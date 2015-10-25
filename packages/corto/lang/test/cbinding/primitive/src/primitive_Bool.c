@@ -1,14 +1,13 @@
-/* primitive_Bool.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * primitive_Bool.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "primitive.h"
 
-/* ::primitive::Bool::testCompare() */
 corto_void _primitive_Bool_testCompare(primitive_Bool this) {
 /* $begin(::primitive::Bool::testCompare) */
 
@@ -17,7 +16,6 @@ corto_void _primitive_Bool_testCompare(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testCopy() */
 corto_void _primitive_Bool_testCopy(primitive_Bool this) {
 /* $begin(::primitive::Bool::testCopy) */
 
@@ -26,7 +24,6 @@ corto_void _primitive_Bool_testCopy(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testCreate() */
 corto_void _primitive_Bool_testCreate(primitive_Bool this) {
 /* $begin(::primitive::Bool::testCreate) */
 
@@ -39,7 +36,6 @@ corto_void _primitive_Bool_testCreate(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testCreateChild() */
 corto_void _primitive_Bool_testCreateChild(primitive_Bool this) {
 /* $begin(::primitive::Bool::testCreateChild) */
 
@@ -48,7 +44,6 @@ corto_void _primitive_Bool_testCreateChild(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testDeclare() */
 corto_void _primitive_Bool_testDeclare(primitive_Bool this) {
 /* $begin(::primitive::Bool::testDeclare) */
 
@@ -57,7 +52,6 @@ corto_void _primitive_Bool_testDeclare(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testDeclareChild() */
 corto_void _primitive_Bool_testDeclareChild(primitive_Bool this) {
 /* $begin(::primitive::Bool::testDeclareChild) */
 
@@ -66,7 +60,6 @@ corto_void _primitive_Bool_testDeclareChild(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testDefine() */
 corto_void _primitive_Bool_testDefine(primitive_Bool this) {
 /* $begin(::primitive::Bool::testDefine) */
 
@@ -75,7 +68,6 @@ corto_void _primitive_Bool_testDefine(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testDeinit() */
 corto_void _primitive_Bool_testDeinit(primitive_Bool this) {
 /* $begin(::primitive::Bool::testDeinit) */
 
@@ -84,7 +76,6 @@ corto_void _primitive_Bool_testDeinit(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testFalse() */
 corto_void _primitive_Bool_testFalse(primitive_Bool this) {
 /* $begin(::primitive::Bool::testFalse) */
 
@@ -93,7 +84,6 @@ corto_void _primitive_Bool_testFalse(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testFromstr() */
 corto_void _primitive_Bool_testFromstr(primitive_Bool this) {
 /* $begin(::primitive::Bool::testFromstr) */
 
@@ -102,7 +92,6 @@ corto_void _primitive_Bool_testFromstr(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testInit() */
 corto_void _primitive_Bool_testInit(primitive_Bool this) {
 /* $begin(::primitive::Bool::testInit) */
 
@@ -111,7 +100,6 @@ corto_void _primitive_Bool_testInit(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testStr() */
 corto_void _primitive_Bool_testStr(primitive_Bool this) {
 /* $begin(::primitive::Bool::testStr) */
 
@@ -120,7 +108,6 @@ corto_void _primitive_Bool_testStr(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testTrue() */
 corto_void _primitive_Bool_testTrue(primitive_Bool this) {
 /* $begin(::primitive::Bool::testTrue) */
 
@@ -129,7 +116,6 @@ corto_void _primitive_Bool_testTrue(primitive_Bool this) {
 /* $end */
 }
 
-/* ::primitive::Bool::testUpdate() */
 corto_void _primitive_Bool_testUpdate(primitive_Bool this) {
 /* $begin(::primitive::Bool::testUpdate) */
 

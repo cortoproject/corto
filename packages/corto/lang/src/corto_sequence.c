@@ -1,9 +1,9 @@
-/* corto_sequence.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_sequence.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -26,7 +26,6 @@ int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_ui
 }
 /* $end */
 
-/* ::corto::lang::sequence::construct() */
 corto_int16 _corto_sequence_construct(corto_sequence this) {
 /* $begin(::corto::lang::sequence::construct) */
     corto_type(this)->hasResources = TRUE;
@@ -42,7 +41,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::sequence::init() */
 corto_int16 _corto_sequence_init(corto_sequence this) {
 /* $begin(::corto::lang::sequence::init) */
     corto_collection(this)->kind = CORTO_SEQUENCE;
@@ -50,7 +48,6 @@ corto_int16 _corto_sequence_init(corto_sequence this) {
 /* $end */
 }
 
-/* ::corto::lang::sequence::size(uint32 size) */
 corto_void _corto_sequence_size(corto_any this, corto_uint32 size) {
 /* $begin(::corto::lang::sequence::size) */
     corto_uint32 oldSize, elementSize;

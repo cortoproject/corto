@@ -1,9 +1,9 @@
-/* ast_Update.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Update.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -39,7 +39,6 @@ error:
 
 /* $end */
 
-/* ::corto::ast::Update::construct() */
 corto_int16 _ast_Update_construct(ast_Update this) {
 /* $begin(::corto::ast::Update::construct) */
     corto_iter exprIter;
@@ -67,7 +66,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Update::toIc(ic::program program,ic::storage storage,bool stored) */
 /* $header(::corto::ast::Update::toIc) */
 static void ast_Update_begin(ast_Update this, ic_program program, ic_node expr) {
     IC_1(program, ast_Node(this)->line, ic_updatebegin, expr, IC_DEREF_ADDRESS);

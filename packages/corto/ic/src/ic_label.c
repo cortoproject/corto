@@ -1,14 +1,13 @@
-/* ic_label.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_label.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::label::construct() */
 corto_int16 _ic_label_construct(ic_label this) {
 /* $begin(::corto::ic::label::construct) */
     ic_node(this)->kind = IC_LABEL;
@@ -17,7 +16,6 @@ corto_int16 _ic_label_construct(ic_label this) {
 /* $end */
 }
 
-/* ::corto::ic::label::str(string in) */
 corto_string _ic_label_str(ic_label this, corto_string in) {
 /* $begin(::corto::ic::label::str) */
     in = strappend(in, "%%L%d", this->id);

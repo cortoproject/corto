@@ -1,9 +1,9 @@
-/* ic.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
@@ -12,7 +12,6 @@
 corto_threadKey IC_PROGRAM_KEY;
 /* $end */
 
-/* ::corto::ic::opKindFromOperator(operatorKind operator) */
 ic_opKind _ic_opKindFromOperator(corto_operatorKind _operator) {
 /* $begin(::corto::ic::opKindFromOperator) */
 

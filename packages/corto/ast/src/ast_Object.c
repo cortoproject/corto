@@ -1,9 +1,9 @@
-/* ast_Object.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Object.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Object::construct() */
 corto_int16 _ast_Object_construct(ast_Object this) {
 /* $begin(::corto::ast::Object::construct) */
     corto_type t = corto_typeof(ast_Object(this)->value);
@@ -30,7 +29,6 @@ corto_int16 _ast_Object_construct(ast_Object this) {
 /* $end */
 }
 
-/* ::corto::ast::Object::getValue() */
 corto_word _ast_Object_getValue(ast_Object this) {
 /* $begin(::corto::ast::Object::getValue) */
     corto_word result = 0;
@@ -45,7 +43,6 @@ corto_word _ast_Object_getValue(ast_Object this) {
 /* $end */
 }
 
-/* ::corto::ast::Object::serialize(type dstType,word dst) */
 corto_int16 _ast_Object_serialize(ast_Object this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Object::serialize) */
     ast_valueKind kind;
@@ -131,7 +128,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Object::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Object_toIc_v(ast_Object this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Object::toIc) */
     CORTO_UNUSED(program);

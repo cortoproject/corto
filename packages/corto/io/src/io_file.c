@@ -1,9 +1,9 @@
-/* io_file.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * io_file.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "io.h"
@@ -12,7 +12,6 @@
 #include "stdio.h"
 /* $end */
 
-/* ::corto::io::file::construct() */
 corto_int16 _io_file_construct(io_file this) {
 /* $begin(::corto::io::file::construct) */
     if (this->name) {
@@ -59,7 +58,6 @@ error:
 /* $end */
 }
 
-/* ::corto::io::file::destruct() */
 corto_void _io_file_destruct(io_file this) {
 /* $begin(::corto::io::file::destruct) */
     if (this->handle) {
@@ -68,14 +66,12 @@ corto_void _io_file_destruct(io_file this) {
 /* $end */
 }
 
-/* ::corto::io::file::flush() */
 corto_void _io_file_flush(io_file this) {
 /* $begin(::corto::io::file::flush) */
     fflush((FILE*)this->handle);
 /* $end */
 }
 
-/* ::corto::io::file::read(uint32 bytes) */
 corto_octetSeq _io_file_read(io_file this, corto_uint32 bytes) {
 /* $begin(::corto::io::file::read) */
     corto_octetSeq result;
@@ -87,7 +83,6 @@ corto_octetSeq _io_file_read(io_file this, corto_uint32 bytes) {
 /* $end */
 }
 
-/* ::corto::io::file::readAll() */
 corto_octetSeq _io_file_readAll(io_file this) {
 /* $begin(::corto::io::file::readAll) */
     corto_octetSeq result;
@@ -103,7 +98,6 @@ corto_octetSeq _io_file_readAll(io_file this) {
 /* $end */
 }
 
-/* ::corto::io::file::readLn() */
 corto_string _io_file_readLn(io_file this) {
 /* $begin(::corto::io::file::readLn) */
     CORTO_UNUSED(this);
@@ -114,7 +108,6 @@ corto_string _io_file_readLn(io_file this) {
 /* $end */
 }
 
-/* ::corto::io::file::readText() */
 corto_string _io_file_readText(io_file this) {
 /* $begin(::corto::io::file::readText) */
     CORTO_UNUSED(this);
@@ -125,7 +118,6 @@ corto_string _io_file_readText(io_file this) {
 /* $end */
 }
 
-/* ::corto::io::file::write(sequence{octet,0} data) */
 corto_uint32 _io_file_write(io_file this, corto_octetSeq data) {
 /* $begin(::corto::io::file::write) */
     CORTO_UNUSED(this);
@@ -137,7 +129,6 @@ corto_uint32 _io_file_write(io_file this, corto_octetSeq data) {
 /* $end */
 }
 
-/* ::corto::io::file::writeText(string txt) */
 corto_uint32 _io_file_writeText(io_file this, corto_string txt) {
 /* $begin(::corto::io::file::writeText) */
     return fwrite(txt, strlen(txt), 1, (FILE*)this->handle);

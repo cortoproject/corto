@@ -1,9 +1,9 @@
-/* ast_Unary.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Unary.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Unary::construct() */
 corto_int16 _ast_Unary_construct(ast_Unary this) {
 /* $begin(::corto::ast::Unary::construct) */
     corto_type lvalueType;
@@ -43,21 +42,18 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Unary::hasReturnedResource() */
 corto_bool _ast_Unary_hasReturnedResource_v(ast_Unary this) {
 /* $begin(::corto::ast::Unary::hasReturnedResource) */
     return ast_Expression_hasReturnedResource(this->lvalue);
 /* $end */
 }
 
-/* ::corto::ast::Unary::hasSideEffects() */
 corto_bool _ast_Unary_hasSideEffects_v(ast_Unary this) {
 /* $begin(::corto::ast::Unary::hasSideEffects) */
     return ast_Expression_hasSideEffects(this->lvalue);
 /* $end */
 }
 
-/* ::corto::ast::Unary::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Unary_toIc_v(ast_Unary this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Unary::toIc) */
     ic_storage result;

@@ -1,9 +1,9 @@
-/* test_Runner.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Runner.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
@@ -26,7 +26,6 @@ void test_updateProgress(test_Runner this) {
 }
 /* $end */
 
-/* ::corto::test::Runner::construct() */
 corto_int16 _test_Runner_construct(test_Runner this) {
 /* $begin(::corto::test::Runner::construct) */
     /* If a testcase is provided, run it. Otherwise, discover testcases and
@@ -61,7 +60,6 @@ error:
 /* $end */
 }
 
-/* ::corto::test::Runner::destruct() */
 corto_void _test_Runner_destruct(test_Runner this) {
 /* $begin(::corto::test::Runner::destruct) */
     if (!this->testcase) {
@@ -71,7 +69,6 @@ corto_void _test_Runner_destruct(test_Runner this) {
 /* $end */
 }
 
-/* ::corto::test::Runner::runTest() */
 corto_void _test_Runner_runTest(test_Runner this, corto_object observable) {
 /* $begin(::corto::test::Runner::runTest) */
 

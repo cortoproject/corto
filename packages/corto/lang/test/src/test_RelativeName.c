@@ -1,14 +1,13 @@
-/* test_RelativeName.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_RelativeName.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::RelativeName::setup() */
 corto_void _test_RelativeName_setup(test_RelativeName this) {
 /* $begin(::test::RelativeName::setup) */
 
@@ -29,7 +28,6 @@ corto_void _test_RelativeName_setup(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromChild() */
 corto_void _test_RelativeName_tc_fromChild(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromChild) */
     corto_id id;
@@ -43,7 +41,6 @@ corto_void _test_RelativeName_tc_fromChild(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromDisjunct() */
 corto_void _test_RelativeName_tc_fromDisjunct(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromDisjunct) */
     corto_id id;
@@ -56,7 +53,6 @@ corto_void _test_RelativeName_tc_fromDisjunct(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromOneUp() */
 corto_void _test_RelativeName_tc_fromOneUp(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromOneUp) */
 
@@ -70,7 +66,6 @@ corto_void _test_RelativeName_tc_fromOneUp(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromParent() */
 corto_void _test_RelativeName_tc_fromParent(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromParent) */
 
@@ -84,7 +79,6 @@ corto_void _test_RelativeName_tc_fromParent(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromRoot() */
 corto_void _test_RelativeName_tc_fromRoot(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromRoot) */
     corto_id id;
@@ -97,7 +91,6 @@ corto_void _test_RelativeName_tc_fromRoot(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromSelf() */
 corto_void _test_RelativeName_tc_fromSelf(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromSelf) */
     corto_id id;
@@ -110,7 +103,6 @@ corto_void _test_RelativeName_tc_fromSelf(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromThreeUp() */
 corto_void _test_RelativeName_tc_fromThreeUp(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromThreeUp) */
     corto_id id;
@@ -123,7 +115,6 @@ corto_void _test_RelativeName_tc_fromThreeUp(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::tc_fromTwoUp() */
 corto_void _test_RelativeName_tc_fromTwoUp(test_RelativeName this) {
 /* $begin(::test::RelativeName::tc_fromTwoUp) */
     corto_id id;
@@ -136,7 +127,6 @@ corto_void _test_RelativeName_tc_fromTwoUp(test_RelativeName this) {
 /* $end */
 }
 
-/* ::test::RelativeName::teardown() */
 corto_void _test_RelativeName_teardown(test_RelativeName this) {
 /* $begin(::test::RelativeName::teardown) */
 

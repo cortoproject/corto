@@ -1,14 +1,13 @@
-/* test_Select.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Select.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::Select::collect(object scope,string expr) */
 test_selectItemList _test_Select_collect(corto_object scope, corto_string expr) {
 /* $begin(::test::Select::collect) */
 	corto_iter iter;
@@ -28,7 +27,6 @@ test_selectItemList _test_Select_collect(corto_object scope, corto_string expr) 
 /* $end */
 }
 
-/* ::test::Select::setup() */
 corto_void _test_Select_setup(test_Select this) {
 /* $begin(::test::Select::setup) */
 
@@ -40,7 +38,6 @@ corto_void _test_Select_setup(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectErrParentAst() */
 corto_void _test_Select_tc_selectErrParentAst(test_Select this) {
 /* $begin(::test::Select::tc_selectErrParentAst) */
     corto_iter iter;
@@ -53,7 +50,6 @@ corto_void _test_Select_tc_selectErrParentAst(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectErrParentId() */
 corto_void _test_Select_tc_selectErrParentId(test_Select this) {
 /* $begin(::test::Select::tc_selectErrParentId) */
     corto_iter iter;
@@ -66,7 +62,6 @@ corto_void _test_Select_tc_selectErrParentId(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectErrParentTree() */
 corto_void _test_Select_tc_selectErrParentTree(test_Select this) {
 /* $begin(::test::Select::tc_selectErrParentTree) */
     corto_iter iter;
@@ -79,7 +74,6 @@ corto_void _test_Select_tc_selectErrParentTree(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectErrParentWc() */
 corto_void _test_Select_tc_selectErrParentWc(test_Select this) {
 /* $begin(::test::Select::tc_selectErrParentWc) */
     corto_iter iter;
@@ -92,7 +86,6 @@ corto_void _test_Select_tc_selectErrParentWc(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectErrScopeScope() */
 corto_void _test_Select_tc_selectErrScopeScope(test_Select this) {
 /* $begin(::test::Select::tc_selectErrScopeScope) */
     corto_iter iter;
@@ -105,7 +98,6 @@ corto_void _test_Select_tc_selectErrScopeScope(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectIdentifier() */
 corto_void _test_Select_tc_selectIdentifier(test_Select this) {
 /* $begin(::test::Select::tc_selectIdentifier) */
 
@@ -114,7 +106,6 @@ corto_void _test_Select_tc_selectIdentifier(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectParent() */
 corto_void _test_Select_tc_selectParent(test_Select this) {
 /* $begin(::test::Select::tc_selectParent) */
 
@@ -123,7 +114,6 @@ corto_void _test_Select_tc_selectParent(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectScopedIdentifier() */
 corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 /* $begin(::test::Select::tc_selectScopedIdentifier) */
 
@@ -132,7 +122,6 @@ corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectScopedParent() */
 corto_void _test_Select_tc_selectScopedParent(test_Select this) {
 /* $begin(::test::Select::tc_selectScopedParent) */
 
@@ -141,7 +130,6 @@ corto_void _test_Select_tc_selectScopedParent(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectScopedThis() */
 corto_void _test_Select_tc_selectScopedThis(test_Select this) {
 /* $begin(::test::Select::tc_selectScopedThis) */
 
@@ -150,7 +138,6 @@ corto_void _test_Select_tc_selectScopedThis(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::tc_selectThis() */
 corto_void _test_Select_tc_selectThis(test_Select this) {
 /* $begin(::test::Select::tc_selectThis) */
 	corto_ll results = NULL;
@@ -174,7 +161,6 @@ corto_void _test_Select_tc_selectThis(test_Select this) {
 /* $end */
 }
 
-/* ::test::Select::teardown() */
 corto_void _test_Select_teardown(test_Select this) {
 /* $begin(::test::Select::teardown) */
 

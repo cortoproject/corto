@@ -1,14 +1,13 @@
-/* corto_map.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_map.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::map::construct() */
 corto_int16 _corto_map_construct(corto_map this) {
 /* $begin(::corto::lang::map::construct) */
     corto_type(this)->hasResources = TRUE;
@@ -21,7 +20,6 @@ corto_int16 _corto_map_construct(corto_map this) {
 /* $end */
 }
 
-/* ::corto::lang::map::init() */
 corto_int16 _corto_map_init(corto_map this) {
 /* $begin(::corto::lang::map::init) */
     corto_collection(this)->kind = CORTO_MAP;

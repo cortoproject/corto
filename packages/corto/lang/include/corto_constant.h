@@ -13,7 +13,6 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::constant::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_constant_init(corto_constant *_this);
 #define corto_constant_init(_this) _corto_constant_init(_this)
 

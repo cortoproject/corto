@@ -1,9 +1,9 @@
-/* ast_Local.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Local.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Local::construct() */
 corto_int16 _ast_Local_construct(ast_Local this) {
 /* $begin(::corto::ast::Local::construct) */
 
@@ -25,7 +24,6 @@ corto_int16 _ast_Local_construct(ast_Local this) {
 /* $end */
 }
 
-/* ::corto::ast::Local::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Local_toIc_v(ast_Local this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Local::toIc) */
     ic_node result;

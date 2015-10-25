@@ -14,15 +14,12 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::sequence::construct() */
 CORTO_LANG_EXPORT corto_int16 _corto_sequence_construct(corto_sequence _this);
 #define corto_sequence_construct(_this) _corto_sequence_construct(corto_sequence(_this))
 
-/* ::corto::lang::sequence::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_sequence_init(corto_sequence _this);
 #define corto_sequence_init(_this) _corto_sequence_init(corto_sequence(_this))
 
-/* ::corto::lang::sequence::size(uint32 size) */
 CORTO_LANG_EXPORT corto_void _corto_sequence_size(corto_any _this, corto_uint32 size);
 #define corto_sequence_size(_this, size) _corto_sequence_size(_this, size)
 

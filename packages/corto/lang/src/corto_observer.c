@@ -1,9 +1,9 @@
-/* corto_observer.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_observer.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -12,7 +12,6 @@
 #include "corto__class.h"
 /* $end */
 
-/* ::corto::lang::observer::bind() */
 corto_int16 _corto_observer_bind(corto_observer this) {
 /* $begin(::corto::lang::observer::bind) */
 
@@ -48,7 +47,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::observer::init() */
 corto_int16 _corto_observer_init(corto_observer this) {
 /* $begin(::corto::lang::observer::init) */
     corto_parameter *p;
@@ -74,7 +72,6 @@ corto_int16 _corto_observer_init(corto_observer this) {
 /* $end */
 }
 
-/* ::corto::lang::observer::listen(object observable,object me) */
 corto_int16 _corto_observer_listen(corto_observer this, corto_object observable, corto_object me) {
 /* $begin(::corto::lang::observer::listen) */
     corto_object oldObservable = NULL;
@@ -116,7 +113,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::observer::setDispatcher(dispatcher dispatcher) */
 corto_void _corto_observer_setDispatcher(corto_observer this, corto_dispatcher dispatcher) {
 /* $begin(::corto::lang::observer::setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
@@ -124,7 +120,6 @@ corto_void _corto_observer_setDispatcher(corto_observer this, corto_dispatcher d
 /* $end */
 }
 
-/* ::corto::lang::observer::silence(object me) */
 corto_int16 _corto_observer_silence(corto_observer this, corto_object me) {
 /* $begin(::corto::lang::observer::silence) */
     corto_object oldObservable = NULL;
@@ -150,7 +145,6 @@ corto_int16 _corto_observer_silence(corto_observer this, corto_object me) {
 /* $end */
 }
 
-/* ::corto::lang::observer::unbind(observer object) */
 corto_void _corto_observer_unbind(corto_observer object) {
 /* $begin(::corto::lang::observer::unbind) */
     if (!object->_template) {

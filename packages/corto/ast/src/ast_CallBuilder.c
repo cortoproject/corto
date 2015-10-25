@@ -1,9 +1,9 @@
-/* ast_CallBuilder.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_CallBuilder.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -65,7 +65,6 @@ error:
 
 /* $end */
 
-/* ::corto::ast::CallBuilder::build() */
 ast_Call _ast_CallBuilder_build(ast_CallBuilder *this) {
 /* $begin(::corto::ast::CallBuilder::build) */
     ast_Call result = NULL;
@@ -135,7 +134,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::CallBuilder::buildSignature() */
 corto_int16 _ast_CallBuilder_buildSignature(ast_CallBuilder *this) {
 /* $begin(::corto::ast::CallBuilder::buildSignature) */
     corto_string signature;

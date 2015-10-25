@@ -1,9 +1,9 @@
-/* profile.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * profile.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "profile.h"
@@ -81,7 +81,6 @@ static void profile_closeProfile(profile_TlsValue *value, corto_time t) {
 
 /* $end */
 
-/* ::corto::profile::start(string name) */
 corto_void _profile_start(corto_string name) {
 /* $begin(::corto::profile::start) */
     corto_time *startTimePtr = corto_alloc(sizeof(corto_time));
@@ -92,7 +91,6 @@ corto_void _profile_start(corto_string name) {
 /* $end */
 }
 
-/* ::corto::profile::stop() */
 corto_void _profile_stop(void) {
 /* $begin(::corto::profile::stop) */
     corto_time *startTimePtr;

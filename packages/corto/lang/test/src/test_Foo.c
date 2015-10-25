@@ -1,14 +1,13 @@
-/* test_Foo.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Foo.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::Foo::construct() */
 corto_int16 _test_Foo_construct(test_Foo this) {
 /* $begin(::test::Foo::construct) */
 
@@ -28,7 +27,6 @@ error:
 /* $end */
 }
 
-/* ::test::Foo::destruct() */
 corto_void _test_Foo_destruct(test_Foo this) {
 /* $begin(::test::Foo::destruct) */
     CORTO_UNUSED(this);
@@ -36,7 +34,6 @@ corto_void _test_Foo_destruct(test_Foo this) {
 /* $end */
 }
 
-/* ::test::Foo::init() */
 corto_int16 _test_Foo_init(test_Foo this) {
 /* $begin(::test::Foo::init) */
     this->x = 1;

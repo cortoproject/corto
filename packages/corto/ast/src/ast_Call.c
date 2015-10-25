@@ -1,9 +1,9 @@
-/* ast_Call.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Call.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -62,7 +62,6 @@ error:
 
 /* $end */
 
-/* ::corto::ast::Call::construct() */
 corto_int16 _ast_Call_construct(ast_Call this) {
 /* $begin(::corto::ast::Call::construct) */
     ast_Node(this)->kind = Ast_CallExpr;
@@ -84,7 +83,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Call::hasReturnedResource() */
 corto_bool _ast_Call_hasReturnedResource_v(ast_Call this) {
 /* $begin(::corto::ast::Call::hasReturnedResource) */
 
@@ -95,7 +93,6 @@ corto_bool _ast_Call_hasReturnedResource_v(ast_Call this) {
 /* $end */
 }
 
-/* ::corto::ast::Call::hasSideEffects() */
 corto_bool _ast_Call_hasSideEffects_v(ast_Call this) {
 /* $begin(::corto::ast::Call::hasSideEffects) */
     CORTO_UNUSED(this);
@@ -103,7 +100,6 @@ corto_bool _ast_Call_hasSideEffects_v(ast_Call this) {
 /* $end */
 }
 
-/* ::corto::ast::Call::setParameters(function function) */
 corto_void _ast_Call_setParameters(ast_Call this, corto_function function) {
 /* $begin(::corto::ast::Call::setParameters) */
     corto_uint32 i;
@@ -122,7 +118,6 @@ corto_void _ast_Call_setParameters(ast_Call this, corto_function function) {
 /* $end */
 }
 
-/* ::corto::ast::Call::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Call_toIc_v(ast_Call this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Call::toIc) */
     ic_storage result = NULL;

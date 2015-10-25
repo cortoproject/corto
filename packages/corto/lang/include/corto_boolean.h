@@ -14,7 +14,6 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::boolean::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_boolean_init(corto_boolean _this);
 #define corto_boolean_init(_this) _corto_boolean_init(corto_boolean(_this))
 

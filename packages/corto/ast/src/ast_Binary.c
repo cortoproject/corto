@@ -1,9 +1,9 @@
-/* ast_Binary.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Binary.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -404,7 +404,6 @@ error:
 
 /* $end */
 
-/* ::corto::ast::Binary::construct() */
 corto_int16 _ast_Binary_construct(ast_Binary this) {
 /* $begin(::corto::ast::Binary::construct) */
     corto_type lvalueType, rvalueType;
@@ -454,7 +453,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Binary::fold() */
 ast_Expression _ast_Binary_fold(ast_Binary this) {
 /* $begin(::corto::ast::Binary::fold) */
     ast_Expression result = ast_Expression(this);
@@ -540,7 +538,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Binary::hasReturnedResource() */
 corto_bool _ast_Binary_hasReturnedResource_v(ast_Binary this) {
 /* $begin(::corto::ast::Binary::hasReturnedResource) */
 
@@ -550,7 +547,6 @@ corto_bool _ast_Binary_hasReturnedResource_v(ast_Binary this) {
 /* $end */
 }
 
-/* ::corto::ast::Binary::hasSideEffects() */
 corto_bool _ast_Binary_hasSideEffects_v(ast_Binary this) {
 /* $begin(::corto::ast::Binary::hasSideEffects) */
     corto_bool result = FALSE;
@@ -574,7 +570,6 @@ corto_bool _ast_Binary_hasSideEffects_v(ast_Binary this) {
 /* $end */
 }
 
-/* ::corto::ast::Binary::setOperator(operatorKind kind) */
 corto_void _ast_Binary_setOperator(ast_Binary this, corto_operatorKind kind) {
 /* $begin(::corto::ast::Binary::setOperator) */
     ast_Binary compoundExpr = NULL;
@@ -645,7 +640,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Binary::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Binary_toIc_v(ast_Binary this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Binary::toIc) */
     ic_node returnsResult = NULL;

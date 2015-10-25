@@ -14,7 +14,6 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::float::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_float_init(corto_float _this);
 #define corto_float_init(_this) _corto_float_init(corto_float(_this))
 

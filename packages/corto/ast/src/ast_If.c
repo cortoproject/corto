@@ -1,9 +1,9 @@
-/* ast_If.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_If.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::If::construct() */
 corto_int16 _ast_If_construct(ast_If this) {
 /* $begin(::corto::ast::If::construct) */
     corto_type conditionType;
@@ -38,14 +37,12 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::If::noWarnUnreachable() */
 corto_void _ast_If_noWarnUnreachable(ast_If this) {
 /* $begin(::corto::ast::If::noWarnUnreachable) */
     this->warnUnreachable = FALSE;
 /* $end */
 }
 
-/* ::corto::ast::If::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_If_toIc_v(ast_If this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::If::toIc) */
     ic_storage accumulator;

@@ -1,28 +1,25 @@
-/* io.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * io.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "io.h"
 
-/* ::corto::io::print(string str) */
 corto_void _io_print(corto_string str) {
 /* $begin(::corto::io::print) */
     printf("%s", str);
 /* $end */
 }
 
-/* ::corto::io::println(string str) */
 corto_void _io_println(corto_string str) {
 /* $begin(::corto::io::println) */
     printf("%s\n", str);
 /* $end */
 }
 
-/* ::corto::io::readln() */
 corto_string _io_readln(void) {
 /* $begin(::corto::io::readln) */
     size_t size=256;

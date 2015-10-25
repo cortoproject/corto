@@ -1,14 +1,13 @@
-/* os_thread.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * os_thread.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "os.h"
 
-/* ::corto::os::thread::construct() */
 corto_int16 _os_thread_construct(os_thread this) {
 /* $begin(::corto::os::thread::construct) */
     CORTO_UNUSED(this);
@@ -17,7 +16,6 @@ corto_int16 _os_thread_construct(os_thread this) {
 /* $end */
 }
 
-/* ::corto::os::thread::destruct() */
 corto_void _os_thread_destruct(os_thread this) {
 /* $begin(::corto::os::thread::destruct) */
 
@@ -28,7 +26,6 @@ corto_void _os_thread_destruct(os_thread this) {
 /* $end */
 }
 
-/* ::corto::os::thread::join() */
 corto_void _os_thread_join(os_thread this) {
 /* $begin(::corto::os::thread::join) */
 
@@ -39,14 +36,12 @@ corto_void _os_thread_join(os_thread this) {
 /* $end */
 }
 
-/* ::corto::os::thread::run() */
 corto_void _os_thread_run_v(os_thread this) {
 /* $begin(::corto::os::thread::run) */
     corto_call(corto_function(os_thread_run_o),NULL,this);
 /* $end */
 }
 
-/* ::corto::os::thread::start() */
 corto_void _os_thread_start(os_thread this) {
 /* $begin(::corto::os::thread::start) */
     corto_context context;
@@ -58,7 +53,6 @@ corto_void _os_thread_start(os_thread this) {
 /* $end */
 }
 
-/* ::corto::os::thread::stop() */
 corto_void _os_thread_stop(os_thread this) {
 /* $begin(::corto::os::thread::stop) */
 

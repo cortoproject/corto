@@ -13,7 +13,6 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::metaprocedure::bind() */
 CORTO_LANG_EXPORT corto_int16 _corto_metaprocedure_bind(corto_metaprocedure _this);
 #define corto_metaprocedure_bind(_this) _corto_metaprocedure_bind(corto_metaprocedure(_this))
 

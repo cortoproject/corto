@@ -1,14 +1,13 @@
-/* corto_alias.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_alias.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::alias::construct() */
 corto_int16 _corto_alias_construct(corto_alias this) {
 /* $begin(::corto::lang::alias::construct) */
 
@@ -18,7 +17,6 @@ corto_int16 _corto_alias_construct(corto_alias this) {
 /* $end */
 }
 
-/* ::corto::lang::alias::init() */
 corto_int16 _corto_alias_init(corto_alias this) {
 /* $begin(::corto::lang::alias::init) */
 

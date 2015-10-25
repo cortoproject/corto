@@ -1,9 +1,9 @@
-/* corto_enum.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_enum.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -26,7 +26,6 @@ corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
 }
 /* $end */
 
-/* ::corto::lang::enum::constant(int32 value) */
 /* $header(::corto::lang::enum::constant) */
 struct corto_enum_findConstant_t {
     corto_int32 value;
@@ -56,7 +55,6 @@ corto_object _corto_enum_constant(corto_enum this, corto_int32 value) {
 /* $end */
 }
 
-/* ::corto::lang::enum::construct() */
 corto_int16 _corto_enum_construct(corto_enum this) {
 /* $begin(::corto::lang::enum::construct) */
     corto_uint32 i;
@@ -70,7 +68,6 @@ corto_int16 _corto_enum_construct(corto_enum this) {
 /* $end */
 }
 
-/* ::corto::lang::enum::destruct() */
 corto_void _corto_enum_destruct(corto_enum this) {
 /* $begin(::corto::lang::enum::destruct) */
     corto_clear(corto_collection(corto_objectseq_o), &this->constants);
@@ -78,7 +75,6 @@ corto_void _corto_enum_destruct(corto_enum this) {
 /* $end */
 }
 
-/* ::corto::lang::enum::init() */
 corto_int16 _corto_enum_init(corto_enum this) {
 /* $begin(::corto::lang::enum::init) */
     corto_primitive(this)->kind = CORTO_ENUM;

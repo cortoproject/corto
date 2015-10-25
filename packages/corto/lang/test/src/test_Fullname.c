@@ -1,14 +1,13 @@
-/* test_Fullname.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Fullname.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::Fullname::tc_null() */
 corto_void _test_Fullname_tc_null(test_Fullname this) {
 /* $begin(::test::Fullname::tc_null) */
     corto_id id;
@@ -24,7 +23,6 @@ corto_void _test_Fullname_tc_null(test_Fullname this) {
 /* $end */
 }
 
-/* ::test::Fullname::tc_nullBuffer() */
 corto_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
 /* $begin(::test::Fullname::tc_nullBuffer) */
 
@@ -37,7 +35,6 @@ corto_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
 /* $end */
 }
 
-/* ::test::Fullname::tc_onelevel() */
 corto_void _test_Fullname_tc_onelevel(test_Fullname this) {
 /* $begin(::test::Fullname::tc_onelevel) */
     corto_id id;
@@ -49,7 +46,6 @@ corto_void _test_Fullname_tc_onelevel(test_Fullname this) {
 /* $end */
 }
 
-/* ::test::Fullname::tc_root() */
 corto_void _test_Fullname_tc_root(test_Fullname this) {
 /* $begin(::test::Fullname::tc_root) */
     corto_id id;
@@ -61,7 +57,6 @@ corto_void _test_Fullname_tc_root(test_Fullname this) {
 /* $end */
 }
 
-/* ::test::Fullname::tc_twolevels() */
 corto_void _test_Fullname_tc_twolevels(test_Fullname this) {
 /* $begin(::test::Fullname::tc_twolevels) */
     corto_id id;

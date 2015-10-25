@@ -1,9 +1,9 @@
-/* ast_Member.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Member.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -55,7 +55,6 @@ error:
 
 /* $end */
 
-/* ::corto::ast::Member::construct() */
 corto_int16 _ast_Member_construct(ast_Member this) {
 /* $begin(::corto::ast::Member::construct) */
 
@@ -100,14 +99,12 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Member::hasSideEffects() */
 corto_bool _ast_Member_hasSideEffects_v(ast_Member this) {
 /* $begin(::corto::ast::Member::hasSideEffects) */
     return ast_Expression_hasSideEffects(this->lvalue);
 /* $end */
 }
 
-/* ::corto::ast::Member::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Member_toIc_v(ast_Member this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Member::toIc) */
     ic_member result = NULL;

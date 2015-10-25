@@ -1137,6 +1137,7 @@ corto_int16 corto_genMain(corto_generator g) {
     const char docsFilename[] = "doc";
     corto_object md;
 
+    system("rm -rf doc");
     corto_mkdir(docsFilename);
     htmlData_t data = {docsFilename, 1, "", g};
 

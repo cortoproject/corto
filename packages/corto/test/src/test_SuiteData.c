@@ -1,14 +1,13 @@
-/* test_SuiteData.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_SuiteData.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::corto::test::SuiteData::construct() */
 corto_int16 _test_SuiteData_construct(test_SuiteData this) {
 /* $begin(::corto::test::SuiteData::construct) */
 
@@ -35,7 +34,6 @@ error:
 /* $end */
 }
 
-/* ::corto::test::SuiteData::setup() */
 corto_void _test_SuiteData_setup_v(test_SuiteData this) {
 /* $begin(::corto::test::SuiteData::setup) */
 
@@ -44,7 +42,6 @@ corto_void _test_SuiteData_setup_v(test_SuiteData this) {
 /* $end */
 }
 
-/* ::corto::test::SuiteData::teardown() */
 corto_void _test_SuiteData_teardown_v(test_SuiteData this) {
 /* $begin(::corto::test::SuiteData::teardown) */
 

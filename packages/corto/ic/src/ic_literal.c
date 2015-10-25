@@ -1,14 +1,13 @@
-/* ic_literal.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_literal.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::literal::construct() */
 corto_int16 _ic_literal_construct(ic_literal this) {
 /* $begin(::corto::ic::literal::construct) */
     ic_node(this)->kind = IC_LITERAL;
@@ -16,7 +15,6 @@ corto_int16 _ic_literal_construct(ic_literal this) {
 /* $end */
 }
 
-/* ::corto::ic::literal::str(string in) */
 corto_string _ic_literal_str(ic_literal this, corto_string in) {
 /* $begin(::corto::ic::literal::str) */
     corto_string result = NULL;

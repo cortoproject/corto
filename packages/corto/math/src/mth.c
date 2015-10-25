@@ -1,9 +1,9 @@
-/* mth.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * mth.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "mth.h"
@@ -12,7 +12,6 @@
 #include "math.h"
 /* $end */
 
-/* ::corto::math::abs(int64 x) */
 corto_uint64 _mth_abs(corto_int64 x) {
 /* $begin(::corto::math::abs) */
 
@@ -21,7 +20,6 @@ corto_uint64 _mth_abs(corto_int64 x) {
 /* $end */
 }
 
-/* ::corto::math::acos(float64 x) */
 corto_float64 _mth_acos(corto_float64 x) {
 /* $begin(::corto::math::acos) */
 
@@ -30,7 +28,6 @@ corto_float64 _mth_acos(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::asin(float64 x) */
 corto_float64 _mth_asin(corto_float64 x) {
 /* $begin(::corto::math::asin) */
 
@@ -39,7 +36,6 @@ corto_float64 _mth_asin(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::atan(float64 x) */
 corto_float64 _mth_atan(corto_float64 x) {
 /* $begin(::corto::math::atan) */
 
@@ -48,7 +44,6 @@ corto_float64 _mth_atan(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::cos(float64 x) */
 corto_float64 _mth_cos(corto_float64 x) {
 /* $begin(::corto::math::cos) */
 
@@ -57,7 +52,6 @@ corto_float64 _mth_cos(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::exp(float64 x) */
 corto_float64 _mth_exp(corto_float64 x) {
 /* $begin(::corto::math::exp) */
 
@@ -66,7 +60,6 @@ corto_float64 _mth_exp(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::log(float64 x) */
 corto_float64 _mth_log(corto_float64 x) {
 /* $begin(::corto::math::log) */
 
@@ -75,7 +68,6 @@ corto_float64 _mth_log(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::log10(float64 x) */
 corto_float64 _mth_log10(corto_float64 x) {
 /* $begin(::corto::math::log10) */
 
@@ -84,7 +76,6 @@ corto_float64 _mth_log10(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::pow(float64 x,float64 p) */
 corto_float64 _mth_pow(corto_float64 x, corto_float64 p) {
 /* $begin(::corto::math::pow) */
 
@@ -93,7 +84,6 @@ corto_float64 _mth_pow(corto_float64 x, corto_float64 p) {
 /* $end */
 }
 
-/* ::corto::math::rand() */
 corto_float64 _mth_rand(void) {
 /* $begin(::corto::math::rand) */
 
@@ -102,7 +92,6 @@ corto_float64 _mth_rand(void) {
 /* $end */
 }
 
-/* ::corto::math::seed(uint32 seed) */
 corto_void _mth_seed(corto_uint32 seed) {
 /* $begin(::corto::math::seed) */
 
@@ -111,7 +100,6 @@ corto_void _mth_seed(corto_uint32 seed) {
 /* $end */
 }
 
-/* ::corto::math::sin(float64 x) */
 corto_float64 _mth_sin(corto_float64 x) {
 /* $begin(::corto::math::sin) */
 
@@ -120,7 +108,6 @@ corto_float64 _mth_sin(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::sqrt(float64 x) */
 corto_float64 _mth_sqrt(corto_float64 x) {
 /* $begin(::corto::math::sqrt) */
 
@@ -129,7 +116,6 @@ corto_float64 _mth_sqrt(corto_float64 x) {
 /* $end */
 }
 
-/* ::corto::math::tan(float64 x) */
 corto_float64 _mth_tan(corto_float64 x) {
 /* $begin(::corto::math::tan) */
 

@@ -1,14 +1,13 @@
-/* corto_float.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_float.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::float::init() */
 corto_int16 _corto_float_init(corto_float this) {
 /* $begin(::corto::lang::float::init) */
     corto_primitive(this)->kind = CORTO_FLOAT;

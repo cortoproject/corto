@@ -1,9 +1,9 @@
-/* test_Event.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Event.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
@@ -12,7 +12,6 @@
 static corto_object testScope;
 /* $end */
 
-/* ::test::Event::setup() */
 corto_void _test_Event_setup(test_Event this) {
 /* $begin(::test::Event::setup) */
     testScope = corto_voidCreateChild(NULL, "testScope");
@@ -23,7 +22,6 @@ corto_void _test_Event_setup(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeclare() */
 corto_void _test_Event_tc_onDeclare(test_Event this) {
 /* $begin(::test::Event::tc_onDeclare) */
     corto_int16 ret;
@@ -64,7 +62,6 @@ corto_void _test_Event_tc_onDeclare(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeclareScope() */
 corto_void _test_Event_tc_onDeclareScope(test_Event this) {
 /* $begin(::test::Event::tc_onDeclareScope) */
     corto_int16 ret;
@@ -101,7 +98,6 @@ corto_void _test_Event_tc_onDeclareScope(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeclareSelf() */
 corto_void _test_Event_tc_onDeclareSelf(test_Event this) {
 /* $begin(::test::Event::tc_onDeclareSelf) */
     corto_int16 ret;
@@ -137,7 +133,6 @@ corto_void _test_Event_tc_onDeclareSelf(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeclareTree() */
 corto_void _test_Event_tc_onDeclareTree(test_Event this) {
 /* $begin(::test::Event::tc_onDeclareTree) */
     corto_int16 ret;
@@ -178,7 +173,6 @@ corto_void _test_Event_tc_onDeclareTree(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDefine() */
 corto_void _test_Event_tc_onDefine(test_Event this) {
 /* $begin(::test::Event::tc_onDefine) */
     corto_int16 ret;
@@ -218,7 +212,6 @@ corto_void _test_Event_tc_onDefine(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDefineScope() */
 corto_void _test_Event_tc_onDefineScope(test_Event this) {
 /* $begin(::test::Event::tc_onDefineScope) */
     corto_int16 ret;
@@ -257,7 +250,6 @@ corto_void _test_Event_tc_onDefineScope(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDefineSelf() */
 corto_void _test_Event_tc_onDefineSelf(test_Event this) {
 /* $begin(::test::Event::tc_onDefineSelf) */
     corto_int16 ret;
@@ -292,7 +284,6 @@ corto_void _test_Event_tc_onDefineSelf(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDefineTree() */
 corto_void _test_Event_tc_onDefineTree(test_Event this) {
 /* $begin(::test::Event::tc_onDefineTree) */
     corto_int16 ret;
@@ -333,7 +324,6 @@ corto_void _test_Event_tc_onDefineTree(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDelete() */
 corto_void _test_Event_tc_onDelete(test_Event this) {
 /* $begin(::test::Event::tc_onDelete) */
     corto_int16 ret;
@@ -369,7 +359,6 @@ corto_void _test_Event_tc_onDelete(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeleteScope() */
 corto_void _test_Event_tc_onDeleteScope(test_Event this) {
 /* $begin(::test::Event::tc_onDeleteScope) */
     corto_int16 ret;
@@ -405,7 +394,6 @@ corto_void _test_Event_tc_onDeleteScope(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeleteSelf() */
 corto_void _test_Event_tc_onDeleteSelf(test_Event this) {
 /* $begin(::test::Event::tc_onDeleteSelf) */
     corto_int16 ret;
@@ -441,7 +429,6 @@ corto_void _test_Event_tc_onDeleteSelf(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onDeleteTree() */
 corto_void _test_Event_tc_onDeleteTree(test_Event this) {
 /* $begin(::test::Event::tc_onDeleteTree) */
     corto_int16 ret;
@@ -477,7 +464,6 @@ corto_void _test_Event_tc_onDeleteTree(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onUpdate() */
 corto_void _test_Event_tc_onUpdate(test_Event this) {
 /* $begin(::test::Event::tc_onUpdate) */
     int ret;
@@ -558,7 +544,6 @@ corto_void _test_Event_tc_onUpdate(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onUpdateScope() */
 corto_void _test_Event_tc_onUpdateScope(test_Event this) {
 /* $begin(::test::Event::tc_onUpdateScope) */
     int ret;
@@ -635,7 +620,6 @@ corto_void _test_Event_tc_onUpdateScope(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onUpdateSelf() */
 corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
 /* $begin(::test::Event::tc_onUpdateSelf) */
     int ret;
@@ -710,7 +694,6 @@ corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_onUpdateTree() */
 corto_void _test_Event_tc_onUpdateTree(test_Event this) {
 /* $begin(::test::Event::tc_onUpdateTree) */
     int ret;
@@ -789,7 +772,6 @@ corto_void _test_Event_tc_onUpdateTree(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_updateUndefined() */
 corto_void _test_Event_tc_updateUndefined(test_Event this) {
 /* $begin(::test::Event::tc_updateUndefined) */
 
@@ -804,7 +786,6 @@ corto_void _test_Event_tc_updateUndefined(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::tc_updateVoidErr() */
 corto_void _test_Event_tc_updateVoidErr(test_Event this) {
 /* $begin(::test::Event::tc_updateVoidErr) */
 
@@ -819,7 +800,6 @@ corto_void _test_Event_tc_updateVoidErr(test_Event this) {
 /* $end */
 }
 
-/* ::test::Event::teardown() */
 corto_void _test_Event_teardown(test_Event this) {
 /* $begin(::test::Event::teardown) */
     corto_uint32 countDelete = this->et->countDelete;

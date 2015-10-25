@@ -1,14 +1,13 @@
-/* test_Suite.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Suite.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::corto::test::Suite::construct() */
 corto_int16 _test_Suite_construct(test_Suite this) {
 /* $begin(::corto::test::Suite::construct) */
     corto_interface(this)->base = corto_interface(test_SuiteData_o);

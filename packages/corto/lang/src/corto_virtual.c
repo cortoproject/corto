@@ -1,14 +1,13 @@
-/* corto_virtual.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_virtual.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::virtual::init() */
 corto_int16 _corto_virtual_init(corto_virtual this) {
 /* $begin(::corto::lang::virtual::init) */
     corto_method(this)->_virtual = TRUE;

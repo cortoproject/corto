@@ -1,9 +1,9 @@
-/* ast_Null.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Null.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Null::init() */
 corto_int16 _ast_Null_init(ast_Null this) {
 /* $begin(::corto::ast::Null::init) */
     ast_Literal(this)->kind = Ast_Nothing;
@@ -21,7 +20,6 @@ corto_int16 _ast_Null_init(ast_Null this) {
 /* $end */
 }
 
-/* ::corto::ast::Null::serialize(type dstType,word dst) */
 corto_int16 _ast_Null_serialize(ast_Null this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Null::serialize) */
     ast_valueKind kind;
@@ -59,7 +57,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Null::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Null_toIc_v(ast_Null this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Null::toIc) */
     CORTO_UNUSED(storage);

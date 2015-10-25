@@ -1,14 +1,13 @@
-/* corto_array.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_array.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::array::construct() */
 corto_int16 _corto_array_construct(corto_array this) {
 /* $begin(::corto::lang::array::construct) */
     corto_uint32 elementTypeSize;
@@ -64,7 +63,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::array::destruct() */
 corto_void _corto_array_destruct(corto_array this) {
 /* $begin(::corto::lang::array::destruct) */
     corto_release(this->elementType);
@@ -75,7 +73,6 @@ corto_void _corto_array_destruct(corto_array this) {
 /* $end */
 }
 
-/* ::corto::lang::array::init() */
 corto_int16 _corto_array_init(corto_array this) {
 /* $begin(::corto::lang::array::init) */
     corto_collection(this)->kind = CORTO_ARRAY;

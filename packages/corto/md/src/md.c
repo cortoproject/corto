@@ -1,9 +1,9 @@
-/* md.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * md.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "md.h"
@@ -89,7 +89,6 @@ error:
 }
 /* $end */
 
-/* ::corto::md::parse(string text) */
 corto_string _md_parse(corto_string text) {
 /* $begin(::corto::md::parse) */
     corto_string result = NULL;
@@ -109,7 +108,6 @@ corto_string _md_parse(corto_string text) {
 /* $end */
 }
 
-/* ::corto::md::parseToCorto(object destination,string text) */
 corto_void _md_parseToCorto(corto_object destination, corto_string text) {
 /* $begin(::corto::md::parseToCorto) */
 

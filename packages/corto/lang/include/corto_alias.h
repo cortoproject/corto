@@ -14,11 +14,9 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::alias::construct() */
 CORTO_LANG_EXPORT corto_int16 _corto_alias_construct(corto_alias _this);
 #define corto_alias_construct(_this) _corto_alias_construct(corto_alias(_this))
 
-/* ::corto::lang::alias::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_alias_init(corto_alias _this);
 #define corto_alias_init(_this) _corto_alias_init(corto_alias(_this))
 

@@ -1,14 +1,13 @@
-/* class_Inherit.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * class_Inherit.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "_class.h"
 
-/* ::class::Inherit::construct() */
 corto_int16 _class_Inherit_construct(class_Inherit this) {
 /* $begin(::class::Inherit::construct) */
 
@@ -17,7 +16,6 @@ corto_int16 _class_Inherit_construct(class_Inherit this) {
 /* $end */
 }
 
-/* ::class::Inherit::destruct() */
 corto_void _class_Inherit_destruct(class_Inherit this) {
 /* $begin(::class::Inherit::destruct) */
 

@@ -1,9 +1,9 @@
-/* ic_program.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_program.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
@@ -12,7 +12,6 @@
 #include "ic_assemble.h"
 /* $end */
 
-/* ::corto::ic::program::add(node n) */
 corto_void _ic_program_add(ic_program this, ic_node n) {
 /* $begin(::corto::ic::program::add) */
 
@@ -31,7 +30,6 @@ corto_void _ic_program_add(ic_program this, ic_node n) {
 /* $end */
 }
 
-/* ::corto::ic::program::assemble() */
 corto_int16 _ic_program_assemble(ic_program this) {
 /* $begin(::corto::ic::program::assemble) */
 
@@ -54,7 +52,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ic::program::construct() */
 corto_int16 _ic_program_construct(ic_program this) {
 /* $begin(::corto::ic::program::construct) */
     extern corto_threadKey IC_PROGRAM_KEY;
@@ -63,7 +60,6 @@ corto_int16 _ic_program_construct(ic_program this) {
 /* $end */
 }
 
-/* ::corto::ic::program::declareVariable(string name,type type,bool isReference,bool holdsReturn,bool isParameter,bool isReturn) */
 ic_variable _ic_program_declareVariable(ic_program this, corto_string name, corto_type type, corto_bool isReference, corto_bool holdsReturn, corto_bool isParameter, corto_bool isReturn) {
 /* $begin(::corto::ic::program::declareVariable) */
     ic_variable result = ic_variable(ic_scope_lookupStorage(this->scope, name, FALSE));
@@ -75,7 +71,6 @@ ic_variable _ic_program_declareVariable(ic_program this, corto_string name, cort
 /* $end */
 }
 
-/* ::corto::ic::program::get() */
 ic_program _ic_program_get(void) {
 /* $begin(::corto::ic::program::get) */
     extern corto_threadKey IC_PROGRAM_KEY;
@@ -83,14 +78,12 @@ ic_program _ic_program_get(void) {
 /* $end */
 }
 
-/* ::corto::ic::program::getAccId() */
 corto_uint32 _ic_program_getAccId(ic_program this) {
 /* $begin(::corto::ic::program::getAccId) */
     return ++this->autoAccId;
 /* $end */
 }
 
-/* ::corto::ic::program::getElement(storage base,node index) */
 ic_element _ic_program_getElement(ic_program this, ic_storage base, ic_node index) {
 /* $begin(::corto::ic::program::getElement) */
     corto_id name;
@@ -111,14 +104,12 @@ ic_element _ic_program_getElement(ic_program this, ic_storage base, ic_node inde
 /* $end */
 }
 
-/* ::corto::ic::program::getLabel() */
 corto_uint32 _ic_program_getLabel(ic_program this) {
 /* $begin(::corto::ic::program::getLabel) */
     return ++this->labelCount;
 /* $end */
 }
 
-/* ::corto::ic::program::getMember(storage base,member m) */
 ic_member _ic_program_getMember(ic_program this, ic_storage base, corto_member m) {
 /* $begin(::corto::ic::program::getMember) */
     corto_id name;
@@ -133,7 +124,6 @@ ic_member _ic_program_getMember(ic_program this, ic_storage base, corto_member m
 /* $end */
 }
 
-/* ::corto::ic::program::getObject(object o) */
 ic_object _ic_program_getObject(ic_program this, corto_object o) {
 /* $begin(::corto::ic::program::getObject) */
     corto_id id;
@@ -151,14 +141,12 @@ ic_object _ic_program_getObject(ic_program this, corto_object o) {
 /* $end */
 }
 
-/* ::corto::ic::program::getVariable(string name) */
 ic_variable _ic_program_getVariable(ic_program this, corto_string name) {
 /* $begin(::corto::ic::program::getVariable) */
     return ic_variable(ic_scope_lookupStorage(this->scope, name, TRUE));
 /* $end */
 }
 
-/* ::corto::ic::program::popAccumulator() */
 corto_void _ic_program_popAccumulator(ic_program this) {
 /* $begin(::corto::ic::program::popAccumulator) */
     ic_storage acc;
@@ -172,7 +160,6 @@ corto_void _ic_program_popAccumulator(ic_program this) {
 /* $end */
 }
 
-/* ::corto::ic::program::popScope() */
 corto_void _ic_program_popScope(ic_program this) {
 /* $begin(::corto::ic::program::popScope) */
     if (this->scope->storages) {
@@ -194,7 +181,6 @@ corto_void _ic_program_popScope(ic_program this) {
 /* $end */
 }
 
-/* ::corto::ic::program::pushAccumulator(type type,bool isReference,bool holdsReturn) */
 ic_accumulator _ic_program_pushAccumulator(ic_program this, corto_type type, corto_bool isReference, corto_bool holdsReturn) {
 /* $begin(::corto::ic::program::pushAccumulator) */
     corto_id name;
@@ -210,7 +196,6 @@ ic_accumulator _ic_program_pushAccumulator(ic_program this, corto_type type, cor
 /* $end */
 }
 
-/* ::corto::ic::program::pushFunction(function function) */
 ic_scope _ic_program_pushFunction(ic_program this, corto_function function) {
 /* $begin(::corto::ic::program::pushFunction) */
     ic_function label;
@@ -228,7 +213,6 @@ ic_scope _ic_program_pushFunction(ic_program this, corto_function function) {
 /* $end */
 }
 
-/* ::corto::ic::program::pushScope() */
 ic_scope _ic_program_pushScope(ic_program this) {
 /* $begin(::corto::ic::program::pushScope) */
     this->scope = ic_scopeCreate(this->scope, FALSE);
@@ -241,7 +225,6 @@ ic_scope _ic_program_pushScope(ic_program this) {
 /* $end */
 }
 
-/* ::corto::ic::program::run(word result,sequence{string} argv) */
 corto_int16 _ic_program_run(ic_program this, corto_word result, corto_stringSeq argv) {
 /* $begin(::corto::ic::program::run) */
     vm_program program = (vm_program)this->vmprogram;
@@ -250,7 +233,6 @@ corto_int16 _ic_program_run(ic_program this, corto_word result, corto_stringSeq 
 /* $end */
 }
 
-/* ::corto::ic::program::str() */
 corto_string _ic_program_str(ic_program this) {
 /* $begin(::corto::ic::program::str) */
     corto_string result = NULL;

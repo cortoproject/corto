@@ -1,9 +1,9 @@
-/* os_time.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * os_time.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "os.h"
@@ -12,7 +12,6 @@
 #include "corto_time.h"
 /* $end */
 
-/* ::corto::os::time::add(::corto::os::time t) */
 corto_void _os_time_add(os_time this, os_time t) {
 /* $begin(::corto::os::time::add) */
     corto_time t1, t2;
@@ -32,7 +31,6 @@ corto_void _os_time_add(os_time this, os_time t) {
 /* $end */
 }
 
-/* ::corto::os::time::get() */
 corto_void _os_time_get(os_time this) {
 /* $begin(::corto::os::time::get) */
 
@@ -41,7 +39,6 @@ corto_void _os_time_get(os_time this) {
 /* $end */
 }
 
-/* ::corto::os::time::sub(::corto::os::time t) */
 corto_void _os_time_sub(os_time this, os_time t) {
 /* $begin(::corto::os::time::sub) */
     corto_time t1, t2;
@@ -61,7 +58,6 @@ corto_void _os_time_sub(os_time this, os_time t) {
 /* $end */
 }
 
-/* ::corto::os::time::toFloat() */
 corto_float64 _os_time_toFloat(os_time this) {
 /* $begin(::corto::os::time::toFloat) */
     corto_time t;

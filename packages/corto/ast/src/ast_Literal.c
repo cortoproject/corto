@@ -1,9 +1,9 @@
-/* ast_Literal.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Literal.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Literal::getValue() */
 corto_word _ast_Literal_getValue_v(ast_Literal this) {
 /* $begin(::corto::ast::Literal::getValue) */
     corto_word result = 0;
@@ -30,7 +29,6 @@ corto_word _ast_Literal_getValue_v(ast_Literal this) {
 /* $end */
 }
 
-/* ::corto::ast::Literal::init() */
 corto_int16 _ast_Literal_init(ast_Literal this) {
 /* $begin(::corto::ast::Literal::init) */
     if (!ast_Expression(this)->type) {

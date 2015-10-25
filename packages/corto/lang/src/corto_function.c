@@ -1,14 +1,13 @@
-/* corto_function.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_function.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::function::bind() */
 corto_int16 _corto_function_bind(corto_function this) {
 /* $begin(::corto::lang::function::bind) */
     /* Count the size based on the parameters and store parameters in slots */
@@ -68,7 +67,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::function::init() */
 /* $header(::corto::lang::function::init) */
 static corto_int16 corto_function_parseArguments(corto_function object) {
     object->parameters = corto_function_stringToParameterSeq(corto_nameof(object), corto_parentof(object));
@@ -159,7 +157,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::function::stringToParameterSeq(string name,object scope) */
 corto_parameterseq _corto_function_stringToParameterSeq(corto_string name, corto_object scope) {
 /* $begin(::corto::lang::function::stringToParameterSeq) */
     corto_parameterseq result = {0, NULL};
@@ -234,7 +231,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::function::unbind(function object) */
 corto_void _corto_function_unbind(corto_function object) {
 /* $begin(::corto::lang::function::unbind) */
     corto_uint32 i;

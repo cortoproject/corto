@@ -14,7 +14,6 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::binary::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_binary_init(corto_binary _this);
 #define corto_binary_init(_this) _corto_binary_init(corto_binary(_this))
 

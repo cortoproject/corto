@@ -1,9 +1,9 @@
-/* ast_Ternary.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Ternary.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -50,7 +50,6 @@ ast_If ast_Ternary_createIf(ast_Expression condition, ast_Node ifTrue, ast_Node 
 
 /* $end */
 
-/* ::corto::ast::Ternary::construct() */
 corto_int16 _ast_Ternary_construct(ast_Ternary this) {
 /* $begin(::corto::ast::Ternary::construct) */
     ast_Node trueBranch=NULL, falseBranch=NULL;
@@ -83,7 +82,6 @@ corto_int16 _ast_Ternary_construct(ast_Ternary this) {
 /* $end */
 }
 
-/* ::corto::ast::Ternary::hasReturnedResource() */
 corto_bool _ast_Ternary_hasReturnedResource_v(ast_Ternary this) {
 /* $begin(::corto::ast::Ternary::hasReturnedResource) */
     return ast_Expression_hasReturnedResource(this->condition) ||
@@ -92,7 +90,6 @@ corto_bool _ast_Ternary_hasReturnedResource_v(ast_Ternary this) {
 /* $end */
 }
 
-/* ::corto::ast::Ternary::hasSideEffects() */
 corto_bool _ast_Ternary_hasSideEffects_v(ast_Ternary this) {
 /* $begin(::corto::ast::Ternary::hasSideEffects) */
     return ast_Expression_hasSideEffects(this->condition) ||
@@ -101,7 +98,6 @@ corto_bool _ast_Ternary_hasSideEffects_v(ast_Ternary this) {
 /* $end */
 }
 
-/* ::corto::ast::Ternary::setOperator(operatorKind kind) */
 corto_void _ast_Ternary_setOperator(ast_Ternary this, corto_operatorKind kind) {
 /* $begin(::corto::ast::Ternary::setOperator) */
 
@@ -115,7 +111,6 @@ corto_void _ast_Ternary_setOperator(ast_Ternary this, corto_operatorKind kind) {
 /* $end */
 }
 
-/* ::corto::ast::Ternary::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Ternary_toIc_v(ast_Ternary this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Ternary::toIc) */
     ast_If_toIc(this->ifstmt, program, storage, stored);

@@ -1,9 +1,9 @@
-/* ast_FloatingPoint.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_FloatingPoint.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::FloatingPoint::init() */
 corto_int16 _ast_FloatingPoint_init(ast_FloatingPoint this) {
 /* $begin(::corto::ast::FloatingPoint::init) */
     ast_Literal(this)->kind = Ast_Float;
@@ -20,7 +19,6 @@ corto_int16 _ast_FloatingPoint_init(ast_FloatingPoint this) {
 /* $end */
 }
 
-/* ::corto::ast::FloatingPoint::serialize(type dstType,word dst) */
 corto_int16 _ast_FloatingPoint_serialize(ast_FloatingPoint this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::FloatingPoint::serialize) */
     ast_valueKind kind;
@@ -52,7 +50,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::FloatingPoint::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_FloatingPoint_toIc_v(ast_FloatingPoint this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::FloatingPoint::toIc) */
     ic_node result;

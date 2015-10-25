@@ -1,14 +1,13 @@
-/* ic_object.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_object.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::object::construct() */
 corto_int16 _ic_object_construct(ic_object this) {
 /* $begin(::corto::ic::object::construct) */
     corto_id id;

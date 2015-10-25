@@ -1,9 +1,9 @@
-/* ast_Wait.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Wait.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -55,7 +55,6 @@ corto_interface ast_findCommonAncestor(corto_interface t1, corto_interface t2) {
 
 /* $end */
 
-/* ::corto::ast::Wait::construct() */
 corto_int16 _ast_Wait_construct(ast_Wait this) {
 /* $begin(::corto::ast::Wait::construct) */
     corto_iter exprIter;
@@ -116,7 +115,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Wait::hasReturnedResource() */
 corto_bool _ast_Wait_hasReturnedResource_v(ast_Wait this) {
 /* $begin(::corto::ast::Wait::hasReturnedResource) */
     CORTO_UNUSED(this);
@@ -124,7 +122,6 @@ corto_bool _ast_Wait_hasReturnedResource_v(ast_Wait this) {
 /* $end */
 }
 
-/* ::corto::ast::Wait::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Wait_toIc_v(ast_Wait this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Wait::toIc) */
     corto_iter exprIter;

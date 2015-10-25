@@ -1,9 +1,9 @@
-/* ast_Character.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Character.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Character::init() */
 corto_int16 _ast_Character_init(ast_Character this) {
 /* $begin(::corto::ast::Character::init) */
     ast_Literal(this)->kind = Ast_Char;
@@ -20,7 +19,6 @@ corto_int16 _ast_Character_init(ast_Character this) {
 /* $end */
 }
 
-/* ::corto::ast::Character::serialize(type dstType,word dst) */
 corto_int16 _ast_Character_serialize(ast_Character this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Character::serialize) */
     ast_valueKind kind;
@@ -51,7 +49,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Character::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Character_toIc_v(ast_Character this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Character::toIc) */
     ic_literal result;

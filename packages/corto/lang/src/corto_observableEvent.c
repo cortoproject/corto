@@ -1,14 +1,13 @@
-/* corto_observableEvent.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_observableEvent.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::observableEvent::handle() */
 corto_void _corto_observableEvent_handle_v(corto_observableEvent this) {
 /* $begin(::corto::lang::observableEvent::handle) */
     corto_call(corto_function(this->observer), NULL, this->me, this->observable, this->source);

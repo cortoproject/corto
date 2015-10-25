@@ -17,11 +17,9 @@ extern "C" {
 CORTO_LANG_EXPORT void _corto_event_handle(corto_event _this);
 #define corto_event_handle(_this) _corto_event_handle(corto_event(_this))
 
-/* ::corto::lang::event::handle() */
 CORTO_LANG_EXPORT corto_void _corto_event_handle_v(corto_event _this);
 #define corto_event_handle_v(_this) _corto_event_handle_v(corto_event(_this))
 
-/* ::corto::lang::event::uniqueKind() */
 CORTO_LANG_EXPORT corto_int16 _corto_event_uniqueKind(void);
 #define corto_event_uniqueKind() _corto_event_uniqueKind()
 

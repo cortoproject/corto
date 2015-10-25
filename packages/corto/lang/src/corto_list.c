@@ -1,9 +1,9 @@
-/* corto_list.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_list.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -132,7 +132,6 @@ static int corto_clearFreeValues(void* o, void* udata) {
 }
 /* $end */
 
-/* ::corto::lang::list::append() */
 corto_any _corto_list_append_(corto_any this) {
 /* $begin(::corto::lang::list::append()) */
     corto_any result;
@@ -143,14 +142,12 @@ corto_any _corto_list_append_(corto_any this) {
 /* $end */
 }
 
-/* ::corto::lang::list::append(any element) */
 corto_void _corto_list_append_any(corto_any this, corto_any element) {
 /* $begin(::corto::lang::list::append(any element)) */
     corto_list_do(this, element, FALSE, corto_list_appendAction, NULL);
 /* $end */
 }
 
-/* ::corto::lang::list::clear() */
 corto_void _corto_list_clear(corto_any this) {
 /* $begin(::corto::lang::list::clear) */
     corto_collection c = corto_collection(this.type);
@@ -161,7 +158,6 @@ corto_void _corto_list_clear(corto_any this) {
 /* $end */
 }
 
-/* ::corto::lang::list::construct() */
 corto_int16 _corto_list_construct(corto_list this) {
 /* $begin(::corto::lang::list::construct) */
     corto_type(this)->hasResources = TRUE;
@@ -177,7 +173,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::list::init() */
 corto_int16 _corto_list_init(corto_list this) {
 /* $begin(::corto::lang::list::init) */
     corto_collection(this)->kind = CORTO_LIST;
@@ -185,7 +180,6 @@ corto_int16 _corto_list_init(corto_list this) {
 /* $end */
 }
 
-/* ::corto::lang::list::insert() */
 corto_any _corto_list_insert_(corto_any this) {
 /* $begin(::corto::lang::list::insert()) */
     corto_any result;
@@ -196,14 +190,12 @@ corto_any _corto_list_insert_(corto_any this) {
 /* $end */
 }
 
-/* ::corto::lang::list::insert(any element) */
 corto_void _corto_list_insert_any(corto_any this, corto_any element) {
 /* $begin(::corto::lang::list::insert(any element)) */
     corto_list_do(this, element, TRUE, corto_list_insertAction, NULL);
 /* $end */
 }
 
-/* ::corto::lang::list::reverse() */
 corto_void _corto_list_reverse(corto_any this) {
 /* $begin(::corto::lang::list::reverse) */
     corto_llReverse(*(corto_ll*)this.value);

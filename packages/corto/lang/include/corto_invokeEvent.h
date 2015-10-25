@@ -18,7 +18,6 @@ extern "C" {
 CORTO_LANG_EXPORT void _corto_invokeEvent_handle(corto_invokeEvent _this);
 #define corto_invokeEvent_handle(_this) _corto_invokeEvent_handle(corto_invokeEvent(_this))
 
-/* ::corto::lang::invokeEvent::handle() */
 CORTO_LANG_EXPORT corto_void _corto_invokeEvent_handle_v(corto_invokeEvent _this);
 #define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(corto_invokeEvent(_this))
 

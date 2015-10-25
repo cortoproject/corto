@@ -1,9 +1,9 @@
-/* test.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
@@ -12,7 +12,6 @@
 corto_threadKey test_suiteKey;
 /* $end */
 
-/* ::corto::test::assert(bool condition,string $condition,uint32 $__line) */
 corto_bool _test_assert(corto_bool condition, corto_string str_condition, corto_uint32 __line) {
 /* $begin(::corto::test::assert) */
     test_SuiteData this = corto_threadTlsGet(test_suiteKey);
@@ -33,7 +32,6 @@ corto_bool _test_assert(corto_bool condition, corto_string str_condition, corto_
 /* $end */
 }
 
-/* ::corto::test::assertEqual(any a,any b,string $a,string $b,uint32 $__line) */
 corto_bool _test_assertEqual(corto_any a, corto_any b, corto_string str_a, corto_string str_b, corto_uint32 __line) {
 /* $begin(::corto::test::assertEqual) */
     corto_equalityKind eq;
@@ -56,7 +54,6 @@ corto_bool _test_assertEqual(corto_any a, corto_any b, corto_string str_a, corto
 /* $end */
 }
 
-/* ::corto::test::fail(string err) */
 corto_void _test_fail(corto_string err) {
 /* $begin(::corto::test::fail) */
     corto_id id;

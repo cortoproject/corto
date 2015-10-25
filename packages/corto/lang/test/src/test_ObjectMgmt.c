@@ -1,14 +1,13 @@
-/* test_ObjectMgmt.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_ObjectMgmt.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::ObjectMgmt::setup() */
 corto_void _test_ObjectMgmt_setup(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::setup) */
     this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
@@ -18,7 +17,6 @@ corto_void _test_ObjectMgmt_setup(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildFoo() */
 corto_void _test_ObjectMgmt_tc_createChildFoo(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildFoo) */
 
@@ -55,7 +53,6 @@ corto_void _test_ObjectMgmt_tc_createChildFoo(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildFooAttr0() */
 corto_void _test_ObjectMgmt_tc_createChildFooAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildFooAttr0) */
 
@@ -93,7 +90,6 @@ corto_void _test_ObjectMgmt_tc_createChildFooAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildInitFail() */
 corto_void _test_ObjectMgmt_tc_createChildInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildInitFail) */
 
@@ -104,7 +100,6 @@ corto_void _test_ObjectMgmt_tc_createChildInitFail(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildInt() */
 corto_void _test_ObjectMgmt_tc_createChildInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildInt) */
 
@@ -133,7 +128,6 @@ corto_void _test_ObjectMgmt_tc_createChildInt(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildIntAttr0() */
 corto_void _test_ObjectMgmt_tc_createChildIntAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildIntAttr0) */
 
@@ -163,7 +157,6 @@ corto_void _test_ObjectMgmt_tc_createChildIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildInvalidType() */
 corto_void _test_ObjectMgmt_tc_createChildInvalidType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildInvalidType) */
 
@@ -188,7 +181,6 @@ corto_void _test_ObjectMgmt_tc_createChildInvalidType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildNested() */
 corto_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildNested) */
 
@@ -248,7 +240,6 @@ corto_void _test_ObjectMgmt_tc_createChildNested(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildNullType() */
 corto_void _test_ObjectMgmt_tc_createChildNullType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildNullType) */
 
@@ -259,7 +250,6 @@ corto_void _test_ObjectMgmt_tc_createChildNullType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildParentStateErr() */
 corto_void _test_ObjectMgmt_tc_createChildParentStateErr(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildParentStateErr) */
 
@@ -281,7 +271,6 @@ corto_void _test_ObjectMgmt_tc_createChildParentStateErr(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildParentTypeErr() */
 corto_void _test_ObjectMgmt_tc_createChildParentTypeErr(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildParentTypeErr) */
 
@@ -303,7 +292,6 @@ corto_void _test_ObjectMgmt_tc_createChildParentTypeErr(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildVoid() */
 corto_void _test_ObjectMgmt_tc_createChildVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildVoid) */
 
@@ -332,7 +320,6 @@ corto_void _test_ObjectMgmt_tc_createChildVoid(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createChildVoidAttr0() */
 corto_void _test_ObjectMgmt_tc_createChildVoidAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createChildVoidAttr0) */
 
@@ -362,7 +349,6 @@ corto_void _test_ObjectMgmt_tc_createChildVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createFoo() */
 corto_void _test_ObjectMgmt_tc_createFoo(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createFoo) */
 
@@ -390,7 +376,6 @@ corto_void _test_ObjectMgmt_tc_createFoo(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createFooAttr0() */
 corto_void _test_ObjectMgmt_tc_createFooAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createFooAttr0) */
 
@@ -419,7 +404,6 @@ corto_void _test_ObjectMgmt_tc_createFooAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createInitFail() */
 corto_void _test_ObjectMgmt_tc_createInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createInitFail) */
 
@@ -430,7 +414,6 @@ corto_void _test_ObjectMgmt_tc_createInitFail(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createInt() */
 corto_void _test_ObjectMgmt_tc_createInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createInt) */
 
@@ -449,7 +432,6 @@ corto_void _test_ObjectMgmt_tc_createInt(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createIntAttr0() */
 corto_void _test_ObjectMgmt_tc_createIntAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createIntAttr0) */
 
@@ -469,7 +451,6 @@ corto_void _test_ObjectMgmt_tc_createIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createInvalidType() */
 corto_void _test_ObjectMgmt_tc_createInvalidType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createInvalidType) */
 
@@ -494,7 +475,6 @@ corto_void _test_ObjectMgmt_tc_createInvalidType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createNullType() */
 corto_void _test_ObjectMgmt_tc_createNullType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createNullType) */
 
@@ -505,7 +485,6 @@ corto_void _test_ObjectMgmt_tc_createNullType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createVoid() */
 corto_void _test_ObjectMgmt_tc_createVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createVoid) */
 
@@ -524,7 +503,6 @@ corto_void _test_ObjectMgmt_tc_createVoid(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_createVoidAttr0() */
 corto_void _test_ObjectMgmt_tc_createVoidAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_createVoidAttr0) */
 
@@ -544,7 +522,6 @@ corto_void _test_ObjectMgmt_tc_createVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildFoo() */
 corto_void _test_ObjectMgmt_tc_declareChildFoo(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildFoo) */
 
@@ -581,7 +558,6 @@ corto_void _test_ObjectMgmt_tc_declareChildFoo(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildFooAttr0() */
 corto_void _test_ObjectMgmt_tc_declareChildFooAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildFooAttr0) */
 
@@ -619,7 +595,6 @@ corto_void _test_ObjectMgmt_tc_declareChildFooAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildInitFail() */
 corto_void _test_ObjectMgmt_tc_declareChildInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildInitFail) */
 
@@ -630,7 +605,6 @@ corto_void _test_ObjectMgmt_tc_declareChildInitFail(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildInt() */
 corto_void _test_ObjectMgmt_tc_declareChildInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildInt) */
 
@@ -663,7 +637,6 @@ corto_void _test_ObjectMgmt_tc_declareChildInt(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildIntAttr0() */
 corto_void _test_ObjectMgmt_tc_declareChildIntAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildIntAttr0) */
 
@@ -693,7 +666,6 @@ corto_void _test_ObjectMgmt_tc_declareChildIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildInvalidType() */
 corto_void _test_ObjectMgmt_tc_declareChildInvalidType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildInvalidType) */
 
@@ -717,7 +689,6 @@ corto_void _test_ObjectMgmt_tc_declareChildInvalidType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildNullType() */
 corto_void _test_ObjectMgmt_tc_declareChildNullType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildNullType) */
 
@@ -728,7 +699,6 @@ corto_void _test_ObjectMgmt_tc_declareChildNullType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildParentStateErr() */
 corto_void _test_ObjectMgmt_tc_declareChildParentStateErr(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildParentStateErr) */
 
@@ -748,7 +718,6 @@ corto_void _test_ObjectMgmt_tc_declareChildParentStateErr(test_ObjectMgmt this) 
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildParentTypeErr() */
 corto_void _test_ObjectMgmt_tc_declareChildParentTypeErr(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildParentTypeErr) */
 
@@ -770,7 +739,6 @@ corto_void _test_ObjectMgmt_tc_declareChildParentTypeErr(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildVoid() */
 corto_void _test_ObjectMgmt_tc_declareChildVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildVoid) */
 
@@ -799,7 +767,6 @@ corto_void _test_ObjectMgmt_tc_declareChildVoid(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareChildVoidAttr0() */
 corto_void _test_ObjectMgmt_tc_declareChildVoidAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareChildVoidAttr0) */
 
@@ -829,7 +796,6 @@ corto_void _test_ObjectMgmt_tc_declareChildVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareExistingWithParentState() */
 corto_void _test_ObjectMgmt_tc_declareExistingWithParentState(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareExistingWithParentState) */
 
@@ -857,7 +823,6 @@ corto_void _test_ObjectMgmt_tc_declareExistingWithParentState(test_ObjectMgmt th
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareFoo() */
 corto_void _test_ObjectMgmt_tc_declareFoo(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareFoo) */
 
@@ -885,7 +850,6 @@ corto_void _test_ObjectMgmt_tc_declareFoo(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareFooAttr0() */
 corto_void _test_ObjectMgmt_tc_declareFooAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareFooAttr0) */
 
@@ -915,7 +879,6 @@ corto_void _test_ObjectMgmt_tc_declareFooAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareInitFail() */
 corto_void _test_ObjectMgmt_tc_declareInitFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareInitFail) */
 
@@ -926,7 +889,6 @@ corto_void _test_ObjectMgmt_tc_declareInitFail(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareInt() */
 corto_void _test_ObjectMgmt_tc_declareInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareInt) */
 
@@ -945,7 +907,6 @@ corto_void _test_ObjectMgmt_tc_declareInt(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareIntAttr0() */
 corto_void _test_ObjectMgmt_tc_declareIntAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareIntAttr0) */
 
@@ -965,7 +926,6 @@ corto_void _test_ObjectMgmt_tc_declareIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareInvalidType() */
 corto_void _test_ObjectMgmt_tc_declareInvalidType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareInvalidType) */
 
@@ -989,7 +949,6 @@ corto_void _test_ObjectMgmt_tc_declareInvalidType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareNullType() */
 corto_void _test_ObjectMgmt_tc_declareNullType(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareNullType) */
 
@@ -1000,7 +959,6 @@ corto_void _test_ObjectMgmt_tc_declareNullType(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareVoid() */
 corto_void _test_ObjectMgmt_tc_declareVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareVoid) */
 
@@ -1019,7 +977,6 @@ corto_void _test_ObjectMgmt_tc_declareVoid(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_declareVoidAttr0() */
 corto_void _test_ObjectMgmt_tc_declareVoidAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_declareVoidAttr0) */
 
@@ -1039,7 +996,6 @@ corto_void _test_ObjectMgmt_tc_declareVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineFoo() */
 corto_void _test_ObjectMgmt_tc_defineFoo(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineFoo) */
 
@@ -1076,7 +1032,6 @@ corto_void _test_ObjectMgmt_tc_defineFoo(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineFooAttr0() */
 corto_void _test_ObjectMgmt_tc_defineFooAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineFooAttr0) */
 
@@ -1114,7 +1069,6 @@ corto_void _test_ObjectMgmt_tc_defineFooAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineFooFail() */
 corto_void _test_ObjectMgmt_tc_defineFooFail(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineFooFail) */
 
@@ -1165,7 +1119,6 @@ corto_void _test_ObjectMgmt_tc_defineFooFail(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineInt() */
 corto_void _test_ObjectMgmt_tc_defineInt(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineInt) */
 
@@ -1185,7 +1138,6 @@ corto_void _test_ObjectMgmt_tc_defineInt(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineIntAttr0() */
 corto_void _test_ObjectMgmt_tc_defineIntAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineIntAttr0) */
 
@@ -1206,7 +1158,6 @@ corto_void _test_ObjectMgmt_tc_defineIntAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineVoid() */
 corto_void _test_ObjectMgmt_tc_defineVoid(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineVoid) */
 
@@ -1227,7 +1178,6 @@ corto_void _test_ObjectMgmt_tc_defineVoid(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_defineVoidAttr0() */
 corto_void _test_ObjectMgmt_tc_defineVoidAttr0(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_defineVoidAttr0) */
 
@@ -1249,7 +1199,6 @@ corto_void _test_ObjectMgmt_tc_defineVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_drop() */
 corto_void _test_ObjectMgmt_tc_drop(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_drop) */
 
@@ -1324,7 +1273,6 @@ corto_void _test_ObjectMgmt_tc_drop(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::tc_invalidate() */
 corto_void _test_ObjectMgmt_tc_invalidate(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::tc_invalidate) */
 
@@ -1343,7 +1291,6 @@ corto_void _test_ObjectMgmt_tc_invalidate(test_ObjectMgmt this) {
 /* $end */
 }
 
-/* ::test::ObjectMgmt::teardown() */
 corto_void _test_ObjectMgmt_teardown(test_ObjectMgmt this) {
 /* $begin(::test::ObjectMgmt::teardown) */
     corto_setAttr(this->prevAttr);

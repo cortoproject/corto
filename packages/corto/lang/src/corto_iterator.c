@@ -1,9 +1,9 @@
-/* corto_iterator.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_iterator.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -99,14 +99,12 @@ corto_int16 corto_iterator_set(void* this, void* collection, corto_collection co
 
 /* $end */
 
-/* ::corto::lang::iterator::castable(type type) */
 corto_bool _corto_iterator_castable_v(corto_iterator this, corto_type type) {
 /* $begin(::corto::lang::iterator::castable) */
     return corto_iterator_compatible_v(this, type);
 /* $end */
 }
 
-/* ::corto::lang::iterator::compatible(type type) */
 corto_bool _corto_iterator_compatible_v(corto_iterator this, corto_type type) {
 /* $begin(::corto::lang::iterator::compatible) */
     corto_bool result = FALSE;
@@ -119,7 +117,6 @@ corto_bool _corto_iterator_compatible_v(corto_iterator this, corto_type type) {
 /* $end */
 }
 
-/* ::corto::lang::iterator::init() */
 corto_int16 _corto_iterator_init(corto_iterator this) {
 /* $begin(::corto::lang::iterator::init) */
     corto_type(this)->kind = CORTO_ITERATOR;

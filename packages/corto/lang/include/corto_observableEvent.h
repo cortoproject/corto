@@ -18,7 +18,6 @@ extern "C" {
 CORTO_LANG_EXPORT void _corto_observableEvent_handle(corto_observableEvent _this);
 #define corto_observableEvent_handle(_this) _corto_observableEvent_handle(corto_observableEvent(_this))
 
-/* ::corto::lang::observableEvent::handle() */
 CORTO_LANG_EXPORT corto_void _corto_observableEvent_handle_v(corto_observableEvent _this);
 #define corto_observableEvent_handle_v(_this) _corto_observableEvent_handle_v(corto_observableEvent(_this))
 

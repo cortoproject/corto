@@ -18,7 +18,6 @@ extern "C" {
 CORTO_LANG_EXPORT corto_bool _corto_primitive_castable(corto_primitive _this, corto_type type);
 #define corto_primitive_castable(_this, type) _corto_primitive_castable(corto_primitive(_this), corto_type(type))
 
-/* ::corto::lang::primitive::castable(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_primitive_castable_v(corto_primitive _this, corto_type type);
 #define corto_primitive_castable_v(_this, type) _corto_primitive_castable_v(corto_primitive(_this), corto_type(type))
 
@@ -26,23 +25,18 @@ CORTO_LANG_EXPORT corto_bool _corto_primitive_castable_v(corto_primitive _this, 
 CORTO_LANG_EXPORT corto_bool _corto_primitive_compatible(corto_primitive _this, corto_type type);
 #define corto_primitive_compatible(_this, type) _corto_primitive_compatible(corto_primitive(_this), corto_type(type))
 
-/* ::corto::lang::primitive::compatible(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_primitive_compatible_v(corto_primitive _this, corto_type type);
 #define corto_primitive_compatible_v(_this, type) _corto_primitive_compatible_v(corto_primitive(_this), corto_type(type))
 
-/* ::corto::lang::primitive::construct() */
 CORTO_LANG_EXPORT corto_int16 _corto_primitive_construct(corto_primitive _this);
 #define corto_primitive_construct(_this) _corto_primitive_construct(corto_primitive(_this))
 
-/* ::corto::lang::primitive::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_primitive_init(corto_primitive _this);
 #define corto_primitive_init(_this) _corto_primitive_init(corto_primitive(_this))
 
-/* ::corto::lang::primitive::isInteger() */
 CORTO_LANG_EXPORT corto_bool _corto_primitive_isInteger(corto_primitive _this);
 #define corto_primitive_isInteger(_this) _corto_primitive_isInteger(corto_primitive(_this))
 
-/* ::corto::lang::primitive::isNumber() */
 CORTO_LANG_EXPORT corto_bool _corto_primitive_isNumber(corto_primitive _this);
 #define corto_primitive_isNumber(_this) _corto_primitive_isNumber(corto_primitive(_this))
 

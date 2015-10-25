@@ -1,14 +1,13 @@
-/* test_MethodTester.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_MethodTester.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::MethodTester::onearg(int32 a) */
 corto_void _test_MethodTester_onearg(test_MethodTester this, corto_int32 a) {
 /* $begin(::test::MethodTester::onearg) */
 
@@ -17,7 +16,6 @@ corto_void _test_MethodTester_onearg(test_MethodTester this, corto_int32 a) {
 /* $end */
 }
 
-/* ::test::MethodTester::overload(::test::MethodTester m) */
 corto_void _test_MethodTester_overload__test_MethodTester(test_MethodTester this, test_MethodTester m) {
 /* $begin(::test::MethodTester::overload(::test::MethodTester m)) */
 
@@ -26,7 +24,6 @@ corto_void _test_MethodTester_overload__test_MethodTester(test_MethodTester this
 /* $end */
 }
 
-/* ::test::MethodTester::overload(int32 a) */
 corto_void _test_MethodTester_overload_int32(test_MethodTester this, corto_int32 a) {
 /* $begin(::test::MethodTester::overload(int32 a)) */
 
@@ -35,7 +32,6 @@ corto_void _test_MethodTester_overload_int32(test_MethodTester this, corto_int32
 /* $end */
 }
 
-/* ::test::MethodTester::overload(int32 a,int32 b) */
 corto_void _test_MethodTester_overload_int32_int32(test_MethodTester this, corto_int32 a, corto_int32 b) {
 /* $begin(::test::MethodTester::overload(int32 a,int32 b)) */
 
@@ -44,7 +40,6 @@ corto_void _test_MethodTester_overload_int32_int32(test_MethodTester this, corto
 /* $end */
 }
 
-/* ::test::MethodTester::overload(string a) */
 corto_void _test_MethodTester_overload_string(test_MethodTester this, corto_string a) {
 /* $begin(::test::MethodTester::overload(string a)) */
 
@@ -53,7 +48,6 @@ corto_void _test_MethodTester_overload_string(test_MethodTester this, corto_stri
 /* $end */
 }
 
-/* ::test::MethodTester::simple() */
 corto_void _test_MethodTester_simple(test_MethodTester this) {
 /* $begin(::test::MethodTester::simple) */
 
@@ -62,7 +56,6 @@ corto_void _test_MethodTester_simple(test_MethodTester this) {
 /* $end */
 }
 
-/* ::test::MethodTester::twoargs(int32 a,int32 b) */
 corto_void _test_MethodTester_twoargs(test_MethodTester this, corto_int32 a, corto_int32 b) {
 /* $begin(::test::MethodTester::twoargs) */
 
@@ -71,7 +64,6 @@ corto_void _test_MethodTester_twoargs(test_MethodTester this, corto_int32 a, cor
 /* $end */
 }
 
-/* ::test::MethodTester::virtualOverload() */
 corto_void _test_MethodTester_virtualOverload__v(test_MethodTester this) {
 /* $begin(::test::MethodTester::virtualOverload()) */
 
@@ -80,7 +72,6 @@ corto_void _test_MethodTester_virtualOverload__v(test_MethodTester this) {
 /* $end */
 }
 
-/* ::test::MethodTester::virtualOverload(int32 a) */
 corto_void _test_MethodTester_virtualOverload_int32(test_MethodTester this, corto_int32 a) {
 /* $begin(::test::MethodTester::virtualOverload(int32 a)) */
 
@@ -89,7 +80,6 @@ corto_void _test_MethodTester_virtualOverload_int32(test_MethodTester this, cort
 /* $end */
 }
 
-/* ::test::MethodTester::virtualSimple() */
 corto_void _test_MethodTester_virtualSimple_v(test_MethodTester this) {
 /* $begin(::test::MethodTester::virtualSimple) */
 

@@ -1,9 +1,9 @@
-/* ast_Boolean.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Boolean.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Boolean::init() */
 corto_int16 _ast_Boolean_init(ast_Boolean this) {
 /* $begin(::corto::ast::Boolean::init) */
     ast_Literal(this)->kind = Ast_Bool;
@@ -20,7 +19,6 @@ corto_int16 _ast_Boolean_init(ast_Boolean this) {
 /* $end */
 }
 
-/* ::corto::ast::Boolean::serialize(type dstType,word dst) */
 corto_int16 _ast_Boolean_serialize(ast_Boolean this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Boolean::serialize) */
     ast_valueKind kind;
@@ -57,7 +55,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Boolean::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Boolean_toIc_v(ast_Boolean this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Boolean::toIc) */
     ic_node result;

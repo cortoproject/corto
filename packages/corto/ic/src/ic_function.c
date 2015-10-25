@@ -1,14 +1,13 @@
-/* ic_function.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_function.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::function::construct() */
 corto_int16 _ic_function_construct(ic_function this) {
 /* $begin(::corto::ic::function::construct) */
     ic_node(this)->kind = IC_FUNCTION;
@@ -16,7 +15,6 @@ corto_int16 _ic_function_construct(ic_function this) {
 /* $end */
 }
 
-/* ::corto::ic::function::str(string in) */
 corto_string _ic_function_str(ic_function this, corto_string in) {
 /* $begin(::corto::ic::function::str) */
     corto_id id;

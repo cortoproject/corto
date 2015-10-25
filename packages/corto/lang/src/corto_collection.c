@@ -1,9 +1,9 @@
-/* corto_collection.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_collection.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -136,7 +136,6 @@ void corto_clear(corto_collection this, corto_void* collection) {
 }
 /* $end */
 
-/* ::corto::lang::collection::castable(type type) */
 corto_bool _corto_collection_castable_v(corto_collection this, corto_type type) {
 /* $begin(::corto::lang::collection::castable) */
     corto_bool result = FALSE;
@@ -159,7 +158,6 @@ corto_bool _corto_collection_castable_v(corto_collection this, corto_type type) 
 /* $end */
 }
 
-/* ::corto::lang::collection::compatible(type type) */
 corto_bool _corto_collection_compatible_v(corto_collection this, corto_type type) {
 /* $begin(::corto::lang::collection::compatible) */
     corto_bool result = FALSE;
@@ -181,7 +179,6 @@ corto_bool _corto_collection_compatible_v(corto_collection this, corto_type type
 /* $end */
 }
 
-/* ::corto::lang::collection::elementRequiresAlloc() */
 corto_bool _corto_collection_elementRequiresAlloc(corto_collection this) {
 /* $begin(::corto::lang::collection::elementRequiresAlloc) */
     corto_bool result = TRUE;
@@ -237,7 +234,6 @@ corto_bool _corto_collection_elementRequiresAlloc(corto_collection this) {
 /* $end */
 }
 
-/* ::corto::lang::collection::init() */
 corto_int16 _corto_collection_init(corto_collection this) {
 /* $begin(::corto::lang::collection::init) */
     corto_type(this)->kind = CORTO_COLLECTION;
@@ -245,7 +241,6 @@ corto_int16 _corto_collection_init(corto_collection this) {
 /* $end */
 }
 
-/* ::corto::lang::collection::size() */
 corto_uint32 _corto_collection_size(corto_any this) {
 /* $begin(::corto::lang::collection::size) */
     corto_uint32 result = 0;

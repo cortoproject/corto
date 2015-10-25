@@ -1,14 +1,13 @@
-/* ic_storage.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_storage.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::storage::construct() */
 corto_int16 _ic_storage_construct(ic_storage this) {
 /* $begin(::corto::ic::storage::construct) */
     ic_node(this)->kind = IC_STORAGE;
@@ -16,7 +15,6 @@ corto_int16 _ic_storage_construct(ic_storage this) {
 /* $end */
 }
 
-/* ::corto::ic::storage::free() */
 corto_void _ic_storage_free(ic_storage this) {
 /* $begin(::corto::ic::storage::free) */
     corto_type type = this->type;
@@ -33,7 +31,6 @@ corto_void _ic_storage_free(ic_storage this) {
 /* $end */
 }
 
-/* ::corto::ic::storage::str(string in) */
 corto_string _ic_storage_str(ic_storage this, corto_string in) {
 /* $begin(::corto::ic::storage::str) */
     return strappend(in, this->name);

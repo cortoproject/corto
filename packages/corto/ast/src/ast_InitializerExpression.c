@@ -1,9 +1,9 @@
-/* ast_InitializerExpression.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_InitializerExpression.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::InitializerExpression::construct() */
 corto_int16 _ast_InitializerExpression_construct(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::construct) */
     corto_int16 result = 0;
@@ -23,7 +22,6 @@ corto_int16 _ast_InitializerExpression_construct(ast_InitializerExpression this)
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::define() */
 corto_int16 _ast_InitializerExpression_define(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::define) */
     ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
@@ -32,7 +30,6 @@ corto_int16 _ast_InitializerExpression_define(ast_InitializerExpression this) {
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::hasReturnedResource() */
 corto_bool _ast_InitializerExpression_hasReturnedResource_v(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::hasReturnedResource) */
     CORTO_UNUSED(this);
@@ -40,7 +37,6 @@ corto_bool _ast_InitializerExpression_hasReturnedResource_v(ast_InitializerExpre
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::insert(Expression variable) */
 corto_int16 _ast_InitializerExpression_insert(ast_InitializerExpression this, ast_Expression variable) {
 /* $begin(::corto::ast::InitializerExpression::insert) */
     ast_DynamicInitializer initializer;
@@ -99,7 +95,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::member(string name) */
 corto_int32 _ast_InitializerExpression_member(ast_InitializerExpression this, corto_string name) {
 /* $begin(::corto::ast::InitializerExpression::member) */
     ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
@@ -109,7 +104,6 @@ corto_int32 _ast_InitializerExpression_member(ast_InitializerExpression this, co
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::pop() */
 corto_int16 _ast_InitializerExpression_pop(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::pop) */
     ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
@@ -118,7 +112,6 @@ corto_int16 _ast_InitializerExpression_pop(ast_InitializerExpression this) {
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::push() */
 corto_int16 _ast_InitializerExpression_push(ast_InitializerExpression this) {
 /* $begin(::corto::ast::InitializerExpression::push) */
     ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);
@@ -127,7 +120,6 @@ corto_int16 _ast_InitializerExpression_push(ast_InitializerExpression this) {
 /* $end */
 }
 
-/* ::corto::ast::InitializerExpression::value(Expression v) */
 corto_int16 _ast_InitializerExpression_value(ast_InitializerExpression this, ast_Expression v) {
 /* $begin(::corto::ast::InitializerExpression::value) */
     ast_InitOper *elem = ast_InitOperListAppendAlloc(this->operations);

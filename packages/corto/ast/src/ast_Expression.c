@@ -1,9 +1,9 @@
-/* ast_Expression.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Expression.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -190,7 +190,6 @@ ast_Expression ast_Expression_narrow(ast_Expression expr, corto_type target) {
 
 /* $end */
 
-/* ::corto::ast::Expression::cast(type type,bool isReference) */
 ast_Expression _ast_Expression_cast(ast_Expression this, corto_type type, corto_bool isReference) {
 /* $begin(::corto::ast::Expression::cast) */
     corto_type exprType, refType;
@@ -365,7 +364,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Expression::cleanList(list{Expression} list) */
 corto_void _ast_Expression_cleanList(ast_ExpressionList list) {
 /* $begin(::corto::ast::Expression::cleanList) */
     if (list) {
@@ -378,7 +376,6 @@ corto_void _ast_Expression_cleanList(ast_ExpressionList list) {
 /* $end */
 }
 
-/* ::corto::ast::Expression::fold() */
 ast_Expression _ast_Expression_fold_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::fold) */
     CORTO_UNUSED(this);
@@ -386,7 +383,6 @@ ast_Expression _ast_Expression_fold_v(ast_Expression this) {
 /* $end */
 }
 
-/* ::corto::ast::Expression::fromList(list{Expression} list) */
 ast_Expression _ast_Expression_fromList(ast_ExpressionList list) {
 /* $begin(::corto::ast::Expression::fromList) */
     ast_Expression result = NULL;
@@ -416,14 +412,12 @@ ast_Expression _ast_Expression_fromList(ast_ExpressionList list) {
 /* $end */
 }
 
-/* ::corto::ast::Expression::getType() */
 corto_type _ast_Expression_getType(ast_Expression this) {
 /* $begin(::corto::ast::Expression::getType) */
     return this->type;
 /* $end */
 }
 
-/* ::corto::ast::Expression::getType_expr(Expression target) */
 /* $header(::corto::ast::Expression::getType_expr) */
 corto_type ast_Expression_getType_intern(ast_Expression this, corto_type target, ast_Expression targetExpr) {
     corto_type result = ast_Expression_getType(this);
@@ -481,14 +475,12 @@ corto_type _ast_Expression_getType_expr(ast_Expression this, ast_Expression targ
 /* $end */
 }
 
-/* ::corto::ast::Expression::getType_type(type target) */
 corto_type _ast_Expression_getType_type(ast_Expression this, corto_type target) {
 /* $begin(::corto::ast::Expression::getType_type) */
     return ast_Expression_getType_intern(this, target, NULL);
 /* $end */
 }
 
-/* ::corto::ast::Expression::getValue() */
 corto_word _ast_Expression_getValue_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::getValue) */
     CORTO_UNUSED(this);
@@ -496,7 +488,6 @@ corto_word _ast_Expression_getValue_v(ast_Expression this) {
 /* $end */
 }
 
-/* ::corto::ast::Expression::hasReturnedResource() */
 corto_bool _ast_Expression_hasReturnedResource_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::hasReturnedResource) */
     CORTO_UNUSED(this);
@@ -504,7 +495,6 @@ corto_bool _ast_Expression_hasReturnedResource_v(ast_Expression this) {
 /* $end */
 }
 
-/* ::corto::ast::Expression::hasSideEffects() */
 corto_bool _ast_Expression_hasSideEffects_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::hasSideEffects) */
     CORTO_UNUSED(this);
@@ -512,7 +502,6 @@ corto_bool _ast_Expression_hasSideEffects_v(ast_Expression this) {
 /* $end */
 }
 
-/* ::corto::ast::Expression::serialize(type dstType,word dst) */
 corto_int16 _ast_Expression_serialize_v(ast_Expression this, corto_type dstType, corto_word dst) {
 /* $begin(::corto::ast::Expression::serialize) */
     CORTO_UNUSED(this);
@@ -523,7 +512,6 @@ corto_int16 _ast_Expression_serialize_v(ast_Expression this, corto_type dstType,
 /* $end */
 }
 
-/* ::corto::ast::Expression::toList() */
 ast_ExpressionList _ast_Expression_toList_v(ast_Expression this) {
 /* $begin(::corto::ast::Expression::toList) */
     ast_NodeList result = NULL;

@@ -1,9 +1,9 @@
-/* ast_DynamicInitializer.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_DynamicInitializer.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -112,7 +112,6 @@ error:
 
 /* $end */
 
-/* ::corto::ast::DynamicInitializer::construct() */
 corto_int16 _ast_DynamicInitializer_construct(ast_DynamicInitializer this) {
 /* $begin(::corto::ast::DynamicInitializer::construct) */
     corto_int8 variable;
@@ -127,7 +126,6 @@ corto_int16 _ast_DynamicInitializer_construct(ast_DynamicInitializer this) {
 /* $end */
 }
 
-/* ::corto::ast::DynamicInitializer::define() */
 corto_int16 _ast_DynamicInitializer_define(ast_DynamicInitializer this) {
 /* $begin(::corto::ast::DynamicInitializer::define) */
     corto_int8 variable;
@@ -146,7 +144,6 @@ corto_int16 _ast_DynamicInitializer_define(ast_DynamicInitializer this) {
 /* $end */
 }
 
-/* ::corto::ast::DynamicInitializer::hasReturnedResource() */
 corto_bool _ast_DynamicInitializer_hasReturnedResource_v(ast_DynamicInitializer this) {
 /* $begin(::corto::ast::DynamicInitializer::hasReturnedResource) */
     CORTO_UNUSED(this);
@@ -154,7 +151,6 @@ corto_bool _ast_DynamicInitializer_hasReturnedResource_v(ast_DynamicInitializer 
 /* $end */
 }
 
-/* ::corto::ast::DynamicInitializer::pop() */
 corto_int16 _ast_DynamicInitializer_pop(ast_DynamicInitializer this) {
 /* $begin(::corto::ast::DynamicInitializer::pop) */
     corto_uint8 fp = ast_Initializer(this)->fp;
@@ -167,7 +163,6 @@ corto_int16 _ast_DynamicInitializer_pop(ast_DynamicInitializer this) {
 /* $end */
 }
 
-/* ::corto::ast::DynamicInitializer::push() */
 corto_int16 _ast_DynamicInitializer_push(ast_DynamicInitializer this) {
 /* $begin(::corto::ast::DynamicInitializer::push) */
     corto_uint8 variable;
@@ -233,7 +228,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::DynamicInitializer::value(Expression v) */
 corto_int16 _ast_DynamicInitializer_value(ast_DynamicInitializer this, ast_Expression v) {
 /* $begin(::corto::ast::DynamicInitializer::value) */
     corto_uint32 variable;

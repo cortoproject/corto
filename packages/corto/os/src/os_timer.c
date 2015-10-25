@@ -1,9 +1,9 @@
-/* os_timer.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * os_timer.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "os.h"
@@ -12,7 +12,6 @@
 #include "corto_time.h"
 /* $end */
 
-/* ::corto::os::timer::run() */
 corto_void _os_timer_run(os_timer this) {
 /* $begin(::corto::os::timer::run) */
 
@@ -24,7 +23,6 @@ corto_void _os_timer_run(os_timer this) {
 /* $end */
 }
 
-/* ::corto::os::timer::stop() */
 corto_void _os_timer_stop(os_timer this) {
 /* $begin(::corto::os::timer::stop) */
 

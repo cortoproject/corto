@@ -1,14 +1,13 @@
-/* corto_replicator.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_replicator.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::replicator::construct() */
 corto_int16 _corto_replicator_construct(corto_replicator this) {
 /* $begin(::corto::lang::replicator::construct) */
     corto_object observable = this->query ? this->query->from : this->mount;
@@ -22,7 +21,6 @@ corto_int16 _corto_replicator_construct(corto_replicator this) {
 /* $end */
 }
 
-/* ::corto::lang::replicator::destruct() */
 corto_void _corto_replicator_destruct(corto_replicator this) {
 /* $begin(::corto::lang::replicator::destruct) */
 
@@ -31,7 +29,6 @@ corto_void _corto_replicator_destruct(corto_replicator this) {
 /* $end */
 }
 
-/* ::corto::lang::replicator::invoke(object instance,function proc,octetseq args) */
 corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
 /* $begin(::corto::lang::replicator::invoke) */
     corto_object owner = corto_ownerof(instance);
@@ -53,7 +50,6 @@ corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance
 /* $end */
 }
 
-/* ::corto::lang::replicator::on_declare */
 corto_void _corto_replicator_on_declare(corto_replicator this, corto_object observable) {
 /* $begin(::corto::lang::replicator::on_declare) */
     
@@ -64,7 +60,6 @@ corto_void _corto_replicator_on_declare(corto_replicator this, corto_object obse
 /* $end */
 }
 
-/* ::corto::lang::replicator::on_delete */
 corto_void _corto_replicator_on_delete(corto_replicator this, corto_object observable) {
 /* $begin(::corto::lang::replicator::on_delete) */
 
@@ -73,7 +68,6 @@ corto_void _corto_replicator_on_delete(corto_replicator this, corto_object obser
 /* $end */
 }
 
-/* ::corto::lang::replicator::on_update */
 corto_void _corto_replicator_on_update(corto_replicator this, corto_object observable) {
 /* $begin(::corto::lang::replicator::on_update) */
 
@@ -84,7 +78,6 @@ corto_void _corto_replicator_on_update(corto_replicator this, corto_object obser
 /* $end */
 }
 
-/* ::corto::lang::replicator::post(event e) */
 corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
 /* $begin(::corto::lang::replicator::post) */
     

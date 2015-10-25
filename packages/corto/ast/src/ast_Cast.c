@@ -1,9 +1,9 @@
-/* ast_Cast.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Cast.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Cast::construct() */
 corto_int16 _ast_Cast_construct(ast_Cast this) {
 /* $begin(::corto::ast::Cast::construct) */
 
@@ -43,7 +42,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::Cast::hasReturnedResource() */
 corto_bool _ast_Cast_hasReturnedResource_v(ast_Cast this) {
 /* $begin(::corto::ast::Cast::hasReturnedResource) */
 
@@ -52,7 +50,6 @@ corto_bool _ast_Cast_hasReturnedResource_v(ast_Cast this) {
 /* $end */
 }
 
-/* ::corto::ast::Cast::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Cast_toIc_v(ast_Cast this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Cast::toIc) */
     ic_node lvalue, rvalue, result;

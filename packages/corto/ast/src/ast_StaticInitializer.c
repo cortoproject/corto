@@ -1,9 +1,9 @@
-/* ast_StaticInitializer.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_StaticInitializer.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -109,7 +109,6 @@ error:
 }
 /* $end */
 
-/* ::corto::ast::StaticInitializer::construct() */
 corto_int16 _ast_StaticInitializer_construct(ast_StaticInitializer this) {
 /* $begin(::corto::ast::StaticInitializer::construct) */
     corto_int8 variable;
@@ -130,7 +129,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::StaticInitializer::define() */
 corto_int16 _ast_StaticInitializer_define(ast_StaticInitializer this) {
 /* $begin(::corto::ast::StaticInitializer::define) */
     corto_uint32 variable;
@@ -170,7 +168,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::StaticInitializer::push() */
 corto_int16 _ast_StaticInitializer_push(ast_StaticInitializer this) {
 /* $begin(::corto::ast::StaticInitializer::push) */
     corto_uint8 variable;
@@ -185,7 +182,6 @@ corto_int16 _ast_StaticInitializer_push(ast_StaticInitializer this) {
 /* $end */
 }
 
-/* ::corto::ast::StaticInitializer::value(Expression v) */
 corto_int16 _ast_StaticInitializer_value(ast_StaticInitializer this, ast_Expression v) {
 /* $begin(::corto::ast::StaticInitializer::value) */
     corto_word offset;

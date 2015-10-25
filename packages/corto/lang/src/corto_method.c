@@ -1,14 +1,13 @@
-/* corto_method.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_method.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::method::bind() */
 corto_int16 _corto_method_bind(corto_method this) {
 /* $begin(::corto::lang::method::bind) */
     
@@ -23,7 +22,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::method::init() */
 corto_int16 _corto_method_init(corto_method this) {
 /* $begin(::corto::lang::method::init) */
     corto_object parent;

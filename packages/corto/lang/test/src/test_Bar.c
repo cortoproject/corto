@@ -1,14 +1,13 @@
-/* test_Bar.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Bar.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::Bar::init() */
 corto_int16 _test_Bar_init(test_Bar this) {
 /* $begin(::test::Bar::init) */
 	/* Test failing initializer */

@@ -861,16 +861,13 @@ corto_int16 g_loadExisting(corto_generator g, corto_string name, corto_string op
                         ptr = endptr + 1;
 
                     } else {
-                        corto_error("generator: missing $end after $begin(%s)", identifier);
-                        goto error;
+                        corto_warning("generator: missing $end after $begin(%s)", identifier);
                     }
                 } else {
-                    corto_error("generator: missing ')' after %s(", option);
-                    goto error;
+                    corto_warning("generator: missing ')' after %s(", option);
                 }
             } else {
-                corto_error("generator: missing '(' after %s.", option);
-                goto error;
+                corto_warning("generator: missing '(' after %s.", option);
             }
         }
         corto_dealloc(code);

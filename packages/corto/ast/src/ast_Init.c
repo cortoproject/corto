@@ -1,9 +1,9 @@
-/* ast_Init.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Init.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Init::construct() */
 corto_int16 _ast_Init_construct(ast_Init this) {
 /* $begin(::corto::ast::Init::construct) */
 	corto_type t = ast_Expression_getType(ast_Expression(this->storage));
@@ -22,7 +21,6 @@ corto_int16 _ast_Init_construct(ast_Init this) {
 /* $end */
 }
 
-/* ::corto::ast::Init::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Init_toIc_v(ast_Init this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Init::toIc) */
     ic_node s;

@@ -1,14 +1,13 @@
-/* test_StringDeserializer.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_StringDeserializer.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::StringDeserializer::setup() */
 corto_void _test_StringDeserializer_setup(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::setup) */
 
@@ -17,7 +16,6 @@ corto_void _test_StringDeserializer_setup(test_StringDeserializer this) {
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserBoolFalse() */
 corto_void _test_StringDeserializer_tc_deserBoolFalse(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserBoolFalse) */
 
@@ -32,7 +30,6 @@ corto_void _test_StringDeserializer_tc_deserBoolFalse(test_StringDeserializer th
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserBoolInvalid() */
 corto_void _test_StringDeserializer_tc_deserBoolInvalid(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserBoolInvalid) */
 
@@ -48,7 +45,6 @@ corto_void _test_StringDeserializer_tc_deserBoolInvalid(test_StringDeserializer 
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserBoolTrue() */
 corto_void _test_StringDeserializer_tc_deserBoolTrue(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserBoolTrue) */
 
@@ -63,7 +59,6 @@ corto_void _test_StringDeserializer_tc_deserBoolTrue(test_StringDeserializer thi
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserChar() */
 corto_void _test_StringDeserializer_tc_deserChar(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserChar) */
 
@@ -78,7 +73,6 @@ corto_void _test_StringDeserializer_tc_deserChar(test_StringDeserializer this) {
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCharEscape() */
 corto_void _test_StringDeserializer_tc_deserCharEscape(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharEscape) */
 
@@ -93,7 +87,6 @@ corto_void _test_StringDeserializer_tc_deserCharEscape(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCharEscapeQuoted() */
 corto_void _test_StringDeserializer_tc_deserCharEscapeQuoted(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharEscapeQuoted) */
 
@@ -108,7 +101,6 @@ corto_void _test_StringDeserializer_tc_deserCharEscapeQuoted(test_StringDeserial
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCharNull() */
 corto_void _test_StringDeserializer_tc_deserCharNull(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharNull) */
 
@@ -123,7 +115,6 @@ corto_void _test_StringDeserializer_tc_deserCharNull(test_StringDeserializer thi
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCharNullQuoted() */
 corto_void _test_StringDeserializer_tc_deserCharNullQuoted(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharNullQuoted) */
 
@@ -138,7 +129,6 @@ corto_void _test_StringDeserializer_tc_deserCharNullQuoted(test_StringDeserializ
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCharQuoted() */
 corto_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCharQuoted) */
 
@@ -153,7 +143,6 @@ corto_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCollection() */
 corto_void _test_StringDeserializer_tc_deserCollection(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCollection) */
 
@@ -179,7 +168,6 @@ corto_void _test_StringDeserializer_tc_deserCollection(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCollectionComplex() */
 corto_void _test_StringDeserializer_tc_deserCollectionComplex(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCollectionComplex) */
 
@@ -215,7 +203,6 @@ corto_void _test_StringDeserializer_tc_deserCollectionComplex(test_StringDeseria
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserComposite() */
 corto_void _test_StringDeserializer_tc_deserComposite(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserComposite) */
 
@@ -232,7 +219,6 @@ corto_void _test_StringDeserializer_tc_deserComposite(test_StringDeserializer th
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeMembers() */
 corto_void _test_StringDeserializer_tc_deserCompositeMembers(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeMembers) */
 
@@ -249,7 +235,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeMembers(test_StringDeserial
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeMixed() */
 corto_void _test_StringDeserializer_tc_deserCompositeMixed(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeMixed) */
 
@@ -266,7 +251,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeMixed(test_StringDeserializ
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeNested() */
 corto_void _test_StringDeserializer_tc_deserCompositeNested(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeNested) */
 
@@ -285,7 +269,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeNested(test_StringDeseriali
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeNestedMembers() */
 corto_void _test_StringDeserializer_tc_deserCompositeNestedMembers(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeNestedMembers) */
 
@@ -304,7 +287,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeNestedMembers(test_StringDe
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeNestedMixed() */
 corto_void _test_StringDeserializer_tc_deserCompositeNestedMixed(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeNestedMixed) */
 
@@ -323,7 +305,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeNestedMixed(test_StringDese
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeNoType() */
 corto_void _test_StringDeserializer_tc_deserCompositeNoType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeNoType) */
 
@@ -341,7 +322,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeNoType(test_StringDeseriali
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserCompositeWhitespace() */
 corto_void _test_StringDeserializer_tc_deserCompositeWhitespace(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserCompositeWhitespace) */
 
@@ -358,7 +338,6 @@ corto_void _test_StringDeserializer_tc_deserCompositeWhitespace(test_StringDeser
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserExisting() */
 corto_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserExisting) */
 
@@ -375,7 +354,6 @@ corto_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer thi
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserExisting_w_scopedType() */
 corto_void _test_StringDeserializer_tc_deserExisting_w_scopedType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserExisting_w_scopedType) */
 
@@ -395,7 +373,6 @@ corto_void _test_StringDeserializer_tc_deserExisting_w_scopedType(test_StringDes
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserExisting_w_type() */
 corto_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserExisting_w_type) */
 
@@ -414,7 +391,6 @@ corto_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeseriali
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInheritance() */
 corto_void _test_StringDeserializer_tc_deserInheritance(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInheritance) */
 
@@ -432,7 +408,6 @@ corto_void _test_StringDeserializer_tc_deserInheritance(test_StringDeserializer 
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInheritanceMembers() */
 corto_void _test_StringDeserializer_tc_deserInheritanceMembers(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInheritanceMembers) */
 
@@ -450,7 +425,6 @@ corto_void _test_StringDeserializer_tc_deserInheritanceMembers(test_StringDeseri
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInheritanceMixed() */
 corto_void _test_StringDeserializer_tc_deserInheritanceMixed(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInheritanceMixed) */
 
@@ -468,7 +442,6 @@ corto_void _test_StringDeserializer_tc_deserInheritanceMixed(test_StringDeserial
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt16() */
 corto_void _test_StringDeserializer_tc_deserInt16(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt16) */
 
@@ -483,7 +456,6 @@ corto_void _test_StringDeserializer_tc_deserInt16(test_StringDeserializer this) 
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt16Minus() */
 corto_void _test_StringDeserializer_tc_deserInt16Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt16Minus) */
 
@@ -498,7 +470,6 @@ corto_void _test_StringDeserializer_tc_deserInt16Minus(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt16Overflow() */
 corto_void _test_StringDeserializer_tc_deserInt16Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt16Overflow) */
 
@@ -513,7 +484,6 @@ corto_void _test_StringDeserializer_tc_deserInt16Overflow(test_StringDeserialize
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt32() */
 corto_void _test_StringDeserializer_tc_deserInt32(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt32) */
 
@@ -528,7 +498,6 @@ corto_void _test_StringDeserializer_tc_deserInt32(test_StringDeserializer this) 
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt32Minus() */
 corto_void _test_StringDeserializer_tc_deserInt32Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt32Minus) */
 
@@ -543,7 +512,6 @@ corto_void _test_StringDeserializer_tc_deserInt32Minus(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt32Overflow() */
 corto_void _test_StringDeserializer_tc_deserInt32Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt32Overflow) */
 
@@ -558,7 +526,6 @@ corto_void _test_StringDeserializer_tc_deserInt32Overflow(test_StringDeserialize
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt64() */
 corto_void _test_StringDeserializer_tc_deserInt64(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt64) */
     
@@ -573,7 +540,6 @@ corto_void _test_StringDeserializer_tc_deserInt64(test_StringDeserializer this) 
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt64Minus() */
 corto_void _test_StringDeserializer_tc_deserInt64Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt64Minus) */
 
@@ -588,7 +554,6 @@ corto_void _test_StringDeserializer_tc_deserInt64Minus(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt8() */
 corto_void _test_StringDeserializer_tc_deserInt8(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt8) */
 
@@ -603,7 +568,6 @@ corto_void _test_StringDeserializer_tc_deserInt8(test_StringDeserializer this) {
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt8Minus() */
 corto_void _test_StringDeserializer_tc_deserInt8Minus(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt8Minus) */
 
@@ -618,7 +582,6 @@ corto_void _test_StringDeserializer_tc_deserInt8Minus(test_StringDeserializer th
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserInt8Overflow() */
 corto_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserInt8Overflow) */
 
@@ -633,7 +596,6 @@ corto_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserString() */
 corto_void _test_StringDeserializer_tc_deserString(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserString) */
 
@@ -648,7 +610,6 @@ corto_void _test_StringDeserializer_tc_deserString(test_StringDeserializer this)
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserStringEscape() */
 corto_void _test_StringDeserializer_tc_deserStringEscape(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserStringEscape) */
 
@@ -663,7 +624,6 @@ corto_void _test_StringDeserializer_tc_deserStringEscape(test_StringDeserializer
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserStringQuotes() */
 corto_void _test_StringDeserializer_tc_deserStringQuotes(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserStringQuotes) */
 
@@ -678,7 +638,6 @@ corto_void _test_StringDeserializer_tc_deserStringQuotes(test_StringDeserializer
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserStringQuotesWhitespaces() */
 corto_void _test_StringDeserializer_tc_deserStringQuotesWhitespaces(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserStringQuotesWhitespaces) */
 
@@ -693,7 +652,6 @@ corto_void _test_StringDeserializer_tc_deserStringQuotesWhitespaces(test_StringD
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserStringWhitespace() */
 corto_void _test_StringDeserializer_tc_deserStringWhitespace(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserStringWhitespace) */
 
@@ -708,7 +666,6 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespace(test_StringDeserial
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserStringWhitespaceTrailing() */
 corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailing(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserStringWhitespaceTrailing) */
 
@@ -723,7 +680,6 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailing(test_String
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserStringWhitespaceTrailingNoType() */
 corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserStringWhitespaceTrailingNoType) */
 
@@ -740,7 +696,6 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(test_
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint16() */
 corto_void _test_StringDeserializer_tc_deserUint16(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint16) */
 
@@ -755,7 +710,6 @@ corto_void _test_StringDeserializer_tc_deserUint16(test_StringDeserializer this)
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint16Overflow() */
 corto_void _test_StringDeserializer_tc_deserUint16Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint16Overflow) */
 
@@ -770,7 +724,6 @@ corto_void _test_StringDeserializer_tc_deserUint16Overflow(test_StringDeserializ
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint32() */
 corto_void _test_StringDeserializer_tc_deserUint32(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint32) */
 
@@ -785,7 +738,6 @@ corto_void _test_StringDeserializer_tc_deserUint32(test_StringDeserializer this)
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint32Overflow() */
 corto_void _test_StringDeserializer_tc_deserUint32Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint32Overflow) */
 
@@ -800,7 +752,6 @@ corto_void _test_StringDeserializer_tc_deserUint32Overflow(test_StringDeserializ
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint64() */
 corto_void _test_StringDeserializer_tc_deserUint64(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint64) */
 
@@ -815,7 +766,6 @@ corto_void _test_StringDeserializer_tc_deserUint64(test_StringDeserializer this)
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint8() */
 corto_void _test_StringDeserializer_tc_deserUint8(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint8) */
 
@@ -830,7 +780,6 @@ corto_void _test_StringDeserializer_tc_deserUint8(test_StringDeserializer this) 
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_deserUint8Overflow() */
 corto_void _test_StringDeserializer_tc_deserUint8Overflow(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_deserUint8Overflow) */
 
@@ -845,7 +794,6 @@ corto_void _test_StringDeserializer_tc_deserUint8Overflow(test_StringDeserialize
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_errExcessElements() */
 corto_void _test_StringDeserializer_tc_errExcessElements(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errExcessElements) */
 
@@ -860,7 +808,6 @@ corto_void _test_StringDeserializer_tc_errExcessElements(test_StringDeserializer
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_errMissingType() */
 corto_void _test_StringDeserializer_tc_errMissingType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errMissingType) */
 
@@ -875,7 +822,6 @@ corto_void _test_StringDeserializer_tc_errMissingType(test_StringDeserializer th
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_errNotAType() */
 corto_void _test_StringDeserializer_tc_errNotAType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errNotAType) */
 
@@ -890,7 +836,6 @@ corto_void _test_StringDeserializer_tc_errNotAType(test_StringDeserializer this)
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_errTypeMismatch() */
 corto_void _test_StringDeserializer_tc_errTypeMismatch(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errTypeMismatch) */
 
@@ -906,7 +851,6 @@ corto_void _test_StringDeserializer_tc_errTypeMismatch(test_StringDeserializer t
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_errUnresolvedMember() */
 corto_void _test_StringDeserializer_tc_errUnresolvedMember(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errUnresolvedMember) */
 
@@ -921,7 +865,6 @@ corto_void _test_StringDeserializer_tc_errUnresolvedMember(test_StringDeserializ
 /* $end */
 }
 
-/* ::test::StringDeserializer::tc_errUnresolvedType() */
 corto_void _test_StringDeserializer_tc_errUnresolvedType(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::tc_errUnresolvedType) */
 
@@ -936,7 +879,6 @@ corto_void _test_StringDeserializer_tc_errUnresolvedType(test_StringDeserializer
 /* $end */
 }
 
-/* ::test::StringDeserializer::teardown() */
 corto_void _test_StringDeserializer_teardown(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::teardown) */
 

@@ -1,14 +1,13 @@
-/* ic_address.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_address.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::address::construct() */
 corto_int16 _ic_address_construct(ic_address this) {
 /* $begin(::corto::ic::address::construct) */
     ic_node(this)->kind = IC_ADDRESS;

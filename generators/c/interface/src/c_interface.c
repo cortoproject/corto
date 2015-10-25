@@ -24,7 +24,23 @@ typedef struct c_typeWalk_t {
     corto_bool generateHeader;
     corto_bool generateSource;
     corto_id sizeExpr;
+    corto_ll generated;
 } c_typeWalk_t;
+
+static g_file c_interfaceOpenFile(corto_string name, c_typeWalk_t *data) {
+    g_file result = g_fileOpen(data->g, name);
+    if (result) {
+        corto_llAppend(data->generated, corto_strdup(name));
+        g_fileWrite(result, "/* $CORTO_GENERATED\n");
+        g_fileWrite(result, " *\n");
+        g_fileWrite(result, " * %s\n", name);
+        g_fileWrite(result, " *\n");
+        g_fileWrite(result, " * Code written between the begin and end tags will be preserved when the\n");
+        g_fileWrite(result, " * file is regenerated.\n");
+        g_fileWrite(result, " */\n\n");
+    }   
+    return result;
+}
 
 /* Generate parameters for method */
 static int c_interfaceParam(corto_parameter *o, void *userData) {
@@ -494,7 +510,6 @@ static int c_interfaceClassProcedure(corto_object o, void *userData) {
 
         /* Write identifying comment to headerfile */
         g_fileWrite(data->header, "\n");
-        g_fileWrite(data->header, "/* %s */\n", fullname);
 
         /* Start of function */
         g_fileWrite(data->header, "%s_EXPORT %s%s _%s", upperName, returnSpec, returnPostfix,
@@ -502,7 +517,6 @@ static int c_interfaceClassProcedure(corto_object o, void *userData) {
 
         /* Write to sourcefile */
         g_fileWrite(data->source, "\n");
-        g_fileWrite(data->source, "/* %s */\n", fullname);
 
         /* Lookup header for function */
         header = g_fileLookupHeader(data->source, signatureName);
@@ -645,8 +659,8 @@ static g_file c_interfaceHeaderFileOpen(corto_generator g, corto_object o, c_typ
     } else {
         sprintf(headerFileName, "_%s.h", g_fullOid(g, o, name));
     }
-    result = g_fileOpen(g, headerFileName);
 
+    result = g_fileOpen(g, headerFileName);
     if (!result) {
         goto error;
     }
@@ -661,8 +675,9 @@ static g_file c_interfaceHeaderFileOpen(corto_generator g, corto_object o, c_typ
             } else {
                 sprintf(mainHeader, "_%s.h", g_fullOid(g, topLevelObject, topLevelName));
             }
+
             data->mainHeader = g_fileOpen(g, mainHeader);
-            if (!result) {
+            if (!data->mainHeader) {
                 goto error;
             }
         }
@@ -794,25 +809,18 @@ static corto_string c_interfaceSourceFileName(corto_string name, corto_char* buf
 }
 
 /* Open generator sourcefile */
-static g_file c_interfaceSourceFileOpen(corto_generator g, corto_string name) {
+static g_file c_interfaceSourceFileOpen(corto_string name, c_typeWalk_t *data) {
     g_file result;
     corto_char fileName[512];
     corto_id topLevelName;
 
-    result = g_fileOpen(g, c_interfaceSourceFileName(name, fileName));
+    result = c_interfaceOpenFile(c_interfaceSourceFileName(name, fileName), data);
     if (!result) {
         goto error;
     }
 
-    /* Print standard comments and includes */
-    g_fileWrite(result, "/* %s\n", fileName);
-    g_fileWrite(result, " *\n");
-    g_fileWrite(result, " * This file contains the implementation for the generated interface.\n");
-    g_fileWrite(result, " *\n");
-    g_fileWrite(result, " * Don't mess with the begin and end tags, since these will ensure that modified\n");
-    g_fileWrite(result, " * code in interface functions isn't replaced when code is re-generated.\n");
-    g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, g_getCurrent(g), topLevelName));
+    /* Print includes */
+    g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(data->g, g_getCurrent(data->g), topLevelName));
 
     return result;
 error:
@@ -866,7 +874,7 @@ static corto_int16 c_interfaceObject(corto_object o, c_typeWalk_t* data) {
         g_fullOid(data->g, o, id);
 
         /* Open sourcefile */
-        data->source = c_interfaceSourceFileOpen(data->g, id);
+        data->source = c_interfaceSourceFileOpen(id, data);
         if (!data->source) {
             goto error;
         }
@@ -905,6 +913,8 @@ static corto_int16 c_interfaceObject(corto_object o, c_typeWalk_t* data) {
             }
             g_fileWrite(data->source, "}\n");
         }
+
+        g_fileClose(data->source);
     }
 
     /* Close */
@@ -938,6 +948,75 @@ error:
     return 0;
 }
 
+static corto_bool c_interfaceIsGenerated(corto_string file) {
+    corto_string content = corto_fileLoad(file);
+    corto_bool result = FALSE;
+
+    if (content) {
+        if (strlen(content) > 1024) {
+            /* Token must appear before the first 1024 bytes */
+            content[1024] = '\0';
+        }
+
+        if (strstr(content, "$CORTO_GENERATED")) {
+            result = TRUE;
+        }
+
+        corto_dealloc(content);
+    }
+    return result;
+}
+
+static corto_bool c_interfaceWasGeneratedNow(
+    corto_string name, 
+    c_typeWalk_t *data) 
+{
+    corto_iter iter = corto_llIter(data->generated);
+
+    while(corto_iterHasNext(&iter)) {
+        corto_string file = corto_iterNext(&iter);
+        if (!strcmp(file, name)) {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+/* Mark files that haven't been regenerated */
+static int c_interfaceMarkUnusedFiles(c_typeWalk_t *data) {
+    corto_ll files = corto_opendir("./src");
+    corto_iter iter = corto_llIter(files);
+
+    while(corto_iterHasNext(&iter)) {
+        corto_string file = corto_iterNext(&iter);
+        corto_id id;
+        sprintf(id, "./src/%s", file);
+        if (c_interfaceIsGenerated(id)) {
+            if (!c_interfaceWasGeneratedNow(file, data)) {
+                if (!strstr(id, ".old")) {
+                    corto_id newname;
+                    sprintf(newname, "src/%s.old", file);
+                    rename (id, newname);
+                    printf("c_interface: %s: stale file, please remove (renamed to %s.old)\n", file, file);
+                } else {
+                    printf("c_interface: %s: stale file, please remove\n", file);
+                }
+            }
+        }
+    }
+
+    iter = corto_llIter(data->generated);
+    while (corto_iterHasNext(&iter)) {
+        corto_dealloc(corto_iterNext(&iter));
+    }
+
+    corto_closedir(files);
+    corto_llFree(data->generated);
+
+    return 0;
+}
+
 /* Entry point for generator */
 int corto_genMain(corto_generator g) {
     c_typeWalk_t walkData;
@@ -961,6 +1040,7 @@ int corto_genMain(corto_generator g) {
     walkData.source = NULL;
     walkData.wrapper = NULL;
     walkData.mainHeader = NULL;
+    walkData.generated = corto_llNew();
 
     /* Walk objects, generate procedures and class members */
     if (!g_walkNoScope(g, c_interfaceWalk, &walkData)) {
@@ -983,6 +1063,8 @@ int corto_genMain(corto_generator g) {
         }
         corto_loadFreePackages(packages);
     }
+
+    c_interfaceMarkUnusedFiles(&walkData);
 
     return 0;
 error:

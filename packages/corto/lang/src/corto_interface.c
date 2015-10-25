@@ -1,9 +1,9 @@
-/* corto_interface.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_interface.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -402,7 +402,6 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
 
 /* $end */
 
-/* ::corto::lang::interface::baseof(interface type) */
 corto_int16 _corto_interface_baseof(corto_interface this, corto_interface type) {
 /* $begin(::corto::lang::interface::baseof) */
     corto_interface ptr = this->base;
@@ -417,7 +416,6 @@ corto_int16 _corto_interface_baseof(corto_interface this, corto_interface type) 
 /* $end */
 }
 
-/* ::corto::lang::interface::bindMethod(method method) */
 corto_int16 _corto_interface_bindMethod(corto_interface this, corto_method method) {
 /* $begin(::corto::lang::interface::bindMethod) */
     corto_method* virtual;
@@ -483,7 +481,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::interface::compatible(type type) */
 corto_bool _corto_interface_compatible_v(corto_interface this, corto_type type) {
 /* $begin(::corto::lang::interface::compatible) */
     corto_bool result;
@@ -507,7 +504,6 @@ corto_bool _corto_interface_compatible_v(corto_interface this, corto_type type) 
 /* $end */
 }
 
-/* ::corto::lang::interface::construct() */
 corto_int16 _corto_interface_construct(corto_interface this) {
 /* $begin(::corto::lang::interface::construct) */
     corto_vtable *superTable, ownTable;
@@ -545,7 +541,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::interface::destruct() */
 corto_void _corto_interface_destruct(corto_interface this) {
 /* $begin(::corto::lang::interface::destruct) */
     corto_uint32 i;
@@ -574,7 +569,6 @@ corto_void _corto_interface_destruct(corto_interface this) {
 /* $end */
 }
 
-/* ::corto::lang::interface::init() */
 corto_int16 _corto_interface_init(corto_interface this) {
 /* $begin(::corto::lang::interface::init) */
     corto_type(this)->reference = TRUE;
@@ -584,7 +578,6 @@ corto_int16 _corto_interface_init(corto_interface this) {
 /* $end */
 }
 
-/* ::corto::lang::interface::resolveMember(string name) */
 corto_member _corto_interface_resolveMember_v(corto_interface this, corto_string name) {
 /* $begin(::corto::lang::interface::resolveMember) */
     corto_uint32 i;
@@ -603,7 +596,6 @@ corto_member _corto_interface_resolveMember_v(corto_interface this, corto_string
 /* $end */
 }
 
-/* ::corto::lang::interface::resolveMethod(string name) */
 corto_method _corto_interface_resolveMethod(corto_interface this, corto_string name) {
 /* $begin(::corto::lang::interface::resolveMethod) */
     corto_method result;
@@ -620,7 +612,6 @@ corto_method _corto_interface_resolveMethod(corto_interface this, corto_string n
 /* $end */
 }
 
-/* ::corto::lang::interface::resolveMethodById(uint32 id) */
 corto_method _corto_interface_resolveMethodById(corto_interface this, corto_uint32 id) {
 /* $begin(::corto::lang::interface::resolveMethodById) */
     corto_method result;
@@ -647,7 +638,6 @@ corto_method _corto_interface_resolveMethodById(corto_interface this, corto_uint
 /* $end */
 }
 
-/* ::corto::lang::interface::resolveMethodId(string name) */
 corto_uint32 _corto_interface_resolveMethodId(corto_interface this, corto_string name) {
 /* $begin(::corto::lang::interface::resolveMethodId) */
     corto_int32 result;

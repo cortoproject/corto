@@ -1,14 +1,13 @@
-/* corto_delegate.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_delegate.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
 
-/* ::corto::lang::delegate::bind(function object) */
 corto_int16 _corto_delegate_bind(corto_function object) {
 /* $begin(::corto::lang::delegate::bind) */
     corto_object parent = corto_parentof(object);
@@ -46,14 +45,12 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::delegate::castable(type type) */
 corto_bool _corto_delegate_castable_v(corto_delegate this, corto_type type) {
 /* $begin(::corto::lang::delegate::castable) */
     return corto_delegate_compatible_v(this, type);
 /* $end */
 }
 
-/* ::corto::lang::delegate::compatible(type type) */
 corto_bool _corto_delegate_compatible_v(corto_delegate this, corto_type type) {
 /* $begin(::corto::lang::delegate::compatible) */
     corto_bool result = FALSE;
@@ -90,7 +87,6 @@ corto_bool _corto_delegate_compatible_v(corto_delegate this, corto_type type) {
 /* $end */
 }
 
-/* ::corto::lang::delegate::init() */
 corto_int16 _corto_delegate_init(corto_delegate this) {
 /* $begin(::corto::lang::delegate::init) */
     corto_int16 result;
@@ -111,7 +107,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::delegate::instanceof(object object) */
 /* $header(::corto::lang::delegate::instanceof) */
 corto_bool corto_delegate_matchParameter(
     corto_type t1, 

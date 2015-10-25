@@ -14,7 +14,6 @@
 extern "C" {
 #endif
 
-/* ::corto::lang::bitmask::init() */
 CORTO_LANG_EXPORT corto_int16 _corto_bitmask_init(corto_bitmask _this);
 #define corto_bitmask_init(_this) _corto_bitmask_init(corto_bitmask(_this))
 

@@ -1,9 +1,9 @@
-/* ast_Comma.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_Comma.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::Comma::addExpression(Expression expr) */
 corto_int16 _ast_Comma_addExpression(ast_Comma this, ast_Expression expr) {
 /* $begin(::corto::ast::Comma::addExpression) */
     if (expr) {
@@ -27,7 +26,6 @@ corto_int16 _ast_Comma_addExpression(ast_Comma this, ast_Expression expr) {
 /* $end */
 }
 
-/* ::corto::ast::Comma::addOrCreate(Expression list,Expression expr) */
 ast_Expression _ast_Comma_addOrCreate(ast_Expression list, ast_Expression expr) {
 /* $begin(::corto::ast::Comma::addOrCreate) */
     ast_Expression result;
@@ -48,7 +46,6 @@ ast_Expression _ast_Comma_addOrCreate(ast_Expression list, ast_Expression expr) 
 /* $end */
 }
 
-/* ::corto::ast::Comma::construct() */
 corto_int16 _ast_Comma_construct(ast_Comma this) {
 /* $begin(::corto::ast::Comma::construct) */
     if (this->expressions) {
@@ -65,7 +62,6 @@ corto_int16 _ast_Comma_construct(ast_Comma this) {
 /* $end */
 }
 
-/* ::corto::ast::Comma::hasReturnedResource() */
 corto_bool _ast_Comma_hasReturnedResource_v(ast_Comma this) {
 /* $begin(::corto::ast::Comma::hasReturnedResource) */
     corto_bool result = FALSE;
@@ -81,7 +77,6 @@ corto_bool _ast_Comma_hasReturnedResource_v(ast_Comma this) {
 /* $end */
 }
 
-/* ::corto::ast::Comma::hasSideEffects() */
 corto_bool _ast_Comma_hasSideEffects_v(ast_Comma this) {
 /* $begin(::corto::ast::Comma::hasSideEffects) */
     corto_bool result = FALSE;
@@ -97,7 +92,6 @@ corto_bool _ast_Comma_hasSideEffects_v(ast_Comma this) {
 /* $end */
 }
 
-/* ::corto::ast::Comma::init() */
 corto_int16 _ast_Comma_init(ast_Comma this) {
 /* $begin(::corto::ast::Comma::init) */
 
@@ -108,7 +102,6 @@ corto_int16 _ast_Comma_init(ast_Comma this) {
 /* $end */
 }
 
-/* ::corto::ast::Comma::insertOrCreate(Expression list,Expression expr) */
 ast_Expression _ast_Comma_insertOrCreate(ast_Expression list, ast_Expression expr) {
 /* $begin(::corto::ast::Comma::insertOrCreate) */
     ast_Expression result;
@@ -129,7 +122,6 @@ ast_Expression _ast_Comma_insertOrCreate(ast_Expression list, ast_Expression exp
 /* $end */
 }
 
-/* ::corto::ast::Comma::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_Comma_toIc_v(ast_Comma this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::Comma::toIc) */
 
@@ -141,7 +133,6 @@ ic_node _ast_Comma_toIc_v(ast_Comma this, ic_program program, ic_storage storage
 /* $end */
 }
 
-/* ::corto::ast::Comma::toList() */
 ast_NodeList _ast_Comma_toList(ast_Comma this) {
 /* $begin(::corto::ast::Comma::toList) */
 

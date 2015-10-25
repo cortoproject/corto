@@ -1,14 +1,13 @@
-/* test_Resolver.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Resolver.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::Resolver::setup() */
 corto_void _test_Resolver_setup(test_Resolver this) {
 /* $begin(::test::Resolver::setup) */
 
@@ -17,7 +16,6 @@ corto_void _test_Resolver_setup(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_caseInsensitive() */
 corto_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
 /* $begin(::test::Resolver::tc_caseInsensitive) */
 
@@ -29,7 +27,6 @@ corto_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveAll() */
 /* $header(::test::Resolver::tc_resolveAll) */
 int tc_resolveAllWalk(corto_object o, void *udata) {
     CORTO_UNUSED(udata);
@@ -58,7 +55,6 @@ corto_void _test_Resolver_tc_resolveAll(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveAnonymous() */
 corto_void _test_Resolver_tc_resolveAnonymous(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveAnonymous) */
 
@@ -69,7 +65,6 @@ corto_void _test_Resolver_tc_resolveAnonymous(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveCorto() */
 corto_void _test_Resolver_tc_resolveCorto(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveCorto) */
 
@@ -80,7 +75,6 @@ corto_void _test_Resolver_tc_resolveCorto(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveEmptyString() */
 corto_void _test_Resolver_tc_resolveEmptyString(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveEmptyString) */
 
@@ -91,7 +85,6 @@ corto_void _test_Resolver_tc_resolveEmptyString(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveFunctionArgs() */
 corto_void _test_Resolver_tc_resolveFunctionArgs(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveFunctionArgs) */
 
@@ -102,7 +95,6 @@ corto_void _test_Resolver_tc_resolveFunctionArgs(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveFunctionNoArgs() */
 corto_void _test_Resolver_tc_resolveFunctionNoArgs(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveFunctionNoArgs) */
 
@@ -113,7 +105,6 @@ corto_void _test_Resolver_tc_resolveFunctionNoArgs(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveIo() */
 corto_void _test_Resolver_tc_resolveIo(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveIo) */
 
@@ -126,7 +117,6 @@ corto_void _test_Resolver_tc_resolveIo(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveLang() */
 corto_void _test_Resolver_tc_resolveLang(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveLang) */
 
@@ -139,7 +129,6 @@ corto_void _test_Resolver_tc_resolveLang(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveNull() */
 corto_void _test_Resolver_tc_resolveNull(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveNull) */
 
@@ -150,7 +139,6 @@ corto_void _test_Resolver_tc_resolveNull(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveParenthesesNoFunction() */
 corto_void _test_Resolver_tc_resolveParenthesesNoFunction(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveParenthesesNoFunction) */
 
@@ -168,7 +156,6 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunction(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveParenthesesNoFunctionArgs() */
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionArgs) */
 
@@ -186,7 +173,6 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(test_Resolver this
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveParenthesesNoFunctionArgsScoped() */
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionArgsScoped) */
     corto_id id;
@@ -210,7 +196,6 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(test_Resolve
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgs() */
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgs) */
 
@@ -226,7 +211,6 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(test_Resol
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgsScoped() */
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionMatchingArgsScoped) */
     corto_id id;
@@ -248,7 +232,6 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(test
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveParenthesesNoFunctionScoped() */
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveParenthesesNoFunctionScoped) */
     corto_id id;
@@ -272,7 +255,6 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(test_Resolver th
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveRoot() */
 corto_void _test_Resolver_tc_resolveRoot(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveRoot) */
 
@@ -283,7 +265,6 @@ corto_void _test_Resolver_tc_resolveRoot(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveString() */
 corto_void _test_Resolver_tc_resolveString(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveString) */
 
@@ -294,7 +275,6 @@ corto_void _test_Resolver_tc_resolveString(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::tc_resolveThis() */
 corto_void _test_Resolver_tc_resolveThis(test_Resolver this) {
 /* $begin(::test::Resolver::tc_resolveThis) */
 
@@ -305,7 +285,6 @@ corto_void _test_Resolver_tc_resolveThis(test_Resolver this) {
 /* $end */
 }
 
-/* ::test::Resolver::teardown() */
 corto_void _test_Resolver_teardown(test_Resolver this) {
 /* $begin(::test::Resolver::teardown) */
 

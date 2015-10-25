@@ -1,14 +1,13 @@
-/* test_Overload.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_Overload.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::Overload::tc_ambiguous() */
 corto_void _test_Overload_tc_ambiguous(test_Overload this) {
 /* $begin(::test::Overload::tc_ambiguous) */
 
@@ -20,7 +19,6 @@ corto_void _test_Overload_tc_ambiguous(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_ambiguousNull() */
 corto_void _test_Overload_tc_ambiguousNull(test_Overload this) {
 /* $begin(::test::Overload::tc_ambiguousNull) */
 
@@ -32,7 +30,6 @@ corto_void _test_Overload_tc_ambiguousNull(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_ambiguousWildcard() */
 corto_void _test_Overload_tc_ambiguousWildcard(test_Overload this) {
 /* $begin(::test::Overload::tc_ambiguousWildcard) */
 
@@ -44,7 +41,6 @@ corto_void _test_Overload_tc_ambiguousWildcard(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyChar() */
 corto_void _test_Overload_tc_anyChar(test_Overload this) {
 /* $begin(::test::Overload::tc_anyChar) */
 
@@ -57,7 +53,6 @@ corto_void _test_Overload_tc_anyChar(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyColor() */
 corto_void _test_Overload_tc_anyColor(test_Overload this) {
 /* $begin(::test::Overload::tc_anyColor) */
 
@@ -70,7 +65,6 @@ corto_void _test_Overload_tc_anyColor(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyFloat32() */
 corto_void _test_Overload_tc_anyFloat32(test_Overload this) {
 /* $begin(::test::Overload::tc_anyFloat32) */
 
@@ -83,7 +77,6 @@ corto_void _test_Overload_tc_anyFloat32(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyFloat64() */
 corto_void _test_Overload_tc_anyFloat64(test_Overload this) {
 /* $begin(::test::Overload::tc_anyFloat64) */
 
@@ -96,7 +89,6 @@ corto_void _test_Overload_tc_anyFloat64(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyInt16() */
 corto_void _test_Overload_tc_anyInt16(test_Overload this) {
 /* $begin(::test::Overload::tc_anyInt16) */
 
@@ -109,7 +101,6 @@ corto_void _test_Overload_tc_anyInt16(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyInt32() */
 corto_void _test_Overload_tc_anyInt32(test_Overload this) {
 /* $begin(::test::Overload::tc_anyInt32) */
 
@@ -124,7 +115,6 @@ corto_void _test_Overload_tc_anyInt32(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyInt64() */
 corto_void _test_Overload_tc_anyInt64(test_Overload this) {
 /* $begin(::test::Overload::tc_anyInt64) */
 
@@ -139,7 +129,6 @@ corto_void _test_Overload_tc_anyInt64(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyInt8() */
 corto_void _test_Overload_tc_anyInt8(test_Overload this) {
 /* $begin(::test::Overload::tc_anyInt8) */
 
@@ -154,7 +143,6 @@ corto_void _test_Overload_tc_anyInt8(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyOctet() */
 corto_void _test_Overload_tc_anyOctet(test_Overload this) {
 /* $begin(::test::Overload::tc_anyOctet) */
 
@@ -169,7 +157,6 @@ corto_void _test_Overload_tc_anyOctet(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyString() */
 corto_void _test_Overload_tc_anyString(test_Overload this) {
 /* $begin(::test::Overload::tc_anyString) */
 
@@ -184,7 +171,6 @@ corto_void _test_Overload_tc_anyString(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyUint16() */
 corto_void _test_Overload_tc_anyUint16(test_Overload this) {
 /* $begin(::test::Overload::tc_anyUint16) */
 
@@ -199,7 +185,6 @@ corto_void _test_Overload_tc_anyUint16(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyUint32() */
 corto_void _test_Overload_tc_anyUint32(test_Overload this) {
 /* $begin(::test::Overload::tc_anyUint32) */
 
@@ -214,7 +199,6 @@ corto_void _test_Overload_tc_anyUint32(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyUint64() */
 corto_void _test_Overload_tc_anyUint64(test_Overload this) {
 /* $begin(::test::Overload::tc_anyUint64) */
 
@@ -229,7 +213,6 @@ corto_void _test_Overload_tc_anyUint64(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyUint8() */
 corto_void _test_Overload_tc_anyUint8(test_Overload this) {
 /* $begin(::test::Overload::tc_anyUint8) */
 
@@ -244,7 +227,6 @@ corto_void _test_Overload_tc_anyUint8(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_anyWord() */
 corto_void _test_Overload_tc_anyWord(test_Overload this) {
 /* $begin(::test::Overload::tc_anyWord) */
 
@@ -259,7 +241,6 @@ corto_void _test_Overload_tc_anyWord(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_inheritanceBase() */
 corto_void _test_Overload_tc_inheritanceBase(test_Overload this) {
 /* $begin(::test::Overload::tc_inheritanceBase) */
 
@@ -273,7 +254,6 @@ corto_void _test_Overload_tc_inheritanceBase(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_inheritanceMatchSub() */
 corto_void _test_Overload_tc_inheritanceMatchSub(test_Overload this) {
 /* $begin(::test::Overload::tc_inheritanceMatchSub) */
 
@@ -287,7 +267,6 @@ corto_void _test_Overload_tc_inheritanceMatchSub(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_inheritanceSub() */
 corto_void _test_Overload_tc_inheritanceSub(test_Overload this) {
 /* $begin(::test::Overload::tc_inheritanceSub) */
 
@@ -301,7 +280,6 @@ corto_void _test_Overload_tc_inheritanceSub(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_inheritSibling() */
 corto_void _test_Overload_tc_inheritSibling(test_Overload this) {
 /* $begin(::test::Overload::tc_inheritSibling) */
 
@@ -315,7 +293,6 @@ corto_void _test_Overload_tc_inheritSibling(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_nullBool() */
 corto_void _test_Overload_tc_nullBool(test_Overload this) {
 /* $begin(::test::Overload::tc_nullBool) */
 
@@ -329,7 +306,6 @@ corto_void _test_Overload_tc_nullBool(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_nullObject() */
 corto_void _test_Overload_tc_nullObject(test_Overload this) {
 /* $begin(::test::Overload::tc_nullObject) */
 
@@ -343,7 +319,6 @@ corto_void _test_Overload_tc_nullObject(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_nullString() */
 corto_void _test_Overload_tc_nullString(test_Overload this) {
 /* $begin(::test::Overload::tc_nullString) */
 
@@ -357,7 +332,6 @@ corto_void _test_Overload_tc_nullString(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numChar() */
 corto_void _test_Overload_tc_numChar(test_Overload this) {
 /* $begin(::test::Overload::tc_numChar) */
 
@@ -372,7 +346,6 @@ corto_void _test_Overload_tc_numChar(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numColor() */
 corto_void _test_Overload_tc_numColor(test_Overload this) {
 /* $begin(::test::Overload::tc_numColor) */
 
@@ -387,7 +360,6 @@ corto_void _test_Overload_tc_numColor(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numFloat32() */
 corto_void _test_Overload_tc_numFloat32(test_Overload this) {
 /* $begin(::test::Overload::tc_numFloat32) */
 
@@ -402,7 +374,6 @@ corto_void _test_Overload_tc_numFloat32(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numFloat64() */
 corto_void _test_Overload_tc_numFloat64(test_Overload this) {
 /* $begin(::test::Overload::tc_numFloat64) */
 
@@ -417,7 +388,6 @@ corto_void _test_Overload_tc_numFloat64(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numInt16() */
 corto_void _test_Overload_tc_numInt16(test_Overload this) {
 /* $begin(::test::Overload::tc_numInt16) */
 
@@ -432,7 +402,6 @@ corto_void _test_Overload_tc_numInt16(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numInt32() */
 corto_void _test_Overload_tc_numInt32(test_Overload this) {
 /* $begin(::test::Overload::tc_numInt32) */
 
@@ -447,7 +416,6 @@ corto_void _test_Overload_tc_numInt32(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numInt64() */
 corto_void _test_Overload_tc_numInt64(test_Overload this) {
 /* $begin(::test::Overload::tc_numInt64) */
 
@@ -462,7 +430,6 @@ corto_void _test_Overload_tc_numInt64(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numInt8() */
 corto_void _test_Overload_tc_numInt8(test_Overload this) {
 /* $begin(::test::Overload::tc_numInt8) */
 
@@ -477,7 +444,6 @@ corto_void _test_Overload_tc_numInt8(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numOctet() */
 corto_void _test_Overload_tc_numOctet(test_Overload this) {
 /* $begin(::test::Overload::tc_numOctet) */
 
@@ -491,7 +457,6 @@ corto_void _test_Overload_tc_numOctet(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numString() */
 corto_void _test_Overload_tc_numString(test_Overload this) {
 /* $begin(::test::Overload::tc_numString) */
 
@@ -502,7 +467,6 @@ corto_void _test_Overload_tc_numString(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numUint16() */
 corto_void _test_Overload_tc_numUint16(test_Overload this) {
 /* $begin(::test::Overload::tc_numUint16) */
 
@@ -516,7 +480,6 @@ corto_void _test_Overload_tc_numUint16(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numUint32() */
 corto_void _test_Overload_tc_numUint32(test_Overload this) {
 /* $begin(::test::Overload::tc_numUint32) */
 
@@ -530,7 +493,6 @@ corto_void _test_Overload_tc_numUint32(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numUint64() */
 corto_void _test_Overload_tc_numUint64(test_Overload this) {
 /* $begin(::test::Overload::tc_numUint64) */
 
@@ -544,7 +506,6 @@ corto_void _test_Overload_tc_numUint64(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numUint8() */
 corto_void _test_Overload_tc_numUint8(test_Overload this) {
 /* $begin(::test::Overload::tc_numUint8) */
 
@@ -558,7 +519,6 @@ corto_void _test_Overload_tc_numUint8(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_numWord() */
 corto_void _test_Overload_tc_numWord(test_Overload this) {
 /* $begin(::test::Overload::tc_numWord) */
 
@@ -572,7 +532,6 @@ corto_void _test_Overload_tc_numWord(test_Overload this) {
 /* $end */
 }
 
-/* ::test::Overload::tc_wildcard() */
 corto_void _test_Overload_tc_wildcard(test_Overload this) {
 /* $begin(::test::Overload::tc_wildcard) */
 

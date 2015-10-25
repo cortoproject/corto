@@ -1,14 +1,13 @@
-/* os.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * os.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "os.h"
 
-/* ::corto::os::exit(bool success) */
 corto_void _os_exit(corto_bool success) {
 /* $begin(::corto::os::exit) */
 
@@ -17,7 +16,6 @@ corto_void _os_exit(corto_bool success) {
 /* $end */
 }
 
-/* ::corto::os::sleep(uint32 sec,uint32 nsec) */
 corto_void _os_sleep(corto_uint32 sec, corto_uint32 nsec) {
 /* $begin(::corto::os::sleep) */
 
@@ -26,7 +24,6 @@ corto_void _os_sleep(corto_uint32 sec, corto_uint32 nsec) {
 /* $end */
 }
 
-/* ::corto::os::system(string cmd) */
 corto_void _os_system(corto_string cmd) {
 /* $begin(::corto::os::system) */
 

@@ -1,14 +1,13 @@
-/* test_MethodTesterInherit.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * test_MethodTesterInherit.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "test.h"
 
-/* ::test::MethodTesterInherit::overload(::test::MethodTesterInherit m) */
 corto_void _test_MethodTesterInherit_overload__test_MethodTesterInherit(test_MethodTesterInherit this, test_MethodTesterInherit m) {
 /* $begin(::test::MethodTesterInherit::overload(::test::MethodTesterInherit m)) */
 
@@ -17,7 +16,6 @@ corto_void _test_MethodTesterInherit_overload__test_MethodTesterInherit(test_Met
 /* $end */
 }
 
-/* ::test::MethodTesterInherit::overload(string a,string b) */
 corto_void _test_MethodTesterInherit_overload_string_string(test_MethodTesterInherit this, corto_string a, corto_string b) {
 /* $begin(::test::MethodTesterInherit::overload(string a,string b)) */
 
@@ -26,7 +24,6 @@ corto_void _test_MethodTesterInherit_overload_string_string(test_MethodTesterInh
 /* $end */
 }
 
-/* ::test::MethodTesterInherit::simple() */
 corto_void _test_MethodTesterInherit_simple(test_MethodTesterInherit this) {
 /* $begin(::test::MethodTesterInherit::simple) */
 
@@ -35,7 +32,6 @@ corto_void _test_MethodTesterInherit_simple(test_MethodTesterInherit this) {
 /* $end */
 }
 
-/* ::test::MethodTesterInherit::virtualOverload(int32 a) */
 corto_void _test_MethodTesterInherit_virtualOverload(test_MethodTesterInherit this, corto_int32 a) {
 /* $begin(::test::MethodTesterInherit::virtualOverload) */
 

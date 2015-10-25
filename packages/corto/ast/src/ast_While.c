@@ -1,9 +1,9 @@
-/* ast_While.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ast_While.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ast.h"
@@ -12,7 +12,6 @@
 #include "ast__private.h"
 /* $end */
 
-/* ::corto::ast::While::construct() */
 corto_int16 _ast_While_construct(ast_While this) {
 /* $begin(::corto::ast::While::construct) */
     corto_type conditionType;
@@ -37,7 +36,6 @@ error:
 /* $end */
 }
 
-/* ::corto::ast::While::toIc(ic::program program,ic::storage storage,bool stored) */
 ic_node _ast_While_toIc_v(ast_While this, ic_program program, ic_storage storage, corto_bool stored) {
 /* $begin(::corto::ast::While::toIc) */
     ic_storage accumulator;

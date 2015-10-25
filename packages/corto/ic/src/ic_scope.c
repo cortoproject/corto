@@ -1,21 +1,19 @@
-/* ic_scope.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * ic_scope.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "ic.h"
 
-/* ::corto::ic::scope::add(node n) */
 corto_void _ic_scope_add(ic_scope this, ic_node n) {
 /* $begin(::corto::ic::scope::add) */
     corto_llAppend(this->program, n);
 /* $end */
 }
 
-/* ::corto::ic::scope::addStorage(storage s) */
 corto_void _ic_scope_addStorage(ic_scope this, ic_storage s) {
 /* $begin(::corto::ic::scope::addStorage) */
     corto_llAppend(this->storages, s);
@@ -23,7 +21,6 @@ corto_void _ic_scope_addStorage(ic_scope this, ic_storage s) {
 /* $end */
 }
 
-/* ::corto::ic::scope::construct() */
 corto_int16 _ic_scope_construct(ic_scope this) {
 /* $begin(::corto::ic::scope::construct) */
     ic_node(this)->kind = IC_SCOPE;
@@ -31,7 +28,6 @@ corto_int16 _ic_scope_construct(ic_scope this) {
 /* $end */
 }
 
-/* ::corto::ic::scope::lookupStorage(string name,bool recursive) */
 ic_storage _ic_scope_lookupStorage(ic_scope this, corto_string name, corto_bool recursive) {
 /* $begin(::corto::ic::scope::lookupStorage) */
     corto_iter storageIter;
@@ -55,7 +51,6 @@ ic_storage _ic_scope_lookupStorage(ic_scope this, corto_string name, corto_bool 
 /* $end */
 }
 
-/* ::corto::ic::scope::str(string in) */
 corto_string _ic_scope_str(ic_scope this, corto_string in) {
 /* $begin(::corto::ic::scope::str) */
     corto_iter programIter, storageIter;

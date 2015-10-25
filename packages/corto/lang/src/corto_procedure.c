@@ -1,9 +1,9 @@
-/* corto_procedure.c
+/* $CORTO_GENERATED
  *
- * This file contains the implementation for the generated interface.
+ * corto_procedure.c
  *
- * Don't mess with the begin and end tags, since these will ensure that modified
- * code in interface functions isn't replaced when code is re-generated.
+ * Code written between the begin and end tags will be preserved when the
+ * file is regenerated.
  */
 
 #include "corto.h"
@@ -13,7 +13,6 @@
 #include "corto_function.h"
 /* $end */
 
-/* ::corto::lang::procedure::init() */
 corto_int16 _corto_procedure_init(corto_procedure this) {
 /* $begin(::corto::lang::procedure::init) */
 
@@ -30,7 +29,6 @@ error:
 /* $end */
 }
 
-/* ::corto::lang::procedure::unbind(function object) */
 corto_void _corto_procedure_unbind(corto_procedure this, corto_function object) {
 /* $begin(::corto::lang::procedure::unbind) */
     if (this->kind == CORTO_OBSERVER){
