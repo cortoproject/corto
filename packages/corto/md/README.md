@@ -1,5 +1,8 @@
 # ::corto::md
-### parse(object destination,string text)
+### parse(string text)
+#### text
+#### Returns
+### parseToCorto(object destination,string text)
 #### destination
 #### text
 

@@ -1123,7 +1123,8 @@ static corto_int16 html_copy(const char* path, const char *name) {
     char sourcePath[PATH_MAX];
     char destinationPath[PATH_MAX];
     char *cortoHome = getenv("CORTO_HOME");
-    sprintf(sourcePath, "%s/etc/corto/%s/generators/%s", cortoHome, CORTO_VERSION, name);
+    sprintf(sourcePath, "%s/etc/corto/%s.%s/generators/%s", cortoHome, 
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, name);
     sprintf(destinationPath, "%s/%s", path, name);
     if (corto_cp(sourcePath, destinationPath)) {
         goto error;

@@ -61,10 +61,10 @@ if File.exists? ".corto/packages.txt" then
 end
 
 CLEAN.include(".corto/obj")
+CLEAN.include("doc")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
-CLOBBER.include("doc")
 
 if USE_COMPONENT_LOADED.length == 0 then
     CLOBBER.include(".corto/components.txt")

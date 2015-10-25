@@ -2,4 +2,4 @@ export CORTO_BUILD=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`/buil
 export CORTO_HOME=$HOME/.corto
 export CORTO_TARGET=$HOME/.corto
 export PATH=$CORTO_TARGET/bin:$PATH
-export CORTO_VERSION=0.2.0-alpha
+export CORTO_VERSION=0.2

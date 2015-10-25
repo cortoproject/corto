@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
                     cortotool_printUsage(FALSE);
                     break;
                 } else if (*(argv[i]+1) == 'v') {
-                    printf("%s", CORTO_VERSION);
+                    printf("%s\n", CORTO_VERSION);
                 } else if (*(argv[i]+1) == 'c') {
                     if (corto_loadComponent(argv[i + 1], 0, NULL)) {
                         corto_error("%s: %s", argv[i + 1], corto_lasterr());
@@ -89,10 +89,12 @@ int main(int argc, char* argv[]) {
                     i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
-                        corto_error("corto version %s (%s) build %s\n", 
+                        printf("corto version %s (%s) build %s\n\n", 
                             CORTO_VERSION, 
                             CORTO_PLATFORM_STRING, 
                             corto_getBuild());
+                    } else if (!strcmp(argv[i] + 2, "minor")) {
+                        printf("%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
                     } else if (!strcmp(argv[i] + 2, "help")) {
                         cortotool_printUsage(FALSE);
                     } else if (!strcmp(argv[i] + 2, "expert")) {

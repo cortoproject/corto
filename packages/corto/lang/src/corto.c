@@ -37,7 +37,7 @@ struct corto_exitHandler {
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "2"
-#define VERSION_PATCH "0"
+#define VERSION_PATCH "1"
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
@@ -699,12 +699,13 @@ int corto_start(void) {
 
     /* CORTO_BUILD is where the buildsystem is located */
     if (!corto_getenv("CORTO_BUILD")) {
-        corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s/build", CORTO_VERSION);
+        corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s.%s/build", 
+            CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
     }
 
     /* CORTO_HOME is where corto binaries are located */
     if (!corto_getenv("CORTO_HOME")) {
-        corto_setenv("CORTO_HOME", "/usr/local", CORTO_VERSION);
+        corto_setenv("CORTO_HOME", "/usr/local");
     }
 
     /* CORTO_TARGET is where a project will be built */
@@ -766,6 +767,17 @@ int corto_start(void) {
 #ifdef CORTO_OPERATORS
     corto_operatorInit();
 #endif
+
+    /* Register exit-handler */
+    void corto_loaderOnExit(void* udata);
+    corto_onexit(corto_loaderOnExit, NULL);
+
+    /* Register library-binding */
+    int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data);
+    corto_loaderRegister("so", corto_loadLibraryAction, NULL);
+
+    int corto_fileLoader(corto_string file, int argc, char* argv[], void *data);
+    corto_loaderRegister("", corto_fileLoader, NULL);
 
     /* Register C-binding and vm-binding */
     {

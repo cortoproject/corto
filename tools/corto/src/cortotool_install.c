@@ -16,8 +16,10 @@ static void cortotool_promptPassword(void) {
 	corto_procwait(pid, NULL);
 }
 
-static corto_int16 cortotool_installFromSource() {
+static corto_int16 cortotool_installFromSource(void) {
 	corto_bool buildingCorto = FALSE;
+	corto_id version;
+	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
 	/* Write installation script */
 	FILE *install = fopen("install.sh", "w");
@@ -29,9 +31,9 @@ static corto_int16 cortotool_installFromSource() {
 	/* Install build system from source */
 	if (corto_fileTest("configure") && corto_fileTest("build")) {
 		/* If installing corto itself, install buildsystem */
-		fprintf(install, "mkdir -p /usr/local/lib/corto/%s\n", CORTO_VERSION);
+		fprintf(install, "mkdir -p /usr/local/lib/corto/%s\n", version);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-		fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", CORTO_VERSION);
+		fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", version);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 		buildingCorto = TRUE;
 	}
@@ -39,8 +41,8 @@ static corto_int16 cortotool_installFromSource() {
 	/* Set the build target to the global environment */
 	fprintf(install, "export CORTO_TARGET=/usr/local\n");
 	fprintf(install, "export CORTO_HOME=/usr/local\n");
-	fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
-	fprintf(install, "export CORTO_VERSION=%s\n", CORTO_VERSION);
+	fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+	fprintf(install, "export CORTO_VERSION=%s\n", version);
 	fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
 	/* Build libraries to global environment */
@@ -49,13 +51,13 @@ static corto_int16 cortotool_installFromSource() {
 
 	if (buildingCorto) {
 		/* Rename corto */
-		fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", CORTO_VERSION);
-		fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", CORTO_VERSION);
+		fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", version);
+		fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", version);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
 		/* Rename libcorto.so */
-		fprintf(install, "mv -f /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.%s\n", CORTO_VERSION);
-		fprintf(install, "ln -s /usr/local/lib/libcorto.so.%s /usr/local/lib/libcorto.so\n", CORTO_VERSION);
+		fprintf(install, "mv -f /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.%s\n", version);
+		fprintf(install, "ln -s /usr/local/lib/libcorto.so.%s /usr/local/lib/libcorto.so\n", version);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 	}
 
@@ -168,6 +170,8 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 	CORTO_UNUSED(argc);
 	CORTO_UNUSED(argv);
 	corto_bool uninstallAll = FALSE;
+	corto_id version;
+	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
 	if (argc > 1) {
 		corto_chdir(argv[1]);
@@ -189,8 +193,8 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 	/* Set the build target to the global environment */
 	fprintf(uninstall, "export CORTO_TARGET=/usr/local\n");
 	fprintf(uninstall, "export CORTO_HOME=/usr/local\n");
-	fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
-	fprintf(uninstall, "export CORTO_VERSION=%s\n", CORTO_VERSION);
+	fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+	fprintf(uninstall, "export CORTO_VERSION=%s\n", version);
 	fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 	fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
@@ -296,6 +300,8 @@ error:
 corto_int16 cortotool_tar(int argc, char* argv[]) {
 	CORTO_UNUSED(argc);
 	CORTO_UNUSED(argv);
+	corto_id version;
+	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
 	if (!cortotool_validProject()) {
 		goto error;
@@ -311,8 +317,8 @@ corto_int16 cortotool_tar(int argc, char* argv[]) {
 	/* Set the build target to the global environment */
 	fprintf(tar, "export CORTO_TARGET=/usr/local\n");
 	fprintf(tar, "export CORTO_HOME=/usr/local\n");
-	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
-	fprintf(tar, "export CORTO_VERSION=%s\n", CORTO_VERSION);
+	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+	fprintf(tar, "export CORTO_VERSION=%s\n", version);
 	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 	fprintf(tar, "rake collect\n");
 	fprintf(tar, "DIR=`pwd`\n");
@@ -344,6 +350,8 @@ error:
 corto_int16 cortotool_untar(int argc, char* argv[]) {
 	CORTO_UNUSED(argc);
 	CORTO_UNUSED(argv);
+	corto_id version;
+	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
 	/* Write installation script */
 	FILE *tar = fopen("untar.sh", "w");
@@ -355,8 +363,8 @@ corto_int16 cortotool_untar(int argc, char* argv[]) {
 	/* Set the build target to the global environment */
 	fprintf(tar, "export CORTO_TARGET=/usr/local\n");
 	fprintf(tar, "export CORTO_HOME=/usr/local\n");
-	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", CORTO_VERSION);
-	fprintf(tar, "export CORTO_VERSION=%s\n", CORTO_VERSION);
+	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+	fprintf(tar, "export CORTO_VERSION=%s\n", version);
 	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 	fprintf(tar, "tar -zxf %s -C /usr/local\n", argv[1]);
 	fclose(tar);

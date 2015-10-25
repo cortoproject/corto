@@ -98,6 +98,7 @@ int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userD
     if ((h = corto_lookupExt(ext))) {
         if (h->load != handler) {
             corto_error("corto_loaderRegister: extension '%s' is already registered with another loader.", ext);
+            abort();
             goto error;
         }
     } else {
@@ -162,7 +163,7 @@ static corto_string corto_packageToFile(corto_string package) {
 
 static corto_dl corto_loadValidLibrary(corto_string fileName) {
     corto_dl result = NULL;
-    corto_string ___ (*build)();
+    corto_string ___ (*build)(void);
 
     if (!(result = corto_dlOpen(fileName))) {
         corto_error("%s", corto_dlError());
@@ -170,7 +171,7 @@ static corto_dl corto_loadValidLibrary(corto_string fileName) {
     }
 
     /* Lookup build function */
-    build = (corto_string ___ (*)())corto_dlProc(result, "corto_getBuild");
+    build = (corto_string ___ (*)(void))corto_dlProc(result, "corto_getBuild");
 
     /* Validate version */
     if (!build || strcmp(build(), corto_getBuild())) {
@@ -235,7 +236,8 @@ error:
 int corto_loadComponent(corto_string component, int argc, char* argv[]) {
     int result;
     corto_string path = corto_envparse(
-        "$CORTO_TARGET/lib/corto/%s/components/%s", CORTO_VERSION, component);
+        "$CORTO_TARGET/lib/corto/%s.%s/components/%s", 
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, component);
     result = corto_loadLibrary(path, argc, argv);
     corto_dealloc(path);
     return result;    
@@ -244,7 +246,7 @@ int corto_loadComponent(corto_string component, int argc, char* argv[]) {
 /*
  * An adapter on top of corto_loadLibrary to fit the corto_loadAction signature.
  */
-static int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data) {
+int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data) {
     CORTO_UNUSED(data);
     return corto_loadLibrary(file, argc, argv);
 }
@@ -327,7 +329,8 @@ corto_string corto_locateLibrary(corto_string lib) {
     time_t t = 0;
 
     /* Look for local packages first */
-    targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s/%s", CORTO_VERSION, lib);
+    targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s", 
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
     if (corto_fileTest(targetPath)) {
         if (corto_checkLibrary(targetPath)) {
             t = corto_getModified(targetPath);
@@ -337,7 +340,8 @@ corto_string corto_locateLibrary(corto_string lib) {
 
     /* Look for packages in CORTO_HOME */
     if (strcmp(corto_getenv("CORTO_HOME"), corto_getenv("CORTO_TARGET"))) {
-        corto_string homePath = corto_envparse("$CORTO_HOME/lib/corto/%s/%s", CORTO_VERSION, lib);
+        corto_string homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s", 
+            CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
         if (corto_fileTest(homePath)) {
             time_t myT = corto_getModified(homePath);
             if ((myT > t) || !result) {
@@ -352,7 +356,8 @@ corto_string corto_locateLibrary(corto_string lib) {
     /* Look for global packages */
     if (strcmp("/usr/local", corto_getenv("CORTO_TARGET")) && 
         strcmp("/usr/local", corto_getenv("CORTO_HOME"))) {
-        usrPath = corto_envparse("/usr/local/lib/corto/%s/%s", CORTO_VERSION, lib);
+        usrPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s", 
+            CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
         if (corto_fileTest(usrPath)) {
             time_t myT = corto_getModified(usrPath);
             if ((myT >= t) || !result) {
@@ -500,7 +505,7 @@ static int corto_packageLoader(corto_string package) {
 }
 
 /* Load file with unspecified extension */
-static int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
+int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
     CORTO_UNUSED(udata);
     corto_id testName;
     
@@ -525,7 +530,7 @@ static int corto_fileLoader(corto_string file, int argc, char* argv[], void* uda
     return -1;
 }
 
-static void corto_loaderOnExit(void* udata) {
+void corto_loaderOnExit(void* udata) {
     struct corto_fileHandler* h;
     corto_dl dl;
     void (*proc)(int code);
@@ -565,16 +570,6 @@ static void corto_loaderOnExit(void* udata) {
     }
 }
 
-/* Register handlers for shared objects */
-CORTO_DLL_CONSTRUCT {
-
-    /* Register exit-handler */
-    corto_onexit(corto_loaderOnExit, NULL);
-
-    /* Register library-binding */
-    corto_loaderRegister("so", corto_loadLibraryAction, NULL);
-    corto_loaderRegister("", corto_fileLoader, NULL);
-}
 #else
 int corto_load(corto_string str) {
     CORTO_UNUSED(str);
