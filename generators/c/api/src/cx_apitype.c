@@ -269,7 +269,7 @@ corto_int16 c_apiTypeDefineIntern(corto_type t, c_apiWalk_t *data, corto_bool is
 
     c_writeExport(data->g, data->header);
 
-    if (isUpdate) {
+    if (isUpdate && !doUpdate) {
     	g_fileWrite(data->header, "void ");
     	g_fileWrite(data->source, "void ");
     } else {
@@ -289,7 +289,9 @@ corto_int16 c_apiTypeDefineIntern(corto_type t, c_apiWalk_t *data, corto_bool is
 	    corto_metaWalk(&s, corto_type(t), data);
 	}
 
-    if ((data->parameterCount == 1) && (t->kind != CORTO_COMPOSITE)) {
+    if ((data->parameterCount == 1) && 
+        (t->kind != CORTO_COMPOSITE) && 
+        (t->kind != CORTO_VOID)) {
         g_fileWrite(data->source, ", %s value", id);
         g_fileWrite(data->header, ", %s value", id);
     }
@@ -309,15 +311,16 @@ corto_int16 c_apiTypeDefineIntern(corto_type t, c_apiWalk_t *data, corto_bool is
     g_fileWrite(data->source, ") {\n");
     g_fileIndent(data->source);
 
-    if (isUpdate && doUpdate && (data->parameterCount > 1)) {
-    	g_fileWrite(data->source, "corto_updateBegin(this);\n");
+    if (isUpdate && doUpdate && (t->kind != CORTO_VOID)) {
+    	g_fileWrite(data->source, "if (!corto_updateBegin(this)) {\n");
+        g_fileIndent(data->source);
     }
 
     /* Member assignments */
     if (data->parameterCount > 1) {
         s = c_apiAssignSerializer();
         corto_metaWalk(&s, corto_type(t), data);
-    } else if (t->kind != CORTO_COMPOSITE) {
+    } else if ((t->kind != CORTO_COMPOSITE) && (t->kind != CORTO_VOID)) {
         if (t->kind != CORTO_COLLECTION) {
             g_fileWrite(data->source, "*this = value;\n");
         } else {
@@ -333,10 +336,17 @@ corto_int16 c_apiTypeDefineIntern(corto_type t, c_apiWalk_t *data, corto_bool is
 
     /* Define object */
     if (isUpdate && doUpdate) {
-        if (data->parameterCount > 1) {
+        if (t->kind != CORTO_VOID) {
             g_fileWrite(data->source, "corto_updateEnd(this);\n");
+            g_fileDedent(data->source);
+            g_fileWrite(data->source, "} else {\n");
+            g_fileIndent(data->source);
+            g_fileWrite(data->source, "return -1;\n");
+            g_fileDedent(data->source);
+            g_fileWrite(data->source, "}\n");
+            g_fileWrite(data->source, "return 0;\n");
         } else {
-            g_fileWrite(data->source, "corto_update(this);\n");
+            g_fileWrite(data->source, "return corto_update(this);\n");
         }
     } else if (!isUpdate) {
         if (corto_instanceof(corto_procedure_o, t)) {

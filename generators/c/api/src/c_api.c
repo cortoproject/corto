@@ -22,6 +22,11 @@ static corto_int16 c_apiWalkType(corto_type o, c_apiWalk_t* data) {
         goto error;
     }
 
+    /* Generate _update function */
+    if (c_apiTypeUpdate(o, data)) {
+        goto error;
+    }   
+
     g_fileWrite(data->header, "\n");
 
     return 0;
@@ -45,12 +50,7 @@ static corto_int16 c_apiWalkNonVoid(corto_type o, c_apiWalk_t* data) {
     /* Generate _define function */
     if (c_apiTypeDefine(o, data)) {
         goto error;
-    }    
-
-    /* Generate _update function */
-    if (c_apiTypeUpdate(o, data)) {
-        goto error;
-    }    
+    } 
 
     /* Generate _set function */
     if (c_apiTypeSet(o, data)) {

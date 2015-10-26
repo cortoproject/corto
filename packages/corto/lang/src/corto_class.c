@@ -155,7 +155,7 @@ void corto_class_listenObservers(corto_class this, corto_object object) {
 }
 
 void corto_class_detachObservers(corto_class this, corto_object object) {
-    corto_uint32 i, id;
+    corto_uint32 i;
     corto_observerTable* observers;
     corto_class base;
     corto_object observable;
@@ -164,7 +164,6 @@ void corto_class_detachObservers(corto_class this, corto_object object) {
     /* Get table for instantiated observer-templates */
     observers = corto_class_getObserverVtable(object);
     if (observers) {
-        id = corto__class_observerCount(this);
         base = this;
         do {
             for (i=0; i<base->observers.length; i++) {
