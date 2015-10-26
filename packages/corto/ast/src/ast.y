@@ -56,7 +56,7 @@ ast_Expression ast_declarationSeqDo(ast_Storage type, ast_ParserDeclarationSeq *
     ast_Comma result = ast_CommaCreate();
     ast_Expression expr = NULL;
 
-    if (type && !corto_instanceof(corto_type_o, type)) {
+    if (type && !corto_instanceof(corto_type_o, ast_Object(type)->value)) {
         _fast_err("object in declaration is not a type");
         return NULL;
     }
