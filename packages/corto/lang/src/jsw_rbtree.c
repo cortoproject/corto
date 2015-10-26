@@ -349,6 +349,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
       new node directly to the root
     */
     tree->root = new_node ( tree, key, data );
+    ++tree->size;
 
     if ( tree->root == NULL )
       return 0;
@@ -369,6 +370,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
       if ( q == NULL ) {
         /* Insert a new node at the first null link */
         p->link[dir] = q = new_node ( tree, key, data );
+        ++tree->size;
 
         if ( q == NULL )
           return 0;
@@ -418,7 +420,6 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
 
   /* Make the root black for simplified logic */
   tree->root->red = 0;
-  ++tree->size;
 
   return 1;
 }

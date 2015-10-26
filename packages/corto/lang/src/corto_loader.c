@@ -533,7 +533,6 @@ int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
 void corto_loaderOnExit(void* udata) {
     struct corto_fileHandler* h;
     corto_dl dl;
-    void (*proc)(int code);
     corto_iter iter;
 
     CORTO_UNUSED(udata);
@@ -559,11 +558,6 @@ void corto_loaderOnExit(void* udata) {
     /* Free libraries */
     if (libraries) {
         while ((dl = corto_llTakeFirst(libraries))) {
-            /* Lookup exit function */
-            proc = (void(*)(int))corto_dlProc(dl, "exit");
-            if (proc) {
-                proc(0);
-            }
             corto_dlClose(dl);
         }
         corto_llFree(libraries);

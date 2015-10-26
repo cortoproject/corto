@@ -37,7 +37,7 @@ struct corto_exitHandler {
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "2"
-#define VERSION_PATCH "1"
+#define VERSION_PATCH "2"
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
@@ -890,7 +890,6 @@ void corto_stop(void) {
     /* Deinitialize root */
     corto__freeSSO(corto_lang_o);
     corto__freeSSO(corto_o);
-
     corto__freeSSO(root_o);
 
     /* Deinit adminLock */

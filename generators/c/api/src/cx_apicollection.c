@@ -41,12 +41,15 @@ static corto_int16 c_apiSequenceTypeForeach(corto_sequence o, c_apiWalk_t* data)
     c_specifierId(data->g, corto_type(o), id, NULL, NULL);
     c_specifierId(data->g, corto_type(elementType), elementId, &prefix, NULL);
     
+
+
     /* Macro */
     g_fileWrite(data->header, "#define %sForeach(seq, elem) \\\n", id);
     g_fileIndent(data->header);
     g_fileWrite(data->header, "corto_uint32 elem##_iter;\\\n");
     g_fileWrite(data->header, "%s elem;\\\n", elementId);
-    g_fileWrite(data->header, "for(elem##_iter=0; (seq).buffer ? elem = (seq).buffer[elem##_iter] : elem, elem##_iter<(seq).length; elem##_iter++)\\\n");
+    g_fileWrite(data->header, "for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\\\n");
+
     g_fileDedent(data->header);
     g_fileWrite(data->header, "\n");
     

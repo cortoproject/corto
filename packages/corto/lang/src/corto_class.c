@@ -165,8 +165,6 @@ void corto_class_detachObservers(corto_class this, corto_object object) {
     observers = corto_class_getObserverVtable(object);
     if (observers) {
         id = corto__class_observerCount(this);
-        observers->buffer = CORTO_OFFSET(observers, sizeof(observable));
-        observers->length = id;
         base = this;
         do {
             for (i=0; i<base->observers.length; i++) {
@@ -366,9 +364,11 @@ corto_void _corto_class_listen(corto_any this, corto_observer observer, corto_ev
         observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
         corto_id id, id2;
-        corto_error("failed to set observer for '%s' of type '%s'", 
-            corto_fullname(this.value, id), 
-            corto_fullname(corto_typeof(this.value), id2));
+        corto_error("failed to set observable for observer '%s' of '%s' of type '%s' (%d)", 
+            corto_nameof(observer),
+            corto_fullname(this.value, id),
+            corto_fullname(corto_typeof(this.value), id2),
+            corto_countof(this.value));
     }
 
 /* $end */

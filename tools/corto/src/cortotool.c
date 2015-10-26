@@ -32,6 +32,9 @@ static void cortotool_printUsage(corto_bool expert) {
     printf("   add                  Add a package to a project\n");
     printf("   remove               Remove a package from a project\n");
     printf("   list                 List packages of a project\n");
+    printf("   install              Install a package.\n");
+    printf("   uninstall            Uninstall a package.\n");
+    printf("   update               Update a package\n");
     printf("   run                  Run a project.\n");
     printf("   build                Build a project (not needed for apps!).\n");
     printf("   test                 Run tests for a project\n");
@@ -41,8 +44,6 @@ static void cortotool_printUsage(corto_bool expert) {
         printf("Expert commands:\n");
         printf("   pp                   Invoke the corto preprocessor.\n");
         printf("   locate               Show where a package or component is located.\n");
-        printf("   install              Install a project to the global environment.\n");
-        printf("   uninstall            Remove a project from the global environment.\n");
         printf("   tar                  Package a project in a redistributable tar file.\n");
         printf("   untar                Unpackage a project to the global environment.\n");
         printf("   rebuild              Clean, then build a project.\n");
@@ -166,6 +167,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;  
+            } else if (!strcmp(argv[i], "update")) {
+                if (cortotool_update(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;              
             } else if (!strcmp(argv[i], "locate")) {
                 if (cortotool_locate(argc-i, &argv[i])) {
                     goto error;

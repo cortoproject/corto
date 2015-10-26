@@ -110,7 +110,7 @@ extern int8_t CORTO_DEBUG_ENABLED;
 #define CORTO_LIST(type) typedef corto_ll type
 
 #define CORTO_OBSERVER(name)\
-    void __##name (corto_object, corto_object, corto_object);\
+    void __##name (corto_object, corto_object);\
     void name (corto_function f, void *result, void *args) {\
         CORTO_UNUSED(f);\
         CORTO_UNUSED(result);\

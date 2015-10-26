@@ -30,6 +30,8 @@ int cortotool_help(int argc, char* argv[]) {
 		cortotool_installHelp();
 	} else if (!strcmp(argv[1], "uninstall")) {
 		cortotool_uninstallHelp();
+	} else if (!strcmp(argv[1], "update")) {
+		cortotool_updateHelp();
 	} else if (!strcmp(argv[1], "locate")) {
 		cortotool_locateHelp();
 	} else if (!strcmp(argv[1], "shell")) {

@@ -475,7 +475,7 @@ void corto__freeSSO(corto_object sso) {
     o = CORTO_OFFSET(sso, -sizeof(corto__object));
     scope = corto__objectScope(o);
 
-    corto_assert(scope != NULL, "corto__freeSSO: static scoped object has no scope (very unlikely, corto__freeSSO called on non-static object?)")
+    corto_assert(scope != NULL, "corto__freeSSO: static scoped object has no scope")
 
     if (scope->parent) {
         corto_release(scope->parent);
@@ -483,8 +483,10 @@ void corto__freeSSO(corto_object sso) {
 
     if (scope->scope) {
         if (corto_rbtreeSize(scope->scope)) {
-            corto_error("corto__freeSSO: scope of object '%s' is not empty (%d left)",
+            corto_error("corto__freeSSO: scope of object '%s' is not empty (%p/%p: %d left)",
                 corto_nameof(sso),
+                sso,
+                scope->scope,
                 corto_rbtreeSize(scope->scope));
         }
         corto_rbtreeFree(scope->scope);
@@ -553,7 +555,7 @@ int corto__destructor(corto_object o) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
         if (corto_class_instanceof(corto_class_o, t)) {
             /* Detach observers from object */
-            corto_class_detachObservers(corto_class(t), o);
+            /* corto_class_detachObservers(corto_class(t), o); */
 
             /* Call destructor */
             corto_delegateDestruct(corto_typeof(o), o);
@@ -781,6 +783,7 @@ void corto__orphan(corto_object o) {
     _child = CORTO_OFFSET(o, -sizeof(corto__object));
     c_scope = corto__objectScope(_child);
 
+
     if (c_scope->parent) {
         _parent = CORTO_OFFSET(c_scope->parent, -sizeof(corto__object));
         p_scope = corto__objectScope(_parent);
@@ -989,6 +992,11 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
         parent = root_o;
     }
 
+    if (!name || !strlen(name)) {
+        corto_seterr("invalid parameter provided for name");
+        goto error;
+    }
+
     /* Create new object */
     corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_SCOPED);
     o = corto_declare(type);
@@ -1141,6 +1149,7 @@ corto_int16 corto_define(corto_object o) {
 void corto_delete(corto_object o) {
     corto__object* _o;
     corto__scope* scope;
+    corto_type t = corto_typeof(o);
 
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -1149,10 +1158,16 @@ void corto_delete(corto_object o) {
         if (corto_adec(&scope->declared) == 0) {
             corto_drop(o);
             corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
+            if (corto_class_instanceof(corto_class_o, t)) {
+                corto_class_detachObservers(corto_class(t), o);
+            }
             corto__orphan(o);
             corto_release(o);
         }
     } else {
+        if (corto_class_instanceof(corto_class_o, t)) {
+            corto_class_detachObservers(corto_class(t), o);
+        }
         corto_release(o);
     }
 }
@@ -1963,11 +1978,13 @@ error:
 }
 
 corto_object corto_lookup(corto_object o, corto_string name) {
-    corto_id lower;
+    corto_id lower; *lower = '\0';
     char *ptr = name, ch;
     char *bptr = lower;
-    for(; (ch = *ptr); ptr++) *(bptr++) = tolower(ch);
-    *bptr = '\0';
+    if (name) {
+        for(; (ch = *ptr); ptr++) *(bptr++) = tolower(ch);
+        *bptr = '\0';
+    }
     return corto_lookupLowercase(o, lower);
 }
 
@@ -2376,6 +2393,20 @@ corto_int32 corto_silence(corto_object this, corto_observer observer, corto_even
                         corto_fullname(this, id3));
             }
 #endif
+            } else {
+                corto_id id1, id2, id3;
+                if (this) {
+                    corto_seterr("observer '%s' ('%s') is not observing '%s'",
+                            corto_fullname(observer, id1),
+                            corto_fullname(this, id2),
+                            corto_fullname(observable, id3));
+                    goto error;
+                } else {
+                    corto_seterr("observer '%s' is not observing '%s'",
+                        corto_fullname(observer, id1),
+                        corto_fullname(observable, id2));
+                    goto error;
+                }
             }
             corto_rwmutexUnlock(&_o->selfLock);
         }
@@ -2392,6 +2423,20 @@ corto_int32 corto_silence(corto_object this, corto_observer observer, corto_even
                     /* Build new observer array */
                     oldChildArray = _o->onChildArray;
                     _o->onChildArray = corto_observersArrayNew(_o->onChild);
+                } else {
+                    corto_id id1, id2, id3;
+                    if (this) {
+                        corto_seterr("observer '%s' ('%s') is not observing '%s'",
+                                corto_fullname(observer, id1),
+                                corto_fullname(this, id2),
+                                corto_fullname(observable, id3));
+                        goto error;
+                    } else {
+                        corto_seterr("observer '%s' is not observing '%s'",
+                            corto_fullname(observer, id1),
+                            corto_fullname(observable, id2));
+                        goto error;
+                    }                    
                 }
                 corto_rwmutexUnlock(&_o->childLock);
             } else {

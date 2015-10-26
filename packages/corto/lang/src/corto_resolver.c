@@ -200,7 +200,7 @@ repeat:
                 } else if (ch == '/') {
                     ptr += 1;
                 } else {
-                    corto_error("corto_resolve: invalid ':' in expression '%s'", str);
+                    corto_seterr("invalid ':' in expression '%s'", str);
                     o = NULL;
                     break;
                 }

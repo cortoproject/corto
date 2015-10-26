@@ -100,7 +100,10 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
 	fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/packages/master/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
 	fprintf(install, "trap install_fail EXIT\n");
 	fprintf(install, "mkdir -p \"$INSTALL_TMPDIR\"\n");
-	fprintf(install, "sudo curl --progress-bar --fail \"$TARBALL_URL\" | tar -xzf - -C \"$INSTALL_TMPDIR\"\n");
+	fprintf(install, "sudo curl --silent --fail \"$TARBALL_URL\" > $INSTALL_TMPDIR/install.tar.gz\n");
+	fprintf(install, "if [ 0 != $? ]; then exit -1; fi;\n");
+	fprintf(install, "tar -xzf $INSTALL_TMPDIR/install.tar.gz -C \"$INSTALL_TMPDIR\"\n");
+	fprintf(install, "rm -rf $INSTALL_TMPDIR/install.tar.gz\n");
 	fprintf(install, "sudo cp -a \"$INSTALL_TMPDIR/.\" /usr/local\n");
 	fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
 	fprintf(install, "trap - EXIT\n");
@@ -145,7 +148,11 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 	corto_char progress[] = {'|', '/', '-', '\\'};
 	corto_int32 procresult, i = 0;
 	corto_int8 rc = 0;
-	printf("corto: installing...  ");
+	if (!installRemote) {
+		printf("corto: installing...  ");
+	} else {
+		printf("corto: installing %s...  ", argv[1]);
+	}
 	while(!(procresult = corto_proccheck(pid, &rc))) {
 		i++;
 		printf("\b%c", progress[i % 4]);
@@ -154,7 +161,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 	}
 
 	if ((procresult != -1) || rc) {
-		printf("\ninstallation failed :(\n");
+		printf("\bfailed!\n");
 		goto error;
 	} else {
 		corto_rm("install.sh");
@@ -228,6 +235,43 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 	}
 	corto_rm("uninstall.sh");
 	printf("\bdone!\n");
+
+	return 0;
+error:
+	return -1;
+}
+
+corto_int16 cortotool_update(int argc, char *argv[]) {
+	corto_string package = "corto";
+	if (argc > 1) {
+		package = argv[1];
+	}
+
+	if (cortotool_installFromRemote(package)) {
+		goto error;
+	}
+
+	cortotool_promptPassword();
+
+	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
+	corto_char progress[] = {'|', '/', '-', '\\'};
+	corto_int32 procresult, i = 0;
+	corto_int8 rc = 0;
+	printf("corto: updating %s...  ", package);
+	while(!(procresult = corto_proccheck(pid, &rc))) {
+		i++;
+		printf("\b%c", progress[i % 4]);
+		fflush(stdout);
+		corto_sleep(0, 200000000);
+	}
+
+	if ((procresult != -1) || rc) {
+		printf("\bfailed!\n");
+		goto error;
+	} else {
+		corto_rm("install.sh");
+		printf("\bdone!\n");
+	}
 
 	return 0;
 error:
@@ -390,12 +434,18 @@ error:
 }
 
 void cortotool_installHelp(void) {
-    printf("Usage: corto install\n");
+    printf("Usage: corto install [package]\n");
     printf("\n");
-    printf("This command installs your project (component or package) to\n");
-    printf("the global environment (/usr/local). Only run this command when you want to\n");
-    printf("make your project available for other users. Run this command from the\n");
-    printf("root directory of your project.\n");
+    printf("Install a new package to your machine from either source or the remote\n");
+    printf("package repository.\n");
+    printf("When this command is run from a project directory (or the argument points\n");
+    printf("to one) corto will install your project to the global environment\n");
+    printf("environment (/usr/local)\n");
+    printf("The package parameter can be either a directory or a scoped name package\n");
+    printf("name.\n\n");
+    printf("Examples:\n");
+    printf("corto install ./myPackage\n");
+    printf("corto install corto::web\n");
     printf("\n");
     printf("Note: installation requires root priviledges.\n");
     printf("\n");
@@ -408,6 +458,21 @@ void cortotool_uninstallHelp(void) {
     printf("the global environment (/usr/local).\n");
     printf("\n");
     printf("Note that uninstalling requires root priviledges.\n");
+    printf("\n");
+}
+
+void cortotool_updateHelp(void) {
+    printf("Usage: corto update [package]\n");
+    printf("\n");
+    printf("Updates a package to its latest published version.\n");
+    printf("The package parameter must be a scoped name package name\n");
+    printf("name. When no package is provided, corto itself will be\n");
+    printf("updated to the latest version.\n\n");
+    printf("Examples:\n");
+    printf("corto update\n");
+    printf("corto update corto::web\n");
+    printf("\n");
+    printf("Note: installation requires root priviledges.\n");
     printf("\n");
 }
 
