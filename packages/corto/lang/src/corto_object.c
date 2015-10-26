@@ -1127,7 +1127,7 @@ corto_int16 corto_define(corto_object o) {
                 }
 
                 /* Notify observers of defined object */
-                corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE);
+                corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE|CORTO_ON_UPDATE);
 
                 if (corto_class_instanceof(corto_class_o, t)) {
                     /* Start listening with final observer params */
