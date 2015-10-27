@@ -232,7 +232,7 @@ static int corto_interface_validateAlias(corto_alias this) {
 
         corto_claim(this->member->type); /* TODO: memory leak outside of bootstrap */
         corto_member(this)->type = this->member->type;
-        corto_member(this)->modifiers = this->member->modifiers;
+        corto_member(this)->modifiers |= this->member->modifiers;
         corto_member(this)->state = this->member->state;
         corto_member(this)->weak = this->member->weak;
     }
@@ -241,7 +241,6 @@ static int corto_interface_validateAlias(corto_alias this) {
 error:
     return -1;
 }
-
 
 static int corto_interface_insertMemberAction(void* o, void* userData) {
     /* If object is a member, add it to members sequence */

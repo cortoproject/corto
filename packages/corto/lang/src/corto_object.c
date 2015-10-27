@@ -2830,12 +2830,13 @@ corto_object corto_wait(corto_int32 timeout_sec, corto_int32 timeout_nanosec) {
 
 /* REPL functionality */
 corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value) {
-    corto_int16 result = 0;
+    corto_int16 result = -1;
     static corto_function parseLine = NULL;
     static corto_bool searchedForParser = FALSE;
     corto_object o = corto_resolve(scope, expr);
     if (o) {
         corto_valueObjectInit(value, o, NULL);
+        result = 0;
     } else {
         if (!parseLine && !searchedForParser) {
             parseLine = corto_resolve(NULL, "::corto::ast::Parser::parseLine");

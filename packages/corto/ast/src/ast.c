@@ -173,10 +173,14 @@ corto_void _ast_report(corto_string kind, corto_string filename, corto_uint32 li
 /* $begin(::corto::ast::report) */
     CORTO_UNUSED(token);
 
-    if(filename) {
-        corto_print("%s:%d:%d: %s: %s", filename, line, column, kind, error);
+    if (yparser()->repl) {
+        if (!yparser()->errors) {
+            corto_seterr("%d: %s: %s", column, kind, error);
+        }
+    } else if(filename) {
+        corto_error("%s:%d:%d: %s: %s", filename, line, column, kind, error);
     } else {
-        corto_print("%d:%d: %s: %s", line, column, kind, error);
+        corto_error("%d:%d: %s: %s", line, column, kind, error);
     }
 
 /* $end */

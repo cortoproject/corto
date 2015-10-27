@@ -492,28 +492,30 @@ static int cxsh_show(char* object) {
             printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
             printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_fullname(corto_valueType(&result), id), NORMAL);
+        }
 
-            /* Initialize serializer userData */
-            s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-            memset(&sdata, 0, sizeof(corto_string_ser_t));
-            sdata.enableColors = TRUE;
-            s.access = CORTO_PRIVATE;
-            s.accessKind = CORTO_NOT;
-            s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+        /* Initialize serializer userData */
+        s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        memset(&sdata, 0, sizeof(corto_string_ser_t));
+        sdata.enableColors = TRUE;
+        s.access = CORTO_PRIVATE;
+        s.accessKind = CORTO_NOT;
+        s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
 
-            /* Serialize value to string */
-            corto_serializeValue(&s, &result, &sdata);
-            if (sdata.buffer) {
-                if (o) {
-                    printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
-                }
-                printf("%s\n", sdata.buffer);
-
-                corto_dealloc(sdata.buffer);
-                sdata.buffer = NULL;
-                sdata.ptr = NULL;
+        /* Serialize value to string */
+        corto_serializeValue(&s, &result, &sdata);
+        if (sdata.buffer) {
+            if (o) {
+                printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
             }
+            printf("%s\n", sdata.buffer);
 
+            corto_dealloc(sdata.buffer);
+            sdata.buffer = NULL;
+            sdata.ptr = NULL;
+        }
+
+        if (o) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
@@ -526,6 +528,7 @@ static int cxsh_show(char* object) {
             }
             printf("\n");
         }
+
         corto_dealloc(expr);
         return 0;
     } else {
@@ -591,9 +594,11 @@ int cxsh_getErrorLocation(corto_string str) {
     int result = 0;
 
     /* Only give location when on the first line */
-    if ((str[0] == '1') && (str[1] == ':')) {
-        str += 2;
+    if (str[1] == ':') {
         result = atoi(str);
+        if (!result) {
+            result = 1;
+        }
     }
 
     return result;
@@ -649,9 +654,10 @@ static int cxsh_doCmd(char* cmd) {
                     corto_id prompt;
                     cxsh_prompt(scope, FALSE, prompt);
                     printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
+                    lastErr += 3;
                 }
 
-                corto_error("%s", lastErr);
+                corto_print("%s", lastErr);
                 cxsh_color(NORMAL);
             } else {
                 cxsh_color(ERROR_COLOR);

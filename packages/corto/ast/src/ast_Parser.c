@@ -591,60 +591,21 @@ error:
 ast_Expression ast_Parser_resolve(ast_Parser this, corto_id id) {
     ast_Expression result = NULL;
     corto_object object;
-    corto_char *ptr, ch;
-    corto_id buffer;
-    corto_char *bptr;
 
-    if (strchr(id, ':')) {
-        ptr = id;
-        bptr = buffer;
-        do {
-            object = corto_resolve(this->scope, id);
-            if (object){
-                result = ast_Expression(ast_ObjectCreate(object));
-                ast_Parser_collect(this, result);
-                corto_release(object);
-                break;
-            } else {
-                if (*ptr) {
-                    while((ch=*ptr) && (ch != ':')) {
-                        *bptr = ch;
-                        bptr++;
-                        ptr++;
-                    }
-                    *bptr = '\0';
-                    corto_load(buffer, 0, NULL);
-                    while((ch=*ptr) && (ch == ':')) {
-                        *bptr = ch;
-                        bptr++;
-                        ptr++;
-                    }
-                    *bptr = '\0';
-                } else {
-                    goto error;
-                }
-            }
-        }while(!object);
-    } else {
-        object = corto_resolve(this->scope, id);
-        if (!object){
-            corto_object rvalueType = ast_Parser_getLvalueType(this, FALSE);
-            if (rvalueType && corto_checkAttr(rvalueType, CORTO_ATTR_SCOPED)) {
-                object = corto_resolve(rvalueType, id);
-            }
+    object = corto_resolve(this->scope, id);
+    if (!object){
+        corto_object rvalueType = ast_Parser_getLvalueType(this, FALSE);
+        if (rvalueType && corto_checkAttr(rvalueType, CORTO_ATTR_SCOPED)) {
+            object = corto_resolve(rvalueType, id);
         }
-        if (object) {
-            result = ast_Expression(ast_ObjectCreate(object));
-            ast_Parser_collect(this, result);
-            corto_release(object);
-        }
+    }
+    if (object) {
+        result = ast_Expression(ast_ObjectCreate(object));
+        ast_Parser_collect(this, result);
+        corto_release(object);
     }
 
     return result;
-error:
-    ast_Parser_error(this, "unresolved identifier '%s'", id);
-    fast_err;
-    return NULL;
 }
 
 /* Create an observer */
@@ -2080,6 +2041,7 @@ corto_bool _ast_Parser_isErrSet(ast_Parser this) {
 ast_Expression _ast_Parser_lookup(ast_Parser this, corto_string id) {
 /* $begin(::corto::ast::Parser::lookup) */
     ast_Expression result = NULL;
+    corto_bool stage = TRUE;
     ast_CHECK_ERRSET(this);
 
     if (this->pass) {
@@ -2106,6 +2068,7 @@ ast_Expression _ast_Parser_lookup(ast_Parser this, corto_string id) {
              this->initializers[this->initializerCount] &&
             corto_instanceof(corto_type(ast_StaticInitializer_o), this->initializers[this->initializerCount]))) {
             ast_Parser_error(this, "unresolved identifier '%s'", id);
+            stage = FALSE;
             fast_err;
         }
 
@@ -2114,7 +2077,10 @@ ast_Expression _ast_Parser_lookup(ast_Parser this, corto_string id) {
         }
         this->lastFailedResolve = corto_strdup(id);
     }
-    ast_Parser_initStage(this, id, result != NULL);
+
+    if (stage) {
+        ast_Parser_initStage(this, id, result != NULL);
+    }
 
     return result;
 /* $end */
