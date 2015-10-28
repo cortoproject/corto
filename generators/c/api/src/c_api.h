@@ -20,6 +20,7 @@ typedef struct c_apiWalk_t {
     corto_uint32 parameterCount;
     corto_ll memberCache;
     corto_ll collections;
+    corto_ll args;
 } c_apiWalk_t;
 
 corto_int16 c_apiTypeCreate(corto_type t, c_apiWalk_t *data);

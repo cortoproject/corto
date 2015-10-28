@@ -940,7 +940,7 @@ static g_file g_fileOpenIntern(corto_generator g, corto_string name) {
 
     return result;
 error:
-    corto_error("failed to open file '%s'", name);
+    corto_seterr("failed to open file '%s'", name);
     return NULL;
 }
 

@@ -56,7 +56,8 @@ ic_node _ast_Character_toIc_v(ast_Character this, ic_program program, ic_storage
     CORTO_UNUSED(storage);
     CORTO_UNUSED(stored);
 
-    result = ic_literalCreate((corto_any){corto_type(corto_char_o), &this->value, FALSE});
+    corto_any l = {corto_type(corto_char_o), &this->value, FALSE};
+    result = ic_literalCreate(l);
 
     return ic_node(result);
 /* $end */

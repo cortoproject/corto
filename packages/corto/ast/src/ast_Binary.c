@@ -382,7 +382,8 @@ corto_int16 ast_Binary_toIc_strOp(
     switch(this->_operator) {
     /* Append strings */
     case CORTO_ADD: {
-        ic_literal dummy = ic_literalCreate((corto_any){corto_type(corto_string_o), NULL, TRUE});
+        corto_any l = {corto_type(corto_string_o), NULL, TRUE};
+        ic_literal dummy = ic_literalCreate(l);
         IC_2(program, ast_Node(this)->line, ic_strcat, lvalue, rvalue, IC_DEREF_VALUE, IC_DEREF_VALUE);
         IC_2(program, ast_Node(this)->line, ic_strcpy, storage, dummy, IC_DEREF_VALUE, IC_DEREF_VALUE);
         break;

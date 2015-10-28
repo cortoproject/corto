@@ -59,7 +59,8 @@ ic_node _ast_SignedInteger_toIc_v(ast_SignedInteger this, ic_program program, ic
     CORTO_UNUSED(stored);
     CORTO_UNUSED(program);
 
-    result = (ic_node)ic_literalCreate((corto_any){ast_Expression_getType(ast_Expression(this)), &this->value, FALSE});
+    corto_any l = {ast_Expression_getType(ast_Expression(this)), &this->value, FALSE};
+    result = (ic_node)ic_literalCreate(l);
 
     return result;
 /* $end */

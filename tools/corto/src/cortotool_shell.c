@@ -594,7 +594,7 @@ int cxsh_getErrorLocation(corto_string str) {
     int result = 0;
 
     /* Only give location when on the first line */
-    if (str[1] == ':') {
+    if (strchr(str, ':')) {
         result = atoi(str);
         if (!result) {
             result = 1;
@@ -654,7 +654,7 @@ static int cxsh_doCmd(char* cmd) {
                     corto_id prompt;
                     cxsh_prompt(scope, FALSE, prompt);
                     printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
-                    lastErr += 3;
+                    lastErr = strchr(lastErr, ':') + 2;
                 }
 
                 corto_print("%s", lastErr);

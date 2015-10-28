@@ -64,6 +64,7 @@ ic_node _ast_Null_toIc_v(ast_Null this, ic_program program, ic_storage storage, 
     CORTO_UNUSED(this);
     CORTO_UNUSED(program);
 
-    return ic_node(ic_literalCreate((corto_any){corto_type(corto_void_o), NULL, FALSE}));
+    corto_any l = {corto_type(corto_void_o), NULL, FALSE};
+    return ic_node(ic_literalCreate(l));
 /* $end */
 }

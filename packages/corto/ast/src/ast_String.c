@@ -252,7 +252,8 @@ ic_node _ast_String_toIc_v(ast_String this, ic_program program, ic_storage stora
     }
 
     if (!corto_llSize(this->elements)) {
-        result = (ic_node)ic_literalCreate((corto_any){corto_type(corto_string_o), &this->value, FALSE});
+        corto_any l = {corto_type(corto_string_o), &this->value, FALSE};
+        result = (ic_node)ic_literalCreate(l);
     } else {
         if (stored) {
             corto_iter elementIter;
@@ -272,7 +273,8 @@ ic_node _ast_String_toIc_v(ast_String this, ic_program program, ic_storage stora
                 goto error;
             }
 
-            dummy = (ic_node)ic_literalCreate((corto_any){corto_type(corto_string_o), NULL, FALSE});
+            corto_any l = {corto_type(corto_string_o), NULL, FALSE};
+            dummy = (ic_node)ic_literalCreate(l);
 
             result = (ic_node)storage;
             elementIter = corto_llIter(this->elements);

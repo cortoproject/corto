@@ -1,11 +1,9 @@
 *.o
 *.so
 bin/*
-benchmark/bin/*
 generators/bin/*
 libraries/bin/*
 components/bin/*
-test/bin/*
 lex.yy.c
 y.output
 y.tab.c

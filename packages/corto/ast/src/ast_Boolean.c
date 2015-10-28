@@ -62,7 +62,8 @@ ic_node _ast_Boolean_toIc_v(ast_Boolean this, ic_program program, ic_storage sto
     CORTO_UNUSED(stored);
     CORTO_UNUSED(program);
 
-    result = (ic_node)ic_literalCreate((corto_any){corto_type(corto_bool_o), &this->value, FALSE});
+    corto_any l = {corto_type(corto_bool_o), &this->value, FALSE};
+    result = (ic_node)ic_literalCreate(l);
 
     return result;
 /* $end */

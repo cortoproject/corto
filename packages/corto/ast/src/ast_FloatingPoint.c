@@ -57,7 +57,8 @@ ic_node _ast_FloatingPoint_toIc_v(ast_FloatingPoint this, ic_program program, ic
     CORTO_UNUSED(storage);
     CORTO_UNUSED(stored);
 
-    result = (ic_node)ic_literalCreate((corto_any){ast_Expression_getType(ast_Expression(this)), &this->value, FALSE});
+    corto_any l = {ast_Expression_getType(ast_Expression(this)), &this->value, FALSE};
+    result = (ic_node)ic_literalCreate(l);
 
     return result;
 /* $end */

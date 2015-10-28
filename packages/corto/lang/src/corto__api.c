@@ -4256,7 +4256,7 @@ corto_int16 corto_mapCompare(corto_map dst, corto_map src) {
     return corto_compare(dst, src);
 }
 
-corto_member corto_memberCreate(corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak) {
+corto_member corto_memberCreate(corto_type type, corto_modifier modifiers) {
     corto_member this;
     this = corto_declare(corto_member_o);
     if (!this) {
@@ -4264,8 +4264,6 @@ corto_member corto_memberCreate(corto_type type, corto_modifier modifiers, corto
     }
     corto_setref(&this->type, corto_type(type));
     this->modifiers = modifiers;
-    this->state = state;
-    this->weak = weak;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -4273,7 +4271,7 @@ corto_member corto_memberCreate(corto_type type, corto_modifier modifiers, corto
     return this;
 }
 
-corto_member corto_memberCreateChild(corto_object _parent, corto_string _name, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak) {
+corto_member corto_memberCreateChild(corto_object _parent, corto_string _name, corto_type type, corto_modifier modifiers) {
     corto_member this;
     this = corto_declareChild(_parent, _name, corto_member_o);
     if (!this) {
@@ -4281,8 +4279,6 @@ corto_member corto_memberCreateChild(corto_object _parent, corto_string _name, c
     }
     corto_setref(&this->type, corto_type(type));
     this->modifiers = modifiers;
-    this->state = state;
-    this->weak = weak;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -4290,12 +4286,10 @@ corto_member corto_memberCreateChild(corto_object _parent, corto_string _name, c
     return this;
 }
 
-corto_int16 corto_memberUpdate(corto_member this, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak) {
+corto_int16 corto_memberUpdate(corto_member this, corto_type type, corto_modifier modifiers) {
     if (!corto_updateBegin(this)) {
         corto_setref(&this->type, corto_type(type));
         this->modifiers = modifiers;
-        this->state = state;
-        this->weak = weak;
         corto_updateEnd(this);
     } else {
         return -1;
@@ -4321,19 +4315,15 @@ corto_member corto_memberDeclareChild(corto_object _parent, corto_string _name) 
     return this;
 }
 
-corto_int16 corto_memberDefine(corto_member this, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak) {
+corto_int16 corto_memberDefine(corto_member this, corto_type type, corto_modifier modifiers) {
     corto_setref(&this->type, corto_type(type));
     this->modifiers = modifiers;
-    this->state = state;
-    this->weak = weak;
     return corto_define(this);
 }
 
-void corto_memberSet(corto_member this, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak) {
+void corto_memberSet(corto_member this, corto_type type, corto_modifier modifiers) {
     corto_setref(&this->type, corto_type(type));
     this->modifiers = modifiers;
-    this->state = state;
-    this->weak = weak;
 }
 
 corto_string corto_memberStr(corto_member value) {

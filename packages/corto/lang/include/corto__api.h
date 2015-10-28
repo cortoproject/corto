@@ -670,14 +670,14 @@ CORTO_LANG_EXPORT corto_int16 corto_mapCopy(corto_map *dst, corto_map src);
 CORTO_LANG_EXPORT corto_int16 corto_mapCompare(corto_map dst, corto_map src);
 
 /* ::corto::lang::member */
-CORTO_LANG_EXPORT corto_member corto_memberCreate(corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak);
-CORTO_LANG_EXPORT corto_member corto_memberCreateChild(corto_object _parent, corto_string _name, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak);
-CORTO_LANG_EXPORT corto_int16 corto_memberUpdate(corto_member _this, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak);
+CORTO_LANG_EXPORT corto_member corto_memberCreate(corto_type type, corto_modifier modifiers);
+CORTO_LANG_EXPORT corto_member corto_memberCreateChild(corto_object _parent, corto_string _name, corto_type type, corto_modifier modifiers);
+CORTO_LANG_EXPORT corto_int16 corto_memberUpdate(corto_member _this, corto_type type, corto_modifier modifiers);
 
 CORTO_LANG_EXPORT corto_member corto_memberDeclare(void);
 CORTO_LANG_EXPORT corto_member corto_memberDeclareChild(corto_object _parent, corto_string _name);
-CORTO_LANG_EXPORT corto_int16 corto_memberDefine(corto_member _this, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak);
-CORTO_LANG_EXPORT void corto_memberSet(corto_member _this, corto_type type, corto_modifier modifiers, corto_state state, corto_bool weak);
+CORTO_LANG_EXPORT corto_int16 corto_memberDefine(corto_member _this, corto_type type, corto_modifier modifiers);
+CORTO_LANG_EXPORT void corto_memberSet(corto_member _this, corto_type type, corto_modifier modifiers);
 CORTO_LANG_EXPORT corto_string corto_memberStr(corto_member value);
 CORTO_LANG_EXPORT corto_member corto_memberFromStr(corto_member value, corto_string str);
 CORTO_LANG_EXPORT corto_int16 corto_memberCopy(corto_member *dst, corto_member src);
