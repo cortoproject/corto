@@ -165,14 +165,14 @@ CORTO_LANG_EXPORT corto_int16 corto_characterCopy(corto_character *dst, corto_ch
 CORTO_LANG_EXPORT corto_int16 corto_characterCompare(corto_character dst, corto_character src);
 
 /* ::corto::lang::class */
-CORTO_LANG_EXPORT corto_class corto_classCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT corto_class corto_classCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT corto_int16 corto_classUpdate(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
+CORTO_LANG_EXPORT corto_class corto_classCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
+CORTO_LANG_EXPORT corto_class corto_classCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
+CORTO_LANG_EXPORT corto_int16 corto_classUpdate(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
 
 CORTO_LANG_EXPORT corto_class corto_classDeclare(void);
 CORTO_LANG_EXPORT corto_class corto_classDeclareChild(corto_object _parent, corto_string _name);
-CORTO_LANG_EXPORT corto_int16 corto_classDefine(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT void corto_classSet(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
+CORTO_LANG_EXPORT corto_int16 corto_classDefine(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
+CORTO_LANG_EXPORT void corto_classSet(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
 CORTO_LANG_EXPORT corto_string corto_classStr(corto_class value);
 CORTO_LANG_EXPORT corto_class corto_classFromStr(corto_class value, corto_string str);
 CORTO_LANG_EXPORT corto_int16 corto_classCopy(corto_class *dst, corto_class src);
@@ -531,14 +531,14 @@ CORTO_LANG_EXPORT corto_int16 corto_int8Init(corto_int8* value);
 CORTO_LANG_EXPORT corto_int16 corto_int8Deinit(corto_int8* value);
 
 /* ::corto::lang::interface */
-CORTO_LANG_EXPORT corto_interface corto_interfaceCreate(corto_interface base, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT corto_interface corto_interfaceCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT corto_int16 corto_interfaceUpdate(corto_interface _this, corto_interface base, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
+CORTO_LANG_EXPORT corto_interface corto_interfaceCreate(corto_interface base);
+CORTO_LANG_EXPORT corto_interface corto_interfaceCreateChild(corto_object _parent, corto_string _name, corto_interface base);
+CORTO_LANG_EXPORT corto_int16 corto_interfaceUpdate(corto_interface _this, corto_interface base);
 
 CORTO_LANG_EXPORT corto_interface corto_interfaceDeclare(void);
 CORTO_LANG_EXPORT corto_interface corto_interfaceDeclareChild(corto_object _parent, corto_string _name);
-CORTO_LANG_EXPORT corto_int16 corto_interfaceDefine(corto_interface _this, corto_interface base, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT void corto_interfaceSet(corto_interface _this, corto_interface base, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
+CORTO_LANG_EXPORT corto_int16 corto_interfaceDefine(corto_interface _this, corto_interface base);
+CORTO_LANG_EXPORT void corto_interfaceSet(corto_interface _this, corto_interface base);
 CORTO_LANG_EXPORT corto_string corto_interfaceStr(corto_interface value);
 CORTO_LANG_EXPORT corto_interface corto_interfaceFromStr(corto_interface value, corto_string str);
 CORTO_LANG_EXPORT corto_int16 corto_interfaceCopy(corto_interface *dst, corto_interface src);
@@ -961,14 +961,14 @@ CORTO_LANG_EXPORT corto_int16 corto_primitiveKindInit(corto_primitiveKind* value
 CORTO_LANG_EXPORT corto_int16 corto_primitiveKindDeinit(corto_primitiveKind* value);
 
 /* ::corto::lang::procedure */
-CORTO_LANG_EXPORT corto_procedure corto_procedureCreate(corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType, corto_procedureKind kind);
-CORTO_LANG_EXPORT corto_procedure corto_procedureCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType, corto_procedureKind kind);
-CORTO_LANG_EXPORT corto_int16 corto_procedureUpdate(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType, corto_procedureKind kind);
+CORTO_LANG_EXPORT corto_procedure corto_procedureCreate(corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
+CORTO_LANG_EXPORT corto_procedure corto_procedureCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
+CORTO_LANG_EXPORT corto_int16 corto_procedureUpdate(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
 
 CORTO_LANG_EXPORT corto_procedure corto_procedureDeclare(void);
 CORTO_LANG_EXPORT corto_procedure corto_procedureDeclareChild(corto_object _parent, corto_string _name);
-CORTO_LANG_EXPORT corto_int16 corto_procedureDefine(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType, corto_procedureKind kind);
-CORTO_LANG_EXPORT void corto_procedureSet(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType, corto_procedureKind kind);
+CORTO_LANG_EXPORT corto_int16 corto_procedureDefine(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
+CORTO_LANG_EXPORT void corto_procedureSet(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
 CORTO_LANG_EXPORT corto_string corto_procedureStr(corto_procedure value);
 CORTO_LANG_EXPORT corto_procedure corto_procedureFromStr(corto_procedure value, corto_string str);
 CORTO_LANG_EXPORT corto_int16 corto_procedureCopy(corto_procedure *dst, corto_procedure src);
@@ -1068,14 +1068,14 @@ CORTO_LANG_EXPORT corto_int16 corto_stringInit(corto_string* value);
 CORTO_LANG_EXPORT corto_int16 corto_stringDeinit(corto_string* value);
 
 /* ::corto::lang::struct */
-CORTO_LANG_EXPORT corto_struct corto_structCreate(corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT corto_struct corto_structCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT corto_int16 corto_structUpdate(corto_struct _this, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
+CORTO_LANG_EXPORT corto_struct corto_structCreate(corto_interface base, corto_modifier baseAccess);
+CORTO_LANG_EXPORT corto_struct corto_structCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess);
+CORTO_LANG_EXPORT corto_int16 corto_structUpdate(corto_struct _this, corto_interface base, corto_modifier baseAccess);
 
 CORTO_LANG_EXPORT corto_struct corto_structDeclare(void);
 CORTO_LANG_EXPORT corto_struct corto_structDeclareChild(corto_object _parent, corto_string _name);
-CORTO_LANG_EXPORT corto_int16 corto_structDefine(corto_struct _this, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-CORTO_LANG_EXPORT void corto_structSet(corto_struct _this, corto_interface base, corto_modifier baseAccess, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
+CORTO_LANG_EXPORT corto_int16 corto_structDefine(corto_struct _this, corto_interface base, corto_modifier baseAccess);
+CORTO_LANG_EXPORT void corto_structSet(corto_struct _this, corto_interface base, corto_modifier baseAccess);
 CORTO_LANG_EXPORT corto_string corto_structStr(corto_struct value);
 CORTO_LANG_EXPORT corto_struct corto_structFromStr(corto_struct value, corto_string str);
 CORTO_LANG_EXPORT corto_int16 corto_structCopy(corto_struct *dst, corto_struct src);

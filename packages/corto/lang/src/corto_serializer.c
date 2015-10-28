@@ -221,6 +221,7 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     /* Process members */
     for(i=0; i<t->members.length; i++) {
         m = t->members.buffer[i];
+        corto_modifier modifiers = m->modifiers;
         corto_bool isAlias = corto_instanceof(corto_alias_o, m);
 
         if (isAlias && (this->aliasAction == CORTO_SERIALIZER_ALIAS_FOLLOW)) {
@@ -230,7 +231,7 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
         }
         
         if (!isAlias || (this->aliasAction != CORTO_SERIALIZER_ALIAS_IGNORE)) {
-            if (corto_serializeMatchAccess(this->accessKind, this->access, m->modifiers)) {
+            if (corto_serializeMatchAccess(this->accessKind, this->access, modifiers)) {
                 member.kind = CORTO_MEMBER;
                 member.parent = info;
                 member.is.member.o = o;

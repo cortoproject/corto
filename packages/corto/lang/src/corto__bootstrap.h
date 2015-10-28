@@ -412,7 +412,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, member), CORTO_MEMBER_V(type, access, CORTO_DECLARED | CORTO_DEFINED, FALSE), VTABLE_V}
 
 /* member object */
-#define CORTO_ALIAS_O(parent, name, member) sso_alias parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, alias), {CORTO_MEMBER_V(word, 0, 0, FALSE), (corto_member)&member##__o.v}, VTABLE_V}
+#define CORTO_ALIAS_O(parent, name, member, access) sso_alias parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, alias), {CORTO_MEMBER_V(word, access, 0, FALSE), (corto_member)&member##__o.v}, VTABLE_V}
 
 /* reference object */
 #define CORTO_REFERENCE_O(parent, name, type, access, state, weak) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, member), CORTO_MEMBER_V(type, access, state, weak), VTABLE_V}
@@ -764,10 +764,10 @@ CORTO_CLASS_O(interface, type, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINE
     CORTO_MEMBER_O(interface, members, memberseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(interface, methods, vtable, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_REFERENCE_O(interface, base, interface, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
-    CORTO_ALIAS_O(interface, parentType, type_parentType);
-    CORTO_ALIAS_O(interface, parentState, type_parentState);
-    CORTO_ALIAS_O(interface, defaultType, type_defaultType);
-    CORTO_ALIAS_O(interface, defaultProcedureType, type_defaultProcedureType);
+    CORTO_ALIAS_O(interface, parentType, type_parentType, CORTO_HIDDEN);
+    CORTO_ALIAS_O(interface, parentState, type_parentState, CORTO_HIDDEN);
+    CORTO_ALIAS_O(interface, defaultType, type_defaultType, CORTO_HIDDEN);
+    CORTO_ALIAS_O(interface, defaultProcedureType, type_defaultProcedureType, CORTO_HIDDEN);
     CORTO_METHOD_O(interface, init, "()", int16, FALSE, corto_interface_init);
     CORTO_METHOD_O(interface, construct, "()", int16, FALSE, corto_interface_construct);
     CORTO_METHOD_O(interface, destruct, "()", void, FALSE, corto_interface_destruct);
@@ -859,12 +859,12 @@ CORTO_CLASS_O(bitmask, enum, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED 
 /* ::corto::lang::struct */
 CORTO_FW_IC(struct);
 CORTO_CLASS_O(struct, interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_IC);
-    CORTO_ALIAS_O (struct, base, interface_base);
+    CORTO_ALIAS_O (struct, base, interface_base, CORTO_GLOBAL);
     CORTO_MEMBER_O(struct, baseAccess, modifier, CORTO_GLOBAL);
-    CORTO_ALIAS_O (struct, parentType, interface_parentType);
-    CORTO_ALIAS_O (struct, parentState, interface_parentState);
-    CORTO_ALIAS_O (struct, defaultType, interface_defaultType);
-    CORTO_ALIAS_O (struct, defaultProcedureType, interface_defaultProcedureType);
+    CORTO_ALIAS_O (struct, parentType, interface_parentType, CORTO_HIDDEN);
+    CORTO_ALIAS_O (struct, parentState, interface_parentState, CORTO_HIDDEN);
+    CORTO_ALIAS_O (struct, defaultType, interface_defaultType, CORTO_HIDDEN);
+    CORTO_ALIAS_O (struct, defaultProcedureType, interface_defaultProcedureType, CORTO_HIDDEN);
     CORTO_METHOD_O(struct, compatible, "(type type)", bool, TRUE, corto_struct_compatible_v);
     CORTO_METHOD_O(struct, castable, "(type type)", bool, TRUE, corto_struct_castable_v);
     CORTO_METHOD_O(struct, resolveMember, "(string name)", member, TRUE, corto_struct_resolveMember_v);
@@ -879,13 +879,13 @@ CORTO_STRUCT_O(interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL
 /* ::corto::lang::class */
 CORTO_FW_ICD(class);
 CORTO_CLASS_O(class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
-    CORTO_ALIAS_O (class, base, struct_base);
-    CORTO_ALIAS_O (class, baseAccess, struct_baseAccess);
+    CORTO_ALIAS_O (class, base, struct_base, CORTO_GLOBAL);
+    CORTO_ALIAS_O (class, baseAccess, struct_baseAccess, CORTO_GLOBAL);
     CORTO_MEMBER_O(class, implements, interfaceseq, CORTO_GLOBAL);
-    CORTO_ALIAS_O (class, parentType, struct_parentType);
-    CORTO_ALIAS_O (class, parentState, struct_parentState);
-    CORTO_ALIAS_O (class, defaultType, struct_defaultType);
-    CORTO_ALIAS_O (class, defaultProcedureType, struct_defaultProcedureType);
+    CORTO_ALIAS_O (class, parentType, struct_parentType, CORTO_HIDDEN);
+    CORTO_ALIAS_O (class, parentState, struct_parentState, CORTO_HIDDEN);
+    CORTO_ALIAS_O (class, defaultType, struct_defaultType, CORTO_HIDDEN);
+    CORTO_ALIAS_O (class, defaultProcedureType, struct_defaultProcedureType, CORTO_HIDDEN);
     CORTO_MEMBER_O(class, interfaceVector, interfaceVectorseq, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(class, observers, observerseq, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(class, construct, initAction, CORTO_LOCAL|CORTO_PRIVATE);

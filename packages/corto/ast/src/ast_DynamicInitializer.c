@@ -237,7 +237,7 @@ corto_int16 _ast_DynamicInitializer_value(ast_DynamicInitializer this, ast_Expre
     if (!type) {
         corto_id id;
         ast_Parser_error(yparser(), "excess elements in initializer of type '%s'",
-            ast_Parser_id(ast_Object(ast_Expression(this)->type)->value, id));
+            ast_Parser_id(ast_Expression(this)->type, id));
         goto error;
     }
 
