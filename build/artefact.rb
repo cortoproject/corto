@@ -24,6 +24,10 @@ LFLAGS ||= []
 TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
+DYNAMIC_SOURCES ||= []
+DYNAMIC_INCLUDES ||= []
+DYNAMIC_OBJECTS ||= {}
+LINK ||= []
 DEFINES ||= []
 USE_PACKAGE ||= []
 USE_PACKAGE_LOADED ||=[]
@@ -36,10 +40,29 @@ INCLUDE <<
     "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
     "/usr/local/include/corto/#{VERSION}/packages"
 
+def corto_replace(str)
+    str = str.gsub("$(CORTO_OS)", `uname -s`.downcase[0...-1])
+    str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
+    etcPath = ENV['CORTO_TARGET'] + "/corto/#{VERSION}"
+    etcPath = TARGETDIR[etcPath.length..-1]
+    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto" + etcPath)
+end
+
+dynamicIncludes = DYNAMIC_INCLUDES.map do |i|
+    corto_replace(i)
+end
+
+INCLUDE.concat (dynamicIncludes)
+
 CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
 
-SOURCES = (Rake::FileList["src/*.c"] + GENERATED_SOURCES)
+SOURCES = Rake::FileList["src/*.c"] + GENERATED_SOURCES + DYNAMIC_SOURCES.map do |s|
+    # Add source to lookup table so rule can find dynamic source with object
+    s = s.gsub("$(CORTO_OS)", `uname -s`.downcase[0...-1])
+    DYNAMIC_OBJECTS[s.ext(".o").pathmap(".corto/obj/%f")] = s
+    s
+end
 OBJECTS = SOURCES.ext(".o").pathmap(".corto/obj/%f")
 
 # Load components from file
@@ -107,7 +130,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     cflags = "#{CFLAGS.join(" ")}"
     corto_lib = "#{CORTO_LIB.map {|i| ENV['CORTO_HOME'] + "/lib/lib" + i + ".so"}.join(" ")}"
-    libpath = "#{LIBPATH.map {|i| "-L" + i}.join(" ")} "
+    libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     use_link =
@@ -134,7 +157,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     cc_command = "cc #{objects} #{cflags} #{corto_lib} #{libpath} #{libmapping} #{use_link} #{lflags}"
     sh cc_command
     if ENV['silent'] != "true" then
-        sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
+        sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"        
     end
 end
 
@@ -153,7 +176,13 @@ end
 rule '__load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '.o' => ->(t){t.pathmap("src/%f").ext(".c")} do |task|
+rule '.o' => ->(t) {
+    if DYNAMIC_OBJECTS.has_key?(t) then
+        DYNAMIC_OBJECTS[t]
+    else
+        t.pathmap("src/%f").ext(".c")
+    end
+} do |task|
     build_source(task.source, task.name, true)
 end
 

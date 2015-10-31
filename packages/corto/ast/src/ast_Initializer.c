@@ -2,8 +2,8 @@
  *
  * ast_Initializer.c
  *
- * Code written between the begin and end tags will be preserved when the
- * file is regenerated.
+ * Only ode written between the begin and end tags will be preserved
+ * when the file is regenerated.
  */
 
 #include "ast.h"

@@ -41,7 +41,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         corto_chdir(argv[1]);
     }
 
-    system("rake clobber >2 /dev/null");
+    system("rake clobber 2> /dev/null");
 
     return 0;
 }

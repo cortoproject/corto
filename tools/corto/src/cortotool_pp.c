@@ -100,9 +100,37 @@ int cortotool_arg_language(char* arg, int argc, char* argv[]) {
             lang = "c";
 
         } else if (!strcmp(argv[1], "cpp")) {
-            corto_llAppend(generators, "cpp_type");
+            corto_object o = NULL;
+            corto_string scope;
+
+            if (!attributes) {
+                attributes = corto_llNew();
+            }
+
+            if (!corto_llSize(scopes)) {
+                corto_error("missing scope for C++");
+                goto error;
+            }
+
+            scope = corto_llGet(scopes, 0);
+            o = corto_resolve(NULL, scope);
+            if (!o) {
+                corto_error("unresolved scope '%s'", scope);
+                goto error;
+            }
+
+            if (corto_llSize(scopes) > 1) {
+                corto_error("C++ can only generate one scope at a time");
+                goto error;
+            }
+
             corto_llAppend(generators, "cpp_class");
-            corto_llAppend(generators, "cpp_load");
+            corto_llAppend(generators, "c_type");
+            corto_llAppend(generators, "c_meta");
+            corto_llAppend(attributes, "c=src");
+            corto_llAppend(attributes, "h=include");
+
+            corto_release(o);
 
         } else {
             corto_error("unknown language '%s'.", argv[1]);

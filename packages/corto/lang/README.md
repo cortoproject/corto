@@ -51,6 +51,15 @@ Attributes can be set with the `corto_setattr` function. This function sets the
 attributes for all subsequently created objects in the thread from which the 
 function is called. By default the attribute is set to `ATTR_DEFAULT`.
 
+The `corto_checkAttr` function can be used to check which attributes are enabled
+for an object. The following example checks whether an object is SCOPED:
+
+```
+if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    printf("name of o is %s\n", corto_nameof(o));
+}
+```
+
 ### ATTR_DEFAULT
 Corto automatically selects the attributes of an object based on its type.
 
@@ -152,13 +161,67 @@ character set is supported. Future versions of Corto will add support for UTF-8.
 #### Returns
 
 ## class
-Enables creating composite reference types.
+Enables creating composite types that can inherit from & implement interfaces.
+
+A class is a reference type, which means that any object created by a
+class by definition is an object. Therefore, a class can offer additional
+functionality over what is provided by a `struct`, which is a valuetype.
+
+Firstly, a class contains a constructor and destructor delegate, which are invoked
+when a class instance is respectively defined and deleted. A constructor returns a
+16 bit integer value, which should be zero upon success, and non-zero upon failure.
+When a non-zero value is returned, the  instance will be invalidated.
+
+An example of a class definition with a constructor and destructor:
+
+```
+class Foo::
+    int16 construct()
+    void destruct()
+```
+
+Secondly, a class can *implement* one or more interfaces. During definition a class constructor
+will validate that all methods of an implemented interface are implemented by
+the class. Any composite type can be used as an interface. Interface variables
+require run time type information to invoke interface methods, which is why this
+behavior can only be implemented on reference types.
+
+An example of a class that implements the `dispatcher` interface (notice that
+implements expects a sequence of interfaces):
+
+```
+class Foo: implements = {dispatcher}::
+    void post() // Implement dispatcher::post
+    
+```
+
+Thirdly, a class can contain *instance observers*. These are observers that start
+observing an observable whenever a new instance of the class is created. The instance
+can set the observable, as well as other observer parameters in the constructor. The
+subscription will take place right after the constructor has finished. Instance observers
+pass the `this` pointer to the observer callback.
+
+An example of a class with an instance observer:
+
+```
+class Foo::
+    int16 construct()
+    void onUpdate() observer // Set parameters for observer in constructor
+```
+An alternative way of specifying an instance observer:
+
+```
+class Foo::
+    observer onUpdate: ON_UPDATE | ON_TREE, ::corto
+```
 
 ### allocSize()
 #### Returns
 ### base
 ### baseAccess
 ### bindObserver(observer observer)
+Should not be invoked directly. Bind an observer with a class.
+
 #### observer
 ### construct
 ### construct()
@@ -168,9 +231,13 @@ Enables creating composite reference types.
 ### destruct
 ### destruct()
 ### eventMaskOf(observer observer)
+Return the event mask of an instance instance observer.
+
 #### observer
 #### Returns
 ### findObserver(object observable)
+Find an instance observer for a given observable.
+
 #### observable
 #### Returns
 ### implements
@@ -183,11 +250,15 @@ Specifies the interfaces implemented by the class.
 #### Returns
 ### interfaceVector
 ### listen(observer observer,eventMask mask,object observable,dispatcher dispatcher)
+Should not be invoked directly (use `corto_listen`). Start listening to an observable.
+
 #### observer
 #### mask
 #### observable
 #### dispatcher
 ### observableOf(observer observer)
+Return the observable for a given instance observer.
+
 #### observer
 #### Returns
 ### observers
@@ -198,16 +269,24 @@ Specifies the interfaces implemented by the class.
 #### observer
 #### Returns
 ### resolveInterfaceMethod(interface interface,uint32 method)
+Resolve a method for a given interface and method id.
+
 #### interface
 #### method
 #### Returns
-### setDispatcher(observer observer,dispatcher dispatcher
+### setDispatcher(observer observer,dispatcher dispatcher)
+Set the dispatcher for a given instance observer.
+
 #### observer
 #### dispatcher
 ### setMask(observer observer,eventMask mask)
+Set the eventmask for a given instance observer.
+
 #### observer
 #### mask
 ### setObservable(observer observer,object observable)
+Set the observable for a given instance observer.
+
 #### observer
 #### observable
 
@@ -366,16 +445,51 @@ Base class for all events.
 ## eventMask
 Flags that can be provided to subscribe for object notifications.
 
+Event masks provide an easy mechanism to get notified of changes in
+the lifecycle of objects. Different constants can be combined in a mask
+to subscribe for multiple events at once.
+
+Typically, a mask selects a type of event (`ON_DECLARE`, `ON_DEFINE`, `ON_UPDATE`,
+`ON_DELETE`, `ON_INVALIDATE`), a scope modifier (`ON_SELF`, `ON_SCOPE`, `ON_TREE`) 
+and a value modifier (`ON_METAVALUE`, `ON_VALUE`). A mask has to at least provide one
+event type. When no scope modifier is provided, `ON_SELF` will be 
+implicitly added. When no value modifier is provided, `ON_VALUE` will be implicitly 
+added.
+
+The following example code subscribes to updates of direct children of the root:
+```
+corto_observerCreate(CORTO_ON_UPDATE | CORTO_ON_SCOPE, root_o, callback);
+```
+
 ### ON_DECLARE
+Notify when an object is declared.
+
 ### ON_DEFINE
+Notify when an object is defined.
+
 ### ON_DELETE
+Notify when an object is deleted.
+
 ### ON_INVALIDATE
+Notify when an object is invalidated.
+
 ### ON_METAVALUE
+Subscribe to object metadata (does not require lock on object value).
+
 ### ON_SCOPE
+Subscribe to direct descendants in scope of observable.
+
 ### ON_SELF
+Subscribe to observable (default).
+
 ### ON_TREE
+Subscribe recursively to all descendants in scope of observable.
+
 ### ON_UPDATE
+Notify when an object is updated.
+
 ### ON_VALUE
+Subscribe to object value (requires locking object value)
 
 ## float
 Enables construction of floating point types.
@@ -590,14 +704,25 @@ Procedure type that provides instance methods.
 ### virtual
 
 ## modifier
-Mask that enables specifying access to members.
+Mask that specifies access to members.
 
 ### CONST
+The member can only be set before an object is defined.
+
 ### GLOBAL
+The member will be serialized (default).
+
 ### HIDDEN
+The  member will be hidden from initializers.
+
 ### LOCAL
+The member will not be serialized.
+
 ### PRIVATE
+The member will not be accessible from outside of the interface.
+
 ### READONLY
+The member can only be read from outside of the interface.
 
 ## notifyAction
 Delegate used by replicators to receive object notifications.
@@ -659,41 +784,115 @@ Sequence of octet elements
 
 
 ## operatorKind
-Operators supported by core.
+Operators supported by the core.
+
+The operator kind is used by the core in the `corto_unaryOperator` and
+`corto_binaryOperator` functions. The following code shows an example:
+
+```
+corto_int32 a = 10, b = 20, result = 0;
+corto_binaryOperator(corto_int32_o, CORTO_ADD, &a, &b, &result);
+// result = 30
+```
 
 ### ADD
+Add operator (+).
+
 ### AND
+Logica and operator (&).
+
 ### ASSIGN
+Assign operator (=).
+
 ### ASSIGN_ADD
+Assign and add operator (+=)
+
 ### ASSIGN_AND
+Assign and logical and operator (&=)
+
 ### ASSIGN_DIV
+Assign and divide operator (/=)
+
 ### ASSIGN_MOD
+Assign and modulo operator (%=)
+
 ### ASSIGN_MUL
+Assign and multiply operator (*=)
+
 ### ASSIGN_OR
+Assign and logical or operator (|=)
+
 ### ASSIGN_SUB
+Assign and subtract operator (-=)
+
 ### ASSIGN_UPDATE
+Assign and update operator (:=)
+
 ### ASSIGN_XOR
+Assign and exclusive or operator (^=)
+
 ### COND_AND
+Conditional and operator (&&)
+
 ### COND_EQ
+Conditional equality operator (==)
+
 ### COND_GT
+Conditional greater than operator (>)
+
 ### COND_GTEQ
+Conditional greater than/equals operator (>=)
+
 ### COND_LT
+Conditional lesser than operator (<)
+
 ### COND_LTEQ
+Conditional lesser than/equals operator (<=)
+
 ### COND_NEQ
+Conditional not equals operator (!=)
+
 ### COND_NOT
+Conditional not operator (!)
+
 ### COND_OR
+Conditional or operator (||)
+
 ### DEC
+Decrease by one operator (--)
+
 ### DIV
+Divide operator (/)
+
 ### INC
+Increase by one operator (++)
+
 ### MOD
+Modulo operator (%)
+
 ### MUL
+Multiply operator (*)
+
 ### NOT
+Logical not operator (!)
+
 ### OR
+Logical or operator (|)
+
 ### REF
+Reference operator (&)
+
 ### SHIFT_LEFT
+Bitwise leftshift operator (<<)
+
 ### SHIFT_RIGHT
+Bitwise rightshift operator (>>)
+
 ### SUB
+Subtract opereator (-)
+
 ### XOR
+Exclusive or operator (^)
 
 ## package
 Container for types that can be shared across projects.
@@ -733,17 +932,48 @@ Enables construction of primitive types.
 ### width
 
 ## primitiveKind
-Primitive typekinds.
+Lists the possible primitive types in Corto.
+
+The `primitiveKind` enumeration is used in `corto::lang::primitive` to quickly
+determine what kind of primitive is described by a type. The kind is automatically
+set by each primitive subclass.
+
+A typical application of `primitiveKind` would be in code that serializes an object.
+The following example shows how `primitiveKind` is used to check whether a type
+represents a string:
+
+```
+if ((type->kind == CORTO_PRIMITIVE) && (corto_primitive(type)->kind == CORTO_TEXT)) {
+    printf("%s represents a string\n", corto_nameof(type));
+}
+```
 
 ### BINARY
+Binary values are not byte swapped when serialized. 
+
 ### BITMASK
+Enumeration value where each constant represents a bit in a 32 bit integer.
+
 ### BOOLEAN
+Value that can hold either true or false.
+
 ### CHARACTER
+A single ASCII character.
+
 ### ENUM
+A list of constants.
+
 ### FLOAT
+A floating point value.
+
 ### INTEGER
+An integer value.
+
 ### TEXT
+A string value.
+
 ### UINTEGER
+An unsigned integer value.
 
 ## procedure
 Enables construction of procedure types.
@@ -759,9 +989,16 @@ Enables construction of procedure types.
 Procedure typekinds.
 
 ### FUNCTION
+A regular procedure with a returntype and argumentlist.
+
 ### METAPROCEDURE
+A procedure that is defined on the type of type of an object.
+
 ### METHOD
+An instance procedure. Can be virtual.
+
 ### OBSERVER
+A procedure that is called upon a notification.
 
 ## query
 Provides the capability to select and query subsections of the corto store.
@@ -807,10 +1044,60 @@ Enables construction of variable length, consecutive collection.
 ## state
 Object states.
 
+Object states provide information about where in its lifecycle an object is. This
+information is important when determining whether to interpret the value of the
+object. The value of an undefined objects should not be interpreted.
+
+The state of an object changes when a lifecycle event occurs. This either means
+that the object is declared, defined, destructed or invalidated. The following code
+shows object states and lifecycle events:
+
+```
+corto_int32 *i = corto_declare(corto_int32_o);
+
+// i is DECLARED
+
+*i = 10;
+if (corto_define(i)) {
+    // error: i is INVALID
+} else {
+    // ok: i is DEFINED
+}
+
+corto_delete(i);
+
+// i is DESTRUCTED and may no longer point to valid memory
+```
+
+An object loses its `VALID` flag it could not be defined. Typically this
+happens when a constructor fails (it returned a non-zero value). When this happens,
+the application can retry with a different value.
+
+There can be other causes for an object to become invalid, for example when
+an object is replicated from another source, and its time to live expires. In that
+case the application can decide to delete the object, or wait until its source becomes
+available again.
+
+The `corto_checkState` function can be used to determine in what state an object is:
+
+```
+if (corto_checkState(i, CORTO_VALID | CORTO_DEFINED)) {
+    printf("the value of i is %d\n", *i);
+}
+```
+
+
 ### DECLARED
+The object is declared (initializer has been called).
+
 ### DEFINED
+The object is defined (constructor has been called).
+
 ### DESTRUCTED
+The object is destructed (destructor has been called).
+
 ### VALID
+The object is valid.
 
 ## string
 Allows representing text.
@@ -957,11 +1244,22 @@ Returns database size of type.
 Core type kinds.
 
 ### ANY
+Self describing value that hold data of any type.
+
 ### COLLECTION
+An iterable collection of elements (see collectionKind).
+
 ### COMPOSITE
+A set of members (see compositeKind).
+
 ### ITERATOR
+An type that allows iterating over collections.
+
 ### PRIMITIVE
+A primitive value (see primitiveKind).
+
 ### VOID
+A type that represents nothing.
 
 ## uint
 Enables construction of unsigned integer types.
@@ -1004,11 +1302,31 @@ Type used to represent the method table of interface types.
 ## width
 Enables representing width in bits.
 
+Example:
+
+```
+if ((type->kind == CORTO_PRIMITIVE) &&
+    (corto_primitive(type)->kind == CORTO_INTEGER) &&
+    (corto_primitive(type)->width == CORTO_WIDTH_32)) 
+{
+    printf("int32 value = %d\n", *(corto_int32*)value);
+}
+```
+
 ### WIDTH_16
+16 bit value.
+
 ### WIDTH_32
+32 bit value.
+
 ### WIDTH_64
+64 bit value.
+
 ### WIDTH_8
+8 bit value.
+
 ### WIDTH_WORD
+Word sized value (architecture dependent)
 
 ## word
 Scalar word-sized binary type.

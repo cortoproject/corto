@@ -44,7 +44,7 @@ task :prebuild do
 	if File.exists?("etc") then
 		etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{etc}"
-	    sh "cp etc/* #{etc}/"
+	    sh "cp -r etc/* #{etc}/"
 	end	
 	if ENV['CORTO_TARGET'] != "/usr/local" then
 		sh "echo \"`pwd`\" >> source.txt"
@@ -63,7 +63,7 @@ task :prebuild do
 end
 
 task :collect do
-	verbose(false)
+	verbose(true)
 	if File.exists?("include") then
 		includePath = ENV['HOME'] + "/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{includePath}"
@@ -72,7 +72,7 @@ task :collect do
 	if File.exists?("etc") then
 		etc = ENV['HOME'] + "/.corto/pack/etc/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{etc}"
-	    sh "cp etc/* #{etc}/"
+	    sh "cp -r etc/* #{etc}/"
 	end	
 end
 

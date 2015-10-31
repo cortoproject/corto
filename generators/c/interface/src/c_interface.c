@@ -35,8 +35,8 @@ static g_file c_interfaceOpenFile(corto_string name, c_typeWalk_t *data) {
         g_fileWrite(result, " *\n");
         g_fileWrite(result, " * %s\n", name);
         g_fileWrite(result, " *\n");
-        g_fileWrite(result, " * Code written between the begin and end tags will be preserved when the\n");
-        g_fileWrite(result, " * file is regenerated.\n");
+        g_fileWrite(result, " * Only ode written between the begin and end tags will be preserved\n");
+        g_fileWrite(result, " * when the file is regenerated.\n");
         g_fileWrite(result, " */\n\n");
     }   
     return result;
@@ -771,7 +771,7 @@ static void c_interfaceHeaderFileClose(g_file file) {
 static g_file c_interfaceWrapperFileOpen(corto_generator g) {
     g_file result;
     corto_char fileName[512];
-    corto_id id, name, path;
+    corto_id id, name;
 
     corto_object o = g_getCurrent(g);
     sprintf(fileName, "%s__wrapper.c", g_getName(g));
@@ -791,7 +791,6 @@ static g_file c_interfaceWrapperFileOpen(corto_generator g) {
     g_fileWrite(result, " *\n");
     g_fileWrite(result, " * This file contains wrapper functions for %s.\n", corto_fullname(o, id));
     g_fileWrite(result, " */\n\n");
-    g_fileWrite(result, "#define %s_LIB\n", c_topath(g_getCurrent(g), path, '_'));
     g_fileWrite(result, "#include \"%s.h\"\n", g_fullOid(g, o, name));
     g_fileWrite(result, "#include \"%s__meta.h\"\n", g_getName(g));
 
