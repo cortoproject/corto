@@ -3,7 +3,6 @@
  * This file contains wrapper functions for ::corto::lang.
  */
 
-#define corto_lang_LIB
 #include "corto.h"
 #include "corto__meta.h"
 

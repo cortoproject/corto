@@ -35,7 +35,7 @@ static g_file c_interfaceOpenFile(corto_string name, c_typeWalk_t *data) {
         g_fileWrite(result, " *\n");
         g_fileWrite(result, " * %s\n", name);
         g_fileWrite(result, " *\n");
-        g_fileWrite(result, " * Only ode written between the begin and end tags will be preserved\n");
+        g_fileWrite(result, " * Only code written between the begin and end tags will be preserved\n");
         g_fileWrite(result, " * when the file is regenerated.\n");
         g_fileWrite(result, " */\n\n");
     }   

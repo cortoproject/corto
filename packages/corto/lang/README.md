@@ -192,7 +192,7 @@ implements expects a sequence of interfaces):
 ```
 class Foo: implements = {dispatcher}::
     void post() // Implement dispatcher::post
-    
+
 ```
 
 Thirdly, a class can contain *instance observers*. These are observers that start
@@ -274,9 +274,7 @@ Resolve a method for a given interface and method id.
 #### interface
 #### method
 #### Returns
-### setDispatcher(observer observer,dispatcher dispatcher)
-Set the dispatcher for a given instance observer.
-
+### setDispatcher(observer observer,dispatcher dispatcher
 #### observer
 #### dispatcher
 ### setMask(observer observer,eventMask mask)
@@ -490,6 +488,7 @@ Notify when an object is updated.
 
 ### ON_VALUE
 Subscribe to object value (requires locking object value)
+
 
 ## float
 Enables construction of floating point types.
@@ -724,6 +723,7 @@ The member will not be accessible from outside of the interface.
 ### READONLY
 The member can only be read from outside of the interface.
 
+
 ## notifyAction
 Delegate used by replicators to receive object notifications.
 
@@ -894,6 +894,7 @@ Subtract opereator (-)
 ### XOR
 Exclusive or operator (^)
 
+
 ## package
 Container for types that can be shared across projects.
 
@@ -975,6 +976,7 @@ A string value.
 ### UINTEGER
 An unsigned integer value.
 
+
 ## procedure
 Enables construction of procedure types.
 
@@ -999,6 +1001,7 @@ An instance procedure. Can be virtual.
 
 ### OBSERVER
 A procedure that is called upon a notification.
+
 
 ## query
 Provides the capability to select and query subsections of the corto store.
@@ -1086,7 +1089,6 @@ if (corto_checkState(i, CORTO_VALID | CORTO_DEFINED)) {
 }
 ```
 
-
 ### DECLARED
 The object is declared (initializer has been called).
 
@@ -1098,6 +1100,7 @@ The object is destructed (destructor has been called).
 
 ### VALID
 The object is valid.
+
 
 ## string
 Allows representing text.
@@ -1261,6 +1264,7 @@ A primitive value (see primitiveKind).
 ### VOID
 A type that represents nothing.
 
+
 ## uint
 Enables construction of unsigned integer types.
 
@@ -1327,6 +1331,7 @@ if ((type->kind == CORTO_PRIMITIVE) &&
 
 ### WIDTH_WORD
 Word sized value (architecture dependent)
+
 
 ## word
 Scalar word-sized binary type.
