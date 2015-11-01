@@ -3,4 +3,10 @@ TARGET = 'corto'
 LIB = ['rt', 'dl', 'm']
 CFLAGS ||= ["-Wunused-parameter"]
 
+task :collect do
+    buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
+    sh "mkdir -p #{buildPath}"
+    sh "cp #{ENV['CORTO_BUILD']}/* #{buildPath}/"    
+end
+
 require "#{ENV['CORTO_BUILD']}/library"
