@@ -52,11 +52,11 @@ task :prebuild do
 		etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{etc}"
 		if File.exists? "etc/everywhere" then
-		    sh "cp -r etc/everywhere/ #{etc}/ 2> /dev/null"
+	        sh "cp -r etc/everywhere/* #{etc}/"
 		end
 		platformStr = "etc/" + `uname -s`[0...-1] + "-" + `uname -p`[0...-1]
 		if File.exists? platformStr then
-		    sh "cp -r " + platformStr + "/ #{etc}"
+		    sh "cp -r " + platformStr + "/* #{etc}"
 		end
 	end	
 	if ENV['CORTO_TARGET'] != "/usr/local" then

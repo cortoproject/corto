@@ -147,8 +147,8 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
             if (not File.exists? lib) then
                 abort "\033[1;31m[ #{l} not found ]\033[0;49m"
             end
-            lib
         end
+        lib
     end
 
     OBJECTS.concat(LINKED)
