@@ -27,6 +27,7 @@ else
 end
 TARGETDIR ||= "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
 
+# Special case for when building the core
 if TARGET != "corto" then
 	USE_LIBRARY << "corto"
 end
@@ -39,14 +40,24 @@ INCLUDE <<
 task :prebuild do
 	verbose(false)
 	if File.exists?("include") then
-		includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
+		if TARGET != "corto" then
+			includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
+		else
+			includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages/corto/lang"
+		end
 		sh "mkdir -p #{includePath}"
 	    sh "cp include/* #{includePath}/"
 	end
 	if File.exists?("etc") then
 		etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{etc}"
-	    sh "cp -r etc/* #{etc}/"
+		if File.exists? "etc/everywhere" then
+		    sh "cp -r etc/everywhere/ #{etc}/ 2> /dev/null"
+		end
+		platformStr = "etc/" + `uname -s`[0...-1] + "-" + `uname -p`[0...-1]
+		if File.exists? platformStr then
+		    sh "cp -r " + platformStr + "/ #{etc}"
+		end
 	end	
 	if ENV['CORTO_TARGET'] != "/usr/local" then
 		sh "echo \"`pwd`\" >> source.txt"
@@ -67,7 +78,11 @@ end
 task :collect do
 	verbose(true)
 	if File.exists?("include") then
-		includePath = ENV['HOME'] + "/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
+		if TARGET != "corto" then
+			includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
+		else
+			includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages/corto/lang"
+		end
 		sh "mkdir -p #{includePath}"
 	    sh "cp include/* #{includePath}/"
 	end	

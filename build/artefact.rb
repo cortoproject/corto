@@ -20,8 +20,8 @@ end
 
 # Utility that replaces buildsystem tokens with actual values
 def corto_replace(str)
-    str = str.gsub("$(CORTO_OS)", `uname -s`.downcase[0...-1])
-    str = str.gsub("$(CORTO_PLATFORM)", `uname -p`.downcase[0...-1])
+    str = str.gsub("$(CORTO_OS)", `uname -s`[0...-1])
+    str = str.gsub("$(CORTO_PLATFORM)", `uname -p`[0...-1])
     str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
     etcPath = ENV['CORTO_TARGET'] + "/corto/#{VERSION}"
     etcPath = TARGETDIR[etcPath.length..-1]
@@ -61,21 +61,6 @@ CFLAGS.unshift("-Wall")
 # Obtain list of source and object files
 SOURCES = Rake::FileList["src/*.c"] + GENERATED_SOURCES
 OBJECTS = SOURCES.ext(".o").pathmap(".corto/obj/%f")
-
-# Create list of files that are going to be linked with. Abstract away from the
-# difference between dll, so and dylib. When a dylib is encountered, perform  a
-# bit of magic to ensure that the executable can find the shared object.
-LINKED = LINK.map do |l|
-    l = corto_replace(l)
-    lib = File.dirname(l) + "/lib" + File.basename(l) + ".so"
-    if (not File.exists? lib) and (`uname` == "Darwin\n") then
-        lib = File.dirname(l) + "/lib" + File.basename(l) + ".dylib"
-        if (not File.exists? lib) then
-            abort "\033[1;31m[ #{l} not found ]\033[0;49m"
-        end
-        lib
-    end
-end
 
 # Load components from file
 if File.exists? ".corto/components.txt" then
@@ -150,6 +135,22 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(false)
     sh "mkdir -p #{TARGETDIR}"
+
+    # Create list of files that are going to be linked with. Abstract away from the
+    # difference between dll, so and dylib. When a dylib is encountered, perform  a
+    # bit of magic to ensure that the executable can find the shared object.
+    LINKED = LINK.map do |l|
+        l = corto_replace(l)
+        lib = File.dirname(l) + "/lib" + File.basename(l) + ".so"
+        if (not File.exists? lib) and (`uname` == "Darwin\n") then
+            lib = File.dirname(l) + "/lib" + File.basename(l) + ".dylib"
+            if (not File.exists? lib) then
+                abort "\033[1;31m[ #{l} not found ]\033[0;49m"
+            end
+            lib
+        end
+    end
+
     OBJECTS.concat(LINKED)
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     cflags = "#{CFLAGS.join(" ")}"
@@ -186,7 +187,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
             # Obtain name of library, check if its different from target path. If
             # names don't match, setup a task to alter the name in the executable
             # path.
-            libname = `otool -L #{lib} | grep #{File.basename(lib)}`.split("\n")[1].split[0]
+            libname = `otool -L #{lib}`.split("\n")[1].split[0]
             if libname != lib then
                 sh "install_name_tool -change #{libname} #{lib} #{TARGETDIR}/#{ARTEFACT}"
             end
