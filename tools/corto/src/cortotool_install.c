@@ -54,11 +54,6 @@ static corto_int16 cortotool_installFromSource(void) {
 		fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", version);
 		fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", version);
 		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-
-		/* Rename libcorto.so */
-		fprintf(install, "mv -f /usr/local/lib/libcorto.so /usr/local/lib/libcorto.so.%s\n", version);
-		fprintf(install, "ln -s /usr/local/lib/libcorto.so.%s /usr/local/lib/libcorto.so\n", version);
-		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 	}
 
 	fprintf(install, "rake clean 2> /dev/null\n");

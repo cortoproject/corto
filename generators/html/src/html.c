@@ -308,6 +308,7 @@ static corto_int16 corto_ser_memberDetail(corto_serializer s, corto_value *info,
     g_file file = userData;
     corto_member m = info->is.member.t;
     corto_string description = doc_getDescription(m);
+    corto_string text = doc_getText(m);
     corto_id path;
     corto_id id;
 
@@ -343,6 +344,9 @@ static corto_int16 corto_ser_memberDetail(corto_serializer s, corto_value *info,
     }
     g_fileWrite(file, "</table>\n");
     g_fileWrite(file, "</td></tr>\n");
+    if (text) {
+        g_fileWrite(file, "<p>%s</p>\n", text);
+    }
 
     return 0;
 }

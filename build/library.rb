@@ -76,20 +76,21 @@ task :prebuild do
 end
 
 task :collect do
-	verbose(true)
+	verbose(false)
 	if File.exists?("include") then
 		if TARGET != "corto" then
-			includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
+			includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
 		else
-			includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages/corto/lang"
+			includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/packages/corto/lang"
 		end
 		sh "mkdir -p #{includePath}"
 	    sh "cp include/* #{includePath}/"
 	end	
 	if File.exists?("etc") then
-		etc = ENV['HOME'] + "/.corto/pack/etc/corto/#{VERSION}/#{TARGETPATH}"
+		etc = "#{ENV['HOME']}/.corto/pack/etc/corto/#{VERSION}/#{TARGETPATH}"
+		targetEtc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
 		sh "mkdir -p #{etc}"
-	    sh "cp -r etc/* #{etc}/"
+	    sh "cp -r #{targetEtc}/* #{etc}/"
 	end	
 end
 
