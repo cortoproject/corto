@@ -14,10 +14,10 @@ TARGET = PACKAGE.split("::").last
 
 PP_PRELOAD ||= []
 GENERATED_SOURCES ||= []
-DEFINES ||= []
+DEFINE ||= []
 CFLAGS ||= []
 
-DEFINES << "BUILDING_" + PACKAGE.gsub("::", "_").upcase
+DEFINE << "BUILDING_" + PACKAGE.gsub("::", "_").upcase
 CFLAGS << "-fvisibility=hidden"
 
 GENERATED_SOURCES <<

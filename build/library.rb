@@ -10,7 +10,7 @@ if not defined? LOCAL then
 end
 
 LFLAGS ||= []
-CORTO_LIB ||= []
+USE_LIBRARY ||= []
 LIBPATH ||= []
 INCLUDE ||= []
 
@@ -27,7 +27,9 @@ else
 end
 TARGETDIR ||= "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
 
-CORTO_LIB << "corto"
+if TARGET != "corto" then
+	USE_LIBRARY << "corto"
+end
 
 INCLUDE << 
 	"#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" << 

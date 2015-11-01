@@ -6,11 +6,11 @@ end
 
 TARGETDIR = "#{ENV['CORTO_TARGET']}/bin"
 ARTEFACT = "#{TARGET}"
-CORTO_LIB ||= []
+USE_LIBRARY ||= []
 LIBPATH ||= []
 INCLUDE ||= []
 
-CORTO_LIB << "corto"
+USE_LIBRARY << "corto"
 INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang"
 
 

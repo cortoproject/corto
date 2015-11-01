@@ -7,7 +7,7 @@ end
 
 ARTEFACT = "app"
 TARGETDIR = "./.corto"
-CORTO_LIB ||= []
+USE_LIBRARY ||= []
 LIBPATH ||= []
 INCLUDE ||= []
 
@@ -15,7 +15,7 @@ GENERATED_SOURCES ||= []
 
 GENERATED_SOURCES << ".corto/#{TARGET}__load.c"
 
-CORTO_LIB << "corto"
+USE_LIBRARY << "corto"
 INCLUDE <<
     "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" <<
     "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang"

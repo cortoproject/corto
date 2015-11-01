@@ -1,34 +1,6 @@
-require 'rake/clean'
-require "#{ENV['CORTO_BUILD']}/version"
-
-TARGET = :corto
+TARGET = 'corto'
 
 LIB = ['rt', 'dl', 'm']
-
-LFLAGS ||= []
 CFLAGS ||= ["-Wunused-parameter"]
 
-ARTEFACT = "lib#{TARGET}.so"
-LFLAGS << "--shared"
-
-CLOBBER.include("#{ENV['CORTO_TARGET']}/include/corto/")
-
-task :prebuild do
-	verbose(false)
-	includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages/corto/lang"
-	sh "mkdir -p #{includePath}"
-    sh "cp include/* #{includePath}/"
-end
-
-task :collect do
-	verbose(false)
-	includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/packages/corto/lang"
-	sh "mkdir -p #{includePath}"
-    sh "cp include/* #{includePath}/"
-
-	buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
-	sh "mkdir -p #{buildPath}"
-    sh "cp #{ENV['CORTO_BUILD']}/* #{buildPath}/"    
-end
-
-require "#{ENV['CORTO_BUILD']}/artefact"
+require "#{ENV['CORTO_BUILD']}/library"
