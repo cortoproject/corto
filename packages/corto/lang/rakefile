@@ -4,6 +4,7 @@ LIB = ['rt', 'dl', 'm']
 CFLAGS ||= ["-Wunused-parameter"]
 
 task :collect do
+    verbose(false)
     buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
     sh "mkdir -p #{buildPath}"
     sh "cp #{ENV['CORTO_BUILD']}/* #{buildPath}/"    
