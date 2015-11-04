@@ -2,8 +2,8 @@
  *
  * test_ObjectMgmt.c
  *
- * Code written between the begin and end tags will be preserved when the
- * file is regenerated.
+ * Only code written between the begin and end tags will be preserved
+ * when the file is regenerated.
  */
 
 #include "test.h"
@@ -802,7 +802,7 @@ corto_void _test_ObjectMgmt_tc_declareExistingWithParentState(test_ObjectMgmt th
     corto_struct s = corto_structDeclareChild(NULL, "s");
     test_assert(s != NULL);
 
-    corto_member m = corto_memberCreateChild(s, "m", corto_type(corto_uint32_o), CORTO_GLOBAL, 0, FALSE);
+    corto_member m = corto_memberCreateChild(s, "m", corto_type(corto_uint32_o), CORTO_GLOBAL);
     test_assert(m != NULL);
 
     corto_int16 ret = corto_define(s);
