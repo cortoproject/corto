@@ -148,7 +148,9 @@ static corto_int16 serializeReference(corto_serializer s, corto_value *v, void *
 
             corto_dealloc(escapedValue);
         } else {
-            corto_ser_appendstr(data, "\"anonymous\"");
+            if (corto_serialize(s, object, data)) {
+                goto error;
+            }
         }
     } else {
         if (!corto_ser_appendstrbuff(data, "null")) {
@@ -158,6 +160,8 @@ static corto_int16 serializeReference(corto_serializer s, corto_value *v, void *
     return 0;
 finished:
     return 1;
+error:
+    return -1;
 }
 
 static corto_int16 serializeItem(corto_serializer s, corto_value *info, void *userData) {
