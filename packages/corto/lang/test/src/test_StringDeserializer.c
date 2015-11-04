@@ -2,8 +2,8 @@
  *
  * test_StringDeserializer.c
  *
- * Code written between the begin and end tags will be preserved when the
- * file is regenerated.
+ * Only code written between the begin and end tags will be preserved
+ * when the file is regenerated.
  */
 
 #include "test.h"
@@ -12,6 +12,246 @@ corto_void _test_StringDeserializer_setup(test_StringDeserializer this) {
 /* $begin(::test::StringDeserializer::setup) */
 
     /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousBig(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserAnonymousBig) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousMultiple(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserAnonymousMultiple) */
+
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, 
+        "test::AnonymousTest{{"
+            "<1>int32{10},"
+            "<2>int32{20},"
+            "<3>int32{30}"
+        "}}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_AnonymousTest_o, o));
+    test_AnonymousTest t = test_AnonymousTest(o);
+    test_assert(t != NULL);
+    test_assert(t->objects != NULL);
+    test_assert(corto_llSize(t->objects) == 3);
+    corto_object e1 = corto_llGet(t->objects, 0);
+    corto_object e2 = corto_llGet(t->objects, 1);
+    corto_object e3 = corto_llGet(t->objects, 2);
+    test_assert(corto_instanceof(corto_int32_o, e1));
+    test_assert(corto_instanceof(corto_int32_o, e2));
+    test_assert(corto_instanceof(corto_int32_o, e3));
+    test_assert(e1 != e2);
+    test_assert(e1 != e3);
+    test_assert(e2 != e3);
+    test_assert(*(corto_int32*)e1 == 10);
+    test_assert(*(corto_int32*)e2 == 20);
+    test_assert(*(corto_int32*)e3 == 30);
+    corto_release(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousNested(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserAnonymousNested) */
+
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, 
+        "test/AnonymousTest{{"
+            "<1>int32{10},"
+            "<2>test/AnonymousTest{{"
+                "<3>int32{20},"
+                "<4>test/Point{10, 20},"
+                "<5>test/AnonymousTest{{"
+                    "<6>test/Point{30, 40},"
+                    "<7>int32{30}"
+                "}}"
+            "}}"
+        "}}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_AnonymousTest_o, o));
+    test_AnonymousTest top = test_AnonymousTest(o);
+    test_assert(top != NULL);
+    test_assert(top->objects != NULL);
+    test_assert(corto_llSize(top->objects) == 2);
+
+    corto_object e1 = corto_llGet(top->objects, 0);
+    corto_object e2 = corto_llGet(top->objects, 1);
+    test_assert(corto_instanceof(corto_int32_o, e1));
+    test_assert(corto_instanceof(test_AnonymousTest_o, e2));
+    test_assert(*(corto_int32*)e1 == 10);
+    test_AnonymousTest t2 = test_AnonymousTest(e2);
+    test_assert(t2 != NULL);
+    test_assert(corto_llSize(t2->objects) == 3);
+
+    corto_object e3 = corto_llGet(t2->objects, 0);
+    corto_object e4 = corto_llGet(t2->objects, 1);
+    corto_object e5 = corto_llGet(t2->objects, 2);
+    test_assert(corto_instanceof(corto_int32_o, e3));
+    test_assert(corto_instanceof(test_Point_o, e4));
+    test_assert(corto_instanceof(test_AnonymousTest_o, e5));
+    test_assert(*(corto_int32*)e3 == 20);
+    test_Point *t4 = test_Point(e4);
+    test_assert(t4 != NULL);
+    test_assert(t4->x == 10);
+    test_assert(t4->y == 20);
+    test_AnonymousTest t5 = test_AnonymousTest(e5);
+    test_assert(t5 != NULL);
+    test_assert(corto_llSize(t5->objects) == 2);
+
+    corto_object e6 = corto_llGet(t5->objects, 0);
+    corto_object e7 = corto_llGet(t5->objects, 1);
+    test_assert(corto_instanceof(test_Point_o, e6));
+    test_assert(corto_instanceof(corto_int32_o, e7));
+    test_Point *t6 = test_Point(e6);
+    test_assert(t6 != NULL);
+    test_assert(t6->x == 30);
+    test_assert(t6->y == 40);
+    test_assert(*(corto_int32*)e7 == 30);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousReuse(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserAnonymousReuse) */
+
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, 
+        "test::AnonymousTest{{"
+            "/corto/lang/type,"
+            "<1>int32{10},"
+            "<2>int32{20},"
+            "<3>int32{30},"
+            "<1>,"
+            "<2>,"
+            "<3>"
+        "}}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_AnonymousTest_o, o));
+    test_AnonymousTest t = test_AnonymousTest(o);
+    test_assert(t != NULL);
+    test_assert(t->objects != NULL);
+    test_assert(corto_llSize(t->objects) == 7);
+    corto_object e1 = corto_llGet(t->objects, 0);
+    corto_object e2 = corto_llGet(t->objects, 1);
+    corto_object e3 = corto_llGet(t->objects, 2);
+    corto_object e4 = corto_llGet(t->objects, 3);
+    corto_object e5 = corto_llGet(t->objects, 4);
+    corto_object e6 = corto_llGet(t->objects, 5);
+    corto_object e7 = corto_llGet(t->objects, 6);
+    test_assert(corto_instanceof(corto_class_o, e1));
+    test_assert(corto_instanceof(corto_int32_o, e2));
+    test_assert(corto_instanceof(corto_int32_o, e3));
+    test_assert(corto_instanceof(corto_int32_o, e4));
+    test_assert(e2 != e3);
+    test_assert(e2 != e4);
+    test_assert(e3 != e4);
+    test_assert(e2 == e5);
+    test_assert(e3 == e6);
+    test_assert(e4 == e7);
+    test_assert(e1 == corto_type_o);
+    test_assert(*(corto_int32*)e2 == 10);
+    test_assert(*(corto_int32*)e3 == 20);
+    test_assert(*(corto_int32*)e4 == 30);
+    corto_release(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousReuseNested(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserAnonymousReuseNested) */
+
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, 
+        "test/AnonymousTest{{"
+            "<1>int32{10},"
+            "<2>test/AnonymousTest{{"
+                "<3>int32{20},"
+                "<4>test/Point{10, 20},"
+                "<5>test/AnonymousTest{{"
+                    "<6>test/Point{30, 40},"
+                    "<7>int32{30}"
+                "}}"
+            "}},"
+            "<1>,<2>,<3>,<4>,<5>,<6>,<7>"
+        "}}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_AnonymousTest_o, o));
+    test_AnonymousTest top = test_AnonymousTest(o);
+    test_assert(top != NULL);
+    test_assert(top->objects != NULL);
+    test_assert(corto_llSize(top->objects) == 9);
+
+    corto_object e1 = corto_llGet(top->objects, 0);
+    corto_object e2 = corto_llGet(top->objects, 1);
+    test_assert(corto_instanceof(corto_int32_o, e1));
+    test_assert(corto_instanceof(test_AnonymousTest_o, e2));
+    test_assert(*(corto_int32*)e1 == 10);
+    test_AnonymousTest t2 = test_AnonymousTest(e2);
+    test_assert(t2 != NULL);
+    test_assert(corto_llSize(t2->objects) == 3);
+
+    corto_object e3 = corto_llGet(t2->objects, 0);
+    corto_object e4 = corto_llGet(t2->objects, 1);
+    corto_object e5 = corto_llGet(t2->objects, 2);
+    test_assert(corto_instanceof(corto_int32_o, e3));
+    test_assert(corto_instanceof(test_Point_o, e4));
+    test_assert(corto_instanceof(test_AnonymousTest_o, e5));
+    test_assert(*(corto_int32*)e3 == 20);
+    test_Point *t4 = test_Point(e4);
+    test_assert(t4 != NULL);
+    test_assert(t4->x == 10);
+    test_assert(t4->y == 20);
+    test_AnonymousTest t5 = test_AnonymousTest(e5);
+    test_assert(t5 != NULL);
+    test_assert(corto_llSize(t5->objects) == 2);
+
+    corto_object e6 = corto_llGet(t5->objects, 0);
+    corto_object e7 = corto_llGet(t5->objects, 1);
+    test_assert(corto_instanceof(test_Point_o, e6));
+    test_assert(corto_instanceof(corto_int32_o, e7));
+    test_Point *t6 = test_Point(e6);
+    test_assert(t6 != NULL);
+    test_assert(t6->x == 30);
+    test_assert(t6->y == 40);
+    test_assert(*(corto_int32*)e7 == 30);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousSimple(test_StringDeserializer this) {
+/* $begin(::test::StringDeserializer::tc_deserAnonymousSimple) */
+
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, 
+        "test::AnonymousTest{{"
+            "<1>int32{10}"
+        "}}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_AnonymousTest_o, o));
+    test_AnonymousTest t = test_AnonymousTest(o);
+    test_assert(t != NULL);
+    test_assert(t->objects != NULL);
+    test_assert(corto_llSize(t->objects) == 1);
+    corto_object e1 = corto_llGet(t->objects, 0);
+    test_assert(corto_instanceof(corto_int32_o, e1));
+    test_assert(*(corto_int32*)e1 == 10);
+    corto_release(o);
 
 /* $end */
 }

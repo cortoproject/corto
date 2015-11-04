@@ -407,6 +407,9 @@ test::Suite MethodResolver::
     void tc_nonexisting()
     void tc_redeclare()
 
+class AnonymousTest::
+    objects: list{object}
+
 // String deserializer testcases
 test::Suite StringDeserializer::
     void setup() method
@@ -484,3 +487,10 @@ test::Suite StringDeserializer::
     void tc_deserCompositeNested()
     void tc_deserCompositeNestedMembers()
     void tc_deserCompositeNestedMixed()
+
+    void tc_deserAnonymousSimple()
+    void tc_deserAnonymousNested()
+    void tc_deserAnonymousMultiple()
+    void tc_deserAnonymousReuse()
+    void tc_deserAnonymousReuseNested()
+    void tc_deserAnonymousBig()
