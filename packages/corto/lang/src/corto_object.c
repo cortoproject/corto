@@ -2651,8 +2651,10 @@ corto_int32 corto_updateBegin(corto_object observable) {
     if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
         corto_object owner = corto_ownerof(observable);
         if (owner && corto_instanceof(corto_replicator_o, owner)) {
-            corto_seterr("cannot update '%s', process does not own object", corto_nameof(observable));
-            goto error;
+            if (owner != corto_getOwner()) {
+                corto_seterr("cannot update '%s', process does not own object", corto_nameof(observable));
+                goto error;
+            }
         }
     }
 
