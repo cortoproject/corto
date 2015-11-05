@@ -391,14 +391,6 @@ corto_object _corto_class_observableOf(corto_any this, corto_observer observer) 
 /* $end */
 }
 
-corto_observer _corto_class_privateObserver(corto_class this, corto_object object, corto_observer observer) {
-/* $begin(::corto::lang::class::privateObserver) */
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(object);
-    return observer; /* Workaround - this function can be removed */
-/* $end */
-}
-
 corto_method _corto_class_resolveInterfaceMethod(corto_class this, corto_interface interface, corto_uint32 method) {
 /* $begin(::corto::lang::class::resolveInterfaceMethod) */
     corto_uint32 i;

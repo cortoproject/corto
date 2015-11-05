@@ -496,7 +496,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, class_allocSize_);\
     SSO_OP_OBJ(op, class_init_);\
     SSO_OP_OBJ(op, class_instanceof_);\
-    SSO_OP_OBJ(op, class_privateObserver_);\
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
     SSO_OP_OBJ(op, class_bindObserver_);\
     SSO_OP_OBJ(op, class_findObserver_);\

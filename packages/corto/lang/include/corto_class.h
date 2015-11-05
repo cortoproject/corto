@@ -48,9 +48,6 @@ CORTO_LANG_EXPORT corto_void _corto_class_listen(corto_any _this, corto_observer
 CORTO_LANG_EXPORT corto_object _corto_class_observableOf(corto_any _this, corto_observer observer);
 #define corto_class_observableOf(_this, observer) _corto_class_observableOf(_this, corto_observer(observer))
 
-CORTO_LANG_EXPORT corto_observer _corto_class_privateObserver(corto_class _this, corto_object object, corto_observer observer);
-#define corto_class_privateObserver(_this, object, observer) _corto_class_privateObserver(corto_class(_this), object, corto_observer(observer))
-
 CORTO_LANG_EXPORT corto_method _corto_class_resolveInterfaceMethod(corto_class _this, corto_interface interface, corto_uint32 method);
 #define corto_class_resolveInterfaceMethod(_this, interface, method) _corto_class_resolveInterfaceMethod(corto_class(_this), corto_interface(interface), method)
 

@@ -170,14 +170,6 @@ void __corto_class_observableOf(corto_function f, void *result, void *args) {
         corto_observer(*(corto_observer*)((intptr_t)args + sizeof(corto_any))));
 }
 
-void __corto_class_privateObserver(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_observer*)result = _corto_class_privateObserver(
-        corto_class(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)),
-        corto_observer(*(corto_observer*)((intptr_t)args + sizeof(void*) + sizeof(corto_object))));
-}
-
 void __corto_class_resolveInterfaceMethod(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     *(corto_method*)result = _corto_class_resolveInterfaceMethod(

@@ -5,7 +5,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto__api.h"
 #include "corto__meta.h"
 #include "corto__object.h"

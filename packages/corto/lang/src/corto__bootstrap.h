@@ -895,7 +895,6 @@ CORTO_CLASS_O(class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED,
     CORTO_METHOD_O(class, destruct, "()", void, FALSE, corto_class_destruct);
     CORTO_METHOD_O(class, allocSize, "()", uint32, TRUE, corto_class_allocSize_v);
     CORTO_METHOD_O(class, instanceof, "(object object)", bool, FALSE, corto_class_instanceof);
-    CORTO_METHOD_O(class, privateObserver, "(object object,observer observer)", observer, FALSE, corto_class_privateObserver);
     CORTO_METHOD_O(class, resolveInterfaceMethod, "(interface interface,uint32 method)", method, FALSE, corto_class_resolveInterfaceMethod);
     CORTO_METHOD_O(class, bindObserver, "(observer observer)", void, FALSE, corto_class_bindObserver);
     CORTO_METHOD_O(class, findObserver, "(object observable)", observer, FALSE, corto_class_findObserver);
