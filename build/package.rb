@@ -56,7 +56,7 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     preload = PP_PRELOAD.join(" ")
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
-    if LOCAL then
+    if LOCAL or (`corto locate doc --component` == "corto: component 'doc' not found\n") then
         ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     else
         ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g doc"

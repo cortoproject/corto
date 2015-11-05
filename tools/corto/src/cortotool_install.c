@@ -288,6 +288,7 @@ void cortotool_toLibPath(char *location) {
 corto_int16 cortotool_locate(int argc, char* argv[]) {
 	corto_string location;
 	corto_bool lib = FALSE, path = FALSE, env = FALSE;
+	corto_bool component = FALSE;
 
 	if (argc <= 1) {
 		printf("corto: please provide a package name\n");
@@ -295,16 +296,25 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
 	}
 
 	if (argc > 2) {
-		if (!strcmp(argv[2], "--lib")) {
-			lib = TRUE;
-		} else if (!strcmp(argv[2], "--path")) {
-			path = TRUE;
-		} else if (!strcmp(argv[2], "--env")) {
-			env = TRUE;
+		int i = 0;
+		for (i = 2; i < argc; i++) {
+			if (!strcmp(argv[i], "--lib")) {
+				lib = TRUE;
+			} else if (!strcmp(argv[i], "--path")) {
+				path = TRUE;
+			} else if (!strcmp(argv[i], "--env")) {
+				env = TRUE;
+			} else if (!strcmp(argv[i], "--component")) {
+				component = TRUE;
+			}
 		}
 	}
 
-	location = corto_locate(argv[1]);
+	if (!component) {
+		location = corto_locate(argv[1]);
+	} else {
+		location = corto_locateComponent(argv[1]);
+	}
 
 	if (location) {
 		if (env) {
@@ -327,7 +337,11 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
 			printf("corto: '%s' => '%s'\n", argv[1], location);
 		}
 	} else {
-		printf("corto: package '%s' not found\n", argv[1]);
+		if (!component) {
+			printf("corto: package '%s' not found\n", argv[1]);
+		} else {
+			printf("corto: component '%s' not found\n", argv[1]);
+		}
 		goto error;
 	}
 
