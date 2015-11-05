@@ -2,10 +2,6 @@
 COMPONENTS = %w(
     packages/corto/lang
     tools
-    libraries
-    generators
-    components
-    packages
 )
 
 require "#{ENV['CORTO_BUILD']}/forward"

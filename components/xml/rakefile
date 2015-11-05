@@ -1,7 +1,0 @@
-TARGET = :xml
-
-INCLUDE = ["/usr/include/libxml2"]
-LIB = ["xml2"]
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTO_BUILD']}/component"

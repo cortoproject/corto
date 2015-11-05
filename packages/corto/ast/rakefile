@@ -1,9 +1,0 @@
-PACKAGE = 'corto::ast'
-
-YACC = "ast.y"
-LEX = "ast.l"
-
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTO_BUILD']}/lexyacc"
-require "#{ENV['CORTO_BUILD']}/package"

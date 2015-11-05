@@ -1,6 +1,0 @@
-TARGET = :c_api
-
-USE_LIBRARY = ["c_common"]
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTO_BUILD']}/generator"

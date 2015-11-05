@@ -2848,6 +2848,8 @@ corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value
 
         if (parseLine) {
             corto_call(parseLine, &result, expr, scope, value);
+        } else {
+            corto_seterr(NULL);
         }
     }
 

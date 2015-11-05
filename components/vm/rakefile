@@ -1,5 +1,0 @@
-TARGET = :vm
-
-CFLAGS = ["-Wunused-parameter", "-Wno-gnu-label-as-value", "-Wno-unknown-pragmas", "-Wunused-parameter"]
- 
-require "#{ENV['CORTO_BUILD']}/component"

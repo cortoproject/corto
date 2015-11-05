@@ -1,8 +1,0 @@
-
-COMPONENTS = %w(
-    json
-    xml
-    vm
-)
-
-require "#{ENV['CORTO_BUILD']}/forward"

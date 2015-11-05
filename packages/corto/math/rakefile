@@ -1,7 +1,0 @@
-PACKAGE = 'corto::math'
-PREFIX = 'mth'
-LIB = ['m']
-
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTO_BUILD']}/package"

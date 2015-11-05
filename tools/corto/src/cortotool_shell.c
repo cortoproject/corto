@@ -661,7 +661,7 @@ static int cxsh_doCmd(char* cmd) {
                 cxsh_color(NORMAL);
             } else {
                 cxsh_color(ERROR_COLOR);
-                corto_print("expression '%s' did not resolve to a valid expression or command", cmd);
+                corto_print("'%s' does not resolve to a valid object or expression", cmd);
                 cxsh_color(NORMAL);
             }
         }

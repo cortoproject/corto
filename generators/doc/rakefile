@@ -1,5 +1,0 @@
-TARGET = :doc
-
-CFLAGS = ["-Wunused-parameter"]
-
-require "#{ENV['CORTO_BUILD']}/generator"

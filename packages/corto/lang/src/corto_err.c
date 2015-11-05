@@ -60,7 +60,7 @@ static char* corto_getLasterror(void) {
 static void corto_setLasterror(char* err) {
     corto_errThreadData *data = corto_getThreadData();
     if (data->lastError) corto_dealloc(data->lastError);
-    data->lastError = corto_strdup(err);
+    data->lastError = err ? corto_strdup(err) : NULL;
 }
 
 void corto_printBacktrace(FILE* f, int nEntries, char** symbols) {
@@ -263,10 +263,11 @@ char* corto_lasterr(void) {
 void corto_seterr(char *fmt, ...) {
     va_list list;
     char *err = NULL;
-
-    va_start(list, fmt);
-    corto_vasprintf(&err, fmt, list);
-    va_end(list);
+    if (fmt) {
+        va_start(list, fmt);
+        corto_vasprintf(&err, fmt, list);
+        va_end(list);
+    }
     corto_setLasterror(err);
     corto_dealloc(err);
 }

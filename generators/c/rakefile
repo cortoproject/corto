@@ -1,9 +1,0 @@
-
-COMPONENTS = [] << 
-    :api <<
-    :type <<
-    :interface <<
-    :meta <<
-    :project
-
-require "#{ENV['CORTO_BUILD']}/forward"
