@@ -115,7 +115,7 @@ task :collect do
     end
 end
 
-# Rule to autoamtically create components.txt
+# Rule to automatically create components.txt
 file ".corto/components.txt" do
     verbose(false)
     sh "mkdir -p .corto"
@@ -230,7 +230,7 @@ rule '__load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
 end
 
-# Generic rule for transferring source files into object files
+# Generic rule for translating source files into object files
 rule '.o' => ->(t) {t.pathmap("src/%f").ext(".c")} do |task|
     build_source(task.source, task.name, true)
 end

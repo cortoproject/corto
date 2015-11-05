@@ -1,6 +1,0 @@
-
-PACKAGE = 'list'
-
-LOCAL = true
-
-require "#{ENV['CORTO_BUILD']}/package"
