@@ -14,9 +14,6 @@ source configure; rake
 ```
 ### Dependencies
 Building Corto depends on the following libraries for building - make sure to have them installed:
- * flex
- * bison
- * libxml2-dev
  * rake
 
 ## Getting started
