@@ -18,6 +18,18 @@
 #include "execinfo.h"
 #include "string.h"
 
+#define BLACK   "\033[1;30m"
+#define RED     "\033[1;31m"
+#define GREEN   "\033[0;32m"
+#define YELLOW  "\033[0;33m"
+#define BLUE    "\033[1;34m"
+#define MAGENTA "\033[1;35m"
+#define CYAN    "\033[1;36m"
+#define WHITE   "\033[1;37m"
+#define GREY    "\033[0;37m"
+#define NORMAL  "\033[0;49m"
+#define BOLD    "\033[1;49m"
+
 // static char* corto_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static corto_threadKey corto_errKey = 0;
 
@@ -119,7 +131,6 @@ char* corto_backtraceString(void) {
 
 corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
     char buff[CORTO_MAX_LOG + 1];
-    unsigned int written;
     size_t n = 0;
     corto_string alloc = NULL;
     corto_string msg = buff;
@@ -140,10 +151,10 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
     strcat(msg, "\n");
     n++;
 
-    if ((written = fwrite(msg, 1, n, f)) != n) {
-        fprintf(f, 
-            "Error in corto_logv: number of bytes written (%u)"\
-            " does not match length of message (%zu).\n", written, n);
+    if (f == stderr) {
+        fprintf(f,  "%s%s%s", RED, msg, NORMAL);
+    } else {
+        fprintf(f, "%s", msg);
     }
 
     if (alloc) {

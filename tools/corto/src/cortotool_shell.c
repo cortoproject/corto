@@ -647,22 +647,18 @@ static int cxsh_doCmd(char* cmd) {
         if (cxsh_show(cmd)) {
             if ((lastErr = corto_lasterr())) {
                 unsigned int location = 0;
-                cxsh_color(ERROR_COLOR);
 
                 /* If lastError starts with a line:column: indication, print an arrow */
                 if ((location = cxsh_getErrorLocation(lastErr))) {
                     corto_id prompt;
                     cxsh_prompt(scope, FALSE, prompt);
-                    printf("%*s^\n", location - 1 + (unsigned int)strlen(prompt), "");
                     lastErr = strchr(lastErr, ':') + 2;
+                    corto_error("%*s^\n%s", location - 1 + (unsigned int)strlen(prompt), "", lastErr);
+                } else {
+                    corto_error("%s", lastErr);
                 }
-
-                corto_print("%s", lastErr);
-                cxsh_color(NORMAL);
             } else {
-                cxsh_color(ERROR_COLOR);
-                corto_print("'%s' does not resolve to a valid object or expression", cmd);
-                cxsh_color(NORMAL);
+                corto_error("'%s' does not resolve to a valid object or expression", cmd);
             }
         }
     }

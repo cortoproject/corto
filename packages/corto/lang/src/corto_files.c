@@ -55,7 +55,11 @@ int corto_touch(const char *file) {
 }
 
 int corto_chdir(const char *name) {
-    return chdir(name);
+    if (chdir(name)) {
+        corto_seterr("%s: %s", name, strerror(errno));
+        return -1;
+    }
+    return 0;
 }
 
 int corto_mkdir(const char *name) {
@@ -256,6 +260,7 @@ int corto_procwait(corto_pid pid, int8_t *rc) {
     int result = 0;
 
     if (waitpid(pid, &status, 0) != pid) {
+        corto_seterr("wait for %d failed: %s", pid, strerror(errno));
         return -1;
     }
 

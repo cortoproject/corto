@@ -286,6 +286,11 @@ void *corto_string_getDestinationPtr(
 {
     void *result = data->ptr;
 
+    if (!info) {
+        corto_seterr("excess elements in string");
+        goto error;
+    }
+
     if (data->allocValue) {
         result = data->allocValue(result, data->allocUdata);
     }
@@ -295,6 +300,8 @@ void *corto_string_getDestinationPtr(
     }
 
     return result;
+error:
+    return NULL;
 }
 
 static corto_string corto_string_deserParseAnonymousId (
@@ -333,6 +340,10 @@ static corto_int16 corto_string_deserParseValue(
     corto_string_deser_t* data) 
 {
     void *offset = corto_string_getDestinationPtr(info, data);
+    if (!offset) {
+        corto_seterr("%s: %s", value, corto_lasterr());
+        goto error;
+    }
 
     /* No more elements where available in the index, meaning an excess element */
     if (!info) {
@@ -526,6 +537,10 @@ static corto_string corto_string_parseAnonymous(
     }
 
     void *offset = corto_string_getDestinationPtr(info, data);
+    if (!offset) {
+        corto_seterr("%s: %s", str, corto_lasterr());
+        goto error;
+    }
     corto_setref(offset, o);
 
     return ptr;

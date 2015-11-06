@@ -4,46 +4,61 @@
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
     if (argc > 1) {
-        corto_chdir(argv[1]);
+        if (corto_chdir(argv[1])) {
+            goto error;
+        }
     }
 
 	corto_pid pid = corto_procrun("rake", (char*[]){"rake", "silent=true", NULL});
     if (corto_procwait(pid, &ret) || ret) {
+        if (ret) {
+            corto_seterr("build failed");
+        }
         goto error;
     }
 
 	return 0;
 error:
-    corto_error("build failed");
+    corto_error("corto: %s", corto_lasterr());
     return -1;
 }
 
 corto_int16 cortotool_rebuild(int argc, char *argv[]) {
     corto_int8 ret = 0;
     if (argc > 1) {
-        corto_chdir(argv[1]);
+        if (corto_chdir(argv[1])) {
+            goto error;
+        }
     }
 
     system("rake clobber 2> /dev/null");
     corto_pid pid = corto_procrun("rake", (char*[]){"rake", "default", "silent=true", NULL});
     if (corto_procwait(pid, &ret) || ret) {
+        if (ret) {
+            corto_seterr("build failed");
+        }
         goto error;
     }
 
     return 0;
 error:
-    corto_error("build failed");
+    corto_error("corto: %s", corto_lasterr());
     return -1;
 }
 
 corto_int16 cortotool_clean(int argc, char *argv[]) {
     if (argc > 1) {
-        corto_chdir(argv[1]);
+        if (corto_chdir(argv[1])) {
+            goto error;
+        }
     }
 
     system("rake clobber 2> /dev/null");
 
     return 0;
+error:
+    corto_error("corto: %s", corto_lasterr());
+    return -1;
 }
 
 void cortotool_buildHelp(void) {
