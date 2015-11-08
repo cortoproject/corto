@@ -3,6 +3,7 @@
 #include "ctype.h"
 #include "corto_string_ser.h"
 #include "jsw_rbtree.h"
+#include "fnmatch.h"
 #include "corto__object.h"
 
 extern corto_threadKey CORTO_KEY_SELECT;
@@ -30,6 +31,7 @@ typedef struct corto_selectStack {
     corto_object o; /* Object of whose scope is being iterated */
     jsw_rbtrav_t trav; /* Persistent tree iterator */
     corto_iter iter;
+    corto_string filter;
 
     /* Callback for either returning single object, traversing 
      * scope or traversing a tree. */
@@ -257,6 +259,26 @@ static void corto_selectCurrent(
 static void corto_selectScope(
     corto_selectData *data, 
     corto_selectStack *frame) {
+
+    if (frame->filter) {
+        data->next = NULL;
+        while (corto_iterHasNext(&frame->iter)) {
+            corto_object o = corto_iterNext(&frame->iter);
+            if (!fnmatch(frame->filter, corto_nameof(o), 0)) {
+                data->next = &data->item;
+                corto_setItemData(o, data->next);
+                break;
+            }
+        }
+    } else {
+        if (corto_iterHasNext(&frame->iter)) {
+            corto_object o = corto_iterNext(&frame->iter);
+            data->next = &data->item;
+            corto_setItemData(o, data->next);
+        } else {
+            data->next = NULL;
+        }
+    }
 }
 
 static void corto_selectTree(
@@ -306,13 +328,18 @@ static int corto_selectRun(corto_selectData *data) {
                 if (o) {
                     corto_release(o);
                 }
+                break;
+            } else {
+                frame->filter = op->start;
             }
-            break;
         case TOKEN_WILDCARD:
+            if (op->token == TOKEN_WILDCARD) {
+                frame->filter = "?";
+            }
         case TOKEN_ASTERISK: {
             corto_rbtree tree = corto_scopeof(frame->o);
             if (tree) {
-                frame->iter = corto_rbtreeIter(tree);
+                frame->iter = _corto_rbtreeIter(tree, &frame->trav);
             }
             break;
         default:
