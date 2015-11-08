@@ -221,7 +221,7 @@ static char* corto_valueKindString[CORTO_CONSTANT+1] = {"object", "base", "membe
 char* corto_strving(corto_value* v, char* buffer, unsigned int length) {
     corto_id object_name;
     corto_member m;
-    corto_value* parents[CORTO_MAX_TYPE_DEPTH];
+    corto_value* parents[CORTO_MAX_INHERITANCE_DEPTH];
     corto_int32 parentCount, i;
     corto_value* vptr;
 
@@ -293,7 +293,7 @@ error:
 
 char* corto_valueExpr(corto_value* v, char* buffer, unsigned int length) {
     corto_member m;
-    corto_value* parents[CORTO_MAX_TYPE_DEPTH];
+    corto_value* parents[CORTO_MAX_INHERITANCE_DEPTH];
     corto_int32 parentCount, i;
     corto_value* vptr;
 

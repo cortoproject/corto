@@ -52,7 +52,7 @@ typedef struct corto_waitForObject {
     corto_sem semaphore;
     corto_observer observer;
     int triggerCount; /* Value is atomically incremented\decremented to make sure wait is only triggered once */
-}corto_waitForObject;
+} corto_waitForObject;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
  * This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
@@ -104,6 +104,7 @@ static struct corto_observerAdmin* corto_observerAdminGet(void) {
 corto__observer** corto_observersPush(corto__observer**  *observers, corto_object *this) {
     corto__observer** result;
     corto_observerAdmin *admin = corto_observerAdminGet();
+
     result = admin->stack[admin->sp].observers = *observers;
     admin->stack[admin->sp++].free = FALSE;
 
@@ -1343,6 +1344,27 @@ corto_string corto_nameof(corto_object o) {
 err_not_scoped:
     corto_critical("corto_nameof: object %p is not scoped.", o);
     return NULL;
+}
+
+/* Get scope tree */
+corto_rbtree corto_scopeof(corto_object o) {
+    corto__object* _o;
+    corto__scope* scope;
+    corto_rbtree result;
+
+    result = NULL;
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    scope = corto__objectScope(_o);
+    if (scope) {
+        result = scope->scope;
+    } else {
+        goto err_not_scoped;
+    }
+
+    return result;
+err_not_scoped:
+    corto_critical("corto_nameof: object %p is not scoped.", o);
+    return NULL;    
 }
 
 corto_uint32 corto_scopeSize(corto_object o) {

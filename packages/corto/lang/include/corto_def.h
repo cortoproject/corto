@@ -48,15 +48,44 @@ typedef int (*corto_walkAction)(void* o, void* userData);
 typedef struct corto_rbtree_s* corto_rbtree;
 typedef struct corto_ll_s* corto_ll;
 
-/* Configuration parameters */
-#define CORTO_MAX_SCOPE_DEPTH (256)
-#define CORTO_MAX_TYPE_DEPTH (32)
-#define CORTO_MAX_INHERITANCE_DEPTH (32)
-#define CORTO_MAX_BINDINGS (256)
-#define CORTO_MAX_THREADS (512)
-#define CORTO_MAX_NOTIFY_DEPTH (32)
-#define CORTO_MAX_STRING_LITERAL_LENGTH (512)
-#define CORTO_MAX_WAIT_FOR_OBJECTS (256)
+/* 
+ * Configuration parameters
+ *   Increasing these numbers will increase memory usage of Corto in various
+ *   scenario's.
+ */
+
+/* The maximum nesting level of objects in the hierarchy. There are in total
+ * 62 orders of magnitude in the universe, so 64 should be adequate to organize
+ * most information. 
+ */
+#define CORTO_MAX_SCOPE_DEPTH (64) 
+
+/* The maximum inheritance depth. Think 16 is too small? The Java world record 
+ * is set at 12 levels of inheritance: 
+ * http://www.javaspecialists.eu/records/index.jsp
+ *
+ * Please don't use 16 levels of inheritance. 
+ */
+#define CORTO_MAX_INHERITANCE_DEPTH (16)
+
+/* The maximum number of languages you can bind to a single Corto process. */ 
+#define CORTO_MAX_BINDINGS (16)
+
+/* The maximum number of threads that can make use of the Corto API. */
+#define CORTO_MAX_THREADS (64)
+
+/* The maximum number of nested notifications. */
+#define CORTO_MAX_NOTIFY_DEPTH (16)
+
+/* The max length of a scoped identifier (incl \0). When combining this with the
+ * MAX_SCOPE_DEPTH, and taking into consideration the scope separator (/) you
+ * can have a tree that is 64 levels deep, where each object has a 7-character
+ * name, and one object with 6, to compensate for \0. Or, you can have an object
+ * in the root with a 510 character name with no children. */
+#define CORTO_MAX_PATH_LENGTH (512)
+
+/* The maximum number of objects that a thread can wait for simultaneously */
+#define CORTO_MAX_WAIT_FOR_OBJECTS (32)
 
 /* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */

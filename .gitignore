@@ -1,9 +1,6 @@
 *.o
 *.so
 bin/*
-generators/bin/*
-libraries/bin/*
-components/bin/*
 lex.yy.c
 y.output
 y.tab.c

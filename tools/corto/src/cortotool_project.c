@@ -20,13 +20,13 @@ static corto_int16 cortotool_setupProject(const char *name, corto_bool isLocal, 
         goto error;
     }
 
-    if (!isLocal) {
+/*    if (!isLocal) {
         corto_pid pid = corto_procrun("git", (char*[]){"git", "init", (char *)name, NULL});
         if (pid && corto_procwait(pid, NULL)) {
             corto_error("corto: failed to initialize git repository (is git installed?)\n");
             goto error;
         }
-    }
+    }*/
 
 	return 0;
 error:

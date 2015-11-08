@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-typedef char corto_id[512];
+typedef char corto_id[CORTO_MAX_PATH_LENGTH];
 
 typedef int (*corto_scopeWalkAction)(corto_object o, void* userData);
 typedef corto_equalityKind ___ (*corto_equalsAction)(corto_type _this, const void* o1, const void* o2);
