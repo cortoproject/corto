@@ -353,6 +353,8 @@ static void corto_selectTree(
                 frame->next = corto_selectTree;
                 frame->filter = data->stack[data->sp - 1].filter;
             }
+        } else {
+            data->next = NULL;
         }
     } while (frame->filter && (data->next && fnmatch(frame->filter, data->next->name, 0)));
 }
