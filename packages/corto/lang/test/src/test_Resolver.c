@@ -9,7 +9,7 @@
 #include "test.h"
 
 corto_void _test_Resolver_setup(test_Resolver this) {
-/* $begin(/test/Resolver/setup) */
+/* $begin(test/Resolver/setup) */
 
     /* << Insert implementation >> */
 
@@ -17,7 +17,7 @@ corto_void _test_Resolver_setup(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
-/* $begin(/test/Resolver/tc_caseInsensitive) */
+/* $begin(test/Resolver/tc_caseInsensitive) */
 
     corto_object o = corto_resolve(NULL, "COrTO");
     test_assert(o != NULL);
@@ -27,7 +27,7 @@ corto_void _test_Resolver_tc_caseInsensitive(test_Resolver this) {
 /* $end */
 }
 
-/* $header(/test/Resolver/tc_resolveAll) */
+/* $header(test/Resolver/tc_resolveAll) */
 int tc_resolveAllWalk(corto_object o, void *udata) {
     CORTO_UNUSED(udata);
     corto_id id;
@@ -48,7 +48,7 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
 }
 /* $end */
 corto_void _test_Resolver_tc_resolveAll(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveAll) */
+/* $begin(test/Resolver/tc_resolveAll) */
 
     corto_scopeWalk(root_o, tc_resolveAllWalk, NULL);
 
@@ -56,7 +56,7 @@ corto_void _test_Resolver_tc_resolveAll(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveAnonymous(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveAnonymous) */
+/* $begin(test/Resolver/tc_resolveAnonymous) */
 
     corto_object o = corto_resolve(NULL, "string{\"Hello World\"}");
     test_assert(o != NULL);
@@ -66,7 +66,7 @@ corto_void _test_Resolver_tc_resolveAnonymous(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveCorto(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveCorto) */
+/* $begin(test/Resolver/tc_resolveCorto) */
 
     corto_object o = corto_resolve(NULL, "corto");
     test_assert (o == corto_o);
@@ -76,7 +76,7 @@ corto_void _test_Resolver_tc_resolveCorto(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveEmptyString(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveEmptyString) */
+/* $begin(test/Resolver/tc_resolveEmptyString) */
 
     corto_object o = corto_resolve(NULL, "");
     test_assert (o == NULL);
@@ -86,7 +86,7 @@ corto_void _test_Resolver_tc_resolveEmptyString(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveFunctionArgs(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveFunctionArgs) */
+/* $begin(test/Resolver/tc_resolveFunctionArgs) */
 
     corto_object o = corto_resolve(NULL, "test/functionToResolve(int32,int32)");
     test_assert(o != NULL);
@@ -96,7 +96,7 @@ corto_void _test_Resolver_tc_resolveFunctionArgs(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveFunctionNoArgs(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveFunctionNoArgs) */
+/* $begin(test/Resolver/tc_resolveFunctionNoArgs) */
 
     corto_object o = corto_resolve(NULL, "test/functionToResolve");
     test_assert(o != NULL);
@@ -106,7 +106,7 @@ corto_void _test_Resolver_tc_resolveFunctionNoArgs(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveIo(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveIo) */
+/* $begin(test/Resolver/tc_resolveIo) */
 
     corto_object o = corto_resolve(NULL, "io");
     test_assert(o != NULL);
@@ -118,7 +118,7 @@ corto_void _test_Resolver_tc_resolveIo(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveLang(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveLang) */
+/* $begin(test/Resolver/tc_resolveLang) */
 
     corto_object o = corto_resolve(NULL, "lang");
     test_assert(o != NULL);    
@@ -130,7 +130,7 @@ corto_void _test_Resolver_tc_resolveLang(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveNull(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveNull) */
+/* $begin(test/Resolver/tc_resolveNull) */
 
     corto_object o = corto_resolve(NULL, NULL);
     test_assert (o == root_o);
@@ -140,7 +140,7 @@ corto_void _test_Resolver_tc_resolveNull(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunction(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveParenthesesNoFunction) */
+/* $begin(test/Resolver/tc_resolveParenthesesNoFunction) */
 
     corto_object o = corto_voidCreateChild(NULL, "o()");
     test_assert(o != NULL);
@@ -157,7 +157,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunction(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveParenthesesNoFunctionArgs) */
+/* $begin(test/Resolver/tc_resolveParenthesesNoFunctionArgs) */
 
     corto_object o = corto_voidCreateChild(NULL, "o(uint32 a)");
     test_assert(o != NULL);
@@ -174,7 +174,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(test_Resolver this
 }
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveParenthesesNoFunctionArgsScoped) */
+/* $begin(test/Resolver/tc_resolveParenthesesNoFunctionArgsScoped) */
     corto_id id;
 
     corto_object parent = corto_voidCreateChild(NULL, "parent");
@@ -197,7 +197,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(test_Resolve
 }
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgs) */
+/* $begin(test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgs) */
 
     corto_object o = corto_voidCreateChild(NULL, "o(uint32 a)");
     test_assert(o != NULL);
@@ -212,7 +212,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(test_Resol
 }
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgsScoped) */
+/* $begin(test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgsScoped) */
     corto_id id;
 
     corto_object parent = corto_voidCreateChild(NULL, "parent");
@@ -233,7 +233,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(test
 }
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveParenthesesNoFunctionScoped) */
+/* $begin(test/Resolver/tc_resolveParenthesesNoFunctionScoped) */
     corto_id id;
 
     corto_object parent = corto_voidCreateChild(NULL, "parent");
@@ -256,7 +256,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(test_Resolver th
 }
 
 corto_void _test_Resolver_tc_resolveRoot(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveRoot) */
+/* $begin(test/Resolver/tc_resolveRoot) */
 
     corto_object o = corto_resolve(NULL, "/");
     test_assert (o == root_o);
@@ -266,7 +266,7 @@ corto_void _test_Resolver_tc_resolveRoot(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveString(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveString) */
+/* $begin(test/Resolver/tc_resolveString) */
 
     corto_object o = corto_resolve(NULL, "string");
     test_assert (o == corto_string_o);
@@ -276,7 +276,7 @@ corto_void _test_Resolver_tc_resolveString(test_Resolver this) {
 }
 
 corto_void _test_Resolver_tc_resolveThis(test_Resolver this) {
-/* $begin(/test/Resolver/tc_resolveThis) */
+/* $begin(test/Resolver/tc_resolveThis) */
 
     corto_object o = corto_resolve(corto_lang_o, ".");
     test_assert(o == corto_lang_o);
@@ -286,7 +286,7 @@ corto_void _test_Resolver_tc_resolveThis(test_Resolver this) {
 }
 
 corto_void _test_Resolver_teardown(test_Resolver this) {
-/* $begin(/test/Resolver/teardown) */
+/* $begin(test/Resolver/teardown) */
 
     /* << Insert implementation >> */
 

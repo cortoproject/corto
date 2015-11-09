@@ -41,6 +41,7 @@ typedef struct corto_selectStack {
 
 typedef struct corto_selectData {
     corto_string expr;                           /* Full expression */
+    corto_object scope;                          /* Scope passed to select */
     corto_selectOp program[CORTO_SELECT_MAX_OP]; /* Parsed program */
     corto_uint8 programSize;
     corto_selectStack stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
@@ -110,7 +111,9 @@ static int corto_selectParse(corto_selectData *data) {
             }
             break;
         default:
-            while((ch = *ptr++) && (isalnum(ch) || (ch == '*') || (ch == '?'))) {
+            while((ch = *ptr++) && 
+                  (isalnum(ch) || (ch == '*') || (ch == '?') || (ch == '(') || 
+                    (ch == ')') || (ch == '{') || (ch == '}'))) {
                 if ((ch == '*') || (ch == '?')) {
                     data->program[op].containsWildcard = TRUE;
                 }
@@ -131,7 +134,7 @@ static int corto_selectParse(corto_selectData *data) {
                     data->program[op].token = TOKEN_IDENTIFIER;
                 }
             } else {
-                corto_seterr("invalid character '%c", ch);
+                corto_seterr("invalid character '%c'", ch);
                 goto error;
             }
             ptr--;
@@ -149,7 +152,6 @@ static int corto_selectParse(corto_selectData *data) {
 
     return 0;
 error:
-    printf("parse error\n");
     return -1;
 }
 
@@ -235,8 +237,16 @@ error:
     return -1;
 }
 
-static void corto_setItemData(corto_object o, corto_selectItem *item) {
-    corto_fullname(corto_parentof(o), item->parent);
+static void corto_setItemData(
+    corto_object o, 
+    corto_selectItem *item, 
+    corto_selectData *data) 
+{
+    if (o != root_o) {
+        corto_relname(data->scope, corto_parentof(o), item->parent);
+    } else {
+        *item->parent = '\0';
+    }
 
     if (corto_nameof(o)) {
         strcpy(item->name, corto_nameof(o));
@@ -245,7 +255,13 @@ static void corto_setItemData(corto_object o, corto_selectItem *item) {
     }
 
     if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
-        corto_fullname(corto_typeof(o), item->type);
+        if (corto_parentof(corto_typeof(o)) == corto_lang_o) {
+            strcpy(item->type, corto_nameof(corto_typeof(o)));
+        } else {
+            corto_id type;
+            corto_fullname(corto_typeof(o), type);
+            strcpy(item->type, type + 1);
+        }
     } else {
         corto_string_ser_t serData;
         struct corto_serializer_s s;
@@ -268,7 +284,7 @@ static void corto_selectThis(
 
     if (!data->next) {
         data->next = &data->item;
-        corto_setItemData(frame->o, data->next);
+        corto_setItemData(frame->o, data->next, data);
     } else {
         corto_setref(&frame->o, NULL);
         data->next = NULL;
@@ -285,7 +301,7 @@ static void corto_selectScope(
             corto_object o = corto_iterNext(&frame->iter);
             if (!fnmatch(frame->filter, corto_nameof(o), 0)) {
                 data->next = &data->item;
-                corto_setItemData(o, data->next);
+                corto_setItemData(o, data->next, data);
                 break;
             }
         }
@@ -293,7 +309,7 @@ static void corto_selectScope(
         if (corto_iterHasNext(&frame->iter)) {
             corto_object o = corto_iterNext(&frame->iter);
             data->next = &data->item;
-            corto_setItemData(o, data->next);
+            corto_setItemData(o, data->next, data);
         } else {
             data->next = NULL;
         }
@@ -307,29 +323,37 @@ static void corto_selectTree(
 
     data->next = NULL;
 
-    if (corto_iterHasNext(&frame->iter)) {
-        frame->o = corto_iterNext(&frame->iter);
-        corto_rbtree scope = corto_scopeof(frame->o);
+    do {
+        if (corto_iterHasNext(&frame->iter)) {
+            frame->o = corto_iterNext(&frame->iter);
+            corto_rbtree scope = corto_scopeof(frame->o);
 
-        data->next = &data->item;
-        corto_setItemData(frame->o, data->next);
+            data->next = &data->item;
+            corto_setItemData(frame->o, data->next, data);
 
-        if (scope && corto_rbtreeSize(scope)) {
-            frame = &data->stack[++ data->sp];
-            frame->iter = _corto_rbtreeIter(scope, &frame->trav);
-            frame->next = corto_selectTree;
+            if (scope && corto_rbtreeSize(scope)) {
+                frame = &data->stack[++ data->sp];
+                frame->iter = _corto_rbtreeIter(scope, &frame->trav);
+                frame->next = corto_selectTree;
+                frame->filter = data->stack[data->sp - 1].filter;
+            }
+        } else if (data->sp) {
+            do {
+                data->sp --;
+                frame = &data->stack[data->sp];
+            } while (data->sp && !corto_iterHasNext(&frame->iter));
+
+            if (data->sp) {
+                data->next = &data->item;
+                frame->o = corto_iterNext(&frame->iter);
+                corto_setItemData(frame->o, data->next, data);
+            } else {
+                data->next = NULL;
+            }
+        } else {
+            data->next = NULL;
         }
-    } else if (data->sp) {
-        do {
-            data->sp --;
-            frame = &data->stack[data->sp];
-        } while (data->sp && !corto_iterHasNext(&frame->iter));
-        data->next = &data->item;
-        frame->o = corto_iterNext(&frame->iter);
-        corto_setItemData(frame->o, data->next);
-    } else {
-        data->next = NULL;
-    }
+    } while (frame->filter && (data->next && fnmatch(frame->filter, data->next->name, 0)));
 }
 
 static int corto_selectRun(corto_selectData *data) {
@@ -431,9 +455,13 @@ static void* corto_selectNext(corto_iter *iter) {
 
 corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter_out) {
     corto_selectData *data = corto_selectDataGet();
-    CORTO_UNUSED(scope);
 
-    data->expr = corto_strdup(expr);
+    if (!scope) {
+        scope = root_o;
+    }
+
+    corto_setstr(&data->expr, expr);
+    data->scope = scope;
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;
@@ -451,6 +479,8 @@ corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter
 
     /* Prepare first stack frame */
     corto_claim(scope);
+    memset(&data->stack, 0, sizeof(data->stack));
+    data->sp = 0;
     data->stack[0].o = scope;
 
     return 0;

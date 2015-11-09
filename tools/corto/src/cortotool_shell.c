@@ -181,7 +181,7 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
     return buff;
 }
 
-static int cxsh_printRow(corto_string name, corto_string type) {
+static int cxsh_printRow(corto_string parent, corto_string name, corto_string type) {
     corto_string remaining = 0;
     corto_string objcolor = OBJECT_COLOR;
     corto_int32 colName = CXSH_COL_NAME;
@@ -189,6 +189,10 @@ static int cxsh_printRow(corto_string name, corto_string type) {
     /* Print columns */
     printf("");
     cxsh_color(objcolor);
+    if (strcmp(parent, ".")) {
+        printf("%s/", parent);
+        colName -= strlen(parent) + 1;
+    }
     remaining = cxsh_printColumnValue(name, colName); 
     cxsh_color(NORMAL);
     cxsh_color(TYPE_COLOR); cxsh_printColumnValue(type, CXSH_COL_TYPE); cxsh_color(NORMAL);
@@ -211,19 +215,29 @@ static void cxsh_ls(char* arg) {
     corto_id buff;
     corto_uint32 i = 0;
 
-    sprintf(buff, "%s/*", arg);
+    char lastCh = arg[strlen(arg) - 1];
+
+    if ((lastCh != '/') && (lastCh != '.') && (lastCh != '*') && (lastCh != '?')) {
+        sprintf(buff, "%s/*", arg);
+    } else {
+        strcpy(buff, arg);
+    }
 
     if (corto_select(scope, buff, &iter)) {
         corto_error("error: %s", corto_lasterr());
     } else {
         while (corto_iterHasNext(&iter)) {
             corto_selectItem *item = corto_iterNext(&iter);
-            cxsh_printRow(item->name, item->type);
+            cxsh_printRow(item->parent, item->name, item->type);
             i ++;
         }
 
         if (!i) {
             corto_print("no objects.");
+        } else if (i > 1) {
+            corto_print("%d objects", i);
+        } else {
+            corto_print("%d object", i);
         }
     }
 }
