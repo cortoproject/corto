@@ -34,9 +34,8 @@ corto_void _test_RelativeName_tc_fromChild(test_RelativeName this) {
     corto_string result;
 
     result = corto_relname(this->child, this->obj, id);
-    test_assert(result == NULL);
-    corto_string err = corto_lasterr();
-    test_assert(!strcmp(err, "origin is not in path of object"));
+    test_assert(result != NULL);
+    test_assert(!strcmp(result, ".."));
 
 /* $end */
 }
@@ -53,9 +52,21 @@ corto_void _test_RelativeName_tc_fromDisjunct(test_RelativeName this) {
 /* $end */
 }
 
+corto_void _test_RelativeName_tc_fromGrandchild(test_RelativeName this) {
+/* $begin(test/RelativeName/tc_fromGrandchild) */
+
+    corto_id id;
+    corto_string result;
+
+    result = corto_relname(this->child, this->tier3, id);
+    test_assert(result != NULL);
+    test_assert(!strcmp(result, "../.."));
+
+/* $end */
+}
+
 corto_void _test_RelativeName_tc_fromOneUp(test_RelativeName this) {
 /* $begin(test/RelativeName/tc_fromOneUp) */
-
     corto_id id;
     corto_string result;
 
@@ -123,6 +134,18 @@ corto_void _test_RelativeName_tc_fromTwoUp(test_RelativeName this) {
     result = corto_relname(this->tier1, this->obj, id);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "tier2/tier3/obj"));
+
+/* $end */
+}
+
+corto_void _test_RelativeName_tc_rootFromObj(test_RelativeName this) {
+/* $begin(test/RelativeName/tc_rootFromObj) */
+    corto_id id;
+    corto_string result;
+
+    result = corto_relname(this->tier1, root_o, id);
+    test_assert(result != NULL);
+    test_assert(!strcmp(result, ".."));
 
 /* $end */
 }

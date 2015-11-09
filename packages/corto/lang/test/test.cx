@@ -129,8 +129,10 @@ test::Suite RelativeName::
     void tc_fromTwoUp()
     void tc_fromThreeUp()
     void tc_fromChild()
+    void tc_fromGrandchild()
     void tc_fromDisjunct()
     void tc_fromSelf()
+    void tc_rootFromObj()
 
 void functionToResolve(int32 a, int32 b)
 

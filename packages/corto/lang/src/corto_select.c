@@ -379,8 +379,13 @@ static int corto_selectRun(corto_selectData *data) {
             frame->next = corto_selectThis;
             break;
         case TOKEN_PARENT:
-            corto_setref(&frame->o, corto_parentof(frame->o));
-            frame->next = corto_selectThis;
+            if (frame->o != root_o) {
+                corto_setref(&frame->o, corto_parentof(frame->o));
+                frame->next = corto_selectThis;
+            } else {
+                corto_seterr("can't select parent of root");
+                goto error;
+            }
             break;
         case TOKEN_SCOPE:
             frame->next = corto_selectScope;

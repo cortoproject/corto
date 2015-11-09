@@ -1493,6 +1493,8 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
     corto_uint32 from_i, o_i;
     corto_char* ptr;
     corto_uint32 length;
+    corto_bool reverse = FALSE;
+    corto_uint32 count = 0;
 
     corto_assert(from != NULL, "relname called with NULL for parameter 'from'.");
     corto_assert(o != NULL, "relname called with NULL for parameter 'to'.");
@@ -1508,35 +1510,50 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
         corto_scopeStack(o, o_s, &o_i);
 
         if (from_i > o_i) {
-            corto_seterr("origin is not in path of object");
-            return NULL;
+            reverse = TRUE; /* from is in scope of o */
         }
 
-        from_i--;
-        o_i--;
-        while(from_s[from_i] == o_s[o_i]) {
+        do {
             from_i--;
             o_i--;
             if (!o_i || !from_i) {
                 break;
             }
+        } while(from_s[from_i] == o_s[o_i]);
+
+        if (!reverse) {
+            count = o_i;
+        } else {
+            count = from_i;
         }
 
-        if (from_s[from_i] == o_s[o_i] && o_i) {
-            o_i--;
+        if (from_s[from_i] == o_s[o_i]) {
+            if (count) {
+                count--;
+            }
         }
 
         ptr = buffer;
-        while(o_i) {
-            length = strlen(corto_nameof(o_s[o_i]));
-            memcpy(ptr, corto_nameof(o_s[o_i]), length);
+        while(count) {
+            if (!reverse) {
+                length = strlen(corto_nameof(o_s[count]));
+                memcpy(ptr, corto_nameof(o_s[count]), length);
+            } else {
+                length = 2;
+                memcpy(ptr, "..", 2);
+            }
             ptr += length;
             *ptr = '/';
             ptr += 1;
-            o_i--;
+            count--;
         }
-        length = strlen(corto_nameof(o_s[o_i]));
-        memcpy(ptr, corto_nameof(o_s[o_i]), length);
+        if (!reverse) {
+            length = strlen(corto_nameof(o_s[count]));
+            memcpy(ptr, corto_nameof(o_s[count]), length);
+        } else {
+            length = 2;
+            memcpy(ptr, "..", 2);
+        }
         ptr += length;
         *ptr = '\0';
     }

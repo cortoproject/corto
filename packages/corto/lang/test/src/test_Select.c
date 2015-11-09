@@ -100,40 +100,100 @@ corto_void _test_Select_tc_selectErrScopeScope(test_Select this) {
 
 corto_void _test_Select_tc_selectIdentifier(test_Select this) {
 /* $begin(test/Select/tc_selectIdentifier) */
+    corto_ll results = NULL;
+    test_selectItem *item;
 
-    /* << Insert implementation >> */
+    corto_object a = corto_resolve(NULL, "a");
+    test_assert(a != NULL);
+
+    results = test_Select_collect(NULL, "a");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    item = corto_llGet(results, 0);
+    test_assert(item != NULL);
+    test_assert(!strcmp(item->parent, "."));
+    test_assert(!strcmp(item->name, "a"));
+    test_assert(!strcmp(item->type, "void"));
+
+    corto_release(a);
 
 /* $end */
 }
 
 corto_void _test_Select_tc_selectParent(test_Select this) {
 /* $begin(test/Select/tc_selectParent) */
+    corto_ll results = NULL;
+    test_selectItem *item;
 
-    /* << Insert implementation >> */
+    corto_object a = corto_resolve(NULL, "a");
+    test_assert(a != NULL);
+
+    results = test_Select_collect(a, "..");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    item = corto_llGet(results, 0);
+    test_assert(item != NULL);
+    test_assert(!strcmp(item->parent, ""));
+    test_assert(!strcmp(item->name, ""));
+    test_assert(!strcmp(item->type, "package"));
+
+    corto_release(a);
 
 /* $end */
 }
 
 corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 /* $begin(test/Select/tc_selectScopedIdentifier) */
+    corto_ll results = NULL;
+    test_selectItem *item;
 
-    /* << Insert implementation >> */
+    results = test_Select_collect(NULL, "a/b");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    item = corto_llGet(results, 0);
+    test_assert(item != NULL);
+    test_assert(!strcmp(item->parent, "a"));
+    test_assert(!strcmp(item->name, "b"));
+    test_assert(!strcmp(item->type, "void"));
 
 /* $end */
 }
 
 corto_void _test_Select_tc_selectScopedParent(test_Select this) {
 /* $begin(test/Select/tc_selectScopedParent) */
+    corto_ll results = NULL;
+    test_selectItem *item;
 
-    /* << Insert implementation >> */
+    results = test_Select_collect(NULL, "a/..");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    item = corto_llGet(results, 0);
+    test_assert(item != NULL);
+    test_assert(!strcmp(item->parent, ""));
+    test_assert(!strcmp(item->name, ""));
+    test_assert(!strcmp(item->type, "package"));
 
 /* $end */
 }
 
 corto_void _test_Select_tc_selectScopedThis(test_Select this) {
 /* $begin(test/Select/tc_selectScopedThis) */
+    corto_ll results = NULL;
+    test_selectItem *item;
 
-    /* << Insert implementation >> */
+    results = test_Select_collect(NULL, "a/.");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    item = corto_llGet(results, 0);
+    test_assert(item != NULL);
+    test_assert(!strcmp(item->parent, "."));
+    test_assert(!strcmp(item->name, "a"));
+    test_assert(!strcmp(item->type, "void"));
 
 /* $end */
 }
@@ -152,9 +212,9 @@ corto_void _test_Select_tc_selectThis(test_Select this) {
 
     item = corto_llGet(results, 0);
     test_assert(item != NULL);
-    test_assert(!strcmp(item->parent, "."));
+    test_assert(!strcmp(item->parent, ".."));
     test_assert(!strcmp(item->name, "a"));
-    test_assert(!strcmp(item->type, "::corto::lang::void"));
+    test_assert(!strcmp(item->type, "void"));
 
     corto_release(a);
 
