@@ -269,9 +269,9 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
         corto_id id;
         corto_string err = corto_lasterr();
         if (err) {
-            corto_seterr("%s::init failed: %s", corto_fullname(corto_typeof(o), id), err);
+            corto_seterr("%s/init failed: %s", corto_fullname(corto_typeof(o), id), err);
         } else {
-            corto_seterr("%s::init failed", corto_fullname(corto_typeof(o), id));
+            corto_seterr("%s/init failed", corto_fullname(corto_typeof(o), id));
         }
         goto error;
     }
@@ -960,9 +960,9 @@ corto_object _corto_declare(corto_type type) {
                 corto_id id;
                 corto_string err = corto_lasterr();
                 if (err) {
-                    corto_seterr("%s::init failed: %s", corto_fullname(type, id), err);
+                    corto_seterr("%s/init failed: %s", corto_fullname(type, id), err);
                 } else {
-                    corto_seterr("%s::init failed", corto_fullname(type, id));
+                    corto_seterr("%s/init failed", corto_fullname(type, id));
                 }
                 goto error_init;
             }
@@ -1443,8 +1443,8 @@ corto_string corto_fullname(corto_object o, corto_id buffer) {
 
         ptr = buffer;
         if (depth == 1) {
-            *(corto_uint16*)ptr = CORTO_SCOPE_HEX;
-            ptr += 2;
+            *ptr = '/';
+            ptr += 1;
         } else {
             while(depth) {
                 depth--;
@@ -1452,8 +1452,8 @@ corto_string corto_fullname(corto_object o, corto_id buffer) {
 
                 if ((name = corto_nameof(o))) {
                     /* Copy scope operator */
-                    *(corto_uint16*)ptr = CORTO_SCOPE_HEX;
-                    ptr += 2;
+                    *ptr = '/';
+                    ptr += 1;
 
                     /* Copy name */
                     len = strlen(name);
@@ -1502,7 +1502,7 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
     } else if (from == root_o) {
         corto_id buff;
         corto_fullname(o, buff);
-        strcpy(buffer, buff + 2);
+        strcpy(buffer, buff + 1);
     } else {
         corto_scopeStack(from, from_s, &from_i);
         corto_scopeStack(o, o_s, &o_i);
@@ -1531,8 +1531,8 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
             length = strlen(corto_nameof(o_s[o_i]));
             memcpy(ptr, corto_nameof(o_s[o_i]), length);
             ptr += length;
-            *(corto_uint16*)ptr = CORTO_SCOPE_HEX;
-            ptr += 2;
+            *ptr = '/';
+            ptr += 1;
             o_i--;
         }
         length = strlen(corto_nameof(o_s[o_i]));
@@ -2862,21 +2862,22 @@ corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value
         corto_valueObjectInit(value, o, NULL);
         result = 0;
     } else {
-        if (!parseLine && !searchedForParser) {
-            parseLine = corto_resolve(NULL, "::corto::ast::Parser::parseLine");
-            searchedForParser = TRUE;
-        }
+        if (!corto_lasterr()) {
+            if (!parseLine && !searchedForParser) {
+                parseLine = corto_resolve(NULL, "::corto::ast::Parser::parseLine");
+                searchedForParser = TRUE;
+            }
 
-        if (parseLine) {
-            corto_call(parseLine, &result, expr, scope, value);
-        } else {
-            corto_seterr(NULL);
+            if (parseLine) {
+                corto_call(parseLine, &result, expr, scope, value);
+            } else {
+                corto_seterr(NULL);
+            }
         }
     }
 
     return result;
 }
-
 
 static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffer) {
     char *ptr = buffer, ch;

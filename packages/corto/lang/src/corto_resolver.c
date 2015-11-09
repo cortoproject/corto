@@ -53,23 +53,22 @@ corto_object corto_resolve(corto_object _scope, corto_string str) {
     int step = 2;
 
     if (!str) {
-        str = "::";
+        str = "/";
     }
 
     if (!*str) {
         return NULL;
     }
 
-    if ((str[0] == '.') && (str[1] == '\0')) {
-        corto_claim(_scope);
-        return _scope;
-    }
-
     if (*str == '<') {
         return corto_resolveAddress(str);
     }
 
-    _scope_start = corto_lang_o;
+    if (*str == '.') {
+        _scope_start = _scope;
+    } else {
+        _scope_start = corto_lang_o;
+    }
     scope = _scope_start;
 
     if (!_scope) {
@@ -124,7 +123,16 @@ repeat:
             *bptr = '\0';
             *bptrLc = '\0';
 
-            if (corto_scopeSize(o)) {
+            if (!strcmp(buffer, ".")) {
+                /* o is already set to scope, just continue */
+            } else if (!strcmp(buffer, "..")) {
+                o = corto_parentof(o);
+                if (!o) {
+                    corto_seterr("cannot resolve parent of root");
+                    goto error;
+                }
+                corto_setref(&lookup, o);
+            } else if (corto_scopeSize(o)) {
                 if (!overload) {
                     corto_object prev = o;
                     int i;

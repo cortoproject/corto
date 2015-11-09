@@ -9,7 +9,7 @@
 #include "test.h"
 
 test_selectItemList _test_Select_collect(corto_object scope, corto_string expr) {
-/* $begin(::test::Select::collect) */
+/* $begin(/test/Select/collect) */
 	corto_iter iter;
 	corto_ll result = corto_llNew();
 
@@ -28,7 +28,7 @@ test_selectItemList _test_Select_collect(corto_object scope, corto_string expr) 
 }
 
 corto_void _test_Select_setup(test_Select this) {
-/* $begin(::test::Select::setup) */
+/* $begin(/test/Select/setup) */
 
     corto_object a = corto_voidCreateChild(NULL, "a");
     corto_voidCreateChild(a, "b");
@@ -39,7 +39,7 @@ corto_void _test_Select_setup(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectErrParentAst(test_Select this) {
-/* $begin(::test::Select::tc_selectErrParentAst) */
+/* $begin(/test/Select/tc_selectErrParentAst) */
     corto_iter iter;
     
     corto_int16 ret = corto_select(NULL, "..*", &iter);
@@ -51,7 +51,7 @@ corto_void _test_Select_tc_selectErrParentAst(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectErrParentId(test_Select this) {
-/* $begin(::test::Select::tc_selectErrParentId) */
+/* $begin(/test/Select/tc_selectErrParentId) */
     corto_iter iter;
     
     corto_int16 ret = corto_select(NULL, "..id", &iter);
@@ -63,7 +63,7 @@ corto_void _test_Select_tc_selectErrParentId(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectErrParentTree(test_Select this) {
-/* $begin(::test::Select::tc_selectErrParentTree) */
+/* $begin(/test/Select/tc_selectErrParentTree) */
     corto_iter iter;
 
     corto_int16 ret = corto_select(NULL, "...", &iter);
@@ -75,7 +75,7 @@ corto_void _test_Select_tc_selectErrParentTree(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectErrParentWc(test_Select this) {
-/* $begin(::test::Select::tc_selectErrParentWc) */
+/* $begin(/test/Select/tc_selectErrParentWc) */
     corto_iter iter;
     
     corto_int16 ret = corto_select(NULL, "..?", &iter);
@@ -87,19 +87,19 @@ corto_void _test_Select_tc_selectErrParentWc(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectErrScopeScope(test_Select this) {
-/* $begin(::test::Select::tc_selectErrScopeScope) */
+/* $begin(/test/Select/tc_selectErrScopeScope) */
     corto_iter iter;
     
     corto_int16 ret = corto_select(NULL, "::::", &iter);
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "select '::::' failed: unexpected '::' after '::'"));
+    test_assert(!strcmp(corto_lasterr(), "select '::::' failed: unexpected '/' after '/'"));
 
 /* $end */
 }
 
 corto_void _test_Select_tc_selectIdentifier(test_Select this) {
-/* $begin(::test::Select::tc_selectIdentifier) */
+/* $begin(/test/Select/tc_selectIdentifier) */
 
     /* << Insert implementation >> */
 
@@ -107,7 +107,7 @@ corto_void _test_Select_tc_selectIdentifier(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectParent(test_Select this) {
-/* $begin(::test::Select::tc_selectParent) */
+/* $begin(/test/Select/tc_selectParent) */
 
     /* << Insert implementation >> */
 
@@ -115,7 +115,7 @@ corto_void _test_Select_tc_selectParent(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
-/* $begin(::test::Select::tc_selectScopedIdentifier) */
+/* $begin(/test/Select/tc_selectScopedIdentifier) */
 
     /* << Insert implementation >> */
 
@@ -123,7 +123,7 @@ corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectScopedParent(test_Select this) {
-/* $begin(::test::Select::tc_selectScopedParent) */
+/* $begin(/test/Select/tc_selectScopedParent) */
 
     /* << Insert implementation >> */
 
@@ -131,7 +131,7 @@ corto_void _test_Select_tc_selectScopedParent(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectScopedThis(test_Select this) {
-/* $begin(::test::Select::tc_selectScopedThis) */
+/* $begin(/test/Select/tc_selectScopedThis) */
 
     /* << Insert implementation >> */
 
@@ -139,7 +139,7 @@ corto_void _test_Select_tc_selectScopedThis(test_Select this) {
 }
 
 corto_void _test_Select_tc_selectThis(test_Select this) {
-/* $begin(::test::Select::tc_selectThis) */
+/* $begin(/test/Select/tc_selectThis) */
 	corto_ll results = NULL;
 	test_selectItem *item;
 
@@ -162,7 +162,7 @@ corto_void _test_Select_tc_selectThis(test_Select this) {
 }
 
 corto_void _test_Select_teardown(test_Select this) {
-/* $begin(::test::Select::teardown) */
+/* $begin(/test/Select/teardown) */
 
     /* << Insert implementation >> */
 

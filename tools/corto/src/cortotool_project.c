@@ -4,6 +4,8 @@
 #include "cortotool_build.h"
 
 static corto_int16 cortotool_setupProject(const char *name, corto_bool isLocal, corto_bool isSilent) {
+    CORTO_UNUSED(isLocal);
+
     if (!isSilent) {
     	printf ("corto: create project '%s'\n", name);
     }

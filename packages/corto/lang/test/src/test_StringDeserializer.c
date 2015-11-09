@@ -9,7 +9,7 @@
 #include "test.h"
 
 corto_void _test_StringDeserializer_setup(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::setup) */
+/* $begin(/test/StringDeserializer/setup) */
 
     /* << Insert implementation >> */
 
@@ -17,7 +17,7 @@ corto_void _test_StringDeserializer_setup(test_StringDeserializer this) {
 }
 
 corto_void _test_StringDeserializer_tc_deserAnonymousBig(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserAnonymousBig) */
+/* $begin(/test/StringDeserializer/tc_deserAnonymousBig) */
 
     /* << Insert implementation >> */
 
@@ -25,11 +25,11 @@ corto_void _test_StringDeserializer_tc_deserAnonymousBig(test_StringDeserializer
 }
 
 corto_void _test_StringDeserializer_tc_deserAnonymousMultiple(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserAnonymousMultiple) */
+/* $begin(/test/StringDeserializer/tc_deserAnonymousMultiple) */
 
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, 
-        "test::AnonymousTest{{"
+        "test/AnonymousTest{{"
             "<1>int32{10},"
             "<2>int32{20},"
             "<3>int32{30}"
@@ -60,7 +60,7 @@ corto_void _test_StringDeserializer_tc_deserAnonymousMultiple(test_StringDeseria
 }
 
 corto_void _test_StringDeserializer_tc_deserAnonymousNested(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserAnonymousNested) */
+/* $begin(/test/StringDeserializer/tc_deserAnonymousNested) */
 
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, 
@@ -122,11 +122,11 @@ corto_void _test_StringDeserializer_tc_deserAnonymousNested(test_StringDeseriali
 }
 
 corto_void _test_StringDeserializer_tc_deserAnonymousReuse(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserAnonymousReuse) */
+/* $begin(/test/StringDeserializer/tc_deserAnonymousReuse) */
 
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, 
-        "test::AnonymousTest{{"
+        "test/AnonymousTest{{"
             "/corto/lang/type,"
             "<1>int32{10},"
             "<2>int32{20},"
@@ -170,7 +170,7 @@ corto_void _test_StringDeserializer_tc_deserAnonymousReuse(test_StringDeserializ
 }
 
 corto_void _test_StringDeserializer_tc_deserAnonymousReuseNested(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserAnonymousReuseNested) */
+/* $begin(/test/StringDeserializer/tc_deserAnonymousReuseNested) */
 
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, 
@@ -233,11 +233,11 @@ corto_void _test_StringDeserializer_tc_deserAnonymousReuseNested(test_StringDese
 }
 
 corto_void _test_StringDeserializer_tc_deserAnonymousSimple(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserAnonymousSimple) */
+/* $begin(/test/StringDeserializer/tc_deserAnonymousSimple) */
 
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, 
-        "test::AnonymousTest{{"
+        "test/AnonymousTest{{"
             "<1>int32{10}"
         "}}");
 
@@ -257,7 +257,7 @@ corto_void _test_StringDeserializer_tc_deserAnonymousSimple(test_StringDeseriali
 }
 
 corto_void _test_StringDeserializer_tc_deserBoolFalse(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserBoolFalse) */
+/* $begin(/test/StringDeserializer/tc_deserBoolFalse) */
 
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, "bool{false}");
@@ -271,7 +271,7 @@ corto_void _test_StringDeserializer_tc_deserBoolFalse(test_StringDeserializer th
 }
 
 corto_void _test_StringDeserializer_tc_deserBoolInvalid(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserBoolInvalid) */
+/* $begin(/test/StringDeserializer/tc_deserBoolInvalid) */
 
     corto_string err;
     corto_object o = corto_boolCreate(TRUE); 
@@ -286,7 +286,7 @@ corto_void _test_StringDeserializer_tc_deserBoolInvalid(test_StringDeserializer 
 }
 
 corto_void _test_StringDeserializer_tc_deserBoolTrue(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserBoolTrue) */
+/* $begin(/test/StringDeserializer/tc_deserBoolTrue) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "bool{true}");
@@ -300,7 +300,7 @@ corto_void _test_StringDeserializer_tc_deserBoolTrue(test_StringDeserializer thi
 }
 
 corto_void _test_StringDeserializer_tc_deserChar(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserChar) */
+/* $begin(/test/StringDeserializer/tc_deserChar) */
 
     corto_object p = NULL; 
     corto_int16 ret = corto_fromStr(&p, "char{a}");
@@ -314,7 +314,7 @@ corto_void _test_StringDeserializer_tc_deserChar(test_StringDeserializer this) {
 }
 
 corto_void _test_StringDeserializer_tc_deserCharEscape(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCharEscape) */
+/* $begin(/test/StringDeserializer/tc_deserCharEscape) */
 
     corto_object p = NULL; 
     corto_int16 ret = corto_fromStr(&p, "char{\\}");
@@ -328,7 +328,7 @@ corto_void _test_StringDeserializer_tc_deserCharEscape(test_StringDeserializer t
 }
 
 corto_void _test_StringDeserializer_tc_deserCharEscapeQuoted(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCharEscapeQuoted) */
+/* $begin(/test/StringDeserializer/tc_deserCharEscapeQuoted) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "char{'\\'}");
@@ -342,7 +342,7 @@ corto_void _test_StringDeserializer_tc_deserCharEscapeQuoted(test_StringDeserial
 }
 
 corto_void _test_StringDeserializer_tc_deserCharNull(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCharNull) */
+/* $begin(/test/StringDeserializer/tc_deserCharNull) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "char{\0}");
@@ -356,7 +356,7 @@ corto_void _test_StringDeserializer_tc_deserCharNull(test_StringDeserializer thi
 }
 
 corto_void _test_StringDeserializer_tc_deserCharNullQuoted(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCharNullQuoted) */
+/* $begin(/test/StringDeserializer/tc_deserCharNullQuoted) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "char{'\0'}");
@@ -370,7 +370,7 @@ corto_void _test_StringDeserializer_tc_deserCharNullQuoted(test_StringDeserializ
 }
 
 corto_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCharQuoted) */
+/* $begin(/test/StringDeserializer/tc_deserCharQuoted) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "char{'a'}");
@@ -384,10 +384,10 @@ corto_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer t
 }
 
 corto_void _test_StringDeserializer_tc_deserCollection(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCollection) */
+/* $begin(/test/StringDeserializer/tc_deserCollection) */
 
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test::PrimitiveCollection{{0, 1, 2, 3}}");
+    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveCollection{{0, 1, 2, 3}}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -409,10 +409,10 @@ corto_void _test_StringDeserializer_tc_deserCollection(test_StringDeserializer t
 }
 
 corto_void _test_StringDeserializer_tc_deserCollectionComplex(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCollectionComplex) */
+/* $begin(/test/StringDeserializer/tc_deserCollectionComplex) */
 
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test::CompositeCollection{{{0, 1}, {2, 3}, {4, 5}}}");
+    corto_int16 ret = corto_fromStr(&o, "test/CompositeCollection{{{0, 1}, {2, 3}, {4, 5}}}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -444,10 +444,10 @@ corto_void _test_StringDeserializer_tc_deserCollectionComplex(test_StringDeseria
 }
 
 corto_void _test_StringDeserializer_tc_deserComposite(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserComposite) */
+/* $begin(/test/StringDeserializer/tc_deserComposite) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point{10,20}");
+    corto_int16 ret = corto_fromStr(&o, "test/Point{10,20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -460,10 +460,10 @@ corto_void _test_StringDeserializer_tc_deserComposite(test_StringDeserializer th
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeMembers(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeMembers) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeMembers) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point{ y=20, x = 10 }");
+    corto_int16 ret = corto_fromStr(&o, "test/Point{ y=20, x = 10 }");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -476,10 +476,10 @@ corto_void _test_StringDeserializer_tc_deserCompositeMembers(test_StringDeserial
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeMixed(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeMixed) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeMixed) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point{ x=10, 20 }");
+    corto_int16 ret = corto_fromStr(&o, "test/Point{ x=10, 20 }");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -492,10 +492,10 @@ corto_void _test_StringDeserializer_tc_deserCompositeMixed(test_StringDeserializ
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeNested(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeNested) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeNested) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Line{{10, 20}, {30, 40}}");
+    corto_int16 ret = corto_fromStr(&o, "test/Line{{10, 20}, {30, 40}}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Line_o);
@@ -510,10 +510,10 @@ corto_void _test_StringDeserializer_tc_deserCompositeNested(test_StringDeseriali
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeNestedMembers(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeNestedMembers) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeNestedMembers) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Line{stop={y=40, x=30}, start={x=10, y=20}}");
+    corto_int16 ret = corto_fromStr(&o, "test/Line{stop={y=40, x=30}, start={x=10, y=20}}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Line_o);
@@ -528,10 +528,10 @@ corto_void _test_StringDeserializer_tc_deserCompositeNestedMembers(test_StringDe
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeNestedMixed(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeNestedMixed) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeNestedMixed) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Line{start={x=40, 30}, {x=10, 20}}");
+    corto_int16 ret = corto_fromStr(&o, "test/Line{start={x=40, 30}, {x=10, 20}}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Line_o);
@@ -546,7 +546,7 @@ corto_void _test_StringDeserializer_tc_deserCompositeNestedMixed(test_StringDese
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeNoType(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeNoType) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeNoType) */
 
     test_Point *o = test_PointCreate(0, 0);
     test_assert(o != NULL);
@@ -563,10 +563,10 @@ corto_void _test_StringDeserializer_tc_deserCompositeNoType(test_StringDeseriali
 }
 
 corto_void _test_StringDeserializer_tc_deserCompositeWhitespace(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserCompositeWhitespace) */
+/* $begin(/test/StringDeserializer/tc_deserCompositeWhitespace) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point  {   10 ,   20\n}  ");
+    corto_int16 ret = corto_fromStr(&o, "test/Point  {   10 ,   20\n}  ");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -579,7 +579,7 @@ corto_void _test_StringDeserializer_tc_deserCompositeWhitespace(test_StringDeser
 }
 
 corto_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserExisting) */
+/* $begin(/test/StringDeserializer/tc_deserExisting) */
 
     corto_bool *o = corto_boolCreate(FALSE);
     test_assert(o != NULL);
@@ -595,13 +595,13 @@ corto_void _test_StringDeserializer_tc_deserExisting(test_StringDeserializer thi
 }
 
 corto_void _test_StringDeserializer_tc_deserExisting_w_scopedType(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserExisting_w_scopedType) */
+/* $begin(/test/StringDeserializer/tc_deserExisting_w_scopedType) */
 
     corto_int32 *o = corto_int32Create(0);
     corto_int32 *p = o;
     test_assert(o != NULL);
     test_assert(*o == 0); 
-    corto_int16 ret = corto_fromStr(&o, "corto::lang::int32{10}");
+    corto_int16 ret = corto_fromStr(&o, "corto/lang/int32{10}");
     test_assert(o != NULL);
     test_assert(o == p);
     test_assert(ret == 0);
@@ -614,7 +614,7 @@ corto_void _test_StringDeserializer_tc_deserExisting_w_scopedType(test_StringDes
 }
 
 corto_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserExisting_w_type) */
+/* $begin(/test/StringDeserializer/tc_deserExisting_w_type) */
 
     corto_bool *o = corto_boolCreate(FALSE);
     corto_bool *p = o;
@@ -632,10 +632,10 @@ corto_void _test_StringDeserializer_tc_deserExisting_w_type(test_StringDeseriali
 }
 
 corto_void _test_StringDeserializer_tc_deserInheritance(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInheritance) */
+/* $begin(/test/StringDeserializer/tc_deserInheritance) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point3D{10,20,30}");
+    corto_int16 ret = corto_fromStr(&o, "test/Point3D{10,20,30}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point3D_o);
@@ -649,10 +649,10 @@ corto_void _test_StringDeserializer_tc_deserInheritance(test_StringDeserializer 
 }
 
 corto_void _test_StringDeserializer_tc_deserInheritanceMembers(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInheritanceMembers) */
+/* $begin(/test/StringDeserializer/tc_deserInheritanceMembers) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point3D{z=30,x=10,y=20}");
+    corto_int16 ret = corto_fromStr(&o, "test/Point3D{z=30,x=10,y=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point3D_o);
@@ -666,10 +666,10 @@ corto_void _test_StringDeserializer_tc_deserInheritanceMembers(test_StringDeseri
 }
 
 corto_void _test_StringDeserializer_tc_deserInheritanceMixed(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInheritanceMixed) */
+/* $begin(/test/StringDeserializer/tc_deserInheritanceMixed) */
 
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point3D{z=30,x=10,20}");
+    corto_int16 ret = corto_fromStr(&o, "test/Point3D{z=30,x=10,20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point3D_o);
@@ -683,7 +683,7 @@ corto_void _test_StringDeserializer_tc_deserInheritanceMixed(test_StringDeserial
 }
 
 corto_void _test_StringDeserializer_tc_deserInt16(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt16) */
+/* $begin(/test/StringDeserializer/tc_deserInt16) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int16{32767}");
@@ -697,7 +697,7 @@ corto_void _test_StringDeserializer_tc_deserInt16(test_StringDeserializer this) 
 }
 
 corto_void _test_StringDeserializer_tc_deserInt16Minus(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt16Minus) */
+/* $begin(/test/StringDeserializer/tc_deserInt16Minus) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int16{-32768}");
@@ -711,7 +711,7 @@ corto_void _test_StringDeserializer_tc_deserInt16Minus(test_StringDeserializer t
 }
 
 corto_void _test_StringDeserializer_tc_deserInt16Overflow(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt16Overflow) */
+/* $begin(/test/StringDeserializer/tc_deserInt16Overflow) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int16{32768}");
@@ -725,7 +725,7 @@ corto_void _test_StringDeserializer_tc_deserInt16Overflow(test_StringDeserialize
 }
 
 corto_void _test_StringDeserializer_tc_deserInt32(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt32) */
+/* $begin(/test/StringDeserializer/tc_deserInt32) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int32{2147483647}");
@@ -739,7 +739,7 @@ corto_void _test_StringDeserializer_tc_deserInt32(test_StringDeserializer this) 
 }
 
 corto_void _test_StringDeserializer_tc_deserInt32Minus(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt32Minus) */
+/* $begin(/test/StringDeserializer/tc_deserInt32Minus) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int32{-2147483648}");
@@ -753,7 +753,7 @@ corto_void _test_StringDeserializer_tc_deserInt32Minus(test_StringDeserializer t
 }
 
 corto_void _test_StringDeserializer_tc_deserInt32Overflow(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt32Overflow) */
+/* $begin(/test/StringDeserializer/tc_deserInt32Overflow) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int32{2147483648}");
@@ -767,7 +767,7 @@ corto_void _test_StringDeserializer_tc_deserInt32Overflow(test_StringDeserialize
 }
 
 corto_void _test_StringDeserializer_tc_deserInt64(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt64) */
+/* $begin(/test/StringDeserializer/tc_deserInt64) */
     
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int64{9223372036854775807}");
@@ -781,7 +781,7 @@ corto_void _test_StringDeserializer_tc_deserInt64(test_StringDeserializer this) 
 }
 
 corto_void _test_StringDeserializer_tc_deserInt64Minus(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt64Minus) */
+/* $begin(/test/StringDeserializer/tc_deserInt64Minus) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int64{-9223372036854775808");
@@ -795,7 +795,7 @@ corto_void _test_StringDeserializer_tc_deserInt64Minus(test_StringDeserializer t
 }
 
 corto_void _test_StringDeserializer_tc_deserInt8(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt8) */
+/* $begin(/test/StringDeserializer/tc_deserInt8) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int8{127}");
@@ -809,7 +809,7 @@ corto_void _test_StringDeserializer_tc_deserInt8(test_StringDeserializer this) {
 }
 
 corto_void _test_StringDeserializer_tc_deserInt8Minus(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt8Minus) */
+/* $begin(/test/StringDeserializer/tc_deserInt8Minus) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int8{-128}");
@@ -823,7 +823,7 @@ corto_void _test_StringDeserializer_tc_deserInt8Minus(test_StringDeserializer th
 }
 
 corto_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserInt8Overflow) */
+/* $begin(/test/StringDeserializer/tc_deserInt8Overflow) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "int8{128}");
@@ -837,7 +837,7 @@ corto_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer
 }
 
 corto_void _test_StringDeserializer_tc_deserString(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserString) */
+/* $begin(/test/StringDeserializer/tc_deserString) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "string{Hello World}");
@@ -851,7 +851,7 @@ corto_void _test_StringDeserializer_tc_deserString(test_StringDeserializer this)
 }
 
 corto_void _test_StringDeserializer_tc_deserStringEscape(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserStringEscape) */
+/* $begin(/test/StringDeserializer/tc_deserStringEscape) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "string{\"\\\"}");
@@ -865,7 +865,7 @@ corto_void _test_StringDeserializer_tc_deserStringEscape(test_StringDeserializer
 }
 
 corto_void _test_StringDeserializer_tc_deserStringQuotes(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserStringQuotes) */
+/* $begin(/test/StringDeserializer/tc_deserStringQuotes) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "string{\"Hello World\"}");
@@ -879,7 +879,7 @@ corto_void _test_StringDeserializer_tc_deserStringQuotes(test_StringDeserializer
 }
 
 corto_void _test_StringDeserializer_tc_deserStringQuotesWhitespaces(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserStringQuotesWhitespaces) */
+/* $begin(/test/StringDeserializer/tc_deserStringQuotesWhitespaces) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "string{\"  Hello World   \"}");
@@ -893,7 +893,7 @@ corto_void _test_StringDeserializer_tc_deserStringQuotesWhitespaces(test_StringD
 }
 
 corto_void _test_StringDeserializer_tc_deserStringWhitespace(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserStringWhitespace) */
+/* $begin(/test/StringDeserializer/tc_deserStringWhitespace) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "string{\"   \n\n\n  \t\t \"}");
@@ -907,7 +907,7 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespace(test_StringDeserial
 }
 
 corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailing(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserStringWhitespaceTrailing) */
+/* $begin(/test/StringDeserializer/tc_deserStringWhitespaceTrailing) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "string{  Hello World   }");
@@ -921,7 +921,7 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailing(test_String
 }
 
 corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserStringWhitespaceTrailingNoType) */
+/* $begin(/test/StringDeserializer/tc_deserStringWhitespaceTrailingNoType) */
 
     corto_string *o = corto_stringCreate(NULL);
     test_assert(o != NULL); 
@@ -937,7 +937,7 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(test_
 }
 
 corto_void _test_StringDeserializer_tc_deserUint16(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint16) */
+/* $begin(/test/StringDeserializer/tc_deserUint16) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint16{65535}");
@@ -951,7 +951,7 @@ corto_void _test_StringDeserializer_tc_deserUint16(test_StringDeserializer this)
 }
 
 corto_void _test_StringDeserializer_tc_deserUint16Overflow(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint16Overflow) */
+/* $begin(/test/StringDeserializer/tc_deserUint16Overflow) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint16{65536}");
@@ -965,7 +965,7 @@ corto_void _test_StringDeserializer_tc_deserUint16Overflow(test_StringDeserializ
 }
 
 corto_void _test_StringDeserializer_tc_deserUint32(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint32) */
+/* $begin(/test/StringDeserializer/tc_deserUint32) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint32{4294967295}");
@@ -979,7 +979,7 @@ corto_void _test_StringDeserializer_tc_deserUint32(test_StringDeserializer this)
 }
 
 corto_void _test_StringDeserializer_tc_deserUint32Overflow(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint32Overflow) */
+/* $begin(/test/StringDeserializer/tc_deserUint32Overflow) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint32{4294967296}");
@@ -993,7 +993,7 @@ corto_void _test_StringDeserializer_tc_deserUint32Overflow(test_StringDeserializ
 }
 
 corto_void _test_StringDeserializer_tc_deserUint64(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint64) */
+/* $begin(/test/StringDeserializer/tc_deserUint64) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint64{18446744073709551615}");
@@ -1007,7 +1007,7 @@ corto_void _test_StringDeserializer_tc_deserUint64(test_StringDeserializer this)
 }
 
 corto_void _test_StringDeserializer_tc_deserUint8(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint8) */
+/* $begin(/test/StringDeserializer/tc_deserUint8) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint8{255}");
@@ -1021,7 +1021,7 @@ corto_void _test_StringDeserializer_tc_deserUint8(test_StringDeserializer this) 
 }
 
 corto_void _test_StringDeserializer_tc_deserUint8Overflow(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_deserUint8Overflow) */
+/* $begin(/test/StringDeserializer/tc_deserUint8Overflow) */
 
     corto_object o = NULL; 
     corto_int16 ret = corto_fromStr(&o, "uint8{256}");
@@ -1035,11 +1035,11 @@ corto_void _test_StringDeserializer_tc_deserUint8Overflow(test_StringDeserialize
 }
 
 corto_void _test_StringDeserializer_tc_errExcessElements(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_errExcessElements) */
+/* $begin(/test/StringDeserializer/tc_errExcessElements) */
 
     corto_string err;
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point{10, 20, 30}");
+    corto_int16 ret = corto_fromStr(&o, "test/Point{10, 20, 30}");
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
@@ -1049,7 +1049,7 @@ corto_void _test_StringDeserializer_tc_errExcessElements(test_StringDeserializer
 }
 
 corto_void _test_StringDeserializer_tc_errMissingType(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_errMissingType) */
+/* $begin(/test/StringDeserializer/tc_errMissingType) */
 
     corto_string err;
     corto_object o = NULL; 
@@ -1063,7 +1063,7 @@ corto_void _test_StringDeserializer_tc_errMissingType(test_StringDeserializer th
 }
 
 corto_void _test_StringDeserializer_tc_errNotAType(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_errNotAType) */
+/* $begin(/test/StringDeserializer/tc_errNotAType) */
 
     corto_string err;
     corto_object o = NULL; 
@@ -1077,7 +1077,7 @@ corto_void _test_StringDeserializer_tc_errNotAType(test_StringDeserializer this)
 }
 
 corto_void _test_StringDeserializer_tc_errTypeMismatch(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_errTypeMismatch) */
+/* $begin(/test/StringDeserializer/tc_errTypeMismatch) */
 
     corto_string err;
     corto_object o = corto_boolCreate(TRUE); 
@@ -1085,18 +1085,18 @@ corto_void _test_StringDeserializer_tc_errTypeMismatch(test_StringDeserializer t
     test_assert(o != NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "type of object ('::corto::lang::bool') does not match string ('::corto::lang::string')"));
+    test_assert(!strcmp(err, "type of object ('/corto/lang/bool') does not match string ('/corto/lang/string')"));
     corto_delete(o);
 
 /* $end */
 }
 
 corto_void _test_StringDeserializer_tc_errUnresolvedMember(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_errUnresolvedMember) */
+/* $begin(/test/StringDeserializer/tc_errUnresolvedMember) */
 
     corto_string err;
     corto_object o = NULL; 
-    corto_int16 ret = corto_fromStr(&o, "test::Point{a = 10}");
+    corto_int16 ret = corto_fromStr(&o, "test/Point{a = 10}");
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
@@ -1106,7 +1106,7 @@ corto_void _test_StringDeserializer_tc_errUnresolvedMember(test_StringDeserializ
 }
 
 corto_void _test_StringDeserializer_tc_errUnresolvedType(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::tc_errUnresolvedType) */
+/* $begin(/test/StringDeserializer/tc_errUnresolvedType) */
 
     corto_string err;
     corto_object o = NULL;
@@ -1120,7 +1120,7 @@ corto_void _test_StringDeserializer_tc_errUnresolvedType(test_StringDeserializer
 }
 
 corto_void _test_StringDeserializer_teardown(test_StringDeserializer this) {
-/* $begin(::test::StringDeserializer::teardown) */
+/* $begin(/test/StringDeserializer/teardown) */
 
     /* << Insert implementation >> */
 

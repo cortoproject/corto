@@ -371,6 +371,9 @@ static int corto_selectRun(corto_selectData *data) {
                 corto_setref(&frame->o, o);
                 if (o) {
                     corto_release(o);
+                } else {
+                    corto_seterr("unresolved identifier '%s'", op->start);
+                    goto error;
                 }
                 break;
             } else {

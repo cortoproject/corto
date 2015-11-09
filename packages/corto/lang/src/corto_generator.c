@@ -623,16 +623,11 @@ static corto_char* g_oidTransform(corto_generator g, corto_object o, corto_id _i
 
         ptr = _id + strlen(_id);
         while(i) {
-            while((ptr > _id) && (*ptr != ':')) {
+            while((ptr > _id) && (*ptr != '/')) {
                 ptr--;
             }
             if ((corto_class_instanceof(corto_interface_o, i) && corto_type(i)->reference) || (i == corto_type(corto_object_o))) {
-                corto_char *start;
-                if (*ptr == ':') {
-                    start = ptr + 1;
-                } else {
-                    start = ptr;
-                }
+                corto_char *start = ptr;
                 if (kind == CORTO_GENERATOR_ID_CLASS_UPPER) {
                     *start = toupper(*start);
                 } else {
@@ -646,8 +641,8 @@ static corto_char* g_oidTransform(corto_generator g, corto_object o, corto_id _i
 
             i = corto_parentof(i);
             if (i) {
-                if (*ptr == ':') {
-                    ptr -= 2;
+                if (*ptr == '/') {
+                    ptr -= 1;
                 }
             }
         }
@@ -689,7 +684,7 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
         strcpy(_id, prefix->prefix);
         while(count) {
             count--;
-            strcat(_id, "::");
+            strcat(_id, "/");
             strcat(_id, corto_nameof(scopes[count]));
         }
 
@@ -969,7 +964,21 @@ corto_string g_fileLookupSnippetIntern(g_file file, corto_string snippetId, cort
         iter = corto_llIter(list);
         while(corto_iterHasNext(&iter)) {
             snippet = corto_iterNext(&iter);
-            if (!stricmp(snippet->id, snippetId)) {
+            char *snippetPtr = snippet->id;
+
+            corto_id path; strcpy(path, snippet->id);
+
+            /* Ignore initial scope character */
+            if (*snippet->id == '/') {
+                corto_pathFromFullname(path);
+                snippetPtr ++;
+            }
+
+            if (*snippetId == '/') {
+                snippetId ++;
+            }
+
+            if (!stricmp(snippetPtr, snippetId) || !strcmp(path, snippetId)) {
                 snippet->used = TRUE;
                 break;
             } else {

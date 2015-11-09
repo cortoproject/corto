@@ -25,11 +25,11 @@
 #define BOLD    "\033[1;49m"
 
 #define STRING (RED)
-#define REFERENCE (BLUE)
+#define REFERENCE (CYAN)
 #define BOOLEAN (GREEN)
 #define NUMBER (GREEN)
 #define CONSTANT (MAGENTA)
-#define MEMBER (BOLD)
+#define MEMBER (NORMAL)
 
 static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* userData);
 
@@ -145,13 +145,12 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
 
     /* If src is string and value is null, put NULL in result. */
     if (corto_primitive(t)->kind == CORTO_TEXT) {
+        corto_ser_appendColor(data, STRING);
         if (*(corto_string*)o) {
-            corto_ser_appendColor(data, STRING);
             if (!corto_ser_appendstrEscape(data, *(corto_string*)o)) {
                 goto finished;
             }
         } else {
-            corto_ser_appendColor(data, BOOLEAN);
             if (!corto_ser_appendstr(data, "null")) {
                 goto finished;
             }
@@ -217,8 +216,8 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     object = *(corto_object*)o;
 
     /* Obtain fully scoped name */
+    corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        corto_ser_appendColor(data, REFERENCE);
         if (corto_checkAttr(object, CORTO_ATTR_SCOPED) || (corto_valueObject(v) == object)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_nameof(object));
@@ -262,7 +261,6 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
             }
         }
     } else {
-        corto_ser_appendColor(data, BOOLEAN);
         str = "null";
     }
 
@@ -294,9 +292,11 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     privateData.itemCount = 0;
 
     /* Serialize composite members */
+    if (!corto_ser_appendColor(&privateData, BOLD)) goto finished;
     if (!corto_ser_appendstr(&privateData, "{")) {
         goto finished;
     }
+    if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
     if (t->kind == CORTO_COMPOSITE) {
         result = corto_serializeMembers(s, v, &privateData);
     } else if (t->kind == CORTO_COLLECTION){
@@ -305,9 +305,11 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
         corto_assert(0, "corto_ser_scope: invalid typekind for function.");
     }
     if (!result) {
+        if (!corto_ser_appendColor(&privateData, BOLD)) goto finished;
         if (!corto_ser_appendstr(&privateData, "}")) {
             goto finished;
         }
+        if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
     }
 
     *data = privateData;
@@ -326,8 +328,14 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
 
     /* Append ',' if this is not the first item */
     if (data->itemCount) {
-        if (!corto_ser_appendstr(data, ",")) {
-            goto finished;
+        if (!data->compactNotation) {
+            if (!corto_ser_appendstr(data, " ")) {
+                goto finished;
+            }
+        } else {
+            if (!corto_ser_appendstr(data, ",")) {
+                goto finished;
+            }
         }
     }
 
@@ -335,8 +343,9 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
         if (v->kind == CORTO_MEMBER) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
             if (!corto_ser_appendstr(data, "%s", corto_nameof(v->is.member.t))) goto finished;
-            if (!corto_ser_appendColor(data, NORMAL)) goto finished;
+            if (!corto_ser_appendColor(data, BOLD)) goto finished;
             if (!corto_ser_appendstr(data, "=")) goto finished;
+            if (!corto_ser_appendColor(data, NORMAL)) goto finished;
         }
     }
 
