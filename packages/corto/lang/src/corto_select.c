@@ -14,6 +14,7 @@ typedef enum corto_selectToken {
     TOKEN_IDENTIFIER,
     TOKEN_SCOPE,
     TOKEN_TREE,
+    TOKEN_THIS,
     TOKEN_PARENT,
     TOKEN_ASTERISK,
     TOKEN_WILDCARD,
@@ -85,12 +86,18 @@ static int corto_selectParse(corto_selectData *data) {
                 ptr++;
             } else {
                 *ptr = '\0';
-                data->program[op].token = TOKEN_TREE;
+                data->program[op].token = TOKEN_THIS;
             }
             break;
         case '/':
-            *ptr = '\0';
-            data->program[op].token = TOKEN_SCOPE;
+            if (ptr[1] == '/') {
+                data->program[op].token = TOKEN_TREE;
+                *ptr = '\0';
+                ptr++;
+            } else {
+                *ptr = '\0';
+                data->program[op].token = TOKEN_SCOPE;
+            }
             break;
         case ':':
             if (ptr[1] == ':') {
@@ -150,10 +157,11 @@ static char* corto_selectTokenStr(corto_selectToken t) {
     switch(t) {
     case TOKEN_NONE: return "none";
     case TOKEN_IDENTIFIER: return "identifier";
-    case TOKEN_SCOPE: return "::";
-    case TOKEN_TREE: return ".";
+    case TOKEN_SCOPE: return "/";
+    case TOKEN_TREE: return "//";
     case TOKEN_ASTERISK: return "*";
     case TOKEN_WILDCARD: return "?";
+    case TOKEN_THIS: return ".";
     case TOKEN_PARENT: return "..";
     }
     return NULL;
@@ -170,6 +178,7 @@ static int corto_selectValidate(corto_selectData *data) {
             case TOKEN_IDENTIFIER:
             case TOKEN_ASTERISK:
             case TOKEN_WILDCARD:
+            case TOKEN_THIS:
             case TOKEN_PARENT:
                 goto error;
             default: break;
@@ -178,14 +187,23 @@ static int corto_selectValidate(corto_selectData *data) {
         case TOKEN_SCOPE:
             switch(tprev) {
             case TOKEN_SCOPE:
+            case TOKEN_TREE:
                 goto error;
             default: break;
             }
             break;
         case TOKEN_TREE:
+            switch(tprev) {
+            case TOKEN_SCOPE:
+            case TOKEN_TREE:
+                goto error;
+            default: break;
+            }
+            break;
+        case TOKEN_THIS:
         case TOKEN_PARENT:
             switch(tprev) {
-            case TOKEN_TREE:
+            case TOKEN_THIS:
             case TOKEN_PARENT:
                 goto error;
             default: break;
@@ -195,6 +213,7 @@ static int corto_selectValidate(corto_selectData *data) {
         case TOKEN_ASTERISK:
             switch(tprev) {
             case TOKEN_IDENTIFIER:
+            case TOKEN_THIS:
             case TOKEN_PARENT:
             case TOKEN_ASTERISK:
             case TOKEN_WILDCARD:
@@ -243,7 +262,7 @@ static void corto_setItemData(corto_object o, corto_selectItem *item) {
     }
 }
 
-static void corto_selectCurrent(
+static void corto_selectThis(
     corto_selectData *data, 
     corto_selectStack *frame) {
 
@@ -281,9 +300,36 @@ static void corto_selectScope(
     }
 }
 
+/* Depth first search */
 static void corto_selectTree(
     corto_selectData *data, 
     corto_selectStack *frame) {
+
+    data->next = NULL;
+
+    if (corto_iterHasNext(&frame->iter)) {
+        frame->o = corto_iterNext(&frame->iter);
+        corto_rbtree scope = corto_scopeof(frame->o);
+
+        data->next = &data->item;
+        corto_setItemData(frame->o, data->next);
+
+        if (scope && corto_rbtreeSize(scope)) {
+            frame = &data->stack[++ data->sp];
+            frame->iter = _corto_rbtreeIter(scope, &frame->trav);
+            frame->next = corto_selectTree;
+        }
+    } else if (data->sp) {
+        do {
+            data->sp --;
+            frame = &data->stack[data->sp];
+        } while (data->sp && !corto_iterHasNext(&frame->iter));
+        data->next = &data->item;
+        frame->o = corto_iterNext(&frame->iter);
+        corto_setItemData(frame->o, data->next);
+    } else {
+        data->next = NULL;
+    }
 }
 
 static int corto_selectRun(corto_selectData *data) {
@@ -297,7 +343,7 @@ static int corto_selectRun(corto_selectData *data) {
     }
 
     data->next = NULL;
-    frame->next = corto_selectCurrent;
+    frame->next = corto_selectScope;
 
     /* Traverse program until a token has been found that requires iterating,
      * which is then taken care of by hasNext */
@@ -305,24 +351,22 @@ static int corto_selectRun(corto_selectData *data) {
         op = &data->program[i];
 
         switch (op->token) {
-        case TOKEN_PARENT:
-            corto_setref(frame->o, corto_parentof(frame->o));
+        case TOKEN_THIS:
+            frame->next = corto_selectThis;
             break;
-        case TOKEN_TREE:
-            /* If scope is last token, just return current object */
-            if (i == data->programSize) {
-                frame->next = corto_selectCurrent;
-            /* Else, walk tree recursively */
-            } else {
-                frame->next = corto_selectTree;
-            }
+        case TOKEN_PARENT:
+            corto_setref(&frame->o, corto_parentof(frame->o));
+            frame->next = corto_selectThis;
             break;
         case TOKEN_SCOPE:
             frame->next = corto_selectScope;
             break;
+        case TOKEN_TREE:
+            frame->next = corto_selectTree;
+            break;
         case TOKEN_IDENTIFIER:
             if (!op->containsWildcard) {
-                frame->next = corto_selectCurrent;
+                frame->next = corto_selectThis;
                 corto_object o = corto_lookup(frame->o, op->start);
                 corto_setref(&frame->o, o);
                 if (o) {
