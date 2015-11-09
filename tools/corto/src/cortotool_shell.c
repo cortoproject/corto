@@ -553,9 +553,9 @@ static void cxsh_help(void) {
     printf("command with an '\\'.\n");
     printf("\n");
     printf("%sAvailable commands:%s\n", HEADER_COLOR, NORMAL);
-    printf("  %sls [scope]%s\n", HEADER_COLOR, NORMAL);
-    printf("      List contents of a scope. If no scope is provided the\n");
-    printf("      contents of the current scope is listed.\n");
+    printf("  %sls [expr]%s\n", HEADER_COLOR, NORMAL);
+    printf("      Lists result of select expression. If no expression is\n");
+    printf("      provided, ls lists the contents of the current scope.\n");
     printf("  %stree [scope]%s\n", HEADER_COLOR, NORMAL);
     printf("      Lists contents of a scope recursively. If no scope is\n");
     printf("      provided the current scope is listed.\n");
@@ -570,10 +570,15 @@ static void cxsh_help(void) {
     printf("      Exit database shell.\n");
     printf("\n");
     printf("%sExamples:%s\n", HEADER_COLOR, NORMAL);
-    printf("  %s$%s ls corto::lang\n", SHELL_COLOR, NORMAL);
-    printf("      List objects in scope 'corto::lang'\n");
-    printf("  %s$%s corto::lang::class\n", SHELL_COLOR, NORMAL);
-    printf("      Display object 'corto::lang::class'\n");
+    printf("  %s$%s ls corto/lang\n", SHELL_COLOR, NORMAL);
+    printf("      List objects in scope 'corto/lang'\n");
+    printf("  %s$%s ls //w*\n", SHELL_COLOR, NORMAL);
+    printf("      Lists all objects that start with the letter 'w'\n");
+    printf("  %s$%s corto/lang/class\n", SHELL_COLOR, NORMAL);
+    printf("      Display object 'corto/lang/class'\n");
+    printf("  %s$%s class.base\n", SHELL_COLOR, NORMAL);
+    printf("      Resolves 'base' member of class object. Requires the corto\n");
+    printf("      scripting language to be installed.\n");
     printf("\n");
 }
 
