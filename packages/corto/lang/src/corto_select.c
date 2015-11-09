@@ -324,7 +324,12 @@ static void corto_selectTree(
     data->next = NULL;
 
     do {
-        if (corto_iterHasNext(&frame->iter)) {
+        while (data->sp && !corto_iterHasNext(&frame->iter)) {
+            data->sp --;
+            frame = &data->stack[data->sp];
+        }
+
+        if (data->sp || corto_iterHasNext(&frame->iter)) {
             frame->o = corto_iterNext(&frame->iter);
             corto_rbtree scope = corto_scopeof(frame->o);
 
@@ -337,21 +342,6 @@ static void corto_selectTree(
                 frame->next = corto_selectTree;
                 frame->filter = data->stack[data->sp - 1].filter;
             }
-        } else if (data->sp) {
-            do {
-                data->sp --;
-                frame = &data->stack[data->sp];
-            } while (data->sp && !corto_iterHasNext(&frame->iter));
-
-            if (data->sp) {
-                data->next = &data->item;
-                frame->o = corto_iterNext(&frame->iter);
-                corto_setItemData(frame->o, data->next, data);
-            } else {
-                data->next = NULL;
-            }
-        } else {
-            data->next = NULL;
         }
     } while (frame->filter && (data->next && fnmatch(frame->filter, data->next->name, 0)));
 }
@@ -467,6 +457,7 @@ corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter
 
     corto_setstr(&data->expr, expr);
     data->scope = scope;
+    data->sp = 0;
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;
@@ -485,7 +476,6 @@ corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter
     /* Prepare first stack frame */
     corto_claim(scope);
     memset(&data->stack, 0, sizeof(data->stack));
-    data->sp = 0;
     data->stack[0].o = scope;
 
     return 0;
