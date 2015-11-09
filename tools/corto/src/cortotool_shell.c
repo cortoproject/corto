@@ -448,7 +448,11 @@ static int cxsh_show(char* object) {
         /* Print object properties */
         if (o) {
             if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_nameof(o), NORMAL);
+                if (o == root_o) {
+                    printf("%sname:%s         %s/%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, NORMAL);
+                } else {
+                    printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_nameof(o), NORMAL);
+                }
                 if (o != root_o) {
                     printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, corto_fullname(corto_parentof(o), id) + 1, NORMAL);
                 }

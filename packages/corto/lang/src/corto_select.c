@@ -229,11 +229,22 @@ static int corto_selectValidate(corto_selectData *data) {
         tprev = t;
     }
 
+    switch(t) {
+    case TOKEN_SCOPE:
+    case TOKEN_TREE:
+        corto_seterr("'%s' unexpected at end of expression",
+            corto_selectTokenStr(t));
+        goto unexpected_end_error;
+    default:
+        break;
+    }
+
     return 0;
 error:
     corto_seterr("unexpected '%s' after '%s'", 
         corto_selectTokenStr(t),
         corto_selectTokenStr(tprev));
+unexpected_end_error:
     return -1;
 }
 
