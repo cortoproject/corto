@@ -160,7 +160,10 @@ repeat:
                                 } else {
                                     sprintf(load, "/%s", buffer);
                                 }
-                                corto_load(load, 0, NULL);
+                                if (corto_load(load, 0, NULL)) {
+                                    corto_seterr(NULL);
+                                    break;
+                                }
                                 o = prev;
                             } else {
                                 break;

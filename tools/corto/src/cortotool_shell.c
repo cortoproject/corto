@@ -187,7 +187,6 @@ static int cxsh_printRow(corto_string parent, corto_string name, corto_string ty
     corto_int32 colName = CXSH_COL_NAME;
 
     /* Print columns */
-    printf("");
     cxsh_color(objcolor);
     if (strcmp(parent, ".")) {
         printf("%s/", parent);
@@ -449,9 +448,9 @@ static int cxsh_show(char* object) {
         /* Print object properties */
         if (o) {
             if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_fullname(o, id), NORMAL);
+                printf("%sname:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_nameof(o), NORMAL);
                 if (o != root_o) {
-                    printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, corto_fullname(corto_parentof(o), id), NORMAL);
+                    printf("%sparent:       %s%s%s\n", INTERFACE_COLOR, OBJECT_COLOR, corto_fullname(corto_parentof(o), id) + 1, NORMAL);
                 }
             }
             if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
@@ -474,7 +473,7 @@ static int cxsh_show(char* object) {
                 printf("%sstate:        %s%s\n", RED, cxsh_stateStr(o, state), NORMAL);                
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
-            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_fullname(corto_valueType(&result), id), NORMAL);
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_fullname(corto_valueType(&result), id) + 1, NORMAL);
         }
 
         /* Initialize serializer userData */
