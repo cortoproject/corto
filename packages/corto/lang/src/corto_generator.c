@@ -964,14 +964,15 @@ corto_string g_fileLookupSnippetIntern(g_file file, corto_string snippetId, cort
         iter = corto_llIter(list);
         while(corto_iterHasNext(&iter)) {
             snippet = corto_iterNext(&iter);
-            char *snippetPtr = snippet->id;
-
             corto_id path; strcpy(path, snippet->id);
+            char *snippetPtr = path;
+
+            /* Temporary workaroud: translate deprecated '::' to '/' */
+            corto_pathFromFullname(path);
 
             /* Ignore initial scope character */
-            if (*snippet->id == '/') {
-                corto_pathFromFullname(path);
-                snippetPtr ++;
+            if (*snippetPtr == '/') {
+                snippetPtr = path + 1;
             }
 
             if (*snippetId == '/') {

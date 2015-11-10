@@ -184,6 +184,7 @@ repeat:
                     }
                     lookup = o;
                     if (!o) {
+                        corto_seterr(NULL);
                         break;
                     }
                 }

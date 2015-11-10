@@ -12,6 +12,7 @@
 #include "corto_class.h"
 #include "corto_loader.h"
 #include "corto_err.h"
+#include "cortotool_shellengine.h"
 
 #define CXSH_CMD_MAX (1024)
 
@@ -67,7 +68,7 @@ static corto_string cxsh_findPreferredBreak(corto_string str) {
     }
 
     /* If no breakpoints were found, look again for scope operators. The reason
-     * to not check for these in the first run is because it is preferred that 
+     * to not check for these in the first run is because it is preferred that
      * identifiers are on one line. */
     if (breakpt == (str + strlen(str))) {
         while ((ch = *ptr)) {
@@ -192,7 +193,7 @@ static int cxsh_printRow(corto_string parent, corto_string name, corto_string ty
         printf("%s/", parent);
         colName -= strlen(parent) + 1;
     }
-    remaining = cxsh_printColumnValue(name, colName); 
+    remaining = cxsh_printColumnValue(name, colName);
     cxsh_color(NORMAL);
     cxsh_color(TYPE_COLOR); cxsh_printColumnValue(type, CXSH_COL_TYPE); cxsh_color(NORMAL);
     printf("\n");
@@ -214,12 +215,15 @@ static void cxsh_ls(char* arg) {
     corto_id buff;
     corto_uint32 i = 0;
 
-    char lastCh = arg[strlen(arg) - 1];
-
-    if ((lastCh != '/') && (lastCh != '.') && (lastCh != '*') && (lastCh != '?')) {
-        sprintf(buff, "%s/*", arg);
+    if (arg) {
+        char lastCh = arg[strlen(arg) - 1];
+        if ((lastCh != '/') && (lastCh != '.') && (lastCh != '*') && (lastCh != '?')) {
+            sprintf(buff, "%s/*", arg);
+        } else {
+            strcpy(buff, arg);
+        }
     } else {
-        strcpy(buff, arg);
+        strcpy(buff, "*");
     }
 
     if (corto_select(scope, buff, &iter)) {
@@ -322,6 +326,9 @@ static void cxsh_cd(char* arg) {
     corto_object oldScope;
 
     oldScope = scope;
+    if (!arg) {
+        arg = "/";
+    }
 
     if (!strlen(arg)) {
         scope = root_o;
@@ -464,8 +471,8 @@ static int cxsh_show(char* object) {
                 printf("%stimestamp:%s    %d.%.9d%s\n", INTERFACE_COLOR, GREEN, t.tv_sec, t.tv_nsec, NORMAL);
 
                 if (corto_checkState(o, CORTO_DEFINED)) {
-                    printf("%sowner:%s        %s%s\n", 
-                        INTERFACE_COLOR, 
+                    printf("%sowner:%s        %s%s\n",
+                        INTERFACE_COLOR,
                         OBJECT_COLOR,
                         owner ? corto_fullname(owner, ownerId) : "<this>",
                         NORMAL);
@@ -474,7 +481,7 @@ static int cxsh_show(char* object) {
             if (corto_checkState(o, CORTO_VALID)) {
                 printf("%sstate:%s        %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_stateStr(o, state), NORMAL);
             } else {
-                printf("%sstate:        %s%s\n", RED, cxsh_stateStr(o, state), NORMAL);                
+                printf("%sstate:        %s%s\n", RED, cxsh_stateStr(o, state), NORMAL);
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
             printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_fullname(corto_valueType(&result), id) + 1, NORMAL);
@@ -596,38 +603,38 @@ int cxsh_getErrorLocation(corto_string str) {
     return result;
 }
 
-static int cxsh_doCmd(char* cmd) {
-    char arg[CXSH_CMD_MAX];
-
-    arg[0] = '\0';
+static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
 
     /* ls */
-    if (((sscanf(cmd, "ls %s", arg) == 1) && (cmd[2] == ' ')) || !strcmp(cmd, "ls")) {
-        cxsh_ls(arg);
+    if (!strcmp(argv[0], "ls")) {
+      cxsh_ls(argv[1]);
     } else
     /* tree */
-    if (((sscanf(cmd, "tree %s", arg) == 1) && (cmd[4] == ' ')) || !strcmp(cmd, "tree")) {
-        cxsh_tree(arg);
+    if (!strcmp(argv[0], "tree")) {
+        cxsh_tree(argv[1]);
     } else
     /* exit */
-    if (!memcmp(cmd, "exit", strlen("exit"))) {
+    if (!strcmp(argv[0], "exit")) {
         goto quit;
     } else
     /* cd */
-    if (((sscanf(cmd, "cd %s", arg) == 1) && (cmd[2] == ' ')) || !strcmp(cmd, "cd")) {
-        cxsh_cd(arg);
+    if (!strcmp(argv[0], "cd")) {
+        cxsh_cd(argv[1]);
     } else
     /* import */
-    if (!memcmp(cmd, "import ", strlen("import "))) {
-        sscanf(cmd, "import %s", arg);
-        cxsh_import(arg);
-    } else/* drop */
-    if (!memcmp(cmd, "drop ", strlen("drop "))) {
-        sscanf(cmd, "drop %s", arg);
-        cxsh_drop(arg);
-    } else if (!memcmp(cmd, "clear", strlen("clear"))) {
+    if (!strcmp(argv[0], "import")) {
+        cxsh_import(argv[1]);
+    } else
+    /* drop */
+    if (!strcmp(argv[0], "drop")) {
+        cxsh_drop(argv[1]);
+    } else
+    /* clear */
+    if (!strcmp(argv[0], "clear")) {
         system("clear");
-    } else if (!memcmp(cmd, "help", strlen("help"))) {
+    } else
+    /* help */
+    if (!strcmp(argv[0], "help")) {
         cxsh_help();
     } else {
         corto_char *lastErr;
@@ -660,32 +667,49 @@ quit:
     return 1;
 }
 
+/* Return result for TAB expansion */
+corto_ll cxsh_shellExpand(char *arg) {
+    corto_ll result = corto_llNew();
+    corto_iter iter;
+    corto_id expr;
+
+    char lastCh = arg[strlen(arg) - 1];
+    if ((lastCh != '/') && (lastCh != '.') && (lastCh != '*') && (lastCh != '?')) {
+        sprintf(expr, "%s*", arg);
+    } else {
+        strcpy(expr, arg);
+    }
+
+    corto_select(scope, expr, &iter);
+
+    while (corto_iterHasNext(&iter)) {
+        corto_selectItem *item = corto_iterNext(&iter);
+        corto_llAppend(result, corto_strdup(item->name));
+    }
+
+    return result;
+}
+
+/* Execute command */
+int cxsh_command(int argc, char* argv[], char *cmd) {
+    return cxsh_doCmd(argc, argv, cmd);
+}
+
 /* Shell */
 static void cxsh_shell(void) {
-    char cmd[CXSH_CMD_MAX];
     corto_bool quit;
     corto_id prompt;
 
     quit = FALSE;
 
     while (!quit) {
-        /* Print prompt */
+        /* Set prompt */
         cxsh_prompt(scope, TRUE, prompt);
-        printf("%s", prompt);
+        corto_shellEngine_prompt(prompt);
 
-        if (!cxsh_readline(cmd)) {
-            if (feof(stdin)) {
-                printf("\n");
-                quit = TRUE;
-            }
-            continue;
-        }
-
-        /* Forward commands */
-        if (strlen(cmd)) {
-            if (cxsh_doCmd(cmd)) {
-                quit = TRUE;
-            }
+        /* Read input */
+        if (corto_shellEngine_readInput(cxsh_command, cxsh_shellExpand)) {
+            quit = TRUE;
         }
     }
 }
