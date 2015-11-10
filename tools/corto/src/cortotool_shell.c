@@ -604,6 +604,7 @@ int cxsh_getErrorLocation(corto_string str) {
 }
 
 static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
+    CORTO_UNUSED(argc);
 
     /* ls */
     if (!strcmp(argv[0], "ls")) {
@@ -615,6 +616,7 @@ static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     } else
     /* exit */
     if (!strcmp(argv[0], "exit")) {
+        printf("Bye!\n");
         goto quit;
     } else
     /* cd */

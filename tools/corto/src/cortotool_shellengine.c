@@ -57,7 +57,7 @@ void cortoconsole_resetPos(void) {
     consolePos = 0;
 }
 
-void cortoconsole_clear(void) {
+void cortoconsole_clear(int chars) {
     int i;
 
     /* Move cursur back */
@@ -65,11 +65,11 @@ void cortoconsole_clear(void) {
         putc('\b', stdout);
     }
 
-    for (i = 0; i < consolePos; i++) {
+    for (i = 0; i < chars; i++) {
         putc(' ', stdout);
     }
 
-    for (i = 0; i < consolePos; i++) {
+    for (i = 0; i < chars; i++) {
         putc('\b', stdout);
     }
 
@@ -301,13 +301,13 @@ static corto_bool corto_shellAutoExpand(char *arg, corto_expandCallback expand) 
         append[0] = '\0';
         int first = 0;
 
-    		/* If more items match, items are printed to console. In that case, signal that
-    		 * the command-input (which will be auto-completed) must be saved for the next readInput call.
-    		 * result = FALSE tells that the readInput call should quit immediately, which, in effect
-    		 * will start a new prompt with the old input.
-    		 */
-    		if (corto_llSize(items) >= 2) {
-      			corto_shellEngine_keepInput();
+        /* If more items match, items are printed to console. In that case, signal that
+         * the command-input (which will be auto-completed) must be saved for the next readInput call.
+         * result = FALSE tells that the readInput call should quit immediately, which, in effect
+         * will start a new prompt with the old input.
+         */
+        if (corto_llSize(items) >= 2) {
+            corto_shellEngine_keepInput();
             result = TRUE;
 
             printf("\n");
@@ -346,6 +346,17 @@ static corto_bool corto_shellAutoExpand(char *arg, corto_expandCallback expand) 
   	return result;
 }
 
+void chinsert(char *buff, int pos, int bpos, char ch) {
+    memmove(&buff[pos] + 1, &buff[pos], bpos - pos + 1);
+    buff[pos] = ch;
+}
+
+char chremove(char *buff, int pos, int bpos) {
+    char result = buff[pos - 1];
+    memmove(&buff[pos] - 1, &buff[pos], bpos - pos + 1);
+    return result;
+}
+
 /* Read from stdin */
 int corto_shellEngine_readInput(
     corto_commandCallback cmd,
@@ -355,7 +366,7 @@ int corto_shellEngine_readInput(
     unsigned int ch;
     const char* historyPtr;
     int result = 0;
-    corto_bool execute = TRUE;
+    corto_bool execute;
 
     /* Print shell */
     printf("%s", shell);
@@ -394,15 +405,31 @@ int corto_shellEngine_readInput(
 
         case XCON_KEY_BACKSPACE:
             if (buffLoc) {
-                cmdbuff[buffLoc - 1] = '\0';
-                cursor--;
+                corto_bool remove = FALSE;
+
+                switch (chremove(cmdbuff, consolePos, buffLoc)) {
+                case '{': if (cmdbuff[consolePos - 1] == '}') remove = TRUE;
+                    break;
+                case '[': if (cmdbuff[consolePos - 1] == ']') remove = TRUE;
+                    break;
+                case '(': if (cmdbuff[consolePos - 1] == ')') remove = TRUE;
+                    break;
+                case '"': if (cmdbuff[consolePos - 1] == '"') remove = TRUE;
+                    break;
+                }
+
+                if (remove) chremove(cmdbuff, consolePos, buffLoc);
+
+                if (cursor) {
+                    cursor--;
+                }
             }
             break;
 
         case XCON_KEY_UP:
             historyPtr = corto_shellEngine_getHistory();
             if (historyPtr) {
-                cortoconsole_clear();
+                cortoconsole_clear(consolePos);
                 strcpy(cmdbuff, historyPtr);
                 cursor = buffLoc = strlen(historyPtr);
             }
@@ -411,7 +438,7 @@ int corto_shellEngine_readInput(
         case XCON_KEY_DOWN:
             historyPtr = corto_shellEngine_getHistoryUp();
             if (historyPtr) {
-                cortoconsole_clear();
+                cortoconsole_clear(consolePos);
                 strcpy(cmdbuff, historyPtr);
                 cursor = buffLoc = strlen(historyPtr);
             }
@@ -429,13 +456,18 @@ int corto_shellEngine_readInput(
             break;
 
         default:
-            if (consolePos == buffLoc) {
-                cmdbuff[buffLoc] = ch;
-                cmdbuff[buffLoc + 1] = '\0';
-            } else {
-                memmove(&cmdbuff[consolePos] + 1, &cmdbuff[consolePos], buffLoc - consolePos + 1);
-                cmdbuff[consolePos] = ch;
+            chinsert(cmdbuff, consolePos, buffLoc, ch);
+
+            if (ch == '(') {
+                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, ')');
+            } else if (ch == '{') {
+                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, '}');
+            } else if (ch == '"') {
+                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, '"');
+            } else if (ch == '[') {
+                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, ']');
             }
+
             cursor++;
             break;
         }
@@ -444,8 +476,8 @@ int corto_shellEngine_readInput(
             break;
         }
 
-        cortoconsole_clear();
         buffLoc = strlen(cmdbuff);
+        cortoconsole_clear(buffLoc + 2);
         cortoconsole_puts(cmdbuff);
         cortoconsole_moveCursor(cursor);
 
@@ -455,12 +487,14 @@ int corto_shellEngine_readInput(
     printf("\n");
 
     /* Execute command */
-    if (cmd && execute && argc) {
+    if (cmd && execute) {
         /* Parse cmd into argc and argv */
         corto_shellEngine_parseCommand();
 
         /* Call the callback function for commands */
-        result = cmd(argc, argv, cmdbuff);
+        if (argc) {
+            result = cmd(argc, argv, cmdbuff);
+        }
     }
 
     /* Add command to history */
