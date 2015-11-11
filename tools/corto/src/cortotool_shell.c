@@ -744,10 +744,26 @@ int cxsh_command(int argc, char* argv[], char *cmd) {
 corto_uint32 cxsh_countSelect(char *expr) {
     corto_uint32 result = 0;
     corto_iter iter;
-    corto_select(scope, expr, &iter);
+    corto_select(corto_lang_o, expr, &iter);
     while (corto_iterHasNext(&iter)) {
-        corto_iterNext(&iter);
         result++;
+        break;
+    }
+    if (!result) {
+        corto_select(corto_o, expr, &iter);
+        while (corto_iterHasNext(&iter)) {
+            corto_iterNext(&iter);
+            result++;
+            break;
+        }
+    }
+    if (!result) {
+        corto_select(scope, expr, &iter);
+        while (corto_iterHasNext(&iter)) {
+            corto_iterNext(&iter);
+            result++;
+            break;
+        }
     }
     return result;
 }
@@ -755,7 +771,6 @@ corto_uint32 cxsh_countSelect(char *expr) {
 /* Print single object */
 void cxsh_printObject(char *expr, char *str) {
     corto_uint32 count = cxsh_countSelect(expr);
-
     if (count) {
         printf("%s%s%s", CYAN, str, NORMAL);
     } else {
@@ -768,15 +783,10 @@ void cxsh_print(const char *arg) {
     corto_id buff, expr;
     const char *ptr = arg;
     char *bptr = buff, *exprPtr = expr, ch;
+    *exprPtr = '\0';
 
     for (; (ch = *ptr); ptr ++) {
-        if (ch != ' ') {
-            *exprPtr++ = ch;
-        } else {
-            exprPtr = expr;
-        }
-        *exprPtr = '\0';
-        if ((ch == '/') || (ch == ' ') || (ch == '{')) {
+        if ((ch == '/') || (ch == ' ') || (ch == '{') || (ch == '.') || (ch == '(')) {
             *bptr = '\0';
             cxsh_printObject(expr, buff);
             printf("%c", ch);
@@ -787,8 +797,15 @@ void cxsh_print(const char *arg) {
         } else {
             *bptr++ = ch;
         }
+        if ((ch == ' ') || (ch == '{') || (ch == '.')) {
+            exprPtr = expr;
+        } else {
+            *exprPtr++ = ch;
+        }
+        *exprPtr = '\0';
     }
     *bptr = '\0';
+    *exprPtr = '\0';
     cxsh_printObject(expr, buff);
 }
 

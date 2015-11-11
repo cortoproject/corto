@@ -500,6 +500,7 @@ corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter
     corto_setstr(&data->expr, expr);
     data->scope = scope;
     data->sp = 0;
+    data->next = NULL;
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;
