@@ -76,9 +76,13 @@ void cortoconsole_clear(int chars) {
     consolePos = 0;
 }
 
-void cortoconsole_puts(const char* s) {
+void cortoconsole_puts(corto_printCallback print, const char* s) {
     consolePos = strlen(s);
-    printf("%s", s);
+    if (!print) {
+        printf("%s", s);
+    } else {
+        print(s);
+    }
 }
 
 void cortoconsole_moveCursor(int pos) {
@@ -292,7 +296,7 @@ void corto_shellEngine_cmdAppend(const char* arg) {
 /* Generic auto-expand function (TAB-callback) */
 static corto_bool corto_shellAutoExpand(
     int argc,
-    char *argv[],
+    const char *argv[],
     char *cmd,
     corto_expandCallback expand)
 {
@@ -315,7 +319,7 @@ static corto_bool corto_shellAutoExpand(
          * result = FALSE tells that the readInput call should quit immediately, which, in effect
          * will start a new prompt with the old input.
          */
-        corto_string arg = argc ? argv[argc - 1] : "";
+        const char* arg = argc ? argv[argc - 1] : "";
         if (cmd[strlen(cmd) - 1] == ' ') {
             arg = "";
         }
@@ -331,7 +335,7 @@ static corto_bool corto_shellAutoExpand(
                 if (!prev) prev = str; else prev = NULL;
                 str = corto_iterNext(&iter);
                 if (prev) {
-                    printf("%*s", 40 - strlen(prev), " ");
+                    printf("%*s", 40 - (int)strlen(prev), " ");
                 }
                 printf("%s", str);
                 if (prev) {
@@ -351,7 +355,7 @@ static corto_bool corto_shellAutoExpand(
                 }
                 first++;
             }
-            if (prev) {
+            if (!prev) {
                 printf("\n");
             }
     		} else {
@@ -383,6 +387,7 @@ char chremove(char *buff, int pos, int bpos) {
 
 /* Read from stdin */
 int corto_shellEngine_readInput(
+    corto_printCallback print,
     corto_commandCallback cmd,
     corto_expandCallback expand)
 {
@@ -402,7 +407,7 @@ int corto_shellEngine_readInput(
     /* If keepInput was set, replace cmdbuff with old commandstring */
     if (keepInput) {
         strcpy(cmdbuff, keepStr);
-        cortoconsole_puts(cmdbuff);
+        cortoconsole_puts(print, cmdbuff);
         cursor = buffLoc = strlen(cmdbuff);
     }
 
@@ -513,7 +518,7 @@ int corto_shellEngine_readInput(
 
         buffLoc = strlen(cmdbuff);
         cortoconsole_clear(buffLoc + 2);
-        cortoconsole_puts(cmdbuff);
+        cortoconsole_puts(print, cmdbuff);
         cortoconsole_moveCursor(cursor);
 
         ch = cortoconsole_getch();

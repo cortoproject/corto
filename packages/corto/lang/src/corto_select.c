@@ -377,6 +377,10 @@ static int corto_selectRun(corto_selectData *data) {
     corto_int32 i;
     corto_selectOp *op;
     corto_selectStack *frame = &data->stack[data->sp];
+    corto_bool explicitRef = FALSE;
+    if (data->sp) {
+        explicitRef = TRUE;
+    }
 
     if (!data->programSize) {
         corto_seterr("invalid program");
@@ -394,6 +398,7 @@ static int corto_selectRun(corto_selectData *data) {
         switch (op->token) {
         case TOKEN_THIS:
             frame->next = corto_selectThis;
+            explicitRef = TRUE;
             break;
         case TOKEN_PARENT:
             if (frame->o != root_o) {
@@ -403,14 +408,22 @@ static int corto_selectRun(corto_selectData *data) {
                 corto_seterr("can't select parent of root");
                 goto error;
             }
+            explicitRef = TRUE;
             break;
         case TOKEN_SCOPE:
             frame->next = corto_selectScope;
+            if (!explicitRef) {
+                corto_setref(&frame->o, root_o);
+            }
             break;
         case TOKEN_TREE:
             frame->next = corto_selectTree;
+            if (!explicitRef) {
+                corto_setref(&frame->o, root_o);
+            }
             break;
         case TOKEN_IDENTIFIER:
+            explicitRef = TRUE;
             if (!op->containsWildcard) {
                 frame->next = corto_selectThis;
                 corto_object o = corto_lookup(frame->o, op->start);

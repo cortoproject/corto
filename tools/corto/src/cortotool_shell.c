@@ -13,6 +13,7 @@
 #include "corto_loader.h"
 #include "corto_err.h"
 #include "cortotool_shellengine.h"
+#include "ctype.h"
 
 #define CXSH_CMD_MAX (1024)
 
@@ -670,7 +671,7 @@ quit:
 }
 
 /* Return result for TAB expansion */
-corto_ll cxsh_shellExpand(int argc, char* argv[], char *cmd) {
+corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
     corto_ll result = corto_llNew();
     corto_iter iter;
     corto_id expr;
@@ -739,6 +740,58 @@ int cxsh_command(int argc, char* argv[], char *cmd) {
     return cxsh_doCmd(argc, argv, cmd);
 }
 
+/* Count number of results from select */
+corto_uint32 cxsh_countSelect(char *expr) {
+    corto_uint32 result = 0;
+    corto_iter iter;
+    corto_select(scope, expr, &iter);
+    while (corto_iterHasNext(&iter)) {
+        corto_iterNext(&iter);
+        result++;
+    }
+    return result;
+}
+
+/* Print single object */
+void cxsh_printObject(char *expr, char *str) {
+    corto_uint32 count = cxsh_countSelect(expr);
+
+    if (count) {
+        printf("%s%s%s", CYAN, str, NORMAL);
+    } else {
+        printf("%s", str);
+    }
+}
+
+/* Color-code command */
+void cxsh_print(const char *arg) {
+    corto_id buff, expr;
+    const char *ptr = arg;
+    char *bptr = buff, *exprPtr = expr, ch;
+
+    for (; (ch = *ptr); ptr ++) {
+        if (ch != ' ') {
+            *exprPtr++ = ch;
+        } else {
+            exprPtr = expr;
+        }
+        *exprPtr = '\0';
+        if ((ch == '/') || (ch == ' ') || (ch == '{')) {
+            *bptr = '\0';
+            cxsh_printObject(expr, buff);
+            printf("%c", ch);
+            bptr = buff;
+        } else if ((bptr == buff) && isdigit(ch)) {
+            printf("%s%c%s", GREEN, ch, NORMAL);
+            bptr = buff;
+        } else {
+            *bptr++ = ch;
+        }
+    }
+    *bptr = '\0';
+    cxsh_printObject(expr, buff);
+}
+
 /* Shell */
 static void cxsh_shell(void) {
     corto_bool quit;
@@ -752,7 +805,10 @@ static void cxsh_shell(void) {
         corto_shellEngine_prompt(prompt);
 
         /* Read input */
-        if (corto_shellEngine_readInput(cxsh_command, cxsh_shellExpand)) {
+        if (corto_shellEngine_readInput(
+          cxsh_print,
+          (corto_commandCallback)cxsh_command,
+          cxsh_shellExpand)) {
             quit = TRUE;
         }
     }

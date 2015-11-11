@@ -10,11 +10,14 @@
 
 #include "corto.h"
 
-typedef void (*corto_printCallback) (int argc, char* argv[], char *cmd);
-typedef int (*corto_commandCallback) (int argc, char* argv[], char *cmd);
-typedef corto_ll (*corto_expandCallback)(int argc, char *argv[], char *cmd);
+typedef void (*corto_printCallback) (const char *cmd);
+typedef int (*corto_commandCallback) (int argc, const char* argv[], char *cmd);
+typedef corto_ll (*corto_expandCallback)(int argc, const char *argv[], char *cmd);
 
 void corto_shellEngine_prompt (const char* fmt, ...);
-int corto_shellEngine_readInput(corto_commandCallback cmd, corto_expandCallback expand);
+int corto_shellEngine_readInput(
+  corto_printCallback print,
+  corto_commandCallback cmd,
+  corto_expandCallback expand);
 
 #endif /* CORTO_SHELLENGINE_H_ */
