@@ -607,7 +607,7 @@ static corto_equalityKind corto_objectCompareLookup(corto_type this, const void*
             continue;
         }
         if (ch1 < 97) ch1 = tolower(ch1);
-       
+
         /* Query is always made lower case, for efficiency reasons */
         /* if (ch2 < 97) ch2 = tolower(ch2); */
         if (ch1 != ch2) {
@@ -674,13 +674,13 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
         if (c_scope) {
 
             /* Insert child in parent-scope */
-            if (corto_rwmutexWrite(&p_scope->scopeLock))     
+            if (corto_rwmutexWrite(&p_scope->scopeLock))
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
                 p_scope->scope = corto_rbtreeNew_w_func(corto_objectCompare);
             }
-            
+
             corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->name, child);
             if (existing) {
                 if (corto_typeof(existing) != corto_typeof(child)) {
@@ -715,7 +715,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
 
             /* Parent must not be deleted before all childs are gone. */
             corto_claim(parent);
-            if (corto_rwmutexUnlock(&p_scope->scopeLock)) 
+            if (corto_rwmutexUnlock(&p_scope->scopeLock))
                 corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");;
         } else {
             corto_critical("corto_adopt: child-object is not scoped");
@@ -1006,7 +1006,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
     if (o) {
         corto_object o_ret = NULL;
         corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
-        
+
         /* Initialize object parameters. */
         if ((o_ret = corto__initScope(o, name, parent))) {
 
@@ -1364,7 +1364,7 @@ corto_rbtree corto_scopeof(corto_object o) {
     return result;
 err_not_scoped:
     corto_critical("corto_nameof: object %p is not scoped.", o);
-    return NULL;    
+    return NULL;
 }
 
 corto_uint32 corto_scopeSize(corto_object o) {
@@ -1585,18 +1585,13 @@ corto_object corto_ownerof(corto_object o) {
     corto__persistent* persistent;
     corto_object result = NULL;
 
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    persistent = corto__objectPersistent(_o);
-    if (persistent) {
+    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+        _o = CORTO_OFFSET(o, -sizeof(corto__object));
+        persistent = corto__objectPersistent(_o);
         result = persistent->owner;
-    } else {
-        goto err_not_persistent;
     }
 
     return result;
-err_not_persistent:
-    corto_critical("corto_ownerof: object %p is not persistent.", o);
-    return result;   
 }
 
 /* Destruct object. */
@@ -2221,7 +2216,7 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     walkData.mask = mask;
     walkData.depth = 0;
 
-    if (((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DECLARED)) || 
+    if (((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DECLARED)) ||
         ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DEFINED))) {
         corto_notifyObserver(observer, observable, observable, mask, 0);
     }
@@ -2475,7 +2470,7 @@ corto_int32 corto_silence(corto_object this, corto_observer observer, corto_even
                             corto_fullname(observer, id1),
                             corto_fullname(observable, id2));
                         goto error;
-                    }                    
+                    }
                 }
                 corto_rwmutexUnlock(&_o->childLock);
             } else {
@@ -3369,7 +3364,7 @@ static corto_uint32 corto_overloadParamCompare(
          * kind. */
         } else if ((o_type->kind == CORTO_PRIMITIVE) && (r_type->kind == CORTO_PRIMITIVE)) {
             if (corto_primitive(o_type)->kind != corto_primitive(r_type)->kind) {
-                if (!corto_primitive_isInteger(corto_primitive(o_type)) || 
+                if (!corto_primitive_isInteger(corto_primitive(o_type)) ||
                     !corto_primitive_isInteger(corto_primitive(r_type))) {
                     d++;
                 }
@@ -3857,7 +3852,7 @@ corto_int16 corto_fromStrv(corto_value *v, corto_string string) {
     } else {
         goto error;
     }
-    
+
     return 0;
 error:
     return -1;
@@ -4081,4 +4076,3 @@ corto_int16 corto_copya(corto_any *dst, corto_any src) {
     dst->type = src.type;
     return result;
 }
-

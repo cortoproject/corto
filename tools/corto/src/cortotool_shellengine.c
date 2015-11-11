@@ -298,6 +298,7 @@ static corto_bool corto_shellAutoExpand(
     int argc,
     const char *argv[],
     char *cmd,
+    corto_printCallback print,
     corto_expandCallback expand)
 {
     corto_ll items = NULL;
@@ -337,7 +338,7 @@ static corto_bool corto_shellAutoExpand(
                 if (prev) {
                     printf("%*s", 40 - (int)strlen(prev), " ");
                 }
-                printf("%s", str);
+                print(str);
                 if (prev) {
                     printf("\n");
                 }
@@ -427,8 +428,10 @@ int corto_shellEngine_readInput(
         switch (ch) {
         case XCON_KEY_TAB:
             if (expand) {
-                execute = !corto_shellAutoExpand(argc, argv, cmdbuff, expand);
+                execute = !corto_shellAutoExpand(argc, argv, cmdbuff, print, expand);
                 cursor = strlen(cmdbuff);
+                buffLoc = cursor - 1;
+                ch = cmdbuff[strlen(cmdbuff) - 1];
             }
             break;
 
@@ -487,29 +490,30 @@ int corto_shellEngine_readInput(
         default: {
                 corto_bool insert = TRUE;
                 if (consolePos) {
-                    char cur = cmdbuff[consolePos - 1];
-                    if ((ch == ')') && (cur == '(')) insert = FALSE;
-                    if ((ch == '}') && (cur == '{')) insert = FALSE;
+                    char cur = cmdbuff[consolePos];
+                    if ((ch == ')') && (cur == ')')) insert = FALSE;
+                    if ((ch == '}') && (cur == '}')) insert = FALSE;
                     if ((ch == '"') && (cur == '"')) insert = FALSE;
-                    if ((ch == ']') && (cur == '[')) insert = FALSE;
+                    if ((ch == ']') && (cur == ']')) insert = FALSE;
                 }
                 if (insert) {
                     chinsert(cmdbuff, consolePos, buffLoc, ch);
                 }
             }
-
-            if (ch == '(') {
-                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, ')');
-            } else if (ch == '{') {
-                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, '}');
-            } else if (ch == '"') {
-                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, '"');
-            } else if (ch == '[') {
-                chinsert(cmdbuff, consolePos + 1, buffLoc + 1, ']');
-            }
-
             cursor++;
             break;
+        }
+
+        if (ch == '(') {
+            /*printf("\ncmdbuff = '%s', cursor = %d, consolePos = %d, buffLoc = %d\n",
+              cmdbuff, cursor, consolePos, buffLoc);*/
+            chinsert(cmdbuff, cursor, buffLoc + 1, ')');
+        } else if (ch == '{') {
+            chinsert(cmdbuff, cursor, buffLoc + 1, '}');
+        } else if (ch == '"') {
+            chinsert(cmdbuff, cursor, buffLoc + 1, '"');
+        } else if (ch == '[') {
+            chinsert(cmdbuff, cursor, buffLoc + 1, ']');
         }
 
         if (!execute) {
