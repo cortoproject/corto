@@ -34,9 +34,9 @@ typedef struct corto_selectStack {
     corto_iter iter;
     corto_string filter;
 
-    /* Callback for either returning single object, traversing 
+    /* Callback for either returning single object, traversing
      * scope or traversing a tree. */
-    void (*next)(struct corto_selectData *data, struct corto_selectStack *frame); 
+    void (*next)(struct corto_selectData *data, struct corto_selectStack *frame);
 } corto_selectStack;
 
 typedef struct corto_selectData {
@@ -111,8 +111,8 @@ static int corto_selectParse(corto_selectData *data) {
             }
             break;
         default:
-            while((ch = *ptr++) && 
-                  (isalnum(ch) || (ch == '*') || (ch == '?') || (ch == '(') || 
+            while((ch = *ptr++) &&
+                  (isalnum(ch) || (ch == '*') || (ch == '?') || (ch == '(') ||
                     (ch == ')') || (ch == '{') || (ch == '}'))) {
                 if ((ch == '*') || (ch == '?')) {
                     data->program[op].containsWildcard = TRUE;
@@ -146,6 +146,20 @@ static int corto_selectParse(corto_selectData *data) {
             corto_seterr("expression is too long");
             goto error;
         }
+    }
+
+    /* If program ends with scope or tree, auto-append asterisk */
+    switch(data->program[op - 1].token) {
+    case TOKEN_SCOPE:
+    case TOKEN_TREE:
+        data->program[op].token = TOKEN_ASTERISK;
+        if (++op == CORTO_SELECT_MAX_OP) {
+            corto_seterr("expression is too long");
+            goto error;
+        }
+        break;
+    default:
+        break;
     }
 
     data->programSize = op;
@@ -241,7 +255,7 @@ static int corto_selectValidate(corto_selectData *data) {
 
     return 0;
 error:
-    corto_seterr("unexpected '%s' after '%s'", 
+    corto_seterr("unexpected '%s' after '%s'",
         corto_selectTokenStr(t),
         corto_selectTokenStr(tprev));
 unexpected_end_error:
@@ -249,9 +263,9 @@ unexpected_end_error:
 }
 
 static void corto_setItemData(
-    corto_object o, 
-    corto_selectItem *item, 
-    corto_selectData *data) 
+    corto_object o,
+    corto_selectItem *item,
+    corto_selectData *data)
 {
     if (o != root_o) {
         corto_relname(data->scope, corto_parentof(o), item->parent);
@@ -290,7 +304,7 @@ static void corto_setItemData(
 }
 
 static void corto_selectThis(
-    corto_selectData *data, 
+    corto_selectData *data,
     corto_selectStack *frame) {
 
     if (!data->next) {
@@ -303,7 +317,7 @@ static void corto_selectThis(
 }
 
 static void corto_selectScope(
-    corto_selectData *data, 
+    corto_selectData *data,
     corto_selectStack *frame) {
 
     if (frame->filter) {
@@ -329,7 +343,7 @@ static void corto_selectScope(
 
 /* Depth first search */
 static void corto_selectTree(
-    corto_selectData *data, 
+    corto_selectData *data,
     corto_selectStack *frame) {
 
     data->next = NULL;
@@ -419,6 +433,8 @@ static int corto_selectRun(corto_selectData *data) {
             corto_rbtree tree = corto_scopeof(frame->o);
             if (tree) {
                 frame->iter = _corto_rbtreeIter(tree, &frame->trav);
+            } else {
+                frame->next = NULL;
             }
             break;
         default:
@@ -455,7 +471,7 @@ error:
 
 static void* corto_selectNext(corto_iter *iter) {
     corto_selectData *data = corto_selectDataGet();
-    
+
     CORTO_UNUSED(iter);
 
     return data->next;

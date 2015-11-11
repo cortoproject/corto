@@ -123,6 +123,11 @@ repeat:
             *bptr = '\0';
             *bptrLc = '\0';
 
+            /* If buffer is empty, just return current object */
+            if (!*buffer) {
+                break;
+            }
+
             if (!strcmp(buffer, ".")) {
                 /* o is already set to scope, just continue */
             } else if (!strcmp(buffer, "..")) {
@@ -237,7 +242,7 @@ repeat:
                 _scope_start = scope = corto_o;
                 goto repeat;
             }
-            break;    
+            break;
         }
 
          /* Do goto instead of a recursive call. Besides saving (a little bit of) performance,

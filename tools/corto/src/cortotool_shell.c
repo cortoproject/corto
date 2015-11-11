@@ -670,23 +670,65 @@ quit:
 }
 
 /* Return result for TAB expansion */
-corto_ll cxsh_shellExpand(char *arg) {
+corto_ll cxsh_shellExpand(int argc, char* argv[], char *cmd) {
     corto_ll result = corto_llNew();
     corto_iter iter;
     corto_id expr;
 
-    char lastCh = arg[strlen(arg) - 1];
-    if ((lastCh != '/') && (lastCh != '.') && (lastCh != '*') && (lastCh != '?')) {
-        sprintf(expr, "%s*", arg);
+    /* If there is no space between command and first
+     * arg, space must be inserted */
+    corto_bool firstArgSpace =
+      argc == 1 ? cmd[strlen(cmd) - 1] == ' ' : TRUE;
+
+    /* For selection of scopes, auto-append a '/' */
+    corto_bool appendSlash = FALSE;
+
+    /* Is expression resolving a member? */
+    corto_bool resolveMember = FALSE;
+
+    if (argc) {
+        if (!strcmp(argv[0], "cd") || !strcmp(argv[0], "ls")) {
+            appendSlash = TRUE;
+            if (argc >= 2) {
+                strcpy(expr, argv[1]);
+            } else {
+                strcpy(expr, "");
+            }
+
+            /* If first argument doesn't end with a space, insert space on first
+             * tab. */
+            if (!firstArgSpace) {
+                corto_llFree(result);
+                result = NULL;
+            } else {
+                strcat(expr, "*");
+            }
+        } else {
+            strcpy(expr, cmd);
+            strcat(expr, "*");
+        }
     } else {
-        strcpy(expr, arg);
+        strcpy(expr, "*");
     }
 
-    corto_select(scope, expr, &iter);
-
-    while (corto_iterHasNext(&iter)) {
-        corto_selectItem *item = corto_iterNext(&iter);
-        corto_llAppend(result, corto_strdup(item->name));
+    if (result) {
+        if (resolveMember) {
+        } else {
+            corto_select(scope, expr, &iter);
+            while (corto_iterHasNext(&iter)) {
+                corto_selectItem *item = corto_iterNext(&iter);
+                corto_id scopedItem;
+                if (strcmp(item->parent, ".")) {
+                    sprintf(scopedItem, "%s/%s", item->parent, item->name);
+                } else {
+                    strcpy(scopedItem, item->name);
+                }
+                if (appendSlash) {
+                    strcat(scopedItem, "/");
+                }
+                corto_llAppend(result, corto_strdup(scopedItem));
+            }
+        }
     }
 
     return result;

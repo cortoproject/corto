@@ -290,13 +290,22 @@ void corto_shellEngine_cmdAppend(const char* arg) {
 }
 
 /* Generic auto-expand function (TAB-callback) */
-static corto_bool corto_shellAutoExpand(char *arg, corto_expandCallback expand) {
+static corto_bool corto_shellAutoExpand(
+    int argc,
+    char *argv[],
+    char *cmd,
+    corto_expandCallback expand)
+{
     corto_ll items = NULL;
     corto_bool result = FALSE;
 
-    items = expand(arg);
+    items = expand(argc, argv, cmd);
 
-  	if (items && corto_llSize(items)) {
+    /* If a NULL is returned, this indicates that the expand function expects
+     * a space between the first argument */
+    if (!items) {
+        corto_shellEngine_cmdAppend(" ");
+    } else if (corto_llSize(items)) {
         corto_id append;
         append[0] = '\0';
         int first = 0;
@@ -306,15 +315,28 @@ static corto_bool corto_shellAutoExpand(char *arg, corto_expandCallback expand) 
          * result = FALSE tells that the readInput call should quit immediately, which, in effect
          * will start a new prompt with the old input.
          */
+        corto_string arg = argc ? argv[argc - 1] : "";
+        if (cmd[strlen(cmd) - 1] == ' ') {
+            arg = "";
+        }
+
         if (corto_llSize(items) >= 2) {
+            corto_string prev = NULL, str = NULL;
             corto_shellEngine_keepInput();
             result = TRUE;
 
             printf("\n");
             corto_iter iter = corto_llIter(items);
             while (corto_iterHasNext(&iter)) {
-                corto_string str = corto_iterNext(&iter);
-                printf("%s ", str);
+                if (!prev) prev = str; else prev = NULL;
+                str = corto_iterNext(&iter);
+                if (prev) {
+                    printf("%*s", 40 - strlen(prev), " ");
+                }
+                printf("%s", str);
+                if (prev) {
+                    printf("\n");
+                }
                 if (!first) {
                     strcpy(append, str + strlen(arg));
                 } else {
@@ -329,7 +351,9 @@ static corto_bool corto_shellAutoExpand(char *arg, corto_expandCallback expand) 
                 }
                 first++;
             }
-            printf("\n");
+            if (prev) {
+                printf("\n");
+            }
     		} else {
             strcpy(append, &(((corto_string)corto_llGet(items, 0))[strlen(arg)]));
         }
@@ -366,7 +390,7 @@ int corto_shellEngine_readInput(
     unsigned int ch;
     const char* historyPtr;
     int result = 0;
-    corto_bool execute;
+    corto_bool execute = TRUE;
 
     /* Print shell */
     printf("%s", shell);
@@ -398,7 +422,7 @@ int corto_shellEngine_readInput(
         switch (ch) {
         case XCON_KEY_TAB:
             if (expand) {
-                execute = !corto_shellAutoExpand(cmdbuff, expand);
+                execute = !corto_shellAutoExpand(argc, argv, cmdbuff, expand);
                 cursor = strlen(cmdbuff);
             }
             break;
@@ -455,8 +479,19 @@ int corto_shellEngine_readInput(
                 cursor++;
             break;
 
-        default:
-            chinsert(cmdbuff, consolePos, buffLoc, ch);
+        default: {
+                corto_bool insert = TRUE;
+                if (consolePos) {
+                    char cur = cmdbuff[consolePos - 1];
+                    if ((ch == ')') && (cur == '(')) insert = FALSE;
+                    if ((ch == '}') && (cur == '{')) insert = FALSE;
+                    if ((ch == '"') && (cur == '"')) insert = FALSE;
+                    if ((ch == ']') && (cur == '[')) insert = FALSE;
+                }
+                if (insert) {
+                    chinsert(cmdbuff, consolePos, buffLoc, ch);
+                }
+            }
 
             if (ch == '(') {
                 chinsert(cmdbuff, consolePos + 1, buffLoc + 1, ')');
