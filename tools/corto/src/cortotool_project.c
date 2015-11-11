@@ -5,7 +5,7 @@
 
 static corto_int16 cortotool_setupProject(const char *name, corto_bool isLocal, corto_bool isSilent) {
     if (!isSilent) {
-    	printf ("corto: create project '%s'\n", name);
+        printf ("corto: create project '%s'\n", name);
     }
 
     if (corto_fileTest(name)) {
@@ -28,9 +28,9 @@ static corto_int16 cortotool_setupProject(const char *name, corto_bool isLocal, 
         }
     }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 static corto_int16 cortotool_createRakefile(const char *projectKind, const char *name, const char *shortName, corto_bool isLocal) {
@@ -40,16 +40,16 @@ static corto_int16 cortotool_createRakefile(const char *projectKind, const char 
     sprintf(buff, "%s/rakefile", shortName);
     file = fopen(buff, "w");
     if(!file) {
-    	corto_error("corto: couldn't create %s/rakefile (check permissions)", buff);
+        corto_error("corto: couldn't create %s/rakefile (check permissions)", buff);
         goto error;
     }
 
     fprintf(file, "\n");
     if (!strcmp(projectKind, CORTO_PACKAGE)) {
-	    fprintf(file, "PACKAGE = '%s'\n\n", name);
-	} else {
-		fprintf(file, "TARGET = '%s'\n\n", name);
-	}
+        fprintf(file, "PACKAGE = '%s'\n\n", name);
+    } else {
+        fprintf(file, "TARGET = '%s'\n\n", name);
+    }
 
     if (isLocal) {
         fprintf(file, "LOCAL = true\n\n");
@@ -60,7 +60,7 @@ static corto_int16 cortotool_createRakefile(const char *projectKind, const char 
 
     return 0;
 error:
-    return -1;	
+    return -1;    
 }
 
 static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponent, corto_bool isPackage) {
@@ -236,16 +236,16 @@ error:
 }
 
 static corto_int16 cortotool_application(int argc, char *argv[]) {
-	corto_id buff;
-	FILE *file;
-	corto_bool isApplication = !strcmp(argv[0], "create") || !strcmp(argv[0], CORTO_APPLICATION);
+    corto_id buff;
+    FILE *file;
+    corto_bool isApplication = !strcmp(argv[0], "create") || !strcmp(argv[0], CORTO_APPLICATION);
     corto_uint32 optionsStartFrom = 1;
-	char *name;
+    char *name;
     corto_bool isLocal = FALSE, noTest = FALSE, isSilent = FALSE, noBuild = TRUE;
 
-	if ((argc <= 1) || (*argv[1] == '-')) {
+    if ((argc <= 1) || (*argv[1] == '-')) {
         name = cortotool_randomName();
-	} else {
+    } else {
         name = argv[1];
         optionsStartFrom = 2;
     }
@@ -255,21 +255,21 @@ static corto_int16 cortotool_application(int argc, char *argv[]) {
         goto error;
     }
 
-	if (cortotool_setupProject(name, isLocal, isSilent)) {
-		goto error;
-	}
+    if (cortotool_setupProject(name, isLocal, isSilent)) {
+        goto error;
+    }
 
-	if (cortotool_createRakefile(isApplication ? CORTO_APPLICATION : argv[0], name, name, isLocal)) {
-		goto error;
-	}
+    if (cortotool_createRakefile(isApplication ? CORTO_APPLICATION : argv[0], name, name, isLocal)) {
+        goto error;
+    }
 
-	sprintf(buff, "%s/src", name);
-	if (corto_mkdir(buff)) {
-		corto_error("corto: couldn't create %s directory (check permissions)", buff);
-		goto error;
-	}
+    sprintf(buff, "%s/src", name);
+    if (corto_mkdir(buff)) {
+        corto_error("corto: couldn't create %s directory (check permissions)", buff);
+        goto error;
+    }
 
-	sprintf(buff, "%s/src/%s.c", name, name);
+    sprintf(buff, "%s/src/%s.c", name, name);
     file = fopen(buff, "w");
     if (file) {
         fprintf(file, "#include \"%s.h\"\n\n", name);
@@ -284,13 +284,13 @@ static corto_int16 cortotool_application(int argc, char *argv[]) {
     }
 
     if (corto_chdir(name)) {
-    	corto_error("corto: can't change working directory to '%s' (check permissions)", buff);
-    	goto error;
+        corto_error("corto: can't change working directory to '%s' (check permissions)", buff);
+        goto error;
     }
 
     if (!noBuild) {
         if (cortotool_build(0, NULL)) {
-        	goto error;
+            goto error;
         }
     }
 
@@ -301,12 +301,12 @@ static corto_int16 cortotool_application(int argc, char *argv[]) {
     }
 
     if (!isSilent) {
-    	printf("corto: done\n\n");
+        printf("corto: done\n\n");
     }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 static corto_int16 cortotool_package(int argc, char *argv[]) {
@@ -350,13 +350,13 @@ static corto_int16 cortotool_package(int argc, char *argv[]) {
         ptr++;
     }
 
-   	if (cortotool_setupProject(name, isLocal, isSilent)) {
-		goto error;
-	}
+       if (cortotool_setupProject(name, isLocal, isSilent)) {
+        goto error;
+    }
 
-	if (cortotool_createRakefile(CORTO_PACKAGE, include, name, isLocal)) {
-		goto error;
-	}
+    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, isLocal)) {
+        goto error;
+    }
 
     /* Write definition file */
     if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", name, name) >= (int)sizeof(cxfile)) {
@@ -454,34 +454,90 @@ static corto_int16 cortotool_package(int argc, char *argv[]) {
 
     return 0;
 error:
-	return -1;
+    return -1;
+}
+
+static corto_int16 cortotool_createEnvironment(int argc, char *argv[]) {
+    char* target = getenv("CORTO_TARGET");
+
+    char* activeEnvironment = getenv("CORTO_ENVIRONMENT");
+    if (activeEnvironment) {
+        corto_seterr("cannot create environment if %s is active", activeEnvironment);
+        goto error;
+    }
+
+    if (argc < 1) {
+        goto error;
+    }
+    char* name = argv[0];
+
+    char* envdir;
+    corto_asprintf(&envdir, "%s/env/%s", target, name);
+    corto_mkdir(envdir);
+    return 0;
+error:
+    return 1;
 }
 
 corto_int16 cortotool_create(int argc, char *argv[]) {
 
-	if (argc <= 1) {
+    if (argc <= 1) {
         if (cortotool_application(argc-1, &argv[0])) {
             goto error;
         }
-	} else 
-	if (!strcmp(argv[1], CORTO_COMPONENT)) {
-		if (cortotool_application(argc-1, &argv[1])) {
-			goto error;
-		}
-	} else
-	if (!strcmp(argv[1], CORTO_PACKAGE)) {
-		if (cortotool_package(argc-1, &argv[1])) {
-			goto error;
-		}
-	} else {
-		if (cortotool_application(argc, &argv[0])) {
-			goto error;
-		}
-	}
+    } else  if (!strcmp(argv[1], CORTO_COMPONENT)) {
+        if (cortotool_application(argc-1, &argv[1])) {
+            goto error;
+        }
+    } else if (!strcmp(argv[1], CORTO_PACKAGE)) {
+        if (cortotool_package(argc-1, &argv[1])) {
+            goto error;
+        }
+    } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
+        if (cortotool_environment(argc-1, &argv[1])) {
+            goto error;
+        }
+    } else {
+        if (cortotool_application(argc, &argv[0])) {
+            goto error;
+        }
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
+}
+
+corto_int16 cortotool_deleteEnvironment(int argc, char *argv[]) {
+    char* target = getenv("CORTO_TARGET");
+
+    char* activeEnvironment = getenv("CORTO_ENVIRONMENT");
+    if (activeEnvironment) {
+        corto_seterr("cannot create environment if %s is active", activeEnvironment);
+        goto error;
+    }
+
+    if (argc < 1) {
+        goto error;
+    }
+    char* name = argv[0];
+
+    char* envdir;
+    corto_asprintf(&envdir, "%s/env/%s", target, name);
+    corto_mkdir(envdir);
+}
+
+corto_int16 cortotool_delete(int argc, char *argv[]) {
+    if (argc <= 1) {
+        goto error;
+    } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
+        if (corto_deleteEnvironment(argc-1, &argv[0])) {
+            goto error;
+        }
+    }
+    return 0;
+error:
+    return -1;
 }
 
 void cortotool_createHelp(void) {

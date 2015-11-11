@@ -11,6 +11,7 @@ extern "C" {
 #define CORTO_PACKAGE ("package")
 #define CORTO_COMPONENT ("component")
 #define CORTO_APPLICATION ("application")
+#define CORTO_ENVIRONMENT ("environment")
 
 corto_int16 cortotool_create(int argc, char* argv[]);
 corto_int16 cortotool_delete(int argc, char* argv[]);
