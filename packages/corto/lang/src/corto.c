@@ -597,7 +597,7 @@ static void corto_initObject(corto_object o) {
     corto_createObject(o);
 
     corto_delegateInit(corto_typeof(o), o);
-    
+
     if (corto_typeof(o)->kind == CORTO_VOID) {
         corto__setState(o, CORTO_DEFINED);
     }
@@ -698,7 +698,7 @@ int corto_start(void) {
 
     /* CORTO_BUILD is where the buildsystem is located */
     if (!corto_getenv("CORTO_BUILD")) {
-        corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s.%s/build", 
+        corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s.%s/build",
             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
     }
 
@@ -745,7 +745,7 @@ int corto_start(void) {
     SSO_OP_OBJECT(corto_initObject);
     SSO_OP_OBJECT_2ND(corto_initObject);
 
-    /* Patch sequences- these cannot be set statically since sequences are 
+    /* Patch sequences- these cannot be set statically since sequences are
      * allocated on the heap */
     corto_patchSequences();
 

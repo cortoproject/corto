@@ -36,6 +36,7 @@ extern corto_mutex_s corto_adminLock;
 
 static corto_object corto_adopt(corto_object parent, corto_object child);
 static corto_int32 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
+static void corto_olsDestroy(corto__scope *scope);
 
 extern corto_threadKey CORTO_KEY_ATTR;
 
@@ -310,6 +311,10 @@ static void corto__deinitScope(corto_object o) {
     if (scope->name) {
         corto_dealloc(scope->name);
         scope->name = NULL;
+    }
+
+    if (scope->ols) {
+        corto_olsDestroy(scope);
     }
 
     /* Finally, free own scopeLock. */
@@ -760,7 +765,6 @@ void corto__orphan(corto_object o) {
 err_parent_mutex:
     corto_error("corto__orphan: lock operation of scopeLock of parent failed");
 }
-
 
 /* Find the right initializer to call */
 corto_int16 corto_delegateInit(corto_type t, void *o) {
@@ -1256,6 +1260,131 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
     }
 
     return result;
+}
+
+static void(*destructors[CORTO_MAX_OLS_KEY])(void*);
+
+static void corto_olsDestroy(corto__scope *scope) {
+    if (scope->ols) {
+        corto__ols *ols = scope->ols;
+        do {
+            if (destructors[ols->key]) {
+                destructors[ols->key](ols->value);
+            }
+        } while ((ols++)->key);
+        corto_dealloc(scope->ols);
+        scope->ols = NULL;
+    }
+}
+
+/* Generate a new OLS key */
+corto_uint8 corto_olsKey(void(*destructor)(void*)) {
+    static int olsKeys;
+    corto_uint32 result;
+
+    result = corto_ainc(&olsKeys);
+    if (result > 255) {
+        corto_seterr("maximum number of extensions exceeded");
+        result = 0;
+    } else {
+        destructors[result] = destructor;
+    }
+
+    return result;
+}
+
+/* Find OLS value (assumes scope is locked) */
+static void* corto_olsFind(corto__scope *scope, corto_int8 key) {
+    corto__ols *ols = scope->ols;
+    if (ols) {
+        do {
+            if (ols->key == key) break;
+        } while ((ols++)->key);
+        return ols->key ? ols : NULL;
+    } else {
+        return NULL;
+    }
+}
+
+static corto_uint8 corto_olsSize(corto__scope *scope) {
+    corto_uint8 result = 0;
+    corto__ols *ols = scope->ols;
+    if (ols) {
+        do {
+        } while ((ols++)->key);
+        result = ols - scope->ols;
+    }
+    return result;
+}
+
+/* Set an OLS value */
+void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
+    corto__object* _o;
+    corto__scope* scope;
+    void *old = NULL;
+
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    scope = corto__objectScope(_o);
+    if (scope) {
+        corto__ols *ols = NULL;
+
+        if (corto_rwmutexWrite(&scope->scopeLock)) {
+            corto_seterr("aquiring scopelock failed");
+            goto error;
+        }
+
+        ols = corto_olsFind(scope, key);
+        if (ols) {
+            old = ols->value;
+        } else {
+            corto_uint8 size = corto_olsSize(scope);
+            scope->ols = corto_realloc(scope->ols,
+                (size + 1) * sizeof(corto__ols));
+            ols = &scope->ols[size];
+            ols->key = key;
+        }
+        ols->value = value;
+
+        corto_rwmutexUnlock(&scope->scopeLock);
+    } else {
+        corto_seterr("object is not scoped");
+        goto error;
+    }
+
+    return old;
+error:
+    return NULL;
+}
+
+/* Get an OLS value */
+void* corto_olsGet(corto_object o, corto_int8 key) {
+    corto__object* _o;
+    corto__scope* scope;
+    void *result = NULL;
+
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    scope = corto__objectScope(_o);
+    if (scope) {
+        corto__ols *ols = NULL;
+        if (corto_rwmutexWrite(&scope->scopeLock)) {
+            corto_seterr("aquiring scopelock failed");
+            goto error;
+        }
+
+        ols = corto_olsFind(scope, key);
+        if (ols) {
+            result = ols->value;
+        }
+
+        corto_rwmutexUnlock(&scope->scopeLock);
+    } else {
+        corto_seterr("object is not scoped");
+        goto error;
+    }
+
+    return result;
+error:
+    return NULL;
 }
 
 /* Get parent (requires scoped object) */
@@ -1783,7 +1912,7 @@ corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string con
     CORTO_TRACE_FREE(o);
 #endif
 
-    if (!i && corto_checkState(o, CORTO_DESTRUCTED)) {
+    if (!i) {
         corto__destruct(o);
     }
     if (i < 0) {

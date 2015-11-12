@@ -56,7 +56,7 @@ typedef struct corto_ll_s* corto_ll;
 
 /* The maximum nesting level of objects in the hierarchy. There are in total
  * 62 orders of magnitude in the universe, so 64 should be adequate to organize
- * most information.
+ * most information sets.
  */
 #define CORTO_MAX_SCOPE_DEPTH (64)
 
@@ -90,11 +90,11 @@ typedef struct corto_ll_s* corto_ll;
 /* Corto can't load files with extensions longer than 16 characters */
 #define CORTO_MAX_FILE_EXTENSION (16)
 
+/* Maximum number of OLS extensions that is supported by the core */
+#define CORTO_MAX_OLS_KEY (256)
+
 /* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */
-#define CORTO_IC_TRACING
-#define CORTO_VM_DEBUG
-#define CORTO_VM
 #define CORTO_API
 #define CORTO_GENERATOR
 #define CORTO_CONVERSIONS

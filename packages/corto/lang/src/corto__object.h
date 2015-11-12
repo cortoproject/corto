@@ -34,12 +34,18 @@ typedef struct corto__object {
     corto_type type;
 }corto__object;
 
+typedef struct corto__ols {
+    corto_int8 key;
+    void *value;
+}corto__ols;
+
 typedef struct corto__scope {
     corto_object parent;
     corto_string name;
     corto_rbtree scope;
     struct corto_rwmutex_s scopeLock;
     corto_int32 declared;
+    corto__ols *ols;
 }corto__scope;
 
 typedef struct corto__writable {

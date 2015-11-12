@@ -41,6 +41,11 @@ corto_int32 corto_claim(corto_object o);
 corto_int32 corto_release(corto_object o);
 void corto_invalidate(corto_object o);
 
+/* Object extensions (ols stands for Object Local Storage) */
+corto_uint8 corto_olsKey(void(*destructor)(void*));
+void* corto_olsSet(corto_object o, corto_int8 key, void *data);
+void* corto_olsGet(corto_object o, corto_int8 key);
+
 /* Generic object data */
 corto_type corto_typeof(corto_object o);
 corto_int32 corto_countof(corto_object o);
