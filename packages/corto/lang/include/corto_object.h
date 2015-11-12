@@ -40,8 +40,6 @@ void corto_drop(corto_object o);
 corto_int32 corto_claim(corto_object o);
 corto_int32 corto_release(corto_object o);
 void corto_invalidate(corto_object o);
-void corto_attach(corto_object parent, corto_object child);
-void corto_detach(corto_object parent, corto_object child);
 
 /* Generic object data */
 corto_type corto_typeof(corto_object o);
@@ -63,7 +61,6 @@ corto_string corto_fullname(corto_object o, corto_id buffer);
 corto_string corto_relname(corto_object from, corto_object o, corto_id buffer);
 
 /* Persistent data */
-corto_time corto_timestampof(corto_object o);
 corto_object corto_ownerof(corto_object o);
 
 /* Find objects by name */

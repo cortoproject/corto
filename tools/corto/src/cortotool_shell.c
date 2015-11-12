@@ -476,10 +476,8 @@ static int cxsh_show(char* object) {
                 }
             }
             if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
-                corto_time t = corto_timestampof(o);
                 corto_object owner = corto_ownerof(o);
                 corto_id ownerId;
-                printf("%stimestamp:%s    %d.%.9d%s\n", INTERFACE_COLOR, GREEN, t.tv_sec, t.tv_nsec, NORMAL);
 
                 if (corto_checkState(o, CORTO_DEFINED)) {
                     printf("%sowner:%s        %s%s\n",

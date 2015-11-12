@@ -37,9 +37,6 @@ extern corto_mutex_s corto_adminLock;
 static corto_object corto_adopt(corto_object parent, corto_object child);
 static corto_int32 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
 
-static void corto_notifyObserverDefault(corto__observer* data, corto_object this, corto_object observable, corto_uint32 mask);
-static void corto_notifyObserverThis(corto__observer* data, corto_object this, corto_object observable, corto_uint32 mask);
-
 extern corto_threadKey CORTO_KEY_ATTR;
 
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
@@ -299,7 +296,6 @@ static void corto__deinitScope(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     scope = corto__objectScope(_o);
     corto_assert(scope != NULL, "corto__deinitScope: called on non-scoped object <%p>.", o);
-    corto_assert(scope->attached == NULL, "corto__deinitScope: object has still objects attached");
 
     /* Free parent */
     if (scope->parent) {
@@ -363,7 +359,6 @@ static void corto__initObservable(corto_object o) {
     observable->onChild = NULL;
     observable->onSelfArray = NULL;
     observable->onChildArray = NULL;
-    observable->used = FALSE;
     observable->lockRequired = FALSE;
     observable->childLockRequired = FALSE;
 
@@ -733,47 +728,6 @@ err_existing:
     corto_rwmutexUnlock(&p_scope->scopeLock);
 error:
     return NULL;
-}
-
-void corto_attach(corto_object parent, corto_object child) {
-    corto__object *_parent;
-    corto__scope *_scope;
-
-    if (!corto_checkAttr(parent, CORTO_ATTR_SCOPED)) {
-        corto_critical("attach: cannot attach to non-scoped object");
-    }
-    if (corto_checkAttr(child, CORTO_ATTR_SCOPED)) {
-        corto_critical("attach: cannot attach scoped object");
-    }
-
-    _parent = CORTO_OFFSET(parent, -sizeof(corto__object));
-    _scope = corto__objectScope(_parent);
-
-    corto_rwmutexWrite(&_scope->scopeLock);
-    if (!_scope->attached) {
-        _scope->attached = corto_llNew();
-    }
-    corto_llAppend(_scope->attached, child);
-    corto_rwmutexUnlock(&_scope->scopeLock);
-}
-
-void corto_detach(corto_object parent, corto_object child) {
-    corto__object *_parent;
-    corto__scope *_scope;
-
-    if (!corto_checkAttr(parent, CORTO_ATTR_SCOPED)) {
-        corto_critical("attach: cannot attach to non-scoped object");
-    }
-    if (corto_checkAttr(child, CORTO_ATTR_SCOPED)) {
-        corto_critical("attach: cannot attach scoped object");
-    }
-
-    _parent = CORTO_OFFSET(parent, -sizeof(corto__object));
-    _scope = corto__objectScope(_parent);
-
-    corto_rwmutexWrite(&_scope->scopeLock);
-    corto_llRemove(_scope->attached, child);
-    corto_rwmutexUnlock(&_scope->scopeLock);
 }
 
 /* Orphan object - not a public function as this will only happen during destruction of an object. */
@@ -1560,26 +1514,6 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
     return buffer;
 }
 
-/* Get timestamp (requires persistent object) */
-corto_time corto_timestampof(corto_object o) {
-    corto__object* _o;
-    corto__persistent* persistent;
-    corto_time result = {0, 0};
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    persistent = corto__objectPersistent(_o);
-    if (persistent) {
-        result = persistent->timestamp;
-    } else {
-        goto err_not_persistent;
-    }
-
-    return result;
-err_not_persistent:
-    corto_critical("corto_timestampof: object %p is not persistent.", o);
-    return result;
-}
-
 corto_object corto_ownerof(corto_object o) {
     corto__object* _o;
     corto__persistent* persistent;
@@ -1606,9 +1540,6 @@ corto_uint16 corto__destruct(corto_object o) {
         corto_vtable *ot;
 
         ot = corto_class_getObserverVtable(o);
-
-        /* Prevents from calling destructor nested */
-        _o->mm.cycles = -1;
 
         /* Only do the following steps if the object is defined */
         if (corto_checkState(o, CORTO_DEFINED)) {
@@ -1852,12 +1783,7 @@ corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string con
     CORTO_TRACE_FREE(o);
 #endif
 
-    if (i == _o->mm.cycles) {
-        corto__destruct(o);
-
-    /* If an invalid scoped object doesn't have a name, it must still be free'd - can occur when objects are
-     * dangling because of double cycles. */
-    } else if (!i && corto_checkState(o, CORTO_DESTRUCTED) && (_o->mm.cycles == 65535)) {
+    if (!i && corto_checkState(o, CORTO_DESTRUCTED)) {
         corto__destruct(o);
     }
     if (i < 0) {
@@ -1897,11 +1823,6 @@ static int corto_dropWalk(void* o, void* userData) {
         if (scope->scope) {
             corto_rbtreeWalk(scope->scope, corto_dropWalk, data);
         }
-        if (scope->attached) {
-            corto_llWalk(scope->attached, corto_dropWalk, data);
-            corto_llFree(scope->attached);
-            scope->attached = NULL;
-        }
         corto_rwmutexUnlock(&scope->scopeLock);
     }
 
@@ -1938,11 +1859,6 @@ void corto_drop(corto_object o) {
         walkData.objects = NULL;
         if (scope->scope) {
             corto_rbtreeWalk(scope->scope, corto_dropWalk, &walkData);
-        }
-        if (scope->attached) {
-            corto_llWalk(scope->attached, corto_dropWalk, &walkData);
-            corto_llFree(scope->attached);
-            scope->attached = NULL;
         }
         corto_rwmutexUnlock(&scope->scopeLock);
 
@@ -2143,7 +2059,11 @@ indent++;
 #endif
 
         if (!dispatcher) {
-            data->notify(data, data->_this, observable, mask);
+            corto_object this = data->_this;
+            if (!this || (this != corto_getOwner())) {
+                corto_function f = corto_function(observer);
+                corto_call(f, NULL, this, observable);
+            }
         } else {
             if (!data->_this || (data->_this != source)) {
                 corto_attr oldAttr = corto_setAttr(0);
@@ -2290,22 +2210,6 @@ corto_int32 corto_listen(corto_object this, corto_observer observer, corto_event
         _observerData->count = 0;
         _observerData->mask = mask;
         _observerData->dispatcher = dispatcher;
-
-        /* Resolve the kind of the observer. This reduces the number of
-         * conditions that need to be evaluated in the notifyObserver function. */
-        if (corto_function(observer)->kind == CORTO_PROCEDURE_CDECL) {
-            if (this) {
-                _observerData->notify = corto_notifyObserverThis;
-            } else {
-                _observerData->notify = corto_notifyObserverDefault;
-            }
-        } else {
-            if (this) {
-                _observerData->notify = corto_notifyObserverThis;
-            } else {
-                _observerData->notify = corto_notifyObserverDefault;
-            }
-        }
 
         added = FALSE;
 
@@ -2546,22 +2450,6 @@ error:
     return FALSE;
 }
 
-static void corto_notifyObserverDefault(corto__observer* data, corto_object this, corto_object observable, corto_uint32 mask) {
-    corto_function f = corto_function(data->observer);
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(mask);
-    corto_call(f, NULL, NULL, observable);
-}
-
-static void corto_notifyObserverThis(corto__observer* data, corto_object this, corto_object observable, corto_uint32 mask) {
-    CORTO_UNUSED(mask);
-
-    if (!this || (this != corto_getOwner())) {
-        corto_function f = corto_function(data->observer);
-        corto_call(f, NULL, this, observable);
-    }
-}
-
 static void corto_notifyObservers(corto__observer** observers, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto__observer* data;
     corto_uint32 i = 0;
@@ -2653,9 +2541,7 @@ corto_int32 corto_update(corto_object observable) {
     if (_o->lockRequired) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         _ps = corto__objectPersistent(CORTO_OFFSET(observable, -sizeof(corto__object)));
-        if (_ps) {
-            corto_timeGet(&_ps->timestamp);
-        }
+
         corto_rwmutexRead(&_wr->lock);
         if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
             goto error;
@@ -2737,9 +2623,6 @@ corto_int32 corto_updateEnd(corto_object observable) {
 
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     _ps = corto__objectPersistent(CORTO_OFFSET(observable, -sizeof(corto__object)));
-    if (_ps) {
-        corto_timeGet(&_ps->timestamp);
-    }
 
     if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
         goto error;

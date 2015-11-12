@@ -33,7 +33,6 @@ typedef struct corto_ll_s {
     corto_llNode first;
     corto_llNode last;
     unsigned int size;
-    corto_llNode lastFreed;
 } corto_ll_s;
 
 #define corto_iterData(iter) ((corto_llIter_s*)(iter).udata)
@@ -46,7 +45,6 @@ corto_ll corto_llNew() {
     result->last = 0;
     result->last = 0;
     result->size = 0;
-    result->lastFreed = NULL;
 
     return result;
 }
@@ -63,9 +61,6 @@ void corto_llFree(corto_ll list) {
         next = node->next;
         free(node);
         node = next;
-    }
-    if (list->lastFreed) {
-        free(list->lastFreed);
     }
 
     free(list);
@@ -98,10 +93,10 @@ int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata) {
     corto_llNode ptr;
     int result;
     corto_uint32 i=0;
-    
+
     ptr = list->first;
     result = 1;
-    
+
     while (ptr) {
         i++;
         next = ptr->next;
@@ -111,7 +106,7 @@ int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata) {
         }
         ptr = next;
     }
-    
+
     return result;
 }
 
@@ -161,7 +156,7 @@ void* corto_llGetPtr(corto_ll list, int index) {
     corto_llNode node;
     void* result;
     int i;
-    
+
     result = 0;
     i = 0;
     node = list->first;
@@ -173,7 +168,7 @@ void* corto_llGetPtr(corto_ll list, int index) {
     if (node) {
         result = &node->data;
     }
-    
+
     return result;
 }
 
@@ -231,11 +226,7 @@ void* corto_llTakeFirst(corto_ll list) {
     if (node) {
         data = node->data;
         list->first = node->next;
-        if (!list->lastFreed) {
-            list->lastFreed = node;
-        } else {
-            free(node);
-        }
+        free(node);
         if (!list->first) {
             list->last = 0;
         }
@@ -318,13 +309,13 @@ void corto_llReverse(corto_ll list) {
     corto_llNode start = list->first;
     corto_llNode end = list->last;
     corto_llNode ptr;
-    
+
     for(i=0; i<size / 2; i++) {
         void *tmp = start->data;
         start->data = end->data;
         end->data = tmp;
         start = start->next;
-        
+
         /* Do in-place reverse, find node that precedes 'end' */
         if (start != end) {
             ptr = start;
@@ -382,7 +373,7 @@ void* corto_llIterMove(corto_iter* iter, unsigned int index) {
         result = corto_iterNext(iter);
         index--;
     }
-    
+
     return result;
 }
 
@@ -414,10 +405,10 @@ void* corto_llIterNext(corto_iter* iter) {
 void* corto_llIterNextPtr(corto_iter* iter) {
     corto_llNode current;
     void* result;
-    
+
     current = corto_iterData(*iter)->next;
     result = 0;
-    
+
     if (current) {
         corto_iterData(*iter)->next = current->next;
         result = &current->data;
@@ -425,7 +416,7 @@ void* corto_llIterNextPtr(corto_iter* iter) {
     } else {
         corto_critical("Illegal use of 'next' by corto_iter. Use 'hasNext' to check if data is still available.");
     }
-    
+
     return result;
 }
 
@@ -468,12 +459,7 @@ void corto_llIterInsert(corto_iter* iter, void* o) {
     current = corto_iterData(*iter)->cur;
     next = corto_iterData(*iter)->next;
 
-    if ((corto_iterData(*iter)->list)->lastFreed) {
-        newNode = (corto_iterData(*iter)->list)->lastFreed;
-        (corto_iterData(*iter)->list)->lastFreed = NULL;
-    } else {
-        newNode = malloc(sizeof(corto_llNode_s));
-    }
+    newNode = malloc(sizeof(corto_llNode_s));
     newNode->data = o;
     newNode->prev = current;
     newNode->next = next;
@@ -501,4 +487,3 @@ void corto_llIterSet(corto_iter* iter, void* o) {
         corto_critical("Illegal use of 'set' by corto_iter: no element selected. Use 'next' to select an element first.");
     }
 }
-

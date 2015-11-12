@@ -217,11 +217,11 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 /* SSO */
 #define CORTO_ATTR_SSOO {1, 0, 1, 0, CORTO_VALID | CORTO_DECLARED}
 #define CORTO_ATTR_SSO {1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}
-#define CORTO_ATTR_SO {0, 0, 0, 0,C X_VALID | CORTO_DECLARED}
-#define CORTO_ROOT_V() {{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v, CORTO_MMNODE_INIT}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v, CORTO_MMNODE_INIT}}, {uri}
-#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v, CORTO_MMNODE_INIT}}
-#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(attached)NULL, _(orphaned)0},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v, CORTO_MMNODE_INIT}}
+#define CORTO_ATTR_SO {0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}
+#define CORTO_ROOT_V() {{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(orphaned)0},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(orphaned)0},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v}}, {uri}
+#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(orphaned)0},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
+#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(orphaned)0},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
 
 /* SSO identifier */
 #define CORTO_ID(name) name##__o
