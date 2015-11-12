@@ -228,6 +228,26 @@ static void cxsh_ls(char* arg) {
         strcpy(buff, "*");
     }
 
+    if (corto_select(corto_lang_o, buff, &iter)) {
+        corto_error("error: %s", corto_lasterr());
+    } else {
+        while (corto_iterHasNext(&iter)) {
+            corto_selectItem *item = corto_iterNext(&iter);
+            cxsh_printRow(item->parent, item->name, item->type);
+            i ++;
+        }
+    }
+
+    if (corto_select(corto_o, buff, &iter)) {
+        corto_error("error: %s", corto_lasterr());
+    } else {
+        while (corto_iterHasNext(&iter)) {
+            corto_selectItem *item = corto_iterNext(&iter);
+            cxsh_printRow(item->parent, item->name, item->type);
+            i ++;
+        }
+    }
+
     if (corto_select(scope, buff, &iter)) {
         corto_error("error: %s", corto_lasterr());
     } else {
@@ -236,14 +256,14 @@ static void cxsh_ls(char* arg) {
             cxsh_printRow(item->parent, item->name, item->type);
             i ++;
         }
+    }
 
-        if (!i) {
-            corto_print("no objects.");
-        } else if (i > 1) {
-            corto_print("%d objects", i);
-        } else {
-            corto_print("%d object", i);
-        }
+    if (!i) {
+        corto_print("no objects.");
+    } else if (i > 1) {
+        corto_print("%d objects", i);
+    } else {
+        corto_print("%d object", i);
     }
 }
 
