@@ -149,19 +149,20 @@ static int corto_selectParse(corto_selectData *data) {
     }
 
     /* If program ends with scope or tree, auto-append asterisk */
-    switch(data->program[op - 1].token) {
-    case TOKEN_SCOPE:
-    case TOKEN_TREE:
-        data->program[op].token = TOKEN_ASTERISK;
-        if (++op == CORTO_SELECT_MAX_OP) {
-            corto_seterr("expression is too long");
-            goto error;
+    if (op) {
+        switch(data->program[op - 1].token) {
+        case TOKEN_SCOPE:
+        case TOKEN_TREE:
+            data->program[op].token = TOKEN_ASTERISK;
+            if (++op == CORTO_SELECT_MAX_OP) {
+                corto_seterr("expression is too long");
+                goto error;
+            }
+            break;
+        default:
+            break;
         }
-        break;
-    default:
-        break;
     }
-
     data->programSize = op;
 
     return 0;
@@ -185,7 +186,7 @@ static char* corto_selectTokenStr(corto_selectToken t) {
 
 static int corto_selectValidate(corto_selectData *data) {
     int op;
-    corto_selectToken t, tprev = TOKEN_NONE;
+    corto_selectToken t = TOKEN_NONE, tprev = TOKEN_NONE;
     for (op = 0; op < data->programSize; op++) {
         t = data->program[op].token;
         switch(t) {

@@ -715,6 +715,20 @@ struct corto_serializer_s cxsh_memberSer(void) {
     return s;
 }
 
+/* Obtain type of expression */
+corto_type cxsh_exprType(corto_string expr) {
+    corto_type result = NULL;
+    corto_function parseLine =
+        corto_resolve(NULL, "/corto/ast/Parser/parseType");
+
+    if (parseLine) {
+        corto_call(parseLine, &result, expr, scope);
+    }
+
+    return result;
+}
+
+
 /* Return result for TAB expansion */
 corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
     corto_ll result = corto_llNew();
@@ -728,9 +742,6 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
 
     /* For selection of scopes, auto-append a '/' */
     corto_bool appendSlash = FALSE;
-
-    /* Is expression resolving a member? */
-    corto_bool resolveMember = FALSE;
 
     if (argc) {
         if (!strcmp(argv[0], "cd") || !strcmp(argv[0], "ls")) {
@@ -769,12 +780,11 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
         }
 
         if (memberPtr) {
-            corto_value v;
             corto_id objExpr; strcpy(objExpr, expr);
             objExpr[memberPtr - expr] = '\0';
             corto_id filter; strcpy(filter, &expr[memberPtr - expr + 1]);
-            if (!corto_expr(scope, objExpr, &v)) {
-                corto_type t = corto_valueType(&v);
+            corto_type t = NULL;
+            if ((t = cxsh_exprType(objExpr))) {
                 if (corto_instanceof(corto_interface_o, t)) {
                     cxsh_memberSer_t walkData = {objExpr, filter, result};
 
@@ -891,6 +901,15 @@ void cxsh_printObject(char *expr, char *str) {
     }
 }
 
+/* Print single object */
+void cxsh_printMember(char *expr, char *str) {
+    if (cxsh_exprType(expr)) {
+        printf("%s%s%s", MAGENTA, str, NORMAL);
+    } else {
+        printf("%s", str);
+    }
+}
+
 /* Color-code command */
 void cxsh_print(const char *arg) {
     corto_id buff, expr;
@@ -898,6 +917,7 @@ void cxsh_print(const char *arg) {
     char *bptr = buff, *exprPtr = expr, ch;
     *exprPtr = '\0';
     corto_uint32 token = 0;
+    corto_bool isMember = FALSE;
 
     for (; (ch = *ptr); ptr ++) {
         if ((ch == '/') ||
@@ -910,15 +930,26 @@ void cxsh_print(const char *arg) {
 
             *bptr = '\0';
             if (token || !cxsh_printCommand(buff)) {
-                cxsh_printObject(expr, buff);
+                if (isMember) {
+                    cxsh_printMember(expr, buff);
+                } else {
+                    cxsh_printObject(expr, buff);
+                }
             }
             if (ch == '/') {
                 printf("%s%c%s", CYAN, ch, NORMAL);
             } else {
                 printf("%s%c%s", BOLD, ch, NORMAL);
             }
+
             bptr = buff;
             token++;
+
+            if (ch == '.') {
+                isMember = TRUE;
+            } else {
+                isMember = FALSE;
+            }
         } else if ((bptr == buff) && isdigit(ch)) {
             printf("%s%c%s", GREEN, ch, NORMAL);
             bptr = buff;
@@ -926,7 +957,7 @@ void cxsh_print(const char *arg) {
         } else {
             *bptr++ = ch;
         }
-        if ((ch == ' ') || (ch == '{') || (ch == '.')) {
+        if ((ch == ' ') || (ch == '{')) {
             exprPtr = expr;
         } else {
             *exprPtr++ = ch;
@@ -936,7 +967,11 @@ void cxsh_print(const char *arg) {
     *bptr = '\0';
     *exprPtr = '\0';
     if (token || !cxsh_printCommand(buff)) {
-        cxsh_printObject(expr, buff);
+      if (isMember) {
+          cxsh_printMember(expr, buff);
+      } else {
+          cxsh_printObject(expr, buff);
+      }
     }
 }
 

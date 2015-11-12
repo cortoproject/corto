@@ -195,13 +195,16 @@ char* corto_fileExtension(char* file, char* buffer) {
     }
     if (ptr >= file) {
         ptr++;
-        while ((ch = *ptr)) {
+        while ((ch = *ptr) && ((bptr - buffer) < CORTO_MAX_FILE_EXTENSION)) {
             *bptr = ch;
             ptr++;
             bptr++;
         }
     }
-    *bptr = '\0';
-
-    return buffer;
+    if ((bptr - buffer) >= CORTO_MAX_FILE_EXTENSION) {
+        return NULL;
+    } else {
+        *bptr = '\0';
+        return buffer;
+    }
 }

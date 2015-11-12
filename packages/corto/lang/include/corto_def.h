@@ -48,7 +48,7 @@ typedef int (*corto_walkAction)(void* o, void* userData);
 typedef struct corto_rbtree_s* corto_rbtree;
 typedef struct corto_ll_s* corto_ll;
 
-/* 
+/*
  * Configuration parameters
  *   Increasing these numbers will increase memory usage of Corto in various
  *   scenario's.
@@ -56,19 +56,19 @@ typedef struct corto_ll_s* corto_ll;
 
 /* The maximum nesting level of objects in the hierarchy. There are in total
  * 62 orders of magnitude in the universe, so 64 should be adequate to organize
- * most information. 
+ * most information.
  */
-#define CORTO_MAX_SCOPE_DEPTH (64) 
+#define CORTO_MAX_SCOPE_DEPTH (64)
 
-/* The maximum inheritance depth. Think 16 is too small? The Java world record 
- * is set at 12 levels of inheritance: 
+/* The maximum inheritance depth. Think 16 is too small? The Java world record
+ * is set at 12 levels of inheritance:
  * http://www.javaspecialists.eu/records/index.jsp
  *
- * Please don't use 16 levels of inheritance. 
+ * Please don't use 16 levels of inheritance.
  */
 #define CORTO_MAX_INHERITANCE_DEPTH (16)
 
-/* The maximum number of languages you can bind to a single Corto process. */ 
+/* The maximum number of languages you can bind to a single Corto process. */
 #define CORTO_MAX_BINDINGS (16)
 
 /* The maximum number of threads that can make use of the Corto API. */
@@ -86,6 +86,9 @@ typedef struct corto_ll_s* corto_ll;
 
 /* The maximum number of objects that a thread can wait for simultaneously */
 #define CORTO_MAX_WAIT_FOR_OBJECTS (32)
+
+/* Corto can't load files with extensions longer than 16 characters */
+#define CORTO_MAX_FILE_EXTENSION (16)
 
 /* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */

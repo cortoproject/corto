@@ -229,18 +229,18 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     return 0;
 error:
     if (dl) corto_dlClose(dl);
-    return -1;  
+    return -1;
 }
 
 /* Load a corto component from a default component location */
 int corto_loadComponent(corto_string component, int argc, char* argv[]) {
     int result;
     corto_string path = corto_envparse(
-        "$CORTO_TARGET/lib/corto/%s.%s/components/%s", 
+        "$CORTO_TARGET/lib/corto/%s.%s/components/%s",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, component);
     result = corto_loadLibrary(path, argc, argv);
     corto_dealloc(path);
-    return result;    
+    return result;
 }
 
 /*
@@ -283,7 +283,9 @@ int corto_load(corto_string str, int argc, char* argv[]) {
     }
 
     /* Get extension from filename */
-    corto_fileExtension(str, ext);
+    if (!corto_fileExtension(str, ext)) {
+        goto error;
+    }
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
@@ -320,7 +322,7 @@ static time_t corto_getModified(corto_string file) {
         printf("failed to stat '%s' (%s)\n", file, strerror(errno));
     }
 
-    return attr.st_mtime;    
+    return attr.st_mtime;
 }
 
 corto_string corto_locateLibrary(corto_string lib) {
@@ -329,7 +331,7 @@ corto_string corto_locateLibrary(corto_string lib) {
     time_t t = 0;
 
     /* Look for local packages first */
-    targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s", 
+    targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
     if (corto_fileTest(targetPath)) {
         if (corto_checkLibrary(targetPath)) {
@@ -340,7 +342,7 @@ corto_string corto_locateLibrary(corto_string lib) {
 
     /* Look for packages in CORTO_HOME */
     if (strcmp(corto_getenv("CORTO_HOME"), corto_getenv("CORTO_TARGET"))) {
-        corto_string homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s", 
+        corto_string homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
         if (corto_fileTest(homePath)) {
             time_t myT = corto_getModified(homePath);
@@ -354,9 +356,9 @@ corto_string corto_locateLibrary(corto_string lib) {
     }
 
     /* Look for global packages */
-    if (strcmp("/usr/local", corto_getenv("CORTO_TARGET")) && 
+    if (strcmp("/usr/local", corto_getenv("CORTO_TARGET")) &&
         strcmp("/usr/local", corto_getenv("CORTO_HOME"))) {
-        usrPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s", 
+        usrPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
         if (corto_fileTest(usrPath)) {
             time_t myT = corto_getModified(usrPath);
@@ -373,7 +375,7 @@ corto_string corto_locateLibrary(corto_string lib) {
     if (homePath && (homePath != result)) corto_dealloc(homePath);
     if (usrPath && (usrPath != result)) corto_dealloc(usrPath);
 
-    return result;   
+    return result;
 }
 
 corto_string corto_locateComponent(corto_string component) {
@@ -473,7 +475,7 @@ corto_bool corto_loadRequiresComponent(corto_string component) {
     corto_ll components = corto_loadGetComponents();
     corto_bool result = corto_loadRequiresDependency(components, component);
     corto_loadFreePackages(components);
-    return result; 
+    return result;
 }
 
 int corto_loadPackages(void) {
@@ -508,7 +510,7 @@ static int corto_packageLoader(corto_string package) {
 int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
     CORTO_UNUSED(udata);
     corto_id testName;
-    
+
     sprintf(testName, "%s.xml", file);
     if (corto_fileTest(testName)) {
         if (!corto_loadXml()) {
