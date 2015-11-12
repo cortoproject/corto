@@ -2651,7 +2651,6 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
 corto_int32 corto_update(corto_object observable) {
     corto__observable *_o;
     corto__writable* _wr;
-    corto__persistent* _ps;
 
     if (corto_typeof(observable)->kind != CORTO_VOID) {
         corto_seterr("use updateBegin/updateEnd for non-void objects");
@@ -2669,7 +2668,6 @@ corto_int32 corto_update(corto_object observable) {
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     if (_o->lockRequired) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-        _ps = corto__objectPersistent(CORTO_OFFSET(observable, -sizeof(corto__object)));
 
         corto_rwmutexRead(&_wr->lock);
         if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
@@ -2748,10 +2746,8 @@ busy:
 corto_int32 corto_updateEnd(corto_object observable) {
     corto__writable* _wr;
     corto__observable *_o;
-    corto__persistent* _ps;
 
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-    _ps = corto__objectPersistent(CORTO_OFFSET(observable, -sizeof(corto__object)));
 
     if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
         goto error;
@@ -2905,7 +2901,6 @@ corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value
 
 static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffer) {
     char *ptr = buffer, ch;
-    int offset = 0;
     if (from) {
         corto_relname(from, o, buffer);
     } else {
@@ -2913,18 +2908,16 @@ static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffe
     }
 
     for (; (ch = *ptr); ptr++) {
-        if (ch == ':') {
-            ptr[-offset] = '_';
-            offset++;
-            ptr++;
+        if (ch == '/') {
+            *ptr = '_';
         } else {
-            ptr[-offset] = ch;
+            *ptr = ch;
         }
     }
 
-    ptr[-offset] = '\0';
+    *ptr = '\0';
 
-    return ptr - offset;
+    return ptr;
 }
 
 static char* corto_manId(corto_object o, corto_id buffer) {
@@ -2932,9 +2925,9 @@ static char* corto_manId(corto_object o, corto_id buffer) {
     corto_uint32 count = 0;
     corto_object p = o;
     corto_object from = NULL;
-    char *ptr = buffer + 7;
+    char *ptr = buffer + 5;
 
-    strcpy(buffer, "::doc::");
+    strcpy(buffer, "/doc/");
 
     do {
         parents[count] = p;
@@ -2951,14 +2944,12 @@ static char* corto_manId(corto_object o, corto_id buffer) {
             if (from && !corto_instanceof(corto_package_o, from)) {
                 *(ptr++) = '_';
             } else {
-                *(ptr++) = ':';
-                *(ptr++) = ':';
+                *(ptr++) = '/';
             }
             ptr = corto_manIdEscape(from, p, ptr);
             from = p;
         } else {
-            *(ptr++) = ':';
-            *(ptr++) = ':';
+            *(ptr++) = '/';
             ptr = corto_manIdEscape(parents[count + 1], p, ptr);
         }
     } while (count);

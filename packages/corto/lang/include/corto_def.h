@@ -95,6 +95,9 @@ typedef struct corto_ll_s* corto_ll;
 
 /* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */
+#define CORTO_IC_TRACING
+#define CORTO_VM_DEBUG
+#define CORTO_VM
 #define CORTO_API
 #define CORTO_GENERATOR
 #define CORTO_CONVERSIONS
