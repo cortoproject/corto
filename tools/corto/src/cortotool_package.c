@@ -14,7 +14,7 @@ static corto_object cortotool_lookupPackage(corto_string str) {
 		goto error;
 	}
 
-	return package;	
+	return package;
 error:
 	return NULL;
 }
@@ -62,7 +62,7 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 			corto_fileClose(f);
 
 			if (!noBuild) {
-				cortotool_build(argc - 1, &argv[1]);
+					cortotool_build(1, (char*[]){"build"});
 			}
 
 			if (!isSilent) {
@@ -96,7 +96,7 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 			corto_fileClose(f);
 
 			if (!noBuild) {
-				cortotool_build(argc - 1, &argv[1]);
+				cortotool_build(1, (char*[]){"build"});
 			}
 
 			if (!isSilent) {

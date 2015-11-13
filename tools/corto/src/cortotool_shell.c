@@ -228,26 +228,6 @@ static void cxsh_ls(char* arg) {
         strcpy(buff, "*");
     }
 
-    if (corto_select(corto_lang_o, buff, &iter)) {
-        corto_error("error: %s", corto_lasterr());
-    } else {
-        while (corto_iterHasNext(&iter)) {
-            corto_selectItem *item = corto_iterNext(&iter);
-            cxsh_printRow(item->parent, item->name, item->type);
-            i ++;
-        }
-    }
-
-    if (corto_select(corto_o, buff, &iter)) {
-        corto_error("error: %s", corto_lasterr());
-    } else {
-        while (corto_iterHasNext(&iter)) {
-            corto_selectItem *item = corto_iterNext(&iter);
-            cxsh_printRow(item->parent, item->name, item->type);
-            i ++;
-        }
-    }
-
     if (corto_select(scope, buff, &iter)) {
         corto_error("error: %s", corto_lasterr());
     } else {
@@ -822,18 +802,44 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                 }
             }
         } else {
-            corto_object scopes[] = {corto_lang_o, corto_o, scope};
             corto_int32 i = 0;
-            if ((scope == corto_lang_o) || (scope == corto_o)) {
-                scopes[2] = NULL;
+            corto_select(scope, expr, &iter);
+            while (corto_iterHasNext(&iter)) {
+                corto_selectItem *item = corto_iterNext(&iter);
+                corto_id scopedItem;
+                if (strcmp(item->parent, ".")) {
+                    sprintf(scopedItem, "%s/%s", item->parent, item->name);
+                } else {
+                    strcpy(scopedItem, item->name);
+                }
+                if (appendSlash) {
+                    strcat(scopedItem, "/");
+                }
+                corto_llAppend(result, corto_strdup(scopedItem));
+                i++;
             }
-            for (i = 0; (i < 3) && scopes[i]; i++) {
-                corto_select(scopes[i], expr, &iter);
+
+            if (!i) {
+                corto_select(corto_o, expr, &iter);
+                while (corto_iterHasNext(&iter)) {
+                    corto_selectItem *item = corto_iterNext(&iter);
+                    corto_id scopedItem;
+                    sprintf(scopedItem, "corto/%s", item->name);
+                    if (appendSlash) {
+                        strcat(scopedItem, "/");
+                    }
+                    corto_llAppend(result, corto_strdup(scopedItem));
+                    i++;
+                }
+            }
+
+            if (!i) {
+                corto_select(corto_lang_o, expr, &iter);
                 while (corto_iterHasNext(&iter)) {
                     corto_selectItem *item = corto_iterNext(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
-                        sprintf(scopedItem, "%s/%s", item->parent, item->name);
+                        sprintf(scopedItem, "corto/lang/%s", item->name);
                     } else {
                         strcpy(scopedItem, item->name);
                     }
@@ -841,9 +847,11 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                         strcat(scopedItem, "/");
                     }
                     corto_llAppend(result, corto_strdup(scopedItem));
+                    i++;
                 }
             }
         }
+
         if (!argc || !firstArgSpace) {
             if (!fnmatch(expr, "cd", 0)) corto_llAppend(result, corto_strdup ("cd"));
             if (!fnmatch(expr, "ls", 0)) corto_llAppend(result, corto_strdup ("ls"));

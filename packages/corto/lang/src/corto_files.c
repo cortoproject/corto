@@ -51,7 +51,7 @@ int corto_touch(const char *file) {
         }
     }
 
-    return touch ? 0 : -1;    
+    return touch ? 0 : -1;
 }
 
 int corto_chdir(const char *name) {
@@ -69,7 +69,7 @@ int corto_mkdir(const char *name) {
     if (mkdir(name, 0700)) {
         _errno = errno;
 
-        /* If error is ENOENT an element in the prefix of the name 
+        /* If error is ENOENT an element in the prefix of the name
          * doesn't exist. Recursively create pathname, and retry. */
         if (errno == ENOENT) {
             /* Allocate so as to not run out of stackspace in recursive call */
@@ -124,7 +124,7 @@ int corto_cp(const char *sourcePath, const char *destinationPath) {
         sprintf(msg, "cannot open file '%s'", sourcePath);
         goto error;
     }
-    
+
     if (!(destinationFile = fopen(destinationPath, "wb"))) {
         _errno = errno;
         sprintf(msg, "cannot open file '%s'", sourcePath);
@@ -139,7 +139,7 @@ int corto_cp(const char *sourcePath, const char *destinationPath) {
         sprintf(msg, "cannot traverse file '%s'", sourcePath);
         goto error_CloseFiles;
     }
-    
+
     long fileSizeResult;
     size_t fileSize;
     fileSizeResult = ftell(sourceFile);
@@ -147,7 +147,7 @@ int corto_cp(const char *sourcePath, const char *destinationPath) {
         sprintf(msg, "cannot obtain filesize from file %s", sourcePath);
         goto error_CloseFiles;
     }
-    /* Now we can be sure that fileSizeResult doesn't contain a 
+    /* Now we can be sure that fileSizeResult doesn't contain a
      * negative value */
     fileSize = fileSizeResult;
 
@@ -165,7 +165,7 @@ int corto_cp(const char *sourcePath, const char *destinationPath) {
         sprintf(msg, "cannot read the file %s", sourcePath);
         goto error_CloseFiles_FreeBuffer;
     }
-    
+
     if (fwrite(buffer, 1, fileSize, destinationFile) != fileSize) {
         _errno = 0;
         sprintf(msg, "cannot write to the file %s", destinationPath);
@@ -199,7 +199,7 @@ int corto_rm(const char *name) {
             result = -1;
         }
     }
-    
+
     return result;
 }
 

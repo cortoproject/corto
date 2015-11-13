@@ -289,7 +289,8 @@ void corto_shellEngine_keepInput(void) {
 }
 
 /* Append the command string */
-void corto_shellEngine_cmdAppend(const char* arg) {
+void corto_shellEngine_cmdAppend(const char* arg, int chars) {
+    cmdbuff[strlen(cmdbuff) - chars] = '\0';
     strcat(cmdbuff, arg);
 }
 
@@ -303,13 +304,14 @@ static corto_bool corto_shellAutoExpand(
 {
     corto_ll items = NULL;
     corto_bool result = FALSE;
+    corto_bool replace = FALSE;
 
     items = expand(argc, argv, cmd);
 
     /* If a NULL is returned, this indicates that the expand function expects
      * a space between the first argument */
     if (!items) {
-        corto_shellEngine_cmdAppend(" ");
+        corto_shellEngine_cmdAppend(" ", 0);
     } else if (corto_llSize(items)) {
         corto_id append;
         append[0] = '\0';
@@ -360,10 +362,15 @@ static corto_bool corto_shellAutoExpand(
                 printf("\n");
             }
     		} else {
-            strcpy(append, &(((corto_string)corto_llGet(items, 0))[strlen(arg)]));
+            if (!memcmp(corto_llGet(items, 0), arg, strlen(arg))) {
+                strcpy(append, &(((corto_string)corto_llGet(items, 0))[strlen(arg)]));
+            } else {
+                strcpy(append, corto_llGet(items, 0));
+                replace = strlen(arg);
+            }
         }
 
-        corto_shellEngine_cmdAppend(append);
+        corto_shellEngine_cmdAppend(append, replace);
 
         corto_iter iter = corto_llIter(items);
         while (corto_iterHasNext(&iter)) {

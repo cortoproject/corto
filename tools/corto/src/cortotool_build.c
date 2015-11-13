@@ -5,11 +5,13 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
     if (argc > 1) {
         if (corto_chdir(argv[1])) {
+            printf("chdir for build failed\n");
+            corto_backtrace(stdout);
             goto error;
         }
     }
 
-	corto_pid pid = corto_procrun("rake", (char*[]){"rake", "silent=true", NULL});
+    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "silent=true", NULL});
     if (corto_procwait(pid, &ret) || ret) {
         if (ret) {
             corto_seterr("build failed");
