@@ -824,7 +824,11 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                 while (corto_iterHasNext(&iter)) {
                     corto_selectItem *item = corto_iterNext(&iter);
                     corto_id scopedItem;
-                    sprintf(scopedItem, "corto/%s", item->name);
+                    if (strcmp(item->parent, ".")) {
+                        sprintf(scopedItem, "corto/%s/%s", item->parent, item->name);
+                    } else {
+                        sprintf(scopedItem, "corto/%s", item->name);
+                    }
                     if (appendSlash) {
                         strcat(scopedItem, "/");
                     }
@@ -839,9 +843,9 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     corto_selectItem *item = corto_iterNext(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
-                        sprintf(scopedItem, "corto/lang/%s", item->name);
+                        sprintf(scopedItem, "corto/lang/%s/%s", item->parent, item->name);
                     } else {
-                        strcpy(scopedItem, item->name);
+                        sprintf(scopedItem, "corto/lang/%s", item->name);
                     }
                     if (appendSlash) {
                         strcat(scopedItem, "/");

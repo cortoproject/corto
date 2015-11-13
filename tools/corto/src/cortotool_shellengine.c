@@ -345,11 +345,16 @@ static corto_bool corto_shellAutoExpand(
                     printf("\n");
                 }
                 if (!first) {
-                    strcpy(append, str + strlen(arg));
+                    if (!memcmp(str, arg, strlen(arg))) {
+                        strcpy(append, &str[strlen(arg)]);
+                    } else {
+                        strcpy(append, str);
+                        replace = strlen(arg);
+                    }
                 } else {
                     int i = 0;
                     char chstr, chappend;
-                    char *ptr = &str[strlen(arg)];
+                    char *ptr = &str[strlen(arg) - replace];
                     while ((chstr = ptr[i]) && (chappend = append[i]) &&
                            (chstr == chappend)) {
                         i++;
