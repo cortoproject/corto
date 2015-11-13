@@ -470,6 +470,28 @@ static corto_int16 cortotool_createEnvironment(int argc, char *argv[]) {
         goto error;
     }
     char* name = argv[0];
+    // setenv("CORTO_ENVIRONMENT_TO_CREATE", name);
+    // char* cortoBuild = getenv("CORTO_BUILD");
+    // char* createEnvironmentScriptPath;
+    // if (corto_asprintf(&createEnvironmentScriptPath, "%s/../tools/etc/") < 0) {
+
+    // }
+    // if (corto_cp()) {
+    //     goto error;
+    // }
+    // unsetenv("CORTO_ENVIRONMENT_TO_CREATE");
+
+    FILE* script = fopen(".createenvironment", "w");
+    if (!script) {
+        goto error;
+    }
+    fprintf(
+        ""
+    );
+    if (corto_rm(".createenvironment")) {
+        goto error;
+    }
+
 
     char* envdir;
     corto_asprintf(&envdir, "%s/env/%s", target, name);
@@ -531,7 +553,7 @@ corto_int16 cortotool_delete(int argc, char *argv[]) {
     if (argc <= 1) {
         goto error;
     } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
-        if (corto_deleteEnvironment(argc-1, &argv[0])) {
+        if (cortotool_deleteEnvironment(argc-1, &argv[0])) {
             goto error;
         }
     }
