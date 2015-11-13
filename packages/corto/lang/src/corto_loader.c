@@ -263,6 +263,9 @@ int corto_load(corto_string str, int argc, char* argv[]) {
     int result = -1;
     struct corto_fileAdmin *lib = NULL;
 
+    /* Packages should be loaded with minimal attributes to conserve memory */
+    corto_attr prevAttr = corto_setAttr(0);
+
     lib = corto_fileAdminFind(str);
 
     if (lib) {
@@ -308,10 +311,13 @@ int corto_load(corto_string str, int argc, char* argv[]) {
         goto error;
     }
 
+    corto_setAttr(prevAttr);
     return result;
 error:
+    corto_setAttr(prevAttr);
     return -1;
 loaded:
+    corto_setAttr(prevAttr);
     return 0;
 }
 
