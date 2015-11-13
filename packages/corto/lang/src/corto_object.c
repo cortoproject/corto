@@ -1065,18 +1065,25 @@ corto_int16 corto_define(corto_object o) {
         corto__persistent *_p = NULL;
         if (!corto_checkState(o, CORTO_DEFINED)) {
             corto_type t = corto_typeof(o);
-            /* If object is instance of a class, call the constructor */
-            if (corto_class_instanceof(corto_class_o, t)) {
-                /* Attach observers to object */
-                corto_class_attachObservers(corto_class(t), o);
-                /* Call constructor - will potentially override observer params */
-                result = corto_delegateConstruct(t, o);
-            } else if (corto_class_instanceof(corto_procedure_o, t)) {
-                result = corto_delegateConstruct(t, o);
-            }
+            corto_bool owned = TRUE;
 
             if ((_p = corto__objectPersistent(_o))) {
                 _p->owner = corto_getOwner();
+            }
+
+            /* Don't invoke constructor if object is not locally owned */
+            if (!_p || !_p->owner || !corto_instanceof(corto_replicator_o, _p->owner)) {
+                /* If object is instance of a class, call the constructor */
+                if (corto_class_instanceof(corto_class_o, t)) {
+                    /* Attach observers to object */
+                    corto_class_attachObservers(corto_class(t), o);
+                    /* Call constructor - will potentially override observer params */
+                    result = corto_delegateConstruct(t, o);
+                } else if (corto_class_instanceof(corto_procedure_o, t)) {
+                    result = corto_delegateConstruct(t, o);
+                }
+            } else {
+                owned = FALSE;
             }
 
             if (!result) {
@@ -1088,7 +1095,7 @@ corto_int16 corto_define(corto_object o) {
                 /* Notify observers of defined object */
                 corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE|CORTO_ON_UPDATE);
 
-                if (corto_class_instanceof(corto_class_o, t)) {
+                if (owned && corto_class_instanceof(corto_class_o, t)) {
                     /* Start listening with final observer params */
                     corto_class_listenObservers(corto_class(t), o);
                 }
@@ -1684,8 +1691,11 @@ corto_uint16 corto__destruct(corto_object o) {
             }
 
             /* Call object destructor */
-            if (corto__destructor(o)) {
-                return -1;
+            corto_object owner = corto_ownerof(o);
+            if (!owner || !corto_instanceof(corto_replicator_o, owner)) {
+                if (corto__destructor(o)) {
+                    return -1;
+                }
             }
         }
 
