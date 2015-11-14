@@ -17,7 +17,14 @@ Building Corto depends on the following libraries for building - make sure to ha
  * rake
 
 ## Getting started
-Our tutorial will take about 15 minutes to finish, and you'll learn everything you need to start writing your first Corto applications: http://www.corto.io/getstarted.html
+The corto library is at the core of the corto platform. You can use the library by itself as a powerful embedded data management abstraction, but we recommend you also check out the rest of the platform, as it comes with many nice things such as package management, XML and JSON bindings, a documentation and test framework and a scripting language.
+
+To install the Corto platform to your computer, simply do (the installer will ask for your computer password):
+```
+curl http://corto.io/install | sh
+```
+
+The Corto tutorial will take about 15 minutes to finish, and you'll learn everything you need to start writing your first Corto applications: http://www.corto.io/getstarted.html
 
 Check out our examples for a quick start:
 http://www.github.com/cortoproject/examples
