@@ -204,6 +204,16 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[1], "activate")) {
+                if (cortotool_activate(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[1], "deactivate")) {
+                if (cortotool_deactivate(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else {
                 if (corto_load(argv[i], argc-i, &argv[i])) {
                     if (!mute) {
