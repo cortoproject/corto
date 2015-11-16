@@ -1,5 +1,4 @@
-
-#include "cortotool_activate.h"
+#include "cortotool_environment.h"
 
 char* cortotool_environmentPath(char* name) {
     char* cortoHome = getenv("CORTO_HOME");
@@ -12,36 +11,32 @@ char* cortotool_environmentPath(char* name) {
         goto error;
     }
     return path;
-error;
+error:
     return NULL;
 }
-
+                                                                                                                                                
 corto_int16 cortotool_activate(int argc, char *argv[]) {
     if (argc < 1) {
-        corto_seterr("did not provide an environment name");
-        goto error;
+        corto_seterr("did not provide an environment name to activate");
+        goto error_no_env;
     }
     char* name = argv[1];
     char* path = cortotool_environmentPath(name);
     if (!corto_fileTest(path)) {
         corto_seterr("environment %s does not exist", name);
-        goto error;
+        goto error_not_found;
     }
     setenv("CORTO_ENVIRONMENT", name, FALSE);
     corto_dealloc(path);
     return 0;
-error:
+error_not_found:
     corto_dealloc(path);
+error_no_env:
     return -1;
 }
 
 corto_int16 cortotool_deactivate(int argc, char *argv[]) {
-    if (argc < 1) {
-        corto_seterr("did not provide an environment name");
-        goto error;
-    }
-    unsetenv("CORTO_ENVIRONMENT");
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
     return 0;
-error:
-    return -1;
 }

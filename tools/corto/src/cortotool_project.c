@@ -460,44 +460,54 @@ error:
 }
 
 static corto_int16 cortotool_createEnvironment(int argc, char *argv[]) {
-    char* target = getenv("CORTO_TARGET");
-
     char* activeEnvironment = getenv("CORTO_ENVIRONMENT");
     if (activeEnvironment) {
-        corto_seterr("cannot create environment if %s is active", activeEnvironment);
+        corto_error("cannot create environment if %s is active", activeEnvironment);
         goto error;
     }
-
-    if (argc < 1) {
+    if (argc < 2) {
+        corto_error("did not provide environment name to create");
         goto error;
     }
-    char* name = argv[0];
-    // setenv("CORTO_ENVIRONMENT_TO_CREATE", name);
-    // char* cortoBuild = getenv("CORTO_BUILD");
-    // char* createEnvironmentScriptPath;
-    // if (corto_asprintf(&createEnvironmentScriptPath, "%s/../tools/etc/") < 0) {
-
-    // }
-    // if (corto_cp()) {
-    //     goto error;
-    // }
-    // unsetenv("CORTO_ENVIRONMENT_TO_CREATE");
-
-    FILE* script = fopen(".createenvironment", "w");
+    
+    char* name = argv[1];
+    puts(name);
+    FILE* script = fopen("./.cortocreateenvironment", "w");
     if (!script) {
         goto error;
     }
+    if (setenv("CORTO_CREATE_ENVIRONMENT", name, FALSE)) {
+        corto_error("could not set environment variables to create corto environment");
+        goto error;
+    }
     fprintf(
-        ""
+        script,
+        "env_path=\"$CORTO_HOME/env/$CORTO_CREATE_ENVIRONMENT\"\n"
+        "mkdir -p \"$env_path/lib\"\n"
+        "mkdir -p \"$env_path/include\"\n"
+        "mkdir -p \"$env_path/bin\"\n"
+        "mkdir -p \"$env_path/etc\"\n"
+        "ln -s \"$CORTO_HOME/bin/corto\" \"$env_path/bin/corto\"\n"
     );
-    if (corto_rm(".createenvironment")) {
+    if (fclose(script)) {
+        corto_error("could not close script");
         goto error;
     }
 
-
-    char* envdir;
-    corto_asprintf(&envdir, "%s/env/%s", target, name);
-    corto_mkdir(envdir);
+    corto_pid pid = corto_procrun("sh", (char*[]){"sh", "./.cortocreateenvironment", NULL});
+    corto_int8 procResult = 0;
+    if (corto_procwait(pid, &procResult) || procResult) {
+        corto_error("could not execute script");
+        goto error;
+    }
+    if (unsetenv("CORTO_CREATE_ENVIRONMENT")) {
+        corto_error("could not clean up environment variables");
+        goto error;
+    }
+    if (corto_rm("./.cortocreateenvironment")) {
+        corto_error("could not remove script");
+        goto error;
+    }
     return 0;
 error:
     return 1;
@@ -518,7 +528,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
             goto error;
         }
     } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
-        if (cortotool_environment(argc-1, &argv[1])) {
+        if (cortotool_createEnvironment(argc-1, &argv[1])) {
             goto error;
         }
     } else {
@@ -533,29 +543,60 @@ error:
 }
 
 corto_int16 cortotool_deleteEnvironment(int argc, char *argv[]) {
-    char* target = getenv("CORTO_TARGET");
-
     char* activeEnvironment = getenv("CORTO_ENVIRONMENT");
     if (activeEnvironment) {
-        corto_seterr("cannot create environment if %s is active", activeEnvironment);
+        corto_error("cannot delete environment if %s is active", activeEnvironment);
+        goto error;
+    }
+    if (argc < 2) {
+        corto_error("did not provide environment name to delete");
+        goto error;
+    }
+    
+    char* name = argv[1];
+    FILE* script = fopen("./.cortodeleteenvironment", "w");
+    if (!script) {
+        goto error;
+    }
+    if (setenv("CORTO_DELETE_ENVIRONMENT", name, FALSE)) {
+        corto_error("could not set environment variables to delete corto environment");
+        goto error;
+    }
+    fprintf(
+        script,
+        "env_path=\"$CORTO_HOME/env/$CORTO_DELETE_ENVIRONMENT\"\n"
+        "echo $CORTO_DELETE_ENVIRONMENT\n"
+        "rm -rf \"$env_path\"\n"
+    );
+    if (fclose(script)) {
+        corto_error("could not close script");
         goto error;
     }
 
-    if (argc < 1) {
+    corto_pid pid = corto_procrun("sh", (char*[]){"sh", "./.cortodeleteenvironment", NULL});
+    corto_int8 procResult = 0;
+    if (corto_procwait(pid, &procResult) || procResult) {
+        corto_error("could not execute script");
         goto error;
     }
-    char* name = argv[0];
-
-    char* envdir;
-    corto_asprintf(&envdir, "%s/env/%s", target, name);
-    corto_mkdir(envdir);
+    if (unsetenv("CORTO_DELETE_ENVIRONMENT")) {
+        corto_error("could not clean up environment variables");
+        goto error;
+    }
+    if (corto_rm("./.cortodeleteenvironment")) {
+        corto_error("could not remove script");
+        goto error;
+    }
+    return 0;
+error:
+    return 1;
 }
 
 corto_int16 cortotool_delete(int argc, char *argv[]) {
     if (argc <= 1) {
         goto error;
     } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
-        if (cortotool_deleteEnvironment(argc-1, &argv[0])) {
+        if (cortotool_deleteEnvironment(argc-1, &argv[1])) {
             goto error;
         }
     }
