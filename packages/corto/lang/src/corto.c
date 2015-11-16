@@ -1,5 +1,5 @@
 /*
- * db.c
+ * corto.c
  *
  *  Created on: Aug 2, 2012
  *      Author: sander
@@ -60,6 +60,8 @@ corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 corto_threadKey CORTO_KEY_WAIT_ADMIN;
 corto_threadKey CORTO_KEY_ATTR;
 corto_threadKey CORTO_KEY_SELECT;
+
+corto_int8 CORTO_OLS_REPLICATOR;
 
 int8_t CORTO_DEBUG_ENABLED = 0;
 
@@ -717,6 +719,8 @@ int corto_start(void) {
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
+
+    CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
 
     /* Init admin-lock */
     corto_mutexNew(&corto_adminLock);

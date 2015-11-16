@@ -46,6 +46,11 @@ corto_uint8 corto_olsKey(void(*destructor)(void*));
 void* corto_olsSet(corto_object o, corto_int8 key, void *data);
 void* corto_olsGet(corto_object o, corto_int8 key);
 
+/* If multiple threads access OLS simultaneously, this API provides safe
+ * access to a key. A LockGet must always be followed by an UnlockSet. */
+void* corto_olsLockGet(corto_object o, corto_int8 key);
+void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
+
 /* Generic object data */
 corto_type corto_typeof(corto_object o);
 corto_int32 corto_countof(corto_object o);
@@ -59,9 +64,9 @@ corto_bool _corto_instanceof(corto_type type, corto_object o);
 corto_string corto_nameof(corto_object o);
 corto_object corto_parentof(corto_object o);
 corto_uint32 corto_scopeSize(corto_object o); /* Returns number of objects (non-recursive) in scope */
-corto_objectseq corto_scopeClaim(corto_object o); /* Safe way to access scope contents */
+corto_objectseq corto_scopeClaim(corto_object o);
 void corto_scopeRelease(corto_objectseq scope);
-corto_int32 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData); /* Safe object-walk */
+corto_int32 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
 corto_string corto_fullname(corto_object o, corto_id buffer);
 corto_string corto_relname(corto_object from, corto_object o, corto_id buffer);
 
@@ -73,9 +78,9 @@ corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
 typedef struct corto_selectItem {
-	corto_string parent;
-	corto_string name;
-	corto_string type;
+    corto_string parent;
+    corto_string name;
+    corto_string type;
 } corto_selectItem;
 
 corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter_out);
@@ -107,7 +112,7 @@ corto_object corto_wait(corto_int32 timeout_sec, corto_int32 timeout_nanosec);
 /* REPL functionality */
 corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value);
 
-/* Documentation */
+/* Obtain documentation objects */
 corto_object corto_man(corto_object o);
 
 /* Set reference field */

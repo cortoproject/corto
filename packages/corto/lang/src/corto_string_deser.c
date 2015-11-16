@@ -280,8 +280,8 @@ error:
 
 /* Get pointer to current destination value */
 void *corto_string_getDestinationPtr(
-    struct corto_string_deserIndexInfo* info, 
-    corto_string_deser_t* data) 
+    struct corto_string_deserIndexInfo* info,
+    corto_string_deser_t* data)
 {
     void *result = data->ptr;
 
@@ -304,7 +304,7 @@ error:
 }
 
 static corto_string corto_string_deserParseAnonymousId (
-    corto_string str, 
+    corto_string str,
     corto_uint32 *out)
 {
     char *ptr = str;
@@ -334,9 +334,9 @@ static corto_string corto_string_deserParseAnonymousId (
 
 /* Parse value */
 static corto_int16 corto_string_deserParseValue(
-    corto_string value, 
-    struct corto_string_deserIndexInfo* info, 
-    corto_string_deser_t* data) 
+    corto_string value,
+    struct corto_string_deserIndexInfo* info,
+    corto_string_deser_t* data)
 {
     void *offset = corto_string_getDestinationPtr(info, data);
     if (!offset) {
@@ -451,10 +451,10 @@ static corto_string corto_string_deserParseString(corto_string ptr, corto_string
 }
 
 static corto_string corto_string_parseAnonymous(
-    corto_string str, 
-    corto_string value, 
-    struct corto_string_deserIndexInfo *info, 
-    corto_string_deser_t *data) 
+    corto_string str,
+    corto_string value,
+    struct corto_string_deserIndexInfo *info,
+    corto_string_deser_t *data)
 {
     corto_object o = NULL;
     corto_string_deser_t privateData;
@@ -462,7 +462,7 @@ static corto_string corto_string_parseAnonymous(
     char *valuePtr = value;
     corto_uint32 index = 0;
 
-    /* Check if this is a 'named' anonymous object in which case it is 
+    /* Check if this is a 'named' anonymous object in which case it is
      * prefixed with <[id]> */
     if ((valuePtr = corto_string_deserParseAnonymousId(valuePtr, &index))) {
         if (data->anonymousObjects && (index <= corto_llSize(data->anonymousObjects))) {
@@ -497,7 +497,7 @@ static corto_string corto_string_parseAnonymous(
 
         o = corto_declare(type);
         if (!o) {
-            corto_seterr("failed to declare %s: %s", 
+            corto_seterr("failed to declare %s: %s",
                 value,
                 corto_lasterr());
             goto error;
@@ -510,6 +510,7 @@ static corto_string corto_string_parseAnonymous(
         privateData.anonymousObjects = data->anonymousObjects;
         privateData.allocValue = NULL;
         privateData.allocUdata = NULL;
+        privateData.scope = data->scope;
 
         if (corto_type(type)->kind == CORTO_PRIMITIVE) {
             ptr ++;
@@ -593,8 +594,8 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
         case '{': /* Scope open */
             if (bptr == buffer) {
                 if (!(ptr = corto_string_deserParseScope(
-                    ptr, 
-                    memberInfo, 
+                    ptr,
+                    memberInfo,
                     data))) {
                     goto error;
                 }
@@ -602,8 +603,8 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
                 *bptr = '\0';
                 if (!(ptr = corto_string_parseAnonymous(
                     ptr,
-                    buffer, 
-                    memberInfo, 
+                    buffer,
+                    memberInfo,
                     data))) {
                     goto error;
                 }
@@ -632,7 +633,7 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
                     corto_seterr("missing ')' at '%s' (%s)", start, ptr);
                     goto error;
                 }
-            }            
+            }
 
 
         case '"':
@@ -711,7 +712,7 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
         info.m = NULL;
         if (corto_string_deserParseValue(buffer, &info, data)) {
             goto error;
-        }        
+        }
     }
 
     if (excess) {

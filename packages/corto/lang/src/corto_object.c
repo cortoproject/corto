@@ -1394,6 +1394,82 @@ error:
     return NULL;
 }
 
+void* corto_olsLockGet(corto_object o, corto_int8 key) {
+    corto__object* _o;
+    corto__scope* scope;
+    void **result = NULL;
+
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    scope = corto__objectScope(_o);
+    if (scope) {
+        corto__ols *ols = NULL;
+        if (corto_rwmutexWrite(&scope->scopeLock)) {
+            corto_seterr("aquiring scopelock failed");
+            goto error;
+        }
+
+        ols = corto_olsFind(scope, key);
+        if (!ols) {
+            corto_uint8 size = corto_olsSize(scope);
+            scope->ols = corto_realloc(scope->ols,
+                (size + 1) * sizeof(corto__ols));
+            ols = &scope->ols[size];
+            ols->key = key;
+            ols->value = NULL;
+        }
+
+        result = ols->value;
+    } else {
+        corto_seterr("object is not scoped");
+        goto error;
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
+void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value) {
+    corto__object* _o;
+    corto__scope* scope;
+
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    scope = corto__objectScope(_o);
+    if (scope) {
+        corto__ols *ols = corto_olsFind(scope, key);
+        if (ols) {
+            ols->value = value;
+        }
+        corto_rwmutexUnlock(&scope->scopeLock);
+    } else {
+        corto_seterr("object is not scoped");
+    }
+}
+
+/* Get & lock scope */
+corto__scope *corto__scopeClaim(corto_object o) {
+    corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+    corto__scope *scope = corto__objectScope(_o);
+    if (scope) {
+        if (corto_rwmutexRead(&scope->scopeLock)) {
+            corto_seterr("aquiring scopelock failed");
+            goto error;
+        }
+    }
+    return scope;
+error:
+    return NULL;
+}
+
+/* Release scope */
+void corto__scopeRelease(corto_object o) {
+    corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+    corto__scope *scope = corto__objectScope(_o);
+    if (scope) {
+        corto_rwmutexUnlock(&scope->scopeLock);
+    }
+}
+
 /* Get parent (requires scoped object) */
 corto_object corto_parentof(corto_object o) {
     corto__object* _o;
@@ -1515,8 +1591,7 @@ corto_string corto_fullname(corto_object o, corto_id buffer) {
     depth = 0;
 
     if (!o) {
-        corto_seterr("no object provided");
-        return NULL;
+        o = root_o;
     }
 
     if (!buffer) {

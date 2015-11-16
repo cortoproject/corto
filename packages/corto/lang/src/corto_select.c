@@ -323,6 +323,7 @@ static void corto_selectScope(
 
     if (frame->filter) {
         data->next = NULL;
+        corto__scopeClaim(frame->o);
         while (corto_iterHasNext(&frame->iter)) {
             corto_object o = corto_iterNext(&frame->iter);
             if (!fnmatch(frame->filter, corto_nameof(o), 0)) {
@@ -331,7 +332,9 @@ static void corto_selectScope(
                 break;
             }
         }
+        corto__scopeRelease(frame->o);
     } else {
+        corto__scopeClaim(frame->o);
         if (corto_iterHasNext(&frame->iter)) {
             corto_object o = corto_iterNext(&frame->iter);
             data->next = &data->item;
@@ -339,6 +342,7 @@ static void corto_selectScope(
         } else {
             data->next = NULL;
         }
+        corto__scopeRelease(frame->o);
     }
 }
 
@@ -350,27 +354,33 @@ static void corto_selectTree(
     data->next = NULL;
 
     do {
+        corto_object claimed;
+        corto__scope *scope = corto__scopeClaim((claimed = frame->o));
         while (data->sp && !corto_iterHasNext(&frame->iter)) {
+            corto__scopeRelease(claimed);
+            corto_setref(&frame->o, NULL);
             data->sp --;
             frame = &data->stack[data->sp];
+            scope = corto__scopeClaim((claimed = frame->o));
         }
 
         if (data->sp || corto_iterHasNext(&frame->iter)) {
-            frame->o = corto_iterNext(&frame->iter);
-            corto_rbtree scope = corto_scopeof(frame->o);
-
+            corto_object o = corto_iterNext(&frame->iter);
             data->next = &data->item;
-            corto_setItemData(frame->o, data->next, data);
+            corto_setItemData(o, data->next, data);
 
-            if (scope && corto_rbtreeSize(scope)) {
+            corto_rbtree tree = corto_scopeof(o);
+            if (tree && corto_rbtreeSize(tree)) {
                 frame = &data->stack[++ data->sp];
-                frame->iter = _corto_rbtreeIter(scope, &frame->trav);
+                corto_setref(&frame->o, o);
+                frame->iter = _corto_rbtreeIter(tree, &frame->trav);
                 frame->next = corto_selectTree;
                 frame->filter = data->stack[data->sp - 1].filter;
             }
         } else {
             data->next = NULL;
         }
+        corto__scopeRelease(claimed);
     } while (frame->filter && (data->next && fnmatch(frame->filter, data->next->name, 0)));
 }
 
