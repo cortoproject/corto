@@ -73,9 +73,3 @@ error_not_found:
 error_no_env:
     return -1;
 }
-
-corto_int16 cortotool_deactivate(int argc, char *argv[]) {
-    CORTO_UNUSED(argc);
-    CORTO_UNUSED(argv);
-    return 0;
-}

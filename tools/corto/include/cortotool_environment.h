@@ -10,7 +10,6 @@ extern "C" {
 
 char* cortotool_environmentPath(char* name);
 corto_int16 cortotool_activate(int argc, char *argv[]);
-corto_int16 cortotool_deactivate(int argc, char *argv[]);
 
 #ifdef __cplusplus
 }
