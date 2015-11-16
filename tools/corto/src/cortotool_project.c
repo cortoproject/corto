@@ -471,15 +471,11 @@ static corto_int16 cortotool_createEnvironment(int argc, char *argv[]) {
     }
     
     char* name = argv[1];
-    puts(name);
     FILE* script = fopen("./.cortocreateenvironment", "w");
     if (!script) {
         goto error;
     }
-    if (setenv("CORTO_CREATE_ENVIRONMENT", name, FALSE)) {
-        corto_error("could not set environment variables to create corto environment");
-        goto error;
-    }
+    corto_setenv("CORTO_CREATE_ENVIRONMENT", name, FALSE);
     fprintf(
         script,
         "env_path=\"$CORTO_HOME/env/$CORTO_CREATE_ENVIRONMENT\"\n"
@@ -500,10 +496,7 @@ static corto_int16 cortotool_createEnvironment(int argc, char *argv[]) {
         corto_error("could not execute script");
         goto error;
     }
-    if (unsetenv("CORTO_CREATE_ENVIRONMENT")) {
-        corto_error("could not clean up environment variables");
-        goto error;
-    }
+
     if (corto_rm("./.cortocreateenvironment")) {
         corto_error("could not remove script");
         goto error;
@@ -558,14 +551,10 @@ corto_int16 cortotool_deleteEnvironment(int argc, char *argv[]) {
     if (!script) {
         goto error;
     }
-    if (setenv("CORTO_DELETE_ENVIRONMENT", name, FALSE)) {
-        corto_error("could not set environment variables to delete corto environment");
-        goto error;
-    }
+    corto_setenv("CORTO_DELETE_ENVIRONMENT", name, FALSE);
     fprintf(
         script,
         "env_path=\"$CORTO_HOME/env/$CORTO_DELETE_ENVIRONMENT\"\n"
-        "echo $CORTO_DELETE_ENVIRONMENT\n"
         "rm -rf \"$env_path\"\n"
     );
     if (fclose(script)) {
@@ -579,10 +568,7 @@ corto_int16 cortotool_deleteEnvironment(int argc, char *argv[]) {
         corto_error("could not execute script");
         goto error;
     }
-    if (unsetenv("CORTO_DELETE_ENVIRONMENT")) {
-        corto_error("could not clean up environment variables");
-        goto error;
-    }
+
     if (corto_rm("./.cortodeleteenvironment")) {
         corto_error("could not remove script");
         goto error;
