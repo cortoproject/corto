@@ -524,12 +524,11 @@ CORTO_FWDECL(observer, replicator_on_delete);
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
 corto_package root_o = CORTO_OFFSET(&root__o.o.o, sizeof(corto__object));
 
-/* ::corto, ::corto::lang and ::corto::serialization */
+/* ::corto, ::corto::lang */
 CORTO_PACKAGE_O(corto, "http://corto.io/doc/corto");
 CORTO_PACKAGE_O_SCOPE(corto, lang, "http://corto.io/doc/corto/lang");
 
 corto_package corto_o = CORTO_OFFSET(&corto__o.o.o, sizeof(corto__object));
-
 corto_package corto_lang_o = CORTO_OFFSET(&corto_lang__o.o.o, sizeof(corto__object));
 
 /* Primitives */
@@ -700,6 +699,8 @@ CORTO_DELEGATE_O(initAction, int16);
 CORTO_DELEGATE_O(destructAction, void);
 CORTO_DELEGATE_O(notifyAction, void);
 CORTO_DELEGATE_O(invokeAction, void);
+CORTO_DELEGATE_O(resolveAction, void);
+CORTO_DELEGATE_O(selectAction, void);
 
 /* ::corto::lang::type */
 CORTO_FW_ICD(type);
@@ -1007,6 +1008,8 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_MEMBER_O(replicator, onUpdate, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onDelete, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onInvoke, invokeAction, CORTO_GLOBAL);
+    CORTO_MEMBER_O(replicator, onResolve, resolveAction, CORTO_GLOBAL);
+    CORTO_MEMBER_O(replicator, onSelect, selectAction, CORTO_GLOBAL);
     CORTO_OBSERVER_O(replicator, on_declare, corto_replicator_on_declare);
     CORTO_OBSERVER_O(replicator, on_update, corto_replicator_on_update);
     CORTO_OBSERVER_O(replicator, on_delete, corto_replicator_on_delete);

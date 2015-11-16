@@ -111,6 +111,10 @@ corto_uint16 corto__destruct(corto_object o);
 /* Set state on object */
 void corto__setState(corto_object o, corto_uint8 state);
 
+/* Get & lock scope */
+corto__scope *corto__scopeClaim(corto_object o);
+void corto__scopeRelease(corto_object o);
+
 /* Get scope tree */
 corto_rbtree corto_scopeof(corto_object o);
 
