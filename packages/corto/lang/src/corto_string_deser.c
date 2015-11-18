@@ -5,7 +5,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto_string_deser.h"
 #include "corto_collection.h"
 #include "corto_object.h"

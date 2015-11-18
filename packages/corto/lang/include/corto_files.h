@@ -30,6 +30,9 @@ corto_ll corto_opendir(const char *name);
 /* Release directory contents */
 void corto_closedir(corto_ll dir);
 
+/* Checks if path refers to a directory */
+int corto_isdir(const char *path);
+
 /* Creates a file. Returns zero if OK, -1 if failed */
 int corto_touch(const char *name);
 

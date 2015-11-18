@@ -138,6 +138,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "envs")) {
+                if (cortotool_listEnvironments(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else if (!strcmp(argv[i], "pp")) {
                 if (cortotool_pp(argc-i, &argv[i])) {
                     goto error;

@@ -5,7 +5,6 @@
     > Modified (Julienne Walker): March 14, 2008
 */
 
-#define corto_lang_LIB
 #include "jsw_rbtree.h"
 #include "corto_util.h"
 #include "corto_err.h"

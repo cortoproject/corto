@@ -5,7 +5,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto_memory_ser.h"
 #include "corto__object.h"
 #include "corto_mem.h"

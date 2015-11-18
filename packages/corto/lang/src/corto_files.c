@@ -1,5 +1,3 @@
-
-#define corto_lang_LIB
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -231,6 +229,13 @@ void corto_closedir(corto_ll dir) {
         corto_dealloc(corto_iterNext(&iter));
     }
     corto_llFree(dir);
+}
+
+int corto_isdir(const char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISDIR(path_stat.st_mode);
 }
 
 corto_pid corto_procrun(const char* exec, char *argv[]) {

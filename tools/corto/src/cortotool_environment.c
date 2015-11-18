@@ -7,8 +7,14 @@ char* cortotool_environmentPath(char* name) {
         goto error;
     }
     char* path = NULL;
-    if (corto_asprintf(&path, "%s/env/%s", cortoHome, name) < 0) {
-        goto error;
+    if (name) {
+        if (corto_asprintf(&path, "%s/env/%s", cortoHome, name) < 0) {
+            goto error;
+        }
+    } else {
+        if (corto_asprintf(&path, "%s/env", cortoHome) < 0) {
+            goto error;
+        }
     }
     return path;
 error:
@@ -71,5 +77,41 @@ corto_int16 cortotool_activate(int argc, char *argv[]) {
 error_not_found:
     corto_dealloc(path);
 error_no_env:
+    return -1;
+}
+
+corto_int16 cortotool_listEnvironments(int argc, char* argv[]) {
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    char* home = corto_getenv("HOME");
+    if (!home) {
+        corto_error("could not find user home directory");
+        goto error_home;
+    }
+    char* envPath = cortotool_environmentPath(NULL);
+    if (!envPath) {
+        goto error_envPath;
+    }
+    corto_ll files = corto_opendir(envPath);
+    if (!files) {
+        corto_error("could not list env directories");
+        goto error_envPath;
+    }
+    corto_iter iter = corto_llIter(files);
+    while (corto_iterHasNext(&iter)) {
+        char* name = corto_iterNext(&iter);
+        char* path = NULL;
+        corto_asprintf(&path, "%s/%s", envPath, name);
+        if (corto_isdir(path)) {
+            corto_print("%s", name);
+        }
+        corto_dealloc(path);
+    }
+    corto_closedir(files);
+    corto_dealloc(envPath);
+    return 0;
+error_envPath:
+    if (envPath) corto_dealloc(envPath);
+error_home:
     return -1;
 }

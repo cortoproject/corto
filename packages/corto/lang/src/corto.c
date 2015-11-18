@@ -4,7 +4,7 @@
  *  Created on: Aug 2, 2012
  *      Author: sander
  */
-#define corto_lang_LIB
+
 #include "corto__bootstrap.h"
 #include "corto_util.h"
 #include "corto_err.h"

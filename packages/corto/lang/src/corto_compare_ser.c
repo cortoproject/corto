@@ -1,5 +1,3 @@
-
-#define corto_lang_LIB
 #include "corto_compare_ser.h"
 #include "corto__object.h"
 #include "corto_mem.h"
