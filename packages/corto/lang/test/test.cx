@@ -237,8 +237,9 @@ class EventTest::
 test::Suite Event::
     void setup() method
     void teardown() method
-    
+
     et: EventTest
+    prevAttr: attr
 
     void tc_onDeclare()
     void tc_onDeclareSelf()
@@ -436,8 +437,8 @@ test::Suite StringDeserializer::
     void tc_deserCharQuoted()
     void tc_deserCharNull()
     void tc_deserCharNullQuoted()
-    void tc_deserCharEscape() 
-    void tc_deserCharEscapeQuoted()    
+    void tc_deserCharEscape()
+    void tc_deserCharEscapeQuoted()
 
     void tc_deserInt8()
     void tc_deserInt8Minus()

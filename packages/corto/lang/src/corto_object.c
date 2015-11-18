@@ -214,12 +214,9 @@ static corto__persistent* corto__objectPersistent(corto__object* o) {
     }
     if (result && o->attrs.observable) {
         result = CORTO_OFFSET(result, -sizeof(corto__observable));
-
-        if (o->attrs.persistent) {
-            result = CORTO_OFFSET(result, -sizeof(corto__persistent));
-        } else {
-            result = NULL;
-        }
+    }
+    if (o->attrs.persistent) {
+        result = CORTO_OFFSET(result, -sizeof(corto__persistent));
     } else {
         result = NULL;
     }
@@ -2317,7 +2314,7 @@ int corto_observerAlignScope(corto_object o, void *userData) {
         corto_notifyObserver(data->observer, data->observable, o, CORTO_ON_DECLARE, data->depth);
     }
 
-    if (corto_checkAttr(o, CORTO_ATTR_OBSERVABLE) && corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
         if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) && corto_checkState(o, CORTO_DEFINED)) {
             corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
         }
@@ -2709,23 +2706,23 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
         if (corto_observersPop()) {
             corto_observersArrayFree(observers);
         }
+    }
 
-        /* Bubble event up in hierarchy */
-        if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
-            parent = observable;
-            while((parent = corto_parentof(parent))) {
-                corto__observable *_parent = corto__objectObservable(CORTO_OFFSET(parent, -sizeof(corto__object)));
+    /* Bubble event up in hierarchy */
+    if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+        parent = observable;
+        while((parent = corto_parentof(parent))) {
+            corto__observable *_parent = corto__objectObservable(CORTO_OFFSET(parent, -sizeof(corto__object)));
 
-                /* Notify observers of parent */
-                if (_parent) {
-                    observers = corto_observersPush(&_parent->onChildArray, NULL);
-                    corto_notifyObservers(observers, observable, this, mask, depth);
-                    if (corto_observersPop()) {
-                        corto_observersArrayFree(observers);
-                    }
+            /* Notify observers of parent */
+            if (_parent) {
+                observers = corto_observersPush(&_parent->onChildArray, NULL);
+                corto_notifyObservers(observers, observable, this, mask, depth);
+                if (corto_observersPop()) {
+                    corto_observersArrayFree(observers);
                 }
-                depth++;
             }
+            depth++;
         }
     }
 
@@ -2735,7 +2732,6 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
 /* Update object */
 corto_int16 corto_update(corto_object observable) {
     corto__observable *_o;
-    corto__writable* _wr;
 
     if (corto_typeof(observable)->kind != CORTO_VOID) {
         corto_seterr("use updateBegin/updateEnd for non-void objects");
@@ -2751,18 +2747,8 @@ corto_int16 corto_update(corto_object observable) {
     }
 
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-    if (_o->lockRequired) {
-        _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-
-        corto_rwmutexRead(&_wr->lock);
-        if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
-            goto error;
-        }
-        corto_rwmutexUnlock(&_wr->lock);
-    } else {
-        if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
-            goto error;
-        }
+    if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
+        goto error;
     }
 
     return 0;
@@ -2791,7 +2777,7 @@ corto_int16 corto_updateBegin(corto_object observable) {
 
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
 
-    if (_o->lockRequired) {
+    if (_o && _o->lockRequired) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         if (_wr) {
             if (corto_rwmutexWrite(&_wr->lock)) {
@@ -2838,7 +2824,7 @@ void corto_updateEnd(corto_object observable) {
         corto_assert(0, "notify failed");
     }
 
-    if (_o->lockRequired) {
+    if (_o && _o->lockRequired) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         if (_wr) {
             corto_rwmutexUnlock(&_wr->lock);
