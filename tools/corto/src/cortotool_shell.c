@@ -934,7 +934,7 @@ void cxsh_printObject(char *expr, char *str) {
 /* Print single object */
 void cxsh_printMember(char *expr, char *str) {
     if (cxsh_exprType(expr)) {
-        printf("%s%s%s", MAGENTA, str, NORMAL);
+        printf("%s%s%s", BLUE, str, NORMAL);
     } else {
         printf("%s", str);
     }

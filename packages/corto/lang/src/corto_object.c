@@ -1559,8 +1559,8 @@ err_not_scoped:
 }
 
 /* Walk objects in scope */
-corto_int32 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* userData) {
-    corto_int32 result;
+corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* userData) {
+    corto_int16 result;
     corto__scope* scope;
 
     if (!o) {
@@ -2363,7 +2363,7 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
 }
 
 /* Add observer to observable */
-corto_int32 corto_listen(corto_object this, corto_observer observer, corto_eventMask mask, corto_object observable, corto_dispatcher dispatcher) {
+corto_int16 corto_listen(corto_object this, corto_observer observer, corto_eventMask mask, corto_object observable, corto_dispatcher dispatcher) {
     corto__observer* _observerData = NULL;
     corto__observable* _o;
     corto_bool added;
@@ -2515,7 +2515,7 @@ error:
 }
 
 /* Remove observer from observable - TODO update lockRequired and parentObserves. */
-corto_int32 corto_silence(corto_object this, corto_observer observer, corto_eventMask mask, corto_object observable) {
+corto_int16 corto_silence(corto_object this, corto_observer observer, corto_eventMask mask, corto_object observable) {
     corto__observer* observerData;
     corto__observable* _o;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
@@ -2733,7 +2733,7 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
 }
 
 /* Update object */
-corto_int32 corto_update(corto_object observable) {
+corto_int16 corto_update(corto_object observable) {
     corto__observable *_o;
     corto__writable* _wr;
 
@@ -2770,7 +2770,7 @@ error:
     return -1;
 }
 
-corto_int32 corto_updateBegin(corto_object observable) {
+corto_int16 corto_updateBegin(corto_object observable) {
     corto__observable *_o;
     corto__writable* _wr;
 
@@ -2810,7 +2810,7 @@ error:
     return -1;
 }
 
-corto_int32 corto_updateTry(corto_object observable) {
+corto_int16 corto_updateTry(corto_object observable) {
     corto__writable* _wr;
 
     _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
@@ -2828,14 +2828,14 @@ busy:
     return CORTO_LOCK_BUSY;
 }
 
-corto_int32 corto_updateEnd(corto_object observable) {
+void corto_updateEnd(corto_object observable) {
     corto__writable* _wr;
     corto__observable *_o;
 
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
 
     if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
-        goto error;
+        corto_assert(0, "notify failed");
     }
 
     if (_o->lockRequired) {
@@ -2844,13 +2844,9 @@ corto_int32 corto_updateEnd(corto_object observable) {
             corto_rwmutexUnlock(&_wr->lock);
         }
     }
-
-    return 0;
-error:
-    return -1;
 }
 
-corto_int32 corto_updateCancel(corto_object observable) {
+corto_int16 corto_updateCancel(corto_object observable) {
 
     if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
         corto__writable* _wr;
@@ -2898,7 +2894,7 @@ static void __corto_waitObserver(corto_function f, void* result, void* args) {
         *(corto_object*)((intptr_t)args + sizeof(corto_object) * 2));
 }
 
-corto_int32 corto_waitfor(corto_object observable) {
+corto_int16 corto_waitfor(corto_object observable) {
     corto_waitForObject *waitAdmin;
 
     /* Obtain waitadministration */
@@ -3050,7 +3046,7 @@ corto_object corto_man(corto_object o) {
 }
 
 /* Thread-safe reading */
-corto_int32 corto_readBegin(corto_object object) {
+corto_int16 corto_readBegin(corto_object object) {
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
 
@@ -3065,12 +3061,12 @@ error:
     return -1;
 }
 
-corto_int32 corto_readEnd(corto_object object) {
+corto_int16 corto_readEnd(corto_object object) {
     return corto_unlock(object);
 }
 
 /* Thread-safe writing */
-corto_int32 corto_lock(corto_object object) {
+corto_int16 corto_lock(corto_object object) {
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
 
@@ -3085,7 +3081,7 @@ error:
     return -1;
 }
 
-corto_int32 corto_unlock(corto_object object) {
+corto_int16 corto_unlock(corto_object object) {
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
 

@@ -2,444 +2,444 @@
 #include "cortotool_install.h"
 
 static corto_bool cortotool_validProject(void) {
-	if (!corto_fileTest("rakefile")) {
-		corto_error("corto: need a valid project directory to install (no rakefile found)!");
-		goto error;
-	}
-	return TRUE;
+    if (!corto_fileTest("rakefile")) {
+        corto_error("corto: need a valid project directory to install (no rakefile found)!");
+        goto error;
+    }
+    return TRUE;
 error:
-	return FALSE;
+    return FALSE;
 }
 
 static void cortotool_promptPassword(void) {
-	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "true", NULL});
-	corto_procwait(pid, NULL);
+    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "true", NULL});
+    corto_procwait(pid, NULL);
 }
 
 static corto_int16 cortotool_installFromSource(void) {
-	corto_bool buildingCorto = FALSE;
-	corto_id version;
-	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+    corto_bool buildingCorto = FALSE;
+    corto_id version;
+    sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
-	/* Write installation script */
-	FILE *install = fopen("install.sh", "w");
-	if (!install) {
-		corto_error("corto: failed to create installation script (check permissions)");
-		goto error;
-	}
+    /* Write installation script */
+    FILE *install = fopen("install.sh", "w");
+    if (!install) {
+        corto_error("corto: failed to create installation script (check permissions)");
+        goto error;
+    }
 
-	/* Install build system from source */
-	if (corto_fileTest("configure") && corto_fileTest("build")) {
-		/* If installing corto itself, install buildsystem */
-		fprintf(install, "mkdir -p /usr/local/lib/corto/%s\n", version);
-		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-		fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", version);
-		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-		buildingCorto = TRUE;
-	}
+    /* Install build system from source */
+    if (corto_fileTest("configure") && corto_fileTest("build")) {
+        /* If installing corto itself, install buildsystem */
+        fprintf(install, "mkdir -p /usr/local/lib/corto/%s\n", version);
+        fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+        fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", version);
+        fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+        buildingCorto = TRUE;
+    }
 
-	/* Set the build target to the global environment */
-	fprintf(install, "export CORTO_TARGET=/usr/local\n");
-	fprintf(install, "export CORTO_HOME=/usr/local\n");
-	fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
-	fprintf(install, "export CORTO_VERSION=%s\n", version);
-	fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+    /* Set the build target to the global environment */
+    fprintf(install, "export CORTO_TARGET=/usr/local\n");
+    fprintf(install, "export CORTO_HOME=/usr/local\n");
+    fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+    fprintf(install, "export CORTO_VERSION=%s\n", version);
+    fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
-	/* Build libraries to global environment */
-	fprintf(install, "rake silent=true 2> /dev/null\n");
-	fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+    /* Build libraries to global environment */
+    fprintf(install, "rake silent=true 2> /dev/null\n");
+    fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
-	if (buildingCorto) {
-		/* Rename corto */
-		fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", version);
-		fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", version);
-		fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-	}
+    if (buildingCorto) {
+        /* Rename corto */
+        fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", version);
+        fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", version);
+        fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+    }
 
-	fprintf(install, "rake clean 2> /dev/null\n");
-	fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-	fclose(install);
+    fprintf(install, "rake clean 2> /dev/null\n");
+    fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+    fclose(install);
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 static corto_int16 cortotool_installFromRemote(corto_string package) {
-	corto_id path, name;
+    corto_id path, name;
 
-	strcpy(name, package);
-	if (*package == ':') {
-		strcpy(path, package + 2);
-	} else {
-		strcpy(path, package);
-	}
+    strcpy(name, package);
+    if (*package == ':') {
+        strcpy(path, package + 2);
+    } else {
+        strcpy(path, package);
+    }
 
-	corto_pathFromFullname(path);
-	corto_nameFromFullname(name);
+    corto_pathFromFullname(path);
+    corto_nameFromFullname(name);
 
-	/* Write installation script */
-	FILE *install = fopen("install.sh", "w");
-	if (!install) {
-		corto_error("corto: failed to create installation script (check permissions)");
-		goto error;
-	}
-	fprintf(install, "install_fail() {\n");
-	fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
-	fprintf(install, "exit -1\n");
-	fprintf(install, "}\n");
-	fprintf(install, "install() {\n");
-	fprintf(install, "UNAME=$(uname)\n");
-	fprintf(install, "ARCHITECTURE=$(uname -p)\n");
-	fprintf(install, "INSTALL_TMPDIR=\"$HOME/.corto/.download\"\n");
-	fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/packages/master/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
-	fprintf(install, "trap install_fail EXIT\n");
-	fprintf(install, "mkdir -p \"$INSTALL_TMPDIR\"\n");
-	fprintf(install, "sudo curl --silent --fail \"$TARBALL_URL\" > $INSTALL_TMPDIR/install.tar.gz\n");
-	fprintf(install, "if [ 0 != $? ]; then exit -1; fi;\n");
-	fprintf(install, "tar -xzf $INSTALL_TMPDIR/install.tar.gz -C \"$INSTALL_TMPDIR\"\n");
-	fprintf(install, "rm -rf $INSTALL_TMPDIR/install.tar.gz\n");
-	fprintf(install, "sudo cp -a \"$INSTALL_TMPDIR/.\" /usr/local\n");
-	fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
-	fprintf(install, "trap - EXIT\n");
-	fprintf(install, "}\n");
-	fprintf(install, "install\n");
+    /* Write installation script */
+    FILE *install = fopen("install.sh", "w");
+    if (!install) {
+        corto_error("corto: failed to create installation script (check permissions)");
+        goto error;
+    }
+    fprintf(install, "install_fail() {\n");
+    fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
+    fprintf(install, "exit -1\n");
+    fprintf(install, "}\n");
+    fprintf(install, "install() {\n");
+    fprintf(install, "UNAME=$(uname)\n");
+    fprintf(install, "ARCHITECTURE=$(uname -m)\n");
+    fprintf(install, "INSTALL_TMPDIR=\"$HOME/.corto/.download\"\n");
+    fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/binaries/packages/master/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
+    fprintf(install, "trap install_fail EXIT\n");
+    fprintf(install, "mkdir -p \"$INSTALL_TMPDIR\"\n");
+    fprintf(install, "sudo curl --silent --fail \"$TARBALL_URL\" > $INSTALL_TMPDIR/install.tar.gz\n");
+    fprintf(install, "if [ 0 != $? ]; then exit -1; fi;\n");
+    fprintf(install, "tar -xzf $INSTALL_TMPDIR/install.tar.gz -C \"$INSTALL_TMPDIR\"\n");
+    fprintf(install, "rm -rf $INSTALL_TMPDIR/install.tar.gz\n");
+    fprintf(install, "sudo cp -a \"$INSTALL_TMPDIR/.\" /usr/local\n");
+    fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
+    fprintf(install, "trap - EXIT\n");
+    fprintf(install, "}\n");
+    fprintf(install, "install\n");
 
-	fclose(install);
+    fclose(install);
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 corto_int16 cortotool_install(int argc, char *argv[]) {
-	CORTO_UNUSED(argc);
-	CORTO_UNUSED(argv);
-	corto_bool installRemote = FALSE;
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    corto_bool installRemote = FALSE;
 
-	if (argc > 1) {
-		if (strchr(argv[1], ':') || corto_chdir(argv[1])) {
-			installRemote = TRUE;
-		} else {
-			if (!cortotool_validProject()) {
-				installRemote = TRUE;
-			}
-		}
-	}
+    if (argc > 1) {
+        if (strchr(argv[1], ':') || corto_chdir(argv[1])) {
+            installRemote = TRUE;
+        } else {
+            if (!cortotool_validProject()) {
+                installRemote = TRUE;
+            }
+        }
+    }
 
-	if (!installRemote) {
-		if (cortotool_installFromSource()) {
-			goto error;
-		}
-	} else {
-		if (cortotool_installFromRemote(argv[1])) {
-			goto error;
-		}
-	}
+    if (!installRemote) {
+        if (cortotool_installFromSource()) {
+            goto error;
+        }
+    } else {
+        if (cortotool_installFromRemote(argv[1])) {
+            goto error;
+        }
+    }
 
-	cortotool_promptPassword();
+    cortotool_promptPassword();
 
-	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
-	corto_char progress[] = {'|', '/', '-', '\\'};
-	corto_int32 procresult, i = 0;
-	corto_int8 rc = 0;
-	if (!installRemote) {
-		printf("corto: installing...  ");
-	} else {
-		printf("corto: installing %s...  ", argv[1]);
-	}
-	while(!(procresult = corto_proccheck(pid, &rc))) {
-		i++;
-		printf("\b%c", progress[i % 4]);
-		fflush(stdout);
-		corto_sleep(0, 200000000);
-	}
+    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
+    corto_char progress[] = {'|', '/', '-', '\\'};
+    corto_int32 procresult, i = 0;
+    corto_int8 rc = 0;
+    if (!installRemote) {
+        printf("corto: installing...  ");
+    } else {
+        printf("corto: installing %s...  ", argv[1]);
+    }
+    while(!(procresult = corto_proccheck(pid, &rc))) {
+        i++;
+        printf("\b%c", progress[i % 4]);
+        fflush(stdout);
+        corto_sleep(0, 200000000);
+    }
 
-	if ((procresult != -1) || rc) {
-		printf("\bfailed!\n");
-		goto error;
-	} else {
-		corto_rm("install.sh");
-		printf("\bdone!\n");
-	}
+    if ((procresult != -1) || rc) {
+        printf("\bfailed!\n");
+        goto error;
+    } else {
+        corto_rm("install.sh");
+        printf("\bdone!\n");
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 corto_int16 cortotool_uninstall(int argc, char *argv[]) {
-	CORTO_UNUSED(argc);
-	CORTO_UNUSED(argv);
-	corto_bool uninstallAll = FALSE;
-	corto_id version;
-	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    corto_bool uninstallAll = FALSE;
+    corto_id version;
+    sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
-	if (argc > 1) {
-		corto_chdir(argv[1]);
+    if (argc > 1) {
+        corto_chdir(argv[1]);
 
-		if (!cortotool_validProject()) {
-			goto error;
-		}
-	} else {
-		uninstallAll = TRUE;
-	}
+        if (!cortotool_validProject()) {
+            goto error;
+        }
+    } else {
+        uninstallAll = TRUE;
+    }
 
-	/* Write installation script */
-	FILE *uninstall = fopen("uninstall.sh", "w");
-	if (!uninstall) {
-		corto_error("corto: failed to create uninstall script (check permissions)");
-		goto error;
-	}
+    /* Write installation script */
+    FILE *uninstall = fopen("uninstall.sh", "w");
+    if (!uninstall) {
+        corto_error("corto: failed to create uninstall script (check permissions)");
+        goto error;
+    }
 
-	/* Set the build target to the global environment */
-	fprintf(uninstall, "export CORTO_TARGET=/usr/local\n");
-	fprintf(uninstall, "export CORTO_HOME=/usr/local\n");
-	fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
-	fprintf(uninstall, "export CORTO_VERSION=%s\n", version);
-	fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
-	fprintf(uninstall, "rake clobber 2> /dev/null\n");
+    /* Set the build target to the global environment */
+    fprintf(uninstall, "export CORTO_TARGET=/usr/local\n");
+    fprintf(uninstall, "export CORTO_HOME=/usr/local\n");
+    fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+    fprintf(uninstall, "export CORTO_VERSION=%s\n", version);
+    fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+    fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
-	/* Also remove from local environment */
-	fprintf(uninstall, "export CORTO_TARGET=~/.corto\n");
-	fprintf(uninstall, "rake clobber 2> /dev/null\n");
+    /* Also remove from local environment */
+    fprintf(uninstall, "export CORTO_TARGET=~/.corto\n");
+    fprintf(uninstall, "rake clobber 2> /dev/null\n");
 
-	if (uninstallAll) {
-		fprintf(uninstall, "rm -rf /usr/local/lib/corto\n");
-		fprintf(uninstall, "rm -rf /usr/local/lib/libcorto.*\n");
-		fprintf(uninstall, "rm -rf /usr/local/bin/corto\n");
-		fprintf(uninstall, "rm -rf /usr/local/bin/corto.*\n");
-		fprintf(uninstall, "rm -rf /usr/local/include/corto\n");
-		fprintf(uninstall, "rm -rf /usr/local/etc\n");
-		fprintf(uninstall, "rm -rf ~/.corto\n");
-	}
+    if (uninstallAll) {
+        fprintf(uninstall, "rm -rf /usr/local/lib/corto\n");
+        fprintf(uninstall, "rm -rf /usr/local/lib/libcorto.*\n");
+        fprintf(uninstall, "rm -rf /usr/local/bin/corto\n");
+        fprintf(uninstall, "rm -rf /usr/local/bin/corto.*\n");
+        fprintf(uninstall, "rm -rf /usr/local/include/corto\n");
+        fprintf(uninstall, "rm -rf /usr/local/etc\n");
+        fprintf(uninstall, "rm -rf ~/.corto\n");
+    }
 
-	fclose(uninstall);
+    fclose(uninstall);
 
-	cortotool_promptPassword();
+    cortotool_promptPassword();
 
-	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "uninstall.sh", NULL});
-	corto_char progress[] = {'|', '/', '-', '\\'};
-	corto_int32 i = 0;
-	printf("corto: uninstalling...  ");
-	while(!corto_proccheck(pid, NULL)) {
-		i++;
-		printf("\b%c", progress[i % 4]);
-		fflush(stdout);
-		corto_sleep(0, 200000000);
-	}
-	corto_rm("uninstall.sh");
-	printf("\bdone!\n");
+    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "uninstall.sh", NULL});
+    corto_char progress[] = {'|', '/', '-', '\\'};
+    corto_int32 i = 0;
+    printf("corto: uninstalling...  ");
+    while(!corto_proccheck(pid, NULL)) {
+        i++;
+        printf("\b%c", progress[i % 4]);
+        fflush(stdout);
+        corto_sleep(0, 200000000);
+    }
+    corto_rm("uninstall.sh");
+    printf("\bdone!\n");
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 corto_int16 cortotool_update(int argc, char *argv[]) {
-	corto_string package = "corto";
-	if (argc > 1) {
-		package = argv[1];
-	}
+    corto_string package = "corto";
+    if (argc > 1) {
+        package = argv[1];
+    }
 
-	if (cortotool_installFromRemote(package)) {
-		goto error;
-	}
+    if (cortotool_installFromRemote(package)) {
+        goto error;
+    }
 
-	cortotool_promptPassword();
+    cortotool_promptPassword();
 
-	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
-	corto_char progress[] = {'|', '/', '-', '\\'};
-	corto_int32 procresult, i = 0;
-	corto_int8 rc = 0;
-	printf("corto: updating %s...  ", package);
-	while(!(procresult = corto_proccheck(pid, &rc))) {
-		i++;
-		printf("\b%c", progress[i % 4]);
-		fflush(stdout);
-		corto_sleep(0, 200000000);
-	}
+    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
+    corto_char progress[] = {'|', '/', '-', '\\'};
+    corto_int32 procresult, i = 0;
+    corto_int8 rc = 0;
+    printf("corto: updating %s...  ", package);
+    while(!(procresult = corto_proccheck(pid, &rc))) {
+        i++;
+        printf("\b%c", progress[i % 4]);
+        fflush(stdout);
+        corto_sleep(0, 200000000);
+    }
 
-	if ((procresult != -1) || rc) {
-		printf("\bfailed!\n");
-		goto error;
-	} else {
-		corto_rm("install.sh");
-		printf("\bdone!\n");
-	}
+    if ((procresult != -1) || rc) {
+        printf("\bfailed!\n");
+        goto error;
+    } else {
+        corto_rm("install.sh");
+        printf("\bdone!\n");
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 void cortotool_toLibPath(char *location) {
-	char *ptr, ch;
-	ptr = &location[strlen(location) - 1];
-	while ((ch = *ptr) && (ptr >= location)) {
-		if (ch == '/') {
-			*ptr = '\0';
-			break;
-		}
-		ptr --;
-	}
+    char *ptr, ch;
+    ptr = &location[strlen(location) - 1];
+    while ((ch = *ptr) && (ptr >= location)) {
+        if (ch == '/') {
+            *ptr = '\0';
+            break;
+        }
+        ptr --;
+    }
 }
 
 corto_int16 cortotool_locate(int argc, char* argv[]) {
-	corto_string location;
-	corto_bool lib = FALSE, path = FALSE, env = FALSE;
-	corto_bool component = FALSE;
+    corto_string location;
+    corto_bool lib = FALSE, path = FALSE, env = FALSE;
+    corto_bool component = FALSE;
 
-	if (argc <= 1) {
-		printf("corto: please provide a package name\n");
-		goto error;
-	}
+    if (argc <= 1) {
+        printf("corto: please provide a package name\n");
+        goto error;
+    }
 
-	if (argc > 2) {
-		int i = 0;
-		for (i = 2; i < argc; i++) {
-			if (!strcmp(argv[i], "--lib")) {
-				lib = TRUE;
-			} else if (!strcmp(argv[i], "--path")) {
-				path = TRUE;
-			} else if (!strcmp(argv[i], "--env")) {
-				env = TRUE;
-			} else if (!strcmp(argv[i], "--component")) {
-				component = TRUE;
-			}
-		}
-	}
+    if (argc > 2) {
+        int i = 0;
+        for (i = 2; i < argc; i++) {
+            if (!strcmp(argv[i], "--lib")) {
+                lib = TRUE;
+            } else if (!strcmp(argv[i], "--path")) {
+                path = TRUE;
+            } else if (!strcmp(argv[i], "--env")) {
+                env = TRUE;
+            } else if (!strcmp(argv[i], "--component")) {
+                component = TRUE;
+            }
+        }
+    }
 
-	if (!component) {
-		location = corto_locate(argv[1]);
-	} else {
-		location = corto_locateComponent(argv[1]);
-	}
+    if (!component) {
+        location = corto_locate(argv[1]);
+    } else {
+        location = corto_locateComponent(argv[1]);
+    }
 
-	if (location) {
-		if (env) {
-			char *ptr = location;
+    if (location) {
+        if (env) {
+            char *ptr = location;
 
-			while (*ptr) {
-				if (!memcmp(ptr, "/lib", 4)) {
-					*ptr = '\0';
-					break;
-				}
-				ptr++;
-			}
-		} else if (path && !lib) {
-			cortotool_toLibPath(location);
-		}
+            while (*ptr) {
+                if (!memcmp(ptr, "/lib", 4)) {
+                    *ptr = '\0';
+                    break;
+                }
+                ptr++;
+            }
+        } else if (path && !lib) {
+            cortotool_toLibPath(location);
+        }
 
-		if (lib || path || env) {
-			printf("%s\n", location);
-		} else {
-			printf("corto: '%s' => '%s'\n", argv[1], location);
-		}
-	} else {
-		if (!component) {
-			printf("corto: package '%s' not found\n", argv[1]);
-		} else {
-			printf("corto: component '%s' not found\n", argv[1]);
-		}
-		goto error;
-	}
+        if (lib || path || env) {
+            printf("%s\n", location);
+        } else {
+            printf("corto: '%s' => '%s'\n", argv[1], location);
+        }
+    } else {
+        if (!component) {
+            printf("corto: package '%s' not found\n", argv[1]);
+        } else {
+            printf("corto: component '%s' not found\n", argv[1]);
+        }
+        goto error;
+    }
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 corto_int16 cortotool_tar(int argc, char* argv[]) {
-	CORTO_UNUSED(argc);
-	CORTO_UNUSED(argv);
-	corto_id version;
-	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    corto_id version;
+    sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
-	if (!cortotool_validProject()) {
-		goto error;
-	}
+    if (!cortotool_validProject()) {
+        goto error;
+    }
 
-	/* Write installation script */
-	FILE *tar = fopen("tar.sh", "w");
-	if (!tar) {
-		corto_error("corto: failed to create tar script (check permissions)");
-		goto error;
-	}
+    /* Write installation script */
+    FILE *tar = fopen("tar.sh", "w");
+    if (!tar) {
+        corto_error("corto: failed to create tar script (check permissions)");
+        goto error;
+    }
 
-	/* Set the build target to the global environment */
-	fprintf(tar, "export CORTO_TARGET=/usr/local\n");
-	fprintf(tar, "export CORTO_HOME=/usr/local\n");
-	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
-	fprintf(tar, "export CORTO_VERSION=%s\n", version);
-	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
-	fprintf(tar, "rake collect\n");
-	fprintf(tar, "DIR=`pwd`\n");
-	fprintf(tar, "cd ~/.corto/pack\n");
-	fprintf(tar, "tar -zcf $DIR/corto.tar.gz .\n");
-	fprintf(tar, "rm -rf ~/.corto/pack\n");
-	fclose(tar);
+    /* Set the build target to the global environment */
+    fprintf(tar, "export CORTO_TARGET=/usr/local\n");
+    fprintf(tar, "export CORTO_HOME=/usr/local\n");
+    fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+    fprintf(tar, "export CORTO_VERSION=%s\n", version);
+    fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+    fprintf(tar, "rake collect\n");
+    fprintf(tar, "DIR=`pwd`\n");
+    fprintf(tar, "cd ~/.corto/pack\n");
+    fprintf(tar, "tar -zcf $DIR/corto.tar.gz .\n");
+    fprintf(tar, "rm -rf ~/.corto/pack\n");
+    fclose(tar);
 
-	cortotool_promptPassword();
+    cortotool_promptPassword();
 
-	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "tar.sh", NULL});
-	corto_char progress[] = {'|', '/', '-', '\\'};
-	corto_int32 i = 0;
-	printf("corto: tarring...  ");
-	while(!corto_proccheck(pid, NULL)) {
-		i++;
-		printf("\b%c", progress[i % 4]);
-		fflush(stdout);
-		corto_sleep(0, 200000000);
-	}
-	corto_rm("tar.sh");
-	printf("\bdone!\n");
+    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "tar.sh", NULL});
+    corto_char progress[] = {'|', '/', '-', '\\'};
+    corto_int32 i = 0;
+    printf("corto: tarring...  ");
+    while(!corto_proccheck(pid, NULL)) {
+        i++;
+        printf("\b%c", progress[i % 4]);
+        fflush(stdout);
+        corto_sleep(0, 200000000);
+    }
+    corto_rm("tar.sh");
+    printf("\bdone!\n");
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 corto_int16 cortotool_untar(int argc, char* argv[]) {
-	CORTO_UNUSED(argc);
-	CORTO_UNUSED(argv);
-	corto_id version;
-	sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+    CORTO_UNUSED(argc);
+    CORTO_UNUSED(argv);
+    corto_id version;
+    sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
 
-	/* Write installation script */
-	FILE *tar = fopen("untar.sh", "w");
-	if (!tar) {
-		corto_error("corto: failed to create tar script (check permissions)");
-		goto error;
-	}
+    /* Write installation script */
+    FILE *tar = fopen("untar.sh", "w");
+    if (!tar) {
+        corto_error("corto: failed to create tar script (check permissions)");
+        goto error;
+    }
 
-	/* Set the build target to the global environment */
-	fprintf(tar, "export CORTO_TARGET=/usr/local\n");
-	fprintf(tar, "export CORTO_HOME=/usr/local\n");
-	fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
-	fprintf(tar, "export CORTO_VERSION=%s\n", version);
-	fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
-	fprintf(tar, "tar -zxf %s -C /usr/local\n", argv[1]);
-	fclose(tar);
+    /* Set the build target to the global environment */
+    fprintf(tar, "export CORTO_TARGET=/usr/local\n");
+    fprintf(tar, "export CORTO_HOME=/usr/local\n");
+    fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
+    fprintf(tar, "export CORTO_VERSION=%s\n", version);
+    fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+    fprintf(tar, "tar -zxf %s -C /usr/local\n", argv[1]);
+    fclose(tar);
 
-	cortotool_promptPassword();
+    cortotool_promptPassword();
 
-	corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "untar.sh", NULL});
-	corto_char progress[] = {'|', '/', '-', '\\'};
-	corto_int32 i = 0;
-	printf("corto: untarring...  ");
-	while(!corto_proccheck(pid, NULL)) {
-		i++;
-		printf("\b%c", progress[i % 4]);
-		fflush(stdout);
-		corto_sleep(0, 200000000);
-	}
-	corto_rm("untar.sh");
-	printf("\bdone!\n");
+    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "untar.sh", NULL});
+    corto_char progress[] = {'|', '/', '-', '\\'};
+    corto_int32 i = 0;
+    printf("corto: untarring...  ");
+    while(!corto_proccheck(pid, NULL)) {
+        i++;
+        printf("\b%c", progress[i % 4]);
+        fflush(stdout);
+        corto_sleep(0, 200000000);
+    }
+    corto_rm("untar.sh");
+    printf("\bdone!\n");
 
-	return 0;
+    return 0;
 error:
-	return -1;
+    return -1;
 }
 
 void cortotool_installHelp(void) {
@@ -504,5 +504,3 @@ void cortotool_untarHelp(void) {
     printf("Note: installation requires root priviledges.\n");
     printf("\n");
 }
-
-

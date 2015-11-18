@@ -66,7 +66,7 @@ corto_object corto_parentof(corto_object o);
 corto_uint32 corto_scopeSize(corto_object o); /* Returns number of objects (non-recursive) in scope */
 corto_objectseq corto_scopeClaim(corto_object o);
 void corto_scopeRelease(corto_objectseq scope);
-corto_int32 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
+corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
 corto_string corto_fullname(corto_object o, corto_id buffer);
 corto_string corto_relname(corto_object from, corto_object o, corto_id buffer);
 
@@ -88,25 +88,25 @@ corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter
 /* Notifications */
 corto_object corto_setOwner(corto_object owner);
 corto_object corto_getOwner(void);
-corto_int32 corto_listen(corto_object _this, corto_observer observer, corto_eventMask mask, corto_object observable, corto_dispatcher dispatcher);
-corto_int32 corto_silence(corto_object _this, corto_observer observer, corto_eventMask mask, corto_object observable);
+corto_int16 corto_listen(corto_object _this, corto_observer observer, corto_eventMask mask, corto_object observable, corto_dispatcher dispatcher);
+corto_int16 corto_silence(corto_object _this, corto_observer observer, corto_eventMask mask, corto_object observable);
 corto_bool corto_listening(corto_object observable, corto_observer, corto_object _this);
-corto_int32 corto_update(corto_object observable);
-corto_int32 corto_updateBegin(corto_object observable);
-corto_int32 corto_updateTry(corto_object observable);
-corto_int32 corto_updateEnd(corto_object observable);
-corto_int32 corto_updateCancel(corto_object observable);
+corto_int16 corto_update(corto_object observable);
+corto_int16 corto_updateBegin(corto_object observable);
+corto_int16 corto_updateTry(corto_object observable);
+void corto_updateEnd(corto_object observable);
+corto_int16 corto_updateCancel(corto_object observable);
 
 /* Read locking */
-corto_int32 corto_readBegin(corto_object object);
-corto_int32 corto_readEnd(corto_object object);
+corto_int16 corto_readBegin(corto_object object);
+corto_int16 corto_readEnd(corto_object object);
 
 /* Write locking */
-corto_int32 corto_lock(corto_object object);
-corto_int32 corto_unlock(corto_object object);
+corto_int16 corto_lock(corto_object object);
+corto_int16 corto_unlock(corto_object object);
 
 /* Waiting */
-corto_int32 corto_waitfor(corto_object observable);
+corto_int16 corto_waitfor(corto_object observable);
 corto_object corto_wait(corto_int32 timeout_sec, corto_int32 timeout_nanosec);
 
 /* REPL functionality */
