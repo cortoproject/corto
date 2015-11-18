@@ -22,10 +22,16 @@ error:
 }
                                                                                                                                                 
 corto_int16 cortotool_activate(int argc, char *argv[]) {
+    char* currentEnvironment = getenv("CORTO_ENVIRONMENT");
+    if (currentEnvironment) {
+        corto_error("environment %s already activate; use exit to deactivate the environment", currentEnvironment);
+        goto error_no_env;
+    }
     if (argc < 2) {
         corto_error("did not provide an environment name to activate");
         goto error_no_env;
     }
+
     char* name = argv[1];
     char* path = cortotool_environmentPath(name);
     if (!path) {
@@ -35,43 +41,25 @@ corto_int16 cortotool_activate(int argc, char *argv[]) {
         corto_error("environment %s does not exist", name);
         goto error_not_found;
     }
-    corto_setenv("CORTO_ENVIRONMENT", name, FALSE);
-
-    FILE* script = fopen("./.cortoactivateenvironment", "w");
-    if (!script) {
-        corto_error("could not open activate script");
-        goto error_not_found;
-    }
+    
     char* oldPrompt = corto_getenv("PS1");
-    if (!oldPrompt) {
-        corto_error("could not find system prompt");
+    char* newPrompt = NULL;
+    if (corto_asprintf(&newPrompt, "(%s) %s", name, oldPrompt) < 0) {
         goto error_not_found;
     }
-    /* corto_setenv will parse variables; and that can strip parts of the prompt */
-    setenv("CORTO_ENVIRONMENT_OLD_PROMPT", oldPrompt, FALSE);
-    fprintf(
-        script,
-        "CORTO_HOME=\"$HOME/.corto/env/$CORTO_ENVIRONMENT\"\n"
-        "CORTO_TARGET=\"$HOME/.corto/env/$CORTO_ENVIRONMENT\"\n"
-        "CORTO_BUILD=\"/usr/local/lib/corto/$CORTO_VERSION/build\"\n"
-        "export PS1=\"($CORTO_ENVIRONMENT) $CORTO_ENVIRONMENT_OLD_PROMPT\"\n"
-        "exec \"${@:-$SHELL}\"\n"
-        "# this file should be removed\n"
-    );
-    fclose(script);
-
-    corto_pid pid = corto_procrun("sh", (char*[]){"sh", "./.cortoactivateenvironment", NULL});
+    char* currentShell = corto_getenv("SHELL");
+    
+    corto_setenv("CORTO_ENVIRONMENT", name, FALSE);
+    corto_setenv("CORTO_HOME", "$HOME/.corto/env/$CORTO_ENVIRONMENT");
+    corto_setenv("CORTO_TARGET", "$HOME/.corto/env/$CORTO_ENVIRONMENT");
+    corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/$CORTO_VERSION/build");
+    setenv("PS1", newPrompt, TRUE);
+    
+    corto_pid pid = corto_procrun(currentShell, (char*[]){currentShell, NULL});
     corto_int8 procResult = 0;
-    if (corto_procwait(pid, &procResult) || procResult) {
-        corto_error("script in %s environment failed", name);
-        goto error_not_found;
-    }
+    corto_procwait(pid, &procResult);
 
-    if (corto_rm("./.cortoactivateenvironment")) {
-        corto_error("cannot remove activate script");
-        goto error_not_found;
-    }
-
+    corto_dealloc(newPrompt);
     corto_dealloc(path);
     return 0;
 error_not_found:
