@@ -71,6 +71,8 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
     strcpy(name, package);
     if (*package == ':') {
         strcpy(path, package + 2);
+    } else if (*package == '/') {
+        strcpy(path, package + 1);
     } else {
         strcpy(path, package);
     }
@@ -92,7 +94,7 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
     fprintf(install, "UNAME=$(uname)\n");
     fprintf(install, "ARCHITECTURE=$(uname -m)\n");
     fprintf(install, "INSTALL_TMPDIR=\"$HOME/.corto/.download\"\n");
-    fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/binaries/packages/master/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
+    fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/binaries/master/packages/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
     fprintf(install, "trap install_fail EXIT\n");
     fprintf(install, "mkdir -p \"$INSTALL_TMPDIR\"\n");
     fprintf(install, "sudo curl --silent --fail \"$TARBALL_URL\" > $INSTALL_TMPDIR/install.tar.gz\n");
