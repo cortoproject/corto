@@ -263,7 +263,7 @@ int corto_load(corto_string str, int argc, char* argv[]) {
     struct corto_fileAdmin *lib = NULL;
 
     /* Packages should be loaded with minimal attributes to conserve memory */
-    corto_attr prevAttr = corto_setAttr(0);
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT);
 
     lib = corto_fileAdminFind(str);
 
