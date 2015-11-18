@@ -25,6 +25,8 @@ corto_string corto_nameFromFullname(corto_id buffer) {
         if (ch == ':') {
             ptr ++;
             name = ptr + 1;
+        } else if (ch == '/') {
+            name = ptr + 1;
         }
     }
 
