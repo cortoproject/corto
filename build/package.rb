@@ -66,7 +66,7 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     rescue
       puts "\033[1;31mcommand failed: #{command}\033[0;49m"
       sh "rm include/#{TARGET}__type.h"
-      abort "\033[1;31m[ aborting build ]\033[0;49m"
+      abort()
     end
 end
 
@@ -74,9 +74,12 @@ task :doc do
     verbose(false)
     if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
         if File.exists? "README.md" and not LOCAL then
-            ret = sh "corto pp README.md --scope #{PACKAGE} -g html"
-            if !ret then
-                abort "\033[1;31m[ build failed ]\033[0;49m"
+            command = "corto pp README.md --scope #{PACKAGE} -g html"
+            begin
+                sh command
+            rescue
+                puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+                abort()
             end
         end
     end

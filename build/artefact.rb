@@ -188,7 +188,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
       sh cc_command
     rescue
       puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
-      abort "\033[1;31m[ aborting build ]\033[0;49m"
+      abort()
     end
 
     # If required, alter paths to dylib files
@@ -223,7 +223,11 @@ task :all => :default
 # Run test for project
 task :test do
     verbose(false)
-    sh "corto test"
+    begin
+      sh "corto test"
+    rescue
+      abort
+    end
 end
 
 # Rules for generated files
@@ -263,6 +267,6 @@ def build_source(source, target, echo)
       sh cc_command
     rescue
       puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
-      abort "\033[1;31m[ aborting build ]\033[0;49m"
+      abort()
     end
 end

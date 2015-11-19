@@ -469,9 +469,13 @@ static int cxsh_show(char* object) {
                       NORMAL);
                 }
                 if (o != root_o) {
+                    char *parentPtr = corto_fullname(corto_parentof(o), id);
+                    if (strcmp(parentPtr, "/")) {
+                        parentPtr += 1;
+                    }
                     printf("%sparent:       %s%s%s\n",
                       INTERFACE_COLOR, OBJECT_COLOR,
-                      corto_fullname(corto_parentof(o), id) + 1,
+                      parentPtr,
                       NORMAL);
                 }
             }
