@@ -1,4 +1,3 @@
-
 #include "cortotool_build.h"
 #include "cortotool_help.h"
 #include "cortotool_install.h"
