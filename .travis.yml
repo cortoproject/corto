@@ -30,12 +30,12 @@ install:
   - git clone https://github.com/cortoproject/cortodoc.git
   - git clone https://github.com/cortoproject/test.git
   - git clone https://github.com/cortoproject/json.git
-  - "echo 'COMPONENTS = %w(corto c-binding xml corto-language ); require \"\#{ENV['CORTO_BUILD']}/forward\"' > rakefile"
-  - source corto/configure
-
+  - |+
+    echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json)
+    require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
+  - cat rakefile
 
 script:
+  - source corto/configure
   - rake
-  - cd packages/corto/lang/test
-  - rake
-  - corto test
+  - corto test corto/packages/corto/lang
