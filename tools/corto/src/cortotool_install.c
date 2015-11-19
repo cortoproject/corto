@@ -291,6 +291,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
     corto_bool lib = FALSE, path = FALSE, env = FALSE;
     corto_bool component = FALSE;
+    corto_bool generator = FALSE;
 
     if (argc <= 1) {
         printf("corto: please provide a package name\n");
@@ -308,14 +309,18 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 env = TRUE;
             } else if (!strcmp(argv[i], "--component")) {
                 component = TRUE;
+            } else if (!strcmp(argv[i], "--generator")) {
+                generator = TRUE;
             }
         }
     }
 
-    if (!component) {
-        location = corto_locate(argv[1]);
-    } else {
+    if (component) {
         location = corto_locateComponent(argv[1]);
+    } else if (generator) {
+        location = corto_locateGenerator(argv[1]);
+    } else {
+        location = corto_locate(argv[1]);
     }
 
     if (location) {
@@ -339,10 +344,12 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             printf("corto: '%s' => '%s'\n", argv[1], location);
         }
     } else {
-        if (!component) {
-            printf("corto: package '%s' not found\n", argv[1]);
-        } else {
+        if (component) {
             printf("corto: component '%s' not found\n", argv[1]);
+        } else if (generator) {
+          printf("corto: generator '%s' not found\n", argv[1]);
+        } else {
+            printf("corto: package '%s' not found\n", argv[1]);
         }
         goto error;
     }

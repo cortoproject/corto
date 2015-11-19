@@ -39,6 +39,11 @@ USE_PACKAGE ||= []
 USE_COMPONENT ||= []
 USE_LIBRARY ||= []
 DEFINE ||= []
+CC ||= if ENV['CC'].nil? or ENV['CC'].empty?
+  "cc"
+else
+  ENV['CC']
+end
 
 # Private variables
 TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
@@ -178,8 +183,13 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         end
     end
 
-    cc_command = "cc #{objects} #{cflags} #{libpath} #{libmapping} #{use_link} #{lflags}"
-    sh cc_command
+    cc_command = "#{CC} #{objects} #{cflags} #{libpath} #{libmapping} #{use_link} #{lflags}"
+    begin
+      sh cc_command
+    rescue
+      puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
+      abort "\033[1;31m[ aborting build ]\033[0;49m"
+    end
 
     # If required, alter paths to dylib files
     LINKED.each do |lib|
@@ -195,7 +205,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     end
 
     if ENV['silent'] != "true" then
-        sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"        
+        sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
     end
 end
 
@@ -248,6 +258,11 @@ def build_source(source, target, echo)
             sh "echo '#{source}'"
         end
     end
-    sh "cc -c #{CFLAGS.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
+    cc_command = "#{CC} -c #{CFLAGS.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
+    begin
+      sh cc_command
+    rescue
+      puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
+      abort "\033[1;31m[ aborting build ]\033[0;49m"
+    end
 end
-
