@@ -14,6 +14,7 @@ static corto_object testScope;
 
 corto_void _test_Event_setup(test_Event this) {
 /* $begin(test/Event/setup) */
+    this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
     testScope = corto_voidCreateChild(NULL, "testScope");
     test_assert(testScope != NULL);
     test_EventTest et = test_EventTestCreate(testScope);
@@ -89,7 +90,7 @@ corto_void _test_Event_tc_onDeclareScope(test_Event this) {
 
     corto_define(q);
     test_assert(this->et->countDeclareScope == 2);
-    
+
     corto_delete(o);
     corto_delete(p);
 
@@ -493,7 +494,7 @@ corto_void _test_Event_tc_onUpdate(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 2);
 
-    ret = corto_updateEnd(o);
+    corto_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 3);
     test_assert(this->et->lastThis == this->et);
@@ -507,7 +508,7 @@ corto_void _test_Event_tc_onUpdate(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 4);
 
-    ret = corto_updateEnd(p);
+    corto_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 5);
     test_assert(this->et->lastThis == this->et);
@@ -530,7 +531,7 @@ corto_void _test_Event_tc_onUpdate(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 6);
 
-    ret = corto_updateEnd(q);
+    corto_updateEnd(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 7);
     test_assert(this->et->lastThis == this->et);
@@ -571,7 +572,7 @@ corto_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 1);
 
-    ret = corto_updateEnd(o);
+    corto_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(this->et->lastThis == this->et);
@@ -585,7 +586,7 @@ corto_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 3);
 
-    ret = corto_updateEnd(p);
+    corto_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 4);
     test_assert(this->et->lastThis == this->et);
@@ -608,9 +609,9 @@ corto_void _test_Event_tc_onUpdateScope(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 4);
 
-    ret = corto_updateEnd(q);
+    corto_updateEnd(q);
     test_assert(ret == 0);
-    test_assert(this->et->countUpdateScope == 4);    
+    test_assert(this->et->countUpdateScope == 4);
 
     corto_delete(o);
     corto_delete(p);
@@ -649,7 +650,7 @@ corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateEnd(o);
+    corto_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -661,7 +662,7 @@ corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateEnd(p);
+    corto_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -682,7 +683,7 @@ corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateEnd(q);
+    corto_updateEnd(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -721,7 +722,7 @@ corto_void _test_Event_tc_onUpdateTree(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 1);
 
-    ret = corto_updateEnd(o);
+    corto_updateEnd(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
     test_assert(this->et->lastThis == this->et);
@@ -735,7 +736,7 @@ corto_void _test_Event_tc_onUpdateTree(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 3);
 
-    ret = corto_updateEnd(p);
+    corto_updateEnd(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 4);
     test_assert(this->et->lastThis == this->et);
@@ -758,7 +759,7 @@ corto_void _test_Event_tc_onUpdateTree(test_Event this) {
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 5);
 
-    ret = corto_updateEnd(q);
+    corto_updateEnd(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 6);
     test_assert(this->et->lastThis == this->et);
@@ -810,5 +811,6 @@ corto_void _test_Event_teardown(test_Event this) {
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == testScope);
 
+    corto_setAttr(this->prevAttr);
 /* $end */
 }

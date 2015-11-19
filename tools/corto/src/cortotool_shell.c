@@ -239,11 +239,11 @@ static void cxsh_ls(char* arg) {
     }
 
     if (!i) {
-        corto_print("no objects.");
+        corto_print("  no objects.");
     } else if (i > 1) {
-        corto_print("%d objects", i);
+        corto_print("  %d objects\n", i);
     } else {
-        corto_print("%d object", i);
+        corto_print("  %d object\n", i);
     }
 }
 
@@ -934,7 +934,7 @@ void cxsh_printObject(char *expr, char *str) {
 /* Print single object */
 void cxsh_printMember(char *expr, char *str) {
     if (cxsh_exprType(expr)) {
-        printf("%s%s%s", MAGENTA, str, NORMAL);
+        printf("%s%s%s", BLUE, str, NORMAL);
     } else {
         printf("%s", str);
     }
@@ -968,6 +968,8 @@ void cxsh_print(const char *arg) {
             }
             if (ch == '/') {
                 printf("%s%c%s", CYAN, ch, NORMAL);
+            } else if (ch == '"') {
+                printf("%s%c%s", RED, ch, NORMAL);
             } else {
                 printf("%s%c%s", BOLD, ch, NORMAL);
             }
@@ -975,7 +977,19 @@ void cxsh_print(const char *arg) {
             bptr = buff;
             token++;
 
-            if (ch == '.') {
+            if (ch == '"') {
+                while ((ch = *(++ptr)) && (ch != '"')) {
+                    *bptr = ch;
+                    bptr++;
+                }
+                if (ch) {
+                    *bptr = '"';
+                    bptr++;
+                }
+                *bptr = '\0';
+                printf("%s%s%s", RED, buff, NORMAL);
+                bptr = buff;
+            } else if (ch == '.') {
                 isMember = TRUE;
             } else {
                 isMember = FALSE;

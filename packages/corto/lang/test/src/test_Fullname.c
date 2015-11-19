@@ -14,11 +14,10 @@ corto_void _test_Fullname_tc_null(test_Fullname this) {
 
     id[0] = 'a';
     corto_string result = corto_fullname(NULL, id);
-    test_assert(result == NULL);
-    test_assert(id[0] == 'a');
+    test_assert(result == id);
+    test_assert(!strcmp(result, "/"));
     corto_string err = corto_lasterr();
-    test_assert(err != NULL);
-    test_assert(!strcmp(err, "no object provided"));
+    test_assert(err == NULL);
 
 /* $end */
 }
