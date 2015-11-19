@@ -18,4 +18,24 @@ addons:
     build_command:   "rake"
     branch_pattern: coverity_scan
 
-script: source configure && rake
+install:
+  - cd ..
+  - mkdir projects
+  - mv corto projects/corto
+  - cd projects
+  - git clone https://github.com/cortoproject/c-binding.git
+  - git clone https://github.com/cortoproject/xml.git
+  - git clone https://github.com/cortoproject/corto-language.git
+  - git clone https://github.com/cortoproject/io.git
+  - git clone https://github.com/cortoproject/cortodoc.git
+  - git clone https://github.com/cortoproject/test.git
+  - git clone https://github.com/cortoproject/json.git
+  - "echo 'COMPONENTS = %w(corto c-binding xml corto-language ); require \"\#{ENV['CORTO_BUILD']}/forward\"' > rakefile"
+  - source corto/configure
+
+
+script:
+  - rake
+  - cd packages/corto/lang/test
+  - rake
+  - corto test
