@@ -1,6 +1,7 @@
 
 #include "cortotool_package.h"
 #include "cortotool_build.h"
+#include "corto_files.h"
 
 static corto_object cortotool_lookupPackage(corto_string str) {
     corto_object package = corto_resolve(NULL, str);

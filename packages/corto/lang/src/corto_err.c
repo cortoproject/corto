@@ -5,7 +5,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto_err.h"
 #include "corto_util.h"
 #include "corto_async.h"

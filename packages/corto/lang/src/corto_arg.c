@@ -1,5 +1,3 @@
-
-#define corto_lang_LIB
 #include "corto.h"
 #include "corto_arg.h"
 
@@ -375,7 +373,3 @@ void corto_argClear(void) {
     corto_llFree(corto_argList);
     corto_argList = NULL;
 }
-
-
-
-

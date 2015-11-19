@@ -5,7 +5,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto_string.h"
 #include "corto.h"
 #include "stdarg.h"

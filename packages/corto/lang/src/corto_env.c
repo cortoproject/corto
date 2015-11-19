@@ -1,5 +1,3 @@
-
-#define corto_lang_LIB
 #include "corto.h"
 #include "stdlib.h"
 #include "ctype.h"
@@ -48,48 +46,48 @@ char* corto_venvparse(const char* input, va_list arglist) {
     bptr = result;
     varptr = var;
 
-    while ((ch = *ptr)) {
-        if (ch == '$') {
-            ptr++;
-            varptr = var;
-            *varptr = *ptr;
-            varptr++;
-        } else if (ch == '~') {
-            char *val = corto_getenv("HOME");
-            int len = strlen(val);
-            bptr = corto_growBuffer(&result, bptr, &size, len);
-            memcpy(bptr, val, len);
-            bptr += len;
-        } else {
-            if (varptr != var) {
-                if (isalpha(ch) || (ch == '_')) {
-                    *varptr = ch;
-                    varptr++;
-                } else {
-                    char *val;
-                    int len;
-                    *varptr = '\0';
-                    val = corto_getenv(var);
-                    if (!val) {
-                        corto_seterr("environment variable '%s' doesn't exist", var);
-                        goto error;
-                    }
-                    len = strlen(val);
-                    bptr = corto_growBuffer(&result, bptr, &size, len + 1);
-                    memcpy(bptr, val, len);
-                    bptr += len;
-                    varptr = var;
-                    *bptr = ch;
-                    bptr++;
-                }
-            } else {
-                bptr = corto_growBuffer(&result, bptr, &size, 1);
-                *bptr = ch;
-                bptr++;
-            }
-        }
-        ptr++;
-    }
+	while ((ch = *ptr)) {
+		if (ch == '$') {
+			ptr++;
+			varptr = var;
+			*varptr = *ptr;
+			varptr++;
+		} else if (ch == '~') {
+			char *val = corto_getenv("HOME");
+			int len = strlen(val);
+			bptr = corto_growBuffer(&result, bptr, &size, len);
+			memcpy(bptr, val, len);
+			bptr += len;
+		} else {
+			if (varptr != var) {
+				if (isalpha(ch) || (ch == '_')) {
+					*varptr = ch;
+					varptr++;
+				} else {
+					char *val;
+					int len;
+					*varptr = '\0';
+					val = corto_getenv(var);
+					if (!val) {
+						corto_seterr("environment variable '%s' doesn't exist", var);
+						goto error;
+					}
+					len = strlen(val);
+					bptr = corto_growBuffer(&result, bptr, &size, len + 1);
+					memcpy(bptr, val, len);
+					bptr += len;
+					varptr = var;
+					*bptr = ch;
+					bptr++;
+				}
+			} else {
+				bptr = corto_growBuffer(&result, bptr, &size, 1);
+				*bptr = ch;
+				bptr++;
+			}
+		}
+		ptr++;
+	}
 
     bptr = corto_growBuffer(&result, bptr, &size, 1);
     *bptr = '\0';

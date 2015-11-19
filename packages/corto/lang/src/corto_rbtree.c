@@ -7,7 +7,6 @@
  *  This implementation is a wrapper around the jsw_rbtree (http://www.eternallyconfuzzled.com) implementation.
  */
 
-#define corto_lang_LIB
 #include "corto_mem.h"
 #include "corto_util.h"
 #include "corto_rbtree.h"

@@ -6,7 +6,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto_object.h"
 #include "corto_value.h"
 #include "corto_err.h"

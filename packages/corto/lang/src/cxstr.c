@@ -1,5 +1,3 @@
-
-#define corto_lang_LIB
 #include "corto.h"
 
 corto_object cxstr_define(corto_object result, corto_string value) {

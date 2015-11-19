@@ -6,7 +6,6 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto_metawalk.h"
 #include "corto__object.h" /* To mimic an object */
 #include "corto_err.h"

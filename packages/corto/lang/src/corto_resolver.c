@@ -1,5 +1,3 @@
-
-#define corto_lang_LIB
 #include "corto.h"
 
 /* Resolve anonymous object */

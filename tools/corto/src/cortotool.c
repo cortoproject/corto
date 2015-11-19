@@ -9,6 +9,7 @@
 #include "cortotool_run.h"
 #include "cortotool_shell.h"
 #include "cortotool_test.h"
+#include "cortotool_environment.h"
 #include "corto_loader.h"
 
 void cortotool_locateHelp(void) {
@@ -117,6 +118,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "delete")) {
+                if (cortotool_delete(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else if (!strcmp(argv[i], "add")) {
                 if (cortotool_add(argc-i, &argv[i])) {
                     goto error;
@@ -129,6 +135,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[i], "list")) {
                 if (cortotool_list(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "envs")) {
+                if (cortotool_listEnvironments(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;
@@ -201,6 +212,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[1], "help")) {
                 if (cortotool_help(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[1], "activate")) {
+                if (cortotool_activate(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;
