@@ -33,11 +33,11 @@ corto_int16 cortotool_activate(int argc, char *argv[]) {
     }
 
     char* name = argv[1];
-    char* path = cortotool_environmentPath(name);
-    if (!path) {
+    char* envPath = cortotool_environmentPath(name);
+    if (!envPath) {
         goto error_no_env;
     }
-    if (!corto_fileTest(path)) {
+    if (!corto_fileTest(envPath)) {
         corto_error("environment %s does not exist", name);
         goto error_not_found;
     }
@@ -49,21 +49,35 @@ corto_int16 cortotool_activate(int argc, char *argv[]) {
     }
     char* currentShell = corto_getenv("SHELL");
     
-    corto_setenv("CORTO_ENVIRONMENT", name, FALSE);
+    corto_setenv("CORTO_ENVIRONMENT", name);
     corto_setenv("CORTO_HOME", "$HOME/.corto/env/$CORTO_ENVIRONMENT");
     corto_setenv("CORTO_TARGET", "$HOME/.corto/env/$CORTO_ENVIRONMENT");
     corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/$CORTO_VERSION/build");
-    setenv("PS1", newPrompt, TRUE);
+    // corto_setenv("CORTO_A", "$CORTO_HOME $CORTO_HOME $CORTO_HOME");
+    // corto_setenv("CORTO_B", "$CORTO_HOME $CORTO_HOME $CORTO_HOME $CORTO_HOME");
+    // corto_setenv("CORTO_C", "$CORTO_HOME $CORTO_HOME $CORTO_HOME $CORTO_HOME $CORTO_HOME");
+
+    puts(getenv("PATH"));
+    puts(">>>>>>>>>>>>>>>>>>>>>>> PATH");
+    corto_setenv("PATH", "$CORTO_HOME:$PATH");
+    puts("<<<<<<<<<<<<<<<<<<<<<<< PATH");
+
+    // corto_setenv("PATH", "$CORTO_HOME:%s");
+    // char* path = getenv("PATH");
+    // corto_setenv("PATH", "$CORTO_HOME:%s", path);
+    // setenv("PS1", newPrompt, TRUE);
+
+    puts("HELLOOOOO");
     
     corto_pid pid = corto_procrun(currentShell, (char*[]){currentShell, NULL});
     corto_int8 procResult = 0;
     corto_procwait(pid, &procResult);
 
     corto_dealloc(newPrompt);
-    corto_dealloc(path);
+    corto_dealloc(envPath);
     return 0;
 error_not_found:
-    corto_dealloc(path);
+    corto_dealloc(envPath);
 error_no_env:
     return -1;
 }
