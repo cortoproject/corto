@@ -35,6 +35,7 @@ int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userD
 
 corto_string corto_locate(corto_string package);
 corto_string corto_locateComponent(corto_string component);
+corto_string corto_locateGenerator(corto_string component);
 corto_string corto_locateLibrary(corto_string lib);
 
 #ifdef __cplusplus

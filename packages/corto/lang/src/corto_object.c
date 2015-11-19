@@ -2987,7 +2987,7 @@ static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffe
     return ptr;
 }
 
-static char* corto_manId(corto_object o, corto_id buffer) {
+char* corto_manId(corto_object o, corto_id buffer) {
     corto_object parents[CORTO_MAX_SCOPE_DEPTH];
     corto_uint32 count = 0;
     corto_object p = o;

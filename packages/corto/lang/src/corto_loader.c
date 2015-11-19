@@ -384,6 +384,17 @@ corto_string corto_locateLibrary(corto_string lib) {
     return result;
 }
 
+corto_string corto_locateGenerator(corto_string component) {
+    corto_string relativePath = NULL;
+    corto_string result = NULL;
+
+    corto_asprintf(&relativePath, "generators/lib%s.so", component);
+    result = corto_locateLibrary(relativePath);
+    corto_dealloc(relativePath);
+
+    return result;
+}
+
 corto_string corto_locateComponent(corto_string component) {
     corto_string relativePath = NULL;
     corto_string result = NULL;

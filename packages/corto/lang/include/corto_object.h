@@ -113,6 +113,7 @@ corto_object corto_wait(corto_int32 timeout_sec, corto_int32 timeout_nanosec);
 corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value);
 
 /* Obtain documentation objects */
+char* corto_manId(corto_object o, corto_id buffer);
 corto_object corto_man(corto_object o);
 
 /* Set reference field */
