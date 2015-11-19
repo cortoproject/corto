@@ -496,3 +496,12 @@ test::Suite StringDeserializer::
     void tc_deserAnonymousMultiple()
     void tc_deserAnonymousReuse()
     void tc_deserAnonymousReuseNested()
+
+test::Suite Env::
+    void tc_setenvSimple()
+    void tc_setenvSimpleFormat()
+    void tc_setenvSimpleReplace()
+    void tc_setenvReplaceMultiple()
+    void tc_setenvReplaceWithSameVariable()
+    void tc_setenvFormatAndReplace()
+    void tc_setenvVariableNotFound()
