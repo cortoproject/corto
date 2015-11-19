@@ -496,4 +496,3 @@ test::Suite StringDeserializer::
     void tc_deserAnonymousMultiple()
     void tc_deserAnonymousReuse()
     void tc_deserAnonymousReuseNested()
-    void tc_deserAnonymousBig()
