@@ -57,7 +57,7 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
     if LOCAL or (`corto locate doc --generator` == "corto: generator 'doc' not found\n") then
-        command "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     else
         command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g doc"
     end
