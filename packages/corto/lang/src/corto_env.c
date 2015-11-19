@@ -68,15 +68,11 @@ char* corto_venvparse(const char* input, va_list arglist) {
 					int len;
 					*varptr = '\0';
 					val = corto_getenv(var);
-					// puts("!!GOT!!");
-					// puts(var);
-					// puts(val);
 					if (!val) {
 						corto_seterr("environment variable '%s' doesn't exist", var);
 						goto error;
 					}
 					len = strlen(val);
-					// printf("len %d\n", len);
 					bptr = corto_growBuffer(&result, bptr, &size, len + 1);
 					memcpy(bptr, val, len);
 					bptr += len;
@@ -91,7 +87,6 @@ char* corto_venvparse(const char* input, va_list arglist) {
 			}
 		}
 		ptr++;
-		// printf(">>> %s\n", result);
 	}
 
     bptr = corto_growBuffer(&result, bptr, &size, 1);
