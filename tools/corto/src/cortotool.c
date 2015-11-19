@@ -1,4 +1,3 @@
-
 #include "corto.h"
 #include "cortotool_build.h"
 #include "cortotool_help.h"
@@ -9,6 +8,7 @@
 #include "cortotool_run.h"
 #include "cortotool_shell.h"
 #include "cortotool_test.h"
+#include "cortotool_environment.h"
 #include "corto_loader.h"
 
 void cortotool_locateHelp(void) {
@@ -32,6 +32,7 @@ static void cortotool_printUsage(corto_bool expert) {
     printf("   add                  Add a package to a project\n");
     printf("   remove               Remove a package from a project\n");
     printf("   list                 List packages of a project\n");
+    printf("   envs                 List environments\n");
     printf("   install              Install a package.\n");
     printf("   uninstall            Uninstall a package.\n");
     printf("   update               Update a package\n");
@@ -117,6 +118,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "delete")) {
+                if (cortotool_delete(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else if (!strcmp(argv[i], "add")) {
                 if (cortotool_add(argc-i, &argv[i])) {
                     goto error;
@@ -129,6 +135,16 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[i], "list")) {
                 if (cortotool_list(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "activate")) {
+                if (cortotool_activate(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "envs")) {
+                if (cortotool_listEnvironments(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;

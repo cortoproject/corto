@@ -2,6 +2,7 @@
 #include "cortotool_create.h"
 #include "cortotool_package.h"
 #include "cortotool_build.h"
+#include "cortotool_environment.h"
 
 static corto_int16 cortotool_setupProject(const char *name, corto_bool isLocal, corto_bool isSilent) {
     CORTO_UNUSED(isLocal);
@@ -465,16 +466,18 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         if (cortotool_application(argc-1, &argv[0])) {
             goto error;
         }
-	} else 
-	if (!strcmp(argv[1], CORTO_COMPONENT)) {
+	} else if (!strcmp(argv[1], CORTO_COMPONENT)) {
 		if (cortotool_application(argc-1, &argv[1])) {
 			goto error;
 		}
-	} else
-	if (!strcmp(argv[1], CORTO_PACKAGE)) {
+	} else if (!strcmp(argv[1], CORTO_PACKAGE)) {
 		if (cortotool_package(argc-1, &argv[1])) {
 			goto error;
 		}
+    } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
+        if (cortotool_createEnvironment(argc-1, &argv[1])) {
+            goto error;
+        }
 	} else {
 		if (cortotool_application(argc, &argv[0])) {
 			goto error;
@@ -484,6 +487,19 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 	return 0;
 error:
 	return -1;
+}
+
+corto_int16 cortotool_delete(int argc, char *argv[]) {
+    if (argc <= 1) {
+        goto error;
+    } else if (!strcmp(argv[1], CORTO_ENVIRONMENT)) {
+        if (cortotool_deleteEnvironment(argc-1, &argv[1])) {
+            goto error;
+        }
+    }
+    return 0;
+error:
+    return -1;
 }
 
 void cortotool_createHelp(void) {

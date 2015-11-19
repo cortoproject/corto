@@ -45,6 +45,9 @@ int corto_rm(const char *name);
 /* Test whether a file exists */
 int corto_fileTest(const char* file);
 
+/* Checks if path refers to a directory */
+int corto_isdir(const char *path);
+
 /* Run a process, return PID (-1 if failed) */
 corto_pid corto_procrun(const char* exec, char *argv[]);
 

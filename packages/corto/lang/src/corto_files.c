@@ -41,6 +41,13 @@ int corto_fileTest(const char* file) {
     return (exists != 0);
 }
 
+int corto_isdir(const char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISDIR(path_stat.st_mode);
+}
+
 int corto_touch(const char *file) {
     FILE* touch = NULL;
 
