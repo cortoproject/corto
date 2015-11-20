@@ -31,7 +31,7 @@ corto_int16 cortotool_rebuild(int argc, char *argv[]) {
         }
     }
 
-    system("rake clobber 2> /dev/null");
+    system("rake clobber");
     corto_pid pid = corto_procrun("rake", (char*[]){"rake", "default", "silent=false", NULL});
     if (corto_procwait(pid, &ret) || ret) {
         if (ret) {
@@ -53,7 +53,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         }
     }
 
-    system("rake clobber 2> /dev/null");
+    system("rake clobber");
 
     return 0;
 error:
