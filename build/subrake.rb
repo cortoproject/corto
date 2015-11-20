@@ -47,11 +47,11 @@ task :test do
     error = 0
     COMPONENTS.each do |e|
         verbose(false)
-        begin
+        #begin
           sh "rake test -f #{e}/rakefile"
-        rescue
-          error = 1
-        end
+        #rescue
+        #  error = 1
+        #end
     end
-    if error then abort() end
+    #if error != 0 then abort() end
 end
