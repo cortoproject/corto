@@ -218,6 +218,7 @@ static int corto_rmtreeCallback(
     CORTO_UNUSED(sb);
     CORTO_UNUSED(typeflag);
     CORTO_UNUSED(ftwbuf);
+    printf("-> remove %s\n", path);
     remove(path);
     return 0;
 }

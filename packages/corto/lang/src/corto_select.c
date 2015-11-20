@@ -354,9 +354,9 @@ static void corto_selectTree(
     data->next = NULL;
 
     do {
-        corto_object claimed;
-        corto__scope *scope = corto__scopeClaim((claimed = frame->o));
-        while (data->sp && !corto_iterHasNext(&frame->iter)) {            
+        corto_object claimed = frame->o;
+        corto__scope *scope = corto__scopeClaim(claimed);
+        while (data->sp && !corto_iterHasNext(&frame->iter)) {
             corto__scopeRelease(claimed);
             corto_setref(&frame->o, NULL);
             data->sp --;
