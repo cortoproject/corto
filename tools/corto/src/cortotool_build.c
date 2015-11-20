@@ -9,7 +9,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         }
     }
 
-    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "silent=true", NULL});
+    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "silent=false", NULL});
     if (corto_procwait(pid, &ret) || ret) {
         if (ret) {
             corto_seterr("build failed");
@@ -32,7 +32,7 @@ corto_int16 cortotool_rebuild(int argc, char *argv[]) {
     }
 
     system("rake clobber 2> /dev/null");
-    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "default", "silent=true", NULL});
+    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "default", "silent=false", NULL});
     if (corto_procwait(pid, &ret) || ret) {
         if (ret) {
             corto_seterr("build failed");
