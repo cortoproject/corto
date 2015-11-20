@@ -505,3 +505,11 @@ test::Suite Env::
     void tc_envparseReplaceWithSameVariable()
     void tc_envparseFormatAndReplace()
     void tc_envparseVariableNotFound()
+
+test::Suite Project::
+    void setup() method
+    void teardown() method
+    void tc_app()
+    void tc_appNoTest()
+    void tc_package()
+    void tc_packageLocal()

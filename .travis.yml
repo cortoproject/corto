@@ -33,9 +33,8 @@ install:
   - |+
     echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json)
     require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
-  - cat rakefile
 
 script:
   - source corto/configure
   - rake
-  - corto test corto/packages/corto/lang
+  - rake test

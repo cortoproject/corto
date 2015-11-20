@@ -39,11 +39,14 @@ int corto_chdir(const char *name);
 /* Copy a file. Returns zero if OK, -1 if failed */
 int corto_cp(const char *source, const char *destination);
 
-/* Remove a file. Returns 0 if OK, -1 if failed */
+/* Remove a file or directory. Returns 0 if OK, -1 if failed */
 int corto_rm(const char *name);
 
+/* Recursively remove a directory */
+int corto_rmtree(const char *name);
+
 /* Test whether a file exists */
-int corto_fileTest(const char* file);
+int corto_fileTest(const char* filefmt, ...);
 
 /* Run a process, return PID (-1 if failed) */
 corto_pid corto_procrun(const char* exec, char *argv[]);

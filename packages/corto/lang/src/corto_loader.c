@@ -238,9 +238,15 @@ int corto_loadComponent(corto_string component, int argc, char* argv[]) {
     corto_string path = corto_envparse(
         "$CORTO_TARGET/lib/corto/%s.%s/components/%s",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, component);
+    if (!path) {
+        goto error;
+    }
     result = corto_loadLibrary(path, argc, argv);
     corto_dealloc(path);
+
     return result;
+error:
+    return -1;
 }
 
 /*
@@ -339,6 +345,9 @@ corto_string corto_locateLibrary(corto_string lib) {
     /* Look for local packages first */
     targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
+    if (!targetPath) {
+        goto error;
+    }
     if (corto_fileTest(targetPath)) {
         if (corto_checkLibrary(targetPath)) {
             t = corto_getModified(targetPath);
@@ -350,6 +359,9 @@ corto_string corto_locateLibrary(corto_string lib) {
     if (strcmp(corto_getenv("CORTO_HOME"), corto_getenv("CORTO_TARGET"))) {
         corto_string homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
+        if (!homePath) {
+            goto error;
+        }
         if (corto_fileTest(homePath)) {
             time_t myT = corto_getModified(homePath);
             if ((myT > t) || !result) {
@@ -366,6 +378,9 @@ corto_string corto_locateLibrary(corto_string lib) {
         strcmp("/usr/local", corto_getenv("CORTO_HOME"))) {
         usrPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, lib);
+        if (!usrPath) {
+            goto error;
+        }
         if (corto_fileTest(usrPath)) {
             time_t myT = corto_getModified(usrPath);
             if ((myT >= t) || !result) {
@@ -382,6 +397,8 @@ corto_string corto_locateLibrary(corto_string lib) {
     if (usrPath && (usrPath != result)) corto_dealloc(usrPath);
 
     return result;
+error:
+    return NULL;
 }
 
 corto_string corto_locateGenerator(corto_string component) {
