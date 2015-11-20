@@ -53,9 +53,7 @@ task :test do
           error = 1
         end
     end
-    puts(error)
     if error != 0 then
-      puts("abort!")
       abort()
     end
 end
