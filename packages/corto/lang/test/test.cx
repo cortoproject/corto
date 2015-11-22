@@ -496,3 +496,11 @@ test::Suite StringDeserializer::
     void tc_deserAnonymousMultiple()
     void tc_deserAnonymousReuse()
     void tc_deserAnonymousReuseNested()
+
+test::Suite Project::
+    void setup() method
+    void teardown() method
+    void tc_app()
+    void tc_appNoTest()
+    void tc_package()
+    void tc_packageLocal()

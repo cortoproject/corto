@@ -31,6 +31,7 @@
 #include "corto_overload.h"
 
 #include <limits.h>
+#include <ctype.h>
 
 extern corto_mutex_s corto_adminLock;
 
@@ -581,50 +582,61 @@ void corto__setState(corto_object o, corto_uint8 state) {
     _o->attrs.state |= state;
 }
 
-static corto_equalityKind corto_objectCompare(corto_type this, const void* o1, const void* o2) {
+static corto_equalityKind corto_compareDefault(corto_type this, const void* o1, const void* o2) {
     int r;
     CORTO_UNUSED(this);
     return ((r = stricmp(o1, o2)) < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
 }
 
-#include "ctype.h"
-static corto_equalityKind corto_objectCompareLookup(corto_type this, const void* o1, const void* o2) {
-    CORTO_UNUSED(this);
-    int r;
-    const char *ptr1, *ptr2;
-    ptr1 = o1;
-    ptr2 = o2;
-    char ch1, ch2;
+static corto_equalityKind corto_compareLookupIntern(const char *o1, const char *o2, corto_bool matchArgs) {
+  int r;
+  const char *ptr1, *ptr2;
+  ptr1 = o1;
+  ptr2 = o2;
+  char ch1, ch2;
 
-    ch2 = *ptr2;
-    while((ch1 = *ptr1) && ch2) {
-        if (ch1 == ch2) {
-            ptr1++; ptr2++;
-            ch2 = *ptr2;
-            continue;
-        }
-        if (ch1 < 97) ch1 = tolower(ch1);
+  ch2 = *ptr2;
+  while((ch1 = *ptr1) && ch2) {
+      if (ch1 == ch2) {
+          ptr1++; ptr2++;
+          ch2 = *ptr2;
+          continue;
+      }
+      if (ch1 < 97) ch1 = tolower(ch1);
 
-        /* Query is always made lower case, for efficiency reasons */
-        /* if (ch2 < 97) ch2 = tolower(ch2); */
-        if (ch1 != ch2) {
-            r = ch1 - ch2;
-            goto compare;
-        }
-        ptr1++;
-        ptr2++;
-        ch2 = *ptr2;
-    }
+      /* Query is always made lower case, for efficiency reasons */
+      /* if (ch2 < 97) ch2 = tolower(ch2); */
+      if (ch1 != ch2) {
+          r = ch1 - ch2;
+          goto compare;
+      }
+      ptr1++;
+      ptr2++;
+      ch2 = *ptr2;
+  }
 
-    if ((ch1 == '(') && !ch2) {
-        r = 0;
-        goto compare;
-    }
+  if (matchArgs) {
+      if ((ch1 == '(') && !ch2) {
+          r = 0;
+          goto compare;
+      }
+  }
 
-    r = ch1 - ch2;
+  r = ch1 - ch2;
 compare:
-    return (r < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
+  return (r < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
 }
+
+static corto_equalityKind corto_compareLookup(corto_type this, const void* o1, const void* o2) {
+    CORTO_UNUSED(this);
+    return corto_compareLookupIntern(o1, o2, TRUE);
+}
+
+static corto_equalityKind corto_compareLookupNoArgMatching(corto_type this, const void* o1, const void* o2) {
+    CORTO_UNUSED(this);
+    return corto_compareLookupIntern(o1, o2, FALSE);
+}
+
 
 /* Match a state exclusively:
  *                CORTO_DECLARED - CORTO_DECLARED | CORTO_DEFINED
@@ -675,7 +687,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
-                p_scope->scope = corto_rbtreeNew_w_func(corto_objectCompare);
+                p_scope->scope = corto_rbtreeNew_w_func(corto_compareDefault);
             }
 
             corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->name, child);
@@ -2105,9 +2117,19 @@ corto_object corto_lookupLowercase(corto_object o, corto_string name) {
     if (scope) {
         corto_rwmutexRead(&scope->scopeLock);
         if ((tree = scope->scope)) {
-            if ((!corto_rbtreeHasKey_w_cmp(tree, name, (void**)&result, corto_objectCompareLookup))) {
+            if ((!corto_rbtreeHasKey_w_cmp(tree, name, (void**)&result, corto_compareLookup))) {
                 result = NULL;
             } else {
+                /* If an object was returned with a ( in its name but
+                 * the request didn't have one, check scope again for an object
+                 * that matches the request exactly */
+                if (strchr(corto_nameof(result), '(') && !strchr(name, '(')) {
+                    corto_object checkNoArgs = NULL;
+                    if (corto_rbtreeHasKey_w_cmp(tree, name, (void**)&checkNoArgs, corto_compareLookupNoArgMatching)) {
+                        result = checkNoArgs;
+                    }
+                }
+
                 /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
                 if (corto_claim(result) == 1) {
                      /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
@@ -2987,7 +3009,7 @@ static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffe
     return ptr;
 }
 
-static char* corto_manId(corto_object o, corto_id buffer) {
+char* corto_manId(corto_object o, corto_id buffer) {
     corto_object parents[CORTO_MAX_SCOPE_DEPTH];
     corto_uint32 count = 0;
     corto_object p = o;

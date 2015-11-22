@@ -7,7 +7,7 @@ if LOCAL == true then
     TARGETDIR = TARGETPATH
 else
     PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
-    TARGETPATH = PACKAGEDIR 
+    TARGETPATH = PACKAGEDIR
 end
 
 TARGET = PACKAGE.split("::").last
@@ -56,14 +56,17 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
     preload = PP_PRELOAD.join(" ")
     sh "mkdir -p .corto"
     sh "touch .corto/#{TARGET}__wrapper.c"
-    if LOCAL or (`corto locate doc --component` == "corto: component 'doc' not found\n") then
-        ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
+    if LOCAL or (`corto locate doc --generator` == "corto: generator 'doc' not found\n") then
+        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     else
-        ret = sh "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g doc"
+        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g doc"
     end
-    if !ret then
-        sh "rm include/#{TARGET}__type.h"
-        abort "\033[1;31m[ build failed ]\033[0;49m"
+    begin
+      sh command
+    rescue
+      puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+      sh "rm include/#{TARGET}__type.h"
+      abort()
     end
 end
 
@@ -71,7 +74,13 @@ task :doc do
     verbose(false)
     if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
         if File.exists? "README.md" and not LOCAL then
-            sh "corto pp README.md --scope #{PACKAGE} -g html"
+            command = "corto pp README.md --scope #{PACKAGE} -g html"
+            begin
+                sh command
+            rescue
+                puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+                abort()
+            end
         end
     end
 end

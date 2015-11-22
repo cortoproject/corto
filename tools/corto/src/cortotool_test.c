@@ -15,17 +15,17 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     if (corto_fileTest("test")) {
         corto_int8 ret = 0, sig = 0, err = 0;
-    	corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", "test", NULL});
+        corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", "test", NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {
             if (sig > 0) {
                 corto_error("corto: the tests failed to build (build crashed with signal %d)", sig);
             } else {
-                corto_error("corto: the tests failed to build (build returned %d)", ret);                
+                corto_error("corto: the tests failed to build (build returned %d)", ret);
             }
             err = 1;
         }
 
-    	if (corto_fileTest("test/.corto/libtest.so")) {
+        if (corto_fileTest("test/.corto/libtest.so")) {
             if (err) {
                 corto_error("corto: trying to run previous testbuild, results may be outdated");
             }
@@ -37,12 +37,15 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
             } else {
                 ret = corto_load("./.corto/libtest.so", 2, (char*[]){"./.corto/libtest.so", testCase, NULL});
             }
-		}
+            if (ret) {
+                goto error;
+            }
+        }
     }
 
     /* If a project doesn't have any tests, that counts as a PASS */
 
-	return 0;
+    return 0;
 error:
     return -1;
 }

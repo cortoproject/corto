@@ -44,8 +44,16 @@ task :clobber do
 end
 
 task :test do
+    error = 0
     COMPONENTS.each do |e|
         verbose(false)
-        sh "rake test -f #{e}/rakefile"
+        begin
+          sh "rake test -f #{e}/rakefile"
+        rescue
+          error = 1
+        end
+    end
+    if error != 0 then
+      abort()
     end
 end

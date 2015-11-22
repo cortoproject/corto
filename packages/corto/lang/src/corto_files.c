@@ -1,5 +1,4 @@
 
-#define corto_lang_LIB
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -8,6 +7,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <signal.h>
+#include <ftw.h>
 
 #if __linux__
 #include <linux/limits.h>
@@ -15,8 +15,7 @@
 #include <limits.h>
 #endif
 
-#include "corto_files.h"
-#include "corto_mem.h"
+#include "corto.h"
 
 /*
  * Receives:
@@ -28,8 +27,13 @@ static void printError(int e, const char *msg) {
     corto_seterr("%s: %s", msg, strerror(e));
 }
 
-int corto_fileTest(const char* file) {
+int corto_fileTest(const char* filefmt, ...) {
     FILE* exists = NULL;
+    va_list arglist;
+
+    va_start(arglist, filefmt);
+    char *file = corto_venvparse(filefmt, arglist);
+    va_end(arglist);
 
     if (file) {
         exists = fopen(file, "rb");
@@ -37,6 +41,8 @@ int corto_fileTest(const char* file) {
             fclose(exists);
         }
     }
+
+    corto_dealloc(file);
 
     return (exists != 0);
 }
@@ -208,6 +214,24 @@ int corto_rm(const char *name) {
     }
 
     return result;
+}
+
+static int corto_rmtreeCallback(
+  const char *path,
+  const struct stat *sb,
+  int typeflag,
+  struct FTW *ftwbuf)
+{
+    CORTO_UNUSED(sb);
+    CORTO_UNUSED(typeflag);
+    CORTO_UNUSED(ftwbuf);
+    remove(path);
+    return 0;
+}
+
+/* Recursively remove a directory */
+int corto_rmtree(const char *name) {
+    return nftw(name, corto_rmtreeCallback, 20, FTW_DEPTH);
 }
 
 /* Read the contents of a directory */
