@@ -87,6 +87,7 @@ test::Suite ObjectMgmt::
     void tc_declareExistingWithParentState()
     void tc_declareChildNullType()
     void tc_declareChildInvalidType()
+    void tc_redeclareWithDifferentType()
 
     void tc_createChildVoid()
     void tc_createChildInt()

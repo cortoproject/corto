@@ -112,8 +112,8 @@ static int corto_selectParse(corto_selectData *data) {
             break;
         default:
             while((ch = *ptr++) &&
-                  (isalnum(ch) || (ch == '*') || (ch == '?') || (ch == '(') ||
-                    (ch == ')') || (ch == '{') || (ch == '}'))) {
+                  (isalnum(ch) || (ch == '_') || (ch == '*') || (ch == '?') ||
+                    (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}'))) {
                 if ((ch == '*') || (ch == '?')) {
                     data->program[op].containsWildcard = TRUE;
                 }

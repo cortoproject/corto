@@ -255,6 +255,8 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
 
     scope->name = corto_strdup(name);
     scope->declared = 1;
+
+    /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
     corto_rwmutexNew(&scope->scopeLock);
 
@@ -274,6 +276,8 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
 
     /* Add object to the scope of the parent-object */
     if (!(result = corto_adopt(parent, o))) {
+        /* Reset parent */
+        scope->parent = NULL;
         goto error;
     }
 
@@ -725,7 +729,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
             /* Parent must not be deleted before all childs are gone. */
             corto_claim(parent);
             if (corto_rwmutexUnlock(&p_scope->scopeLock))
-                corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");;
+                corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");
         } else {
             corto_critical("corto_adopt: child-object is not scoped");
         }
