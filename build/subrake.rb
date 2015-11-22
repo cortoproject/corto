@@ -53,5 +53,7 @@ task :test do
           error = 1
         end
     end
-    if error then abort() end
+    if error != 0 then
+      abort()
+    end
 end
