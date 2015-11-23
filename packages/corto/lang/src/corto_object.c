@@ -2970,6 +2970,10 @@ corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value
     corto_int16 result = -1;
     static corto_function parseLine = NULL;
     static corto_bool searchedForParser = FALSE;
+
+    /* Clear any errors set by previous code  */
+    corto_seterr(NULL);
+
     corto_object o = corto_resolve(scope, expr);
     if (o) {
         corto_valueObjectInit(value, o, NULL);
