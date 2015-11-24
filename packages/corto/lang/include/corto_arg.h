@@ -1,19 +1,10 @@
-/*
- *                         OpenSplice DDS
- *
- *   This software and documentation are Copyright 2006 to 2011 PrismTech
- *   Limited and its licensees. All rights reserved. See file:
- *
- *                     $OSPL_HOME/LICENSE
- *
- *   for full copyright notice and license terms.
- *
- */
 
-#ifndef IDL_ARG_H_
-#define IDL_ARG_H_
+#ifndef CORTO_ARG_H
+#define CORTO_ARG_H
 
 /* Command-line argument parsing utility library */
+
+#include "corto_ll.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,8 +56,20 @@ int corto_argParse(int argc, char* argv[]);
  */
 void corto_argClear(void);
 
+/*
+ * Argument parser that requires no callbacks
+ */
+typedef struct corto_argdata {
+    const char *pattern;
+    corto_ll *match;
+    corto_ll *args;
+} corto_argdata;
+
+corto_argdata* corto_argparse(char *argv[], corto_argdata *data);
+void corto_argclean(corto_argdata *data);
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* IDL_ARG_H_ */
+#endif /* CORTO_ARG_H */
