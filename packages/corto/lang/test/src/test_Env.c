@@ -59,10 +59,63 @@ corto_void _test_Env_tc_envparseVariableNotFound(test_Env this) {
 /* $end */
 }
 
+corto_void _test_Env_tc_setenvFormatAndReplace(test_Env this) {
+/* $begin(test/Env/tc_setenvFormatAndReplace) */
+    corto_setenv("CORTO_TEST_A", "A");
+    corto_setenv("CORTO_TEST_B",  "A/%s/$CORTO_TEST_A", "A");
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_B"), "A/A/A"));
+/* $end */
+}
+
+corto_void _test_Env_tc_setenvNull(test_Env this) {
+/* $begin(test/Env/tc_setenvNull) */
+    corto_setenv("CORTO_TEST_A", "A");
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_A"), "A"));
+    corto_setenv("CORTO_TEST_A", NULL);
+    test_assert(corto_getenv("CORTO_TEST_A") == NULL);
+/* $end */
+}
+
+corto_void _test_Env_tc_setenvReplaceMultiple(test_Env this) {
+/* $begin(test/Env/tc_setenvReplaceMultiple) */
+    test_assert(!corto_setenv("CORTO_TEST_A", "A"));
+    test_assert(!corto_setenv("CORTO_TEST_B", "<$CORTO_TEST_A $CORTO_TEST_A $CORTO_TEST_A>"));
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_B"), "<A A A>"));
+/* $end */
+}
+
+corto_void _test_Env_tc_setenvReplaceWithSameVariable(test_Env this) {
+/* $begin(test/Env/tc_setenvReplaceWithSameVariable) */
+    test_assert(!corto_setenv("CORTO_TEST_A", "A"));
+    test_assert(!corto_setenv("CORTO_TEST_A", "$CORTO_TEST_A:$CORTO_TEST_A"));
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_A"), "A:A"));
+/* $end */
+}
+
 corto_void _test_Env_tc_setenvSimple(test_Env this) {
 /* $begin(test/Env/tc_setenvSimple) */
-    corto_setenv("CORTO_TEST_A", "A");
-    char* a = corto_getenv("CORTO_TEST_A");
-    test_assert(!strcmp(a, "A"));
+    test_assert(!corto_setenv("CORTO_TEST_A", "A"));
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_A"), "A"));
+/* $end */
+}
+
+corto_void _test_Env_tc_setenvSimpleFormat(test_Env this) {
+/* $begin(test/Env/tc_setenvSimpleFormat) */
+    test_assert(!corto_setenv("CORTO_TEST_A", "A %s", "B"));
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_A"), "A B"));
+/* $end */
+}
+
+corto_void _test_Env_tc_setenvSimpleReplace(test_Env this) {
+/* $begin(test/Env/tc_setenvSimpleReplace) */
+    test_assert(!corto_setenv("CORTO_TEST_A", "A"));
+    test_assert(!corto_setenv("CORTO_TEST_B", "B $CORTO_TEST_A"));
+    test_assert(!strcmp(corto_getenv("CORTO_TEST_B"), "B A"));
+/* $end */
+}
+
+corto_void _test_Env_tc_setenvVariableNotFound(test_Env this) {
+/* $begin(test/Env/tc_setenvVariableNotFound) */
+    test_assert(corto_setenv("CORTO_TEST_A", "ABC ABC $CORTO_NOT_FOUND"));
 /* $end */
 }
