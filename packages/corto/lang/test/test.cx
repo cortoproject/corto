@@ -87,6 +87,7 @@ test::Suite ObjectMgmt::
     void tc_declareExistingWithParentState()
     void tc_declareChildNullType()
     void tc_declareChildInvalidType()
+    void tc_redeclareWithDifferentType()
 
     void tc_createChildVoid()
     void tc_createChildInt()
@@ -176,6 +177,7 @@ test::Suite Select::
     void teardown() method
 
     list{selectItem} collect(object @scope, string expr) function
+    bool hasObject(list{selectItem} items, string parent, string name, string type) function
 
     void tc_selectErrParentTree()
     void tc_selectErrParentId()
@@ -186,9 +188,27 @@ test::Suite Select::
     void tc_selectThis()
     void tc_selectParent()
     void tc_selectIdentifier()
+    void tc_selectIdentifierCaps()
+    void tc_selectNumeric()
+    void tc_selectUnderscore()
     void tc_selectScopedThis()
     void tc_selectScopedParent()
     void tc_selectScopedIdentifier()
+
+    void tc_selectScope()
+    void tc_selectScopeWithWildcard()
+    void tc_selectScopeWithAsterisk()
+    void tc_selectScopeWithWildcardFilter()
+    void tc_selectScopeWithAsteriskFilter()
+
+    void tc_selectTree()
+    void tc_selectTreeWithWildcard()
+    void tc_selectTreeWithAsterisk()
+    void tc_selectTreeWithWildcardFilter()
+    void tc_selectTreeWithAsteriskFilter()
+
+    void tc_selectFilterAsterisk()
+    void tc_selectFilterWildcard()
 
 // Test Event scenarios
 class EventTest::
@@ -504,3 +524,24 @@ test::Suite Project::
     void tc_appNoTest()
     void tc_package()
     void tc_packageLocal()
+
+test::Suite Args::
+    void tc_matchSingle()
+    void tc_matchMultiple()
+    void tc_matchDuplicate()
+    void tc_matchPattern()
+    void tc_matchAll()
+    void tc_matchNone()
+    void tc_matchErr()
+    void tc_matchSingleArg()
+    void tc_matchMultipleArg()
+    void tc_matchDuplicateArg()
+    void tc_matchFixed()
+    void tc_matchShell()
+    void tc_matchCreate()
+    void tc_matchCreateMultiple()
+    void tc_matchCreateApp()
+    void tc_matchCreatePackage()
+    void tc_matchCreatePackageAndApp()
+    void tc_matchCreatePackageAndAppEscaped()
+    void tc_matchCreatePackageOptions()

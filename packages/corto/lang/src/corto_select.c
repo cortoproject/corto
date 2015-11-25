@@ -112,8 +112,8 @@ static int corto_selectParse(corto_selectData *data) {
             break;
         default:
             while((ch = *ptr++) &&
-                  (isalnum(ch) || (ch == '*') || (ch == '?') || (ch == '(') ||
-                    (ch == ')') || (ch == '{') || (ch == '}'))) {
+                  (isalnum(ch) || (ch == '_') || (ch == '*') || (ch == '?') ||
+                    (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}'))) {
                 if ((ch == '*') || (ch == '?')) {
                     data->program[op].containsWildcard = TRUE;
                 }
@@ -317,6 +317,17 @@ static void corto_selectThis(
     }
 }
 
+static corto_bool corto_match(corto_string filter, corto_string name) {
+    corto_id filterLc, nameLc;
+
+    strcpy(filterLc, filter);
+    strcpy(nameLc, name);
+    corto_strlower(filterLc);
+    corto_strlower(nameLc);
+
+    return !fnmatch(filterLc, nameLc, 0);
+}
+
 static void corto_selectScope(
     corto_selectData *data,
     corto_selectStack *frame) {
@@ -326,7 +337,7 @@ static void corto_selectScope(
         corto__scopeClaim(frame->o);
         while (corto_iterHasNext(&frame->iter)) {
             corto_object o = corto_iterNext(&frame->iter);
-            if (!fnmatch(frame->filter, corto_nameof(o), 0)) {
+            if (corto_match(frame->filter, corto_nameof(o))) {
                 data->next = &data->item;
                 corto_setItemData(o, data->next, data);
                 break;
@@ -381,7 +392,7 @@ static void corto_selectTree(
             data->next = NULL;
         }
         corto__scopeRelease(claimed);
-    } while (frame->filter && (data->next && fnmatch(frame->filter, data->next->name, 0)));
+    } while (frame->filter && (data->next && !corto_match(frame->filter, data->next->name)));
 }
 
 static int corto_selectRun(corto_selectData *data) {
