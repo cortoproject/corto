@@ -41,6 +41,9 @@ corto_string corto_pathFromFullname(corto_id buffer);
 /* Strip parent identifiers from fullname */
 corto_string corto_nameFromFullname(corto_id buffer);
 
+/* Set intern TLS string */
+corto_string corto_setThreadString(corto_string string);
+
 #ifdef __cplusplus
 }
 #endif

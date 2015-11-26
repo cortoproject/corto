@@ -96,6 +96,15 @@ typedef struct corto_ll_s* corto_ll;
 /* The maximum number of arguments that can be passed to the Corto arg parser */
 #define CORTO_ARG_MAX (256)
 
+/* The maximum number of TLS strings that can exist simultaneously */
+#define CORTO_MAX_TLS_STRINGS (5)
+
+/* Maximum retained buffer length for TLS string. This ensures that when a very
+ * large string is stored in TLS, it will be cleaned up eventually. Keeping it
+ * around would be wasteful since chances are low that a string of similar
+ * length will take advantage of the memory. */
+#define CORTO_MAX_TLS_STRINGS_MAX (1024)
+
 /* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING

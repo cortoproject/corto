@@ -68,6 +68,12 @@ int corto_chdir(const char *name) {
     return 0;
 }
 
+char* corto_cwd(void) {
+    corto_id cwd;
+    getcwd(cwd, sizeof(cwd));
+    return corto_setThreadString(cwd);
+}
+
 int corto_mkdir(const char *name) {
     int _errno = 0;
     char msg[PATH_MAX];
@@ -261,9 +267,62 @@ corto_pid corto_procrun(const char* exec, char *argv[]) {
     pid_t pid = fork();
 
     if (pid == 0) {
+
         /* Child process */
         if (execvp(exec, argv)) {
             corto_error("core: failed to start process '%s'", exec);
+            abort();
+        }
+    } else if (pid > 0) {
+        /* Parent process */
+    } else {
+        /* Failure */
+    }
+
+    return pid;
+}
+
+#include "unistd.h"
+#include <fcntl.h>
+
+corto_pid corto_procrunRedirect(
+    const char* exec, char *argv[], FILE *in, FILE *out, FILE *err)
+{
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        FILE *devnull = NULL;
+        if (!out || !err) {
+            devnull = fopen("/dev/null", "w");
+            if (!devnull) {
+                corto_error("corto: failed to open /dev/null");
+                abort();
+            }
+        }
+
+        if (dup2(fileno(out ? out : devnull), STDOUT_FILENO) < 0) {
+            corto_error("corto: failed to redirect stdout for '%s': %s", exec, strerror(errno));
+            abort();
+        }
+        if (out) fclose(out);
+
+        if (dup2(fileno(err ? err : devnull), STDERR_FILENO) < 0) {
+            corto_error("corto: failed to redirect stderr for '%s': %s", exec, strerror(errno));
+            abort();
+        }
+
+        if (err) fclose(err);
+        if (devnull) fclose(devnull);
+
+        if (dup2(fileno(in), STDIN_FILENO) < 0) {
+            corto_error("corto: failed to redirect stdin for '%s': %s", exec, strerror(errno));
+            abort();
+        }
+        if (in) fclose(in);
+
+        /* Child process */
+        if (execvp(exec, argv)) {
+            corto_error("corto: failed to start process '%s'", exec);
             abort();
         }
     } else if (pid > 0) {

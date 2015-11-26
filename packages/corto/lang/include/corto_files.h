@@ -11,14 +11,14 @@ extern "C" {
 typedef int corto_pid;
 
 typedef enum corto_procsignal {
-	CORTO_SIGINT = 2,
-	CORTO_SIGQUIT = 3,
-	CORTO_SIGILL = 4,
-	CORTO_SIGABRT = 6,
-	CORTO_SIGFPE = 8,
-	CORTO_SIGKILL = 9,
-	CORTO_SIGSEGV = 11,
-	CORTO_SIGTERM = 15
+    CORTO_SIGINT = 2,
+    CORTO_SIGQUIT = 3,
+    CORTO_SIGILL = 4,
+    CORTO_SIGABRT = 6,
+    CORTO_SIGFPE = 8,
+    CORTO_SIGKILL = 9,
+    CORTO_SIGSEGV = 11,
+    CORTO_SIGTERM = 15
 } corto_procsignal;
 
 /* Create a directory. Returns zero if OK, -1 if failed */
@@ -32,6 +32,9 @@ void corto_closedir(corto_ll dir);
 
 /* Creates a file. Returns zero if OK, -1 if failed */
 int corto_touch(const char *name);
+
+/* Get working directory. Returns NULL of failed, an internal buffer otherwise */
+char* corto_cwd(void);
 
 /* Change working directory. Returns zero if OK, -1 if failed */
 int corto_chdir(const char *name);
@@ -50,6 +53,10 @@ int corto_fileTest(const char* filefmt, ...);
 
 /* Run a process, return PID (-1 if failed) */
 corto_pid corto_procrun(const char* exec, char *argv[]);
+
+/* Same as corto_procrun, but override stdin, stdout and stderr of child */
+corto_pid corto_procrunRedirect(
+    const char* exec, char *argv[], FILE *inc, FILE *out, FILE *err);
 
 /* Send signal to process */
 int corto_prockill(corto_pid pid, corto_procsignal sig);

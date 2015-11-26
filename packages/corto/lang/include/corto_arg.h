@@ -63,6 +63,7 @@ typedef struct corto_argdata {
     const char *pattern;
     corto_ll *match;
     corto_ll *args;
+    corto_int8 count;
 } corto_argdata;
 
 corto_argdata* corto_argparse(char *argv[], corto_argdata *data);

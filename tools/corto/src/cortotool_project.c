@@ -79,7 +79,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
 
     if (cortotool_create(
         8,
-        (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent", "--nobuild"}
+        (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent", "--nobuild", NULL}
     )) {
         corto_error("corto: couldn't create test skeleton (check permissions)");
         goto error;
@@ -116,7 +116,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
 
     if (cortotool_add(
         4,
-        (char*[]){"add", "::corto::test", "--silent", "--nobuild"}
+        (char*[]){"add", "::corto::test", "--silent", "--nobuild", NULL}
     )) {
         goto error;
     }
@@ -124,14 +124,14 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
     if (isComponent) {
         if (cortotool_add(
             5,
-            (char*[]){"add", name, "--component", "--silent", "--nobuild"}
+            (char*[]){"add", name, "--component", "--silent", "--nobuild", NULL}
         )) {
             goto error;
         }
     } else if (isPackage) {
         if (cortotool_add(
             3,
-            (char*[]){"add", name, "--silent", "--nobuild"}
+            (char*[]){"add", name, "--silent", "--nobuild", NULL}
         )) {
             goto error;
         }
@@ -139,7 +139,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
 
     /* Timestamps of the files are likely too close to trigger a build, so explicitly
      * do a rebuild of the test project */
-    cortotool_rebuild(1, (char*[]){"rebuild"});
+    cortotool_rebuild(2, (char*[]){"rebuild", "--silent", NULL});
 
     if (corto_chdir("..")) {
         corto_error("corto: failed to change directory to parent");
@@ -439,7 +439,7 @@ static corto_int16 cortotool_package(int argc, char *argv[]) {
     }
 
     if (!noBuild) {
-        if (cortotool_build(0, NULL)) {
+        if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
             goto error;
         }
     }

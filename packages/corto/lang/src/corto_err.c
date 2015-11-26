@@ -135,7 +135,7 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
     corto_string alloc = NULL;
     corto_string msg = buff;
     va_list argcpy;
-    va_copy(argcpy, arg); /* Make copy of arglist in 
+    va_copy(argcpy, arg); /* Make copy of arglist in
                            * case vsnprintf needs to be called twice */
 
     CORTO_UNUSED(level);

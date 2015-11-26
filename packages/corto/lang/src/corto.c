@@ -56,11 +56,14 @@ corto_mutex_s corto_adminLock;
 static corto_ll corto_exitHandlers = NULL;
 static corto_ll corto_unloadHandlers = NULL;
 
+/* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 corto_threadKey CORTO_KEY_WAIT_ADMIN;
 corto_threadKey CORTO_KEY_ATTR;
 corto_threadKey CORTO_KEY_SELECT;
+corto_threadKey CORTO_KEY_THREAD_STRING;
 
+/* OLS keys */
 corto_int8 CORTO_OLS_REPLICATOR;
 
 int8_t CORTO_DEBUG_ENABLED = 0;
@@ -719,6 +722,9 @@ int corto_start(void) {
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
+
+    void corto_threadStringDealloc(void *data);
+    corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
 
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
 

@@ -8,6 +8,39 @@
 
 #include "test.h"
 
+corto_void _test_Args_tc_matchAddNoProject(test_Args this) {
+/* $begin(test/Args/tc_matchAddNoProject) */
+    char *argv[] = {"add", "::corto::test", "--silent", NULL};
+    corto_ll project, packages, silent;
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL},
+        {"--silent", &silent, NULL},
+        {"$?*", &project, NULL},
+        {"$+*", &packages, NULL},
+        {NULL}
+      }
+    );
+
+    test_assert(data != NULL);
+
+    test_assert(silent != NULL);
+    test_assert(project == NULL);
+    test_assert(packages != NULL);
+
+    test_assert(corto_llSize(silent) == 1);
+    test_assert(corto_llSize(packages) == 1);
+
+    test_assert(!strcmp(corto_llGet(silent, 0), "--silent"));
+    test_assert(!strcmp(corto_llGet(packages, 0), "::corto::test"));
+
+    corto_argclean(data);
+
+/* $end */
+}
+
 corto_void _test_Args_tc_matchAll(test_Args this) {
 /* $begin(test/Args/tc_matchAll) */
     char *argv[] = {"abc", "def", "-g", "--hi", NULL};
@@ -303,7 +336,7 @@ corto_void _test_Args_tc_matchCreatePackageOptions(test_Args this) {
 
     test_assert(app == NULL);
     test_assert(component == NULL);
-    
+
     corto_argclean(data);
 
 /* $end */
@@ -526,6 +559,96 @@ corto_void _test_Args_tc_matchNone(test_Args this) {
 
     test_assert(data != NULL);
     test_assert(corto_lasterr() == NULL);
+
+    corto_argclean(data);
+
+/* $end */
+}
+
+corto_void _test_Args_tc_matchOptional(test_Args this) {
+/* $begin(test/Args/tc_matchOptional) */
+    char *argv[] = {"ab", "cd", "ef", NULL};
+    corto_ll atMostOnce, atLeastOnce;
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$?*", &atMostOnce, NULL},
+        {"$+*", &atLeastOnce, NULL},
+        {NULL}
+      }
+    );
+
+    test_assert(data != NULL);
+
+    test_assert(atMostOnce != NULL);
+    test_assert(corto_llSize(atMostOnce) == 1);
+
+    test_assert(atLeastOnce != NULL);
+    test_assert(corto_llSize(atLeastOnce) == 2);
+
+    test_assert(!strcmp(corto_llGet(atMostOnce, 0), "ab"));
+    test_assert(!strcmp(corto_llGet(atLeastOnce, 0), "cd"));
+    test_assert(!strcmp(corto_llGet(atLeastOnce, 1), "ef"));
+
+    corto_argclean(data);
+
+/* $end */
+}
+
+corto_void _test_Args_tc_matchOptionalOneArg(test_Args this) {
+/* $begin(test/Args/tc_matchOptionalOneArg) */
+    char *argv[] = {"ab", NULL};
+    corto_ll atMostOnce, atLeastOnce;
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$?*", &atMostOnce, NULL},
+        {"$+*", &atLeastOnce, NULL},
+        {NULL}
+      }
+    );
+
+    test_assert(data != NULL);
+
+    test_assert(atMostOnce == NULL);
+    test_assert(atLeastOnce != NULL);
+    test_assert(corto_llSize(atLeastOnce) == 1);
+
+    test_assert(!strcmp(corto_llGet(atLeastOnce, 0), "ab"));
+
+    corto_argclean(data);
+
+/* $end */
+}
+
+corto_void _test_Args_tc_matchOptionalWithOtherArgs(test_Args this) {
+/* $begin(test/Args/tc_matchOptionalWithOtherArgs) */
+    char *argv[] = {"ab", "other", NULL};
+    corto_ll atMostOnce, atLeastOnce, other;
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"other", &other, NULL},
+        {"$?*", &atMostOnce, NULL},
+        {"$+*", &atLeastOnce, NULL},
+        {NULL}
+      }
+    );
+
+    test_assert(data != NULL);
+
+    test_assert(other != NULL);
+    test_assert(atMostOnce == NULL);
+    test_assert(atLeastOnce != NULL);
+
+    test_assert(corto_llSize(other) == 1);
+    test_assert(corto_llSize(atLeastOnce) == 1);
+
+    test_assert(!strcmp(corto_llGet(other, 0), "other"));
+    test_assert(!strcmp(corto_llGet(atLeastOnce, 0), "ab"));
 
     corto_argclean(data);
 

@@ -197,7 +197,7 @@ static int cxsh_printRow(corto_string parent, corto_string name, corto_string ty
     }
     remaining = cxsh_printColumnValue(name, colName);
     cxsh_color(NORMAL);
-    cxsh_color(TYPE_COLOR); cxsh_printColumnValue(type, CXSH_COL_TYPE); cxsh_color(NORMAL);
+    cxsh_color(TYPE_COLOR); printf("%s", type); cxsh_color(NORMAL);
     printf("\n");
 
     /* Print remainder of the name */
