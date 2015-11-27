@@ -21,4 +21,3 @@ void cortotool_createHelp(void);
 }
 #endif
 #endif
-

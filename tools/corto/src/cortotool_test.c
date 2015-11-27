@@ -15,7 +15,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     if (corto_fileTest("test")) {
         corto_int8 ret = 0, sig = 0, err = 0;
-        corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", "test", NULL});
+        corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", "test", "--silent", NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {
             if (sig > 0) {
                 corto_error("corto: the tests failed to build (build aborted with signal %d)", sig);

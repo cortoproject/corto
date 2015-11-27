@@ -413,58 +413,66 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
         /* Match argument against patterns */
         while (!match && data[p].pattern) {
             pattern = &data[p];
-            if (pattern->pattern[0] == '$') {
-                corto_int32 matchCount = pattern->match ?
-                    *pattern->match ? corto_llSize(*pattern->match) : 0 : 0;
-                corto_int32 argCount = pattern->args ?
-                    *pattern->args ? corto_llSize(*pattern->args) : 0 : 0;
 
-                if (pattern->pattern[1] == '|') {
-                    count += argCount + matchCount;
-                } else {
-                    count = argCount + matchCount;
-                }
+            /* If arguments are required and there are none, there's no match */
+            if ((argv[a + 1] && argv[a + 1][0] != '-') || !pattern->args) {
 
-                /* Match AT MOST once */
-                if (pattern->pattern[1] == '?') {
-                    if (!count && !fnmatch(pattern->pattern + 2, arg, 0)) {
-                        tentative = pattern;
-                        /* Optionals will match when all other constraints
-                         * are satisfied */
+                /* '$' Indicates constraint */
+                if (pattern->pattern[0] == '$') {
+                    corto_int32 matchCount = pattern->match ?
+                        *pattern->match ? corto_llSize(*pattern->match) : 0 : 0;
+                    corto_int32 argCount = pattern->args ?
+                        *pattern->args ? corto_llSize(*pattern->args) : 0 : 0;
+
+                    /* | can be used with + or ? to indicate an OR relationship
+                     * between multiple AT LEAST/AT MOST once patterns */
+                    if (pattern->pattern[1] == '|') {
+                        count += argCount + matchCount;
+                    } else {
+                        count = argCount + matchCount;
                     }
 
-                /* Match AT LEAST once */
-                } else if ((pattern->pattern[1] == '+') || (pattern->pattern[1] == '|')) {
-                    if (!fnmatch(pattern->pattern + 2, arg, 0)) {
-                        if (count && tentative)  {
-                            /* Push back one element to optional pattern */
-                            if (matchCount && pattern->match && *pattern->match) {
-                                corto_string arg = corto_llTakeFirst(*pattern->match);
-                                *tentative->match = corto_llNew();
-                                corto_llAppend(*tentative->match, arg);
+                    /* Match AT MOST once */
+                    if (pattern->pattern[1] == '?') {
+                        if (!count && !fnmatch(pattern->pattern + 2, arg, 0)) {
+                            tentative = pattern;
+                            /* Optionals will match when all other constraints
+                             * are satisfied */
+                        }
+
+                    /* Match AT LEAST once */
+                    } else if ((pattern->pattern[1] == '+') || (pattern->pattern[1] == '|')) {
+                        if (!fnmatch(pattern->pattern + 2, arg, 0)) {
+                            if (count && tentative)  {
+                                /* Push back one element to optional pattern */
+                                if (matchCount && pattern->match && *pattern->match) {
+                                    corto_string arg = corto_llTakeFirst(*pattern->match);
+                                    *tentative->match = corto_llNew();
+                                    corto_llAppend(*tentative->match, arg);
+                                }
+                                if (argCount && pattern->args && *pattern->args) {
+                                    corto_string arg = corto_llTakeFirst(*pattern->args);
+                                    *tentative->args = corto_llNew();
+                                    corto_llAppend(*tentative->args, arg);
+                                }
+                                tentative = NULL;
+                                match = TRUE;
+                            } else {
+                                match = TRUE;
                             }
-                            if (argCount && pattern->args && *pattern->args) {
-                                corto_string arg = corto_llTakeFirst(*pattern->args);
-                                *tentative->args = corto_llNew();
-                                corto_llAppend(*tentative->args, arg);
-                            }
-                            tentative = NULL;
-                            match = TRUE;
-                        } else {
+                        }
+
+                    /* Match an argument on a fixed position */
+                    } else {
+                        int num = atoi(&pattern->pattern[1]);
+                        if (num == a) {
                             match = TRUE;
                         }
                     }
-
-                /* Match an argument on a fixed position */
                 } else {
-                    int num = atoi(&pattern->pattern[1]);
-                    if (num == a) {
+                    if (!fnmatch(pattern->pattern, arg, 0)) {
                         match = TRUE;
                     }
-                }
-            } else {
-                if (!fnmatch(pattern->pattern, arg, 0)) {
-                    match = TRUE;
                 }
             }
             p++;

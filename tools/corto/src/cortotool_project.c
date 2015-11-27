@@ -3,32 +3,33 @@
 #include "cortotool_package.h"
 #include "cortotool_build.h"
 
-static corto_int16 cortotool_setupProject(const char *name, corto_bool isLocal, corto_bool isSilent) {
+static corto_int16 cortotool_setupProject(
+    const char *projectKind,
+    const char *name,
+    corto_bool isLocal,
+    corto_bool isSilent)
+{
     CORTO_UNUSED(isLocal);
 
     if (!isSilent) {
-        printf ("corto: create project '%s'\n", name);
+        printf ("corto: create %s '%s'\n", projectKind, name);
     }
 
     if (corto_fileTest(name)) {
         corto_id id;
         sprintf(id, "%s/.corto", name);
         if (corto_fileTest(id)) {
-            corto_error("corto: a project with the name '%s' already exists!", name);
+            corto_error(
+                "corto: a project with the name '%s' already exists!",
+                name);
             goto error;
         }
     } else if (corto_mkdir(name)) {
-        corto_error("corto: couldn't create project directory '%s' (check permissions)", name);
+        corto_error(
+            "corto: couldn't create project directory '%s' (check permissions)",
+            name);
         goto error;
     }
-
-/*    if (!isLocal) {
-        corto_pid pid = corto_procrun("git", (char*[]){"git", "init", (char *)name, NULL});
-        if (pid && corto_procwait(pid, NULL)) {
-            corto_error("corto: failed to initialize git repository (is git installed?)\n");
-            goto error;
-        }
-    }*/
 
     return 0;
 error:
@@ -124,7 +125,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
     if (isComponent) {
         if (cortotool_add(
             5,
-            (char*[]){"add", name, "--component", "--silent", "--nobuild", NULL}
+            (char*[]){"add", "component", name, "--silent", "--nobuild", NULL}
         )) {
             goto error;
         }
@@ -206,62 +207,28 @@ static char* cortotool_randomName(void) {
     return strdup(buffer);
 }
 
-static corto_int16 cortotool_parseProjectArgs(
-    int argc,
-    char *argv[],
-    corto_bool *isEmpty,
-    corto_bool *isLocal,
-    corto_bool *noTest,
-    corto_bool *silent,
-    corto_bool *nobuild)
+static corto_int16 cortotool_app (
+    const char *projectKind,
+    char *name,
+    corto_bool silent,
+    corto_bool mute,
+    corto_bool nobuild,
+    corto_bool notest,
+    corto_bool local,
+    corto_bool empty)
 {
-    corto_int32 i;
-    for (i = 0; i < argc; i++) {
-        if (!strcmp(argv[i], "--empty")) {
-            if (isEmpty) *isEmpty = TRUE;
-        } else if (!strcmp(argv[i], "--local")) {
-            if (isLocal) *isLocal = TRUE;
-        } else if (!strcmp(argv[i], "--notest")) {
-            if (noTest) *noTest = TRUE;
-        } else if (!strcmp(argv[i], "--silent")) {
-            if (silent) *silent = TRUE;
-        } else if (!strcmp(argv[i], "--nobuild")) {
-            *nobuild = TRUE;
-        } else {
-            corto_error("corto: unknown option '%s'", argv[i]);
-            goto error;
-        }
-    }
-    return 0;
-error:
-    return -1;
-}
-
-static corto_int16 cortotool_application(int argc, char *argv[]) {
     corto_id buff;
     FILE *file;
-    corto_bool isApplication = !strcmp(argv[0], "create") || !strcmp(argv[0], CORTO_APPLICATION);
-    corto_uint32 optionsStartFrom = 1;
-    char *name;
-    corto_bool isLocal = FALSE, noTest = FALSE, isSilent = FALSE, noBuild = TRUE;
 
-    if ((argc <= 1) || (*argv[1] == '-')) {
-        name = cortotool_randomName();
-    } else {
-        name = argv[1];
-        optionsStartFrom = 2;
-    }
+    CORTO_UNUSED(empty);
 
-    /* Parse options */
-    if (cortotool_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], NULL, &isLocal, &noTest, &isSilent, &noBuild)) {
+    silent |= mute;
+
+    if (cortotool_setupProject(projectKind, name, local, silent)) {
         goto error;
     }
 
-    if (cortotool_setupProject(name, isLocal, isSilent)) {
-        goto error;
-    }
-
-    if (cortotool_createRakefile(isApplication ? CORTO_APPLICATION : argv[0], name, name, isLocal)) {
+    if (cortotool_createRakefile(projectKind, name, name, local)) {
         goto error;
     }
 
@@ -290,19 +257,23 @@ static corto_int16 cortotool_application(int argc, char *argv[]) {
         goto error;
     }
 
-    if (!noBuild) {
-        if (cortotool_build(0, NULL)) {
+    if (!nobuild) {
+        if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
             goto error;
         }
     }
 
-    if (!noTest) {
-        if (cortotool_createTest(name, !isApplication, FALSE)) {
+    if (!notest) {
+        if (cortotool_createTest(
+            name,
+            !strcmp(projectKind, CORTO_COMPONENT),
+            FALSE))
+        {
             goto error;
         }
     }
 
-    if (!isSilent) {
+    if (!silent) {
         printf("corto: done\n\n");
     }
 
@@ -311,35 +282,33 @@ error:
     return -1;
 }
 
-static corto_int16 cortotool_package(int argc, char *argv[]) {
+static corto_int16 cortotool_package(
+    char *projectname,
+    corto_bool silent,
+    corto_bool mute,
+    corto_bool nobuild,
+    corto_bool notest,
+    corto_bool local,
+    corto_bool empty)
+{
     corto_id cxfile, srcfile, srcdir;
     corto_char *ptr, *name;
     FILE *file;
     corto_uint32 i;
-    corto_char *include = NULL;
-    corto_uint32 optionsStartFrom = 1;
-    corto_bool isEmpty = FALSE, isLocal = FALSE, noTest = FALSE, isSilent = FALSE, noBuild = FALSE;
+    corto_char *include = projectname;
 
-    if ((argc <= 1) || (*(argv[1])) == '-') {
-        include = cortotool_randomName();
-    } else {
-        include = argv[1];
-        optionsStartFrom = 2;
-    }
+    silent |= mute;
 
     /* Ignore initial colons */
     if (include[0] == ':') {
         if (include[1] == ':') {
             include += 2;
         } else {
-            corto_error("corto: invalid package name");
+            if (!mute) {
+                corto_error("corto: invalid package name");
+            }
             goto error;
         }
-    }
-
-    /* Parse options */
-    if (cortotool_parseProjectArgs(argc - optionsStartFrom, &argv[optionsStartFrom], &isEmpty, &isLocal, &noTest, &isSilent, &noBuild)) {
-        goto error;
     }
 
     /* Extract left-most name from include variable */
@@ -352,34 +321,44 @@ static corto_int16 cortotool_package(int argc, char *argv[]) {
         ptr++;
     }
 
-    if (cortotool_setupProject(name, isLocal, isSilent)) {
+    if (cortotool_setupProject(CORTO_PACKAGE, name, local, silent)) {
         goto error;
     }
 
-    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, isLocal)) {
+    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, local)) {
         goto error;
     }
 
     /* Write definition file */
-    if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", name, name) >= (int)sizeof(cxfile)) {
-        corto_error("corto: package name '%s' is too long", name);
+    if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", name, name) >=
+        (int)sizeof(cxfile))
+    {
+        if (!mute) {
+            corto_error("corto: package name '%s' is too long", name);
+        }
         goto error;
     }
 
     if (corto_fileTest(cxfile)) {
-        corto_error("corto: package '%s' already exists", cxfile);
+        if (!mute) {
+            corto_error("corto: package '%s' already exists", cxfile);
+        }
         goto error;
     }
 
     if (corto_mkdir(name)) {
-        corto_error("corto: failed to create directory '%s' (check permissions)", name);
+        if (!mute) {
+            corto_error(
+                "corto: failed to create directory '%s' (check permissions)",
+                name);
+        }
         goto error;
     }
 
     file = fopen(cxfile, "w");
     if (file) {
         fprintf(file, "#package ::%s\n\n", include);
-        if (!isEmpty) {
+        if (!empty) {
             fprintf(file, "class RedPanda::\n");
             fprintf(file, "    weight: int32\n");
             fprintf(file, "    int16 construct()\n");
@@ -387,25 +366,38 @@ static corto_int16 cortotool_package(int argc, char *argv[]) {
         }
         fclose(file);
     } else {
-        corto_error("corto: failed to open file '%s' (check permissions)", cxfile);
+        corto_error(
+            "corto: failed to open file '%s' (check permissions)",
+            cxfile);
         goto error;
     }
 
     /* Write class implementation */
     sprintf(srcdir, "%s/src", name);
     if (corto_mkdir(srcdir)) {
-        corto_error("corto: failed to create directory '%s' (check permissions)", srcdir);
+        corto_error(
+          "corto: failed to create directory '%s' (check permissions)",
+          srcdir);
         goto error;
     }
 
-    if (!isEmpty) {
-        if (snprintf(srcfile, sizeof(srcfile), "%s/src/%s_RedPanda.c", name, name) >= (int)sizeof(srcfile)) {
-            corto_error("corto: package name '%s' is too long", name);
+    if (!empty) {
+        if (snprintf(srcfile,
+            sizeof(srcfile),
+            "%s/src/%s_RedPanda.c",
+            name,
+            name) >= (int)sizeof(srcfile))
+        {
+            if (!mute) {
+                corto_error("corto: package name '%s' is too long", name);
+            }
             goto error;
         }
 
         if (corto_fileTest(srcfile)) {
-            corto_error("corto: file '%s' already exists", srcfile);
+            if (!mute) {
+                corto_error("corto: file '%s' already exists", srcfile);
+            }
             goto error;
         }
 
@@ -428,29 +420,35 @@ static corto_int16 cortotool_package(int argc, char *argv[]) {
     }
 
     if (corto_load(cxfile, 0, NULL)) {
-        corto_error("corto: failed to load '%s'", cxfile);
+        if (!mute) {
+            corto_error("corto: failed to load '%s'", cxfile);
+        }
         goto error;
     }
 
     /* Change working directory */
     if (corto_chdir(name)) {
-        corto_error("corto: can't change working directory to '%s' (check permissions)", name);
+        if (!mute) {
+            corto_error(
+              "corto: can't change directory to '%s' (check permissions)",
+              name);
+        }
         goto error;
     }
 
-    if (!noBuild) {
+    if (!nobuild) {
         if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
             goto error;
         }
     }
 
-    if (!noTest) {
+    if (!notest) {
         if (cortotool_createTest(include, FALSE, TRUE)) {
             goto error;
         }
     }
 
-    if (!isSilent) {
+    if (!silent) {
         printf("corto: done\n\n");
     }
 
@@ -460,26 +458,173 @@ error:
 }
 
 corto_int16 cortotool_create(int argc, char *argv[]) {
+    corto_ll silent, mute, nobuild, notest, local, empty;
+    corto_ll apps, components, packages;
+    corto_ll apps_noname, components_noname, packages_noname;
 
-    if (argc <= 1) {
-        if (cortotool_application(argc-1, &argv[0])) {
-            goto error;
-        }
-    } else
-    if (!strcmp(argv[1], CORTO_COMPONENT)) {
-        if (cortotool_application(argc-1, &argv[1])) {
-            goto error;
-        }
-    } else
-    if (!strcmp(argv[1], CORTO_PACKAGE)) {
-        if (cortotool_package(argc-1, &argv[1])) {
-            goto error;
-        }
-    } else {
-        if (cortotool_application(argc, &argv[0])) {
+    CORTO_UNUSED(argc);
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'create' */
+        {"--silent", &silent, NULL},
+        {"--mute", &mute, NULL},
+        {"--nobuild", &nobuild, NULL},
+        {"--notest", &notest, NULL},
+        {"--local", &local, NULL},
+        {"--empty", &empty, NULL},
+        {CORTO_APPLICATION, NULL, &apps},
+        {CORTO_COMPONENT, NULL, &components},
+        {CORTO_PACKAGE, NULL, &packages},
+        {CORTO_APPLICATION, &apps_noname, NULL},
+        {CORTO_COMPONENT, &components_noname, NULL},
+        {CORTO_PACKAGE, &packages_noname, NULL},
+        {"$1", &apps, NULL},
+        {NULL}
+      }
+    );
+
+    if (!data) {
+        corto_error("corto: %s", corto_lasterr());
+        goto error;
+    }
+
+    /* If no arguments are provided, create an application with a random name */
+    if (!apps && !components && !packages && !apps_noname &&
+        components_noname && !packages_noname)
+    {
+        char *name = cortotool_randomName();
+        if (cortotool_app(
+            CORTO_APPLICATION,
+            name,
+            silent != NULL,
+            mute != NULL,
+            nobuild != NULL,
+            notest != NULL,
+            local != NULL,
+            empty != NULL))
+        {
             goto error;
         }
     }
+
+    if (apps) {
+        corto_iter iter = corto_llIter(apps);
+        while (corto_iterHasNext(&iter)) {
+            char *name = corto_iterNext(&iter);
+            if (cortotool_app(
+                CORTO_APPLICATION,
+                name,
+                silent != NULL,
+                mute != NULL,
+                nobuild != NULL,
+                notest != NULL,
+                local != NULL,
+                empty != NULL))
+            {
+                goto error;
+            }
+        }
+    }
+
+    if (apps_noname) {
+        corto_iter iter = corto_llIter(apps_noname);
+        while (corto_iterHasNext(&iter)) {
+            char *name = cortotool_randomName();
+            corto_iterNext(&iter);
+            if (cortotool_app(
+                CORTO_APPLICATION,
+                name,
+                silent != NULL,
+                mute != NULL,
+                nobuild != NULL,
+                notest != NULL,
+                local != NULL,
+                empty != NULL))
+            {
+                goto error;
+            }
+        }
+    }
+
+    if (components) {
+        corto_iter iter = corto_llIter(components);
+        while (corto_iterHasNext(&iter)) {
+            char *name = corto_iterNext(&iter);
+            if (cortotool_app(
+                CORTO_COMPONENT,
+                name,
+                silent != NULL,
+                mute != NULL,
+                nobuild != NULL,
+                notest != NULL,
+                local != NULL,
+                empty != NULL))
+            {
+                goto error;
+            }
+        }
+    }
+
+    if (components_noname) {
+        corto_iter iter = corto_llIter(components_noname);
+        while (corto_iterHasNext(&iter)) {
+            char *name = cortotool_randomName();
+            corto_iterNext(&iter);
+            if (cortotool_app(
+                CORTO_COMPONENT,
+                name,
+                silent != NULL,
+                mute != NULL,
+                nobuild != NULL,
+                notest != NULL,
+                local != NULL,
+                empty != NULL))
+            {
+                goto error;
+            }
+        }
+    }
+
+    if (packages) {
+        corto_iter iter = corto_llIter(packages);
+        while (corto_iterHasNext(&iter)) {
+            char *name = corto_iterNext(&iter);
+            if (cortotool_package(
+                name,
+                silent != NULL,
+                mute != NULL,
+                nobuild != NULL,
+                notest != NULL,
+                local != NULL,
+                empty != NULL))
+            {
+                goto error;
+            }
+        }
+    }
+
+    if (packages_noname) {
+        corto_iter iter = corto_llIter(packages_noname);
+        while (corto_iterHasNext(&iter)) {
+            char *name = cortotool_randomName();
+            corto_iterNext(&iter);
+            if (cortotool_package(
+                name,
+                silent != NULL,
+                mute != NULL,
+                nobuild != NULL,
+                notest != NULL,
+                local != NULL,
+                empty != NULL))
+            {
+                goto error;
+            }
+        }
+    }
+
+    corto_argclean(data);
 
     return 0;
 error:
@@ -488,9 +633,9 @@ error:
 
 void cortotool_createHelp(void) {
     printf("Usage: corto create\n");
-    printf("Usage: corto create <name> [--notest]\n");
-    printf("Usage: corto create <command> <name> [--empty] [--local] [--notest]\n");
-    printf("Usage: corto create <command> [--empty] [--local] [--notest]\n");
+    printf("Usage: corto create <name> [options]\n");
+    printf("Usage: corto create <command> <name> [options]\n");
+    printf("Usage: corto create <command> [options]\n");
     printf("\n");
     printf("When no name is passed to create, corto will choose a random name.\n");
     printf("\n");
