@@ -298,7 +298,8 @@ static void corto__deinitScope(corto_object o) {
     /* Obtain own scope */
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     scope = corto__objectScope(_o);
-    corto_assert(scope != NULL, "corto__deinitScope: called on non-scoped object <%p>.", o);
+    corto_assert(scope != NULL,
+        "corto__deinitScope: called on non-scoped object <%p>.", o);
 
     /* Free parent */
     if (scope->parent) {
@@ -306,10 +307,8 @@ static void corto__deinitScope(corto_object o) {
         scope->parent = NULL;
     }
 
-    /* We cannot actually remove the scope itself, since there might be childs which
-     * have multiple cycles, which must be resolved first. The childs will take care
-     * of removing the parent's scope. */
-
+    /* We cannot actually remove the scope itself, since there might be childs
+    * which have multiple cycles, which must be resolved first. */
     if (scope->name) {
         corto_dealloc(scope->name);
         scope->name = NULL;
@@ -756,7 +755,6 @@ void corto__orphan(corto_object o) {
     _child = CORTO_OFFSET(o, -sizeof(corto__object));
     c_scope = corto__objectScope(_child);
 
-
     if (c_scope->parent) {
         _parent = CORTO_OFFSET(c_scope->parent, -sizeof(corto__object));
         p_scope = corto__objectScope(_parent);
@@ -764,12 +762,6 @@ void corto__orphan(corto_object o) {
         /* Remove object from parent scope */
         if (corto_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
         corto_rbtreeRemove(p_scope->scope, (void*)corto_nameof(o));
-
-        /* If scope is empty delete it. */
-        if (!corto_rbtreeSize(p_scope->scope)) {
-            corto_rbtreeFree(p_scope->scope);
-            p_scope->scope = NULL;
-        }
 
         if (corto_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
     }
@@ -1823,15 +1815,30 @@ corto_uint16 corto__destruct(corto_object o) {
         }
     }
 
-    /* Although after the destruct-operation it is ensured that this object no longer participates in any cycles, it cannot be assumed
-     * that all objects using this are free'd. For example, another object that has multiple reference cycles might still be
-     * referencing this object, but can itself not yet be free'd because of the other cycles, which cannot be solved by the destruction
-     * of this object. Therefore when the reference count of this object is non-zero, it cannot yet be free'd.
+    /* Although after the destruct-operation it is ensured that this object no
+     * longer participates in any cycles, it cannot be assumed that all objects
+     * using this are free'd. For example, another object that has multiple
+     * reference cycles might still be referencing this object, but can itself
+     * not yet be freed because of the other cycles, which cannot be solved by
+     * the destruction of this object. Therefore when the reference count of
+     * this object is non-zero, it cannot yet be freed.
      */
 
     corto_adec(&_o->refcount);
 
     if (!corto_countof(o)) {
+        /* If the object was scoped, check if there is a tree object that needs
+         * to be removed. Tree objects can't be cleaned up for as long as the
+         * object is referenced, since that may indicate that there can be
+         * iterators active on the tree. Iterators need the tree object to
+         * figure out whether mutations have happened. */
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            _o = CORTO_OFFSET(o, -sizeof(corto__object));
+             corto__scope *scope = corto__objectScope(_o);
+            if (scope->scope) {
+                corto_rbtreeFree(scope->scope);
+            }
+        }
         corto_dealloc(corto__objectStartAddr(_o));
         return 0;
     } else {
