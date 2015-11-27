@@ -107,14 +107,14 @@ int corto_rbtreeWalk(corto_rbtree tree, corto_walkAction callback, void* userDat
 int corto_rbtreeWalkPtr(corto_rbtree tree, corto_walkAction callback, void* userData) {
     jsw_rbtrav_t tdata;
     void* data;
-    
+
     /* Move to first */
     data = jsw_rbtfirstptr(&tdata, (jsw_rbtree_t*)tree);
     if (data) {
         if (!callback(data, userData)) {
             return 0;
         }
-        
+
         /* Walk values */
         while((data = jsw_rbtnextptr(&tdata))) {
             if (!callback(data, userData)) {
@@ -122,7 +122,7 @@ int corto_rbtreeWalkPtr(corto_rbtree tree, corto_walkAction callback, void* user
             }
         }
     }
-    
+
     return 1;
 }
 
@@ -137,9 +137,14 @@ static int corto_rbtreeIterHasNext(corto_iter *iter) {
 }
 
 static void* corto_rbtreeIterNext(corto_iter *iter) {
-    void* data = corto_iterData(iter)->it ? jsw_rbnodedata(corto_iterData(iter)->it) : NULL;
+    void* data = corto_iterData(iter)->it ?
+        jsw_rbnodedata(corto_iterData(iter)->it) : NULL;
     jsw_rbtnext(corto_iterData(iter));
     return data;
+}
+
+corto_bool corto_rbtreeIterChanged(corto_iter *iter) {
+    return jsw_rbtchanged(corto_iterData(iter));
 }
 
 corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata) {

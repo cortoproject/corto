@@ -36,7 +36,8 @@ typedef struct corto_selectStack {
 
     /* Callback for either returning single object, traversing
      * scope or traversing a tree. */
-    void (*next)(struct corto_selectData *data, struct corto_selectStack *frame);
+    void (*next)(struct corto_selectData *data,
+        struct corto_selectStack *frame);
 } corto_selectStack;
 
 typedef struct corto_selectData {
@@ -143,7 +144,7 @@ static int corto_selectParse(corto_selectData *data) {
 
         data->program[op].start = start;
         if (++op == CORTO_SELECT_MAX_OP) {
-            corto_seterr("expression is too long");
+            corto_seterr("expression contains too many tokens");
             goto error;
         }
     }
@@ -155,7 +156,7 @@ static int corto_selectParse(corto_selectData *data) {
         case TOKEN_TREE:
             data->program[op].token = TOKEN_ASTERISK;
             if (++op == CORTO_SELECT_MAX_OP) {
-                corto_seterr("expression is too long");
+                corto_seterr("expression contains too many tokens");
                 goto error;
             }
             break;
@@ -299,7 +300,10 @@ static void corto_setItemData(
         serData.prefixType = FALSE;
         serData.enableColors = FALSE;
 
-        s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
+        s = corto_string_ser(
+            CORTO_LOCAL,
+            CORTO_NOT,
+            CORTO_SERIALIZER_TRACE_NEVER);
         corto_serialize(&s, corto_typeof(o), &serData);
     }
 }
@@ -317,7 +321,7 @@ static void corto_selectThis(
     }
 }
 
-static corto_bool corto_match(corto_string filter, corto_string name) {
+static corto_bool corto_selectMatch(corto_string filter, corto_string name) {
     corto_id filterLc, nameLc;
 
     strcpy(filterLc, filter);
@@ -328,33 +332,63 @@ static corto_bool corto_match(corto_string filter, corto_string name) {
     return !fnmatch(filterLc, nameLc, 0);
 }
 
+static corto_object corto_selectRepositionAfterChange(
+  corto_selectStack *frame,
+  corto_rbtree tree,
+  corto_string key)
+{
+    frame->iter = _corto_rbtreeIter(tree, &frame->trav);
+
+    while (corto_iterHasNext(&frame->iter)) {
+        corto_object o = corto_iterNext(&frame->iter);
+        if (stricmp(corto_nameof(o), key) > 0) {
+            return o;
+        }
+    }
+
+    return NULL;
+}
+
 static void corto_selectScope(
     corto_selectData *data,
     corto_selectStack *frame) {
 
-    if (frame->filter) {
-        data->next = NULL;
-        corto__scopeClaim(frame->o);
-        while (corto_iterHasNext(&frame->iter)) {
-            corto_object o = corto_iterNext(&frame->iter);
-            if (corto_match(frame->filter, corto_nameof(o))) {
-                data->next = &data->item;
-                corto_setItemData(o, data->next, data);
-                break;
-            }
-        }
-        corto__scopeRelease(frame->o);
-    } else {
-        corto__scopeClaim(frame->o);
-        if (corto_iterHasNext(&frame->iter)) {
-            corto_object o = corto_iterNext(&frame->iter);
+    corto__scopeClaim(frame->o);
+
+    if (corto_rbtreeIterChanged(&frame->iter)) {
+        corto_object o = corto_selectRepositionAfterChange(
+            frame,
+            corto_scopeof(frame->o),
+            data->item.name);
+
+        if (o) {
             data->next = &data->item;
             corto_setItemData(o, data->next, data);
         } else {
             data->next = NULL;
         }
-        corto__scopeRelease(frame->o);
+    } else {
+        if (frame->filter) {
+            data->next = NULL;
+            while (corto_iterHasNext(&frame->iter)) {
+                corto_object o = corto_iterNext(&frame->iter);
+                if (corto_selectMatch(frame->filter, corto_nameof(o))) {
+                    data->next = &data->item;
+                    corto_setItemData(o, data->next, data);
+                    break;
+                }
+            }
+        } else {
+            if (corto_iterHasNext(&frame->iter)) {
+                corto_object o = corto_iterNext(&frame->iter);
+                data->next = &data->item;
+                corto_setItemData(o, data->next, data);
+            } else {
+                data->next = NULL;
+            }
+        }
     }
+    corto__scopeRelease(frame->o);
 }
 
 /* Depth first search */
@@ -392,7 +426,8 @@ static void corto_selectTree(
             data->next = NULL;
         }
         corto__scopeRelease(claimed);
-    } while (frame->filter && (data->next && !corto_match(frame->filter, data->next->name)));
+    } while (frame->filter && (data->next &&
+        !corto_selectMatch(frame->filter, data->next->name)));
 }
 
 static int corto_selectRun(corto_selectData *data) {
@@ -512,7 +547,11 @@ static void* corto_selectNext(corto_iter *iter) {
     return data->next;
 }
 
-corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter_out) {
+corto_int16 corto_select(
+    corto_object scope,
+    corto_string expr,
+    corto_iter *iter_out)
+{
     corto_selectData *data = corto_selectDataGet();
 
     if (!scope) {

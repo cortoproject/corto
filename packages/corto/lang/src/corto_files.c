@@ -304,21 +304,21 @@ corto_pid corto_procrunRedirect(
             corto_error("corto: failed to redirect stdout for '%s': %s", exec, strerror(errno));
             abort();
         }
-        if (out) fclose(out);
+        if (out && (err != stdout)) fclose(out);
 
         if (dup2(fileno(err ? err : devnull), STDERR_FILENO) < 0) {
             corto_error("corto: failed to redirect stderr for '%s': %s", exec, strerror(errno));
             abort();
         }
 
-        if (err) fclose(err);
+        if (err && (err != stderr)) fclose(err);
         if (devnull) fclose(devnull);
 
         if (dup2(fileno(in), STDIN_FILENO) < 0) {
             corto_error("corto: failed to redirect stdin for '%s': %s", exec, strerror(errno));
             abort();
         }
-        if (in) fclose(in);
+        if (in && (in != stdin)) fclose(in);
 
         /* Child process */
         if (execvp(exec, argv)) {

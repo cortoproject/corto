@@ -210,6 +210,24 @@ test::Suite Select::
     void tc_selectFilterAsterisk()
     void tc_selectFilterWildcard()
 
+    void tc_selectOrder()
+
+    void tc_selectDeleteFirst()
+    void tc_selectDeletePrevious()
+    void tc_selectDeleteCurrent()
+    void tc_selectDeleteNext()
+    void tc_selectDeleteParent()
+    void tc_selectDeleteGrandparent()
+    void tc_selectDeleteRoot()
+
+    void tc_selectTreeDeleteFirst()
+    void tc_selectTreeDeletePrevious()
+    void tc_selectTreeDeleteCurrent()
+    void tc_selectTreeDeleteNext()
+    void tc_selectTreeDeleteParent()
+    void tc_selectTreeDeleteGrandparent()
+    void tc_selectTreeDeleteRoot()
+
 // Test Event scenarios
 class EventTest::
     @scope: object

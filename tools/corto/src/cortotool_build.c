@@ -44,7 +44,8 @@ corto_int16 cortotool_runcmd(
         }
 
         if ((sig = corto_procwait(pid, &ret)) || ret) {
-            corto_seterr("%s failed (signal %d)", argv[0], sig);
+            corto_seterr("%s failed (%s %d)", argv[0],
+                sig ? "signal" : "returncode", sig ? sig : ret);
             goto error;
         }
 

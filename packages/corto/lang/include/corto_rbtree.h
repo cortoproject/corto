@@ -34,9 +34,11 @@ void* corto_rbtreePrev(corto_rbtree tree, void* key, void** key_out);
 corto_uint32 corto_rbtreeSize(corto_rbtree tree);
 int corto_rbtreeWalk(corto_rbtree tree, corto_walkAction callback, void* userData);
 int corto_rbtreeWalkPtr(corto_rbtree tree, corto_walkAction callback, void* userData);
+
 #define corto_rbtreeIter(tree) _corto_rbtreeIter(tree, alloca(sizeof(struct jsw_rbtrav)));
 corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata);
 corto_type corto_rbtreeKeyType(corto_rbtree tree);
+corto_bool corto_rbtreeIterChanged(corto_iter *iter);
 
 #ifdef __cplusplus
 }

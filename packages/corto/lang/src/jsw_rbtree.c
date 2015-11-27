@@ -32,8 +32,9 @@ typedef corto_equalityKind ___ (*corto_equalFunction)(corto_any this, corto_any 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
   corto_equalsAction cmp;  /* Compare two items */
-  corto_type        type; /* This object which must be passed to cmp-function */
-  size_t        size; /* Number of items (user-defined) */
+  corto_type type; /* This object which must be passed to cmp-function */
+  size_t size; /* Number of items (user-defined) */
+  corto_int32 changes; /* Change counter- for iterators */
 };
 
 /**
@@ -162,6 +163,7 @@ jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equalsAction cmp)
   rt->cmp = cmp;
   rt->type = type;
   rt->size = 0;
+  rt->changes = 0;
 
   return rt;
 }
@@ -262,20 +264,20 @@ void *jsw_rbfind ( jsw_rbtree_t *tree, void *key )
 void *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key )
 {
     jsw_rbnode_t *it = tree->root;
-    
+
     while ( it != NULL ) {
         int cmp = tree->cmp ( tree->type, it->key, key );
-        
+
         if ( cmp == 0 )
             break;
-        
+
         /*
          If the tree supports duplicates, they should be
          chained to the right subtree for this to work
          */
         it = it->link[cmp < 0];
     }
-    
+
     return it == NULL ? NULL : &it->data;
 }
 
@@ -421,6 +423,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
   /* Make the root black for simplified logic */
   tree->root->red = 0;
 
+  tree->changes++;
   return 1;
 }
 
@@ -524,6 +527,7 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *key )
     --tree->size;
   }
 
+  tree->changes++;
   return 1;
 }
 
@@ -713,6 +717,7 @@ static void *start ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree, int dir, int ptr )
   trav->tree = tree;
   trav->it = tree->root;
   trav->top = 0;
+  trav->changes = tree->changes;
 
   /* Save the path for later traversal */
   if ( trav->it != NULL ) {
@@ -722,11 +727,11 @@ static void *start ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree, int dir, int ptr )
     }
   }
 
-    if (ptr) {
-      return trav->it == NULL ? NULL : &trav->it->data;
-    } else {
-      return trav->it == NULL ? NULL : trav->it->data;
-    }
+  if (ptr) {
+    return trav->it == NULL ? NULL : &trav->it->data;
+  } else {
+    return trav->it == NULL ? NULL : trav->it->data;
+  }
 }
 
 /**
@@ -834,4 +839,8 @@ void *jsw_rbtnextptr ( jsw_rbtrav_t *trav )
 void *jsw_rbtprev ( jsw_rbtrav_t *trav )
 {
   return move ( trav, 0, 0 ); /* Toward smaller items */
+}
+
+corto_bool jsw_rbtchanged( jsw_rbtrav_t *trav ) {
+  return trav->changes != trav->tree->changes;
 }

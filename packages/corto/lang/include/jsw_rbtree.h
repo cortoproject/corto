@@ -9,7 +9,7 @@
 
   This code is in the public domain. Anyone may
   use it or change it in any way that they see
-  fit. The author assumes no responsibility for 
+  fit. The author assumes no responsibility for
   damages incurred through use of the original
   code or any variations thereof.
 
@@ -41,7 +41,7 @@ typedef struct jsw_rbtree jsw_rbtree_t;
 typedef struct jsw_rbtrav jsw_rbtrav_t;
 typedef struct jsw_rbnode jsw_rbnode_t;
 
-/* Make this structure opaque as this will
+/* Make this structure public as this will
  * eliminate the need for an allocation when
  * traversing the tree */
 struct jsw_rbtrav {
@@ -49,6 +49,7 @@ struct jsw_rbtrav {
   jsw_rbnode_t *it;                 /* Current node */
   jsw_rbnode_t *path[HEIGHT_LIMIT]; /* Traversal path */
   size_t        top;                /* Top of stack */
+  corto_int32   changes;
 };
 
 /* User-defined item handling */
@@ -58,7 +59,7 @@ typedef void  (*rel_f) ( void *p );
 /* Red Black tree functions */
 jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equalsAction cmp);
 void          jsw_rbdelete ( jsw_rbtree_t *tree );
-corto_type       jsw_rbtype( jsw_rbtree_t *tree);
+corto_type    jsw_rbtype( jsw_rbtree_t *tree);
 void         *jsw_rbfind ( jsw_rbtree_t *tree, void *key );
 void         *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key );
 int           jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data );
@@ -84,6 +85,7 @@ void         *jsw_rbtlast ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree );
 void         *jsw_rbtnext ( jsw_rbtrav_t *trav );
 void         *jsw_rbtnextptr ( jsw_rbtrav_t *trav );
 void         *jsw_rbtprev ( jsw_rbtrav_t *trav );
+corto_bool    jsw_rbtchanged( jsw_rbtrav_t *trav );
 
 void *jsw_rbnodedata(jsw_rbnode_t *node);
 
