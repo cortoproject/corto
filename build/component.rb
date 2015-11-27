@@ -40,7 +40,13 @@ file ".corto/#{TARGET}__load.c" => [".corto/packages.txt", ".corto/components.tx
     verbose(false)
     if generate then
         sh "mkdir -p .corto"
-        sh "corto pp --name #{TARGET} -g c_project --attr component=true"
+        command = "corto pp --name #{TARGET} -g c_project --attr component=true"
+        begin
+            sh command
+        rescue
+            puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+            abort()
+        end
     end
 end
 
