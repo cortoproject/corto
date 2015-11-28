@@ -217,8 +217,6 @@ test::Suite Select::
     void tc_selectDeleteCurrent()
     void tc_selectDeleteNext()
     void tc_selectDeleteParent()
-    void tc_selectDeleteGrandparent()
-    void tc_selectDeleteRoot()
 
     void tc_selectTreeDeleteFirst()
     void tc_selectTreeDeletePrevious()
@@ -226,7 +224,6 @@ test::Suite Select::
     void tc_selectTreeDeleteNext()
     void tc_selectTreeDeleteParent()
     void tc_selectTreeDeleteGrandparent()
-    void tc_selectTreeDeleteRoot()
 
 // Test Event scenarios
 class EventTest::

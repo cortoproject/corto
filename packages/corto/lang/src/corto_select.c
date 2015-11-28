@@ -332,85 +332,75 @@ static corto_bool corto_selectMatch(corto_string filter, corto_string name) {
     return !fnmatch(filterLc, nameLc, 0);
 }
 
-static corto_object corto_selectRepositionAfterChange(
-  corto_selectStack *frame,
-  corto_rbtree tree,
-  corto_string key)
+static corto_object corto_selectIterNext(
+    corto_selectStack *frame,
+    corto_string lastKey)
 {
-    frame->iter = _corto_rbtreeIter(tree, &frame->trav);
+    corto_object result = NULL;
 
-    while (corto_iterHasNext(&frame->iter)) {
-        corto_object o = corto_iterNext(&frame->iter);
-        if (stricmp(corto_nameof(o), key) > 0) {
-            return o;
+    if (corto_rbtreeIterChanged(&frame->iter)) {
+        frame->iter = _corto_rbtreeIter(corto_scopeof(frame->o), &frame->trav);
+        while (corto_iterHasNext(&frame->iter)) {
+            corto_object o = corto_iterNext(&frame->iter);
+            if (stricmp(corto_nameof(o), lastKey) > 0) {
+                result = o;
+                break;
+            }
+        }
+    } else {
+        if (corto_iterHasNext(&frame->iter)) {
+            result = corto_iterNext(&frame->iter);
         }
     }
 
-    return NULL;
+    return result;
 }
 
 static void corto_selectScope(
     corto_selectData *data,
-    corto_selectStack *frame) {
+    corto_selectStack *frame)
+{
+    corto_object o = NULL;
+    corto_string lastKey = data->item.name;
 
     corto__scopeClaim(frame->o);
 
-    if (corto_rbtreeIterChanged(&frame->iter)) {
-        corto_object o = corto_selectRepositionAfterChange(
-            frame,
-            corto_scopeof(frame->o),
-            data->item.name);
-
-        if (o) {
+    data->next = NULL;
+    while ((o = corto_selectIterNext(frame, lastKey))) {
+        if (!frame->filter || corto_selectMatch(frame->filter, corto_nameof(o))) {
             data->next = &data->item;
             corto_setItemData(o, data->next, data);
-        } else {
-            data->next = NULL;
-        }
-    } else {
-        if (frame->filter) {
-            data->next = NULL;
-            while (corto_iterHasNext(&frame->iter)) {
-                corto_object o = corto_iterNext(&frame->iter);
-                if (corto_selectMatch(frame->filter, corto_nameof(o))) {
-                    data->next = &data->item;
-                    corto_setItemData(o, data->next, data);
-                    break;
-                }
-            }
-        } else {
-            if (corto_iterHasNext(&frame->iter)) {
-                corto_object o = corto_iterNext(&frame->iter);
-                data->next = &data->item;
-                corto_setItemData(o, data->next, data);
-            } else {
-                data->next = NULL;
-            }
+            break;
         }
     }
+
     corto__scopeRelease(frame->o);
 }
 
 /* Depth first search */
 static void corto_selectTree(
     corto_selectData *data,
-    corto_selectStack *frame) {
-
+    corto_selectStack *frame)
+{
+    corto_string lastKey = data->item.name;
     data->next = NULL;
 
     do {
         corto_object claimed = frame->o;
         corto__scope *scope = corto__scopeClaim(claimed);
-        while (data->sp && !corto_iterHasNext(&frame->iter)) {
+        corto_object o = NULL;
+
+        while (!(o = corto_selectIterNext(frame, lastKey)) && data->sp) {
             corto__scopeRelease(claimed);
+            /* Cache name as next line might delete object */
+            strcpy(data->item.name, corto_nameof(frame->o));
             corto_setref(&frame->o, NULL);
             data->sp --;
             frame = &data->stack[data->sp];
             scope = corto__scopeClaim((claimed = frame->o));
         }
 
-        if (data->sp || corto_iterHasNext(&frame->iter)) {
-            corto_object o = corto_iterNext(&frame->iter);
+        if (data->sp || o) {
             data->next = &data->item;
             corto_setItemData(o, data->next, data);
 

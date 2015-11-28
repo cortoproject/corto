@@ -66,7 +66,7 @@ char* corto_venvparse(const char* input, va_list arglist) {
     int size = 256;
     char *result = corto_alloc(size);
     const char *ptr;
-    char *bptr, *str;
+    char *bptr, *str = NULL;
     char var[256], *varptr; /* buffer for name of environment variable */
     char ch;
 
@@ -118,8 +118,11 @@ char* corto_venvparse(const char* input, va_list arglist) {
     bptr = corto_growBuffer(&result, bptr, &size, 1);
     *bptr = '\0';
 
+    corto_dealloc(str);
+
     return result;
 error:
+    if (str) corto_dealloc(str);
     return NULL;
 }
 

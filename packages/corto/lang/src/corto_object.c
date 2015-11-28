@@ -307,12 +307,14 @@ static void corto__deinitScope(corto_object o) {
         scope->parent = NULL;
     }
 
-    /* We cannot actually remove the scope itself, since there might be childs
+    /* We cannot remove the scope itself, since there might be childs
     * which have multiple cycles, which must be resolved first. */
-    if (scope->name) {
-        corto_dealloc(scope->name);
-        scope->name = NULL;
-    }
+
+    /* Deleting the name of the object is also postponed until the object itself
+     * is deleted. This makes it easier to debug scenarios with cycles where
+     * otherwise lots of objects with NULL names would show up. It also
+     * allows the select function to more efficiently determine what the
+     * last iterated object was after a tree has changed. */
 
     if (scope->ols) {
         corto_olsDestroy(scope);
@@ -1638,7 +1640,11 @@ corto_string corto_fullname(corto_object o, corto_id buffer) {
     return buffer;
 }
 
-static corto_object* corto_scopeStack(corto_object o, corto_object scopeStack[], corto_uint32 *length) {
+static corto_object* corto_scopeStack(
+    corto_object o,
+    corto_object scopeStack[],
+    corto_uint32 *length)
+{
     corto_object ptr;
     corto_uint32 i;
 
@@ -1766,7 +1772,9 @@ corto_uint16 corto__destruct(corto_object o) {
             if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
                 if (corto_parentof(o) == corto_lang_o) {
                     corto_id id;
-                    corto_critical("illegal attempt to destruct builtin-object '%s'.", corto_fullname(o, id));
+                    corto_critical(
+                      "illegal attempt to destruct builtin-object '%s'.",
+                      corto_fullname(o, id));
                 }
             }
 
@@ -1781,7 +1789,8 @@ corto_uint16 corto__destruct(corto_object o) {
 
         /* Notify destruct (scoped objects are destructed by corto_delete) */
         if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_notify(corto__objectObservable(CORTO_OFFSET(o,-sizeof(corto__object))), o, CORTO_ON_DELETE);
+            corto_notify(corto__objectObservable(
+                CORTO_OFFSET(o,-sizeof(corto__object))), o, CORTO_ON_DELETE);
         }
 
         corto_deinit(o);
@@ -1810,7 +1819,8 @@ corto_uint16 corto__destruct(corto_object o) {
 
         /* Reset template observable table */
         if (ot && ot->buffer) {
-            ot->buffer = NULL; /* Buffer is allocated as part of object - so no leakage */
+            /* Buffer is allocated as part of object - so no leakage */
+            ot->buffer = NULL;
             ot->length = 0;
         }
     }
@@ -1837,6 +1847,11 @@ corto_uint16 corto__destruct(corto_object o) {
              corto__scope *scope = corto__objectScope(_o);
             if (scope->scope) {
                 corto_rbtreeFree(scope->scope);
+            }
+
+            if (scope->name) {
+                corto_dealloc(scope->name);
+                scope->name = NULL;
             }
         }
         corto_dealloc(corto__objectStartAddr(_o));
