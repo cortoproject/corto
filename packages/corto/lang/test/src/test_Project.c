@@ -215,6 +215,118 @@ corto_void _test_Project_tc_packageLocal(test_Project this) {
 /* $end */
 }
 
+corto_void _test_Project_tc_publishNotag(test_Project this) {
+/* $begin(test/Project/tc_publishNotag) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "Project",
+            "--silent",
+            "--local",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project"));
+    test_assert(corto_fileTest("Project/.corto/version.txt"));
+
+    corto_string v = corto_fileLoad("Project/.corto/version.txt");
+    test_assert(v != NULL);
+    test_assert(!strcmp(v, "0.0.0\n"));
+    corto_dealloc(v);
+
+    /* Test patch version increase */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "publish",
+            "Project",
+            "patch",
+            "--silent",
+            "--notag",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project/.corto/version.txt"));
+
+    v = corto_fileLoad("Project/.corto/version.txt");
+    test_assert(v != NULL);
+    test_assert(!strcmp(v, "0.0.1\n"));
+    corto_dealloc(v);
+
+    /* Test minor version increase */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "publish",
+            "Project",
+            "minor",
+            "--silent",
+            "--notag",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project/.corto/version.txt"));
+
+    v = corto_fileLoad("Project/.corto/version.txt");
+    test_assert(v != NULL);
+    test_assert(!strcmp(v, "0.1.1\n"));
+    corto_dealloc(v);
+
+    /* Test major version increase */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "publish",
+            "Project",
+            "major",
+            "--silent",
+            "--notag",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project/.corto/version.txt"));
+
+    v = corto_fileLoad("Project/.corto/version.txt");
+    test_assert(!strcmp(v, "1.1.1\n"));
+    corto_dealloc(v);
+
+/* $end */
+}
+
 corto_void _test_Project_teardown(test_Project this) {
 /* $begin(test/Project/teardown) */
     char *env = corto_envparse(

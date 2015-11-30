@@ -73,7 +73,7 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                     /* Match AT LEAST once */
                     } else if ((pattern->pattern[1] == '+') || (pattern->pattern[1] == '|')) {
                         if (!fnmatch(pattern->pattern + 2, arg, 0)) {
-                            if (count && tentative)  {
+                            if (count && tentative && !fnmatch(tentative->pattern + 2, arg, 0))  {
                                 /* Push back one element to optional pattern */
                                 if (matchCount && pattern->match && *pattern->match) {
                                     corto_string arg = corto_llTakeFirst(*pattern->match);
@@ -88,6 +88,7 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                                 tentative = NULL;
                                 match = TRUE;
                             } else {
+                                tentative = NULL;
                                 match = TRUE;
                             }
                         }
@@ -106,6 +107,11 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                 }
             }
             p++;
+        }
+
+        if (tentative && !fnmatch(tentative->pattern + 2, arg, 0)) {
+            pattern = tentative;
+            match = TRUE;
         }
 
         if (match) {

@@ -1,15 +1,16 @@
 
 #include "corto.h"
+#include "corto_loader.h"
 #include "cortotool_build.h"
+#include "cortotool_create.h"
 #include "cortotool_help.h"
 #include "cortotool_install.h"
 #include "cortotool_package.h"
 #include "cortotool_pp.h"
-#include "cortotool_create.h"
+#include "cortotool_publish.h"
 #include "cortotool_run.h"
 #include "cortotool_shell.h"
 #include "cortotool_test.h"
-#include "corto_loader.h"
 
 void cortotool_locateHelp(void) {
     printf("Usage: corto locate <package>\n");
@@ -90,9 +91,9 @@ int main(int argc, char* argv[]) {
                     i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
-                        printf("corto version %s (%s) build %s\n\n", 
-                            CORTO_VERSION, 
-                            CORTO_PLATFORM_STRING, 
+                        printf("corto version %s (%s) build %s\n\n",
+                            CORTO_VERSION,
+                            CORTO_PLATFORM_STRING,
                             corto_getBuild());
                     } else if (!strcmp(argv[i] + 2, "minor")) {
                         printf("%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
@@ -137,6 +138,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "publish")) {
+                if (cortotool_publish(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else if (!strcmp(argv[i], "build")) {
                 if (cortotool_build(argc-i, &argv[i])) {
                     goto error;
@@ -166,17 +172,17 @@ int main(int argc, char* argv[]) {
                 if (cortotool_uninstall(argc-i, &argv[i])) {
                     goto error;
                 }
-                break;  
+                break;
             } else if (!strcmp(argv[i], "update")) {
                 if (cortotool_update(argc-i, &argv[i])) {
                     goto error;
                 }
-                break;              
+                break;
             } else if (!strcmp(argv[i], "locate")) {
                 if (cortotool_locate(argc-i, &argv[i])) {
                     goto error;
                 }
-                break;                
+                break;
             } else if (!strcmp(argv[i], "run")) {
                 if (cortotool_run(argc-i, &argv[i])) {
                     goto error;

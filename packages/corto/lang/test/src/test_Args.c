@@ -681,6 +681,70 @@ corto_void _test_Args_tc_matchPattern(test_Args this) {
 /* $end */
 }
 
+corto_void _test_Args_tc_matchPublish(test_Args this) {
+/* $begin(test/Args/tc_matchPublish) */
+    char *argv[] = {"publish", "MyApp", "major", "--notag", NULL};
+    corto_ll notag, dirs, majorarg, minorarg, patcharg;
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'publish' argument */
+        {"--notag", &notag, NULL},
+        {"$?*", &dirs, NULL},
+        {"$+major", &majorarg, NULL},
+        {"$|minor", &minorarg, NULL},
+        {"$|patch", &patcharg, NULL},
+        {NULL}
+      }
+    );
+
+    test_assert(data != NULL);
+
+    test_assert(notag != NULL);
+    test_assert(majorarg != NULL);
+    test_assert(minorarg == NULL);
+    test_assert(patcharg == NULL);
+
+    test_assert(dirs != NULL);
+    test_assert(!strcmp(corto_llGet(dirs, 0), "MyApp"));
+
+    corto_argclean(data);
+
+/* $end */
+}
+
+corto_void _test_Args_tc_matchPublishNoProject(test_Args this) {
+/* $begin(test/Args/tc_matchPublishNoProject) */
+    char *argv[] = {"publish", "major", "--notag", NULL};
+    corto_ll notag, dirs, majorarg, minorarg, patcharg;
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'publish' argument */
+        {"--notag", &notag, NULL},
+        {"$?*", &dirs, NULL},
+        {"$+major", &majorarg, NULL},
+        {"$|minor", &minorarg, NULL},
+        {"$|patch", &patcharg, NULL},
+        {NULL}
+      }
+    );
+
+    test_assert(data != NULL);
+
+    test_assert(notag != NULL);
+    test_assert(majorarg != NULL);
+    test_assert(minorarg == NULL);
+    test_assert(patcharg == NULL);
+    test_assert(dirs == NULL);
+
+    corto_argclean(data);
+
+/* $end */
+}
+
 corto_void _test_Args_tc_matchShell(test_Args this) {
 /* $begin(test/Args/tc_matchShell) */
     char *argv[] = {"shell", "-p", "corto/idl", "test.cx", "-d", "test2.cx", NULL};

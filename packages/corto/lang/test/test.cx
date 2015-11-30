@@ -549,7 +549,6 @@ test::Suite Env::
     void tc_setenvVariableNotFound()
     void tc_setenvNull()
 
-
 test::Suite Project::
     void setup() method
     void teardown() method
@@ -557,6 +556,7 @@ test::Suite Project::
     void tc_appNoTest()
     void tc_package()
     void tc_packageLocal()
+    void tc_publishNotag()
 
 test::Suite Args::
     void tc_matchSingle()
@@ -574,6 +574,8 @@ test::Suite Args::
     void tc_matchOptionalOneArg()
     void tc_matchOptionalWithOtherArgs()
     void tc_matchShell()
+    void tc_matchPublish()
+    void tc_matchPublishNoProject()
     void tc_matchCreate()
     void tc_matchCreateMultiple()
     void tc_matchCreateApp()

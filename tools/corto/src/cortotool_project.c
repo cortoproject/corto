@@ -24,7 +24,26 @@ static corto_int16 cortotool_setupProject(
                 name);
             goto error;
         }
-    } else if (corto_mkdir(name)) {
+    } else if (!corto_mkdir(name)) {
+        corto_id id;
+        sprintf(id, "%s/.corto", name);
+        if (corto_mkdir(id)) {
+            corto_error(
+                "corto: couldn't create '%s/.corto (check permissions)'",
+                name);
+            goto error;
+        }
+
+        /* Write version.txt */
+        sprintf(id, "%s/.corto/version.txt", name);
+        FILE *f = fopen(id, "w");
+        if (!f) {
+            corto_error("corto: couldn't create '%s' (check permissions)",
+              id);
+        }
+        fprintf(f, "%s", "0.0.0\n");
+        fclose(f);
+    } else {
         corto_error(
             "corto: couldn't create project directory '%s' (check permissions)",
             name);
@@ -474,6 +493,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         {"--notest", &notest, NULL},
         {"--local", &local, NULL},
         {"--empty", &empty, NULL},
+        {"--nopanda", &empty, NULL},
         {CORTO_APPLICATION, NULL, &apps},
         {CORTO_COMPONENT, NULL, &components},
         {CORTO_PACKAGE, NULL, &packages},
