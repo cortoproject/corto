@@ -3,6 +3,7 @@
 #include "cortotool_install.h"
 #include "cortotool_package.h"
 #include "cortotool_create.h"
+#include "cortotool_publish.h"
 #include "cortotool_run.h"
 #include "cortotool_shell.h"
 #include "cortotool_test.h"
