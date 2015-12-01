@@ -6,6 +6,7 @@
 #include "fnmatch.h"
 #include "corto__object.h"
 
+extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_threadKey CORTO_KEY_SELECT;
 #define CORTO_SELECT_MAX_OP (32)
 
@@ -47,8 +48,11 @@ typedef struct corto_selectData {
     corto_uint8 programSize;
     corto_selectStack stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     corto_uint8 sp;
+    corto_resultIter replicators[CORTO_MAX_REPLICATORS];
+    corto_int8 activeReplicators; /* Replicators with outstanding requests */
+    corto_int8 currentReplicator; /* Current replicator being evaluated */
 
-    /* Pre allocated for for selectItem */
+    /* Pre allocated for selectItem */
     corto_id parent;
     corto_id name;
     corto_id type;
@@ -356,6 +360,26 @@ static corto_object corto_selectIterNext(
     return result;
 }
 
+static void corto_selectRequestReplicators(
+    corto_selectData *data,
+    corto_selectStack *frame,
+    corto_ll replicators)
+{
+    corto_iter iter = corto_llIter(replicators);
+
+    while (corto_iterHasNext(&iter)) {
+        corto_id parentId; corto_fullname(frame->o, parentId);
+        corto_replicator_olsData_t *odata = corto_iterNext(&iter);
+
+        /* Make select request to replicator */
+        data->replicators[data->activeReplicators ++] =
+            corto_replicator_request(
+                odata->replicator,
+                parentId,
+                frame->filter ? frame->filter : "*");
+    }
+}
+
 static void corto_selectScope(
     corto_selectData *data,
     corto_selectStack *frame)
@@ -363,7 +387,19 @@ static void corto_selectScope(
     corto_object o = NULL;
     corto_string lastKey = data->item.name;
 
-    corto__scopeClaim(frame->o);
+    corto__scope *scope = corto__scopeClaim(frame->o);
+
+    /* Request replicators once per scope, and do it before iterating over
+     * corto store objects so replicators have some time to make the
+     * request */
+    if (data->activeReplicators < 0) {
+        corto_ll replicators = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
+        data->activeReplicators = 0;
+
+        if (replicators) {
+            corto_selectRequestReplicators(data, frame, replicators);
+        }
+    }
 
     data->next = NULL;
     while ((o = corto_selectIterNext(frame, lastKey))) {
@@ -552,6 +588,7 @@ corto_int16 corto_select(
     data->scope = scope;
     data->sp = 0;
     data->next = NULL;
+    data->activeReplicators = -1;
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;

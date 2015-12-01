@@ -92,6 +92,11 @@ struct corto__persistent {
     corto_object owner;
 };
 
+typedef struct corto_replicator_olsData_t {
+    corto_replicator replicator;
+    corto_eventMask mask;
+} corto_replicator_olsData_t;
+
 /* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
 void corto__freeSSO(corto_object sso);
@@ -114,6 +119,7 @@ void corto__setState(corto_object o, corto_uint8 state);
 /* Get & lock scope */
 corto__scope *corto__scopeClaim(corto_object o);
 void corto__scopeRelease(corto_object o);
+void* corto_olsFind(corto__scope *scope, corto_int8 key);
 
 /* Get scope tree */
 corto_rbtree corto_scopeof(corto_object o);

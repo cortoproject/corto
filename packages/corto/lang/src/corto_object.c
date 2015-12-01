@@ -453,6 +453,7 @@ void corto__newSSO(corto_object sso) {
 
     o = CORTO_OFFSET(sso, -sizeof(corto__object));
     scope = corto__objectScope(o);
+    corto_assert(scope != NULL, "SSO object without a scope? That's bad.");
 
     /* Don't call initScope because name is already set. */
     corto_rwmutexNew(&scope->scopeLock);
@@ -1308,7 +1309,7 @@ corto_uint8 corto_olsKey(void(*destructor)(void*)) {
 }
 
 /* Find OLS value (assumes scope is locked) */
-static void* corto_olsFind(corto__scope *scope, corto_int8 key) {
+void* corto_olsFind(corto__scope *scope, corto_int8 key) {
     corto__ols *ols = scope->ols;
     if (ols) {
         do {

@@ -1074,6 +1074,14 @@ void __corto_replicator_post(corto_function f, void *result, void *args) {
         corto_event(*(corto_event*)((intptr_t)args + sizeof(void*))));
 }
 
+void __corto_replicator_request(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_resultIter*)result = _corto_replicator_request(
+        corto_replicator(*(void**)args),
+        *(corto_string*)((intptr_t)args + sizeof(void*)),
+        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)));
+}
+
 void __corto_sequence_construct(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);

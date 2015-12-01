@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <alloca.h>
 
+#include "corto_iter.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -71,7 +73,8 @@ typedef struct corto_ll_s* corto_ll;
 /* The maximum number of languages you can bind to a single Corto process. */
 #define CORTO_MAX_BINDINGS (16)
 
-/* The maximum number of threads that can make use of the Corto API. */
+/* The maximum number of threads that can make use of the Corto
+ * API simultaneously. */
 #define CORTO_MAX_THREADS (64)
 
 /* The maximum number of nested notifications. */
@@ -105,6 +108,11 @@ typedef struct corto_ll_s* corto_ll;
  * length will take advantage of the memory. */
 #define CORTO_MAX_TLS_STRINGS_MAX (1024)
 
+/* The maximum number of replicators that can attached to the same path.
+ * This number controls the number of replicators a select call will process at
+ * most. */
+#define CORTO_MAX_REPLICATORS (16)
+
 /* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
@@ -123,21 +131,6 @@ extern int8_t CORTO_DEBUG_ENABLED;
 
 /* C language binding type definition macro's */
 #define CORTO_ANY(__type) typedef struct __type {corto_type type; void *value; uint8_t owner;} __type
-#define CORTO_ITERATOR(__type) typedef struct __type {\
-    void *current;\
-    corto_collection type;\
-    corto_bool ___ (*next)(void* iterator);\
-    union {\
-        struct { /* CORTO_ARRAY and CORTO_SEQUENCE */\
-            void *array;\
-            int32_t elementSize;\
-            void* max;\
-        } array;\
-        struct {\
-        	corto_iter iter;\
-        } ll;\
-    } is;\
-} __type
 #define CORTO_BITMASK(type) typedef uint32_t type
 
 #define CORTO_STRUCT(type) typedef struct type type

@@ -9,15 +9,11 @@
 #include "corto.h"
 
 /* $header() */
+#include "corto__object.h"
 extern corto_int8 CORTO_OLS_REPLICATOR;
 
-typedef struct corto_replicator_olsData_t {
-    corto_replicator replicator;
-    corto_eventMask mask;
-} corto_replicator_olsData_t;
-
 /* Add replicator entry to object OLS */
-corto_void corto_replicator_attach(
+corto_int16 corto_replicator_attach(
     corto_replicator this,
     corto_object o,
     corto_eventMask mask)
@@ -29,12 +25,22 @@ corto_void corto_replicator_attach(
         replicators = corto_llNew();
     }
 
+    if (corto_llSize(replicators) >= CORTO_MAX_REPLICATORS) {
+        corto_seterr("maximum number of replicatos for scope set");
+        corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, replicators);
+        goto error;
+    }
+
     data = corto_alloc(sizeof(corto_replicator_olsData_t));
     data->replicator = this;
     data->mask = mask;
     corto_llAppend(replicators, data);
 
     corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, replicators);
+
+    return 0;
+error:
+    return -1;
 }
 /* $end */
 
@@ -49,7 +55,9 @@ corto_int16 _corto_replicator_construct(corto_replicator this) {
 
     /* Attach replicator to the observable if mask != ON_SELF */
     if (mask != CORTO_ON_SELF) {
-        corto_replicator_attach(this, observable, mask);
+        if (corto_replicator_attach(this, observable, mask)) {
+            goto error;
+        }
     }
 
     corto_listen(this, corto_replicator_on_declare_o, CORTO_ON_DECLARE | mask, observable, this);
@@ -57,6 +65,8 @@ corto_int16 _corto_replicator_construct(corto_replicator this) {
     corto_listen(this, corto_replicator_on_delete_o, CORTO_ON_DELETE | mask, observable, this);
 
     return 0;
+error:
+    return -1;
 /* $end */
 }
 
@@ -123,5 +133,13 @@ corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
     CORTO_UNUSED(this);
     corto_event_handle(e);
 
+/* $end */
+}
+
+corto_resultIter _corto_replicator_request(corto_replicator this, corto_string parent, corto_string expr) {
+/* $begin(corto/lang/replicator/request) */
+    corto_resultIter result;
+    corto_requestActionCall(&this->onRequest, &result, parent, expr);
+    return result;
 /* $end */
 }

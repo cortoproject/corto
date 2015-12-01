@@ -30,20 +30,16 @@ it's size, which in the case of an array depends on the size of its elementType.
 Object attributes.
 `ATTR_DEFAULT` will automatically add `ATTR_OBSERVABLE` for all types, `ATTR_WRITABLE`
 for non-VOID objects and `ATTR_PERSISTENT` when `ATTR_SCOPED` is selected.
-
 `ATTR_OBSERVABLE` objects emit notifications on lifecycle events.
-
 `ATTR_PERSISTENT` objects have an additional timestamp and owner field. These fields
 are used by replicators to synchronize objects between datastores. Additionally,
 to ensure consistency across stores, `ATTR_PERSISTENT` objects will align `DECLARED` and
 `DEFINED` events to a 'late joining' observer, when the observable is respectfully
 `DECLARED` and/or `DEFINED`. This ensures that regardless of when the replication
 process starts, the two datastores will end up with the same object state.
-
 Attributes can be set with the `corto_setattr` function. This function sets the
 attributes for all subsequently created objects in the thread from which the
 function is called. By default the attribute is set to `ATTR_DEFAULT`.
-
 The `corto_checkAttr` function can be used to check which attributes are enabled
 for an object. The following example checks whether an object is SCOPED:
 
@@ -71,10 +67,8 @@ Enables construction of binary types.
 A binary type is a type that does not undergo translation when it is transmitted
 over a (networked) medium. For example, some network protocols may require byte
 swapping to match endianness, but binary values will be left intact.
-
 When binary values are used in code, they behave just like unsigned integers. Binary
 values are usually visualized using hexadecimal notation.
-
 **Example**
 ```
 binary{width_16} bin16
@@ -87,24 +81,20 @@ bin16 b: 0xFF
 Enables construction of bitmask types.
 Bitmasks are values of which each bit is assigned a semantical meaning. Bits can
 be enabled (set to 1) or disabled (set to 0).
-
 The bitmask type provides a convenient method of working with bitmasks. A bitmask
 type contains, much like an enumeration, a set of constants. These constants by
 default describe the meaning of one bit.
-
 Take for example:
 ```
 bitmask Color::
     Red, Yellow, Blue
 ```
 Here, the constants `Red`, `Yellow` and `Blue` would be assigned the following values:
-
 | Constant | Value |
 |----------|-------|
 |Red     |0x1  |
 |Yellow  |0x2  |
 |Blue    |0x4  |
-
 A value of this type can enable multiple bits by specifying the corresponding constants:
 ```
 Color purple: Red | Blue
@@ -142,20 +132,16 @@ Enables creating composite types that can inherit from & implement interfaces.
 A class is a reference type, which means that any object created by a
 class by definition is an object. Therefore, a class can offer additional
 functionality over what is provided by a `struct`, which is a valuetype.
-
 Firstly, a class contains a constructor and destructor delegate, which are invoked
 when a class instance is respectively defined and deleted. A constructor returns a
 16 bit integer value, which should be zero upon success, and non-zero upon failure.
 When a non-zero value is returned, the  instance will be invalidated.
-
 An example of a class definition with a constructor and destructor:
-
 ```
 class Foo::
     int16 construct()
     void destruct()
 ```
-
 Secondly, a class can *implement* one or more interfaces. During definition a class constructor
 will validate that all methods of an implemented interface are implemented by
 the class. Any composite type can be used as an interface. Interface variables
@@ -358,7 +344,6 @@ Dispatchers allow for intercepting various Corto events, which can then be
 handled by a user in an appropriate way. An example could be to handle an event
 in a different thread (threadpools) or to forward an event to a different
 process.
-
 A typical use for a dispatcher is to be associated with an observer, in which
 case all object notifications are delivered to the post method as
 `corto/lang/observableEvent` objects.
@@ -413,14 +398,12 @@ Flags that can be provided to subscribe for object notifications.
 Event masks provide an easy mechanism to get notified of changes in
 the lifecycle of objects. Different constants can be combined in a mask
 to subscribe for multiple events at once.
-
 Typically, a mask selects a type of event (`ON_DECLARE`, `ON_DEFINE`, `ON_UPDATE`,
 `ON_DELETE`, `ON_INVALIDATE`), a scope modifier (`ON_SELF`, `ON_SCOPE`, `ON_TREE`)
 and a value modifier (`ON_METAVALUE`, `ON_VALUE`). A mask has to at least provide one
 event type. When no scope modifier is provided, `ON_SELF` will be
 implicitly added. When no value modifier is provided, `ON_VALUE` will be implicitly
 added.
-
 The following example code subscribes to updates of direct children of the root:
 ```
 corto_observerCreate(CORTO_ON_UPDATE | CORTO_ON_SCOPE, root_o, callback);
@@ -716,7 +699,6 @@ Sequence of octet elements
 Operators supported by the core.
 The operator kind is used by the core in the `corto_unaryOperator` and
 `corto_binaryOperator` functions. The following code shows an example:
-
 ```
 corto_int32 a = 10, b = 20, result = 0;
 corto_binaryOperator(corto_int32_o, CORTO_ADD, &a, &b, &result);
@@ -827,11 +809,9 @@ Lists the possible primitive types in Corto.
 The `primitiveKind` enumeration is used in `corto::lang::primitive` to quickly
 determine what kind of primitive is described by a type. The kind is automatically
 set by each primitive subclass.
-
 A typical application of `primitiveKind` would be in code that serializes an object.
 The following example shows how `primitiveKind` is used to check whether a type
 represents a string:
-
 ```
 if ((type->kind == CORTO_PRIMITIVE) && (corto_primitive(type)->kind == CORTO_TEXT)) {
     printf("%s represents a string\n", corto_nameof(type));
@@ -900,15 +880,24 @@ Base for classes that replicate data between datasources.
 ### onDeclare
 ### onDelete
 ### onInvoke
+### onRequest
 ### onUpdate
 ### post(event e)
 #### e
 ### query
+### request(string parent,string expr)
+#### parent
+#### expr
+#### Returns
 
-## selectResult
+## requestAction
+
+## result
 ### name
 ### parent
 ### type
+
+## resultIter
 
 ## sequence
 Enables construction of variable length, consecutive collection.
@@ -924,16 +913,12 @@ Object states.
 Object states provide information about where in its lifecycle an object is. This
 information is important when determining whether to interpret the value of the
 object. The value of an undefined objects should not be interpreted.
-
 The state of an object changes when a lifecycle event occurs. This either means
 that the object is declared, defined, destructed or invalidated. The following code
 shows object states and lifecycle events:
-
 ```
 corto_int32 *i = corto_declare(corto_int32_o);
-
 // i is DECLARED
-
 *i = 10;
 if (corto_define(i)) {
     // error: i is INVALID

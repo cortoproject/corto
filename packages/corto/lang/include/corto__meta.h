@@ -56,7 +56,7 @@ CORTO_META_OBJECT(class, replicator);
 CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);
 CORTO_META_OBJECT(struct, parameter);
-CORTO_META_OBJECT(struct, selectResult);
+CORTO_META_OBJECT(struct, result);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(binary, octet);
@@ -108,6 +108,7 @@ CORTO_META_OBJECT(delegate, initAction);
 CORTO_META_OBJECT(delegate, destructAction);
 CORTO_META_OBJECT(delegate, notifyAction);
 CORTO_META_OBJECT(delegate, invokeAction);
+CORTO_META_OBJECT(delegate, requestAction);
 
 CORTO_META_OBJECT(procedure, function);
 CORTO_META_OBJECT(procedure, method);
@@ -118,6 +119,8 @@ CORTO_META_OBJECT(procedure, metaprocedure);
 CORTO_META_OBJECT(observer, replicator_on_declare);
 CORTO_META_OBJECT(observer, replicator_on_update);
 CORTO_META_OBJECT(observer, replicator_on_delete);
+
+CORTO_META_OBJECT(iterator, resultIter);
 
 #ifdef __cplusplus
 }

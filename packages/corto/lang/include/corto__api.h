@@ -1707,21 +1707,21 @@ CORTO_LANG_EXPORT corto_int16 _corto_queryCompare(corto_query dst, corto_query s
 #define corto_queryCompare(dst, src) _corto_queryCompare(corto_query(dst), corto_query(src))
 
 /* /corto/lang/replicator */
-CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke);
-#define corto_replicatorCreate(mount, query, onDeclare, onUpdate, onDelete, onInvoke) _corto_replicatorCreate(mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke)
-CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke);
-#define corto_replicatorCreateChild(_parent, _name, mount, query, onDeclare, onUpdate, onDelete, onInvoke) _corto_replicatorCreateChild(_parent, _name, mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke)
-CORTO_LANG_EXPORT corto_int16 _corto_replicatorUpdate(corto_replicator _this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke);
-#define corto_replicatorUpdate(_this, mount, query, onDeclare, onUpdate, onDelete, onInvoke) _corto_replicatorUpdate(corto_replicator(_this), mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke)
+CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest);
+#define corto_replicatorCreate(mount, query, onDeclare, onUpdate, onDelete, onInvoke, onRequest) _corto_replicatorCreate(mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke, onRequest)
+CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest);
+#define corto_replicatorCreateChild(_parent, _name, mount, query, onDeclare, onUpdate, onDelete, onInvoke, onRequest) _corto_replicatorCreateChild(_parent, _name, mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke, onRequest)
+CORTO_LANG_EXPORT corto_int16 _corto_replicatorUpdate(corto_replicator _this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest);
+#define corto_replicatorUpdate(_this, mount, query, onDeclare, onUpdate, onDelete, onInvoke, onRequest) _corto_replicatorUpdate(corto_replicator(_this), mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke, onRequest)
 
 CORTO_LANG_EXPORT corto_replicator _corto_replicatorDeclare(void);
 #define corto_replicatorDeclare() _corto_replicatorDeclare()
 CORTO_LANG_EXPORT corto_replicator _corto_replicatorDeclareChild(corto_object _parent, corto_string _name);
 #define corto_replicatorDeclareChild(_parent, _name) _corto_replicatorDeclareChild(_parent, _name)
-CORTO_LANG_EXPORT corto_int16 _corto_replicatorDefine(corto_replicator _this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke);
-#define corto_replicatorDefine(_this, mount, query, onDeclare, onUpdate, onDelete, onInvoke) _corto_replicatorDefine(corto_replicator(_this), mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke)
-CORTO_LANG_EXPORT void _corto_replicatorSet(corto_replicator _this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke);
-#define corto_replicatorSet(_this, mount, query, onDeclare, onUpdate, onDelete, onInvoke) _corto_replicatorSet(corto_replicator(_this), mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke)
+CORTO_LANG_EXPORT corto_int16 _corto_replicatorDefine(corto_replicator _this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest);
+#define corto_replicatorDefine(_this, mount, query, onDeclare, onUpdate, onDelete, onInvoke, onRequest) _corto_replicatorDefine(corto_replicator(_this), mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke, onRequest)
+CORTO_LANG_EXPORT void _corto_replicatorSet(corto_replicator _this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest);
+#define corto_replicatorSet(_this, mount, query, onDeclare, onUpdate, onDelete, onInvoke, onRequest) _corto_replicatorSet(corto_replicator(_this), mount, corto_query(query), onDeclare, onUpdate, onDelete, onInvoke, onRequest)
 CORTO_LANG_EXPORT corto_string _corto_replicatorStr(corto_replicator value);
 #define corto_replicatorStr(value) _corto_replicatorStr(corto_replicator(value))
 CORTO_LANG_EXPORT corto_replicator corto_replicatorFromStr(corto_replicator value, corto_string str);
@@ -1730,34 +1730,93 @@ CORTO_LANG_EXPORT corto_int16 _corto_replicatorCopy(corto_replicator *dst, corto
 CORTO_LANG_EXPORT corto_int16 _corto_replicatorCompare(corto_replicator dst, corto_replicator src);
 #define corto_replicatorCompare(dst, src) _corto_replicatorCompare(corto_replicator(dst), corto_replicator(src))
 
-/* /corto/lang/selectResult */
-CORTO_LANG_EXPORT corto_selectResult* _corto_selectResultCreate(corto_string name, corto_string parent, corto_string type);
-#define corto_selectResultCreate(name, parent, type) _corto_selectResultCreate(name, parent, type)
-CORTO_LANG_EXPORT corto_selectResult* _corto_selectResultCreateChild(corto_object _parent, corto_string _name, corto_string name, corto_string parent, corto_string type);
-#define corto_selectResultCreateChild(_parent, _name, name, parent, type) _corto_selectResultCreateChild(_parent, _name, name, parent, type)
-CORTO_LANG_EXPORT corto_int16 _corto_selectResultUpdate(corto_selectResult* _this, corto_string name, corto_string parent, corto_string type);
-#define corto_selectResultUpdate(_this, name, parent, type) _corto_selectResultUpdate(_this, name, parent, type)
+/* /corto/lang/requestAction */
+CORTO_LANG_EXPORT corto_requestAction* _corto_requestActionCreate(corto_object instance, corto_function procedure);
+#define corto_requestActionCreate(instance, procedure) _corto_requestActionCreate(instance, corto_function(procedure))
+CORTO_LANG_EXPORT corto_requestAction* _corto_requestActionCreateChild(corto_object _parent, corto_string _name, corto_object instance, corto_function procedure);
+#define corto_requestActionCreateChild(_parent, _name, instance, procedure) _corto_requestActionCreateChild(_parent, _name, instance, corto_function(procedure))
+CORTO_LANG_EXPORT corto_int16 _corto_requestActionUpdate(corto_requestAction* _this, corto_object instance, corto_function procedure);
+#define corto_requestActionUpdate(_this, instance, procedure) _corto_requestActionUpdate(_this, instance, corto_function(procedure))
 
-CORTO_LANG_EXPORT corto_selectResult* _corto_selectResultDeclare(void);
-#define corto_selectResultDeclare() _corto_selectResultDeclare()
-CORTO_LANG_EXPORT corto_selectResult* _corto_selectResultDeclareChild(corto_object _parent, corto_string _name);
-#define corto_selectResultDeclareChild(_parent, _name) _corto_selectResultDeclareChild(_parent, _name)
-CORTO_LANG_EXPORT corto_int16 _corto_selectResultDefine(corto_selectResult* _this, corto_string name, corto_string parent, corto_string type);
-#define corto_selectResultDefine(_this, name, parent, type) _corto_selectResultDefine(_this, name, parent, type)
-CORTO_LANG_EXPORT void _corto_selectResultSet(corto_selectResult* _this, corto_string name, corto_string parent, corto_string type);
-#define corto_selectResultSet(_this, name, parent, type) _corto_selectResultSet(_this, name, parent, type)
-CORTO_LANG_EXPORT corto_string _corto_selectResultStr(corto_selectResult* value);
-#define corto_selectResultStr(value) _corto_selectResultStr(value)
-CORTO_LANG_EXPORT corto_selectResult* corto_selectResultFromStr(corto_selectResult* value, corto_string str);
-CORTO_LANG_EXPORT corto_int16 _corto_selectResultCopy(corto_selectResult* *dst, corto_selectResult* src);
-#define corto_selectResultCopy(dst, src) _corto_selectResultCopy(dst, src)
-CORTO_LANG_EXPORT corto_int16 _corto_selectResultCompare(corto_selectResult* dst, corto_selectResult* src);
-#define corto_selectResultCompare(dst, src) _corto_selectResultCompare(dst, src)
+CORTO_LANG_EXPORT corto_requestAction* _corto_requestActionDeclare(void);
+#define corto_requestActionDeclare() _corto_requestActionDeclare()
+CORTO_LANG_EXPORT corto_requestAction* _corto_requestActionDeclareChild(corto_object _parent, corto_string _name);
+#define corto_requestActionDeclareChild(_parent, _name) _corto_requestActionDeclareChild(_parent, _name)
+CORTO_LANG_EXPORT corto_int16 _corto_requestActionDefine(corto_requestAction* _this, corto_object instance, corto_function procedure);
+#define corto_requestActionDefine(_this, instance, procedure) _corto_requestActionDefine(_this, instance, corto_function(procedure))
+CORTO_LANG_EXPORT void _corto_requestActionSet(corto_requestAction* _this, corto_object instance, corto_function procedure);
+#define corto_requestActionSet(_this, instance, procedure) _corto_requestActionSet(_this, instance, corto_function(procedure))
+CORTO_LANG_EXPORT corto_string _corto_requestActionStr(corto_requestAction* value);
+#define corto_requestActionStr(value) _corto_requestActionStr(value)
+CORTO_LANG_EXPORT corto_requestAction* corto_requestActionFromStr(corto_requestAction* value, corto_string str);
+CORTO_LANG_EXPORT corto_int16 _corto_requestActionCopy(corto_requestAction* *dst, corto_requestAction* src);
+#define corto_requestActionCopy(dst, src) _corto_requestActionCopy(dst, src)
+CORTO_LANG_EXPORT corto_int16 _corto_requestActionCompare(corto_requestAction* dst, corto_requestAction* src);
+#define corto_requestActionCompare(dst, src) _corto_requestActionCompare(dst, src)
 
-CORTO_LANG_EXPORT corto_int16 _corto_selectResultInit(corto_selectResult* value);
-#define corto_selectResultInit(value) _corto_selectResultInit(value)
-CORTO_LANG_EXPORT corto_int16 _corto_selectResultDeinit(corto_selectResult* value);
-#define corto_selectResultDeinit(value) _corto_selectResultDeinit(value)
+CORTO_LANG_EXPORT corto_int16 _corto_requestActionInit(corto_requestAction* value);
+#define corto_requestActionInit(value) _corto_requestActionInit(value)
+CORTO_LANG_EXPORT corto_int16 _corto_requestActionDeinit(corto_requestAction* value);
+#define corto_requestActionDeinit(value) _corto_requestActionDeinit(value)
+
+corto_int16 corto_requestActionCall(corto_requestAction *_delegate, corto_resultIter* _result, corto_string scope, corto_string expr);
+/* /corto/lang/result */
+CORTO_LANG_EXPORT corto_result* _corto_resultCreate(corto_string name, corto_string parent, corto_string type);
+#define corto_resultCreate(name, parent, type) _corto_resultCreate(name, parent, type)
+CORTO_LANG_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string name, corto_string parent, corto_string type);
+#define corto_resultCreateChild(_parent, _name, name, parent, type) _corto_resultCreateChild(_parent, _name, name, parent, type)
+CORTO_LANG_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, corto_string name, corto_string parent, corto_string type);
+#define corto_resultUpdate(_this, name, parent, type) _corto_resultUpdate(_this, name, parent, type)
+
+CORTO_LANG_EXPORT corto_result* _corto_resultDeclare(void);
+#define corto_resultDeclare() _corto_resultDeclare()
+CORTO_LANG_EXPORT corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _name);
+#define corto_resultDeclareChild(_parent, _name) _corto_resultDeclareChild(_parent, _name)
+CORTO_LANG_EXPORT corto_int16 _corto_resultDefine(corto_result* _this, corto_string name, corto_string parent, corto_string type);
+#define corto_resultDefine(_this, name, parent, type) _corto_resultDefine(_this, name, parent, type)
+CORTO_LANG_EXPORT void _corto_resultSet(corto_result* _this, corto_string name, corto_string parent, corto_string type);
+#define corto_resultSet(_this, name, parent, type) _corto_resultSet(_this, name, parent, type)
+CORTO_LANG_EXPORT corto_string _corto_resultStr(corto_result* value);
+#define corto_resultStr(value) _corto_resultStr(value)
+CORTO_LANG_EXPORT corto_result* corto_resultFromStr(corto_result* value, corto_string str);
+CORTO_LANG_EXPORT corto_int16 _corto_resultCopy(corto_result* *dst, corto_result* src);
+#define corto_resultCopy(dst, src) _corto_resultCopy(dst, src)
+CORTO_LANG_EXPORT corto_int16 _corto_resultCompare(corto_result* dst, corto_result* src);
+#define corto_resultCompare(dst, src) _corto_resultCompare(dst, src)
+
+CORTO_LANG_EXPORT corto_int16 _corto_resultInit(corto_result* value);
+#define corto_resultInit(value) _corto_resultInit(value)
+CORTO_LANG_EXPORT corto_int16 _corto_resultDeinit(corto_result* value);
+#define corto_resultDeinit(value) _corto_resultDeinit(value)
+
+/* /corto/lang/resultIter */
+CORTO_LANG_EXPORT corto_resultIter* _corto_resultIterCreate(corto_resultIter value);
+#define corto_resultIterCreate(value) _corto_resultIterCreate(value)
+CORTO_LANG_EXPORT corto_resultIter* _corto_resultIterCreateChild(corto_object _parent, corto_string _name, corto_resultIter value);
+#define corto_resultIterCreateChild(_parent, _name, value) _corto_resultIterCreateChild(_parent, _name, value)
+CORTO_LANG_EXPORT corto_int16 _corto_resultIterUpdate(corto_resultIter* _this, corto_resultIter value);
+#define corto_resultIterUpdate(_this, value) _corto_resultIterUpdate(_this, value)
+
+CORTO_LANG_EXPORT corto_resultIter* _corto_resultIterDeclare(void);
+#define corto_resultIterDeclare() _corto_resultIterDeclare()
+CORTO_LANG_EXPORT corto_resultIter* _corto_resultIterDeclareChild(corto_object _parent, corto_string _name);
+#define corto_resultIterDeclareChild(_parent, _name) _corto_resultIterDeclareChild(_parent, _name)
+CORTO_LANG_EXPORT corto_int16 _corto_resultIterDefine(corto_resultIter* _this, corto_resultIter value);
+#define corto_resultIterDefine(_this, value) _corto_resultIterDefine(_this, value)
+CORTO_LANG_EXPORT void _corto_resultIterSet(corto_resultIter* _this, corto_resultIter value);
+#define corto_resultIterSet(_this, value) _corto_resultIterSet(_this, value)
+CORTO_LANG_EXPORT corto_string _corto_resultIterStr(corto_resultIter value);
+#define corto_resultIterStr(value) _corto_resultIterStr(value)
+CORTO_LANG_EXPORT corto_resultIter* corto_resultIterFromStr(corto_resultIter* value, corto_string str);
+CORTO_LANG_EXPORT corto_int16 _corto_resultIterCopy(corto_resultIter* *dst, corto_resultIter* src);
+#define corto_resultIterCopy(dst, src) _corto_resultIterCopy(dst, src)
+CORTO_LANG_EXPORT corto_int16 _corto_resultIterCompare(corto_resultIter* dst, corto_resultIter* src);
+#define corto_resultIterCompare(dst, src) _corto_resultIterCompare(dst, src)
+
+CORTO_LANG_EXPORT corto_int16 _corto_resultIterInit(corto_resultIter* value);
+#define corto_resultIterInit(value) _corto_resultIterInit(value)
+CORTO_LANG_EXPORT corto_int16 _corto_resultIterDeinit(corto_resultIter* value);
+#define corto_resultIterDeinit(value) _corto_resultIterDeinit(value)
 
 /* /corto/lang/sequence */
 CORTO_LANG_EXPORT corto_sequence _corto_sequenceCreate(corto_type elementType, corto_uint32 max);

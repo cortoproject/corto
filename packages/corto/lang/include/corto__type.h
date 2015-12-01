@@ -77,7 +77,9 @@ extern "C" {
 #define corto_procedureKind(o) ((corto_procedureKind *)corto_assertType((corto_type)corto_procedureKind_o, o))
 #define corto_query(o) ((corto_query)corto_assertType((corto_type)corto_query_o, o))
 #define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
-#define corto_selectResult(o) ((corto_selectResult *)corto_assertType((corto_type)corto_selectResult_o, o))
+#define corto_requestAction(o) ((corto_requestAction *)corto_assertType((corto_type)corto_requestAction_o, o))
+#define corto_result(o) ((corto_result *)corto_assertType((corto_type)corto_result_o, o))
+#define corto_resultIter(o) ((corto_resultIter *)corto_assertType((corto_type)corto_resultIter_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_state(o) ((corto_state *)corto_assertType((corto_type)corto_state_o, o))
 #define corto_string(o) ((corto_string *)corto_assertType((corto_type)corto_string_o, o))
@@ -516,6 +518,13 @@ struct corto_notifyAction {
     corto_delegatedata _parent;
 };
 
+/*  /corto/lang/requestAction */
+typedef struct corto_requestAction corto_requestAction;
+
+struct corto_requestAction {
+    corto_delegatedata _parent;
+};
+
 /*  /corto/lang/replicator */
 CORTO_CLASS(corto_replicator);
 
@@ -526,6 +535,7 @@ CORTO_CLASS_DEF(corto_replicator) {
     corto_notifyAction onUpdate;
     corto_notifyAction onDelete;
     corto_invokeAction onInvoke;
+    corto_requestAction onRequest;
 };
 
 /* /corto/lang/octet */
@@ -657,14 +667,16 @@ CORTO_CLASS_DEF(corto_procedure) {
     corto_initAction bind;
 };
 
-/*  /corto/lang/selectResult */
-typedef struct corto_selectResult corto_selectResult;
+/*  /corto/lang/result */
+typedef struct corto_result corto_result;
 
-struct corto_selectResult {
+struct corto_result {
     corto_string name;
     corto_string parent;
     corto_string type;
 };
+
+CORTO_ITERATOR(corto_resultIter);
 
 /*  /corto/lang/sequence */
 CORTO_CLASS(corto_sequence);

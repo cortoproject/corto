@@ -206,6 +206,7 @@ CORTO_STATIC_SCOPED_REFOBJECT(observer);
 CORTO_STATIC_SCOPED_REFOBJECT(metaprocedure);
 CORTO_STATIC_SCOPED_REFOBJECT(member);
 CORTO_STATIC_SCOPED_REFOBJECT(alias);
+CORTO_STATIC_SCOPED_REFOBJECT(iterator);
 CORTO_STATIC_SCOPED_OBJECT(parameter);
 
 CORTO_STATIC_SCOPED_OBJECT(constant);
@@ -421,6 +422,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_DELEGATE_O(name, returnType) sso_delegate name##__o = \
     {CORTO_SSO_V(corto_lang, #name, delegate), {CORTO_STRUCT_NOBASE_V(name, CORTO_DELEGATE, FALSE, NULL, CORTO_DECLARED|CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&returnType##__o.v, FALSE, CORTO_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
 
+#define CORTO_ITERATOR_O(name, elementType) sso_iterator name##__o = {CORTO_SSO_V(corto_lang, #name, iterator), {CORTO_TYPE_V(name, CORTO_ITERATOR, FALSE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&elementType##__o.v}, VTABLE_V}
+
+
 /* Forward declarations of classes */
 CORTO_FWDECL(class, alias);
 CORTO_FWDECL(class, array);
@@ -458,7 +462,7 @@ CORTO_FWDECL(class, uint);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
-CORTO_FWDECL(struct, selectResult);
+CORTO_FWDECL(struct, result);
 
 /* Abstract classes */
 CORTO_FWDECL(interface, dispatcher);
@@ -518,10 +522,13 @@ CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, invokeAction);
 CORTO_FWDECL(delegate, notifyAction);
+CORTO_FWDECL(delegate, requestAction);
 
 CORTO_FWDECL(observer, replicator_on_declare);
 CORTO_FWDECL(observer, replicator_on_update);
 CORTO_FWDECL(observer, replicator_on_delete);
+
+CORTO_FWDECL(iterator, resultIter);
 
 /* database root */
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
@@ -703,7 +710,10 @@ CORTO_DELEGATE_O(destructAction, void);
 CORTO_DELEGATE_O(notifyAction, void);
 CORTO_DELEGATE_O(invokeAction, void);
 CORTO_DELEGATE_O(resolveAction, void);
-CORTO_DELEGATE_O(selectAction, void);
+CORTO_DELEGATE_O(requestAction, resultIter);
+
+/* Iterator types */
+CORTO_ITERATOR_O(resultIter, result);
 
 /* /corto/lang/type */
 CORTO_FW_ICD(type);
@@ -914,11 +924,11 @@ CORTO_STRUCT_O(delegatedata, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(delegatedata, instance, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(delegatedata, procedure, function, CORTO_GLOBAL);
 
-/* /corto/lang/selectResult */
-CORTO_STRUCT_O(selectResult, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_MEMBER_O(selectResult, name, string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(selectResult, parent, string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(selectResult, type, string, CORTO_GLOBAL);
+/* /corto/lang/result */
+CORTO_STRUCT_O(result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(result, name, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);
 
 /* /corto/lang/delegate */
 CORTO_FW_I(delegate);
@@ -1012,13 +1022,14 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_METHOD_O(replicator, construct, "()", int16, FALSE, corto_replicator_construct);
     CORTO_METHOD_O(replicator, destruct, "()", void, FALSE, corto_replicator_destruct);
     CORTO_METHOD_O(replicator, post, "(event e)", void, FALSE, corto_replicator_post);
-    CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_post);
+    CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_invoke);
+    CORTO_METHOD_O(replicator, request, "(string parent,string expr)", resultIter, FALSE, corto_replicator_request);
     CORTO_MEMBER_O(replicator, onDeclare, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onUpdate, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onDelete, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onInvoke, invokeAction, CORTO_GLOBAL);
+    CORTO_MEMBER_O(replicator, onRequest, requestAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onResolve, resolveAction, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, onSelect, selectAction, CORTO_GLOBAL);
     CORTO_OBSERVER_O(replicator, on_declare, corto_replicator_on_declare);
     CORTO_OBSERVER_O(replicator, on_update, corto_replicator_on_update);
     CORTO_OBSERVER_O(replicator, on_delete, corto_replicator_on_delete);
