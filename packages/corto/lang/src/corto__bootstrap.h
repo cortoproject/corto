@@ -107,17 +107,17 @@
  *  6. The unbind callbacks are not resolved using a regular delegate-lookup function, but instead are directly
  *     forwarded to the corto_function_unbind function. Because procedures are destructed after the destruction of
  *     all classes, the vtable of corto_procedure_o does no longer exist, so the callback lookup would crash.
- *     Because lang::function is the only object with an unbind this is a safe workaround. Consequence is that
- *     end-users won't be able to use the procedure::unbind delegate, which is acceptable.
+ *     Because lang/function is the only object with an unbind this is a safe workaround. Consequence is that
+ *     end-users won't be able to use the procedure/unbind delegate, which is acceptable.
  *
- *  7. The virtual method 'interface::bindMethod' is required to bind methods to classes and interfaces. However,
+ *  7. The virtual method 'interface/bindMethod' is required to bind methods to classes and interfaces. However,
  *     there is a bootstrap issue here (who binds bindMethod) which cannot be easily solved by a hard-coded
  *     bind of bindMethod. Since virtual methods are looked-up by methodId's, and methodId's are only stable
  *     after the parent of a method is defined, bindMethod can only be looked up after both 'interface' and
  *     'class' are defined. To get defined though, these classes need to bind all their methods, hence the
- *     bootstrap. This issue is solved by calling the method::init initializer call the implementations of the
- *     virtual method 'interface::bindMethod' directly, so no methodId lookup is required.
- *     For delegate functions this is the same, but here the implementation is easier, since the delegate::init
+ *     bootstrap. This issue is solved by calling the method/init initializer call the implementations of the
+ *     virtual method 'interface/bindMethod' directly, so no methodId lookup is required.
+ *     For delegate functions this is the same, but here the implementation is easier, since the delegate/init
  *     function does not need to distinct between interface's and classes. Delegates can only be defined on a class.
  */
 
@@ -422,99 +422,102 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
     {CORTO_SSO_V(corto_lang, #name, delegate), {CORTO_STRUCT_NOBASE_V(name, CORTO_DELEGATE, FALSE, NULL, CORTO_DECLARED|CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&returnType##__o.v, FALSE, CORTO_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
 
 /* Forward declarations of classes */
-CORTO_FWDECL(class, type);
-CORTO_FWDECL(class, template);
-CORTO_FWDECL(class, primitive);
-CORTO_FWDECL(class, interface);
-CORTO_FWDECL(class, collection);
-CORTO_FWDECL(class, iterator);
-CORTO_FWDECL(class, procedure);
+CORTO_FWDECL(class, alias);
+CORTO_FWDECL(class, array);
 CORTO_FWDECL(class, binary);
-CORTO_FWDECL(class, boolean);
-CORTO_FWDECL(class, character);
-CORTO_FWDECL(class, int);
-CORTO_FWDECL(class, uint);
-CORTO_FWDECL(class, float);
-CORTO_FWDECL(class, text);
-CORTO_FWDECL(class, enum);
 CORTO_FWDECL(class, bitmask);
-CORTO_FWDECL(class, struct);
+CORTO_FWDECL(class, boolean);
 CORTO_FWDECL(class, class);
 CORTO_FWDECL(class, delegate);
-CORTO_FWDECL(class, array);
-CORTO_FWDECL(class, sequence);
+CORTO_FWDECL(class, event);
+CORTO_FWDECL(class, character);
+CORTO_FWDECL(class, collection);
+CORTO_FWDECL(class, enum);
+CORTO_FWDECL(class, int);
+CORTO_FWDECL(class, float);
+CORTO_FWDECL(class, interface);
+CORTO_FWDECL(class, invokeEvent);
+CORTO_FWDECL(class, iterator);
 CORTO_FWDECL(class, list);
 CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
-CORTO_FWDECL(class, alias);
-CORTO_FWDECL(class, event);
-CORTO_FWDECL(class, observableEvent);
-CORTO_FWDECL(class, invokeEvent);
 CORTO_FWDECL(class, notifyEvent);
+CORTO_FWDECL(class, observableEvent);
 CORTO_FWDECL(class, package);
+CORTO_FWDECL(class, primitive);
+CORTO_FWDECL(class, procedure);
 CORTO_FWDECL(class, query);
 CORTO_FWDECL(class, replicator);
+CORTO_FWDECL(class, template);
+CORTO_FWDECL(class, sequence);
+CORTO_FWDECL(class, struct);
+CORTO_FWDECL(class, text);
+CORTO_FWDECL(class, type);
+CORTO_FWDECL(class, uint);
+
+CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
-CORTO_FWDECL(struct, delegatedata);
+CORTO_FWDECL(struct, selectResult);
 
 /* Abstract classes */
 CORTO_FWDECL(interface, dispatcher);
 
 CORTO_FWDECL(binary, octet);
+CORTO_FWDECL(binary, word);
 CORTO_FWDECL(boolean, bool);
 CORTO_FWDECL(character, char);
-CORTO_FWDECL(uint, uint8);
-CORTO_FWDECL(uint, uint16);
-CORTO_FWDECL(uint, uint32);
-CORTO_FWDECL(uint, uint64);
+CORTO_FWDECL(float, float32);
+CORTO_FWDECL(float, float64);
 CORTO_FWDECL(int, int8);
 CORTO_FWDECL(int, int16);
 CORTO_FWDECL(int, int32);
 CORTO_FWDECL(int, int64);
-CORTO_FWDECL(float, float32);
-CORTO_FWDECL(float, float64);
-CORTO_FWDECL(text, string);
-CORTO_FWDECL(binary, word);
 CORTO_FWDECL(int, constant);
+CORTO_FWDECL(uint, uint8);
+CORTO_FWDECL(uint, uint16);
+CORTO_FWDECL(uint, uint32);
+CORTO_FWDECL(uint, uint64);
+CORTO_FWDECL(text, string);
 
 static CORTO_FWDECL(type, any);
-static CORTO_FWDECL(type, void);
 static CORTO_FWDECL(type, object);
+static CORTO_FWDECL(type, void);
 
 CORTO_FWDECL(procedure, function);
-CORTO_FWDECL(procedure, method);
-CORTO_FWDECL(procedure, virtual);
-CORTO_FWDECL(procedure, observer);
 CORTO_FWDECL(procedure, metaprocedure);
+CORTO_FWDECL(procedure, method);
+CORTO_FWDECL(procedure, observer);
+CORTO_FWDECL(procedure, virtual);
 
-CORTO_FWDECL(enum, width);
-CORTO_FWDECL(enum, typeKind);
-CORTO_FWDECL(enum, primitiveKind);
-CORTO_FWDECL(enum, compositeKind);
 CORTO_FWDECL(enum, collectionKind);
+CORTO_FWDECL(enum, compositeKind);
+CORTO_FWDECL(enum, equalityKind);
+CORTO_FWDECL(enum, primitiveKind);
+CORTO_FWDECL(enum, operatorKind);
 CORTO_FWDECL(enum, procedureKind);
 CORTO_FWDECL(enum, scopeStateKind);
-CORTO_FWDECL(enum, equalityKind);
-CORTO_FWDECL(enum, operatorKind);
-CORTO_FWDECL(bitmask, state);
+CORTO_FWDECL(enum, typeKind);
+CORTO_FWDECL(enum, width);
+
 CORTO_FWDECL(bitmask, attr);
 CORTO_FWDECL(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifier);
+CORTO_FWDECL(bitmask, state);
 
-CORTO_FWDECL(sequence, objectseq);
 CORTO_FWDECL(sequence, interfaceseq);
-CORTO_FWDECL(sequence, memberseq);
-CORTO_FWDECL(sequence, parameterseq);
-CORTO_FWDECL(sequence, observerseq);
-CORTO_FWDECL(sequence, vtable);
 CORTO_FWDECL(sequence, interfaceVectorseq);
+CORTO_FWDECL(sequence, memberseq);
+CORTO_FWDECL(sequence, objectseq);
+CORTO_FWDECL(sequence, observerseq);
 CORTO_FWDECL(sequence, octetseq);
+CORTO_FWDECL(sequence, parameterseq);
+CORTO_FWDECL(sequence, vtable);
 
-CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, destructAction);
-CORTO_FWDECL(delegate, notifyAction);
+CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, invokeAction);
+CORTO_FWDECL(delegate, notifyAction);
 
 CORTO_FWDECL(observer, replicator_on_declare);
 CORTO_FWDECL(observer, replicator_on_update);
@@ -524,7 +527,7 @@ CORTO_FWDECL(observer, replicator_on_delete);
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
 corto_package root_o = CORTO_OFFSET(&root__o.o.o, sizeof(corto__object));
 
-/* ::corto, ::corto::lang */
+/* /corto, /corto/lang */
 CORTO_PACKAGE_O(corto, "http://corto.io/doc/corto");
 CORTO_PACKAGE_O_SCOPE(corto, lang, "http://corto.io/doc/corto/lang");
 
@@ -702,7 +705,7 @@ CORTO_DELEGATE_O(invokeAction, void);
 CORTO_DELEGATE_O(resolveAction, void);
 CORTO_DELEGATE_O(selectAction, void);
 
-/* ::corto::lang::type */
+/* /corto/lang/type */
 CORTO_FW_ICD(type);
 CORTO_CLASS_NOBASE_O(type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
     CORTO_MEMBER_O(type, kind, typeKind, CORTO_READONLY | CORTO_LOCAL);
@@ -744,7 +747,7 @@ CORTO_CLASS_NOBASE_O(type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, COR
     CORTO_METAPROCEDURE_O(type, copy, "(any value)", int16, FALSE, corto_type_copy);
     CORTO_METAPROCEDURE_O(type, toString, "()", string, FALSE, corto_type_toString);
 
-/* ::corto::lang::primitive */
+/* /corto/lang/primitive */
 CORTO_FW_IC(primitive);
 CORTO_CLASS_O(primitive, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_MEMBER_O(primitive, kind, primitiveKind, CORTO_LOCAL|CORTO_READONLY);
@@ -757,7 +760,7 @@ CORTO_CLASS_O(primitive, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARE
     CORTO_METHOD_O(primitive, init, "()", int16, FALSE, corto_primitive_init);
     CORTO_METHOD_O(primitive, construct, "()", int16, FALSE, corto_primitive_construct);
 
-/* ::corto::lang::interface */
+/* /corto/lang/interface */
 CORTO_FW_ICD(interface);
 CORTO_CLASS_O(interface, type, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
     CORTO_MEMBER_O(interface, kind, compositeKind, CORTO_LOCAL|CORTO_READONLY);
@@ -780,7 +783,7 @@ CORTO_CLASS_O(interface, type, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINE
     CORTO_METHOD_O(interface, bindMethod, "(method method)", int16, FALSE, corto_interface_bindMethod);
     CORTO_METHOD_O(interface, baseof, "(interface type)", int16, FALSE, corto_interface_baseof);
 
-/* ::corto::lang::collection */
+/* /corto/lang/collection */
 CORTO_FW_I(collection);
 CORTO_CLASS_O(collection, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(collection, kind, collectionKind, CORTO_LOCAL|CORTO_READONLY);
@@ -792,7 +795,7 @@ CORTO_CLASS_O(collection, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLAR
     CORTO_METHOD_O(collection, init, "()", int16, FALSE, corto_collection_init);
     CORTO_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, corto_collection_size);
 
-/* ::corto::lang::iterator */
+/* /corto/lang/iterator */
 CORTO_FW_I(iterator);
 CORTO_CLASS_O(iterator, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_REFERENCE_O(iterator, elementType, type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
@@ -800,50 +803,50 @@ CORTO_CLASS_O(iterator, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED
     CORTO_METHOD_O(iterator, compatible, "(type type)", bool, TRUE, corto_iterator_compatible_v);
     CORTO_METHOD_O(iterator, castable, "(type type)", bool, TRUE, corto_iterator_castable_v);
 
-/* ::corto::lang::binary */
+/* /corto/lang/binary */
 CORTO_FW_I(binary);
 CORTO_CLASS_O(binary, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_METHOD_O(binary, init, "()", int16, FALSE, corto_binary_init);
 
-/* ::corto::lang::boolean */
+/* /corto/lang/boolean */
 CORTO_FW_I(boolean);
 CORTO_CLASS_O(boolean, primitive, CORTO_GLOBAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_METHOD_O(boolean, init, "()", int16, FALSE, corto_boolean_init);
 
-/* ::corto::lang::character */
+/* /corto/lang/character */
 CORTO_FW_I(character);
 CORTO_CLASS_O(character, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_METHOD_O(character, init, "()", int16, FALSE, corto_character_init);
 
-/* ::corto::lang::int */
+/* /corto/lang/int */
 CORTO_FW_I(int);
 CORTO_CLASS_O(int, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(int, min, int64, CORTO_GLOBAL);
     CORTO_MEMBER_O(int, max, int64, CORTO_GLOBAL);
     CORTO_METHOD_O(int, init, "()", int16, FALSE, corto_int_init);
 
-/* ::corto::lang::uint */
+/* /corto/lang/uint */
 CORTO_FW_I(uint);
 CORTO_CLASS_O(uint, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(uint, min, uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(uint, max, uint64, CORTO_GLOBAL);
     CORTO_METHOD_O(uint, init, "()", int16, FALSE, corto_uint_init);
 
-/* ::corto::lang::float */
+/* /corto/lang/float */
 CORTO_FW_I(float);
 CORTO_CLASS_O(float, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(float, min, float64, CORTO_GLOBAL);
     CORTO_MEMBER_O(float, max, float64, CORTO_GLOBAL);
     CORTO_METHOD_O(float, init, "()", int16, FALSE, corto_float_init);
 
-/* ::corto::lang::text */
+/* /corto/lang/text */
 CORTO_FW_I(text);
 CORTO_CLASS_O(text, primitive, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(text, charWidth, width, CORTO_GLOBAL);
     CORTO_MEMBER_O(text, length, uint64, CORTO_GLOBAL);
     CORTO_METHOD_O(text, init, "()", int16, FALSE, corto_text_init);
 
-/* ::corto::lang::enum */
+/* /corto/lang/enum */
 CORTO_FW_ICD(enum);
 CORTO_CLASS_O(enum, primitive, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(constant), NULL, CORTO_ICD);
     CORTO_MEMBER_O(enum, constants, objectseq, CORTO_LOCAL | CORTO_PRIVATE);
@@ -852,12 +855,12 @@ CORTO_CLASS_O(enum, primitive, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARE
     CORTO_METHOD_O(enum, destruct, "()", void, FALSE, corto_enum_destruct);
     CORTO_METHOD_O(enum, constant, "(int32 value)", object, FALSE, corto_enum_constant);
 
-/* ::corto::lang::bitmask */
+/* /corto/lang/bitmask */
 CORTO_FW_I(bitmask);
 CORTO_CLASS_O(bitmask, enum, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(constant), NULL, CORTO_I);
     CORTO_METHOD_O(bitmask, init, "()", int16, FALSE, corto_bitmask_init);
 
-/* ::corto::lang::struct */
+/* /corto/lang/struct */
 CORTO_FW_IC(struct);
 CORTO_CLASS_O(struct, interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_IC);
     CORTO_ALIAS_O (struct, base, interface_base, CORTO_GLOBAL);
@@ -872,12 +875,12 @@ CORTO_CLASS_O(struct, interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFI
     CORTO_METHOD_O(struct, init, "()", int16, FALSE, corto_struct_init);
     CORTO_METHOD_O(struct, construct, "()", int16, FALSE, corto_struct_construct);
 
-/* ::corto::lang::interfaceVector */
+/* /corto/lang/interfaceVector */
 CORTO_STRUCT_O(interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(interfaceVector, interface, interface, CORTO_GLOBAL);
     CORTO_MEMBER_O(interfaceVector, vector, vtable, CORTO_GLOBAL);
 
-/* ::corto::lang::class */
+/* /corto/lang/class */
 CORTO_FW_ICD(class);
 CORTO_CLASS_O(class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
     CORTO_ALIAS_O (class, base, struct_base, CORTO_GLOBAL);
@@ -906,12 +909,18 @@ CORTO_CLASS_O(class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED,
     CORTO_METAPROCEDURE_O(class, observableOf, "(observer observer)", object, FALSE, corto_class_observableOf);
     CORTO_METAPROCEDURE_O(class, eventMaskOf, "(observer observer)", eventMask, FALSE, corto_class_eventMaskOf);
 
-/* ::corto::lang::delegatedata */
+/* /corto/lang/delegatedata */
 CORTO_STRUCT_O(delegatedata, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(delegatedata, instance, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(delegatedata, procedure, function, CORTO_GLOBAL);
 
-/* ::corto::lang::delegate */
+/* /corto/lang/selectResult */
+CORTO_STRUCT_O(selectResult, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(selectResult, name, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(selectResult, parent, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(selectResult, type, string, CORTO_GLOBAL);
+
+/* /corto/lang/delegate */
 CORTO_FW_I(delegate);
 CORTO_CLASS_O(delegate, struct, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_I);
     CORTO_METHOD_O(delegate, init, "()", int16, FALSE, corto_delegate_init);
@@ -923,7 +932,7 @@ CORTO_CLASS_O(delegate, struct, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEF
     CORTO_METHOD_O(delegate, instanceof, "(object object)", bool, FALSE, corto_delegate_instanceof);
     CORTO_FUNCTION_O(delegate, bind, "(function object)", int16, corto_delegate_bind);
 
-/* ::corto::lang::procedure */
+/* /corto/lang/procedure */
 CORTO_FW_I(procedure);
 CORTO_CLASS_O(procedure, struct, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(procedure, kind, procedureKind, CORTO_GLOBAL);
@@ -931,7 +940,7 @@ CORTO_CLASS_O(procedure, struct, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFI
     CORTO_METHOD_O(procedure, init, "()", int16, FALSE, corto_procedure_init);
     CORTO_METHOD_O(procedure, unbind, "(function object)", void, FALSE, corto_procedure_unbind);
 
-/* ::corto::lang::array */
+/* /corto/lang/array */
 CORTO_FW_ICD(array);
 CORTO_CLASS_O(array, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
     CORTO_REFERENCE_O(array, elementType, type, CORTO_GLOBAL|CORTO_PRIVATE, CORTO_DEFINED, FALSE);
@@ -939,14 +948,14 @@ CORTO_CLASS_O(array, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFI
     CORTO_METHOD_O(array, construct, "()", int16, FALSE, corto_array_construct);
     CORTO_METHOD_O(array, destruct, "()", void, FALSE, corto_array_destruct);
 
-/* ::corto::lang::sequence */
+/* /corto/lang/sequence */
 CORTO_FW_IC(sequence);
 CORTO_CLASS_O(sequence, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_METHOD_O(sequence, init, "()", int16, FALSE, corto_sequence_init);
     CORTO_METHOD_O(sequence, construct, "()", int16, FALSE, corto_sequence_construct);
     CORTO_METAPROCEDURE_O(sequence, size, "(uint32 size)", void, FALSE, corto_sequence_size);
 
-/* ::corto::lang::list */
+/* /corto/lang/list */
 CORTO_FW_IC(list);
 CORTO_CLASS_O(list, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_METHOD_O(list, init, "()", int16, FALSE, corto_list_init);
@@ -958,7 +967,7 @@ CORTO_CLASS_O(list, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFIN
     CORTO_METAPROCEDURE_O(list, reverse, "()", void, FALSE, corto_list_reverse);
     CORTO_METAPROCEDURE_O(list, clear, "()", void, FALSE, corto_list_clear);
 
-/* ::corto::lang::map */
+/* /corto/lang/map */
 CORTO_FW_IC(map);
 CORTO_CLASS_O(map, collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     /* Duplicate members for a more convenient order in the initializer */
@@ -968,7 +977,7 @@ CORTO_CLASS_O(map, collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED
     CORTO_METHOD_O(map, init, "()", int16, FALSE, corto_map_init);
     CORTO_METHOD_O(map, construct, "()", int16, FALSE, corto_map_construct);
 
-/* ::corto::lang::function */
+/* /corto/lang/function */
 CORTO_FW_IB(function);
 CORTO_PROCEDURE_NOBASE_O(function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_REFERENCE_O(function, returnType, type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
@@ -986,16 +995,16 @@ CORTO_PROCEDURE_NOBASE_O(function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_
     CORTO_FUNCTION_O(function, unbind, "(function object)", void, corto_function_unbind);
     CORTO_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterseq, corto_function_stringToParameterSeq);
 
-/* ::corto::lang::dispatcher */
+/* /corto/lang/dispatcher */
 CORTO_INTERFACE_O(dispatcher);
     CORTO_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
 
-/* ::corto::lang::query */
+/* /corto/lang/query */
 CORTO_CLASS_NOBASE_O(query, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(query, from, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(query, mask, eventMask, CORTO_GLOBAL);
 
-/* ::corto::lang::replicator */
+/* /corto/lang/replicator */
 CORTO_FW_CD(replicator);
 CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_MEMBER_O(replicator, mount, object, CORTO_GLOBAL);
@@ -1014,14 +1023,14 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_OBSERVER_O(replicator, on_update, corto_replicator_on_update);
     CORTO_OBSERVER_O(replicator, on_delete, corto_replicator_on_delete);
 
-/* ::corto::lang::event */
+/* /corto/lang/event */
 CORTO_CLASS_NOBASE_O(event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(event, kind, uint16, CORTO_GLOBAL);
     CORTO_MEMBER_O(event, handled, bool, CORTO_LOCAL | CORTO_READONLY);
     CORTO_METHOD_O(event, handle, "()", void, TRUE, corto_event_handle_v);
     CORTO_FUNCTION_O(event, uniqueKind, "()", int16, corto_event_uniqueKind);
 
-/* ::corto::lang::observableEvent */
+/* /corto/lang/observableEvent */
 CORTO_CLASS_O(observableEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_REFERENCE_O(observableEvent, observer, observer, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(observableEvent, me, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
@@ -1029,7 +1038,7 @@ CORTO_CLASS_O(observableEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | COR
     CORTO_REFERENCE_O(observableEvent, observable, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_METHOD_O(observableEvent, handle, "()", void, TRUE, corto_observableEvent_handle_v);
 
-/* ::corto::lang::invokeEvent */
+/* /corto/lang/invokeEvent */
 CORTO_CLASS_O(invokeEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_REFERENCE_O(invokeEvent, replicator, replicator, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(invokeEvent, instance, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
@@ -1037,7 +1046,7 @@ CORTO_CLASS_O(invokeEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_D
     CORTO_REFERENCE_O(invokeEvent, args, octetseq, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_METHOD_O(invokeEvent, handle, "()", void, TRUE, corto_invokeEvent_handle_v);
 
-/* ::corto::lang::method */
+/* /corto/lang/method */
 CORTO_FW_IB(method);
 CORTO_PROCEDURE_O(method, CORTO_METHOD, function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_IC);
     CORTO_MEMBER_O(method, virtual, bool, CORTO_GLOBAL);
@@ -1048,7 +1057,7 @@ CORTO_FW_I(virtual);
 CORTO_PROCEDURE_O(virtual, CORTO_METHOD, method, CORTO_GLOBAL, CORTO_TYPE_ID(interface), CORTO_DECLARED, CORTO_I);
     CORTO_METHOD_O(virtual, init, "()", int16, FALSE, corto_virtual_init);
 
-/* ::corto::lang::observer */
+/* /corto/lang/observer */
 CORTO_FW_IB(observer);
 CORTO_PROCEDURE_O(observer, CORTO_OBSERVER, function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_MEMBER_O(observer, mask, eventMask, CORTO_GLOBAL);
@@ -1065,13 +1074,13 @@ CORTO_PROCEDURE_O(observer, CORTO_OBSERVER, function, CORTO_LOCAL | CORTO_READON
     CORTO_METHOD_O(observer, setDispatcher, "(dispatcher dispatcher)", void, FALSE, corto_observer_setDispatcher);
     CORTO_FUNCTION_O(observer, unbind, "(observer object)", void, corto_observer_unbind);
 
-/* ::corto::lang::metaprocedure */
+/* /corto/lang/metaprocedure */
 CORTO_FW_B(metaprocedure);
 CORTO_PROCEDURE_O(metaprocedure, CORTO_METAPROCEDURE, function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_B);
     CORTO_METHOD_O(metaprocedure, bind, "()", int16, FALSE, corto_metaprocedure_bind);
     CORTO_MEMBER_O(metaprocedure, referenceOnly, bool, CORTO_GLOBAL);
 
-/* ::corto::lang::member */
+/* /corto/lang/member */
 CORTO_FW_IC(member);
 CORTO_CLASS_NOBASE_O(member, CORTO_TYPE_ID(interface), CORTO_DECLARED, NULL, NULL, CORTO_IC);
     CORTO_REFERENCE_O(member, type, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);
@@ -1083,14 +1092,14 @@ CORTO_CLASS_NOBASE_O(member, CORTO_TYPE_ID(interface), CORTO_DECLARED, NULL, NUL
     CORTO_METHOD_O(member, init, "()", int16, FALSE, corto_member_init);
     CORTO_METHOD_O(member, construct, "()", int16, FALSE, corto_member_construct);
 
-/* ::corto::lang::alias */
+/* /corto/lang/alias */
 CORTO_FW_IC(alias);
 CORTO_CLASS_O(alias, member, CORTO_HIDDEN, CORTO_TYPE_ID(struct), CORTO_DECLARED, NULL, NULL, CORTO_IC);
     CORTO_REFERENCE_O(alias, member, member, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
     CORTO_METHOD_O(alias, init, "()", int16, FALSE, corto_alias_init);
     CORTO_METHOD_O(alias, construct, "()", int16, FALSE, corto_alias_construct);
 
-/* ::corto::lang::parameter */
+/* /corto/lang/parameter */
 CORTO_STRUCT_O(parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(parameter, name, string, CORTO_GLOBAL);
     CORTO_REFERENCE_O(parameter, type, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);

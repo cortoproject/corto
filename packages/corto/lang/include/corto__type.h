@@ -213,6 +213,13 @@ CORTO_CLASS_DEF(corto_member) {
     corto_uint32 offset;
 };
 
+CORTO_STRUCT(corto_selectResult);
+CORTO_STRUCT_DEF(corto_selectResult) {
+    corto_string name;
+    corto_string parent;
+    corto_string type;
+};
+
 /*  ::corto::lang::alias */
 CORTO_CLASS(corto_alias);
 
@@ -698,4 +705,3 @@ typedef void corto_void;
 }
 #endif
 #endif
-

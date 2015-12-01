@@ -53,9 +53,10 @@ CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, replicator);
-CORTO_META_OBJECT(struct, parameter);
-CORTO_META_OBJECT(struct, delegatedata);
 CORTO_META_OBJECT(struct, interfaceVector);
+CORTO_META_OBJECT(struct, delegatedata);
+CORTO_META_OBJECT(struct, parameter);
+CORTO_META_OBJECT(struct, selectResult);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(binary, octet);

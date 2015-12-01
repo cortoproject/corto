@@ -164,6 +164,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_PRIM(op, interfaceVectorseq);\
     SSO_OP_PRIM(op, interfaceVector);\
     SSO_OP_PRIM(op, parameter);\
+    SSO_OP_PRIM(op, selectResult);\
     SSO_OP_PRIM(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_PRIM(op, initAction);\
@@ -574,6 +575,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
+    /* selectResult */\
+    SSO_OP_OBJ(op, selectResult_name);\
+    SSO_OP_OBJ(op, selectResult_parent);\
+    SSO_OP_OBJ(op, selectResult_type);\
     /* package */\
     SSO_OP_OBJ(op, package_url);
 
