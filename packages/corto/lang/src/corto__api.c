@@ -6558,6 +6558,125 @@ corto_int16 _corto_replicatorCompare(corto_replicator dst, corto_replicator src)
     return corto_compare(dst, src);
 }
 
+corto_selectResult* _corto_selectResultCreate(corto_string name, corto_string parent, corto_string type) {
+    corto_selectResult* this;
+    this = corto_declare(corto_selectResult_o);
+    if (!this) {
+        return NULL;
+    }
+    corto_setstr(&this->name, name);
+    corto_setstr(&this->parent, parent);
+    corto_setstr(&this->type, type);
+    if (this && corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_selectResult* _corto_selectResultCreateChild(corto_object _parent, corto_string _name, corto_string name, corto_string parent, corto_string type) {
+    corto_selectResult* this;
+    this = corto_declareChild(_parent, _name, corto_selectResult_o);
+    if (!this) {
+        return NULL;
+    }
+    corto_setstr(&this->name, name);
+    corto_setstr(&this->parent, parent);
+    corto_setstr(&this->type, type);
+    if (this && corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_selectResultUpdate(corto_selectResult* this, corto_string name, corto_string parent, corto_string type) {
+    if (!corto_updateBegin(this)) {
+        corto_setstr(&this->name, name);
+        corto_setstr(&this->parent, parent);
+        corto_setstr(&this->type, type);
+        corto_updateEnd(this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_selectResult* _corto_selectResultDeclare(void) {
+    corto_selectResult* this;
+    this = corto_declare(corto_selectResult_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_selectResult* _corto_selectResultDeclareChild(corto_object _parent, corto_string _name) {
+    corto_selectResult* this;
+    this = corto_declareChild(_parent, _name, corto_selectResult_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_selectResultDefine(corto_selectResult* this, corto_string name, corto_string parent, corto_string type) {
+    corto_setstr(&this->name, name);
+    corto_setstr(&this->parent, parent);
+    corto_setstr(&this->type, type);
+    return corto_define(this);
+}
+
+void _corto_selectResultSet(corto_selectResult* this, corto_string name, corto_string parent, corto_string type) {
+    corto_setstr(&this->name, name);
+    corto_setstr(&this->parent, parent);
+    corto_setstr(&this->type, type);
+}
+
+corto_string _corto_selectResultStr(corto_selectResult* value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_selectResult_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_selectResult* corto_selectResultFromStr(corto_selectResult* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_selectResult_o), str);
+    return value;
+}
+
+corto_int16 _corto_selectResultCopy(corto_selectResult* *dst, corto_selectResult* src) {
+    corto_value v1, v2;
+    corto_valueValueInit(&v1, NULL, corto_type(corto_selectResult_o), dst);
+    corto_valueValueInit(&v2, NULL, corto_type(corto_selectResult_o), src);
+    return corto_copyv(&v1, &v2);
+}
+
+corto_int16 _corto_selectResultCompare(corto_selectResult* dst, corto_selectResult* src) {
+    corto_value v1, v2;
+    corto_valueValueInit(&v1, NULL, corto_type(corto_selectResult_o), dst);
+    corto_valueValueInit(&v2, NULL, corto_type(corto_selectResult_o), src);
+    return corto_comparev(&v1, &v2);
+}
+
+corto_int16 _corto_selectResultInit(corto_selectResult* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_selectResult_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_selectResult_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_selectResultDeinit(corto_selectResult* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_selectResult_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_sequence _corto_sequenceCreate(corto_type elementType, corto_uint32 max) {
     corto_sequence this;
     this = corto_declare(corto_sequence_o);

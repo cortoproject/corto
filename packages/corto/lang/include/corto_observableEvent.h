@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-/* virtual ::corto::lang::observableEvent::handle() */
+/* virtual /corto/lang/observableEvent/handle() */
 CORTO_LANG_EXPORT void _corto_observableEvent_handle(corto_observableEvent _this);
 #define corto_observableEvent_handle(_this) _corto_observableEvent_handle(corto_observableEvent(_this))
 

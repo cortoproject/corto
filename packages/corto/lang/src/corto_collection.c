@@ -137,7 +137,7 @@ void corto_clear(corto_collection this, corto_void* collection) {
 /* $end */
 
 corto_bool _corto_collection_castable_v(corto_collection this, corto_type type) {
-/* $begin(::corto::lang::collection::castable) */
+/* $begin(corto/lang/collection/castable) */
     corto_bool result = FALSE;
     if (type->kind == CORTO_COLLECTION) {
         corto_collection t = corto_collection(type);
@@ -159,7 +159,7 @@ corto_bool _corto_collection_castable_v(corto_collection this, corto_type type) 
 }
 
 corto_bool _corto_collection_compatible_v(corto_collection this, corto_type type) {
-/* $begin(::corto::lang::collection::compatible) */
+/* $begin(corto/lang/collection/compatible) */
     corto_bool result = FALSE;
 
     if (type->kind == CORTO_COLLECTION) {
@@ -180,7 +180,7 @@ corto_bool _corto_collection_compatible_v(corto_collection this, corto_type type
 }
 
 corto_bool _corto_collection_elementRequiresAlloc(corto_collection this) {
-/* $begin(::corto::lang::collection::elementRequiresAlloc) */
+/* $begin(corto/lang/collection/elementRequiresAlloc) */
     corto_bool result = TRUE;
     corto_type elementType = this->elementType;
 
@@ -235,14 +235,14 @@ corto_bool _corto_collection_elementRequiresAlloc(corto_collection this) {
 }
 
 corto_int16 _corto_collection_init(corto_collection this) {
-/* $begin(::corto::lang::collection::init) */
+/* $begin(corto/lang/collection/init) */
     corto_type(this)->kind = CORTO_COLLECTION;
     return corto_type_init(corto_type(this));
 /* $end */
 }
 
 corto_uint32 _corto_collection_size(corto_any this) {
-/* $begin(::corto::lang::collection::size) */
+/* $begin(corto/lang/collection/size) */
     corto_uint32 result = 0;
 
     switch(corto_collection(this.type)->kind) {

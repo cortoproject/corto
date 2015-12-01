@@ -139,7 +139,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
         }
 
         /* Insert dependency on parent */
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_parentof(o)) {
             if (parent != root_o) { /* Root is always available */
                 corto_int8 parentState = corto_type(corto_typeof(o))->parentState;
 
@@ -227,4 +227,3 @@ error:
 }
 
 #endif
-

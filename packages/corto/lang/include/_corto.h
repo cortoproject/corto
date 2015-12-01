@@ -56,6 +56,7 @@ extern "C" {
 #include "corto_procedure.h"
 #include "corto_query.h"
 #include "corto_replicator.h"
+#include "corto_selectResult.h"
 #include "corto_sequence.h"
 #include "corto_struct.h"
 #include "corto_text.h"

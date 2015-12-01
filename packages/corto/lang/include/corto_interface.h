@@ -20,7 +20,7 @@ CORTO_LANG_EXPORT corto_int16 _corto_interface_baseof(corto_interface _this, cor
 CORTO_LANG_EXPORT corto_int16 _corto_interface_bindMethod(corto_interface _this, corto_method method);
 #define corto_interface_bindMethod(_this, method) _corto_interface_bindMethod(corto_interface(_this), corto_method(method))
 
-/* virtual ::corto::lang::interface::compatible(type type) */
+/* virtual /corto/lang/interface/compatible(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_interface_compatible(corto_interface _this, corto_type type);
 #define corto_interface_compatible(_this, type) _corto_interface_compatible(corto_interface(_this), corto_type(type))
 
@@ -36,7 +36,7 @@ CORTO_LANG_EXPORT corto_void _corto_interface_destruct(corto_interface _this);
 CORTO_LANG_EXPORT corto_int16 _corto_interface_init(corto_interface _this);
 #define corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
 
-/* virtual ::corto::lang::interface::resolveMember(string name) */
+/* virtual /corto/lang/interface/resolveMember(string name) */
 CORTO_LANG_EXPORT corto_member _corto_interface_resolveMember(corto_interface _this, corto_string name);
 #define corto_interface_resolveMember(_this, name) _corto_interface_resolveMember(corto_interface(_this), name)
 

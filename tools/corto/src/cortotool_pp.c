@@ -158,8 +158,8 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                     scope = corto_iterNext(&iter);
 
                     /* Ensure the scope is fully qualified */
-                    if (scope[0] != ':') {
-                        sprintf(scopeId, "::%s", scope);
+                    if ((scope[0] != '/') && (scope[0] != ':')) {
+                        sprintf(scopeId, "/%s", scope);
                     } else {
                         strcpy(scopeId, scope);
                     }

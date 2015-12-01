@@ -14,14 +14,14 @@
 extern "C" {
 #endif
 
-/* virtual ::corto::lang::collection::castable(type type) */
+/* virtual /corto/lang/collection/castable(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_collection_castable(corto_collection _this, corto_type type);
 #define corto_collection_castable(_this, type) _corto_collection_castable(corto_collection(_this), corto_type(type))
 
 CORTO_LANG_EXPORT corto_bool _corto_collection_castable_v(corto_collection _this, corto_type type);
 #define corto_collection_castable_v(_this, type) _corto_collection_castable_v(corto_collection(_this), corto_type(type))
 
-/* virtual ::corto::lang::collection::compatible(type type) */
+/* virtual /corto/lang/collection/compatible(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_collection_compatible(corto_collection _this, corto_type type);
 #define corto_collection_compatible(_this, type) _corto_collection_compatible(corto_collection(_this), corto_type(type))
 

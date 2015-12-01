@@ -9,7 +9,7 @@
 #include "corto.h"
 
 corto_int16 _corto_array_construct(corto_array this) {
-/* $begin(::corto::lang::array::construct) */
+/* $begin(corto/lang/array/construct) */
     corto_uint32 elementTypeSize;
     corto_type elementType;
   
@@ -64,7 +64,7 @@ error:
 }
 
 corto_void _corto_array_destruct(corto_array this) {
-/* $begin(::corto::lang::array::destruct) */
+/* $begin(corto/lang/array/destruct) */
     corto_release(this->elementType);
     this->elementType = NULL;
     corto_release(corto_collection(this)->elementType);
@@ -74,7 +74,7 @@ corto_void _corto_array_destruct(corto_array this) {
 }
 
 corto_int16 _corto_array_init(corto_array this) {
-/* $begin(::corto::lang::array::init) */
+/* $begin(corto/lang/array/init) */
     corto_collection(this)->kind = CORTO_ARRAY;
     return corto_collection_init(corto_collection(this));
 /* $end */

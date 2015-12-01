@@ -402,7 +402,7 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
 /* $end */
 
 corto_int16 _corto_interface_baseof(corto_interface this, corto_interface type) {
-/* $begin(::corto::lang::interface::baseof) */
+/* $begin(corto/lang/interface/baseof) */
     corto_interface ptr = this->base;
     corto_bool result = this == type;
     
@@ -416,7 +416,7 @@ corto_int16 _corto_interface_baseof(corto_interface this, corto_interface type) 
 }
 
 corto_int16 _corto_interface_bindMethod(corto_interface this, corto_method method) {
-/* $begin(::corto::lang::interface::bindMethod) */
+/* $begin(corto/lang/interface/bindMethod) */
     corto_method* virtual;
     corto_int32 d;
 
@@ -481,7 +481,7 @@ error:
 }
 
 corto_bool _corto_interface_compatible_v(corto_interface this, corto_type type) {
-/* $begin(::corto::lang::interface::compatible) */
+/* $begin(corto/lang/interface/compatible) */
     corto_bool result;
 
     /* First test if types are compatible using the rules that are
@@ -504,7 +504,7 @@ corto_bool _corto_interface_compatible_v(corto_interface this, corto_type type) 
 }
 
 corto_int16 _corto_interface_construct(corto_interface this) {
-/* $begin(::corto::lang::interface::construct) */
+/* $begin(corto/lang/interface/construct) */
     corto_vtable *superTable, ownTable;
     corto_uint32 i;
 
@@ -541,7 +541,7 @@ error:
 }
 
 corto_void _corto_interface_destruct(corto_interface this) {
-/* $begin(::corto::lang::interface::destruct) */
+/* $begin(corto/lang/interface/destruct) */
     corto_uint32 i;
 
     /* Free members */
@@ -569,7 +569,7 @@ corto_void _corto_interface_destruct(corto_interface this) {
 }
 
 corto_int16 _corto_interface_init(corto_interface this) {
-/* $begin(::corto::lang::interface::init) */
+/* $begin(corto/lang/interface/init) */
     corto_type(this)->reference = TRUE;
     corto_type(this)->kind = CORTO_COMPOSITE;
     this->kind = CORTO_INTERFACE;
@@ -578,7 +578,7 @@ corto_int16 _corto_interface_init(corto_interface this) {
 }
 
 corto_member _corto_interface_resolveMember_v(corto_interface this, corto_string name) {
-/* $begin(::corto::lang::interface::resolveMember) */
+/* $begin(corto/lang/interface/resolveMember) */
     corto_uint32 i;
     corto_member result;
 
@@ -596,7 +596,7 @@ corto_member _corto_interface_resolveMember_v(corto_interface this, corto_string
 }
 
 corto_method _corto_interface_resolveMethod(corto_interface this, corto_string name) {
-/* $begin(::corto::lang::interface::resolveMethod) */
+/* $begin(corto/lang/interface/resolveMethod) */
     corto_method result;
     corto_method* found;
 
@@ -612,7 +612,7 @@ corto_method _corto_interface_resolveMethod(corto_interface this, corto_string n
 }
 
 corto_method _corto_interface_resolveMethodById(corto_interface this, corto_uint32 id) {
-/* $begin(::corto::lang::interface::resolveMethodById) */
+/* $begin(corto/lang/interface/resolveMethodById) */
     corto_method result;
     corto_vtable* vtable;
 
@@ -638,7 +638,7 @@ corto_method _corto_interface_resolveMethodById(corto_interface this, corto_uint
 }
 
 corto_uint32 _corto_interface_resolveMethodId(corto_interface this, corto_string name) {
-/* $begin(::corto::lang::interface::resolveMethodId) */
+/* $begin(corto/lang/interface/resolveMethodId) */
     corto_int32 result;
     corto_function *f;
 

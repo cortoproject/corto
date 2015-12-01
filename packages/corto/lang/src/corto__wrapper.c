@@ -1,6 +1,6 @@
 /* corto__wrapper.c
  *
- * This file contains wrapper functions for ::corto::lang.
+ * This file contains wrapper functions for /corto/lang.
  */
 
 #include "corto.h"
@@ -70,7 +70,7 @@ void __corto_character_init(corto_function f, void *result, void *args) {
         corto_character(*(void**)args));
 }
 
-/* virtual ::corto::lang::class::allocSize() */
+/* virtual /corto/lang/class/allocSize() */
 corto_uint32 _corto_class_allocSize(corto_class this) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -205,7 +205,7 @@ void __corto_class_setObservable(corto_function f, void *result, void *args) {
         *(corto_object*)((intptr_t)args + sizeof(corto_any) + sizeof(corto_observer)));
 }
 
-/* virtual ::corto::lang::collection::castable(type type) */
+/* virtual /corto/lang/collection/castable(type type) */
 corto_bool _corto_collection_castable(corto_collection this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -236,7 +236,7 @@ void __corto_collection_castable_v(corto_function f, void *result, void *args) {
         corto_type(*(corto_type*)((intptr_t)args + sizeof(void*))));
 }
 
-/* virtual ::corto::lang::collection::compatible(type type) */
+/* virtual /corto/lang/collection/compatible(type type) */
 corto_bool _corto_collection_compatible(corto_collection this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -301,7 +301,7 @@ void __corto_delegate_bind(corto_function f, void *result, void *args) {
         corto_function(*(corto_function*)args));
 }
 
-/* virtual ::corto::lang::delegate::castable(type type) */
+/* virtual /corto/lang/delegate/castable(type type) */
 corto_bool _corto_delegate_castable(corto_delegate this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -332,7 +332,7 @@ void __corto_delegate_castable_v(corto_function f, void *result, void *args) {
         corto_type(*(corto_type*)((intptr_t)args + sizeof(void*))));
 }
 
-/* virtual ::corto::lang::delegate::compatible(type type) */
+/* virtual /corto/lang/delegate/compatible(type type) */
 corto_bool _corto_delegate_compatible(corto_delegate this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -377,7 +377,7 @@ void __corto_delegate_instanceof(corto_function f, void *result, void *args) {
         *(corto_object*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::corto::lang::dispatcher::post(event e) */
+/* virtual /corto/lang/dispatcher/post(event e) */
 void _corto_dispatcher_post(corto_dispatcher this, corto_event e) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -435,7 +435,7 @@ void __corto_enum_init(corto_function f, void *result, void *args) {
         corto_enum(*(void**)args));
 }
 
-/* virtual ::corto::lang::event::handle() */
+/* virtual /corto/lang/event/handle() */
 void _corto_event_handle(corto_event this) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -527,7 +527,7 @@ void __corto_interface_bindMethod(corto_function f, void *result, void *args) {
         corto_method(*(corto_method*)((intptr_t)args + sizeof(void*))));
 }
 
-/* virtual ::corto::lang::interface::compatible(type type) */
+/* virtual /corto/lang/interface/compatible(type type) */
 corto_bool _corto_interface_compatible(corto_interface this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -580,7 +580,7 @@ void __corto_interface_init(corto_function f, void *result, void *args) {
         corto_interface(*(void**)args));
 }
 
-/* virtual ::corto::lang::interface::resolveMember(string name) */
+/* virtual /corto/lang/interface/resolveMember(string name) */
 corto_member _corto_interface_resolveMember(corto_interface this, corto_string name) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -632,7 +632,7 @@ void __corto_interface_resolveMethodId(corto_function f, void *result, void *arg
         *(corto_string*)((intptr_t)args + sizeof(void*)));
 }
 
-/* virtual ::corto::lang::invokeEvent::handle() */
+/* virtual /corto/lang/invokeEvent/handle() */
 void _corto_invokeEvent_handle(corto_invokeEvent this) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -661,7 +661,7 @@ void __corto_invokeEvent_handle_v(corto_function f, void *result, void *args) {
         corto_invokeEvent(*(void**)args));
 }
 
-/* virtual ::corto::lang::iterator::castable(type type) */
+/* virtual /corto/lang/iterator/castable(type type) */
 corto_bool _corto_iterator_castable(corto_iterator this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -692,7 +692,7 @@ void __corto_iterator_castable_v(corto_function f, void *result, void *args) {
         corto_type(*(corto_type*)((intptr_t)args + sizeof(void*))));
 }
 
-/* virtual ::corto::lang::iterator::compatible(type type) */
+/* virtual /corto/lang/iterator/compatible(type type) */
 corto_bool _corto_iterator_compatible(corto_iterator this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -839,7 +839,7 @@ void __corto_method_init(corto_function f, void *result, void *args) {
         corto_method(*(void**)args));
 }
 
-/* virtual ::corto::lang::observableEvent::handle() */
+/* virtual /corto/lang/observableEvent/handle() */
 void _corto_observableEvent_handle(corto_observableEvent this) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -912,7 +912,7 @@ void __corto_observer_unbind(corto_function f, void *result, void *args) {
         corto_observer(*(corto_observer*)args));
 }
 
-/* virtual ::corto::lang::primitive::castable(type type) */
+/* virtual /corto/lang/primitive/castable(type type) */
 corto_bool _corto_primitive_castable(corto_primitive this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -943,7 +943,7 @@ void __corto_primitive_castable_v(corto_function f, void *result, void *args) {
         corto_type(*(corto_type*)((intptr_t)args + sizeof(void*))));
 }
 
-/* virtual ::corto::lang::primitive::compatible(type type) */
+/* virtual /corto/lang/primitive/compatible(type type) */
 corto_bool _corto_primitive_compatible(corto_primitive this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -1096,7 +1096,7 @@ void __corto_sequence_size(corto_function f, void *result, void *args) {
         *(corto_uint32*)((intptr_t)args + sizeof(corto_any)));
 }
 
-/* virtual ::corto::lang::struct::castable(type type) */
+/* virtual /corto/lang/struct/castable(type type) */
 corto_bool _corto_struct_castable(corto_struct this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -1127,7 +1127,7 @@ void __corto_struct_castable_v(corto_function f, void *result, void *args) {
         corto_type(*(corto_type*)((intptr_t)args + sizeof(void*))));
 }
 
-/* virtual ::corto::lang::struct::compatible(type type) */
+/* virtual /corto/lang/struct/compatible(type type) */
 corto_bool _corto_struct_compatible(corto_struct this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -1172,7 +1172,7 @@ void __corto_struct_init(corto_function f, void *result, void *args) {
         corto_struct(*(void**)args));
 }
 
-/* virtual ::corto::lang::struct::resolveMember(string name) */
+/* virtual /corto/lang/struct/resolveMember(string name) */
 corto_member _corto_struct_resolveMember(corto_struct this, corto_string name) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -1217,7 +1217,7 @@ void __corto_type_alignmentof(corto_function f, void *result, void *args) {
         corto_type(*(void**)args));
 }
 
-/* virtual ::corto::lang::type::allocSize() */
+/* virtual /corto/lang/type/allocSize() */
 corto_uint32 _corto_type_allocSize(corto_type this) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -1248,7 +1248,7 @@ void __corto_type_allocSize_v(corto_function f, void *result, void *args) {
         corto_type(*(void**)args));
 }
 
-/* virtual ::corto::lang::type::castable(type type) */
+/* virtual /corto/lang/type/castable(type type) */
 corto_bool _corto_type_castable(corto_type this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -1300,7 +1300,7 @@ void __corto_type_compare(corto_function f, void *result, void *args) {
         *(corto_any*)((intptr_t)args + sizeof(corto_any)));
 }
 
-/* virtual ::corto::lang::type::compatible(type type) */
+/* virtual /corto/lang/type/compatible(type type) */
 corto_bool _corto_type_compatible(corto_type this, corto_type type) {
     static corto_uint32 _methodId;
     corto_method _method;

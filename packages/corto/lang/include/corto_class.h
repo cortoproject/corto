@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-/* virtual ::corto::lang::class::allocSize() */
+/* virtual /corto/lang/class/allocSize() */
 CORTO_LANG_EXPORT corto_uint32 _corto_class_allocSize(corto_class _this);
 #define corto_class_allocSize(_this) _corto_class_allocSize(corto_class(_this))
 

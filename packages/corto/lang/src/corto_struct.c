@@ -14,13 +14,13 @@
 /* $end */
 
 corto_bool _corto_struct_castable_v(corto_struct this, corto_type type) {
-/* $begin(::corto::lang::struct::castable) */
+/* $begin(corto/lang/struct/castable) */
     return corto_struct_compatible(this, type);
 /* $end */
 }
 
 corto_bool _corto_struct_compatible_v(corto_struct this, corto_type type) {
-/* $begin(::corto::lang::struct::compatible) */
+/* $begin(corto/lang/struct/compatible) */
     corto_bool result;
 
     corto_assert(corto_class_instanceof(corto_struct_o, this), "struct::compatible called on non-struct object.");
@@ -48,7 +48,7 @@ corto_bool _corto_struct_compatible_v(corto_struct this, corto_type type) {
 }
 
 corto_int16 _corto_struct_construct(corto_struct this) {
-/* $begin(::corto::lang::struct::construct) */
+/* $begin(corto/lang/struct/construct) */
     corto_struct base;
     corto_uint16 alignment;
     corto_uint32 size;
@@ -132,7 +132,7 @@ error:
 }
 
 corto_int16 _corto_struct_init(corto_struct this) {
-/* $begin(::corto::lang::struct::init) */
+/* $begin(corto/lang/struct/init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
         this->baseAccess = CORTO_GLOBAL;
@@ -152,7 +152,7 @@ error:
 }
 
 corto_member _corto_struct_resolveMember_v(corto_struct this, corto_string name) {
-/* $begin(::corto::lang::struct::resolveMember) */
+/* $begin(corto/lang/struct/resolveMember) */
     corto_interface base;
     corto_member m;
 

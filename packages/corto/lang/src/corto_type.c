@@ -42,7 +42,7 @@ error:
 /* $end */
 
 corto_uint16 _corto_type_alignmentof(corto_type this) {
-/* $begin(::corto::lang::type::alignmentof) */
+/* $begin(corto/lang/type/alignmentof) */
     corto_uint16 alignment;
 
     if (this->reference) {
@@ -55,13 +55,13 @@ corto_uint16 _corto_type_alignmentof(corto_type this) {
 }
 
 corto_uint32 _corto_type_allocSize_v(corto_type this) {
-/* $begin(::corto::lang::type::allocSize) */
+/* $begin(corto/lang/type/allocSize) */
     return this->size;
 /* $end */
 }
 
 corto_bool _corto_type_castable_v(corto_type this, corto_type type) {
-/* $begin(::corto::lang::type::castable) */
+/* $begin(corto/lang/type/castable) */
     corto_bool result = FALSE;
 
     if (this->kind == CORTO_VOID) { /* A void reference can be casted to any reference type */
@@ -79,19 +79,19 @@ corto_bool _corto_type_castable_v(corto_type this, corto_type type) {
 }
 
 corto_bool _corto_type_checkAttr(corto_any this, corto_attr attributes) {
-/* $begin(::corto::lang::type::checkAttr) */
+/* $begin(corto/lang/type/checkAttr) */
     return corto_checkAttr(this.value, attributes);
 /* $end */
 }
 
 corto_bool _corto_type_checkState(corto_any this, corto_state state) {
-/* $begin(::corto::lang::type::checkState) */
+/* $begin(corto/lang/type/checkState) */
     return corto_checkState(this.value, state);
 /* $end */
 }
 
 corto_equalityKind _corto_type_compare(corto_any this, corto_any value) {
-/* $begin(::corto::lang::type::compare) */
+/* $begin(corto/lang/type/compare) */
     corto_compare_ser_t data;
     struct corto_serializer_s s;
     corto_value v1;
@@ -108,7 +108,7 @@ corto_equalityKind _corto_type_compare(corto_any this, corto_any value) {
 }
 
 corto_bool _corto_type_compatible_v(corto_type this, corto_type type) {
-/* $begin(::corto::lang::type::compatible) */
+/* $begin(corto/lang/type/compatible) */
     corto_bool result;
 
     result = FALSE;
@@ -132,7 +132,7 @@ corto_bool _corto_type_compatible_v(corto_type this, corto_type type) {
 }
 
 corto_int16 _corto_type_construct(corto_type this) {
-/* $begin(::corto::lang::type::construct) */
+/* $begin(corto/lang/type/construct) */
     switch(this->kind) {
     case CORTO_ANY:
         this->size = sizeof(corto_any);
@@ -146,7 +146,7 @@ corto_int16 _corto_type_construct(corto_type this) {
 }
 
 corto_int16 _corto_type_copy(corto_any this, corto_any value) {
-/* $begin(::corto::lang::type::copy) */
+/* $begin(corto/lang/type/copy) */
     corto_copy_ser_t data;
     struct corto_serializer_s s;
     corto_value v1;
@@ -175,7 +175,7 @@ corto_int16 _corto_type_copy(corto_any this, corto_any value) {
 }
 
 corto_object _corto_type_declare(corto_any this, corto_string name, corto_type type) {
-/* $begin(::corto::lang::type::declare) */
+/* $begin(corto/lang/type/declare) */
     corto_object result = corto_declareChild(this.value, name, type);
     corto_claim(result);
     return result;
@@ -183,19 +183,19 @@ corto_object _corto_type_declare(corto_any this, corto_string name, corto_type t
 }
 
 corto_int16 _corto_type_define(corto_any this) {
-/* $begin(::corto::lang::type::define) */
+/* $begin(corto/lang/type/define) */
     return corto_define(this.value);
 /* $end */
 }
 
 corto_void _corto_type_delete(corto_any this) {
-/* $begin(::corto::lang::type::delete) */
+/* $begin(corto/lang/type/delete) */
     corto_delete(this.value);
 /* $end */
 }
 
 corto_void _corto_type_destruct(corto_type this) {
-/* $begin(::corto::lang::type::destruct) */
+/* $begin(corto/lang/type/destruct) */
     corto_uint32 i;
 
     /* Free methods */
@@ -211,7 +211,7 @@ corto_void _corto_type_destruct(corto_type this) {
 }
 
 corto_string _corto_type_fullname(corto_any this) {
-/* $begin(::corto::lang::type::fullname) */
+/* $begin(corto/lang/type/fullname) */
     corto_string result = NULL;
 
     if (this.value) {
@@ -226,7 +226,7 @@ corto_string _corto_type_fullname(corto_any this) {
 }
 
 corto_int16 _corto_type_init(corto_type this) {
-/* $begin(::corto::lang::type::init) */
+/* $begin(corto/lang/type/init) */
     if (!this->parentState) {
         this->parentState = CORTO_DECLARED | CORTO_DEFINED;
     }
@@ -235,25 +235,25 @@ corto_int16 _corto_type_init(corto_type this) {
 }
 
 corto_bool _corto_type_instanceof(corto_any this, corto_type type) {
-/* $begin(::corto::lang::type::instanceof) */
+/* $begin(corto/lang/type/instanceof) */
     return corto_instanceof(type, this.value);
 /* $end */
 }
 
 corto_void _corto_type_invalidate(corto_any this) {
-/* $begin(::corto::lang::type::invalidate) */
+/* $begin(corto/lang/type/invalidate) */
     corto_invalidate(this.value);
 /* $end */
 }
 
 corto_object _corto_type_lookup(corto_any this, corto_string name) {
-/* $begin(::corto::lang::type::lookup) */
+/* $begin(corto/lang/type/lookup) */
     return corto_lookup(this.value, name);
 /* $end */
 }
 
 corto_string _corto_type_nameof(corto_any this) {
-/* $begin(::corto::lang::type::nameof) */
+/* $begin(corto/lang/type/nameof) */
     corto_string result = NULL;
 
     if (this.value) {
@@ -270,7 +270,7 @@ corto_string _corto_type_nameof(corto_any this) {
 }
 
 corto_object _corto_type_parentof(corto_any this) {
-/* $begin(::corto::lang::type::parentof) */
+/* $begin(corto/lang/type/parentof) */
     corto_string result = NULL;
 
    if (corto_checkAttr(this.value, CORTO_ATTR_SCOPED)) {
@@ -289,7 +289,7 @@ corto_object _corto_type_parentof(corto_any this) {
 }
 
 corto_string _corto_type_relname(corto_any this, corto_object from) {
-/* $begin(::corto::lang::type::relname) */
+/* $begin(corto/lang/type/relname) */
     corto_string result = NULL;
     corto_id id;
 
@@ -304,13 +304,13 @@ corto_string _corto_type_relname(corto_any this, corto_object from) {
 }
 
 corto_object _corto_type_resolve(corto_any this, corto_string name) {
-/* $begin(::corto::lang::type::resolve) */
+/* $begin(corto/lang/type/resolve) */
     return corto_resolve(this.value, name);
 /* $end */
 }
 
 corto_function _corto_type_resolveProcedure(corto_type this, corto_string name) {
-/* $begin(::corto::lang::type::resolveProcedure) */
+/* $begin(corto/lang/type/resolveProcedure) */
     corto_function result = NULL;
 
     /* If type is an interface, try first to resolve a method on the interface */
@@ -341,7 +341,7 @@ corto_function _corto_type_resolveProcedure(corto_type this, corto_string name) 
 }
 
 corto_uint32 _corto_type_sizeof(corto_type this) {
-/* $begin(::corto::lang::type::sizeof) */
+/* $begin(corto/lang/type/sizeof) */
     corto_uint32 size;
     if (this->reference) {
         size = sizeof(corto_object);
@@ -353,7 +353,7 @@ corto_uint32 _corto_type_sizeof(corto_type this) {
 }
 
 corto_string _corto_type_toString(corto_any this) {
-/* $begin(::corto::lang::type::toString) */
+/* $begin(corto/lang/type/toString) */
     corto_value value;
     corto_string result;
 
@@ -373,7 +373,7 @@ corto_string _corto_type_toString(corto_any this) {
 }
 
 corto_type _corto_type_typeof(corto_any this) {
-/* $begin(::corto::lang::type::typeof) */
+/* $begin(corto/lang/type/typeof) */
     corto_type result = NULL;
 
     result = this.type;

@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-/* virtual ::corto::lang::invokeEvent::handle() */
+/* virtual /corto/lang/invokeEvent/handle() */
 CORTO_LANG_EXPORT void _corto_invokeEvent_handle(corto_invokeEvent _this);
 #define corto_invokeEvent_handle(_this) _corto_invokeEvent_handle(corto_invokeEvent(_this))
 

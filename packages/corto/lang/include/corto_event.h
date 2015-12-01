@@ -13,7 +13,7 @@
 extern "C" {
 #endif
 
-/* virtual ::corto::lang::event::handle() */
+/* virtual /corto/lang/event/handle() */
 CORTO_LANG_EXPORT void _corto_event_handle(corto_event _this);
 #define corto_event_handle(_this) _corto_event_handle(corto_event(_this))
 

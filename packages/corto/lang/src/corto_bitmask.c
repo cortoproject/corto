@@ -25,7 +25,7 @@ corto_int16 corto__bitmask_bindConstant(corto_bitmask this, corto_constant* c) {
 /* $end */
 
 corto_int16 _corto_bitmask_init(corto_bitmask this) {
-/* $begin(::corto::lang::bitmask::init) */
+/* $begin(corto/lang/bitmask/init) */
     corto_primitive(this)->kind = CORTO_BITMASK;
     corto_primitive(this)->width = CORTO_WIDTH_32;
     return corto_primitive_init((corto_primitive)this);

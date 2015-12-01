@@ -189,7 +189,7 @@ void corto_class_detachObservers(corto_class this, corto_object object) {
 /* $end */
 
 corto_uint32 _corto_class_allocSize_v(corto_class this) {
-/* $begin(::corto::lang::class::allocSize) */
+/* $begin(corto/lang/class/allocSize) */
     corto_uint32 observerCount;
     corto_uint32 size;
 
@@ -204,7 +204,7 @@ corto_uint32 _corto_class_allocSize_v(corto_class this) {
 }
 
 corto_void _corto_class_bindObserver(corto_class this, corto_observer observer) {
-/* $begin(::corto::lang::class::bindObserver) */
+/* $begin(corto/lang/class/bindObserver) */
     this->observers.buffer = corto_realloc(this->observers.buffer, (this->observers.length + 1) * sizeof(corto_observer));
     this->observers.buffer[this->observers.length] = observer;
     this->observers.length++;
@@ -214,7 +214,7 @@ corto_void _corto_class_bindObserver(corto_class this, corto_observer observer) 
 }
 
 corto_int16 _corto_class_construct(corto_class this) {
-/* $begin(::corto::lang::class::construct) */
+/* $begin(corto/lang/class/construct) */
     corto_int16 result;
     corto_uint32 i;
 
@@ -248,7 +248,7 @@ corto_int16 _corto_class_construct(corto_class this) {
 }
 
 corto_void _corto_class_destruct(corto_class this) {
-/* $begin(::corto::lang::class::destruct) */
+/* $begin(corto/lang/class/destruct) */
     corto_uint32 i,j;
     corto_interfaceVector *v;
 
@@ -278,7 +278,7 @@ corto_void _corto_class_destruct(corto_class this) {
 }
 
 corto_eventMask _corto_class_eventMaskOf(corto_any this, corto_observer observer) {
-/* $begin(::corto::lang::class::eventMaskOf) */
+/* $begin(corto/lang/class/eventMaskOf) */
 
     corto_observerTable* observers;
     corto_eventMask result = 0;
@@ -298,7 +298,7 @@ corto_eventMask _corto_class_eventMaskOf(corto_any this, corto_observer observer
 }
 
 corto_observer _corto_class_findObserver(corto_class this, corto_object observable) {
-/* $begin(::corto::lang::class::findObserver) */
+/* $begin(corto/lang/class/findObserver) */
     corto_uint32 i;
     corto_observer result = NULL;
 
@@ -314,7 +314,7 @@ corto_observer _corto_class_findObserver(corto_class this, corto_object observab
 }
 
 corto_int16 _corto_class_init(corto_class this) {
-/* $begin(::corto::lang::class::init) */
+/* $begin(corto/lang/class/init) */
     if (corto_struct_init(this)) {
         goto error;
     }
@@ -329,7 +329,7 @@ error:
 }
 
 corto_bool _corto_class_instanceof(corto_class this, corto_object object) {
-/* $begin(::corto::lang::class::instanceof) */
+/* $begin(corto/lang/class/instanceof) */
     corto_type t;
     corto_bool result;
 
@@ -353,7 +353,7 @@ corto_bool _corto_class_instanceof(corto_class this, corto_object object) {
 }
 
 corto_void _corto_class_listen(corto_any this, corto_observer observer, corto_eventMask mask, corto_object observable, corto_dispatcher dispatcher) {
-/* $begin(::corto::lang::class::listen) */
+/* $begin(corto/lang/class/listen) */
     corto_observerTable* observers;
 
     observers = corto_class_getObserverVtable(this.value);
@@ -374,7 +374,7 @@ corto_void _corto_class_listen(corto_any this, corto_observer observer, corto_ev
 }
 
 corto_object _corto_class_observableOf(corto_any this, corto_observer observer) {
-/* $begin(::corto::lang::class::observableOf) */
+/* $begin(corto/lang/class/observableOf) */
     corto_observerTable* observers;
     corto_object result = NULL;
     corto_object me = this.value;
@@ -392,7 +392,7 @@ corto_object _corto_class_observableOf(corto_any this, corto_observer observer) 
 }
 
 corto_method _corto_class_resolveInterfaceMethod(corto_class this, corto_interface interface, corto_uint32 method) {
-/* $begin(::corto::lang::class::resolveInterfaceMethod) */
+/* $begin(corto/lang/class/resolveInterfaceMethod) */
     corto_uint32 i;
     corto_interfaceVector *v;
 
@@ -419,7 +419,7 @@ error:
 }
 
 corto_void _corto_class_setDispatcher(corto_any this, corto_observer observer, corto_dispatcher dispatcher) {
-/* $begin(::corto::lang::class::setDispatcher) */
+/* $begin(corto/lang/class/setDispatcher) */
 
     corto_observerTable* observers;
 
@@ -437,7 +437,7 @@ corto_void _corto_class_setDispatcher(corto_any this, corto_observer observer, c
 }
 
 corto_void _corto_class_setMask(corto_any this, corto_observer observer, corto_eventMask mask) {
-/* $begin(::corto::lang::class::setMask) */
+/* $begin(corto/lang/class/setMask) */
 
     corto_observerTable* observers;
 
@@ -455,7 +455,7 @@ corto_void _corto_class_setMask(corto_any this, corto_observer observer, corto_e
 }
 
 corto_void _corto_class_setObservable(corto_any this, corto_observer observer, corto_object observable) {
-/* $begin(::corto::lang::class::setObservable) */
+/* $begin(corto/lang/class/setObservable) */
 
     corto_observerTable* observers;
 

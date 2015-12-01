@@ -9,7 +9,7 @@
 #include "corto.h"
 
 corto_int16 _corto_uint_init(corto_uint this) {
-/* $begin(::corto::lang::uint::init) */
+/* $begin(corto/lang/uint/init) */
     corto_primitive(this)->kind = CORTO_UINTEGER;
     return corto_primitive_init((corto_primitive)this);
 /* $end */

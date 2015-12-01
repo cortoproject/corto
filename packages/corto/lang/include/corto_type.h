@@ -16,14 +16,14 @@ extern "C" {
 CORTO_LANG_EXPORT corto_uint16 _corto_type_alignmentof(corto_type _this);
 #define corto_type_alignmentof(_this) _corto_type_alignmentof(corto_type(_this))
 
-/* virtual ::corto::lang::type::allocSize() */
+/* virtual /corto/lang/type/allocSize() */
 CORTO_LANG_EXPORT corto_uint32 _corto_type_allocSize(corto_type _this);
 #define corto_type_allocSize(_this) _corto_type_allocSize(corto_type(_this))
 
 CORTO_LANG_EXPORT corto_uint32 _corto_type_allocSize_v(corto_type _this);
 #define corto_type_allocSize_v(_this) _corto_type_allocSize_v(corto_type(_this))
 
-/* virtual ::corto::lang::type::castable(type type) */
+/* virtual /corto/lang/type/castable(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_type_castable(corto_type _this, corto_type type);
 #define corto_type_castable(_this, type) _corto_type_castable(corto_type(_this), corto_type(type))
 
@@ -39,7 +39,7 @@ CORTO_LANG_EXPORT corto_bool _corto_type_checkState(corto_any _this, corto_state
 CORTO_LANG_EXPORT corto_equalityKind _corto_type_compare(corto_any _this, corto_any value);
 #define corto_type_compare(_this, value) _corto_type_compare(_this, value)
 
-/* virtual ::corto::lang::type::compatible(type type) */
+/* virtual /corto/lang/type/compatible(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_type_compatible(corto_type _this, corto_type type);
 #define corto_type_compatible(_this, type) _corto_type_compatible(corto_type(_this), corto_type(type))
 

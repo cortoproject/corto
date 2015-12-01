@@ -100,13 +100,13 @@ corto_int16 corto_iterator_set(void* this, void* collection, corto_collection co
 /* $end */
 
 corto_bool _corto_iterator_castable_v(corto_iterator this, corto_type type) {
-/* $begin(::corto::lang::iterator::castable) */
+/* $begin(corto/lang/iterator/castable) */
     return corto_iterator_compatible_v(this, type);
 /* $end */
 }
 
 corto_bool _corto_iterator_compatible_v(corto_iterator this, corto_type type) {
-/* $begin(::corto::lang::iterator::compatible) */
+/* $begin(corto/lang/iterator/compatible) */
     corto_bool result = FALSE;
     if (type->kind == CORTO_COLLECTION) {
         if (corto_collection(type)->elementType == this->elementType) {
@@ -118,7 +118,7 @@ corto_bool _corto_iterator_compatible_v(corto_iterator this, corto_type type) {
 }
 
 corto_int16 _corto_iterator_init(corto_iterator this) {
-/* $begin(::corto::lang::iterator::init) */
+/* $begin(corto/lang/iterator/init) */
     corto_type(this)->kind = CORTO_ITERATOR;
     CORTO_ITERATOR(iteratorType);
     corto_type(this)->size = sizeof(iteratorType);

@@ -9,7 +9,7 @@
 #include "corto.h"
 
 corto_int16 _corto_method_bind(corto_method this) {
-/* $begin(::corto::lang::method::bind) */
+/* $begin(corto/lang/method/bind) */
     
     /* Bind function */
     if (corto_function_bind(corto_function(this))) {
@@ -23,7 +23,7 @@ error:
 }
 
 corto_int16 _corto_method_init(corto_method this) {
-/* $begin(::corto::lang::method::init) */
+/* $begin(corto/lang/method/init) */
     corto_object parent;
     
     /* Locate parent class object */

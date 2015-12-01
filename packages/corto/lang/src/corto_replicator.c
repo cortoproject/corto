@@ -39,7 +39,7 @@ corto_void corto_replicator_attach(
 /* $end */
 
 corto_int16 _corto_replicator_construct(corto_replicator this) {
-/* $begin(::corto::lang::replicator::construct) */
+/* $begin(corto/lang/replicator/construct) */
     corto_object observable = this->query ? this->query->from : this->mount;
     corto_eventMask mask = this->query ? this->query->mask : CORTO_ON_SCOPE;
 
@@ -61,7 +61,7 @@ corto_int16 _corto_replicator_construct(corto_replicator this) {
 }
 
 corto_void _corto_replicator_destruct(corto_replicator this) {
-/* $begin(::corto::lang::replicator::destruct) */
+/* $begin(corto/lang/replicator/destruct) */
 
     CORTO_UNUSED(this);
 
@@ -69,7 +69,7 @@ corto_void _corto_replicator_destruct(corto_replicator this) {
 }
 
 corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
-/* $begin(::corto::lang::replicator::invoke) */
+/* $begin(corto/lang/replicator/invoke) */
     corto_object owner = corto_ownerof(instance);
 
     if (owner == this) {
@@ -90,7 +90,7 @@ corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance
 }
 
 corto_void _corto_replicator_on_declare(corto_replicator this, corto_object observable) {
-/* $begin(::corto::lang::replicator::on_declare) */
+/* $begin(corto/lang/replicator/on_declare) */
 
     if (observable != root_o) {
         corto_notifyActionCall(&this->onDeclare, observable);
@@ -100,7 +100,7 @@ corto_void _corto_replicator_on_declare(corto_replicator this, corto_object obse
 }
 
 corto_void _corto_replicator_on_delete(corto_replicator this, corto_object observable) {
-/* $begin(::corto::lang::replicator::on_delete) */
+/* $begin(corto/lang/replicator/on_delete) */
 
     corto_notifyActionCall(&this->onDelete, observable);
 
@@ -108,7 +108,7 @@ corto_void _corto_replicator_on_delete(corto_replicator this, corto_object obser
 }
 
 corto_void _corto_replicator_on_update(corto_replicator this, corto_object observable) {
-/* $begin(::corto::lang::replicator::on_update) */
+/* $begin(corto/lang/replicator/on_update) */
 
     if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
         corto_notifyActionCall(&this->onUpdate, observable);
@@ -118,7 +118,7 @@ corto_void _corto_replicator_on_update(corto_replicator this, corto_object obser
 }
 
 corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
-/* $begin(::corto::lang::replicator::post) */
+/* $begin(corto/lang/replicator/post) */
 
     CORTO_UNUSED(this);
     corto_event_handle(e);

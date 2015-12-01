@@ -19,14 +19,14 @@ corto_int16 corto_iterator_set(void *_this, void *collection, corto_collection c
 corto_bool corto_iterator_next(void *_this);
 /* $end */
 
-/* virtual ::corto::lang::iterator::castable(type type) */
+/* virtual /corto/lang/iterator/castable(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_iterator_castable(corto_iterator _this, corto_type type);
 #define corto_iterator_castable(_this, type) _corto_iterator_castable(corto_iterator(_this), corto_type(type))
 
 CORTO_LANG_EXPORT corto_bool _corto_iterator_castable_v(corto_iterator _this, corto_type type);
 #define corto_iterator_castable_v(_this, type) _corto_iterator_castable_v(corto_iterator(_this), corto_type(type))
 
-/* virtual ::corto::lang::iterator::compatible(type type) */
+/* virtual /corto/lang/iterator/compatible(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_iterator_compatible(corto_iterator _this, corto_type type);
 #define corto_iterator_compatible(_this, type) _corto_iterator_compatible(corto_iterator(_this), corto_type(type))
 

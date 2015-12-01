@@ -19,7 +19,6 @@ Enables construction of fixed length, consecutively stored collections.
 ### destruct()
 ### elementType
 Element type of the array.
-
 This field can be any type except for non-reference VOID types. The elementType
 for an array must be DEFINED, whereas in other collections this is not required.
 The rationale behind this is that at construction time, the type will calculate
@@ -29,7 +28,6 @@ it's size, which in the case of an array depends on the size of its elementType.
 
 ## attr
 Object attributes.
-
 `ATTR_DEFAULT` will automatically add `ATTR_OBSERVABLE` for all types, `ATTR_WRITABLE`
 for non-VOID objects and `ATTR_PERSISTENT` when `ATTR_SCOPED` is selected.
 
@@ -70,7 +68,6 @@ The object will be writable, which means its value can be locked.
 
 ## binary
 Enables construction of binary types.
-
 A binary type is a type that does not undergo translation when it is transmitted
 over a (networked) medium. For example, some network protocols may require byte
 swapping to match endianness, but binary values will be left intact.
@@ -88,7 +85,6 @@ bin16 b: 0xFF
 
 ## bitmask
 Enables construction of bitmask types.
-
 Bitmasks are values of which each bit is assigned a semantical meaning. Bits can
 be enabled (set to 1) or disabled (set to 0).
 
@@ -127,7 +123,6 @@ Scalar boolean type.
 
 ## boolean
 Enables construction of boolean types.
-
 Boolean values can be either `true` or `false`.
 ### init()
 #### Returns
@@ -137,7 +132,6 @@ Scalar character type.
 
 ## character
 Enables construction of character types.
-
 Characters are types that can represent a single character. Currently only the ASCII
 character set is supported. Future versions of Corto will add support for UTF-8.
 ### init()
@@ -145,7 +139,6 @@ character set is supported. Future versions of Corto will add support for UTF-8.
 
 ## class
 Enables creating composite types that can inherit from & implement interfaces.
-
 A class is a reference type, which means that any object created by a
 class by definition is an object. Therefore, a class can offer additional
 functionality over what is provided by a `struct`, which is a valuetype.
@@ -198,6 +191,7 @@ class Foo::
     observer onUpdate: ON_UPDATE | ON_TREE, ::corto
 ```
 ### allocSize()
+#### Returns
 ### base
 ### baseAccess
 ### bindObserver(observer observer)
@@ -266,11 +260,9 @@ Enables construction of collection types.
 #### Returns
 ### elementRequiresAlloc()
 Returns whether memory has to be allocated to accommodate for a new element.
-
 Arrays and sequences will always return false, since memory for elements is
 allocated in a consecutive block. Lists and maps require allocations for
 value types as element type that are larger than the size of a word.
-
 #### Returns
 ### elementType
 The type of which the elements in a collection will be. Depending on the kind
@@ -288,7 +280,6 @@ The maximum number of elements for a given collection type.
 
 ## collectionKind
 Lists the different corto collection kinds.
-
 The collectionKind enumeration is used in the collection class to be able to
 quickly determine what kind of collection it describes. This enumeration is
 interpreted primarily by code that relies on metadata, such as the serializer
@@ -304,7 +295,6 @@ Indicates a sequence collection.
 
 ## compositeKind
 Composite typekinds.
-
 The compositeKind enumeration is used in the interface class to be able to
 quickly determine what kind of composite it describes. This enumeration is
 interpreted primarily by code that relies on metadata, such as the serializer
@@ -347,20 +337,15 @@ Enables construction of delegate types.
 
 ## delegatedata
 Base for all delegate types.
-
 Delegates are composite types, which allows a user to add custom members
 and methods to a delegate type. Each delegate type inherits from the
 delegatedata struct, which provides it with an instance and procedure object.
-
 ### instance
 The instance of the delegate.
-
 This member may be `null` when the procedure is not an
 instance method.
-
 ### procedure
 The procedure of the delegate.
-
 The procedure must match the delegate type. Any
 procedure that inherits from `corto/lang/function` is allowed.
 
@@ -369,7 +354,6 @@ Delegate used for class destructors.
 
 ## dispatcher
 Interface for manual dispatching of events.
-
 Dispatchers allow for intercepting various Corto events, which can then be
 handled by a user in an appropriate way. An example could be to handle an event
 in a different thread (threadpools) or to forward an event to a different
@@ -378,31 +362,20 @@ process.
 A typical use for a dispatcher is to be associated with an observer, in which
 case all object notifications are delivered to the post method as
 `corto/lang/observableEvent` objects.
-
 ### post(event e)
 The post method is invoked when an event is intercepted.
 #### e
-An instance of `corto/lang/event`. A post function is expected to (indirectly)
-invoke the `corto/lang/event/handle` function, which will run the associated
-action for an event.
 
 ## enum
 Enables construction of enumeration types.
 ### constant(int32 value)
 Lookup a constant object by value.
-
 Example:
 ```
 corto_constant *Red = enum_constant(Color, Color_Red);
 ```
-
 #### value
-The integer value of a constant in the provided enumeration.
-
 #### Returns
-Returns `null` when the provided value does not correspond to a constant in the
-enumeration. Otherwise the constant object is returned.
-
 ### constants
 ### construct()
 #### Returns
@@ -412,7 +385,6 @@ enumeration. Otherwise the constant object is returned.
 
 ## equalityKind
 Used as result of equality comparisons.
-
 The most common use of equalityKind is in the core compare functions, which
 are used for various purposes. Both the typesystem and core rely on comparisons
 for storing objects in tree structures, where the hierarchical object store is
@@ -438,7 +410,6 @@ Base class for all events.
 
 ## eventMask
 Flags that can be provided to subscribe for object notifications.
-
 Event masks provide an easy mechanism to get notified of changes in
 the lifecycle of objects. Different constants can be combined in a mask
 to subscribe for multiple events at once.
@@ -494,38 +465,28 @@ Enables construction of procedure objects.
 #### Returns
 ### impl
 Callback to the language-binding specific handler for invoking functions.
-
 ### implData
 A pointer to userdata containing the language-binding specific function object.
-
 ### init()
 #### Returns
 ### kind
 ### nextParameterId
 ### overloaded
 Indicates whether a function is overloaded.
-
 This member is set automatically when a function is declared that overloads an
 already existing function.
-
 ### parameters
 List of function parameters.
-
 ### resource
 Deprecated. Allows a user to associate an object with the lifecycle of a
 function.
-
 ### returnsReference
 Indicates whether the function returns a reference.
-
 This field does not need to be set when the return type is a reference type.
-
 ### returnType
 The return type of the function.
-
 ### size
 The size on stack of the function argument list.
-
 ### stringToParameterSeq(string name,object scope)
 #### name
 #### scope
@@ -753,7 +714,6 @@ Sequence of octet elements
 
 ## operatorKind
 Operators supported by the core.
-
 The operator kind is used by the core in the `corto_unaryOperator` and
 `corto_binaryOperator` functions. The following code shows an example:
 
@@ -864,7 +824,6 @@ Enables construction of primitive types.
 
 ## primitiveKind
 Lists the possible primitive types in Corto.
-
 The `primitiveKind` enumeration is used in `corto::lang::primitive` to quickly
 determine what kind of primitive is described by a type. The kind is automatically
 set by each primitive subclass.
@@ -946,6 +905,11 @@ Base for classes that replicate data between datasources.
 #### e
 ### query
 
+## selectResult
+### name
+### parent
+### type
+
 ## sequence
 Enables construction of variable length, consecutive collection.
 ### construct()
@@ -957,7 +921,6 @@ Enables construction of variable length, consecutive collection.
 
 ## state
 Object states.
-
 Object states provide information about where in its lifecycle an object is. This
 information is important when determining whether to interpret the value of the
 object. The value of an undefined objects should not be interpreted.
@@ -1178,7 +1141,6 @@ Type used to represent the method table of interface types.
 ## width
 Enables representing width in bits.
 Example:
-
 ```
 if ((type->kind == CORTO_PRIMITIVE) &&
     (corto_primitive(type)->kind == CORTO_INTEGER) &&

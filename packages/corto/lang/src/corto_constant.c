@@ -14,7 +14,7 @@
 /* $end */
 
 corto_int16 _corto_constant_init(corto_constant *this) {
-/* $begin(::corto::lang::constant::init) */
+/* $begin(corto/lang/constant/init) */
     corto_object parent;
 
     parent = corto_parentof(this);

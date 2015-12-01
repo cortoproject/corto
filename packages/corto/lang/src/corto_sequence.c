@@ -27,7 +27,7 @@ int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_ui
 /* $end */
 
 corto_int16 _corto_sequence_construct(corto_sequence this) {
-/* $begin(::corto::lang::sequence::construct) */
+/* $begin(corto/lang/sequence/construct) */
     corto_type(this)->hasResources = TRUE;
     corto_type(this)->size = sizeof(__dummySeq);
     corto_type(this)->alignment = CORTO_ALIGNMENT(__dummySeq);
@@ -42,14 +42,14 @@ error:
 }
 
 corto_int16 _corto_sequence_init(corto_sequence this) {
-/* $begin(::corto::lang::sequence::init) */
+/* $begin(corto/lang/sequence/init) */
     corto_collection(this)->kind = CORTO_SEQUENCE;
     return corto_collection_init(corto_collection(this));
 /* $end */
 }
 
 corto_void _corto_sequence_size(corto_any this, corto_uint32 size) {
-/* $begin(::corto::lang::sequence::size) */
+/* $begin(corto/lang/sequence/size) */
     corto_uint32 oldSize, elementSize;
 
     oldSize = ((corto_objectseq*)this.value)->length;

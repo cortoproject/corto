@@ -14,14 +14,14 @@
 extern "C" {
 #endif
 
-/* virtual ::corto::lang::primitive::castable(type type) */
+/* virtual /corto/lang/primitive/castable(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_primitive_castable(corto_primitive _this, corto_type type);
 #define corto_primitive_castable(_this, type) _corto_primitive_castable(corto_primitive(_this), corto_type(type))
 
 CORTO_LANG_EXPORT corto_bool _corto_primitive_castable_v(corto_primitive _this, corto_type type);
 #define corto_primitive_castable_v(_this, type) _corto_primitive_castable_v(corto_primitive(_this), corto_type(type))
 
-/* virtual ::corto::lang::primitive::compatible(type type) */
+/* virtual /corto/lang/primitive/compatible(type type) */
 CORTO_LANG_EXPORT corto_bool _corto_primitive_compatible(corto_primitive _this, corto_type type);
 #define corto_primitive_compatible(_this, type) _corto_primitive_compatible(corto_primitive(_this), corto_type(type))
 
