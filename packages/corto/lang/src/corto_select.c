@@ -391,6 +391,10 @@ static void corto_selectRequestReplicators(
 
 static void corto_selectIterateReplicators(corto_selectData *data) {
     if (data->activeReplicators) {
+        if (data->currentReplicator < 0) {
+            data->currentReplicator = 0;
+        }
+        
         /* Walk over iterators until one with data available has been found */
         while ((data->currentReplicator < data->activeReplicators)) {
             corto_resultIter *iter = &data->replicators[data->currentReplicator];
@@ -418,6 +422,7 @@ static void corto_selectIterateReplicators(corto_selectData *data) {
                 /* Return item */
                 break;
             } else {
+                corto_iterRelease(iter);
                 data->currentReplicator ++;
             }
         }

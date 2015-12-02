@@ -347,6 +347,7 @@ corto_iter _corto_llIter(corto_ll list, void *udata) {
     result.remove = corto_llIterRemove;
     result.insert = corto_llIterInsert;
     result.set = corto_llIterSet;
+    result.release = NULL;
 
     return result;
 }
@@ -361,6 +362,7 @@ corto_iter corto_llIterAlloc(corto_ll list) {
 
 void corto_llIterRelease(corto_iter *iter) {
     corto_dealloc(iter->udata);
+    iter->udata = NULL;
 }
 
 void corto_llIterMoveFirst(corto_iter* iter) {
