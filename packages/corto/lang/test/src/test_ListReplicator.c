@@ -11,6 +11,7 @@
 corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_object parent, corto_string expr) {
 /* $begin(test/ListReplicator/onRequest) */
 
+    /* Return persistent iterator to request */
     return corto_llIterAlloc(this->items);
 
 /* $end */

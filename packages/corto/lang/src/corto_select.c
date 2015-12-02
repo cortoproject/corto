@@ -389,41 +389,51 @@ static void corto_selectRequestReplicators(
     }
 }
 
-static void corto_selectIterateReplicators(corto_selectData *data) {
+static void corto_selectIterateReplicators(
+    corto_selectData *data,
+    corto_selectStack *frame)
+{
     if (data->activeReplicators) {
         if (data->currentReplicator < 0) {
             data->currentReplicator = 0;
         }
-        
+
         /* Walk over iterators until one with data available has been found */
         while ((data->currentReplicator < data->activeReplicators)) {
             corto_resultIter *iter = &data->replicators[data->currentReplicator];
-            if (corto_iterHasNext(iter)) {
+            while (corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
-                data->next = &data->item;
+                if (!frame->filter ||
+                    corto_selectMatch(frame->filter, result->name))
+                {
+                    data->next = &data->item;
 
-                /* Copy data, so replicator can safely release it */
-                if (result->name) {
-                    strcpy(data->item.name, result->name);
-                } else {
-                    data->item.name[0] = '\0';
-                }
-                if (result->parent) {
-                    strcpy(data->item.parent, result->name);
-                } else {
-                    data->item.parent[0] = '\0';
-                }
-                if (result->type) {
-                    strcpy(data->item.type, result->name);
-                } else {
-                    data->item.type[0] = '\0';
-                }
+                    /* Copy data, so replicator can safely release it */
+                    if (result->name) {
+                        strcpy(data->item.name, result->name);
+                    } else {
+                        data->item.name[0] = '\0';
+                    }
+                    if (result->parent) {
+                        strcpy(data->item.parent, result->name);
+                    } else {
+                        data->item.parent[0] = '\0';
+                    }
+                    if (result->type) {
+                        strcpy(data->item.type, result->name);
+                    } else {
+                        data->item.type[0] = '\0';
+                    }
 
-                /* Return item */
-                break;
-            } else {
+                    break;
+                }
+            }
+
+            if (!data->next) {
                 corto_iterRelease(iter);
                 data->currentReplicator ++;
+            } else {
+                break;
             }
         }
     }
@@ -459,7 +469,7 @@ static void corto_selectScope(
 
     /* Handle replicator iteration outside of scope lock */
     if (!data->next) {
-        corto_selectIterateReplicators(data);
+        corto_selectIterateReplicators(data, frame);
     }
 }
 
@@ -558,19 +568,19 @@ static int corto_selectRun(corto_selectData *data) {
         case TOKEN_IDENTIFIER:
             explicitRef = TRUE;
             if (!op->containsWildcard) {
-                frame->next = corto_selectThis;
                 corto_object o = corto_lookup(frame->o, op->start);
-                corto_setref(&frame->o, o);
                 if (o) {
+                    frame->next = corto_selectThis;
+                    corto_setref(&frame->o, o);
                     corto_release(o);
-                } else {
-                    corto_seterr("unresolved identifier '%s'", op->start);
-                    goto error;
+                    break;
                 }
-                break;
-            } else {
-                frame->filter = op->start;
             }
+
+            /* If expression contains wildcard OR does not resolve to an object,
+             * lookup object in scope (and replicators) */
+            frame->filter = op->start;
+
         case TOKEN_WILDCARD:
             if (op->token == TOKEN_WILDCARD) {
                 frame->filter = "?";

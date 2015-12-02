@@ -228,8 +228,10 @@ test::Suite ReplicatorRequest::
     void setup() method
     void teardown() method
     replicator: ListReplicator
+    void tc_selectSingle()
     void tc_selectScope()
     void tc_selectScopeMixed()
+    void tc_selectScopeFilter()
 
 // Test Event scenarios
 class EventTest::
