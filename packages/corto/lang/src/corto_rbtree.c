@@ -144,7 +144,11 @@ static void* corto_rbtreeIterNext(corto_iter *iter) {
 }
 
 corto_bool corto_rbtreeIterChanged(corto_iter *iter) {
-    return jsw_rbtchanged(corto_iterData(iter));
+    if (corto_iterData(iter)) {
+        return jsw_rbtchanged(corto_iterData(iter));
+    } else {
+        return FALSE;
+    }
 }
 
 corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata) {

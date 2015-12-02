@@ -83,13 +83,7 @@ corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance
     corto_object owner = corto_ownerof(instance);
 
     if (owner == this) {
-        if (this->onInvoke._parent.procedure) {
-            corto_octetseq argbuff = args;
-            argbuff.buffer = corto_alloc(args.length * sizeof(corto_octet));
-            memcpy(argbuff.buffer, args.buffer, args.length * sizeof(corto_octet));
-            corto_invokeEvent e = corto_invokeEventCreate(this, instance, proc, argbuff);
-            corto_dispatcher_post(this, e);
-        }
+        corto_replicator_onInvoke(this, instance, proc, args);
     } else {
         corto_object prevowner = corto_setOwner(corto_ownerof(instance));
         corto_callb(proc, NULL, args.buffer);
@@ -103,7 +97,7 @@ corto_void _corto_replicator_on_declare(corto_replicator this, corto_object obse
 /* $begin(corto/lang/replicator/on_declare) */
 
     if (observable != root_o) {
-        corto_notifyActionCall(&this->onDeclare, observable);
+        corto_replicator_onDeclare(this, observable);
     }
 
 /* $end */
@@ -112,7 +106,7 @@ corto_void _corto_replicator_on_declare(corto_replicator this, corto_object obse
 corto_void _corto_replicator_on_delete(corto_replicator this, corto_object observable) {
 /* $begin(corto/lang/replicator/on_delete) */
 
-    corto_notifyActionCall(&this->onDelete, observable);
+    corto_replicator_onDelete(this, observable);
 
 /* $end */
 }
@@ -121,8 +115,59 @@ corto_void _corto_replicator_on_update(corto_replicator this, corto_object obser
 /* $begin(corto/lang/replicator/on_update) */
 
     if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
-        corto_notifyActionCall(&this->onUpdate, observable);
+        corto_replicator_onUpdate(this, observable);
     }
+
+/* $end */
+}
+
+corto_void _corto_replicator_onDeclare_v(corto_replicator this, corto_object observable) {
+/* $begin(corto/lang/replicator/onDeclare) */
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(observable);
+
+/* $end */
+}
+
+corto_void _corto_replicator_onDelete_v(corto_replicator this, corto_object observable) {
+/* $begin(corto/lang/replicator/onDelete) */
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(observable);
+
+/* $end */
+}
+
+corto_void _corto_replicator_onInvoke_v(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
+/* $begin(corto/lang/replicator/onInvoke) */
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(instance);
+    CORTO_UNUSED(proc);
+    CORTO_UNUSED(args);
+
+/* $end */
+}
+
+corto_resultIter _corto_replicator_onRequest_v(corto_replicator this, corto_object parent, corto_string expr) {
+/* $begin(corto/lang/replicator/onRequest) */
+    corto_resultIter result;
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(parent);
+    CORTO_UNUSED(expr);
+
+    memset(&result, 0, sizeof(corto_iter));
+    return result;
+/* $end */
+}
+
+corto_void _corto_replicator_onUpdate_v(corto_replicator this, corto_object observable) {
+/* $begin(corto/lang/replicator/onUpdate) */
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(observable);
 
 /* $end */
 }
@@ -138,8 +183,6 @@ corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
 
 corto_resultIter _corto_replicator_request(corto_replicator this, corto_object parent, corto_string expr) {
 /* $begin(corto/lang/replicator/request) */
-    corto_resultIter result;
-    corto_requestActionCall(&this->onRequest, &result, parent, expr);
-    return result;
+    return corto_replicator_onRequest(this, parent, expr);
 /* $end */
 }

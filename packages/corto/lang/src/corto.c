@@ -170,8 +170,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_PRIM(op, initAction);\
     SSO_OP_PRIM(op, destructAction);\
     SSO_OP_PRIM(op, notifyAction);\
-    SSO_OP_PRIM(op, invokeAction);\
-    SSO_OP_PRIM(op, requestAction);\
     SSO_OP_PRIM(op, resultIter);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
@@ -524,11 +522,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, replicator_invoke_);\
     SSO_OP_OBJ(op, replicator_request_);\
     SSO_OP_OBJ(op, replicator_post_);\
-    SSO_OP_OBJ(op, replicator_onDeclare);\
-    SSO_OP_OBJ(op, replicator_onUpdate);\
-    SSO_OP_OBJ(op, replicator_onDelete);\
-    SSO_OP_OBJ(op, replicator_onInvoke);\
-    SSO_OP_OBJ(op, replicator_onRequest);\
+    SSO_OP_OBJ(op, replicator_onDeclare_);\
+    SSO_OP_OBJ(op, replicator_onUpdate_);\
+    SSO_OP_OBJ(op, replicator_onDelete_);\
+    SSO_OP_OBJ(op, replicator_onInvoke_);\
+    SSO_OP_OBJ(op, replicator_onRequest_);\
     SSO_OP_OBJ(op, replicator_on_declare);\
     SSO_OP_OBJ(op, replicator_on_update);\
     SSO_OP_OBJ(op, replicator_on_delete);\
@@ -694,32 +692,6 @@ static void corto_patchSequences(void) {
     corto_notifyAction_o->parameters.buffer[0].name = "observable";
     corto_notifyAction_o->parameters.buffer[0].type = corto_object_o;
     corto_notifyAction_o->parameters.buffer[0].passByReference = 0;
-
-    /* invokeAction delegate parameters */
-    corto_invokeAction_o->parameters.length = 3;
-    corto_invokeAction_o->parameters.buffer = corto_alloc(3 * sizeof(corto_parameter));
-    corto_invokeAction_o->parameters.buffer[0].name = "instance";
-    corto_invokeAction_o->parameters.buffer[0].type = corto_object_o;
-    corto_invokeAction_o->parameters.buffer[0].passByReference = 0;
-
-    corto_invokeAction_o->parameters.buffer[1].name = "function";
-    corto_invokeAction_o->parameters.buffer[1].type = corto_type(corto_function_o);
-    corto_invokeAction_o->parameters.buffer[1].passByReference = 0;
-
-    corto_invokeAction_o->parameters.buffer[2].name = "args";
-    corto_invokeAction_o->parameters.buffer[2].type = corto_type(corto_octetseq_o);
-    corto_invokeAction_o->parameters.buffer[2].passByReference = 0;
-
-    /* requestAction delegate parameters */
-    corto_requestAction_o->parameters.length = 2;
-    corto_requestAction_o->parameters.buffer = corto_alloc(2 * sizeof(corto_parameter));
-    corto_requestAction_o->parameters.buffer[0].name = "scope";
-    corto_requestAction_o->parameters.buffer[0].type = corto_type(corto_object_o);
-    corto_requestAction_o->parameters.buffer[0].passByReference = 0;
-
-    corto_requestAction_o->parameters.buffer[1].name = "expr";
-    corto_requestAction_o->parameters.buffer[1].type = corto_type(corto_string_o);
-    corto_requestAction_o->parameters.buffer[1].passByReference = 0;
 
 }
 

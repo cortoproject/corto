@@ -28,7 +28,7 @@ void corto_llFree(corto_ll);
 
 /* Walk list */
 int corto_llWalk(corto_ll list, corto_walkAction callback, void* userdata);
-    
+
 /* Walk list, return pointers to elements */
 int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata);
 
@@ -67,7 +67,11 @@ int corto_llSize(corto_ll list);
 
 /* Obtain iterator */
 #define corto_llIter(list) _corto_llIter(list, alloca(sizeof(corto_llIter_s)));
+
 corto_iter _corto_llIter(corto_ll, void *udata);
+corto_iter corto_llIterAlloc(corto_ll);
+
+void corto_llIterRelease(corto_iter *iter);
 
 /* Append one list to another */
 void corto_llAppendList(corto_ll l1, corto_ll l2);
@@ -77,10 +81,10 @@ void corto_llInsertList(corto_ll l1, corto_ll l2);
 
 /* Reverse list */
 void corto_llReverse(corto_ll list);
-    
+
 /* Clear list */
 void corto_llClear(corto_ll list);
-    
+
 /* Iterator implementation */
 void corto_llIterMoveFirst(corto_iter* iter);
 void *corto_llIterMove(corto_iter* iter, unsigned int index);
@@ -96,5 +100,3 @@ void corto_llIterSet(corto_iter* iter, void* o);
 #endif
 
 #endif
-
-

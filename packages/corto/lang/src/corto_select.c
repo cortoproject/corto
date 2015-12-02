@@ -366,21 +366,24 @@ static void corto_selectRequestReplicators(
     corto__scope *scope)
 {
     if (data->activeReplicators < 0) {
-        corto_ll replicators = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
+        corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
         data->activeReplicators = 0;
 
-        if (replicators) {
-            corto_iter iter = corto_llIter(replicators);
+        if (ols) {
+            corto_ll replicators = ols->value;
+            if (replicators) {
+                corto_iter iter = corto_llIter(replicators);
 
-            while (corto_iterHasNext(&iter)) {
-                corto_replicator_olsData_t *odata = corto_iterNext(&iter);
+                while (corto_iterHasNext(&iter)) {
+                    corto_replicator_olsData_t *odata = corto_iterNext(&iter);
 
-                /* Make select request to replicator */
-                data->replicators[data->activeReplicators ++] =
-                    corto_replicator_request(
-                        odata->replicator,
-                        frame->o,
-                        frame->filter ? frame->filter : "*");
+                    /* Make select request to replicator */
+                    data->replicators[data->activeReplicators ++] =
+                        corto_replicator_request(
+                            odata->replicator,
+                            frame->o,
+                            frame->filter ? frame->filter : "*");
+                }
             }
         }
     }
@@ -389,19 +392,33 @@ static void corto_selectRequestReplicators(
 static void corto_selectIterateReplicators(corto_selectData *data) {
     if (data->activeReplicators) {
         /* Walk over iterators until one with data available has been found */
-        while ((++data->currentReplicator < data->activeReplicators)) {
+        while ((data->currentReplicator < data->activeReplicators)) {
             corto_resultIter *iter = &data->replicators[data->currentReplicator];
             if (corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
                 data->next = &data->item;
 
                 /* Copy data, so replicator can safely release it */
-                strcpy(data->item.name, result->name);
-                strcpy(data->item.parent, result->parent);
-                strcpy(data->item.type, result->type);
+                if (result->name) {
+                    strcpy(data->item.name, result->name);
+                } else {
+                    data->item.name[0] = '\0';
+                }
+                if (result->parent) {
+                    strcpy(data->item.parent, result->name);
+                } else {
+                    data->item.parent[0] = '\0';
+                }
+                if (result->type) {
+                    strcpy(data->item.type, result->name);
+                } else {
+                    data->item.type[0] = '\0';
+                }
 
                 /* Return item */
                 break;
+            } else {
+                data->currentReplicator ++;
             }
         }
     }
@@ -558,7 +575,7 @@ static int corto_selectRun(corto_selectData *data) {
             if (tree) {
                 frame->iter = _corto_rbtreeIter(tree, &frame->trav);
             } else {
-                frame->next = NULL;
+                memset(&frame->iter, 0, sizeof(corto_iter));
             }
             break;
         default:

@@ -520,9 +520,9 @@ CORTO_FWDECL(sequence, vtable);
 
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
-CORTO_FWDECL(delegate, invokeAction);
 CORTO_FWDECL(delegate, notifyAction);
 CORTO_FWDECL(delegate, requestAction);
+CORTO_FWDECL(delegate, invokeAction);
 
 CORTO_FWDECL(observer, replicator_on_declare);
 CORTO_FWDECL(observer, replicator_on_update);
@@ -1024,11 +1024,11 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_METHOD_O(replicator, post, "(event e)", void, FALSE, corto_replicator_post);
     CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_invoke);
     CORTO_METHOD_O(replicator, request, "(object parent,string expr)", resultIter, FALSE, corto_replicator_request);
-    CORTO_MEMBER_O(replicator, onDeclare, notifyAction, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, onUpdate, notifyAction, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, onDelete, notifyAction, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, onInvoke, invokeAction, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, onRequest, requestAction, CORTO_GLOBAL);
+    CORTO_METHOD_O(replicator, onInvoke, "(object instance,function proc,octetseq args)", void, TRUE, corto_replicator_onInvoke_v);
+    CORTO_METHOD_O(replicator, onRequest, "(object parent,string expr)", resultIter, TRUE, corto_replicator_onRequest_v);
+    CORTO_METHOD_O(replicator, onDeclare, "(object observable)", void, TRUE, corto_replicator_onDeclare_v);
+    CORTO_METHOD_O(replicator, onUpdate, "(object observable)", void, TRUE, corto_replicator_onUpdate_v);
+    CORTO_METHOD_O(replicator, onDelete, "(object observable)", void, TRUE, corto_replicator_onDelete_v);
     CORTO_MEMBER_O(replicator, onResolve, resolveAction, CORTO_GLOBAL);
     CORTO_OBSERVER_O(replicator, on_declare, corto_replicator_on_declare);
     CORTO_OBSERVER_O(replicator, on_update, corto_replicator_on_update);

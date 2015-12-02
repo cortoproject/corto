@@ -10,7 +10,11 @@ void* corto_iterMove(corto_iter* iter, unsigned int index) {
 }
 
 int corto_iterHasNext(corto_iter* iter) {
-    return iter->hasNext(iter);
+    if (iter->hasNext) {
+        return iter->hasNext(iter);
+    } else {
+        return 0;
+    }
 }
 
 void* corto_iterNext(corto_iter* iter) {

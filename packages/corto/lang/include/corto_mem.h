@@ -17,8 +17,8 @@
 extern "C" {
 #endif
 
-#define corto_calloc(n) calloc(n, 1);
-#define corto_alloc(n) malloc(n);
+#define corto_calloc(n) calloc(n, 1)
+#define corto_alloc(n) malloc(n)
 #define corto_dealloc free
 #define corto_realloc realloc
 

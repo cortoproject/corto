@@ -1066,6 +1066,156 @@ void __corto_replicator_on_update(corto_function f, void *result, void *args) {
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
+/* virtual /corto/lang/replicator/onDeclare(object observable) */
+void _corto_replicator_onDeclare(corto_replicator this, corto_object observable) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
+    }
+    corto_assert(_methodId, "virtual method 'onDeclare(object observable)' not found in abstract '%s'", corto_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), NULL, this, observable);
+}
+
+void __corto_replicator_onDeclare_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(result);
+    _corto_replicator_onDeclare_v(
+        corto_replicator(*(void**)args),
+        *(corto_object*)((intptr_t)args + sizeof(void*)));
+}
+
+/* virtual /corto/lang/replicator/onDelete(object observable) */
+void _corto_replicator_onDelete(corto_replicator this, corto_object observable) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onDelete(object observable)");
+    }
+    corto_assert(_methodId, "virtual method 'onDelete(object observable)' not found in abstract '%s'", corto_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onDelete(object observable)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), NULL, this, observable);
+}
+
+void __corto_replicator_onDelete_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(result);
+    _corto_replicator_onDelete_v(
+        corto_replicator(*(void**)args),
+        *(corto_object*)((intptr_t)args + sizeof(void*)));
+}
+
+/* virtual /corto/lang/replicator/onInvoke(object instance,function proc,octetseq args) */
+void _corto_replicator_onInvoke(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,octetseq args)");
+    }
+    corto_assert(_methodId, "virtual method 'onInvoke(object instance,function proc,octetseq args)' not found in abstract '%s'", corto_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,octetseq args)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), NULL, this, instance, proc, args);
+}
+
+void __corto_replicator_onInvoke_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(result);
+    _corto_replicator_onInvoke_v(
+        corto_replicator(*(void**)args),
+        *(corto_object*)((intptr_t)args + sizeof(void*)),
+        corto_function(*(corto_function*)((intptr_t)args + sizeof(void*) + sizeof(corto_object))),
+        *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
+}
+
+/* virtual /corto/lang/replicator/onRequest(object parent,string expr) */
+corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_object parent, corto_string expr) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_resultIter _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(object parent,string expr)");
+    }
+    corto_assert(_methodId, "virtual method 'onRequest(object parent,string expr)' not found in abstract '%s'", corto_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(object parent,string expr)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), &_result, this, parent, expr);
+    
+    return _result;
+}
+
+void __corto_replicator_onRequest_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_resultIter*)result = _corto_replicator_onRequest_v(
+        corto_replicator(*(void**)args),
+        *(corto_object*)((intptr_t)args + sizeof(void*)),
+        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_object)));
+}
+
+/* virtual /corto/lang/replicator/onUpdate(object observable) */
+void _corto_replicator_onUpdate(corto_replicator this, corto_object observable) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onUpdate(object observable)");
+    }
+    corto_assert(_methodId, "virtual method 'onUpdate(object observable)' not found in abstract '%s'", corto_nameof(_abstract));
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onUpdate(object observable)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), NULL, this, observable);
+}
+
+void __corto_replicator_onUpdate_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(result);
+    _corto_replicator_onUpdate_v(
+        corto_replicator(*(void**)args),
+        *(corto_object*)((intptr_t)args + sizeof(void*)));
+}
+
 void __corto_replicator_post(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);

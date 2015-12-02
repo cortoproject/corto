@@ -6,11 +6,7 @@
  */
 
 
-#include "corto_ll.h"
-#include "corto_err.h"
-#include "corto_object.h"
-
-#include "stdlib.h"
+#include "corto.h"
 
 /* List convenience macros (to be replaced with generic collection interface) */
 #define get(list, index) corto_llGet(list, index)
@@ -353,6 +349,18 @@ corto_iter _corto_llIter(corto_ll list, void *udata) {
     result.set = corto_llIterSet;
 
     return result;
+}
+
+corto_iter corto_llIterAlloc(corto_ll list) {
+    corto_iter result;
+    corto_llIter_s *udata =  corto_alloc(sizeof(corto_llIter_s));
+    result = _corto_llIter(list, udata);
+    result.release = corto_llIterRelease;
+    return result;
+}
+
+void corto_llIterRelease(corto_iter *iter) {
+    corto_dealloc(iter->udata);
 }
 
 void corto_llIterMoveFirst(corto_iter* iter) {

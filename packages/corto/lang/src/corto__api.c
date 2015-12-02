@@ -3755,133 +3755,6 @@ corto_int16 _corto_interfaceVectorseqDeinit(corto_interfaceVectorseq* value) {
     return result;
 }
 
-corto_invokeAction* _corto_invokeActionCreate(corto_object instance, corto_function procedure) {
-    corto_invokeAction* this;
-    this = corto_declare(corto_invokeAction_o);
-    if (!this) {
-        return NULL;
-    }
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-    if (this && corto_define(this)) {
-        corto_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-corto_invokeAction* _corto_invokeActionCreateChild(corto_object _parent, corto_string _name, corto_object instance, corto_function procedure) {
-    corto_invokeAction* this;
-    this = corto_declareChild(_parent, _name, corto_invokeAction_o);
-    if (!this) {
-        return NULL;
-    }
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-    if (this && corto_define(this)) {
-        corto_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-corto_int16 _corto_invokeActionUpdate(corto_invokeAction* this, corto_object instance, corto_function procedure) {
-    if (!corto_updateBegin(this)) {
-        corto_setref(&((corto_delegatedata*)this)->instance, instance);
-        corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-        corto_updateEnd(this);
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_invokeAction* _corto_invokeActionDeclare(void) {
-    corto_invokeAction* this;
-    this = corto_declare(corto_invokeAction_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-corto_invokeAction* _corto_invokeActionDeclareChild(corto_object _parent, corto_string _name) {
-    corto_invokeAction* this;
-    this = corto_declareChild(_parent, _name, corto_invokeAction_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-corto_int16 _corto_invokeActionDefine(corto_invokeAction* this, corto_object instance, corto_function procedure) {
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-    return corto_define(this);
-}
-
-void _corto_invokeActionSet(corto_invokeAction* this, corto_object instance, corto_function procedure) {
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-}
-
-corto_string _corto_invokeActionStr(corto_invokeAction* value) {
-    corto_string result;
-    corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_invokeAction_o), &value);
-    result = corto_strv(&v, 0);
-    return result;
-}
-
-corto_invokeAction* corto_invokeActionFromStr(corto_invokeAction* value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_invokeAction_o), str);
-    return value;
-}
-
-corto_int16 _corto_invokeActionCopy(corto_invokeAction* *dst, corto_invokeAction* src) {
-    corto_value v1, v2;
-    corto_valueValueInit(&v1, NULL, corto_type(corto_invokeAction_o), dst);
-    corto_valueValueInit(&v2, NULL, corto_type(corto_invokeAction_o), src);
-    return corto_copyv(&v1, &v2);
-}
-
-corto_int16 _corto_invokeActionCompare(corto_invokeAction* dst, corto_invokeAction* src) {
-    corto_value v1, v2;
-    corto_valueValueInit(&v1, NULL, corto_type(corto_invokeAction_o), dst);
-    corto_valueValueInit(&v2, NULL, corto_type(corto_invokeAction_o), src);
-    return corto_comparev(&v1, &v2);
-}
-
-corto_int16 _corto_invokeActionInit(corto_invokeAction* value) {
-    corto_int16 result;
-    memset(value, 0, corto_type(corto_invokeAction_o)->size);
-    corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_invokeAction_o), value);
-    result = corto_initv(&v);
-    return result;
-}
-
-corto_int16 _corto_invokeActionDeinit(corto_invokeAction* value) {
-    corto_int16 result;
-    corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_invokeAction_o), value);
-    result = corto_deinitv(&v);
-    return result;
-}
-
-corto_int16 corto_invokeActionCall(corto_invokeAction *_delegate, corto_object instance, corto_function function, corto_octetseq args) {
-    if (_delegate->_parent.procedure) {
-        if (_delegate->_parent.instance) {
-            corto_call(_delegate->_parent.procedure, NULL, _delegate->_parent.instance, instance, function, args);
-        } else {
-            corto_call(_delegate->_parent.procedure, NULL, instance, function, args);
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
 corto_invokeEvent _corto_invokeEventCreate(corto_replicator replicator, corto_object instance, corto_function function, corto_octetseq args) {
     corto_invokeEvent this;
     this = corto_declare(corto_invokeEvent_o);
@@ -6447,7 +6320,7 @@ corto_int16 _corto_queryCompare(corto_query dst, corto_query src) {
     return corto_compare(dst, src);
 }
 
-corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest) {
+corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query) {
     corto_replicator this;
     this = corto_declare(corto_replicator_o);
     if (!this) {
@@ -6455,11 +6328,6 @@ corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, 
     }
     corto_setref(&this->mount, mount);
     corto_setref(&this->query, corto_query(query));
-    this->onDeclare = onDeclare;
-    this->onUpdate = onUpdate;
-    this->onDelete = onDelete;
-    this->onInvoke = onInvoke;
-    this->onRequest = onRequest;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -6467,7 +6335,7 @@ corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, 
     return this;
 }
 
-corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest) {
+corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query) {
     corto_replicator this;
     this = corto_declareChild(_parent, _name, corto_replicator_o);
     if (!this) {
@@ -6475,11 +6343,6 @@ corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string
     }
     corto_setref(&this->mount, mount);
     corto_setref(&this->query, corto_query(query));
-    this->onDeclare = onDeclare;
-    this->onUpdate = onUpdate;
-    this->onDelete = onDelete;
-    this->onInvoke = onInvoke;
-    this->onRequest = onRequest;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -6487,15 +6350,10 @@ corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string
     return this;
 }
 
-corto_int16 _corto_replicatorUpdate(corto_replicator this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest) {
+corto_int16 _corto_replicatorUpdate(corto_replicator this, corto_object mount, corto_query query) {
     if (!corto_updateBegin(this)) {
         corto_setref(&this->mount, mount);
         corto_setref(&this->query, corto_query(query));
-        this->onDeclare = onDeclare;
-        this->onUpdate = onUpdate;
-        this->onDelete = onDelete;
-        this->onInvoke = onInvoke;
-        this->onRequest = onRequest;
         corto_updateEnd(this);
     } else {
         return -1;
@@ -6521,25 +6379,15 @@ corto_replicator _corto_replicatorDeclareChild(corto_object _parent, corto_strin
     return this;
 }
 
-corto_int16 _corto_replicatorDefine(corto_replicator this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest) {
+corto_int16 _corto_replicatorDefine(corto_replicator this, corto_object mount, corto_query query) {
     corto_setref(&this->mount, mount);
     corto_setref(&this->query, corto_query(query));
-    this->onDeclare = onDeclare;
-    this->onUpdate = onUpdate;
-    this->onDelete = onDelete;
-    this->onInvoke = onInvoke;
-    this->onRequest = onRequest;
     return corto_define(this);
 }
 
-void _corto_replicatorSet(corto_replicator this, corto_object mount, corto_query query, corto_notifyAction onDeclare, corto_notifyAction onUpdate, corto_notifyAction onDelete, corto_invokeAction onInvoke, corto_requestAction onRequest) {
+void _corto_replicatorSet(corto_replicator this, corto_object mount, corto_query query) {
     corto_setref(&this->mount, mount);
     corto_setref(&this->query, corto_query(query));
-    this->onDeclare = onDeclare;
-    this->onUpdate = onUpdate;
-    this->onDelete = onDelete;
-    this->onInvoke = onInvoke;
-    this->onRequest = onRequest;
 }
 
 corto_string _corto_replicatorStr(corto_replicator value) {
@@ -6561,133 +6409,6 @@ corto_int16 _corto_replicatorCopy(corto_replicator *dst, corto_replicator src) {
 
 corto_int16 _corto_replicatorCompare(corto_replicator dst, corto_replicator src) {
     return corto_compare(dst, src);
-}
-
-corto_requestAction* _corto_requestActionCreate(corto_object instance, corto_function procedure) {
-    corto_requestAction* this;
-    this = corto_declare(corto_requestAction_o);
-    if (!this) {
-        return NULL;
-    }
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-    if (this && corto_define(this)) {
-        corto_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-corto_requestAction* _corto_requestActionCreateChild(corto_object _parent, corto_string _name, corto_object instance, corto_function procedure) {
-    corto_requestAction* this;
-    this = corto_declareChild(_parent, _name, corto_requestAction_o);
-    if (!this) {
-        return NULL;
-    }
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-    if (this && corto_define(this)) {
-        corto_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-corto_int16 _corto_requestActionUpdate(corto_requestAction* this, corto_object instance, corto_function procedure) {
-    if (!corto_updateBegin(this)) {
-        corto_setref(&((corto_delegatedata*)this)->instance, instance);
-        corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-        corto_updateEnd(this);
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_requestAction* _corto_requestActionDeclare(void) {
-    corto_requestAction* this;
-    this = corto_declare(corto_requestAction_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-corto_requestAction* _corto_requestActionDeclareChild(corto_object _parent, corto_string _name) {
-    corto_requestAction* this;
-    this = corto_declareChild(_parent, _name, corto_requestAction_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-corto_int16 _corto_requestActionDefine(corto_requestAction* this, corto_object instance, corto_function procedure) {
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-    return corto_define(this);
-}
-
-void _corto_requestActionSet(corto_requestAction* this, corto_object instance, corto_function procedure) {
-    corto_setref(&((corto_delegatedata*)this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)this)->procedure, corto_function(procedure));
-}
-
-corto_string _corto_requestActionStr(corto_requestAction* value) {
-    corto_string result;
-    corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_requestAction_o), &value);
-    result = corto_strv(&v, 0);
-    return result;
-}
-
-corto_requestAction* corto_requestActionFromStr(corto_requestAction* value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_requestAction_o), str);
-    return value;
-}
-
-corto_int16 _corto_requestActionCopy(corto_requestAction* *dst, corto_requestAction* src) {
-    corto_value v1, v2;
-    corto_valueValueInit(&v1, NULL, corto_type(corto_requestAction_o), dst);
-    corto_valueValueInit(&v2, NULL, corto_type(corto_requestAction_o), src);
-    return corto_copyv(&v1, &v2);
-}
-
-corto_int16 _corto_requestActionCompare(corto_requestAction* dst, corto_requestAction* src) {
-    corto_value v1, v2;
-    corto_valueValueInit(&v1, NULL, corto_type(corto_requestAction_o), dst);
-    corto_valueValueInit(&v2, NULL, corto_type(corto_requestAction_o), src);
-    return corto_comparev(&v1, &v2);
-}
-
-corto_int16 _corto_requestActionInit(corto_requestAction* value) {
-    corto_int16 result;
-    memset(value, 0, corto_type(corto_requestAction_o)->size);
-    corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_requestAction_o), value);
-    result = corto_initv(&v);
-    return result;
-}
-
-corto_int16 _corto_requestActionDeinit(corto_requestAction* value) {
-    corto_int16 result;
-    corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_requestAction_o), value);
-    result = corto_deinitv(&v);
-    return result;
-}
-
-corto_int16 corto_requestActionCall(corto_requestAction *_delegate, corto_resultIter* _result, corto_object scope, corto_string expr) {
-    if (_delegate->_parent.procedure) {
-        if (_delegate->_parent.instance) {
-            corto_call(_delegate->_parent.procedure, _result, _delegate->_parent.instance, scope, expr);
-        } else {
-            corto_call(_delegate->_parent.procedure, _result, scope, expr);
-        }
-    } else {
-        return -1;
-    }
-    return 0;
 }
 
 corto_result* _corto_resultCreate(corto_string name, corto_string parent, corto_string type) {

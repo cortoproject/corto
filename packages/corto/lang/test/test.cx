@@ -219,6 +219,18 @@ test::Suite Select::
     void tc_selectTreeDeleteParent()
     void tc_selectTreeDeleteGrandparent()
 
+class ListReplicator : replicator, hidden::
+    alias mount : replicator/mount
+    items: list{result}
+    resultIter onRequest(object parent, string expr)
+
+test::Suite ReplicatorRequest::
+    void setup() method
+    void teardown() method
+    replicator: ListReplicator
+    void tc_selectScope()
+    void tc_selectScopeMixed()
+
 // Test Event scenarios
 class EventTest::
     @scope: object

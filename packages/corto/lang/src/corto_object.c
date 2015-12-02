@@ -1327,7 +1327,7 @@ static corto_uint8 corto_olsSize(corto__scope *scope) {
     if (ols) {
         do {
         } while ((ols++)->key);
-        result = ols - scope->ols;
+        result = ols - scope->ols - 1;
     }
     return result;
 }
@@ -1420,7 +1420,8 @@ void* corto_olsLockGet(corto_object o, corto_int8 key) {
         if (!ols) {
             corto_uint8 size = corto_olsSize(scope);
             scope->ols = corto_realloc(scope->ols,
-                (size + 1) * sizeof(corto__ols));
+                (size + 2) * sizeof(corto__ols));
+            scope->ols[size + 1].key = 0; /* Marks end of list */
             ols = &scope->ols[size];
             ols->key = key;
             ols->value = NULL;
