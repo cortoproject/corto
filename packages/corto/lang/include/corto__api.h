@@ -1759,7 +1759,7 @@ CORTO_LANG_EXPORT corto_int16 _corto_requestActionInit(corto_requestAction* valu
 CORTO_LANG_EXPORT corto_int16 _corto_requestActionDeinit(corto_requestAction* value);
 #define corto_requestActionDeinit(value) _corto_requestActionDeinit(value)
 
-corto_int16 corto_requestActionCall(corto_requestAction *_delegate, corto_resultIter* _result, corto_string scope, corto_string expr);
+corto_int16 corto_requestActionCall(corto_requestAction *_delegate, corto_resultIter* _result, corto_object scope, corto_string expr);
 /* /corto/lang/result */
 CORTO_LANG_EXPORT corto_result* _corto_resultCreate(corto_string name, corto_string parent, corto_string type);
 #define corto_resultCreate(name, parent, type) _corto_resultCreate(name, parent, type)

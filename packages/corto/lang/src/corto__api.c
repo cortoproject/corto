@@ -6677,7 +6677,7 @@ corto_int16 _corto_requestActionDeinit(corto_requestAction* value) {
     return result;
 }
 
-corto_int16 corto_requestActionCall(corto_requestAction *_delegate, corto_resultIter* _result, corto_string scope, corto_string expr) {
+corto_int16 corto_requestActionCall(corto_requestAction *_delegate, corto_resultIter* _result, corto_object scope, corto_string expr) {
     if (_delegate->_parent.procedure) {
         if (_delegate->_parent.instance) {
             corto_call(_delegate->_parent.procedure, _result, _delegate->_parent.instance, scope, expr);

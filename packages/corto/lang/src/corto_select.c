@@ -56,8 +56,8 @@ typedef struct corto_selectData {
     corto_id parent;
     corto_id name;
     corto_id type;
-    corto_selectItem item;
-    corto_selectItem *next;
+    corto_result item;
+    corto_result *next;
 }corto_selectData;
 
 static corto_selectData* corto_selectDataGet(void) {
@@ -270,7 +270,7 @@ unexpected_end_error:
 
 static void corto_setItemData(
     corto_object o,
-    corto_selectItem *item,
+    corto_result *item,
     corto_selectData *data)
 {
     if (o != root_o) {
@@ -363,20 +363,47 @@ static corto_object corto_selectIterNext(
 static void corto_selectRequestReplicators(
     corto_selectData *data,
     corto_selectStack *frame,
-    corto_ll replicators)
+    corto__scope *scope)
 {
-    corto_iter iter = corto_llIter(replicators);
+    if (data->activeReplicators < 0) {
+        corto_ll replicators = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
+        data->activeReplicators = 0;
 
-    while (corto_iterHasNext(&iter)) {
-        corto_id parentId; corto_fullname(frame->o, parentId);
-        corto_replicator_olsData_t *odata = corto_iterNext(&iter);
+        if (replicators) {
+            corto_iter iter = corto_llIter(replicators);
 
-        /* Make select request to replicator */
-        data->replicators[data->activeReplicators ++] =
-            corto_replicator_request(
-                odata->replicator,
-                parentId,
-                frame->filter ? frame->filter : "*");
+            while (corto_iterHasNext(&iter)) {
+                corto_replicator_olsData_t *odata = corto_iterNext(&iter);
+
+                /* Make select request to replicator */
+                data->replicators[data->activeReplicators ++] =
+                    corto_replicator_request(
+                        odata->replicator,
+                        frame->o,
+                        frame->filter ? frame->filter : "*");
+            }
+        }
+    }
+}
+
+static void corto_selectIterateReplicators(corto_selectData *data) {
+    if (data->activeReplicators) {
+        /* Walk over iterators until one with data available has been found */
+        while ((++data->currentReplicator < data->activeReplicators)) {
+            corto_resultIter *iter = &data->replicators[data->currentReplicator];
+            if (corto_iterHasNext(iter)) {
+                corto_result *result = corto_iterNext(iter);
+                data->next = &data->item;
+
+                /* Copy data, so replicator can safely release it */
+                strcpy(data->item.name, result->name);
+                strcpy(data->item.parent, result->parent);
+                strcpy(data->item.type, result->type);
+
+                /* Return item */
+                break;
+            }
+        }
     }
 }
 
@@ -390,27 +417,28 @@ static void corto_selectScope(
     corto__scope *scope = corto__scopeClaim(frame->o);
 
     /* Request replicators once per scope, and do it before iterating over
-     * corto store objects so replicators have some time to make the
-     * request */
-    if (data->activeReplicators < 0) {
-        corto_ll replicators = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
-        data->activeReplicators = 0;
-
-        if (replicators) {
-            corto_selectRequestReplicators(data, frame, replicators);
-        }
-    }
+     * corto store objects so replicators have more time to fetch data. */
+    corto_selectRequestReplicators(data, frame, scope);
 
     data->next = NULL;
-    while ((o = corto_selectIterNext(frame, lastKey))) {
-        if (!frame->filter || corto_selectMatch(frame->filter, corto_nameof(o))) {
-            data->next = &data->item;
-            corto_setItemData(o, data->next, data);
-            break;
+
+    /* If not iterating over a replicator, we're iterating over the store */
+    if (data->currentReplicator == -1) {
+        while ((o = corto_selectIterNext(frame, lastKey))) {
+            if (!frame->filter || corto_selectMatch(frame->filter, corto_nameof(o))) {
+                data->next = &data->item;
+                corto_setItemData(o, data->next, data);
+                break;
+            }
         }
     }
 
     corto__scopeRelease(frame->o);
+
+    /* Handle replicator iteration outside of scope lock */
+    if (!data->next) {
+        corto_selectIterateReplicators(data);
+    }
 }
 
 /* Depth first search */
@@ -544,7 +572,7 @@ error:
     return -1;
 }
 
-static int corto_selectHasNext(corto_iter *iter) {
+static int corto_selectHasNext(corto_resultIter *iter) {
     corto_selectData *data = corto_selectDataGet();
     corto_selectStack *frame = &data->stack[data->sp];
     CORTO_UNUSED(iter);
@@ -565,7 +593,7 @@ error:
                * to check for two values */
 }
 
-static void* corto_selectNext(corto_iter *iter) {
+static void* corto_selectNext(corto_resultIter *iter) {
     corto_selectData *data = corto_selectDataGet();
 
     CORTO_UNUSED(iter);
@@ -576,7 +604,7 @@ static void* corto_selectNext(corto_iter *iter) {
 corto_int16 corto_select(
     corto_object scope,
     corto_string expr,
-    corto_iter *iter_out)
+    corto_resultIter *iter_out)
 {
     corto_selectData *data = corto_selectDataGet();
 
@@ -589,6 +617,7 @@ corto_int16 corto_select(
     data->sp = 0;
     data->next = NULL;
     data->activeReplicators = -1;
+    data->currentReplicator = -1;
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;

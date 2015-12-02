@@ -1023,7 +1023,7 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_METHOD_O(replicator, destruct, "()", void, FALSE, corto_replicator_destruct);
     CORTO_METHOD_O(replicator, post, "(event e)", void, FALSE, corto_replicator_post);
     CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_invoke);
-    CORTO_METHOD_O(replicator, request, "(string parent,string expr)", resultIter, FALSE, corto_replicator_request);
+    CORTO_METHOD_O(replicator, request, "(object parent,string expr)", resultIter, FALSE, corto_replicator_request);
     CORTO_MEMBER_O(replicator, onDeclare, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onUpdate, notifyAction, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, onDelete, notifyAction, CORTO_GLOBAL);

@@ -77,13 +77,8 @@ corto_object corto_ownerof(corto_object o);
 corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
-typedef struct corto_selectItem {
-    corto_string parent;
-    corto_string name;
-    corto_string type;
-} corto_selectItem;
-
-corto_int16 corto_select(corto_object scope, corto_string expr, corto_iter *iter_out);
+/* Iterate over object metadata matching a expression */
+corto_int16 corto_select(corto_object scope, corto_string expr, corto_resultIter *iter_out);
 
 /* Notifications */
 corto_object corto_setOwner(corto_object owner);

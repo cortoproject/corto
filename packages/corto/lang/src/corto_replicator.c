@@ -136,7 +136,7 @@ corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
 /* $end */
 }
 
-corto_resultIter _corto_replicator_request(corto_replicator this, corto_string parent, corto_string expr) {
+corto_resultIter _corto_replicator_request(corto_replicator this, corto_object parent, corto_string expr) {
 /* $begin(corto/lang/replicator/request) */
     corto_resultIter result;
     corto_requestActionCall(&this->onRequest, &result, parent, expr);

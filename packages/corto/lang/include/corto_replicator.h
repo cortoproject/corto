@@ -34,7 +34,7 @@ CORTO_LANG_EXPORT corto_void _corto_replicator_on_update(corto_replicator _this,
 CORTO_LANG_EXPORT corto_void _corto_replicator_post(corto_replicator _this, corto_event e);
 #define corto_replicator_post(_this, e) _corto_replicator_post(corto_replicator(_this), corto_event(e))
 
-CORTO_LANG_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_string parent, corto_string expr);
+CORTO_LANG_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_object parent, corto_string expr);
 #define corto_replicator_request(_this, parent, expr) _corto_replicator_request(corto_replicator(_this), parent, expr)
 
 #ifdef __cplusplus

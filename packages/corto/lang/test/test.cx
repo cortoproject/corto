@@ -166,18 +166,12 @@ test::Suite Resolver::
 
     void tc_resolveAll()
 
-// Select testcases
-struct selectItem::
-    parent : string
-    name : string
-    type : string
-
 test::Suite Select::
     void setup() method
     void teardown() method
 
-    list{selectItem} collect(object @scope, string expr) function
-    bool hasObject(list{selectItem} items, string parent, string name, string type) function
+    list{result} collect(object @scope, string expr) function
+    bool hasObject(list{result} items, string parent, string name, string type) function
 
     void tc_selectErrParentTree()
     void tc_selectErrParentId()

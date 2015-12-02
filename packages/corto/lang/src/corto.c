@@ -714,7 +714,7 @@ static void corto_patchSequences(void) {
     corto_requestAction_o->parameters.length = 2;
     corto_requestAction_o->parameters.buffer = corto_alloc(2 * sizeof(corto_parameter));
     corto_requestAction_o->parameters.buffer[0].name = "scope";
-    corto_requestAction_o->parameters.buffer[0].type = corto_type(corto_string_o);
+    corto_requestAction_o->parameters.buffer[0].type = corto_type(corto_object_o);
     corto_requestAction_o->parameters.buffer[0].passByReference = 0;
 
     corto_requestAction_o->parameters.buffer[1].name = "expr";

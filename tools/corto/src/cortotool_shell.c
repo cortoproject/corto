@@ -232,7 +232,7 @@ static void cxsh_ls(char* arg) {
         corto_error("error: %s", corto_lasterr());
     } else {
         while (corto_iterHasNext(&iter)) {
-            corto_selectItem *item = corto_iterNext(&iter);
+            corto_result *item = corto_iterNext(&iter);
             cxsh_printRow(item->parent, item->name, item->type);
             i ++;
         }
@@ -809,7 +809,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             corto_int32 i = 0;
             corto_select(scope, expr, &iter);
             while (corto_iterHasNext(&iter)) {
-                corto_selectItem *item = corto_iterNext(&iter);
+                corto_result *item = corto_iterNext(&iter);
                 corto_id scopedItem;
                 if (strcmp(item->parent, ".")) {
                     sprintf(scopedItem, "%s/%s", item->parent, item->name);
@@ -826,7 +826,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             if (!i) {
                 corto_select(corto_o, expr, &iter);
                 while (corto_iterHasNext(&iter)) {
-                    corto_selectItem *item = corto_iterNext(&iter);
+                    corto_result *item = corto_iterNext(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
                         sprintf(scopedItem, "corto/%s/%s", item->parent, item->name);
@@ -844,7 +844,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             if (!i) {
                 corto_select(corto_lang_o, expr, &iter);
                 while (corto_iterHasNext(&iter)) {
-                    corto_selectItem *item = corto_iterNext(&iter);
+                    corto_result *item = corto_iterNext(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
                         sprintf(scopedItem, "corto/lang/%s/%s", item->parent, item->name);

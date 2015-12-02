@@ -8,15 +8,15 @@
 
 #include "test.h"
 
-test_selectItemList _test_Select_collect(corto_object scope, corto_string expr) {
+corto_resultList _test_Select_collect(corto_object scope, corto_string expr) {
 /* $begin(test/Select/collect) */
     corto_iter iter;
     corto_ll result = corto_llNew();
 
     corto_select(scope, expr, &iter);
     while (corto_iterHasNext(&iter)) {
-        corto_selectItem *item = corto_iterNext(&iter);
-        test_selectItem *listItem = corto_alloc(sizeof(test_selectItem));
+        corto_result *item = corto_iterNext(&iter);
+        corto_result *listItem = corto_alloc(sizeof(corto_result));
         listItem->parent = corto_strdup(item->parent);
         listItem->name = corto_strdup(item->name);
         listItem->type = corto_strdup(item->type);
@@ -27,12 +27,12 @@ test_selectItemList _test_Select_collect(corto_object scope, corto_string expr) 
 /* $end */
 }
 
-corto_bool _test_Select_hasObject(test_selectItemList items, corto_string parent, corto_string name, corto_string type) {
+corto_bool _test_Select_hasObject(corto_resultList items, corto_string parent, corto_string name, corto_string type) {
 /* $begin(test/Select/hasObject) */
 
     corto_iter iter = corto_llIter(items);
     while (corto_iterHasNext(&iter)) {
-        test_selectItem *item = corto_iterNext(&iter);
+        corto_result *item = corto_iterNext(&iter);
         if (!strcmp(item->parent, parent)) {
             if (!strcmp(item->name, name)) {
                 if (!strcmp(item->type, type)) {
@@ -90,7 +90,7 @@ corto_void _test_Select_tc_selectDeleteCurrent(test_Select this) {
 /* $begin(test/Select/tc_selectDeleteCurrent) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -121,7 +121,7 @@ corto_void _test_Select_tc_selectDeleteFirst(test_Select this) {
 /* $begin(test/Select/tc_selectDeleteFirst) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -148,7 +148,7 @@ corto_void _test_Select_tc_selectDeleteNext(test_Select this) {
 /* $begin(test/Select/tc_selectDeleteNext) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -175,7 +175,7 @@ corto_void _test_Select_tc_selectDeleteParent(test_Select this) {
 /* $begin(test/Select/tc_selectDeleteParent) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -199,7 +199,7 @@ corto_void _test_Select_tc_selectDeletePrevious(test_Select this) {
 /* $begin(test/Select/tc_selectDeletePrevious) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -318,7 +318,7 @@ corto_void _test_Select_tc_selectFilterWildcard(test_Select this) {
 corto_void _test_Select_tc_selectIdentifier(test_Select this) {
 /* $begin(test/Select/tc_selectIdentifier) */
     corto_ll results = NULL;
-    test_selectItem *item;
+    corto_result *item;
 
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
@@ -366,7 +366,7 @@ corto_void _test_Select_tc_selectNumeric(test_Select this) {
 
 corto_void _test_Select_tc_selectOrder(test_Select this) {
 /* $begin(test/Select/tc_selectOrder) */
-    corto_selectItem *item;
+    corto_result *item;
     corto_iter iter;
     corto_int16 ret;
 
@@ -499,7 +499,7 @@ corto_void _test_Select_tc_selectOrder(test_Select this) {
 corto_void _test_Select_tc_selectParent(test_Select this) {
 /* $begin(test/Select/tc_selectParent) */
     corto_ll results = NULL;
-    test_selectItem *item;
+    corto_result *item;
 
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
@@ -542,7 +542,7 @@ corto_void _test_Select_tc_selectScope(test_Select this) {
 corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 /* $begin(test/Select/tc_selectScopedIdentifier) */
     corto_ll results = NULL;
-    test_selectItem *item;
+    corto_result *item;
 
     results = test_Select_collect(NULL, "a/b");
     test_assert(results != NULL);
@@ -560,7 +560,7 @@ corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 corto_void _test_Select_tc_selectScopedParent(test_Select this) {
 /* $begin(test/Select/tc_selectScopedParent) */
     corto_ll results = NULL;
-    test_selectItem *item;
+    corto_result *item;
 
     results = test_Select_collect(NULL, "a/..");
     test_assert(results != NULL);
@@ -578,7 +578,7 @@ corto_void _test_Select_tc_selectScopedParent(test_Select this) {
 corto_void _test_Select_tc_selectScopedThis(test_Select this) {
 /* $begin(test/Select/tc_selectScopedThis) */
     corto_ll results = NULL;
-    test_selectItem *item;
+    corto_result *item;
 
     results = test_Select_collect(NULL, "a/.");
     test_assert(results != NULL);
@@ -662,7 +662,7 @@ corto_void _test_Select_tc_selectScopeWithWildcardFilter(test_Select this) {
 corto_void _test_Select_tc_selectThis(test_Select this) {
 /* $begin(test/Select/tc_selectThis) */
     corto_ll results = NULL;
-    test_selectItem *item;
+    corto_result *item;
 
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
@@ -723,7 +723,7 @@ corto_void _test_Select_tc_selectTreeDeleteCurrent(test_Select this) {
 /* $begin(test/Select/tc_selectTreeDeleteCurrent) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     ret = corto_select(NULL, "/a//", &iter);
@@ -754,7 +754,7 @@ corto_void _test_Select_tc_selectTreeDeleteFirst(test_Select this) {
 /* $begin(test/Select/tc_selectTreeDeleteFirst) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -781,7 +781,7 @@ corto_void _test_Select_tc_selectTreeDeleteGrandparent(test_Select this) {
 /* $begin(test/Select/tc_selectTreeDeleteGrandparent) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
     ret = corto_select(NULL, "/a//", &iter);
@@ -852,7 +852,7 @@ corto_void _test_Select_tc_selectTreeDeleteNext(test_Select this) {
 /* $begin(test/Select/tc_selectTreeDeleteNext) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -879,7 +879,7 @@ corto_void _test_Select_tc_selectTreeDeleteParent(test_Select this) {
 /* $begin(test/Select/tc_selectTreeDeleteParent) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
     ret = corto_select(NULL, "/a/", &iter);
@@ -904,7 +904,7 @@ corto_void _test_Select_tc_selectTreeDeletePrevious(test_Select this) {
 /* $begin(test/Select/tc_selectTreeDeletePrevious) */
     corto_iter iter;
     corto_int16 ret;
-    corto_selectItem *item;
+    corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     ret = corto_select(NULL, "/a/", &iter);
