@@ -53,7 +53,7 @@ static void corto_list_do(corto_any object, corto_any element, corto_bool insert
     void* value = NULL;
     corto_bool doCopy = TRUE;
     corto_value src, dst;
-    
+
     /* If appending a list of the same type, insert all elements from 'element' to object */
     if (corto_type_castable(object.type, element.type)) {
         if (!insert) {
@@ -64,9 +64,9 @@ static void corto_list_do(corto_any object, corto_any element, corto_bool insert
             walkData.iter = corto_llIter(list);
             walkData.dest = &object;
             corto_llWalk(*(corto_ll*)element.value, corto_list_insertWalk, &walkData);
-            doCopy = FALSE;        
+            doCopy = FALSE;
         }
-    } else if (corto_collection_elementRequiresAlloc(corto_collection(object.type))) {
+    } else if (corto_collection_requiresAlloc(corto_collection(object.type)->elementType)) {
         corto_uint32 size = corto_type_sizeof(corto_collection(object.type)->elementType);
         value = corto_calloc(size);
         corto_valueValueInit(&dst, NULL, corto_collection(object.type)->elementType, value);
@@ -82,7 +82,7 @@ static void corto_list_do(corto_any object, corto_any element, corto_bool insert
             corto_valueValueInit(&src, NULL, corto_collection(object.type)->elementType, element.value);
         }
     }
-    
+
     if (doCopy) {
         corto_copyv(&dst, &src);
         action(list, value, userData);
@@ -103,8 +103,8 @@ static void* corto_list_do_(corto_any object, corto_bool insert) {
     corto_ll list = *(corto_ll*)object.value;
     void* value = NULL;
     corto_value dst;
-    
-    if (corto_collection_elementRequiresAlloc(corto_collection(object.type))) {
+
+    if (corto_collection_requiresAlloc(corto_collection(object.type)->elementType)) {
         corto_uint32 size = corto_type_sizeof(corto_collection(object.type)->elementType);
         value = corto_calloc(size);
         corto_valueValueInit(&dst, NULL, corto_collection(object.type)->elementType, value);
@@ -151,7 +151,7 @@ corto_void _corto_list_append_any(corto_any this, corto_any element) {
 corto_void _corto_list_clear(corto_any this) {
 /* $begin(corto/lang/list/clear) */
     corto_collection c = corto_collection(this.type);
-    if (corto_collection_elementRequiresAlloc(c)) {
+    if (corto_collection_requiresAlloc(c->elementType)) {
         corto_llWalk(*(corto_ll*)this.value, corto_clearFreeValues, NULL);
     }
     corto_llClear(*(corto_ll*)this.value);

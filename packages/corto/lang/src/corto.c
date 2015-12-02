@@ -423,7 +423,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, collection_max);\
     SSO_OP_OBJ(op, collection_castable_);\
     SSO_OP_OBJ(op, collection_compatible_);\
-    SSO_OP_OBJ(op, collection_elementRequiresAlloc_);\
+    SSO_OP_OBJ(op, collection_requiresAlloc);\
     SSO_OP_OBJ(op, collection_init_);\
     SSO_OP_OBJ(op, collection_size);\
     /* iterator */\

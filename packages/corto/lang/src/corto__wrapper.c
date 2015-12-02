@@ -83,7 +83,7 @@ corto_uint32 _corto_class_allocSize(corto_class this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "allocSize()");
     }
-    corto_assert(_methodId, "virtual method 'allocSize()' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'allocSize()' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -218,7 +218,7 @@ corto_bool _corto_collection_castable(corto_collection this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -249,7 +249,7 @@ corto_bool _corto_collection_compatible(corto_collection this, corto_type type) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -267,18 +267,17 @@ void __corto_collection_compatible_v(corto_function f, void *result, void *args)
         corto_type(*(corto_type*)((intptr_t)args + sizeof(void*))));
 }
 
-void __corto_collection_elementRequiresAlloc(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_bool*)result = _corto_collection_elementRequiresAlloc(
-        corto_collection(*(void**)args));
-}
-
 void __corto_collection_init(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
     *(corto_int16*)result = _corto_collection_init(
         corto_collection(*(void**)args));
+}
+
+void __corto_collection_requiresAlloc(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_bool*)result = _corto_collection_requiresAlloc(
+        corto_type(*(corto_type*)args));
 }
 
 void __corto_collection_size(corto_function f, void *result, void *args) {
@@ -314,7 +313,7 @@ corto_bool _corto_delegate_castable(corto_delegate this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -345,7 +344,7 @@ corto_bool _corto_delegate_compatible(corto_delegate this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -389,7 +388,7 @@ void _corto_dispatcher_post(corto_dispatcher this, corto_event e) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "post(event e)");
     }
-    corto_assert(_methodId, "virtual method 'post(event e)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'post(event e)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -447,7 +446,7 @@ void _corto_event_handle(corto_event this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual method 'handle()' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'handle()' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -540,7 +539,7 @@ corto_bool _corto_interface_compatible(corto_interface this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -593,7 +592,7 @@ corto_member _corto_interface_resolveMember(corto_interface this, corto_string n
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    corto_assert(_methodId, "virtual method 'resolveMember(string name)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'resolveMember(string name)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -644,7 +643,7 @@ void _corto_invokeEvent_handle(corto_invokeEvent this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual method 'handle()' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'handle()' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -674,7 +673,7 @@ corto_bool _corto_iterator_castable(corto_iterator this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -705,7 +704,7 @@ corto_bool _corto_iterator_compatible(corto_iterator this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -851,7 +850,7 @@ void _corto_observableEvent_handle(corto_observableEvent this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual method 'handle()' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'handle()' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -925,7 +924,7 @@ corto_bool _corto_primitive_castable(corto_primitive this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -956,7 +955,7 @@ corto_bool _corto_primitive_compatible(corto_primitive this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1078,7 +1077,7 @@ void _corto_replicator_onDeclare(corto_replicator this, corto_object observable)
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onDeclare(object observable)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'onDeclare(object observable)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1107,7 +1106,7 @@ void _corto_replicator_onDelete(corto_replicator this, corto_object observable) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDelete(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onDelete(object observable)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'onDelete(object observable)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1136,7 +1135,7 @@ void _corto_replicator_onInvoke(corto_replicator this, corto_object instance, co
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,octetseq args)");
     }
-    corto_assert(_methodId, "virtual method 'onInvoke(object instance,function proc,octetseq args)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'onInvoke(object instance,function proc,octetseq args)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1168,7 +1167,7 @@ corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_object
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(object parent,string expr)");
     }
-    corto_assert(_methodId, "virtual method 'onRequest(object parent,string expr)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'onRequest(object parent,string expr)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1199,7 +1198,7 @@ void _corto_replicator_onUpdate(corto_replicator this, corto_object observable) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onUpdate(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onUpdate(object observable)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'onUpdate(object observable)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1267,7 +1266,7 @@ corto_bool _corto_struct_castable(corto_struct this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1298,7 +1297,7 @@ corto_bool _corto_struct_compatible(corto_struct this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1343,7 +1342,7 @@ corto_member _corto_struct_resolveMember(corto_struct this, corto_string name) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    corto_assert(_methodId, "virtual method 'resolveMember(string name)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'resolveMember(string name)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1388,7 +1387,7 @@ corto_uint32 _corto_type_allocSize(corto_type this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "allocSize()");
     }
-    corto_assert(_methodId, "virtual method 'allocSize()' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'allocSize()' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1419,7 +1418,7 @@ corto_bool _corto_type_castable(corto_type this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -1471,7 +1470,7 @@ corto_bool _corto_type_compatible(corto_type this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in abstract '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);

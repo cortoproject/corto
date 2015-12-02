@@ -163,7 +163,7 @@ void* corto_string_deserAllocElem(void *ptr, void *udata) {
     switch(t->kind) {
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)ptr;
-        if (corto_collection_elementRequiresAlloc(t)) {
+        if (corto_collection_requiresAlloc(t->elementType)) {
             result = corto_calloc(corto_type_sizeof(t->elementType));
             corto_llAppend(list, result);
         } else {

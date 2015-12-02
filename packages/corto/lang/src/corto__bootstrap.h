@@ -801,7 +801,7 @@ CORTO_CLASS_O(collection, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLAR
     CORTO_MEMBER_O(collection, max, uint32, CORTO_GLOBAL);
     CORTO_METHOD_O(collection, castable, "(type type)", bool, TRUE, corto_collection_castable_v);
     CORTO_METHOD_O(collection, compatible, "(type type)", bool, TRUE, corto_collection_compatible_v);
-    CORTO_METHOD_O(collection, elementRequiresAlloc, "()", bool, FALSE, corto_collection_elementRequiresAlloc);
+    CORTO_FUNCTION_O(collection, requiresAlloc, "(type elementType)", bool, corto_collection_requiresAlloc);
     CORTO_METHOD_O(collection, init, "()", int16, FALSE, corto_collection_init);
     CORTO_METAPROCEDURE_O(collection, size, "()", uint32, FALSE, corto_collection_size);
 

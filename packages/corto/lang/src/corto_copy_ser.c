@@ -13,15 +13,15 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, vo
     corto_copy_ser_t *data = userData;
     void *this = corto_valueValue(info);
     void *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
-    
+
     CORTO_UNUSED(s);
-    
+
     if (corto_primitive(type)->kind != CORTO_TEXT) {
         memcpy(value, this, type->size);
     } else {
         *(corto_string*)value = corto_strdup(*(corto_string*)this);
     }
-    
+
     return 0;
 }
 
@@ -30,16 +30,16 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value *info, vo
     void *this = corto_valueValue(info);
     void *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
     CORTO_UNUSED(s);
- 
+
     corto_setref(value, *(corto_object*)this);
-    
+
     return 0;
 }
 
 /* Deinit element */
 void corto_collection_deinitElement(corto_collection t, void *ptr) {
     corto_value v;
-    if (corto_collection_elementRequiresAlloc(t)) {
+    if (corto_collection_requiresAlloc(t->elementType)) {
         corto_valueValueInit(&v, NULL, corto_type(t->elementType), ptr);
     } else {
         corto_valueValueInit(&v, NULL, corto_type(t->elementType), &ptr);
@@ -54,10 +54,10 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
     void *e1, *e2;
     corto_type elementType = t->elementType;
     corto_any v1, v2;
-    
+
     iter = corto_llIter(list);
     while(corto_iterHasNext(&iter)) {
-        if (corto_collection_elementRequiresAlloc(t)) {
+        if (corto_collection_requiresAlloc(t->elementType)) {
             e2 = corto_iterNext(&iter);
         } else {
             e2 = corto_iterNextPtr(&iter);
@@ -69,7 +69,7 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
             v2.value = e2;
         } else {
             v1.value = e2;
-            v2.value = e1;            
+            v2.value = e1;
         }
 
         if (elementType->reference) {
@@ -77,10 +77,10 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
         } else {
             result = corto_type_copy(v1, v2);
         }
-        
+
         i++;
     }
-    
+
     return result;
 }
 
@@ -95,7 +95,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
     iter1 = corto_llIter(list1);
     iter2 = corto_llIter(list2);
     while(corto_iterHasNext(&iter1) && corto_iterHasNext(&iter2)) {
-        if (corto_collection_elementRequiresAlloc(t)) {
+        if (corto_collection_requiresAlloc(t->elementType)) {
             e1 = corto_iterNext(&iter1);
             e2 = corto_iterNext(&iter2);
         } else {
@@ -112,7 +112,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
             result = corto_type_copy(v1, v2);
         }
     }
-    
+
     return result;
 }
 
@@ -120,7 +120,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
 static void corto_collection_resizeList(corto_collection t, corto_ll list, corto_uint32 size) {
     corto_uint32 ownSize = corto_llSize(list);
     corto_type elementType = t->elementType;
-    
+
     /* If there are more elements in the destination, remove superfluous elements */
     if (ownSize > size) {
         corto_uint32 i;
@@ -134,7 +134,7 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
         corto_uint32 i;
         for(i=ownSize; i<size; i++) {
             void *ptr = NULL;
-            if (corto_collection_elementRequiresAlloc(t)) {
+            if (corto_collection_requiresAlloc(t->elementType)) {
                 ptr = corto_calloc(elementType->size);
             }
             corto_llInsert(list, ptr);
@@ -149,7 +149,7 @@ static void corto_collection_resizeArray(corto_collection t, void* sequence, cor
     if (t->kind == CORTO_SEQUENCE) {
         corto_uint32 ownSize = ((corto_objectseq*)sequence)->length;
         corto_type elementType = t->elementType;
-        
+
         /* If there are more elements in the destination, remove superfluous elements */
         if (ownSize > size) {
             corto_uint32 i;
@@ -158,12 +158,12 @@ static void corto_collection_resizeArray(corto_collection t, void* sequence, cor
             }
             /* Reallocate buffer */
             ((corto_objectseq*)sequence)->buffer = corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
-            
+
             /* If there are less elements in the destination, add new elements */
         } else if (ownSize < size) {
             /* Reallocate buffer */
             ((corto_objectseq*)sequence)->buffer = corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
-            
+
             /* Memset new memory */
             memset(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
         }
@@ -178,16 +178,16 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
     corto_uint32 size1 = 0;
     corto_copy_ser_t *data = userData;
     corto_uint32 result = 0;
-    
+
     CORTO_UNUSED(s);
-    
+
     /* If this function is reached, collection-types are either equal or comparable. When the
      * base-object was a collection, the collection type can be different. When the base-object
      * was a composite type, the collection type has to be equal, since different composite
      * types are considered non-comparable. */
     t1 = corto_valueType(info);
     v1 = corto_valueValue(info);
-    
+
     /* Verify whether current serialized object is the base-object */
     if (info->parent) {
         t2 = t1;
@@ -196,14 +196,14 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
         t2 = corto_valueType(&data->value);
         v2 = corto_valueValue(&data->value);
     }
-    
+
     {
         void *array1=NULL, *array2=NULL;
         corto_ll list1=NULL, list2=NULL;
         corto_uint32 elementSize=0;
-        
+
         elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
-        
+
         switch(corto_collection(t1)->kind) {
             case CORTO_ARRAY:
                 array1 = v1;
@@ -222,7 +222,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
             case CORTO_MAP:
                 break;
         }
-        
+
         switch(corto_collection(t2)->kind) {
             case CORTO_ARRAY:
                 array2 = v2;
@@ -236,11 +236,11 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
             case CORTO_MAP:
                 break;
         }
-        
+
         if (array1) {
             if (array2) {
                 corto_copy_ser_t privateData;
-                                
+
                 /* This is a bit tricky: I'm passing the pointer to what is potentially a sequence-buffer
                  * while I provide a sequence type. */
                 corto_valueValueInit(&privateData.value, NULL, corto_type(t2), array2);
@@ -261,27 +261,27 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
             }
         }
     }
-    
+
     return result;
 }
 
 static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
     CORTO_UNUSED(s);
-    
+
     corto_type t1 = corto_valueType(info);
     corto_type t2 = corto_valueType(&data->value);
 
     data->base = corto_valueValue(info);
-    
+
     return !corto_type_castable(t2, t1);
 }
 
 struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
     struct corto_serializer_s s;
-    
+
     corto_serializerInit(&s);
-    
+
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
@@ -293,4 +293,3 @@ struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKi
     s.reference = corto_ser_reference;
     return s;
 }
-

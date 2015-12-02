@@ -28,11 +28,11 @@ CORTO_LANG_EXPORT corto_bool _corto_collection_compatible(corto_collection _this
 CORTO_LANG_EXPORT corto_bool _corto_collection_compatible_v(corto_collection _this, corto_type type);
 #define corto_collection_compatible_v(_this, type) _corto_collection_compatible_v(corto_collection(_this), corto_type(type))
 
-CORTO_LANG_EXPORT corto_bool _corto_collection_elementRequiresAlloc(corto_collection _this);
-#define corto_collection_elementRequiresAlloc(_this) _corto_collection_elementRequiresAlloc(corto_collection(_this))
-
 CORTO_LANG_EXPORT corto_int16 _corto_collection_init(corto_collection _this);
 #define corto_collection_init(_this) _corto_collection_init(corto_collection(_this))
+
+CORTO_LANG_EXPORT corto_bool _corto_collection_requiresAlloc(corto_type elementType);
+#define corto_collection_requiresAlloc(elementType) _corto_collection_requiresAlloc(corto_type(elementType))
 
 CORTO_LANG_EXPORT corto_uint32 _corto_collection_size(corto_any _this);
 #define corto_collection_size(_this) _corto_collection_size(_this)

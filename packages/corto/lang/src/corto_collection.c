@@ -53,7 +53,7 @@ int corto_walk(corto_collection this, corto_void* collection, corto_walkAction a
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)collection;
         if (list) {
-            if (corto_collection_elementRequiresAlloc(this)) {
+            if (corto_collection_requiresAlloc(this->elementType)) {
                 result = corto_llWalk(list, action, userData);
             } else {
                 result = corto_llWalkPtr(list, action, userData);
@@ -64,7 +64,7 @@ int corto_walk(corto_collection this, corto_void* collection, corto_walkAction a
     case CORTO_MAP: {
         corto_rbtree tree = *(corto_rbtree*)collection;
         if (tree) {
-            if (corto_collection_elementRequiresAlloc(this)) {
+            if (corto_collection_requiresAlloc(this->elementType)) {
                 result = corto_rbtreeWalk(tree, action, userData);
             } else {
                 result = corto_rbtreeWalkPtr(tree, action, userData);
@@ -110,7 +110,7 @@ void corto_clear(corto_collection this, corto_void* collection) {
    case CORTO_LIST: {
        corto_ll c;
        if ((c = *(corto_ll*)collection)) {
-           if (corto_collection_elementRequiresAlloc(this)) {
+           if (corto_collection_requiresAlloc(elementType)) {
                corto_walk(this, collection, corto_clearFreeValues, NULL);
            }
            corto_llFree(c);
@@ -179,10 +179,16 @@ corto_bool _corto_collection_compatible_v(corto_collection this, corto_type type
 /* $end */
 }
 
-corto_bool _corto_collection_elementRequiresAlloc(corto_collection this) {
-/* $begin(corto/lang/collection/elementRequiresAlloc) */
+corto_int16 _corto_collection_init(corto_collection this) {
+/* $begin(corto/lang/collection/init) */
+    corto_type(this)->kind = CORTO_COLLECTION;
+    return corto_type_init(corto_type(this));
+/* $end */
+}
+
+corto_bool _corto_collection_requiresAlloc(corto_type elementType) {
+/* $begin(corto/lang/collection/requiresAlloc) */
     corto_bool result = TRUE;
-    corto_type elementType = this->elementType;
 
     if (elementType->reference) {
         result = FALSE;
@@ -231,13 +237,6 @@ corto_bool _corto_collection_elementRequiresAlloc(corto_collection this) {
     }
 
     return result;
-/* $end */
-}
-
-corto_int16 _corto_collection_init(corto_collection this) {
-/* $begin(corto/lang/collection/init) */
-    corto_type(this)->kind = CORTO_COLLECTION;
-    return corto_type_init(corto_type(this));
 /* $end */
 }
 
