@@ -65,12 +65,14 @@ void* corto_llLast(corto_ll list);
 /* Get listsize */
 int corto_llSize(corto_ll list);
 
-/* Obtain iterator */
+/* Obtain regular iterator, not valid outside scope of origin. */
 #define corto_llIter(list) _corto_llIter(list, alloca(sizeof(corto_llIter_s)));
-
 corto_iter _corto_llIter(corto_ll, void *udata);
+
+/* Obtain persistent iterator. Requries corto_iterRelease to be called */
 corto_iter corto_llIterAlloc(corto_ll);
 
+/* Iterator cleanup functions */
 void corto_llIterRelease(corto_iter *iter);
 
 /* Append one list to another */

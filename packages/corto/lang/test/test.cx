@@ -221,14 +221,16 @@ test::Suite Select::
 
 class ListReplicator : replicator, hidden::
     alias mount : replicator/mount
-    items: list{result}
-    resultIter onRequest(object parent, string expr)
+    items: list{result}, private
+    int16 construct()
+    resultIter onRequest(string parent, string expr)
 
 test::Suite ReplicatorRequest::
     void setup() method
     void teardown() method
     replicator: ListReplicator
     void tc_selectSingle()
+    void tc_selectSingleNested()
     void tc_selectScope()
     void tc_selectScopeMixed()
     void tc_selectScopeFilter()

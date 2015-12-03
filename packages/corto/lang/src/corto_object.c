@@ -1743,6 +1743,84 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
     return buffer;
 }
 
+static char *strsep(char **str, char delim) {
+    char *result = *str;
+    if (result) {
+        char *ptr = strchr(result, delim);
+        if (ptr) {
+            *ptr = 0;
+            (*str) = ptr + 1;
+        } else {
+            *str = NULL;
+        }
+    }
+    return result;
+}
+
+corto_string corto_cleanpath(corto_id path) {
+    corto_id work;
+    char *cp, *thisp, *nextp = work;
+    corto_id buf;
+
+    cp = strchr(path, '/');
+
+    /* no '/' characters - return as-is */
+    if (cp == NULL) {
+        strcpy(buf, (path[0] != '\0' ? path : "."));
+        strcpy(path, buf);
+        return path;
+    }
+
+    /* copy leading slash if present */
+    if (cp == path) {
+        strcpy(buf, "/");
+    } else {
+        buf[0] = '\0';
+    }
+
+    /* tokenization */
+    strcpy(work, path);
+    while ((thisp = strsep(&nextp, '/')) != NULL) {
+        if (*thisp == '\0') continue;
+
+        if (strcmp(thisp, ".") == 0) continue;
+
+        if (strcmp(thisp, "..") == 0) {
+            cp = strrchr(buf, '/');
+
+             /* "/" or "/foo" */
+            if (cp == buf) {
+                buf[1] = '\0';
+                continue;
+            }
+
+            /* "..", "foo", or "" */
+            else if (cp == NULL) {
+                if (buf[0] != '\0' && strcmp(buf, "..") != 0) {
+                    buf[0] = '\0';
+                    continue;
+                }
+            }
+            /* ".../foo" */
+            else {
+                *cp = '\0';
+                continue;
+            }
+        }
+
+        if (buf[0] != '\0' && buf[strlen(buf) - 1] != '/') {
+            strcat(buf, "/");
+        }
+
+        strcat(buf, thisp);
+    }
+
+    if (buf[0] == '\0') strcpy(buf, ".");
+    strcpy(path, buf);
+
+    return path;
+}
+
 corto_object corto_ownerof(corto_object o) {
     corto__object* _o;
     corto__persistent* persistent;

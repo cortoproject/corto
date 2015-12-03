@@ -69,6 +69,7 @@ void corto_scopeRelease(corto_objectseq scope);
 corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
 corto_string corto_fullname(corto_object o, corto_id buffer);
 corto_string corto_relname(corto_object from, corto_object o, corto_id buffer);
+corto_string corto_cleanpath(corto_id path);
 
 /* Persistent data */
 corto_object corto_ownerof(corto_object o);

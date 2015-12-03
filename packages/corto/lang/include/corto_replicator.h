@@ -52,11 +52,11 @@ CORTO_LANG_EXPORT void _corto_replicator_onInvoke(corto_replicator _this, corto_
 CORTO_LANG_EXPORT corto_void _corto_replicator_onInvoke_v(corto_replicator _this, corto_object instance, corto_function proc, corto_octetseq args);
 #define corto_replicator_onInvoke_v(_this, instance, proc, args) _corto_replicator_onInvoke_v(corto_replicator(_this), instance, corto_function(proc), args)
 
-/* virtual /corto/lang/replicator/onRequest(object parent,string expr) */
-CORTO_LANG_EXPORT corto_resultIter _corto_replicator_onRequest(corto_replicator _this, corto_object parent, corto_string expr);
+/* virtual /corto/lang/replicator/onRequest(string parent,string expr) */
+CORTO_LANG_EXPORT corto_resultIter _corto_replicator_onRequest(corto_replicator _this, corto_string parent, corto_string expr);
 #define corto_replicator_onRequest(_this, parent, expr) _corto_replicator_onRequest(corto_replicator(_this), parent, expr)
 
-CORTO_LANG_EXPORT corto_resultIter _corto_replicator_onRequest_v(corto_replicator _this, corto_object parent, corto_string expr);
+CORTO_LANG_EXPORT corto_resultIter _corto_replicator_onRequest_v(corto_replicator _this, corto_string parent, corto_string expr);
 #define corto_replicator_onRequest_v(_this, parent, expr) _corto_replicator_onRequest_v(corto_replicator(_this), parent, expr)
 
 /* virtual /corto/lang/replicator/onUpdate(object observable) */
@@ -69,7 +69,7 @@ CORTO_LANG_EXPORT corto_void _corto_replicator_onUpdate_v(corto_replicator _this
 CORTO_LANG_EXPORT corto_void _corto_replicator_post(corto_replicator _this, corto_event e);
 #define corto_replicator_post(_this, e) _corto_replicator_post(corto_replicator(_this), corto_event(e))
 
-CORTO_LANG_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_object parent, corto_string expr);
+CORTO_LANG_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_string parent, corto_string expr);
 #define corto_replicator_request(_this, parent, expr) _corto_replicator_request(corto_replicator(_this), parent, expr)
 
 #ifdef __cplusplus

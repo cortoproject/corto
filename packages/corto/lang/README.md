@@ -42,7 +42,6 @@ attributes for all subsequently created objects in the thread from which the
 function is called. By default the attribute is set to `ATTR_DEFAULT`.
 The `corto_checkAttr` function can be used to check which attributes are enabled
 for an object. The following example checks whether an object is SCOPED:
-
 ```
 if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
     printf("name of o is %s\n", corto_nameof(o));
@@ -147,7 +146,6 @@ will validate that all methods of an implemented interface are implemented by
 the class. Any composite type can be used as an interface. Interface variables
 require run time type information to invoke interface methods, which is why this
 behavior can only be implemented on reference types.
-
 An example of a class that implements the `dispatcher` interface (notice that
 implements expects a sequence of interfaces):
 
@@ -244,12 +242,6 @@ Enables construction of collection types.
 ### compatible(type type)
 #### type
 #### Returns
-### elementRequiresAlloc()
-Returns whether memory has to be allocated to accommodate for a new element.
-Arrays and sequences will always return false, since memory for elements is
-allocated in a consecutive block. Lists and maps require allocations for
-value types as element type that are larger than the size of a word.
-#### Returns
 ### elementType
 The type of which the elements in a collection will be. Depending on the kind
 of collection, elements might require allocation. The `elementRequiresAlloc`
@@ -261,6 +253,9 @@ Specifies the kind of collection. See `collectionKind` for a more detailed
 description of the available options.
 ### max
 The maximum number of elements for a given collection type.
+### requiresAlloc(type elementType)
+#### elementType
+#### Returns
 ### size()
 #### Returns
 
@@ -548,9 +543,6 @@ Enables quick lookups of interface methods.
 
 ## interfaceVectorseq
 Sequence of interfaceVector elements.
-
-## invokeAction
-Delegate used by replicators to forward calls.
 
 ## invokeEvent
 Event used by delegates to forward calls.
@@ -877,11 +869,20 @@ Base for classes that replicate data between datasources.
 #### observable
 ### on_update
 #### observable
-### onDeclare
-### onDelete
-### onInvoke
-### onRequest
-### onUpdate
+### onDeclare(object observable)
+#### observable
+### onDelete(object observable)
+#### observable
+### onInvoke(object instance,function proc,octetseq args)
+#### instance
+#### proc
+#### args
+### onRequest(string parent,string expr)
+#### parent
+#### expr
+#### Returns
+### onUpdate(object observable)
+#### observable
 ### post(event e)
 #### e
 ### query
@@ -889,8 +890,6 @@ Base for classes that replicate data between datasources.
 #### parent
 #### expr
 #### Returns
-
-## requestAction
 
 ## result
 ### name
@@ -925,7 +924,6 @@ if (corto_define(i)) {
 } else {
     // ok: i is DEFINED
 }
-
 corto_delete(i);
 
 // i is DESTRUCTED and may no longer point to valid memory
