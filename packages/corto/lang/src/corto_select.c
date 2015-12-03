@@ -415,12 +415,12 @@ static void corto_selectIterateReplicators(
                         data->item.name[0] = '\0';
                     }
                     if (result->parent) {
-                        strcpy(data->item.parent, result->name);
+                        strcpy(data->item.parent, result->parent);
                     } else {
                         data->item.parent[0] = '\0';
                     }
                     if (result->type) {
-                        strcpy(data->item.type, result->name);
+                        strcpy(data->item.type, result->type);
                     } else {
                         data->item.type[0] = '\0';
                     }

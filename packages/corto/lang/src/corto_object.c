@@ -1123,6 +1123,11 @@ corto_int16 corto_define(corto_object o) {
 void corto_delete(corto_object o) {
     corto__object* _o;
     corto__scope* scope;
+
+    if (!o) {
+        corto_critical("NULL passed to corto_delete");
+    }
+
     corto_type t = corto_typeof(o);
 
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {

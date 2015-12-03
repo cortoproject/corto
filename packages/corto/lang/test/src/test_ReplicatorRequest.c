@@ -18,7 +18,10 @@ corto_void _test_ReplicatorRequest_setup(test_ReplicatorRequest this) {
 
     /* Create list of dummy 'remote' objects */
     corto_resultList items = corto_llNew();
-    *(corto_resultListAppendAlloc(items)) = (corto_result){corto_strdup("x")};
+    *(corto_resultListAppendAlloc(items)) = (corto_result){
+        corto_strdup("x"),
+        corto_strdup("parent"),
+        corto_strdup("type")};
     *(corto_resultListAppendAlloc(items)) = (corto_result){corto_strdup("yz")};
     *(corto_resultListAppendAlloc(items)) = (corto_result){corto_strdup("xyz")};
 
@@ -43,8 +46,8 @@ corto_void _test_ReplicatorRequest_tc_selectScope(test_ReplicatorRequest this) {
     test_assert(result != NULL);
     test_assert(result->name != NULL);
     test_assert(!strcmp(result->name, "x"));
-    test_assert(!strlen(result->parent));
-    test_assert(!strlen(result->type));
+    test_assert(!strcmp(result->parent, "parent"));
+    test_assert(!strcmp(result->type, "type"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -145,8 +148,8 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(test_ReplicatorRequest th
     test_assert(result != NULL);
     test_assert(result->name != NULL);
     test_assert(!strcmp(result->name, "x"));
-    test_assert(!strlen(result->parent));
-    test_assert(!strlen(result->type));
+    test_assert(!strcmp(result->parent, "parent"));
+    test_assert(!strcmp(result->type, "type"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);

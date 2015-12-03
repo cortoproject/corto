@@ -2289,12 +2289,12 @@ CORTO_LANG_EXPORT corto_function* corto_vtableAppendAlloc(corto_vtable *seq);
 CORTO_LANG_EXPORT void corto_vtableSize(corto_vtable *seq, corto_uint32 length);
 CORTO_LANG_EXPORT void corto_vtableClear(corto_vtable *seq);
 #define corto_resultIterForeach(iter, elem) \
-while(corto_iterHasNext(&elem##_iter) ? corto_result *elem;\
-elem = *(corto_result*)(corto_word)corto_iterNext(&iter), TRUE : FALSE)
-    
-    
-    #ifdef __cplusplus
-    }
-    #endif
-    #endif
+    corto_result elem;\
+    while(corto_iterHasNext(&iter) ? elem = *(corto_result*)(corto_word)corto_iterNext(&iter), TRUE : FALSE)
+
+
+#ifdef __cplusplus
+}
+#endif
+#endif
 
