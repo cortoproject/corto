@@ -1758,6 +1758,35 @@ CORTO_LANG_EXPORT corto_int16 _corto_resultIterInit(corto_resultIter* value);
 CORTO_LANG_EXPORT corto_int16 _corto_resultIterDeinit(corto_resultIter* value);
 #define corto_resultIterDeinit(value) _corto_resultIterDeinit(value)
 
+/* /corto/lang/resultList */
+CORTO_LANG_EXPORT corto_resultList* _corto_resultListCreate(void);
+#define corto_resultListCreate() _corto_resultListCreate()
+CORTO_LANG_EXPORT corto_resultList* _corto_resultListCreateChild(corto_object _parent, corto_string _name);
+#define corto_resultListCreateChild(_parent, _name) _corto_resultListCreateChild(_parent, _name)
+CORTO_LANG_EXPORT corto_int16 _corto_resultListUpdate(corto_resultList* _this, corto_resultList value);
+#define corto_resultListUpdate(_this, value) _corto_resultListUpdate(_this, value)
+
+CORTO_LANG_EXPORT corto_resultList* _corto_resultListDeclare(void);
+#define corto_resultListDeclare() _corto_resultListDeclare()
+CORTO_LANG_EXPORT corto_resultList* _corto_resultListDeclareChild(corto_object _parent, corto_string _name);
+#define corto_resultListDeclareChild(_parent, _name) _corto_resultListDeclareChild(_parent, _name)
+CORTO_LANG_EXPORT corto_int16 _corto_resultListDefine(corto_resultList* _this, corto_resultList value);
+#define corto_resultListDefine(_this, value) _corto_resultListDefine(_this, value)
+CORTO_LANG_EXPORT void _corto_resultListSet(corto_resultList* _this, corto_resultList value);
+#define corto_resultListSet(_this, value) _corto_resultListSet(_this, value)
+CORTO_LANG_EXPORT corto_string _corto_resultListStr(corto_resultList value);
+#define corto_resultListStr(value) _corto_resultListStr(value)
+CORTO_LANG_EXPORT corto_resultList* corto_resultListFromStr(corto_resultList* value, corto_string str);
+CORTO_LANG_EXPORT corto_int16 _corto_resultListCopy(corto_resultList* *dst, corto_resultList* src);
+#define corto_resultListCopy(dst, src) _corto_resultListCopy(dst, src)
+CORTO_LANG_EXPORT corto_int16 _corto_resultListCompare(corto_resultList* dst, corto_resultList* src);
+#define corto_resultListCompare(dst, src) _corto_resultListCompare(dst, src)
+
+CORTO_LANG_EXPORT corto_int16 _corto_resultListInit(corto_resultList* value);
+#define corto_resultListInit(value) _corto_resultListInit(value)
+CORTO_LANG_EXPORT corto_int16 _corto_resultListDeinit(corto_resultList* value);
+#define corto_resultListDeinit(value) _corto_resultListDeinit(value)
+
 /* /corto/lang/sequence */
 CORTO_LANG_EXPORT corto_sequence _corto_sequenceCreate(corto_type elementType, corto_uint32 max);
 #define corto_sequenceCreate(elementType, max) _corto_sequenceCreate(corto_type(elementType), max)
@@ -2277,6 +2306,22 @@ CORTO_LANG_EXPORT corto_parameter* corto_parameterseqAppend(corto_parameterseq *
 CORTO_LANG_EXPORT corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *seq);
 CORTO_LANG_EXPORT void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length);
 CORTO_LANG_EXPORT void corto_parameterseqClear(corto_parameterseq *seq);
+
+/* /corto/lang/resultList */
+#define corto_resultListForeach(list, elem) \
+    corto_iter elem##_iter = corto_llIter(list);\
+    corto_result *elem;\
+    while(corto_iterHasNext(&elem##_iter) ? elem = corto_iterNext(&elem##_iter), TRUE : FALSE)
+
+CORTO_LANG_EXPORT corto_result* corto_resultListInsertAlloc(corto_resultList list);
+CORTO_LANG_EXPORT corto_result* corto_resultListInsert(corto_resultList list, corto_result* element);
+CORTO_LANG_EXPORT corto_result* corto_resultListAppendAlloc(corto_resultList list);
+CORTO_LANG_EXPORT corto_result* corto_resultListAppend(corto_resultList list, corto_result* element);
+CORTO_LANG_EXPORT corto_result* corto_resultListTakeFirst(corto_resultList list);
+CORTO_LANG_EXPORT corto_result* corto_resultListLast(corto_resultList list);
+CORTO_LANG_EXPORT void corto_resultListClear(corto_resultList list);
+CORTO_LANG_EXPORT corto_result* corto_resultListGet(corto_resultList list, corto_uint32 index);
+CORTO_LANG_EXPORT corto_uint32 corto_resultListSize(corto_resultList list);
 
 /* /corto/lang/vtable */
 #define corto_vtableForeach(seq, elem) \

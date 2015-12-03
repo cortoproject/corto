@@ -518,6 +518,8 @@ CORTO_FWDECL(sequence, octetseq);
 CORTO_FWDECL(sequence, parameterseq);
 CORTO_FWDECL(sequence, vtable);
 
+CORTO_FWDECL(list, resultList);
+
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, notifyAction);
@@ -703,6 +705,7 @@ CORTO_SEQUENCE_O(observerseq, observer, 0);
 CORTO_SEQUENCE_O(vtable, function, 0);
 CORTO_SEQUENCE_O(interfaceVectorseq, interfaceVector, 0);
 CORTO_SEQUENCE_O(octetseq, octet, 0);
+CORTO_LIST_O(resultList, result, 0);
 
 /* Delegate types */
 CORTO_DELEGATE_O(initAction, int16);

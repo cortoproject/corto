@@ -232,6 +232,8 @@ test::Suite ReplicatorRequest::
     void tc_selectSingle()
     void tc_selectSingleNested()
     void tc_selectScope()
+    void tc_selectScopeNested()
+    void tc_selectScopeNestedDirty()
     void tc_selectScopeMixed()
     void tc_selectScopeFilter()
 

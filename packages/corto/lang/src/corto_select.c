@@ -292,7 +292,7 @@ static void corto_setItemData(
         } else {
             corto_id type;
             corto_fullname(corto_typeof(o), type);
-            strcpy(item->type, type + 1);
+            strcpy(item->type, type);
         }
     } else {
         corto_string_ser_t serData;
@@ -379,6 +379,7 @@ static void corto_selectParseFilter(
         if (exprStart != filter) {
             strcpy(parent, filter);
             parent[exprStart - filter - 1] = '\0';
+            corto_cleanpath(parent);
         }
     } else {
         strcpy(expr, "*");
@@ -410,7 +411,8 @@ static void corto_selectRequestReplicators(
                         corto_replicator_request(
                             odata->replicator,
                             parent, /* Parent is relative to registered scope */
-                            expr);
+                            expr
+                        );
                 }
             }
         }

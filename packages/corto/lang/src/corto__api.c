@@ -6639,6 +6639,113 @@ corto_int16 _corto_resultIterDeinit(corto_resultIter* value) {
     return result;
 }
 
+corto_resultList* _corto_resultListCreate(void) {
+    corto_resultList* this;
+    this = corto_declare(corto_resultList_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_resultList* _corto_resultListCreateChild(corto_object _parent, corto_string _name) {
+    corto_resultList* this;
+    this = corto_declareChild(_parent, _name, corto_resultList_o);
+    if (!this) {
+        return NULL;
+    }
+    if (this && corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_resultListUpdate(corto_resultList* this, corto_resultList value) {
+    if (!corto_updateBegin(this)) {
+        corto_copyp(this, corto_resultList_o, value);
+        corto_updateEnd(this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_resultList* _corto_resultListDeclare(void) {
+    corto_resultList* this;
+    this = corto_declare(corto_resultList_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_resultList* _corto_resultListDeclareChild(corto_object _parent, corto_string _name) {
+    corto_resultList* this;
+    this = corto_declareChild(_parent, _name, corto_resultList_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_resultListDefine(corto_resultList* this, corto_resultList value) {
+    corto_copyp(this, corto_resultList_o, value);
+    return corto_define(this);
+}
+
+void _corto_resultListSet(corto_resultList* this, corto_resultList value) {
+    corto_copyp(this, corto_resultList_o, value);
+}
+
+corto_string _corto_resultListStr(corto_resultList value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_resultList_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_resultList* corto_resultListFromStr(corto_resultList* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_resultList_o), str);
+    return value;
+}
+
+corto_int16 _corto_resultListCopy(corto_resultList* *dst, corto_resultList* src) {
+    corto_value v1, v2;
+    corto_valueValueInit(&v1, NULL, corto_type(corto_resultList_o), dst);
+    corto_valueValueInit(&v2, NULL, corto_type(corto_resultList_o), src);
+    return corto_copyv(&v1, &v2);
+}
+
+corto_int16 _corto_resultListCompare(corto_resultList* dst, corto_resultList* src) {
+    corto_value v1, v2;
+    corto_valueValueInit(&v1, NULL, corto_type(corto_resultList_o), dst);
+    corto_valueValueInit(&v2, NULL, corto_type(corto_resultList_o), src);
+    return corto_comparev(&v1, &v2);
+}
+
+corto_int16 _corto_resultListInit(corto_resultList* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_resultList_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_resultList_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_resultListDeinit(corto_resultList* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_resultList_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_sequence _corto_sequenceCreate(corto_type elementType, corto_uint32 max) {
     corto_sequence this;
     this = corto_declare(corto_sequence_o);
@@ -8614,6 +8721,71 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
 
 void corto_parameterseqClear(corto_parameterseq *seq) {
     corto_parameterseqSize(seq, 0);
+}
+
+corto_result* corto_resultListInsertAlloc(corto_resultList list) {
+    corto_result* result;
+    result = corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
+    {
+        corto_value v;
+        corto_valueValueInit(&v, NULL, corto_type(corto_result_o), result);
+        corto_initv(&v);
+    }
+    corto_llInsert(list, result);
+    return result;
+}
+
+corto_result* corto_resultListInsert(corto_resultList list, corto_result* element) {
+    corto_result *result = corto_resultListInsertAlloc(list);
+    corto_copyp(result, corto_result_o, element);
+    return result;
+}
+
+corto_result* corto_resultListAppendAlloc(corto_resultList list) {
+    corto_result* result;
+    result = corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
+    {
+        corto_value v;
+        corto_valueValueInit(&v, NULL, corto_type(corto_result_o), result);
+        corto_initv(&v);
+    }
+    corto_llAppend(list, result);
+    return result;
+}
+
+corto_result* corto_resultListAppend(corto_resultList list, corto_result* element) {
+    corto_result *result = corto_resultListAppendAlloc(list);
+    corto_copyp(result, corto_result_o, element);
+    return result;
+}
+
+corto_result* corto_resultListTakeFirst(corto_resultList list) {
+    return (corto_result*)(corto_word)corto_llTakeFirst(list);
+}
+
+corto_result* corto_resultListLast(corto_resultList list) {
+    return (corto_result*)(corto_word)corto_llLast(list);
+}
+
+void corto_resultListClear(corto_resultList list) {
+    void *element;
+
+    while((element = corto_llTakeFirst(list))) {
+        {
+            corto_value v;
+            corto_valueValueInit(&v, NULL, corto_type(corto_result_o), element);
+            corto_deinitv(&v);
+        }
+        corto_dealloc(element);
+    }
+}
+
+corto_result* corto_resultListGet(corto_resultList list, corto_uint32 index) {
+    return (corto_result*)(corto_word)corto_llGet(list, index);
+}
+
+corto_uint32 corto_resultListSize(corto_resultList list) {
+    return corto_llSize(list);
 }
 
 corto_function* corto_vtableAppend(corto_vtable *seq, corto_function element) {

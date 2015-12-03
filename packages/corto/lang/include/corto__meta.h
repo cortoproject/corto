@@ -103,6 +103,7 @@ CORTO_META_OBJECT(sequence, interfaceseq);
 CORTO_META_OBJECT(sequence, observerseq);
 CORTO_META_OBJECT(sequence, vtable);
 CORTO_META_OBJECT(sequence, octetseq);
+CORTO_META_OBJECT(list, resultList);
 
 CORTO_META_OBJECT(delegate, initAction);
 CORTO_META_OBJECT(delegate, destructAction);

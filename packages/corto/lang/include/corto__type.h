@@ -78,6 +78,7 @@ extern "C" {
 #define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
 #define corto_result(o) ((corto_result *)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter *)corto_assertType((corto_type)corto_resultIter_o, o))
+#define corto_resultList(o) ((corto_resultList *)corto_assertType((corto_type)corto_resultList_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_state(o) ((corto_state *)corto_assertType((corto_type)corto_state_o, o))
 #define corto_string(o) ((corto_string *)corto_assertType((corto_type)corto_string_o, o))
@@ -656,6 +657,8 @@ struct corto_result {
 };
 
 CORTO_ITERATOR(corto_resultIter);
+
+CORTO_LIST(corto_resultList);
 
 /*  /corto/lang/sequence */
 CORTO_CLASS(corto_sequence);

@@ -163,6 +163,84 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(test_ReplicatorRequest th
 /* $end */
 }
 
+corto_void _test_ReplicatorRequest_tc_selectScopeNested(test_ReplicatorRequest this) {
+/* $begin(test/ReplicatorRequest/tc_selectScopeNested) */
+    corto_resultIter iter;
+    corto_result *result;
+    corto_int16 ret;
+
+    ret = corto_select(root_o, "a/xyz/*", &iter);
+
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->name != NULL);
+    test_assert(!strcmp(result->name, "a"));
+    test_assert(!strcmp(result->parent, "a/xyz"));
+    test_assert(!strcmp(result->type, "/type"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->name != NULL);
+    test_assert(!strcmp(result->name, "abc"));
+    test_assert(!strcmp(result->parent, "a/xyz"));
+    test_assert(!strcmp(result->type, "/type"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->name != NULL);
+    test_assert(!strcmp(result->name, "bc"));
+    test_assert(!strcmp(result->parent, "a/xyz"));
+    test_assert(!strcmp(result->type, "/type"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(test_ReplicatorRequest this) {
+/* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirty) */
+    corto_resultIter iter;
+    corto_result *result;
+    corto_int16 ret;
+
+    ret = corto_select(root_o, "a/../a/./xyz/./*", &iter);
+
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->name != NULL);
+    test_assert(!strcmp(result->name, "a"));
+    test_assert(!strcmp(result->parent, "a/xyz"));
+    test_assert(!strcmp(result->type, "/type"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->name != NULL);
+    test_assert(!strcmp(result->name, "abc"));
+    test_assert(!strcmp(result->parent, "a/xyz"));
+    test_assert(!strcmp(result->type, "/type"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->name != NULL);
+    test_assert(!strcmp(result->name, "bc"));
+    test_assert(!strcmp(result->parent, "a/xyz"));
+    test_assert(!strcmp(result->type, "/type"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
 corto_void _test_ReplicatorRequest_tc_selectSingle(test_ReplicatorRequest this) {
 /* $begin(test/ReplicatorRequest/tc_selectSingle) */
     corto_resultIter iter;

@@ -66,14 +66,14 @@ corto_int16 _test_ListReplicator_construct(test_ListReplicator this) {
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
-        "bc",
+        "abc",
         "xyz",
         "/type"
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
-        "abc",
+        "bc",
         "xyz",
         "/type"
     );

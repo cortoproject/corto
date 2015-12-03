@@ -163,6 +163,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_PRIM(op, vtable);\
     SSO_OP_PRIM(op, interfaceVectorseq);\
     SSO_OP_PRIM(op, interfaceVector);\
+    SSO_OP_PRIM(op, resultList);\
     SSO_OP_PRIM(op, parameter);\
     SSO_OP_PRIM(op, result);\
     SSO_OP_PRIM(op, delegatedata);\
