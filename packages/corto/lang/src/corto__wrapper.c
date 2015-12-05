@@ -1233,6 +1233,13 @@ void __corto_replicator_request(corto_function f, void *result, void *args) {
         *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
 }
 
+void __corto_replicator_setContentType(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_int16*)result = _corto_replicator_setContentType(
+        corto_replicator(*(void**)args),
+        *(corto_string*)((intptr_t)args + sizeof(void*)));
+}
+
 void __corto_result_getText(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);

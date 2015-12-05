@@ -187,3 +187,10 @@ corto_resultIter _corto_replicator_request(corto_replicator this, corto_string p
     return corto_replicator_onRequest(this, parent, expr, setContent);
 /* $end */
 }
+
+corto_int16 _corto_replicator_setContentType(corto_replicator this, corto_string type) {
+/* $begin(corto/lang/replicator/setContentType) */
+    corto_setstr(&this->contentType, type);
+    return 0;
+/* $end */
+}

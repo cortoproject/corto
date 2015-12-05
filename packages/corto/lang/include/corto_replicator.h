@@ -72,6 +72,9 @@ CORTO_LANG_EXPORT corto_void _corto_replicator_post(corto_replicator _this, cort
 CORTO_LANG_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_string parent, corto_string expr, corto_bool setContent);
 #define corto_replicator_request(_this, parent, expr, setContent) _corto_replicator_request(corto_replicator(_this), parent, expr, setContent)
 
+CORTO_LANG_EXPORT corto_int16 _corto_replicator_setContentType(corto_replicator _this, corto_string type);
+#define corto_replicator_setContentType(_this, type) _corto_replicator_setContentType(corto_replicator(_this), type)
+
 #ifdef __cplusplus
 }
 #endif

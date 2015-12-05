@@ -932,7 +932,7 @@ CORTO_STRUCT_O(result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(result, name, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(result, value, word, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(result, value, word, CORTO_GLOBAL);
     CORTO_METHOD_O(result, getText, "()", string, FALSE, corto_result_getText);
 
 /* /corto/lang/delegate */
@@ -1028,6 +1028,7 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_METHOD_O(replicator, construct, "()", int16, FALSE, corto_replicator_construct);
     CORTO_METHOD_O(replicator, destruct, "()", void, FALSE, corto_replicator_destruct);
     CORTO_METHOD_O(replicator, post, "(event e)", void, FALSE, corto_replicator_post);
+    CORTO_METHOD_O(replicator, setContentType, "(string type)", int16, FALSE, corto_replicator_setContentType);
     CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_invoke);
     CORTO_METHOD_O(replicator, request, "(string parent,string expr,bool setContent)", resultIter, FALSE, corto_replicator_request);
     CORTO_METHOD_O(replicator, onInvoke, "(object instance,function proc,octetseq args)", void, TRUE, corto_replicator_onInvoke_v);

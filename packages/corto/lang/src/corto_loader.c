@@ -287,7 +287,7 @@ int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *dat
 
 /* Load xml interface */
 static int corto_loadXml(void) {
-    return corto_loadComponent("libxml.so", 0, NULL);
+    return corto_loadComponent("xml", 0, NULL);
 }
 
 /* Load a package */
