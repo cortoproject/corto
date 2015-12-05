@@ -170,8 +170,8 @@ test::Suite Select::
     void setup() method
     void teardown() method
 
-    list{result} collect(object @scope, string expr) function
-    bool hasObject(list{result} items, string parent, string name, string type) function
+    resultList collect(object @scope, string expr) function
+    bool hasObject(resultList items, string parent, string name, string type) function
 
     void tc_selectErrParentTree()
     void tc_selectErrParentId()
@@ -221,9 +221,9 @@ test::Suite Select::
 
 class ListReplicator : replicator, hidden::
     alias mount : replicator/mount
-    items: list{result}, private
+    items: resultList, private
     int16 construct()
-    resultIter onRequest(string parent, string expr)
+    resultIter onRequest(string parent, string expr, bool setContent)
 
 test::Suite ReplicatorRequest::
     void setup() method

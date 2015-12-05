@@ -1814,6 +1814,7 @@ corto_string corto_cleanpath(corto_id path) {
     }
 
     if (buf[0] == '\0') strcpy(buf, ".");
+
     strcpy(path, buf);
 
     return path;

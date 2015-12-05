@@ -879,7 +879,11 @@ corto_uint32 cxsh_countSelect(char *expr) {
     }
     if (!result) {
         corto_id scopedExpr;
-        sprintf(scopedExpr, "%s/%s", scope, expr);
+        if (strcmp(scope, "/")) {
+            sprintf(scopedExpr, "%s/%s", scope, expr);
+        } else {
+            strcpy(scopedExpr, expr);
+        }
         if (!corto_select(root_o, scopedExpr, &iter)) {
             while (corto_iterHasNext(&iter)) {
                 corto_iterNext(&iter);

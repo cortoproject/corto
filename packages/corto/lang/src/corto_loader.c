@@ -202,18 +202,6 @@ static corto_bool corto_checkLibrary(corto_string fileName) {
 static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     corto_dl dl = NULL;
     int (*proc)(int argc, char* argv[]);
-    struct corto_fileAdmin *lib = NULL;
-
-    /* Don't load library twice */
-    lib = corto_fileAdminFind(fileName);
-    if (lib) {
-        if (lib->loading) {
-            corto_seterr("resursive loading of library '%s'", fileName);
-            goto error;
-        } else {
-            goto loaded;
-        }
-    }
 
     if (!(dl = corto_loadValidLibrary(fileName))) {
         goto error;
@@ -238,9 +226,6 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     }
     corto_llInsert(libraries, dl);
 
-    corto_fileAdminAdd(fileName)->loading = FALSE;
-
-loaded:
     return 0;
 error:
     if (dl) corto_dlClose(dl);
@@ -254,7 +239,7 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
     corto_iter iter = corto_llIter(libraries);
     while (!result && corto_iterHasNext(&iter)) {
         corto_dl dl = corto_iterNext(&iter);
-        result = (void(*)())corto_dlProc(dl, procName);
+        result = (void(*)(void))corto_dlProc(dl, procName);
     }
 
     return result;
@@ -263,15 +248,24 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
 /* Load a corto component from a default component location */
 int corto_loadComponent(corto_string component, int argc, char* argv[]) {
     int result;
+
     corto_string path = corto_envparse(
         "$CORTO_TARGET/lib/corto/%s.%s/components/lib%s.so",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, component);
     if (!path) {
         goto error;
     }
+
+    /* Don't load component twice */
+    struct corto_fileAdmin *lib = corto_fileAdminFind(path);
+    if (lib) {
+        goto loaded;
+    }
+
     result = corto_loadLibrary(path, argc, argv);
     corto_dealloc(path);
 
+loaded:
     return result;
 error:
     return -1;

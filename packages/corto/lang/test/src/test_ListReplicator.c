@@ -20,19 +20,22 @@ corto_int16 _test_ListReplicator_construct(test_ListReplicator this) {
         corto_resultListAppendAlloc(this->items),
         "x",
         ".",
-        "/foo"
+        "/foo",
+        0
     );
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "yz",
         ".",
-        "/bar"
+        "/bar",
+        0
     );
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "xyz",
         ".",
-        "/panda"
+        "/panda",
+        0
     );
 
     /* Creat nested objects */
@@ -40,42 +43,48 @@ corto_int16 _test_ListReplicator_construct(test_ListReplicator this) {
         corto_resultListAppendAlloc(this->items),
         "a",
         "x",
-        "/type"
+        "/type",
+        0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "b",
         "x",
-        "/type"
+        "/type",
+        0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "c",
         "x",
-        "/type"
+        "/type",
+        0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "a",
         "xyz",
-        "/type"
+        "/type",
+        0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "abc",
         "xyz",
-        "/type"
+        "/type",
+        0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "bc",
         "xyz",
-        "/type"
+        "/type",
+        0
     );
 
     return corto_replicator_construct(this);
@@ -91,7 +100,7 @@ void test_ListReplicator_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_string parent, corto_string expr) {
+corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_string parent, corto_string expr, corto_bool setContent) {
 /* $begin(test/ListReplicator/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();
@@ -103,7 +112,8 @@ corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_
                 corto_resultListAppendAlloc(data),
                 e.name,
                 e.parent,
-                e.type
+                e.type,
+                0
             );
         }
     }

@@ -33,7 +33,7 @@ int corto_loadPackages(void);
 
 int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userData);
 
-void (*corto_loaderResolveProc(corto_string procName))();
+void (*corto_loaderResolveProc(corto_string procName))(void);
 
 corto_string corto_locate(corto_string package);
 corto_string corto_locateComponent(corto_string component);

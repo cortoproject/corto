@@ -160,7 +160,6 @@ static int corto_selectParse(corto_selectData *data) {
         }
     }
 
-    /* If program ends with scope or tree, auto-append asterisk */
     if (op) {
         switch(data->program[op - 1].token) {
         case TOKEN_SCOPE:
@@ -727,7 +726,7 @@ corto_int16 corto_selectContentType(corto_resultIter *iter, corto_string content
         /* Load serialization routines */
         corto_id id; sprintf(id, "%s_fromCorto", component);
         data->contentFromCorto =
-            (corto_word ___ (*)())corto_loaderResolveProc(id);
+            (corto_word ___ (*)(corto_object))corto_loaderResolveProc(id);
         if (!data->contentFromCorto) {
             corto_seterr("unresolved symbol %s", id);
             goto error;
@@ -794,8 +793,6 @@ corto_int16 corto_select(
     corto_setstr(&data->expr, expr);
     corto_setstr(&data->tokens, expr);
     corto_setstr(&data->contentType, NULL);
-    corto_cleanpath(data->expr);
-    corto_cleanpath(data->tokens);
     data->scope = scope;
     data->sp = 0;
     data->next = NULL;
