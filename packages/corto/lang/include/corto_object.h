@@ -79,6 +79,7 @@ corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
 /* Iterate over object metadata matching a expression */
+corto_int16 corto_selectContentType(corto_resultIter *iter, corto_string contentType);
 corto_int16 corto_select(corto_object scope, corto_string expr, corto_resultIter *iter_out);
 
 /* Notifications */

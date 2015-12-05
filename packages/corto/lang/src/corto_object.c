@@ -1766,8 +1766,6 @@ corto_string corto_cleanpath(corto_id path) {
 
     /* no '/' characters - return as-is */
     if (cp == NULL) {
-        strcpy(buf, (path[0] != '\0' ? path : "."));
-        strcpy(path, buf);
         return path;
     }
 

@@ -509,6 +509,7 @@ CORTO_CLASS(corto_replicator);
 CORTO_CLASS_DEF(corto_replicator) {
     corto_object mount;
     corto_query query;
+    corto_string contentType;
 };
 
 /* /corto/lang/octet */
@@ -654,6 +655,7 @@ struct corto_result {
     corto_string name;
     corto_string parent;
     corto_string type;
+    corto_word value;
 };
 
 CORTO_ITERATOR(corto_resultIter);

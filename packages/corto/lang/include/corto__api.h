@@ -1677,21 +1677,21 @@ CORTO_LANG_EXPORT corto_int16 _corto_queryCompare(corto_query dst, corto_query s
 #define corto_queryCompare(dst, src) _corto_queryCompare(corto_query(dst), corto_query(src))
 
 /* /corto/lang/replicator */
-CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query);
-#define corto_replicatorCreate(mount, query) _corto_replicatorCreate(mount, corto_query(query))
-CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query);
-#define corto_replicatorCreateChild(_parent, _name, mount, query) _corto_replicatorCreateChild(_parent, _name, mount, corto_query(query))
-CORTO_LANG_EXPORT corto_int16 _corto_replicatorUpdate(corto_replicator _this, corto_object mount, corto_query query);
-#define corto_replicatorUpdate(_this, mount, query) _corto_replicatorUpdate(corto_replicator(_this), mount, corto_query(query))
+CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_string contentType);
+#define corto_replicatorCreate(mount, query, contentType) _corto_replicatorCreate(mount, corto_query(query), contentType)
+CORTO_LANG_EXPORT corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_string contentType);
+#define corto_replicatorCreateChild(_parent, _name, mount, query, contentType) _corto_replicatorCreateChild(_parent, _name, mount, corto_query(query), contentType)
+CORTO_LANG_EXPORT corto_int16 _corto_replicatorUpdate(corto_replicator _this, corto_object mount, corto_query query, corto_string contentType);
+#define corto_replicatorUpdate(_this, mount, query, contentType) _corto_replicatorUpdate(corto_replicator(_this), mount, corto_query(query), contentType)
 
 CORTO_LANG_EXPORT corto_replicator _corto_replicatorDeclare(void);
 #define corto_replicatorDeclare() _corto_replicatorDeclare()
 CORTO_LANG_EXPORT corto_replicator _corto_replicatorDeclareChild(corto_object _parent, corto_string _name);
 #define corto_replicatorDeclareChild(_parent, _name) _corto_replicatorDeclareChild(_parent, _name)
-CORTO_LANG_EXPORT corto_int16 _corto_replicatorDefine(corto_replicator _this, corto_object mount, corto_query query);
-#define corto_replicatorDefine(_this, mount, query) _corto_replicatorDefine(corto_replicator(_this), mount, corto_query(query))
-CORTO_LANG_EXPORT void _corto_replicatorSet(corto_replicator _this, corto_object mount, corto_query query);
-#define corto_replicatorSet(_this, mount, query) _corto_replicatorSet(corto_replicator(_this), mount, corto_query(query))
+CORTO_LANG_EXPORT corto_int16 _corto_replicatorDefine(corto_replicator _this, corto_object mount, corto_query query, corto_string contentType);
+#define corto_replicatorDefine(_this, mount, query, contentType) _corto_replicatorDefine(corto_replicator(_this), mount, corto_query(query), contentType)
+CORTO_LANG_EXPORT void _corto_replicatorSet(corto_replicator _this, corto_object mount, corto_query query, corto_string contentType);
+#define corto_replicatorSet(_this, mount, query, contentType) _corto_replicatorSet(corto_replicator(_this), mount, corto_query(query), contentType)
 CORTO_LANG_EXPORT corto_string _corto_replicatorStr(corto_replicator value);
 #define corto_replicatorStr(value) _corto_replicatorStr(corto_replicator(value))
 CORTO_LANG_EXPORT corto_replicator corto_replicatorFromStr(corto_replicator value, corto_string str);
@@ -1701,21 +1701,21 @@ CORTO_LANG_EXPORT corto_int16 _corto_replicatorCompare(corto_replicator dst, cor
 #define corto_replicatorCompare(dst, src) _corto_replicatorCompare(corto_replicator(dst), corto_replicator(src))
 
 /* /corto/lang/result */
-CORTO_LANG_EXPORT corto_result* _corto_resultCreate(corto_string name, corto_string parent, corto_string type);
-#define corto_resultCreate(name, parent, type) _corto_resultCreate(name, parent, type)
-CORTO_LANG_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string name, corto_string parent, corto_string type);
-#define corto_resultCreateChild(_parent, _name, name, parent, type) _corto_resultCreateChild(_parent, _name, name, parent, type)
-CORTO_LANG_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, corto_string name, corto_string parent, corto_string type);
-#define corto_resultUpdate(_this, name, parent, type) _corto_resultUpdate(_this, name, parent, type)
+CORTO_LANG_EXPORT corto_result* _corto_resultCreate(corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultCreate(name, parent, type, value) _corto_resultCreate(name, parent, type, value)
+CORTO_LANG_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultCreateChild(_parent, _name, name, parent, type, value) _corto_resultCreateChild(_parent, _name, name, parent, type, value)
+CORTO_LANG_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultUpdate(_this, name, parent, type, value) _corto_resultUpdate(_this, name, parent, type, value)
 
 CORTO_LANG_EXPORT corto_result* _corto_resultDeclare(void);
 #define corto_resultDeclare() _corto_resultDeclare()
 CORTO_LANG_EXPORT corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _name);
 #define corto_resultDeclareChild(_parent, _name) _corto_resultDeclareChild(_parent, _name)
-CORTO_LANG_EXPORT corto_int16 _corto_resultDefine(corto_result* _this, corto_string name, corto_string parent, corto_string type);
-#define corto_resultDefine(_this, name, parent, type) _corto_resultDefine(_this, name, parent, type)
-CORTO_LANG_EXPORT void _corto_resultSet(corto_result* _this, corto_string name, corto_string parent, corto_string type);
-#define corto_resultSet(_this, name, parent, type) _corto_resultSet(_this, name, parent, type)
+CORTO_LANG_EXPORT corto_int16 _corto_resultDefine(corto_result* _this, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultDefine(_this, name, parent, type, value) _corto_resultDefine(_this, name, parent, type, value)
+CORTO_LANG_EXPORT void _corto_resultSet(corto_result* _this, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultSet(_this, name, parent, type, value) _corto_resultSet(_this, name, parent, type, value)
 CORTO_LANG_EXPORT corto_string _corto_resultStr(corto_result* value);
 #define corto_resultStr(value) _corto_resultStr(value)
 CORTO_LANG_EXPORT corto_result* corto_resultFromStr(corto_result* value, corto_string str);

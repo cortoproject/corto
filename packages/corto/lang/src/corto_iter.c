@@ -1,5 +1,5 @@
 
-#include "corto_iter.h"
+#include "corto.h"
 
 void corto_iterMoveFirst(corto_iter* iter) {
     iter->moveFirst(iter);
@@ -11,7 +11,13 @@ void* corto_iterMove(corto_iter* iter, unsigned int index) {
 
 int corto_iterHasNext(corto_iter* iter) {
     if (iter->hasNext) {
-        return iter->hasNext(iter);
+        if (!iter->hasNext(iter)) {
+            corto_iterRelease(iter);
+            iter->hasNext = NULL;
+            return 0;
+        } else {
+            return 1;
+        }
     } else {
         return 0;
     }
@@ -38,5 +44,8 @@ void corto_iterSet(corto_iter* iter, void* o) {
 }
 
 void corto_iterRelease(corto_iter* iter) {
-    iter->release(iter);
+    if (iter->release) {
+        iter->release(iter);
+        iter->release = NULL;
+    }
 }

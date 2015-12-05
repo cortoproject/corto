@@ -164,6 +164,7 @@ corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata) {
     result.remove = NULL;
     result.insert = NULL;
     result.set = NULL;
+    result.release = NULL;
 
     return result;
 }

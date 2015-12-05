@@ -13,6 +13,9 @@
 extern "C" {
 #endif
 
+CORTO_LANG_EXPORT corto_string _corto_result_getText(corto_result *_this);
+#define corto_result_getText(_this) _corto_result_getText(_this)
+
 #ifdef __cplusplus
 }
 #endif

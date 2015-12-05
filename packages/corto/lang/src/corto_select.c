@@ -44,6 +44,7 @@ typedef struct corto_selectStack {
 typedef struct corto_selectData {
     corto_string expr;                         /* Full expression */
     corto_string tokens;                       /* Cut up string for op tokens */
+    corto_string contentType;
     corto_object scope;                        /* Scope passed to select */
     corto_selectOp program[CORTO_SELECT_MAX_OP]; /* Parsed program */
     corto_uint8 programSize;
@@ -53,13 +54,18 @@ typedef struct corto_selectData {
     corto_int8 activeReplicators; /* Replicators with outstanding requests */
     corto_int8 currentReplicator; /* Current replicator being evaluated */
 
+    /* Serializers for requested content type */
+    corto_word ___ (*contentFromCorto)(corto_object o);
+    corto_int16 ___ (*contentToCorto)(corto_object *o, corto_word content);
+    void (*contentRelease)(corto_word content);
+
     /* Pre allocated for selectItem */
     corto_id parent;
     corto_id name;
     corto_id type;
     corto_result item;
     corto_result *next;
-}corto_selectData;
+} corto_selectData;
 
 static corto_selectData* corto_selectDataGet(void) {
     corto_selectData* result;
@@ -309,7 +315,15 @@ static void corto_setItemData(
             CORTO_LOCAL,
             CORTO_NOT,
             CORTO_SERIALIZER_TRACE_NEVER);
+
         corto_serialize(&s, corto_typeof(o), &serData);
+    }
+
+    if (data->contentType) {
+        if (item->value) {
+            data->contentRelease(item->value);
+        }
+        item->value = data->contentFromCorto(o);
     }
 }
 
@@ -411,7 +425,8 @@ static void corto_selectRequestReplicators(
                         corto_replicator_request(
                             odata->replicator,
                             parent, /* Parent is relative to registered scope */
-                            expr
+                            expr,
+                            data->contentType ? TRUE : FALSE
                         );
                 }
             }
@@ -470,12 +485,15 @@ static void corto_selectIterateReplicators(
                         data->item.type[0] = '\0';
                     }
 
+                    if (data->contentType) {
+                        data->contentRelease(data->item.value);
+                        data->item.value = result->value;
+                    }
                     break;
                 }
             }
 
             if (!data->next) {
-                corto_iterRelease(iter);
                 data->currentReplicator ++;
             } else {
                 break;
@@ -556,6 +574,7 @@ static void corto_selectTree(
         } else {
             data->next = NULL;
         }
+
         corto__scopeRelease(claimed);
     } while (frame->filter && (data->next &&
         !corto_selectMatch(frame->filter, data->next->name)));
@@ -656,6 +675,7 @@ error:
 static int corto_selectHasNext(corto_resultIter *iter) {
     corto_selectData *data = corto_selectDataGet();
     corto_selectStack *frame = &data->stack[data->sp];
+
     CORTO_UNUSED(iter);
 
     if (!data->next) {
@@ -682,6 +702,84 @@ static void* corto_selectNext(corto_resultIter *iter) {
     return data->next;
 }
 
+corto_int16 corto_selectContentType(corto_resultIter *iter, corto_string contentType) {
+    CORTO_UNUSED(iter);
+    corto_selectData *data;
+
+    data = corto_selectDataGet();
+
+    if (!data->contentType || strcmp(contentType, data->contentType)) {
+        char *component = strchr(contentType, '/');
+        if (!component) {
+            corto_seterr("invalid content type %s", data->contentType);
+            goto error;
+        }
+
+        /* Strip '/' */
+        component ++;
+
+        /* Load component associated with content type */
+        if (corto_loadComponent(component, 0, NULL)) {
+            corto_seterr("unsupported content type %s", data->contentType);
+            goto error;
+        }
+
+        /* Load serialization routines */
+        corto_id id; sprintf(id, "%s_fromCorto", component);
+        data->contentFromCorto =
+            (corto_word ___ (*)())corto_loaderResolveProc(id);
+        if (!data->contentFromCorto) {
+            corto_seterr("unresolved symbol %s", id);
+            goto error;
+        }
+
+        sprintf(id, "%s_toCorto", component);
+        data->contentToCorto =
+            (corto_int16 ___ (*)(corto_object*, corto_word))
+            corto_loaderResolveProc(id);
+        if (!data->contentToCorto) {
+            corto_seterr("unresolved symbol %s", id);
+            goto error;
+        }
+
+        sprintf(id, "%s_release", component);
+        data->contentRelease =
+            (void ___ (*)(corto_word))corto_loaderResolveProc(id);
+        if (!data->contentRelease) {
+            corto_seterr("unresolved symbol %s", id);
+            goto error;
+        }
+
+        corto_setstr(&data->contentType, contentType);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static void corto_selectRelease(corto_iter *iter) {
+    corto_selectData *data = corto_selectDataGet();
+    corto_int32 i = 0;
+
+    CORTO_UNUSED(iter);
+
+    if (data->expr) corto_dealloc(data->expr);
+    if (data->tokens) corto_dealloc(data->tokens);
+
+    for (i = 0; i < data->activeReplicators; i ++) {
+        corto_iterRelease(&data->replicators[i]);
+    }
+
+    if (data->item.value && data->contentRelease) {
+        data->contentRelease(data->item.value);
+    }
+
+    data->expr = NULL;
+    data->tokens = NULL;
+    data->item.value = 0;
+}
+
 corto_int16 corto_select(
     corto_object scope,
     corto_string expr,
@@ -695,14 +793,22 @@ corto_int16 corto_select(
 
     corto_setstr(&data->expr, expr);
     corto_setstr(&data->tokens, expr);
+    corto_setstr(&data->contentType, NULL);
+    corto_cleanpath(data->expr);
+    corto_cleanpath(data->tokens);
     data->scope = scope;
     data->sp = 0;
     data->next = NULL;
+    data->item.value = 0;
     data->activeReplicators = -1;
     data->currentReplicator = -1;
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;
+    iter_out->release = corto_selectRelease;
+
+    memset(&data->program, 0, sizeof(data->program));
+    memset(&data->stack, 0, sizeof(data->stack));
 
     if (corto_selectParse(data)) {
         corto_seterr("select '%s' failed: %s", expr, corto_lasterr());
@@ -717,7 +823,6 @@ corto_int16 corto_select(
 
     /* Prepare first stack frame */
     corto_claim(scope);
-    memset(&data->stack, 0, sizeof(data->stack));
     data->stack[0].o = scope;
 
     return 0;
