@@ -34,6 +34,7 @@ LIB ||= []
 LIBPATH ||= []
 LINK ||= []
 CFLAGS ||= []
+CXXFLAGS ||= []
 LFLAGS ||= []
 USE_PACKAGE ||= []
 USE_COMPONENT ||= []
@@ -43,6 +44,11 @@ CC ||= if ENV['CC'].nil? or ENV['CC'].empty?
   "cc"
 else
   ENV['CC']
+end
+CXX ||= if ENV['CXX'].nil? or ENV['CXX'].empty?
+  "g++"
+else
+  ENV['CXX']
 end
 
 # Private variables
@@ -60,11 +66,14 @@ INCLUDE <<
     "/usr/local/include/corto/#{VERSION}/packages"
 
 # Default CFLAGS
-CFLAGS << "-g" << "-Wstrict-prototypes" << "-std=c99" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
+CFLAGS << "-g" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
 
+# Default CXXFLAGS
+CXXFLAGS << "-Wall" << "-g" << "-std=c++11"
+
 # Obtain list of source and object files
-SOURCES = Rake::FileList["src/*.c"] + GENERATED_SOURCES
+SOURCES = Rake::FileList["src/*.c*"] + GENERATED_SOURCES
 OBJECTS = SOURCES.ext(".o").pathmap(".corto/obj/%f")
 
 # Load components from file
@@ -245,7 +254,17 @@ rule '__load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
 end
 
 # Generic rule for translating source files into object files
-rule '.o' => ->(t) {t.pathmap("src/%f").ext(".c")} do |task|
+rule '.o' => ->(t) {
+    files = Rake::FileList["src/*.c*"]
+    file = ""
+    files.each do |e|
+      if File.basename(e).ext("") == File.basename(t).ext("") then
+          file = e
+          break;
+      end
+    end
+    file
+} do |task|
     build_source(task.source, task.name, true)
 end
 
@@ -254,6 +273,15 @@ end
 # Utility for building a sourcefile
 def build_source(source, target, echo)
     verbose(false)
+    flags = ""
+    cc = ""
+    if File.extname(source) == ".c" then
+        flags = CFLAGS
+        cc = CC
+    else
+        flags = CXXFLAGS
+        cc = CXX
+    end
     if not File.exists? ".corto/obj" then
         sh "mkdir -p .corto/obj"
     end
@@ -262,7 +290,7 @@ def build_source(source, target, echo)
             sh "echo '#{source}'"
         end
     end
-    cc_command = "#{CC} -c #{CFLAGS.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
+    cc_command = "#{cc} -c #{flags.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
     begin
       sh cc_command
     rescue
