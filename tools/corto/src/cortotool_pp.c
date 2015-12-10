@@ -135,6 +135,17 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                 }
             }
         }
+
+        /* If there's a single include file, set an attribute to pass the name
+         * of the file to a generator */
+        if (corto_llSize(includes) == 1) {
+            corto_string str;
+            corto_asprintf(&str, "include=%s", corto_llGet(includes, 0));
+            if (!attributes) {
+                attributes = corto_llNew();
+            }
+            corto_llAppend(attributes, str);
+        }
     }
 
     /* Load library */
@@ -177,7 +188,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                 }
             }
 
-            /* Add output directories */
+            /* Set attributes */
             if (attributes) {
                 iter = corto_llIter(attributes);
                 while (corto_iterHasNext(&iter)) {

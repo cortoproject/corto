@@ -229,8 +229,6 @@ corto_int16 cortotool_debug(int argc, char *argv[]) {
         corto_chdir(argv[1]);
     }
 
-    printf("argv[1] = %s\n", argv[1]);
-
     corto_pid pid = corto_procrun("lldb", (char*[]){".corto/app", NULL});
     if (pid) {
         corto_procwait(pid, NULL);
@@ -292,7 +290,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
             /* Rebuild the app */
             if (rebuild) {
                 corto_rm(".corto/app");
-                cortotool_build(0, NULL);
+                cortotool_build(2, (char*[]){"build", "--silent", NULL});
             } else if (depErrors) {
                 printf("corto: won't restart because dependency failed to rebuild\n");
             }
@@ -327,7 +325,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                 pid = 0;
             }
         } else {
-            corto_error("corto: go fix your code!\n");
+            corto_error("corto: fix your code!\n");
 
             /* Wait for changed before trying again */
             changed = cortotool_waitForChanges(0, files, changed);
@@ -335,7 +333,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
 
         /* If the process segfaults, wait for changes and rebuild */
         if ((retcode == 11) || (retcode == 6)) {
-            printf("corto: segmentation fault, go fix your code!\n");
+            printf("corto: segmentation fault, fix your code!\n");
             changed = cortotool_waitForChanges(0, files, changed);
             retcode = 0;
             pid = 0;

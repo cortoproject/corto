@@ -247,7 +247,7 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
 
 /* Load a corto component from a default component location */
 int corto_loadComponent(corto_string component, int argc, char* argv[]) {
-    int result;
+    int result = 0;
 
     corto_string path = corto_envparse(
         "$CORTO_TARGET/lib/corto/%s.%s/components/lib%s.so",

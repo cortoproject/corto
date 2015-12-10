@@ -66,7 +66,7 @@ INCLUDE <<
     "/usr/local/include/corto/#{VERSION}/packages"
 
 # Default CFLAGS
-CFLAGS << "-g" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
+CFLAGS << "-g" << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
@@ -256,12 +256,15 @@ end
 # Generic rule for translating source files into object files
 rule '.o' => ->(t) {
     files = Rake::FileList["src/*.c*"]
-    file = ""
+    file = nil
     files.each do |e|
       if File.basename(e).ext("") == File.basename(t).ext("") then
           file = e
           break;
       end
+    end
+    if file == nil then
+        file = t.pathmap("src/%f").ext(".c")
     end
     file
 } do |task|
@@ -275,7 +278,9 @@ def build_source(source, target, echo)
     verbose(false)
     flags = ""
     cc = ""
-    if File.extname(source) == ".c" then
+
+    # Can't use extname because of files with multiple periods in their name
+    if source.split(".").last == "c" then
         flags = CFLAGS
         cc = CC
     else
