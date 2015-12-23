@@ -41,6 +41,12 @@ typedef struct corto_selectStack {
         struct corto_selectStack *frame);
 } corto_selectStack;
 
+typedef struct corto_contentType {
+    corto_word ___ (*contentFromCorto)(corto_object o);
+    corto_int16 ___ (*contentToCorto)(corto_object o, corto_word content);
+    void (*contentRelease)(corto_word content);
+} corto_contentType;
+
 typedef struct corto_selectData {
     corto_string expr;                         /* Full expression */
     corto_string tokens;                       /* Cut up string for op tokens */
@@ -50,14 +56,21 @@ typedef struct corto_selectData {
     corto_uint8 programSize;
     corto_selectStack stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     corto_uint8 sp;
-    corto_resultIter replicators[CORTO_MAX_REPLICATORS];
-    corto_int8 activeReplicators; /* Replicators with outstanding requests */
-    corto_int8 currentReplicator; /* Current replicator being evaluated */
 
-    /* Serializers for requested content type */
-    corto_word ___ (*contentFromCorto)(corto_object o);
-    corto_int16 ___ (*contentToCorto)(corto_object *o, corto_word content);
-    void (*contentRelease)(corto_word content);
+    /* Replicators loaded for the scope that is currently evaluated */
+    corto_resultIter replicators[CORTO_MAX_REPLICATORS];
+
+    /* Replicators with outstanding requests */
+    corto_int8 activeReplicators;
+
+    /* Current replicator being evaluated */
+    corto_int8 currentReplicator;
+
+    /* Serializer for requested content type */
+    corto_contentType destSer;
+
+    /* Serializers for source content types */
+    corto_contentType srcSer[CORTO_MAX_REPLICATORS];
 
     /* Pre allocated for selectItem */
     corto_id parent;
@@ -81,6 +94,76 @@ static corto_selectData* corto_selectDataGet(void) {
     }
 
     return result;
+}
+
+static corto_string corto_selectToStr(corto_object o) {
+    return corto_str(o, 0);
+}
+
+static corto_int16 corto_selectFromStr(corto_object o, corto_string str) {
+    return corto_fromStr(&o, str);
+}
+
+static corto_int16 corto_loadContentType(
+    corto_contentType *type_out,
+    corto_string contentType)
+{
+    /* Built in Corto string serializer */
+    if (!strcmp(contentType, "application/corto")) {
+        type_out->contentToCorto =
+            (corto_int16 ___ (*)(corto_object, corto_word))corto_selectFromStr;
+
+        type_out->contentFromCorto =
+            (corto_word ___ (*)(corto_object))corto_selectToStr;
+
+        type_out->contentRelease = (void ___ (*)(corto_word))corto_dealloc;
+
+    } else {
+        char *component = strchr(contentType, '/');
+        if (!component) {
+            corto_seterr("invalid content type %s", contentType);
+            goto error;
+        }
+
+        /* Strip '/' */
+        component ++;
+
+        /* Load component associated with content type */
+        if (corto_loadComponent(component, 0, NULL)) {
+            corto_seterr("unsupported content type %s", contentType);
+            goto error;
+        }
+
+        /* Load serialization routines */
+        corto_id id; sprintf(id, "%s_fromCorto", component);
+        type_out->contentFromCorto =
+            (corto_word ___ (*)(corto_object))corto_loaderResolveProc(id);
+        if (!type_out->contentFromCorto) {
+            corto_seterr("unresolved symbol %s", id);
+            goto error;
+        }
+
+        sprintf(id, "%s_toCorto", component);
+        type_out->contentToCorto =
+            (corto_int16 ___ (*)(corto_object, corto_word))
+            corto_loaderResolveProc(id);
+        if (!type_out->contentToCorto) {
+            corto_seterr("unresolved symbol %s", id);
+            goto error;
+        }
+
+        sprintf(id, "%s_release", component);
+        type_out->contentRelease =
+            (void ___ (*)(corto_word))corto_loaderResolveProc(id);
+        if (!type_out->contentRelease) {
+            corto_seterr("unresolved symbol %s", id);
+            goto error;
+        }
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 static int corto_selectParse(corto_selectData *data) {
@@ -320,9 +403,9 @@ static void corto_setItemData(
 
     if (data->contentType) {
         if (item->value) {
-            data->contentRelease(item->value);
+            data->destSer.contentRelease(item->value);
         }
-        item->value = data->contentFromCorto(o);
+        item->value = data->destSer.contentFromCorto(o);
     }
 }
 
@@ -399,7 +482,7 @@ static void corto_selectParseFilter(
     }
 }
 
-static void corto_selectRequestReplicators(
+static corto_int16 corto_selectRequestReplicators(
     corto_selectData *data,
     corto_selectStack *frame,
     corto__scope *scope)
@@ -419,6 +502,21 @@ static void corto_selectRequestReplicators(
                 while (corto_iterHasNext(&iter)) {
                     corto_replicator_olsData_t *odata = corto_iterNext(&iter);
 
+                    /* If required, load replicator content type */
+                    if (data->contentType && odata->replicator->contentType) {
+                        if (strcmp(
+                              data->contentType,
+                              odata->replicator->contentType))
+                        {
+                            if (corto_loadContentType(
+                                &data->srcSer[data->activeReplicators],
+                                odata->replicator->contentType))
+                            {
+                                goto error;
+                            }
+                        }
+                    }
+
                     /* Make select request to replicator */
                     data->replicators[data->activeReplicators ++] =
                         corto_replicator_request(
@@ -431,6 +529,59 @@ static void corto_selectRequestReplicators(
             }
         }
     }
+
+    return 0;
+error:
+    return -1;
+}
+
+static corto_word corto_selectConvert(
+    corto_selectData *data,
+    corto_result *src)
+{
+    corto_word result = 0;
+
+    corto_int16 ___ (*toCorto)(corto_object o, corto_word content) =
+        data->srcSer[data->currentReplicator].contentToCorto;
+    corto_word ___ (*fromCorto)(corto_object o) =
+        data->destSer.contentFromCorto;
+
+    /* If source serializer is loaded, a conversion is
+     * needed */
+    if (toCorto) {
+        corto_object t = corto_resolve(NULL, src->type);
+        if (!t) {
+            corto_seterr("unresolved type '%s'", src->type);
+            goto error;
+        } else {
+            corto_object o = corto_create(t);
+
+            /* Convert from source format to object */
+            if (toCorto(o, src->value)) {
+                corto_seterr("failed to convert value to '%s' (%s)",
+                    src->type,
+                    corto_lasterr());
+                goto error;
+            }
+
+            /* Convert from object to destination format */
+            if (!(result = fromCorto(o))) {
+                corto_seterr("failed to convert value to '%s' (%s)",
+                    data->contentType,
+                    corto_lasterr());
+                goto error;
+            }
+
+            corto_delete(o);
+        }
+    } else {
+        /* If formats are equal, just pass through */
+        result = src->value;
+    }
+
+    return result;
+error:
+    return 0;
 }
 
 static void corto_selectIterateReplicators(
@@ -485,8 +636,8 @@ static void corto_selectIterateReplicators(
                     }
 
                     if (data->contentType) {
-                        data->contentRelease(data->item.value);
-                        data->item.value = result->value;
+                        data->destSer.contentRelease(data->item.value);
+                        data->item.value = corto_selectConvert(data, result);
                     }
                     break;
                 }
@@ -701,56 +852,23 @@ static void* corto_selectNext(corto_resultIter *iter) {
     return data->next;
 }
 
-corto_int16 corto_selectContentType(corto_resultIter *iter, corto_string contentType) {
+corto_int16 corto_selectContentType(
+    corto_resultIter *iter,
+    corto_string contentType)
+{
     CORTO_UNUSED(iter);
     corto_selectData *data;
 
     data = corto_selectDataGet();
 
-    if (!data->contentType || strcmp(contentType, data->contentType)) {
-        char *component = strchr(contentType, '/');
-        if (!component) {
-            corto_seterr("invalid content type %s", data->contentType);
+    /* Set destination serializer */
+    if (!data->contentType || strcmp(data->contentType, contentType)) {
+        if (corto_loadContentType(&data->destSer, contentType)) {
             goto error;
         }
-
-        /* Strip '/' */
-        component ++;
-
-        /* Load component associated with content type */
-        if (corto_loadComponent(component, 0, NULL)) {
-            corto_seterr("unsupported content type %s", data->contentType);
-            goto error;
-        }
-
-        /* Load serialization routines */
-        corto_id id; sprintf(id, "%s_fromCorto", component);
-        data->contentFromCorto =
-            (corto_word ___ (*)(corto_object))corto_loaderResolveProc(id);
-        if (!data->contentFromCorto) {
-            corto_seterr("unresolved symbol %s", id);
-            goto error;
-        }
-
-        sprintf(id, "%s_toCorto", component);
-        data->contentToCorto =
-            (corto_int16 ___ (*)(corto_object*, corto_word))
-            corto_loaderResolveProc(id);
-        if (!data->contentToCorto) {
-            corto_seterr("unresolved symbol %s", id);
-            goto error;
-        }
-
-        sprintf(id, "%s_release", component);
-        data->contentRelease =
-            (void ___ (*)(corto_word))corto_loaderResolveProc(id);
-        if (!data->contentRelease) {
-            corto_seterr("unresolved symbol %s", id);
-            goto error;
-        }
-
-        corto_setstr(&data->contentType, contentType);
     }
+
+    corto_setstr(&data->contentType, contentType);
 
     return 0;
 error:
@@ -770,8 +888,8 @@ static void corto_selectRelease(corto_iter *iter) {
         corto_iterRelease(&data->replicators[i]);
     }
 
-    if (data->item.value && data->contentRelease) {
-        data->contentRelease(data->item.value);
+    if (data->item.value && data->destSer.contentRelease) {
+        data->destSer.contentRelease(data->item.value);
     }
 
     data->expr = NULL;

@@ -4,6 +4,7 @@ int8 initCalled: 0
 int8 constructCalled: 0
 int8 destructCalled: 0
 
+// Support types
 class Foo::
     fail: bool, local
     x, y: int32
@@ -104,6 +105,43 @@ test::Suite ObjectMgmt::
     void tc_createChildNested()
     void tc_drop()
 
+// Class with method for testing ownership onInvoke
+class MethodForwardTest::
+    void func()
+    invoked: int32, readonly
+
+// Replicator for ownership testcase
+class FooReplicator : replicator, hidden ::
+    alias mount: replicator/mount
+    void onInvoke(object instance, function proc, octetseq args)
+    invoked: uint32, readonly
+
+// Test ownership scenarios
+test::Suite Ownership::
+    observable: word
+
+    void setup() method
+
+    void tc_checkOwnerNull()
+    void tc_checkOwnerReplicator()
+
+    void tc_declareOwned()
+    void tc_createOwned()
+    void tc_updateOwned()
+    void tc_deleteOwned()
+    void tc_releaseOwned()
+
+    void tc_declareNotOwned()
+    void tc_createNotOwned()
+    void tc_updateNotOwned()
+    void tc_deleteNotOwned()
+    void tc_releaseNotOwned()
+
+    void tc_invokeOwned()
+    void tc_invokeNotOwned()
+
+    observer onDelete: ON_DELETE
+
 // Generate fully scoped names
 test::Suite Fullname::
     void tc_root()
@@ -137,7 +175,7 @@ test::Suite RelativeName::
 
 void functionToResolve(int32 a, int32 b)
 
-// Resolve algorithm testcases
+// Test corto_resolve
 test::Suite Resolver::
     void setup() method
     void teardown() method
@@ -166,6 +204,7 @@ test::Suite Resolver::
 
     void tc_resolveAll()
 
+// Test corto_select
 test::Suite Select::
     void setup() method
     void teardown() method
@@ -219,12 +258,37 @@ test::Suite Select::
     void tc_selectTreeDeleteParent()
     void tc_selectTreeDeleteGrandparent()
 
+class JsonReplicator : replicator, hidden::
+    alias mount: replicator/mount
+    int16 construct()
+    resultIter onRequest(string parent, string expr, bool setContent)
+
+class StringReplicator : replicator, hidden::
+    alias mount: replicator/mount
+    int16 construct()
+    resultIter onRequest(string parent, string expr, bool setContent)
+
+// Test setting content types
+test::Suite SelectContentType::
+    void setup() method
+
+    void tc_selectStringFromObjects()
+    void tc_selectStringFromString()
+    void tc_selectStringFromJson()
+    void tc_selectStringFromMixed()
+
+    void tc_selectJsonFromObjects()
+    void tc_selectJsonFromString()
+    void tc_selectJsonFromJson()
+    void tc_selectStringFromMixed()
+
 class ListReplicator : replicator, hidden::
     alias mount : replicator/mount
     items: resultList, private
     int16 construct()
     resultIter onRequest(string parent, string expr, bool setContent)
 
+// Test corto_select requesting data from replicators
 test::Suite ReplicatorRequest::
     void setup() method
     void teardown() method
@@ -237,7 +301,7 @@ test::Suite ReplicatorRequest::
     void tc_selectScopeMixed()
     void tc_selectScopeFilter()
 
-// Test Event scenarios
+// Event test support type
 class EventTest::
     @scope: object
     lastThis: object, readonly
@@ -281,6 +345,7 @@ class EventTest::
     countDeleteScope: uint32, readonly
     countDeleteTree: uint32, readonly
 
+// Test notifications
 test::Suite Event::
     void setup() method
     void teardown() method
@@ -311,7 +376,7 @@ test::Suite Event::
     void tc_updateVoidErr()
     void tc_updateUndefined()
 
-// Overloading testcases
+// Function overloading support types
 void ol_null(object a)
 void ol_null(string a)
 void ol_null(bool a)
@@ -353,6 +418,7 @@ class Cat : Animal::
 void ol_inherit(Animal a)
 void ol_inherit(Dog a)
 
+// Functio overloading test suite
 test::Suite Overload::
     void tc_ambiguous()
     void tc_ambiguousWildcard()
@@ -400,7 +466,6 @@ test::Suite Overload::
     void tc_inheritanceSub()
     void tc_inheritanceMatchSub()
     void tc_inheritSibling()
-
 
 class MethodTester::
     void simple()
@@ -456,6 +521,49 @@ test::Suite MethodResolver::
     void tc_inheritVirtualOverloadNoArgs()
     void tc_nonexisting()
     void tc_redeclare()
+
+// Test Corto string serializer
+test::Suite StringSerializer::
+    void tc_serBoolTrue()
+    void tc_serBoolFalse()
+
+    void tc_serChar()
+    void tc_serCharNull()
+    void tc_serCharEscape()
+
+    void tc_serInt8()
+    void tc_serInt8Minus()
+
+    void tc_serInt16()
+    void tc_serInt16Minus()
+
+    void tc_serInt32()
+    void tc_serInt32Minus()
+
+    void tc_serInt64()
+    void tc_serInt64Minus()
+
+    void tc_serUint8()
+    void tc_serUint16()
+    void tc_serUint32()
+    void tc_serUint64()
+
+    void tc_serString()
+    void tc_serStringEscape()
+    void tc_serStringWhitespace()
+    void tc_serStringNull()
+
+    void tc_serComposite()
+    void tc_serInheritance()
+    void tc_serCompositeNested()
+
+    void tc_serArray()
+    void tc_serArrayComplex()
+    void tc_serSequence()
+    void tc_serSequenceComplex()
+    void tc_serList()
+    void tc_serListComplex()
+
 
 class AnonymousTest::
     objects: list{object}
@@ -544,6 +652,7 @@ test::Suite StringDeserializer::
     void tc_deserAnonymousReuse()
     void tc_deserAnonymousReuseNested()
 
+// Test environment variable parsing functions
 test::Suite Env::
     void tc_envparseSimpleFormat()
     void tc_envparseSimpleReplace()
@@ -561,6 +670,7 @@ test::Suite Env::
     void tc_setenvVariableNotFound()
     void tc_setenvNull()
 
+// Test corto create command
 test::Suite Project::
     void setup() method
     void teardown() method
@@ -570,6 +680,7 @@ test::Suite Project::
     void tc_packageLocal()
     void tc_publishNotag()
 
+// Test argument parser
 test::Suite Args::
     void tc_matchSingle()
     void tc_matchMultiple()
