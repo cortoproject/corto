@@ -24,16 +24,6 @@ corto_int16 _corto_observer_bind(corto_observer this) {
 
     corto_function(this)->size = sizeof(corto_object) * 3;
 
-    /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!(this->mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
-        this->mask |= CORTO_ON_SELF;
-    }
-
-    /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
-    if (!((this->mask & CORTO_ON_VALUE) || (this->mask & CORTO_ON_METAVALUE))) {
-        this->mask |= CORTO_ON_VALUE;
-    }
-
     /* Listen to observable */
     if (!this->_template) {
         if (corto_observer_listen(this, this->observable, this->me)) {
@@ -50,13 +40,12 @@ error:
 corto_int16 _corto_observer_init(corto_observer this) {
 /* $begin(corto/lang/observer/init) */
     corto_parameter *p;
-    
-    corto_setref( &corto_function(this)->returnType, corto_void_o);
+
+    corto_setref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable, source) */
     corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
     corto_function(this)->parameters.length = 1;
- 
 
     /* Parameter observable */
     p = &corto_function(this)->parameters.buffer[0];

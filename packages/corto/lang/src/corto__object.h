@@ -99,7 +99,7 @@ typedef struct corto_replicator_olsData_t {
 
 /* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
-void corto__freeSSO(corto_object sso);
+corto_int16 corto__freeSSO(corto_object sso);
 
 /* Adopt static scoped object */
 int corto__adoptSSO(corto_object sso);
@@ -109,9 +109,6 @@ void corto__orphan(corto_object o);
 
 /* Call destructor of object (if class) */
 int corto__destructor(corto_object o);
-
-/* Destruct object */
-corto_uint16 corto__destruct(corto_object o);
 
 /* Set state on object */
 void corto__setState(corto_object o, corto_uint8 state);

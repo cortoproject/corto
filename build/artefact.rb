@@ -275,7 +275,7 @@ end
 
 # Utility for building a sourcefile
 def build_source(source, target, echo)
-    verbose(true)
+    verbose(false)
     flags = ""
     cc = ""
 

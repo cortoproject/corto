@@ -868,7 +868,7 @@ static void corto_exit(void) {
     }
 }
 
-void corto_stop(void) {
+int corto_stop(void) {
 
     /* Call unload handlers */
     corto_unload();
@@ -898,9 +898,9 @@ void corto_stop(void) {
     SSO_OP_TYPE(corto_releaseType);
 
     /* Deinitialize root */
-    corto__freeSSO(corto_lang_o);
-    corto__freeSSO(corto_o);
-    corto__freeSSO(root_o);
+    if (corto__freeSSO(corto_lang_o)) goto error;
+    if (corto__freeSSO(corto_o)) goto error;
+    if (corto__freeSSO(root_o)) goto error;
 
     /* Deinit adminLock */
     corto_mutexFree(&corto_adminLock);
@@ -908,6 +908,9 @@ void corto_stop(void) {
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 
+    return 0;
+error:
+    return -1;
 }
 
 corto_string corto_getBuild(void) {

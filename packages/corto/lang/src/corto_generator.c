@@ -543,7 +543,7 @@ static g_object* g_findPrefix(corto_generator g, corto_object o, corto_object* m
             /* If a parent was found (parent of root is NULL), assign it to result if
              * distance is smaller than minDistance */
             if (parent) {
-                if ((distance < minDistance)) {
+                if ((distance < minDistance) && distance) {
                     result = t;
                     minDistance = distance;
                     if (match) {
@@ -1223,5 +1223,3 @@ void corto_genMemberCacheClean(corto_ll cache) {
 }
 
 #endif
-
-

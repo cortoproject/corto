@@ -33,15 +33,49 @@ struct corto_fileHandler {
     void* userData;
 };
 
+static char* corto_convertToPath(corto_string lib, corto_id path) {
+    char *ptr, *bptr, ch;
+    /* Convert '::' in library name to '/' */
+    ptr = lib;
+    bptr = path;
+
+    if (ptr[0] == '/') {
+        ptr++;
+    } else
+    if ((ptr[0] == ':') && (ptr[1] == ':')) {
+        ptr += 2;
+    }
+
+    while ((ch = *ptr)) {
+        if (ch == ':') {
+            if (ptr[1] == ':') {
+                ch = '/';
+                ptr++;
+            }
+        }
+        *bptr = ch;
+
+        ptr++;
+        bptr++;
+    }
+    *bptr = '\0';
+
+    return path;
+}
+
 /* Lookup file */
 static struct corto_fileAdmin* corto_fileAdminFind(corto_string library) {
     if (fileAdmin) {
         corto_iter iter = corto_llIter(fileAdmin);
         struct corto_fileAdmin *lib;
+        corto_id libPath, adminPath;
+
+        corto_convertToPath(library, libPath);
 
         while (corto_iterHasNext(&iter)) {
             lib = corto_iterNext(&iter);
-            if (!strcmp(lib->name, library)) {
+            corto_convertToPath(lib->name, adminPath);
+            if (!strcmp(adminPath, libPath)) {
                 return lib;
             }
         }

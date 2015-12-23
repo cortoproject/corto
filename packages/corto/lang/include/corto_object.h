@@ -35,8 +35,8 @@ corto_object _corto_createChild(corto_object parent, corto_string name, corto_ty
 corto_object _corto_declare(corto_type type);
 corto_object _corto_declareChild(corto_object parent, corto_string name, corto_type type);
 corto_int16 corto_define(corto_object o);
-void corto_delete(corto_object o);
-void corto_drop(corto_object o);
+corto_int16 corto_delete(corto_object o);
+corto_int16 corto_suspend(corto_object o);
 corto_int32 corto_claim(corto_object o);
 corto_int32 corto_release(corto_object o);
 void corto_invalidate(corto_object o);
@@ -73,6 +73,7 @@ corto_string corto_cleanpath(corto_id path);
 
 /* Persistent data */
 corto_object corto_ownerof(corto_object o);
+corto_bool corto_owned(corto_object o);
 
 /* Find objects by name */
 corto_object corto_lookup(corto_object scope, corto_string name);

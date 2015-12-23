@@ -117,11 +117,14 @@ void corto_class_attachObservers(corto_class this, corto_object object) {
         base = this;
 
         do {
-            corto_any this = {corto_typeof(object), object, FALSE};
-            for (i=0; i<base->observers.length; i++) {
-                corto_class_listen(this, 
+            corto_any objAny = {corto_typeof(object), object, FALSE};
+            for (i = 0; i < base->observers.length; i++) {
+
+                /* Copy the observers from the class to the observer table of
+                 * the instance */
+                corto_class_listen(objAny,
                     base->observers.buffer[i],
-                    base->observers.buffer[i]->mask,  
+                    base->observers.buffer[i]->mask,
                     base->observers.buffer[i]->observable,
                     base->observers.buffer[i]->dispatcher);
             }
@@ -142,6 +145,8 @@ void corto_class_listenObservers(corto_class this, corto_object object) {
         do {
             for (i=0; i<base->observers.length; i++) {
                 if (observers->buffer[i].observable) {
+
+                    /* Enable attached observers */
                     corto_listen(
                         object,
                         base->observers.buffer[i],
@@ -166,14 +171,22 @@ void corto_class_detachObservers(corto_class this, corto_object object) {
     if (observers) {
         base = this;
         do {
-            for (i=0; i<base->observers.length; i++) {
+            for (i = 0; i < base->observers.length; i++) {
                 corto_any thisAny = {corto_type(this), object, FALSE};
-                observable = corto_class_observableOf(thisAny, base->observers.buffer[i]);
-                mask = corto_class_eventMaskOf(thisAny, base->observers.buffer[i]);
+
+                observable = corto_class_observableOf(
+                    thisAny, base->observers.buffer[i]);
+
+                mask = corto_class_eventMaskOf(
+                    thisAny, base->observers.buffer[i]);
+
                 if (observable) {
-                    /* Do not silence observers that listen for childs on non-scoped objects */
+                    /* Do not silence observers that listen for childs on
+                     * non-scoped objects */
                     if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE) &&
-                            (!(base->observers.buffer[i]->mask & CORTO_ON_SCOPE) || corto_checkAttr(object, CORTO_ATTR_SCOPED))) {
+                       (!(base->observers.buffer[i]->mask & CORTO_ON_SCOPE) ||
+                       corto_checkAttr(object, CORTO_ATTR_SCOPED)))
+                    {
                         corto_silence(
                             object,
                             base->observers.buffer[i],
@@ -182,6 +195,10 @@ void corto_class_detachObservers(corto_class this, corto_object object) {
                     }
                 }
             }
+
+            /* Ensure that detaching observers happens only once */
+            base->observers.length = 0;
+
         } while ((base = corto_class(corto_interface(base)->base)));
     }
 }
@@ -363,7 +380,7 @@ corto_void _corto_class_listen(corto_any this, corto_observer observer, corto_ev
         observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
         corto_id id, id2;
-        corto_error("failed to set observable for observer '%s' of '%s' of type '%s' (%d)", 
+        corto_error("failed to set observable for observer '%s' of '%s' of type '%s' (%d)",
             corto_nameof(observer),
             corto_fullname(this.value, id),
             corto_fullname(corto_typeof(this.value), id2),
@@ -428,8 +445,8 @@ corto_void _corto_class_setDispatcher(corto_any this, corto_observer observer, c
         observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
         corto_id id, id2;
-        corto_error("failed to set dispatcher for '%s' of type '%s'", 
-            corto_fullname(this.value, id), 
+        corto_error("failed to set dispatcher for '%s' of type '%s'",
+            corto_fullname(this.value, id),
             corto_fullname(corto_typeof(this.value), id2));
     }
 
@@ -446,8 +463,8 @@ corto_void _corto_class_setMask(corto_any this, corto_observer observer, corto_e
         observers->buffer[observer->_template-1].mask = mask;
     } else {
         corto_id id, id2;
-        corto_error("failed to set mask for '%s' of type '%s'", 
-            corto_fullname(this.value, id), 
+        corto_error("failed to set mask for '%s' of type '%s'",
+            corto_fullname(this.value, id),
             corto_fullname(corto_typeof(this.value), id2));
     }
 
@@ -456,7 +473,6 @@ corto_void _corto_class_setMask(corto_any this, corto_observer observer, corto_e
 
 corto_void _corto_class_setObservable(corto_any this, corto_observer observer, corto_object observable) {
 /* $begin(corto/lang/class/setObservable) */
-
     corto_observerTable* observers;
 
     observers = corto_class_getObserverVtable(this.value);
@@ -464,8 +480,8 @@ corto_void _corto_class_setObservable(corto_any this, corto_observer observer, c
         observers->buffer[observer->_template-1].observable = observable;
     } else {
         corto_id id, id2;
-        corto_error("failed to set observable for '%s' of type '%s'", 
-            corto_fullname(this.value, id), 
+        corto_error("failed to set observable for '%s' of type '%s'",
+            corto_fullname(this.value, id),
             corto_fullname(corto_typeof(this.value), id2));
     }
 

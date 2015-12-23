@@ -147,7 +147,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
     if (corto_primitive(t)->kind == CORTO_TEXT) {
         corto_ser_appendColor(data, STRING);
         if (*(corto_string*)o) {
-            if (!corto_ser_appendstrEscape(data, *(corto_string*)o)) {
+            if (!corto_ser_appendstr(data, "\"%s\"", *(corto_string*)o)) {
                 goto finished;
             }
         } else {
@@ -412,7 +412,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
 static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void* userData) {
     CORTO_UNUSED(s);
     CORTO_UNUSED(info);
-    
+
     corto_string_ser_t* data = userData;
     data->ptr = data->buffer;
     data->itemCount = 0;
@@ -431,7 +431,7 @@ error:
 
 corto_int16 corto_ser_destruct(corto_serializer s, void* userData) {
     CORTO_UNUSED(s);
-    
+
     corto_string_ser_t* data = userData;
     if (data->anonymousObjects) {
         corto_llFree(data->anonymousObjects);
@@ -453,7 +453,7 @@ struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operator
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
     s.program[CORTO_COMPOSITE] = corto_ser_scope;
     s.program[CORTO_COLLECTION] = corto_ser_scope;
-    
+
     s.metaprogram[CORTO_MEMBER] = corto_ser_item;
     s.metaprogram[CORTO_BASE] = corto_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */

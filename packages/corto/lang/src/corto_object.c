@@ -37,6 +37,7 @@ extern corto_mutex_s corto_adminLock;
 
 static corto_object corto_adopt(corto_object parent, corto_object child);
 static corto_int32 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
+static corto_bool corto_deactivate(corto_object o, corto_bool delete);
 static void corto_olsDestroy(corto__scope *scope);
 
 extern corto_threadKey CORTO_KEY_ATTR;
@@ -284,6 +285,9 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
     if (result != o) {
         corto_dealloc(scope->name);
         corto_rwmutexFree(&scope->scopeLock);
+        _o = CORTO_OFFSET(result, -sizeof(corto__object));
+        scope = corto__objectScope(_o);
+        corto_ainc(&scope->declared);
     }
 
     return result;
@@ -473,7 +477,7 @@ void corto__newSSO(corto_object sso) {
 }
 
 /* Deinitialize static scoped object */
-void corto__freeSSO(corto_object sso) {
+corto_int16 corto__freeSSO(corto_object sso) {
     corto__object* o;
     corto__scope* scope;
 
@@ -493,6 +497,7 @@ void corto__freeSSO(corto_object sso) {
                 sso,
                 scope->scope,
                 corto_rbtreeSize(scope->scope));
+            goto error;
         }
         corto_rbtreeFree(scope->scope);
         scope->scope = NULL;
@@ -507,6 +512,10 @@ void corto__freeSSO(corto_object sso) {
 
     /* Free type */
     corto_release(corto_typeof(sso));
+
+    return 0;
+error:
+    return -1;
 }
 
 /* Adopt static scoped object */
@@ -907,11 +916,6 @@ corto_object _corto_declare(corto_type type) {
         /* Initially, an object is valid and declared */
         o->attrs.state = CORTO_DECLARED;
 
-        /* void objects are instantly defined because they have no value. */
-        if (type->kind == CORTO_VOID) {
-            o->attrs.state |= CORTO_DEFINED;
-        }
-
         corto_claim(type);
 
         if (!(attrs & CORTO_ATTR_SCOPED)) {
@@ -940,6 +944,11 @@ corto_object _corto_declare(corto_type type) {
             }
             corto_llInsert(corto_anonymousObjects, CORTO_OFFSET(o, sizeof(corto__object)));
             corto_mutexUnlock(&corto_adminLock);
+
+            /* void objects are instantly defined because they have no value. */
+            if (type->kind == CORTO_VOID) {
+                corto_define(CORTO_OFFSET(o, sizeof(corto__object)));
+            }
         }
     }
 
@@ -960,7 +969,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
     }
 
     if (!name || !strlen(name)) {
-        corto_seterr("invalid parameter provided for name");
+        corto_seterr("invalid name");
         goto error;
     }
 
@@ -990,6 +999,21 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
                 corto_release(type);
                 corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
                 o = o_ret;
+
+                /* The object already exists. Check if the existing object is
+                 * owned by the same owner as the one registered */
+                corto_object owner = corto_ownerof(o);
+                if (owner && corto_instanceof(corto_replicator_o, owner)) {
+                    if (owner != corto_getOwner()) {
+                        corto_id id, id2;
+                        corto_seterr(
+                          "owner '%s' of existing object '%s' does not match",
+                          corto_fullname(owner, id),
+                          corto_fullname(o, id2));
+                        goto owner_error;
+                    }
+                }
+
                 goto ok;
             }
         } else {
@@ -1004,6 +1028,11 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
         if (corto__objectObservable(_o)) {
             corto_notify(corto__objectObservable(_o), o, CORTO_ON_DECLARE);
         }
+
+        /* void objects are instantly defined because they have no value. */
+        if (type->kind == CORTO_VOID) {
+            corto_define(o);
+        }
     }
 
 ok:
@@ -1012,6 +1041,7 @@ error:
     if (o) {
         corto_delete(o);
     }
+owner_error:
     return NULL;
 }
 
@@ -1119,16 +1149,83 @@ corto_int16 corto_define(corto_object o) {
     return result;
 }
 
-/* Destruct object */
-void corto_delete(corto_object o) {
+typedef struct corto_dropWalk_t {
+    corto_ll objects;
+}corto_dropWalk_t;
+
+/* Collect objects in scope, so they can be removed outside of scopeLock. */
+static int corto_dropWalk(void* o, void* userData) {
+    corto_dropWalk_t* data;
+
+    data = userData;
+
+    /* Prevent object from being deleted when scopeLock is released, which
+     * would result in invalid reference in list. */
+    corto_claim(o);
+
+    /* Insert object in list */
+    if (!data->objects) {
+        data->objects = corto_llNew();
+    }
+    corto_llInsert(data->objects, o);
+
+    return 1;
+}
+
+void corto_drop(corto_object o) {
     corto__object* _o;
     corto__scope* scope;
+    corto_dropWalk_t walkData;
 
-    if (!o) {
-        corto_critical("NULL passed to corto_delete");
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    scope = corto__objectScope(_o);
+    if (scope) {
+        corto_iter iter;
+        corto_object collected;
+
+        /* Because object refcounts can reach zero after a free, a
+         * walk in which objects are collected is needed first. During
+         * destruction of an object, this scopeLock is also required,
+         * which would result in deadlocks. */
+
+        corto_rwmutexRead(&scope->scopeLock);
+        walkData.objects = NULL;
+        if (scope->scope) {
+            corto_rbtreeWalk(scope->scope, corto_dropWalk, &walkData);
+        }
+        corto_rwmutexUnlock(&scope->scopeLock);
+
+        /* Free objects outside scopeLock */
+        if (walkData.objects) {
+            iter = corto_llIter(walkData.objects);
+            while(corto_iterHasNext(&iter)) {
+                collected = corto_iterNext(&iter);
+                if (corto_deactivate(collected, corto_owned(collected))) {
+                    corto_release(collected);
+                }
+
+                /* Double free - because corto_drop itself introduced a keep. */
+                corto_release(collected);
+            }
+            corto_llFree(walkData.objects);
+        }
+    } else {
+        corto_critical("corto_drop: object <%p> is not scoped.", o);
     }
+}
 
+/* This doesn't delete the object, but will 'deactivate' it, so that
+ * no longer appears in the object hierarchy, won't be attached as observer
+ * and a DELETE notification has been sent out.
+ *
+ * This function needs to be reentrant because non-scoped objects don't have
+ * a declared counter.
+ */
+static corto_bool corto_deactivate(corto_object o, corto_bool delete) {
     corto_type t = corto_typeof(o);
+    corto__object* _o;
+    corto__scope* scope;
+    corto_bool result = FALSE;
 
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -1136,19 +1233,63 @@ void corto_delete(corto_object o) {
 
         if (corto_adec(&scope->declared) == 0) {
             corto_drop(o);
-            corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
+
+            if (delete) {
+                corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
+            }
+
             if (corto_class_instanceof(corto_class_o, t)) {
                 corto_class_detachObservers(corto_class(t), o);
             }
             corto__orphan(o);
-            corto_release(o);
+            result = TRUE;
+
+          //  printf("-- %s->declared\n", corto_nameof(o), scope->declared);
         }
     } else {
         if (corto_class_instanceof(corto_class_o, t)) {
             corto_class_detachObservers(corto_class(t), o);
         }
+        result = TRUE;
+    }
+
+    return result;
+}
+
+/* Delete object */
+corto_int16 corto_suspend(corto_object o) {
+    if (!o) {
+        corto_critical("NULL passed to corto_delete");
+    }
+
+    if (corto_deactivate(o, FALSE)) {
         corto_release(o);
     }
+
+    return 0;
+}
+
+/* Delete object */
+corto_int16 corto_delete(corto_object o) {
+    if (!o) {
+        corto_critical("NULL passed to corto_delete");
+    }
+
+    if (!corto_owned(o)) {
+        corto_id id;
+        corto_seterr(
+          "can't delete %s: not owned by thread (use corto_suspend)",
+          corto_fullname(o, id));
+        goto error;
+    }
+
+    if (corto_deactivate(o, TRUE)) {
+        corto_release(o);
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* Invalidate object by removing valid flag */
@@ -1834,14 +1975,29 @@ corto_object corto_ownerof(corto_object o) {
     return result;
 }
 
+corto_bool corto_owned(corto_object o) {
+    corto_object owner = corto_ownerof(o);
+    corto_object current = corto_getOwner();
+
+    if (owner == current) {
+        return TRUE;
+    } else {
+        if (!current && owner) {
+            return !corto_instanceof(corto_replicator_o, owner);
+        } else {
+            return FALSE;
+        }
+    }
+}
+
 /* Destruct object. */
-corto_uint16 corto__destruct(corto_object o) {
+static corto_uint16 corto_destruct(corto_object o) {
     corto__object* _o;
+    corto_object owner = corto_ownerof(o);
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto_ainc(&_o->refcount);
 
-    /* Only the following steps if the object is valid. */
     if (!corto_checkState(o, CORTO_DESTRUCTED)) {
         corto_vtable *ot;
 
@@ -1863,7 +2019,6 @@ corto_uint16 corto__destruct(corto_object o) {
             }
 
             /* Call object destructor */
-            corto_object owner = corto_ownerof(o);
             if (!owner || !corto_instanceof(corto_replicator_o, owner)) {
                 if (corto__destructor(o)) {
                     return -1;
@@ -1871,12 +2026,17 @@ corto_uint16 corto__destruct(corto_object o) {
             }
         }
 
-        /* Notify destruct (scoped objects are destructed by corto_delete) */
-        if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_notify(corto__objectObservable(
-                CORTO_OFFSET(o,-sizeof(corto__object))), o, CORTO_ON_DELETE);
-        }
+        /* Deactivate object.
+         *
+         * When object is not owned by the current process, always do a suspend.
+         * Even when this function is called from the thread that owns the
+         * object, this only deals with implicit object destruction, and
+         * delete of a remote object should always be aligned explicitly (even
+         * when the remote object is deleted implicitly on the remote end).
+         */
+        corto_deactivate(o, !owner || !corto_instanceof(corto_replicator_o, owner));
 
+        /* Call deinitializer */
         corto_deinit(o);
 
         /* Deinit observable */
@@ -2117,7 +2277,7 @@ corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string con
 #endif
 
     if (!i) {
-        corto__destruct(o);
+        corto_destruct(o);
     }
     if (i < 0) {
         corto_id id, typeId;
@@ -2134,81 +2294,6 @@ corto_int32 corto_claim(corto_object o) {
 
 corto_int32 corto_release(corto_object o) {
     return corto_release_ext(NULL, o, NULL);
-}
-
-typedef struct corto_dropWalk_t {
-    corto_ll objects;
-}corto_dropWalk_t;
-
-/* Collect objects in scope, so they can be removed outside of scopeLock. */
-static int corto_dropWalk(void* o, void* userData) {
-    corto__object* _o;
-    corto__scope* scope;
-    corto_dropWalk_t* data;
-
-    data = userData;
-
-    /* Drops are recursive */
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
-    if (scope) {
-        corto_rwmutexRead(&scope->scopeLock);
-        if (scope->scope) {
-            corto_rbtreeWalk(scope->scope, corto_dropWalk, data);
-        }
-        corto_rwmutexUnlock(&scope->scopeLock);
-    }
-
-    /* Prevent object from being deleted when scopeLock is released, which
-     * would result in invalid reference in list. */
-    corto_claim(o);
-
-    /* Insert object in list */
-    if (!data->objects) {
-        data->objects = corto_llNew();
-    }
-    corto_llInsert(data->objects, o);
-
-    return 1;
-}
-
-void corto_drop(corto_object o) {
-    corto__object* _o;
-    corto__scope* scope;
-    corto_dropWalk_t walkData;
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
-    if (scope) {
-        corto_iter iter;
-        corto_object collected;
-
-        /* Because object refcounts can reach zero after a free, a
-         * walk in which objects are collected is needed first. During
-         * destruction of an object, this scopeLock is also required,
-         * which would result in deadlocks. */
-
-        corto_rwmutexRead(&scope->scopeLock);
-        walkData.objects = NULL;
-        if (scope->scope) {
-            corto_rbtreeWalk(scope->scope, corto_dropWalk, &walkData);
-        }
-        corto_rwmutexUnlock(&scope->scopeLock);
-
-        /* Free objects outside scopeLock */
-        if (walkData.objects) {
-            iter = corto_llIter(walkData.objects);
-            while(corto_iterHasNext(&iter)) {
-                collected = corto_iterNext(&iter);
-                corto_delete(collected);
-                /* Double free - because corto_drop itself introduced a keep. */
-                corto_release(collected);
-            }
-            corto_llFree(walkData.objects);
-        }
-    } else {
-        corto_critical("corto_drop: object <%p> is not scoped.", o);
-    }
 }
 
 corto_object corto_lookupLowercase(corto_object o, corto_string name) {
@@ -2502,140 +2587,159 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
         observable = root_o;
     }
 
-    /* If the observer is a template observer and 'this' is not yet defined,
-     * don't start listening right away but set the observable in the list of
+    /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
+    if (!(mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
+        mask |= CORTO_ON_SELF;
+    }
+
+    /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
+    if (!((mask & CORTO_ON_VALUE) || (mask & CORTO_ON_METAVALUE))) {
+        mask |= CORTO_ON_VALUE;
+    }
+
+    /* If the observer is a template observer set the observable in the list of
      * class observables */
-    if (observer->_template && this && !corto_checkState(this, CORTO_DEFINED)) {
+    if (observer->_template && this) {
         corto_any thisAny = {corto_typeof(this), this, FALSE};
         corto_class_listen(thisAny, observer, mask, observable, dispatcher);
-    } else {
+    }
 
-        /* Test for error conditions before making changes */
-        if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-            if (!corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
-                corto_id id, id2;
-                corto_seterr("corto::listen: cannot listen to childs of non-scoped observable '%s' (observer %s)",
-                        corto_fullname(observable, id),
-                        corto_fullname(observer, id2));
-                goto error;
-            }
-        }
-
-        if (!corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
-            corto_id id;
-            corto_assert(0, "corto::listen: object '%s' is not an observable", corto_fullname(observable, id));
+    /* Test for error conditions before making changes */
+    if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
+        if (!corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+            corto_id id, id2;
+            corto_seterr(
+                "cannot listen to scope of non-scoped observable '%s' (observer %s)",
+                corto_fullname(observable, id),
+                corto_fullname(observer, id2));
             goto error;
         }
+    }
 
-        _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
+    if (!corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
+        corto_id id;
+        corto_assert(
+            0,
+            "object '%s' is not an observable",
+            corto_fullname(observable, id));
+        goto error;
+    }
 
-    #ifdef CORTO_TRACE_NOTIFICATIONS
-        {
-            corto_id id1, id2, id3;
-            printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s\n",
-                    indent * 3, "",
-                    corto_fullname(observable, id1),
-                    corto_fullname(observer, id2),
-                    corto_fullname(this, id3),
-                    mask & CORTO_ON_SELF ? " self" : "",
-                    mask & CORTO_ON_SCOPE ? " scope" : "",
-                    mask & CORTO_ON_TREE ? " tree" : "",
-                    mask & CORTO_ON_DECLARE ? " declare" : "",
-                    mask & CORTO_ON_DEFINE ? " define" : "",
-                    mask & CORTO_ON_UPDATE ? " update" : "");
+    _o = corto__objectObservable(
+        CORTO_OFFSET(observable, -sizeof(corto__object)));
+
+#ifdef CORTO_TRACE_NOTIFICATIONS
+    {
+        corto_id id1, id2, id3;
+        printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s%s\n",
+                indent * 3, "",
+                corto_fullname(observable, id1),
+                corto_fullname(observer, id2),
+                corto_fullname(this, id3),
+                mask & CORTO_ON_SELF ? " self" : "",
+                mask & CORTO_ON_SCOPE ? " scope" : "",
+                mask & CORTO_ON_TREE ? " tree" : "",
+                mask & CORTO_ON_DECLARE ? " declare" : "",
+                mask & CORTO_ON_DEFINE ? " define" : "",
+                mask & CORTO_ON_UPDATE ? " update" : "",
+                mask & CORTO_ON_DELETE ? " delete" : "");
+    }
+#endif
+
+    /* Create observerData */
+    _observerData = corto_alloc(sizeof(corto__observer));
+    _observerData->observer = observer;
+    _observerData->_this = this;
+    _observerData->count = 0;
+    _observerData->mask = mask;
+    _observerData->dispatcher = dispatcher;
+
+    added = FALSE;
+
+    /* If observer must trigger on updates of me, add it to onSelf list */
+    if (mask & CORTO_ON_SELF) {
+        corto_rwmutexWrite(&_o->selfLock);
+        if (!corto_observerFind(_o->onSelf, observer, this)) {
+            if (!_o->onSelf) {
+                _o->onSelf = corto_llNew();
+            }
+            corto_llAppend(_o->onSelf, _observerData);
+            _observerData->count++;
+            added = TRUE;
+
+            /* Build new observer array. This array can be accessed without
+             * locking and is faster than walking the linked list. */
+            oldSelfArray = _o->onSelfArray;
+            _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
         }
-    #endif
-
-        /* Create observerData */
-        _observerData = corto_alloc(sizeof(corto__observer));
-        _observerData->observer = observer;
-        _observerData->_this = this;
-        _observerData->count = 0;
-        _observerData->mask = mask;
-        _observerData->dispatcher = dispatcher;
-
-        added = FALSE;
-
-        /* If observer must trigger on updates of me, add it to onSelf list */
-        if (mask & CORTO_ON_SELF) {
-            corto_rwmutexWrite(&_o->selfLock);
-            if (!corto_observerFind(_o->onSelf, observer, this)) {
-                if (!_o->onSelf) {
-                    _o->onSelf = corto_llNew();
-                }
-                corto_llAppend(_o->onSelf, _observerData);
-                _observerData->count++;
-                added = TRUE;
-
-                /* Build new observer array. This array can be accessed without locking and is
-                 * faster than walking the linked list. */
-                oldSelfArray = _o->onSelfArray;
-                _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
-            }
-            if (mask & CORTO_ON_VALUE) {
-                if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
-                    _o->lockRequired = TRUE;
-                }
-            }
-            corto_rwmutexUnlock(&_o->selfLock);
-        }
-
-        /* If observer must trigger on updates of childs, add it to onChilds list */
-        if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-            corto_rwmutexWrite(&_o->childLock);
-            if (!corto_observerFind(_o->onChild, observer, this)) {
-                if (!_o->onChild) {
-                    _o->onChild = corto_llNew();
-                }
-
-                corto_llAppend(_o->onChild, _observerData);
-                _observerData->count++;
-                added = TRUE;
-
-                /* Build new observer array. This array can be accessed without locking and is
-                 * faster than walking a linked list. */
-                oldChildArray = _o->onChildArray;
-                _o->onChildArray = corto_observersArrayNew(_o->onChild);
-            }
-
-            if (mask & CORTO_ON_VALUE) {
-                if (!_o->childLockRequired) {
-                    _o->childLockRequired = TRUE;
-                    corto_setrefChildLockRequired(observable);
-                }
-            }
-            corto_rwmutexUnlock(&_o->childLock);
-        }
-
-        if (!added) {
-            corto_dealloc(_observerData);
-        } else {
-            /* If observer is subscribed to declare/define events, align observer with existing */
-            if ((mask & CORTO_ON_DECLARE) || (mask & CORTO_ON_DEFINE)) {
-                corto_observerAlign(observable, _observerData, mask);
+        if (mask & CORTO_ON_VALUE) {
+            if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
+                _o->lockRequired = TRUE;
             }
         }
+        corto_rwmutexUnlock(&_o->selfLock);
+    }
 
-        /* From this point onwards the old observer arrays are no longer accessible. However, since notifications can
-         * still be in progress these arrays can't be deleted yet. Therefore wait until the arrays are no longer being
-         * used.
-         *
-         * The administration where this information is stored is not protected by locking so that notifying objects can
-         * remain lock-free. There is however a slight chance that a notification pushed the old array to the administration
-         * but that this change is not yet visible due to a number of issues w.r.t. concurrency. In this case the functions
-         * below will assume the array is unused, which is incorrect.
-         *
-         * To be absolutely sure that the observed administration is up to date a memory barrier is required here. A simple
-         * mutex will not do since this would encumber the notifications too much.
-         */
-         /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
+    /* If observer must trigger on updates of childs, add it to onChilds list */
+    if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
+        corto_rwmutexWrite(&_o->childLock);
+        if (!corto_observerFind(_o->onChild, observer, this)) {
+            if (!_o->onChild) {
+                _o->onChild = corto_llNew();
+            }
 
-        if (corto_observersWaitForUnused(oldSelfArray)) {
-            corto_observersArrayFree(oldSelfArray);
+            corto_llAppend(_o->onChild, _observerData);
+            _observerData->count++;
+            added = TRUE;
+
+            /* Build new observer array. This array can be accessed without
+             * locking and is faster than walking a linked list. */
+            oldChildArray = _o->onChildArray;
+            _o->onChildArray = corto_observersArrayNew(_o->onChild);
         }
-        if (corto_observersWaitForUnused(oldChildArray)) {
-            corto_observersArrayFree(oldChildArray);
+
+        if (mask & CORTO_ON_VALUE) {
+            if (!_o->childLockRequired) {
+                _o->childLockRequired = TRUE;
+                corto_setrefChildLockRequired(observable);
+            }
         }
+        corto_rwmutexUnlock(&_o->childLock);
+    }
+
+    if (!added) {
+        corto_dealloc(_observerData);
+    } else {
+        /* If observer is subscribed to declare/define events, align observer
+         * with existing */
+        if ((mask & CORTO_ON_DECLARE) || (mask & CORTO_ON_DEFINE)) {
+            corto_observerAlign(observable, _observerData, mask);
+        }
+    }
+
+    /* From this point onwards the old observer arrays are no longer accessible.
+     * However, since notifications can still be in progress these arrays can't
+     * be deleted yet. Therefore wait until the arrays are no longer being
+     * used.
+     *
+     * The administration where this information is stored is not protected by
+     * locking so that notifying objects can remain lock-free. There is however
+     * a slight chance that a notification pushed the old array to the
+     * administration but that this change is not yet visible due to a number of
+     * issues w.r.t. concurrency. In this case the functions below will assume
+     * the array is unused, which is incorrect.
+     *
+     * To be absolutely sure that the observed administration is up to date a
+     * memory barrier is required here. A simple mutex will not do since this
+     * would encumber the notifications too much.
+     */
+     /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
+
+    if (corto_observersWaitForUnused(oldSelfArray)) {
+        corto_observersArrayFree(oldSelfArray);
+    }
+    if (corto_observersWaitForUnused(oldChildArray)) {
+        corto_observersArrayFree(oldChildArray);
     }
 
     return 0;
@@ -2844,7 +2948,8 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
     if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
         parent = observable;
         while((parent = corto_parentof(parent))) {
-            corto__observable *_parent = corto__objectObservable(CORTO_OFFSET(parent, -sizeof(corto__object)));
+            corto__observable *_parent = corto__objectObservable(
+                CORTO_OFFSET(parent, -sizeof(corto__object)));
 
             /* Notify observers of parent */
             if (_parent) {
@@ -2862,24 +2967,22 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
 }
 
 /* Update object */
-corto_int16 corto_update(corto_object observable) {
+corto_int16 corto_update(corto_object o) {
     corto__observable *_o;
 
-    if (corto_typeof(observable)->kind != CORTO_VOID) {
+    if (corto_typeof(o)->kind != CORTO_VOID) {
         corto_seterr("use updateBegin/updateEnd for non-void objects");
         goto error;
     }
 
-    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
-        corto_object owner = corto_ownerof(observable);
-        if (owner && corto_instanceof(corto_replicator_o, owner)) {
-            corto_seterr("cannot update '%s', process does not own object", corto_nameof(observable));
-            goto error;
-        }
+    if (!corto_owned(o)) {
+        corto_seterr("cannot update '%s', process does not own object",
+            corto_nameof(o));
+        goto error;
     }
 
-    _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-    if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
+    _o = corto__objectObservable(CORTO_OFFSET(o, -sizeof(corto__object)));
+    if (corto_notify(_o, o, CORTO_ON_UPDATE)) {
         goto error;
     }
 
@@ -2888,38 +2991,37 @@ error:
     return -1;
 }
 
-corto_int16 corto_updateBegin(corto_object observable) {
+corto_int16 corto_updateBegin(corto_object o) {
     corto__observable *_o;
     corto__writable* _wr;
 
-    if (!corto_checkState(observable, CORTO_DEFINED)) {
+    if (!corto_checkState(o, CORTO_DEFINED)) {
         corto_seterr("cannot update undefined object");
         goto error;
     }
 
-    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
-        corto_object owner = corto_ownerof(observable);
-        if (owner && corto_instanceof(corto_replicator_o, owner)) {
-            if (owner != corto_getOwner()) {
-                corto_seterr("cannot update '%s', process does not own object", corto_nameof(observable));
-                goto error;
-            }
-        }
+    if (!corto_owned(o)) {
+        corto_seterr("cannot update '%s', process does not own object",
+            corto_nameof(o));
+        goto error;
     }
 
-    _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
+    _o = corto__objectObservable(CORTO_OFFSET(o, -sizeof(corto__object)));
 
     if (_o && _o->lockRequired) {
-        _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
+        _wr = corto__objectWritable(CORTO_OFFSET(o, -sizeof(corto__object)));
         if (_wr) {
             if (corto_rwmutexWrite(&_wr->lock)) {
                 corto_id id;
-                corto_seterr("writelock on object '%s' failed", corto_fullname(observable, id));
+                corto_seterr("writelock on object '%s' failed",
+                    corto_fullname(o, id));
                 goto error;
             }
         } else {
             corto_id id;
-            corto_warning("calling updateBegin for non-writable object '%s' is useless", corto_fullname(observable, id));
+            corto_warning(
+                "calling updateBegin for non-writable object '%s' is useless",
+                corto_fullname(o, id));
         }
     }
 

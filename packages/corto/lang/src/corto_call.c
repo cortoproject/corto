@@ -86,6 +86,24 @@ void corto_callDestroy(corto_function f) {
 
 /* Call with buffer (on most platforms this will be the same as corto_callv) */
 static void corto_call_intern(corto_function f, corto_void* result, void* args) {
+    /* If process does not own object, forward call */
+    if (corto_instanceof(corto_method_o, f)) {
+        corto_object instance = *(corto_object*)args;
+        corto_object owner = corto_ownerof(instance);
+
+        if (owner && corto_instanceof(corto_replicator_o, owner)) {
+            if (!(owner == corto_getOwner())) {
+                corto_octetseq argbuff = {f->size, args};
+                corto_replicator_invoke(owner, instance, f, argbuff);
+                return;
+            } else {
+                /* A replicator invoking a method on an object it owns? That is
+                 * odd. Don't do anything. */
+                return;
+            }
+        }
+    }
+
     ((void(*)(corto_function, void*, void*))f->impl)(f, result, args);
 }
 
@@ -122,19 +140,5 @@ int corto_calla(corto_function f, corto_void* result, corto_uint32 argc, void* a
 
 /* Call with buffer (on most platforms this will be the same as corto_callv) */
 void corto_callb(corto_function f, corto_void* result, void* args) {
-    /* If process does not own object, forward call */
-    if (corto_instanceof(corto_method_o, f)) {
-        corto_object instance = *(corto_object*)args;
-        corto_object owner = corto_ownerof(instance);
-
-        if (owner && corto_instanceof(corto_replicator_o, owner)) {
-            corto_octetseq argbuff = {f->size, args};
-            corto_replicator_invoke(owner, instance, f, argbuff);
-            return;
-        }
-    }
-
     corto_call_intern(f, result, args);
 }
-
-
