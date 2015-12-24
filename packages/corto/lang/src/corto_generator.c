@@ -691,7 +691,7 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
 
     /* If no prefix is found for object, just use the scoped identifier */
     } else {
-        corto_seterr(_id, o);
+        corto_fullpath(_id, o);
     }
 
     g_oidTransform(g, o, _id, kind);
