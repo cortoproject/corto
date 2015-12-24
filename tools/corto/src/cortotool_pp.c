@@ -53,6 +53,7 @@ void cortotool_core(void) {
     corto_llAppend(generators, "c_type");
     corto_llAppend(generators, "doc");
     corto_llAppend(scopes, "/corto/lang");
+    corto_llAppend(scopes, "/corto/core");
     corto_llAppend(attributes, "stubs=false");
     corto_llAppend(attributes, "c=src");
     corto_llAppend(attributes, "h=include");
