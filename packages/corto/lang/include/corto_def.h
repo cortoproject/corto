@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <alloca.h>
+#include <assert.h>
+#include <inttypes.h>
 
 #include "corto_iter.h"
 

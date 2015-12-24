@@ -12,7 +12,7 @@ end
 LFLAGS ||= []
 USE_LIBRARY ||= []
 LIBPATH ||= []
-INCLUDE ||= []
+INCLUDE ||= ["include"]
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
@@ -34,7 +34,6 @@ end
 
 INCLUDE <<
     "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" <<
-    "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang" <<
     "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
 
 task :prebuild do

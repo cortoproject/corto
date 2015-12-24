@@ -29,7 +29,7 @@ def corto_replace(str)
 end
 
 # Public variables
-INCLUDE ||= []
+INCLUDE ||= ["include"]
 LIB ||= []
 LIBPATH ||= []
 LINK ||= []
@@ -61,7 +61,6 @@ USE_COMPONENT_LOADED ||=[]
 # Add default include paths
 INCLUDE <<
     "src" <<
-    "include" <<
     "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
     "/usr/local/include/corto/#{VERSION}/packages"
 
