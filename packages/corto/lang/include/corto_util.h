@@ -44,6 +44,9 @@ corto_string corto_nameFromFullname(corto_id buffer);
 /* Set intern TLS string */
 corto_string corto_setThreadString(corto_string string);
 
+/* Check whether object is a builtin package */
+corto_bool corto_isBuiltinPackage(corto_object o);
+
 #ifdef __cplusplus
 }
 #endif

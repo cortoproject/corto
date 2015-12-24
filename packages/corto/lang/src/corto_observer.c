@@ -88,8 +88,8 @@ corto_int16 _corto_observer_listen(corto_observer this, corto_object observable,
                 corto_listen(me, this, this->mask, observable, this->dispatcher);
             } else {
                 if (!this->_template) {
-                    corto_id id;
-                    corto_error("cannot observe non-observable object '%s'", corto_fullname(observable, id));
+                    corto_seterr("cannot observe non-observable object '%s'",
+                        corto_fullpath(NULL, observable));
                     goto error;
                 }
             }

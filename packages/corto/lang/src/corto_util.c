@@ -1,5 +1,4 @@
-#include "corto_util.h"
-#include "corto_mem.h"
+#include "corto.h"
 
 extern corto_threadKey CORTO_KEY_THREAD_STRING;
 
@@ -90,4 +89,11 @@ void corto_threadStringDealloc(void *tdata) {
     }
 
     corto_dealloc(data);
+}
+
+/* Check whether object is a builtin package */
+corto_bool corto_isBuiltinPackage(corto_object o) {
+    return (o == corto_o) ||
+           (o == corto_lang_o) ||
+           (o == corto_core_o);
 }

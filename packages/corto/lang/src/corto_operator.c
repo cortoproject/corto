@@ -265,8 +265,10 @@ corto_int16 corto_unaryOperator(corto_type type, corto_operatorKind operator, vo
         if (impl) {
             impl(operand, result);
         } else {
-            corto_id id;
-            corto_error("unary operator '%s' is not implemented for type '%s'", corto_nameof(corto_enum_constant(corto_operatorKind_o, operator)), corto_fullname(type, id));
+            corto_seterr(
+              "unary operator '%s' is not implemented for type '%s'",
+              corto_nameof(corto_enum_constant(corto_operatorKind_o, operator)),
+              corto_fullpath(NULL, type));
             goto error;
         }
     }
@@ -282,8 +284,9 @@ corto_int16 corto_binaryOperator(corto_type type, corto_operatorKind operator, v
         if (impl) {
             impl(operand1, operand2, result);
         } else {
-            corto_id id;
-            corto_error("binary operator '%s' is not implemented for type '%s'", corto_nameof(corto_enum_constant(corto_operatorKind_o, operator)), corto_fullname(type, id));
+            corto_seterr("binary operator '%s' is not implemented for type '%s'",
+              corto_nameof(corto_enum_constant(corto_operatorKind_o, operator)),
+              corto_fullpath(NULL, type));
             goto error;
         }
     }

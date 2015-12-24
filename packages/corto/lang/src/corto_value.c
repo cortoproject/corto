@@ -165,8 +165,8 @@ corto_function corto_valueFunction(corto_value* val) {
         if (corto_class_instanceof(corto_procedure_o, corto_typeof(val->is.object.o))) {
             result = val->is.object.o;
         } else {
-            corto_id id;
-            corto_error("object '%s' in value is not a function", corto_fullname(val->is.object.o, id));
+            corto_seterr("object '%s' in value is not a function",
+                corto_fullpath(NULL, val->is.object.o));
             result = NULL;
         }
         break;
@@ -174,7 +174,7 @@ corto_function corto_valueFunction(corto_value* val) {
         result = val->is.call.t;
         break;
     default:
-       corto_error("value does not represent a function");
+       corto_seterr("value does not represent a function");
        result = NULL;
        break;
     }
@@ -234,7 +234,7 @@ char* corto_strving(corto_value* v, char* buffer, unsigned int length) {
     sprintf(buffer, "%s ", corto_valueKindString[v->kind]);
 
     /* Get name of object */
-    corto_fullname(corto_valueObject(v), object_name);
+    corto_fullpath(object_name, corto_valueObject(v));
     if ((strlen(buffer) + (strlen(object_name) + 2 + 1)) >= length) {
         corto_error("buffer passed to corto_strving is too short for object name.");
         goto error;
@@ -491,4 +491,3 @@ void corto_valueStackFree(corto_value* valueStack, corto_uint32 count) {
         corto_valueFree(&valueStack[i]);
     }
 }
-

@@ -369,8 +369,9 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
 
     /* Check if object is valid */
     if (!corto_checkState(o, CORTO_VALID)) {
-        corto_id id1, id2;
-        corto_seterr("%s has invalid objects (%s).", corto_fullname(g_getCurrent(data->g), id1), corto_fullname(o, id2));
+        corto_seterr("%s has invalid objects (%s).",
+            corto_fullpath(NULL, g_getCurrent(data->g)),
+            corto_fullpath(NULL, o));
         return 1;
     }
 
@@ -380,8 +381,9 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
     if (!corto_checkState(o, CORTO_DEFINED)) {
-        corto_id id1, id2;
-        corto_seterr("%s has undefined objects (%s).", corto_fullname(g_getCurrent(data->g), id1), corto_fullname(o, id2));
+        corto_seterr("%s has undefined objects (%s).",
+            corto_fullpath(NULL, g_getCurrent(data->g)),
+            corto_fullpath(NULL, o));
         return 1;
     }
 
@@ -399,9 +401,9 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
                         *recursion = TRUE;
                         goto recursion;
                     } else {
-                        /* If caller does not handle recursion, report an error. */
-                        corto_id id;
-                        corto_seterr("invalid recursion for type '%s'", corto_fullname(o, id));
+                        /* If caller does not handle recursion, report error. */
+                        corto_seterr("invalid recursion for type '%s'",
+                            corto_fullpath(NULL, o));
                         goto error;
                     }
                 } else {
@@ -463,8 +465,8 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
                         *recursion = recurCheck;
                     } else {
                         /* Recursion has not been catched in time. */
-                        corto_id id;
-                        corto_seterr("recursion not handled for type '%s'", corto_fullname(o, id));
+                        corto_seterr("recursion not handled for type '%s'",
+                            corto_fullpath(NULL, o));
                         goto error;
                     }
                 }
@@ -515,4 +517,3 @@ error:
 }
 
 #endif
-

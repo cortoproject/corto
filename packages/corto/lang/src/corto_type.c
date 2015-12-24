@@ -25,8 +25,10 @@ corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure pr
         } else {
             if (*f != corto_function(procedure)) {
                 /* Overriding metaprocedures is not allowed. */
-                corto_id id, id2;
-                corto_error("definition of metaprocedure '%s' conflicts with existing metaprocedure '%s'", corto_fullname(*f, id), corto_fullname(procedure, id2));
+                corto_seterr(
+                  "definition of metaprocedure '%s' conflicts with existing '%s'",
+                  corto_fullpath(NULL, *f),
+                  corto_fullpath(NULL, procedure));
                 goto error;
             }
         }
@@ -73,7 +75,7 @@ corto_bool _corto_type_castable_v(corto_type this, corto_type type) {
     if (!result) {
         result = corto_type_compatible_v(this, type);
     }
-    
+
     return result;
 /* $end */
 }
@@ -95,10 +97,10 @@ corto_equalityKind _corto_type_compare(corto_any this, corto_any value) {
     corto_compare_ser_t data;
     struct corto_serializer_s s;
     corto_value v1;
-    
+
     corto_valueValueInit(&v1, NULL, corto_type(this.type), this.value);
     corto_valueValueInit(&data.value, NULL, corto_type(value.type), value.value);
-    
+
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
 
     corto_serializeValue(&s, &v1, &data);
@@ -154,22 +156,20 @@ corto_int16 _corto_type_copy(corto_any this, corto_any value) {
 
     if (this.type->reference || value.type->reference) {
         corto_valueObjectInit(&data.value, this.value, NULL);
-        corto_valueObjectInit(&v1, value.value, NULL);       
+        corto_valueObjectInit(&v1, value.value, NULL);
     } else {
         corto_valueValueInit(&data.value, NULL, corto_type(this.type), this.value);
         corto_valueValueInit(&v1, NULL, corto_type(value.type), value.value);
     }
-    
-    s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    
-    result = corto_serializeValue(&s, &v1, &data);
 
-    if (result) {
-        corto_id id, id2;
-        corto_error("type::copy: failed to copy value of type '%s' to value of type '%s'",
-                 corto_fullname(this.type, id), corto_fullname(value.type, id2));
+    s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+
+    if ((result = corto_serializeValue(&s, &v1, &data))) {
+        corto_seterr(
+          "type/copy: failed to copy value of type '%s' to value of type '%s'",
+          corto_fullpath(NULL, this.type), corto_fullpath(NULL, value.type));
     }
-    
+
     return result;
 /* $end */
 }
@@ -216,7 +216,7 @@ corto_string _corto_type_fullname(corto_any this) {
 
     if (this.value) {
         corto_id id;
-        result = corto_strdup(corto_fullname(this.value, id));
+        result = corto_strdup(corto_fullpath(id, this.value));
     } else {
         result = corto_strdup("null");
     }
@@ -276,10 +276,10 @@ corto_object _corto_type_parentof(corto_any this) {
    if (corto_checkAttr(this.value, CORTO_ATTR_SCOPED)) {
        result = corto_parentof(this.value);
    } else {
-       corto_id id;
-       corto_error("cannot get parent from non-scoped object of type '%s'", corto_fullname(corto_typeof(this.value), id));
+       corto_error("cannot get parent from non-scoped object of type '%s'",
+          corto_fullpath(NULL, corto_typeof(this.value)));
    }
-    
+
    if (result) {
        corto_claim(result);
    }
@@ -294,7 +294,7 @@ corto_string _corto_type_relname(corto_any this, corto_object from) {
     corto_id id;
 
     if (this.value) {
-        result = corto_strdup(corto_relname(from, this.value, id));
+        result = corto_strdup(corto_path(id, from, this.value, "/"));
     } else {
         result = corto_strdup("null");
     }
@@ -377,7 +377,7 @@ corto_type _corto_type_typeof(corto_any this) {
     corto_type result = NULL;
 
     result = this.type;
-    
+
     if (result) {
         corto_claim(result);
     }

@@ -160,8 +160,9 @@ CORTO_DECL_TRANSFORM(enum, string) {
     CORTO_UNUSED(toType);
     constant = corto_enum_constant((corto_enum)fromType, *(corto_int32*)from);
     if (!constant) {
-        corto_id fullname;
-        corto_error("value %d is not valid for enumeration '%s'.", *(corto_uint32*)from, corto_fullname(fromType, fullname));
+        corto_seterr("value %d is not valid for enumeration '%s'",
+            *(corto_uint32*)from,
+            corto_fullpath(NULL, fromType));
         return -1;
     }
     *(corto_string*)to = corto_strdup(corto_nameof(constant));
@@ -174,8 +175,10 @@ CORTO_DECL_TRANSFORM(string, enum) {
     CORTO_UNUSED(fromType);
     o = corto_resolve(toType, *(corto_string*)from);
     if (!o) {
-        corto_id fullname;
-        corto_error("constant identifier '%s' is not valid for enumeration '%s'.", *(corto_string*)from, corto_fullname(toType, fullname));
+        corto_seterr(
+            "constant identifier '%s' is not valid for enumeration '%s'",
+            *(corto_string*)from,
+            corto_fullpath(NULL, toType));
         goto error;
     } else {
         *(corto_int32*)to = *o;
@@ -283,8 +286,9 @@ CORTO_DECL_TRANSFORM(string, bitmask) {
                 *bptr = '\0';
                 constant = corto_lookup(toType, buffer);
                 if (!constant) {
-                    corto_id fullname;
-                    corto_error("constant identifier '%s' is not valid for bitmask '%s'.", buffer, corto_fullname(toType, fullname));
+                    corto_seterr(
+                        "constant identifier '%s' is not valid for bitmask '%s'.",
+                        buffer, corto_fullpath(NULL, toType));
                     v = 0;
                     goto error;
                 }
@@ -517,7 +521,7 @@ void corto_convertInit(void) {
 /* Convert a value from one primitive type to another */
 corto_int16 corto_convert(corto_primitive fromType, void *from, corto_primitive toType, void *to) {
     corto_conversion c;
-    
+
     /* Get conversion */
     c = _conversions[fromType->convertId][toType->convertId];
     if (c) {
@@ -526,8 +530,8 @@ corto_int16 corto_convert(corto_primitive fromType, void *from, corto_primitive 
             goto error;
         }
     } else {
-        corto_id id1, id2;
-        corto_seterr("no conversion possible from primitive type '%s' to '%s'.", corto_fullname(fromType, id1), corto_fullname(toType, id2));
+        corto_seterr("no conversion possible from primitive type '%s' to '%s'.",
+            corto_fullpath(NULL, fromType), corto_fullpath(NULL, toType));
         goto error;
     }
 

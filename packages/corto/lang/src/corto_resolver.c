@@ -49,8 +49,8 @@ corto_object corto_resolve(corto_object _scope, corto_string str) {
     corto_char ch;
     corto_bool overload;
     corto_bool fullyQualified = FALSE;
-    corto_bool cortoSearched = FALSE;
-    int step = 2;
+    corto_bool cortoSearched = FALSE, cortoCoreSearched = FALSE;
+    int step = 3;
 
     if (!str) {
         str = "/";
@@ -99,6 +99,8 @@ repeat:
             overload = FALSE;
             if (scope == corto_o) {
                 cortoSearched = TRUE;
+            } else if (scope == corto_core_o) {
+                cortoCoreSearched = TRUE;
             }
 
             bptr = buffer;
@@ -159,9 +161,10 @@ repeat:
 
                         if (!o) {
                             if (!i && (prev != corto_lang_o) && corto_instanceof(corto_type(corto_package_o), prev)) {
-                                corto_id load, id;
+                                corto_id load;
                                 if (prev != root_o) {
-                                    sprintf(load, "%s/%s", corto_fullname(prev, id), buffer);
+                                    sprintf(load, "%s/%s",
+                                        corto_fullpath(NULL, prev), buffer);
                                 } else {
                                     sprintf(load, "/%s", buffer);
                                 }
@@ -220,18 +223,24 @@ repeat:
             }
         }
         if (o) break;
-    } while((step == 1) && (scope = corto_parentof(scope)));
+    } while((step == 2) && (scope = corto_parentof(scope)));
 
-    /* Do lookup in actual scope first, then in corto */
+    /* Do lookup in actual scope first, then in corto/core, then corto */
     if (!o && step && !fullyQualified) {
         switch(--step) {
-        case 1:
+        case 2:
             if ((_scope == corto_o) || (_scope == corto_lang_o)) {
                 _scope_start = scope = root_o;
             } else {
                 _scope_start = scope = _scope;
             }
             goto repeat;
+            break;
+        case 1:
+            if (!cortoCoreSearched) {
+                _scope_start = scope = corto_core_o;
+                goto repeat;
+            }
             break;
         case 0:
             if (!cortoSearched) {

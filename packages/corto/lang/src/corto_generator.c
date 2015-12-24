@@ -358,7 +358,7 @@ corto_int16 g_importsEvalReference(corto_generator g, corto_object o) {
             parent = corto_parentof(parent);
         }
 
-        if ((parent != root_o) && (parent != corto_o) && (parent != corto_lang_o)) {
+        if ((parent != root_o) && !corto_isBuiltinPackage(parent)) {
             if (!g->imports) {
                 g->imports = corto_llNew();
             }
@@ -572,8 +572,8 @@ static corto_char* g_oidTransform(corto_generator g, corto_object o, corto_id _i
     CORTO_UNUSED(g);
 
     /* If the object is a function with an argumentlist, cut the argumentlist
-     * from the name if the function is not overloaded. This keeps processing for
-     * generators trivial. */
+     * from the name if the function is not overloaded. This keeps processing
+     * for generators trivial. */
     if (corto_class_instanceof(corto_procedure_o, corto_typeof(o))) {
         if (!corto_function(o)->overloaded) {
             corto_char* ptr;
@@ -582,14 +582,15 @@ static corto_char* g_oidTransform(corto_generator g, corto_object o, corto_id _i
                 *ptr = '\0';
             } else {
                 if (corto_procedure(corto_typeof(o))->kind != CORTO_OBSERVER) {
-                    corto_id id;
-                    corto_warning("function object '%s' without argument list.", corto_fullname(o, id));
+                    corto_warning("function object '%s' without argument list.",
+                        corto_fullpath(NULL, o));
                 }
             }
         } else {
-            /* If function is overloaded, construct the 'request' string, that is, the string without
-             * the argument-names. This results in a string with only the types, which is enough to
-             * generate unique names in languages which do not support overloading. */
+            /* If function is overloaded, construct the 'request' string, that
+             * is, the string without the argument-names. This results in a
+             * string with only the types, which is enough to generate unique
+             * names in languages which do not support overloading. */
             corto_id tmp, buff;
             corto_int32 count, i;
             strcpy(tmp, _id);
@@ -690,7 +691,7 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
 
     /* If no prefix is found for object, just use the scoped identifier */
     } else {
-        corto_fullname(o, _id);
+        corto_seterr(_id, o);
     }
 
     g_oidTransform(g, o, _id, kind);

@@ -107,7 +107,7 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 
             /* Use fully scoped name from here */
             corto_id id;
-            if (!corto_loadRequiresPackage(corto_fullname(package, id))) {
+            if (!corto_loadRequiresPackage(corto_fullpath(id, package))) {
                 corto_mkdir(".corto");
                 corto_file f = corto_fileAppend(".corto/packages.txt");
                 if (!f) {
@@ -228,7 +228,7 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
             }
 
             corto_id id;
-            corto_fullname(package, id);
+            corto_fullpath(id, package);
 
             corto_ll packages = corto_loadGetPackages();
             corto_file file = corto_fileOpen(".corto/packages.txt");

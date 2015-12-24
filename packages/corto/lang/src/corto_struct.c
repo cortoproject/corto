@@ -76,9 +76,9 @@ corto_int16 _corto_struct_construct(corto_struct this) {
     if (corto_interface(this)->members.length) {
         alignment = corto__interface_calculateAlignment(corto_interface(this));
         if (!alignment) {
-            corto_id id;
-            corto_error("error in definition of '%s'", corto_fullname(this, id));
-            goto error;            
+            corto_seterr("error in definition of '%s'",
+                corto_fullpath(NULL, this));
+            goto error;
         }
     }
 
@@ -88,8 +88,8 @@ corto_int16 _corto_struct_construct(corto_struct this) {
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
-            corto_id id, id2;
-            corto_error("struct '%s' inherits from non-struct type '%s'", corto_fullname(this, id), corto_fullname(base, id2));
+            corto_seterr("struct '%s' inherits from non-struct type '%s'",
+                corto_fullpath(NULL, this), corto_fullpath(NULL, base));
             goto error;
         }
 
@@ -116,8 +116,8 @@ corto_int16 _corto_struct_construct(corto_struct this) {
     if (corto_interface(this)->members.length) {
         size = corto__interface_calculateSize(corto_interface(this), size);
         if (!size) {
-            corto_id id;
-            corto_error("error in definition of '%s'", corto_fullname(this, id));
+            corto_seterr("error in definition of '%s'",
+                corto_fullpath(NULL, this));
             goto error;
         }
     }

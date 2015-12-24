@@ -140,8 +140,9 @@ corto_uint16 corto__interface_calculateAlignment(corto_interface this) {
                 alignment = memberAlignment;
             }
         } else {
-            corto_id id, id2;
-            corto_seterr("member '%s' has type '%s' with zero-alignment.", corto_fullname(member, id), corto_fullname(member->type, id2));
+            corto_seterr("member '%s' has type '%s' with zero-alignment.",
+                corto_fullpath(NULL, member),
+                corto_fullpath(NULL, member->type));
             goto error;
         }
     }
@@ -167,8 +168,10 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
         if (!corto_instanceof(corto_alias_o, m)) {
             memberSize = corto_type_sizeof(memberType);
             if (!memberSize) {
-                corto_id id1, id2;
-                corto_error("member '%s' of type '%s' is of invalid type '%s'", corto_nameof(m), corto_fullname(this, id1), corto_fullname(memberType, id2));
+                corto_error("member '%s' of type '%s' is of invalid type '%s'",
+                    corto_nameof(m),
+                    corto_fullpath(NULL, this),
+                    corto_fullpath(NULL, memberType));
                 goto error;
             }
 
@@ -196,17 +199,16 @@ error:
 
 static int corto_interface_validateAlias(corto_alias this) {
     corto_modifier m = 0;
-    
+
     /* Find the member we're aliassing and verify access */
     if (!this->member) {
-        corto_id id;
-        corto_seterr("alias '%s' doesn't point to anything", corto_fullname(this, id));
+        corto_seterr("alias '%s' doesn't point to anything",
+            corto_fullpath(NULL, this));
         goto error;
     } else {
         if (this->member->modifiers & (CORTO_PRIVATE|CORTO_LOCAL|CORTO_READONLY|CORTO_CONST)) {
-            corto_id id1, id2;
             corto_seterr("alias '%s' doesn't have write-access to member '%s'",
-                corto_fullname(this, id1), corto_fullname(this->member, id2));
+                corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
             goto error;
         }
 
@@ -217,16 +219,14 @@ static int corto_interface_validateAlias(corto_alias this) {
         }
 
         if (!base) {
-            corto_id id;
             corto_seterr("alias '%s' points to member of another interface",
-                corto_fullname(this, id));
+                corto_fullpath(NULL, this));
             goto error;
         }
 
         if (m && m != CORTO_HIDDEN) {
-            corto_id id1, id2;
             corto_seterr("alias '%s' doesn't have write-access to member '%s'",
-                corto_fullname(this, id1), corto_fullname(this->member, id2));
+                corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
             goto error;
         }
 
@@ -254,8 +254,7 @@ static int corto_interface_insertMemberAction(void* o, void* userData) {
         }
 
         if (!m->type) {
-            corto_id id;
-            corto_error("member '%s' has no type", corto_fullname(m, id));
+            corto_seterr("member '%s' has no type", corto_fullpath(NULL, m));
             goto error;
         }
 
@@ -298,25 +297,24 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
     result = TRUE;
 
     if (o1->parameters.length != o2->parameters.length) {
-        corto_id id1, id2;
-        corto_error("number of parameters does not match for functions '%s' (%d) and '%s' (%d)",
-                corto_fullname(o1, id1), o1->parameters.length,
-                corto_fullname(o2, id2), o2->parameters.length);
+        corto_seterr("number of parameters does not match for functions '%s' (%d) and '%s' (%d)",
+            corto_fullpath(NULL, o1), o1->parameters.length,
+            corto_fullpath(NULL, o2), o2->parameters.length);
         result = FALSE;
     } else {
         corto_uint32 i;
-        corto_id id1, id2;
 
         for (i=0; i<o1->parameters.length; i++) {
             corto_type p1, p2;
             /* Check if names of parameters are compatible */
             if (strcmp(o1->parameters.buffer[i].name, o2->parameters.buffer[i].name)) {
-                corto_warning("parameter %d of function '%s' and '%s' differs in name (%s vs %s)",
-                        i,
-                        corto_fullname(o1, id1),
-                        corto_fullname(o2, id2),
-                        o1->parameters.buffer[i].name,
-                        o2->parameters.buffer[i].name);
+                corto_warning(
+                    "parameter %d of function '%s' and '%s' differs in name (%s vs %s)",
+                    i,
+                    corto_fullpath(NULL, o1),
+                    corto_fullpath(NULL, o2),
+                    o1->parameters.buffer[i].name,
+                    o2->parameters.buffer[i].name);
             }
 
             /* Check if types of parameters are compatible */
@@ -329,16 +327,16 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
                 if (!corto_checkState(corto_type_o, CORTO_DEFINED)) { /* If lang::type is not yet defined, we're still bootstrapping. */
                     if (p1 != p2) {
                         if (!(p1 == corto_object_o) && (p2->reference)) {
-                            corto_error("bootstrap failure: types of parameters '%s' and '%s' are not compatible.",
-                                    o1->parameters.buffer[i].name,
-                                    o2->parameters.buffer[i].name);
+                            corto_seterr("bootstrap failure: types of parameters '%s' and '%s' are not compatible.",
+                                o1->parameters.buffer[i].name,
+                                o2->parameters.buffer[i].name);
                         }
                     }
                 } else if (!corto_type_castable(p1, p2)) { /* This virtual function can only be called after the bootstrap is complete. */
-                    corto_error("type of parameter %s of function '%s' is incompatible with function '%s'",
-                            corto_nameof(o2->parameters.buffer[i].type),
-                            corto_fullname(o2, id1),
-                            corto_fullname(o1, id2));
+                    corto_seterr("type of parameter %s of function '%s' is incompatible with function '%s'",
+                        corto_nameof(o2->parameters.buffer[i].type),
+                        corto_fullpath(NULL, o2),
+                        corto_fullpath(NULL, o1));
                 }
             }
 
@@ -348,10 +346,10 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
                     (((p2->kind == CORTO_VOID) && (p2->reference)) && o1->parameters.buffer[i].passByReference)) {
 
                 } else {
-                    corto_error("parameter '%s' of function '%s' and '%s' has conflicting pass-by-reference semantics.",
-                            o1->parameters.buffer[i].name,
-                            corto_fullname(o1, id1),
-                            corto_fullname(o2, id2));
+                    corto_seterr("parameter '%s' of function '%s' and '%s' has conflicting pass-by-reference semantics.",
+                        o1->parameters.buffer[i].name,
+                        corto_fullpath(NULL, o1),
+                        corto_fullpath(NULL, o2));
                 }
             }
         }
@@ -374,12 +372,11 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
     returnType2 = o2->returnType ? o1->returnType : (corto_type)corto_void_o;
 
     if (returnType1 != returnType2) {
-        corto_id id1, id2, id3, id4;
         corto_error("function '%s' and '%s' have conflicting returntypes (%s vs %s).",
-                corto_fullname(o1, id1),
-                corto_fullname(o2, id2),
-                corto_fullname(returnType1, id3),
-                corto_fullname(returnType2, id4));
+            corto_fullpath(NULL, o1),
+            corto_fullpath(NULL, o2),
+            corto_fullpath(NULL, returnType1),
+            corto_fullpath(NULL, returnType2));
         result = FALSE; /* Returntypes must match exactly (save for typedefs) */
     } else {
         switch(corto_procedure(t1)->kind) {
@@ -405,12 +402,12 @@ corto_int16 _corto_interface_baseof(corto_interface this, corto_interface type) 
 /* $begin(corto/lang/interface/baseof) */
     corto_interface ptr = this->base;
     corto_bool result = this == type;
-    
+
     while (ptr && !result) {
         result = ptr == type;
         ptr = ptr->base;
     }
-    
+
     return result;
 /* $end */
 }
@@ -446,8 +443,8 @@ corto_int16 _corto_interface_bindMethod(corto_interface this, corto_method metho
                 corto_setref(virtual, method);
             } else {
                 corto_id id, id2;
-                corto_fullname(method, id);
-                corto_fullname(*virtual, id2);
+                corto_fullpath(id, method);
+                corto_fullpath(id2, *virtual);
                 if (strcmp(id, id2)) {
                     corto_seterr("definition of method '%s' conflicts with existing method '%s'", id, id2);
                     goto error;
@@ -521,7 +518,7 @@ corto_int16 _corto_interface_construct(corto_interface this) {
             for (i=0; i<ownTable.length; i++) {
                 if (corto_instanceof(corto_type(corto_method_o), ownTable.buffer[i])) {
                     corto_interface_bindMethod(this, corto_method(ownTable.buffer[i]));
-                } 
+                }
                 corto_release(ownTable.buffer[i]);
             }
 
@@ -624,12 +621,13 @@ corto_method _corto_interface_resolveMethodById(corto_interface this, corto_uint
     if (id <= vtable->length) {
         result = corto_method(vtable->buffer[id-1]);
     } else {
-        corto_id _id;
         corto_uint32 i;
-        corto_error("interface::resolveMethodById: invalid vtable-index %d for interface %s", id, corto_fullname(this, _id));
-        printf("%s.vtable:\n", corto_fullname(this, _id));
+        corto_seterr(
+            "interface::resolveMethodById: invalid vtable-index %d for interface %s",
+            id, corto_fullpath(NULL, this));
+        printf("%s.vtable:\n", corto_fullpath(NULL, this));
         for (i=0; i<vtable->length; i++) {
-            printf("   (%d) %s\n", i+1, corto_fullname(vtable->buffer[i], _id));
+            printf("  (%d) %s\n", i+1, corto_fullpath(NULL, vtable->buffer[i]));
         }
     }
 
@@ -645,8 +643,10 @@ corto_uint32 _corto_interface_resolveMethodId(corto_interface this, corto_string
     result = 0;
 
     if (!corto_checkState(this, CORTO_DEFINED)) {
-        corto_id id;
-        corto_error("cannot resolve methodId for method '%s' from undefined interface '%s'", name, corto_fullname(this, id));
+        corto_seterr(
+            "cannot resolve methodId for method '%s' from undefined interface '%s'",
+            name,
+            corto_fullpath(NULL, this));
         abort();
         goto error;
     }

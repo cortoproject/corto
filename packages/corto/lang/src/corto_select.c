@@ -363,7 +363,7 @@ static void corto_setItemData(
     corto_selectData *data)
 {
     if (o != root_o) {
-        corto_relname(data->scope, corto_parentof(o), item->parent);
+        corto_path(item->parent, data->scope, corto_parentof(o), "/");
     } else {
         *item->parent = '\0';
     }
@@ -378,9 +378,7 @@ static void corto_setItemData(
         if (corto_parentof(corto_typeof(o)) == corto_lang_o) {
             strcpy(item->type, corto_nameof(corto_typeof(o)));
         } else {
-            corto_id type;
-            corto_fullname(corto_typeof(o), type);
-            strcpy(item->type, type);
+            strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
         }
     } else {
         corto_string_ser_t serData;
@@ -592,7 +590,7 @@ static void corto_selectIterateReplicators(
         corto_id path, parent, expr;
 
         /* Relative path is used to translate parent identifier */
-        corto_relname (data->scope, frame->o, path);
+        corto_path(path, data->scope, frame->o, "/");
 
         /* Parse filter into parent and expression */
         corto_selectParseFilter(frame->filter, parent, expr);

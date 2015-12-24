@@ -90,36 +90,6 @@ static corto_bool corto_ser_appendstr(corto_string_ser_t* data, corto_string fmt
     return result;
 }
 
-/* Escape string */
-static corto_bool corto_ser_appendstrEscape(corto_string_ser_t *data, corto_string str) {
-    corto_char buffer[1024];
-    corto_char *ptr, *bptr, ch;
-
-    ptr = str;
-    bptr = buffer;
-    *bptr = '"';
-    bptr++;
-    while((ch = *ptr)) {
-        bptr = chresc(bptr, ch, '"');
-        ptr++;
-
-        if ((bptr - buffer) == 1023) { /* Avoid allocating temporary strings by reusing buffer.
-                                       * Keep buffer sufficiently large to no call appendstr too much. */
-            *bptr = '\0';
-            if (!corto_ser_appendstr(data, "%s", buffer)) {
-                goto finished;
-            }
-            bptr = buffer;
-        }
-    }
-    *bptr = '"';
-    *(++bptr) = '\0';
-
-    return corto_ser_appendstr(data, "%s", buffer);
-finished:
-    return 1;
-}
-
 /* Insert color if enabled */
 static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string color) {
     corto_bool result = TRUE;
@@ -223,7 +193,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 strcpy(id, corto_nameof(object));
                 str = id;
             } else {
-                str = (char*)corto_fullname(object, id);
+                str = (char*)corto_fullpath(id, object);
             }
         } else {
             corto_string_ser_t walkData;
@@ -378,7 +348,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
         if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED) && corto_parentof(corto_typeof(o)) == corto_lang_o) {
             strcpy(id, corto_nameof(corto_typeof(o)));
         } else {
-            corto_fullname(corto_typeof(o), id);
+            corto_fullpath(id, corto_typeof(o));
         }
 
         if (corto_typeof(o)->kind != CORTO_PRIMITIVE) {

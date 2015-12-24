@@ -110,9 +110,9 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
 
     data = userData;
 
-    /* If object is corto_lang_o, signal that a bootstrap is found, indicating
+    /* If object a builtin package, signal that a bootstrap is found, indicating
      * that dependencies should be disregarded. */
-    if (o == corto_lang_o) {
+    if (corto_isBuiltinPackage(o)) {
         data->bootstrap = TRUE;
         result = 0;
     } else {

@@ -9,7 +9,9 @@
 #include "corto.h"
 
 /* $header() */
-corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure);
+corto_int16 corto_type_bindMetaprocedure(
+    corto_type this,
+    corto_metaprocedure procedure);
 /* $end */
 
 corto_int16 _corto_metaprocedure_bind(corto_metaprocedure this) {
@@ -22,8 +24,8 @@ corto_int16 _corto_metaprocedure_bind(corto_metaprocedure this) {
             goto error;
         }
     } else {
-        corto_id id, id2;
-        corto_error("metaoperation '%s' not defined in scope of '%s' which is not a type", corto_fullname(this, id), corto_fullname(parent, id2));
+        corto_seterr("invalid declaration of '%s' in non-type scope '%s'",
+            corto_fullpath(NULL, this), corto_fullpath(NULL, parent));
         goto error;
     }
 

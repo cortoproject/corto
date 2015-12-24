@@ -103,7 +103,6 @@ test::Suite ObjectMgmt::
     void tc_createChildInvalidType()
 
     void tc_createChildNested()
-    void tc_drop()
 
 // Class with method for testing ownership onInvoke
 class MethodForwardTest::
@@ -162,6 +161,7 @@ test::Suite RelativeName::
     disjunct: object
     child: object
 
+    void tc_fromNull()
     void tc_fromRoot()
     void tc_fromParent()
     void tc_fromOneUp()
@@ -275,12 +275,10 @@ test::Suite SelectContentType::
     void tc_selectStringFromObjects()
     void tc_selectStringFromString()
     void tc_selectStringFromJson()
-    void tc_selectStringFromMixed()
 
     void tc_selectJsonFromObjects()
     void tc_selectJsonFromString()
     void tc_selectJsonFromJson()
-    void tc_selectStringFromMixed()
 
 class ListReplicator : replicator, hidden::
     alias mount : replicator/mount

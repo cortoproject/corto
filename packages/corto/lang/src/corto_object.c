@@ -252,7 +252,8 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     scope = corto__objectScope(_o);
-    corto_assert(scope != NULL, "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
+    corto_assert(scope != NULL,
+      "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
     scope->name = corto_strdup(name);
     scope->declared = 1;
@@ -265,12 +266,13 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
      * object, so that when the initializer failed, it hasn't
      * yet been added to the scope. */
     if (corto_init(o)) {
-        corto_id id;
         corto_string err = corto_lasterr();
         if (err) {
-            corto_seterr("%s/init failed: %s", corto_fullname(corto_typeof(o), id), err);
+            corto_seterr(
+              "%s/init failed: %s", corto_fullpath(NULL, corto_typeof(o)), err);
         } else {
-            corto_seterr("%s/init failed", corto_fullname(corto_typeof(o), id));
+            corto_seterr(
+              "%s/init failed", corto_fullpath(NULL, corto_typeof(o)));
         }
         goto error;
     }
@@ -580,8 +582,8 @@ int corto__destructor(corto_object o) {
 
         _o->attrs.state &= ~CORTO_DEFINED;
     } else {
-        corto_id id, id2;
-        corto_error("%s::destruct: object '%s' is not defined", corto_fullname(t, id2), corto_fullname(o, id));
+        corto_seterr("%s/destruct: object '%s' is not defined",
+            corto_fullpath(NULL, t), corto_fullpath(NULL, o));
         goto error;
     }
 
@@ -718,19 +720,18 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 if (childType->parentType) {
                     parentType = corto_typeof(parent);
                     if ((childType->parentType != parentType) && !corto_instanceof(childType->parentType, parent)) {
-                        corto_id parentId, childParentTypeId;
                         corto_seterr("type of '%s' is not '%s'",
-                                corto_fullname(parent, parentId), corto_fullname(childType->parentType, childParentTypeId));
+                                corto_fullpath(NULL, parent),
+                                corto_fullpath(NULL, childType->parentType));
                         goto err_invalid_parent;
                     }
                 }
 
                 /* Check if parentState matches scopeState of child type */
                 if (childType->parentState && !corto__checkStateXOR(parent, childType->parentState)) {
-                    corto_id parentId;
                     corto_uint32 childState = childType->parentState;
                     corto_seterr("'%s' is %s, must be %s",
-                        corto_fullname(parent, parentId),
+                        corto_fullpath(NULL, parent),
                         corto_stateStr(_parent->attrs.state),
                         corto_stateStr(childState));
                     goto err_invalid_parent;
@@ -927,12 +928,13 @@ corto_object _corto_declare(corto_type type) {
             if (!corto_init(CORTO_OFFSET(o, sizeof(corto__object)))) {
                 o->attrs.state |= CORTO_VALID;
             } else {
-                corto_id id;
                 corto_string err = corto_lasterr();
                 if (err) {
-                    corto_seterr("%s/init failed: %s", corto_fullname(type, id), err);
+                    corto_seterr("%s/init failed: %s",
+                        corto_fullpath(NULL, type), err);
                 } else {
-                    corto_seterr("%s/init failed", corto_fullname(type, id));
+                    corto_seterr("%s/init failed",
+                        corto_fullpath(NULL, type));
                 }
                 goto error_init;
             }
@@ -1005,11 +1007,10 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
                 corto_object owner = corto_ownerof(o);
                 if (owner && corto_instanceof(corto_replicator_o, owner)) {
                     if (owner != corto_getOwner()) {
-                        corto_id id, id2;
                         corto_seterr(
                           "owner '%s' of existing object '%s' does not match",
-                          corto_fullname(owner, id),
-                          corto_fullname(o, id2));
+                          corto_fullpath(NULL, owner),
+                          corto_fullpath(NULL, o));
                         goto owner_error;
                     }
                 }
@@ -1276,10 +1277,9 @@ corto_int16 corto_delete(corto_object o) {
     }
 
     if (!corto_owned(o)) {
-        corto_id id;
         corto_seterr(
           "can't delete %s: not owned by thread (use corto_suspend)",
-          corto_fullname(o, id));
+          corto_fullpath(NULL, o));
         goto error;
     }
 
@@ -1355,11 +1355,10 @@ corto_bool corto_checkAttr(corto_object o, corto_int8 attr) {
 corto_object corto_assertType(corto_type type, corto_object o) {
     if (o && (o != type)) {
         if (!corto_instanceof(type, o)) {
-            corto_id id1, id2;
-            corto_error("object '%s' is not of type '%s'",
-                corto_fullname(o, id1),
-                corto_fullname(type, id2));
-            corto_error("    type = %s\n", corto_fullname(corto_typeof(o), id1));
+            corto_error("object '%s' is not of type '%s'\n   type = %s",
+                corto_fullpath(NULL, o),
+                corto_fullpath(NULL, type),
+                corto_fullpath(NULL, corto_typeof(o)));
             corto_backtrace(stdout);
             abort();
         }
@@ -1736,12 +1735,13 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* 
 }
 
 /* Obtain scoped identifier (serves as global unique identifier) */
-corto_string corto_fullname(corto_object o, corto_id buffer) {
+corto_string corto_fullpath(corto_id buffer, corto_object o) {
     corto_object stack[CORTO_MAX_SCOPE_DEPTH];
     corto_uint32 depth;
     corto_string name;
     corto_char* ptr;
     corto_uint32 len;
+    corto_bool threadStr = FALSE;
 
     depth = 0;
 
@@ -1750,8 +1750,8 @@ corto_string corto_fullname(corto_object o, corto_id buffer) {
     }
 
     if (!buffer) {
-        corto_seterr("no buffer provided");
-        return NULL;
+        buffer = corto_alloc(sizeof(corto_id));
+        threadStr = TRUE;
     }
 
     if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
@@ -1785,6 +1785,10 @@ corto_string corto_fullname(corto_object o, corto_id buffer) {
         *ptr = '\0';
     }
 
+    if (threadStr) {
+        buffer = corto_setThreadString(buffer);
+    }
+
     return buffer;
 }
 
@@ -1811,7 +1815,12 @@ static corto_object* corto_scopeStack(
     return scopeStack;
 }
 
-corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
+corto_string corto_path(
+    corto_id buffer,
+    corto_object from,
+    corto_object o,
+    const char *sep)
+{
     corto_object from_s[CORTO_MAX_SCOPE_DEPTH];
     corto_object o_s[CORTO_MAX_SCOPE_DEPTH];
     corto_uint32 from_i, o_i;
@@ -1819,16 +1828,24 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
     corto_uint32 length;
     corto_bool reverse = FALSE;
     corto_uint32 count = 0;
+    corto_bool threadStr = FALSE;
 
-    corto_assert(from != NULL, "relname called with NULL for parameter 'from'.");
     corto_assert(o != NULL, "relname called with NULL for parameter 'to'.");
+
+    if (!buffer) {
+        buffer = corto_alloc(sizeof(corto_id));
+        threadStr = TRUE;
+    }
+
+    buffer[0] = '\0';
+
+    if (!from) {
+        strcpy(buffer, sep);
+        from = root_o;
+    }
 
     if (from == o) {
         strcpy(buffer, ".");
-    } else if (from == root_o) {
-        corto_id buff;
-        corto_fullname(o, buff);
-        strcpy(buffer, buff + 1);
     } else {
         corto_scopeStack(from, from_s, &from_i);
         corto_scopeStack(o, o_s, &o_i);
@@ -1857,7 +1874,7 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
             }
         }
 
-        ptr = buffer;
+        ptr = &buffer[strlen(buffer)];
         while(count) {
             if (!reverse) {
                 length = strlen(corto_nameof(o_s[count]));
@@ -1867,8 +1884,8 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
                 memcpy(ptr, "..", 2);
             }
             ptr += length;
-            *ptr = '/';
-            ptr += 1;
+            strcpy(ptr, sep);
+            ptr += strlen(sep);
             count--;
         }
         if (!reverse) {
@@ -1881,6 +1898,11 @@ corto_string corto_relname(corto_object from, corto_object o, corto_id buffer) {
         ptr += length;
         *ptr = '\0';
     }
+
+    if (threadStr) {
+        buffer = corto_setThreadString(buffer);
+    }
+
     return buffer;
 }
 
@@ -2011,10 +2033,9 @@ static corto_uint16 corto_destruct(corto_object o) {
             /* Integrity check */
             if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
                 if (corto_parentof(o) == corto_lang_o) {
-                    corto_id id;
                     corto_critical(
                       "illegal attempt to destruct builtin-object '%s'.",
-                      corto_fullname(o, id));
+                      corto_fullpath(NULL, o));
                 }
             }
 
@@ -2105,129 +2126,6 @@ static corto_uint16 corto_destruct(corto_object o) {
     }
 }
 
-/* Name-based tracing */
-/*#define CORTO_TRACE_DEBUG
-#define CORTO_TRACE "48"*/
-#ifdef CORTO_TRACE
-#define CORTO_TRACE_KEEP(o)\
-    {\
-        corto__object* _o;\
-        _o = CORTO_OFFSET(o, -sizeof(corto__object));\
-        if (corto__objectScope(_o)) {\
-            if ((corto_nameof(o) == CORTO_TRACE) || (CORTO_TRACE && (corto_nameof(o) && !strcmp(corto_nameof(o), CORTO_TRACE)))) {\
-                CORTO_TRACE_ADDR = o;\
-                corto_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, corto_nameof(o), _o->refcount, context);\
-                if (src) {\
-                    corto_id id;\
-                    corto_trace("    source: %s", corto_fullname(src, id));\
-                }\
-                corto_backtrace(stdout);\
-            }\
-        }\
-    }
-#define CORTO_TRACE_FREE(object)\
-    {\
-        corto__object* _o;\
-        _o = CORTO_OFFSET(o, -sizeof(corto__object));\
-        if (corto__objectScope(_o)) {\
-            if ((corto_nameof(o) == CORTO_TRACE) || (CORTO_TRACE && (corto_nameof(o) && !strcmp(corto_nameof(o), CORTO_TRACE)))) {\
-                CORTO_TRACE_ADDR = o;\
-                corto_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, corto_nameof(o), _o->refcount, context, _o->mm.cycles);\
-                if (src) {\
-                    corto_id id;\
-                    corto_trace("    source: %s", corto_fullname(src, id));\
-                }\
-                corto_backtrace(stdout);\
-            }\
-        }\
-    }
-#endif
-
-/* Type-based tracing */
-/* #define CORTO_TRACE_DEBUG
-#define CORTO_TRACE_TYPE "Local"*/
-#ifdef CORTO_TRACE_TYPE
-#define CORTO_TRACE_KEEP(o)\
-    {\
-        corto__object* _o;\
-        _o = CORTO_OFFSET(o, -sizeof(corto__object));\
-        if ((corto_nameof(corto_typeof(o)) == CORTO_TRACE_TYPE) || (CORTO_TRACE_TYPE && (corto_nameof(corto_typeof(o)) && !strcmp(corto_nameof(corto_typeof(o)), CORTO_TRACE_TYPE)))) {\
-            corto_id id;\
-            corto_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, corto_fullname(o, id), corto_countof(o), context);\
-            if (src) {\
-                corto_id id;\
-                corto_trace("    source: %s", corto_fullname(src, id));\
-            }\
-            corto_backtrace(stdout);\
-        }\
-    }
-#define CORTO_TRACE_FREE(object)\
-    {\
-        corto__object* _o;\
-        _o = CORTO_OFFSET(o, -sizeof(corto__object));\
-        if ((corto_nameof(corto_typeof(o)) == CORTO_TRACE_TYPE) || (CORTO_TRACE_TYPE && (corto_nameof(corto_typeof(o)) && !strcmp(corto_nameof(corto_typeof(o)), CORTO_TRACE_TYPE)))) {\
-            corto_id id;\
-            corto_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, corto_fullname(o, id), corto_countof(o), context, _o->mm.cycles);\
-            if (src) {\
-                corto_id id;\
-                corto_trace("    source: %s", corto_fullname(src, id));\
-            }\
-            corto_backtrace(stdout);\
-        }\
-    }
-#endif
-
-/* Parent based tracing */
-/*#define CORTO_TRACE_DEBUG
-#define CORTO_TRACE_TYPEPARENT "ast"*/
-#ifdef CORTO_TRACE_TYPEPARENT
-#define CORTO_TRACE_KEEP(o)\
-    {\
-        corto__object* _o;\
-        _o = CORTO_OFFSET(corto_typeof(o), -sizeof(corto__object));\
-        if (corto__objectScope(_o)) {\
-            if ((corto_nameof(corto_parentof(corto_typeof(o))) == CORTO_TRACE_TYPEPARENT) || (CORTO_TRACE_TYPEPARENT && (corto_nameof(corto_parentof(corto_typeof(o))) && !strcmp(corto_nameof(corto_parentof(corto_typeof(o))), CORTO_TRACE_TYPEPARENT)))) {\
-                corto_id id;\
-                corto_trace("keep (%p)'%s' -> %d (context = \"%s\")", o, corto_fullname(o, id), corto_countof(o), context);\
-                if (src) {\
-                    corto_id id;\
-                    corto_trace("    source: %s", corto_fullname(src, id));\
-                }\
-                /*corto_backtrace(stdout);*/\
-            }\
-        }\
-    }
-#define CORTO_TRACE_FREE(object)\
-    {\
-        corto__object* _o;\
-        _o = CORTO_OFFSET(corto_typeof(o), -sizeof(corto__object));\
-        if (corto__objectScope(_o)) {\
-            if ((corto_nameof(corto_parentof(corto_typeof(o))) == CORTO_TRACE_TYPEPARENT) || (CORTO_TRACE_TYPEPARENT && (corto_nameof(corto_parentof(corto_typeof(o))) && !strcmp(corto_nameof(corto_parentof(corto_typeof(o))), CORTO_TRACE_TYPEPARENT)))) {\
-                corto_id id;\
-                corto_trace("free (%p)'%s' -> %d (context = \"%s\", cycles=%d)", o, corto_fullname(o, id), corto_countof(o), context, _o->mm.cycles);\
-                if (src) {\
-                    corto_id id;\
-                    corto_trace("    source: %s", corto_fullname(src, id));\
-                }\
-                /*corto_backtrace(stdout);\*/\
-            }\
-        }\
-    }
-#endif
-
-
-#ifndef CORTO_TRACE
-#ifndef CORTO_TRACE_TYPE
-#ifndef CORTO_TRACE_TYPEPARENT
-#define CORTO_TRACE_KEEP(o)
-#define CORTO_TRACE_FREE(o)
-#endif
-#endif
-#endif
-
-#ifdef CORTO_TRACE_DEBUG
-corto_object CORTO_TRACE_ADDR = NULL;
-#endif
 corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string context) {
     corto__object* _o;
     corto_uint32 i;
@@ -2236,22 +2134,6 @@ corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string conte
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     i = corto_ainc(&_o->refcount);
-
-#ifdef CORTO_TRACE_DEBUG
-    if (CORTO_TRACE_ADDR == o) {
-        corto_id id, id2;
-        corto_trace("keep %s of type %s -> %d (cycles=%d, source=%p, context='%s')", corto_fullname(o, id), corto_fullname(corto_typeof(o), id2), i, _o->mm.cycles, src, context);
-        /*corto_backtrace(stdout);*/
-    }
-
-    CORTO_TRACE_KEEP(o);
-
-    if (i == 0) {
-        corto_id id1, id2;
-        corto_critical("keep resulted in refcount of 0 for object '%s' of type '%s'",
-                corto_fullname(o, id1), corto_fullname(corto_typeof(o), id2));
-    }
-#endif
 
     return i;
 }
@@ -2265,23 +2147,12 @@ corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string con
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     i = corto_adec(&_o->refcount);
 
-#ifdef CORTO_TRACE_DEBUG
-    if ((CORTO_TRACE_ADDR == o)) {
-        corto_id id, id2;
-        corto_trace("free (%p)%s of type %s -> %d (cycles=%d, valid=%d, destructed = %d, source=%p, context='%s')",
-                o, corto_fullname(o, id), corto_fullname(corto_typeof(o), id2), i, _o->mm.cycles, corto_checkState(o, CORTO_VALID), corto_checkState(o, CORTO_DESTRUCTED), src, context);
-        /*corto_backtrace(stdout);*/
-    }
-
-    CORTO_TRACE_FREE(o);
-#endif
-
     if (!i) {
         corto_destruct(o);
     }
     if (i < 0) {
-        corto_id id, typeId;
-        corto_critical("negative reference count of object (%p) '%s' of type '%s'", o, corto_fullname(o, id), corto_fullname(corto_typeof(o), typeId));
+        corto_critical("negative reference count of object (%p) '%s' of type '%s'",
+            o, corto_fullpath(NULL, o), corto_fullpath(NULL, corto_typeof(o)));
         corto_backtrace(stdout);
     }
 
@@ -2345,8 +2216,8 @@ corto_object corto_lookupLowercase(corto_object o, corto_string name) {
         }
         corto_rwmutexUnlock(&scope->scopeLock);
     } else {
-        corto_id id;
-        corto_error("corto_lookup: object '%s' has no scope", corto_fullname(o, id));
+        corto_seterr("corto_lookup: object '%s' has no scope",
+            corto_fullpath(NULL, o));
         goto error;
     }
 
@@ -2474,16 +2345,14 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
 
     if ((mask & observerMask) && (!depth || (observerMask & CORTO_ON_TREE))) {
         corto_dispatcher dispatcher = data->dispatcher;
+
 #ifdef CORTO_TRACE_NOTIFICATIONS
-{
-    corto_id id1, id2, id3;
-    printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
-            indent * 3, "",
-            corto_fullname(observable, id1),
-            corto_fullname(observer, id2),
-            corto_fullname(data->_this, id3));
-}
-indent++;
+        printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
+                indent * 3, "",
+                corto_fullpath(NULL, observable),
+                corto_fullpath(NULL, observer),
+                corto_fullpath(NULL, data->_this));
+        indent++;
 #endif
 
         if (!dispatcher) {
@@ -2607,21 +2476,19 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
     /* Test for error conditions before making changes */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
         if (!corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
-            corto_id id, id2;
             corto_seterr(
                 "cannot listen to scope of non-scoped observable '%s' (observer %s)",
-                corto_fullname(observable, id),
-                corto_fullname(observer, id2));
+                corto_fullpath(NULL, observable),
+                corto_fullpath(NULL, observer));
             goto error;
         }
     }
 
     if (!corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
-        corto_id id;
-        corto_assert(
+        corto_seterr(
             0,
             "object '%s' is not an observable",
-            corto_fullname(observable, id));
+            corto_fullpath(NULL, observable));
         goto error;
     }
 
@@ -2629,13 +2496,11 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
         CORTO_OFFSET(observable, -sizeof(corto__object)));
 
 #ifdef CORTO_TRACE_NOTIFICATIONS
-    {
-        corto_id id1, id2, id3;
         printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s%s\n",
                 indent * 3, "",
-                corto_fullname(observable, id1),
-                corto_fullname(observer, id2),
-                corto_fullname(this, id3),
+                corto_fullpath(NULL, observable),
+                corto_fullpath(NULL, observer),
+                corto_fullpath(NULL, this),
                 mask & CORTO_ON_SELF ? " self" : "",
                 mask & CORTO_ON_SCOPE ? " scope" : "",
                 mask & CORTO_ON_TREE ? " tree" : "",
@@ -2643,7 +2508,6 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
                 mask & CORTO_ON_DEFINE ? " define" : "",
                 mask & CORTO_ON_UPDATE ? " update" : "",
                 mask & CORTO_ON_DELETE ? " delete" : "");
-    }
 #endif
 
     /* Create observerData */
@@ -2768,28 +2632,26 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
                 /* Build new observer array */
                 oldSelfArray = _o->onSelfArray;
                 _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
+
 #ifdef CORTO_TRACE_NOTIFICATIONS
-            {
-                corto_id id1, id2, id3;
                 printf("%*s [silence] observable '%s' observer '%s' me '%s'\n",
                         indent * 3, "",
-                        corto_fullname(observable, id1),
-                        corto_fullname(observer, id2),
-                        corto_fullname(this, id3));
-            }
+                        corto_fullpath(NULL, observable),
+                        corto_fullpath(NULL, observer),
+                        corto_fullpath(NULL, this));
 #endif
+
             } else {
-                corto_id id1, id2, id3;
                 if (this) {
                     corto_seterr("observer '%s' ('%s') is not observing '%s'",
-                            corto_fullname(observer, id1),
-                            corto_fullname(this, id2),
-                            corto_fullname(observable, id3));
+                            corto_fullpath(NULL, observer),
+                            corto_fullpath(NULL, this),
+                            corto_fullpath(NULL, observable));
                     goto error;
                 } else {
                     corto_seterr("observer '%s' is not observing '%s'",
-                        corto_fullname(observer, id1),
-                        corto_fullname(observable, id2));
+                        corto_fullpath(NULL, observer),
+                        corto_fullpath(NULL, observable));
                     goto error;
                 }
             }
@@ -2809,29 +2671,29 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
                     oldChildArray = _o->onChildArray;
                     _o->onChildArray = corto_observersArrayNew(_o->onChild);
                 } else {
-                    corto_id id1, id2, id3;
                     if (this) {
                         corto_seterr("observer '%s' ('%s') is not observing '%s'",
-                                corto_fullname(observer, id1),
-                                corto_fullname(this, id2),
-                                corto_fullname(observable, id3));
+                            corto_fullpath(NULL, observer),
+                            corto_fullpath(NULL, this),
+                            corto_fullpath(NULL, observable));
                         goto error;
                     } else {
                         corto_seterr("observer '%s' is not observing '%s'",
-                            corto_fullname(observer, id1),
-                            corto_fullname(observable, id2));
+                            corto_fullpath(NULL, observer),
+                            corto_fullpath(NULL, observable));
                         goto error;
                     }
                 }
                 corto_rwmutexUnlock(&_o->childLock);
             } else {
-                corto_error(0, "corto::listen: observer subscribed on childs of non-scoped object");
+                corto_seterr(
+                    "corto::listen: observer subscribed on childs of non-scoped object");
                 goto error;
             }
         }
     } else {
-        corto_id id;
-        corto_error("object '%s' is not an observable", corto_fullname(observable, id));
+        corto_seterr("object '%s' is not an observable",
+            corto_fullpath(NULL, observable));
         goto error;
     }
 
@@ -2885,8 +2747,8 @@ corto_bool corto_listening(corto_object observable, corto_observer observer, cor
                     }
                 }
             } else {
-                corto_id id;
-                corto_error("object '%s' is not an observable", corto_fullname(observable, id));
+                corto_seterr("object '%s' is not an observable",
+                    corto_fullpath(NULL, observable));
                 goto error;
             }
         }
@@ -3012,16 +2874,14 @@ corto_int16 corto_updateBegin(corto_object o) {
         _wr = corto__objectWritable(CORTO_OFFSET(o, -sizeof(corto__object)));
         if (_wr) {
             if (corto_rwmutexWrite(&_wr->lock)) {
-                corto_id id;
                 corto_seterr("writelock on object '%s' failed",
-                    corto_fullname(o, id));
+                    corto_fullpath(NULL, o));
                 goto error;
             }
         } else {
-            corto_id id;
             corto_warning(
                 "calling updateBegin for non-writable object '%s' is useless",
-                corto_fullname(o, id));
+                corto_fullpath(NULL, o));
         }
     }
 
@@ -3039,8 +2899,8 @@ corto_int16 corto_updateTry(corto_object observable) {
             goto busy;
         }
     } else {
-        corto_id id;
-        corto_warning("calling updateTry for non-writable object '%s' is useless.", corto_fullname(observable, id));
+        corto_warning("calling updateTry for non-writable object '%s' is useless.",
+            corto_fullpath(NULL, observable));
     }
 
     return 0;
@@ -3075,8 +2935,8 @@ corto_int16 corto_updateCancel(corto_object observable) {
 
         corto_rwmutexUnlock(&_wr->lock);
     } else {
-        corto_id id;
-        corto_error("object '%s' is not an observable", corto_fullname(observable, id));
+        corto_seterr("object '%s' is not an observable",
+            corto_fullpath(NULL, observable));
         goto error;
     }
 
@@ -3205,24 +3065,10 @@ corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value
 }
 
 static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffer) {
-    char *ptr = buffer, ch;
-    if (from) {
-        corto_relname(from, o, buffer);
-    } else {
-        corto_fullname(o, buffer);
-    }
 
-    for (; (ch = *ptr); ptr++) {
-        if (ch == '/') {
-            *ptr = '_';
-        } else {
-            *ptr = ch;
-        }
-    }
+    corto_path(buffer, from, o, "_");
 
-    *ptr = '\0';
-
-    return ptr;
+    return &buffer[strlen(buffer)];
 }
 
 char* corto_manId(corto_object o, corto_id buffer) {
@@ -4003,10 +3849,11 @@ corto_string corto_signatureAdd(corto_string sig, corto_type type, int flags) {
 
     if (type) {
         if (!corto_checkAttr(type, CORTO_ATTR_SCOPED) ||
-           ((corto_parentof(type) != corto_o) &&
-           (corto_parentof(type) != corto_lang_o))) {
-            corto_fullname(type, id);
-        } else {
+            corto_isBuiltinPackage(type))
+        {
+            corto_fullpath(id, type);
+        } else
+        {
             strcpy(id, corto_nameof(type));
         }
     } else if (wildcard) {

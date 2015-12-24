@@ -71,8 +71,10 @@ static corto_bool corto_class_checkInterfaceCompatibility(corto_class this, cort
                 corto_setref(&vtable->buffer[i], m_class);
             }
         } else {
-            corto_id id, id2;
-            corto_seterr("class '%s' is missing implementation for function '%s'", corto_fullname(this, id), corto_fullname(m_interface, id2));
+            corto_seterr(
+                "class '%s' is missing implementation for function '%s'",
+                corto_fullpath(NULL, this),
+                corto_fullpath(NULL, m_interface));
             compatible = FALSE;
         }
     }
@@ -305,8 +307,9 @@ corto_eventMask _corto_class_eventMaskOf(corto_any this, corto_observer observer
     if (observers) {
         result = observers->buffer[observer->_template-1].mask;
     } else {
-        corto_id id, id2;
-        corto_error("failed to get observer for object '%s' of type '%s'", corto_fullname(me, id), corto_fullname(corto_typeof(me), id2));
+        corto_error("failed to get observer for object '%s' of type '%s'",
+            corto_fullpath(NULL, me),
+            corto_fullpath(NULL, corto_typeof(me)));
     }
 
     return result;
@@ -379,11 +382,10 @@ corto_void _corto_class_listen(corto_any this, corto_observer observer, corto_ev
         observers->buffer[observer->_template-1].mask = mask;
         observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
-        corto_id id, id2;
         corto_error("failed to set observable for observer '%s' of '%s' of type '%s' (%d)",
             corto_nameof(observer),
-            corto_fullname(this.value, id),
-            corto_fullname(corto_typeof(this.value), id2),
+            corto_fullpath(NULL, this.value),
+            corto_fullpath(NULL, corto_typeof(this.value)),
             corto_countof(this.value));
     }
 
@@ -400,8 +402,9 @@ corto_object _corto_class_observableOf(corto_any this, corto_observer observer) 
     if (observers) {
         result = observers->buffer[observer->_template-1].observable;
     } else {
-        corto_id id, id2;
-        corto_error("failed to get observer for object '%s' of type '%s'", corto_fullname(me, id), corto_fullname(corto_typeof(me), id2));
+        corto_error("failed to get observer for object '%s' of type '%s'",
+            corto_fullpath(NULL, me),
+            corto_fullpath(NULL, corto_typeof(me)));
     }
 
     return result;
@@ -424,8 +427,10 @@ corto_method _corto_class_resolveInterfaceMethod(corto_class this, corto_interfa
     }
 
     if (!v) {
-        corto_id id, id2;
-        corto_error("class::resolveInterfaceMethod: class '%s' does not implement interface '%s'", corto_fullname(this, id), corto_fullname(interface, id2));
+        corto_error(
+            "class::resolveInterfaceMethod: class '%s' does not implement interface '%s'",
+            corto_fullpath(NULL, this),
+            corto_fullpath(NULL, interface));
         goto error;
     }
 
@@ -444,10 +449,9 @@ corto_void _corto_class_setDispatcher(corto_any this, corto_observer observer, c
     if (observers) {
         observers->buffer[observer->_template-1].dispatcher = dispatcher;
     } else {
-        corto_id id, id2;
         corto_error("failed to set dispatcher for '%s' of type '%s'",
-            corto_fullname(this.value, id),
-            corto_fullname(corto_typeof(this.value), id2));
+            corto_fullpath(NULL, this.value),
+            corto_fullpath(NULL, corto_typeof(this.value)));
     }
 
 /* $end */
@@ -462,10 +466,9 @@ corto_void _corto_class_setMask(corto_any this, corto_observer observer, corto_e
     if (observers) {
         observers->buffer[observer->_template-1].mask = mask;
     } else {
-        corto_id id, id2;
         corto_error("failed to set mask for '%s' of type '%s'",
-            corto_fullname(this.value, id),
-            corto_fullname(corto_typeof(this.value), id2));
+            corto_fullpath(NULL, this.value),
+            corto_fullpath(NULL, corto_typeof(this.value)));
     }
 
 /* $end */
@@ -479,10 +482,9 @@ corto_void _corto_class_setObservable(corto_any this, corto_observer observer, c
     if (observers) {
         observers->buffer[observer->_template-1].observable = observable;
     } else {
-        corto_id id, id2;
         corto_error("failed to set observable for '%s' of type '%s'",
-            corto_fullname(this.value, id),
-            corto_fullname(corto_typeof(this.value), id2));
+            corto_fullpath(NULL, this.value),
+            corto_fullpath(NULL, corto_typeof(this.value)));
     }
 
 /* $end */

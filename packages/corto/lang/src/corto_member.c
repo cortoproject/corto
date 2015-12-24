@@ -15,8 +15,7 @@
 corto_int16 _corto_member_construct(corto_member this) {
 /* $begin(corto/lang/member/construct) */
     if (!this->type) {
-        corto_id id;
-        corto_seterr("member '%s' has no type", corto_fullname(this, id));
+        corto_seterr("member '%s' has no type", corto_fullpath(NULL, this));
         goto error;
     }
 
@@ -47,9 +46,9 @@ corto_int16 _corto_member_init(corto_member this) {
                 this->state = CORTO_DECLARED | CORTO_DEFINED;
             }
         } else {
-            corto_id id;
-            corto_seterr("invalid declaration of member '%s' in scope '%s', members can only be declared in scopes of composite types.",
-                    corto_nameof(this), corto_fullname(parent, id));
+            corto_seterr(
+              "invalid declaration of member '%s' in non-composite scope '%s'",
+              corto_nameof(this), corto_fullpath(NULL, parent));
             goto error;
         }
     }

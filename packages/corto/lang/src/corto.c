@@ -639,8 +639,9 @@ static void corto_defineType(corto_object o, corto_uint32 size) {
 
     /* Size validation */
     if (corto_type(o)->size != size) {
-        corto_id id;
-        corto_error("bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.", corto_fullname(o, id), corto_type(o)->size, size);
+        corto_error(
+          "bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.",
+          corto_fullpath(NULL, o), corto_type(o)->size, size);
     }
 }
 
@@ -745,11 +746,13 @@ int corto_start(void) {
     corto_initObject(root_o);
     corto_initObject(corto_o);
     corto_initObject(corto_lang_o);
+    corto_initObject(corto_core_o);
 
     /* Define builtin scopes */
     corto_defineObject(root_o);
     corto_defineObject(corto_o);
     corto_defineObject(corto_lang_o);
+    corto_defineObject(corto_core_o);
 
     /* Init objects */
     SSO_OP_TYPE(corto_initType);
@@ -898,6 +901,7 @@ int corto_stop(void) {
     SSO_OP_TYPE(corto_releaseType);
 
     /* Deinitialize root */
+    if (corto__freeSSO(corto_core_o)) goto error;
     if (corto__freeSSO(corto_lang_o)) goto error;
     if (corto__freeSSO(corto_o)) goto error;
     if (corto__freeSSO(root_o)) goto error;

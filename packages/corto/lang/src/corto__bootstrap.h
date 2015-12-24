@@ -302,76 +302,76 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_PACKAGE_O_SCOPE(parent, name, uri) corto_ssoo_package parent##_##name##__o = {CORTO_PACKAGE_V(parent, #name, uri)}
 
 /* type object */
-#define CORTO_TYPE_O(name, kind, reference) static sso_type name##__o = {CORTO_SSO_V(corto_lang, #name, type), CORTO_TYPE_V(name, kind, reference, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), VTABLE_V}
+#define CORTO_TYPE_O(parent, name, kind, reference) static sso_type name##__o = {CORTO_SSO_V(parent, #name, type), CORTO_TYPE_V(name, kind, reference, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), VTABLE_V}
 
 /* primitive object */
-#define CORTO_PRIMITIVE_O(name, kind, width) sso_primitive name##__o = {CORTO_SSO_V(corto_lang, #name, primitive), CORTO_PRIMITIVE_V(name, kind, width, CORTO_NODELEGATE), VTABLE_V}
+#define CORTO_PRIMITIVE_O(parent, name, kind, width) sso_primitive name##__o = {CORTO_SSO_V(parent, #name, primitive), CORTO_PRIMITIVE_V(name, kind, width, CORTO_NODELEGATE), VTABLE_V}
 
 /* binary object */
-#define CORTO_BINARY_O(name, width) sso_binary name##__o = {CORTO_SSO_V(corto_lang, #name, binary), {CORTO_PRIMITIVE_V(name, CORTO_BINARY, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
+#define CORTO_BINARY_O(parent, name, width) sso_binary name##__o = {CORTO_SSO_V(parent, #name, binary), {CORTO_PRIMITIVE_V(name, CORTO_BINARY, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
 
 /* boolean object */
-#define CORTO_BOOLEAN_O(name) sso_boolean name##__o = {CORTO_SSO_V(corto_lang, #name, boolean), {CORTO_PRIMITIVE_V(name, CORTO_BOOLEAN, CORTO_WIDTH_8, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
+#define CORTO_BOOLEAN_O(parent, name) sso_boolean name##__o = {CORTO_SSO_V(parent, #name, boolean), {CORTO_PRIMITIVE_V(name, CORTO_BOOLEAN, CORTO_WIDTH_8, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
 
 /* character object */
-#define CORTO_CHARACTER_O(name, width) sso_character name##__o = {CORTO_SSO_V(corto_lang, #name, character), {CORTO_PRIMITIVE_V(name, CORTO_CHARACTER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
+#define CORTO_CHARACTER_O(parent, name, width) sso_character name##__o = {CORTO_SSO_V(parent, #name, character), {CORTO_PRIMITIVE_V(name, CORTO_CHARACTER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
 
 /* int object */
-#define CORTO_INT_O(name, width, min, max, scopeType, scopeStateKind, DELEGATE) sso_int name##__o = {CORTO_SSO_V(corto_lang, #name, int), {CORTO_PRIMITIVE_V(name, CORTO_INTEGER, width, scopeType, scopeStateKind, DELEGATE), min, max}, VTABLE_V}
+#define CORTO_INT_O(parent, name, width, min, max, scopeType, scopeStateKind, DELEGATE) sso_int name##__o = {CORTO_SSO_V(parent, #name, int), {CORTO_PRIMITIVE_V(name, CORTO_INTEGER, width, scopeType, scopeStateKind, DELEGATE), min, max}, VTABLE_V}
 
 /* uint object */
-#define CORTO_UINT_O(name, width, min, max) sso_uint name##__o = {CORTO_SSO_V(corto_lang, #name, uint), {CORTO_PRIMITIVE_V(name, CORTO_UINTEGER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}, VTABLE_V}
+#define CORTO_UINT_O(parent, name, width, min, max) sso_uint name##__o = {CORTO_SSO_V(parent, #name, uint), {CORTO_PRIMITIVE_V(name, CORTO_UINTEGER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}, VTABLE_V}
 
 /* float object */
-#define CORTO_FLOAT_O(name, width, min, max) sso_float name##__o = {CORTO_SSO_V(corto_lang, #name, float), {CORTO_PRIMITIVE_V(name, CORTO_FLOAT, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}, VTABLE_V}
+#define CORTO_FLOAT_O(parent, name, width, min, max) sso_float name##__o = {CORTO_SSO_V(parent, #name, float), {CORTO_PRIMITIVE_V(name, CORTO_FLOAT, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}, VTABLE_V}
 
 /* text object */
-#define CORTO_TEXT_O(name, width, length) sso_text name##__o = {CORTO_SSO_V(corto_lang, #name, text), {CORTO_PRIMITIVE_V(name, CORTO_TEXT, CORTO_WIDTH_WORD, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), width, length}, VTABLE_V}
+#define CORTO_TEXT_O(parent, name, width, length) sso_text name##__o = {CORTO_SSO_V(parent, #name, text), {CORTO_PRIMITIVE_V(name, CORTO_TEXT, CORTO_WIDTH_WORD, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), width, length}, VTABLE_V}
 
 /* enum object */
-#define CORTO_ENUM_O(name) sso_enum name##__o = {CORTO_SSO_V(corto_lang, #name, enum), {CORTO_PRIMITIVE_V(name, CORTO_ENUM, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
+#define CORTO_ENUM_O(parent, name) sso_enum name##__o = {CORTO_SSO_V(parent, #name, enum), {CORTO_PRIMITIVE_V(name, CORTO_ENUM, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
 
 /* bitmask object */
-#define CORTO_BITMASK_O(name) sso_bitmask name##__o = {CORTO_SSO_V(corto_lang, #name, bitmask), {{CORTO_PRIMITIVE_V(name, CORTO_BITMASK, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
+#define CORTO_BITMASK_O(parent, name) sso_bitmask name##__o = {CORTO_SSO_V(parent, #name, bitmask), {{CORTO_PRIMITIVE_V(name, CORTO_BITMASK, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
 
 /* constant object */
 #define CORTO_CONSTANT_O(parent, name) sso_constant parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, constant), CORTO_##name, VTABLE_V}
 
 /* struct object */
-#define CORTO_STRUCT_O(name, scopeType, scopeStateKind, defaultType, defaultProcedureType) sso_struct name##__o = \
-    {CORTO_SSO_V(corto_lang, #name, struct), CORTO_STRUCT_NOBASE_V(name, CORTO_STRUCT, FALSE, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE), VTABLE_V}
+#define CORTO_STRUCT_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType) sso_struct name##__o = \
+    {CORTO_SSO_V(parent, #name, struct), CORTO_STRUCT_NOBASE_V(name, CORTO_STRUCT, FALSE, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE), VTABLE_V}
 
 /* interface object */
-#define CORTO_INTERFACE_O(name) sso_interface name##__o = \
-    {CORTO_SSO_V(corto_lang, #name, interface), CORTO_COMPOSITE_NOBASE_V(name, CORTO_INTERFACE, TRUE, NULL, 0, NULL, CORTO_TYPE_ID(method), CORTO_NODELEGATE), VTABLE_V}
+#define CORTO_INTERFACE_O(parent, name) sso_interface name##__o = \
+    {CORTO_SSO_V(parent, #name, interface), CORTO_COMPOSITE_NOBASE_V(name, CORTO_INTERFACE, TRUE, NULL, 0, NULL, CORTO_TYPE_ID(method), CORTO_NODELEGATE), VTABLE_V}
 
 /* class object */
-#define CORTO_CLASS_NOBASE_O(name, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE) sso_class name##__o = \
-    {CORTO_SSO_V(corto_lang, #name, class), {CORTO_STRUCT_NOBASE_V(name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
+#define CORTO_CLASS_NOBASE_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE) sso_class name##__o = \
+    {CORTO_SSO_V(parent, #name, class), {CORTO_STRUCT_NOBASE_V(name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
 
-#define CORTO_CLASS_O(name, base, baseAccess, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE) sso_class name##__o = \
-        {CORTO_SSO_V(corto_lang, #name, class), {CORTO_STRUCT_V(name, CORTO_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
+#define CORTO_CLASS_O(parent, name, base, baseAccess, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE) sso_class name##__o = \
+        {CORTO_SSO_V(parent, #name, class), {CORTO_STRUCT_V(name, CORTO_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
 
-#define CORTO_CLASS_IMPLEMENTS_O(name, scopeType, scopeStateKind, defaultType, defaultProcedureType, interface, DELEGATE) sso_class name##__o = \
-    {CORTO_SSO_V(corto_lang, #name, class), {CORTO_STRUCT_NOBASE_V(name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {1,{interface}}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
+#define CORTO_CLASS_IMPLEMENTS_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType, interface, DELEGATE) sso_class name##__o = \
+    {CORTO_SSO_V(parent, #name, class), {CORTO_STRUCT_NOBASE_V(name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {1,{interface}}, {0,NULL}, {0,NULL}, DELEGATE##_CLASS(name)}, VTABLE_V}
 
 /* array object */
-#define CORTO_ARRAY_O(name, elementType, size) sso_array name##__o = {CORTO_SSO_V(corto_lang, #name, array), {CORTO_COLLECTION_V(name, CORTO_ARRAY, elementType, size)}, VTABLE_V}
+#define CORTO_ARRAY_O(parent, name, elementType, size) sso_array name##__o = {CORTO_SSO_V(parent, #name, array), {CORTO_COLLECTION_V(name, CORTO_ARRAY, elementType, size)}, VTABLE_V}
 
 /* sequence object */
-#define CORTO_SEQUENCE_O(name, elementType, max) sso_sequence name##__o = {CORTO_SSO_V(corto_lang, #name, sequence), {CORTO_COLLECTION_V(name, CORTO_SEQUENCE, elementType, max)}, VTABLE_V}
+#define CORTO_SEQUENCE_O(parent, name, elementType, max) sso_sequence name##__o = {CORTO_SSO_V(parent, #name, sequence), {CORTO_COLLECTION_V(name, CORTO_SEQUENCE, elementType, max)}, VTABLE_V}
 
 /* list object */
-#define CORTO_LIST_O(name, elementType, max) sso_list name##__o = {CORTO_SSO_V(corto_lang, #name, list), {CORTO_COLLECTION_V(name, CORTO_LIST, elementType, max)}, VTABLE_V}
+#define CORTO_LIST_O(parent, name, elementType, max) sso_list name##__o = {CORTO_SSO_V(parent, #name, list), {CORTO_COLLECTION_V(name, CORTO_LIST, elementType, max)}, VTABLE_V}
 
 /* map object */
-#define CORTO_MAP_O(name, elementType, keyType, max) sso_map name##__o = {CORTO_SSO_V(corto_lang, #name, map), {CORTO_COLLECTION_V(name, CORTO_MAP, elementType, max), (corto_type)&keyType##__o.v}, VTABLE_V}
+#define CORTO_MAP_O(parent, name, elementType, keyType, max) sso_map name##__o = {CORTO_SSO_V(parent, #name, map), {CORTO_COLLECTION_V(name, CORTO_MAP, elementType, max), (corto_type)&keyType##__o.v}, VTABLE_V}
 
 /* procedure object */
-#define CORTO_PROCEDURE_O(name, kind, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_procedure name##__o = \
-        {CORTO_SSO_V(corto_lang, #name, procedure), {CORTO_STRUCT_V(name, CORTO_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
-#define CORTO_PROCEDURE_NOBASE_O(name, kind, scopeType, scopeStateKind, DELEGATE) sso_procedure name##__o = \
-        {CORTO_SSO_V(corto_lang, #name, procedure), {CORTO_STRUCT_NOBASE_V(name, CORTO_PROCEDURE, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
+#define CORTO_PROCEDURE_O(parent, name, kind, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_procedure name##__o = \
+        {CORTO_SSO_V(parent, #name, procedure), {CORTO_STRUCT_V(name, CORTO_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
+#define CORTO_PROCEDURE_NOBASE_O(parent, name, kind, scopeType, scopeStateKind, DELEGATE) sso_procedure name##__o = \
+        {CORTO_SSO_V(parent, #name, procedure), {CORTO_STRUCT_NOBASE_V(name, CORTO_PROCEDURE, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(name)}, VTABLE_V}
 
 /* function object */
 #define CORTO_FUNCTION_O(parent, name, args, returnType, impl) \
@@ -419,10 +419,10 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_REFERENCE_O(parent, name, type, access, state, weak) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, member), CORTO_MEMBER_V(type, access, state, weak), VTABLE_V}
 
 /* Delegate type */
-#define CORTO_DELEGATE_O(name, returnType) sso_delegate name##__o = \
-    {CORTO_SSO_V(corto_lang, #name, delegate), {CORTO_STRUCT_NOBASE_V(name, CORTO_DELEGATE, FALSE, NULL, CORTO_DECLARED|CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&returnType##__o.v, FALSE, CORTO_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
+#define CORTO_DELEGATE_O(parent, name, returnType) sso_delegate name##__o = \
+    {CORTO_SSO_V(parent, #name, delegate), {CORTO_STRUCT_NOBASE_V(name, CORTO_DELEGATE, FALSE, NULL, CORTO_DECLARED|CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&returnType##__o.v, FALSE, CORTO_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
 
-#define CORTO_ITERATOR_O(name, elementType) sso_iterator name##__o = {CORTO_SSO_V(corto_lang, #name, iterator), {CORTO_TYPE_V(name, CORTO_ITERATOR, FALSE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&elementType##__o.v}, VTABLE_V}
+#define CORTO_ITERATOR_O(parent, name, elementType) sso_iterator name##__o = {CORTO_SSO_V(parent, #name, iterator), {CORTO_TYPE_V(name, CORTO_ITERATOR, FALSE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&elementType##__o.v}, VTABLE_V}
 
 
 /* Forward declarations of classes */
@@ -539,52 +539,54 @@ corto_package root_o = CORTO_OFFSET(&root__o.o.o, sizeof(corto__object));
 /* /corto, /corto/lang */
 CORTO_PACKAGE_O(corto, "http://corto.io/doc/corto");
 CORTO_PACKAGE_O_SCOPE(corto, lang, "http://corto.io/doc/corto/lang");
+CORTO_PACKAGE_O_SCOPE(corto, core, "http://corto.io/doc/corto/core");
 
 corto_package corto_o = CORTO_OFFSET(&corto__o.o.o, sizeof(corto__object));
 corto_package corto_lang_o = CORTO_OFFSET(&corto_lang__o.o.o, sizeof(corto__object));
+corto_package corto_core_o = CORTO_OFFSET(&corto_core__o.o.o, sizeof(corto__object));
 
 /* Primitives */
-CORTO_BINARY_O(octet, CORTO_WIDTH_8);
-CORTO_BOOLEAN_O(bool);
-CORTO_CHARACTER_O(char, CORTO_WIDTH_8);
-CORTO_UINT_O(uint8, CORTO_WIDTH_8, 0, MAX_UINT8);
-CORTO_UINT_O(uint16, CORTO_WIDTH_16, 0, MAX_UINT16);
-CORTO_UINT_O(uint32, CORTO_WIDTH_32, 0, MAX_UINT32);
-CORTO_UINT_O(uint64, CORTO_WIDTH_64, 0, MAX_UINT64);
-CORTO_INT_O(int8, CORTO_WIDTH_8, MIN_INT8, MAX_INT8, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
-CORTO_INT_O(int16, CORTO_WIDTH_16, MIN_INT16, MAX_INT16, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
-CORTO_INT_O(int32, CORTO_WIDTH_32, MIN_INT32, MAX_INT32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
-CORTO_INT_O(int64, CORTO_WIDTH_64, MIN_INT64, MAX_INT64, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
-CORTO_FLOAT_O(float32, CORTO_WIDTH_32, 0, 0);
-CORTO_FLOAT_O(float64, CORTO_WIDTH_64, 0, 0);
-CORTO_TEXT_O(string, CORTO_WIDTH_8, 0);
-CORTO_BINARY_O(word, CORTO_WIDTH_WORD);
+CORTO_BINARY_O(corto_lang, octet, CORTO_WIDTH_8);
+CORTO_BOOLEAN_O(corto_lang, bool);
+CORTO_CHARACTER_O(corto_lang, char, CORTO_WIDTH_8);
+CORTO_UINT_O(corto_lang, uint8, CORTO_WIDTH_8, 0, MAX_UINT8);
+CORTO_UINT_O(corto_lang, uint16, CORTO_WIDTH_16, 0, MAX_UINT16);
+CORTO_UINT_O(corto_lang, uint32, CORTO_WIDTH_32, 0, MAX_UINT32);
+CORTO_UINT_O(corto_lang, uint64, CORTO_WIDTH_64, 0, MAX_UINT64);
+CORTO_INT_O(corto_lang, int8, CORTO_WIDTH_8, MIN_INT8, MAX_INT8, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
+CORTO_INT_O(corto_lang, int16, CORTO_WIDTH_16, MIN_INT16, MAX_INT16, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
+CORTO_INT_O(corto_lang, int32, CORTO_WIDTH_32, MIN_INT32, MAX_INT32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
+CORTO_INT_O(corto_lang, int64, CORTO_WIDTH_64, MIN_INT64, MAX_INT64, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE);
+CORTO_FLOAT_O(corto_lang, float32, CORTO_WIDTH_32, 0, 0);
+CORTO_FLOAT_O(corto_lang, float64, CORTO_WIDTH_64, 0, 0);
+CORTO_TEXT_O(corto_lang, string, CORTO_WIDTH_8, 0);
+CORTO_BINARY_O(corto_lang, word, CORTO_WIDTH_WORD);
 CORTO_FW_I(constant);
-CORTO_INT_O(constant, CORTO_WIDTH_32, 0, MAX_INT32, CORTO_TYPE_ID(enum), CORTO_DECLARED, CORTO_I);
+CORTO_INT_O(corto_lang, constant, CORTO_WIDTH_32, 0, MAX_INT32, CORTO_TYPE_ID(enum), CORTO_DECLARED, CORTO_I);
     CORTO_METHOD_O(constant, init, "()", int16, FALSE, corto_constant_init);
 
 /* Any type */
-CORTO_TYPE_O(any, CORTO_ANY, FALSE);
+CORTO_TYPE_O(corto_lang, any, CORTO_ANY, FALSE);
 
 /* Void type */
-CORTO_TYPE_O(void, CORTO_VOID, FALSE);
+CORTO_TYPE_O(corto_lang, void, CORTO_VOID, FALSE);
 
 /* Object type */
-CORTO_TYPE_O(object, CORTO_VOID, TRUE);
+CORTO_TYPE_O(corto_lang, object, CORTO_VOID, TRUE);
 
 /* Package type */
-CORTO_CLASS_NOBASE_O(package, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_NOBASE_O(corto_core, package, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(package, url, string, CORTO_GLOBAL);
 
 /* Enumerations */
-CORTO_ENUM_O(width);
+CORTO_ENUM_O(corto_lang, width);
     CORTO_CONSTANT_O(width, WIDTH_8);
     CORTO_CONSTANT_O(width, WIDTH_16);
     CORTO_CONSTANT_O(width, WIDTH_32);
     CORTO_CONSTANT_O(width, WIDTH_64);
     CORTO_CONSTANT_O(width, WIDTH_WORD);
 
-CORTO_ENUM_O(typeKind);
+CORTO_ENUM_O(corto_lang, typeKind);
     CORTO_CONSTANT_O(typeKind, VOID);
     CORTO_CONSTANT_O(typeKind, ANY);
     CORTO_CONSTANT_O(typeKind, PRIMITIVE);
@@ -592,7 +594,7 @@ CORTO_ENUM_O(typeKind);
     CORTO_CONSTANT_O(typeKind, COLLECTION);
     CORTO_CONSTANT_O(typeKind, ITERATOR);
 
-CORTO_ENUM_O(primitiveKind);
+CORTO_ENUM_O(corto_lang, primitiveKind);
     CORTO_CONSTANT_O(primitiveKind, BINARY);
     CORTO_CONSTANT_O(primitiveKind, BOOLEAN);
     CORTO_CONSTANT_O(primitiveKind, CHARACTER);
@@ -603,32 +605,32 @@ CORTO_ENUM_O(primitiveKind);
     CORTO_CONSTANT_O(primitiveKind, ENUM);
     CORTO_CONSTANT_O(primitiveKind, BITMASK);
 
-CORTO_ENUM_O(compositeKind);
+CORTO_ENUM_O(corto_lang, compositeKind);
     CORTO_CONSTANT_O(compositeKind, STRUCT);
     CORTO_CONSTANT_O(compositeKind, INTERFACE);
     CORTO_CONSTANT_O(compositeKind, CLASS);
     CORTO_CONSTANT_O(compositeKind, DELEGATE);
     CORTO_CONSTANT_O(compositeKind, PROCEDURE);
 
-CORTO_ENUM_O(collectionKind);
+CORTO_ENUM_O(corto_lang, collectionKind);
     CORTO_CONSTANT_O(collectionKind, ARRAY);
     CORTO_CONSTANT_O(collectionKind, SEQUENCE);
     CORTO_CONSTANT_O(collectionKind, LIST);
     CORTO_CONSTANT_O(collectionKind, MAP);
 
-CORTO_ENUM_O(procedureKind);
+CORTO_ENUM_O(corto_lang, procedureKind);
     CORTO_CONSTANT_O(procedureKind, FUNCTION);
     CORTO_CONSTANT_O(procedureKind, METHOD);
     CORTO_CONSTANT_O(procedureKind, OBSERVER);
     CORTO_CONSTANT_O(procedureKind, METAPROCEDURE);
 
-CORTO_ENUM_O(equalityKind);
+CORTO_ENUM_O(corto_core, equalityKind);
     CORTO_CONSTANT_O(equalityKind, EQ);
     CORTO_CONSTANT_O(equalityKind, LT);
     CORTO_CONSTANT_O(equalityKind, GT);
     CORTO_CONSTANT_O(equalityKind, NEQ);
 
-CORTO_ENUM_O(operatorKind);
+CORTO_ENUM_O(corto_core, operatorKind);
     CORTO_CONSTANT_O(operatorKind, ASSIGN);
     CORTO_CONSTANT_O(operatorKind, ASSIGN_ADD);
     CORTO_CONSTANT_O(operatorKind, ASSIGN_SUB);
@@ -663,20 +665,20 @@ CORTO_ENUM_O(operatorKind);
     CORTO_CONSTANT_O(operatorKind, SHIFT_RIGHT);
     CORTO_CONSTANT_O(operatorKind, REF);
 
-CORTO_BITMASK_O(state);
+CORTO_BITMASK_O(corto_core, state);
     CORTO_CONSTANT_O(state, VALID);
     CORTO_CONSTANT_O(state, DECLARED);
     CORTO_CONSTANT_O(state, DEFINED);
     CORTO_CONSTANT_O(state, DESTRUCTED);
 
-CORTO_BITMASK_O(attr);
+CORTO_BITMASK_O(corto_core, attr);
     CORTO_CONSTANT_O(attr, ATTR_SCOPED);
     CORTO_CONSTANT_O(attr, ATTR_WRITABLE);
     CORTO_CONSTANT_O(attr, ATTR_OBSERVABLE);
     CORTO_CONSTANT_O(attr, ATTR_PERSISTENT);
     CORTO_CONSTANT_O(attr, ATTR_DEFAULT);
 
-CORTO_BITMASK_O(eventMask);
+CORTO_BITMASK_O(corto_core, eventMask);
     CORTO_CONSTANT_O(eventMask, ON_DECLARE);
     CORTO_CONSTANT_O(eventMask, ON_DEFINE);
     CORTO_CONSTANT_O(eventMask, ON_DELETE);
@@ -688,7 +690,7 @@ CORTO_BITMASK_O(eventMask);
     CORTO_CONSTANT_O(eventMask, ON_VALUE);
     CORTO_CONSTANT_O(eventMask, ON_METAVALUE);
 
-CORTO_BITMASK_O(modifier);
+CORTO_BITMASK_O(corto_lang, modifier);
     CORTO_CONSTANT_O(modifier, GLOBAL);
     CORTO_CONSTANT_O(modifier, LOCAL);
     CORTO_CONSTANT_O(modifier, PRIVATE);
@@ -697,30 +699,30 @@ CORTO_BITMASK_O(modifier);
     CORTO_CONSTANT_O(modifier, HIDDEN);
 
 /* Collections */
-CORTO_SEQUENCE_O(objectseq, object, 0);
-CORTO_SEQUENCE_O(interfaceseq, interface, 0);
-CORTO_SEQUENCE_O(memberseq, member, 0);
-CORTO_SEQUENCE_O(parameterseq, parameter, 0);
-CORTO_SEQUENCE_O(observerseq, observer, 0);
-CORTO_SEQUENCE_O(vtable, function, 0);
-CORTO_SEQUENCE_O(interfaceVectorseq, interfaceVector, 0);
-CORTO_SEQUENCE_O(octetseq, octet, 0);
-CORTO_LIST_O(resultList, result, 0);
+CORTO_SEQUENCE_O(corto_lang, objectseq, object, 0);
+CORTO_SEQUENCE_O(corto_lang, interfaceseq, interface, 0);
+CORTO_SEQUENCE_O(corto_lang, memberseq, member, 0);
+CORTO_SEQUENCE_O(corto_lang, parameterseq, parameter, 0);
+CORTO_SEQUENCE_O(corto_lang, observerseq, observer, 0);
+CORTO_SEQUENCE_O(corto_lang, vtable, function, 0);
+CORTO_SEQUENCE_O(corto_lang, interfaceVectorseq, interfaceVector, 0);
+CORTO_SEQUENCE_O(corto_lang, octetseq, octet, 0);
+CORTO_LIST_O(corto_core, resultList, result, 0);
 
 /* Delegate types */
-CORTO_DELEGATE_O(initAction, int16);
-CORTO_DELEGATE_O(destructAction, void);
-CORTO_DELEGATE_O(notifyAction, void);
-CORTO_DELEGATE_O(invokeAction, void);
-CORTO_DELEGATE_O(resolveAction, void);
-CORTO_DELEGATE_O(requestAction, resultIter);
+CORTO_DELEGATE_O(corto_lang, initAction, int16);
+CORTO_DELEGATE_O(corto_lang, destructAction, void);
+CORTO_DELEGATE_O(corto_core, notifyAction, void);
+CORTO_DELEGATE_O(corto_core, invokeAction, void);
+CORTO_DELEGATE_O(corto_core, resolveAction, void);
+CORTO_DELEGATE_O(corto_core, requestAction, resultIter);
 
 /* Iterator types */
-CORTO_ITERATOR_O(resultIter, result);
+CORTO_ITERATOR_O(corto_core, resultIter, result);
 
 /* /corto/lang/type */
 CORTO_FW_ICD(type);
-CORTO_CLASS_NOBASE_O(type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
+CORTO_CLASS_NOBASE_O(corto_lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
     CORTO_MEMBER_O(type, kind, typeKind, CORTO_READONLY | CORTO_LOCAL);
     CORTO_MEMBER_O(type, reference, bool, CORTO_READONLY | CORTO_LOCAL);
     CORTO_MEMBER_O(type, hasResources, bool, CORTO_PRIVATE | CORTO_LOCAL);
@@ -762,7 +764,7 @@ CORTO_CLASS_NOBASE_O(type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, COR
 
 /* /corto/lang/primitive */
 CORTO_FW_IC(primitive);
-CORTO_CLASS_O(primitive, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(corto_lang, primitive, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_MEMBER_O(primitive, kind, primitiveKind, CORTO_LOCAL|CORTO_READONLY);
     CORTO_MEMBER_O(primitive, width, width, CORTO_GLOBAL);
     CORTO_MEMBER_O(primitive, convertId, uint8, CORTO_LOCAL | CORTO_PRIVATE);
@@ -775,7 +777,7 @@ CORTO_CLASS_O(primitive, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARE
 
 /* /corto/lang/interface */
 CORTO_FW_ICD(interface);
-CORTO_CLASS_O(interface, type, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
+CORTO_CLASS_O(corto_lang, interface, type, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
     CORTO_MEMBER_O(interface, kind, compositeKind, CORTO_LOCAL|CORTO_READONLY);
     CORTO_MEMBER_O(interface, nextMemberId, uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(interface, members, memberseq, CORTO_LOCAL | CORTO_PRIVATE);
@@ -798,7 +800,7 @@ CORTO_CLASS_O(interface, type, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINE
 
 /* /corto/lang/collection */
 CORTO_FW_I(collection);
-CORTO_CLASS_O(collection, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, collection, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(collection, kind, collectionKind, CORTO_LOCAL|CORTO_READONLY);
     CORTO_REFERENCE_O(collection, elementType, type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(collection, max, uint32, CORTO_GLOBAL);
@@ -810,7 +812,7 @@ CORTO_CLASS_O(collection, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLAR
 
 /* /corto/lang/iterator */
 CORTO_FW_I(iterator);
-CORTO_CLASS_O(iterator, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, iterator, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_REFERENCE_O(iterator, elementType, type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
     CORTO_METHOD_O(iterator, init, "()", int16, FALSE, corto_iterator_init);
     CORTO_METHOD_O(iterator, compatible, "(type type)", bool, TRUE, corto_iterator_compatible_v);
@@ -818,50 +820,50 @@ CORTO_CLASS_O(iterator, type, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED
 
 /* /corto/lang/binary */
 CORTO_FW_I(binary);
-CORTO_CLASS_O(binary, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, binary, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_METHOD_O(binary, init, "()", int16, FALSE, corto_binary_init);
 
 /* /corto/lang/boolean */
 CORTO_FW_I(boolean);
-CORTO_CLASS_O(boolean, primitive, CORTO_GLOBAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, boolean, primitive, CORTO_GLOBAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_METHOD_O(boolean, init, "()", int16, FALSE, corto_boolean_init);
 
 /* /corto/lang/character */
 CORTO_FW_I(character);
-CORTO_CLASS_O(character, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, character, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_METHOD_O(character, init, "()", int16, FALSE, corto_character_init);
 
 /* /corto/lang/int */
 CORTO_FW_I(int);
-CORTO_CLASS_O(int, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, int, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(int, min, int64, CORTO_GLOBAL);
     CORTO_MEMBER_O(int, max, int64, CORTO_GLOBAL);
     CORTO_METHOD_O(int, init, "()", int16, FALSE, corto_int_init);
 
 /* /corto/lang/uint */
 CORTO_FW_I(uint);
-CORTO_CLASS_O(uint, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, uint, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(uint, min, uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(uint, max, uint64, CORTO_GLOBAL);
     CORTO_METHOD_O(uint, init, "()", int16, FALSE, corto_uint_init);
 
 /* /corto/lang/float */
 CORTO_FW_I(float);
-CORTO_CLASS_O(float, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, float, primitive, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(float, min, float64, CORTO_GLOBAL);
     CORTO_MEMBER_O(float, max, float64, CORTO_GLOBAL);
     CORTO_METHOD_O(float, init, "()", int16, FALSE, corto_float_init);
 
 /* /corto/lang/text */
 CORTO_FW_I(text);
-CORTO_CLASS_O(text, primitive, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, text, primitive, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(text, charWidth, width, CORTO_GLOBAL);
     CORTO_MEMBER_O(text, length, uint64, CORTO_GLOBAL);
     CORTO_METHOD_O(text, init, "()", int16, FALSE, corto_text_init);
 
 /* /corto/lang/enum */
 CORTO_FW_ICD(enum);
-CORTO_CLASS_O(enum, primitive, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(constant), NULL, CORTO_ICD);
+CORTO_CLASS_O(corto_lang, enum, primitive, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(constant), NULL, CORTO_ICD);
     CORTO_MEMBER_O(enum, constants, objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(enum, init, "()", int16, FALSE, corto_enum_init);
     CORTO_METHOD_O(enum, construct, "()", int16, FALSE, corto_enum_construct);
@@ -870,12 +872,12 @@ CORTO_CLASS_O(enum, primitive, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARE
 
 /* /corto/lang/bitmask */
 CORTO_FW_I(bitmask);
-CORTO_CLASS_O(bitmask, enum, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(constant), NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, bitmask, enum, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(constant), NULL, CORTO_I);
     CORTO_METHOD_O(bitmask, init, "()", int16, FALSE, corto_bitmask_init);
 
 /* /corto/lang/struct */
 CORTO_FW_IC(struct);
-CORTO_CLASS_O(struct, interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_IC);
+CORTO_CLASS_O(corto_lang, struct, interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_IC);
     CORTO_ALIAS_O (struct, base, interface_base, CORTO_GLOBAL);
     CORTO_MEMBER_O(struct, baseAccess, modifier, CORTO_GLOBAL);
     CORTO_ALIAS_O (struct, parentType, interface_parentType, CORTO_HIDDEN);
@@ -889,13 +891,13 @@ CORTO_CLASS_O(struct, interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFI
     CORTO_METHOD_O(struct, construct, "()", int16, FALSE, corto_struct_construct);
 
 /* /corto/lang/interfaceVector */
-CORTO_STRUCT_O(interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+CORTO_STRUCT_O(corto_lang, interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(interfaceVector, interface, interface, CORTO_GLOBAL);
     CORTO_MEMBER_O(interfaceVector, vector, vtable, CORTO_GLOBAL);
 
 /* /corto/lang/class */
 CORTO_FW_ICD(class);
-CORTO_CLASS_O(class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
+CORTO_CLASS_O(corto_lang, class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_ICD);
     CORTO_ALIAS_O (class, base, struct_base, CORTO_GLOBAL);
     CORTO_ALIAS_O (class, baseAccess, struct_baseAccess, CORTO_GLOBAL);
     CORTO_MEMBER_O(class, implements, interfaceseq, CORTO_GLOBAL);
@@ -923,21 +925,13 @@ CORTO_CLASS_O(class, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED,
     CORTO_METAPROCEDURE_O(class, eventMaskOf, "(observer observer)", eventMask, FALSE, corto_class_eventMaskOf);
 
 /* /corto/lang/delegatedata */
-CORTO_STRUCT_O(delegatedata, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+CORTO_STRUCT_O(corto_lang, delegatedata, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(delegatedata, instance, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(delegatedata, procedure, function, CORTO_GLOBAL);
 
-/* /corto/lang/result */
-CORTO_STRUCT_O(result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_MEMBER_O(result, name, string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(result, value, word, CORTO_GLOBAL);
-    CORTO_METHOD_O(result, getText, "()", string, FALSE, corto_result_getText);
-
 /* /corto/lang/delegate */
 CORTO_FW_I(delegate);
-CORTO_CLASS_O(delegate, struct, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_I);
+CORTO_CLASS_O(corto_lang, delegate, struct, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(member), CORTO_TYPE_ID(method), CORTO_I);
     CORTO_METHOD_O(delegate, init, "()", int16, FALSE, corto_delegate_init);
     CORTO_REFERENCE_O(delegate, returnType, type, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(delegate, returnsReference, bool, CORTO_GLOBAL);
@@ -949,7 +943,7 @@ CORTO_CLASS_O(delegate, struct, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEF
 
 /* /corto/lang/procedure */
 CORTO_FW_I(procedure);
-CORTO_CLASS_O(procedure, struct, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, procedure, struct, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(procedure, kind, procedureKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(procedure, bind, initAction, CORTO_LOCAL|CORTO_READONLY);
     CORTO_METHOD_O(procedure, init, "()", int16, FALSE, corto_procedure_init);
@@ -957,7 +951,7 @@ CORTO_CLASS_O(procedure, struct, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFI
 
 /* /corto/lang/array */
 CORTO_FW_ICD(array);
-CORTO_CLASS_O(array, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
+CORTO_CLASS_O(corto_lang, array, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
     CORTO_REFERENCE_O(array, elementType, type, CORTO_GLOBAL|CORTO_PRIVATE, CORTO_DEFINED, FALSE);
     CORTO_METHOD_O(array, init, "()", int16, FALSE, corto_array_init);
     CORTO_METHOD_O(array, construct, "()", int16, FALSE, corto_array_construct);
@@ -965,14 +959,14 @@ CORTO_CLASS_O(array, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFI
 
 /* /corto/lang/sequence */
 CORTO_FW_IC(sequence);
-CORTO_CLASS_O(sequence, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(corto_lang, sequence, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_METHOD_O(sequence, init, "()", int16, FALSE, corto_sequence_init);
     CORTO_METHOD_O(sequence, construct, "()", int16, FALSE, corto_sequence_construct);
     CORTO_METAPROCEDURE_O(sequence, size, "(uint32 size)", void, FALSE, corto_sequence_size);
 
 /* /corto/lang/list */
 CORTO_FW_IC(list);
-CORTO_CLASS_O(list, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(corto_lang, list, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_METHOD_O(list, init, "()", int16, FALSE, corto_list_init);
     CORTO_METHOD_O(list, construct, "()", int16, FALSE, corto_list_construct);
     CORTO_METAPROCEDURE_O(list, insert, "(any element)", void, FALSE, corto_list_insert_any);
@@ -984,7 +978,7 @@ CORTO_CLASS_O(list, collection, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFIN
 
 /* /corto/lang/map */
 CORTO_FW_IC(map);
-CORTO_CLASS_O(map, collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(corto_lang, map, collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     /* Duplicate members for a more convenient order in the initializer */
     CORTO_REFERENCE_O(map, elementType, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);
     CORTO_REFERENCE_O(map, keyType, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);
@@ -994,7 +988,7 @@ CORTO_CLASS_O(map, collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CORTO_DEFINED
 
 /* /corto/lang/function */
 CORTO_FW_IB(function);
-CORTO_PROCEDURE_NOBASE_O(function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+CORTO_PROCEDURE_NOBASE_O(corto_lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_REFERENCE_O(function, returnType, type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(function, returnsReference, bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(function, overloaded, bool, CORTO_LOCAL | CORTO_READONLY);
@@ -1010,18 +1004,26 @@ CORTO_PROCEDURE_NOBASE_O(function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_
     CORTO_FUNCTION_O(function, unbind, "(function object)", void, corto_function_unbind);
     CORTO_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterseq, corto_function_stringToParameterSeq);
 
+/* /corto/lang/result */
+CORTO_STRUCT_O(corto_core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(result, name, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, value, word, CORTO_GLOBAL);
+    CORTO_METHOD_O(result, getText, "()", string, FALSE, corto_result_getText);
+
 /* /corto/lang/dispatcher */
-CORTO_INTERFACE_O(dispatcher);
+CORTO_INTERFACE_O(corto_core, dispatcher);
     CORTO_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
 
 /* /corto/lang/query */
-CORTO_CLASS_NOBASE_O(query, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_NOBASE_O(corto_core, query, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(query, from, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(query, mask, eventMask, CORTO_GLOBAL);
 
 /* /corto/lang/replicator */
 CORTO_FW_CD(replicator);
-CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_MEMBER_O(replicator, mount, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, query, query, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, contentType, string, CORTO_GLOBAL);
@@ -1042,14 +1044,14 @@ CORTO_CLASS_NOBASE_O(replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_OBSERVER_O(replicator, on_delete, corto_replicator_on_delete);
 
 /* /corto/lang/event */
-CORTO_CLASS_NOBASE_O(event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_NOBASE_O(corto_core, event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(event, kind, uint16, CORTO_GLOBAL);
     CORTO_MEMBER_O(event, handled, bool, CORTO_LOCAL | CORTO_READONLY);
     CORTO_METHOD_O(event, handle, "()", void, TRUE, corto_event_handle_v);
     CORTO_FUNCTION_O(event, uniqueKind, "()", int16, corto_event_uniqueKind);
 
 /* /corto/lang/observableEvent */
-CORTO_CLASS_O(observableEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_O(corto_core, observableEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_REFERENCE_O(observableEvent, observer, observer, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(observableEvent, me, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(observableEvent, source, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
@@ -1057,7 +1059,7 @@ CORTO_CLASS_O(observableEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | COR
     CORTO_METHOD_O(observableEvent, handle, "()", void, TRUE, corto_observableEvent_handle_v);
 
 /* /corto/lang/invokeEvent */
-CORTO_CLASS_O(invokeEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_O(corto_core, invokeEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_REFERENCE_O(invokeEvent, replicator, replicator, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(invokeEvent, instance, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(invokeEvent, function, function, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
@@ -1066,18 +1068,18 @@ CORTO_CLASS_O(invokeEvent, event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_D
 
 /* /corto/lang/method */
 CORTO_FW_IB(method);
-CORTO_PROCEDURE_O(method, CORTO_METHOD, function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_IC);
+CORTO_PROCEDURE_O(corto_lang, method, CORTO_METHOD, function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_IC);
     CORTO_MEMBER_O(method, virtual, bool, CORTO_GLOBAL);
     CORTO_METHOD_O(method, init, "()", int16, FALSE, corto_method_init);
     CORTO_METHOD_O(method, bind, "()", int16, FALSE, corto_method_bind);
 
 CORTO_FW_I(virtual);
-CORTO_PROCEDURE_O(virtual, CORTO_METHOD, method, CORTO_GLOBAL, CORTO_TYPE_ID(interface), CORTO_DECLARED, CORTO_I);
+CORTO_PROCEDURE_O(corto_lang, virtual, CORTO_METHOD, method, CORTO_GLOBAL, CORTO_TYPE_ID(interface), CORTO_DECLARED, CORTO_I);
     CORTO_METHOD_O(virtual, init, "()", int16, FALSE, corto_virtual_init);
 
 /* /corto/lang/observer */
 CORTO_FW_IB(observer);
-CORTO_PROCEDURE_O(observer, CORTO_OBSERVER, function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+CORTO_PROCEDURE_O(corto_core, observer, CORTO_OBSERVER, function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_MEMBER_O(observer, mask, eventMask, CORTO_GLOBAL);
     CORTO_REFERENCE_O(observer, observable, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(observer, template, uint32, CORTO_GLOBAL|CORTO_READONLY);
@@ -1094,13 +1096,13 @@ CORTO_PROCEDURE_O(observer, CORTO_OBSERVER, function, CORTO_LOCAL | CORTO_READON
 
 /* /corto/lang/metaprocedure */
 CORTO_FW_B(metaprocedure);
-CORTO_PROCEDURE_O(metaprocedure, CORTO_METAPROCEDURE, function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_B);
+CORTO_PROCEDURE_O(corto_lang, metaprocedure, CORTO_METAPROCEDURE, function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_B);
     CORTO_METHOD_O(metaprocedure, bind, "()", int16, FALSE, corto_metaprocedure_bind);
     CORTO_MEMBER_O(metaprocedure, referenceOnly, bool, CORTO_GLOBAL);
 
 /* /corto/lang/member */
 CORTO_FW_IC(member);
-CORTO_CLASS_NOBASE_O(member, CORTO_TYPE_ID(interface), CORTO_DECLARED, NULL, NULL, CORTO_IC);
+CORTO_CLASS_NOBASE_O(corto_lang, member, CORTO_TYPE_ID(interface), CORTO_DECLARED, NULL, NULL, CORTO_IC);
     CORTO_REFERENCE_O(member, type, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);
     CORTO_MEMBER_O(member, modifiers, modifier, CORTO_GLOBAL);
     CORTO_MEMBER_O(member, state, state, CORTO_HIDDEN);
@@ -1112,13 +1114,13 @@ CORTO_CLASS_NOBASE_O(member, CORTO_TYPE_ID(interface), CORTO_DECLARED, NULL, NUL
 
 /* /corto/lang/alias */
 CORTO_FW_IC(alias);
-CORTO_CLASS_O(alias, member, CORTO_HIDDEN, CORTO_TYPE_ID(struct), CORTO_DECLARED, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(corto_lang, alias, member, CORTO_HIDDEN, CORTO_TYPE_ID(struct), CORTO_DECLARED, NULL, NULL, CORTO_IC);
     CORTO_REFERENCE_O(alias, member, member, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
     CORTO_METHOD_O(alias, init, "()", int16, FALSE, corto_alias_init);
     CORTO_METHOD_O(alias, construct, "()", int16, FALSE, corto_alias_construct);
 
 /* /corto/lang/parameter */
-CORTO_STRUCT_O(parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+CORTO_STRUCT_O(corto_lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(parameter, name, string, CORTO_GLOBAL);
     CORTO_REFERENCE_O(parameter, type, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);
     CORTO_MEMBER_O(parameter, passByReference, bool, CORTO_GLOBAL);

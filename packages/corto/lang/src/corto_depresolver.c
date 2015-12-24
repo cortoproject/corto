@@ -405,7 +405,7 @@ void corto_depresolver_depend(corto_depresolver this, void* o, corto_uint8 kind,
 }
 
 void corto_depresolver_insert(corto_depresolver this, void *item) {
-    g_itemLookup(item, this);   
+    g_itemLookup(item, this);
 }
 
 int corto_depresolver_walk(corto_depresolver this) {
@@ -443,12 +443,12 @@ int corto_depresolver_walk(corto_depresolver this) {
     while((item = corto_llTakeFirst(this->items))) {
         if (!item->defined) {
             if (!item->declared) {
-                corto_id id;
-                corto_warning("not declared/defined: '%s'", corto_fullname(item->o, id));
+                corto_warning("not declared/defined: '%s'",
+                    corto_fullpath(NULL, item->o));
                 unresolved++;
             } else if (!item->defined){
-                corto_id id;
-                corto_warning("not defined: '%s'", corto_fullname(item->o, id));
+                corto_warning("not defined: '%s'",
+                    corto_fullpath(NULL, item->o));
                 unresolved++;
             }
         }
@@ -471,4 +471,3 @@ int corto_depresolver_walk(corto_depresolver this) {
 error:
     return -1;
 }
-

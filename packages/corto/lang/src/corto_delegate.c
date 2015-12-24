@@ -27,13 +27,15 @@ corto_int16 _corto_delegate_bind(corto_function object) {
                     corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
                 }
                 /* Bind procedure */
-                corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);    
+                corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
             } else {
                 /* If there is a member that corresponds to a delegate but has a non matching
                  * signature, always report error */
-                corto_id id1, id2;
-                corto_error("member '%s' of delegate type '%s' does not match signature of '%s'",
-                    corto_nameof(m), corto_fullname(m->type, id1), corto_fullname(object, id2));
+                corto_seterr(
+                    "member '%s' of delegate type '%s' does not match signature of '%s'",
+                    corto_nameof(m),
+                    corto_fullpath(NULL, m->type),
+                    corto_fullpath(NULL, object));
                 goto error;
             }
         }
@@ -78,7 +80,7 @@ corto_bool _corto_delegate_compatible_v(corto_delegate this, corto_type type) {
             if(this->parameters.buffer[i].passByReference != corto_delegate(type)->parameters.buffer[i].passByReference) {
                 result = FALSE;
             }
-        }   
+        }
     } else if ((type->kind == CORTO_COMPOSITE) && (corto_interface(type)->kind == CORTO_PROCEDURE)) {
         result = TRUE;
     }
@@ -109,9 +111,9 @@ error:
 
 /* $header(corto/lang/delegate/instanceof) */
 corto_bool corto_delegate_matchParameter(
-    corto_type t1, 
-    corto_bool isRef1, 
-    corto_type t2, 
+    corto_type t1,
+    corto_bool isRef1,
+    corto_type t2,
     corto_bool isRef2) {
 
     if ((t1 != t2) || (isRef1 && !isRef2)) {
@@ -149,7 +151,7 @@ corto_bool _corto_delegate_instanceof(corto_delegate this, corto_object object) 
             corto_parameter *p1, *p2;
             p1 = &this->parameters.buffer[i];
             p2 = &call->parameters.buffer[i];
-            
+
             if (!corto_delegate_matchParameter(
                 p1->type,
                 p1->passByReference,

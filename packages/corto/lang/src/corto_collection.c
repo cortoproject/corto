@@ -128,8 +128,9 @@ void corto_clear(corto_collection this, corto_void* collection) {
        break;
    }
    default: {
-       corto_id id;
-       corto_error("the clear operation is only valid for sequences, lists and maps (got %s)", corto_fullname(this, id));
+       corto_error(
+         "the clear operation is only valid for sequences, lists and maps (got %s)",
+         corto_fullpath(NULL, this));
        break;
    }
    }

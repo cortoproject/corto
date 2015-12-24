@@ -440,7 +440,7 @@ static int cxsh_show(char* object) {
                       NORMAL);
                 }
                 if (o != root_o) {
-                    char *parentPtr = corto_fullname(corto_parentof(o), id);
+                    char *parentPtr = corto_fullpath(id, corto_parentof(o));
                     if (strcmp(parentPtr, "/")) {
                         parentPtr += 1;
                     }
@@ -452,13 +452,12 @@ static int cxsh_show(char* object) {
             }
             if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
                 corto_object owner = corto_ownerof(o);
-                corto_id ownerId;
 
                 if (corto_checkState(o, CORTO_DEFINED)) {
                     printf("%sowner:%s        %s%s\n",
                         INTERFACE_COLOR,
                         OBJECT_COLOR,
-                        owner ? corto_fullname(owner, ownerId) : "<this>",
+                        owner ? corto_fullpath(NULL, owner) : "<this>",
                         NORMAL);
                 }
             }
@@ -468,7 +467,8 @@ static int cxsh_show(char* object) {
                 printf("%sstate:        %s%s\n", RED, cxsh_stateStr(o, state), NORMAL);
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
-            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR, corto_fullname(corto_valueType(&result), id) + 1, NORMAL);
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR,
+                corto_fullpath(NULL, corto_valueType(&result)) + 1, NORMAL);
         }
 
         /* Initialize serializer userData */

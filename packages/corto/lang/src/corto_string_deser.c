@@ -220,8 +220,8 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
     /* Check if type is composite or collection */
     kind = info->type->kind;
     if ((kind != CORTO_COMPOSITE) && (kind != CORTO_COLLECTION)) {
-        corto_id id;
-        corto_seterr("'{' unexpected for type '%s'", corto_fullname(info->type, id));
+        corto_seterr("'{' unexpected for type '%s'",
+            corto_fullpath(NULL, info->type));
         goto error;
     }
 
@@ -378,8 +378,8 @@ static corto_int16 corto_string_deserParseValue(
             corto_setref(offset, o);
             if (o) corto_release(o);
         } else {
-            corto_id id;
-            corto_seterr("unresolved reference to '%s' for member '%s'", value, corto_fullname(info->m, id));
+            corto_seterr("unresolved reference to '%s' for member '%s'", value,
+                corto_fullpath(NULL, info->m));
             goto error;
         }
     } else
@@ -491,8 +491,7 @@ static corto_string corto_string_parseAnonymous(
         }
 
         if (!corto_instanceof(corto_type_o, type)) {
-            corto_id id;
-            corto_seterr("'%s' is not a type", corto_fullname(type, id));
+            corto_seterr("'%s' is not a type", corto_fullpath(NULL, type));
             goto error;
         }
 
@@ -758,10 +757,10 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
                 type = corto_resolve(NULL, buffer);
                 if (type) {
                     if (data->type && (type != data->type)) {
-                        corto_id id1, id2;
-                        corto_seterr("type of object ('%s') does not match string ('%s')",
-                            corto_fullname(data->type, id1),
-                            corto_fullname(type, id2));
+                        corto_seterr(
+                          "type of object ('%s') does not match string ('%s')",
+                          corto_fullpath(NULL, data->type),
+                          corto_fullpath(NULL, type));
                         corto_release(type);
                         goto error;
                     }

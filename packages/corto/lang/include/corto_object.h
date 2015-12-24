@@ -63,12 +63,14 @@ corto_bool _corto_instanceof(corto_type type, corto_object o);
 /* Scoped data */
 corto_string corto_nameof(corto_object o);
 corto_object corto_parentof(corto_object o);
-corto_uint32 corto_scopeSize(corto_object o); /* Returns number of objects (non-recursive) in scope */
+corto_uint32 corto_scopeSize(corto_object o);
 corto_objectseq corto_scopeClaim(corto_object o);
 void corto_scopeRelease(corto_objectseq scope);
 corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
-corto_string corto_fullname(corto_object o, corto_id buffer);
-corto_string corto_relname(corto_object from, corto_object o, corto_id buffer);
+
+/* Obtain object path */
+corto_string corto_fullpath(corto_id str, corto_object o);
+corto_string corto_path(corto_id str, corto_object from, corto_object o, const char* sep);
 corto_string corto_cleanpath(corto_id path);
 
 /* Persistent data */

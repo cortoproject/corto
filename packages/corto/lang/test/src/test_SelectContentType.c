@@ -230,14 +230,6 @@ corto_void _test_SelectContentType_tc_selectStringFromJson(test_SelectContentTyp
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromMixed(test_SelectContentType this) {
-/* $begin(test/SelectContentType/tc_selectStringFromMixed) */
-
-    /* << Insert implementation >> */
-
-/* $end */
-}
-
 corto_void _test_SelectContentType_tc_selectStringFromObjects(test_SelectContentType this) {
 /* $begin(test/SelectContentType/tc_selectStringFromObjects) */
     corto_iter iter;

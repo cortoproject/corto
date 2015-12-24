@@ -25,8 +25,8 @@ corto_int16 _corto_constant_init(corto_constant *this) {
     } else if (corto_typeof(parent) == corto_type(corto_bitmask_o)) {
         corto__bitmask_bindConstant(parent, this);
     } else {
-        corto_id id;
-        corto_error("::constant::init: parent of constant '%s' is not an enum.", corto_fullname(this, id));
+        corto_seterr("constant/init: parent of constant '%s' is not an enum.",
+            corto_fullpath(NULL, this));
         goto error;
     }
 
