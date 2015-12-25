@@ -172,12 +172,16 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
     use_link =
         USE_PACKAGE.map do |i|
-            result = `corto locate #{i} --lib`[0...-1]
-            if $?.exitstatus != 0 then
-                p result
-                abort "\033[1;31m[ build failed ]\033[0;49m"
+            if i == "corto" then
+                "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/packages/corto/libcorto.so"
+            else
+                result = `corto locate #{i} --lib`[0...-1]
+                if $?.exitstatus != 0 then
+                    p result
+                    abort "\033[1;31m[ build failed ]\033[0;49m"
+                end
+                result
             end
-            result
         end.join(" ") + " " +
         USE_COMPONENT.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/components/lib" + i + ".so"}.join(" ") + " " +
         USE_LIBRARY.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")

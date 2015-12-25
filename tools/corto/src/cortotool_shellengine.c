@@ -1,5 +1,4 @@
 #include "cortotool_shellengine.h"
-#include "corto.h"
 
 #include "string.h"
 #include "stdarg.h"

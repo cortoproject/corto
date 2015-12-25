@@ -2,7 +2,7 @@
 #ifndef CORTO_PUBLISH_H
 #define CORTO_PUBLISH_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,10 +1,12 @@
 require 'rake/clean'
 
 LOCAL ||= false
+INCLUDE ||= []
 
 if LOCAL == true then
     TARGETPATH = "./.corto"
     TARGETDIR = TARGETPATH
+    INCLUDE << "include"
 else
     PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
     TARGETPATH = PACKAGEDIR

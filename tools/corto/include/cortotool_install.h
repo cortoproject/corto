@@ -2,7 +2,7 @@
 #ifndef CORTO_INSTALL_H
 #define CORTO_INSTALL_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,5 +27,3 @@ void cortotool_updateHelp(void);
 }
 #endif
 #endif
-
-

@@ -10,7 +10,7 @@ if not defined? LOCAL then
 end
 
 LFLAGS ||= []
-USE_LIBRARY ||= []
+USE_PACKAGE ||= []
 LIBPATH ||= []
 INCLUDE ||= ["include"]
 
@@ -29,7 +29,7 @@ TARGETDIR ||= "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
 
 # Special case for when building the core
 if TARGET != "corto" then
-    USE_LIBRARY << "corto"
+    USE_PACKAGE << "corto"
 end
 
 INCLUDE <<
@@ -39,14 +39,10 @@ INCLUDE <<
 task :prebuild do
     verbose(false)
     if File.exists?("include") then
-        if TARGET != "corto" then
-            includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
-        else
-            includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages/corto/lang"
-        end
+        includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
         sh "rm -rf #{includePath}"
         sh "mkdir -p #{includePath}"
-        sh "cp include/* #{includePath}/"
+        sh "cp -r include/* #{includePath}/"
     end
     if File.exists?("etc") then
         etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
@@ -79,11 +75,7 @@ end
 task :collect do
     verbose(false)
     if File.exists?("include") then
-        if TARGET != "corto" then
-            includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
-        else
-            includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/packages/corto/lang"
-        end
+        includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{includePath}"
         sh "cp include/* #{includePath}/"
     end

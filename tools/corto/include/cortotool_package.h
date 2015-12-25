@@ -2,7 +2,7 @@
 #ifndef CORTOTOOL_PACKAGE_H
 #define CORTOTOOL_PACKAGE_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,4 +20,3 @@ void cortotool_listHelp(void);
 }
 #endif
 #endif
-

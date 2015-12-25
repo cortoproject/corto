@@ -1,8 +1,5 @@
 
-#include "corto.h"
-#include "corto_generator.h"
-#include "corto_loader.h"
-#include "corto_arg.h"
+#include "cortotool_pp.h"
 
 static corto_ll silent, mute, attributes, names, prefixes, generators, scopes;
 static corto_ll languages, includes;

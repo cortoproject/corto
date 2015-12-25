@@ -2,7 +2,7 @@
 #ifndef CORTO_SHELL_H
 #define CORTO_SHELL_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {

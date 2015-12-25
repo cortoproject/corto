@@ -2,7 +2,7 @@
 #ifndef CORTO_HELP_H
 #define CORTO_HELP_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,4 +16,3 @@ void cortotool_locateHelp(void);
 }
 #endif
 #endif
-

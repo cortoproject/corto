@@ -1,0 +1,17 @@
+TARGET = 'corto'
+
+LIB = ['rt', 'dl', 'm']
+CFLAGS ||= ["-Wunused-parameter"]
+
+# Explicitly set target path so that includes and library are stored in
+# the package repository
+TARGETPATH = "/packages/corto"
+
+task :collect do
+    verbose(false)
+    buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
+    sh "mkdir -p #{buildPath}"
+    sh "cp #{ENV['CORTO_BUILD']}/* #{buildPath}/"
+end
+
+require "#{ENV['CORTO_BUILD']}/library"

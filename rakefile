@@ -1,6 +1,6 @@
 
 COMPONENTS = %w(
-    packages/corto/lang
+    packages/corto
     tools
 )
 

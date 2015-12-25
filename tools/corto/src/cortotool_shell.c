@@ -5,13 +5,7 @@
  *      Author: sander
  */
 
-#include "corto.h"
-#include "corto_convert.h"
-#include "corto_string_ser.h"
-#include "corto_metawalk.h"
-#include "corto_class.h"
-#include "corto_loader.h"
-#include "corto_err.h"
+#include "cortotool_shell.h"
 #include "cortotool_shellengine.h"
 #include "ctype.h"
 #include "fnmatch.h"
@@ -1033,7 +1027,7 @@ static void cxsh_shell(void) {
     }
 }
 
-int cortotool_shell(int argc, char* argv[]) {
+corto_int16 cortotool_shell(int argc, char* argv[]) {
     int i;
 
     cxsh_color(SHELL_COLOR);

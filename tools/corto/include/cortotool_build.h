@@ -2,7 +2,7 @@
 #ifndef CORTO_BUILD_H
 #define CORTO_BUILD_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,4 +19,3 @@ void cortotool_cleanHelp(void);
 }
 #endif
 #endif
-

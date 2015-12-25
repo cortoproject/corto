@@ -2,7 +2,7 @@
 #ifndef CORTO_RUN_H
 #define CORTO_RUN_H
 
-#include "corto.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {

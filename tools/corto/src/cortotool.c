@@ -1,6 +1,4 @@
 
-#include "corto.h"
-#include "corto_loader.h"
 #include "cortotool_build.h"
 #include "cortotool_create.h"
 #include "cortotool_help.h"
