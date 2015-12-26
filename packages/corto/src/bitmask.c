@@ -6,10 +6,11 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto__bitmask.h"
+#include "_bitmask.h"
+
 corto_int16 corto__bitmask_bindConstant(corto_bitmask this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
         *c = 0x1 << corto_scopeSize(this);

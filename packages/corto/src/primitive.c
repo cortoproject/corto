@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
 corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width) {

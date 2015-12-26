@@ -6,11 +6,11 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto__enum.h"
-#include "corto__bitmask.h"
+#include "_enum.h"
+#include "_bitmask.h"
 /* $end */
 
 corto_int16 _corto_constant_init(corto_constant *this) {

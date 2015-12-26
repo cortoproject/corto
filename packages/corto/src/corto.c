@@ -5,9 +5,9 @@
  *      Author: sander
  */
 
-#include "corto__bootstrap.h"
-#include "corto__class.h"
-#include "corto__object.h"
+#include "_bootstrap.h"
+#include "_class.h"
+#include "_object.h"
 
 #include "corto/corto.h"
 

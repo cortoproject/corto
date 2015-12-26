@@ -6,10 +6,9 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto_value.h"
 typedef void (*corto_list_action)(corto_ll list, void *value, void *userData);
 static void corto_list_do(corto_any object, corto_any element, corto_bool insert, corto_list_action action, void *userData);
 

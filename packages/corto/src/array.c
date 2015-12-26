@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_int16 _corto_array_construct(corto_array this) {
 /* $begin(corto/lang/array/construct) */

@@ -10,7 +10,7 @@
 
 /* $header() */
 #include "_interface.h"
-#include "corto__class.h"
+#include "_class.h"
 /* $end */
 
 corto_bool _corto_struct_castable_v(corto_struct this, corto_type type) {

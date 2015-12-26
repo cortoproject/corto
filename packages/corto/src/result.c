@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_string _corto_result_getText(corto_result *this) {
 /* $begin(corto/lang/result/getText) */

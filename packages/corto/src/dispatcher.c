@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_void _corto_dispatcher_post_v(corto_dispatcher this, corto_event e) {
 /* $begin(corto/lang/dispatcher/post) */

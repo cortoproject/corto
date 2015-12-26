@@ -6,10 +6,10 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto__class.h"
+#include "_class.h"
 /* $end */
 
 corto_int16 _corto_observer_bind(corto_observer this) {

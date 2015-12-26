@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_int16 _corto_function_bind(corto_function this) {
 /* $begin(corto/lang/function/bind) */

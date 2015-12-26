@@ -6,11 +6,11 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto__interface.h"
-#include "corto__sequence.h"
+#include "_interface.h"
+#include "_sequence.h"
 
 static corto_vtable *corto_interface_vtableFromBase(corto_interface this) {
     corto_interface base;

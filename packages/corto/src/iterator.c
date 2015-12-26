@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_bool _corto_iterator_castable_v(corto_iterator this, corto_type type) {
 /* $begin(corto/lang/iterator/castable) */

@@ -6,11 +6,11 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto__enum.h"
-#include "corto__collection.h"
+#include "_enum.h"
+#include "_collection.h"
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {

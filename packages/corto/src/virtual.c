@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_int16 _corto_virtual_init(corto_virtual this) {
 /* $begin(corto/lang/virtual/init) */

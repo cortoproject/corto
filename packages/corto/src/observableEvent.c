@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_void _corto_observableEvent_handle_v(corto_observableEvent this) {
 /* $begin(corto/lang/observableEvent/handle) */

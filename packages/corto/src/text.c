@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_int16 _corto_text_init(corto_text this) {
 /* $begin(corto/lang/text/init) */

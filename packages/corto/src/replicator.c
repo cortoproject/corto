@@ -6,10 +6,10 @@
  * when the file is regenerated.
  */
 
-#include "corto.h"
+#include "corto/corto.h"
 
 /* $header() */
-#include "corto__object.h"
+#include "_object.h"
 extern corto_int8 CORTO_OLS_REPLICATOR;
 
 /* Add replicator entry to object OLS */

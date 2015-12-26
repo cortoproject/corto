@@ -1,6 +1,5 @@
 
-#define corto_lang_LIB
-#include "corto.h"
+#include "corto/corto.h"
 
 corto_object cxstr_define(corto_object result, corto_string value) {
 
@@ -11,8 +10,8 @@ corto_object cxstr_define(corto_object result, corto_string value) {
     if (corto_define(result)) {
         goto error;
     }
-    
-    return result; 
+
+    return result;
 error:
     corto_delete(result);
     return NULL;

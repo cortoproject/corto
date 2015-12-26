@@ -19,7 +19,7 @@
   a header comment, such as this one.
 */
 
-#include "corto_object.h"
+#include "corto/object.h"
 #include "corto/lang/type.h"
 
 #ifdef __cplusplus

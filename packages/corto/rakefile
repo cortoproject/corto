@@ -7,6 +7,9 @@ CFLAGS ||= ["-Wunused-parameter"]
 # the package repository
 TARGETPATH = "/packages/corto"
 
+# This will prevent the build system from automatically adding 'include'
+INCLUDE = []
+
 task :collect do
     verbose(false)
     buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"

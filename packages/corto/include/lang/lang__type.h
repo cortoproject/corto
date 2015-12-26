@@ -7,7 +7,7 @@
 #ifndef CORTO_LANG__TYPE_H
 #define CORTO_LANG__TYPE_H
 
-#include "corto/corto_def.h"
+#include "corto/def.h"
 
 #ifdef __cplusplus
 extern "C" {

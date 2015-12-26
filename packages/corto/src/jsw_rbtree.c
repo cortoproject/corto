@@ -13,8 +13,6 @@
 using std::malloc;
 using std::free;
 using std::size_t;
-#else
-#include <stdlib.h>
 #endif
 
 struct jsw_rbnode {
