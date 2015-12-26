@@ -19,6 +19,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <math.h>
+#include <limits.h>
 
 #include <fnmatch.h>
 #include <inttypes.h>
@@ -33,12 +34,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include <ftw.h>
-
-#if __linux__
-#include <linux/limits.h>
-#else
-#include <limits.h>
-#endif
 
 #ifdef __MACH__
 #include <mach/clock.h>
