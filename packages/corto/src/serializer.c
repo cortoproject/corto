@@ -7,7 +7,7 @@
 
 #include "corto/corto.h"
 #include "_object.h"
-#include "_collection.h"
+#include "lang/_collection.h"
 
 /*#define CORTO_SERIALIZER_TRACING*/
 #ifdef CORTO_SERIALIZER_TRACING

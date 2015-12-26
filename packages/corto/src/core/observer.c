@@ -9,7 +9,7 @@
 #include "corto/corto.h"
 
 /* $header() */
-#include "_class.h"
+#include "../lang/_class.h"
 /* $end */
 
 corto_int16 _corto_observer_bind(corto_observer this) {

@@ -6,7 +6,7 @@
  */
 
 #include "_bootstrap.h"
-#include "_class.h"
+#include "lang/_class.h"
 #include "_object.h"
 
 #include "corto/corto.h"

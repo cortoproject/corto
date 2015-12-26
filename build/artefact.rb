@@ -71,9 +71,9 @@ CFLAGS.unshift("-Wall")
 # Default CXXFLAGS
 CXXFLAGS << "-Wall" << "-g" << "-std=c++11"
 
-# Obtain list of source and object files
-SOURCES = Rake::FileList["src/*.c*"] + GENERATED_SOURCES
-OBJECTS = SOURCES.ext(".o").pathmap(".corto/obj/%f")
+# Crawl src directory to get list of source files
+SOURCES = Rake::FileList["src/**/*.c*"] + GENERATED_SOURCES
+OBJECTS = SOURCES.ext(".o").pathmap(".corto/%{^src/,obj/}p")
 
 # Load components from file
 if File.exists? ".corto/components.txt" then
@@ -258,10 +258,11 @@ end
 
 # Generic rule for translating source files into object files
 rule '.o' => ->(t) {
-    files = Rake::FileList["src/*.c*"]
+    files = Rake::FileList["src/**/*.c*"]
     file = nil
     files.each do |e|
-      if File.basename(e).ext("") == File.basename(t).ext("") then
+      base = File.join(File.dirname(t), File.basename(t, '.*'))
+      if e.pathmap("%{^src/,.corto/obj/}X") == base then
           file = e
           break;
       end
@@ -290,14 +291,18 @@ def build_source(source, target, echo)
         flags = CXXFLAGS
         cc = CXX
     end
-    if not File.exists? ".corto/obj" then
-        sh "mkdir -p .corto/obj"
+
+    path = File.dirname(target)
+    if not File.exists? path then
+        sh "mkdir -p #{path}"
     end
+
     if echo
         if ENV['silent'] != "true" then
             sh "echo '#{source}'"
         end
     end
+
     cc_command = "#{cc} -c #{flags.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
     begin
       sh cc_command

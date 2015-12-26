@@ -783,6 +783,9 @@ static corto_string g_filePath(corto_generator g, corto_string filename, corto_c
         if (ext && *ext) {
             sprintf(buffer, "%s/%s", ext, filename);
             result = buffer;
+
+            /* Ensure path exists */
+            corto_mkdir(ext);
         }
     }
 

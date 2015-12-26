@@ -6,7 +6,7 @@
  */
 
 #include "corto/corto.h"
-#include "_primitive.h"
+#include "lang/_primitive.h"
 
 #ifdef CORTO_CONVERSIONS
 

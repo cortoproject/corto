@@ -41,22 +41,55 @@ error:
     return -1;
 }
 
-void cortotool_core(void) {
-    if (!generators) generators = corto_llNew();
-    if (!scopes) scopes = corto_llNew();
-    if (!attributes) attributes = corto_llNew();
-    corto_llAppend(generators, "c_interface");
-    corto_llAppend(generators, "c_api");
-    corto_llAppend(generators, "c_type");
-    corto_llAppend(generators, "doc");
-    corto_llAppend(scopes, "/corto/lang");
-    corto_llAppend(scopes, "/corto/core");
-    corto_llAppend(attributes, "stubs=false");
-    corto_llAppend(attributes, "c=src");
-    corto_llAppend(attributes, "h=include");
-    corto_llAppend(attributes, "bootstrap=true");
-    prefix = "corto";
-    name = "corto";
+corto_int16 cortotool_core(void) {
+    corto_pid pid;
+    corto_int8 ret = 0;
+
+    /* Generate the core. This is a two-step process where files are generated
+     * for both the core and lang package */
+    pid = corto_procrun("corto", (char*[]){
+      "corto",
+      "pp",
+      "--prefix", "corto",
+      "--name", "corto",
+      "--scope", "corto/core",
+      "--attr", "c=src/core",
+      "--attr", "h=include/core",
+      "--attr", "bootstrap=true",
+      "--attr", "stubs=false",
+      "-g", "c_interface",
+      "-g", "c_api",
+      "-g", "c_type",
+      NULL
+    });
+    if (corto_procwait(pid, &ret) || ret) {
+        corto_error("failed to generate code for corto/core (%d)", ret);
+        goto error;
+    }
+
+    pid = corto_procrun("corto", (char*[]){
+      "corto",
+      "pp",
+      "--prefix", "corto",
+      "--name", "corto",
+      "--scope", "corto/lang",
+      "--attr", "c=src/lang",
+      "--attr", "h=include/lang",
+      "--attr", "bootstrap=true",
+      "--attr", "stubs=false",
+      "-g", "c_interface",
+      "-g", "c_api",
+      "-g", "c_type",
+      NULL
+    });
+    if (corto_procwait(pid, &ret) || ret) {
+        corto_error("failed to generate code for corto/lang (%d)", ret);
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 corto_int16 cortotool_pp(int argc, char *argv[]) {
@@ -105,7 +138,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     if (core) {
-        cortotool_core();
+        return cortotool_core();
     }
 
     if (languages) {

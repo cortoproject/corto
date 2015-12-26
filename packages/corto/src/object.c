@@ -7,7 +7,7 @@
 
 #include "corto/corto.h"
 #include "_object.h"
-#include "_class.h"
+#include "lang/_class.h"
 
 extern corto_mutex_s corto_adminLock;
 
