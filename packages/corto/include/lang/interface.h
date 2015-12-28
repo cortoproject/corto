@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_INTERFACE_H
 #define CORTO_LANG_INTERFACE_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_int16 _corto_interface_baseof(corto_interface _this, corto_interface type);
 #define corto_interface_baseof(_this, type) _corto_interface_baseof(corto_interface(_this), corto_interface(type))
@@ -53,3 +57,4 @@ CORTO_EXPORT corto_uint32 _corto_interface_resolveMethodId(corto_interface _this
 }
 #endif
 #endif
+

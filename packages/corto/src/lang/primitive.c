@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_primitive.c
+ * primitive.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 /* $header() */
 corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width) {

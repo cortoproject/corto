@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_INT_H
 #define CORTO_LANG_INT_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_int16 _corto_int_init(corto_int _this);
 #define corto_int_init(_this) _corto_int_init(corto_int(_this))
@@ -20,3 +24,4 @@ CORTO_EXPORT corto_int16 _corto_int_init(corto_int _this);
 }
 #endif
 #endif
+

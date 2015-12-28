@@ -87,6 +87,23 @@ corto_int16 cortotool_core(void) {
         goto error;
     }
 
+    pid = corto_procrun("corto", (char*[]){
+      "corto",
+      "pp",
+      "--prefix", "corto",
+      "--name", "corto",
+      "--attr", "c=src",
+      "--attr", "h=include",
+      "--attr", "bootstrap=true",
+      "--attr", "stubs=false",
+      "-g", "c_project",
+      NULL
+    });
+    if (corto_procwait(pid, &ret) || ret) {
+        corto_error("failed to setup project for corto (%d)", ret);
+        goto error;
+    }
+
     return 0;
 error:
     return -1;

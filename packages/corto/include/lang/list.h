@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_LIST_H
 #define CORTO_LANG_LIST_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_any _corto_list_append_(corto_any _this);
 #define corto_list_append_(_this) _corto_list_append_(_this)
@@ -41,3 +45,4 @@ CORTO_EXPORT corto_void _corto_list_reverse(corto_any _this);
 }
 #endif
 #endif
+

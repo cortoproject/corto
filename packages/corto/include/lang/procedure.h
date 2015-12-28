@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_PROCEDURE_H
 #define CORTO_LANG_PROCEDURE_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_int16 _corto_procedure_init(corto_procedure _this);
 #define corto_procedure_init(_this) _corto_procedure_init(corto_procedure(_this))
@@ -23,3 +27,4 @@ CORTO_EXPORT corto_void _corto_procedure_unbind(corto_procedure _this, corto_fun
 }
 #endif
 #endif
+

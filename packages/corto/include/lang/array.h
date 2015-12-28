@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_ARRAY_H
 #define CORTO_LANG_ARRAY_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_int16 _corto_array_construct(corto_array _this);
 #define corto_array_construct(_this) _corto_array_construct(corto_array(_this))
@@ -26,3 +30,4 @@ CORTO_EXPORT corto_int16 _corto_array_init(corto_array _this);
 }
 #endif
 #endif
+

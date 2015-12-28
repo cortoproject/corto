@@ -198,11 +198,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* observer */\
     SSO_OP_OBJ(op, observer_mask);\
     SSO_OP_OBJ(op, observer_observable);\
-    SSO_OP_OBJ(op, observer_template);\
-    SSO_OP_OBJ(op, observer_dispatcher);\
     SSO_OP_OBJ(op, observer_me);\
-    SSO_OP_OBJ(op, observer_observing);\
-    SSO_OP_OBJ(op, observer_delayedBinder);\
+    SSO_OP_OBJ(op, observer_dispatcher);\
+    SSO_OP_OBJ(op, observer_template);\
     SSO_OP_OBJ(op, observer_init_);\
     SSO_OP_OBJ(op, observer_bind_);\
     SSO_OP_OBJ(op, observer_unbind);\
@@ -353,7 +351,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, type_init);\
     SSO_OP_OBJ(op, type_sizeof_);\
     SSO_OP_OBJ(op, type_alignmentof_);\
-    SSO_OP_OBJ(op, type_allocSize_);\
     SSO_OP_OBJ(op, type_compatible_);\
     SSO_OP_OBJ(op, type_resolveProcedure_);\
     SSO_OP_OBJ(op, type_castable_);\
@@ -486,21 +483,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, class_defaultType);\
     SSO_OP_OBJ(op, class_defaultProcedureType);\
     SSO_OP_OBJ(op, class_interfaceVector);\
-    SSO_OP_OBJ(op, class_observers);\
     SSO_OP_OBJ(op, class_construct);\
     SSO_OP_OBJ(op, class_destruct);\
-    SSO_OP_OBJ(op, class_allocSize_);\
     SSO_OP_OBJ(op, class_init_);\
     SSO_OP_OBJ(op, class_instanceof_);\
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
-    SSO_OP_OBJ(op, class_bindObserver_);\
-    SSO_OP_OBJ(op, class_findObserver_);\
-    SSO_OP_OBJ(op, class_listen);\
-    SSO_OP_OBJ(op, class_setObservable);\
-    SSO_OP_OBJ(op, class_setMask);\
-    SSO_OP_OBJ(op, class_setDispatcher);\
-    SSO_OP_OBJ(op, class_observableOf);\
-    SSO_OP_OBJ(op, class_eventMaskOf);\
     /* query */\
     SSO_OP_OBJ(op, query_from);\
     SSO_OP_OBJ(op, query_mask);\

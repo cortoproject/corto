@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_STRUCT_H
 #define CORTO_LANG_STRUCT_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_bool _corto_struct_castable(corto_struct _this, corto_type type);
 #define corto_struct_castable(_this, type) _corto_struct_castable(corto_struct(_this), corto_type(type))
@@ -41,3 +45,4 @@ CORTO_EXPORT corto_member _corto_struct_resolveMember_v(corto_struct _this, cort
 }
 #endif
 #endif
+

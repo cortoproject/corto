@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_type.c
+ * type.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 /* $header() */
 #include "_interface.h"
@@ -51,12 +51,6 @@ corto_uint16 _corto_type_alignmentof(corto_type this) {
         alignment = this->alignment;
     }
     return alignment;
-/* $end */
-}
-
-corto_uint32 _corto_type_allocSize_v(corto_type this) {
-/* $begin(corto/lang/type/allocSize) */
-    return this->size;
 /* $end */
 }
 

@@ -6,21 +6,19 @@
 #ifndef CORTO_LANG_TYPE_H
 #define CORTO_LANG_TYPE_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
 CORTO_EXPORT corto_uint16 _corto_type_alignmentof(corto_type _this);
 #define corto_type_alignmentof(_this) _corto_type_alignmentof(corto_type(_this))
-
-CORTO_EXPORT corto_uint32 _corto_type_allocSize(corto_type _this);
-#define corto_type_allocSize(_this) _corto_type_allocSize(corto_type(_this))
-
-CORTO_EXPORT corto_uint32 _corto_type_allocSize_v(corto_type _this);
-#define corto_type_allocSize_v(_this) _corto_type_allocSize_v(corto_type(_this))
 
 CORTO_EXPORT corto_bool _corto_type_castable(corto_type _this, corto_type type);
 #define corto_type_castable(_this, type) _corto_type_castable(corto_type(_this), corto_type(type))
@@ -104,3 +102,4 @@ CORTO_EXPORT corto_type _corto_type_typeof(corto_any _this);
 }
 #endif
 #endif
+

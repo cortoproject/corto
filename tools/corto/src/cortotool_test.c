@@ -41,6 +41,10 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
                 goto error;
             }
         }
+        
+        if (err) {
+            goto error;
+        }
     }
 
     /* If a project doesn't have any tests, that counts as a PASS */

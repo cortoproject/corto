@@ -13,7 +13,7 @@ INCLUDE ||= []
 
 GENERATED_SOURCES ||= []
 
-GENERATED_SOURCES << ".corto/#{TARGET}__load.c"
+GENERATED_SOURCES << ".corto/_load.c"
 
 USE_LIBRARY << "corto"
 INCLUDE <<
@@ -22,12 +22,12 @@ INCLUDE <<
 
 CLOBBER.include ".corto/#{TARGET}.h"
 
-file ".corto/#{TARGET}__load.c" => [".corto/packages.txt", ".corto/components.txt"] do
+file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
     sh "corto pp --name #{TARGET} -g c_project"
 end
 
-task :prebuild => ".corto/#{TARGET}__load.c"
+task :prebuild => ".corto/_load.c"
 
 require "#{ENV['CORTO_BUILD']}/artefact"

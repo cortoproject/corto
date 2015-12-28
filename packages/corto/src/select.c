@@ -690,7 +690,7 @@ static void corto_selectTree(
 
     do {
         corto_object claimed = frame->o;
-        corto__scope *scope = corto__scopeClaim(claimed);
+        corto__scopeClaim(claimed);
         corto_object o = NULL;
 
         while (!(o = corto_selectIterNext(frame, lastKey)) && data->sp) {
@@ -700,7 +700,7 @@ static void corto_selectTree(
             corto_setref(&frame->o, NULL);
             data->sp --;
             frame = &data->stack[data->sp];
-            scope = corto__scopeClaim((claimed = frame->o));
+            corto__scopeClaim((claimed = frame->o));
         }
 
         if (data->sp || o) {

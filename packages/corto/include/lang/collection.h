@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_COLLECTION_H
 #define CORTO_LANG_COLLECTION_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_bool _corto_collection_castable(corto_collection _this, corto_type type);
 #define corto_collection_castable(_this, type) _corto_collection_castable(corto_collection(_this), corto_type(type))
@@ -38,3 +42,4 @@ CORTO_EXPORT corto_uint32 _corto_collection_size(corto_any _this);
 }
 #endif
 #endif
+

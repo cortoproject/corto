@@ -1,15 +1,19 @@
-/*
- * corto.h
+/* corto.h
  *
- *  Created on: Aug 21, 2012
- *      Author: sander
+ * This file is generated. Do not modify.
  */
 
 #ifndef CORTO_H
 #define CORTO_H
 
-#include "lang/lang.h"
-#include "core/core.h"
+#include "corto/corto.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* $header() */
+#include "corto/lang/lang.h"
+#include "corto/core/core.h"
 
 #include "corto/arg.h"
 #include "corto/async.h"
@@ -49,22 +53,18 @@
 #include "corto/time.h"
 #include "corto/util.h"
 #include "corto/value.h"
-
 #include "cxstr.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 int corto_start(void);
 int corto_stop(void);
-corto_string corto_getBuild(void); /* Used for catching library conflicts */
+corto_string corto_getBuild(void);
 corto_bool corto_isbuiltin(corto_object o);
 void corto_onunload(void(*handler)(void*), void* userData);
 void corto_onexit(void(*handler)(void*), void* userData);
+/* $end */
 
 #ifdef __cplusplus
 }
 #endif
+#endif
 
-#endif /* CORTO_H_ */

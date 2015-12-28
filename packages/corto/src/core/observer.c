@@ -1,25 +1,23 @@
 /* $CORTO_GENERATED
  *
- * corto_observer.c
+ * observer.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/core/core.h"
 
 /* $header() */
 #include "../lang/_class.h"
 /* $end */
 
 corto_int16 _corto_observer_bind(corto_observer this) {
-/* $begin(corto/lang/observer/bind) */
+/* $begin(corto/core/observer/bind) */
 
     /* If this is a scoped observer, automatically bind with parent if it's a class. */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        if (corto_class_instanceof(corto_class_o, corto_parentof(this))) {
-            corto_class_bindObserver(corto_parentof(this), this);
-        }
+        this->_template = 1;
     }
 
     corto_function(this)->size = sizeof(corto_object) * 3;
@@ -38,7 +36,7 @@ error:
 }
 
 corto_int16 _corto_observer_init(corto_observer this) {
-/* $begin(corto/lang/observer/init) */
+/* $begin(corto/core/observer/init) */
     corto_parameter *p;
 
     corto_setref(&corto_function(this)->returnType, corto_void_o);
@@ -62,17 +60,12 @@ corto_int16 _corto_observer_init(corto_observer this) {
 }
 
 corto_int16 _corto_observer_listen(corto_observer this, corto_object observable, corto_object me) {
-/* $begin(corto/lang/observer/listen) */
+/* $begin(corto/core/observer/listen) */
     corto_object oldObservable = NULL;
 
     /* Silence old observable */
     if (!this->_template) {
-        if (this->observing) {
-            oldObservable = this->observing;
-            corto_setref(&this->observing, NULL);
-        } else {
-            oldObservable = this->observable;
-        }
+        oldObservable = this->observable;
         corto_setref(&this->observable, observable);
     } else {
         corto_critical("don't use observer::listen for instance observers (use class::listen)");
@@ -103,24 +96,19 @@ error:
 }
 
 corto_void _corto_observer_setDispatcher(corto_observer this, corto_dispatcher dispatcher) {
-/* $begin(corto/lang/observer/setDispatcher) */
+/* $begin(corto/core/observer/setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
     corto_setref(&this->dispatcher, dispatcher);
 /* $end */
 }
 
 corto_int16 _corto_observer_silence(corto_observer this, corto_object me) {
-/* $begin(corto/lang/observer/silence) */
+/* $begin(corto/core/observer/silence) */
     corto_object oldObservable = NULL;
 
     /* Silence old observable */
     if (!this->_template) {
-        if (this->observing) {
-            oldObservable = this->observing;
-            corto_setref(&this->observing, NULL);
-        } else {
-            oldObservable = this->observable;
-        }
+        oldObservable = this->observable;
         corto_setref(&this->observable, NULL);
     } else {
         corto_critical("don't use observer::silence for instance observers (use class::silence)");
@@ -135,15 +123,10 @@ corto_int16 _corto_observer_silence(corto_observer this, corto_object me) {
 }
 
 corto_void _corto_observer_unbind(corto_observer object) {
-/* $begin(corto/lang/observer/unbind) */
+/* $begin(corto/core/observer/unbind) */
     if (!object->_template) {
         if (object->observable) {
-            if (object->observing) {
-                /* When the observer uses an expression, silence observing rather than observable */
-                corto_silence(object->me, object, object->mask, object->observing);
-            } else {
-                corto_silence(object->me, object, object->mask, object->observable);
-            }
+            corto_silence(object->me, object, object->mask, object->observable);
         }
     }
 

@@ -23,16 +23,16 @@ DEFINE << "BUILDING_" + PACKAGE.gsub("::", "_").upcase
 CFLAGS << "-fvisibility=hidden"
 
 GENERATED_SOURCES <<
-    ".corto/#{TARGET}__api.c" <<
-    ".corto/#{TARGET}__wrapper.c" <<
-    ".corto/#{TARGET}__meta.c" <<
-    ".corto/#{TARGET}__load.c"
+    ".corto/_api.c" <<
+    ".corto/_wrapper.c" <<
+    ".corto/_meta.c" <<
+    ".corto/_load.c"
 
 GENERATED_HEADERS ||= [] <<
-    "include/#{TARGET}__api.h" <<
-    "include/#{TARGET}__meta.h" <<
-    "include/#{TARGET}__type.h" <<
-    "include/#{TARGET}__interface.h"
+    "include/_api.h" <<
+    "include/_meta.h" <<
+    "include/_type.h" <<
+    "include/_interface.h"
 
 PREFIX ||= TARGET
 
@@ -53,11 +53,11 @@ file ".corto/components.txt" do
     sh "touch .corto/components.txt"
 end
 
-file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
+file "include/_type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
     verbose(false)
     preload = PP_PRELOAD.join(" ")
     sh "mkdir -p .corto"
-    sh "touch .corto/#{TARGET}__wrapper.c"
+    sh "touch .corto/_wrapper.c"
     if LOCAL or (`corto locate doc --generator` == "corto: generator 'doc' not found\n") then
         command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
     else
@@ -67,7 +67,7 @@ file "include/#{TARGET}__type.h" => [GENFILE, ".corto/packages.txt", ".corto/com
       sh command
     rescue
       puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-      sh "rm include/#{TARGET}__type.h"
+      sh "rm include/_type.h"
       abort()
     end
 end
@@ -87,7 +87,7 @@ task :doc do
     end
 end
 
-task :default => ["include/#{TARGET}__type.h"]
+task :default => ["include/_type.h"]
 
 task :postbuild => [:doc]
 

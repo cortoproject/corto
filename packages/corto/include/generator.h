@@ -8,7 +8,7 @@
 #ifndef CORTO_GEN_H_
 #define CORTO_GEN_H_
 
-#include "corto/lang/lang__type.h"
+#include "corto/lang/_type.h"
 #include "corto/file.h"
 #include "corto/dl.h"
 

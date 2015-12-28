@@ -390,12 +390,6 @@ static void corto__deinitObservable(corto_object o) {
     if (observable->onSelf) {
         corto__observer* observer;
         while((observer = corto_llTakeFirst(observable->onSelf))) {
-            /* Clear template observer data */
-            if (observer->observer->_template) {
-                corto_object observerObj = observer->_this;
-                corto_any thisAny = {corto_typeof(observerObj), observerObj, FALSE};
-                corto_class_listen(thisAny, observer->observer, 0, NULL, NULL);
-            }
             if (!--observer->count) {
                 corto_dealloc(observer);
             }
@@ -407,12 +401,6 @@ static void corto__deinitObservable(corto_object o) {
     if (observable->onChild) {
         corto__observer* observer;
         while((observer = corto_llTakeFirst(observable->onChild))) {
-            /* Clear template observer data */
-            if (observer->observer->_template) {
-                corto_object observerObj = observer->_this;
-                corto_any thisAny = {corto_typeof(observerObj), observerObj, FALSE};
-                corto_class_listen(thisAny, observer->observer, 0, NULL, NULL);
-            }
             observer->count--;
              if (!observer->count) {
                 corto_dealloc(observer);
@@ -546,8 +534,6 @@ int corto__destructor(corto_object o) {
     if (corto_checkState(o, CORTO_DEFINED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
         if (corto_class_instanceof(corto_class_o, t)) {
-            /* Detach observers from object */
-            /* corto_class_detachObservers(corto_class(t), o); */
 
             /* Call destructor */
             corto_delegateDestruct(corto_typeof(o), o);
@@ -840,8 +826,7 @@ corto_object _corto_declare(corto_type type) {
 
     headerSize = sizeof(corto__object);
 
-    /* Get size of type */
-    size = corto_type_allocSize(type);
+    size = type->size;
 
     /* Calculate size of attributes */
     if (attrs & CORTO_ATTR_SCOPED) {
@@ -1090,8 +1075,6 @@ corto_int16 corto_define(corto_object o) {
             if (!_p || !_p->owner || !corto_instanceof(corto_replicator_o, _p->owner)) {
                 /* If object is instance of a class, call the constructor */
                 if (corto_class_instanceof(corto_class_o, t)) {
-                    /* Attach observers to object */
-                    corto_class_attachObservers(corto_class(t), o);
                     /* Call constructor - will potentially override observer params */
                     result = corto_delegateConstruct(t, o);
                 } else if (corto_class_instanceof(corto_procedure_o, t)) {
@@ -1109,11 +1092,6 @@ corto_int16 corto_define(corto_object o) {
 
                 /* Notify observers of defined object */
                 corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE|CORTO_ON_UPDATE);
-
-                if (owned && corto_class_instanceof(corto_class_o, t)) {
-                    /* Start listening with final observer params */
-                    corto_class_listenObservers(corto_class(t), o);
-                }
             } else {
                 /* Remove valid state */
                 corto_invalidate(o);
@@ -1199,7 +1177,6 @@ void corto_drop(corto_object o) {
  * a declared counter.
  */
 static corto_bool corto_deactivate(corto_object o, corto_bool delete) {
-    corto_type t = corto_typeof(o);
     corto__object* _o;
     corto__scope* scope;
     corto_bool result = FALSE;
@@ -1215,18 +1192,10 @@ static corto_bool corto_deactivate(corto_object o, corto_bool delete) {
                 corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
             }
 
-            if (corto_class_instanceof(corto_class_o, t)) {
-                corto_class_detachObservers(corto_class(t), o);
-            }
             corto__orphan(o);
             result = TRUE;
-
-          //  printf("-- %s->declared\n", corto_nameof(o), scope->declared);
         }
     } else {
-        if (corto_class_instanceof(corto_class_o, t)) {
-            corto_class_detachObservers(corto_class(t), o);
-        }
         result = TRUE;
     }
 
@@ -1997,9 +1966,6 @@ static corto_uint16 corto_destruct(corto_object o) {
     corto_ainc(&_o->refcount);
 
     if (!corto_checkState(o, CORTO_DESTRUCTED)) {
-        corto_vtable *ot;
-
-        ot = corto_class_getObserverVtable(o);
 
         /* Only do the following steps if the object is defined */
         if (corto_checkState(o, CORTO_DEFINED)) {
@@ -2056,13 +2022,6 @@ static corto_uint16 corto_destruct(corto_object o) {
             corto_mutexLock(&corto_adminLock);
             corto_llRemove(corto_anonymousObjects, o);
             corto_mutexUnlock(&corto_adminLock);
-        }
-
-        /* Reset template observable table */
-        if (ot && ot->buffer) {
-            /* Buffer is allocated as part of object - so no leakage */
-            ot->buffer = NULL;
-            ot->length = 0;
         }
     }
 
@@ -2440,13 +2399,6 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
     /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
     if (!((mask & CORTO_ON_VALUE) || (mask & CORTO_ON_METAVALUE))) {
         mask |= CORTO_ON_VALUE;
-    }
-
-    /* If the observer is a template observer set the observable in the list of
-     * class observables */
-    if (observer->_template && this) {
-        corto_any thisAny = {corto_typeof(this), this, FALSE};
-        corto_class_listen(thisAny, observer, mask, observable, dispatcher);
     }
 
     /* Test for error conditions before making changes */
@@ -4079,6 +4031,7 @@ corto_equalityKind corto_comparea(corto_any a1, corto_any a2) {
 
 corto_int16 corto_init(corto_object o) {
     corto_typeKind kind = corto_typeof(o)->kind;
+
     switch(kind) {
         case CORTO_COMPOSITE:
         case CORTO_COLLECTION: {

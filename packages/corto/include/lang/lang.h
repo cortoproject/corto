@@ -6,18 +6,14 @@
 #ifndef CORTO_LANG_H
 #define CORTO_LANG_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
-#include "corto/lang/lang__api.h"
-#include "corto/lang/lang__meta.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#ifdef __cplusplus
-}
-#endif
 #endif
 
 #include "corto/lang/alias.h"
@@ -54,3 +50,9 @@ extern "C" {
 #include "corto/lang/type.h"
 #include "corto/lang/uint.h"
 #include "corto/lang/virtual.h"
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+

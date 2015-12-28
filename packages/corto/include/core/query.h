@@ -6,14 +6,19 @@
 #ifndef CORTO_CORE_QUERY_H
 #define CORTO_CORE_QUERY_H
 
-#include "corto/corto__interface.h"
-#include "corto/core/core__type.h"
+#include "corto/corto.h"
+#include "corto/core/_type.h"
+#include "corto/core/_api.h"
+#include "corto/core/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
 #ifdef __cplusplus
 }
 #endif
 #endif
+

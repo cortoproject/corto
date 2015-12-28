@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_DELEGATE_H
 #define CORTO_LANG_DELEGATE_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_int16 _corto_delegate_bind(corto_function object);
 #define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
@@ -38,3 +42,4 @@ CORTO_EXPORT corto_bool _corto_delegate_instanceof(corto_delegate _this, corto_o
 }
 #endif
 #endif
+

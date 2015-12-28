@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_alias.c
+ * alias.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 corto_int16 _corto_alias_construct(corto_alias this) {
 /* $begin(corto/lang/alias/construct) */

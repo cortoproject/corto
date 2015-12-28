@@ -6,12 +6,16 @@
 #ifndef CORTO_LANG_ENUM_H
 #define CORTO_LANG_ENUM_H
 
-#include "corto/corto__interface.h"
-#include "corto/lang/lang__type.h"
+#include "corto/corto.h"
+#include "corto/lang/_type.h"
+#include "corto/lang/_api.h"
+#include "corto/lang/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_object _corto_enum_constant(corto_enum _this, corto_int32 value);
 #define corto_enum_constant(_this, value) _corto_enum_constant(corto_enum(_this), value)
@@ -29,3 +33,4 @@ CORTO_EXPORT corto_int16 _corto_enum_init(corto_enum _this);
 }
 #endif
 #endif
+

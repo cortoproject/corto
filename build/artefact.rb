@@ -15,7 +15,6 @@ if not defined? ARTEFACT then
     raise "artefact: ARTEFACT not specified\n"
 end
 
-
 # --- DATA PROCESSING
 
 # Utility that replaces buildsystem tokens with actual values
@@ -72,8 +71,9 @@ CFLAGS.unshift("-Wall")
 CXXFLAGS << "-Wall" << "-g" << "-std=c++11"
 
 # Crawl src directory to get list of source files
-SOURCES = Rake::FileList["src/**/*.c*"] + GENERATED_SOURCES
-OBJECTS = SOURCES.ext(".o").pathmap(".corto/%{^src/,obj/}p")
+SOURCES = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
+OBJECTS = SOURCES.ext(".o").pathmap(".corto/%{^src/,obj/}p") +
+          Rake::FileList[GENERATED_SOURCES].ext(".o").pathmap(".corto/obj/%f")
 
 # Load components from file
 if File.exists? ".corto/components.txt" then
@@ -188,8 +188,8 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
 
     # Check if there were any new files created during code generation
     Rake::FileList["src/*.c"].each do |file|
-        if not SOURCES.include? file
-            obj = file.ext(".o").pathmap(".corto/obj/%f")
+        obj = file.ext(".o").pathmap(".corto/obj/%f")
+        if not OBJECTS.include? obj
             build_source(file, obj, true)
             objects += " " + obj
         end
@@ -243,22 +243,22 @@ task :test do
 end
 
 # Rules for generated files
-rule '__api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '__meta.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_meta.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '__wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '__load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
 end
 
 # Generic rule for translating source files into object files
 rule '.o' => ->(t) {
-    files = Rake::FileList["src/**/*.c*"]
+    files = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
     file = nil
     files.each do |e|
       base = File.join(File.dirname(t), File.basename(t, '.*'))

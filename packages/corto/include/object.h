@@ -8,8 +8,8 @@
 #ifndef CORTO_OBJECT_H_
 #define CORTO_OBJECT_H_
 
-#include "core/core__type.h"
-#include "lang/lang__type.h"
+#include "core/_type.h"
+#include "lang/_type.h"
 #include "corto/ll.h"
 #include "corto/value.h"
 #include "corto/async.h"

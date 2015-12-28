@@ -4,6 +4,7 @@
 
 /* Command-line argument parsing utility library */
 
+#include "corto/lang/_type.h"
 #include "corto/ll.h"
 
 #ifdef __cplusplus

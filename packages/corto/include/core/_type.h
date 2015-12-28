@@ -1,4 +1,4 @@
-/* corto__type.h
+/* _type.h
  *
  * Type definitions for C-language.
  * This file contains generated code. Do not modify!
@@ -7,9 +7,7 @@
 #ifndef CORTO_CORE__TYPE_H
 #define CORTO_CORE__TYPE_H
 
-#include "corto/def.h"
-#include "corto/lang/lang__type.h"
-
+#include "corto/lang/_type.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,6 +22,7 @@ extern "C" {
 #define corto_notifyAction(o) ((corto_notifyAction *)corto_assertType((corto_type)corto_notifyAction_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
+#define corto_observerseq(o) ((corto_observerseq *)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind *)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_query(o) ((corto_query)corto_assertType((corto_type)corto_query_o, o))
@@ -31,7 +30,6 @@ extern "C" {
 #define corto_result(o) ((corto_result *)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter *)corto_assertType((corto_type)corto_resultIter_o, o))
 #define corto_resultList(o) ((corto_resultList *)corto_assertType((corto_type)corto_resultList_o, o))
-#define corto_state(o) ((corto_state *)corto_assertType((corto_type)corto_state_o, o))
 
 /* Type definitions */
 /* /corto/core/attr */
@@ -41,6 +39,9 @@ CORTO_BITMASK(corto_attr);
     #define CORTO_ATTR_OBSERVABLE (0x4)
     #define CORTO_ATTR_PERSISTENT (0x8)
     #define CORTO_ATTR_DEFAULT (0x10)
+
+/*  /corto/core/dispatcher */
+CORTO_INTERFACE(corto_dispatcher);
 
 /* /corto/core/equalityKind */
 typedef enum corto_equalityKind {
@@ -57,6 +58,19 @@ CORTO_CLASS_DEF(corto_event) {
     corto_uint16 kind;
     corto_bool handled;
 };
+
+/* /corto/core/eventMask */
+CORTO_BITMASK(corto_eventMask);
+    #define CORTO_ON_DECLARE (0x1)
+    #define CORTO_ON_DEFINE (0x2)
+    #define CORTO_ON_DELETE (0x4)
+    #define CORTO_ON_INVALIDATE (0x8)
+    #define CORTO_ON_UPDATE (0x10)
+    #define CORTO_ON_SELF (0x20)
+    #define CORTO_ON_SCOPE (0x40)
+    #define CORTO_ON_TREE (0x80)
+    #define CORTO_ON_VALUE (0x100)
+    #define CORTO_ON_METAVALUE (0x200)
 
 /*  /corto/core/query */
 CORTO_CLASS(corto_query);
@@ -93,6 +107,18 @@ struct corto_notifyAction {
     corto_delegatedata _parent;
 };
 
+/*  /corto/core/observer */
+CORTO_CLASS(corto_observer);
+
+CORTO_CLASS_DEF(corto_observer) {
+    CORTO_EXTEND(corto_function);
+    corto_eventMask mask;
+    corto_object observable;
+    corto_object me;
+    corto_dispatcher dispatcher;
+    corto_uint32 _template;
+};
+
 /*  /corto/core/observableEvent */
 CORTO_CLASS(corto_observableEvent);
 
@@ -103,6 +129,8 @@ CORTO_CLASS_DEF(corto_observableEvent) {
     corto_object source;
     corto_object observable;
 };
+
+CORTO_SEQUENCE(corto_observerseq, corto_observer,);
 
 /* /corto/core/operatorKind */
 typedef enum corto_operatorKind {
@@ -166,3 +194,4 @@ CORTO_LIST(corto_resultList);
 }
 #endif
 #endif
+

@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_array.c
+ * array.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 corto_int16 _corto_array_construct(corto_array this) {
 /* $begin(corto/lang/array/construct) */

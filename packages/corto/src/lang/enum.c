@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_enum.c
+ * enum.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 /* $header() */
 #include "_enum.h"

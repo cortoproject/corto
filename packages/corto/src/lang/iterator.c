@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_iterator.c
+ * iterator.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 corto_bool _corto_iterator_castable_v(corto_iterator this, corto_type type) {
 /* $begin(corto/lang/iterator/castable) */

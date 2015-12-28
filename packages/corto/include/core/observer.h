@@ -6,12 +6,16 @@
 #ifndef CORTO_CORE_OBSERVER_H
 #define CORTO_CORE_OBSERVER_H
 
-#include "corto/corto__interface.h"
-#include "corto/core/core__type.h"
+#include "corto/corto.h"
+#include "corto/core/_type.h"
+#include "corto/core/_api.h"
+#include "corto/core/_meta.h"
+#include "corto/_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 CORTO_EXPORT corto_int16 _corto_observer_bind(corto_observer _this);
 #define corto_observer_bind(_this) _corto_observer_bind(corto_observer(_this))
@@ -35,3 +39,4 @@ CORTO_EXPORT corto_void _corto_observer_unbind(corto_observer object);
 }
 #endif
 #endif
+

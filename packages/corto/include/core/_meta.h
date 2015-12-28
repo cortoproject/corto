@@ -8,8 +8,8 @@
 #ifndef CORTO_CORE_META_H_
 #define CORTO_CORE_META_H_
 
-#include "corto/lang/lang__type.h"
-#include "corto/core/core__type.h"
+#include "corto/lang/_type.h"
+#include "corto/core/_type.h"
 
 #ifdef __cplusplus
 extern "C" {

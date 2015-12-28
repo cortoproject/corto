@@ -9,7 +9,7 @@
 #define CORTO_CALL_H_
 
 #include "corto/object.h"
-#include "corto/lang/lang__type.h"
+#include "corto/lang/_type.h"
 #include <stdarg.h>
 
 #ifdef __cplusplus

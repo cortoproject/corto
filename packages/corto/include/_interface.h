@@ -1,4 +1,4 @@
-/* corto__interface.h
+/* _interface.h
  *
  * This file contains generated code. Do not modify!
  */
@@ -12,3 +12,4 @@
 #else
 #define CORTO_EXPORT
 #endif
+

@@ -8,7 +8,7 @@
 #ifndef CORTO_OPERATOR_H_
 #define CORTO_OPERATOR_H_
 
-#include "corto/lang/lang__type.h"
+#include "corto/lang/_type.h"
 
 #ifdef __cplusplus
 extern "C" {

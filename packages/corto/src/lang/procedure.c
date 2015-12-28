@@ -1,12 +1,12 @@
 /* $CORTO_GENERATED
  *
- * corto_procedure.c
+ * procedure.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/lang/lang.h"
 
 corto_int16 _corto_procedure_init(corto_procedure this) {
 /* $begin(corto/lang/procedure/init) */

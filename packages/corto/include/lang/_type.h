@@ -1,4 +1,4 @@
-/* corto__type.h
+/* _type.h
  *
  * Type definitions for C-language.
  * This file contains generated code. Do not modify!
@@ -8,7 +8,6 @@
 #define CORTO_LANG__TYPE_H
 
 #include "corto/def.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,7 +53,6 @@ extern "C" {
 #define corto_method(o) ((corto_method)corto_assertType((corto_type)corto_method_o, o))
 #define corto_modifier(o) ((corto_modifier *)corto_assertType((corto_type)corto_modifier_o, o))
 #define corto_objectseq(o) ((corto_objectseq *)corto_assertType((corto_type)corto_objectseq_o, o))
-#define corto_observerseq(o) ((corto_observerseq *)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_octet(o) ((corto_octet *)corto_assertType((corto_type)corto_octet_o, o))
 #define corto_octetseq(o) ((corto_octetseq *)corto_assertType((corto_type)corto_octetseq_o, o))
 #define corto_parameter(o) ((corto_parameter *)corto_assertType((corto_type)corto_parameter_o, o))
@@ -64,6 +62,7 @@ extern "C" {
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
 #define corto_procedureKind(o) ((corto_procedureKind *)corto_assertType((corto_type)corto_procedureKind_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
+#define corto_state(o) ((corto_state *)corto_assertType((corto_type)corto_state_o, o))
 #define corto_string(o) ((corto_string *)corto_assertType((corto_type)corto_string_o, o))
 #define corto_struct(o) ((corto_struct)corto_assertType((corto_type)corto_struct_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
@@ -102,7 +101,7 @@ typedef uint16_t corto_uint16;
 /*  /corto/lang/type */
 CORTO_CLASS(corto_type);
 
-/* /corto/core/state */
+/* /corto/lang/state */
 CORTO_BITMASK(corto_state);
     #define CORTO_VALID (0x1)
     #define CORTO_DECLARED (0x2)
@@ -354,38 +353,6 @@ struct corto_interfaceVector {
 
 CORTO_SEQUENCE(corto_interfaceVectorseq, corto_interfaceVector,);
 
-/* /corto/core/eventMask */
-CORTO_BITMASK(corto_eventMask);
-    #define CORTO_ON_DECLARE (0x1)
-    #define CORTO_ON_DEFINE (0x2)
-    #define CORTO_ON_DELETE (0x4)
-    #define CORTO_ON_INVALIDATE (0x8)
-    #define CORTO_ON_UPDATE (0x10)
-    #define CORTO_ON_SELF (0x20)
-    #define CORTO_ON_SCOPE (0x40)
-    #define CORTO_ON_TREE (0x80)
-    #define CORTO_ON_VALUE (0x100)
-    #define CORTO_ON_METAVALUE (0x200)
-
-/*  /corto/core/dispatcher */
-CORTO_INTERFACE(corto_dispatcher);
-
-/*  /corto/core/observer */
-CORTO_CLASS(corto_observer);
-
-CORTO_CLASS_DEF(corto_observer) {
-    CORTO_EXTEND(corto_function);
-    corto_eventMask mask;
-    corto_object observable;
-    corto_uint32 _template;
-    corto_dispatcher dispatcher;
-    corto_object me;
-    corto_object observing;
-    corto_observer delayedBinder;
-};
-
-CORTO_SEQUENCE(corto_observerseq, corto_observer,);
-
 /*  /corto/lang/destructAction */
 typedef struct corto_destructAction corto_destructAction;
 
@@ -400,7 +367,6 @@ CORTO_CLASS_DEF(corto_class) {
     CORTO_EXTEND(corto_struct);
     corto_interfaceseq implements;
     corto_interfaceVectorseq interfaceVector;
-    corto_observerseq observers;
     corto_initAction construct;
     corto_destructAction destruct;
 };
@@ -559,3 +525,4 @@ typedef void corto_void;
 }
 #endif
 #endif
+

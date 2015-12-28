@@ -1,15 +1,15 @@
 /* $CORTO_GENERATED
  *
- * corto_dispatcher.c
+ * dispatcher.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
  */
 
-#include "corto/corto.h"
+#include "corto/core/core.h"
 
 corto_void _corto_dispatcher_post_v(corto_dispatcher this, corto_event e) {
-/* $begin(corto/lang/dispatcher/post) */
+/* $begin(corto/core/dispatcher/post) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(e);

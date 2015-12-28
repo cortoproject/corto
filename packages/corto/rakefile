@@ -10,6 +10,7 @@ TARGETPATH = "/packages/corto"
 # This will prevent the build system from automatically adding 'include'
 INCLUDE = []
 
+# When building a tar for the core, also include the build system
 task :collect do
     verbose(false)
     buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
