@@ -113,15 +113,15 @@ corto_void _test_Project_tc_package(test_Project this) {
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(corto_fileTest("Project/src/Project_RedPanda.c"));
+    test_assert(corto_fileTest("Project/src/RedPanda.c"));
 
     test_assert(corto_fileTest("Project/include"));
     test_assert(corto_fileTest("Project/include/Project.h"));
-    test_assert(corto_fileTest("Project/include/Project_RedPanda.h"));
-    test_assert(corto_fileTest("Project/include/Project__api.h"));
-    test_assert(corto_fileTest("Project/include/Project__interface.h"));
-    test_assert(corto_fileTest("Project/include/Project__meta.h"));
-    test_assert(corto_fileTest("Project/include/Project__type.h"));
+    test_assert(corto_fileTest("Project/include/RedPanda.h"));
+    test_assert(corto_fileTest("Project/include/_api.h"));
+    test_assert(corto_fileTest("Project/include/_interface.h"));
+    test_assert(corto_fileTest("Project/include/_meta.h"));
+    test_assert(corto_fileTest("Project/include/_type.h"));
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
@@ -129,14 +129,14 @@ corto_void _test_Project_tc_package(test_Project this) {
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.c"));
-    test_assert(corto_fileTest("Project/test/src/test_MySuite.c"));
+    test_assert(corto_fileTest("Project/test/src/MySuite.c"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/test_MySuite.h"));
-    test_assert(corto_fileTest("Project/test/include/test__api.h"));
-    test_assert(corto_fileTest("Project/test/include/test__interface.h"));
-    test_assert(corto_fileTest("Project/test/include/test__meta.h"));
-    test_assert(corto_fileTest("Project/test/include/test__type.h"));
+    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
+    test_assert(corto_fileTest("Project/test/include/_api.h"));
+    test_assert(corto_fileTest("Project/test/include/_interface.h"));
+    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
     test_assert(!corto_fileTest("Project/.corto/libProject.so"));
@@ -195,15 +195,15 @@ corto_void _test_Project_tc_packageLocal(test_Project this) {
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(corto_fileTest("Project/src/Project_RedPanda.c"));
+    test_assert(corto_fileTest("Project/src/RedPanda.c"));
 
     test_assert(corto_fileTest("Project/include"));
     test_assert(corto_fileTest("Project/include/Project.h"));
-    test_assert(corto_fileTest("Project/include/Project_RedPanda.h"));
-    test_assert(corto_fileTest("Project/include/Project__api.h"));
-    test_assert(corto_fileTest("Project/include/Project__interface.h"));
-    test_assert(corto_fileTest("Project/include/Project__meta.h"));
-    test_assert(corto_fileTest("Project/include/Project__type.h"));
+    test_assert(corto_fileTest("Project/include/RedPanda.h"));
+    test_assert(corto_fileTest("Project/include/_api.h"));
+    test_assert(corto_fileTest("Project/include/_interface.h"));
+    test_assert(corto_fileTest("Project/include/_meta.h"));
+    test_assert(corto_fileTest("Project/include/_type.h"));
 
     test_assert(!corto_fileTest("Project/test"));
 

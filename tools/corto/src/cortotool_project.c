@@ -403,8 +403,7 @@ static corto_int16 cortotool_package(
     if (!empty) {
         if (snprintf(srcfile,
             sizeof(srcfile),
-            "%s/src/%s_RedPanda.c",
-            name,
+            "%s/src/RedPanda.c",
             name) >= (int)sizeof(srcfile))
         {
             if (!mute) {
@@ -422,11 +421,11 @@ static corto_int16 cortotool_package(
 
         file = fopen(srcfile, "w");
         if (file) {
-            fprintf(file, "/* $begin(::%s::RedPanda::construct) */\n", include);
+            fprintf(file, "/* $begin(/%s/RedPanda/construct) */\n", include);
             fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", corto_nameof(this));\n");
             fprintf(file, "    return 0;\n");
             fprintf(file, "/* $end */\n");
-            fprintf(file, "/* $begin(::%s::RedPanda::chew) */\n", include);
+            fprintf(file, "/* $begin(/%s/RedPanda/chew) */\n", include);
             fprintf(file, "    this->weight++;\n");
             fprintf(file, "    printf(\"%%s the panda is chewing on something omnomnom (his weight: %%d)\\n\",\n");
             fprintf(file, "            corto_nameof(this), this->weight);\n");
