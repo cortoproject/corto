@@ -243,6 +243,7 @@ static void cxsh_ls(char* arg) {
 
     if (strcmp(scope, "/")) {
         strcpy(prefix, scope);
+        strcat(prefix, "/");
     } else {
         *prefix = '\0';
     }
@@ -250,12 +251,12 @@ static void cxsh_ls(char* arg) {
     if (arg) {
         char lastCh = arg[strlen(arg) - 1];
         if ((lastCh != '/') && (lastCh != '.') && (lastCh != '*') && (lastCh != '?')) {
-            sprintf(buff, "%s/%s/*", prefix, arg);
+            sprintf(buff, "%s%s/*", prefix, arg);
         } else {
-            sprintf(buff, "%s/%s", prefix, arg);
+            sprintf(buff, "%s%s", prefix, arg);
         }
     } else {
-        sprintf(buff, "%s/*", prefix);
+        sprintf(buff, "%s*", prefix);
     }
 
     if (corto_select(root_o, buff, &iter)) {

@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * test_ReplicatorRequest.c
+ * ReplicatorRequest.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.

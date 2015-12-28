@@ -58,11 +58,19 @@ file "include/_type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.tx
     preload = PP_PRELOAD.join(" ")
     sh "mkdir -p .corto"
     sh "touch .corto/_wrapper.c"
-    if LOCAL or (`corto locate doc --generator` == "corto: generator 'doc' not found\n") then
-        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c"
-    else
-        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} --prefix #{PREFIX} --lang c -g doc"
+
+    localStr = ""
+    docStr = ""
+
+    if LOCAL then
+        localStr = "--attr local=true"
+    elsif (`corto locate doc --generator` != "corto: generator 'doc' not found\n") then
+        docStr = "-g doc"
     end
+
+    command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
+              "--prefix #{PREFIX} #{localStr} #{docStr} --lang c"
+
     begin
       sh command
     rescue

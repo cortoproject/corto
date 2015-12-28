@@ -1065,7 +1065,6 @@ corto_int16 corto_define(corto_object o) {
         corto__persistent *_p = NULL;
         if (!corto_checkState(o, CORTO_DEFINED)) {
             corto_type t = corto_typeof(o);
-            corto_bool owned = TRUE;
 
             if ((_p = corto__objectPersistent(_o))) {
                 _p->owner = corto_getOwner();
@@ -1080,8 +1079,6 @@ corto_int16 corto_define(corto_object o) {
                 } else if (corto_class_instanceof(corto_procedure_o, t)) {
                     result = corto_delegateConstruct(t, o);
                 }
-            } else {
-                owned = FALSE;
             }
 
             if (!result) {

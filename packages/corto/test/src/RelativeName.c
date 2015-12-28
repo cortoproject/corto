@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * test_RelativeName.c
+ * RelativeName.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -61,6 +61,14 @@ corto_void _test_RelativeName_tc_fromGrandchild(test_RelativeName this) {
     result = corto_relname(this->child, this->tier3, id);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "../.."));
+
+/* $end */
+}
+
+corto_void _test_RelativeName_tc_fromNull(test_RelativeName this) {
+/* $begin(test/RelativeName/tc_fromNull) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
