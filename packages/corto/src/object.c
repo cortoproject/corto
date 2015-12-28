@@ -2388,6 +2388,10 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
         observable = root_o;
     }
 
+    if (!mask) {
+        mask = observer->mask;
+    }
+
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
     if (!(mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
         mask |= CORTO_ON_SELF;

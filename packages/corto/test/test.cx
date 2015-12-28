@@ -306,6 +306,7 @@ class EventTest::
     lastObservable: object, readonly
 
     int16 construct()
+    void destruct()
 
     observer onDeclare:      ON_DECLARE|ON_SELF|ON_TREE
     observer onDeclareSelf:  ON_DECLARE

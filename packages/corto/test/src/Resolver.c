@@ -33,7 +33,7 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
     corto_id id;
     corto_object r;
 
-    corto_fullname(o, id);
+    corto_fullpath(id, o);
     r = corto_resolve(NULL, id);
 
     /* Set errormessage to ease debugging */
@@ -175,15 +175,13 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(test_Resolver this
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(test_Resolver this) {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionArgsScoped) */
-    corto_id id;
-
     corto_object parent = corto_voidCreateChild(NULL, "parent");
     test_assert(parent != NULL);
 
     corto_object o = corto_voidCreateChild(parent, "o(uint32 a)");
     test_assert(o != NULL);
     test_assert(!strcmp(corto_nameof(o), "o(uint32 a)"));
-    test_assert(!strcmp(corto_fullname(o, id), "/parent/o(uint32 a)"));
+    test_assert(!strcmp(corto_fullpath(NULL, o), "/parent/o(uint32 a)"));
 
     corto_object p = corto_resolve(NULL, "/parent/o(uint32 a)");
     test_assert(p != NULL);
@@ -213,15 +211,13 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(test_Resol
 
 corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(test_Resolver this) {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgsScoped) */
-    corto_id id;
-
     corto_object parent = corto_voidCreateChild(NULL, "parent");
     test_assert(parent != NULL);
 
     corto_object o = corto_voidCreateChild(parent, "o(uint32 a)");
     test_assert(o != NULL);
     test_assert(!strcmp(corto_nameof(o), "o(uint32 a)"));
-    test_assert(!strcmp(corto_fullname(o, id), "/parent/o(uint32 a)"));
+    test_assert(!strcmp(corto_fullpath(NULL, o), "/parent/o(uint32 a)"));
 
     corto_object p = corto_resolve(NULL, "/parent/o(uint16 a)");
     test_assert(p == NULL);
@@ -242,7 +238,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(test_Resolver th
     corto_object o = corto_voidCreateChild(parent, "o()");
     test_assert(o != NULL);
     test_assert(!strcmp(corto_nameof(o), "o()"));
-    test_assert(!strcmp(corto_fullname(o, id), "/parent/o()"));
+    test_assert(!strcmp(corto_fullpath(id, o), "/parent/o()"));
 
     corto_object p = corto_resolve(NULL, "/parent/o()");
     test_assert(p != NULL);

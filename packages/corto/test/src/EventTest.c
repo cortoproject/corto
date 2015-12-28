@@ -10,29 +10,54 @@
 
 corto_int16 _test_EventTest_construct(test_EventTest this) {
 /* $begin(test/EventTest/construct) */
-    corto_any thisAny = {corto_typeof(this), this, FALSE};
 
-    corto_class_setObservable(thisAny, test_EventTest_onDeclare_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDeclareSelf_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDeclareScope_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDeclareTree_o, this->scope);
+    corto_listen(this, test_EventTest_onDeclare_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDeclareSelf_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDeclareScope_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDeclareTree_o, 0, this->scope, NULL);
 
-    corto_class_setObservable(thisAny, test_EventTest_onDefine_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDefineSelf_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDefineScope_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDefineTree_o, this->scope);
+    corto_listen(this, test_EventTest_onDefine_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDefineSelf_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDefineScope_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDefineTree_o, 0, this->scope, NULL);
 
-    corto_class_setObservable(thisAny, test_EventTest_onUpdate_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onUpdateSelf_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onUpdateScope_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onUpdateTree_o, this->scope);
+    corto_listen(this, test_EventTest_onUpdate_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onUpdateSelf_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onUpdateScope_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onUpdateTree_o, 0, this->scope, NULL);
 
-    corto_class_setObservable(thisAny, test_EventTest_onDelete_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDeleteSelf_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDeleteScope_o, this->scope);
-    corto_class_setObservable(thisAny, test_EventTest_onDeleteTree_o, this->scope);
+    corto_listen(this, test_EventTest_onDelete_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDeleteSelf_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDeleteScope_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onDeleteTree_o, 0, this->scope, NULL);
 
     return 0;
+/* $end */
+}
+
+corto_void _test_EventTest_destruct(test_EventTest this) {
+/* $begin(test/EventTest/destruct) */
+
+    corto_silence(this, test_EventTest_onDeclare_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDeclareSelf_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDeclareScope_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDeclareTree_o, 0, this->scope);
+
+    corto_silence(this, test_EventTest_onDefine_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDefineSelf_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDefineScope_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDefineTree_o, 0, this->scope);
+
+    corto_silence(this, test_EventTest_onUpdate_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onUpdateSelf_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onUpdateScope_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onUpdateTree_o, 0, this->scope);
+
+    corto_silence(this, test_EventTest_onDelete_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDeleteSelf_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDeleteScope_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onDeleteTree_o, 0, this->scope);
+
 /* $end */
 }
 
