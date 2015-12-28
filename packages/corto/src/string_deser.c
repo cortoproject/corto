@@ -36,7 +36,10 @@ static void corto_string_deserIndexInsert(corto_string_deser_t* data, struct cor
 }
 
 /* Lookup index */
-static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(corto_string member, corto_string_deser_t* data) {
+static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
+    corto_string member,
+    corto_string_deser_t* data)
+{
     corto_iter iter;
     struct corto_string_deserIndexInfo* info;
     corto_bool found;
@@ -51,11 +54,14 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(corto_s
         while(corto_iterHasNext(&iter)) {
             info = corto_iterNext(&iter);
 
-            /* Ambiguous members must always be referenced from their own scope. Even if the current scope does not have a member with the
+            /* Ambiguous members must always be referenced from their own scope.
+             * Even if the current scope does not have a member with the
              * specified name, implicit referencing is not allowed. */
             if (!strcmp(corto_nameof(info->m), member) && (!info->parsed)) {
                 found = TRUE;
+                data->iterData = *(corto_llIter_s*)iter.udata;
                 data->currentIter = iter;
+                data->currentIter.udata = &data->iterData;
                 break;
             }
         }
@@ -224,7 +230,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
 
         /* Create iterator for index */
         if (privateData.index) {
-            privateData.currentIter = corto_llIter(privateData.index);
+            privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
         }
     /* If type is a collection, build index with one node for element */
     } else {
@@ -238,7 +244,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         corto_string_deserIndexInsert(&privateData, elementNode);
 
         /* Create iterator for index */
-        privateData.currentIter = corto_llIter(privateData.index);
+        privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
         privateData.allocValue = corto_string_deserAllocElem;
         privateData.allocUdata = info->type;
 

@@ -40,7 +40,16 @@ task :prebuild do
     verbose(false)
     if File.exists?("include") then
         includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
-        sh "rm -rf #{includePath}"
+
+        # Clear subdirectories of include in target include directory
+        Dir.glob("include/**/*/").each do |file|
+            sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
+        end
+
+        # Clear header files in root include
+        sh "rm -f #{includePath}/*.h"
+
+        # Copy new header files
         sh "mkdir -p #{includePath}"
         sh "cp -r include/* #{includePath}/"
     end

@@ -331,8 +331,7 @@ corto_void _test_Ownership_tc_releaseOwned(test_Ownership this) {
     corto_int16 count = corto_release(o);
 
     test_assert(count == 0);
-    test_assert(this->observable == (corto_word)o);
-
+    test_assert(this->observable == 0);
 
 /* $end */
 }

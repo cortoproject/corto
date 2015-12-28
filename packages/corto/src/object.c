@@ -1124,7 +1124,7 @@ static int corto_dropWalk(void* o, void* userData) {
     return 1;
 }
 
-void corto_drop(corto_object o) {
+void corto_drop(corto_object o, corto_bool delete) {
     corto__object* _o;
     corto__scope* scope;
     corto_dropWalk_t walkData;
@@ -1152,7 +1152,10 @@ void corto_drop(corto_object o) {
             iter = corto_llIter(walkData.objects);
             while(corto_iterHasNext(&iter)) {
                 collected = corto_iterNext(&iter);
-                if (corto_deactivate(collected, corto_owned(collected))) {
+                if (corto_deactivate(
+                    collected,
+                    corto_owned(collected) && delete))
+                {
                     corto_release(collected);
                 }
 
@@ -1183,7 +1186,7 @@ static corto_bool corto_deactivate(corto_object o, corto_bool delete) {
         scope = corto__objectScope(_o);
 
         if (corto_adec(&scope->declared) == 0) {
-            corto_drop(o);
+            corto_drop(o, delete);
 
             if (delete) {
                 corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
@@ -1994,7 +1997,7 @@ static corto_uint16 corto_destruct(corto_object o) {
          * delete of a remote object should always be aligned explicitly (even
          * when the remote object is deleted implicitly on the remote end).
          */
-        corto_deactivate(o, !owner || !corto_instanceof(corto_replicator_o, owner));
+        corto_deactivate(o, FALSE);
 
         /* Call deinitializer */
         corto_deinit(o);
@@ -3170,7 +3173,7 @@ corto_int32 corto_signatureParamType(corto_string signature, corto_uint32 id, co
 
     srcptr = strchr(signature, '(');
     if (!srcptr) {
-        corto_error("missing argmentlist in signature '%s'", signature);
+        corto_seterr("missing argmentlist in signature '%s'", signature);
         goto error;
     }
     srcptr++;
@@ -3336,12 +3339,15 @@ corto_type corto_overloadParamType(corto_object object, corto_int32 i, corto_boo
     corto_id buffer;
     corto_int32 flags = 0;
     corto_id signature;
+    corto_type result;
 
     if (corto_signature(object, signature)) {
+        corto_seterr("invalid signature %s", signature);
         goto error;
     }
 
     if (corto_signatureParamType(signature, i, buffer, &flags)) {
+        corto_seterr("cannot get parameter %d from signature %s", i, signature);
         goto error;
     }
 
@@ -3351,9 +3357,21 @@ corto_type corto_overloadParamType(corto_object object, corto_int32 i, corto_boo
         if (reference) *reference = FALSE;
     }
 
-    return corto_type(corto_resolve(object, buffer));
+    result = corto_resolve(object, buffer);
+    if (!result) {
+        corto_seterr(
+          "unresolved type '%s' in signature '%s'", buffer, signature);
+        goto error;
+    }
+
+    if(!corto_instanceof(corto_type_o, result)) {
+        corto_seterr(
+          "object '%s' in signature '%s' is not a type", buffer, signature);
+        goto error;
+    }
+
+    return result;
 error:
-    corto_error("failed to obtain parameter %d from signature %s", i, signature);
     return NULL;
 }
 
@@ -3502,8 +3520,10 @@ corto_int16 corto_signature(corto_object object, corto_id buffer) {
 
     return 0;
 error:
-    corto_error("cannot obtain signature from a non callable object");
-    abort();
+    corto_seterr(
+      "can't get signature from '%s' of non-procedure type '%s'",
+      corto_fullpath(NULL, object),
+      corto_fullpath(NULL, t));    abort();
     return -1;
 }
 
@@ -3524,21 +3544,28 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
 
     /* Validate if function object is valid */
     if (!corto_checkState(object, CORTO_VALID)) {
+        corto_seterr(
+            "can't perform request '%s' on invalid object %s",
+            requested,
+            corto_fullpath(NULL, object));
         goto error;
     }
 
     /* Obtain offered singature */
     if (corto_signature(object, offered)) {
+        printf("invalid signature\n");
         goto error;
     }
 
     /* Obtain name of offered object */
     if (corto_signatureName(offered, o_name)) {
+        printf("invalid signature name #1\n");
         goto error;
     }
 
     /* Obtain name of requested object */
     if (corto_signatureName(requested, r_name)) {
+        printf("invalid signature name\n");
         goto error;
     }
 
@@ -3614,7 +3641,7 @@ nomatch:
     return 0;
 error:
     if (!corto_lasterr()) {
-        corto_seterr("invalid query '%s'", requested);
+        corto_seterr("invalid procedure request '%s'", requested);
     }
     return -1;
 }

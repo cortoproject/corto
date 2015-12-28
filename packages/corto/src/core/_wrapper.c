@@ -257,7 +257,7 @@ void _corto_replicator_onDelete(corto_replicator this, corto_object observable) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDelete(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onDelete(object observable)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual method 'onDelete(object observable)' not found in interface '%s' (%s)", corto_nameof(_abstract), corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -323,7 +323,7 @@ corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_string
     corto_assert(_method != NULL, "unresolved method '%s::onRequest(string parent,string expr,bool setContent)@%d'", corto_nameof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, parent, expr, setContent);
-    
+
     return _result;
 }
 

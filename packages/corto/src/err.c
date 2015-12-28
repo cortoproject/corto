@@ -270,5 +270,11 @@ void corto_seterr(char *fmt, ...) {
         va_end(list);
     }
     corto_setLasterror(err);
+
+    if (CORTO_OPERATIONAL && fmt) {
+        corto_error("error raised while shutting down: %s", err);
+        corto_backtrace(stdout);
+    }
+
     corto_dealloc(err);
 }

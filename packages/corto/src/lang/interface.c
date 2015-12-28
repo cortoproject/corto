@@ -639,6 +639,7 @@ corto_uint32 _corto_interface_resolveMethodId(corto_interface this, corto_string
 /* $begin(corto/lang/interface/resolveMethodId) */
     corto_int32 result;
     corto_function *f;
+    corto_int32 d;
 
     result = 0;
 
@@ -648,17 +649,21 @@ corto_uint32 _corto_interface_resolveMethodId(corto_interface this, corto_string
             name,
             corto_fullpath(NULL, this));
         abort();
-        goto error;
+        goto notfound;
     }
 
     /* Lookup method */
-    if ((f = corto_vtableLookup(&this->methods, name, NULL))) {
+    if ((f = corto_vtableLookup(&this->methods, name, &d))) {
         result = ((corto_word)f - (corto_word)this->methods.buffer) / sizeof(corto_function);
         result++; /* Id's start at 1 */
+    } else if (d == -1) {
+        goto error;
     }
 
     return (corto_uint32)result;
-error:
+notfound:
     return 0;
+error:
+    return -1;
 /* $end */
 }

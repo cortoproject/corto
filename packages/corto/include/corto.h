@@ -61,10 +61,11 @@ corto_string corto_getBuild(void);
 corto_bool corto_isbuiltin(corto_object o);
 void corto_onunload(void(*handler)(void*), void* userData);
 void corto_onexit(void(*handler)(void*), void* userData);
+
+extern int8_t CORTO_OPERATIONAL;
 /* $end */
 
 #ifdef __cplusplus
 }
 #endif
 #endif
-

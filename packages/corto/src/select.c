@@ -898,10 +898,6 @@ corto_int16 corto_select(
 {
     corto_selectData *data = corto_selectDataGet();
 
-    if (!scope) {
-        scope = root_o;
-    }
-
     corto_setstr(&data->expr, expr);
     corto_setstr(&data->tokens, expr);
     corto_setstr(&data->contentType, NULL);
@@ -931,8 +927,8 @@ corto_int16 corto_select(
     }
 
     /* Prepare first stack frame */
-    corto_claim(scope);
-    data->stack[0].o = scope;
+    data->stack[0].o = scope ? scope : root_o;
+    corto_claim(data->stack[0].o);
 
     return 0;
 error:

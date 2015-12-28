@@ -27,6 +27,7 @@ typedef struct corto_string_deser_t {
     corto_type type;
 
     /* Private */
+    corto_llIter_s iterData;
     corto_iter currentIter;
     corto_uint32 current;
     corto_ll index;

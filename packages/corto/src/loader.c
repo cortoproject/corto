@@ -312,7 +312,7 @@ static int corto_loadXml(void) {
 }
 
 /* Load a package */
-int corto_load(corto_string str, int argc, char* argv[]) {
+static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try) {
     corto_char ext[16];
     struct corto_fileHandler* h;
     int result = -1;
@@ -362,8 +362,12 @@ int corto_load(corto_string str, int argc, char* argv[]) {
         result = h->load(str, argc, argv, h->userData);
         lib->loading = FALSE;
     } else {
-        corto_seterr("file extension '%s' not supported.", ext);
-        goto error;
+        if (!try) {
+            corto_seterr(
+                "cannot load '%s': unknown file extension '%s'",
+                str, ext);
+            goto error;
+        }
     }
 
     corto_setAttr(prevAttr);
@@ -374,6 +378,16 @@ error:
 loaded:
     corto_setAttr(prevAttr);
     return 0;
+}
+
+/* Load a package */
+int corto_load(corto_string str, int argc, char* argv[]) {
+    return corto_loadIntern(str, argc, argv, FALSE);
+}
+
+/* Try loading a package */
+int corto_loadTry(corto_string str, int argc, char* argv[]) {
+    return corto_loadIntern(str, argc, argv, TRUE);
 }
 
 static time_t corto_getModified(corto_string file) {

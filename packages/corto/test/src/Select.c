@@ -294,7 +294,7 @@ corto_void _test_Select_tc_selectFilterAsterisk(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 3);
 
-    test_assert(test_Select_hasObject(results, ".", "corto", "package"));
+    test_assert(test_Select_hasObject(results, ".", "corto", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, ".", "karto", "void"));
     test_assert(test_Select_hasObject(results, ".", "korto", "void"));
 
@@ -309,8 +309,47 @@ corto_void _test_Select_tc_selectFilterWildcard(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 2);
 
-    test_assert(test_Select_hasObject(results, ".", "corto", "package"));
+    test_assert(test_Select_hasObject(results, ".", "corto", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, ".", "korto", "void"));
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectFromCorto(test_Select this) {
+/* $begin(test/Select/tc_selectFromCorto) */
+    corto_ll results = NULL;
+
+    results = test_Select_collect(corto_o, "//lang");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    test_assert(test_Select_hasObject(results, ".", "lang", "/corto/core/package"));
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectFromNull(test_Select this) {
+/* $begin(test/Select/tc_selectFromNull) */
+    corto_ll results = NULL;
+
+    results = test_Select_collect(NULL, "//lang");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/core/package"));
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectFromRoot(test_Select this) {
+/* $begin(test/Select/tc_selectFromRoot) */
+    corto_ll results = NULL;
+
+    results = test_Select_collect(root_o, "//lang");
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+    test_assert(test_Select_hasObject(results, "corto", "lang", "/corto/core/package"));
 
 /* $end */
 }
@@ -346,7 +385,7 @@ corto_void _test_Select_tc_selectIdentifierCaps(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 1);
 
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
 
 /* $end */
 }
@@ -359,7 +398,7 @@ corto_void _test_Select_tc_selectNumeric(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 1);
 
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
 /* $end */
 }
@@ -512,7 +551,7 @@ corto_void _test_Select_tc_selectParent(test_Select this) {
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, ""));
-    test_assert(!strcmp(item->type, "package"));
+    test_assert(!strcmp(item->type, "/corto/core/package"));
 
     corto_release(a);
 
@@ -527,14 +566,14 @@ corto_void _test_Select_tc_selectScope(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 8);
 
-    test_assert(test_Select_hasObject(results, "a", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a", "c", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
 /* $end */
 }
@@ -550,7 +589,7 @@ corto_void _test_Select_tc_selectScopedIdentifier(test_Select this) {
 
     item = corto_llGet(results, 0);
     test_assert(item != NULL);
-    test_assert(!strcmp(item->parent, "a"));
+    test_assert(!strcmp(item->parent, "/a"));
     test_assert(!strcmp(item->name, "b"));
     test_assert(!strcmp(item->type, "void"));
 
@@ -570,7 +609,7 @@ corto_void _test_Select_tc_selectScopedParent(test_Select this) {
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, ""));
-    test_assert(!strcmp(item->type, "package"));
+    test_assert(!strcmp(item->type, "/corto/core/package"));
 
 /* $end */
 }
@@ -601,14 +640,14 @@ corto_void _test_Select_tc_selectScopeWithAsterisk(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 8);
 
-    test_assert(test_Select_hasObject(results, "a", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a", "c", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
 /* $end */
 }
@@ -621,12 +660,12 @@ corto_void _test_Select_tc_selectScopeWithAsteriskFilter(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 6);
 
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
 /* $end */
 }
@@ -639,8 +678,8 @@ corto_void _test_Select_tc_selectScopeWithWildcard(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 2);
 
-    test_assert(test_Select_hasObject(results, "a", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "c", "void"));
 
 /* $end */
 }
@@ -653,8 +692,8 @@ corto_void _test_Select_tc_selectScopeWithWildcardFilter(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 2);
 
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
 
 /* $end */
 }
@@ -690,32 +729,32 @@ corto_void _test_Select_tc_selectTree(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 24);
 
-    test_assert(test_Select_hasObject(results, "a", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a", "c", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "c", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "ab01234567890", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c/b", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/c", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abc", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abd", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abdc", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/Abab", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/ab_ab", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/ab01234567890", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/b", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/c", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abc", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abd", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abdc", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/Abab", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/ab_ab", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/ab01234567890", "abcdef", "void"));
 /* $end */
 }
 
@@ -939,32 +978,32 @@ corto_void _test_Select_tc_selectTreeWithAsterisk(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 24);
 
-    test_assert(test_Select_hasObject(results, "a", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a", "c", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "c", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "ab01234567890", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c/b", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/c", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abc", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abd", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abdc", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/Abab", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/ab_ab", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/ab01234567890", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/b", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/c", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abc", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abd", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abdc", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/Abab", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/ab_ab", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/ab01234567890", "abcdef", "void"));
 
 /* $end */
 }
@@ -977,28 +1016,28 @@ corto_void _test_Select_tc_selectTreeWithAsteriskFilter(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 20);
 
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "ab01234567890", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abdc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "Abab", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "ab01234567890", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c/b", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/c", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abc", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abd", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/abdc", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/Abab", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/ab_ab", "abcdef", "void"));
-    test_assert(test_Select_hasObject(results, "a/c/ab01234567890", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/b", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/c", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abc", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abd", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/abdc", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/Abab", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/ab_ab", "abcdef", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c/ab01234567890", "abcdef", "void"));
 
 /* $end */
 }
@@ -1011,11 +1050,11 @@ corto_void _test_Select_tc_selectTreeWithWildcard(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 4);
 
-    test_assert(test_Select_hasObject(results, "a", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "c", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c", "b", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "c", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "b", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "c", "void"));
 
 /* $end */
 }
@@ -1028,11 +1067,11 @@ corto_void _test_Select_tc_selectTreeWithWildcardFilter(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 4);
 
-    test_assert(test_Select_hasObject(results, "a", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
 
-    test_assert(test_Select_hasObject(results, "a/c", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "a/c", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a/c", "abd", "void"));
 
 /* $end */
 }
@@ -1045,7 +1084,7 @@ corto_void _test_Select_tc_selectUnderscore(test_Select this) {
     test_assert(results != NULL);
     test_assert(corto_llSize(results) == 1);
 
-    test_assert(test_Select_hasObject(results, "a", "ab_ab", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
 
 /* $end */
 }

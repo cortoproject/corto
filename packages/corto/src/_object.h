@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-void corto_drop(corto_object o);
+void corto_drop(corto_object o, corto_bool delete);
 
 typedef struct corto__attr {
     unsigned scope:1;

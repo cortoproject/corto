@@ -218,6 +218,10 @@ test::Suite Select::
     void tc_selectErrParentWc()
     void tc_selectErrScopeScope()
 
+    void tc_selectFromNull()
+    void tc_selectFromRoot()
+    void tc_selectFromCorto()
+
     void tc_selectThis()
     void tc_selectParent()
     void tc_selectIdentifier()

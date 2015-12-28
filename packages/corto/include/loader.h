@@ -19,6 +19,9 @@ typedef int (*corto_loadAction)(corto_string file, int argc, char* argv[], void*
 /* Load a package */
 int corto_load(corto_string package, int argc, char* argv[]);
 
+/* Try loading a package (doesn't generate errors when not found) */
+int corto_loadTry(corto_string str, int argc, char* argv[]);
+
 /* Load a component */
 int corto_loadComponent(corto_string component, int argc, char* argv[]);
 

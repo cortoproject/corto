@@ -167,7 +167,7 @@ repeat:
                                 } else {
                                     sprintf(load, "/%s", buffer);
                                 }
-                                if (corto_load(load, 0, NULL)) {
+                                if (corto_loadTry(load, 0, NULL)) {
                                     corto_seterr(NULL);
                                     break;
                                 }

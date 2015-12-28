@@ -55,7 +55,18 @@ corto_threadKey CORTO_KEY_THREAD_STRING;
 /* OLS keys */
 corto_int8 CORTO_OLS_REPLICATOR;
 
+/* When enabled, components may trace debug information */
 int8_t CORTO_DEBUG_ENABLED = 0;
+
+/*
+ * Indicator for whether corto is operational
+ * 0 = running
+ * 1 = initializing
+ * 2 = deinitializing
+ * 3 = stopped
+ */
+
+int8_t CORTO_OPERATIONAL = 3;
 
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
@@ -679,6 +690,8 @@ static void corto_patchSequences(void) {
 
 int corto_start(void) {
 
+    CORTO_OPERATIONAL = 1; /* Initializing */
+
     /* CORTO_BUILD is where the buildsystem is located */
     if (!corto_getenv("CORTO_BUILD")) {
         corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s.%s/build",
@@ -784,6 +797,8 @@ int corto_start(void) {
     /* Load packages */
     corto_loadPackages();
 
+    CORTO_OPERATIONAL = 0; /* Running */
+
     return 0;
 }
 
@@ -849,13 +864,15 @@ static void corto_exit(void) {
 
 int corto_stop(void) {
 
+    CORTO_OPERATIONAL = 2; /* Initializing */
+
     /* Call unload handlers */
     corto_unload();
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the
      * removal of all non-static objects. */
-    corto_drop(root_o);
+    corto_drop(root_o, FALSE);
     corto_release(root_o);
 
     /* Call exithandlers */
@@ -887,6 +904,8 @@ int corto_stop(void) {
 
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
+
+    CORTO_OPERATIONAL = 3; /* Initializing */
 
     return 0;
 error:
