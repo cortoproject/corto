@@ -511,7 +511,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     /* If no arguments are provided, create an application with a random name */
     if (!apps && !components && !packages && !apps_noname &&
-        components_noname && !packages_noname)
+        !components_noname && !packages_noname)
     {
         char *name = cortotool_randomName();
         if (cortotool_app(

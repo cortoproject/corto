@@ -202,7 +202,7 @@ static corto_dl corto_loadValidLibrary(corto_string fileName) {
 
     /* Validate version */
     if (!build || strcmp(build(), corto_getBuild())) {
-        corto_seterr("%s: uses different corto library", fileName);
+        /* Library is linked with different Corto version */
         goto error;
     }
 
