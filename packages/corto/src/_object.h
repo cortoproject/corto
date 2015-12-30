@@ -41,7 +41,6 @@ typedef struct corto__scope {
     corto_string name;
     corto_rbtree scope;
     struct corto_rwmutex_s scopeLock;
-    corto_int32 declared;
     corto__ols *ols;
 }corto__scope;
 
