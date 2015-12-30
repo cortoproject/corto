@@ -452,11 +452,15 @@ corto_int16 corto__freeSSO(corto_object sso) {
 
     corto_assert(scope != NULL, "corto__freeSSO: static scoped object has no scope")
 
+    corto__orphan(sso);
+
     if (scope->parent) {
         corto_release(scope->parent);
     }
 
     if (scope->scope) {
+        /* Don't print this error - without a proper cycle detector this could
+         * be reported without there actually being a problem
         if (corto_rbtreeSize(scope->scope)) {
             corto_error("corto__freeSSO: scope of object '%s' is not empty (%p/%p: %d left)",
                 corto_nameof(sso),
@@ -464,7 +468,7 @@ corto_int16 corto__freeSSO(corto_object sso) {
                 scope->scope,
                 corto_rbtreeSize(scope->scope));
             goto error;
-        }
+        }*/
         corto_rbtreeFree(scope->scope);
         scope->scope = NULL;
     }
@@ -480,8 +484,6 @@ corto_int16 corto__freeSSO(corto_object sso) {
     corto_release(corto_typeof(sso));
 
     return 0;
-error:
-    return -1;
 }
 
 /* Adopt static scoped object */
@@ -651,6 +653,9 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
                 i --;
                 printf("   from: %s\n", memtrace[i]);
             } while (i);
+        }
+        if (CORTO_BACKTRACE_ENABLED) {
+            corto_backtrace(stdout);
         }
         printf("\n");
     }
@@ -1181,10 +1186,9 @@ static corto_bool corto_isBuiltin(corto_object o) {
     return FALSE;
 }
 
-static corto_bool corto_destruct(corto_object o, corto_bool delete) {
+corto_bool corto_destruct(corto_object o, corto_bool delete) {
     corto__object* _o;
-    corto__scope* scope;
-    corto_bool result = FALSE;
+    corto_bool result = TRUE;
     corto_object owner = corto_ownerof(o);
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -1193,11 +1197,8 @@ static corto_bool corto_destruct(corto_object o, corto_bool delete) {
     /* Treat builtin objects separately. They cannot be destructed regularly
      * because they aren't allocated on heap */
     if (corto_isBuiltin(o)) {
-        /// printf(" => destruct builtin %s\n", corto_fullpath(NULL, o));
         if (!corto_checkState(o, CORTO_DESTRUCTED)) {
             _o->attrs.state |= CORTO_DESTRUCTED;
-            corto_drop(o, delete);
-            corto__orphan(o);
         }
         return TRUE;
     }
@@ -1209,17 +1210,15 @@ static corto_bool corto_destruct(corto_object o, corto_bool delete) {
         /* From here, object is marked as destructed. */
         _o->attrs.state |= CORTO_DESTRUCTED;
 
-        /* If object is scoped, drop its children */
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_drop(o, delete);
-        }
-
         /* Only do the following steps if the object is defined */
         if (corto_checkState(o, CORTO_DEFINED)) {
 
             /* Only send delete notification when object is being deleted, not
              * when object is being suspended. */
             if (delete) {
+                if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+                    corto_drop(o, delete);
+                }
                 corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
             }
 
@@ -1366,12 +1365,19 @@ void corto_drop(corto_object o, corto_bool delete) {
                 collected = corto_iterNext(&iter);
 
                 corto_memtracePush();
-                if (corto_destruct(
-                    collected,
-                    corto_owned(collected) && delete))
-                {
+
+                if (delete) {
+                    if (corto_destruct(
+                        collected,
+                        corto_owned(collected) && delete))
+                    {
+                        corto_release(collected);
+                    }
+                } else {
                     corto_release(collected);
+                    corto_drop(collected, delete);
                 }
+
                 corto_memtracePop();
 
                 /* Double free - because corto_drop itself introduced a keep. */
@@ -2418,13 +2424,15 @@ typedef struct corto_observerAlignData {
 int corto_observerAlignScope(corto_object o, void *userData) {
     corto_observerAlignData *data = userData;
 
-    if (((data->mask & CORTO_ON_DECLARE) && (data->mask & CORTO_ON_SCOPE)) ||
-        ((data->mask & CORTO_ON_DECLARE) && (data->mask & CORTO_ON_SCOPE))) {
+    if ((data->mask & CORTO_ON_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
+    {
         corto_notifyObserver(data->observer, data->observable, o, CORTO_ON_DECLARE, data->depth);
     }
 
     if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
-        if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) && corto_checkState(o, CORTO_DEFINED)) {
+        if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
+            corto_checkState(o, CORTO_DEFINED))
+        {
             corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
         }
     }

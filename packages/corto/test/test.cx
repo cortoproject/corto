@@ -101,8 +101,13 @@ test::Suite ObjectMgmt::
     void tc_createChildParentTypeErr()
     void tc_createChildNullType()
     void tc_createChildInvalidType()
-
     void tc_createChildNested()
+
+    void tc_deleteSingle()
+    void tc_deleteTreeImplicit()
+    void tc_deleteTreeExplicit()
+    void tc_deleteWithReference()
+    void tc_deleteRedeclaration()
 
 // Class with method for testing ownership onInvoke
 class MethodForwardTest::

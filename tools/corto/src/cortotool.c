@@ -57,18 +57,24 @@ int main(int argc, char* argv[]) {
     corto_bool mute = FALSE;
     corto_bool startShell = FALSE;
 
-    /* Parse certain debugging options before starting the core */
+    /* Parse debugging options before starting the core */
     for(i = 1; i < argc; i++) {
-        if (*(argv[i]+1) == 'd') {
-            CORTO_DEBUG_ENABLED = TRUE;
-        }else if (*(argv[i]+1) == 't') {
-            CORTO_TRACE_OBJECT = argv[i + 1];
-            i ++;
-        }else if (*(argv[i]+1) == 'h') {
-            cortotool_printUsage(FALSE);
-            break;
-        } else if (*(argv[i]+1) == 'v') {
-            printf("%s\n", CORTO_VERSION);
+        if (*argv[i] == '-') {
+            if (*(argv[i]+1) == 'd') {
+                CORTO_DEBUG_ENABLED = TRUE;
+            }else if (*(argv[i]+1) == 't') {
+                CORTO_TRACE_OBJECT = argv[i + 1];
+                i ++;
+            }else if (*(argv[i]+1) == 'h') {
+                cortotool_printUsage(FALSE);
+                break;
+            } else if (*(argv[i]+1) == 'v') {
+                printf("%s\n", CORTO_VERSION);
+            } else if (*(argv[i]+1) == '-') {
+                if (!strcmp(argv[i], "--backtrace")) {
+                    CORTO_BACKTRACE_ENABLED = TRUE;
+                }
+            }
         }
     }
 
@@ -119,6 +125,8 @@ int main(int argc, char* argv[]) {
                         cortotool_printUsage(TRUE);
                     } else if (!strcmp(argv[i] + 2, "mute")) {
                         mute = TRUE;
+                    } else if (!strcmp(argv[i] + 2, "backtrace")) {
+                        /* Already handled */
                     } else {
                         corto_error("corto: unknown option '%s'", argv[i] + 2);
                         cortotool_printUsage(FALSE);

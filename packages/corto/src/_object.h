@@ -113,6 +113,8 @@ void corto__setState(corto_object o, corto_uint8 state);
 /* Provide extra debug information to release */
 corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string context);
 
+corto_bool corto_destruct(corto_object o, corto_bool delete);
+
 /* Get & lock scope */
 corto__scope *corto__scopeClaim(corto_object o);
 void corto__scopeRelease(corto_object o);

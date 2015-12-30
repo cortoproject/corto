@@ -5,10 +5,8 @@
  *      Author: sander
  */
 
-#define corto_lang_LIB
 #include "corto/corto.h"
-
-#include "string.h"
+#include "_object.h"
 
 corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* userData) {
     corto_object o;

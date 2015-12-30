@@ -1199,6 +1199,310 @@ corto_void _test_ObjectMgmt_tc_defineVoidAttr0(test_ObjectMgmt this) {
 /* $end */
 }
 
+corto_void _test_ObjectMgmt_tc_deleteRedeclaration(test_ObjectMgmt this) {
+/* $begin(test/ObjectMgmt/tc_deleteRedeclaration) */
+    corto_int16 result;
+    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(corto_countof(o) == 1);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 0);
+
+    /* Redeclare object */
+    test_Foo o2 = corto_createChild(NULL, "o", test_Foo_o);
+    test_assert(o2 != NULL);
+    test_assert(o == o2);
+    test_assert(corto_countof(o) == 2);
+
+    test_assert(*test_initCalled_o == 2);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 0);
+
+    test_EventTest e = test_EventTestCreate(o);
+    test_assert(corto_countof(o) == 4);
+
+    corto_object p = corto_resolve(NULL, "o");
+    test_assert(p == o);
+    test_assert(corto_countof(o) == 5);
+    corto_release(p);
+    test_assert(corto_countof(o) == 4);
+
+    test_assert(e->countDeclareSelf == 1);
+    test_assert(e->countDefineSelf == 1);
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    result = corto_delete(o);
+    test_assert(result == 0);
+    test_assert(corto_countof(o) == 3);
+
+    corto_object q = corto_resolve(NULL, "o");
+    test_assert(q == NULL);
+
+    test_assert(e->countDeleteSelf == 1);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    test_assert(*test_initCalled_o == 2);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+    result = corto_delete(o2);
+    test_assert(result == 0);
+    test_assert(corto_countof(o) == 2);
+
+    test_assert(e->countDeleteSelf == 1);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    test_assert(*test_initCalled_o == 2);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+    corto_delete(e);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_deleteSingle(test_ObjectMgmt this) {
+/* $begin(test/ObjectMgmt/tc_deleteSingle) */
+    corto_int16 result;
+    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+
+    test_EventTest e = test_EventTestCreate(o);
+
+    corto_object p = corto_resolve(NULL, "o");
+    test_assert(p == o);
+    corto_release(p);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 0);
+
+    test_assert(e->countDeclareSelf == 1);
+    test_assert(e->countDefineSelf == 1);
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    result = corto_delete(o);
+    test_assert(result == 0);
+
+    test_assert(e->countDeleteSelf == 1);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+    corto_object q = corto_resolve(NULL, "o");
+    test_assert(q == NULL);
+
+    corto_delete(e);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_deleteTreeExplicit(test_ObjectMgmt this) {
+/* $begin(test/ObjectMgmt/tc_deleteTreeExplicit) */
+    corto_int16 result;
+    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+
+    test_Foo o_o = corto_createChild(o, "o", test_Foo_o);
+    test_assert(o_o != NULL);
+    test_assert(o_o != o);
+
+    test_Foo o_o_o = corto_createChild(o_o, "o", test_Foo_o);
+    test_assert(o_o_o != NULL);
+    test_assert(o_o_o != o_o);
+    test_assert(o_o_o != o);
+
+    test_EventTest e = test_EventTestCreate(o);
+
+    corto_object p = corto_resolve(NULL, "o");
+    test_assert(p == o);
+    corto_release(p);
+
+    p = corto_resolve(NULL, "o/o");
+    test_assert(p == o_o);
+    corto_release(p);
+
+    p = corto_resolve(NULL, "o/o/o");
+    test_assert(p == o_o_o);
+    corto_release(p);
+
+    test_assert(*test_initCalled_o == 3);
+    test_assert(*test_constructCalled_o == 3);
+    test_assert(*test_destructCalled_o == 0);
+
+    test_assert(e->countDeclareSelf == 1);
+    test_assert(e->countDefineSelf == 1);
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeclareScope == 1);
+    test_assert(e->countDefineScope == 1);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeclareTree == 2);
+    test_assert(e->countDefineTree == 2);
+    test_assert(e->countDeleteTree == 0);
+
+    result = corto_delete(o_o_o);
+    test_assert(result == 0);
+
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 1);
+
+    p = corto_resolve(NULL, "o/o/o");
+    test_assert(p == NULL);
+
+    result = corto_delete(o_o);
+    test_assert(result == 0);
+
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeleteScope == 1);
+    test_assert(e->countDeleteTree == 2);
+
+    p = corto_resolve(NULL, "o/o");
+    test_assert(p == NULL);
+
+    result = corto_delete(o);
+    test_assert(result == 0);
+
+    test_assert(e->countDeleteSelf == 1);
+    test_assert(e->countDeleteScope == 1);
+    test_assert(e->countDeleteTree == 2);
+
+    p = corto_resolve(NULL, "o");
+    test_assert(p == NULL);
+
+    test_assert(*test_initCalled_o == 3);
+    test_assert(*test_constructCalled_o == 3);
+    test_assert(*test_destructCalled_o == 3);
+
+    corto_delete(e);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_deleteTreeImplicit(test_ObjectMgmt this) {
+/* $begin(test/ObjectMgmt/tc_deleteTreeImplicit) */
+    corto_int16 result;
+    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+
+    test_Foo o_o = corto_createChild(o, "o", test_Foo_o);
+    test_assert(o_o != NULL);
+    test_assert(o_o != o);
+
+    test_Foo o_o_o = corto_createChild(o_o, "o", test_Foo_o);
+    test_assert(o_o_o != NULL);
+    test_assert(o_o_o != o_o);
+    test_assert(o_o_o != o);
+
+    test_EventTest e = test_EventTestCreate(o);
+
+    corto_object p = corto_resolve(NULL, "o");
+    test_assert(p == o);
+    corto_release(p);
+
+    p = corto_resolve(NULL, "o/o");
+    test_assert(p == o_o);
+    corto_release(p);
+
+    p = corto_resolve(NULL, "o/o/o");
+    test_assert(p == o_o_o);
+    corto_release(p);
+
+    test_assert(*test_initCalled_o == 3);
+    test_assert(*test_constructCalled_o == 3);
+    test_assert(*test_destructCalled_o == 0);
+
+    test_assert(e->countDeclareSelf == 1);
+    test_assert(e->countDefineSelf == 1);
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeclareScope == 1);
+    test_assert(e->countDefineScope == 1);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeclareTree == 2);
+    test_assert(e->countDefineTree == 2);
+    test_assert(e->countDeleteTree == 0);
+
+    result = corto_delete(o);
+    test_assert(result == 0);
+
+    test_assert(e->countDeleteSelf == 1);
+    test_assert(e->countDeleteScope == 1);
+    test_assert(e->countDeleteTree == 2);
+
+    p = corto_resolve(NULL, "o");
+    test_assert(p == NULL);
+
+    test_assert(*test_initCalled_o == 3);
+    test_assert(*test_constructCalled_o == 3);
+    test_assert(*test_destructCalled_o == 3);
+
+    corto_delete(e);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_deleteWithReference(test_ObjectMgmt this) {
+/* $begin(test/ObjectMgmt/tc_deleteWithReference) */
+    corto_int16 result;
+    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_assert(o != NULL);
+    test_assert(corto_countof(o) == 1);
+
+    test_EventTest e = test_EventTestCreate(o);
+    test_assert(corto_countof(o) == 3); /* e holds 2 references */
+
+    corto_object p = corto_resolve(NULL, "o");
+    test_assert(p == o);
+    test_assert(corto_countof(o) == 4);
+
+    /* Postpone release until after the delete */
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 0);
+
+    test_assert(e->countDeclareSelf == 1);
+    test_assert(e->countDefineSelf == 1);
+    test_assert(e->countDeleteSelf == 0);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    result = corto_delete(o);
+    test_assert(result == 0);
+    test_assert(corto_countof(o) == 3);
+
+    test_assert(e->countDeleteSelf == 1);
+    test_assert(e->countDeleteScope == 0);
+    test_assert(e->countDeleteTree == 0);
+
+    test_assert(*test_initCalled_o == 1);
+    test_assert(*test_constructCalled_o == 1);
+    test_assert(*test_destructCalled_o == 1);
+
+    corto_object q = corto_resolve(NULL, "o");
+    test_assert(q == NULL);
+    test_assert(corto_countof(o) == 3);
+
+    result = corto_release(o);
+    test_assert(result == 2); /* Refcount should be 2 */
+
+    /* This will get rid of the remaining 2 references */
+    corto_delete(e);
+
+/* $end */
+}
+
 corto_void _test_ObjectMgmt_tc_invalidate(test_ObjectMgmt this) {
 /* $begin(test/ObjectMgmt/tc_invalidate) */
 

@@ -61,6 +61,9 @@ int8_t CORTO_DEBUG_ENABLED = 0;
 /* When set, the core traces memory management information for this object */
 corto_string CORTO_TRACE_OBJECT = NULL;
 
+/* When set, the core adds backtraces to memory tracing */
+int8_t CORTO_BACKTRACE_ENABLED = 0;
+
 /*
  * Indicator for whether corto is operational
  * 0 = running
@@ -637,13 +640,13 @@ static void corto_defineType(corto_object o, corto_uint32 size) {
 
 /* Destruct object */
 static void corto_deleteObject(corto_object o) {
-    corto__destructor(o);
+    corto_destruct(o, FALSE);
 }
 
 /* Destruct type */
 static void corto_deleteType(corto_object o, corto_uint32 size) {
     CORTO_UNUSED(size);
-    corto__destructor(o);
+    corto_destruct(o, FALSE);
 }
 
 /* Update references */
@@ -890,13 +893,14 @@ int corto_stop(void) {
     SSO_OP_TYPE(corto_deleteType);
     SSO_OP_OBJECT(corto_deleteObject);
     SSO_OP_OBJECT_2ND(corto_deleteObject);
+    corto_destruct(corto_o, FALSE);
 
     /* Free objects */
     SSO_OP_OBJECT_2ND(corto_releaseObject);
     SSO_OP_OBJECT(corto_releaseObject);
     SSO_OP_TYPE(corto_releaseType);
 
-    /* Deinitialize root */
+    /* Deinitialize core packages */
     if (corto__freeSSO(corto_core_o)) goto error;
     if (corto__freeSSO(corto_lang_o)) goto error;
     if (corto__freeSSO(corto_o)) goto error;
@@ -908,7 +912,7 @@ int corto_stop(void) {
     /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
     /*pthread_exit(NULL);*/
 
-    CORTO_OPERATIONAL = 3; /* Initializing */
+    CORTO_OPERATIONAL = 3; /* Shut down */
 
     return 0;
 error:
