@@ -58,6 +58,9 @@ corto_int8 CORTO_OLS_REPLICATOR;
 /* When enabled, components may trace debug information */
 int8_t CORTO_DEBUG_ENABLED = 0;
 
+/* When set, the core traces memory management information for this object */
+corto_string CORTO_TRACE_OBJECT = NULL;
+
 /*
  * Indicator for whether corto is operational
  * 0 = running

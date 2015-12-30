@@ -543,7 +543,7 @@ corto_void _corto_interface_destruct(corto_interface this) {
 
     /* Free members */
     for (i=0; i<this->members.length; i++) {
-        corto_release(this->members.buffer[i]);
+        corto_setref(&this->members.buffer[i], NULL);
     }
 
     if (this->members.buffer) {
@@ -553,7 +553,7 @@ corto_void _corto_interface_destruct(corto_interface this) {
 
     /* Free methods */
     for (i=0; i<this->methods.length; i++) {
-        corto_release(this->methods.buffer[i]);
+        corto_setref(&this->methods.buffer[i], NULL);
     }
 
     if (this->methods.buffer) {

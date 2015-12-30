@@ -105,10 +105,13 @@ int corto__adoptSSO(corto_object sso);
 void corto__orphan(corto_object o);
 
 /* Call destructor of object (if class) */
-int corto__destructor(corto_object o);
+void corto__destructor(corto_object o);
 
 /* Set state on object */
 void corto__setState(corto_object o, corto_uint8 state);
+
+/* Provide extra debug information to release */
+corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string context);
 
 /* Get & lock scope */
 corto__scope *corto__scopeClaim(corto_object o);

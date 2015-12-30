@@ -175,12 +175,6 @@ corto_void _test_RelativeName_teardown(test_RelativeName this) {
 /* $begin(test/RelativeName/teardown) */
 
     corto_delete(this->tier1);
-    corto_delete(this->tier2);
-    corto_delete(this->tier3);
-    corto_delete(this->obj);
-    corto_delete(this->disjunct);
-    corto_delete(this->child);
-
     corto_setref(&this->tier1, NULL);
     corto_setref(&this->tier2, NULL);
     corto_setref(&this->tier3, NULL);

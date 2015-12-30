@@ -13,7 +13,6 @@ extern corto_mutex_s corto_adminLock;
 
 static corto_object corto_adopt(corto_object parent, corto_object child);
 static corto_int32 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
-static corto_bool corto_deactivate(corto_object o, corto_bool delete);
 static void corto_olsDestroy(corto__scope *scope);
 
 extern corto_threadKey CORTO_KEY_ATTR;
@@ -54,6 +53,10 @@ typedef struct corto_observerAdmin {
     corto_object from;
 }corto_observerAdmin;
 static corto_observerAdmin observerAdmin[CORTO_MAX_THREADS];
+
+/* Stack for tracing memory management operations */
+static corto_string memtrace[50];
+static corto_int8 memtraceSp = 0;
 
 static struct corto_observerAdmin* corto_observerAdminGet(void) {
     corto_observerAdmin *admin = corto_threadTlsGet(CORTO_KEY_OBSERVER_ADMIN);
@@ -145,6 +148,7 @@ static corto__scope* corto__objectScope(corto__object* o) {
     if (o->attrs.scope) {
         result = CORTO_OFFSET(o, -sizeof(corto__scope));
     }
+
     return result;
 }
 
@@ -232,7 +236,6 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
       "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
     scope->name = corto_strdup(name);
-    scope->declared = 1;
 
     /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
@@ -265,7 +268,6 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
         corto_rwmutexFree(&scope->scopeLock);
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
-        corto_ainc(&scope->declared);
     }
 
     return result;
@@ -431,8 +433,6 @@ void corto__newSSO(corto_object sso) {
         corto__adoptSSO(sso);
     }
 
-    scope->declared = 1;
-
     /* Init observable */
     if (corto_checkAttr(sso, CORTO_ATTR_OBSERVABLE)) {
         corto__initObservable(sso);
@@ -526,7 +526,7 @@ void corto_delegateDestruct(corto_type t, corto_object o) {
 }
 
 /* Destruct object */
-int corto__destructor(corto_object o) {
+void corto__destructor(corto_object o) {
     corto_type t;
     corto__object* _o;
 
@@ -544,14 +544,9 @@ int corto__destructor(corto_object o) {
 
         _o->attrs.state &= ~CORTO_DEFINED;
     } else {
-        corto_seterr("%s/destruct: object '%s' is not defined",
+        corto_critical("%s/destruct: object '%s' is not defined",
             corto_fullpath(NULL, t), corto_fullpath(NULL, o));
-        goto error;
     }
-
-    return 0;
-error:
-    return -1;
 }
 
 void corto__setState(corto_object o, corto_uint8 state) {
@@ -568,31 +563,31 @@ static corto_equalityKind corto_compareDefault(corto_type this, const void* o1, 
 }
 
 static corto_equalityKind corto_compareLookupIntern(const char *o1, const char *o2, corto_bool matchArgs) {
-  int r;
-  const char *ptr1, *ptr2;
-  ptr1 = o1;
-  ptr2 = o2;
-  char ch1, ch2;
+    int r;
+    const char *ptr1, *ptr2;
+    ptr1 = o1;
+    ptr2 = o2;
+    char ch1, ch2;
 
-  ch2 = *ptr2;
-  while((ch1 = *ptr1) && ch2) {
-      if (ch1 == ch2) {
-          ptr1++; ptr2++;
-          ch2 = *ptr2;
-          continue;
-      }
-      if (ch1 < 97) ch1 = tolower(ch1);
+    ch2 = *ptr2;
+    while((ch1 = *ptr1) && ch2) {
+        if (ch1 == ch2) {
+            ptr1++; ptr2++;
+            ch2 = *ptr2;
+            continue;
+        }
+        if (ch1 < 97) ch1 = tolower(ch1);
 
-      /* Query is always made lower case, for efficiency reasons */
-      /* if (ch2 < 97) ch2 = tolower(ch2); */
-      if (ch1 != ch2) {
-          r = ch1 - ch2;
-          goto compare;
-      }
-      ptr1++;
-      ptr2++;
-      ch2 = *ptr2;
-  }
+        /* Query is always made lower case, for efficiency reasons */
+        /* if (ch2 < 97) ch2 = tolower(ch2); */
+        if (ch1 != ch2) {
+            r = ch1 - ch2;
+            goto compare;
+        }
+        ptr1++;
+        ptr2++;
+        ch2 = *ptr2;
+    }
 
   if (matchArgs) {
       if ((ch1 == '(') && !ch2) {
@@ -616,6 +611,50 @@ static corto_equalityKind corto_compareLookupNoArgMatching(corto_type this, cons
     return corto_compareLookupIntern(o1, o2, FALSE);
 }
 
+static void corto_memtracePush(void) {
+    memtraceSp ++;
+}
+
+static void corto_memtracePop(void) {
+    memtraceSp --;
+    if (memtrace[memtraceSp]) {
+        corto_dealloc(memtrace[memtraceSp]);
+        memtrace[memtraceSp] = NULL;
+    }
+}
+
+static void corto_memtrace(corto_string oper, corto_object o, corto_string context) {
+    corto_id path;
+    corto_fullpath(path, o);
+
+    if (memtrace[memtraceSp]) {
+        corto_dealloc(memtrace[memtraceSp]);
+        memtrace[memtraceSp] = NULL;
+    }
+
+    corto_asprintf(&memtrace[memtraceSp], "%s (%s) %s", path, oper, context ? context : "");
+
+    if (!strcmp(path, CORTO_TRACE_OBJECT)) {
+        printf("%s: %s (count = %d, destructed = %d)\n",
+            oper,
+            path,
+            corto_countof(o),
+            corto_checkState(o, CORTO_DESTRUCTED));
+
+        if (context) {
+            printf("    %s\n", context);
+        }
+
+        if (memtraceSp) {
+            corto_int32 i = memtraceSp;
+            do {
+                i --;
+                printf("   from: %s\n", memtrace[i]);
+            } while (i);
+        }
+        printf("\n");
+    }
+}
 
 /* Match a state exclusively:
  *                CORTO_DECLARED - CORTO_DECLARED | CORTO_DEFINED
@@ -701,7 +740,11 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
             }
 
             /* Parent must not be deleted before all childs are gone. */
+            if (CORTO_TRACE_OBJECT) corto_memtrace("declare", child, NULL);
+            corto_memtracePush();
             corto_claim(parent);
+            corto_memtracePop();
+
             if (corto_rwmutexUnlock(&p_scope->scopeLock))
                 corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");
         } else {
@@ -963,11 +1006,17 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
                 corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
                 o = o_ret;
 
+                /* Redeclaring an object results in a claim so that the object
+                 * can't be deallocated until it is explicitly deleted by the
+                 * code that redeclared it. */
+                corto_claim(o);
+
                 /* The object already exists. Check if the existing object is
                  * owned by the same owner as the one registered */
                 corto_object owner = corto_ownerof(o);
                 if (owner && corto_instanceof(corto_replicator_o, owner)) {
                     if (owner != corto_getOwner()) {
+                        corto_release(o);
                         corto_seterr(
                           "owner '%s' of existing object '%s' does not match",
                           corto_fullpath(NULL, owner),
@@ -1093,9 +1142,168 @@ corto_int16 corto_define(corto_object o) {
                 /* Remove valid state */
                 corto_invalidate(o);
             }
+
+            if (CORTO_TRACE_OBJECT) corto_memtrace("define", o, NULL);
         } else {
             corto_notify(corto__objectObservable(_o), o, CORTO_ON_UPDATE);
         }
+    }
+
+    return result;
+}
+
+static corto_bool corto_isBuiltin(corto_object o) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (o == root_o ||
+            o == corto_o ||
+            o == corto_lang_o ||
+            o == corto_core_o)
+        {
+            return TRUE;
+        } else
+        {
+            corto_object p = corto_parentof(o);
+            if (p == corto_lang_o || p == corto_core_o)
+            {
+                return TRUE;
+            } else
+            {
+                do {
+                    p = corto_parentof(p);
+                    if (p == corto_lang_o || p == corto_core_o) {
+                        return TRUE;
+                    }
+                } while (p);
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+static corto_bool corto_destruct(corto_object o, corto_bool delete) {
+    corto__object* _o;
+    corto__scope* scope;
+    corto_bool result = FALSE;
+    corto_object owner = corto_ownerof(o);
+
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    corto_ainc(&_o->refcount);
+
+    /* Treat builtin objects separately. They cannot be destructed regularly
+     * because they aren't allocated on heap */
+    if (corto_isBuiltin(o)) {
+        /// printf(" => destruct builtin %s\n", corto_fullpath(NULL, o));
+        if (!corto_checkState(o, CORTO_DESTRUCTED)) {
+            _o->attrs.state |= CORTO_DESTRUCTED;
+            corto_drop(o, delete);
+            corto__orphan(o);
+        }
+        return TRUE;
+    }
+
+    if (!corto_checkState(o, CORTO_DESTRUCTED)) {
+        if (CORTO_TRACE_OBJECT) corto_memtrace("destruct", o, NULL);
+        corto_memtracePush();
+
+        /* From here, object is marked as destructed. */
+        _o->attrs.state |= CORTO_DESTRUCTED;
+
+        /* If object is scoped, drop its children */
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            corto_drop(o, delete);
+        }
+
+        /* Only do the following steps if the object is defined */
+        if (corto_checkState(o, CORTO_DEFINED)) {
+
+            /* Only send delete notification when object is being deleted, not
+             * when object is being suspended. */
+            if (delete) {
+                corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
+            }
+
+            /* Call object destructor */
+            if (!owner || !corto_instanceof(corto_replicator_o, owner)) {
+                corto__destructor(o);
+            }
+        }
+
+        /* Deinit observable */
+        if (corto_checkAttr(o, CORTO_ATTR_OBSERVABLE)) {
+            corto__deinitObservable(o);
+        }
+
+        /* Deinit writable */
+        if (corto_checkAttr(o, CORTO_ATTR_WRITABLE)) {
+            corto__deinitWritable(o);
+        }
+
+        /* Deinit scope */
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            corto__orphan(o);
+        } else {
+            /* Remove from anonymous cache */
+            corto_mutexLock(&corto_adminLock);
+            corto_llRemove(corto_anonymousObjects, o);
+            corto_mutexUnlock(&corto_adminLock);
+        }
+
+        /* Indicate that object has been destructed */
+        result = TRUE;
+        corto_memtracePop();
+    }
+
+    /* Although after the destruct-operation it is ensured that this object no
+     * longer participates in any cycles, it cannot be assumed that all objects
+     * using this are free'd. For example, another object that has multiple
+     * reference cycles might still be referencing this object, but can itself
+     * not yet be freed because of the other cycles, which cannot be solved by
+     * the destruction of this object. Therefore when the reference count of
+     * this object is non-zero, it cannot yet be freed.
+     */
+
+    if (!corto_adec(&_o->refcount)) {
+
+        if (CORTO_TRACE_OBJECT) corto_memtrace("deinit", o, NULL);
+
+        /* Call deinitializer */
+        corto_memtracePush();
+        corto_deinit(o);
+        corto_memtracePop();
+
+        /* Do not free type before deinitializing the object, which needs the
+         * type to walk over the content of the object. */
+        corto_release(corto_typeof(o));
+
+        /* If the object was scoped, check if there is a tree object that needs
+         * to be removed. Tree objects can't be cleaned up for as long as the
+         * object is referenced, since that may indicate that there can be
+         * iterators active on the tree. Iterators need the tree object to
+         * figure out whether mutations have happened. */
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            /* Deinit scope not before refcount goes to zero. The data in the scope
+             * administration is required to determine whether this object is
+             * a builtin object. */
+            corto__deinitScope(o);
+
+            _o = CORTO_OFFSET(o, -sizeof(corto__object));
+             corto__scope *scope = corto__objectScope(_o);
+            if (scope->scope) {
+                corto_rbtreeFree(scope->scope);
+            }
+
+            if (scope->name) {
+                corto_dealloc(scope->name);
+                scope->name = NULL;
+            }
+        }
+
+        if (CORTO_TRACE_OBJECT) corto_memtrace("deallocate", o, NULL);
+
+        corto_dealloc(corto__objectStartAddr(_o));
+
+        result = FALSE;
     }
 
     return result;
@@ -1149,15 +1357,22 @@ void corto_drop(corto_object o, corto_bool delete) {
 
         /* Free objects outside scopeLock */
         if (walkData.objects) {
+            if (CORTO_TRACE_OBJECT) {
+                corto_memtrace(delete ? "drop:delete" : "drop:suspend", o, NULL);
+            }
+
             iter = corto_llIter(walkData.objects);
             while(corto_iterHasNext(&iter)) {
                 collected = corto_iterNext(&iter);
-                if (corto_deactivate(
+
+                corto_memtracePush();
+                if (corto_destruct(
                     collected,
                     corto_owned(collected) && delete))
                 {
                     corto_release(collected);
                 }
+                corto_memtracePop();
 
                 /* Double free - because corto_drop itself introduced a keep. */
                 corto_release(collected);
@@ -1169,46 +1384,13 @@ void corto_drop(corto_object o, corto_bool delete) {
     }
 }
 
-/* This doesn't delete the object, but will 'deactivate' it, so that
- * no longer appears in the object hierarchy, won't be attached as observer
- * and a DELETE notification has been sent out.
- *
- * This function needs to be reentrant because non-scoped objects don't have
- * a declared counter.
- */
-static corto_bool corto_deactivate(corto_object o, corto_bool delete) {
-    corto__object* _o;
-    corto__scope* scope;
-    corto_bool result = FALSE;
-
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        _o = CORTO_OFFSET(o, -sizeof(corto__object));
-        scope = corto__objectScope(_o);
-
-        if (corto_adec(&scope->declared) == 0) {
-            corto_drop(o, delete);
-
-            if (delete) {
-                corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
-            }
-
-            corto__orphan(o);
-            result = TRUE;
-        }
-    } else {
-        result = TRUE;
-    }
-
-    return result;
-}
-
 /* Delete object */
 corto_int16 corto_suspend(corto_object o) {
     if (!o) {
         corto_critical("NULL passed to corto_delete");
     }
 
-    if (corto_deactivate(o, FALSE)) {
+    if (corto_destruct(o, FALSE)) {
         corto_release(o);
     }
 
@@ -1228,9 +1410,14 @@ corto_int16 corto_delete(corto_object o) {
         goto error;
     }
 
-    if (corto_deactivate(o, TRUE)) {
+    if (CORTO_TRACE_OBJECT) corto_memtrace("delete", o, NULL);
+    corto_memtracePush();
+
+    if (corto_destruct(o, TRUE)) {
         corto_release(o);
     }
+
+    corto_memtracePop();
 
     return 0;
 error:
@@ -1957,110 +2144,6 @@ corto_bool corto_owned(corto_object o) {
     }
 }
 
-/* Destruct object. */
-static corto_uint16 corto_destruct(corto_object o) {
-    corto__object* _o;
-    corto_object owner = corto_ownerof(o);
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    corto_ainc(&_o->refcount);
-
-    if (!corto_checkState(o, CORTO_DESTRUCTED)) {
-
-        /* Only do the following steps if the object is defined */
-        if (corto_checkState(o, CORTO_DEFINED)) {
-            /* From here, object is marked as destructed. */
-            _o->attrs.state |= CORTO_DESTRUCTED;
-
-            /* Integrity check */
-            if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                if (corto_parentof(o) == corto_lang_o) {
-                    corto_critical(
-                      "illegal attempt to destruct builtin-object '%s'.",
-                      corto_fullpath(NULL, o));
-                }
-            }
-
-            /* Call object destructor */
-            if (!owner || !corto_instanceof(corto_replicator_o, owner)) {
-                if (corto__destructor(o)) {
-                    return -1;
-                }
-            }
-        }
-
-        /* Deactivate object.
-         *
-         * When object is not owned by the current process, always do a suspend.
-         * Even when this function is called from the thread that owns the
-         * object, this only deals with implicit object destruction, and
-         * delete of a remote object should always be aligned explicitly (even
-         * when the remote object is deleted implicitly on the remote end).
-         */
-        corto_deactivate(o, FALSE);
-
-        /* Call deinitializer */
-        corto_deinit(o);
-
-        /* Deinit observable */
-        if (corto_checkAttr(o, CORTO_ATTR_OBSERVABLE)) {
-            corto__deinitObservable(o);
-        }
-
-        /* Free type of object */
-        corto_release(corto_typeof(o));
-
-        /* Deinit writable */
-        if (corto_checkAttr(o, CORTO_ATTR_WRITABLE)) {
-            corto__deinitWritable(o);
-        }
-
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto__deinitScope(o);
-        } else {
-            /* Remove from anonymous cache */
-            corto_mutexLock(&corto_adminLock);
-            corto_llRemove(corto_anonymousObjects, o);
-            corto_mutexUnlock(&corto_adminLock);
-        }
-    }
-
-    /* Although after the destruct-operation it is ensured that this object no
-     * longer participates in any cycles, it cannot be assumed that all objects
-     * using this are free'd. For example, another object that has multiple
-     * reference cycles might still be referencing this object, but can itself
-     * not yet be freed because of the other cycles, which cannot be solved by
-     * the destruction of this object. Therefore when the reference count of
-     * this object is non-zero, it cannot yet be freed.
-     */
-
-    corto_adec(&_o->refcount);
-
-    if (!corto_countof(o)) {
-        /* If the object was scoped, check if there is a tree object that needs
-         * to be removed. Tree objects can't be cleaned up for as long as the
-         * object is referenced, since that may indicate that there can be
-         * iterators active on the tree. Iterators need the tree object to
-         * figure out whether mutations have happened. */
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            _o = CORTO_OFFSET(o, -sizeof(corto__object));
-             corto__scope *scope = corto__objectScope(_o);
-            if (scope->scope) {
-                corto_rbtreeFree(scope->scope);
-            }
-
-            if (scope->name) {
-                corto_dealloc(scope->name);
-                scope->name = NULL;
-            }
-        }
-        corto_dealloc(corto__objectStartAddr(_o));
-        return 0;
-    } else {
-        return corto_countof(o);
-    }
-}
-
 corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string context) {
     corto__object* _o;
     corto_uint32 i;
@@ -2069,6 +2152,8 @@ corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string conte
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     i = corto_ainc(&_o->refcount);
+
+    if (CORTO_TRACE_OBJECT) corto_memtrace("claim", o, context);
 
     return i;
 }
@@ -2082,14 +2167,17 @@ corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string con
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     i = corto_adec(&_o->refcount);
 
+    if (CORTO_TRACE_OBJECT) corto_memtrace("release", o, context);
+    corto_memtracePush();
+
     if (!i) {
-        corto_destruct(o);
-    }
-    if (i < 0) {
+        corto_destruct(o, FALSE);
+    } else if (i < 0) {
         corto_critical("negative reference count of object (%p) '%s' of type '%s'",
             o, corto_fullpath(NULL, o), corto_fullpath(NULL, corto_typeof(o)));
         corto_backtrace(stdout);
     }
+    corto_memtracePop();
 
     return i;
 }

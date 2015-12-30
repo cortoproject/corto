@@ -132,7 +132,13 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
             }
         }
         if (!weak) {
-            corto_release(o);
+            if (CORTO_TRACE_OBJECT) {
+                corto_id buff;
+                corto_valueExpr(v, buff, sizeof(buff));
+                corto_release_ext(NULL, o, buff);
+            } else {
+                corto_release(o);
+            }
         }
     }
 

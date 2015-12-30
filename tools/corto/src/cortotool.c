@@ -57,6 +57,21 @@ int main(int argc, char* argv[]) {
     corto_bool mute = FALSE;
     corto_bool startShell = FALSE;
 
+    /* Parse certain debugging options before starting the core */
+    for(i = 1; i < argc; i++) {
+        if (*(argv[i]+1) == 'd') {
+            CORTO_DEBUG_ENABLED = TRUE;
+        }else if (*(argv[i]+1) == 't') {
+            CORTO_TRACE_OBJECT = argv[i + 1];
+            i ++;
+        }else if (*(argv[i]+1) == 'h') {
+            cortotool_printUsage(FALSE);
+            break;
+        } else if (*(argv[i]+1) == 'v') {
+            printf("%s\n", CORTO_VERSION);
+        }
+    }
+
     /* Start corto */
     corto_start();
 
@@ -69,12 +84,15 @@ int main(int argc, char* argv[]) {
         for(i=1; i<argc; i++) {
             if (*argv[i] == '-') {
                 if (*(argv[i]+1) == 'd') {
-                    CORTO_DEBUG_ENABLED = TRUE;
+                    /* Already handled */
+                }else if (*(argv[i]+1) == 't') {
+                    /* Already handled */
+                    i ++;
                 }else if (*(argv[i]+1) == 'h') {
-                    cortotool_printUsage(FALSE);
+                    /* Already handled */
                     break;
                 } else if (*(argv[i]+1) == 'v') {
-                    printf("%s\n", CORTO_VERSION);
+                    /* Already handled */
                 } else if (*(argv[i]+1) == 'c') {
                     if (corto_loadComponent(argv[i + 1], 0, NULL)) {
                         corto_error("%s: %s", argv[i + 1], corto_lasterr());
