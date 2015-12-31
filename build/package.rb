@@ -35,11 +35,12 @@ GENERATED_HEADERS ||= [] <<
     "include/_interface.h"
 
 PREFIX ||= TARGET
+NAME ||= PACKAGE.split("::").last
 
 CHDIR_SET = true
 Dir.chdir(File.dirname(Rake.application.rakefile))
 
-GENFILE = Rake::FileList["#{PACKAGE.split("::").last}.*"][0]
+GENFILE = Rake::FileList["#{NAME}.{cx,idl,xml}"][0]
 
 file ".corto/packages.txt" do
     verbose(false)
@@ -83,8 +84,8 @@ end
 task :doc do
     verbose(false)
     if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
-        if File.exists? "README.md" and not LOCAL then
-            command = "corto pp README.md --scope #{PACKAGE} -g html"
+        if File.exists? "#{NAME}.md" and not LOCAL then
+            command = "corto pp #{NAME}.md --scope #{PACKAGE} -g html"
             begin
                 sh command
             rescue

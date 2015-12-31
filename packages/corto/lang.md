@@ -1,9 +1,8 @@
 # /corto/lang
-The lang package contains the types of the Corto typesystem.
+Contains the Corto typesystem.
 
-# /corto/core
 
-## lang/alias
+## alias
 Enables creating an alias to a (hidden) member in an interface.
 
 ### construct()
@@ -12,11 +11,11 @@ Enables creating an alias to a (hidden) member in an interface.
 #### Returns
 ### member
 
-## lang/any
+## any
 Type that can represent any value.
 
 
-## lang/array
+## array
 Enables construction of fixed length, consecutively stored collections.
 
 ### construct()
@@ -32,7 +31,7 @@ it's size, which in the case of an array depends on the size of its elementType.
 ### init()
 #### Returns
 
-## lang/binary
+## binary
 Enables construction of binary types.
 
 A binary type is a type that does not undergo translation when it is transmitted
@@ -50,7 +49,7 @@ bin16 b: 0xFF
 ### init()
 #### Returns
 
-## lang/bitmask
+## bitmask
 Enables construction of bitmask types.
 
 Bitmasks are values of which each bit is assigned a semantical meaning. Bits can
@@ -86,22 +85,22 @@ bitmask Color::
 ### init()
 #### Returns
 
-## lang/bool
+## bool
 Scalar boolean type.
 
 
-## lang/boolean
+## boolean
 Enables construction of boolean types.
 
 Boolean values can be either `true` or `false`.
 ### init()
 #### Returns
 
-## lang/char
+## char
 Scalar character type.
 
 
-## lang/character
+## character
 Enables construction of character types.
 
 Characters are types that can represent a single character. Currently only the ASCII
@@ -109,7 +108,7 @@ character set is supported. Future versions of Corto will add support for UTF-8.
 ### init()
 #### Returns
 
-## lang/class
+## class
 Enables creating composite types that can inherit from & implement interfaces.
 
 A class is a reference type, which means that any object created by a
@@ -163,12 +162,8 @@ An alternative way of specifying an instance observer:
 class Foo::
     observer onUpdate: ON_UPDATE | ON_TREE, ::corto
 ```
-### allocSize()
-#### Returns
 ### base
 ### baseAccess
-### bindObserver(observer observer)
-#### observer
 ### construct
 ### construct()
 #### Returns
@@ -176,12 +171,6 @@ class Foo::
 ### defaultType
 ### destruct
 ### destruct()
-### eventMaskOf(observer observer)
-#### observer
-#### Returns
-### findObserver(object observable)
-#### observable
-#### Returns
 ### implements
 Specifies the interfaces implemented by the class.
 
@@ -191,32 +180,14 @@ Specifies the interfaces implemented by the class.
 #### object
 #### Returns
 ### interfaceVector
-### listen(observer observer,eventMask mask,object observable,dispatcher dispatcher)
-#### observer
-#### mask
-#### observable
-#### dispatcher
-### observableOf(observer observer)
-#### observer
-#### Returns
-### observers
 ### parentState
 ### parentType
 ### resolveInterfaceMethod(interface interface,uint32 method)
 #### interface
 #### method
 #### Returns
-### setDispatcher(observer observer,dispatcher dispatcher
-#### observer
-#### dispatcher
-### setMask(observer observer,eventMask mask)
-#### observer
-#### mask
-### setObservable(observer observer,object observable)
-#### observer
-#### observable
 
-## lang/collection
+## collection
 Enables construction of collection types.
 
 ### castable(type type)
@@ -245,7 +216,7 @@ The maximum number of elements for a given collection type.
 ### size()
 #### Returns
 
-## lang/collectionKind
+## collectionKind
 Lists the different corto collection kinds.
 
 The collectionKind enumeration is used in the collection class to be able to
@@ -257,7 +228,7 @@ framework, code generators and data visualization tools.
 ### MAP
 ### SEQUENCE
 
-## lang/compositeKind
+## compositeKind
 Composite typekinds.
 
 The compositeKind enumeration is used in the interface class to be able to
@@ -270,13 +241,13 @@ framework, code generators and data visualization tools.
 ### PROCEDURE
 ### STRUCT
 
-## lang/constant
+## constant
 Scalar integer type used for enumerations and bitmasks.
 
 ### init()
 #### Returns
 
-## lang/delegate
+## delegate
 Enables construction of delegate types.
 
 ### bind(function object)
@@ -297,7 +268,7 @@ Enables construction of delegate types.
 ### returnsReference
 ### returnType
 
-## lang/delegatedata
+## delegatedata
 Base for all delegate types.
 
 Delegates are composite types, which allows a user to add custom members
@@ -310,11 +281,11 @@ This member may be `null` when the procedure is not an
 instance method.
 ### procedure
 
-## lang/destructAction
+## destructAction
 Delegate used for class destructors.
 
 
-## lang/enum
+## enum
 Enables construction of enumeration types.
 
 ### constant(int32 value)
@@ -327,7 +298,7 @@ Enables construction of enumeration types.
 ### init()
 #### Returns
 
-## lang/float
+## float
 Enables construction of floating point types.
 
 ### init()
@@ -335,15 +306,15 @@ Enables construction of floating point types.
 ### max
 ### min
 
-## lang/float32
+## float32
 32 bit floating point type.
 
 
-## lang/float64
+## float64
 64 bit floating point type.
 
 
-## lang/function
+## function
 Enables construction of procedure objects.
 
 ### bind()
@@ -387,11 +358,11 @@ The size on stack of the function argument list.
 ### unbind(function object)
 #### object
 
-## lang/initAction
+## initAction
 Delegate used for type initializers and class constructors.
 
 
-## lang/int
+## int
 Enables construction of signed integer types.
 
 ### init()
@@ -399,23 +370,23 @@ Enables construction of signed integer types.
 ### max
 ### min
 
-## lang/int16
+## int16
 16 bit signed integer
 
 
-## lang/int32
+## int32
 32 bit signed integer
 
 
-## lang/int64
+## int64
 64 bit signed integer
 
 
-## lang/int8
+## int8
 8 bit signed integer
 
 
-## lang/interface
+## interface
 Enables programming by contract.
 
 ### base
@@ -456,21 +427,21 @@ Specifies the interface from which to inherit.
 #### name
 #### Returns
 
-## lang/interfaceseq
+## interfaceseq
 Sequence of interface elements.
 
 
-## lang/interfaceVector
+## interfaceVector
 Enables quick lookups of interface methods.
 
 ### interface
 ### vector
 
-## lang/interfaceVectorseq
+## interfaceVectorseq
 Sequence of interfaceVector elements.
 
 
-## lang/iterator
+## iterator
 Provides generic iterator functionality for collections.
 
 ### castable(type type)
@@ -483,7 +454,7 @@ Provides generic iterator functionality for collections.
 ### init()
 #### Returns
 
-## lang/list
+## list
 Enables construction of variable length, linked list collections.
 
 ### append()
@@ -501,7 +472,7 @@ Enables construction of variable length, linked list collections.
 #### element
 ### reverse()
 
-## lang/map
+## map
 Enables construction of key-value pair collections.
 
 ### construct()
@@ -512,7 +483,7 @@ Enables construction of key-value pair collections.
 ### keyType
 ### max
 
-## lang/member
+## member
 Provides capability to add members to composite types.
 
 ### construct()
@@ -526,18 +497,18 @@ Provides capability to add members to composite types.
 ### type
 ### weak
 
-## lang/memberseq
+## memberseq
 Sequence of member elements.
 
 
-## lang/metaprocedure
+## metaprocedure
 Procedure defined on the meta (type of type) level.
 
 ### bind()
 #### Returns
 ### referenceOnly
 
-## lang/method
+## method
 Procedure type that provides instance methods.
 
 ### bind()
@@ -546,7 +517,7 @@ Procedure type that provides instance methods.
 #### Returns
 ### virtual
 
-## lang/modifier
+## modifier
 Mask that specifies access to members.
 
 ### CONST
@@ -568,38 +539,34 @@ The member will not be accessible from outside of the interface.
 The member can only be read from outside of the interface.
 
 
-## lang/object
+## object
 Type that allows for storing references to objects of any type.
 
 
-## lang/objectseq
+## objectseq
 Sequence of object elements.
 
 
-## lang/observerseq
-Sequence of observer elements.
-
-
-## lang/octet
+## octet
 Scalar 8 bit binary type.
 
 
-## lang/octetseq
+## octetseq
 Sequence of octet elements
 
 
-## lang/parameter
+## parameter
 Describes a function parameter.
 
 ### name
 ### passByReference
 ### type
 
-## lang/parameterseq
+## parameterseq
 Sequence of parameter elements.
 
 
-## lang/primitive
+## primitive
 Enables construction of primitive types.
 
 ### castable(type type)
@@ -620,7 +587,7 @@ Enables construction of primitive types.
 ### kind
 ### width
 
-## lang/primitiveKind
+## primitiveKind
 Lists the possible primitive types in Corto.
 
 The `primitiveKind` enumeration is used in `corto::lang::primitive` to quickly
@@ -650,7 +617,7 @@ An integer value.
 An unsigned integer value.
 
 
-## lang/procedure
+## procedure
 Enables construction of procedure types.
 
 ### bind
@@ -660,7 +627,7 @@ Enables construction of procedure types.
 ### unbind(function object)
 #### object
 
-## lang/procedureKind
+## procedureKind
 Procedure typekinds.
 
 ### FUNCTION
@@ -670,7 +637,7 @@ Procedure typekinds.
 A procedure that is called upon a notification.
 
 
-## lang/sequence
+## sequence
 Enables construction of variable length, consecutive collection.
 
 ### construct()
@@ -680,11 +647,17 @@ Enables construction of variable length, consecutive collection.
 ### size(uint32 size)
 #### size
 
-## lang/string
+## state
+### DECLARED
+### DEFINED
+### DESTRUCTED
+### VALID
+
+## string
 Allows representing text.
 
 
-## lang/struct
+## struct
 Enables construction of composite valuetypes.
 
 ### base
@@ -709,7 +682,7 @@ Access modifiers for members of the inherited interface.
 #### name
 #### Returns
 
-## lang/text
+## text
 Enables construction of types that allow representing text.
 
 ### charWidth
@@ -717,16 +690,12 @@ Enables construction of types that allow representing text.
 #### Returns
 ### length
 
-## lang/type
+## type
 Base class for all types.
 
 ### alignment
 ### alignmentof()
 Returns C alignment of type.
-
-#### Returns
-### allocSize()
-Returns allocation size for type.
 
 #### Returns
 ### castable(type type)
@@ -813,7 +782,7 @@ Returns database size of type.
 ### typeof()
 #### Returns
 
-## lang/typeKind
+## typeKind
 Core type kinds.
 
 ### ANY
@@ -825,7 +794,7 @@ A set of members (see compositeKind).
 ### PRIMITIVE
 ### VOID
 
-## lang/uint
+## uint
 Enables construction of unsigned integer types.
 
 ### init()
@@ -833,37 +802,37 @@ Enables construction of unsigned integer types.
 ### max
 ### min
 
-## lang/uint16
+## uint16
 16 bit unsigned integer.
 
 
-## lang/uint32
+## uint32
 32 bit unsigned integer.
 
 
-## lang/uint64
+## uint64
 64 bit unsigned integer.
 
 
-## lang/uint8
+## uint8
 8 bit unsigned integer.
 
 
-## lang/virtual
+## virtual
 Method that can be overridden by a method in a subclass.
 
 ### init()
 #### Returns
 
-## lang/void
+## void
 Type that represents nothing.
 
 
-## lang/vtable
+## vtable
 Type used to represent the method table of interface types.
 
 
-## lang/width
+## width
 Enables representing width in bits.
 Example:
 
@@ -891,185 +860,5 @@ if ((type->kind == CORTO_PRIMITIVE) &&
 Word sized value (architecture dependent)
 
 
-## lang/word
+## word
 Scalar word-sized binary type.
-
-
-## attr
-### ATTR_DEFAULT
-### ATTR_OBSERVABLE
-### ATTR_PERSISTENT
-### ATTR_SCOPED
-### ATTR_WRITABLE
-
-## dispatcher
-### post(event e)
-#### e
-
-## equalityKind
-### EQ
-### GT
-### LT
-### NEQ
-
-## event
-### handle()
-### handled
-### kind
-### uniqueKind()
-#### Returns
-
-## eventMask
-### ON_DECLARE
-### ON_DEFINE
-### ON_DELETE
-### ON_INVALIDATE
-### ON_METAVALUE
-### ON_SCOPE
-### ON_SELF
-### ON_TREE
-### ON_UPDATE
-### ON_VALUE
-
-## invokeEvent
-### args
-### function
-### handle()
-### instance
-### replicator
-
-## notifyAction
-
-## observableEvent
-### handle()
-### me
-### observable
-### observer
-### source
-
-## observer
-### bind()
-#### Returns
-### delayedBinder
-### dispatcher
-### init()
-#### Returns
-### listen(object observable,object me)
-#### observable
-#### me
-#### Returns
-### mask
-### me
-### observable
-### observing
-### setDispatcher(core/dispatcher dispatcher)
-#### dispatcher
-### silence(object me)
-#### me
-#### Returns
-### template
-### unbind(observer object)
-#### object
-
-## operatorKind
-### ADD
-### AND
-### ASSIGN
-### ASSIGN_ADD
-### ASSIGN_AND
-### ASSIGN_DIV
-### ASSIGN_MOD
-### ASSIGN_MUL
-### ASSIGN_OR
-### ASSIGN_SUB
-### ASSIGN_UPDATE
-### ASSIGN_XOR
-### COND_AND
-### COND_EQ
-### COND_GT
-### COND_GTEQ
-### COND_LT
-### COND_LTEQ
-### COND_NEQ
-### COND_NOT
-### COND_OR
-### DEC
-### DIV
-### INC
-### MOD
-### MUL
-### NOT
-### OR
-### REF
-### SHIFT_LEFT
-### SHIFT_RIGHT
-### SUB
-### XOR
-
-## package
-### url
-
-## query
-### from
-### mask
-
-## replicator
-### construct()
-#### Returns
-### contentType
-### destruct()
-### invoke(object instance,function proc,octetseq args)
-#### instance
-#### proc
-#### args
-### mount
-### on_declare
-#### observable
-### on_delete
-#### observable
-### on_update
-#### observable
-### onDeclare(object observable)
-#### observable
-### onDelete(object observable)
-#### observable
-### onInvoke(object instance,function proc,octetseq args)
-#### instance
-#### proc
-#### args
-### onRequest(string parent,string expr,bool setContent)
-#### parent
-#### expr
-#### setContent
-#### Returns
-### onUpdate(object observable)
-#### observable
-### post(event e)
-#### e
-### query
-### request(string parent,string expr,bool setContent)
-#### parent
-#### expr
-#### setContent
-#### Returns
-### setContentType(string type)
-#### type
-#### Returns
-
-## result
-### getText()
-#### Returns
-### name
-### parent
-### type
-### value
-
-## resultIter
-
-## resultList
-
-## state
-### DECLARED
-### DEFINED
-### DESTRUCTED
-### VALID
