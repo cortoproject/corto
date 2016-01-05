@@ -340,7 +340,7 @@ static corto_string cxsh_multiline(corto_string expr, corto_uint32 indent) {
     unsigned int len = strlen(expr);
     unsigned int multiline = 0;
 
-    if (expr[len-1] == ':') {
+    if (len && expr[len-1] == ':') {
         unsigned int cmdLen = 0;
         corto_id prompt;
         cxsh_prompt(FALSE, prompt);
@@ -617,10 +617,6 @@ static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
         cxsh_help();
     } else {
         corto_char *lastErr;
-
-        if (*cmd == '/') {
-            cmd++;
-        }
 
         if (cxsh_show(cmd)) {
             if ((lastErr = corto_lasterr())) {
