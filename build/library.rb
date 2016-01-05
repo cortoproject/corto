@@ -86,7 +86,7 @@ task :collect do
     if File.exists?("include") then
         includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{includePath}"
-        sh "cp include/* #{includePath}/"
+        sh "cp -r include/* #{includePath}/"
     end
     if File.exists?("etc") then
         etc = "#{ENV['HOME']}/.corto/pack/etc/corto/#{VERSION}/#{TARGETPATH}"

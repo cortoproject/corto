@@ -15,7 +15,7 @@ task :collect do
     verbose(false)
     buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
     sh "mkdir -p #{buildPath}"
-    sh "cp #{ENV['CORTO_BUILD']}/* #{buildPath}/"
+    sh "cp -r #{ENV['CORTO_BUILD']}/* #{buildPath}/"
 end
 
 require "#{ENV['CORTO_BUILD']}/library"
