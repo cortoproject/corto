@@ -138,7 +138,7 @@ repeat:
                     goto error;
                 }
                 corto_setref(&lookup, o);
-            } else if (corto_scopeSize(o)) {
+            } else {
                 if (!overload) {
                     corto_object prev = o;
                     int i;
@@ -159,7 +159,11 @@ repeat:
                         }
 
                         if (!o) {
-                            if (!i && (prev != corto_lang_o) && corto_instanceof(corto_type(corto_package_o), prev)) {
+                            if (!i &&
+                                (prev != corto_lang_o) &&
+                                (prev != corto_core_o) &&
+                                corto_instanceof(corto_type(corto_package_o), prev))
+                            {
                                 corto_id load;
                                 if (prev != root_o) {
                                     sprintf(load, "%s/%s",
@@ -191,13 +195,6 @@ repeat:
                     }
                     lookup = o;
                 }
-            } else {
-                o = NULL;
-                if (lookup) {
-                    corto_release(lookup);
-                    lookup = NULL;
-                }
-                break;
             }
 
             /* Expect scope or serializable string */
