@@ -800,9 +800,6 @@ int corto_start(void) {
     /* Init CRC table */
     corto_crcInit();
 
-    /* Load packages */
-    corto_loadPackages();
-
     CORTO_OPERATIONAL = 0; /* Running */
 
     return 0;
