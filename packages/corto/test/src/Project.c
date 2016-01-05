@@ -109,7 +109,7 @@ corto_void _test_Project_tc_package(test_Project this) {
 
     test_assert(corto_fileTest("Project"));
     test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(corto_fileTest("Project/README.md"));
+    test_assert(corto_fileTest("Project/Project.md"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
