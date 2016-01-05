@@ -2426,15 +2426,13 @@ int corto_observerAlignScope(corto_object o, void *userData) {
 
     if ((data->mask & CORTO_ON_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
     {
-        corto_notifyObserver(data->observer, data->observable, o, CORTO_ON_DECLARE, data->depth);
+        corto_notifyObserver(data->observer, o, o, CORTO_ON_DECLARE, data->depth);
     }
 
-    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
-        if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
-            corto_checkState(o, CORTO_DEFINED))
-        {
-            corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
-        }
+    if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
+        corto_checkState(o, CORTO_DEFINED))
+    {
+        corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
     }
 
     if (data->mask & CORTO_ON_TREE) {
