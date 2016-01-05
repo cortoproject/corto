@@ -125,8 +125,14 @@ static corto_int16 corto_loadContentType(
         component ++;
 
         /* Load component associated with content type */
+        corto_seterr(NULL);
         if (corto_loadComponent(component, 0, NULL)) {
-            corto_seterr("unsupported content type %s", contentType);
+            if (corto_lasterr()) {
+                corto_seterr("unsupported content type %s (%s)",
+                    contentType, corto_lasterr());
+            } else {
+                corto_seterr("unsupported content type %s", contentType);
+            }
             goto error;
         }
 

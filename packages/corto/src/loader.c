@@ -276,9 +276,7 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
 int corto_loadComponent(corto_string component, int argc, char* argv[]) {
     int result = 0;
 
-    corto_string path = corto_envparse(
-        "$CORTO_TARGET/lib/corto/%s.%s/components/lib%s.so",
-        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, component);
+    corto_string path = corto_locateComponent(component);
     if (!path) {
         goto error;
     }
