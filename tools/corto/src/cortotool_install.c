@@ -364,6 +364,11 @@ corto_int16 cortotool_tar(int argc, char* argv[]) {
     CORTO_UNUSED(argv);
     corto_id version;
     sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+    corto_id name;
+
+    /* Get name of project from current path to use as name for tar */
+    strcpy(name, corto_getenv("PWD"));
+    corto_nameFromFullname(name);
 
     if (!cortotool_validProject()) {
         goto error;
@@ -382,16 +387,19 @@ corto_int16 cortotool_tar(int argc, char* argv[]) {
     fprintf(tar, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
     fprintf(tar, "export CORTO_VERSION=%s\n", version);
     fprintf(tar, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+    fprintf(tar, "export UNAME=$(uname)\n");
+    fprintf(tar, "export ARCHITECTURE=$(uname -m)\n");
     fprintf(tar, "rake collect\n");
-    fprintf(tar, "DIR=`pwd`\n");
+    fprintf(tar, "DIR=`pwd`/tar/$UNAME-$ARCHITECTURE\n");
+    fprintf(tar, "mkdir -p $DIR\n");
     fprintf(tar, "cd ~/.corto/pack\n");
-    fprintf(tar, "tar -zcf $DIR/corto.tar.gz .\n");
+    fprintf(tar, "tar -zcf $DIR/%s.tar.gz .\n", name);
     fprintf(tar, "rm -rf ~/.corto/pack\n");
     fclose(tar);
 
     cortotool_promptPassword();
 
-    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "tar.sh", NULL});
+    corto_pid pid = corto_procrun("sh", (char*[]){"sh", "tar.sh", NULL});
     corto_char progress[] = {'|', '/', '-', '\\'};
     corto_int32 i = 0;
     printf("corto: tarring...  ");
