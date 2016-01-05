@@ -25,7 +25,11 @@ typedef enum corto_err {
     CORTO_ASSERT = 6
 }corto_err;
 
+#ifndef NDEBUG
 #define corto_assert(condition, ...) if (!(condition)){_corto_assert(condition, "(" #condition ") " __VA_ARGS__);}
+#else
+#define corto_assert(condition, ...)
+#endif
 
 /* Log errors to console */
 void _corto_assert(unsigned int condition, char* fmt, ...);

@@ -58,8 +58,14 @@ corto_int32 corto_countof(corto_object o);
 corto_int8 corto_stateof(corto_object o);
 corto_bool corto_checkState(corto_object o, corto_int8 state);
 corto_bool corto_checkAttr(corto_object o, corto_int8 attr);
-corto_object corto_assertType(corto_type type, corto_object o);
 corto_bool _corto_instanceof(corto_type type, corto_object o);
+
+corto_object _corto_assertType(corto_type type, corto_object o);
+#ifndef NDEBUG
+#define corto_assertType(type, o) _corto_assertType(type, o)
+#else
+#define corto_assertType(type, o) (o)
+#endif
 
 /* Scoped data */
 corto_string corto_nameof(corto_object o);

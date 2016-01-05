@@ -1490,7 +1490,7 @@ corto_bool corto_checkAttr(corto_object o, corto_int8 attr) {
     return result;
 }
 
-corto_object corto_assertType(corto_type type, corto_object o) {
+corto_object _corto_assertType(corto_type type, corto_object o) {
     if (o && (o != type)) {
         if (!corto_instanceof(type, o)) {
             corto_error("object '%s' is not of type '%s'\n   type = %s",

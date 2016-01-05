@@ -3,14 +3,23 @@ COMPONENTS = [] if not defined? COMPONENTS
 task :all => :default
 
 task :default do
+    if ENV['target'] == "release" then
+      c_bold = "\033[1;36m"
+      c_name = "\033[1;49m"
+      c_normal = "\033[0;49m"
+    else
+      c_bold = "\033[1;49m"
+      c_name = "\033[1;35m"
+      c_normal = "\033[0;49m"
+    end
     COMPONENTS.each do |e|
         verbose(false)
         if ENV['silent'] != "true" then
-            sh "echo '\033[1;49m[ >> building \033[1;35m#{e}\033[0;49m\033[1;49m ]\033[0;49m'"
+            sh "echo '#{c_bold}[ >> building #{c_normal}#{c_name}#{e}#{c_normal}#{c_bold} ]#{c_normal}'"
         end
         sh "rake -f #{e}/rakefile"
         if ENV['silent'] != "true" then
-            sh "echo '\033[1;49m[ << leaving \033[1;35m#{e}\033[0;49m\033[1;49m ]\033[0;49m'"
+            sh "echo '#{c_bold}[ << leaving #{c_normal}#{c_name}#{e}#{c_normal}#{c_bold} ]#{c_normal}'"
         end
     end
 end

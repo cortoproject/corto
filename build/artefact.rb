@@ -14,6 +14,9 @@ end
 if not defined? ARTEFACT then
     raise "artefact: ARTEFACT not specified\n"
 end
+if not ENV['target'] then
+    ENV['target'] = "debug"
+end
 
 # --- DATA PROCESSING
 
@@ -64,11 +67,24 @@ INCLUDE <<
     "/usr/local/include/corto/#{VERSION}/packages"
 
 # Default CFLAGS
-CFLAGS << "-g" << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
+CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
-CXXFLAGS << "-Wall" << "-g" << "-std=c++11"
+CXXFLAGS << "-Wall" << "-std=c++11"
+
+# Set NDEBUG macro in release builds to disable tracing & checking
+# Also enable optimizations
+if ENV['target'] == "release" then
+  CFLAGS << "-DNDEBUG" << "-O3"
+  CXXFLAGS << "-DNDEBUG" << "-O3"
+end
+
+# Enable debug information in debug builds & disable optimizations
+if ENV['target'] == "debug" then
+  CFLAGS << "-g" << "-O0"
+  CXXFLAGS << "-g" << "-O0"
+end
 
 # Crawl src directory to get list of source files
 SOURCES = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
@@ -216,8 +232,23 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         end
     end
 
+    # If target is release, strip binary
+    if ENV['target'] == "release" then
+      sh "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
+    end
+
+    if ENV['target'] == "release" then
+      c_bold = "\033[1;36m"
+      c_name = "\033[1;49m"
+      c_normal = "\033[0;49m"
+    else
+      c_bold = "\033[1;49m"
+      c_name = "\033[1;34m"
+      c_normal = "\033[0;49m"
+    end
+
     if ENV['silent'] != "true" then
-        sh "echo '\033[1;49m[ \033[1;34m#{ARTEFACT}\033[0;49m\033[1;49m ]\033[0;49m'"
+        sh "echo '#{c_bold}[ #{c_normal}#{c_name}#{ARTEFACT}#{c_normal}#{c_bold} ]#{c_normal}'"
     end
 end
 

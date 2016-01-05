@@ -62,7 +62,7 @@ error:
 /* Build a project */
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll silent, mute, coverage, optimize, dirs;
+    corto_ll silent, mute, coverage, optimize, dirs, release, debug;
 
     CORTO_UNUSED(argc);
 
@@ -74,6 +74,8 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--mute", &mute, NULL},
         {"--coverage", &coverage, NULL},
         {"--optimize", &optimize, NULL},
+        {"--release", &release, NULL},
+        {"--debug", &debug, NULL},
         {"*", &dirs, NULL},
         {NULL}
       }
@@ -86,6 +88,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
           "rake",
           coverage ? "coverage=true" : "coverage=false",
           optimize ? "optimize=true" : "optimize=false",
+          release ? "target=release" : "target=debug",
           NULL
       }, silent != NULL, mute != NULL);
 
@@ -115,6 +118,8 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"--mute", NULL, NULL},
         {"--coverage", NULL, NULL}, /* Ignore coverage */
         {"--optimize", NULL, NULL}, /* Ignore optimize */
+        {"--release", NULL, NULL}, /* Ignore release */
+        {"--debug", NULL, NULL}, /* Ignore debug */
         {"*", &dirs, NULL},
         {NULL}
       }
@@ -160,6 +165,12 @@ void cortotool_buildHelp(void) {
     printf("\n");
     printf("Build your Corto project.\n");
     printf("\n");
+    printf("Options:\n");
+    printf("   --debug         Create a debug build [default]\n");
+    printf("   --release       Create a release build\n");
+    printf("   --silent        No writing to stdout\n");
+    printf("   --mute          No writing to stdout and stderr\n");
+    printf("\n");
 }
 
 void cortotool_rebuildHelp(void) {
@@ -167,6 +178,12 @@ void cortotool_rebuildHelp(void) {
     printf("       corto rebuild <project>\n");
     printf("\n");
     printf("Rebuild your Corto project (clean before build).\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("   --debug         Create a debug build [default]\n");
+    printf("   --release       Create a release build\n");
+    printf("   --silent        No writing to stdout\n");
+    printf("   --mute          No writing to stdout and stderr\n");
     printf("\n");
 }
 
