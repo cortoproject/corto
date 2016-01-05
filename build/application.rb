@@ -12,8 +12,10 @@ LIBPATH ||= []
 INCLUDE ||= []
 
 GENERATED_SOURCES ||= []
+GENERATED_HEADERS ||= []
 
 GENERATED_SOURCES << ".corto/_load.c"
+GENERATED_HEADERS << "include/_interface.h"
 
 USE_PACKAGE << "corto"
 INCLUDE <<
