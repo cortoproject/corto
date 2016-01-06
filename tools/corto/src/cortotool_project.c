@@ -108,7 +108,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
 
     if (cortotool_create(
         8,
-        (char*[]){"create", "package", "::test", "--empty", "--notest", "--local", "--silent", "--nobuild", NULL}
+        (char*[]){"create", "package", "::test", "--notest", "--local", "--silent", "--nobuild", NULL}
     )) {
         corto_error("corto: couldn't create test skeleton (check permissions)");
         goto error;

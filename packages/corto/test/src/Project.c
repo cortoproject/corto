@@ -97,6 +97,7 @@ corto_void _test_Project_tc_package(test_Project this) {
             "create",
             "package",
             "Project",
+            "--panda",
             "--silent",
             NULL
         });
@@ -178,6 +179,7 @@ corto_void _test_Project_tc_packageLocal(test_Project this) {
             "package",
             "Project",
             "--silent",
+            "--panda",
             "--local",
             "--notest",
             NULL
