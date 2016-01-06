@@ -250,12 +250,119 @@ corto_void _test_Project_tc_packageNoCorto(test_Project this) {
     test_assert(!corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/doc"));
 
+    test_assert(!corto_fileTest(
+        "$HOME/.corto/lib/corto/%s.%s/packages/Project",
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(!corto_fileTest(
+      "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    /* Create a source file */
+    FILE *f = fopen("Project/src/Project.c", "w");
+    fprintf(f, "\nvoid foo(void) {}\n\n");
+    fclose(f);
+
+    /* Rebuild project */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "build",
+            "Project",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Validate that library is present */
     test_assert(corto_fileTest(
         "$HOME/.corto/lib/corto/%s.%s/packages/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
       "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_packageNoCortoNested(test_Project this) {
+/* $begin(test/Project/tc_packageNoCortoNested) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create package in /corto */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "corto::Project",
+            "--silent",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project"));
+    test_assert(corto_fileTest("Project/rakefile"));
+
+    test_assert(corto_fileTest("Project/src"));
+    test_assert(!corto_fileTest("Project/src/Project.c"));
+
+    test_assert(corto_fileTest("Project/include"));
+    test_assert(!corto_fileTest("Project/test"));
+    test_assert(!corto_fileTest("Project/doc"));
+
+    test_assert(!corto_fileTest(
+        "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project",
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(!corto_fileTest(
+      "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project/libProject.so",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    /* Create a source file */
+    FILE *f = fopen("Project/src/Project.c", "w");
+    fprintf(f, "\nvoid foo(void) {}\n\n");
+    fclose(f);
+
+    /* Rebuild project */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "build",
+            "Project",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Validate that library is present */
+    test_assert(corto_fileTest(
+        "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project",
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(corto_fileTest(
+      "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -382,6 +489,13 @@ corto_void _test_Project_teardown(test_Project this) {
     corto_rmtree(env);
     corto_dealloc(env);
     corto_rmtree("Project");
+
+    env = corto_envparse(
+      "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+
+    corto_rmtree(env);
+    corto_dealloc(env);
 
 /* $end */
 }
