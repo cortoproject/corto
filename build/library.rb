@@ -28,7 +28,7 @@ end
 TARGETDIR ||= "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
 
 # Special case for when building the core
-if TARGET != "corto" then
+if TARGET != "corto" and not defined? NOCORTO then
     USE_PACKAGE << "corto"
 end
 

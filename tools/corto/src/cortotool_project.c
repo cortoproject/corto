@@ -402,7 +402,15 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    /* Write class implementation */
+    /* Create src and include folders */
+    sprintf(srcdir, "%s/include", name);
+    if (corto_mkdir(srcdir)) {
+        corto_error(
+          "corto: failed to create directory '%s' (check permissions)",
+          srcdir);
+        goto error;
+    }
+
     sprintf(srcdir, "%s/src", name);
     if (corto_mkdir(srcdir)) {
         corto_error(
@@ -411,6 +419,7 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
+    /* Write class implementation */
     if (!empty) {
         if (snprintf(srcfile,
             sizeof(srcfile),
@@ -522,6 +531,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (nocorto) {
         notest = nocorto;
+        nobuild = nocorto;
         panda = NULL;
     }
 

@@ -273,13 +273,6 @@ task :test do
   end
 end
 
-# Always have a src and include folder
-task :prebuild do
-  verbose(false)
-  sh "mkdir -p src"
-  sh "mkdir -p include"
-end
-
 # Rules for generated files
 rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
