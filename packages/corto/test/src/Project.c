@@ -191,7 +191,7 @@ corto_void _test_Project_tc_packageLocal(test_Project this) {
 
     test_assert(corto_fileTest("Project"));
     test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(!corto_fileTest("Project/README.md"));
+    test_assert(!corto_fileTest("Project/Project.md"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
@@ -211,6 +211,50 @@ corto_void _test_Project_tc_packageLocal(test_Project this) {
     test_assert(corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_packageNoCorto(test_Project this) {
+/* $begin(test/Project/tc_packageNoCorto) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "Project",
+            "--silent",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project"));
+    test_assert(corto_fileTest("Project/rakefile"));
+
+    test_assert(corto_fileTest("Project/src"));
+    test_assert(!corto_fileTest("Project/src/Project.c"));
+
+    test_assert(corto_fileTest("Project/include"));
+    test_assert(!corto_fileTest("Project/test"));
+    test_assert(!corto_fileTest("Project/doc"));
+
+    test_assert(corto_fileTest(
+        "$HOME/.corto/lib/corto/%s.%s/packages/Project",
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(corto_fileTest(
+      "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
 }

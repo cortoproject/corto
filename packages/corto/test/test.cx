@@ -686,6 +686,7 @@ test::Suite Project::
     void tc_appNoTest()
     void tc_package()
     void tc_packageLocal()
+    void tc_packageNoCorto()
     void tc_publishNotag()
 
 // Test argument parser
