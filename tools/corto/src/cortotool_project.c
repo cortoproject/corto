@@ -693,8 +693,8 @@ void cortotool_createHelp(void) {
     printf("                  upon loading the library.\n");
     printf("\n");
     printf("Options:\n");
-    printf("   --empty        Create an empty project instead of an example project\n");
     printf("   --local        Create a project that won't be installed in the Corto repository\n");
+    printf("   --nocorto      Create a package that doens't use any Corto functionality\n");
     printf("   --notest       Do not create a test skeleton\n");
     printf("\n");
 }
