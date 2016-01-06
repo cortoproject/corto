@@ -22,18 +22,6 @@ CFLAGS ||= []
 DEFINE << "BUILDING_" + PACKAGE.gsub("::", "_").upcase
 CFLAGS << "-fvisibility=hidden"
 
-GENERATED_SOURCES <<
-    ".corto/_api.c" <<
-    ".corto/_wrapper.c" <<
-    ".corto/_meta.c" <<
-    ".corto/_load.c"
-
-GENERATED_HEADERS ||= [] <<
-    "include/_api.h" <<
-    "include/_meta.h" <<
-    "include/_type.h" <<
-    "include/_interface.h"
-
 PREFIX ||= TARGET
 NAME ||= PACKAGE.split("::").last
 
@@ -54,31 +42,47 @@ file ".corto/components.txt" do
     sh "touch .corto/components.txt"
 end
 
-file "include/_type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
-    verbose(false)
-    preload = PP_PRELOAD.join(" ")
-    sh "mkdir -p .corto"
-    sh "touch .corto/_wrapper.c"
+if not defined? NOCORTO then
+    GENERATED_SOURCES <<
+        ".corto/_api.c" <<
+        ".corto/_wrapper.c" <<
+        ".corto/_meta.c" <<
+        ".corto/_load.c"
 
-    localStr = ""
-    docStr = ""
+    GENERATED_HEADERS ||= [] <<
+        "include/_api.h" <<
+        "include/_meta.h" <<
+        "include/_type.h" <<
+        "include/_interface.h"
 
-    if LOCAL then
-        localStr = "--attr local=true"
-    elsif (`corto locate doc --generator` != "corto: generator 'doc' not found\n") then
-        docStr = "-g doc"
+    file "include/_type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
+        verbose(false)
+        preload = PP_PRELOAD.join(" ")
+        sh "mkdir -p .corto"
+        sh "touch .corto/_wrapper.c"
+
+        localStr = ""
+        docStr = ""
+
+        if LOCAL then
+            localStr = "--attr local=true"
+        elsif (`corto locate doc --generator` != "corto: generator 'doc' not found\n") then
+            docStr = "-g doc"
+        end
+
+        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
+                  "--prefix #{PREFIX} #{localStr} #{docStr} --lang c"
+
+        begin
+          sh command
+        rescue
+          puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+          sh "rm include/_type.h"
+          abort()
+        end
     end
 
-    command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
-              "--prefix #{PREFIX} #{localStr} #{docStr} --lang c"
-
-    begin
-      sh command
-    rescue
-      puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-      sh "rm include/_type.h"
-      abort()
-    end
+    task :default => ["include/_type.h"]
 end
 
 task :doc do
@@ -95,8 +99,6 @@ task :doc do
         end
     end
 end
-
-task :default => ["include/_type.h"]
 
 task :postbuild => [:doc]
 

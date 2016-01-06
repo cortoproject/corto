@@ -55,7 +55,13 @@ error:
     return -1;
 }
 
-static corto_int16 cortotool_createRakefile(const char *projectKind, const char *name, const char *shortName, corto_bool isLocal) {
+static corto_int16 cortotool_createRakefile(
+    const char *projectKind,
+    const char *name,
+    const char *shortName,
+    corto_bool isLocal,
+    corto_bool nocorto)
+{
     FILE *file;
     corto_id buff;
 
@@ -75,6 +81,9 @@ static corto_int16 cortotool_createRakefile(const char *projectKind, const char 
 
     if (isLocal) {
         fprintf(file, "LOCAL = true\n\n");
+    }
+    if (nocorto) {
+        fprintf(file, "NOCORTO = true\n\n");
     }
 
     fprintf(file, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", projectKind);
@@ -234,7 +243,8 @@ static corto_int16 cortotool_app (
     corto_bool nobuild,
     corto_bool notest,
     corto_bool local,
-    corto_bool empty)
+    corto_bool empty,
+    corto_bool nocorto)
 {
     corto_id buff;
     FILE *file;
@@ -247,7 +257,7 @@ static corto_int16 cortotool_app (
         goto error;
     }
 
-    if (cortotool_createRakefile(projectKind, name, name, local)) {
+    if (cortotool_createRakefile(projectKind, name, name, local, nocorto)) {
         goto error;
     }
 
@@ -308,7 +318,8 @@ static corto_int16 cortotool_package(
     corto_bool nobuild,
     corto_bool notest,
     corto_bool local,
-    corto_bool empty)
+    corto_bool empty,
+    corto_bool nocorto)
 {
     corto_id cxfile, srcfile, srcdir;
     corto_char *ptr, *name;
@@ -344,7 +355,7 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, local)) {
+    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, local, nocorto)) {
         goto error;
     }
 
@@ -477,7 +488,7 @@ error:
 
 corto_int16 cortotool_create(int argc, char *argv[]) {
     corto_ll silent, mute, nobuild, notest, local, empty;
-    corto_ll apps, components, packages;
+    corto_ll apps, components, packages, nocorto;
     corto_ll apps_noname, components_noname, packages_noname;
 
     CORTO_UNUSED(argc);
@@ -492,6 +503,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         {"--notest", &notest, NULL},
         {"--local", &local, NULL},
         {"--empty", &empty, NULL},
+        {"--nocorto", &nocorto, NULL},
         {"--nopanda", &empty, NULL},
         {CORTO_APPLICATION, NULL, &apps},
         {CORTO_COMPONENT, NULL, &components},
@@ -509,6 +521,12 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         goto error;
     }
 
+    if (nocorto) {
+        empty = nocorto;
+        nobuild = nocorto;
+        notest = nocorto;
+    }
+
     /* If no arguments are provided, create an application with a random name */
     if (!apps && !components && !packages && !apps_noname &&
         !components_noname && !packages_noname)
@@ -522,7 +540,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
             nobuild != NULL,
             notest != NULL,
             local != NULL,
-            empty != NULL))
+            empty != NULL,
+            nocorto != NULL))
         {
             goto error;
         }
@@ -540,7 +559,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                empty != NULL))
+                empty != NULL,
+                nocorto != NULL))
             {
                 goto error;
             }
@@ -560,7 +580,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                empty != NULL))
+                empty != NULL,
+                nocorto != NULL))
             {
                 goto error;
             }
@@ -579,7 +600,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                empty != NULL))
+                empty != NULL,
+                nocorto != NULL))
             {
                 goto error;
             }
@@ -599,7 +621,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                empty != NULL))
+                empty != NULL,
+                nocorto != NULL))
             {
                 goto error;
             }
@@ -617,7 +640,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                empty != NULL))
+                empty != NULL,
+                nocorto != NULL))
             {
                 goto error;
             }
@@ -636,7 +660,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                empty != NULL))
+                empty != NULL,
+                nocorto != NULL))
             {
                 goto error;
             }

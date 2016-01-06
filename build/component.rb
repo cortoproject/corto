@@ -32,23 +32,24 @@ if defined? GENERATED_SOURCES then
     generate = false
 end
 
-GENERATED_SOURCES ||= [".corto/_load.c"]
-GENERATED_HEADERS ||= ["include/_interface.h"]
+if not defined? NOCORTO then
+    GENERATED_SOURCES ||= [".corto/_load.c"]
+    GENERATED_HEADERS ||= ["include/_interface.h"]
 
-file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
-    verbose(false)
-    if generate then
-        sh "mkdir -p .corto"
-        command = "corto pp --name #{TARGET} -g c_project --attr h=include --attr component=true"
-        begin
-            sh command
-        rescue
-            puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-            abort()
+    file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
+        verbose(false)
+        if generate then
+            sh "mkdir -p .corto"
+            command = "corto pp --name #{TARGET} -g c_project --attr h=include --attr component=true"
+            begin
+                sh command
+            rescue
+                puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+                abort()
+            end
         end
     end
+    task :prebuild => ".corto/_load.c"
 end
-
-task :prebuild => ".corto/_load.c"
 
 require "#{ENV['CORTO_BUILD']}/library"

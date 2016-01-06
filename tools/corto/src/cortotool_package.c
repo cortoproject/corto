@@ -2,16 +2,23 @@
 #include "cortotool_package.h"
 #include "cortotool_build.h"
 
-static corto_object cortotool_lookupPackage(corto_string str) {
-    corto_object package = corto_resolve(NULL, str);
-    if (!package) {
-        corto_seterr("package '%s' not be found", str);
-        goto error;
-    }
-
-    if (!corto_instanceof(corto_package_o, package)) {
-        corto_seterr("object '%s' is not a package", str);
-        goto error;
+static corto_string cortotool_lookupPackage(corto_string str) {
+    corto_object p = corto_resolve(NULL, str);
+    corto_string package = NULL;
+    if (!p) {
+        if (!corto_locate(str)) {
+            corto_seterr("package '%s' not found", str);
+            goto error;
+        } else {
+            package = str;
+        }
+    } else {
+        if (!corto_instanceof(corto_package_o, p)) {
+            corto_seterr("object '%s' is not a package", str);
+            goto error;
+        } else {
+            package = corto_fullpath(NULL, p);
+        }
     }
 
     return package;
@@ -99,36 +106,33 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
         corto_iter iter = corto_llIter(packages);
         while (corto_iterHasNext(&iter)) {
             /* Test whether package exists */
-            corto_object package =
+            corto_string package =
                 cortotool_lookupPackage(corto_iterNext(&iter));
             if (!package) {
                 goto error;
             }
 
             /* Use fully scoped name from here */
-            corto_id id;
-            if (!corto_loadRequiresPackage(corto_fullpath(id, package))) {
+            if (!corto_loadRequiresPackage(package)) {
                 corto_mkdir(".corto");
                 corto_file f = corto_fileAppend(".corto/packages.txt");
                 if (!f) {
                     corto_seterr("failed to open .corto/packages.txt (check permissions)");
-                    corto_release(package);
                     goto error;
                 }
-                fprintf(corto_fileGet(f), "%s\n", id);
+                fprintf(corto_fileGet(f), "%s\n", package);
                 corto_fileClose(f);
                 build = TRUE;
 
                 if (!silent) {
-                    printf("corto: package '%s' added to project\n", id);
+                    printf("corto: package '%s' added to project\n", package);
                 }
             } else {
                 if (!silent) {
-                    printf("corto: package '%s' is already added to the project\n", id);
+                    printf("corto: package '%s' is already added to the project\n", package);
                 }
             }
 
-            corto_release(package);
         }
     }
 
@@ -166,7 +170,7 @@ static corto_bool cortotool_removeEntry(corto_file file, corto_ll list, corto_st
 }
 
 corto_int16 cortotool_remove(int argc, char* argv[]) {
-    corto_ll silent, mute, nobuild, project, packages, components, group;
+    corto_ll silent, mute, nobuild, project, packages, components;
     corto_bool build = FALSE;
 
     CORTO_UNUSED(argc);
@@ -178,15 +182,15 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
         {"$0", NULL, NULL},
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
-        {"--nobuid", &nobuild, NULL},
+        {"--nobuild", &nobuild, NULL},
 
         /* Match at most one project directory */
         {"$?*", &project, NULL},
 
-        /* 'group' ensures there's AT LEAST one package OR component */
-        {"$+package", &group, &packages},
-        {"$+component", &group, &components},
-        {"$+*", &packages, &group},
+        /* At least one package or component must be specified */
+        {"$+package", NULL, &packages},
+        {"$|component", NULL, &components},
+        {"$|*", &packages, NULL},
         {NULL}
       }
     );
@@ -222,26 +226,23 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
         corto_iter iter = corto_llIter(packages);
         while (corto_iterHasNext(&iter)) {
             corto_string arg = corto_iterNext(&iter);
-            corto_object package = cortotool_lookupPackage(arg);
+            corto_string package = cortotool_lookupPackage(arg);
             if (!package) {
                 goto error;
             }
 
-            corto_id id;
-            corto_fullpath(id, package);
-
             corto_ll packages = corto_loadGetPackages();
             corto_file file = corto_fileOpen(".corto/packages.txt");
-            corto_bool found = cortotool_removeEntry(file, packages, id);
+            corto_bool found = cortotool_removeEntry(file, packages, package);
             corto_fileClose(file);
             corto_loadFreePackages(packages);
 
             if (!found) {
-                corto_error("corto: '%s' ('%s') not found in package file", arg, id);
+                corto_error("corto: '%s' ('%s') not found in package file", arg, package);
                 goto error;
             } else {
                 build = TRUE;
-                printf("corto: package '%s' removed from project\n", id);
+                printf("corto: package '%s' removed from project\n", package);
             }
         }
     }
