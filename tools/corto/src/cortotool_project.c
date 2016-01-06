@@ -523,7 +523,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (nocorto) {
         empty = nocorto;
-        nobuild = nocorto;
         notest = nocorto;
     }
 

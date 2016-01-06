@@ -265,12 +265,19 @@ task :all => :default
 
 # Run test for project
 task :test do
-    verbose(false)
-    begin
-      sh "corto test"
-    rescue
-      abort
-    end
+  verbose(false)
+  begin
+    sh "corto test"
+  rescue
+    abort
+  end
+end
+
+# Always have a src and include folder
+task :prebuild do
+  verbose(false)
+  sh "mkdir -p src"
+  sh "mkdir -p include"
 end
 
 # Rules for generated files

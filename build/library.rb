@@ -38,7 +38,7 @@ INCLUDE <<
 
 task :prebuild do
     verbose(false)
-    if File.exists?("include") then
+    if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
         includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
 
         # Clear subdirectories of include in target include directory
