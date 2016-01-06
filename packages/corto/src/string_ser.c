@@ -73,6 +73,8 @@ static corto_bool corto_ser_appendstr(corto_string_ser_t* data, corto_string fmt
         va_start(args, fmt);
         memRequired = vsnprintf(buff, 1024, fmt, args);
         if (memRequired >= 1024) {
+            va_end(args);
+            va_start(args, fmt);
             buff = corto_alloc(memRequired + 1);
             vsprintf(buff, fmt, args);
         }
