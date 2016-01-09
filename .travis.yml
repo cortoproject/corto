@@ -18,6 +18,8 @@ addons:
     build_command:   "rake"
     branch_pattern: coverity_scan
 
+before_install:
+
 install:
   - cd ..
   - mkdir projects
@@ -30,6 +32,7 @@ install:
   - git clone https://github.com/cortoproject/cortodoc.git
   - git clone https://github.com/cortoproject/test.git
   - git clone https://github.com/cortoproject/json.git
+  - git clone https://github.com/cortoproject/examples.git
   - |+
     echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json)
     require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
@@ -38,3 +41,7 @@ script:
   - source corto/configure
   - rake
   - rake test
+  # Test examples
+  - cd examples
+  - ./run.sh
+  - cd ..
