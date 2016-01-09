@@ -43,9 +43,5 @@ script:
   - rake test
   # Test examples
   - cd examples
-  - corto run Crud
-  - corto run DynamicType
-  - corto run HelloWorld
-  - corto run Notifications
-  - corto run Select
+  - ./run.sh
   - cd ..
