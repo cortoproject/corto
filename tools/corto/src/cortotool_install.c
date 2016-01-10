@@ -97,7 +97,7 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
     fprintf(install, "TARBALL_URL=https://raw.githubusercontent.com/cortoproject/binaries/master/packages/%s/$UNAME-$ARCHITECTURE/%s.tar.gz\n", path, name);
     fprintf(install, "trap install_fail EXIT\n");
     fprintf(install, "mkdir -p \"$INSTALL_TMPDIR\"\n");
-    fprintf(install, "sudo curl --silent --fail \"$TARBALL_URL\" > $INSTALL_TMPDIR/install.tar.gz\n");
+    fprintf(install, "sudo curl -sS \"$TARBALL_URL\" -o $INSTALL_TMPDIR/install.tar.gz\n");
     fprintf(install, "if [ 0 != $? ]; then exit -1; fi;\n");
     fprintf(install, "tar -xzf $INSTALL_TMPDIR/install.tar.gz -C \"$INSTALL_TMPDIR\"\n");
     fprintf(install, "rm -rf $INSTALL_TMPDIR/install.tar.gz\n");
@@ -141,7 +141,13 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
     cortotool_promptPassword();
 
-    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "install.sh", NULL});
+    corto_pid pid = corto_procrunRedirect(
+        "sudo",
+        (char*[]){"sudo", "sh", "install.sh", NULL},
+        stdin,
+        NULL,
+        stderr);
+
     corto_char progress[] = {'|', '/', '-', '\\'};
     corto_int32 procresult, i = 0;
     corto_int8 rc = 0;
@@ -320,7 +326,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
     } else if (generator) {
         location = corto_locateGenerator(argv[1]);
     } else {
-        location = corto_locate(argv[1]);
+        location = corto_locate(argv[1], CORTO_LOCATION_LIB);
     }
 
     if (location) {
