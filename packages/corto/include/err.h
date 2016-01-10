@@ -28,7 +28,7 @@ typedef enum corto_err {
 #ifndef NDEBUG
 #define corto_assert(condition, ...) if (!(condition)){_corto_assert(condition, "(" #condition ") " __VA_ARGS__);}
 #else
-#define corto_assert(condition, ...)
+#define corto_assert(condition, ...) (void)(condition)
 #endif
 
 /* Log errors to console */
