@@ -82,34 +82,19 @@ void* corto_threadTlsGet(corto_threadKey key) {
     return pthread_getspecific(key);
 }
 
-void corto_mutexNew(struct corto_mutex_s *m) {
-    pthread_mutex_init (&m->mutex, NULL);
-
-#if DETECT_CONTENTION
-    void* buff[DEPTH];
-    m->contention = 0;
-    m->c_entries = backtrace(buff, DEPTH);
-    m->c_symbols = backtrace_symbols(buff, DEPTH);
-#endif
+int corto_mutexNew(struct corto_mutex_s *m) {
+    int result;
+    if ((result = pthread_mutex_init (&m->mutex, NULL))) {
+        corto_seterr("mutexNew failed: %s", strerror(result));
+    }
+    return result;
 }
 
 int corto_mutexLock(corto_mutex mutex) {
     int result;
-
-    result = 0;
-    if (pthread_mutex_trylock(&mutex->mutex)) {
-#if DETECT_CONTENTION
-        mutex->contention++;
-        corto_trace("!! Contention(%d) @ ", mutex->contention);
-        corto_backtrace(stdout);
-
-        corto_trace("   Mutex creation @ :");
-        corto_printBacktrace(stdout, mutex->c_entries, mutex->c_symbols);
-#endif
-        result = pthread_mutex_lock (&mutex->mutex);
-
+    if ((result = pthread_mutex_lock(&mutex->mutex))) {
+        corto_seterr("mutexLock failed: %s", strerror(result));
     }
-
     return result;
 }
 
@@ -119,59 +104,81 @@ int corto_mutexUnlock(corto_mutex mutex) {
 
 int corto_mutexFree(corto_mutex mutex) {
     int result;
-
-    result = pthread_mutex_destroy(&mutex->mutex);
-
+    if ((result = pthread_mutex_destroy(&mutex->mutex))) {
+        corto_seterr("mutexFree failed: %s", strerror(result));
+    }
     return result;
 }
 
 int corto_mutexTry(corto_mutex mutex) {
     int result;
-
-    result = pthread_mutex_trylock(&mutex->mutex);
-
+    if ((result = pthread_mutex_trylock(&mutex->mutex))) {
+        corto_seterr("mutexTry failed: %s", strerror(result));
+    }
     return result;
 }
 
 /* Create read-write mutex */
-void corto_rwmutexNew(struct corto_rwmutex_s *m) {
-    if (pthread_rwlock_init(&m->mutex, NULL)) {
-        corto_critical("pthread_rwlock_init failed.");
+int corto_rwmutexNew(struct corto_rwmutex_s *m) {
+    int result = 0;
+    if ((result = pthread_rwlock_init(&m->mutex, NULL))) {
+        corto_seterr("rwmutexNew failed: %s", strerror(result));
     }
+    return result;
 }
 
 /* Free read-write mutex */
 int corto_rwmutexFree(corto_rwmutex m) {
     int result = 0;
     if ((result = pthread_rwlock_destroy(&m->mutex))) {
-        corto_critical("pthread_rwlock_destroy failed (%s)", strerror(result));
+        corto_seterr("rwmutexFree failed: %s", strerror(result));
     }
-    return 0;
+    return result;
 }
 
 /* Read lock */
 int corto_rwmutexRead(corto_rwmutex mutex) {
-    return pthread_rwlock_rdlock(&mutex->mutex);
+    int result = 0;
+    if ((result = pthread_rwlock_rdlock(&mutex->mutex))) {
+        corto_seterr("rwmutexRead failed: %s", strerror(result));
+    }
+    return result;
 }
 
 /* Write lock */
 int corto_rwmutexWrite(corto_rwmutex mutex) {
-    return pthread_rwlock_wrlock(&mutex->mutex);
+    int result = 0;
+    if ((result = pthread_rwlock_wrlock(&mutex->mutex))) {
+        corto_seterr("rwmutexWrite failed: %s", strerror(result));
+    }
+    return result;
 }
 
 /* Try read */
 int corto_rwmutexTryRead(corto_rwmutex mutex) {
-    return pthread_rwlock_tryrdlock(&mutex->mutex);
+    int result;
+    if ((result = pthread_rwlock_tryrdlock(&mutex->mutex))) {
+        corto_seterr("rwmutexTryRead failed: %s", strerror(result));
+    }
+    return result;
 }
 
 /* Try write */
 int corto_rwmutexTryWrite(corto_rwmutex mutex) {
-    return pthread_rwlock_trywrlock(&mutex->mutex);
+    int result;
+    if ((result = pthread_rwlock_trywrlock(&mutex->mutex))) {
+        corto_seterr("rwmutexTryWrite failed: %s", strerror(result));
+    }
+    return result;
 }
 
 /* Write unlock */
 int corto_rwmutexUnlock(corto_rwmutex mutex) {
-    return pthread_rwlock_unlock(&mutex->mutex);
+    int result;
+    if ((result = pthread_rwlock_unlock(&mutex->mutex))) {
+        corto_seterr("rwmutexUnlock failed: %s", strerror(result));
+    }
+    return result;
 }
 
 corto_sem corto_semNew(unsigned int initValue) {

@@ -36,7 +36,7 @@ void* corto_threadTlsGet(corto_threadKey key);
 /* Mutex */
 typedef struct corto_mutex_s* corto_mutex;
 
-void corto_mutexNew(struct corto_mutex_s *m);
+int corto_mutexNew(struct corto_mutex_s *m);
 int corto_mutexLock(corto_mutex mutex);
 int corto_mutexUnlock(corto_mutex mutex);
 int corto_mutexFree(corto_mutex mutex);
@@ -45,7 +45,7 @@ int corto_mutexTry(corto_mutex mutex);
 /* Read-write mutex */
 typedef struct corto_rwmutex_s* corto_rwmutex;
 
-void corto_rwmutexNew(struct corto_rwmutex_s *m);
+int corto_rwmutexNew(struct corto_rwmutex_s *m);
 int corto_rwmutexRead(corto_rwmutex mutex);
 int corto_rwmutexWrite(corto_rwmutex mutex);
 int corto_rwmutexTryRead(corto_rwmutex mutex);
