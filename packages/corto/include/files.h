@@ -56,7 +56,7 @@ corto_pid corto_procrun(const char* exec, char *argv[]);
 
 /* Same as corto_procrun, but override stdin, stdout and stderr of child */
 corto_pid corto_procrunRedirect(
-    const char* exec, char *argv[], FILE *inc, FILE *out, FILE *err);
+    const char* exec, char *argv[], FILE *in, FILE *out, FILE *err);
 
 /* Send signal to process */
 int corto_prockill(corto_pid pid, corto_procsignal sig);

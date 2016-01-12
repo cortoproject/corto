@@ -7,6 +7,8 @@
 #define CORTO_H
 
 #include "corto/corto.h"
+#include "_interface.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,3 +74,4 @@ extern int8_t CORTO_BACKTRACE_ENABLED;
 }
 #endif
 #endif
+
