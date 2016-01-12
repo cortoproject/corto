@@ -10,9 +10,17 @@
 
 corto_void _corto_observableEvent_handle_v(corto_observableEvent this) {
 /* $begin(corto/core/observableEvent/handle) */
-    if (!corto_readBegin(this->observable)) {
-        corto_call(corto_function(this->observer), NULL, this->me, this->observable, this->source);
-        corto_readEnd(this->observable);
+    /* Don't readlock event for DELETE events */
+    if ((this->mask & CORTO_ON_DELETE) || !corto_readBegin(this->observable)) {
+        corto_call(
+            corto_function(this->observer),
+            NULL,
+            this->me,
+            this->observable,
+            this->source);
+        if (!(this->mask & CORTO_ON_DELETE)) {
+            corto_readEnd(this->observable);
+        }
         corto_event_handle_v(corto_event(this));
     } else {
         /* Error */

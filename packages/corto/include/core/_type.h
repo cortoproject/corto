@@ -43,6 +43,7 @@ CORTO_BITMASK(corto_attr);
 /*  /corto/core/dispatcher */
 CORTO_INTERFACE(corto_dispatcher);
 
+
 /* /corto/core/equalityKind */
 typedef enum corto_equalityKind {
     CORTO_EQ = 0,
@@ -128,6 +129,7 @@ CORTO_CLASS_DEF(corto_observableEvent) {
     corto_object me;
     corto_object source;
     corto_object observable;
+    corto_eventMask mask;
 };
 
 CORTO_SEQUENCE(corto_observerseq, corto_observer,);
