@@ -47,6 +47,7 @@ typedef struct corto_selectData {
     corto_string expr;                         /* Full expression */
     corto_string tokens;                       /* Cut up string for op tokens */
     corto_string contentType;
+    corto_string param;
     corto_object scope;                        /* Scope passed to select */
     corto_selectOp program[CORTO_SELECT_MAX_OP]; /* Parsed program */
     corto_uint8 programSize;
@@ -523,6 +524,7 @@ static corto_int16 corto_selectRequestReplicators(
                             odata->replicator,
                             parent, /* Parent is relative to registered scope */
                             expr,
+                            data->param,
                             data->contentType ? TRUE : FALSE
                         );
                 }
@@ -873,6 +875,17 @@ corto_int16 corto_selectContentType(
     return 0;
 error:
     return -1;
+}
+
+corto_int16 corto_selectParam(corto_resultIter *iter, corto_string param) {
+    CORTO_UNUSED(iter);
+    corto_selectData *data;
+
+    data = corto_selectDataGet();
+
+    corto_setstr(&data->param, param);
+
+    return 0;
 }
 
 static void corto_selectRelease(corto_iter *iter) {

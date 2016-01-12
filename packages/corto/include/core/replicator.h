@@ -53,11 +53,11 @@ CORTO_EXPORT void _corto_replicator_onInvoke(corto_replicator _this, corto_objec
 CORTO_EXPORT corto_void _corto_replicator_onInvoke_v(corto_replicator _this, corto_object instance, corto_function proc, corto_octetseq args);
 #define corto_replicator_onInvoke_v(_this, instance, proc, args) _corto_replicator_onInvoke_v(corto_replicator(_this), instance, corto_function(proc), args)
 
-CORTO_EXPORT corto_resultIter _corto_replicator_onRequest(corto_replicator _this, corto_string parent, corto_string expr, corto_bool setContent);
-#define corto_replicator_onRequest(_this, parent, expr, setContent) _corto_replicator_onRequest(corto_replicator(_this), parent, expr, setContent)
+CORTO_EXPORT corto_resultIter _corto_replicator_onRequest(corto_replicator _this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent);
+#define corto_replicator_onRequest(_this, parent, expr, param, setContent) _corto_replicator_onRequest(corto_replicator(_this), parent, expr, param, setContent)
 
-CORTO_EXPORT corto_resultIter _corto_replicator_onRequest_v(corto_replicator _this, corto_string parent, corto_string expr, corto_bool setContent);
-#define corto_replicator_onRequest_v(_this, parent, expr, setContent) _corto_replicator_onRequest_v(corto_replicator(_this), parent, expr, setContent)
+CORTO_EXPORT corto_resultIter _corto_replicator_onRequest_v(corto_replicator _this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent);
+#define corto_replicator_onRequest_v(_this, parent, expr, param, setContent) _corto_replicator_onRequest_v(corto_replicator(_this), parent, expr, param, setContent)
 
 CORTO_EXPORT void _corto_replicator_onUpdate(corto_replicator _this, corto_object observable);
 #define corto_replicator_onUpdate(_this, observable) _corto_replicator_onUpdate(corto_replicator(_this), observable)
@@ -68,8 +68,8 @@ CORTO_EXPORT corto_void _corto_replicator_onUpdate_v(corto_replicator _this, cor
 CORTO_EXPORT corto_void _corto_replicator_post(corto_replicator _this, corto_event e);
 #define corto_replicator_post(_this, e) _corto_replicator_post(corto_replicator(_this), corto_event(e))
 
-CORTO_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_string parent, corto_string expr, corto_bool setContent);
-#define corto_replicator_request(_this, parent, expr, setContent) _corto_replicator_request(corto_replicator(_this), parent, expr, setContent)
+CORTO_EXPORT corto_resultIter _corto_replicator_request(corto_replicator _this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent);
+#define corto_replicator_request(_this, parent, expr, param, setContent) _corto_replicator_request(corto_replicator(_this), parent, expr, param, setContent)
 
 CORTO_EXPORT corto_int16 _corto_replicator_setContentType(corto_replicator _this, corto_string type);
 #define corto_replicator_setContentType(_this, type) _corto_replicator_setContentType(corto_replicator(_this), type)
