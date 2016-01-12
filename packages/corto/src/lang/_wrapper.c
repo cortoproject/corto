@@ -119,7 +119,7 @@ corto_bool _corto_collection_castable(corto_collection this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -149,7 +149,7 @@ corto_bool _corto_collection_compatible(corto_collection this, corto_type type) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -212,7 +212,7 @@ corto_bool _corto_delegate_castable(corto_delegate this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -242,7 +242,7 @@ corto_bool _corto_delegate_compatible(corto_delegate this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -371,7 +371,7 @@ corto_bool _corto_interface_compatible(corto_interface this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -423,7 +423,7 @@ corto_member _corto_interface_resolveMember(corto_interface this, corto_string n
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    corto_assert(_methodId, "virtual method 'resolveMember(string name)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'resolveMember(string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -474,7 +474,7 @@ corto_bool _corto_iterator_castable(corto_iterator this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -504,7 +504,7 @@ corto_bool _corto_iterator_compatible(corto_iterator this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -650,7 +650,7 @@ corto_bool _corto_primitive_castable(corto_primitive this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -680,7 +680,7 @@ corto_bool _corto_primitive_compatible(corto_primitive this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -775,7 +775,7 @@ corto_bool _corto_struct_castable(corto_struct this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -805,7 +805,7 @@ corto_bool _corto_struct_compatible(corto_struct this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -849,7 +849,7 @@ corto_member _corto_struct_resolveMember(corto_struct this, corto_string name) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    corto_assert(_methodId, "virtual method 'resolveMember(string name)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'resolveMember(string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -893,7 +893,7 @@ corto_bool _corto_type_castable(corto_type this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "virtual method 'castable(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -944,7 +944,7 @@ corto_bool _corto_type_compatible(corto_type this, corto_type type) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "virtual method 'compatible(type type)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);

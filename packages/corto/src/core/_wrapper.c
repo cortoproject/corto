@@ -17,7 +17,7 @@ void _corto_dispatcher_post(corto_dispatcher this, corto_event e) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "post(event e)");
     }
-    corto_assert(_methodId, "virtual method 'post(event e)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -45,7 +45,7 @@ void _corto_event_handle(corto_event this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual method 'handle()' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -80,7 +80,7 @@ void _corto_invokeEvent_handle(corto_invokeEvent this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual method 'handle()' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -108,7 +108,7 @@ void _corto_observableEvent_handle(corto_observableEvent this) {
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual method 'handle()' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -229,7 +229,7 @@ void _corto_replicator_onDeclare(corto_replicator this, corto_object observable)
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onDeclare(object observable)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -257,7 +257,7 @@ void _corto_replicator_onDelete(corto_replicator this, corto_object observable) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDelete(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onDelete(object observable)' not found in interface '%s' (%s)", corto_nameof(_abstract), corto_lasterr());
+    corto_assert(_methodId, "virtual 'onDelete(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -285,7 +285,7 @@ void _corto_replicator_onInvoke(corto_replicator this, corto_object instance, co
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,octetseq args)");
     }
-    corto_assert(_methodId, "virtual method 'onInvoke(object instance,function proc,octetseq args)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,octetseq args)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -304,7 +304,7 @@ void __corto_replicator_onInvoke_v(corto_function f, void *result, void *args) {
         *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
 }
 
-corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_string parent, corto_string expr, corto_bool setContent) {
+corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_resultIter _result;
@@ -314,16 +314,16 @@ corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_string
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(string parent,string expr,bool setContent)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(string parent,string expr,string param,bool setContent)");
     }
-    corto_assert(_methodId, "virtual method 'onRequest(string parent,string expr,bool setContent)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'onRequest(string parent,string expr,string param,bool setContent)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(string parent,string expr,bool setContent)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(string parent,string expr,string param,bool setContent)@%d'", corto_nameof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, parent, expr, setContent);
-
+    corto_call(corto_function(_method), &_result, this, parent, expr, param, setContent);
+    
     return _result;
 }
 
@@ -333,7 +333,8 @@ void __corto_replicator_onRequest_v(corto_function f, void *result, void *args) 
         corto_replicator(*(void**)args),
         *(corto_string*)((intptr_t)args + sizeof(void*)),
         *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
+        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)),
+        *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string) + sizeof(corto_string)));
 }
 
 void _corto_replicator_onUpdate(corto_replicator this, corto_object observable) {
@@ -347,7 +348,7 @@ void _corto_replicator_onUpdate(corto_replicator this, corto_object observable) 
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onUpdate(object observable)");
     }
-    corto_assert(_methodId, "virtual method 'onUpdate(object observable)' not found in interface '%s'", corto_nameof(_abstract));
+    corto_assert(_methodId, "virtual 'onUpdate(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -378,7 +379,8 @@ void __corto_replicator_request(corto_function f, void *result, void *args) {
         corto_replicator(*(void**)args),
         *(corto_string*)((intptr_t)args + sizeof(void*)),
         *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
+        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)),
+        *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string) + sizeof(corto_string)));
 }
 
 void __corto_replicator_setContentType(corto_function f, void *result, void *args) {
