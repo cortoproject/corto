@@ -26,7 +26,7 @@ struct corto_exitHandler {
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "2"
-#define VERSION_PATCH "9"
+#define VERSION_PATCH "10"
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
