@@ -271,11 +271,13 @@ void corto_seterr(char *fmt, ...) {
     }
     corto_setLasterror(err);
 
-    if (CORTO_OPERATIONAL && fmt) {
+    if (fmt && (CORTO_DEBUG_ENABLED || CORTO_OPERATIONAL)) {
         if (CORTO_OPERATIONAL == 1) {
-            corto_error("error raised while starting up: %s", err);      
-        } else {
+            corto_error("error raised while starting up: %s", err);
+        } else if (CORTO_OPERATIONAL){
             corto_error("error raised while shutting down: %s", err);
+        } else {
+            corto_error("debug: %s", err);
         }
         corto_backtrace(stderr);
     }
