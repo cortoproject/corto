@@ -398,7 +398,7 @@ static time_t corto_getModified(corto_string file) {
     return attr.st_mtime;
 }
 
-corto_string corto_locateLibrary(corto_string lib) {
+static corto_string corto_locateLibraryIntern(corto_string lib, corto_string *base) {
     corto_string targetPath = NULL, homePath = NULL, usrPath = NULL;
     corto_string result = NULL;
     time_t t = 0;
@@ -413,6 +413,10 @@ corto_string corto_locateLibrary(corto_string lib) {
         if (corto_checkLibrary(targetPath)) {
             t = corto_getModified(targetPath);
             result = targetPath;
+            if (base) {
+                *base = corto_envparse("$CORTO_TARGET/%%s/corto/%s.%s",
+                    CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+            }
         }
     }
 
@@ -429,6 +433,10 @@ corto_string corto_locateLibrary(corto_string lib) {
                 if (corto_checkLibrary(homePath)) {
                     t = myT;
                     result = homePath;
+                    if (base) {
+                        *base = corto_envparse("$CORTO_HOME/%%s/corto/%s.%s",
+                            CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+                    }
                 }
             }
         }
@@ -448,6 +456,10 @@ corto_string corto_locateLibrary(corto_string lib) {
                 if (corto_checkLibrary(usrPath)) {
                     t = myT;
                     result = usrPath;
+                    if (base) {
+                        *base = corto_envparse("/usr/local/%%s/corto/%s.%s",
+                            CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+                    }
                 }
             }
         }
@@ -460,6 +472,10 @@ corto_string corto_locateLibrary(corto_string lib) {
     return result;
 error:
     return NULL;
+}
+
+corto_string corto_locateLibrary(corto_string lib) {
+    return corto_locateLibraryIntern(lib, NULL);
 }
 
 corto_string corto_locateGenerator(corto_string component) {
@@ -484,16 +500,39 @@ corto_string corto_locateComponent(corto_string component) {
     return result;
 }
 
-corto_string corto_locate(corto_string package) {
+corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     corto_string relativePath = corto_packageToFile(package);
     corto_string result = NULL;
+    corto_string base = NULL;
 
     if (!relativePath) {
         goto error;
     }
 
-    result = corto_locateLibrary(relativePath);
+    result = corto_locateLibraryIntern(relativePath, &base);
     corto_dealloc(relativePath);
+
+    switch(kind) {
+    case CORTO_LOCATION_ENV:
+        /* Quick & dirty trick to strip everything but the env */
+        corto_dealloc(result);
+        corto_asprintf(&result, base, "@");
+        *(strchr(result, '@') - 1) = '\0'; /* Also strip the '/' */
+        break;
+    case CORTO_LOCATION_LIB:
+        /* Result is already pointing to the lib */
+        break;
+    case CORTO_LOCATION_INCLUDE: {
+        corto_dealloc(result);
+        corto_string include;
+        corto_asprintf(&include, base, "include");
+        corto_asprintf(&result, "%s/packages/%s", include, package);
+        corto_dealloc(include);
+        break;
+    }
+    }
+
+    corto_dealloc(base);
 
     return result;
 error:
@@ -590,7 +629,7 @@ static int corto_packageLoader(corto_string package) {
     corto_string fileName;
     int result;
 
-    fileName = corto_locate(package);
+    fileName = corto_locate(package, CORTO_LOCATION_LIB);
     if (!fileName) {
         return -1;
     }

@@ -6,7 +6,7 @@ static corto_string cortotool_lookupPackage(corto_string str) {
     corto_object p = corto_resolve(NULL, str);
     corto_string package = NULL;
     if (!p) {
-        if (!corto_locate(str)) {
+        if (!corto_locate(str, CORTO_LOCATION_LIB)) {
             corto_seterr("package '%s' not found", str);
             goto error;
         } else {
@@ -275,7 +275,7 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
         printf("packages:\n");
         while (corto_iterHasNext(&iter)) {
             corto_string str = corto_iterNext(&iter);
-            printf("  %s  =>  %s\n", str, corto_locate(str));
+            printf("  %s  =>  %s\n", str, corto_locate(str, CORTO_LOCATION_LIB));
         }
     } else {
         printf("corto: no packages to list\n");

@@ -341,7 +341,47 @@ void gen_free(corto_generator g) {
 
 /* Start generator */
 corto_int16 gen_start(corto_generator g) {
+    /* Find dependent packages, configure associated API prefixes */
+
+    /* Resolve imports based on metadata. */
+    if (g_resolveImports(g)) {
+        goto error;
+    }
+
+    /* packages.txt may contain more packages than is found by looking at the
+     * metadata, however no code will be generated based on those packages so
+     * they don't have to be configered for code generators */
+
+    /* Find include paths for packages, load prefix file into generator */
+    if (g->imports) {
+        corto_iter iter = corto_llIter(g->imports)
+        while (corto_iterHasNext(&iter)) {
+            corto_object p = corto_iterNext(&iter);
+            corto_string prefixFileStr;
+            corto_string prefix;
+            corto_string includePath =
+                corto_locate(
+                    corto_path(NULL, root_o, p, "/"), CORTO_LOCATION_INCLUDE);
+
+            if (!includePath) {
+                goto error;
+            }
+
+            corto_asprintf(&prefixFileStr, "%s/.prefix", includePath);
+            prefix = corto_fileLoad(prefixFileStr);
+            if (prefix) {
+                gen_parse(g, p, FALSE, FALSE, prefix);
+            }
+
+            corto_dealloc(prefix);
+            corto_dealloc(prefixFileStr);
+            corto_dealloc(includePath);
+        }
+    }
+
     return g->start_action(g);
+error:
+    return -1;
 }
 
 /* ==== Generator utility functions */
@@ -437,7 +477,6 @@ corto_int16 g_resolveImports(corto_generator generator) {
     return 0;
 }
 
-
 /* Recursively walk scopes */
 int g_walkObjects(void* o, void* userData) {
     struct g_walkObjects_t* data;
@@ -514,7 +553,12 @@ int g_walkRecursive(corto_generator g, g_walkAction action, void* userData) {
 
 /* Find prefix for a given object. Search parse-object in generator
  * which is closest to the object passed to this function. */
-static g_object* g_findPrefix(corto_generator g, corto_object o, corto_object* match) {
+static g_object* g_findObjectIntern(
+    corto_generator g,
+    corto_object o,
+    corto_object* match,
+    corto_bool inclusive)
+{
     corto_iter iter;
     g_object *result, *t;
     corto_object parent;
@@ -538,7 +582,7 @@ static g_object* g_findPrefix(corto_generator g, corto_object o, corto_object* m
             /* If a parent was found (parent of root is NULL), assign it to result if
              * distance is smaller than minDistance */
             if (parent) {
-                if ((distance < minDistance) && distance) {
+                if ((distance < minDistance) && (distance || inclusive)) {
                     result = t;
                     minDistance = distance;
                     if (match) {
@@ -552,12 +596,28 @@ static g_object* g_findPrefix(corto_generator g, corto_object o, corto_object* m
     return result;
 }
 
+g_object* g_findObject(
+    corto_generator g,
+    corto_object o,
+    corto_object* match)
+{
+    return g_findObjectIntern(g, o, match, FALSE);
+}
+
+g_object* g_findObjectInclusive(
+    corto_generator g,
+    corto_object o,
+    corto_object* match)
+{
+    return g_findObjectIntern(g, o, match, TRUE);
+}
+
 /* Obtain prefix */
 corto_string g_getPrefix(corto_generator g, corto_object o) {
     g_object* prefix;
 
     /* Lookup prefix */
-    prefix = g_findPrefix(g, o, NULL);
+    prefix = g_findObject(g, o, NULL);
 
     return (prefix != NULL) ? prefix->prefix : NULL;
 }
@@ -659,7 +719,7 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
 
     /* Find prefix for object */
     match = NULL;
-    prefix = g_findPrefix(g, o, &match);
+    prefix = g_findObject(g, o, &match);
 
     /* TODO: prefix i.c.m. !CORTO_GENERATOR_ID_DEFAULT & nested classes i.c.m. !CORTO_GENERATOR_ID_DEFAULT */
 
@@ -727,7 +787,7 @@ corto_string g_oid(corto_generator g, corto_object o, corto_id id) {
 
     /* Find prefix for object */
     match = NULL;
-    prefix = g_findPrefix(g, o, &match);
+    prefix = g_findObject(g, o, &match);
 
    /* If prefix is found, replace the scope up until the found object with the prefix */
     if (prefix && prefix->prefix) {

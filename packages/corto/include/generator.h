@@ -125,6 +125,10 @@ int g_walkNoScope(corto_generator g, g_walkAction action, void* userData);
 /* Recursively walk objects, will walk all objects under the scope of generator objects. */
 int g_walkRecursive(corto_generator generator, g_walkAction o, void* userData);
 
+/* Find generator object for object */
+g_object* g_findObject(corto_generator g, corto_object o, corto_object* match);
+g_object* g_findObjectInclusive(corto_generator g, corto_object o, corto_object* match);
+
 /* Lookup prefix for object. */
 corto_string g_getPrefix(corto_generator g, corto_object o);
 

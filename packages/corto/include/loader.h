@@ -38,7 +38,13 @@ int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userD
 
 void (*corto_loaderResolveProc(corto_string procName))(void);
 
-corto_string corto_locate(corto_string package);
+typedef enum corto_loaderLocationKind {
+    CORTO_LOCATION_ENV,
+    CORTO_LOCATION_LIB,
+    CORTO_LOCATION_INCLUDE,
+} corto_loaderLocationKind;
+
+corto_string corto_locate(corto_string package, corto_loaderLocationKind kind);
 corto_string corto_locateComponent(corto_string component);
 corto_string corto_locateGenerator(corto_string component);
 corto_string corto_locateLibrary(corto_string lib);

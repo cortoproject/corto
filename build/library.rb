@@ -47,11 +47,11 @@ task :prebuild do
         end
 
         # Clear header files in root include
-        sh "rm -f #{includePath}/*.h"
+        sh "rm -f #{includePath}/*.h #{includePath}/.prefix"
 
         # Copy new header files
         sh "mkdir -p #{includePath}"
-        sh "cp -r include/* #{includePath}/"
+        sh "cp -r include/. #{includePath}/"
     end
     if File.exists?("etc") then
         etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
