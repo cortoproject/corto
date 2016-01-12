@@ -1205,11 +1205,6 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             corto__deinitObservable(o);
         }
 
-        /* Deinit writable */
-        if (corto_checkAttr(o, CORTO_ATTR_WRITABLE)) {
-            corto__deinitWritable(o);
-        }
-
         /* Deinit scope */
         if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
             corto__orphan(o);
@@ -1235,6 +1230,11 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
      */
 
     if (!corto_adec(&_o->refcount)) {
+
+        /* Deinit writable */
+        if (corto_checkAttr(o, CORTO_ATTR_WRITABLE)) {
+            corto__deinitWritable(o);
+        }
 
         if (CORTO_TRACE_OBJECT) corto_memtrace("deinit", o, NULL);
 
@@ -2307,9 +2307,7 @@ static void corto_observersArrayFree(corto__observer** array) {
     }
 }
 
-/* #define CORTO_TRACE_NOTIFICATIONS */
-
-#ifdef CORTO_TRACE_NOTIFICATIONS
+#ifndef NDEBUG
 static corto_uint32 indent = 0;
 #endif
 
@@ -2321,13 +2319,15 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
     if ((mask & observerMask) && (!depth || (observerMask & CORTO_ON_TREE))) {
         corto_dispatcher dispatcher = data->dispatcher;
 
-#ifdef CORTO_TRACE_NOTIFICATIONS
-        printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
+#ifndef NDEBUG
+        if (CORTO_TRACE_NOTIFICATIONS) {
+            printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
                 indent * 3, "",
                 corto_fullpath(NULL, observable),
                 corto_fullpath(NULL, observer),
                 corto_fullpath(NULL, data->_this));
-        indent++;
+            indent++;
+        }
 #endif
 
         if (!dispatcher) {
@@ -2346,11 +2346,12 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
                 corto_setref(&event->me, data->_this);
                 corto_setref(&event->observable, observable);
                 corto_setref(&event->source, source);
+                event->mask = mask;
 
                 corto_dispatcher_post(dispatcher, corto_event(event));
             }
         }
-#ifdef CORTO_TRACE_NOTIFICATIONS
+#ifndef NDEBUG
         indent--;
 #endif
     }
@@ -2467,8 +2468,9 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
     _o = corto__objectObservable(
         CORTO_OFFSET(observable, -sizeof(corto__object)));
 
-#ifdef CORTO_TRACE_NOTIFICATIONS
-        printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s%s\n",
+#ifndef NDEBUG
+        if (CORTO_TRACE_NOTIFICATIONS) {
+            printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s%s\n",
                 indent * 3, "",
                 corto_fullpath(NULL, observable),
                 corto_fullpath(NULL, observer),
@@ -2480,6 +2482,7 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
                 mask & CORTO_ON_DEFINE ? " define" : "",
                 mask & CORTO_ON_UPDATE ? " update" : "",
                 mask & CORTO_ON_DELETE ? " delete" : "");
+        }
 #endif
 
     /* Create observerData */
@@ -2601,12 +2604,14 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
                 oldSelfArray = _o->onSelfArray;
                 _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
 
-#ifdef CORTO_TRACE_NOTIFICATIONS
-                printf("%*s [silence] observable '%s' observer '%s' me '%s'\n",
+#ifndef NDEBUG
+                if (CORTO_TRACE_NOTIFICATIONS) {
+                    printf("%*s [silence] observable '%s' observer '%s' me '%s'\n",
                         indent * 3, "",
                         corto_fullpath(NULL, observable),
                         corto_fullpath(NULL, observer),
                         corto_fullpath(NULL, this));
+                }
 #endif
 
             } else {

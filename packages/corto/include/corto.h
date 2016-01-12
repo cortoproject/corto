@@ -67,6 +67,7 @@ void corto_onexit(void(*handler)(void*), void* userData);
 extern int8_t CORTO_OPERATIONAL;
 extern int8_t CORTO_DEBUG_ENABLED;
 extern corto_string CORTO_TRACE_OBJECT;
+extern int8_t CORTO_TRACE_NOTIFICATIONS;
 extern int8_t CORTO_BACKTRACE_ENABLED;
 /* $end */
 

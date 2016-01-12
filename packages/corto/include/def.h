@@ -139,7 +139,6 @@ typedef struct corto_ll_s* corto_ll;
  * most. */
 #define CORTO_MAX_REPLICATORS (16)
 
-/* #define CORTO_TRACE_NOTIFICATIONS */
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG

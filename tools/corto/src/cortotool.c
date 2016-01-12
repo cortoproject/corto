@@ -60,18 +60,21 @@ int main(int argc, char* argv[]) {
     /* Parse debugging options before starting the core */
     for(i = 1; i < argc; i++) {
         if (*argv[i] == '-') {
-            if (*(argv[i]+1) == 'd') {
-                CORTO_DEBUG_ENABLED = TRUE;
-            }else if (*(argv[i]+1) == 't') {
-                CORTO_TRACE_OBJECT = argv[i + 1];
-                i ++;
-            }else if (*(argv[i]+1) == 'h') {
+            if (*(argv[i]+1) == 'h') {
                 cortotool_printUsage(FALSE);
                 break;
             } else if (*(argv[i]+1) == 'v') {
                 printf("%s\n", CORTO_VERSION);
             } else if (*(argv[i]+1) == '-') {
-                if (!strcmp(argv[i], "--backtrace")) {
+                if (!strcmp(argv[i], "--debug")) {
+                    CORTO_DEBUG_ENABLED = TRUE;
+                } else if (!strcmp(argv[i], "--trace-memory")) {
+                    CORTO_TRACE_OBJECT = argv[i + 1];
+                    i ++;
+                } else if (!strcmp(argv[i], "--trace-events")) {
+                    CORTO_TRACE_NOTIFICATIONS = 1;
+                    i ++;
+                } else if (!strcmp(argv[i], "--trace-stack")) {
                     CORTO_BACKTRACE_ENABLED = TRUE;
                 }
             }
@@ -89,12 +92,7 @@ int main(int argc, char* argv[]) {
     } else {
         for(i=1; i<argc; i++) {
             if (*argv[i] == '-') {
-                if (*(argv[i]+1) == 'd') {
-                    /* Already handled */
-                }else if (*(argv[i]+1) == 't') {
-                    /* Already handled */
-                    i ++;
-                }else if (*(argv[i]+1) == 'h') {
+                if (*(argv[i]+1) == 'h') {
                     /* Already handled */
                     break;
                 } else if (*(argv[i]+1) == 'v') {
@@ -125,7 +123,11 @@ int main(int argc, char* argv[]) {
                         cortotool_printUsage(TRUE);
                     } else if (!strcmp(argv[i] + 2, "mute")) {
                         mute = TRUE;
-                    } else if (!strcmp(argv[i] + 2, "backtrace")) {
+                    } else if (!strcmp(argv[i] + 2, "trace-events")) {
+                        /* Already handled */
+                    } else if (!strcmp(argv[i] + 2, "trace-memory")) {
+                        /* Already handled */
+                    } else if (!strcmp(argv[i] + 2, "trace-stack")) {
                         /* Already handled */
                     } else {
                         corto_error("corto: unknown option '%s'", argv[i] + 2);
