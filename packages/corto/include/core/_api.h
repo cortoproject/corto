@@ -202,21 +202,21 @@ CORTO_EXPORT corto_int16 _corto_notifyActionDeinit(corto_notifyAction* value);
 
 corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object observable);
 /* /corto/core/observableEvent */
-CORTO_EXPORT corto_observableEvent _corto_observableEventCreate(corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask);
-#define corto_observableEventCreate(observer, me, source, observable, mask) _corto_observableEventCreate(corto_observer(observer), me, source, observable, mask)
-CORTO_EXPORT corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, corto_string _name, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask);
-#define corto_observableEventCreateChild(_parent, _name, observer, me, source, observable, mask) _corto_observableEventCreateChild(_parent, _name, corto_observer(observer), me, source, observable, mask)
-CORTO_EXPORT corto_int16 _corto_observableEventUpdate(corto_observableEvent _this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask);
-#define corto_observableEventUpdate(_this, observer, me, source, observable, mask) _corto_observableEventUpdate(corto_observableEvent(_this), corto_observer(observer), me, source, observable, mask)
+CORTO_EXPORT corto_observableEvent _corto_observableEventCreate(corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread);
+#define corto_observableEventCreate(observer, me, source, observable, mask, thread) _corto_observableEventCreate(corto_observer(observer), me, source, observable, mask, thread)
+CORTO_EXPORT corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, corto_string _name, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread);
+#define corto_observableEventCreateChild(_parent, _name, observer, me, source, observable, mask, thread) _corto_observableEventCreateChild(_parent, _name, corto_observer(observer), me, source, observable, mask, thread)
+CORTO_EXPORT corto_int16 _corto_observableEventUpdate(corto_observableEvent _this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread);
+#define corto_observableEventUpdate(_this, observer, me, source, observable, mask, thread) _corto_observableEventUpdate(corto_observableEvent(_this), corto_observer(observer), me, source, observable, mask, thread)
 
 CORTO_EXPORT corto_observableEvent _corto_observableEventDeclare(void);
 #define corto_observableEventDeclare() _corto_observableEventDeclare()
 CORTO_EXPORT corto_observableEvent _corto_observableEventDeclareChild(corto_object _parent, corto_string _name);
 #define corto_observableEventDeclareChild(_parent, _name) _corto_observableEventDeclareChild(_parent, _name)
-CORTO_EXPORT corto_int16 _corto_observableEventDefine(corto_observableEvent _this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask);
-#define corto_observableEventDefine(_this, observer, me, source, observable, mask) _corto_observableEventDefine(corto_observableEvent(_this), corto_observer(observer), me, source, observable, mask)
-CORTO_EXPORT void _corto_observableEventSet(corto_observableEvent _this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask);
-#define corto_observableEventSet(_this, observer, me, source, observable, mask) _corto_observableEventSet(corto_observableEvent(_this), corto_observer(observer), me, source, observable, mask)
+CORTO_EXPORT corto_int16 _corto_observableEventDefine(corto_observableEvent _this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread);
+#define corto_observableEventDefine(_this, observer, me, source, observable, mask, thread) _corto_observableEventDefine(corto_observableEvent(_this), corto_observer(observer), me, source, observable, mask, thread)
+CORTO_EXPORT void _corto_observableEventSet(corto_observableEvent _this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread);
+#define corto_observableEventSet(_this, observer, me, source, observable, mask, thread) _corto_observableEventSet(corto_observableEvent(_this), corto_observer(observer), me, source, observable, mask, thread)
 CORTO_EXPORT corto_string _corto_observableEventStr(corto_observableEvent value);
 #define corto_observableEventStr(value) _corto_observableEventStr(corto_observableEvent(value))
 CORTO_EXPORT corto_observableEvent corto_observableEventFromStr(corto_observableEvent value, corto_string str);

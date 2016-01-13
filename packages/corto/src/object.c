@@ -2348,6 +2348,10 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
                 corto_setref(&event->source, source);
                 event->mask = mask;
 
+                /* Set thread handle so the dispatcher can figure out whether a
+                 * readlock is needed */
+                event->thread = corto_threadSelf();
+
                 corto_dispatcher_post(dispatcher, corto_event(event));
             }
         }

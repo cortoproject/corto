@@ -1046,6 +1046,7 @@ CORTO_CLASS_O(corto_core, observableEvent, event, CORTO_READONLY, NULL, CORTO_DE
     CORTO_REFERENCE_O(observableEvent, source, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(observableEvent, observable, object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(observableEvent, mask, eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(observableEvent, thread, word, CORTO_GLOBAL);
     CORTO_METHOD_O(observableEvent, handle, "()", void, TRUE, corto_observableEvent_handle_v);
 
 /* /corto/lang/invokeEvent */

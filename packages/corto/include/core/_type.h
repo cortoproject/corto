@@ -130,6 +130,7 @@ CORTO_CLASS_DEF(corto_observableEvent) {
     corto_object source;
     corto_object observable;
     corto_eventMask mask;
+    corto_word thread;
 };
 
 CORTO_SEQUENCE(corto_observerseq, corto_observer,);

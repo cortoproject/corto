@@ -243,6 +243,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, observableEvent_source);\
     SSO_OP_OBJ(op, observableEvent_observable);\
     SSO_OP_OBJ(op, observableEvent_mask);\
+    SSO_OP_OBJ(op, observableEvent_thread);\
     SSO_OP_OBJ(op, observableEvent_handle_);\
     /* invokeEvent */\
     SSO_OP_OBJ(op, invokeEvent_replicator);\

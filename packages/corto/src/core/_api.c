@@ -728,7 +728,7 @@ corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object o
     return 0;
 }
 
-corto_observableEvent _corto_observableEventCreate(corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask) {
+corto_observableEvent _corto_observableEventCreate(corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread) {
     corto_observableEvent this;
     this = corto_declare(corto_observableEvent_o);
     if (!this) {
@@ -739,6 +739,7 @@ corto_observableEvent _corto_observableEventCreate(corto_observer observer, cort
     corto_setref(&this->source, source);
     corto_setref(&this->observable, observable);
     this->mask = mask;
+    this->thread = thread;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -746,7 +747,7 @@ corto_observableEvent _corto_observableEventCreate(corto_observer observer, cort
     return this;
 }
 
-corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, corto_string _name, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask) {
+corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, corto_string _name, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread) {
     corto_observableEvent this;
     this = corto_declareChild(_parent, _name, corto_observableEvent_o);
     if (!this) {
@@ -757,6 +758,7 @@ corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, co
     corto_setref(&this->source, source);
     corto_setref(&this->observable, observable);
     this->mask = mask;
+    this->thread = thread;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -764,13 +766,14 @@ corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, co
     return this;
 }
 
-corto_int16 _corto_observableEventUpdate(corto_observableEvent this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask) {
+corto_int16 _corto_observableEventUpdate(corto_observableEvent this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread) {
     if (!corto_updateBegin(this)) {
         corto_setref(&this->observer, corto_observer(observer));
         corto_setref(&this->me, me);
         corto_setref(&this->source, source);
         corto_setref(&this->observable, observable);
         this->mask = mask;
+        this->thread = thread;
         corto_updateEnd(this);
     } else {
         return -1;
@@ -796,21 +799,23 @@ corto_observableEvent _corto_observableEventDeclareChild(corto_object _parent, c
     return this;
 }
 
-corto_int16 _corto_observableEventDefine(corto_observableEvent this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask) {
+corto_int16 _corto_observableEventDefine(corto_observableEvent this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread) {
     corto_setref(&this->observer, corto_observer(observer));
     corto_setref(&this->me, me);
     corto_setref(&this->source, source);
     corto_setref(&this->observable, observable);
     this->mask = mask;
+    this->thread = thread;
     return corto_define(this);
 }
 
-void _corto_observableEventSet(corto_observableEvent this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask) {
+void _corto_observableEventSet(corto_observableEvent this, corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread) {
     corto_setref(&this->observer, corto_observer(observer));
     corto_setref(&this->me, me);
     corto_setref(&this->source, source);
     corto_setref(&this->observable, observable);
     this->mask = mask;
+    this->thread = thread;
 }
 
 corto_string _corto_observableEventStr(corto_observableEvent value) {
