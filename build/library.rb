@@ -58,11 +58,11 @@ task :prebuild do
         sh "rm -rf #{etc}"
         sh "mkdir -p #{etc}"
         if File.exists? "etc/everywhere" then
-            sh "cp -r etc/everywhere/* #{etc}/"
+            sh "cp -r etc/everywhere/. #{etc}/"
         end
         platformStr = "etc/" + `uname -s`[0...-1] + "-" + `uname -p`[0...-1]
         if File.exists? platformStr then
-            sh "cp -r " + platformStr + "/* #{etc}"
+            sh "cp -r " + platformStr + "/. #{etc}"
         end
     end
     if ENV['CORTO_TARGET'] != "/usr/local" then
@@ -86,13 +86,13 @@ task :collect do
     if File.exists?("include") then
         includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{includePath}"
-        sh "cp -r include/* #{includePath}/"
+        sh "cp -r include/. #{includePath}/"
     end
     if File.exists?("etc") then
         etc = "#{ENV['HOME']}/.corto/pack/etc/corto/#{VERSION}/#{TARGETPATH}"
         targetEtc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{etc}"
-        sh "cp -r #{targetEtc}/* #{etc}/"
+        sh "cp -r #{targetEtc}/. #{etc}/"
     end
 end
 
