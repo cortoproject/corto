@@ -100,7 +100,7 @@ void test_ListReplicator_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_string parent, corto_string expr, corto_bool setContent) {
+corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
 /* $begin(test/ListReplicator/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();

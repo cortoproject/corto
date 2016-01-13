@@ -270,12 +270,12 @@ test::Suite Select::
 class JsonReplicator : replicator, hidden::
     alias mount: replicator/mount
     int16 construct()
-    resultIter onRequest(string parent, string expr, bool setContent)
+    resultIter onRequest(string parent, string expr, string param, bool setContent)
 
 class StringReplicator : replicator, hidden::
     alias mount: replicator/mount
     int16 construct()
-    resultIter onRequest(string parent, string expr, bool setContent)
+    resultIter onRequest(string parent, string expr, string param, bool setContent)
 
 // Test setting content types
 test::Suite SelectContentType::
@@ -293,7 +293,7 @@ class ListReplicator : replicator, hidden::
     alias mount : replicator/mount
     items: resultList, private
     int16 construct()
-    resultIter onRequest(string parent, string expr, bool setContent)
+    resultIter onRequest(string parent, string expr, string param, bool setContent)
 
 // Test corto_select requesting data from replicators
 test::Suite ReplicatorRequest::

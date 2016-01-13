@@ -26,7 +26,7 @@ void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_JsonReplicator_onRequest(test_JsonReplicator this, corto_string parent, corto_string expr, corto_bool setContent) {
+corto_resultIter _test_JsonReplicator_onRequest(test_JsonReplicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
 /* $begin(test/JsonReplicator/onRequest) */
     corto_ll data = corto_llNew();
 
