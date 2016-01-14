@@ -192,6 +192,11 @@ static corto_ll cortotool_gatherFiles(void) {
         corto_id sourceLink;
         corto_string package = corto_iterNext(&iter);
         corto_string file = corto_locate(package, CORTO_LOCATION_LIB);
+        if (!file) {
+            corto_error("corto: package '%s' could not be located\n", package);
+            corto_error("  try: corto install %s", package);
+            goto error;
+        }
         corto_fileMonitor *mon = cortotool_monitorNew(file, NULL);
         if (file) {
             corto_llAppend(result, mon);
