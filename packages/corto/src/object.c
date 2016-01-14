@@ -1896,7 +1896,9 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
     }
 
     if (threadStr) {
+        corto_string tmp = buffer;
         buffer = corto_setThreadString(buffer);
+        corto_dealloc(tmp);
     }
 
     return buffer;
@@ -1940,7 +1942,12 @@ corto_string corto_path(
     corto_uint32 count = 0;
     corto_bool threadStr = FALSE;
 
-    corto_assert(o != NULL, "relname called with NULL for parameter 'to'.");
+    corto_assert(o != NULL, "corto_path called with NULL for parameter 'to'.");
+
+    if (o == NULL) {
+        corto_seterr("NULL passed to corto_path");
+        goto error;
+    }
 
     if (!buffer) {
         buffer = corto_alloc(sizeof(corto_id));
@@ -2010,10 +2017,14 @@ corto_string corto_path(
     }
 
     if (threadStr) {
+        corto_string tmp = buffer;
         buffer = corto_setThreadString(buffer);
+        corto_dealloc(tmp);
     }
 
     return buffer;
+error:
+    return NULL;
 }
 
 static char *strsep(char **str, char delim) {
