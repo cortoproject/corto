@@ -45,6 +45,7 @@ corto_err corto_debugv(char* fmt, va_list args);
 corto_err corto_tracev(char* fmt, va_list args);
 corto_err corto_warningv(char* fmt, va_list args);
 corto_err corto_errorv(char* fmt, va_list args);
+void corto_seterrv(char *fmt, va_list args);
 void corto_printv(char *fmt, va_list args);
 void corto_criticalv(char* fmt, va_list args);
 

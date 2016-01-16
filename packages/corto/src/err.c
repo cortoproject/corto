@@ -189,6 +189,27 @@ void corto_printv(char* fmt, va_list args) {
     corto_logv(CORTO_OK, 0, fmt, args, stdout);
 }
 
+void corto_seterrv(char *fmt, va_list args) {
+    char *err = NULL;
+    if (fmt) {
+        corto_vasprintf(&err, fmt, args);
+    }
+    corto_setLasterror(err);
+
+    if (fmt && (CORTO_DEBUG_ENABLED || CORTO_OPERATIONAL)) {
+        if (CORTO_OPERATIONAL == 1) {
+            corto_error("error raised while starting up: %s", err);
+        } else if (CORTO_OPERATIONAL){
+            corto_error("error raised while shutting down: %s", err);
+        } else {
+            corto_error("debug: %s", err);
+        }
+        corto_backtrace(stderr);
+    }
+
+    corto_dealloc(err);
+}
+
 corto_err corto_debug(char* fmt, ...) {
     va_list arglist;
     corto_err result;
@@ -262,25 +283,9 @@ char* corto_lasterr(void) {
 }
 
 void corto_seterr(char *fmt, ...) {
-    va_list list;
-    char *err = NULL;
-    if (fmt) {
-        va_start(list, fmt);
-        corto_vasprintf(&err, fmt, list);
-        va_end(list);
-    }
-    corto_setLasterror(err);
+    va_list arglist;
 
-    if (fmt && (CORTO_DEBUG_ENABLED || CORTO_OPERATIONAL)) {
-        if (CORTO_OPERATIONAL == 1) {
-            corto_error("error raised while starting up: %s", err);
-        } else if (CORTO_OPERATIONAL){
-            corto_error("error raised while shutting down: %s", err);
-        } else {
-            corto_error("debug: %s", err);
-        }
-        corto_backtrace(stderr);
-    }
-
-    corto_dealloc(err);
+    va_start(arglist, fmt);
+    corto_seterrv(fmt, arglist);
+    va_end(arglist);
 }
