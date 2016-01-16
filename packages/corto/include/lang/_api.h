@@ -1281,21 +1281,21 @@ CORTO_EXPORT corto_int16 _corto_primitiveKindDeinit(corto_primitiveKind* value);
 #define corto_primitiveKindDeinit(value) _corto_primitiveKindDeinit(value)
 
 /* /corto/lang/procedure */
-CORTO_EXPORT corto_procedure _corto_procedureCreate(corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
-#define corto_procedureCreate(base, baseAccess, kind) _corto_procedureCreate(corto_interface(base), baseAccess, kind)
-CORTO_EXPORT corto_procedure _corto_procedureCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
-#define corto_procedureCreateChild(_parent, _name, base, baseAccess, kind) _corto_procedureCreateChild(_parent, _name, corto_interface(base), baseAccess, kind)
-CORTO_EXPORT corto_int16 _corto_procedureUpdate(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
-#define corto_procedureUpdate(_this, base, baseAccess, kind) _corto_procedureUpdate(corto_procedure(_this), corto_interface(base), baseAccess, kind)
+CORTO_EXPORT corto_procedure _corto_procedureCreate(corto_procedureKind kind_1);
+#define corto_procedureCreate(kind_1) _corto_procedureCreate(kind_1)
+CORTO_EXPORT corto_procedure _corto_procedureCreateChild(corto_object _parent, corto_string _name, corto_procedureKind kind_1);
+#define corto_procedureCreateChild(_parent, _name, kind_1) _corto_procedureCreateChild(_parent, _name, kind_1)
+CORTO_EXPORT corto_int16 _corto_procedureUpdate(corto_procedure _this, corto_procedureKind kind_1);
+#define corto_procedureUpdate(_this, kind_1) _corto_procedureUpdate(corto_procedure(_this), kind_1)
 
 CORTO_EXPORT corto_procedure _corto_procedureDeclare(void);
 #define corto_procedureDeclare() _corto_procedureDeclare()
 CORTO_EXPORT corto_procedure _corto_procedureDeclareChild(corto_object _parent, corto_string _name);
 #define corto_procedureDeclareChild(_parent, _name) _corto_procedureDeclareChild(_parent, _name)
-CORTO_EXPORT corto_int16 _corto_procedureDefine(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
-#define corto_procedureDefine(_this, base, baseAccess, kind) _corto_procedureDefine(corto_procedure(_this), corto_interface(base), baseAccess, kind)
-CORTO_EXPORT void _corto_procedureSet(corto_procedure _this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind);
-#define corto_procedureSet(_this, base, baseAccess, kind) _corto_procedureSet(corto_procedure(_this), corto_interface(base), baseAccess, kind)
+CORTO_EXPORT corto_int16 _corto_procedureDefine(corto_procedure _this, corto_procedureKind kind_1);
+#define corto_procedureDefine(_this, kind_1) _corto_procedureDefine(corto_procedure(_this), kind_1)
+CORTO_EXPORT void _corto_procedureSet(corto_procedure _this, corto_procedureKind kind_1);
+#define corto_procedureSet(_this, kind_1) _corto_procedureSet(corto_procedure(_this), kind_1)
 CORTO_EXPORT corto_string _corto_procedureStr(corto_procedure value);
 #define corto_procedureStr(value) _corto_procedureStr(corto_procedure(value))
 CORTO_EXPORT corto_procedure corto_procedureFromStr(corto_procedure value, corto_string str);
@@ -1464,21 +1464,21 @@ CORTO_EXPORT corto_int16 _corto_textCompare(corto_text dst, corto_text src);
 #define corto_textCompare(dst, src) _corto_textCompare(corto_text(dst), corto_text(src))
 
 /* /corto/lang/type */
-CORTO_EXPORT corto_type _corto_typeCreate(corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-#define corto_typeCreate(parentType, parentState, defaultType, defaultProcedureType) _corto_typeCreate(corto_type(parentType), parentState, corto_type(defaultType), corto_type(defaultProcedureType))
-CORTO_EXPORT corto_type _corto_typeCreateChild(corto_object _parent, corto_string _name, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-#define corto_typeCreateChild(_parent, _name, parentType, parentState, defaultType, defaultProcedureType) _corto_typeCreateChild(_parent, _name, corto_type(parentType), parentState, corto_type(defaultType), corto_type(defaultProcedureType))
-CORTO_EXPORT corto_int16 _corto_typeUpdate(corto_type _this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-#define corto_typeUpdate(_this, parentType, parentState, defaultType, defaultProcedureType) _corto_typeUpdate(corto_type(_this), corto_type(parentType), parentState, corto_type(defaultType), corto_type(defaultProcedureType))
+CORTO_EXPORT corto_type _corto_typeCreate(corto_typeKind kind, corto_bool reference);
+#define corto_typeCreate(kind, reference) _corto_typeCreate(kind, reference)
+CORTO_EXPORT corto_type _corto_typeCreateChild(corto_object _parent, corto_string _name, corto_typeKind kind, corto_bool reference);
+#define corto_typeCreateChild(_parent, _name, kind, reference) _corto_typeCreateChild(_parent, _name, kind, reference)
+CORTO_EXPORT corto_int16 _corto_typeUpdate(corto_type _this, corto_typeKind kind, corto_bool reference);
+#define corto_typeUpdate(_this, kind, reference) _corto_typeUpdate(corto_type(_this), kind, reference)
 
 CORTO_EXPORT corto_type _corto_typeDeclare(void);
 #define corto_typeDeclare() _corto_typeDeclare()
 CORTO_EXPORT corto_type _corto_typeDeclareChild(corto_object _parent, corto_string _name);
 #define corto_typeDeclareChild(_parent, _name) _corto_typeDeclareChild(_parent, _name)
-CORTO_EXPORT corto_int16 _corto_typeDefine(corto_type _this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-#define corto_typeDefine(_this, parentType, parentState, defaultType, defaultProcedureType) _corto_typeDefine(corto_type(_this), corto_type(parentType), parentState, corto_type(defaultType), corto_type(defaultProcedureType))
-CORTO_EXPORT void _corto_typeSet(corto_type _this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType);
-#define corto_typeSet(_this, parentType, parentState, defaultType, defaultProcedureType) _corto_typeSet(corto_type(_this), corto_type(parentType), parentState, corto_type(defaultType), corto_type(defaultProcedureType))
+CORTO_EXPORT corto_int16 _corto_typeDefine(corto_type _this, corto_typeKind kind, corto_bool reference);
+#define corto_typeDefine(_this, kind, reference) _corto_typeDefine(corto_type(_this), kind, reference)
+CORTO_EXPORT void _corto_typeSet(corto_type _this, corto_typeKind kind, corto_bool reference);
+#define corto_typeSet(_this, kind, reference) _corto_typeSet(corto_type(_this), kind, reference)
 CORTO_EXPORT corto_string _corto_typeStr(corto_type value);
 #define corto_typeStr(value) _corto_typeStr(corto_type(value))
 CORTO_EXPORT corto_type corto_typeFromStr(corto_type value, corto_string str);

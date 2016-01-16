@@ -723,16 +723,16 @@ CORTO_ITERATOR_O(corto_core, resultIter, result);
 /* /corto/lang/type */
 CORTO_FW_ICD(type);
 CORTO_CLASS_NOBASE_O(corto_lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
-    CORTO_MEMBER_O(type, kind, typeKind, CORTO_READONLY | CORTO_LOCAL);
-    CORTO_MEMBER_O(type, reference, bool, CORTO_READONLY | CORTO_LOCAL);
+    CORTO_MEMBER_O(type, kind, typeKind, CORTO_GLOBAL);
+    CORTO_MEMBER_O(type, reference, bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(type, hasResources, bool, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(type, templateId, uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(type, size, uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(type, alignment, uint16, CORTO_PRIVATE | CORTO_LOCAL);
-    CORTO_REFERENCE_O(type, parentType, type, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
-    CORTO_MEMBER_O(type, parentState, state, CORTO_GLOBAL);
-    CORTO_REFERENCE_O(type, defaultType, type, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
-    CORTO_REFERENCE_O(type, defaultProcedureType, type, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
+    CORTO_REFERENCE_O(type, parentType, type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
+    CORTO_MEMBER_O(type, parentState, state, CORTO_HIDDEN);
+    CORTO_REFERENCE_O(type, defaultType, type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
+    CORTO_REFERENCE_O(type, defaultProcedureType, type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
     CORTO_MEMBER_O(type, metaprocedures, vtable, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(type, init, initAction, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(type, sizeof, "()", uint32, FALSE, corto_type_sizeof);
@@ -932,7 +932,7 @@ CORTO_CLASS_O(corto_lang, delegate, struct, CORTO_READONLY, NULL, CORTO_DECLARED
 
 /* /corto/lang/procedure */
 CORTO_FW_I(procedure);
-CORTO_CLASS_O(corto_lang, procedure, struct, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(corto_lang, procedure, struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(procedure, kind, procedureKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(procedure, bind, initAction, CORTO_LOCAL|CORTO_READONLY);
     CORTO_METHOD_O(procedure, init, "()", int16, FALSE, corto_procedure_init);

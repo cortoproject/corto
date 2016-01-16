@@ -4803,15 +4803,13 @@ corto_int16 _corto_primitiveKindDeinit(corto_primitiveKind* value) {
     return result;
 }
 
-corto_procedure _corto_procedureCreate(corto_interface base, corto_modifier baseAccess, corto_procedureKind kind) {
+corto_procedure _corto_procedureCreate(corto_procedureKind kind_1) {
     corto_procedure this;
     this = corto_declare(corto_procedure_o);
     if (!this) {
         return NULL;
     }
-    corto_setref(&corto_interface(this)->base, corto_interface(base));
-    corto_struct(this)->baseAccess = baseAccess;
-    this->kind = kind;
+    this->kind = kind_1;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -4819,15 +4817,13 @@ corto_procedure _corto_procedureCreate(corto_interface base, corto_modifier base
     return this;
 }
 
-corto_procedure _corto_procedureCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind) {
+corto_procedure _corto_procedureCreateChild(corto_object _parent, corto_string _name, corto_procedureKind kind_1) {
     corto_procedure this;
     this = corto_declareChild(_parent, _name, corto_procedure_o);
     if (!this) {
         return NULL;
     }
-    corto_setref(&corto_interface(this)->base, corto_interface(base));
-    corto_struct(this)->baseAccess = baseAccess;
-    this->kind = kind;
+    this->kind = kind_1;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -4835,11 +4831,9 @@ corto_procedure _corto_procedureCreateChild(corto_object _parent, corto_string _
     return this;
 }
 
-corto_int16 _corto_procedureUpdate(corto_procedure this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind) {
+corto_int16 _corto_procedureUpdate(corto_procedure this, corto_procedureKind kind_1) {
     if (!corto_updateBegin(this)) {
-        corto_setref(&corto_interface(this)->base, corto_interface(base));
-        corto_struct(this)->baseAccess = baseAccess;
-        this->kind = kind;
+        this->kind = kind_1;
         corto_updateEnd(this);
     } else {
         return -1;
@@ -4865,17 +4859,13 @@ corto_procedure _corto_procedureDeclareChild(corto_object _parent, corto_string 
     return this;
 }
 
-corto_int16 _corto_procedureDefine(corto_procedure this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind) {
-    corto_setref(&corto_interface(this)->base, corto_interface(base));
-    corto_struct(this)->baseAccess = baseAccess;
-    this->kind = kind;
+corto_int16 _corto_procedureDefine(corto_procedure this, corto_procedureKind kind_1) {
+    this->kind = kind_1;
     return corto_define(this);
 }
 
-void _corto_procedureSet(corto_procedure this, corto_interface base, corto_modifier baseAccess, corto_procedureKind kind) {
-    corto_setref(&corto_interface(this)->base, corto_interface(base));
-    corto_struct(this)->baseAccess = baseAccess;
-    this->kind = kind;
+void _corto_procedureSet(corto_procedure this, corto_procedureKind kind_1) {
+    this->kind = kind_1;
 }
 
 corto_string _corto_procedureStr(corto_procedure value) {
@@ -5499,16 +5489,14 @@ corto_int16 _corto_textCompare(corto_text dst, corto_text src) {
     return corto_compare(dst, src);
 }
 
-corto_type _corto_typeCreate(corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
+corto_type _corto_typeCreate(corto_typeKind kind, corto_bool reference) {
     corto_type this;
     this = corto_declare(corto_type_o);
     if (!this) {
         return NULL;
     }
-    corto_setref(&this->parentType, corto_type(parentType));
-    this->parentState = parentState;
-    corto_setref(&this->defaultType, corto_type(defaultType));
-    corto_setref(&this->defaultProcedureType, corto_type(defaultProcedureType));
+    this->kind = kind;
+    this->reference = reference;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -5516,16 +5504,14 @@ corto_type _corto_typeCreate(corto_type parentType, corto_state parentState, cor
     return this;
 }
 
-corto_type _corto_typeCreateChild(corto_object _parent, corto_string _name, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
+corto_type _corto_typeCreateChild(corto_object _parent, corto_string _name, corto_typeKind kind, corto_bool reference) {
     corto_type this;
     this = corto_declareChild(_parent, _name, corto_type_o);
     if (!this) {
         return NULL;
     }
-    corto_setref(&this->parentType, corto_type(parentType));
-    this->parentState = parentState;
-    corto_setref(&this->defaultType, corto_type(defaultType));
-    corto_setref(&this->defaultProcedureType, corto_type(defaultProcedureType));
+    this->kind = kind;
+    this->reference = reference;
     if (this && corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -5533,12 +5519,10 @@ corto_type _corto_typeCreateChild(corto_object _parent, corto_string _name, cort
     return this;
 }
 
-corto_int16 _corto_typeUpdate(corto_type this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
+corto_int16 _corto_typeUpdate(corto_type this, corto_typeKind kind, corto_bool reference) {
     if (!corto_updateBegin(this)) {
-        corto_setref(&this->parentType, corto_type(parentType));
-        this->parentState = parentState;
-        corto_setref(&this->defaultType, corto_type(defaultType));
-        corto_setref(&this->defaultProcedureType, corto_type(defaultProcedureType));
+        this->kind = kind;
+        this->reference = reference;
         corto_updateEnd(this);
     } else {
         return -1;
@@ -5564,19 +5548,15 @@ corto_type _corto_typeDeclareChild(corto_object _parent, corto_string _name) {
     return this;
 }
 
-corto_int16 _corto_typeDefine(corto_type this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
-    corto_setref(&this->parentType, corto_type(parentType));
-    this->parentState = parentState;
-    corto_setref(&this->defaultType, corto_type(defaultType));
-    corto_setref(&this->defaultProcedureType, corto_type(defaultProcedureType));
+corto_int16 _corto_typeDefine(corto_type this, corto_typeKind kind, corto_bool reference) {
+    this->kind = kind;
+    this->reference = reference;
     return corto_define(this);
 }
 
-void _corto_typeSet(corto_type this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
-    corto_setref(&this->parentType, corto_type(parentType));
-    this->parentState = parentState;
-    corto_setref(&this->defaultType, corto_type(defaultType));
-    corto_setref(&this->defaultProcedureType, corto_type(defaultProcedureType));
+void _corto_typeSet(corto_type this, corto_typeKind kind, corto_bool reference) {
+    this->kind = kind;
+    this->reference = reference;
 }
 
 corto_string _corto_typeStr(corto_type value) {

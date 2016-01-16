@@ -132,6 +132,9 @@ corto_int16 _corto_type_construct(corto_type this) {
         this->size = sizeof(corto_any);
         this->alignment = CORTO_ALIGNMENT(corto_any);
         break;
+    case CORTO_VOID:
+        this->size = this->reference ? sizeof(void*) : 0;
+        this->alignment = CORTO_ALIGNMENT(void*);
     default:
         break;
     }

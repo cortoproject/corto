@@ -150,7 +150,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_PRIM(op, constant);\
     SSO_OP_PRIM(op, any);\
     SSO_OP_VOID(op, void);\
-    SSO_OP_VOID(op, object);\
+    SSO_OP_PRIM(op, object);\
     SSO_OP_PRIM(op, width);\
     SSO_OP_PRIM(op, typeKind);\
     SSO_OP_PRIM(op, primitiveKind);\
