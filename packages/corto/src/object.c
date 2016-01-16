@@ -57,6 +57,7 @@ static corto_observerAdmin observerAdmin[CORTO_MAX_THREADS];
 /* Stack for tracing memory management operations */
 static corto_string memtrace[50];
 static corto_int8 memtraceSp = 0;
+static corto_int8 memtraceCount = 0;
 
 static struct corto_observerAdmin* corto_observerAdminGet(void) {
     corto_observerAdmin *admin = corto_threadTlsGet(CORTO_KEY_OBSERVER_ADMIN);
@@ -253,12 +254,14 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
             corto_seterr(
               "%s/init failed", corto_fullpath(NULL, corto_typeof(o)));
         }
+        /* Reset parent so deinitScope won't release it */
+        scope->parent = NULL;
         goto error;
     }
 
     /* Add object to the scope of the parent-object */
     if (!(result = corto_adopt(parent, o))) {
-        /* Reset parent */
+        /* Reset parent so deinitScope won't release it */
         scope->parent = NULL;
         goto error;
     }
@@ -609,7 +612,10 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
     corto_asprintf(&memtrace[memtraceSp], "%s (%s) %s", path, oper, context ? context : "");
 
     if (!strcmp(path, CORTO_TRACE_OBJECT)) {
-        printf("%s: %s (count = %d, destructed = %d)\n",
+        memtraceCount ++;
+
+        printf("%d: %s: %s (count = %d, destructed = %d)\n",
+            memtraceCount,
             oper,
             path,
             corto_countof(o),
@@ -630,6 +636,11 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
             corto_backtrace(stdout);
         }
         printf("\n");
+
+        if (CORTO_MEMTRACE_BREAKPOINT == memtraceCount) {
+            printf(" << BREAKPOINT >>\n");
+            abort();
+        }
     }
 }
 

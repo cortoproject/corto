@@ -69,10 +69,10 @@ extern int8_t CORTO_DEBUG_ENABLED;
 extern corto_string CORTO_TRACE_OBJECT;
 extern int8_t CORTO_TRACE_NOTIFICATIONS;
 extern int8_t CORTO_BACKTRACE_ENABLED;
+extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 /* $end */
 
 #ifdef __cplusplus
 }
 #endif
 #endif
-

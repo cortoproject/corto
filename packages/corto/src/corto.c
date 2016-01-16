@@ -67,6 +67,9 @@ int8_t CORTO_TRACE_NOTIFICATIONS = 0;
 /* When set, the core adds backtraces to memory tracing */
 int8_t CORTO_BACKTRACE_ENABLED = 0;
 
+/* When set, the core will break at the specified id */
+int32_t CORTO_MEMTRACE_BREAKPOINT;
+
 /*
  * Indicator for whether corto is operational
  * 0 = running
