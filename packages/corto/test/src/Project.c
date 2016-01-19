@@ -91,7 +91,7 @@ corto_int16 test_Project_implementNoCorto(
 
     /* Add function and rebuild */
     fprintf(f, "#include \"%s/%s.h\"\n", package, name);
-    fprintf(f, "void foo() {}\n\n");
+    fprintf(f, "void foo(void) {}\n\n");
     fclose(f);
 
     sprintf(cfile, "%s/include/%s.h", name, name);
@@ -101,7 +101,7 @@ corto_int16 test_Project_implementNoCorto(
     }
 
     /* Add function and rebuild */
-    fprintf(f, "\nvoid foo();\n\n");
+    fprintf(f, "\nvoid foo(void);\n\n");
     fclose(f);
 
     corto_pid pid = corto_procrun(
@@ -137,7 +137,7 @@ corto_int16 test_Project_use(corto_string package) {
     }
 
     /* Add function and rebuild */
-    fprintf(f, "\n\nvoid bar() {\n    foo();\n}\n\n");
+    fprintf(f, "\n\nvoid bar(void) {\n    foo();\n}\n\n");
     fclose(f);
 
     corto_pid pid = corto_procrun(
@@ -178,7 +178,7 @@ corto_int16 test_Project_useNoCorto(
 
     /* Add function and rebuild */
     fprintf(f, "#include \"%s/%s.h\"\n", include, includeName);
-    fprintf(f, "\n\nvoid bar() {\n    foo();\n}\n\n");
+    fprintf(f, "\n\nvoid bar(void) {\n    foo();\n}\n\n");
     fclose(f);
 
     corto_pid pid = corto_procrun(
