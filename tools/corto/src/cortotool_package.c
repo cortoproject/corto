@@ -5,6 +5,7 @@
 static corto_string cortotool_lookupPackage(corto_string str) {
     corto_object p = corto_resolve(NULL, str);
     corto_string package = NULL;
+
     if (!p) {
         if (!corto_locate(str, CORTO_LOCATION_LIB)) {
             corto_seterr("package '%s' not found", str);
@@ -120,7 +121,13 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
                     corto_seterr("failed to open .corto/packages.txt (check permissions)");
                     goto error;
                 }
-                fprintf(corto_fileGet(f), "%s\n", package);
+
+                /* Only add fully scoped names to package file */
+                if (*package != '/') {
+                    fprintf(corto_fileGet(f), "/%s\n", package);
+                } else {
+                    fprintf(corto_fileGet(f), "%s\n", package);
+                }
                 corto_fileClose(f);
                 build = TRUE;
 

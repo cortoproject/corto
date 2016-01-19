@@ -261,6 +261,16 @@ static corto_int16 cortotool_app (
         goto error;
     }
 
+    if (strchr(name, '/')) {
+        corto_error("corto: app name should'nt contain '/' characters");
+        goto error;
+    }
+
+    if (strchr(name, ':')) {
+        corto_error("corto: app name should'nt contain ':' characters");
+        goto error;
+    }
+
     sprintf(buff, "%s/src", name);
     if (corto_mkdir(buff)) {
         corto_error("corto: couldn't create %s directory (check permissions)", buff);
@@ -321,7 +331,7 @@ static corto_int16 cortotool_package(
     corto_bool empty,
     corto_bool nocorto)
 {
-    corto_id cxfile, srcfile, srcdir;
+    corto_id cxfile, srcfile, srcdir, parentName;
     corto_char *ptr, *name;
     FILE *file;
     corto_uint32 i;
@@ -329,7 +339,7 @@ static corto_int16 cortotool_package(
 
     silent |= mute;
 
-    /* Ignore initial colons */
+    /* Ignore initial colons and slashes */
     if (include[0] == ':') {
         if (include[1] == ':') {
             include += 2;
@@ -340,15 +350,29 @@ static corto_int16 cortotool_package(
             goto error;
         }
     }
+    if (include[0] == '/') {
+        include += 1;
+    }
 
     /* Extract left-most name from include variable */
     ptr = include;
     name = include;
+    parentName[0] = '\0';
     for (i = 0; i < strlen(include); i++) {
-        if (*ptr == ':') {
-            name = ptr+1;
+        if (*ptr == '/') {
+            name = ptr + 1;
+        } else if (*ptr == ':') {
+            name = ptr + 1;
         }
         ptr++;
+    }
+    if (name != include) {
+        strcpy(parentName, include);
+        if (parentName[name - include - 1] == '/') {
+            parentName[name - include - 1] = '\0';
+        } else {
+            parentName[name - include - 2] = '\0';
+        }
     }
 
     if (cortotool_setupProject(CORTO_PACKAGE, name, local, silent)) {
@@ -387,7 +411,7 @@ static corto_int16 cortotool_package(
 
     file = fopen(cxfile, "w");
     if (file) {
-        fprintf(file, "#package ::%s\n\n", include);
+        fprintf(file, "#package /%s\n\n", include);
         if (!empty) {
             fprintf(file, "class RedPanda::\n");
             fprintf(file, "    weight: int32\n");
@@ -472,6 +496,16 @@ static corto_int16 cortotool_package(
               name);
         }
         goto error;
+    }
+
+    /* If package is nested, add a dependency to parent */
+    if (strlen(parentName) && !nocorto) {
+        if (cortotool_add(
+            4,
+            (char*[]){"add", parentName, "--silent", "--nobuild", NULL}
+        )) {
+            goto error;
+        }
     }
 
     if (!nobuild) {

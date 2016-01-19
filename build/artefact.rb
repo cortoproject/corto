@@ -4,6 +4,14 @@ require "#{ENV['CORTO_BUILD']}/libmapping"
 
 CHDIR_SET ||= false
 
+if not defined? VERBOSE then
+    if ENV['verbose'] == "true" then
+        VERBOSE ||= true
+    else
+        VERBOSE ||= false
+    end
+end
+
 if !CHDIR_SET then
     Dir.chdir(File.dirname(Rake.application.rakefile))
 end
@@ -132,7 +140,7 @@ end
 # Task that collects all artefacts from the build and store them in a 'pack'
 # folder, where they can be tarred for redistribution.
 task :collect do
-    verbose(false)
+    verbose(VERBOSE)
     artefact = "#{TARGETDIR}/#{ARTEFACT}"
     target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
     sh "mkdir -p " + target.split("/")[0...-1].join("/")
@@ -146,14 +154,14 @@ end
 
 # Rule to automatically create components.txt
 file ".corto/components.txt" do
-    verbose(false)
+    verbose(VERBOSE)
     sh "mkdir -p .corto"
     sh "touch .corto/components.txt"
 end
 
 # Rule to automatically create packages.txt
 file ".corto/packages.txt" do
-    verbose(false)
+    verbose(VERBOSE)
     sh "mkdir -p .corto"
     sh "touch .corto/packages.txt"
 end
@@ -162,7 +170,7 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 
 # Build artefact
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
-    verbose(false)
+    verbose(VERBOSE)
     sh "mkdir -p #{TARGETDIR}"
 
     # Create list of files that are going to be linked with. Abstract away from the
@@ -193,7 +201,8 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
             else
                 result = `corto locate #{i} --lib`[0...-1]
                 if $?.exitstatus != 0 then
-                    p result
+                    print "\033[1;31m[ dependency #{i} could not be located ]\033[0;49m\n"
+                    print "\033[1;31m     #{result} \033[0;49m\n"
                     abort "\033[1;31m[ build failed ]\033[0;49m"
                 end
                 result
@@ -265,7 +274,7 @@ task :all => :default
 
 # Run test for project
 task :test do
-  verbose(false)
+  verbose(VERBOSE)
   begin
     sh "corto test"
   rescue
@@ -310,7 +319,7 @@ end
 
 # Utility for building a sourcefile
 def build_source(source, target, echo)
-    verbose(false)
+    verbose(VERBOSE)
     flags = ""
     cc = ""
 

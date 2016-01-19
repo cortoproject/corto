@@ -201,10 +201,13 @@ static corto_dl corto_loadValidLibrary(corto_string fileName) {
     build = (corto_string ___ (*)(void))corto_dlProc(result, "corto_getBuild");
 
     /* Validate version */
-    if (!build || strcmp(build(), corto_getBuild())) {
+    if (build && strcmp(build(), corto_getBuild())) {
         /* Library is linked with different Corto version */
         goto error;
     }
+
+    /* If no build function is available, the library is not linked with
+     * Corto, and probably represents a --nocorto package */
 
     return result;
 error:

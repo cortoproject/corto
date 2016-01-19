@@ -1,5 +1,13 @@
 require "#{ENV['CORTO_BUILD']}/version"
 
+if not defined? VERBOSE then
+    if ENV['verbose'] == "true" then
+        VERBOSE ||= true
+    else
+        VERBOSE ||= false
+    end
+end
+
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
@@ -37,7 +45,7 @@ if not defined? NOCORTO then
     GENERATED_HEADERS ||= ["include/_interface.h"]
 
     file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
-        verbose(false)
+        verbose(VERBOSE)
         if generate then
             sh "mkdir -p .corto"
             command = "corto pp --name #{TARGET} -g c_project --attr h=include --attr component=true"

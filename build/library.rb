@@ -1,6 +1,14 @@
 require "#{ENV['CORTO_BUILD']}/version"
 require 'rake/clean'
 
+if not defined? VERBOSE then
+    if ENV['verbose'] == "true" then
+        VERBOSE ||= true
+    else
+        VERBOSE ||= false
+    end
+end
+
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
@@ -37,7 +45,7 @@ INCLUDE <<
     "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
 
 task :prebuild do
-    verbose(false)
+    verbose(VERBOSE)
     if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
         includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
 
@@ -82,7 +90,7 @@ task :prebuild do
 end
 
 task :collect do
-    verbose(false)
+    verbose(VERBOSE)
     if File.exists?("include") then
         includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{includePath}"

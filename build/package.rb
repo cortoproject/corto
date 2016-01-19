@@ -1,29 +1,42 @@
 require 'rake/clean'
 
+if not defined? VERBOSE then
+    if ENV['verbose'] == "true" then
+        VERBOSE ||= true
+    else
+        VERBOSE ||= false
+    end
+end
+
 LOCAL ||= false
 INCLUDE ||= []
+PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
 if LOCAL == true then
     TARGETPATH = "./.corto"
     TARGETDIR = TARGETPATH
     INCLUDE << "include"
 else
-    PACKAGEDIR = "packages/" + PACKAGE.gsub("::", "/")
+    PACKAGEDIR = "packages/" + PACKAGE_FWSLASH
     TARGETPATH = PACKAGEDIR
 end
 
-TARGET = PACKAGE.split("::").last
+TARGET = PACKAGE_FWSLASH.split("/").last
 
 PP_PRELOAD ||= []
 GENERATED_SOURCES ||= []
 DEFINE ||= []
 CFLAGS ||= []
 
-DEFINE << "BUILDING_" + PACKAGE.gsub("::", "_").upcase
-CFLAGS << "-fvisibility=hidden"
+DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
+
+# If this is not a corto package, expose all symbols by default
+if not defined? NOCORTO then
+    CFLAGS << "-fvisibility=hidden"
+end
 
 PREFIX ||= TARGET
-NAME ||= PACKAGE.split("::").last
+NAME ||= PACKAGE_FWSLASH.split("/").last
 
 CHDIR_SET = true
 Dir.chdir(File.dirname(Rake.application.rakefile))
@@ -31,13 +44,13 @@ Dir.chdir(File.dirname(Rake.application.rakefile))
 GENFILE = Rake::FileList["#{NAME}.{cx,idl,xml}"][0]
 
 file ".corto/packages.txt" do
-    verbose(false)
+    verbose(VERBOSE)
     sh "mkdir -p .corto"
     sh "touch .corto/packages.txt"
 end
 
 file ".corto/components.txt" do
-    verbose(false)
+    verbose(VERBOSE)
     sh "mkdir -p .corto"
     sh "touch .corto/components.txt"
 end
@@ -56,7 +69,7 @@ if not defined? NOCORTO then
         "include/_interface.h"
 
     file "include/_type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
-        verbose(false)
+        verbose(VERBOSE)
         preload = PP_PRELOAD.join(" ")
         sh "mkdir -p .corto"
         sh "touch .corto/_wrapper.c"
@@ -86,10 +99,10 @@ if not defined? NOCORTO then
 end
 
 task :doc do
-    verbose(false)
+    verbose(VERBOSE)
     if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
         if File.exists? "#{NAME}.md" and not LOCAL then
-            command = "corto pp #{NAME}.md --scope #{PACKAGE} -g html"
+            command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g html"
             begin
                 sh command
             rescue
