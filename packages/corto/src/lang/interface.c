@@ -168,7 +168,7 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
         if (!corto_instanceof(corto_alias_o, m)) {
             memberSize = corto_type_sizeof(memberType);
             if (!memberSize) {
-                corto_error("member '%s' of type '%s' is of invalid type '%s'",
+                corto_seterr("member '%s' of type '%s' is of invalid type '%s'",
                     corto_nameof(m),
                     corto_fullpath(NULL, this),
                     corto_fullpath(NULL, memberType));

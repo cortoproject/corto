@@ -365,8 +365,8 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     } else {
         if (!try) {
             corto_seterr(
-                "cannot load '%s': unknown file extension '%s'",
-                str, ext);
+                "unknown file extension '%s'",
+                ext);
             goto error;
         }
     }

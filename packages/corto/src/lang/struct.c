@@ -76,8 +76,9 @@ corto_int16 _corto_struct_construct(corto_struct this) {
     if (corto_interface(this)->members.length) {
         alignment = corto__interface_calculateAlignment(corto_interface(this));
         if (!alignment) {
-            corto_seterr("error in definition of '%s'",
-                corto_fullpath(NULL, this));
+            corto_seterr("can't compute alignment of %s: %s",
+                corto_fullpath(NULL, this),
+                corto_lasterr());
             goto error;
         }
     }
@@ -116,8 +117,9 @@ corto_int16 _corto_struct_construct(corto_struct this) {
     if (corto_interface(this)->members.length) {
         size = corto__interface_calculateSize(corto_interface(this), size);
         if (!size) {
-            corto_seterr("error in definition of '%s'",
-                corto_fullpath(NULL, this));
+            corto_seterr("can't compute size of %s: %s",
+                corto_fullpath(NULL, this),
+                corto_lasterr());
             goto error;
         }
     }
