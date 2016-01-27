@@ -35,6 +35,7 @@ unsigned int corto_fileTell(corto_file);
 char* corto_fileReadLine(corto_file file, char* buf, unsigned int length);
 
 char* corto_fileExtension(char* file, char* buffer);
+char* corto_filePath(char* file, char* buffer);
 
 #ifdef __cplusplus
 }

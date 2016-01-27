@@ -819,6 +819,7 @@ corto_string g_oid(corto_generator g, corto_object o, corto_id id) {
 /* Convert a filename to a filepath, depending on it's extension. */
 static corto_string g_filePath(corto_generator g, corto_string filename, corto_char* buffer) {
     corto_string result;
+    corto_id path;
 
     result = filename;
 
@@ -843,13 +844,19 @@ static corto_string g_filePath(corto_generator g, corto_string filename, corto_c
         if (ext && *ext) {
             sprintf(buffer, "%s/%s", ext, filename);
             result = buffer;
+        }
+    }
 
-            /* Ensure path exists */
-            corto_mkdir(ext);
+    /* Ensure path exists */
+    if (corto_filePath(result, path)) {
+        if (corto_mkdir(path)) {
+            goto error;
         }
     }
 
     return result;
+error:
+    return NULL;
 }
 
 /* Find existing parts in the code that must not be overwritten. */
@@ -957,6 +964,7 @@ void g_fileClose(g_file file) {
 static g_file g_fileOpenIntern(corto_generator g, corto_string name) {
     g_file result;
     char ext[255];
+    corto_id path;
 
     result = corto_alloc(sizeof(struct g_file_s));
     result->snippets = NULL;
@@ -964,7 +972,7 @@ static g_file g_fileOpenIntern(corto_generator g, corto_string name) {
     result->scope = NULL;
     result->file = NULL;
     result->indent = 0;
-    result->name = corto_strdup(name);
+    corto_asprintf(&result->name, "%s/%s", path, name);
     result->generator = g;
 
     corto_fileExtension(name, ext);

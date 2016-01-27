@@ -201,3 +201,20 @@ char* corto_fileExtension(char* file, char* buffer) {
         return buffer;
     }
 }
+
+/* Get file path */
+char* corto_filePath(char* file, char* buffer) {
+    corto_int32 i;
+
+    strcpy(buffer, file);
+    i = strlen(buffer);
+    while (i >= 0) {
+        if ((buffer[i] == '/') || (buffer[i] == '\\')) {
+            buffer[i] = '\0';
+            break;
+        }
+        i--;
+    }
+
+    return i ? buffer : NULL;
+}
