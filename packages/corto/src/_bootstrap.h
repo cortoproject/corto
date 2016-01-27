@@ -532,6 +532,8 @@ CORTO_FWDECL(observer, replicator_on_delete);
 
 CORTO_FWDECL(iterator, resultIter);
 
+CORTO_FWDECL(struct, time);
+
 /* database root */
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
 corto_package root_o = CORTO_OFFSET(&root__o.o.o, sizeof(corto__object));
@@ -1113,6 +1115,11 @@ CORTO_STRUCT_O(corto_lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL
     CORTO_MEMBER_O(parameter, name, string, CORTO_GLOBAL);
     CORTO_REFERENCE_O(parameter, type, type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, FALSE);
     CORTO_MEMBER_O(parameter, passByReference, bool, CORTO_GLOBAL);
+
+/* /corto/core/time */
+CORTO_STRUCT_O(corto_core, time, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(time, sec, int32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(time, nanosec, int32, CORTO_GLOBAL);
 
 #ifdef __cplusplus
 }

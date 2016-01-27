@@ -8,11 +8,6 @@
 #ifndef CORE_TIME_H_
 #define CORE_TIME_H_
 
-typedef struct corto_time {
-    int tv_sec;
-    int tv_nsec;
-} corto_time;
-
 void corto_sleep(unsigned int sec, unsigned int nanosec);
 
 void corto_timeGet(corto_time* time);
@@ -21,7 +16,7 @@ corto_time corto_timeAdd(corto_time t1, corto_time t2);
 
 corto_time corto_timeSub(corto_time t1, corto_time t2);
 
-int corto_timeCompare(corto_time t1, corto_time t2);
+int corto_time_compare(corto_time t1, corto_time t2);
 
 double corto_timeToDouble(corto_time t);
 

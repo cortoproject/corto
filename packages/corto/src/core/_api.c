@@ -1762,6 +1762,120 @@ corto_int16 _corto_resultListDeinit(corto_resultList* value) {
     return result;
 }
 
+corto_time* _corto_timeCreate(corto_int32 sec, corto_int32 nanosec) {
+    corto_time* this;
+    this = corto_declare(corto_time_o);
+    if (!this) {
+        return NULL;
+    }
+    this->sec = sec;
+    this->nanosec = nanosec;
+    if (this && corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_time* _corto_timeCreateChild(corto_object _parent, corto_string _name, corto_int32 sec, corto_int32 nanosec) {
+    corto_time* this;
+    this = corto_declareChild(_parent, _name, corto_time_o);
+    if (!this) {
+        return NULL;
+    }
+    this->sec = sec;
+    this->nanosec = nanosec;
+    if (this && corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_timeUpdate(corto_time* this, corto_int32 sec, corto_int32 nanosec) {
+    if (!corto_updateBegin(this)) {
+        this->sec = sec;
+        this->nanosec = nanosec;
+        corto_updateEnd(this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_time* _corto_timeDeclare(void) {
+    corto_time* this;
+    this = corto_declare(corto_time_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_time* _corto_timeDeclareChild(corto_object _parent, corto_string _name) {
+    corto_time* this;
+    this = corto_declareChild(_parent, _name, corto_time_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_timeDefine(corto_time* this, corto_int32 sec, corto_int32 nanosec) {
+    this->sec = sec;
+    this->nanosec = nanosec;
+    return corto_define(this);
+}
+
+void _corto_timeSet(corto_time* this, corto_int32 sec, corto_int32 nanosec) {
+    this->sec = sec;
+    this->nanosec = nanosec;
+}
+
+corto_string _corto_timeStr(corto_time* value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_time_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_time* corto_timeFromStr(corto_time* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_time_o), str);
+    return value;
+}
+
+corto_int16 _corto_timeCopy(corto_time* *dst, corto_time* src) {
+    corto_value v1, v2;
+    corto_valueValueInit(&v1, NULL, corto_type(corto_time_o), dst);
+    corto_valueValueInit(&v2, NULL, corto_type(corto_time_o), src);
+    return corto_copyv(&v1, &v2);
+}
+
+corto_int16 _corto_timeCompare(corto_time* dst, corto_time* src) {
+    corto_value v1, v2;
+    corto_valueValueInit(&v1, NULL, corto_type(corto_time_o), dst);
+    corto_valueValueInit(&v2, NULL, corto_type(corto_time_o), src);
+    return corto_comparev(&v1, &v2);
+}
+
+corto_int16 _corto_timeInit(corto_time* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_time_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_time_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_timeDeinit(corto_time* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_time_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_observer* corto_observerseqAppend(corto_observerseq *seq, corto_observer element) {
     corto_uint32 size;
     seq->length++;

@@ -45,6 +45,7 @@ CORTO_META_OBJECT(delegate, invokeAction);
 CORTO_META_OBJECT(delegate, requestAction);
 
 CORTO_META_OBJECT(procedure, observer);
+CORTO_META_OBJECT(struct, time);
 
 #ifdef __cplusplus
 }

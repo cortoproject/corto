@@ -24,24 +24,24 @@ void corto_timeGet(corto_time* time) {
     host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
     clock_get_time(cclock, &mts);
     mach_port_deallocate(mach_task_self(), cclock);
-    time->tv_sec = mts.tv_sec;
-    time->tv_nsec = mts.tv_nsec;
+    time->sec = mts.tv_sec;
+    time->nanosec = mts.tv_nsec;
 #else
     struct timespec t;
     clock_gettime(CLOCK_REALTIME, &t);
-    time->tv_sec = t.tv_sec;
-    time->tv_nsec = t.tv_nsec;
+    time->sec = t.tv_sec;
+    time->nanosec = t.tv_nsec;
 #endif
 }
 
 corto_time corto_timeAdd(corto_time t1, corto_time t2) {
     corto_time result;
 
-    result.tv_nsec = t1.tv_nsec + t2.tv_nsec;
-    result.tv_sec = t1.tv_sec + t2.tv_sec;
-    if (result.tv_nsec > 1000000000) {
-        result.tv_sec++;
-        result.tv_nsec = result.tv_nsec - 1000000000;
+    result.nanosec = t1.nanosec + t2.nanosec;
+    result.sec = t1.sec + t2.sec;
+    if (result.nanosec > 1000000000) {
+        result.sec++;
+        result.nanosec = result.nanosec - 1000000000;
     }
 
     return result;
@@ -50,12 +50,12 @@ corto_time corto_timeAdd(corto_time t1, corto_time t2) {
 corto_time corto_timeSub(corto_time t1, corto_time t2) {
     corto_time result;
 
-    if (t1.tv_nsec >= t2.tv_nsec) {
-        result.tv_nsec = t1.tv_nsec - t2.tv_nsec;
-        result.tv_sec = t1.tv_sec - t2.tv_sec;
+    if (t1.nanosec >= t2.nanosec) {
+        result.nanosec = t1.nanosec - t2.nanosec;
+        result.sec = t1.sec - t2.sec;
     } else {
-        result.tv_nsec = t1.tv_nsec - t2.tv_nsec + 1000000000;
-        result.tv_sec = t1.tv_sec - t2.tv_sec - 1;
+        result.nanosec = t1.nanosec - t2.nanosec + 1000000000;
+        result.sec = t1.sec - t2.sec - 1;
     }
 
     return result;
@@ -64,22 +64,22 @@ corto_time corto_timeSub(corto_time t1, corto_time t2) {
 double corto_timeToDouble(corto_time t) {
     double result;
 
-    result = t.tv_sec;
-    result += (double)t.tv_nsec / (double)1000000000;
+    result = t.sec;
+    result += (double)t.nanosec / (double)1000000000;
 
     return result;
 }
 
-int corto_timeCompare(corto_time t1, corto_time t2) {
+int corto_time_compare(corto_time t1, corto_time t2) {
     int result;
 
-    if (t1.tv_sec < t2.tv_sec) {
+    if (t1.sec < t2.sec) {
         result = -1;
-    } else if (t1.tv_sec > t2.tv_sec) {
+    } else if (t1.sec > t2.sec) {
         result = 1;
-    } else if (t1.tv_nsec < t2.tv_nsec) {
+    } else if (t1.nanosec < t2.nanosec) {
         result = -1;
-    } else if (t1.tv_nsec > t2.tv_nsec) {
+    } else if (t1.nanosec > t2.nanosec) {
         result = 1;
     } else {
         result = 0;

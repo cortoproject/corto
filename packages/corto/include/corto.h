@@ -7,7 +7,6 @@
 #define CORTO_H
 
 #include "corto/corto.h"
-#include "_interface.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,3 +75,4 @@ extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 }
 #endif
 #endif
+

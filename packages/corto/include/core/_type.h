@@ -30,6 +30,7 @@ extern "C" {
 #define corto_result(o) ((corto_result *)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter *)corto_assertType((corto_type)corto_resultIter_o, o))
 #define corto_resultList(o) ((corto_resultList *)corto_assertType((corto_type)corto_resultList_o, o))
+#define corto_time(o) ((corto_time *)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
 /* /corto/core/attr */
@@ -192,6 +193,14 @@ struct corto_result {
 CORTO_ITERATOR(corto_resultIter);
 
 CORTO_LIST(corto_resultList);
+
+/*  /corto/core/time */
+typedef struct corto_time corto_time;
+
+struct corto_time {
+    corto_int32 sec;
+    corto_int32 nanosec;
+};
 
 #ifdef __cplusplus
 }

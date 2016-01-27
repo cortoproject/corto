@@ -83,7 +83,7 @@ int8_t CORTO_OPERATIONAL = 3;
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
 #define SSO_OP_VOID(op, type) op(corto_##type##_o, 0)
-#define SSO_OP_PRIM(op, type) op(corto_##type##_o, sizeof(corto_##type))
+#define SSO_OP_VALUE(op, type) op(corto_##type##_o, sizeof(corto_##type))
 #define SSO_OP_CLASS(op, type) op(corto_##type##_o, sizeof(struct corto_##type##_s))
 
 /* The ordering of the lists of objects below is important to ensure correct
@@ -133,57 +133,58 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, observer);\
     SSO_OP_CLASS(op, metaprocedure);
 
-/* ::corto::lang objects (types only) */
+/* ::corto::lang objects */
 #define SSO_OP_TYPE(op)\
-    SSO_OP_PRIM(op, octet);\
-    SSO_OP_PRIM(op, bool);\
-    SSO_OP_PRIM(op, char);\
-    SSO_OP_PRIM(op, uint8);\
-    SSO_OP_PRIM(op, uint16);\
-    SSO_OP_PRIM(op, uint32);\
-    SSO_OP_PRIM(op, uint64);\
-    SSO_OP_PRIM(op, int8);\
-    SSO_OP_PRIM(op, int16);\
-    SSO_OP_PRIM(op, int32);\
-    SSO_OP_PRIM(op, int64);\
-    SSO_OP_PRIM(op, float32);\
-    SSO_OP_PRIM(op, float64);\
-    SSO_OP_PRIM(op, string);\
-    SSO_OP_PRIM(op, word);\
-    SSO_OP_PRIM(op, constant);\
-    SSO_OP_PRIM(op, any);\
+    SSO_OP_VALUE(op, octet);\
+    SSO_OP_VALUE(op, bool);\
+    SSO_OP_VALUE(op, char);\
+    SSO_OP_VALUE(op, uint8);\
+    SSO_OP_VALUE(op, uint16);\
+    SSO_OP_VALUE(op, uint32);\
+    SSO_OP_VALUE(op, uint64);\
+    SSO_OP_VALUE(op, int8);\
+    SSO_OP_VALUE(op, int16);\
+    SSO_OP_VALUE(op, int32);\
+    SSO_OP_VALUE(op, int64);\
+    SSO_OP_VALUE(op, float32);\
+    SSO_OP_VALUE(op, float64);\
+    SSO_OP_VALUE(op, string);\
+    SSO_OP_VALUE(op, word);\
+    SSO_OP_VALUE(op, constant);\
+    SSO_OP_VALUE(op, any);\
     SSO_OP_VOID(op, void);\
-    SSO_OP_PRIM(op, object);\
-    SSO_OP_PRIM(op, width);\
-    SSO_OP_PRIM(op, typeKind);\
-    SSO_OP_PRIM(op, primitiveKind);\
-    SSO_OP_PRIM(op, compositeKind);\
-    SSO_OP_PRIM(op, collectionKind);\
-    SSO_OP_PRIM(op, procedureKind);\
-    SSO_OP_PRIM(op, equalityKind);\
-    SSO_OP_PRIM(op, operatorKind);\
-    SSO_OP_PRIM(op, modifier);\
-    SSO_OP_PRIM(op, eventMask);\
-    SSO_OP_PRIM(op, state);\
-    SSO_OP_PRIM(op, attr);\
-    SSO_OP_PRIM(op, objectseq);\
-    SSO_OP_PRIM(op, interfaceseq);\
-    SSO_OP_PRIM(op, memberseq);\
-    SSO_OP_PRIM(op, parameterseq);\
-    SSO_OP_PRIM(op, observerseq);\
-    SSO_OP_PRIM(op, octetseq);\
-    SSO_OP_PRIM(op, vtable);\
-    SSO_OP_PRIM(op, interfaceVectorseq);\
-    SSO_OP_PRIM(op, interfaceVector);\
-    SSO_OP_PRIM(op, resultList);\
-    SSO_OP_PRIM(op, parameter);\
-    SSO_OP_PRIM(op, result);\
-    SSO_OP_PRIM(op, delegatedata);\
+    SSO_OP_VALUE(op, object);\
+    SSO_OP_VALUE(op, width);\
+    SSO_OP_VALUE(op, typeKind);\
+    SSO_OP_VALUE(op, primitiveKind);\
+    SSO_OP_VALUE(op, compositeKind);\
+    SSO_OP_VALUE(op, collectionKind);\
+    SSO_OP_VALUE(op, procedureKind);\
+    SSO_OP_VALUE(op, equalityKind);\
+    SSO_OP_VALUE(op, operatorKind);\
+    SSO_OP_VALUE(op, modifier);\
+    SSO_OP_VALUE(op, eventMask);\
+    SSO_OP_VALUE(op, state);\
+    SSO_OP_VALUE(op, attr);\
+    SSO_OP_VALUE(op, objectseq);\
+    SSO_OP_VALUE(op, interfaceseq);\
+    SSO_OP_VALUE(op, memberseq);\
+    SSO_OP_VALUE(op, parameterseq);\
+    SSO_OP_VALUE(op, observerseq);\
+    SSO_OP_VALUE(op, octetseq);\
+    SSO_OP_VALUE(op, vtable);\
+    SSO_OP_VALUE(op, interfaceVectorseq);\
+    SSO_OP_VALUE(op, interfaceVector);\
+    SSO_OP_VALUE(op, resultList);\
+    SSO_OP_VALUE(op, parameter);\
+    SSO_OP_VALUE(op, result);\
+    SSO_OP_VALUE(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
-    SSO_OP_PRIM(op, initAction);\
-    SSO_OP_PRIM(op, destructAction);\
-    SSO_OP_PRIM(op, notifyAction);\
-    SSO_OP_PRIM(op, resultIter);\
+    SSO_OP_VALUE(op, initAction);\
+    SSO_OP_VALUE(op, destructAction);\
+    SSO_OP_VALUE(op, notifyAction);\
+    SSO_OP_VALUE(op, resultIter);\
+    SSO_OP_VALUE(op, time);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
@@ -588,7 +589,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, result_value);\
     SSO_OP_OBJ(op, result_getText_);\
     /* package */\
-    SSO_OP_OBJ(op, package_url);
+    SSO_OP_OBJ(op, package_url);\
+    /* time */\
+    SSO_OP_OBJ(op, time_sec);\
+    SSO_OP_OBJ(op, time_nanosec);
+
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \

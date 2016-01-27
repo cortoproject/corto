@@ -26,6 +26,7 @@ extern "C" {
 #include "corto/core/query.h"
 #include "corto/core/replicator.h"
 #include "corto/core/result.h"
+#include "corto/core/time.h"
 
 #ifdef __cplusplus
 }
