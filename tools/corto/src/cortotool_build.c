@@ -62,7 +62,7 @@ error:
 /* Build a project */
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll silent, mute, coverage, optimize, dirs, release, debug;
+    corto_ll silent, mute, coverage, optimize, dirs, release, debug, verbose;
 
     CORTO_UNUSED(argc);
 
@@ -72,6 +72,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"$0", NULL, NULL}, /* Ignore first argument */
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
+        {"--verbose", &verbose, NULL},
         {"--coverage", &coverage, NULL},
         {"--optimize", &optimize, NULL},
         {"--release", &release, NULL},
@@ -89,6 +90,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
           coverage ? "coverage=true" : "coverage=false",
           optimize ? "optimize=true" : "optimize=false",
           release ? "target=release" : "target=debug",
+          verbose ? "verbose=true" : "verbose=false",
           NULL
       }, silent != NULL, mute != NULL);
 
@@ -106,7 +108,7 @@ error:
 
 corto_int16 cortotool_clean(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll dirs;
+    corto_ll dirs, verbose;
 
     CORTO_UNUSED(argc);
 
@@ -116,6 +118,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"$0", NULL, NULL}, /* Ignore first argument */
         {"--silent", NULL, NULL},
         {"--mute", NULL, NULL},
+        {"--verbose", &verbose, NULL},
         {"--coverage", NULL, NULL}, /* Ignore coverage */
         {"--optimize", NULL, NULL}, /* Ignore optimize */
         {"--release", NULL, NULL}, /* Ignore release */
@@ -131,8 +134,9 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
       {
         "rake",
         "clobber",
+        verbose ? "verbose=true" : "verbose=false",
         NULL
-      }, TRUE, TRUE);
+      }, verbose ? FALSE : TRUE, verbose ? FALSE : TRUE);
 
     corto_argclean(data);
     if (ret) {
