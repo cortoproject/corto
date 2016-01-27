@@ -267,7 +267,7 @@ static corto_int16 cortotool_app (
     }
 
     if (strchr(name, ':')) {
-        corto_error("corto: app name should'nt contain ':' characters");
+        corto_error("corto: app name shouldn't contain ':' characters");
         goto error;
     }
 
@@ -479,13 +479,91 @@ static corto_int16 cortotool_package(
             corto_error("corto: failed to open file '%s'", cxfile);
             goto error;
         }
-    }
 
-    if (corto_load(cxfile, 0, NULL)) {
-        if (!mute) {
-            corto_error("corto: failed to load '%s'", cxfile);
+    /* When package doesn't use corto, create an empty header and source file
+     * upon creation of the package. The header is mandatory- at least one
+     * header with the name of the package must exist. These files will be
+     * untouched by code generation when rebuilding the package */
+    } else if (nocorto) {
+        if (snprintf(srcfile,
+            sizeof(srcfile),
+            "%s/include/%s.h",
+            name, name) >= (int)sizeof(srcfile))
+        {
+            if (!mute) {
+                corto_error("corto: package name '%s' is too long", name);
+            }
+            goto error;
         }
-        goto error;
+
+        /* Don't overwrite file if it already exists */
+        if (!corto_fileTest(srcfile)) {
+            file = fopen(srcfile, "w");
+            if (file) {
+                /* Create macro identifier the hard way */
+                corto_id macro;
+                char *ptr = macro, ch;
+                strcpy(macro, include);
+                corto_strupper(macro);
+                while ((ch = *ptr)) {
+                    if (ch == '/') {
+                        *ptr = '_';
+                    } else if (ch == ':') {
+                        *ptr = '_';
+                        memmove(ptr, ptr + 1, strlen(ptr + 1));
+                    }
+                    ptr ++;
+                }
+
+                fprintf(file, "\n");
+                fprintf(file, "#ifndef %s_H\n", macro);
+                fprintf(file, "#define %s_H\n", macro);
+                fprintf(file, "\n");
+                fprintf(file, "/* Add include files here */\n");
+                fprintf(file, "\n");
+                fprintf(file, "#ifdef __cplusplus\n");
+                fprintf(file, "extern \"C\" {\n");
+                fprintf(file, "#endif\n");
+                fprintf(file, "\n");
+                fprintf(file, "/* Insert definitions here */\n");
+                fprintf(file, "\n");
+                fprintf(file, "#ifdef __cplusplus\n");
+                fprintf(file, "}\n");
+                fprintf(file, "#endif\n\n");
+                fprintf(file, "#endif /* %s_H */\n\n", macro);
+            } else {
+                if (!mute) {
+                    corto_error("corto: failed to open file '%s'", srcfile);
+                }
+                goto error;
+            }
+        }
+
+        snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name);
+
+        /* Don't overwrite file if it already exists */
+        if (!corto_fileTest(srcfile)) {
+            file = fopen(srcfile, "w");
+            if (file) {
+                fprintf(file, "\n");
+                fprintf(file, "#include \"%s/%s.h\"\n", include, name);
+                fprintf(file, "\n");
+                fprintf(file, "/* Add implementation here */\n");
+                fprintf(file, "\n");
+                fprintf(file, "/* cortomain is called when the package is loaded by Corto. It is a good\n");
+                fprintf(file, " * place for initialization code that needs to be executed once.\n");
+                fprintf(file, " * The function can be safely removed if not needed. */\n");
+                fprintf(file, "int cortomain(int argc, char *argv[]) {\n\n");
+                fprintf(file, "    return 0;\n");
+                fprintf(file, "}\n");
+                fprintf(file, "\n");
+            } else {
+                if (!mute) {
+                    corto_error("corto: failed to open file '%s'", srcfile);
+                }
+                goto error;
+            }
+        }
     }
 
     /* Change working directory */
