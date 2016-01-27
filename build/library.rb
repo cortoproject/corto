@@ -49,13 +49,19 @@ task :prebuild do
     if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
         includePath = "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/#{TARGETPATH}"
 
-        # Clear subdirectories of include in target include directory
-        Dir.glob("include/**/*/").each do |file|
-            sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
+        # Clear all files before removing directories in include folder
+        Dir.glob("include/**/*").each do |file|
+            if File.file?(file) then
+                sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
+            end
         end
 
-        # Clear header files in root include
-        sh "rm -f #{includePath}/*.h #{includePath}/.prefix"
+        # Clear all directories in include folder
+        Dir.glob("include/**/*/").each do |file|
+            if !File.file?(file) then
+                sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
+            end
+        end
 
         # Copy new header files
         sh "mkdir -p #{includePath}"
