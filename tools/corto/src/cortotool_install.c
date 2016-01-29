@@ -46,7 +46,7 @@ static corto_int16 cortotool_installFromSource(void) {
     fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
     /* Build libraries to global environment */
-    fprintf(install, "rake silent=true 2> /dev/null\n");
+    fprintf(install, "rake silent=true\n");
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
     if (buildingCorto) {

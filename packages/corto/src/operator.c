@@ -87,6 +87,8 @@ CORTO_NUMERIC_BINARY_OP(type, |, or)\
 CORTO_NUMERIC_BINARY_OP(type, ^, xor)\
 CORTO_NUMERIC_BINARY_OP(type, &, and)\
 CORTO_NUMERIC_BINARY_OP(type, ^, not)\
+CORTO_NUMERIC_BINARY_OP(type, >>, shift_right)\
+CORTO_NUMERIC_BINARY_OP(type, <<, shift_left)\
 CORTO_NUMERIC_COND_BINARY_OP(type, ==, cond_eq)\
 CORTO_NUMERIC_COND_BINARY_OP(type, !=, cond_neq)\
 CORTO_NUMERIC_COND_BINARY_OP(type, <, cond_lt)\
@@ -181,6 +183,8 @@ CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_OR, type, or)\
 CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_XOR, type, xor)\
 CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_AND, type, and)\
 CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_NOT, type, not)\
+CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_SHIFT_RIGHT, type, shift_right)\
+CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_SHIFT_LEFT, type, shift_left)\
 CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_COND_EQ, type, cond_eq)\
 CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_COND_NEQ, type, cond_neq)\
 CORTO_BINARY_OP_INIT(typeKind, typeWidth, CORTO_COND_LT, type, cond_lt)\

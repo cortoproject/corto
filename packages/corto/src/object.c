@@ -1017,8 +1017,16 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
             }
         } else {
             corto__deinitScope(o);
+            if (corto_countof(o) != 1) {
+                corto_seterr(
+                  "object '%s/%s' is referenced after initializer failed. details:\n    %s",
+                  corto_fullpath(NULL, parent),
+                  name,
+                  corto_lasterr());
+            } else {
+                corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
+            }
             corto_release(type);
-            corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
             o = NULL;
             goto error;
         }
