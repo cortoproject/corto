@@ -146,20 +146,15 @@ error:
     return -1;
 }
 
-/* Convert package identifier to filename */
-static corto_string corto_packageToFile(corto_string package) {
+static corto_string corto_replaceColons(corto_id buffer, corto_string package) {
     corto_char ch, *ptr, *bptr;
-    corto_string fileName, path, start;
-    int fileNameLength;
+    corto_string fileName, start;
+
+    fileName = buffer;
 
     ptr = package;
-    path = malloc(strlen(package) * 2 + strlen("packages//lib.so") + 1);
-
-    strcpy(path, "packages/");
-    bptr = path + strlen("packages/");
+    bptr = buffer;
     start = bptr;
-    fileName = bptr;
-
     while ((ch = *ptr)) {
         switch (ch) {
         case ':':
@@ -179,6 +174,19 @@ static corto_string corto_packageToFile(corto_string package) {
         ptr++;
     }
     *bptr = '\0';
+
+    return fileName;
+}
+
+/* Convert package identifier to filename */
+static corto_string corto_packageToFile(corto_string package) {
+    corto_string fileName, path;
+    int fileNameLength;
+
+    path = malloc(strlen(package) * 2 + strlen("packages//lib.so") + 1);
+
+    strcpy(path, "packages/");
+    fileName = corto_replaceColons(path + strlen("packages/"), package);
 
     fileNameLength = strlen(fileName);
     memcpy(fileName + fileNameLength, "/lib", 4);
@@ -239,16 +247,15 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
 
     /* Lookup main function */
     proc = (int(*)(int,char*[]))corto_dlProc(dl, "cortomain");
-    if (!proc) {
-        corto_seterr("%s: unresolved 'cortomain'", fileName);
-        goto error;
+    if (proc) {
+        /* Call main */
+        if (proc(argc, argv)) {
+            corto_seterr("%s: cortomain failed", fileName);
+            goto error;
+        }
     }
 
-    /* Call main */
-    if (proc(argc, argv)) {
-        corto_seterr("%s: cortomain failed", fileName);
-        goto error;
-    }
+
 
     /* Add library to libraries list */
     if (!libraries) {
@@ -531,6 +538,28 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
         corto_asprintf(&include, base, "include");
         corto_asprintf(&result, "%s/packages/%s", include, package);
         corto_dealloc(include);
+        break;
+    }
+    case CORTO_LOCATION_NAME:
+    case CORTO_LOCATION_FULLNAME: {
+        corto_string name;
+        corto_dealloc(result);
+        result = corto_strdup(package);
+
+        if (package[0] == '/') {
+            name = corto_replaceColons(result, package + 1);
+        } else if (package[0] == ':') {
+            name = corto_replaceColons(result, package + 2);
+        } else {
+            name = corto_replaceColons(result, package);
+        }
+
+        if (kind == CORTO_LOCATION_NAME) {
+            name = corto_strdup(name);
+            corto_dealloc(result);
+            result = name;
+        }
+
         break;
     }
     }

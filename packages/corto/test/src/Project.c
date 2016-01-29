@@ -125,19 +125,45 @@ error:
     return -1;
 }
 
-corto_int16 test_Project_use(corto_string package) {
+void test_Project_load(corto_string target, corto_string fullname) {
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    if (fullname) {
+       corto_string location = corto_locate(fullname, CORTO_LOCATION_LIB);
+       test_assert(location != NULL);
+
+       /* If target is a library, load library with Corto to ensure that all
+        * symbols can be resolved */
+       corto_pid pid = corto_procrun(
+           "corto",
+           (char*[]){
+               "corto",
+               location,
+                NULL
+            });
+
+            test_assert(pid != 0);
+
+        waitResult = corto_procwait(pid, &ret);
+        test_assert(waitResult == 0);
+        test_assert(ret == 0);
+    }
+}
+
+corto_int16 test_Project_use(corto_string target, corto_string fullname, corto_string dependency) {
     corto_id cfile;
     corto_int8 ret;
     corto_int16 waitResult;
 
-    sprintf(cfile, "%s/src/%s.c", package, package);
+    sprintf(cfile, "%s/src/%s.c", target, target);
     FILE *f = fopen(cfile, "a");
     if (!f) {
         goto error;
     }
 
     /* Add function and rebuild */
-    fprintf(f, "\n\nvoid bar(void) {\n    foo();\n}\n\n");
+    fprintf(f, "\n\nvoid bar(void) {\n    %s_foo();\n}\n\n", dependency);
     fclose(f);
 
     corto_pid pid = corto_procrun(
@@ -145,7 +171,7 @@ corto_int16 test_Project_use(corto_string package) {
         (char*[]){
             "corto",
             "rebuild",
-            package,
+            target,
             "--silent",
              NULL
          });
@@ -155,6 +181,8 @@ corto_int16 test_Project_use(corto_string package) {
      waitResult = corto_procwait(pid, &ret);
      test_assert(waitResult == 0);
      test_assert(ret == 0);
+
+     test_Project_load(target, fullname);
 
     return 0;
 error:
@@ -196,6 +224,8 @@ corto_int16 test_Project_useNoCorto(
      waitResult = corto_procwait(pid, &ret);
      test_assert(waitResult == 0);
      test_assert(ret == 0);
+
+     test_Project_load(package, include);
 
     return 0;
 error:
@@ -240,6 +270,518 @@ corto_void _test_Project_tc_app(test_Project this) {
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
     test_assert(corto_fileTest("Project/test"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_appCortoDependencyNoCorto(test_Project this) {
+/* $begin(test/Project/tc_appCortoDependencyNoCorto) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create package that will be depended on */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "foo",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create application that will depend on foo */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "bar",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "bar",
+            "/foo",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("bar/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(!strcmp(str, "/foo\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo application */
+    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_appCortoNestedDependencyNoCorto(test_Project this) {
+/* $begin(test/Project/tc_appCortoNestedDependencyNoCorto) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create nested package */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent/child",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create application that will depend on parent/child */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "foo",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "foo",
+            "parent/child",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("foo/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(!strcmp(str, "/parent/child\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo application */
+    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_appDependency(test_Project this) {
+/* $begin(test/Project/tc_appDependency) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create package that will be depended on */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "foo",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create application that will depend on foo */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "bar",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "bar",
+            "/foo",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("bar/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(!strcmp(str, "/foo\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo application */
+    test_assert(!test_Project_implement("foo"));
+    test_assert(!test_Project_use("bar", NULL, "foo"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_appNestedDependency(test_Project this) {
+/* $begin(test/Project/tc_appNestedDependency) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create nested package */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent/child",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create application that will depend on parent/child */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "foo",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "foo",
+            "parent/child",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("foo/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(!strcmp(str, "/parent/child\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo application */
+    test_assert(!test_Project_implement("child"));
+    test_assert(!test_Project_use("foo", NULL, "child"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_appNoCortoDependency(test_Project this) {
+/* $begin(test/Project/tc_appNoCortoDependency) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create package that will be depended on */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "foo",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create application that will depend on foo */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "bar",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "bar",
+            "/foo",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("bar/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(!strcmp(str, "/foo\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo application */
+    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_appNoCortoNestedDependency(test_Project this) {
+/* $begin(test/Project/tc_appNoCortoNestedDependency) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create nested package */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent/child",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create application that will depend on parent/child */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "foo",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "foo",
+            "parent/child",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("foo/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(!strcmp(str, "/parent/child\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo application */
+    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
 /* $end */
 }
@@ -349,8 +891,8 @@ corto_void _test_Project_tc_package(test_Project this) {
 /* $end */
 }
 
-corto_void _test_Project_tc_packageDependency(test_Project this) {
-/* $begin(test/Project/tc_packageDependency) */
+corto_void _test_Project_tc_packageCortoDependencyNoCorto(test_Project this) {
+/* $begin(test/Project/tc_packageCortoDependencyNoCorto) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -363,6 +905,8 @@ corto_void _test_Project_tc_packageDependency(test_Project this) {
             "package",
             "foo",
             "--silent",
+            "--notest",
+            "--nocorto",
             NULL
         });
 
@@ -381,6 +925,179 @@ corto_void _test_Project_tc_packageDependency(test_Project this) {
             "package",
             "bar",
             "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "bar",
+            "/foo",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("bar/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(!strcmp(str, "/foo\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo package */
+    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_useNoCorto("bar", "/bar", "foo"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(test_Project this) {
+/* $begin(test/Project/tc_packageCortoNestedDependencyNoCorto) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create nested package */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "parent/child",
+            "--silent",
+            "--notest",
+            "--nocorto",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create package that will depend on parent/child */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "foo",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Add package dependency */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "add",
+            "foo",
+            "parent/child",
+            "--silent",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* If test is still running, it means the package builds */
+
+    /* Test package.txt */
+    test_assert(corto_fileTest("foo/.corto/packages.txt"));
+    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(!strcmp(str, "/parent/child\n"));
+    corto_dealloc(str);
+
+    /* Add function to foo package */
+    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_packageDependency(test_Project this) {
+/* $begin(test/Project/tc_packageDependency) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create package that will be depended on */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "foo",
+            "--silent",
+            "--notest",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Create package that will depend on foo */
+    pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "bar",
+            "--silent",
+            "--notest",
             NULL
         });
 
@@ -418,7 +1135,7 @@ corto_void _test_Project_tc_packageDependency(test_Project this) {
 
     /* Add function to foo package */
     test_assert(!test_Project_implement("foo"));
-    test_assert(!test_Project_use("bar"));
+    test_assert(!test_Project_use("bar", "/bar", "foo"));
 
 /* $end */
 }
@@ -437,6 +1154,7 @@ corto_void _test_Project_tc_packageDependencyColons(test_Project this) {
             "package",
             "foo",
             "--silent",
+            "--notest",
             NULL
         });
 
@@ -455,6 +1173,7 @@ corto_void _test_Project_tc_packageDependencyColons(test_Project this) {
             "package",
             "bar",
             "--silent",
+            "--notest",
             NULL
         });
 
@@ -492,7 +1211,7 @@ corto_void _test_Project_tc_packageDependencyColons(test_Project this) {
 
     /* Add function to foo package */
     test_assert(!test_Project_implement("foo"));
-    test_assert(!test_Project_use("bar"));
+    test_assert(!test_Project_use("bar", "/bar", "foo"));
 /* $end */
 }
 
@@ -724,7 +1443,7 @@ corto_void _test_Project_tc_packageNestedDependency(test_Project this) {
 
     /* Add function to foo package */
     test_assert(!test_Project_implement("child"));
-    test_assert(!test_Project_use("foo"));
+    test_assert(!test_Project_use("foo", "/foo", "child"));
 
 /* $end */
 }
@@ -818,7 +1537,7 @@ corto_void _test_Project_tc_packageNestedDependencyColons(test_Project this) {
 
     /* Add function to foo package */
     test_assert(!test_Project_implement("child"));
-    test_assert(!test_Project_use("foo"));
+    test_assert(!test_Project_use("foo", "/foo", "child"));
 
 /* $end */
 }
@@ -912,7 +1631,7 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScoped(test_Project this
 
     /* Add function to foo package */
     test_assert(!test_Project_implement("child"));
-    test_assert(!test_Project_use("foo"));
+    test_assert(!test_Project_use("foo", "/foo", "child"));
 
 /* $end */
 }
@@ -1006,7 +1725,7 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(test_Projec
 
     /* Add function to foo package */
     test_assert(!test_Project_implement("child"));
-    test_assert(!test_Project_use("foo"));
+    test_assert(!test_Project_use("foo", "/foo", "child"));
 
 /* $end */
 }
@@ -1128,11 +1847,11 @@ corto_void _test_Project_tc_packageNoCorto(test_Project this) {
     test_assert(!corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/doc"));
 
-    test_assert(!corto_fileTest(
+    test_assert(corto_fileTest(
         "$HOME/.corto/lib/corto/%s.%s/packages/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(corto_fileTest(
       "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1285,11 +2004,11 @@ corto_void _test_Project_tc_packageNoCortoNested(test_Project this) {
     test_assert(!corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/doc"));
 
-    test_assert(!corto_fileTest(
+    test_assert(corto_fileTest(
         "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(corto_fileTest(
       "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 

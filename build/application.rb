@@ -29,7 +29,13 @@ CLOBBER.include ".corto/#{TARGET}.h"
 file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
-    sh "corto pp --name #{TARGET} --attr local=true --attr h=include -g c_project"
+    command = "corto pp --name #{TARGET} --attr local=true --attr h=include -g c_project"
+    begin
+        sh command
+    rescue
+        puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+        abort()
+    end
 end
 
 task :prebuild => ".corto/_load.c"

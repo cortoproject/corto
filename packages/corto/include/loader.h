@@ -42,6 +42,8 @@ typedef enum corto_loaderLocationKind {
     CORTO_LOCATION_ENV,
     CORTO_LOCATION_LIB,
     CORTO_LOCATION_INCLUDE,
+    CORTO_LOCATION_NAME,
+    CORTO_LOCATION_FULLNAME
 } corto_loaderLocationKind;
 
 corto_string corto_locate(corto_string package, corto_loaderLocationKind kind);

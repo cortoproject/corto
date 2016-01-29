@@ -335,7 +335,10 @@ static corto_int16 cortotool_package(
     corto_char *ptr, *name;
     FILE *file;
     corto_uint32 i;
-    corto_char *include = projectname;
+
+    /* Might change start address of include */
+    corto_char *includeMem = corto_strdup(projectname);
+    corto_char *include = includeMem;
 
     silent |= mute;
 
@@ -354,18 +357,24 @@ static corto_int16 cortotool_package(
         include += 1;
     }
 
-    /* Extract left-most name from include variable */
+    /* Extract left-most name from include variable & replace :: */
     ptr = include;
     name = include;
     parentName[0] = '\0';
+    corto_int32 offset = 0;
     for (i = 0; i < strlen(include); i++) {
         if (*ptr == '/') {
             name = ptr + 1;
         } else if (*ptr == ':') {
-            name = ptr + 1;
+            offset ++;
+            ptr++;
+            *ptr = '/';
+            name = &ptr[-offset] + 1;
         }
+        ptr[-offset] = *ptr;
         ptr++;
     }
+
     if (name != include) {
         strcpy(parentName, include);
         if (parentName[name - include - 1] == '/') {
@@ -531,6 +540,7 @@ static corto_int16 cortotool_package(
                 fprintf(file, "}\n");
                 fprintf(file, "#endif\n\n");
                 fprintf(file, "#endif /* %s_H */\n\n", macro);
+                fclose(file);
             } else {
                 if (!mute) {
                     corto_error("corto: failed to open file '%s'", srcfile);
@@ -557,6 +567,7 @@ static corto_int16 cortotool_package(
                 fprintf(file, "    return 0;\n");
                 fprintf(file, "}\n");
                 fprintf(file, "\n");
+                fclose(file);
             } else {
                 if (!mute) {
                     corto_error("corto: failed to open file '%s'", srcfile);
@@ -602,8 +613,11 @@ static corto_int16 cortotool_package(
         printf("corto: done\n\n");
     }
 
+    corto_dealloc(includeMem);
+
     return 0;
 error:
+    corto_dealloc(includeMem);
     return -1;
 }
 
@@ -643,7 +657,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (nocorto) {
         notest = nocorto;
-        nobuild = nocorto;
         panda = NULL;
     }
 

@@ -964,7 +964,6 @@ void g_fileClose(g_file file) {
 static g_file g_fileOpenIntern(corto_generator g, corto_string name) {
     g_file result;
     char ext[255];
-    corto_id path;
 
     result = corto_alloc(sizeof(struct g_file_s));
     result->snippets = NULL;
@@ -972,7 +971,7 @@ static g_file g_fileOpenIntern(corto_generator g, corto_string name) {
     result->scope = NULL;
     result->file = NULL;
     result->indent = 0;
-    corto_asprintf(&result->name, "%s/%s", path, name);
+    result->name = corto_strdup(name);
     result->generator = g;
 
     corto_fileExtension(name, ext);
