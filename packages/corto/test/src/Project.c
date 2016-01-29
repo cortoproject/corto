@@ -1122,7 +1122,7 @@ corto_void _test_Project_tc_packageNoCorto(test_Project this) {
     test_assert(corto_fileTest("Project/rakefile"));
 
     test_assert(corto_fileTest("Project/src"));
-    test_assert(!corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_fileTest("Project/src/Project.c"));
 
     test_assert(corto_fileTest("Project/include"));
     test_assert(!corto_fileTest("Project/test"));
@@ -1279,7 +1279,7 @@ corto_void _test_Project_tc_packageNoCortoNested(test_Project this) {
     test_assert(corto_fileTest("Project/rakefile"));
 
     test_assert(corto_fileTest("Project/src"));
-    test_assert(!corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_fileTest("Project/src/Project.c"));
 
     test_assert(corto_fileTest("Project/include"));
     test_assert(!corto_fileTest("Project/test"));

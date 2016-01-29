@@ -90,7 +90,9 @@ if not defined? NOCORTO then
           sh command
         rescue
           puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-          sh "rm include/_type.h"
+          if File.exists? "include/_type.h" then
+              sh "rm include/_type.h"
+          end
           abort()
         end
     end

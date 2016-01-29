@@ -216,5 +216,5 @@ char* corto_filePath(char* file, char* buffer) {
         i--;
     }
 
-    return i ? buffer : NULL;
+    return (i != -1) ? buffer : NULL;
 }
