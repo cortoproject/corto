@@ -213,6 +213,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, function_bind_);\
     SSO_OP_OBJ(op, function_unbind);\
     SSO_OP_OBJ(op, function_stringToParameterSeq);\
+    SSO_OP_OBJ(op, function_parseParamString_);\
     /* method */\
     SSO_OP_OBJ(op, method_virtual);\
     SSO_OP_OBJ(op, method_init_);\

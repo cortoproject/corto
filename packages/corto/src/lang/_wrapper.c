@@ -324,6 +324,13 @@ void __corto_function_init(corto_function f, void *result, void *args) {
         corto_function(*(void**)args));
 }
 
+void __corto_function_parseParamString(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_int16*)result = _corto_function_parseParamString(
+        corto_function(*(void**)args),
+        *(corto_string*)((intptr_t)args + sizeof(void*)));
+}
+
 void __corto_function_stringToParameterSeq(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     *(corto_parameterseq*)result = _corto_function_stringToParameterSeq(

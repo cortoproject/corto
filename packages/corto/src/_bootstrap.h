@@ -988,12 +988,13 @@ CORTO_PROCEDURE_NOBASE_O(corto_lang, function, CORTO_FUNCTION, NULL, CORTO_DECLA
     CORTO_MEMBER_O(function, implData, word, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_REFERENCE_O(function, resource, object, CORTO_LOCAL|CORTO_PRIVATE, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(function, size, uint16, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(function, parameters, parameterseq, CORTO_LOCAL | CORTO_READONLY);
+    CORTO_MEMBER_O(function, parameters, parameterseq, CORTO_LOCAL | CORTO_HIDDEN);
     CORTO_MEMBER_O(function, nextParameterId, uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(function, init, "()", int16, FALSE, corto_function_init);
     CORTO_METHOD_O(function, bind, "()", int16, FALSE, corto_function_bind);
     CORTO_FUNCTION_O(function, unbind, "(function object)", void, corto_function_unbind);
     CORTO_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterseq, corto_function_stringToParameterSeq);
+    CORTO_METHOD_O(function, parseParamString, "(string params)", int16, FALSE, corto_function_parseParamString);
 
 /* /corto/lang/result */
 CORTO_STRUCT_O(corto_core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

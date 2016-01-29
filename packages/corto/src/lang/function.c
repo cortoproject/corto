@@ -57,8 +57,10 @@ corto_int16 _corto_function_bind(corto_function this) {
     }
 
     /* Bind with interface if possible */
-    if (corto_delegate_bind(this)) {
-        goto error;
+    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+        if (corto_delegate_bind(this)) {
+            goto error;
+        }
     }
 
     return 0;
@@ -68,11 +70,6 @@ error:
 }
 
 /* $header(corto/lang/function/init) */
-static corto_int16 corto_function_parseArguments(corto_function object) {
-    object->parameters = corto_function_stringToParameterSeq(corto_nameof(object), corto_parentof(object));
-    return object->parameters.length == (corto_uint32)-1;
-}
-
 typedef struct corto_functionLookup_t {
     corto_function f;
     corto_bool error;
@@ -124,38 +121,58 @@ finish:
     return 0;
 }
 /* $end */
+
 corto_int16 _corto_function_init(corto_function this) {
 /* $begin(corto/lang/function/init) */
     corto_functionLookup_t walkData;
     corto_objectseq scope;
     corto_uint32 i;
 
-    scope = corto_scopeClaim(corto_parentof(this));
+    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+        scope = corto_scopeClaim(corto_parentof(this));
 
-    walkData.f = this;
-    walkData.error = FALSE;
-    corto_signatureName(corto_nameof(this), walkData.name);
+        walkData.f = this;
+        walkData.error = FALSE;
+        corto_signatureName(corto_nameof(this), walkData.name);
 
-    for (i = 0; i < scope.length; i++) {
-        if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
-            break;
+        for (i = 0; i < scope.length; i++) {
+            if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
+                break;
+            }
+        }
+        if (walkData.error) {
+            goto error;
+        }
+
+        corto_scopeRelease(scope);
+
+        /* Parse arguments from name */
+        if (corto_function_parseParamString(this, corto_nameof(this))) {
+          goto error;
         }
     }
-    if (walkData.error) {
-        goto error;
-    }
 
-    corto_scopeRelease(scope);
-
-    /* Parse arguments */
-    if (corto_function_parseArguments(this)) {
-        goto error;
-    }
 
     return 0;
 error:
     this->parameters.length = 0;
     return -1;
+/* $end */
+}
+
+corto_int16 _corto_function_parseParamString(corto_function this, corto_string params) {
+/* $begin(corto/lang/function/parseParamString) */
+    corto_object scope;
+
+    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+        scope = corto_parentof(this);
+    } else {
+        scope = root_o;
+    }
+
+    this->parameters = corto_function_stringToParameterSeq(params, scope);
+
+    return this->parameters.length == (corto_uint32)-1;
 /* $end */
 }
 
