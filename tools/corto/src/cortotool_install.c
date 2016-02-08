@@ -16,7 +16,7 @@ static void cortotool_promptPassword(void) {
     corto_procwait(pid, NULL);
 }
 
-static corto_int16 cortotool_installFromSource(void) {
+static corto_int16 cortotool_installFromSource(corto_bool verbose) {
     corto_bool buildingCorto = FALSE;
     corto_id version;
     sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
@@ -46,7 +46,10 @@ static corto_int16 cortotool_installFromSource(void) {
     fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
     /* Build libraries to global environment */
-    fprintf(install, "rake silent=true\n");
+    fprintf(install, "rake silent=%s verbose=%s\n",
+        verbose ? "false" : "true",
+        verbose ? "true" : "false");
+
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
     if (buildingCorto) {
@@ -130,7 +133,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     }
 
     if (!installRemote) {
-        if (cortotool_installFromSource()) {
+        if (cortotool_installFromSource(FALSE)) {
             goto error;
         }
     } else {
@@ -141,12 +144,9 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
     cortotool_promptPassword();
 
-    corto_pid pid = corto_procrunRedirect(
+    corto_pid pid = corto_procrun(
         "sudo",
-        (char*[]){"sudo", "sh", "install.sh", NULL},
-        stdin,
-        NULL,
-        stderr);
+        (char*[]){"sudo", "sh", "install.sh", NULL});
 
     corto_char progress[] = {'|', '/', '-', '\\'};
     corto_int32 procresult, i = 0;
@@ -167,7 +167,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         printf("\bfailed!\n");
         goto error;
     } else {
-        corto_rm("install.sh");
+        //corto_rm("install.sh");
         printf("\bdone!\n");
     }
 

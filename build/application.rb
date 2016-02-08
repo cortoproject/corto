@@ -33,7 +33,7 @@ file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
     begin
         sh command
     rescue
-        puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+        STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
         abort()
     end
 end

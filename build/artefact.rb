@@ -201,9 +201,10 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
             else
                 result = `corto locate #{i} --lib`[0...-1]
                 if $?.exitstatus != 0 then
-                    print "\033[1;31m[ dependency #{i} could not be located ]\033[0;49m\n"
-                    print "\033[1;31m     #{result} \033[0;49m\n"
-                    abort "\033[1;31m[ build failed ]\033[0;49m"
+                    STDERR.print "\033[1;31m[ dependency #{i} could not be located ]\033[0;49m\n"
+                    STDERR.print "\033[1;31m     #{result} \033[0;49m\n"
+                    STDERR.print "\033[1;31m[ build failed ]\033[0;49m"
+                    abort()
                 end
                 result
             end
@@ -224,7 +225,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     begin
       sh cc_command
     rescue
-      puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
+      STDERR.puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
       abort()
     end
 
@@ -347,7 +348,7 @@ def build_source(source, target, echo)
     begin
       sh cc_command
     rescue
-      puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
+      STDERR.puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
       abort()
     end
 end
