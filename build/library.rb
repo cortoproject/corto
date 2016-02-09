@@ -68,7 +68,6 @@ task :prebuild do
         sh "cp -r include/. #{includePath}/"
     end
     if File.exists?("etc") then
-        STDERR.puts "\033[1;31m[ #{TARGET}: support for 'etc' is deprecated. Use install/<platform>/etc instead ]\033[0;49m"
         etc = "#{ENV['CORTO_TARGET']}/etc/corto/#{VERSION}/#{TARGETPATH}"
         sh "rm -rf #{etc}"
         sh "mkdir -p #{etc}"

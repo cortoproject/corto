@@ -33,9 +33,11 @@ def corto_replace(str)
     str = str.gsub("$(CORTO_OS)", `uname -s`[0...-1])
     str = str.gsub("$(CORTO_PLATFORM)", `uname -p`[0...-1])
     str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
-    etcPath = ENV['CORTO_TARGET'] + "/corto/#{VERSION}"
-    etcPath = TARGETDIR[etcPath.length..-1]
-    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto" + etcPath)
+    etcPath = ""
+    if defined? PACKAGEDIR then
+        etcPath = PACKAGEDIR
+    end
+    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto/#{VERSION}/" + etcPath)
 end
 
 # Public variables
@@ -68,6 +70,11 @@ GENERATED_HEADERS ||= []
 USE_PACKAGE_LOADED ||=[]
 USE_COMPONENT_LOADED ||=[]
 
+# Add lib path for builds that don't install to global environment
+if ENV['CORTO_TARGET'] != "/usr/local" then
+    LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
+end
+
 # Add default include paths
 INCLUDE <<
     "src" <<
@@ -79,7 +86,7 @@ CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_X
 CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
-CXXFLAGS << "-Wall" << "-std=c++11"
+CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC"
 
 # Set NDEBUG macro in release builds to disable tracing & checking
 # Also enable optimizations
@@ -178,9 +185,13 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     # bit of magic to ensure that the executable can find the shared object.
     LINKED = LINK.map do |l|
         l = corto_replace(l)
-        lib = File.dirname(l) + "/lib" + File.basename(l) + ".so"
+        prefix = ""
+        if File.dirname(l) != "." then
+          prefix = File.dirname(l) + "/"
+        end
+        lib = prefix + "lib" + File.basename(l) + ".so"
         if (not File.exists? lib) and (`uname` == "Darwin\n") then
-            lib = File.dirname(l) + "/lib" + File.basename(l) + ".dylib"
+            lib = prefix + "lib" + File.basename(l) + ".dylib"
             if (not File.exists? lib) then
                 abort "\033[1;31m[ #{l} not found ]\033[0;49m"
             end
