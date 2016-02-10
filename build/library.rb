@@ -74,19 +74,21 @@ task :prebuild do
         if File.exists? "etc/everywhere" then
             sh "cp -r etc/everywhere/. #{etc}/"
         end
-        platformStr = "etc/" + `uname -s`[0...-1] + "-" + `uname -p`[0...-1]
+        platformStr = "etc/" + `uname -s`[0...-1] + "-" + `uname -m`[0...-1]
         if File.exists? platformStr then
             sh "cp -r " + platformStr + "/. #{etc}"
         end
     end
     if File.exists?("install") then
-        platformStr = "install/" + `uname -s`[0...-1] + "-" + `uname -p`[0...-1]
+        platformStr = "install/" + `uname -s`[0...-1] + "-" + `uname -m`[0...-1]
         if File.exists? platformStr then
             install = "#{ENV['CORTO_TARGET']}"
             sh "cp -r " + platformStr + "/. #{install}"
         end
     end
     if ENV['CORTO_TARGET'] != "/usr/local" then
+        # Using this file, corto can auto-rebuild the package when changes in
+        # package files are made while a running application is using it.
         sh "echo \"`pwd`\" >> source.txt"
         libpath = "#{ENV['CORTO_TARGET']}/lib/corto/#{VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{libpath}"

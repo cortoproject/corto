@@ -31,7 +31,7 @@ end
 # Utility that replaces buildsystem tokens with actual values
 def corto_replace(str)
     str = str.gsub("$(CORTO_OS)", `uname -s`[0...-1])
-    str = str.gsub("$(CORTO_PLATFORM)", `uname -p`[0...-1])
+    str = str.gsub("$(CORTO_PLATFORM)", `uname -m`[0...-1])
     str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
     etcPath = ""
     if defined? PACKAGEDIR then
@@ -232,7 +232,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         end
     end
 
-    cc_command = "#{CC} #{objects} #{cflags} #{libpath} #{libmapping} #{use_link} #{lflags}"
+    cc_command = "#{CC} #{objects} #{libpath} #{libmapping} #{use_link} #{lflags}"
     begin
       sh cc_command
     rescue
