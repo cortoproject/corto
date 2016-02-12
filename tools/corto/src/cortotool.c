@@ -42,7 +42,7 @@ static void cortotool_printUsage(corto_bool expert) {
     if (expert) {
         printf("Expert commands:\n");
         printf("   pp                   Invoke the corto preprocessor.\n");
-        printf("   locate               Show where a package or component is located.\n");
+        printf("   locate               Show where a package is located.\n");
         printf("   tar                  Package a project in a redistributable tar file.\n");
         printf("   untar                Unpackage a project to the global environment.\n");
         printf("   rebuild              Clean, then build a project.\n");
@@ -97,12 +97,6 @@ int main(int argc, char* argv[]) {
                     break;
                 } else if (*(argv[i]+1) == 'v') {
                     /* Already handled */
-                } else if (*(argv[i]+1) == 'c') {
-                    if (corto_loadComponent(argv[i + 1], 0, NULL)) {
-                        corto_error("%s: %s", argv[i + 1], corto_lasterr());
-                        goto error;
-                    }
-                    i++;
                 } else if (*(argv[i]+1) == 'p') {
                     if (corto_load(argv[i + 1], 0, NULL)) {
                         corto_error("%s: %s", argv[i + 1], corto_lasterr());

@@ -116,18 +116,20 @@ static corto_int16 corto_loadContentType(
         type_out->contentRelease = (void ___ (*)(corto_word))corto_dealloc;
 
     } else {
-        char *component = strchr(contentType, '/');
-        if (!component) {
+        char *componentPtr = strchr(contentType, '/');
+        if (!componentPtr) {
             corto_seterr("invalid content type %s", contentType);
             goto error;
         }
 
-        /* Strip '/' */
-        component ++;
+        componentPtr ++;
+
+        corto_id component;
+        sprintf(component, "corto/fmt/%s", componentPtr);
 
         /* Load component associated with content type */
         corto_seterr(NULL);
-        if (corto_loadComponent(component, 0, NULL)) {
+        if (corto_load(component, 0, NULL)) {
             if (corto_lasterr()) {
                 corto_seterr("unsupported content type %s (%s)",
                     contentType, corto_lasterr());
@@ -138,7 +140,7 @@ static corto_int16 corto_loadContentType(
         }
 
         /* Load serialization routines */
-        corto_id id; sprintf(id, "%s_fromCorto", component);
+        corto_id id; sprintf(id, "%s_fromCorto", componentPtr);
         type_out->contentFromCorto =
             (corto_word ___ (*)(corto_object))corto_loaderResolveProc(id);
         if (!type_out->contentFromCorto) {
@@ -146,7 +148,7 @@ static corto_int16 corto_loadContentType(
             goto error;
         }
 
-        sprintf(id, "%s_toCorto", component);
+        sprintf(id, "%s_toCorto", componentPtr);
         type_out->contentToCorto =
             (corto_int16 ___ (*)(corto_object, corto_word))
             corto_loaderResolveProc(id);
@@ -155,7 +157,7 @@ static corto_int16 corto_loadContentType(
             goto error;
         }
 
-        sprintf(id, "%s_release", component);
+        sprintf(id, "%s_release", componentPtr);
         type_out->contentRelease =
             (void ___ (*)(corto_word))corto_loaderResolveProc(id);
         if (!type_out->contentRelease) {

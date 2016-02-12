@@ -1,26 +1,8 @@
-require "#{ENV['CORTO_BUILD']}/version"
-require 'rake/clean'
-
-if not defined? VERBOSE then
-    if ENV['verbose'] == "true" then
-        VERBOSE ||= true
-    else
-        VERBOSE ||= false
-    end
-end
+require "#{ENV['CORTO_BUILD']}/common"
 
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
-
-if not defined? LOCAL then
-    LOCAL = false
-end
-
-LFLAGS ||= []
-USE_PACKAGE ||= []
-LIBPATH ||= []
-INCLUDE ||= ["include"]
 
 ARTEFACT = "lib#{TARGET}.so"
 LFLAGS << "--shared"
@@ -33,6 +15,7 @@ if LOCAL == true then
 else
     TARGETPATH ||= "libraries"
 end
+
 TARGETDIR ||= "#{ENV['CORTO_TARGET']}/lib/corto/" + VERSION + "/" + TARGETPATH
 
 # Special case for when building the core
@@ -40,9 +23,7 @@ if TARGET != "corto" and not defined? NOCORTO then
     USE_PACKAGE << "corto"
 end
 
-INCLUDE <<
-    "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" <<
-    "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
+INCLUDE << "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/libraries"
 
 task :prebuild do
     verbose(VERBOSE)
@@ -74,13 +55,13 @@ task :prebuild do
         if File.exists? "etc/everywhere" then
             sh "cp -r etc/everywhere/. #{etc}/"
         end
-        platformStr = "etc/" + `uname -s`[0...-1] + "-" + `uname -m`[0...-1]
+        platformStr = "etc/" + CORTO_PLATFORM
         if File.exists? platformStr then
             sh "cp -r " + platformStr + "/. #{etc}"
         end
     end
     if File.exists?("install") then
-        platformStr = "install/" + `uname -s`[0...-1] + "-" + `uname -m`[0...-1]
+        platformStr = "install/" + CORTO_PLATFORM
         if File.exists? platformStr then
             install = "#{ENV['CORTO_TARGET']}"
             sh "cp -r " + platformStr + "/. #{install}"
@@ -97,10 +78,6 @@ task :prebuild do
     if File.exists? ".corto/packages.txt" then
         sh "mkdir -p #{libpath}/.corto"
         sh "cp .corto/packages.txt #{libpath}/.corto"
-    end
-    if File.exists? ".corto/components.txt" then
-        sh "mkdir -p #{libpath}/.corto"
-        sh "cp .corto/components.txt #{libpath}/.corto"
     end
 end
 

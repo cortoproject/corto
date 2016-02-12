@@ -22,13 +22,6 @@ int corto_load(corto_string package, int argc, char* argv[]);
 /* Try loading a package (doesn't generate errors when not found) */
 int corto_loadTry(corto_string str, int argc, char* argv[]);
 
-/* Load a component */
-int corto_loadComponent(corto_string component, int argc, char* argv[]);
-
-corto_ll corto_loadGetComponents(void);
-void corto_loadFreeComponents(corto_ll packages);
-corto_bool corto_loadRequiresComponent(corto_string package);
-
 corto_ll corto_loadGetPackages(void);
 void corto_loadFreePackages(corto_ll packages);
 corto_bool corto_loadRequiresPackage(corto_string package);
@@ -47,7 +40,6 @@ typedef enum corto_loaderLocationKind {
 } corto_loaderLocationKind;
 
 corto_string corto_locate(corto_string package, corto_loaderLocationKind kind);
-corto_string corto_locateComponent(corto_string component);
 corto_string corto_locateGenerator(corto_string component);
 corto_string corto_locateLibrary(corto_string lib);
 

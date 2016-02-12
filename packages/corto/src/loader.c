@@ -282,41 +282,12 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
     return result;
 }
 
-/* Load a corto component from a default component location */
-int corto_loadComponent(corto_string component, int argc, char* argv[]) {
-    int result = 0;
-
-    corto_string path = corto_locateComponent(component);
-    if (!path) {
-        goto error;
-    }
-
-    /* Don't load component twice */
-    struct corto_fileAdmin *lib = corto_fileAdminFind(path);
-    if (lib) {
-        goto loaded;
-    }
-
-    result = corto_loadLibrary(path, argc, argv);
-    corto_dealloc(path);
-
-loaded:
-    return result;
-error:
-    return -1;
-}
-
 /*
  * An adapter on top of corto_loadLibrary to fit the corto_loadAction signature.
  */
 int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data) {
     CORTO_UNUSED(data);
     return corto_loadLibrary(file, argc, argv);
-}
-
-/* Load xml interface */
-static int corto_loadXml(void) {
-    return corto_loadComponent("xml", 0, NULL);
 }
 
 /* Load a package */
@@ -355,11 +326,11 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
 
     /* Handle known extensions */
     if (!strcmp(ext, "cx")) {
-        corto_load("corto::ast", 0, NULL);
+        corto_load("corto/ast", 0, NULL);
     } else if (!strcmp(ext, "xml")) {
-        corto_loadXml();
+        corto_load("corto/fmt/xml", 0, NULL);
     } else if (!strcmp(ext, "md")) {
-        corto_load("corto::md", 0, NULL);
+        corto_load("corto/md", 0, NULL);
     }
 
     /* Lookup extension */
@@ -488,22 +459,11 @@ corto_string corto_locateLibrary(corto_string lib) {
     return corto_locateLibraryIntern(lib, NULL);
 }
 
-corto_string corto_locateGenerator(corto_string component) {
+corto_string corto_locateGenerator(corto_string generator) {
     corto_string relativePath = NULL;
     corto_string result = NULL;
 
-    corto_asprintf(&relativePath, "generators/lib%s.so", component);
-    result = corto_locateLibrary(relativePath);
-    corto_dealloc(relativePath);
-
-    return result;
-}
-
-corto_string corto_locateComponent(corto_string component) {
-    corto_string relativePath = NULL;
-    corto_string result = NULL;
-
-    corto_asprintf(&relativePath, "components/lib%s.so", component);
+    corto_asprintf(&relativePath, "libraries/lib%s.so", generator);
     result = corto_locateLibrary(relativePath);
     corto_dealloc(relativePath);
 
@@ -629,21 +589,6 @@ corto_bool corto_loadRequiresPackage(corto_string package) {
     return result;
 }
 
-corto_ll corto_loadGetComponents(void) {
-    return corto_loadGetDependencies(".corto/components.txt");
-}
-
-void corto_loadFreeComponents(corto_ll components) {
-    corto_loadFreeDependencies(components);
-}
-
-corto_bool corto_loadRequiresComponent(corto_string component) {
-    corto_ll components = corto_loadGetComponents();
-    corto_bool result = corto_loadRequiresDependency(components, component);
-    corto_loadFreePackages(components);
-    return result;
-}
-
 int corto_loadPackages(void) {
     corto_ll packages = corto_loadGetPackages();
     if (packages) {
@@ -679,7 +624,7 @@ int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
 
     sprintf(testName, "%s.xml", file);
     if (corto_fileTest(testName)) {
-        if (!corto_loadXml()) {
+        if (!corto_load("corto/fmt/xml", 0, NULL)) {
             return corto_load(testName, argc, argv);
         }
     }

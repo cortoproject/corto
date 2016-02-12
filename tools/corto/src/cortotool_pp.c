@@ -169,7 +169,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             include = corto_iterNext(&iter);
 
             if (corto_load(include, 0, NULL)) {
-                corto_error("corto: cannot load '%s'", include);
+                corto_error("corto: %s: %s", include, corto_lasterr());
                 goto error;
             } else {
                 /* Add name to scope list if none provided */

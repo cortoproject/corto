@@ -1,5 +1,4 @@
-require "#{ENV['CORTO_BUILD']}/version"
-require "rake/clean"
+require "#{ENV['CORTO_BUILD']}/common"
 
 if not defined? TARGET then
     raise "library: TARGET not specified\n"
@@ -26,7 +25,7 @@ INCLUDE <<
 
 CLOBBER.include ".corto/#{TARGET}.h"
 
-file ".corto/_load.c" => [".corto/packages.txt", ".corto/components.txt"] do
+file ".corto/_load.c" => [".corto/packages.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
     command = "corto pp --name #{TARGET} --attr local=true --attr h=include -g c_project"

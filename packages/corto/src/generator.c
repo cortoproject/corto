@@ -198,7 +198,7 @@ corto_string gen_getAttribute(corto_generator g, corto_string key) {
 corto_int16 gen_load(corto_generator g, corto_string library) {
 
     /* Load library from generator path */
-    corto_string relativePath = corto_envparse("generators/lib%s.so", library);
+    corto_string relativePath = corto_envparse("libraries/lib%s.so", library);
     corto_string path = corto_locateLibrary(relativePath);
     if (!path) {
         corto_error("generator '%s' not found", relativePath);

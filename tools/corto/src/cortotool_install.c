@@ -296,7 +296,6 @@ void cortotool_toLibPath(char *location) {
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
     corto_bool lib = FALSE, path = FALSE, env = FALSE;
-    corto_bool component = FALSE;
     corto_bool generator = FALSE;
 
     if (argc <= 1) {
@@ -313,17 +312,13 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 path = TRUE;
             } else if (!strcmp(argv[i], "--env")) {
                 env = TRUE;
-            } else if (!strcmp(argv[i], "--component")) {
-                component = TRUE;
             } else if (!strcmp(argv[i], "--generator")) {
                 generator = TRUE;
             }
         }
     }
 
-    if (component) {
-        location = corto_locateComponent(argv[1]);
-    } else if (generator) {
+    if (generator) {
         location = corto_locateGenerator(argv[1]);
     } else {
         location = corto_locate(argv[1], CORTO_LOCATION_LIB);
@@ -350,9 +345,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             printf("corto: '%s' => '%s'\n", argv[1], location);
         }
     } else {
-        if (component) {
-            printf("corto: component '%s' not found\n", argv[1]);
-        } else if (generator) {
+        if (generator) {
           printf("corto: generator '%s' not found\n", argv[1]);
         } else {
             printf("corto: package '%s' not found\n", argv[1]);
@@ -486,7 +479,7 @@ void cortotool_installHelp(void) {
 void cortotool_uninstallHelp(void) {
     printf("Usage: corto uninstall\n");
     printf("\n");
-    printf("This command removes your project (component or package) from\n");
+    printf("This command removes your project from\n");
     printf("the global environment (/usr/local).\n");
     printf("\n");
     printf("Note that uninstalling requires root priviledges.\n");

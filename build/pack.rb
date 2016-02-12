@@ -1,6 +1,4 @@
-
-require 'rake/clean'
-
+require "#{ENV['CORTO_BUILD']}/common"
 
 task :pack do
     Version = ENV["CORTO_VERSION"]

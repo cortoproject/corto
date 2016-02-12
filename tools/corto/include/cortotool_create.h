@@ -9,7 +9,6 @@ extern "C" {
 #endif
 
 #define CORTO_PACKAGE ("package")
-#define CORTO_COMPONENT ("component")
 #define CORTO_APPLICATION ("application")
 
 corto_int16 cortotool_create(int argc, char* argv[]);

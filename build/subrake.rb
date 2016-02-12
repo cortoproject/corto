@@ -1,12 +1,6 @@
-COMPONENTS = [] if not defined? COMPONENTS
+require "#{ENV['CORTO_BUILD']}/common"
 
-if not defined? VERBOSE then
-    if ENV['verbose'] == "true" then
-        VERBOSE ||= true
-    else
-        VERBOSE ||= false
-    end
-end
+COMPONENTS = [] if not defined? COMPONENTS
 
 task :all => :default
 

@@ -1,15 +1,5 @@
-require 'rake/clean'
+require "#{ENV['CORTO_BUILD']}/common"
 
-if not defined? VERBOSE then
-    if ENV['verbose'] == "true" then
-        VERBOSE ||= true
-    else
-        VERBOSE ||= false
-    end
-end
-
-LOCAL ||= false
-INCLUDE ||= []
 PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
 if LOCAL == true then
@@ -23,10 +13,11 @@ end
 
 TARGET = PACKAGE_FWSLASH.split("/").last
 
-PP_PRELOAD ||= []
 GENERATED_SOURCES ||= []
-DEFINE ||= []
-CFLAGS ||= []
+
+INCLUDE_PUBLIC ||= [] + INCLUDE
+LIB_PUBLIC ||= ["."] + LIB
+LIBPATH_PUBLIC ||= [] + LIBPATH
 
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
 
@@ -49,12 +40,6 @@ file ".corto/packages.txt" do
     sh "touch .corto/packages.txt"
 end
 
-file ".corto/components.txt" do
-    verbose(VERBOSE)
-    sh "mkdir -p .corto"
-    sh "touch .corto/components.txt"
-end
-
 if not defined? NOCORTO then
     GENERATED_SOURCES <<
         ".corto/_api.c" <<
@@ -68,7 +53,7 @@ if not defined? NOCORTO then
         "include/_type.h" <<
         "include/_interface.h"
 
-    file "include/_type.h" => [GENFILE, ".corto/packages.txt", ".corto/components.txt"] do
+    file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
         verbose(VERBOSE)
         preload = PP_PRELOAD.join(" ")
         sh "mkdir -p .corto"
@@ -97,7 +82,7 @@ if not defined? NOCORTO then
         end
     end
 
-    task :default => ["include/_type.h"]
+    task :prebuild => ["include/_type.h"]
 end
 
 task :doc do
@@ -121,5 +106,5 @@ if File.exists? "./.corto/dep.rb"
     require "./.corto/dep.rb"
 end
 
-require "#{ENV['CORTO_BUILD']}/component"
+require "#{ENV['CORTO_BUILD']}/library"
 require "#{ENV['CORTO_BUILD']}/subrake"

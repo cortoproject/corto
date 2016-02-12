@@ -1,16 +1,7 @@
-require 'rake/clean'
-require "#{ENV['CORTO_BUILD']}/version"
+require "#{ENV['CORTO_BUILD']}/common"
 require "#{ENV['CORTO_BUILD']}/libmapping"
 
 CHDIR_SET ||= false
-
-if not defined? VERBOSE then
-    if ENV['verbose'] == "true" then
-        VERBOSE ||= true
-    else
-        VERBOSE ||= false
-    end
-end
 
 if !CHDIR_SET then
     Dir.chdir(File.dirname(Rake.application.rakefile))
@@ -30,8 +21,9 @@ end
 
 # Utility that replaces buildsystem tokens with actual values
 def corto_replace(str)
-    str = str.gsub("$(CORTO_OS)", `uname -s`[0...-1])
-    str = str.gsub("$(CORTO_PLATFORM)", `uname -m`[0...-1])
+    str = str.gsub("$(CORTO_OS)", CORTO_OS)
+    str = str.gsub("$(CORTO_MACHINE)", CORTO_MACHINE)
+    str = str.gsub("$(CORTO_PLATFORM)", CORTO_PLATFORM)
     str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
     etcPath = ""
     if defined? PACKAGEDIR then
@@ -40,39 +32,20 @@ def corto_replace(str)
     str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto/#{VERSION}/" + etcPath)
 end
 
-# Public variables
-INCLUDE ||= ["include"]
-LIB ||= []
-LIBPATH ||= []
-LINK ||= []
-CFLAGS ||= []
-CXXFLAGS ||= []
-LFLAGS ||= []
-USE_PACKAGE ||= []
-USE_COMPONENT ||= []
-USE_LIBRARY ||= []
-DEFINE ||= []
-CC ||= if ENV['CC'].nil? or ENV['CC'].empty?
-  "cc"
-else
-  ENV['CC']
-end
-CXX ||= if ENV['CXX'].nil? or ENV['CXX'].empty?
-  "g++"
-else
-  ENV['CXX']
-end
-
 # Private variables
 TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
 USE_PACKAGE_LOADED ||=[]
-USE_COMPONENT_LOADED ||=[]
 
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
     LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
+end
+
+# If no include paths are configured, use 'include'
+if INCLUDE.length == 0 then
+    INCLUDE << "include"
 end
 
 # Add default include paths
@@ -103,17 +76,11 @@ end
 
 # Crawl src directory to get list of source files
 SOURCES = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
-OBJECTS = SOURCES.ext(".o").pathmap(".corto/%{^src/,obj/}p") +
-          Rake::FileList[GENERATED_SOURCES].ext(".o").pathmap(".corto/obj/%f")
-
-# Load components from file
-if File.exists? ".corto/components.txt" then
-    f = File.open(".corto/components.txt")
-    f.each_line {|line|
-        USE_COMPONENT_LOADED.push line[0...-1]
-        USE_COMPONENT.push line[0...-1]
-    }
-end
+OBJECTS =   SOURCES.ext(".o")
+              .pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
+            Rake::FileList[GENERATED_SOURCES]
+              .ext(".o")
+              .pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
 
 # Load packages from file
 if File.exists? ".corto/packages.txt" then
@@ -125,16 +92,12 @@ if File.exists? ".corto/packages.txt" then
 end
 
 # Setup default clean & clobber rules
-CLEAN.include(".corto/obj")
+CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
+CLOBBER.include(".corto/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
-
-# If components.txt is empty, clobber it
-if USE_COMPONENT_LOADED.length == 0 then
-    CLOBBER.include(".corto/components.txt")
-end
 
 # If packages.txt is empty, clobber it
 if USE_PACKAGE_LOADED.length == 0 then
@@ -152,18 +115,11 @@ task :collect do
     target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
     sh "mkdir -p " + target.split("/")[0...-1].join("/")
 
-    if `uname` == "Darwin\n" then
+    if CORTO_OS == "Darwin\n" then
         sh "cp -r #{artefact} #{target}"
     else
         sh "cp -rL #{artefact} #{target}"
     end
-end
-
-# Rule to automatically create components.txt
-file ".corto/components.txt" do
-    verbose(VERBOSE)
-    sh "mkdir -p .corto"
-    sh "touch .corto/components.txt"
 end
 
 # Rule to automatically create packages.txt
@@ -190,7 +146,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
           prefix = File.dirname(l) + "/"
         end
         lib = prefix + "lib" + File.basename(l) + ".so"
-        if (not File.exists? lib) and (`uname` == "Darwin\n") then
+        if (not File.exists? lib) and (CORTO_OS == "Darwin\n") then
             lib = prefix + "lib" + File.basename(l) + ".dylib"
             if (not File.exists? lib) then
                 abort "\033[1;31m[ #{l} not found ]\033[0;49m"
@@ -220,12 +176,11 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
                 result
             end
         end.join(" ") + " " +
-        USE_COMPONENT.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/components/lib" + i + ".so"}.join(" ") + " " +
         USE_LIBRARY.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
 
     # Check if there were any new files created during code generation
     Rake::FileList["src/*.c"].each do |file|
-        obj = file.ext(".o").pathmap(".corto/obj/%f")
+        obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
         if not OBJECTS.include? obj
             build_source(file, obj, true)
             objects += " " + obj
@@ -314,7 +269,7 @@ rule '.o' => ->(t) {
     file = nil
     files.each do |e|
       base = File.join(File.dirname(t), File.basename(t, '.*'))
-      if e.pathmap("%{^src/,.corto/obj/}X") == base then
+      if e.pathmap("%{^src/,.corto/obj/#{CORTO_PLATFORM}/}X") == base then
           file = e
           break;
       end

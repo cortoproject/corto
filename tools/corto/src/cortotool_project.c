@@ -94,7 +94,7 @@ error:
     return -1;
 }
 
-static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponent, corto_bool isPackage) {
+static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage) {
     FILE *file;
 
     if (corto_mkdir("test")) {
@@ -150,14 +150,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isComponen
         goto error;
     }
 
-    if (isComponent) {
-        if (cortotool_add(
-            5,
-            (char*[]){"add", "component", name, "--silent", "--nobuild", NULL}
-        )) {
-            goto error;
-        }
-    } else if (isPackage) {
+    if (isPackage) {
         if (cortotool_add(
             3,
             (char*[]){"add", name, "--silent", "--nobuild", NULL}
@@ -305,7 +298,6 @@ static corto_int16 cortotool_app (
     if (!notest) {
         if (cortotool_createTest(
             name,
-            !strcmp(projectKind, CORTO_COMPONENT),
             FALSE))
         {
             goto error;
@@ -604,7 +596,7 @@ static corto_int16 cortotool_package(
     }
 
     if (!notest) {
-        if (cortotool_createTest(include, FALSE, TRUE)) {
+        if (cortotool_createTest(include, TRUE)) {
             goto error;
         }
     }
@@ -623,8 +615,8 @@ error:
 
 corto_int16 cortotool_create(int argc, char *argv[]) {
     corto_ll silent, mute, nobuild, notest, local, panda;
-    corto_ll apps, components, packages, nocorto;
-    corto_ll apps_noname, components_noname, packages_noname;
+    corto_ll apps, packages, nocorto;
+    corto_ll apps_noname, packages_noname;
 
     CORTO_UNUSED(argc);
 
@@ -640,10 +632,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         {"--nocorto", &nocorto, NULL},
         {"--panda", &panda, NULL},
         {CORTO_APPLICATION, NULL, &apps},
-        {CORTO_COMPONENT, NULL, &components},
         {CORTO_PACKAGE, NULL, &packages},
         {CORTO_APPLICATION, &apps_noname, NULL},
-        {CORTO_COMPONENT, &components_noname, NULL},
         {CORTO_PACKAGE, &packages_noname, NULL},
         {"$1", &apps, NULL},
         {NULL}
@@ -661,8 +651,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     }
 
     /* If no arguments are provided, create an application with a random name */
-    if (!apps && !components && !packages && !apps_noname &&
-        !components_noname && !packages_noname)
+    if (!apps && !packages && !apps_noname && !packages_noname)
     {
         char *name = cortotool_randomName();
         if (cortotool_app(
@@ -707,47 +696,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
             corto_iterNext(&iter);
             if (cortotool_app(
                 CORTO_APPLICATION,
-                name,
-                silent != NULL,
-                mute != NULL,
-                nobuild != NULL,
-                notest != NULL,
-                local != NULL,
-                panda == NULL,
-                nocorto != NULL))
-            {
-                goto error;
-            }
-        }
-    }
-
-    if (components) {
-        corto_iter iter = corto_llIter(components);
-        while (corto_iterHasNext(&iter)) {
-            char *name = corto_iterNext(&iter);
-            if (cortotool_app(
-                CORTO_COMPONENT,
-                name,
-                silent != NULL,
-                mute != NULL,
-                nobuild != NULL,
-                notest != NULL,
-                local != NULL,
-                panda == NULL,
-                nocorto != NULL))
-            {
-                goto error;
-            }
-        }
-    }
-
-    if (components_noname) {
-        corto_iter iter = corto_llIter(components_noname);
-        while (corto_iterHasNext(&iter)) {
-            char *name = cortotool_randomName();
-            corto_iterNext(&iter);
-            if (cortotool_app(
-                CORTO_COMPONENT,
                 name,
                 silent != NULL,
                 mute != NULL,
@@ -823,9 +771,6 @@ void cortotool_createHelp(void) {
     printf("   package:       Create a new package. Use when you're about to create\n");
     printf("                  functionality that must be shared between apps, or\n");
     printf("                  other packages.\n");
-    printf("   component:     Create a new component. A component is a shared library\n");
-    printf("                  that contains a cortomain function which is executed\n");
-    printf("                  upon loading the library.\n");
     printf("\n");
     printf("Options:\n");
     printf("   --local        Create a project that won't be installed in the Corto repository\n");
