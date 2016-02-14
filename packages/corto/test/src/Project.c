@@ -2036,11 +2036,11 @@ corto_void _test_Project_tc_packageNoCortoNested(test_Project this) {
 
     /* Validate that library is present */
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project",
+        "$HOME/.corto/lib/corto/%s.%s/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project/libProject.so",
+      "$HOME/.corto/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
