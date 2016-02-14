@@ -455,21 +455,6 @@ error:
     return NULL;
 }
 
-corto_string corto_locateLibrary(corto_string lib) {
-    return corto_locateLibraryIntern(lib, NULL);
-}
-
-corto_string corto_locateGenerator(corto_string generator) {
-    corto_string relativePath = NULL;
-    corto_string result = NULL;
-
-    corto_asprintf(&relativePath, "libraries/lib%s.so", generator);
-    result = corto_locateLibrary(relativePath);
-    corto_dealloc(relativePath);
-
-    return result;
-}
-
 corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     corto_string relativePath = corto_packageToFile(package);
     corto_string result = NULL;

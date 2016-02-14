@@ -16,11 +16,11 @@ corto_int16 cortotool_language(char *language) {
     }
 
     if (!strcmp(language, "c")) {
-        corto_llAppend(generators, "c_project");
-        corto_llAppend(generators, "c_type");
-        corto_llAppend(generators, "c_interface");
-        corto_llAppend(generators, "c_meta");
-        corto_llAppend(generators, "c_api");
+        corto_llAppend(generators, "c/project");
+        corto_llAppend(generators, "c/type");
+        corto_llAppend(generators, "c/interface");
+        corto_llAppend(generators, "c/load");
+        corto_llAppend(generators, "c/api");
         corto_llAppend(attributes, "c=src");
         corto_llAppend(attributes, "h=include");
 

@@ -25,11 +25,13 @@ def corto_replace(str)
     str = str.gsub("$(CORTO_MACHINE)", CORTO_MACHINE)
     str = str.gsub("$(CORTO_PLATFORM)", CORTO_PLATFORM)
     str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
-    etcPath = ""
+    projectPath = ""
     if defined? PACKAGEDIR then
-        etcPath = PACKAGEDIR
+        projectPath = PACKAGEDIR
     end
-    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto/#{VERSION}/" + etcPath)
+    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto/#{CORTO_VERSION}/" + projectPath)
+    str = str.gsub("$(CORTO_INCLUDE)", ENV['CORTO_TARGET'] + "/include/corto/#{CORTO_VERSION}/" + projectPath)
+    str = str.gsub("$(CORTO_LIB)", ENV['CORTO_TARGET'] + "/include/corto/#{CORTO_VERSION}/" + projectPath)
 end
 
 # Private variables
@@ -43,16 +45,11 @@ if ENV['CORTO_TARGET'] != "/usr/local" then
     LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
 end
 
-# If no include paths are configured, use 'include'
-if INCLUDE.length == 0 then
-    INCLUDE << "include"
-end
-
 # Add default include paths
 INCLUDE <<
     "src" <<
-    "#{ENV['CORTO_TARGET']}/include/corto/#{VERSION}/packages" <<
-    "/usr/local/include/corto/#{VERSION}/packages"
+    "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}/packages" <<
+    "/usr/local/include/corto/#{CORTO_VERSION}/packages"
 
 # Default CFLAGS
 CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
@@ -60,6 +57,15 @@ CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
 CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC"
+
+# Set default compiler
+if LANGUAGE == "c" then
+    COMPILER = CC
+elsif LANGUAGE == "c++" then
+    COMPILER = CXX
+else
+    abort "\033[1;31m[ language #{LANGUAGE} unsupported ]\033[0;49m"
+end
 
 # Set NDEBUG macro in release builds to disable tracing & checking
 # Also enable optimizations
@@ -85,9 +91,10 @@ OBJECTS =   SOURCES.ext(".o")
 # Load packages from file
 if File.exists? ".corto/packages.txt" then
     f = File.open(".corto/packages.txt")
-    f.each_line {|line|
-        USE_PACKAGE_LOADED.push line[0...-1]
-        USE_PACKAGE.push line[0...-1]
+    f.each_line {|l|
+        p = l[0...-1]
+        USE_PACKAGE_LOADED.push p
+        USE_PACKAGE.push p
     }
 end
 
@@ -113,8 +120,13 @@ task :collect do
     verbose(VERBOSE)
     artefact = "#{TARGETDIR}/#{ARTEFACT}"
     target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
-    sh "mkdir -p " + target.split("/")[0...-1].join("/")
+    targetDir = target.split("/")[0...-1].join("/")
+    sh "mkdir -p #{targetDir}"
     sh "cp #{artefact} #{target}"
+
+    if File.exists? "#{TARGETDIR}/build.sh" then
+        sh "cp #{TARGETDIR}/build.sh #{targetDir}/build.sh"
+    end
 end
 
 # Rule to automatically create packages.txt
@@ -130,6 +142,7 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}"
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(VERBOSE)
     sh "mkdir -p #{TARGETDIR}"
+    FILES << "#{TARGETDIR}"
 
     # Create list of files that are going to be linked with. Abstract away from the
     # difference between dll, so and dylib. When a dylib is encountered, perform  a
@@ -156,22 +169,11 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
+
     use_link =
-        USE_PACKAGE.map do |i|
-            if i == "corto" then
-                "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/packages/corto/libcorto.so"
-            else
-                result = `corto locate #{i} --lib`[0...-1]
-                if $?.exitstatus != 0 then
-                    STDERR.print "\033[1;31m[ dependency #{i} could not be located ]\033[0;49m\n"
-                    STDERR.print "\033[1;31m     #{result} \033[0;49m\n"
-                    STDERR.print "\033[1;31m[ build failed ]\033[0;49m"
-                    abort()
-                end
-                result
-            end
-        end.join(" ") + " " +
-        USE_LIBRARY.map {|i| "#{ENV['CORTO_HOME']}/lib/corto/#{VERSION}/libraries/lib" + i + ".so"}.join(" ")
+      USE_LIBRARY.map {|i|
+        "#{ENV['CORTO_HOME']}/lib/corto/#{CORTO_VERSION}/libraries/lib" + i + ".so"
+      }.join(" ")
 
     # Check if there were any new files created during code generation
     Rake::FileList["src/*.c"].each do |file|
@@ -182,12 +184,12 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         end
     end
 
-    cc_command = "#{CC} #{objects} #{libpath} #{libmapping} #{use_link} #{lflags}"
+    cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags}"
     begin
       sh cc_command
     rescue
       STDERR.puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
-      abort()
+      abort
     end
 
     # If required, alter paths to dylib files
@@ -225,7 +227,16 @@ end
 
 # These tasks allow projects to define actions that should happen before and
 # after the build.
-task :prebuild
+task :prebuild do
+  # Load dependency build instructions before anything else
+  USE_PACKAGE.each {|p|
+      buildscript = `corto locate #{p} --path`[0...-1] + "/build.rb"
+      if File.exists? buildscript then
+          require "#{buildscript}"
+      end
+  }
+end
+
 task :postbuild
 
 # The default rule that kicks of the build process
@@ -260,13 +271,12 @@ end
 
 # Generic rule for translating source files into object files
 rule '.o' => ->(t) {
-    files = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
     file = nil
-    files.each do |e|
-      base = File.join(File.dirname(t), File.basename(t, '.*'))
+    base = File.join(File.dirname(t), File.basename(t, '.*'))
+    SOURCES.each do |e|
       if e.pathmap("%{^src/,.corto/obj/#{CORTO_PLATFORM}/}X") == base then
-          file = e
-          break;
+        file = e
+        break;
       end
     end
     if file == nil then
@@ -305,11 +315,11 @@ def build_source(source, target, echo)
         end
     end
 
-    cc_command = "#{cc} -c #{flags.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + i}.join(" ")} #{source} -o #{target}"
+    cc_command = "#{COMPILER} -c #{flags.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + corto_replace(i)}.join(" ")} #{source} -o #{target}"
     begin
       sh cc_command
     rescue
       STDERR.puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
-      abort()
+      abort
     end
 end

@@ -198,15 +198,16 @@ corto_string gen_getAttribute(corto_generator g, corto_string key) {
 corto_int16 gen_load(corto_generator g, corto_string library) {
 
     /* Load library from generator path */
-    corto_string relativePath = corto_envparse("libraries/lib%s.so", library);
-    corto_string path = corto_locateLibrary(relativePath);
-    if (!path) {
-        corto_error("generator '%s' not found", relativePath);
+    corto_string package = NULL;
+    corto_asprintf(&package, "corto/gen/%s", library);
+    corto_string lib = corto_locate(package, CORTO_LOCATION_LIB);
+    if (!lib) {
+        corto_error("generator '%s' not found", package);
         goto error;
     }
 
-    g->library = corto_dlOpen(path);
-    corto_dealloc(path);
+    g->library = corto_dlOpen(lib);
+    corto_dealloc(lib);
     if (!g->library) {
         corto_error("%s", corto_dlError());
         goto error;
@@ -222,10 +223,10 @@ corto_int16 gen_load(corto_generator g, corto_string library) {
 
     /* Function is allowed to be absent. */
 
-    corto_dealloc(relativePath);
+    corto_dealloc(package);
     return 0;
 error:
-    corto_dealloc(relativePath);
+    corto_dealloc(package);
     return -1;
 }
 

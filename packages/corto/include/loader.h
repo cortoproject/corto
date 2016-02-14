@@ -40,8 +40,6 @@ typedef enum corto_loaderLocationKind {
 } corto_loaderLocationKind;
 
 corto_string corto_locate(corto_string package, corto_loaderLocationKind kind);
-corto_string corto_locateGenerator(corto_string component);
-corto_string corto_locateLibrary(corto_string lib);
 
 #ifdef __cplusplus
 }

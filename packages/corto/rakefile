@@ -1,21 +1,17 @@
-TARGET = 'corto'
+PACKAGE = 'corto'
 
 LIB = ['rt', 'dl', 'm']
 CFLAGS ||= ["-Wunused-parameter"]
 
-# Explicitly set target path so that includes and library are stored in
-# the package repository
-TARGETPATH = "/packages/corto"
-
-# This will prevent the build system from automatically adding 'include'
-INCLUDE = []
+# Bootstrap: can't build corto packages without corto
+NOCORTO = true
 
 # When building a tar for the core, also include the build system
 task :collect do
     verbose(false)
-    buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{VERSION}/build"
+    buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{CORTO_VERSION}/build"
     sh "mkdir -p #{buildPath}"
     sh "cp -r #{ENV['CORTO_BUILD']}/* #{buildPath}/"
 end
 
-require "#{ENV['CORTO_BUILD']}/library"
+require "#{ENV['CORTO_BUILD']}/package"

@@ -2,6 +2,25 @@ require "#{ENV['CORTO_BUILD']}/common"
 
 PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
+INCLUDE_PUBLIC ||= [] + INCLUDE
+LIB_PUBLIC ||= [] + LIB
+LINK_PUBLIC ||= ["."] + LINK
+GENERATED_SOURCES ||= []
+TARGET = PACKAGE_FWSLASH.split("/").last
+DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
+PREFIX ||= TARGET
+NAME ||= PACKAGE_FWSLASH.split("/").last
+ARTEFACT = "lib#{TARGET}.so"
+LFLAGS << "--shared"
+
+# Include corto package only when not building the core
+if TARGET != "corto" and not defined? NOCORTO then USE_PACKAGE << "corto" end
+
+# Set working directory to where the rakefile is
+CHDIR_SET = true
+Dir.chdir(File.dirname(Rake.application.rakefile))
+
+# Support for local packages (packages that are not installed to environment)
 if LOCAL == true then
     TARGETPATH = "./.corto"
     TARGETDIR = TARGETPATH
@@ -9,38 +28,25 @@ if LOCAL == true then
 else
     PACKAGEDIR = "packages/" + PACKAGE_FWSLASH
     TARGETPATH = PACKAGEDIR
+    TARGETDIR = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 end
-
-TARGET = PACKAGE_FWSLASH.split("/").last
-
-GENERATED_SOURCES ||= []
-
-INCLUDE_PUBLIC ||= [] + INCLUDE
-LIB_PUBLIC ||= ["."] + LIB
-LIBPATH_PUBLIC ||= [] + LIBPATH
-
-DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
 
 # If this is not a corto package, expose all symbols by default
 if not defined? NOCORTO then
     CFLAGS << "-fvisibility=hidden"
 end
 
-PREFIX ||= TARGET
-NAME ||= PACKAGE_FWSLASH.split("/").last
-
-CHDIR_SET = true
-Dir.chdir(File.dirname(Rake.application.rakefile))
-
-GENFILE = Rake::FileList["#{NAME}.{cx,idl,xml}"][0]
-
+# Rule for creating packages.txt
 file ".corto/packages.txt" do
     verbose(VERBOSE)
     sh "mkdir -p .corto"
     sh "touch .corto/packages.txt"
 end
 
+# Code generation
 if not defined? NOCORTO then
+    GENFILE = Rake::FileList["#{NAME}.{cx,idl,xml}"][0]
+
     GENERATED_SOURCES <<
         ".corto/_api.c" <<
         ".corto/_wrapper.c" <<
@@ -64,8 +70,8 @@ if not defined? NOCORTO then
 
         if LOCAL then
             localStr = "--attr local=true"
-        elsif (`corto locate doc --generator` != "corto: generator 'doc' not found\n") then
-            docStr = "-g doc"
+        elsif (`corto locate corto/gen/doc/doc` != "corto: package 'corto/gen/doc/doc' not found\n") then
+            docStr = "-g doc/doc"
         end
 
         command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
@@ -85,26 +91,146 @@ if not defined? NOCORTO then
     task :prebuild => ["include/_type.h"]
 end
 
+# Document framework integration
 task :doc do
     verbose(VERBOSE)
-    if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
-        if File.exists? "#{NAME}.md" and not LOCAL then
-            command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g html"
-            begin
-                sh command
-            rescue
-                STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-                abort()
+    if `which corto` != "" then
+        if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
+            if File.exists? "#{NAME}.md" and not LOCAL then
+                command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
+                begin
+                    sh command
+                rescue
+                    STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+                    abort
+                end
             end
         end
     end
 end
 
-task :postbuild => [:doc]
+# Generate a script with build instructions for this package
+task :buildscript do
+    verbose(VERBOSE)
+    if not LOCAL then
+        if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
+            dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+            CLOBBER.include("#{dir}/build.rb")
+            FILES << "#{dir}/build.rb"
+            sh "mkdir -p #{dir}"
+            File.open("#{dir}/build.rb", "w") {|file|
+                if INCLUDE_PUBLIC.length != 0 then
+                    file.write "INCLUDE"
+                    INCLUDE_PUBLIC.each {|i|
+                        file.write " << \"#{corto_replace(i)}\""
+                    }
+                    file.write "\n"
+                end
 
+                if LIB_PUBLIC.length != 0 then
+                    file.write "LIB"
+                    LIB_PUBLIC.each {|i|
+                        file.write " << \"#{corto_replace(i)}\""
+                    }
+                    file.write "\n"
+                end
+
+                if LINK_PUBLIC.length != 0 then
+                    file.write "LINK"
+                    LINK_PUBLIC.each {|i|
+                        if i != "." then
+                            file.write " << \"#{corto_replace(i)}\""
+                        else
+                            file.write " << \"#{TARGETDIR}/#{TARGET}\""
+                        end
+                    }
+                    file.write "\n"
+                end
+            }
+        end
+    end
+end
+
+# dep.rb contains CLOBBER rules for generated header files
 if File.exists? "./.corto/dep.rb"
     require "./.corto/dep.rb"
 end
 
-require "#{ENV['CORTO_BUILD']}/library"
-require "#{ENV['CORTO_BUILD']}/subrake"
+# Crawl project directory for files that need to be installed with binary
+task :prebuild do
+    verbose(VERBOSE)
+    if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
+        includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+
+        # Clear all files before removing directories in include folder
+        Dir.glob("include/**/*").each do |file|
+            if File.file?(file) then
+                sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
+            end
+        end
+
+        # Clear all directories in include folder
+        Dir.glob("include/**/*/").each do |file|
+            if !File.file?(file) then
+                sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
+            end
+        end
+
+        # Copy new header files
+        sh "mkdir -p #{includePath}"
+        sh "cp -r include/. #{includePath}/"
+    end
+    if File.exists?("etc") then
+        etc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        sh "rm -rf #{etc}"
+        sh "mkdir -p #{etc}"
+        if File.exists? "etc/everywhere" then
+            sh "cp -r etc/everywhere/. #{etc}/"
+        end
+        platformStr = "etc/" + CORTO_PLATFORM
+        if File.exists? platformStr then
+            sh "cp -r " + platformStr + "/. #{etc}"
+        end
+    end
+    if File.exists?("install") then
+        platformStr = "install/" + CORTO_PLATFORM
+        if File.exists? platformStr then
+            install = "#{CORTO_TARGET}"
+            sh "cp -r " + platformStr + "/. #{install}"
+        end
+    end
+    if ENV['CORTO_TARGET'] != "/usr/local" then
+        # Using this file, corto can auto-rebuild the package when changes in
+        # package files are made while a running application is using it.
+        sh "echo \"`pwd`\" >> source.txt"
+        libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        sh "mkdir -p #{libpath}"
+        sh "mv source.txt #{libpath}/source.txt"
+    end
+    if File.exists? ".corto/packages.txt" then
+        sh "mkdir -p #{libpath}/.corto"
+        sh "cp .corto/packages.txt #{libpath}/.corto"
+    end
+end
+
+# Collect files in preparation for creating a tar
+task :collect do
+    verbose(VERBOSE)
+    if File.exists?("include") then
+        includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        sh "mkdir -p #{includePath}"
+        sh "cp -r include/. #{includePath}/"
+    end
+    if File.exists?("etc") then
+        etc = "#{ENV['HOME']}/.corto/pack/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        targetEtc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        sh "mkdir -p #{etc}"
+        sh "cp -r #{targetEtc}/. #{etc}/"
+    end
+end
+
+# Generate markdown file & buildscript after build
+task :postbuild => [:doc, :buildscript]
+
+require "#{CORTO_BUILD}/artefact"
+require "#{CORTO_BUILD}/subrake"

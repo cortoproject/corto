@@ -167,7 +167,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         printf("\bfailed!\n");
         goto error;
     } else {
-        //corto_rm("install.sh");
+        corto_rm("install.sh");
         printf("\bdone!\n");
     }
 
@@ -206,19 +206,18 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
     fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
     fprintf(uninstall, "export CORTO_VERSION=%s\n", version);
     fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
-    fprintf(uninstall, "rake clobber 2> /dev/null\n");
+    fprintf(uninstall, "rake clobber\n");
 
     /* Also remove from local environment */
     fprintf(uninstall, "export CORTO_TARGET=~/.corto\n");
-    fprintf(uninstall, "rake clobber 2> /dev/null\n");
+    fprintf(uninstall, "rake clobber\n");
 
     if (uninstallAll) {
         fprintf(uninstall, "rm -rf /usr/local/lib/corto\n");
-        fprintf(uninstall, "rm -rf /usr/local/lib/libcorto.*\n");
         fprintf(uninstall, "rm -rf /usr/local/bin/corto\n");
         fprintf(uninstall, "rm -rf /usr/local/bin/corto.*\n");
         fprintf(uninstall, "rm -rf /usr/local/include/corto\n");
-        fprintf(uninstall, "rm -rf /usr/local/etc\n");
+        fprintf(uninstall, "rm -rf /usr/local/etc/corto\n");
         fprintf(uninstall, "rm -rf ~/.corto\n");
     }
 
@@ -296,7 +295,6 @@ void cortotool_toLibPath(char *location) {
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
     corto_bool lib = FALSE, path = FALSE, env = FALSE;
-    corto_bool generator = FALSE;
 
     if (argc <= 1) {
         printf("corto: please provide a package name\n");
@@ -312,17 +310,11 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 path = TRUE;
             } else if (!strcmp(argv[i], "--env")) {
                 env = TRUE;
-            } else if (!strcmp(argv[i], "--generator")) {
-                generator = TRUE;
             }
         }
     }
 
-    if (generator) {
-        location = corto_locateGenerator(argv[1]);
-    } else {
-        location = corto_locate(argv[1], CORTO_LOCATION_LIB);
-    }
+    location = corto_locate(argv[1], CORTO_LOCATION_LIB);
 
     if (location) {
         if (env) {
@@ -345,11 +337,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             printf("corto: '%s' => '%s'\n", argv[1], location);
         }
     } else {
-        if (generator) {
-          printf("corto: generator '%s' not found\n", argv[1]);
-        } else {
-            printf("corto: package '%s' not found\n", argv[1]);
-        }
+        printf("corto: package '%s' not found\n", argv[1]);
         goto error;
     }
 

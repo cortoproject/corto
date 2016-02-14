@@ -2,9 +2,9 @@ require 'rake/clean'
 
 # Set Corto version variable
 if ENV['CORTO_VERSION'] then
-	VERSION ||= ENV['CORTO_VERSION']
+	CORTO_VERSION ||= ENV['CORTO_VERSION']
 else
-	VERSION ||= `corto --minor`[0...-1]
+	CORTO_VERSION ||= `corto --minor`[0...-1]
 end
 
 # Set platform variables
@@ -34,8 +34,15 @@ USE_COMPONENT ||= []
 USE_LIBRARY ||= []
 DEFINE ||= []
 PP_PRELOAD ||= []
+LANGUAGE ||= "c"
 
-# Private variables
+# Variable that contains all files created by the buildsystem (for uninstaller)
+FILES ||= []
+
+# Set environment variables in local constants
+CORTO_TARGET = ENV['CORTO_TARGET']
+CORTO_BUILD = ENV['CORTO_BUILD']
+CORTO_HOME = ENV['CORTO_HOME']
 
 # Initialize LOCAL
 LOCAL ||= false

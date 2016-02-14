@@ -8,7 +8,7 @@ ARTEFACT = "app"
 TARGETDIR = "./.corto"
 USE_PACKAGE ||= []
 LIBPATH ||= []
-INCLUDE ||= []
+INCLUDE << "include"
 
 GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
@@ -18,10 +18,9 @@ GENERATED_HEADERS << "include/_interface.h"
 
 USE_PACKAGE << "corto"
 INCLUDE <<
-    "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}" <<
-    "#{ENV['CORTO_HOME']}/include/corto/#{VERSION}/packages/corto/lang" <<
+    "#{ENV['CORTO_HOME']}/include/corto/#{CORTO_VERSION}" <<
+    "#{ENV['CORTO_HOME']}/include/corto/#{CORTO_VERSION}/packages/corto/lang" <<
     "include"
-
 
 CLOBBER.include ".corto/#{TARGET}.h"
 
