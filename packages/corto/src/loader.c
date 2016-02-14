@@ -183,10 +183,10 @@ static corto_string corto_packageToFile(corto_string package) {
     corto_string fileName, path;
     int fileNameLength;
 
-    path = malloc(strlen(package) * 2 + strlen("packages//lib.so") + 1);
+    path = malloc(strlen(package) * 2 + strlen("/lib.so") + 1);
 
-    strcpy(path, "packages/");
-    fileName = corto_replaceColons(path + strlen("packages/"), package);
+    strcpy(path, "/");
+    fileName = corto_replaceColons(path + strlen("/"), package);
 
     fileNameLength = strlen(fileName);
     memcpy(fileName + fileNameLength, "/lib", 4);
@@ -481,7 +481,7 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
         corto_dealloc(result);
         corto_string include;
         corto_asprintf(&include, base, "include");
-        corto_asprintf(&result, "%s/packages/%s", include, package);
+        corto_asprintf(&result, "%s/%s", include, package);
         corto_dealloc(include);
         break;
     }

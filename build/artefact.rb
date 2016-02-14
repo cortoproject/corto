@@ -48,8 +48,8 @@ end
 # Add default include paths
 INCLUDE <<
     "src" <<
-    "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}/packages" <<
-    "/usr/local/include/corto/#{CORTO_VERSION}/packages"
+    "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}" <<
+    "/usr/local/include/corto/#{CORTO_VERSION}"
 
 # Default CFLAGS
 CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"

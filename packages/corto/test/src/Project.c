@@ -873,19 +873,19 @@ corto_void _test_Project_tc_package(test_Project this) {
     test_assert(corto_fileTest("Project/doc/Project/RedPanda.html"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/packages/Project",
+        "$HOME/.corto/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
+      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/packages/Project",
+      "$HOME/.corto/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/packages/Project/Project.h",
+      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1848,11 +1848,11 @@ corto_void _test_Project_tc_packageNoCorto(test_Project this) {
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/packages/Project",
+        "$HOME/.corto/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
+      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Create a source file */
@@ -1879,11 +1879,11 @@ corto_void _test_Project_tc_packageNoCorto(test_Project this) {
 
     /* Validate that library is present */
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/packages/Project",
+        "$HOME/.corto/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/packages/Project/libProject.so",
+      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -2005,11 +2005,11 @@ corto_void _test_Project_tc_packageNoCortoNested(test_Project this) {
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project",
+        "$HOME/.corto/lib/corto/%s.%s/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/packages/corto/Project/libProject.so",
+      "$HOME/.corto/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Create a source file */

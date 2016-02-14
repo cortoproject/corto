@@ -57,9 +57,9 @@ corto_int16 cortotool_core(void) {
       "--attr", "h=include/core",
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
-      "-g", "c_interface",
-      "-g", "c_api",
-      "-g", "c_type",
+      "-g", "c/interface",
+      "-g", "c/api",
+      "-g", "c/type",
       NULL
     });
     if (corto_procwait(pid, &ret) || ret) {
@@ -77,9 +77,9 @@ corto_int16 cortotool_core(void) {
       "--attr", "h=include/lang",
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
-      "-g", "c_interface",
-      "-g", "c_api",
-      "-g", "c_type",
+      "-g", "c/interface",
+      "-g", "c/api",
+      "-g", "c/type",
       NULL
     });
     if (corto_procwait(pid, &ret) || ret) {
@@ -96,7 +96,7 @@ corto_int16 cortotool_core(void) {
       "--attr", "h=include",
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
-      "-g", "c_project",
+      "-g", "c/project",
       NULL
     });
     if (corto_procwait(pid, &ret) || ret) {
