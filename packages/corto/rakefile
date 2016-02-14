@@ -1,6 +1,7 @@
 PACKAGE = 'corto'
 
 LIB = ['rt', 'dl', 'm']
+LIB_PUBLIC = [] # projects don't need to link with rt, dl and m
 CFLAGS ||= ["-Wunused-parameter"]
 
 # Bootstrap: can't build corto packages without corto
