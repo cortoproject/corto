@@ -45,50 +45,81 @@ end
 
 # Code generation
 if not defined? NOCORTO then
-    GENFILE = Rake::FileList["#{NAME}.{cx,idl,xml}"][0]
+    DEFFILES = Rake::FileList["#{NAME}.{cx,idl,xml}"]
 
-    GENERATED_SOURCES <<
-        ".corto/_api.c" <<
-        ".corto/_wrapper.c" <<
-        ".corto/_meta.c" <<
-        ".corto/_load.c"
+    if DEFFILES.length != 0 then
+        GENFILE = DEFFILES[0]
+        GENERATED_SOURCES <<
+            ".corto/_api.c" <<
+            ".corto/_wrapper.c" <<
+            ".corto/_meta.c" <<
+            ".corto/_load.c"
 
-    GENERATED_HEADERS ||= [] <<
-        "include/_api.h" <<
-        "include/_meta.h" <<
-        "include/_type.h" <<
-        "include/_interface.h"
+        GENERATED_HEADERS ||= [] <<
+            "include/_api.h" <<
+            "include/_meta.h" <<
+            "include/_type.h" <<
+            "include/_interface.h"
 
-    file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
-        verbose(VERBOSE)
-        preload = PP_PRELOAD.join(" ")
-        sh "mkdir -p .corto"
-        sh "touch .corto/_wrapper.c"
+        file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
+            verbose(VERBOSE)
+            preload = PP_PRELOAD.join(" ")
+            sh "mkdir -p .corto"
+            sh "touch .corto/_wrapper.c"
 
-        localStr = ""
-        docStr = ""
+            localStr = ""
+            docStr = ""
 
-        if LOCAL then
-            localStr = "--attr local=true"
-        elsif (`corto locate corto/gen/doc/doc` != "corto: package 'corto/gen/doc/doc' not found\n") then
-            docStr = "-g doc/doc"
+            if LOCAL then
+                localStr = "--attr local=true"
+            elsif (`corto locate corto/gen/doc/doc` != "corto: package 'corto/gen/doc/doc' not found\n") then
+                docStr = "-g doc/doc"
+            end
+
+            command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
+                      "--prefix #{PREFIX} #{localStr} #{docStr} --lang c"
+
+            begin
+              sh command
+            rescue
+              STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+              if File.exists? "include/_type.h" then
+                  sh "rm include/_type.h"
+              end
+              abort()
+            end
         end
+        task :prebuild => ["include/_type.h"]
+    else
+        file "include/#{NAME}.h" => [".corto/packages.txt"] do
+            verbose(VERBOSE)
+            preload = PP_PRELOAD.join(" ")
+            sh "mkdir -p .corto"
 
-        command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
-                  "--prefix #{PREFIX} #{localStr} #{docStr} --lang c"
+            localStr = ""
 
-        begin
-          sh command
-        rescue
-          STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-          if File.exists? "include/_type.h" then
-              sh "rm include/_type.h"
-          end
-          abort()
+            if LOCAL then
+                localStr = "--attr local=true"
+            end
+
+            command =
+                "corto pp #{preload} #{localStr} --name #{NAME} " +
+                "--attr h=include --attr c=src -g c/project"
+
+            begin
+              sh command
+            rescue
+              STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+              if File.exists? "include/#{NAME}.h" then
+                  sh "rm include/#{NAME}.h"
+              end
+              abort()
+            end
         end
+        task :prebuild => ["include/#{NAME}.h"]
     end
 
-    task :prebuild => ["include/_type.h"]
+
 end
 
 # Document framework integration
@@ -162,19 +193,7 @@ task :prebuild do
     if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
         includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 
-        # Clear all files before removing directories in include folder
-        Dir.glob("include/**/*").each do |file|
-            if File.file?(file) then
-                sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
-            end
-        end
-
-        # Clear all directories in include folder
-        Dir.glob("include/**/*/").each do |file|
-            if !File.file?(file) then
-                sh "rm -rf #{includePath}/#{file.pathmap("%{^include/,}p")}"
-            end
-        end
+        sh "rm -rf #{includePath}"
 
         # Copy new header files
         sh "mkdir -p #{includePath}"

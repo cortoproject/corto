@@ -94,7 +94,7 @@ error:
     return -1;
 }
 
-static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage) {
+static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage, corto_bool isLocal) {
     FILE *file;
 
     if (corto_mkdir("test")) {
@@ -150,7 +150,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage)
         goto error;
     }
 
-    if (isPackage) {
+    if (isPackage && !isLocal) {
         if (cortotool_add(
             3,
             (char*[]){"add", name, "--silent", "--nobuild", NULL}
@@ -236,13 +236,10 @@ static corto_int16 cortotool_app (
     corto_bool nobuild,
     corto_bool notest,
     corto_bool local,
-    corto_bool empty,
     corto_bool nocorto)
 {
     corto_id buff;
     FILE *file;
-
-    CORTO_UNUSED(empty);
 
     silent |= mute;
 
@@ -298,7 +295,8 @@ static corto_int16 cortotool_app (
     if (!notest) {
         if (cortotool_createTest(
             name,
-            FALSE))
+            FALSE,
+            local))
         {
             goto error;
         }
@@ -320,8 +318,8 @@ static corto_int16 cortotool_package(
     corto_bool nobuild,
     corto_bool notest,
     corto_bool local,
-    corto_bool empty,
-    corto_bool nocorto)
+    corto_bool nocorto,
+    corto_bool nodef)
 {
     corto_id cxfile, srcfile, srcdir, parentName;
     corto_char *ptr, *name;
@@ -410,21 +408,17 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    file = fopen(cxfile, "w");
-    if (file) {
-        fprintf(file, "#package /%s\n\n", include);
-        if (!empty) {
-            fprintf(file, "class RedPanda::\n");
-            fprintf(file, "    weight: int32\n");
-            fprintf(file, "    int16 construct()\n");
-            fprintf(file, "    void chew()\n");
+    if (!nodef) {
+        file = fopen(cxfile, "w");
+        if (file) {
+            fprintf(file, "#package /%s\n\n", include);
+            fclose(file);
+        } else {
+            corto_error(
+                "corto: failed to open file '%s' (check permissions)",
+                cxfile);
+            goto error;
         }
-        fclose(file);
-    } else {
-        corto_error(
-            "corto: failed to open file '%s' (check permissions)",
-            cxfile);
-        goto error;
     }
 
     /* Create src and include folders */
@@ -444,48 +438,11 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    /* Write class implementation */
-    if (!empty) {
-        if (snprintf(srcfile,
-            sizeof(srcfile),
-            "%s/src/RedPanda.c",
-            name) >= (int)sizeof(srcfile))
-        {
-            if (!mute) {
-                corto_error("corto: package name '%s' is too long", name);
-            }
-            goto error;
-        }
-
-        if (corto_fileTest(srcfile)) {
-            if (!mute) {
-                corto_error("corto: file '%s' already exists", srcfile);
-            }
-            goto error;
-        }
-
-        file = fopen(srcfile, "w");
-        if (file) {
-            fprintf(file, "/* $begin(/%s/RedPanda/construct) */\n", include);
-            fprintf(file, "    printf(\"Hurray, %%s the panda is born!\\n\", corto_nameof(this));\n");
-            fprintf(file, "    return 0;\n");
-            fprintf(file, "/* $end */\n");
-            fprintf(file, "/* $begin(/%s/RedPanda/chew) */\n", include);
-            fprintf(file, "    this->weight++;\n");
-            fprintf(file, "    printf(\"%%s the panda is chewing on something omnomnom (his weight: %%d)\\n\",\n");
-            fprintf(file, "            corto_nameof(this), this->weight);\n");
-            fprintf(file, "/* $end */\n");
-            fclose(file);
-        } else {
-            corto_error("corto: failed to open file '%s'", cxfile);
-            goto error;
-        }
-
-    /* When package doesn't use corto, create an empty header and source file
-     * upon creation of the package. The header is mandatory- at least one
+    /* When package doesn't have a definition, create an empty header and source
+     * file upon creation of the package. The header is mandatory- at least one
      * header with the name of the package must exist. These files will be
-     * untouched by code generation when rebuilding the package */
-    } else if (nocorto) {
+     * untouched by code generation when rebuilding the package with nocorto */
+    if (nocorto) {
         if (snprintf(srcfile,
             sizeof(srcfile),
             "%s/include/%s.h",
@@ -540,9 +497,10 @@ static corto_int16 cortotool_package(
                 goto error;
             }
         }
+    }
 
-        snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name);
-
+    snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name);
+    if (nocorto) {
         /* Don't overwrite file if it already exists */
         if (!corto_fileTest(srcfile)) {
             file = fopen(srcfile, "w");
@@ -566,6 +524,36 @@ static corto_int16 cortotool_package(
                 }
                 goto error;
             }
+        }
+    } else if (nodef) {
+        /* Don't overwrite file if it already exists */
+        if (!corto_fileTest(srcfile)) {
+            file = fopen(srcfile, "w");
+            if (file) {
+                fprintf(file, "\n");
+                if (local) {
+                    fprintf(file, "#include \"%s.h\"\n", name);
+                } else {
+                    fprintf(file, "#include \"%s/%s.h\"\n", include, name);
+                }
+                fprintf(file, "\n");
+                fprintf(file, "/* Add implementation here */\n");
+                fprintf(file, "\n");
+                fprintf(file, "/* Enter package initialization code here */\n");
+                fprintf(file, "int %sMain(int argc, char *argv[]) {\n\n", name);
+                fprintf(file, "    return 0;\n");
+                fprintf(file, "}\n");
+                fprintf(file, "\n");
+                fclose(file);
+            } else {
+                if (!mute) {
+                    corto_error("corto: failed to open file '%s'", srcfile);
+                }
+                goto error;
+            }
+        } else {
+            corto_error("corto: file already exists, can't generate", srcfile);
+            goto error;
         }
     }
 
@@ -596,7 +584,7 @@ static corto_int16 cortotool_package(
     }
 
     if (!notest) {
-        if (cortotool_createTest(include, TRUE)) {
+        if (cortotool_createTest(include, TRUE, local)) {
             goto error;
         }
     }
@@ -614,8 +602,8 @@ error:
 }
 
 corto_int16 cortotool_create(int argc, char *argv[]) {
-    corto_ll silent, mute, nobuild, notest, local, panda;
-    corto_ll apps, packages, nocorto;
+    corto_ll silent, mute, nobuild, notest, local;
+    corto_ll apps, packages, nocorto, nodef;
     corto_ll apps_noname, packages_noname;
 
     CORTO_UNUSED(argc);
@@ -628,9 +616,9 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         {"--mute", &mute, NULL},
         {"--nobuild", &nobuild, NULL},
         {"--notest", &notest, NULL},
-        {"--local", &local, NULL},
         {"--nocorto", &nocorto, NULL},
-        {"--panda", &panda, NULL},
+        {"--nodef", &nodef, NULL},
+        {"--local", &local, NULL},
         {CORTO_APPLICATION, NULL, &apps},
         {CORTO_PACKAGE, NULL, &packages},
         {CORTO_APPLICATION, &apps_noname, NULL},
@@ -647,7 +635,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (nocorto) {
         notest = nocorto;
-        panda = NULL;
     }
 
     /* If no arguments are provided, create an application with a random name */
@@ -662,7 +649,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
             nobuild != NULL,
             notest != NULL,
             local != NULL,
-            panda == NULL,
             nocorto != NULL))
         {
             goto error;
@@ -681,7 +667,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                panda == NULL,
                 nocorto != NULL))
             {
                 goto error;
@@ -702,7 +687,6 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                panda == NULL,
                 nocorto != NULL))
             {
                 goto error;
@@ -721,8 +705,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                panda == NULL,
-                nocorto != NULL))
+                nocorto != NULL,
+                nodef != NULL))
             {
                 goto error;
             }
@@ -741,8 +725,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 nobuild != NULL,
                 notest != NULL,
                 local != NULL,
-                panda == NULL,
-                nocorto != NULL))
+                nocorto != NULL,
+                nodef != NULL))
             {
                 goto error;
             }

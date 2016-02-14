@@ -696,8 +696,8 @@ test::Suite Project::
     void tc_packageNoCortoNestedDependency()
     void tc_packageCortoDependencyNoCorto()
     void tc_packageCortoNestedDependencyNoCorto()
-    void tc_package()
-    void tc_packageLocal()
+    void tc_packageNodef()
+    void tc_packageNodefLocal()
     void tc_packageNested()
     void tc_packageNestedColons()
     void tc_packageNestedFullyScoped()
@@ -708,6 +708,7 @@ test::Suite Project::
     void tc_packageNestedDependencyColons()
     void tc_packageNestedDependencyFullyScoped()
     void tc_packageNestedDependencyFullyScopedColons()
+    void tc_packagePublicHeaderRemoval()
     void tc_publishNotag()
 
 // Test argument parser

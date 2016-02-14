@@ -27,7 +27,7 @@ CLOBBER.include ".corto/#{TARGET}.h"
 file ".corto/_load.c" => [".corto/packages.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
-    command = "corto pp --name #{TARGET} --attr local=true --attr h=include -g c/project"
+    command = "corto pp --name #{TARGET} --attr local=true --attr h=include --attr app=true -g c/project"
     begin
         sh command
     rescue

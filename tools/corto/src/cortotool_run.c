@@ -265,6 +265,11 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
 
     cortotool_getModified(files, NULL);
 
+    /* Add $HOME/.corto/lib to LD_LIBRARY_PATH so that 3rd party libraries
+     * installed to /usr/local/lib are also available when doing development
+     * in local environment. */
+    corto_setenv("LD_LIBRARY_PATH", "$HOME/.corto/lib:$LD_LIBRARY_PATH");
+
     while (!retcode) {
 
         /* Build the project */
