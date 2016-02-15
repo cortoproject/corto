@@ -136,13 +136,14 @@ file ".corto/packages.txt" do
     sh "touch .corto/packages.txt"
 end
 
-task :binary => "#{TARGETDIR}/#{ARTEFACT}"
+task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
+    UNINSTALL << TARGETDIR
+end
 
 # Build artefact
 file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(VERBOSE)
     sh "mkdir -p #{TARGETDIR}"
-    FILES << "#{TARGETDIR}"
 
     # Create list of files that are going to be linked with. Abstract away from the
     # difference between dll, so and dylib. When a dylib is encountered, perform  a
@@ -228,9 +229,11 @@ end
 # These tasks allow projects to define actions that should happen before and
 # after the build.
 task :prebuild do
+  verbose(VERBOSE)
   # Load dependency build instructions before anything else
   USE_PACKAGE.each {|p|
-      buildscript = `corto locate #{p} --path`[0...-1] + "/build.rb"
+      location = `corto locate #{p} --path`[0...-1]
+      buildscript = location + "/build.rb"
       if File.exists? buildscript then
           require "#{buildscript}"
       end

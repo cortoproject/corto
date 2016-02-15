@@ -36,8 +36,8 @@ DEFINE ||= []
 PP_PRELOAD ||= []
 LANGUAGE ||= "c"
 
-# Variable that contains all files created by the buildsystem (for uninstaller)
-FILES ||= []
+# Variable that tracks files created by the buildsystem for uninstaller
+UNINSTALL ||= []
 
 # Set environment variables in local constants
 CORTO_TARGET = ENV['CORTO_TARGET']

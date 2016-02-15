@@ -184,15 +184,27 @@ error:
     return -1;
 }
 
+/* Test if name is a directory */
+int corto_isDirectory(const char *path) {
+    struct stat buff;
+    if (stat(path, &buff) != 0) {
+        return 0;
+    }
+    return S_ISDIR(buff.st_mode);
+}
+
 /* Remove a file. Returns 0 if OK, -1 if failed */
 int corto_rm(const char *name) {
     int result = 0;
 
-    if (remove(name)) {
+    if (corto_isDirectory(name)) {
+        return corto_rmtree(name);
+    } else if (remove(name)) {
         /* Don't care if file didn't exist since the postcondition
          * is that file doesn't exist. */
         if (errno != EEXIST) {
             result = -1;
+            corto_seterr(strerror(errno));
         }
     }
 

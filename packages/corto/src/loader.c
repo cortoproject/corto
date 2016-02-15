@@ -185,8 +185,7 @@ static corto_string corto_packageToFile(corto_string package) {
 
     path = malloc(strlen(package) * 2 + strlen("/lib.so") + 1);
 
-    strcpy(path, "/");
-    fileName = corto_replaceColons(path + strlen("/"), package);
+    fileName = corto_replaceColons(path, package);
 
     fileNameLength = strlen(fileName);
     memcpy(fileName + fileNameLength, "/lib", 4);

@@ -146,8 +146,6 @@ task :buildscript do
     if not LOCAL then
         if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
             dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
-            CLOBBER.include("#{dir}/build.rb")
-            FILES << "#{dir}/build.rb"
             sh "mkdir -p #{dir}"
             File.open("#{dir}/build.rb", "w") {|file|
                 if INCLUDE_PUBLIC.length != 0 then
@@ -182,22 +180,48 @@ task :buildscript do
     end
 end
 
+task :uninstaller do
+    dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+    sh "mkdir -p #{dir}"
+    File.open("#{dir}/uninstall.txt", "w") {|file|
+        UNINSTALL.each {|f|
+            file.write("#{f}\n")
+        }
+    }
+end
+
+task :uninstall do
+    verbose(FALSE)
+    dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+    if File.exists? "#{dir}/uninstall.txt" then
+        File.open("#{dir}/uninstall.txt") {|file|
+            file.each_line{|l|
+                sh "rm -rf #{l}"
+            }
+        }
+    end
+end
+
 # dep.rb contains CLOBBER rules for generated header files
 if File.exists? "./.corto/dep.rb"
     require "./.corto/dep.rb"
 end
 
 # Crawl project directory for files that need to be installed with binary
-task :prebuild do
+task :install do
     verbose(VERBOSE)
     if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
         includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-
-        sh "rm -rf #{includePath}"
+        installFiles = Dir.glob("include/*")
 
         # Copy new header files
         sh "mkdir -p #{includePath}"
         sh "cp -r include/. #{includePath}/"
+
+        # Keep track of installed include files
+        installFiles.each {|f|
+          UNINSTALL << f.pathmap("#{includePath}/%{^include/,}p")
+        }
     end
     if File.exists?("etc") then
         etc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
@@ -210,12 +234,38 @@ task :prebuild do
         if File.exists? platformStr then
             sh "cp -r " + platformStr + "/. #{etc}"
         end
+        UNINSTALL << etc
     end
     if File.exists?("install") then
         platformStr = "install/" + CORTO_PLATFORM
         if File.exists? platformStr then
             install = "#{CORTO_TARGET}"
-            sh "cp -r " + platformStr + "/. #{install}"
+            if File.exists? "#{platformStr}/lib" then
+                sh "cp -r #{platformStr}/lib/. #{install}/lib"
+            end
+            if File.exists? "#{platformStr}/bin" then
+                sh "cp -r #{platformStr}/bin/. #{install}/bin"
+            end
+            if File.exists? "#{platformStr}/include" then
+                sh "cp -r #{platformStr}/include/. #{install}/include"
+            end
+            if File.exists? "#{platformStr}/etc" then
+                sh "cp -r #{platformStr}/etc/. #{install}/etc"
+            end
+
+            # Add installed files to FILES variable
+            Dir.glob("#{platformStr}/lib/**/*").each do |file|
+                UNINSTALL << file.pathmap("#{CORTO_TARGET}/%{^#{platformStr}/,}p")
+            end
+            Dir.glob("#{platformStr}/bin/**/*").each do |file|
+                UNINSTALL << file.pathmap("#{CORTO_TARGET}/%{^#{platformStr}/,}p")
+            end
+            Dir.glob("#{platformStr}/include/**/*").each do |file|
+                UNINSTALL << file.pathmap("#{CORTO_TARGET}/%{^#{platformStr}/,}p")
+            end
+            Dir.glob("#{platformStr}/etc/**/*").each do |file|
+                UNINSTALL << file.pathmap("#{CORTO_TARGET}/%{^#{platformStr}/,}p")
+            end
         end
     end
     if ENV['CORTO_TARGET'] != "/usr/local" then
@@ -248,8 +298,11 @@ task :collect do
     end
 end
 
-# Generate markdown file & buildscript after build
-task :postbuild => [:doc, :buildscript]
+# Prebuild tasks
+task :prebuild => [:uninstall, :install]
+
+# Postbuild tasks
+task :postbuild => [:doc, :buildscript, :uninstaller]
 
 require "#{CORTO_BUILD}/artefact"
 require "#{CORTO_BUILD}/subrake"

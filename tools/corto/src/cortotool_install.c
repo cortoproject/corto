@@ -176,67 +176,115 @@ error:
     return -1;
 }
 
-corto_int16 cortotool_uninstall(int argc, char *argv[]) {
-    CORTO_UNUSED(argc);
-    CORTO_UNUSED(argv);
-    corto_bool uninstallAll = FALSE;
-    corto_id version;
-    sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
+corto_int16 cortotool_uninstallAll(void) {
+    printf("This will completely remove corto from your system. Proceed? [Y/n] ");
+    char ch = getc(stdin);
 
-    if (argc > 1) {
-        corto_chdir(argv[1]);
-
-        if (!cortotool_validProject()) {
+    if (ch == 'Y') {
+        FILE *uninstall = fopen("uninstall.sh", "w");
+        if (!uninstall) {
+            corto_error("corto: failed to create uninstall script (check permissions)");
             goto error;
         }
-    } else {
-        uninstallAll = TRUE;
-    }
 
-    /* Write installation script */
-    FILE *uninstall = fopen("uninstall.sh", "w");
-    if (!uninstall) {
-        corto_error("corto: failed to create uninstall script (check permissions)");
-        goto error;
-    }
-
-    /* Set the build target to the global environment */
-    fprintf(uninstall, "export CORTO_TARGET=/usr/local\n");
-    fprintf(uninstall, "export CORTO_HOME=/usr/local\n");
-    fprintf(uninstall, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
-    fprintf(uninstall, "export CORTO_VERSION=%s\n", version);
-    fprintf(uninstall, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
-    fprintf(uninstall, "rake clobber\n");
-
-    /* Also remove from local environment */
-    fprintf(uninstall, "export CORTO_TARGET=~/.corto\n");
-    fprintf(uninstall, "rake clobber\n");
-
-    if (uninstallAll) {
         fprintf(uninstall, "rm -rf /usr/local/lib/corto\n");
         fprintf(uninstall, "rm -rf /usr/local/bin/corto\n");
         fprintf(uninstall, "rm -rf /usr/local/bin/corto.*\n");
         fprintf(uninstall, "rm -rf /usr/local/include/corto\n");
         fprintf(uninstall, "rm -rf /usr/local/etc/corto\n");
         fprintf(uninstall, "rm -rf ~/.corto\n");
+
+        fclose(uninstall);
+
+        cortotool_promptPassword();
+
+        corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "uninstall.sh", NULL});
+        corto_char progress[] = {'|', '/', '-', '\\'};
+        corto_int32 i = 0;
+        printf("corto: uninstalling...  ");
+        while(!corto_proccheck(pid, NULL)) {
+            i++;
+            printf("\b%c", progress[i % 4]);
+            fflush(stdout);
+            corto_sleep(0, 200000000);
+        }
+        corto_rm("uninstall.sh");
+        printf("\bdone!\n");
+    } else {
+        printf("Aborted.\n");
     }
 
-    fclose(uninstall);
+    return 0;
+error:
+    return -1;
+}
 
-    cortotool_promptPassword();
+corto_int16 cortotool_uninstaller(corto_string dir) {
+    corto_bool err = FALSE;
 
-    corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "uninstall.sh", NULL});
-    corto_char progress[] = {'|', '/', '-', '\\'};
-    corto_int32 i = 0;
-    printf("corto: uninstalling...  ");
-    while(!corto_proccheck(pid, NULL)) {
-        i++;
-        printf("\b%c", progress[i % 4]);
-        fflush(stdout);
-        corto_sleep(0, 200000000);
+    corto_string uninstall;
+    corto_asprintf(&uninstall, "%s/uninstall.txt", dir);
+    if (corto_fileTest(uninstall)) {
+        corto_id name;
+        /* Remove files of package */
+        corto_file f = corto_fileRead(uninstall);
+        char *dependency;
+        while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
+            if (corto_rm(dependency)) {
+                corto_error("failed to remove %s: %s", dependency, corto_lasterr());
+                err = TRUE;
+            }
+        }
+        corto_fileClose(f);
     }
-    corto_rm("uninstall.sh");
-    printf("\bdone!\n");
+    corto_dealloc(uninstall);
+
+    return err;
+}
+
+corto_int16 cortotool_uninstall(int argc, char *argv[]) {
+    corto_bool err = FALSE, found = FALSE;
+
+    if (argc > 1) {
+        corto_string dir;
+
+        /* Look in local environment */
+        dir = corto_envparse(
+            "$CORTO_TARGET/lib/corto/%s.%s/%s",
+            CORTO_VERSION_MAJOR,
+            CORTO_VERSION_MINOR,
+            argv[1]);
+        if (corto_fileTest(dir)) {
+            err = cortotool_uninstaller(dir);
+            corto_rm(dir);
+            found = TRUE;
+        }
+        corto_dealloc(dir);
+
+        /* Look in global environment */
+        dir = corto_envparse(
+            "/usr/local/lib/corto/%s.%s/%s",
+            CORTO_VERSION_MAJOR,
+            CORTO_VERSION_MINOR,
+            argv[1]);
+        if (corto_fileTest(dir)) {
+            err = cortotool_uninstaller(dir);
+            corto_rm(dir);
+            found = TRUE;
+        }
+        corto_dealloc(dir);
+
+        if (!err) {
+            corto_print("corto: package '%s' uninstalled", argv[1]);
+        } else if (!found) {
+            corto_error("corto: package '%s' not found", argv[1]);
+            goto error;
+        }
+    } else {
+        if (cortotool_uninstallAll()) {
+            goto error;
+        }
+    }
 
     return 0;
 error:

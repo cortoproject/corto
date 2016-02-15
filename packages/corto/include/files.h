@@ -42,6 +42,9 @@ int corto_chdir(const char *name);
 /* Copy a file. Returns zero if OK, -1 if failed */
 int corto_cp(const char *source, const char *destination);
 
+/* Test if name is a directory */
+int corto_isDirectory(const char *name);
+
 /* Remove a file or directory. Returns 0 if OK, -1 if failed */
 int corto_rm(const char *name);
 
