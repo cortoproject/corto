@@ -181,24 +181,28 @@ task :buildscript do
 end
 
 task :uninstaller do
-    dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
-    sh "mkdir -p #{dir}"
-    File.open("#{dir}/uninstall.txt", "w") {|file|
-        UNINSTALL.each {|f|
-            file.write("#{f}\n")
+    if not LOCAL then
+        dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+        sh "mkdir -p #{dir}"
+        File.open("#{dir}/uninstall.txt", "w") {|file|
+            UNINSTALL.each {|f|
+                file.write("#{f}\n")
+            }
         }
-    }
+    end
 end
 
 task :uninstall do
     verbose(FALSE)
-    dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
-    if File.exists? "#{dir}/uninstall.txt" then
-        File.open("#{dir}/uninstall.txt") {|file|
-            file.each_line{|l|
-                sh "rm -rf #{l}"
+    if not LOCAL then
+        dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+        if File.exists? "#{dir}/uninstall.txt" then
+            File.open("#{dir}/uninstall.txt") {|file|
+                file.each_line{|l|
+                    sh "rm -rf #{l}"
+                }
             }
-        }
+        end
     end
 end
 
