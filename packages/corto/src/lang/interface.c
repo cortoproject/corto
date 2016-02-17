@@ -232,7 +232,7 @@ static int corto_interface_validateAlias(corto_alias this) {
 
         corto_claim(this->member->type); /* TODO: memory leak outside of bootstrap */
         corto_member(this)->type = this->member->type;
-        corto_member(this)->modifiers |= this->member->modifiers;
+        corto_member(this)->modifiers = 0; /* alias is never hidden */
         corto_member(this)->state = this->member->state;
         corto_member(this)->weak = this->member->weak;
     }

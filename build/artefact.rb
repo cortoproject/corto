@@ -56,7 +56,7 @@ CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_X
 CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
-CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC"
+CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC" << "-Wno-write-strings"
 
 # Set default compiler
 if LANGUAGE == "c" then
@@ -155,7 +155,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
           prefix = File.dirname(l) + "/"
         end
         lib = prefix + "lib" + File.basename(l) + ".so"
-        if (not File.exists? lib) and (CORTO_OS == "Darwin\n") then
+        if (not File.exists? lib) and (CORTO_OS == "Darwin") then
             lib = prefix + "lib" + File.basename(l) + ".dylib"
             if (not File.exists? lib) then
                 abort "\033[1;31m[ #{l} not found ]\033[0;49m"
@@ -298,8 +298,7 @@ def build_source(source, target, echo)
     flags = ""
     cc = ""
 
-    # Can't use extname because of files with multiple periods in their name
-    if source.split(".").last == "c" then
+    if LANGUAGE == "c" then
         flags = CFLAGS
         cc = CC
     else
