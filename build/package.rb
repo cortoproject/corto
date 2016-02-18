@@ -118,8 +118,6 @@ if not defined? NOCORTO then
         end
         task :prebuild => ["include/#{NAME}.h"]
     end
-
-
 end
 
 # Document framework integration
@@ -145,7 +143,7 @@ task :buildscript do
     verbose(VERBOSE)
     if not LOCAL then
         if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
-            dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+            dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
             sh "mkdir -p #{dir}"
             File.open("#{dir}/build.rb", "w") {|file|
                 if INCLUDE_PUBLIC.length != 0 then
@@ -289,6 +287,14 @@ end
 # Collect files in preparation for creating a tar
 task :collect do
     verbose(VERBOSE)
+    buildScript = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}/build.rb"
+    if not File.exists?(buildScript) then
+      STDERR.puts "\033[1;31m build.rb not found ]\033[0;49m"
+      abort
+    end
+    libPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+    sh "mkdir -p #{libPath}"
+    sh "cp -r #{buildScript} #{libPath}"
     if File.exists?("include") then
         includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
         sh "mkdir -p #{includePath}"
@@ -300,6 +306,7 @@ task :collect do
         sh "mkdir -p #{etc}"
         sh "cp -r #{targetEtc}/. #{etc}/"
     end
+
 end
 
 # Prebuild tasks
