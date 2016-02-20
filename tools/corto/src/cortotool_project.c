@@ -506,7 +506,11 @@ static corto_int16 cortotool_package(
             file = fopen(srcfile, "w");
             if (file) {
                 fprintf(file, "\n");
-                fprintf(file, "#include \"%s/%s.h\"\n", include, name);
+                if (local) {
+                    fprintf(file, "#include \"%s.h\"\n", name);
+                } else {
+                    fprintf(file, "#include \"%s/%s.h\"\n", include, name);
+                }
                 fprintf(file, "\n");
                 fprintf(file, "/* Add implementation here */\n");
                 fprintf(file, "\n");
