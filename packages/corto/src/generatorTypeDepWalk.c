@@ -143,7 +143,8 @@ static int corto_genTypeAnyDependencies(corto_type t, corto_genTypeWalk_t* data)
 
     if (!decl->printed) {
         /* Print forward declaration */
-        if (data->onDeclare(corto_type_o, data->userData)) {
+        if (g_mustParse(data->g, corto_type_o) &&
+            data->onDeclare(corto_type_o, data->userData)) {
             goto error;
         }
         decl->printed = TRUE;
@@ -194,7 +195,7 @@ static int corto_genTypeInterfaceDependencies(corto_interface t, corto_bool allo
             goto error;
         }
 
-        /* If recursion occurred and a declaration is allowed, forward declare type and turn of recursion. */
+        /* If recursion occurred and a declaration is allowed, forward declare type and turn off recursion. */
         if (recursion && *recursion) {
             corto_genTypeDeclaration* decl;
             *recursion = FALSE;
@@ -204,7 +205,7 @@ static int corto_genTypeInterfaceDependencies(corto_interface t, corto_bool allo
                 decl = corto_genTypeDeclared(m->type, data);
             }
 
-            if (!decl->printed) {
+            if (!decl->printed && g_mustParse(data->g, m->type)) {
                 /* Print forward declaration */
                 if (data->onDeclare(m->type, data->userData)) {
                     goto error;
@@ -406,7 +407,7 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
                     }
                 } else {
                     /* Print forward declaration */
-                    if (!decl->printed) {
+                    if (!decl->printed && g_mustParse(data->g, o)) {
                         /* Write end-of-line and comment with name before each definition */
                         if (data->onDeclare(o, data->userData)) {
                             goto error;
