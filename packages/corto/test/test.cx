@@ -696,6 +696,7 @@ test::Suite Project::
     void tc_packageNoCortoNestedDependency()
     void tc_packageCortoDependencyNoCorto()
     void tc_packageCortoNestedDependencyNoCorto()
+    void tc_packageNoCortoLocal()
     void tc_packageNodef()
     void tc_packageNodefLocal()
     void tc_packageNested()

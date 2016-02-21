@@ -77,7 +77,8 @@ error:
 
 corto_int16 test_Project_implementNoCorto(
     corto_string name,
-    corto_string package)
+    corto_string package,
+    corto_bool local)
 {
     corto_id cfile;
     corto_int8 ret;
@@ -90,7 +91,11 @@ corto_int16 test_Project_implementNoCorto(
     }
 
     /* Add function and rebuild */
-    fprintf(f, "#include \"%s/%s.h\"\n", package, name);
+    if (!local) {
+        fprintf(f, "#include \"%s/%s.h\"\n", package, name);
+    } else {
+        fprintf(f, "#include \"%s.h\"\n", name);
+    }
     fprintf(f, "void foo(void) {}\n\n");
     fclose(f);
 
@@ -344,7 +349,7 @@ corto_void _test_Project_tc_appCortoDependencyNoCorto(test_Project this) {
     corto_dealloc(str);
 
     /* Add function to foo application */
-    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
     test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
 
 /* $end */
@@ -439,7 +444,7 @@ corto_void _test_Project_tc_appCortoNestedDependencyNoCorto(test_Project this) {
     corto_dealloc(str);
 
     /* Add function to foo application */
-    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
 /* $end */
@@ -684,7 +689,7 @@ corto_void _test_Project_tc_appNoCortoDependency(test_Project this) {
     corto_dealloc(str);
 
     /* Add function to foo application */
-    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
     test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
 
 /* $end */
@@ -780,7 +785,7 @@ corto_void _test_Project_tc_appNoCortoNestedDependency(test_Project this) {
     corto_dealloc(str);
 
     /* Add function to foo application */
-    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
 /* $end */
@@ -881,7 +886,7 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(test_Project this) {
     corto_dealloc(str);
 
     /* Add function to foo package */
-    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
     test_assert(!test_Project_useNoCorto("bar", "/bar", "foo"));
 
 /* $end */
@@ -977,7 +982,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(test_Project thi
     corto_dealloc(str);
 
     /* Add function to foo package */
-    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
 /* $end */
@@ -1804,7 +1809,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(test_Project this) {
 
     /* Implement before adding the package. If there's no implementation, there
      * is nothing to be built */
-    test_assert(!test_Project_implementNoCorto("foo", "foo"));
+    test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
 
     /* Add package dependency */
     pid = corto_procrun(
@@ -1834,6 +1839,38 @@ corto_void _test_Project_tc_packageNoCortoDependency(test_Project this) {
 
     /* Add implementation */
     test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_packageNoCortoLocal(test_Project this) {
+/* $begin(test/Project/tc_packageNoCortoLocal) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    /* Create nested package */
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "foo",
+            "--silent",
+            "--nocorto",
+            "--local",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    /* Implement before adding the package. If there's no implementation, there
+     * is nothing to be built */
+    test_assert(!test_Project_implementNoCorto("foo", "foo", TRUE));
 
 /* $end */
 }
@@ -1980,7 +2017,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(test_Project this) {
 
     /* Implement before adding the package. If there's no implementation, there
      * is nothing to be built */
-    test_assert(!test_Project_implementNoCorto("child", "parent/child"));
+    test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
 
     /* Add package dependency */
     pid = corto_procrun(
