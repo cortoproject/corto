@@ -4095,14 +4095,16 @@ error:
 }
 
 corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
-    corto_any a1, a2;
-    a1.value = o1;
-    a1.type = corto_typeof(o1);
-    a1.owner = FALSE;
-    a2.value = o2;
-    a2.type = corto_typeof(o2);
-    a2.owner = FALSE;
-    return corto_type_compare(a1, a2);
+    corto_compare_ser_t data;
+    struct corto_serializer_s s;
+
+    corto_valueValueInit(&data.value, NULL, corto_typeof(o2), o2);
+
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
+
+    corto_serialize(&s, o1, &data);
+
+    return data.result;
 }
 
 corto_equalityKind corto_comparev(corto_value *value1, corto_value *value2) {
