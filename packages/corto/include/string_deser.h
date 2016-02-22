@@ -33,7 +33,7 @@ typedef struct corto_string_deser_t {
     corto_ll index;
     corto_void* ptr;
     corto_ll anonymousObjects;
-    void* (*allocValue)(void *ptr, void *udata);
+    void* (*allocValue)(void *ptr, struct corto_string_deser_t *udata);
     void *allocUdata;
 }corto_string_deser_t;
 

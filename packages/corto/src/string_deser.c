@@ -153,15 +153,26 @@ corto_serializer corto_string_deserBuildIndex(void) {
 
 static corto_string corto_string_deserParse(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data);
 
-void* corto_string_deserAllocElem(void *ptr, void *udata) {
-    corto_collection t = udata;
+void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
+    corto_collection t = corto_collection(data->allocUdata);
+    corto_int32 size = corto_type_sizeof(t->elementType);
     void *result = NULL;
 
     switch(t->kind) {
+    case CORTO_SEQUENCE: {
+        corto_objectseq *seq = ptr; /* Use random built-in sequence type */
+        seq->buffer = corto_realloc(seq->buffer, (data->current + 1) * size);
+        seq->length = data->current + 1;
+        ptr = seq->buffer;
+        memset(CORTO_OFFSET(ptr, size * data->current), 0, size);
+    }
+    case CORTO_ARRAY:
+        result = CORTO_OFFSET(ptr, size * data->current);
+        break;
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)ptr;
         if (corto_collection_requiresAlloc(t->elementType)) {
-            result = corto_calloc(corto_type_sizeof(t->elementType));
+            result = corto_calloc(size);
             corto_llAppend(list, result);
         } else {
             corto_llAppend(list, NULL);
@@ -183,7 +194,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
     void *ptr = data->ptr;
 
     if (data->allocValue) {
-        ptr = data->allocValue(ptr, data->allocUdata);
+        ptr = data->allocValue(ptr, data);
     }
 
     /* Prepare privateData */
@@ -233,7 +244,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
             privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
         }
     /* If type is a collection, build index with one node for element */
-    } else {
+    } else if (info->type->kind == CORTO_COLLECTION){
         struct corto_string_deserIndexInfo *elementNode;
         elementNode = corto_alloc(sizeof(struct corto_string_deserIndexInfo));
         elementNode->m = NULL;
@@ -249,6 +260,9 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         privateData.allocUdata = info->type;
 
         switch(corto_collection(info->type)->kind) {
+        case CORTO_ARRAY:
+        case CORTO_SEQUENCE:
+            break;
         case CORTO_LIST:
             if (!*(corto_ll*)ptr) {
                 *(corto_ll*)ptr = corto_llNew();
@@ -289,7 +303,7 @@ void *corto_string_getDestinationPtr(
     }
 
     if (data->allocValue) {
-        result = data->allocValue(result, data->allocUdata);
+        result = data->allocValue(result, data);
     }
 
     if (info->m) {

@@ -248,6 +248,76 @@ corto_void _test_StringDeserializer_tc_deserAnonymousSimple(test_StringDeseriali
 /* $end */
 }
 
+corto_void _test_StringDeserializer_tc_deserArray(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserArray) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveArray{0, 1, 2, 3}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveArray_o);
+
+    corto_int32 *c = test_PrimitiveArray(o);
+    test_assert(c != NULL);
+
+    test_assert(c[0] == 0);
+    test_assert(c[1] == 1);
+    test_assert(c[2] == 2);
+    test_assert(c[3] == 3);
+
+    corto_delete(o);
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserArrayComplex(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserArrayComplex) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+      "test/CompositeArray{{10, 20}, {30, 40}, {50, 60}, {70, 80}}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_CompositeArray_o);
+
+    test_Point *c = test_CompositeArray(o);
+    test_assert(c != NULL);
+
+    test_assert(c[0].x == 10);
+    test_assert(c[0].y == 20);
+    test_assert(c[1].x == 30);
+    test_assert(c[1].y == 40);
+    test_assert(c[2].x == 50);
+    test_assert(c[2].y == 60);
+    test_assert(c[3].x == 70);
+    test_assert(c[3].y == 80);
+
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserArrayReference(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserArrayReference) */
+    corto_object *o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/ObjectArray{lang, corto, bool, any}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ObjectArray_o);
+
+    corto_object *c = test_ObjectArray(o);
+    test_assert(c != NULL);
+
+    test_assert(c[0] == corto_lang_o);
+    test_assert(c[1] == corto_o);
+    test_assert(c[2] == corto_bool_o);
+    test_assert(c[3] == corto_any_o);
+
+    corto_delete(o);
+
+/* $end */
+}
+
 corto_void _test_StringDeserializer_tc_deserBoolFalse(test_StringDeserializer this) {
 /* $begin(test/StringDeserializer/tc_deserBoolFalse) */
 
@@ -370,66 +440,6 @@ corto_void _test_StringDeserializer_tc_deserCharQuoted(test_StringDeserializer t
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_char_o);
     test_assert(*(corto_char*)o == 'a');
-    corto_delete(o);
-
-/* $end */
-}
-
-corto_void _test_StringDeserializer_tc_deserCollection(test_StringDeserializer this) {
-/* $begin(test/StringDeserializer/tc_deserCollection) */
-
-    corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveCollection{{0, 1, 2, 3}}");
-
-    test_assert(o != NULL);
-    test_assert(ret == 0);
-    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveCollection_o);
-
-    test_PrimitiveCollection *c = test_PrimitiveCollection(o);
-    test_assert(c != NULL);
-    test_assert(c->ints != NULL);
-    test_assert(corto_llSize(c->ints) == 4);
-
-    test_assert((corto_uint32)(corto_word)corto_llGet(c->ints, 0) == 0);
-    test_assert((corto_uint32)(corto_word)corto_llGet(c->ints, 1) == 1);
-    test_assert((corto_uint32)(corto_word)corto_llGet(c->ints, 2) == 2);
-    test_assert((corto_uint32)(corto_word)corto_llGet(c->ints, 3) == 3);
-
-    corto_delete(o);
-
-/* $end */
-}
-
-corto_void _test_StringDeserializer_tc_deserCollectionComplex(test_StringDeserializer this) {
-/* $begin(test/StringDeserializer/tc_deserCollectionComplex) */
-
-    corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/CompositeCollection{{{0, 1}, {2, 3}, {4, 5}}}");
-
-    test_assert(o != NULL);
-    test_assert(ret == 0);
-    test_assert(corto_typeof(o) == (corto_type)test_CompositeCollection_o);
-
-    test_CompositeCollection *c = test_CompositeCollection(o);
-    test_assert(c != NULL);
-    test_assert(c->points != NULL);
-    test_assert(corto_llSize(c->points) == 3);
-
-    test_Point *p = corto_llGet(c->points, 0);
-    test_assert(p != NULL);
-    test_assert(p->x == 0);
-    test_assert(p->y == 1);
-
-    p = corto_llGet(c->points, 1);
-    test_assert(p != NULL);
-    test_assert(p->x == 2);
-    test_assert(p->y == 3);
-
-    p = corto_llGet(c->points, 2);
-    test_assert(p != NULL);
-    test_assert(p->x == 4);
-    test_assert(p->y == 5);
-
     corto_delete(o);
 
 /* $end */
@@ -600,7 +610,6 @@ corto_void _test_StringDeserializer_tc_deserExisting_w_scopedType(test_StringDes
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
     test_assert(*o == 10);
     corto_delete(o);
-
 
 /* $end */
 }
@@ -823,6 +832,160 @@ corto_void _test_StringDeserializer_tc_deserInt8Overflow(test_StringDeserializer
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int8_o);
     test_assert(*(corto_int8*)o == -128);
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserList(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserList) */
+    corto_object *o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveList{0, 1, 2, 3}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveList_o);
+
+    test_PrimitiveList *c = test_PrimitiveList(o);
+    test_assert(c != NULL);
+    test_assert(corto_llSize(*c) == 4);
+
+    test_assert((corto_uint32)(corto_word)corto_llGet(*c, 0) == 0);
+    test_assert((corto_uint32)(corto_word)corto_llGet(*c, 1) == 1);
+    test_assert((corto_uint32)(corto_word)corto_llGet(*c, 2) == 2);
+    test_assert((corto_uint32)(corto_word)corto_llGet(*c, 3) == 3);
+
+    corto_delete(o);
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserListComplex(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserListComplex) */
+    corto_object *o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/CompositeList{{0, 1}, {2, 3}, {4, 5}}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_CompositeList_o);
+
+    test_CompositeList *c = test_CompositeList(o);
+    test_assert(c != NULL);
+    test_assert(corto_llSize(*c) == 3);
+
+    test_Point *p = corto_llGet(*c, 0);
+    test_assert(p != NULL);
+    test_assert(p->x == 0);
+    test_assert(p->y == 1);
+
+    p = corto_llGet(*c, 1);
+    test_assert(p != NULL);
+    test_assert(p->x == 2);
+    test_assert(p->y == 3);
+
+    p = corto_llGet(*c, 2);
+    test_assert(p != NULL);
+    test_assert(p->x == 4);
+    test_assert(p->y == 5);
+
+    corto_delete(o);
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserListReference(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserListReference) */
+    corto_object *o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/ObjectList{lang, corto, bool, any}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ObjectList_o);
+
+    test_PrimitiveList *c = test_ObjectList(o);
+    test_assert(c != NULL);
+    test_assert(corto_llSize(*c) == 4);
+
+    test_assert(corto_llGet(*c, 0) == corto_lang_o);
+    test_assert(corto_llGet(*c, 1) == corto_o);
+    test_assert(corto_llGet(*c, 2) == corto_bool_o);
+    test_assert(corto_llGet(*c, 3) == corto_any_o);
+
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserSequence(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserSequence) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveSequence{0, 1, 2, 3}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveSequence_o);
+
+    test_PrimitiveSequence *c = test_PrimitiveSequence(o);
+    test_assert(c != NULL);
+    test_assert(c->length == 4);
+    test_assert(c->buffer != NULL);
+
+    test_assert(c->buffer[0] == 0);
+    test_assert(c->buffer[1] == 1);
+    test_assert(c->buffer[2] == 2);
+    test_assert(c->buffer[3] == 3);
+
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserSequenceComplex(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserSequenceComplex) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+      "test/CompositeSequence{{10, 20}, {30, 40}, {50, 60}, {70, 80}}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_CompositeSequence_o);
+
+    test_CompositeSequence *c = test_CompositeSequence(o);
+    test_assert(c != NULL);
+    test_assert(c->buffer != NULL);
+    test_assert(c->length == 4);
+
+    test_assert(c->buffer[0].x == 10);
+    test_assert(c->buffer[0].y == 20);
+    test_assert(c->buffer[1].x == 30);
+    test_assert(c->buffer[1].y == 40);
+    test_assert(c->buffer[2].x == 50);
+    test_assert(c->buffer[2].y == 60);
+    test_assert(c->buffer[3].x == 70);
+    test_assert(c->buffer[3].y == 80);
+
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserSequenceReference(test_StringDeserializer this) {
+/* $begin(test/StringDeserializer/tc_deserSequenceReference) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/ObjectSequence{lang, corto, bool, any}");
+
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ObjectSequence_o);
+
+    test_ObjectSequence *c = test_ObjectSequence(o);
+    test_assert(c != NULL);
+    test_assert(c->buffer != NULL);
+    test_assert(c->length == 4);
+
+    test_assert(c->buffer[0] == corto_lang_o);
+    test_assert(c->buffer[1] == corto_o);
+    test_assert(c->buffer[2] == corto_bool_o);
+    test_assert(c->buffer[3] == corto_any_o);
+
     corto_delete(o);
 
 /* $end */

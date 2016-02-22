@@ -24,11 +24,17 @@ struct Point3D: Point::
 struct Line::
     start, stop: Point
 
-struct PrimitiveCollection::
-    ints: list{int32}
+array PrimitiveArray: int32, 4
+array CompositeArray: Point, 4
+array ObjectArray: object, 4
 
-struct CompositeCollection::
-    points: list{Point}
+sequence PrimitiveSequence: int32
+sequence CompositeSequence: Point
+sequence ObjectSequence: object
+
+list PrimitiveList: int32
+list CompositeList: Point
+list ObjectList: object
 
 struct VoidParent: parentType = void::
     foo: int32
@@ -643,8 +649,17 @@ test::Suite StringDeserializer::
     void tc_deserCompositeMembers()
     void tc_deserCompositeMixed()
 
-    void tc_deserCollection()
-    void tc_deserCollectionComplex()
+    void tc_deserArray()
+    void tc_deserArrayComplex()
+    void tc_deserArrayReference()
+
+    void tc_deserSequence()
+    void tc_deserSequenceComplex()
+    void tc_deserSequenceReference()
+
+    void tc_deserList()
+    void tc_deserListComplex()
+    void tc_deserListReference()
 
     void tc_deserInheritance()
     void tc_deserInheritanceMembers()
