@@ -160,7 +160,7 @@ corto_int16 corto_serializeAny(corto_serializer this, corto_value* info, void* u
 
     if (any->type) {
         v.parent = info;
-        corto_valueValueInit(&v, corto_valueObject(info), (corto_type)any->type, any->value);
+        corto_valueValueInit(&v, corto_valueObject(info), corto_type(any->type), any->value);
         result = corto_serializeValue(this, &v, userData);
     }
 

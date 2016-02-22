@@ -4123,6 +4123,7 @@ corto_equalityKind corto_comparev(corto_value *value1, corto_value *value2) {
     a2.value = v2;
     a2.type = t2;
     a2.owner = FALSE;
+
     return corto_type_compare(a1, a2);
 }
 

@@ -3,6 +3,26 @@
 
 #define CORTO_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? CORTO_GT : *(type*)v1 < *(type*)v2 ? CORTO_LT : CORTO_EQ
 
+static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *userData) {
+    corto_any *this = corto_valueValue(info);
+    corto_compare_ser_t *data = userData, privateData;
+    corto_any *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
+
+    corto_value v;
+    corto_valueValueInit(&v, NULL, this->type, this->value);
+    corto_valueValueInit(&privateData.value, NULL, value->type, value->value);
+
+    /* Set base of privateData. Because we're reusing the serializer, the
+     * construct callback won't be called again */
+    privateData.base = this->value;
+
+    corto_serializeValue(s, &v, &privateData);
+
+    data->result = privateData.result;
+
+    return data->result != CORTO_EQ;
+}
+
 static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, void *userData) {
     corto_equalityKind result = CORTO_EQ;
     corto_compare_ser_t *data = userData;
@@ -354,6 +374,7 @@ struct corto_serializer_s corto_compare_ser(corto_modifier access, corto_operato
     s.traceKind = trace;
     s.construct = corto_ser_construct;
     s.program[CORTO_VOID] = NULL;
+    s.program[CORTO_ANY] = corto_ser_any;
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
     s.program[CORTO_COLLECTION] = corto_ser_collection;
     s.reference = corto_ser_reference;
