@@ -153,6 +153,26 @@ corto_serializer corto_string_deserBuildIndex(void) {
 
 static corto_string corto_string_deserParse(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data);
 
+void* corto_string_deserAllocAny(void *ptr, corto_string_deser_t *data) {
+    void *result = NULL;
+    if (!data->current) {
+        result = ptr;
+    } else {
+        corto_any *a = ptr;
+        corto_type t = a->type;
+        struct corto_string_deserIndexInfo *anyNode = data->allocUdata;
+        anyNode->type = t;
+        a->owner = TRUE;
+        if (t->kind == CORTO_PRIMITIVE) {
+            a->value = corto_calloc(corto_type_sizeof(t));
+            result = a->value;
+        } else {
+            result = &a->value;
+        }
+    }
+    return result;
+}
+
 void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
     corto_collection t = corto_collection(data->allocUdata);
     corto_int32 size = corto_type_sizeof(t->elementType);
@@ -225,9 +245,10 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         info = &rootInfo;
     }
 
-    /* Check if type is composite or collection */
+    /* Check if type is any, composite or collection */
     kind = info->type->kind;
-    if ((kind != CORTO_COMPOSITE) && (kind != CORTO_COLLECTION)) {
+
+    if ((kind != CORTO_COMPOSITE) && (kind != CORTO_COLLECTION) && (kind != CORTO_ANY)) {
         corto_seterr("'{' unexpected for type '%s'",
             corto_fullpath(NULL, info->type));
         goto error;
@@ -244,14 +265,12 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
             privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
         }
     /* If type is a collection, build index with one node for element */
-    } else if (info->type->kind == CORTO_COLLECTION){
+    } else if (info->type->kind == CORTO_COLLECTION) {
         struct corto_string_deserIndexInfo *elementNode;
         elementNode = corto_alloc(sizeof(struct corto_string_deserIndexInfo));
         elementNode->m = NULL;
         elementNode->parsed = FALSE;
         elementNode->type = corto_collection(info->type)->elementType;
-
-        /* Insert indexInfo into index */
         corto_string_deserIndexInsert(&privateData, elementNode);
 
         /* Create iterator for index */
@@ -274,6 +293,16 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         default:
             break;
         }
+    } else if (info->type->kind == CORTO_ANY) {
+          struct corto_string_deserIndexInfo *anyNode;
+          anyNode = corto_alloc(sizeof(struct corto_string_deserIndexInfo));
+          anyNode->m = NULL;
+          anyNode->parsed = FALSE;
+          anyNode->type = corto_type(corto_type_o);
+          corto_string_deserIndexInsert(&privateData, anyNode);
+          privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
+          privateData.allocValue = corto_string_deserAllocAny;
+          privateData.allocUdata = anyNode;
     }
 
     /* Parse scope */

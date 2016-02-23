@@ -98,6 +98,32 @@ static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string c
     return result;
 }
 
+/* Serialize any */
+static corto_int16 corto_ser_any(corto_serializer s, corto_value* v, void* userData) {
+    corto_string_ser_t* data = userData;
+    corto_any *this = corto_valueValue(v);
+    corto_int16 result = 0;
+    corto_id id;
+    corto_value anyValue;
+    corto_valueValueInit(&anyValue, NULL, this->type, this->value);
+
+    if (!corto_ser_appendstr(data, "{%s,", corto_fullpath(id, this->type))) {
+        goto finished;
+    }
+
+    if ((result = corto_serializeValue(s, &anyValue, data))) {
+        return result;
+    }
+
+    if (!corto_ser_appendstr(data, "}")) {
+        goto finished;
+    }
+
+    return 0;
+finished:
+    return 0;
+}
+
 /* Serialize primitive values */
 static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void* userData) {
     corto_string_ser_t* data;
@@ -419,6 +445,7 @@ struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operator
     s.construct = corto_ser_construct;
     s.destruct = corto_ser_destruct;
     s.program[CORTO_VOID] = NULL;
+    s.program[CORTO_ANY] = corto_ser_any;
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
     s.program[CORTO_COMPOSITE] = corto_ser_scope;
     s.program[CORTO_COLLECTION] = corto_ser_scope;
