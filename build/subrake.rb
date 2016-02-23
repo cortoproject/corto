@@ -64,6 +64,14 @@ task :test do
           error = 1
         end
     end
+    if File.exists? "test" then
+        begin
+          sh "rake -f test/rakefile silent=true"
+          sh "rake test -f test/rakefile"
+        rescue
+          error = 1
+        end
+    end
     if error != 0 then
       abort()
     end
