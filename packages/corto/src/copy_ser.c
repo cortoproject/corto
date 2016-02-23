@@ -1,6 +1,31 @@
 
 #include "corto/corto.h"
 
+static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *userData) {
+    corto_any *this = corto_valueValue(info);
+    corto_copy_ser_t *data = userData, privateData;
+    corto_any *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_value v;
+
+    if (this->type->kind == CORTO_PRIMITIVE) {
+        value->value = corto_calloc(corto_type_sizeof(this->type));
+    }
+
+    corto_valueValueInit(&v, NULL, this->type, this->value);
+    corto_valueValueInit(&privateData.value, NULL, value->type, value->value);
+
+    /* Set base of privateData. Because we're reusing the serializer, the
+     * construct callback won't be called again */
+    privateData.base = this->value;
+
+    corto_serializeValue(s, &v, &privateData);
+
+    value->type = this->type;
+    value->owner = TRUE;
+
+    return 0;
+}
+
 static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, void *userData) {
     corto_type type = corto_valueType(info);
     corto_copy_ser_t *data = userData;
@@ -281,6 +306,7 @@ struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKi
     s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
     s.construct = corto_ser_construct;
     s.program[CORTO_VOID] = NULL;
+    s.program[CORTO_ANY] = corto_ser_any;
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
     s.program[CORTO_COLLECTION] = corto_ser_collection;
     s.reference = corto_ser_reference;
