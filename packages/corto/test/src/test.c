@@ -187,7 +187,7 @@ corto_void _test_ol_wildcard_int32_string(corto_int32 a, corto_string b) {
 int testMain(int argc, char* argv[]) {
 /* $begin(main) */
     int result = 0;
-    test_Runner runner = test_RunnerCreate("core", argv[0], (argc > 1) ? argv[1] : NULL);
+    test_Runner runner = test_RunnerCreate("corto", argv[0], (argc > 1) ? argv[1] : NULL);
     if (!runner) return -1;
     if (corto_llSize(runner->failures)) {
         result = -1;
