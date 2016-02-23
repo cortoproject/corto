@@ -31,11 +31,6 @@ else
     TARGETDIR = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 end
 
-# If this is not a corto package, expose all symbols by default
-if not defined? NOCORTO then
-    CFLAGS << "-fvisibility=hidden"
-end
-
 # Rule for creating packages.txt
 file ".corto/packages.txt" do
     verbose(VERBOSE)
@@ -48,6 +43,10 @@ if not defined? NOCORTO then
     DEFFILES = Rake::FileList["#{NAME}.{cx,idl,xml}"]
 
     if DEFFILES.length != 0 then
+        # If this is a corto package, let Corto manage which symbols should be
+        # external
+        CFLAGS << "-fvisibility=hidden"
+
         GENFILE = DEFFILES[0]
         GENERATED_SOURCES <<
             ".corto/_api.c" <<
@@ -91,6 +90,9 @@ if not defined? NOCORTO then
         end
         task :prebuild => ["include/_type.h"]
     else
+        GENERATED_SOURCES <<
+            ".corto/_load.c"
+
         file "include/#{NAME}.h" => [".corto/packages.txt"] do
             verbose(VERBOSE)
             preload = PP_PRELOAD.join(" ")
@@ -103,7 +105,7 @@ if not defined? NOCORTO then
             end
 
             command =
-                "corto pp #{preload} #{localStr} --name #{NAME} " +
+                "corto pp #{preload} #{localStr} --name #{PACKAGE} " +
                 "--attr h=include --attr c=src -g c/project"
 
             begin
