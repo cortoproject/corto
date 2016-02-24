@@ -1012,7 +1012,8 @@ static corto_int16 corto_selectParseScope(corto_selectData *data) {
                     data->scopes[current].parentQuery = *ptr ? ptr + 1 : NULL;
                 }
 
-                prev = ptr;
+                prev = ptr + (*ptr ? 1 : 0);
+
                 current++;
             }
             ptr++;
@@ -1031,8 +1032,8 @@ corto_int16 corto_select(
 {
     corto_selectData *data = corto_selectDataGet();
 
-    data->expr = corto_strdup(expr);
-    data->tokens = corto_strdup(expr);
+    data->expr = expr ? corto_strdup(expr) : corto_strdup("*");
+    data->tokens = corto_strdup(data->expr);
     data->contentType = NULL;
     data->scope = scope ? corto_strdup(scope) : NULL;
     data->sp = 0;
