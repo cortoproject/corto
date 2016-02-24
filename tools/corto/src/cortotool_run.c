@@ -18,11 +18,12 @@ corto_fileMonitor* cortotool_monitorNew(char *file, char *lib) {
     mon->file = corto_strdup(file);
     mon->lib = lib ? corto_strdup(lib) : NULL;
     mon->mtime = 0;
+
     return mon;
 }
 
 static void cortotool_addChangedLibrary(corto_ll *libs, corto_string lib) {
-    if (*libs) {
+    if (*libs && lib) {
         corto_iter iter = corto_llIter(*libs);
         while (corto_iterHasNext(&iter)) {
             corto_string l = corto_iterNext(&iter);
