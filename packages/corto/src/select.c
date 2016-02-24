@@ -43,12 +43,19 @@ typedef struct corto_contentType {
     void (*contentRelease)(corto_word content);
 } corto_contentType;
 
+typedef struct corto_scopeSegment {
+    corto_object scope;
+    corto_string parentQuery;
+} corto_scopeSegment;
+
 typedef struct corto_selectData {
-    corto_string expr;                         /* Full expression */
-    corto_string tokens;                       /* Cut up string for op tokens */
+    corto_string expr;                       /* Full expression */
+    corto_string tokens;                     /* Cut up string for op tokens */
     corto_string contentType;
     corto_string param;
-    corto_object scope;                        /* Scope passed to select */
+    corto_string scope;                      /* Scope passed to select */
+    corto_scopeSegment scopes[CORTO_MAX_SCOPE_DEPTH]; /* Scopes to walk (parsed scope) */
+    corto_uint32 currentScope;               /* Scope currently being walked */
     corto_selectOp program[CORTO_SELECT_MAX_OP]; /* Parsed program */
     corto_uint8 programSize;
     corto_selectStack stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
@@ -368,7 +375,11 @@ static void corto_setItemData(
     corto_selectData *data)
 {
     if (o != root_o) {
-        corto_path(item->parent, data->scope, corto_parentof(o), "/");
+        corto_path(
+            item->parent,
+            data->scopes[data->currentScope].scope,
+            corto_parentof(o),
+            "/");
     } else {
         *item->parent = '\0';
     }
@@ -465,8 +476,6 @@ static void corto_selectParseFilter(
     corto_id parent,
     corto_id expr)
 {
-    strcpy(parent, ".");
-
     /* Separate filter in parent and expression */
     if (filter) {
         char *ptr = filter;
@@ -476,11 +485,15 @@ static void corto_selectParseFilter(
         }
         strcpy(expr, exprStart);
         if (exprStart != filter) {
-            strcpy(parent, filter);
-            parent[exprStart - filter - 1] = '\0';
+            if (*parent) strcat(parent, "/");
+            strcat(parent, filter);
+            parent[strlen(parent) - (strlen(exprStart) + 1)] = '\0';
             corto_cleanpath(parent);
+        } else if (!*parent) {
+            strcpy(parent, ".");
         }
     } else {
+        if (!*parent) strcpy(parent, ".");
         strcpy(expr, "*");
     }
 }
@@ -493,6 +506,12 @@ static corto_int16 corto_selectRequestReplicators(
     if (data->activeReplicators < 0) {
         corto_id parent, expr;
         corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
+
+        if (data->scopes[data->currentScope].parentQuery) {
+            strcpy(parent, data->scopes[data->currentScope].parentQuery);
+        } else {
+            *parent = '\0';
+        }
 
         corto_selectParseFilter(frame->filter, parent, expr);
         data->activeReplicators = 0;
@@ -593,12 +612,22 @@ static void corto_selectIterateReplicators(
     corto_selectStack *frame)
 {
     if (data->activeReplicators) {
-        corto_id path, parent, expr;
+        corto_id path, parent /* not used */, expr;
 
         /* Relative path is used to translate parent identifier */
-        corto_path(path, data->scope, frame->o, "/");
+        corto_path(
+          path,
+          data->scopes[data->currentScope].scope,
+          frame->o,
+          "/");
+
+        if (data->scopes[data->currentScope].parentQuery) {
+            strcat(path, "/");
+            strcat(path, data->scopes[data->currentScope].parentQuery);
+        }
 
         /* Parse filter into parent and expression */
+        *parent = '\0';
         corto_selectParseFilter(frame->filter, parent, expr);
 
         if (data->currentReplicator < 0) {
@@ -672,7 +701,7 @@ static void corto_selectScope(
     data->next = NULL;
 
     /* If not iterating over a replicator, we're iterating over the store */
-    if (data->currentReplicator == -1) {
+    if ((data->currentReplicator == -1) && !data->scopes[data->currentScope].parentQuery) {
         while ((o = corto_selectIterNext(frame, lastKey))) {
             if (!frame->filter || corto_selectMatch(frame->filter, corto_nameof(o))) {
                 data->next = &data->item;
@@ -826,21 +855,53 @@ error:
     return -1;
 }
 
+/* Reset select data (either initially or when moving to next scope) */
+static void corto_selectReset(corto_selectData *data) {
+    corto_int32 i = 0;
+
+    for (i = 0; i < data->activeReplicators; i ++) {
+        corto_iterRelease(&data->replicators[i]);
+    }
+
+    if (data->item.value && data->destSer.contentRelease) {
+        data->destSer.contentRelease(data->item.value);
+    }
+
+    data->sp = 0;
+    data->item.value = 0;
+    data->activeReplicators = -1;
+    data->currentReplicator = -1;
+}
+
+static corto_bool corto_selectNextScope(corto_selectData *data) {
+    if (data->scopes[data->currentScope + 1].scope) {
+        corto_selectStack *frame = &data->stack[0];
+        corto_selectReset(data);
+        data->currentScope ++;
+        frame->o = data->scopes[data->currentScope].scope;
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
 static int corto_selectHasNext(corto_resultIter *iter) {
     corto_selectData *data = corto_selectDataGet();
     corto_selectStack *frame = &data->stack[data->sp];
 
     CORTO_UNUSED(iter);
 
-    if (!data->next) {
-        if (corto_selectRun(data)) {
-            goto error;
+    do {
+        if (!data->next) {
+            if (corto_selectRun(data)) {
+                goto error;
+            }
         }
-    }
 
-    if (frame->next) {
-        frame->next(data, frame);
-    }
+        if (frame->next) {
+            frame->next(data, frame);
+        }
+    } while ((data->next == NULL) && (corto_selectNextScope(data)));
 
     return data->next != NULL;
 error:
@@ -892,42 +953,98 @@ corto_int16 corto_selectParam(corto_resultIter *iter, corto_string param) {
 
 static void corto_selectRelease(corto_iter *iter) {
     corto_selectData *data = corto_selectDataGet();
-    corto_int32 i = 0;
 
     CORTO_UNUSED(iter);
 
     if (data->expr) corto_dealloc(data->expr);
     if (data->tokens) corto_dealloc(data->tokens);
+    if (data->scope) corto_dealloc(data->scope);
 
-    for (i = 0; i < data->activeReplicators; i ++) {
-        corto_iterRelease(&data->replicators[i]);
-    }
-
-    if (data->item.value && data->destSer.contentRelease) {
-        data->destSer.contentRelease(data->item.value);
-    }
+    corto_selectReset(data);
 
     data->expr = NULL;
     data->tokens = NULL;
     data->item.value = 0;
 }
 
+static corto_int16 corto_selectParseScope(corto_selectData *data) {
+    memset(data->scopes, 0, sizeof(data->scopes));
+
+    if (!data->scope || !strlen(data->scope)) {
+        /* Leave scope to NULL. This way, the parent string in the result will
+         * include the initial '/' */
+    } else {
+        char *ptr, *prev, ch;
+        corto_uint32 current = 0;
+        ptr = data->scope;
+
+        if (ptr[0] != '/') {
+            corto_seterr(
+                "invalid scope '%s' (should start with '/')",
+                data->scope);
+            goto error;
+        }
+
+        /* Set first scope to root */
+        ptr ++;
+        corto_setref(&data->scopes[0].scope, root_o);
+        data->scopes[0].parentQuery = *ptr ? ptr : NULL;
+        current ++;
+        prev = ptr;
+
+        do {
+            ch = *ptr;
+            if ((!ch && (prev != ptr)) || (ch == '/')) {
+                corto_id expr;
+                memcpy(expr, prev, ptr - prev);
+                expr[ptr - prev] = '\0';
+
+                /* Don't use resolve here since that might load objects in the
+                 * object store, which is exactly what select must avoid */
+                data->scopes[current].scope = corto_lookup(
+                    data->scopes[current - 1].scope,
+                    expr);
+                if (!data->scopes[current].scope) {
+                    /* If a scope cannot be found in the object store, select
+                     * will attempt to request it from replicators */
+                    break;
+                } else {
+                    data->scopes[current].parentQuery = *ptr ? ptr + 1 : NULL;
+                }
+
+                prev = ptr;
+                current++;
+            }
+            ptr++;
+        } while (ch);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 corto_int16 corto_select(
-    corto_object scope,
+    corto_string scope,
     corto_string expr,
     corto_resultIter *iter_out)
 {
     corto_selectData *data = corto_selectDataGet();
 
-    corto_setstr(&data->expr, expr);
-    corto_setstr(&data->tokens, expr);
-    corto_setstr(&data->contentType, NULL);
-    data->scope = scope;
+    data->expr = corto_strdup(expr);
+    data->tokens = corto_strdup(expr);
+    data->contentType = NULL;
+    data->scope = scope ? corto_strdup(scope) : NULL;
     data->sp = 0;
     data->next = NULL;
     data->item.value = 0;
     data->activeReplicators = -1;
     data->currentReplicator = -1;
+    data->currentScope = 0;
+
+    if (corto_selectParseScope(data)) {
+        goto error;
+    }
 
     iter_out->hasNext = corto_selectHasNext;
     iter_out->next = corto_selectNext;
@@ -948,8 +1065,7 @@ corto_int16 corto_select(
     }
 
     /* Prepare first stack frame */
-    data->stack[0].o = scope ? scope : root_o;
-    corto_claim(data->stack[0].o);
+    data->stack[0].o = data->scopes[0].scope ? data->scopes[0].scope : root_o;
 
     return 0;
 error:
