@@ -8,7 +8,9 @@
 
 #include "test.h"
 
-corto_void _test_SelectContentType_setup(test_SelectContentType this) {
+corto_void _test_SelectContentType_setup(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/setup) */
 
     /* Create 'json' scope for JSON replicator */
@@ -34,14 +36,16 @@ corto_void _test_SelectContentType_setup(test_SelectContentType this) {
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectJsonFromJson(test_SelectContentType this) {
+corto_void _test_SelectContentType_tc_selectJsonFromJson(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/tc_selectJsonFromJson) */
     corto_iter iter;
     corto_int16 ret;
     corto_result *result;
     corto_string json;
 
-    ret = corto_select(root_o, "/json/*", &iter);
+    ret = corto_select("/", "/json/*", &iter);
     test_assert(ret == 0);
 
     ret = corto_selectContentType(&iter, "application/json");
@@ -83,14 +87,16 @@ corto_void _test_SelectContentType_tc_selectJsonFromJson(test_SelectContentType 
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectJsonFromObjects(test_SelectContentType this) {
+corto_void _test_SelectContentType_tc_selectJsonFromObjects(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/tc_selectJsonFromObjects) */
     corto_iter iter;
     corto_int16 ret;
     corto_result *result;
     corto_string json;
 
-    ret = corto_select(root_o, "/obj/*", &iter);
+    ret = corto_select("/", "/obj/*", &iter);
     test_assert(ret == 0);
 
     ret = corto_selectContentType(&iter, "application/json");
@@ -132,14 +138,16 @@ corto_void _test_SelectContentType_tc_selectJsonFromObjects(test_SelectContentTy
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectJsonFromString(test_SelectContentType this) {
+corto_void _test_SelectContentType_tc_selectJsonFromString(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/tc_selectJsonFromString) */
     corto_iter iter;
     corto_int16 ret;
     corto_result *result;
     corto_string json;
 
-    ret = corto_select(root_o, "/str/*", &iter);
+    ret = corto_select("/", "/str/*", &iter);
     test_assert(ret == 0);
 
     ret = corto_selectContentType(&iter, "application/json");
@@ -181,14 +189,16 @@ corto_void _test_SelectContentType_tc_selectJsonFromString(test_SelectContentTyp
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromJson(test_SelectContentType this) {
+corto_void _test_SelectContentType_tc_selectStringFromJson(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/tc_selectStringFromJson) */
     corto_iter iter;
     corto_int16 ret;
     corto_result *result;
     corto_string str;
 
-    ret = corto_select(root_o, "/json/*", &iter);
+    ret = corto_select("/", "/json/*", &iter);
     test_assert(ret == 0);
 
     ret = corto_selectContentType(&iter, "application/corto");
@@ -230,14 +240,16 @@ corto_void _test_SelectContentType_tc_selectStringFromJson(test_SelectContentTyp
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromObjects(test_SelectContentType this) {
+corto_void _test_SelectContentType_tc_selectStringFromObjects(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/tc_selectStringFromObjects) */
     corto_iter iter;
     corto_int16 ret;
     corto_result *result;
     corto_string str;
 
-    ret = corto_select(root_o, "/obj/*", &iter);
+    ret = corto_select("/", "/obj/*", &iter);
     test_assert(ret == 0);
 
     ret = corto_selectContentType(&iter, "application/corto");
@@ -279,14 +291,16 @@ corto_void _test_SelectContentType_tc_selectStringFromObjects(test_SelectContent
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromString(test_SelectContentType this) {
+corto_void _test_SelectContentType_tc_selectStringFromString(
+    test_SelectContentType this)
+{
 /* $begin(test/SelectContentType/tc_selectStringFromString) */
     corto_iter iter;
     corto_int16 ret;
     corto_result *result;
     corto_string str;
 
-    ret = corto_select(root_o, "/str/*", &iter);
+    ret = corto_select("/", "/str/*", &iter);
     test_assert(ret == 0);
 
     ret = corto_selectContentType(&iter, "application/corto");

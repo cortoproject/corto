@@ -178,104 +178,6 @@ error:
     return -1;
 }
 
-static int corto_selectParse(corto_selectData *data) {
-    char *ptr, *start, ch;
-    int op = 0;
-
-    ptr = data->tokens;
-    for (; (ch = *ptr); data->program[op].start = ptr, ptr++) {
-        data->program[op].containsWildcard = FALSE;
-        start = ptr;
-        switch(ch) {
-        case '.':
-            if (ptr[1] == '.') {
-                data->program[op].token = TOKEN_PARENT;
-                *ptr = '\0';
-                ptr++;
-            } else {
-                *ptr = '\0';
-                data->program[op].token = TOKEN_THIS;
-            }
-            break;
-        case '/':
-            if (ptr[1] == '/') {
-                data->program[op].token = TOKEN_TREE;
-                *ptr = '\0';
-                ptr++;
-            } else {
-                *ptr = '\0';
-                data->program[op].token = TOKEN_SCOPE;
-            }
-            break;
-        case ':':
-            if (ptr[1] == ':') {
-                data->program[op].token = TOKEN_SCOPE;
-                *ptr = '\0';
-                ptr++;
-            } else {
-                corto_seterr("invalid usage of ':'");
-                goto error;
-            }
-            break;
-        default:
-            while((ch = *ptr++) &&
-                  (isalnum(ch) || (ch == '_') || (ch == '*') || (ch == '?') ||
-                    (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}'))) {
-                if ((ch == '*') || (ch == '?')) {
-                    data->program[op].containsWildcard = TRUE;
-                }
-            }
-
-            ptr--; /* Go back one character to adjust for lookahead of one */
-            int len = ptr - start;
-            if (len) {
-                if (len == 1) {
-                    if (*(ptr - 1) == '?') {
-                        data->program[op].token = TOKEN_WILDCARD;
-                    } else if (*(ptr - 1) == '*') {
-                        data->program[op].token = TOKEN_ASTERISK;
-                    } else {
-                        data->program[op].token = TOKEN_IDENTIFIER;
-                    }
-                } else {
-                    data->program[op].token = TOKEN_IDENTIFIER;
-                }
-            } else {
-                corto_seterr("invalid character '%c'", ch);
-                goto error;
-            }
-            ptr--;
-            break;
-        }
-
-        data->program[op].start = start;
-        if (++op == CORTO_SELECT_MAX_OP) {
-            corto_seterr("expression contains too many tokens");
-            goto error;
-        }
-    }
-
-    if (op) {
-        switch(data->program[op - 1].token) {
-        case TOKEN_SCOPE:
-        case TOKEN_TREE:
-            data->program[op].token = TOKEN_ASTERISK;
-            if (++op == CORTO_SELECT_MAX_OP) {
-                corto_seterr("expression contains too many tokens");
-                goto error;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-    data->programSize = op;
-
-    return 0;
-error:
-    return -1;
-}
-
 static char* corto_selectTokenStr(corto_selectToken t) {
     switch(t) {
     case TOKEN_NONE: return "none";
@@ -369,6 +271,106 @@ unexpected_end_error:
     return -1;
 }
 
+static int corto_selectParse(corto_selectData *data) {
+    char *ptr, *start, ch;
+    int op = 0;
+
+    ptr = data->tokens;
+    for (; (ch = *ptr); data->program[op].start = ptr, ptr++) {
+        data->program[op].containsWildcard = FALSE;
+        start = ptr;
+        switch(ch) {
+        case '.':
+            if (ptr[1] == '.') {
+                data->program[op].token = TOKEN_PARENT;
+                *ptr = '\0';
+                ptr++;
+            } else {
+                *ptr = '\0';
+                data->program[op].token = TOKEN_THIS;
+            }
+            break;
+        case '/':
+            if (ptr[1] == '/') {
+                data->program[op].token = TOKEN_TREE;
+                *ptr = '\0';
+                ptr++;
+            } else {
+                *ptr = '\0';
+                data->program[op].token = TOKEN_SCOPE;
+            }
+            break;
+        case ':':
+            if (ptr[1] == ':') {
+                data->program[op].token = TOKEN_SCOPE;
+                *ptr = '\0';
+                ptr++;
+            } else {
+                corto_seterr("invalid usage of ':'");
+                goto error;
+            }
+            break;
+        default:
+            while((ch = *ptr++) &&
+                  (isalnum(ch) || (ch == '_') || (ch == '*') || (ch == '?') ||
+                    (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}'))) {
+                if ((ch == '*') || (ch == '?')) {
+                    data->program[op].containsWildcard = TRUE;
+                }
+            }
+
+            ptr--; /* Go back one character to adjust for lookahead of one */
+            int len = ptr - start;
+            if (len) {
+                if (len == 1) {
+                    if (*(ptr - 1) == '?') {
+                        data->program[op].token = TOKEN_WILDCARD;
+                    } else if (*(ptr - 1) == '*') {
+                        data->program[op].token = TOKEN_ASTERISK;
+                    } else {
+                        data->program[op].token = TOKEN_IDENTIFIER;
+                    }
+                } else {
+                    data->program[op].token = TOKEN_IDENTIFIER;
+                }
+            } else {
+                corto_seterr("invalid character '%c'", ch);
+                goto error;
+            }
+            ptr--;
+            break;
+        }
+
+        data->program[op].start = start;
+        if (++op == CORTO_SELECT_MAX_OP) {
+            corto_seterr("expression contains too many tokens");
+            goto error;
+        }
+    }
+
+    if (op) {
+        data->programSize = op;
+
+        if (corto_selectValidate(data)) {
+            data->programSize = 0;
+            goto error;
+        }
+
+        switch(data->program[op - 1].token) {
+        case TOKEN_SCOPE:
+        case TOKEN_TREE:
+            data->programSize--; /* Ignore trailing SCOPE or TREE */
+            break;
+        default:
+            break;
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 static void corto_setItemData(
     corto_object o,
     corto_result *item,
@@ -381,7 +383,11 @@ static void corto_setItemData(
             corto_parentof(o),
             "/");
     } else {
-        *item->parent = '\0';
+        corto_path(
+            item->parent,
+            data->scopes[data->currentScope].scope,
+            o,
+            "/");
     }
 
     if (corto_nameof(o)) {
@@ -427,12 +433,14 @@ static void corto_selectThis(
     corto_selectData *data,
     corto_selectStack *frame) {
 
-    if (!data->next) {
-        data->next = &data->item;
-        corto_setItemData(frame->o, data->next, data);
-    } else {
-        corto_setref(&frame->o, NULL);
-        data->next = NULL;
+    if (!data->scopes[data->currentScope].parentQuery) {
+        if (!data->next) {
+            data->next = &data->item;
+            corto_setItemData(frame->o, data->next, data);
+        } else {
+            corto_setref(&frame->o, NULL);
+            data->next = NULL;
+        }
     }
 }
 
@@ -479,15 +487,22 @@ static void corto_selectParseFilter(
     /* Separate filter in parent and expression */
     if (filter) {
         char *ptr = filter;
-        char *exprStart = ptr;
-        while ((ptr = strchr(exprStart, '/'))) {
-            exprStart = ptr + 1;
+        char *exprStart = filter;
+        while ((ptr = strchr(ptr, '/')) && (ptr[1] != '/')) {
+            ptr ++;
+            exprStart = ptr;
         }
+
+        /* If ptr is NULL, the filter contains no '//' and thus the expr
+         * should start after the last '/'. If the expression does contain a
+         * '//', it should start at '//' (ptr). */
+        exprStart = ptr ? ptr : exprStart;
+
         strcpy(expr, exprStart);
         if (exprStart != filter) {
             if (*parent) strcat(parent, "/");
             strcat(parent, filter);
-            parent[strlen(parent) - (strlen(exprStart) + 1)] = '\0';
+            parent[strlen(parent) - (strlen(exprStart) + (ptr ? 0 : 1))] = '\0';
             corto_cleanpath(parent);
         } else if (!*parent) {
             strcpy(parent, ".");
@@ -505,6 +520,13 @@ static corto_int16 corto_selectRequestReplicators(
 {
     if (data->activeReplicators < 0) {
         corto_id parent, expr;
+        corto_bool releaseScope = FALSE;
+
+        if (!scope) {
+            scope = corto__scopeClaim(frame->o);
+            releaseScope = TRUE;
+        }
+
         corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
 
         if (data->scopes[data->currentScope].parentQuery) {
@@ -550,6 +572,10 @@ static corto_int16 corto_selectRequestReplicators(
                         );
                 }
             }
+        }
+
+        if (releaseScope) {
+            corto__scopeRelease(frame->o);
         }
     }
 
@@ -691,7 +717,6 @@ static void corto_selectScope(
 {
     corto_object o = NULL;
     corto_string lastKey = data->item.name;
-
     corto__scope *scope = corto__scopeClaim(frame->o);
 
     /* Request replicators once per scope, and do it before iterating over
@@ -725,42 +750,53 @@ static void corto_selectTree(
     corto_selectStack *frame)
 {
     corto_string lastKey = data->item.name;
+
+    /* Request replicators once per scope, and do it before iterating over
+     * corto store objects so replicators have more time to fetch data. */
+    corto_selectRequestReplicators(data, frame, NULL);
+
     data->next = NULL;
 
-    do {
-        corto_object claimed = frame->o;
-        corto__scopeClaim(claimed);
-        corto_object o = NULL;
+    if ((data->currentReplicator == -1) && !data->scopes[data->currentScope].parentQuery) {
+        do {
+            corto_object o = NULL;
+            corto_object claimed = frame->o;
+            corto__scopeClaim(claimed);
 
-        while (!(o = corto_selectIterNext(frame, lastKey)) && data->sp) {
-            corto__scopeRelease(claimed);
-            /* Cache name as next line might delete object */
-            strcpy(data->item.name, corto_nameof(frame->o));
-            corto_setref(&frame->o, NULL);
-            data->sp --;
-            frame = &data->stack[data->sp];
-            corto__scopeClaim((claimed = frame->o));
-        }
-
-        if (data->sp || o) {
-            data->next = &data->item;
-            corto_setItemData(o, data->next, data);
-
-            corto_rbtree tree = corto_scopeof(o);
-            if (tree && corto_rbtreeSize(tree)) {
-                frame = &data->stack[++ data->sp];
-                corto_setref(&frame->o, o);
-                frame->iter = _corto_rbtreeIter(tree, &frame->trav);
-                frame->next = corto_selectTree;
-                frame->filter = data->stack[data->sp - 1].filter;
+            while (!(o = corto_selectIterNext(frame, lastKey)) && data->sp) {
+                corto__scopeRelease(claimed);
+                /* Cache name as next line might delete object */
+                strcpy(data->item.name, corto_nameof(frame->o));
+                corto_setref(&frame->o, NULL);
+                data->sp --;
+                frame = &data->stack[data->sp];
+                corto__scopeClaim((claimed = frame->o));
             }
-        } else {
-            data->next = NULL;
-        }
 
-        corto__scopeRelease(claimed);
-    } while (frame->filter && (data->next &&
-        !corto_selectMatch(frame->filter, data->next->name)));
+            if (data->sp || o) {
+                data->next = &data->item;
+                corto_setItemData(o, data->next, data);
+
+                corto_rbtree tree = corto_scopeof(o);
+                if (tree && corto_rbtreeSize(tree)) {
+                    frame = &data->stack[++ data->sp];
+                    corto_setref(&frame->o, o);
+                    frame->iter = _corto_rbtreeIter(tree, &frame->trav);
+                    frame->next = corto_selectTree;
+                    frame->filter = data->stack[data->sp - 1].filter;
+                }
+            } else {
+                data->next = NULL;
+            }
+            corto__scopeRelease(claimed);
+        } while (frame->filter && (data->next &&
+            !corto_selectMatch(frame->filter, data->next->name)));
+    }
+
+    /* Handle replicator iteration outside of scope lock */
+    if (!data->next) {
+        corto_selectIterateReplicators(data, frame);
+    }
 }
 
 static int corto_selectRun(corto_selectData *data) {
@@ -768,6 +804,12 @@ static int corto_selectRun(corto_selectData *data) {
     corto_selectOp *op;
     corto_selectStack *frame = &data->stack[data->sp];
     corto_bool explicitRef = FALSE;
+    corto_object currentScope = data->scopes[data->currentScope].scope;
+
+    if (!currentScope) {
+        currentScope = root_o;
+    }
+
     if (data->sp) {
         explicitRef = TRUE;
     }
@@ -780,6 +822,7 @@ static int corto_selectRun(corto_selectData *data) {
     data->next = NULL;
     frame->next = corto_selectScope;
 
+
     /* Traverse program until a token has been found that requires iterating,
      * which is then taken care of by hasNext */
     for (i = 0; i < data->programSize; i ++) {
@@ -790,26 +833,27 @@ static int corto_selectRun(corto_selectData *data) {
             frame->next = corto_selectThis;
             explicitRef = TRUE;
             break;
-        case TOKEN_PARENT:
+        case TOKEN_PARENT: {
             if (frame->o != root_o) {
                 corto_setref(&frame->o, corto_parentof(frame->o));
                 frame->next = corto_selectThis;
-            } else {
+            } else if (!data->scopes[data->currentScope].parentQuery) {
                 corto_seterr("can't select parent of root");
                 goto error;
             }
             explicitRef = TRUE;
             break;
+        }
         case TOKEN_SCOPE:
             frame->next = corto_selectScope;
             if (!explicitRef) {
-                corto_setref(&frame->o, root_o);
+                corto_setref(&frame->o, currentScope);
             }
             break;
         case TOKEN_TREE:
             frame->next = corto_selectTree;
             if (!explicitRef) {
-                corto_setref(&frame->o, root_o);
+                corto_setref(&frame->o, currentScope);
             }
             break;
         case TOKEN_IDENTIFIER:
@@ -1056,12 +1100,6 @@ corto_int16 corto_select(
 
     if (corto_selectParse(data)) {
         corto_seterr("select '%s' failed: %s", expr, corto_lasterr());
-        goto error;
-    }
-
-    if (corto_selectValidate(data)) {
-        corto_seterr("select '%s' failed: %s", expr, corto_lasterr());
-        data->programSize = 0;
         goto error;
     }
 

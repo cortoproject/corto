@@ -220,7 +220,7 @@ test::Suite Select::
     void setup() method
     void teardown() method
 
-    resultList collect(object @scope, string expr) function
+    resultList collect(string @scope, string expr) function
     bool hasObject(resultList items, string parent, string name, string type) function
 
     void tc_selectErrParentTree()
@@ -251,7 +251,6 @@ test::Suite Select::
 
     void tc_selectTree()
     void tc_selectTreeWithWildcard()
-    void tc_selectTreeWithAsterisk()
     void tc_selectTreeWithWildcardFilter()
     void tc_selectTreeWithAsteriskFilter()
 
@@ -272,6 +271,16 @@ test::Suite Select::
     void tc_selectTreeDeleteNext()
     void tc_selectTreeDeleteParent()
     void tc_selectTreeDeleteGrandparent()
+
+    void tc_selectObject() "corto"
+    void tc_selectObjectScope() "corto/lang/word"
+    void tc_selectObjectTree() "//word"
+    void tc_selectObjectParentScope() // "corto", "lang/word"
+    void tc_selectObjectParentTree() // "corto", "//word"
+    void tc_selectObjectTrailingScope() // "corto/"
+    void tc_selectObjectPrefixScope() // "/corto"
+    void tc_selectObjectPrefixTrailingScope() // "/corto/"
+    void tc_selectObjectTrailingTree() // "corto//"
 
 class JsonReplicator : replicator, hidden::
     alias mount: replicator/mount

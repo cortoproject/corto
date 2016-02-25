@@ -207,8 +207,25 @@ static int cxsh_printRow(corto_string parent, corto_string name, corto_string ty
 static void cxsh_ls(char* arg) {
     corto_iter iter;
     corto_uint32 i = 0;
+    corto_id buff;
+    char ch;
 
-    if (corto_select(scope, arg, &iter)) {
+    if (arg) {
+        strcpy(buff, arg);
+
+        /* Append * to argument */
+        corto_uint32 l = strlen(buff);
+        if ((ch = buff[l - 1]) != '*') {
+            if (ch != '/') {
+                strcat(buff, "/");
+            }
+            strcat(buff, "*");
+        }
+    } else {
+        strcpy(buff, "*");
+    }
+
+    if (corto_select(scope, buff, &iter)) {
         corto_error("error: %s", corto_lasterr());
     } else {
         corto_resultIterForeach(iter, item) {
@@ -236,8 +253,9 @@ static void cxsh_cd(char* arg) {
         corto_id result;
         corto_int32 count = 0;
 
+        corto_seterr(NULL);
         if (corto_select(scope, arg, &iter)) {
-            corto_error("invalid argument: '%s'", arg);
+            corto_error("%s", corto_lasterr());
             return;
         }
 
@@ -256,7 +274,11 @@ static void cxsh_cd(char* arg) {
             strcpy(scope, result);
             corto_cleanpath(scope);
         } else {
-            corto_error("unresolved object '%s'", arg);
+            if (corto_lasterr()) {
+                corto_error("%s", corto_lasterr());
+            } else {
+                corto_error("'%s' did not match any objects", arg);
+            }
         }
     }
 }

@@ -8,7 +8,12 @@
 
 #include "test.h"
 
-corto_void _test_FooReplicator_onInvoke(test_FooReplicator this, corto_object instance, corto_function proc, corto_octetseq args) {
+corto_void _test_FooReplicator_onInvoke(
+    test_FooReplicator this,
+    corto_object instance,
+    corto_function proc,
+    corto_octetseq args)
+{
 /* $begin(test/FooReplicator/onInvoke) */
     CORTO_UNUSED(instance);
     CORTO_UNUSED(proc);
