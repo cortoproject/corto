@@ -351,11 +351,6 @@ static int corto_selectParse(corto_selectData *data) {
     if (op) {
         data->programSize = op;
 
-        if (corto_selectValidate(data)) {
-            data->programSize = 0;
-            goto error;
-        }
-
         switch(data->program[op - 1].token) {
         case TOKEN_SCOPE:
         case TOKEN_TREE:
@@ -363,6 +358,11 @@ static int corto_selectParse(corto_selectData *data) {
             break;
         default:
             break;
+        }
+
+        if (corto_selectValidate(data)) {
+            data->programSize = 0;
+            goto error;
         }
     }
 
@@ -755,6 +755,8 @@ static void corto_selectTree(
      * corto store objects so replicators have more time to fetch data. */
     corto_selectRequestReplicators(data, frame, NULL);
 
+    printf("Walk tree of '%s'\n", corto_nameof(frame->o));
+
     data->next = NULL;
 
     if ((data->currentReplicator == -1) && !data->scopes[data->currentScope].parentQuery) {
@@ -815,7 +817,7 @@ static int corto_selectRun(corto_selectData *data) {
     }
 
     if (!data->programSize) {
-        corto_seterr("invalid program");
+        corto_seterr("invalid expression: '%s'", data->expr);
         goto error;
     }
 
@@ -1022,15 +1024,11 @@ static corto_int16 corto_selectParseScope(corto_selectData *data) {
         corto_uint32 current = 0;
         ptr = data->scope;
 
-        if (ptr[0] != '/') {
-            corto_seterr(
-                "invalid scope '%s' (should start with '/')",
-                data->scope);
-            goto error;
+        if (ptr[0] == '/') {
+            ptr ++;
         }
 
         /* Set first scope to root */
-        ptr ++;
         corto_setref(&data->scopes[0].scope, root_o);
         data->scopes[0].parentQuery = *ptr ? ptr : NULL;
         current ++;
@@ -1065,8 +1063,6 @@ static corto_int16 corto_selectParseScope(corto_selectData *data) {
     }
 
     return 0;
-error:
-    return -1;
 }
 
 corto_int16 corto_select(
@@ -1075,11 +1071,21 @@ corto_int16 corto_select(
     corto_resultIter *iter_out)
 {
     corto_selectData *data = corto_selectDataGet();
+    if (expr && *expr) {
+        data->expr = corto_strdup(expr);
+    } else {
+        data->expr = corto_strdup(".");
+    }
 
-    data->expr = expr ? corto_strdup(expr) : corto_strdup("*");
     data->tokens = corto_strdup(data->expr);
     data->contentType = NULL;
-    data->scope = scope ? corto_strdup(scope) : NULL;
+
+    if (scope && *scope) {
+        data->scope = corto_strdup(scope);
+    } else {
+        data->scope = NULL;
+    }
+
     data->sp = 0;
     data->next = NULL;
     data->item.value = 0;

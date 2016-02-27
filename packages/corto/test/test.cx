@@ -174,6 +174,8 @@ test::Suite RelativeName::
 
     void tc_fromNull()
     void tc_fromRoot()
+    void tc_rootFromNull()
+    void tc_rootFromNullColon()
     void tc_fromParent()
     void tc_fromOneUp()
     void tc_fromTwoUp()
@@ -253,6 +255,7 @@ test::Suite Select::
     void tc_selectTreeWithWildcard()
     void tc_selectTreeWithWildcardFilter()
     void tc_selectTreeWithAsteriskFilter()
+    void tc_selectTreeWithScopedAsteriskFilter()
 
     void tc_selectFilterAsterisk()
     void tc_selectFilterWildcard()
@@ -272,15 +275,22 @@ test::Suite Select::
     void tc_selectTreeDeleteParent()
     void tc_selectTreeDeleteGrandparent()
 
-    void tc_selectObject() "corto"
-    void tc_selectObjectScope() "corto/lang/word"
-    void tc_selectObjectTree() "//word"
-    void tc_selectObjectParentScope() // "corto", "lang/word"
-    void tc_selectObjectParentTree() // "corto", "//word"
-    void tc_selectObjectTrailingScope() // "corto/"
-    void tc_selectObjectPrefixScope() // "/corto"
-    void tc_selectObjectPrefixTrailingScope() // "/corto/"
-    void tc_selectObjectTrailingTree() // "corto//"
+    void tc_selectObject()
+    void tc_selectObjectScope()
+    void tc_selectObjectTree()
+    void tc_selectObjectParentScope()
+    void tc_selectObjectParentTree()
+    void tc_selectObjectTrailingScope()
+    void tc_selectObjectPrefixScope()
+    void tc_selectObjectPrefixTrailingScope()
+    void tc_selectObjectTrailingTree()
+
+    void tc_selectEmptyParentString()
+    void tc_selectEmptyParentAst()
+    void tc_selectEmptyQueryString()
+    void tc_selectEmptyStrings()
+
+    void tc_selectParentNoSlash()
 
 class JsonReplicator : replicator, hidden::
     alias mount: replicator/mount

@@ -1977,41 +1977,56 @@ corto_string corto_path(
 
     if (!from) {
         strcpy(buffer, sep);
-        from = root_o;
+        if (o != root_o) {
+            from = root_o;
+        }
     }
 
-    if (from == o) {
-        strcpy(buffer, ".");
-    } else {
-        corto_scopeStack(from, from_s, &from_i);
-        corto_scopeStack(o, o_s, &o_i);
-
-        if (from_i > o_i) {
-            reverse = TRUE; /* from is in scope of o */
-        }
-
-        do {
-            from_i--;
-            o_i--;
-            if (!o_i || !from_i) {
-                break;
-            }
-        } while(from_s[from_i] == o_s[o_i]);
-
-        if (!reverse) {
-            count = o_i;
+    if (from) {
+        if (from == o) {
+            strcpy(buffer, ".");
         } else {
-            count = from_i;
-        }
+            corto_scopeStack(from, from_s, &from_i);
+            corto_scopeStack(o, o_s, &o_i);
 
-        if (from_s[from_i] == o_s[o_i]) {
-            if (count) {
+            if (from_i > o_i) {
+                reverse = TRUE; /* from is in scope of o */
+            }
+
+            do {
+                from_i--;
+                o_i--;
+                if (!o_i || !from_i) {
+                    break;
+                }
+            } while(from_s[from_i] == o_s[o_i]);
+
+            if (!reverse) {
+                count = o_i;
+            } else {
+                count = from_i;
+            }
+
+            if (from_s[from_i] == o_s[o_i]) {
+                if (count) {
+                    count--;
+                }
+            }
+
+            ptr = &buffer[strlen(buffer)];
+            while(count) {
+                if (!reverse) {
+                    length = strlen(corto_nameof(o_s[count]));
+                    memcpy(ptr, corto_nameof(o_s[count]), length);
+                } else {
+                    length = 2;
+                    memcpy(ptr, "..", 2);
+                }
+                ptr += length;
+                strcpy(ptr, sep);
+                ptr += strlen(sep);
                 count--;
             }
-        }
-
-        ptr = &buffer[strlen(buffer)];
-        while(count) {
             if (!reverse) {
                 length = strlen(corto_nameof(o_s[count]));
                 memcpy(ptr, corto_nameof(o_s[count]), length);
@@ -2020,19 +2035,8 @@ corto_string corto_path(
                 memcpy(ptr, "..", 2);
             }
             ptr += length;
-            strcpy(ptr, sep);
-            ptr += strlen(sep);
-            count--;
+            *ptr = '\0';
         }
-        if (!reverse) {
-            length = strlen(corto_nameof(o_s[count]));
-            memcpy(ptr, corto_nameof(o_s[count]), length);
-        } else {
-            length = 2;
-            memcpy(ptr, "..", 2);
-        }
-        ptr += length;
-        *ptr = '\0';
     }
 
     if (threadStr) {

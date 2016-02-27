@@ -180,6 +180,34 @@ corto_void _test_RelativeName_tc_fromTwoUp(
 /* $end */
 }
 
+corto_void _test_RelativeName_tc_rootFromNull(
+    test_RelativeName this)
+{
+/* $begin(test/RelativeName/tc_rootFromNull) */
+    corto_id id;
+    corto_string result;
+
+    result = corto_path(id, NULL, root_o, "/");
+    test_assert(result != NULL);
+    test_assert(result == id);
+    test_assert(!strcmp(result, "/"));
+/* $end */
+}
+
+corto_void _test_RelativeName_tc_rootFromNullColon(
+    test_RelativeName this)
+{
+/* $begin(test/RelativeName/tc_rootFromNullColon) */
+    corto_id id;
+    corto_string result;
+
+    result = corto_path(id, NULL, root_o, "::");
+    test_assert(result != NULL);
+    test_assert(result == id);
+    test_assert(!strcmp(result, "::"));
+/* $end */
+}
+
 corto_void _test_RelativeName_tc_rootFromObj(
     test_RelativeName this)
 {
