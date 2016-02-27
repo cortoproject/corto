@@ -8,7 +8,9 @@
 
 #include "test.h"
 
-corto_int16 _test_StringReplicator_construct(test_StringReplicator this) {
+corto_int16 _test_StringReplicator_construct(
+    test_StringReplicator this)
+{
 /* $begin(test/StringReplicator/construct) */
 
     corto_replicator_setContentType(this, "application/corto");
@@ -26,7 +28,13 @@ void test_StringReplicator_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_StringReplicator_onRequest(test_StringReplicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
+corto_resultIter _test_StringReplicator_onRequest(
+    test_StringReplicator this,
+    corto_string parent,
+    corto_string expr,
+    corto_string param,
+    corto_bool setContent)
+{
 /* $begin(test/StringReplicator/onRequest) */
     corto_ll data = corto_llNew();
 

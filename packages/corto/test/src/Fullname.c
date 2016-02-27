@@ -8,7 +8,9 @@
 
 #include "test.h"
 
-corto_void _test_Fullname_tc_null(test_Fullname this) {
+corto_void _test_Fullname_tc_null(
+    test_Fullname this)
+{
 /* $begin(test/Fullname/tc_null) */
     corto_id id;
 
@@ -22,7 +24,9 @@ corto_void _test_Fullname_tc_null(test_Fullname this) {
 /* $end */
 }
 
-corto_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
+corto_void _test_Fullname_tc_nullBuffer(
+    test_Fullname this)
+{
 /* $begin(test/Fullname/tc_nullBuffer) */
 
     corto_string result = corto_fullpath(NULL, NULL);
@@ -34,7 +38,9 @@ corto_void _test_Fullname_tc_nullBuffer(test_Fullname this) {
 /* $end */
 }
 
-corto_void _test_Fullname_tc_onelevel(test_Fullname this) {
+corto_void _test_Fullname_tc_onelevel(
+    test_Fullname this)
+{
 /* $begin(test/Fullname/tc_onelevel) */
     corto_id id;
 
@@ -45,7 +51,9 @@ corto_void _test_Fullname_tc_onelevel(test_Fullname this) {
 /* $end */
 }
 
-corto_void _test_Fullname_tc_root(test_Fullname this) {
+corto_void _test_Fullname_tc_root(
+    test_Fullname this)
+{
 /* $begin(test/Fullname/tc_root) */
     corto_id id;
 
@@ -56,7 +64,9 @@ corto_void _test_Fullname_tc_root(test_Fullname this) {
 /* $end */
 }
 
-corto_void _test_Fullname_tc_twolevels(test_Fullname this) {
+corto_void _test_Fullname_tc_twolevels(
+    test_Fullname this)
+{
 /* $begin(test/Fullname/tc_twolevels) */
     corto_id id;
 

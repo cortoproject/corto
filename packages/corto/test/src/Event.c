@@ -12,7 +12,9 @@
 static corto_object testScope;
 /* $end */
 
-corto_void _test_Event_setup(test_Event this) {
+corto_void _test_Event_setup(
+    test_Event this)
+{
 /* $begin(test/Event/setup) */
     this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
     testScope = corto_voidCreateChild(NULL, "testScope");
@@ -23,7 +25,9 @@ corto_void _test_Event_setup(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclare(test_Event this) {
+corto_void _test_Event_tc_onDeclare(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeclare) */
     corto_int16 ret;
 
@@ -63,7 +67,9 @@ corto_void _test_Event_tc_onDeclare(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareScope(test_Event this) {
+corto_void _test_Event_tc_onDeclareScope(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeclareScope) */
     corto_int16 ret;
     test_assert(this->et->countDeclareScope == 0);
@@ -99,7 +105,9 @@ corto_void _test_Event_tc_onDeclareScope(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareSelf(test_Event this) {
+corto_void _test_Event_tc_onDeclareSelf(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeclareSelf) */
     corto_int16 ret;
 
@@ -134,7 +142,9 @@ corto_void _test_Event_tc_onDeclareSelf(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareTree(test_Event this) {
+corto_void _test_Event_tc_onDeclareTree(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeclareTree) */
     corto_int16 ret;
 
@@ -174,7 +184,9 @@ corto_void _test_Event_tc_onDeclareTree(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefine(test_Event this) {
+corto_void _test_Event_tc_onDefine(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDefine) */
     corto_int16 ret;
     test_assert(this->et->countDefine == 1);
@@ -213,7 +225,9 @@ corto_void _test_Event_tc_onDefine(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineScope(test_Event this) {
+corto_void _test_Event_tc_onDefineScope(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDefineScope) */
     corto_int16 ret;
 
@@ -251,7 +265,9 @@ corto_void _test_Event_tc_onDefineScope(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineSelf(test_Event this) {
+corto_void _test_Event_tc_onDefineSelf(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDefineSelf) */
     corto_int16 ret;
 
@@ -285,7 +301,9 @@ corto_void _test_Event_tc_onDefineSelf(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineTree(test_Event this) {
+corto_void _test_Event_tc_onDefineTree(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDefineTree) */
     corto_int16 ret;
 
@@ -325,7 +343,9 @@ corto_void _test_Event_tc_onDefineTree(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDelete(test_Event this) {
+corto_void _test_Event_tc_onDelete(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDelete) */
     corto_int16 ret;
 
@@ -360,7 +380,9 @@ corto_void _test_Event_tc_onDelete(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteScope(test_Event this) {
+corto_void _test_Event_tc_onDeleteScope(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeleteScope) */
     corto_int16 ret;
 
@@ -395,7 +417,9 @@ corto_void _test_Event_tc_onDeleteScope(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteSelf(test_Event this) {
+corto_void _test_Event_tc_onDeleteSelf(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeleteSelf) */
     corto_int16 ret;
 
@@ -430,7 +454,9 @@ corto_void _test_Event_tc_onDeleteSelf(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteTree(test_Event this) {
+corto_void _test_Event_tc_onDeleteTree(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onDeleteTree) */
     corto_int16 ret;
 
@@ -465,7 +491,9 @@ corto_void _test_Event_tc_onDeleteTree(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdate(test_Event this) {
+corto_void _test_Event_tc_onUpdate(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onUpdate) */
     int ret;
 
@@ -545,7 +573,9 @@ corto_void _test_Event_tc_onUpdate(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateScope(test_Event this) {
+corto_void _test_Event_tc_onUpdateScope(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onUpdateScope) */
     int ret;
 
@@ -621,7 +651,9 @@ corto_void _test_Event_tc_onUpdateScope(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
+corto_void _test_Event_tc_onUpdateSelf(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onUpdateSelf) */
     int ret;
 
@@ -695,7 +727,9 @@ corto_void _test_Event_tc_onUpdateSelf(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateTree(test_Event this) {
+corto_void _test_Event_tc_onUpdateTree(
+    test_Event this)
+{
 /* $begin(test/Event/tc_onUpdateTree) */
     int ret;
 
@@ -773,7 +807,9 @@ corto_void _test_Event_tc_onUpdateTree(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_updateUndefined(test_Event this) {
+corto_void _test_Event_tc_updateUndefined(
+    test_Event this)
+{
 /* $begin(test/Event/tc_updateUndefined) */
 
     corto_object o = corto_int32DeclareChild(NULL, "o");
@@ -787,7 +823,9 @@ corto_void _test_Event_tc_updateUndefined(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_tc_updateVoidErr(test_Event this) {
+corto_void _test_Event_tc_updateVoidErr(
+    test_Event this)
+{
 /* $begin(test/Event/tc_updateVoidErr) */
 
     corto_object o = corto_int32CreateChild(NULL, "o", 10);
@@ -801,7 +839,9 @@ corto_void _test_Event_tc_updateVoidErr(test_Event this) {
 /* $end */
 }
 
-corto_void _test_Event_teardown(test_Event this) {
+corto_void _test_Event_teardown(
+    test_Event this)
+{
 /* $begin(test/Event/teardown) */
     corto_uint32 countDelete = this->et->countDelete;
 

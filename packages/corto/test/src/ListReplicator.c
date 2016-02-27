@@ -12,7 +12,9 @@
 #include "fnmatch.h"
 /* $end */
 
-corto_int16 _test_ListReplicator_construct(test_ListReplicator this) {
+corto_int16 _test_ListReplicator_construct(
+    test_ListReplicator this)
+{
 /* $begin(test/ListReplicator/construct) */
 
     /* Create top level objects */
@@ -100,7 +102,13 @@ void test_ListReplicator_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_ListReplicator_onRequest(test_ListReplicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
+corto_resultIter _test_ListReplicator_onRequest(
+    test_ListReplicator this,
+    corto_string parent,
+    corto_string expr,
+    corto_string param,
+    corto_bool setContent)
+{
 /* $begin(test/ListReplicator/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();

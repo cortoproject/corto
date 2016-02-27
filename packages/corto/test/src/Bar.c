@@ -8,7 +8,9 @@
 
 #include "test.h"
 
-corto_int16 _test_Bar_init(test_Bar this) {
+corto_int16 _test_Bar_init(
+    test_Bar this)
+{
 /* $begin(test/Bar/init) */
 	/* Test failing initializer */
 	return -1;

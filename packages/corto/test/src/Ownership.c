@@ -8,20 +8,27 @@
 
 #include "test.h"
 
-corto_void _test_Ownership_onDelete(test_Ownership this, corto_object observable) {
+corto_void _test_Ownership_onDelete(
+    test_Ownership this,
+    corto_object observable)
+{
 /* $begin(test/Ownership/onDelete) */
     CORTO_UNUSED(this);
     this->observable = (corto_word)observable;
 /* $end */
 }
 
-corto_void _test_Ownership_setup(test_Ownership this) {
+corto_void _test_Ownership_setup(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/setup) */
 
 /* $end */
 }
 
-corto_void _test_Ownership_tc_checkOwnerNull(test_Ownership this) {
+corto_void _test_Ownership_tc_checkOwnerNull(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_checkOwnerNull) */
     corto_object o = corto_voidCreateChild(NULL, "o");
     test_assert(o != NULL);
@@ -33,7 +40,9 @@ corto_void _test_Ownership_tc_checkOwnerNull(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_checkOwnerReplicator(test_Ownership this) {
+corto_void _test_Ownership_tc_checkOwnerReplicator(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_checkOwnerReplicator) */
     test_FooReplicator r = test_FooReplicatorCreate(root_o);
 
@@ -55,7 +64,9 @@ corto_void _test_Ownership_tc_checkOwnerReplicator(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_createNotOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_createNotOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_createNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -90,7 +101,9 @@ corto_void _test_Ownership_tc_createNotOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_createOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_createOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_createOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -120,7 +133,9 @@ corto_void _test_Ownership_tc_createOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_declareNotOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_declareNotOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_declareNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -153,7 +168,9 @@ corto_void _test_Ownership_tc_declareNotOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_declareOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_declareOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_declareOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -180,7 +197,9 @@ corto_void _test_Ownership_tc_declareOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_deleteNotOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_deleteNotOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_deleteNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -202,7 +221,9 @@ corto_void _test_Ownership_tc_deleteNotOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_deleteOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_deleteOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_deleteOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -224,7 +245,9 @@ corto_void _test_Ownership_tc_deleteOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_invokeNotOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_invokeNotOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_invokeNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -255,7 +278,9 @@ corto_void _test_Ownership_tc_invokeNotOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_invokeOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_invokeOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_invokeOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -282,7 +307,9 @@ corto_void _test_Ownership_tc_invokeOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_releaseNotOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_releaseNotOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_releaseNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -315,7 +342,9 @@ corto_void _test_Ownership_tc_releaseNotOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_releaseOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_releaseOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_releaseOwned) */
     corto_object o = corto_voidCreateChild(NULL, "o");
     test_assert(o != NULL);
@@ -336,7 +365,9 @@ corto_void _test_Ownership_tc_releaseOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_updateNotOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_updateNotOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_updateNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
@@ -366,7 +397,9 @@ corto_void _test_Ownership_tc_updateNotOwned(test_Ownership this) {
 /* $end */
 }
 
-corto_void _test_Ownership_tc_updateOwned(test_Ownership this) {
+corto_void _test_Ownership_tc_updateOwned(
+    test_Ownership this)
+{
 /* $begin(test/Ownership/tc_updateOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 

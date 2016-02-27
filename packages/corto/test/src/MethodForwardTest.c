@@ -8,7 +8,9 @@
 
 #include "test.h"
 
-corto_void _test_MethodForwardTest_func(test_MethodForwardTest this) {
+corto_void _test_MethodForwardTest_func(
+    test_MethodForwardTest this)
+{
 /* $begin(test/MethodForwardTest/func) */
 
    this->invoked ++;
