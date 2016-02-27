@@ -1301,30 +1301,6 @@ corto_void _test_Select_tc_selectTreeWithAsteriskFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithScopedAsteriskFilter(
-    test_Select this)
-{
-/* $begin(test/Select/tc_selectTreeWithScopedAsteriskFilter) */
-    corto_ll results = NULL;
-
-    results = test_Select_collect(NULL, "//c/*");
-    test_assert(results != NULL);
-    printf("results = %d\n", corto_llSize(results));
-    test_assert(corto_llSize(results) == 8);
-
-    test_assert(test_Select_hasObject(results, "/a/c", "b", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "c", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "abc", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "abd", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "abdc", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "Abab", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "ab_ab", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c", "ab01234567890", "void"));
-    test_assert(test_Select_hasObject(results, "/a/c/c", "abcdef", "void"));
-
-/* $end */
-}
-
 corto_void _test_Select_tc_selectTreeWithWildcard(
     test_Select this)
 {

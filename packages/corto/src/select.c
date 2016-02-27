@@ -755,8 +755,6 @@ static void corto_selectTree(
      * corto store objects so replicators have more time to fetch data. */
     corto_selectRequestReplicators(data, frame, NULL);
 
-    printf("Walk tree of '%s'\n", corto_nameof(frame->o));
-
     data->next = NULL;
 
     if ((data->currentReplicator == -1) && !data->scopes[data->currentScope].parentQuery) {

@@ -255,7 +255,6 @@ test::Suite Select::
     void tc_selectTreeWithWildcard()
     void tc_selectTreeWithWildcardFilter()
     void tc_selectTreeWithAsteriskFilter()
-    void tc_selectTreeWithScopedAsteriskFilter()
 
     void tc_selectFilterAsterisk()
     void tc_selectFilterWildcard()
