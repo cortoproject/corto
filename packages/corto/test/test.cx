@@ -324,6 +324,7 @@ test::Suite ReplicatorRequest::
     void setup() method
     void teardown() method
     replicator: ListReplicator
+
     void tc_selectSingle()
     void tc_selectSingleNested()
     void tc_selectScope()
@@ -331,6 +332,20 @@ test::Suite ReplicatorRequest::
     void tc_selectScopeNestedDirty()
     void tc_selectScopeMixed()
     void tc_selectScopeFilter()
+
+    void tc_selectSingleFromScope()
+    void tc_selectSingleNestedFromScope()
+    void tc_selectScopeFromScope()
+    void tc_selectScopeNestedFromScope()
+    void tc_selectScopeNestedDirtyFromScope()
+    void tc_selectScopeFilterFromScope()
+
+    void tc_selectSingleFromVirtualScope()
+    void tc_selectSingleNestedFromVirtualScope()
+    void tc_selectScopeFromVirtualScope()
+    void tc_selectScopeNestedFromVirtualScope()
+    void tc_selectScopeNestedDirtyFromVirtualScope()
+    void tc_selectScopeFilterFromVirtualScope()
 
 // Event test support type
 class EventTest::

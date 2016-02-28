@@ -40,7 +40,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    /* Creat nested objects */
+    /* Create nested objects */
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "a",
@@ -89,6 +89,23 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
+    corto_resultSet(
+        corto_resultListAppendAlloc(this->items),
+        "foo",
+        "xyz/abc",
+        "/type",
+        0
+    );
+
+    corto_resultSet(
+        corto_resultListAppendAlloc(this->items),
+        "bar",
+        "xyz/abc",
+        "/type",
+        0
+    );
+
+
     return corto_replicator_construct(this);
 /* $end */
 }
@@ -119,7 +136,7 @@ corto_resultIter _test_ListReplicator_onRequest(
             corto_resultSet(
                 corto_resultListAppendAlloc(data),
                 e.name,
-                e.parent,
+                ".",
                 e.type,
                 0
             );

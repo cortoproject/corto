@@ -221,6 +221,7 @@ static int corto_selectValidate(corto_selectData *data) {
             switch(tprev) {
             case TOKEN_SCOPE:
             case TOKEN_TREE:
+            case TOKEN_PARENT:
                 goto error;
             default: break;
             }
@@ -638,22 +639,15 @@ static void corto_selectIterateReplicators(
     corto_selectStack *frame)
 {
     if (data->activeReplicators) {
-        corto_id path, parent /* not used */, expr;
-
-        /* Relative path is used to translate parent identifier */
-        corto_path(
-          path,
-          data->scopes[data->currentScope].scope,
-          frame->o,
-          "/");
-
-        if (data->scopes[data->currentScope].parentQuery) {
-            strcat(path, "/");
-            strcat(path, data->scopes[data->currentScope].parentQuery);
-        }
+        corto_id parent, expr;
 
         /* Parse filter into parent and expression */
-        *parent = '\0';
+        if (data->scopes[data->currentScope].parentQuery) {
+            strcpy(parent, data->scopes[data->currentScope].parentQuery);
+        } else {
+            *parent = '\0';
+        }
+
         corto_selectParseFilter(frame->filter, parent, expr);
 
         if (data->currentReplicator < 0) {
@@ -679,11 +673,50 @@ static void corto_selectIterateReplicators(
                     }
 
                     if (result->parent) {
-                        /* Prefix path with relative path to provided scope */
-                        corto_id parent;
-                        sprintf(parent, "%s/%s", path, result->parent);
-                        corto_cleanpath(parent);
-                        strcpy(data->item.parent, parent);
+                        corto_id path, rpath;
+                        corto_int32 length, rlength;
+
+                        /* Crude but effective way of computing the relative
+                         * path from the scope provided to select (which may be
+                         * a virtual scope) to the returned parent (which may
+                         * also be virtual).
+                         *
+                         * 1. Obtain full path from query (incl. virtual part)
+                         * 2. Append result path to replicator mount (full) path
+                         * 3. Normalize (2)
+                         * 4. 'Subtract' (1) from (2)
+                         *
+                         * Note that (2) must always be an extension of (1).
+                         * If this is not the case, the replicator is faulty.
+                         */
+                        corto_fullpath(path, data->scopes[data->currentScope].scope);
+                        if (data->scopes[data->currentScope].parentQuery) {
+                            strcat(path, "/");
+                            strcat(path, data->scopes[data->currentScope].parentQuery);
+                        }
+
+                        corto_fullpath(rpath, frame->o);
+                        strcat(rpath, "/");
+                        strcat(rpath, parent);
+                        strcat(rpath, "/");
+                        strcat(rpath, result->parent);
+                        corto_cleanpath(rpath);
+
+                        length = strlen(path);
+                        rlength = strlen(rpath);
+
+                        if (length == rlength) {
+                            strcpy(data->item.parent, ".");
+                        } else {
+                            /* If length > 1, 'path' is not '/', and an
+                             * additional scope character has to be removed */
+                            if (length > 1) {
+                                strcpy(data->item.parent, &rpath[length + 1]);
+                            } else {
+                                strcpy(data->item.parent, &rpath[length]);
+                            }
+                        }
+
                     } else {
                         data->item.parent[0] = '\0';
                     }
@@ -1070,7 +1103,22 @@ corto_int16 corto_select(
 {
     corto_selectData *data = corto_selectDataGet();
     if (expr && *expr) {
-        data->expr = corto_strdup(expr);
+        /* If expression starts with a parent token, prepend the scope to the
+         * expression & cleanup. */
+        if (scope && (expr[0] == '.') && (expr[1] == '.')) {
+            corto_string buff;
+            corto_int32 scopeLength = strlen(scope);
+            corto_asprintf(&buff, "%s/%s", scope, expr);
+            corto_cleanpath(buff);
+            if (scopeLength > 1) {
+                data->expr = corto_strdup(&buff[scopeLength + 1]);
+            } else {
+                data->expr = corto_strdup(&buff[scopeLength]);
+            }
+            corto_dealloc(buff);
+        } else {
+            data->expr = corto_strdup(expr);
+        }
     } else {
         data->expr = corto_strdup(".");
     }

@@ -323,7 +323,7 @@ corto_void _test_Select_tc_selectErrParentAst(
 /* $begin(test/Select/tc_selectErrParentAst) */
     corto_iter iter;
 
-    corto_int16 ret = corto_select(NULL, "..*", &iter);
+    corto_int16 ret = corto_select("/", "..*", &iter);
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..*' failed: unexpected '*' after '..'"));
