@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_function_bind(corto_function this) {
+corto_int16 _corto_function_bind(
+    corto_function this)
+{
 /* $begin(corto/lang/function/bind) */
     /* Count the size based on the parameters and store parameters in slots */
     if (!this->size) {
@@ -121,8 +123,9 @@ finish:
     return 0;
 }
 /* $end */
-
-corto_int16 _corto_function_init(corto_function this) {
+corto_int16 _corto_function_init(
+    corto_function this)
+{
 /* $begin(corto/lang/function/init) */
     corto_functionLookup_t walkData;
     corto_objectseq scope;
@@ -160,7 +163,10 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_function_parseParamString(corto_function this, corto_string params) {
+corto_int16 _corto_function_parseParamString(
+    corto_function this,
+    corto_string params)
+{
 /* $begin(corto/lang/function/parseParamString) */
     corto_object scope;
 
@@ -176,7 +182,10 @@ corto_int16 _corto_function_parseParamString(corto_function this, corto_string p
 /* $end */
 }
 
-corto_parameterseq _corto_function_stringToParameterSeq(corto_string name, corto_object scope) {
+corto_parameterseq _corto_function_stringToParameterSeq(
+    corto_string name,
+    corto_object scope)
+{
 /* $begin(corto/lang/function/stringToParameterSeq) */
     corto_parameterseq result = {0, NULL};
 
@@ -256,7 +265,9 @@ error:
 /* $end */
 }
 
-corto_void _corto_function_unbind(corto_function object) {
+corto_void _corto_function_unbind(
+    corto_function object)
+{
 /* $begin(corto/lang/function/unbind) */
     corto_uint32 i;
 

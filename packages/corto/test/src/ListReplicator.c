@@ -21,6 +21,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "x",
+        NULL,
         ".",
         "/foo",
         0
@@ -28,6 +29,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "yz",
+        NULL,
         ".",
         "/bar",
         0
@@ -35,6 +37,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "xyz",
+        NULL,
         ".",
         "/panda",
         0
@@ -44,6 +47,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "a",
+        NULL,
         "x",
         "/type",
         0
@@ -52,6 +56,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "b",
+        NULL,
         "x",
         "/type",
         0
@@ -60,6 +65,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "c",
+        NULL,
         "x",
         "/type",
         0
@@ -68,6 +74,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "a",
+        NULL,
         "xyz",
         "/type",
         0
@@ -76,6 +83,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "abc",
+        NULL,
         "xyz",
         "/type",
         0
@@ -84,6 +92,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "bc",
+        NULL,
         "xyz",
         "/type",
         0
@@ -92,6 +101,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "foo",
+        NULL,
         "xyz/abc",
         "/type",
         0
@@ -100,6 +110,7 @@ corto_int16 _test_ListReplicator_construct(
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "bar",
+        NULL,
         "xyz/abc",
         "/type",
         0
@@ -135,7 +146,8 @@ corto_resultIter _test_ListReplicator_onRequest(
         if (!fnmatch(parent, e.parent, 0)) {
             corto_resultSet(
                 corto_resultListAppendAlloc(data),
-                e.name,
+                e.id,
+                e.id,
                 ".",
                 e.type,
                 0

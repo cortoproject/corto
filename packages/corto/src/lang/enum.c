@@ -42,7 +42,10 @@ static int corto_enum_findConstant(corto_object o, void* udata) {
     return userData->o == NULL;
 }
 /* $end */
-corto_object _corto_enum_constant(corto_enum this, corto_int32 value) {
+corto_object _corto_enum_constant(
+    corto_enum this,
+    corto_int32 value)
+{
 /* $begin(corto/lang/enum/constant) */
     struct corto_enum_findConstant_t walkData;
 
@@ -55,7 +58,9 @@ corto_object _corto_enum_constant(corto_enum this, corto_int32 value) {
 /* $end */
 }
 
-corto_int16 _corto_enum_construct(corto_enum this) {
+corto_int16 _corto_enum_construct(
+    corto_enum this)
+{
 /* $begin(corto/lang/enum/construct) */
     corto_uint32 i;
 
@@ -68,14 +73,18 @@ corto_int16 _corto_enum_construct(corto_enum this) {
 /* $end */
 }
 
-corto_void _corto_enum_destruct(corto_enum this) {
+corto_void _corto_enum_destruct(
+    corto_enum this)
+{
 /* $begin(corto/lang/enum/destruct) */
     corto_clear(corto_collection(corto_objectseq_o), &this->constants);
     corto_type_destruct(corto_type(this));
 /* $end */
 }
 
-corto_int16 _corto_enum_init(corto_enum this) {
+corto_int16 _corto_enum_init(
+    corto_enum this)
+{
 /* $begin(corto/lang/enum/init) */
     corto_primitive(this)->kind = CORTO_ENUM;
     corto_primitive(this)->width = CORTO_WIDTH_32;

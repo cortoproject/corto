@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_procedure_init(corto_procedure this) {
+corto_int16 _corto_procedure_init(
+    corto_procedure this)
+{
 /* $begin(corto/lang/procedure/init) */
 
     if (corto_interface_init(corto_interface(this))) {
@@ -24,7 +26,10 @@ error:
 /* $end */
 }
 
-corto_void _corto_procedure_unbind(corto_procedure this, corto_function object) {
+corto_void _corto_procedure_unbind(
+    corto_procedure this,
+    corto_function object)
+{
 /* $begin(corto/lang/procedure/unbind) */
     if (this->kind == CORTO_OBSERVER){
         corto_observer_unbind(corto_observer(object));

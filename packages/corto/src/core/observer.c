@@ -12,7 +12,9 @@
 #include "../lang/_class.h"
 /* $end */
 
-corto_int16 _corto_observer_bind(corto_observer this) {
+corto_int16 _corto_observer_bind(
+    corto_observer this)
+{
 /* $begin(corto/core/observer/bind) */
 
     /* If this is a scoped observer, automatically bind with parent if it's a class. */
@@ -35,7 +37,9 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_observer_init(corto_observer this) {
+corto_int16 _corto_observer_init(
+    corto_observer this)
+{
 /* $begin(corto/core/observer/init) */
     corto_parameter *p;
 
@@ -59,7 +63,11 @@ corto_int16 _corto_observer_init(corto_observer this) {
 /* $end */
 }
 
-corto_int16 _corto_observer_listen(corto_observer this, corto_object observable, corto_object me) {
+corto_int16 _corto_observer_listen(
+    corto_observer this,
+    corto_object observable,
+    corto_object me)
+{
 /* $begin(corto/core/observer/listen) */
     corto_object oldObservable = NULL;
 
@@ -95,14 +103,20 @@ error:
 /* $end */
 }
 
-corto_void _corto_observer_setDispatcher(corto_observer this, corto_dispatcher dispatcher) {
+corto_void _corto_observer_setDispatcher(
+    corto_observer this,
+    corto_dispatcher dispatcher)
+{
 /* $begin(corto/core/observer/setDispatcher) */
     /* TODO: when observer is a template observer only set the dispatcher in observerData. */
     corto_setref(&this->dispatcher, dispatcher);
 /* $end */
 }
 
-corto_int16 _corto_observer_silence(corto_observer this, corto_object me) {
+corto_int16 _corto_observer_silence(
+    corto_observer this,
+    corto_object me)
+{
 /* $begin(corto/core/observer/silence) */
     corto_object oldObservable = NULL;
 
@@ -122,7 +136,9 @@ corto_int16 _corto_observer_silence(corto_observer this, corto_object me) {
 /* $end */
 }
 
-corto_void _corto_observer_unbind(corto_observer object) {
+corto_void _corto_observer_unbind(
+    corto_observer object)
+{
 /* $begin(corto/core/observer/unbind) */
     if (!object->_template) {
         if (object->observable) {

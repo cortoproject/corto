@@ -14,7 +14,9 @@ corto_int16 corto_type_bindMetaprocedure(
     corto_metaprocedure procedure);
 /* $end */
 
-corto_int16 _corto_metaprocedure_bind(corto_metaprocedure this) {
+corto_int16 _corto_metaprocedure_bind(
+    corto_metaprocedure this)
+{
 /* $begin(corto/lang/metaprocedure/bind) */
     corto_object parent;
 

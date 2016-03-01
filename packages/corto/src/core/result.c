@@ -8,7 +8,9 @@
 
 #include "corto/core/core.h"
 
-corto_string _corto_result_getText(corto_result *this) {
+corto_string _corto_result_getText(
+    corto_result* this)
+{
 /* $begin(corto/core/result/getText) */
 
     return (corto_string)this->value;

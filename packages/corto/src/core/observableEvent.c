@@ -8,7 +8,9 @@
 
 #include "corto/core/core.h"
 
-corto_void _corto_observableEvent_handle_v(corto_observableEvent this) {
+corto_void _corto_observableEvent_handle_v(
+    corto_observableEvent this)
+{
 /* $begin(corto/core/observableEvent/handle) */
     corto_bool lockRequired =
       (this->thread != corto_threadSelf()) &&

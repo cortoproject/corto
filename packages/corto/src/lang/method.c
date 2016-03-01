@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_method_bind(corto_method this) {
+corto_int16 _corto_method_bind(
+    corto_method this)
+{
 /* $begin(corto/lang/method/bind) */
 
     /* Bind function */
@@ -22,7 +24,9 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_method_init(corto_method this) {
+corto_int16 _corto_method_init(
+    corto_method this)
+{
 /* $begin(corto/lang/method/init) */
     corto_object parent;
 

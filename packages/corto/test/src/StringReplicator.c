@@ -42,6 +42,7 @@ corto_resultIter _test_StringReplicator_onRequest(
     corto_resultSet(
         corto_resultListAppendAlloc(data),
         "a",
+        NULL,
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{10,20}")
@@ -49,6 +50,7 @@ corto_resultIter _test_StringReplicator_onRequest(
     corto_resultSet(
         corto_resultListAppendAlloc(data),
         "b",
+        NULL,
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{30,40}")
@@ -56,6 +58,7 @@ corto_resultIter _test_StringReplicator_onRequest(
     corto_resultSet(
         corto_resultListAppendAlloc(data),
         "c",
+        NULL,
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{50,60}")

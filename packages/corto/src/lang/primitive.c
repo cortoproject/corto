@@ -45,7 +45,10 @@ corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width wid
 }
 /* $end */
 
-corto_bool _corto_primitive_castable_v(corto_primitive this, corto_type type) {
+corto_bool _corto_primitive_castable_v(
+    corto_primitive this,
+    corto_type type)
+{
 /* $begin(corto/lang/primitive/castable) */
     corto_bool result;
 
@@ -168,7 +171,10 @@ corto_bool _corto_primitive_castable_v(corto_primitive this, corto_type type) {
 /* $end */
 }
 
-corto_bool _corto_primitive_compatible_v(corto_primitive this, corto_type type) {
+corto_bool _corto_primitive_compatible_v(
+    corto_primitive this,
+    corto_type type)
+{
 /* $begin(corto/lang/primitive/compatible) */
     corto_bool result;
 
@@ -231,7 +237,9 @@ corto_bool _corto_primitive_compatible_v(corto_primitive this, corto_type type) 
 /* $end */
 }
 
-corto_int16 _corto_primitive_construct(corto_primitive this) {
+corto_int16 _corto_primitive_construct(
+    corto_primitive this)
+{
 /* $begin(corto/lang/primitive/construct) */
 
     switch(this->width) {
@@ -264,14 +272,18 @@ corto_int16 _corto_primitive_construct(corto_primitive this) {
 /* $end */
 }
 
-corto_int16 _corto_primitive_init(corto_primitive this) {
+corto_int16 _corto_primitive_init(
+    corto_primitive this)
+{
 /* $begin(corto/lang/primitive/init) */
     corto_type(this)->kind = CORTO_PRIMITIVE;
     return corto_type_init((corto_type)this);
 /* $end */
 }
 
-corto_bool _corto_primitive_isInteger(corto_primitive this) {
+corto_bool _corto_primitive_isInteger(
+    corto_primitive this)
+{
 /* $begin(corto/lang/primitive/isInteger) */
 
     switch(this->kind) {
@@ -287,7 +299,9 @@ corto_bool _corto_primitive_isInteger(corto_primitive this) {
 /* $end */
 }
 
-corto_bool _corto_primitive_isNumber(corto_primitive this) {
+corto_bool _corto_primitive_isNumber(
+    corto_primitive this)
+{
 /* $begin(corto/lang/primitive/isNumber) */
 
     switch(this->kind) {

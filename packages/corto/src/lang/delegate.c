@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_delegate_bind(corto_function object) {
+corto_int16 _corto_delegate_bind(
+    corto_function object)
+{
 /* $begin(corto/lang/delegate/bind) */
     corto_object parent = corto_parentof(object);
 
@@ -47,13 +49,19 @@ error:
 /* $end */
 }
 
-corto_bool _corto_delegate_castable_v(corto_delegate this, corto_type type) {
+corto_bool _corto_delegate_castable_v(
+    corto_delegate this,
+    corto_type type)
+{
 /* $begin(corto/lang/delegate/castable) */
     return corto_delegate_compatible_v(this, type);
 /* $end */
 }
 
-corto_bool _corto_delegate_compatible_v(corto_delegate this, corto_type type) {
+corto_bool _corto_delegate_compatible_v(
+    corto_delegate this,
+    corto_type type)
+{
 /* $begin(corto/lang/delegate/compatible) */
     corto_bool result = FALSE;
     CORTO_UNUSED(this);
@@ -89,7 +97,9 @@ corto_bool _corto_delegate_compatible_v(corto_delegate this, corto_type type) {
 /* $end */
 }
 
-corto_int16 _corto_delegate_init(corto_delegate this) {
+corto_int16 _corto_delegate_init(
+    corto_delegate this)
+{
 /* $begin(corto/lang/delegate/init) */
     corto_int16 result;
 
@@ -123,7 +133,10 @@ corto_bool corto_delegate_matchParameter(
     }
 }
 /* $end */
-corto_bool _corto_delegate_instanceof(corto_delegate this, corto_object object) {
+corto_bool _corto_delegate_instanceof(
+    corto_delegate this,
+    corto_object object)
+{
 /* $begin(corto/lang/delegate/instanceof) */
     corto_type t = corto_typeof(object);
     corto_bool result = TRUE;

@@ -584,6 +584,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
     /* result */\
+    SSO_OP_OBJ(op, result_id);\
     SSO_OP_OBJ(op, result_name);\
     SSO_OP_OBJ(op, result_parent);\
     SSO_OP_OBJ(op, result_type);\

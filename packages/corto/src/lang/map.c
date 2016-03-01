@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_map_construct(corto_map this) {
+corto_int16 _corto_map_construct(
+    corto_map this)
+{
 /* $begin(corto/lang/map/construct) */
     corto_type(this)->hasResources = TRUE;
     corto_type(this)->size = sizeof(corto_map);
@@ -20,7 +22,9 @@ corto_int16 _corto_map_construct(corto_map this) {
 /* $end */
 }
 
-corto_int16 _corto_map_init(corto_map this) {
+corto_int16 _corto_map_init(
+    corto_map this)
+{
 /* $begin(corto/lang/map/init) */
     corto_collection(this)->kind = CORTO_MAP;
     return corto_collection_init(corto_collection(this));

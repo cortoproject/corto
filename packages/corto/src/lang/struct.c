@@ -13,13 +13,19 @@
 #include "_class.h"
 /* $end */
 
-corto_bool _corto_struct_castable_v(corto_struct this, corto_type type) {
+corto_bool _corto_struct_castable_v(
+    corto_struct this,
+    corto_type type)
+{
 /* $begin(corto/lang/struct/castable) */
     return corto_struct_compatible(this, type);
 /* $end */
 }
 
-corto_bool _corto_struct_compatible_v(corto_struct this, corto_type type) {
+corto_bool _corto_struct_compatible_v(
+    corto_struct this,
+    corto_type type)
+{
 /* $begin(corto/lang/struct/compatible) */
     corto_bool result;
 
@@ -47,7 +53,9 @@ corto_bool _corto_struct_compatible_v(corto_struct this, corto_type type) {
 /* $end */
 }
 
-corto_int16 _corto_struct_construct(corto_struct this) {
+corto_int16 _corto_struct_construct(
+    corto_struct this)
+{
 /* $begin(corto/lang/struct/construct) */
     corto_struct base;
     corto_uint16 alignment;
@@ -133,7 +141,9 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_struct_init(corto_struct this) {
+corto_int16 _corto_struct_init(
+    corto_struct this)
+{
 /* $begin(corto/lang/struct/init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
@@ -153,7 +163,10 @@ error:
 /* $end */
 }
 
-corto_member _corto_struct_resolveMember_v(corto_struct this, corto_string name) {
+corto_member _corto_struct_resolveMember_v(
+    corto_struct this,
+    corto_string name)
+{
 /* $begin(corto/lang/struct/resolveMember) */
     corto_interface base;
     corto_member m;

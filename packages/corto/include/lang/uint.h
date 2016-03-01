@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 
-CORTO_EXPORT corto_int16 _corto_uint_init(corto_uint _this);
+CORTO_EXPORT corto_int16 _corto_uint_init(
+    corto_uint _this);
 #define corto_uint_init(_this) _corto_uint_init(corto_uint(_this))
 
 #ifdef __cplusplus

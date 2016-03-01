@@ -17,10 +17,12 @@ extern "C" {
 #endif
 
 
-CORTO_EXPORT void _corto_invokeEvent_handle(corto_invokeEvent _this);
+CORTO_EXPORT void _corto_invokeEvent_handle(
+    corto_invokeEvent _this);
 #define corto_invokeEvent_handle(_this) _corto_invokeEvent_handle(corto_invokeEvent(_this))
 
-CORTO_EXPORT corto_void _corto_invokeEvent_handle_v(corto_invokeEvent _this);
+CORTO_EXPORT corto_void _corto_invokeEvent_handle_v(
+    corto_invokeEvent _this);
 #define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(corto_invokeEvent(_this))
 
 #ifdef __cplusplus

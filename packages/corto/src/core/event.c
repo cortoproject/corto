@@ -12,13 +12,16 @@
 static int corto_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
 /* $end */
 
-corto_void _corto_event_handle_v(corto_event this) {
+corto_void _corto_event_handle_v(
+    corto_event this)
+{
 /* $begin(corto/core/event/handle) */
     this->handled = TRUE;
 /* $end */
 }
 
-corto_int16 _corto_event_uniqueKind(void) {
+corto_int16 _corto_event_uniqueKind(void)
+{
 /* $begin(corto/core/event/uniqueKind) */
     int result = corto_ainc(&corto_maxEventId)-1;
     if (result == 65535) {

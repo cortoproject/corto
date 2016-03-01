@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_binary_init(corto_binary this) {
+corto_int16 _corto_binary_init(
+    corto_binary this)
+{
 /* $begin(corto/lang/binary/init) */
     corto_primitive(this)->kind = CORTO_BINARY;
     return corto_primitive_init((corto_primitive)this);

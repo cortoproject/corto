@@ -1923,6 +1923,25 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
     return buffer;
 }
 
+corto_int32 corto_pathToArray(corto_string path, char *elements[]) {
+    corto_int32 count = 0;
+    char *ptr = path;
+
+    if (*ptr == '/') {
+        ptr++;
+    }
+
+    do {
+        if (*ptr == '/') {
+            *ptr = '\0';
+            ptr++;
+        }
+        elements[count ++] = ptr;
+    } while ((ptr = strchr(ptr, '/')));
+
+    return count;
+}
+
 static corto_object* corto_scopeStack(
     corto_object o,
     corto_object scopeStack[],

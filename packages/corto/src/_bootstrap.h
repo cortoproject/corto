@@ -998,6 +998,7 @@ CORTO_PROCEDURE_NOBASE_O(corto_lang, function, CORTO_FUNCTION, NULL, CORTO_DECLA
 
 /* /corto/lang/result */
 CORTO_STRUCT_O(corto_core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(result, id, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, name, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);

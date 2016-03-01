@@ -8,7 +8,9 @@
 
 #include "corto/lang/lang.h"
 
-corto_int16 _corto_alias_construct(corto_alias this) {
+corto_int16 _corto_alias_construct(
+    corto_alias this)
+{
 /* $begin(corto/lang/alias/construct) */
 
     CORTO_UNUSED(this);
@@ -17,7 +19,9 @@ corto_int16 _corto_alias_construct(corto_alias this) {
 /* $end */
 }
 
-corto_int16 _corto_alias_init(corto_alias this) {
+corto_int16 _corto_alias_init(
+    corto_alias this)
+{
 /* $begin(corto/lang/alias/init) */
 
     return corto_member_init(this);

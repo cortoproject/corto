@@ -6,7 +6,18 @@
 #include "corto/core/core.h"
 #include "corto/core/_meta.h"
 
-void _corto_dispatcher_post(corto_dispatcher this, corto_event e) {
+void __corto_notifyAction(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    corto_void ___ (*_fptr)(corto_object,corto_object) = (corto_void ___ (*)(corto_object,corto_object))f->implData;
+    CORTO_UNUSED(result);
+    _fptr(
+        *(void**)args,
+        *(corto_object*)((intptr_t)args + sizeof(void*)));
+}
+
+void _corto_dispatcher_post(
+    corto_dispatcher this,
+    corto_event e) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -34,7 +45,8 @@ void __corto_dispatcher_post_v(corto_function f, void *result, void *args) {
         corto_event(*(corto_event*)((intptr_t)args + sizeof(void*))));
 }
 
-void _corto_event_handle(corto_event this) {
+void _corto_event_handle(
+    corto_event this) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -69,7 +81,8 @@ void __corto_event_uniqueKind(corto_function f, void *result, void *args) {
         );
 }
 
-void _corto_invokeEvent_handle(corto_invokeEvent this) {
+void _corto_invokeEvent_handle(
+    corto_invokeEvent this) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -97,7 +110,8 @@ void __corto_invokeEvent_handle_v(corto_function f, void *result, void *args) {
         corto_invokeEvent(*(void**)args));
 }
 
-void _corto_observableEvent_handle(corto_observableEvent this) {
+void _corto_observableEvent_handle(
+    corto_observableEvent this) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -218,7 +232,9 @@ void __corto_replicator_on_update(corto_function f, void *result, void *args) {
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
-void _corto_replicator_onDeclare(corto_replicator this, corto_object observable) {
+void _corto_replicator_onDeclare(
+    corto_replicator this,
+    corto_object observable) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -246,7 +262,9 @@ void __corto_replicator_onDeclare_v(corto_function f, void *result, void *args) 
         *(corto_object*)((intptr_t)args + sizeof(void*)));
 }
 
-void _corto_replicator_onDelete(corto_replicator this, corto_object observable) {
+void _corto_replicator_onDelete(
+    corto_replicator this,
+    corto_object observable) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -274,7 +292,11 @@ void __corto_replicator_onDelete_v(corto_function f, void *result, void *args) {
         *(corto_object*)((intptr_t)args + sizeof(void*)));
 }
 
-void _corto_replicator_onInvoke(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
+void _corto_replicator_onInvoke(
+    corto_replicator this,
+    corto_object instance,
+    corto_function proc,
+    corto_octetseq args) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -304,7 +326,12 @@ void __corto_replicator_onInvoke_v(corto_function f, void *result, void *args) {
         *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
 }
 
-corto_resultIter _corto_replicator_onRequest(corto_replicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
+corto_resultIter _corto_replicator_onRequest(
+    corto_replicator this,
+    corto_string parent,
+    corto_string expr,
+    corto_string param,
+    corto_bool setContent) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_resultIter _result;
@@ -337,7 +364,9 @@ void __corto_replicator_onRequest_v(corto_function f, void *result, void *args) 
         *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string) + sizeof(corto_string)));
 }
 
-void _corto_replicator_onUpdate(corto_replicator this, corto_object observable) {
+void _corto_replicator_onUpdate(
+    corto_replicator this,
+    corto_object observable) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;

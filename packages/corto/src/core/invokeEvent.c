@@ -8,7 +8,9 @@
 
 #include "corto/core/core.h"
 
-corto_void _corto_invokeEvent_handle_v(corto_invokeEvent this) {
+corto_void _corto_invokeEvent_handle_v(
+    corto_invokeEvent this)
+{
 /* $begin(corto/core/invokeEvent/handle) */
 
     corto_replicator_onInvoke(this->replicator, this->instance, this->function, this->args);

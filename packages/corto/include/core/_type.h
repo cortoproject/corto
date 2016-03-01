@@ -13,24 +13,24 @@ extern "C" {
 #endif
 
 /* Casting macro's for classes */
-#define corto_attr(o) ((corto_attr *)corto_assertType((corto_type)corto_attr_o, o))
+#define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
-#define corto_equalityKind(o) ((corto_equalityKind *)corto_assertType((corto_type)corto_equalityKind_o, o))
+#define corto_equalityKind(o) ((corto_equalityKind*)corto_assertType((corto_type)corto_equalityKind_o, o))
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
-#define corto_eventMask(o) ((corto_eventMask *)corto_assertType((corto_type)corto_eventMask_o, o))
+#define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
-#define corto_notifyAction(o) ((corto_notifyAction *)corto_assertType((corto_type)corto_notifyAction_o, o))
+#define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
-#define corto_observerseq(o) ((corto_observerseq *)corto_assertType((corto_type)corto_observerseq_o, o))
-#define corto_operatorKind(o) ((corto_operatorKind *)corto_assertType((corto_type)corto_operatorKind_o, o))
+#define corto_observerseq(o) ((corto_observerseq*)corto_assertType((corto_type)corto_observerseq_o, o))
+#define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_query(o) ((corto_query)corto_assertType((corto_type)corto_query_o, o))
 #define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
-#define corto_result(o) ((corto_result *)corto_assertType((corto_type)corto_result_o, o))
-#define corto_resultIter(o) ((corto_resultIter *)corto_assertType((corto_type)corto_resultIter_o, o))
-#define corto_resultList(o) ((corto_resultList *)corto_assertType((corto_type)corto_resultList_o, o))
-#define corto_time(o) ((corto_time *)corto_assertType((corto_type)corto_time_o, o))
+#define corto_result(o) ((corto_result*)corto_assertType((corto_type)corto_result_o, o))
+#define corto_resultIter(o) ((corto_resultIter*)corto_assertType((corto_type)corto_resultIter_o, o))
+#define corto_resultList(o) ((corto_resultList*)corto_assertType((corto_type)corto_resultList_o, o))
+#define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
 /* /corto/core/attr */
@@ -184,6 +184,7 @@ CORTO_CLASS_DEF(corto_package) {
 typedef struct corto_result corto_result;
 
 struct corto_result {
+    corto_string id;
     corto_string name;
     corto_string parent;
     corto_string type;

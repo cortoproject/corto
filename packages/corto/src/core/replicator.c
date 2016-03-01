@@ -44,7 +44,9 @@ error:
 }
 /* $end */
 
-corto_int16 _corto_replicator_construct(corto_replicator this) {
+corto_int16 _corto_replicator_construct(
+    corto_replicator this)
+{
 /* $begin(corto/core/replicator/construct) */
     corto_object observable = this->query ? this->query->from : this->mount;
     corto_eventMask mask = this->query ? this->query->mask : CORTO_ON_SCOPE;
@@ -70,7 +72,9 @@ error:
 /* $end */
 }
 
-corto_void _corto_replicator_destruct(corto_replicator this) {
+corto_void _corto_replicator_destruct(
+    corto_replicator this)
+{
 /* $begin(corto/core/replicator/destruct) */
 
     CORTO_UNUSED(this);
@@ -78,7 +82,12 @@ corto_void _corto_replicator_destruct(corto_replicator this) {
 /* $end */
 }
 
-corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
+corto_void _corto_replicator_invoke(
+    corto_replicator this,
+    corto_object instance,
+    corto_function proc,
+    corto_octetseq args)
+{
 /* $begin(corto/core/replicator/invoke) */
     corto_object owner = corto_ownerof(instance);
 
@@ -93,7 +102,10 @@ corto_void _corto_replicator_invoke(corto_replicator this, corto_object instance
 /* $end */
 }
 
-corto_void _corto_replicator_on_declare(corto_replicator this, corto_object observable) {
+corto_void _corto_replicator_on_declare(
+    corto_replicator this,
+    corto_object observable)
+{
 /* $begin(corto/core/replicator/on_declare) */
 
     if (observable != root_o) {
@@ -103,7 +115,10 @@ corto_void _corto_replicator_on_declare(corto_replicator this, corto_object obse
 /* $end */
 }
 
-corto_void _corto_replicator_on_delete(corto_replicator this, corto_object observable) {
+corto_void _corto_replicator_on_delete(
+    corto_replicator this,
+    corto_object observable)
+{
 /* $begin(corto/core/replicator/on_delete) */
 
     corto_replicator_onDelete(this, observable);
@@ -111,7 +126,10 @@ corto_void _corto_replicator_on_delete(corto_replicator this, corto_object obser
 /* $end */
 }
 
-corto_void _corto_replicator_on_update(corto_replicator this, corto_object observable) {
+corto_void _corto_replicator_on_update(
+    corto_replicator this,
+    corto_object observable)
+{
 /* $begin(corto/core/replicator/on_update) */
 
     if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
@@ -121,7 +139,10 @@ corto_void _corto_replicator_on_update(corto_replicator this, corto_object obser
 /* $end */
 }
 
-corto_void _corto_replicator_onDeclare_v(corto_replicator this, corto_object observable) {
+corto_void _corto_replicator_onDeclare_v(
+    corto_replicator this,
+    corto_object observable)
+{
 /* $begin(corto/core/replicator/onDeclare) */
 
     CORTO_UNUSED(this);
@@ -130,7 +151,10 @@ corto_void _corto_replicator_onDeclare_v(corto_replicator this, corto_object obs
 /* $end */
 }
 
-corto_void _corto_replicator_onDelete_v(corto_replicator this, corto_object observable) {
+corto_void _corto_replicator_onDelete_v(
+    corto_replicator this,
+    corto_object observable)
+{
 /* $begin(corto/core/replicator/onDelete) */
 
     CORTO_UNUSED(this);
@@ -139,7 +163,12 @@ corto_void _corto_replicator_onDelete_v(corto_replicator this, corto_object obse
 /* $end */
 }
 
-corto_void _corto_replicator_onInvoke_v(corto_replicator this, corto_object instance, corto_function proc, corto_octetseq args) {
+corto_void _corto_replicator_onInvoke_v(
+    corto_replicator this,
+    corto_object instance,
+    corto_function proc,
+    corto_octetseq args)
+{
 /* $begin(corto/core/replicator/onInvoke) */
 
     CORTO_UNUSED(this);
@@ -150,7 +179,13 @@ corto_void _corto_replicator_onInvoke_v(corto_replicator this, corto_object inst
 /* $end */
 }
 
-corto_resultIter _corto_replicator_onRequest_v(corto_replicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
+corto_resultIter _corto_replicator_onRequest_v(
+    corto_replicator this,
+    corto_string parent,
+    corto_string expr,
+    corto_string param,
+    corto_bool setContent)
+{
 /* $begin(corto/core/replicator/onRequest) */
     corto_resultIter result;
 
@@ -165,7 +200,10 @@ corto_resultIter _corto_replicator_onRequest_v(corto_replicator this, corto_stri
 /* $end */
 }
 
-corto_void _corto_replicator_onUpdate_v(corto_replicator this, corto_object observable) {
+corto_void _corto_replicator_onUpdate_v(
+    corto_replicator this,
+    corto_object observable)
+{
 /* $begin(corto/core/replicator/onUpdate) */
 
     CORTO_UNUSED(this);
@@ -174,7 +212,10 @@ corto_void _corto_replicator_onUpdate_v(corto_replicator this, corto_object obse
 /* $end */
 }
 
-corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
+corto_void _corto_replicator_post(
+    corto_replicator this,
+    corto_event e)
+{
 /* $begin(corto/core/replicator/post) */
 
     CORTO_UNUSED(this);
@@ -183,13 +224,22 @@ corto_void _corto_replicator_post(corto_replicator this, corto_event e) {
 /* $end */
 }
 
-corto_resultIter _corto_replicator_request(corto_replicator this, corto_string parent, corto_string expr, corto_string param, corto_bool setContent) {
+corto_resultIter _corto_replicator_request(
+    corto_replicator this,
+    corto_string parent,
+    corto_string expr,
+    corto_string param,
+    corto_bool setContent)
+{
 /* $begin(corto/core/replicator/request) */
     return corto_replicator_onRequest(this, parent, expr, param, setContent);
 /* $end */
 }
 
-corto_int16 _corto_replicator_setContentType(corto_replicator this, corto_string type) {
+corto_int16 _corto_replicator_setContentType(
+    corto_replicator this,
+    corto_string type)
+{
 /* $begin(corto/core/replicator/setContentType) */
     corto_setstr(&this->contentType, type);
     return 0;

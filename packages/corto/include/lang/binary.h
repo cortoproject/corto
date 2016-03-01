@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 
-CORTO_EXPORT corto_int16 _corto_binary_init(corto_binary _this);
+CORTO_EXPORT corto_int16 _corto_binary_init(
+    corto_binary _this);
 #define corto_binary_init(_this) _corto_binary_init(corto_binary(_this))
 
 #ifdef __cplusplus

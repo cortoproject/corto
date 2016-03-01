@@ -56,7 +56,9 @@ static corto_bool corto_class_checkInterfaceCompatibility(
 }
 /* $end */
 
-corto_int16 _corto_class_construct(corto_class this) {
+corto_int16 _corto_class_construct(
+    corto_class this)
+{
 /* $begin(corto/lang/class/construct) */
     corto_int16 result;
     corto_uint32 i;
@@ -90,7 +92,9 @@ corto_int16 _corto_class_construct(corto_class this) {
 /* $end */
 }
 
-corto_void _corto_class_destruct(corto_class this) {
+corto_void _corto_class_destruct(
+    corto_class this)
+{
 /* $begin(corto/lang/class/destruct) */
     corto_uint32 i,j;
     corto_interfaceVector *v;
@@ -112,7 +116,9 @@ corto_void _corto_class_destruct(corto_class this) {
 /* $end */
 }
 
-corto_int16 _corto_class_init(corto_class this) {
+corto_int16 _corto_class_init(
+    corto_class this)
+{
 /* $begin(corto/lang/class/init) */
     if (corto_struct_init(this)) {
         goto error;
@@ -127,7 +133,10 @@ error:
 /* $end */
 }
 
-corto_bool _corto_class_instanceof(corto_class this, corto_object object) {
+corto_bool _corto_class_instanceof(
+    corto_class this,
+    corto_object object)
+{
 /* $begin(corto/lang/class/instanceof) */
     corto_type t;
     corto_bool result;
@@ -151,7 +160,11 @@ corto_bool _corto_class_instanceof(corto_class this, corto_object object) {
 /* $end */
 }
 
-corto_method _corto_class_resolveInterfaceMethod(corto_class this, corto_interface interface, corto_uint32 method) {
+corto_method _corto_class_resolveInterfaceMethod(
+    corto_class this,
+    corto_interface interface,
+    corto_uint32 method)
+{
 /* $begin(corto/lang/class/resolveInterfaceMethod) */
     corto_uint32 i;
     corto_interfaceVector *v;

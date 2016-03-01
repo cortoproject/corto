@@ -12,7 +12,9 @@
 #include "_interface.h"
 /* $end */
 
-corto_int16 _corto_member_construct(corto_member this) {
+corto_int16 _corto_member_construct(
+    corto_member this)
+{
 /* $begin(corto/lang/member/construct) */
     if (!this->type) {
         corto_seterr("member '%s' has no type", corto_fullpath(NULL, this));
@@ -25,7 +27,9 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_member_init(corto_member this) {
+corto_int16 _corto_member_init(
+    corto_member this)
+{
 /* $begin(corto/lang/member/init) */
     corto_object parent;
     corto_type parentType;

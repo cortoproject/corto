@@ -131,7 +131,8 @@ static int corto_clearFreeValues(void* o, void* udata) {
 }
 /* $end */
 
-corto_any _corto_list_append_(corto_any this) {
+corto_any _corto_list_append_(corto_any this)
+{
 /* $begin(corto/lang/list/append()) */
     corto_any result;
     result.type = corto_collection(this.type)->elementType;
@@ -141,13 +142,16 @@ corto_any _corto_list_append_(corto_any this) {
 /* $end */
 }
 
-corto_void _corto_list_append_any(corto_any this, corto_any element) {
+corto_void _corto_list_append_any(corto_any this,
+    corto_any element)
+{
 /* $begin(corto/lang/list/append(any element)) */
     corto_list_do(this, element, FALSE, corto_list_appendAction, NULL);
 /* $end */
 }
 
-corto_void _corto_list_clear(corto_any this) {
+corto_void _corto_list_clear(corto_any this)
+{
 /* $begin(corto/lang/list/clear) */
     corto_collection c = corto_collection(this.type);
     if (corto_collection_requiresAlloc(c->elementType)) {
@@ -157,7 +161,9 @@ corto_void _corto_list_clear(corto_any this) {
 /* $end */
 }
 
-corto_int16 _corto_list_construct(corto_list this) {
+corto_int16 _corto_list_construct(
+    corto_list this)
+{
 /* $begin(corto/lang/list/construct) */
     corto_type(this)->hasResources = TRUE;
     corto_type(this)->size = sizeof(corto_ll);
@@ -172,14 +178,17 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_list_init(corto_list this) {
+corto_int16 _corto_list_init(
+    corto_list this)
+{
 /* $begin(corto/lang/list/init) */
     corto_collection(this)->kind = CORTO_LIST;
     return corto_collection_init(corto_collection(this));
 /* $end */
 }
 
-corto_any _corto_list_insert_(corto_any this) {
+corto_any _corto_list_insert_(corto_any this)
+{
 /* $begin(corto/lang/list/insert()) */
     corto_any result;
     result.type = corto_collection(this.type)->elementType;
@@ -189,13 +198,16 @@ corto_any _corto_list_insert_(corto_any this) {
 /* $end */
 }
 
-corto_void _corto_list_insert_any(corto_any this, corto_any element) {
+corto_void _corto_list_insert_any(corto_any this,
+    corto_any element)
+{
 /* $begin(corto/lang/list/insert(any element)) */
     corto_list_do(this, element, TRUE, corto_list_insertAction, NULL);
 /* $end */
 }
 
-corto_void _corto_list_reverse(corto_any this) {
+corto_void _corto_list_reverse(corto_any this)
+{
 /* $begin(corto/lang/list/reverse) */
     corto_llReverse(*(corto_ll*)this.value);
 /* $end */

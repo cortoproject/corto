@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 
-CORTO_EXPORT corto_int16 _corto_constant_init(corto_constant *_this);
+CORTO_EXPORT corto_int16 _corto_constant_init(
+    corto_constant* _this);
 #define corto_constant_init(_this) _corto_constant_init(_this)
 
 #ifdef __cplusplus

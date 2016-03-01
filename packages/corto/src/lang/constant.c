@@ -13,7 +13,9 @@
 #include "_bitmask.h"
 /* $end */
 
-corto_int16 _corto_constant_init(corto_constant *this) {
+corto_int16 _corto_constant_init(
+    corto_constant* this)
+{
 /* $begin(corto/lang/constant/init) */
     corto_object parent;
     corto_type parentType;

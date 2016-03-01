@@ -77,8 +77,9 @@ typedef struct corto_selectData {
     corto_contentType srcSer[CORTO_MAX_REPLICATORS];
 
     /* Pre allocated for selectItem */
-    corto_id parent;
+    corto_id id;
     corto_id name;
+    corto_id parent;
     corto_id type;
     corto_result item;
     corto_result *next;
@@ -93,6 +94,7 @@ static corto_selectData* corto_selectDataGet(void) {
         result->item.parent = result->parent;
         result->item.name = result->name;
         result->item.type = result->type;
+        result->item.id = result->id;
 
         corto_threadTlsSet(CORTO_KEY_SELECT, result);
     }
@@ -392,8 +394,10 @@ static void corto_setItemData(
     }
 
     if (corto_nameof(o)) {
+        strcpy(item->id, corto_nameof(o));
         strcpy(item->name, corto_nameof(o));
     } else {
+        item->id[0] = '\0';
         item->name[0] = '\0';
     }
 
@@ -666,10 +670,20 @@ static void corto_selectIterateReplicators(
                     data->next = &data->item;
 
                     /* Copy data, so replicator can safely release it */
+                    if (result->id) {
+                        strcpy(data->item.id, result->id);
+                    } else {
+                        data->item.id[0] = '\0';
+                    }
+
                     if (result->name) {
                         strcpy(data->item.name, result->name);
                     } else {
-                        data->item.name[0] = '\0';
+                        if (!result->id) {
+                            data->item.name[0] = '\0';
+                        } else {
+                            strcpy(data->item.name, result->id);
+                        }
                     }
 
                     if (result->parent) {
