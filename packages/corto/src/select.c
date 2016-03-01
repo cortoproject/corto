@@ -665,7 +665,7 @@ static void corto_selectIterateReplicators(
             while (corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
                 if (!frame->filter ||
-                    corto_selectMatch(expr, result->name))
+                    corto_selectMatch(expr, result->id))
                 {
                     data->next = &data->item;
 
