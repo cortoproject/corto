@@ -488,7 +488,7 @@ CORTO_EXPORT corto_int16 _corto_destructActionDeinit(corto_destructAction* value
 
 corto_int16 corto_destructActionCall(corto_destructAction *_delegate);
 #define corto_destructActionInitC_auto(d, callback) corto_destructAction d; corto_destructActionInitC(&d, callback)
-CORTO_EXPORT corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*callback)());
+CORTO_EXPORT corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*callback)(void));
 #define corto_destructActionInitCInstance_auto(d, instance, callback)corto_destructAction d; corto_destructActionInitCInstance(&d, instance, callback)
 CORTO_EXPORT corto_int16 corto_destructActionInitCInstance(corto_destructAction *d, corto_object instance, corto_void ___ (*callback)(corto_object));
 /* /corto/lang/enum */
@@ -661,7 +661,7 @@ CORTO_EXPORT corto_int16 _corto_initActionDeinit(corto_initAction* value);
 
 corto_int16 corto_initActionCall(corto_initAction *_delegate, corto_int16* _result);
 #define corto_initActionInitC_auto(d, callback) corto_initAction d; corto_initActionInitC(&d, callback)
-CORTO_EXPORT corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callback)());
+CORTO_EXPORT corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callback)(void));
 #define corto_initActionInitCInstance_auto(d, instance, callback)corto_initAction d; corto_initActionInitCInstance(&d, instance, callback)
 CORTO_EXPORT corto_int16 corto_initActionInitCInstance(corto_initAction *d, corto_object instance, corto_int16 ___ (*callback)(corto_object));
 /* /corto/lang/int */

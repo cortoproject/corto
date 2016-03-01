@@ -1669,7 +1669,7 @@ corto_int16 corto_destructActionCall(corto_destructAction *_delegate) {
     return 0;
 }
 
-corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*callback)()) {
+corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*callback)(void)) {
     d->_parent.procedure = corto_functionDeclare();
     void __corto_destructAction(corto_function f, void *result, void *args);
     d->_parent.procedure->impl = (corto_word)__corto_destructAction;
@@ -2285,7 +2285,7 @@ corto_int16 corto_initActionCall(corto_initAction *_delegate, corto_int16* _resu
     return 0;
 }
 
-corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callback)()) {
+corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callback)(void)) {
     d->_parent.procedure = corto_functionDeclare();
     void __corto_initAction(corto_function f, void *result, void *args);
     d->_parent.procedure->impl = (corto_word)__corto_initAction;
