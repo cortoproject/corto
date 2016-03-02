@@ -36,17 +36,18 @@ static void cortotool_printUsage(corto_bool expert) {
     printf("   update               Update a package\n");
     printf("   run                  Run a project.\n");
     printf("   build                Build a project (not needed for apps!).\n");
+    printf("   rebuild              Clean, then build a project.\n");
+    printf("   clean                Clean a project.\n");
     printf("   test                 Run tests for a project\n");
+    printf("   coverage             Print coverage report for project\n");
     printf("   shell                Start the corto shell.\n");
+    printf("   locate               Show where a package is located.\n");
     printf("\n");
     if (expert) {
         printf("Expert commands:\n");
         printf("   pp                   Invoke the corto preprocessor.\n");
-        printf("   locate               Show where a package is located.\n");
         printf("   tar                  Package a project in a redistributable tar file.\n");
         printf("   untar                Unpackage a project to the global environment.\n");
-        printf("   rebuild              Clean, then build a project.\n");
-        printf("   clean                Clean a project.\n");
         printf("\n");
     }
     printf("See 'corto help <command>' for details on a commnad.\n\n");
@@ -170,6 +171,11 @@ int main(int argc, char* argv[]) {
                 break;
             } else if (!strcmp(argv[i], "rebuild")) {
                 if (cortotool_rebuild(argc-i, &argv[i])) {
+                    goto error;
+                }
+                break;
+            } else if (!strcmp(argv[i], "coverage")) {
+                if (cortotool_coverage(argc-i, &argv[i])) {
                     goto error;
                 }
                 break;

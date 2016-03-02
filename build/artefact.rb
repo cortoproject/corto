@@ -58,6 +58,11 @@ CFLAGS.unshift("-Wall")
 # Default CXXFLAGS
 CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC" << "-Wno-write-strings"
 
+# Add compiler flags for coverage testing
+if COVERAGE then
+
+end
+
 # Set default compiler
 if LANGUAGE == "c" then
     COMPILER = CC
@@ -74,10 +79,11 @@ if ENV['target'] == "release" then
   CXXFLAGS << "-DNDEBUG" << "-O3"
 end
 
-# Enable debug information in debug builds & disable optimizations
+# Enable debug info, coverage and disable optimizations in debug
 if ENV['target'] == "debug" then
-  CFLAGS << "-g" << "-O0"
-  CXXFLAGS << "-g" << "-O0"
+  CFLAGS << "-g" << "-O0" << "-fprofile-arcs" << "-ftest-coverage"
+  CXXFLAGS << "-g" << "-O0" << "-fprofile-arcs" << "-ftest-coverage"
+  LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
 end
 
 # Crawl src directory to get list of source files
@@ -101,6 +107,7 @@ end
 # Setup default clean & clobber rules
 CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
+CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(GENERATED_SOURCES)
@@ -166,7 +173,6 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
 
     OBJECTS.concat(LINKED)
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
-    cflags = "#{CFLAGS.join(" ")}"
     libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
     lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
@@ -211,18 +217,8 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
       sh "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
     end
 
-    if ENV['target'] == "release" then
-      c_bold = "\033[1;36m"
-      c_name = "\033[1;49m"
-      c_normal = "\033[0;49m"
-    else
-      c_bold = "\033[1;49m"
-      c_name = "\033[1;34m"
-      c_normal = "\033[0;49m"
-    end
-
     if ENV['silent'] != "true" then
-        sh "echo '#{c_bold}[ #{c_normal}#{c_name}#{ARTEFACT}#{c_normal}#{c_bold} ]#{c_normal}'"
+        sh "echo '#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
     end
 end
 
@@ -258,6 +254,36 @@ task :test do
   end
 end
 
+# Keep track of overal coverage statistics for project
+covered = 0
+total = 0
+coverage_report = []
+
+# Run gcov for project
+task :gcov => SOURCES.ext(".gcov") do
+  coverage_report.sort_by {|item| item['uncovered']}.reverse!.each {|item|
+      if (item['uncovered'] != 0) then
+        if (item['pct'] < 0.7) then
+          print "#{item['source']}: #{C_FAIL}#{"%.2f" % (item['pct']*100)}%#{C_NORMAL} (#{item['uncovered']} uncovered)\n"
+        elsif (item['pct'] > 0.8) then
+          print "#{item['source']}: #{C_OK}#{"%.2f" % (item['pct']*100)}%#{C_NORMAL} (#{item['uncovered']} uncovered)\n"
+        else
+          print "#{item['source']}: #{"%.2f" % (item['pct']*100)}% (#{item['uncovered']} uncovered)\n"
+        end
+      end
+  }
+  if (total != 0) then
+    pct = covered / total
+    if (pct < 0.7) then
+      print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_FAIL} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+    elsif (pct > 0.8) then
+      print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_OK} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+    else
+      print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+    end
+  end
+end
+
 # Rules for generated files
 rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
     build_source(task.source, task.name, false)
@@ -274,20 +300,47 @@ end
 
 # Generic rule for translating source files into object files
 rule '.o' => ->(t) {
-    file = nil
-    base = File.join(File.dirname(t), File.basename(t, '.*'))
-    SOURCES.each do |e|
-      if e.pathmap("%{^src/,.corto/obj/#{CORTO_PLATFORM}/}X") == base then
-        file = e
-        break;
-      end
+  file = nil
+  base = File.join(File.dirname(t), File.basename(t, '.*'))
+  SOURCES.each do |e|
+    if e.pathmap("%{^src/,.corto/obj/#{CORTO_PLATFORM}/}X") == base then
+      file = e
+      break;
     end
-    if file == nil then
-        file = t.pathmap("src/%f").ext(".c")
-    end
-    file
+  end
+  if file == nil then
+    file = t.pathmap("src/%f").ext(".c")
+  end
+  file
 } do |task|
-    build_source(task.source, task.name, true)
+  sh "rm -f #{task.name.ext(".gcda")}"
+  sh "rm -f #{task.name.ext(".gcno")}"
+  build_source(task.source, task.name, true)
+end
+
+# Rule for creating a gcov file
+rule '.gcov' => ->(t){t.ext(".c")} do |task|
+  if File.basename(task.name)[0] != "_" then
+    gcov_dir = File.dirname(task.source.pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p"))
+    begin
+      coverage = `gcov --object-directory #{gcov_dir} #{task.source}`
+      data = coverage.split("\n")[1]
+      pct = data.match(/(\w+)\.(\w+)\%/)[0][0...-1].to_f / 100
+      lines = data.split(" ")[3].to_i
+      covered += (pct) * lines
+      total += lines
+
+      if (pct < 0.7) then
+        #print "#{task.source}:#{C_FAIL} #{"%.2f" % (pct*100)}%#{C_NORMAL}#{C_BOLD}#{C_NORMAL} of #{lines}\n"
+      elsif (pct > 0.8) then
+        #print "#{task.source}:#{C_OK} #{"%.2f" % (pct*100)}%#{C_NORMAL}#{C_BOLD}#{C_NORMAL} of #{lines}\n"
+      else
+        #print "#{task.source}:#{C_NORMAL} #{"%.2f" % (pct*100)}%#{C_NORMAL}#{C_BOLD}#{C_NORMAL} of #{lines}\n"
+      end
+      coverage_report << {'pct' => pct, 'uncovered' => (lines - lines * pct).round, 'source' => task.source}
+    rescue
+    end
+  end
 end
 
 # --- UTILITIES

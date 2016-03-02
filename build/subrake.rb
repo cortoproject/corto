@@ -5,23 +5,14 @@ COMPONENTS = [] if not defined? COMPONENTS
 task :all => :default
 
 task :default do
-    if ENV['target'] == "release" then
-      c_bold = "\033[1;36m"
-      c_name = "\033[1;49m"
-      c_normal = "\033[0;49m"
-    else
-      c_bold = "\033[1;49m"
-      c_name = "\033[1;35m"
-      c_normal = "\033[0;49m"
-    end
     COMPONENTS.each do |e|
         verbose(VERBOSE)
         if ENV['silent'] != "true" then
-            sh "echo '#{c_bold}[ >> building #{c_normal}#{c_name}#{e}#{c_normal}#{c_bold} ]#{c_normal}'"
+            sh "echo '#{C_BOLD}[ >> entering #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
         end
         sh "rake -f #{e}/rakefile"
         if ENV['silent'] != "true" then
-            sh "echo '#{c_bold}[ << leaving #{c_normal}#{c_name}#{e}#{c_normal}#{c_bold} ]#{c_normal}'"
+            sh "echo '#{C_BOLD}[ << leaving #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
         end
     end
 end
@@ -74,5 +65,18 @@ task :test do
     end
     if error != 0 then
       abort()
+    end
+end
+
+task :gcov do
+    COMPONENTS.each do |e|
+        verbose(VERBOSE)
+        if ENV['silent'] != "true" then
+            sh "echo '#{C_BOLD}[ >> entering #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
+        end
+        sh "rake gcov -f #{e}/rakefile"
+        if ENV['silent'] != "true" then
+            sh "echo '#{C_BOLD}[ << leaving #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
+        end
     end
 end

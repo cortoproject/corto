@@ -73,7 +73,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
         {"--verbose", &verbose, NULL},
-        {"--coverage", &coverage, NULL},
+        {"--no-coverage", &coverage, NULL},
         {"--optimize", &optimize, NULL},
         {"--release", &release, NULL},
         {"--debug", &debug, NULL},
@@ -87,7 +87,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
       (char*[])
       {
           "rake",
-          coverage ? "coverage=true" : "coverage=false",
+          coverage ? "coverage=false" : "coverage=true",
           optimize ? "optimize=true" : "optimize=false",
           release ? "target=release" : "target=debug",
           verbose ? "verbose=true" : "verbose=false",
@@ -119,7 +119,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"--silent", NULL, NULL},
         {"--mute", NULL, NULL},
         {"--verbose", &verbose, NULL},
-        {"--coverage", NULL, NULL}, /* Ignore coverage */
+        {"--no-coverage", NULL, NULL}, /* Ignore coverage */
         {"--optimize", NULL, NULL}, /* Ignore optimize */
         {"--release", NULL, NULL}, /* Ignore release */
         {"--debug", NULL, NULL}, /* Ignore debug */
@@ -146,6 +146,40 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
     return 0;
 error:
     corto_error("corto: clean: %s", corto_lasterr());
+    return -1;
+}
+
+corto_int16 cortotool_coverage(int argc, char *argv[]) {
+    corto_int8 ret = 0;
+    corto_ll dirs, verbose;
+
+    CORTO_UNUSED(argc);
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore first argument */
+        {"--silent", NULL, NULL},
+        {"--mute", NULL, NULL},
+        {"--verbose", &verbose, NULL},
+        {"*", &dirs, NULL},
+        {NULL}
+      }
+    );
+
+    ret = cortotool_runcmd(
+      dirs,
+      (char*[])
+      {
+        "rake",
+        "gcov",
+        verbose ? "verbose=true" : "verbose=false",
+        NULL
+      }, FALSE, FALSE);
+
+    return 0;
+error:
+    corto_error("corto: coverage: %s", corto_lasterr());
     return -1;
 }
 

@@ -2,9 +2,9 @@ require 'rake/clean'
 
 # Set Corto version variable
 if ENV['CORTO_VERSION'] then
-	CORTO_VERSION ||= ENV['CORTO_VERSION']
+  CORTO_VERSION ||= ENV['CORTO_VERSION']
 else
-	CORTO_VERSION ||= `corto --minor`[0...-1]
+  CORTO_VERSION ||= `corto --minor`[0...-1]
 end
 
 # Set platform variables
@@ -20,6 +20,29 @@ if not defined? VERBOSE then
         VERBOSE ||= false
     end
 end
+
+# Set covergae
+if ENV['coverage'] == "true" then
+    COVERAGE ||= true
+else
+    COVERAGE ||= false
+end
+
+# Set colors
+if ENV['target'] == "release" then
+  C_BOLD = "\033[1;36m"
+  C_NAME = "\033[1;49m"
+  C_NORMAL = "\033[0;49m"
+  C_TARGET = "\033[1;49m"
+else
+  C_BOLD = "\033[1;49m"
+  C_NAME = "\033[1;35m"
+  C_NORMAL = "\033[0;49m"
+  C_TARGET = "\033[1;34m"
+end
+C_FAIL = "\033[1;31m"
+C_OK = "\033[1;32m"
+C_WARNING = "\033[1;33m"
 
 # Initialize public variables
 INCLUDE ||= []
