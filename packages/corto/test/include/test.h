@@ -112,6 +112,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include "Args.h"
 #include "Bar.h"
 #include "Cat.h"
+#include "Compare.h"
 #include "DeclaredParent.h"
 #include "DefinedParent.h"
 #include "Dog.h"

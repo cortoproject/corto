@@ -43,7 +43,6 @@ const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 
 corto_mutex_s corto_adminLock;
 static corto_ll corto_exitHandlers = NULL;
-static corto_ll corto_unloadHandlers = NULL;
 
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
@@ -622,10 +621,6 @@ static void corto_initObject(corto_object o) {
     corto_createObject(o);
 
     corto_delegateInit(corto_typeof(o), o);
-
-    if (corto_typeof(o)->kind == CORTO_VOID) {
-        corto__setState(o, CORTO_DEFINED);
-    }
 }
 
 /* Initialization of types */
@@ -820,22 +815,6 @@ int corto_start(void) {
     return 0;
 }
 
-/* Register unloadhandler */
-void corto_onunload(void(*handler)(void*), void* userData) {
-    struct corto_exitHandler* h;
-
-    h = corto_alloc(sizeof(struct corto_exitHandler));
-    h->handler = handler;
-    h->userData = userData;
-
-    corto_mutexLock(&corto_adminLock);
-    if (!corto_unloadHandlers) {
-        corto_unloadHandlers = corto_llNew();
-    }
-    corto_llInsert(corto_unloadHandlers, h);
-    corto_mutexUnlock(&corto_adminLock);
-}
-
 /* Register exithandler */
 void corto_onexit(void(*handler)(void*), void* userData) {
     struct corto_exitHandler* h;
@@ -850,20 +829,6 @@ void corto_onexit(void(*handler)(void*), void* userData) {
     }
     corto_llInsert(corto_exitHandlers, h);
     corto_mutexUnlock(&corto_adminLock);
-}
-
-/* Call unload-handlers */
-static void corto_unload(void) {
-    struct corto_exitHandler* h;
-
-    if (corto_unloadHandlers) {
-        while((h = corto_llTakeFirst(corto_unloadHandlers))) {
-            h->handler(h->userData);
-            corto_dealloc(h);
-        }
-        corto_llFree(corto_unloadHandlers);
-        corto_unloadHandlers = NULL;
-    }
 }
 
 /* Call exit-handlers */
@@ -883,9 +848,6 @@ static void corto_exit(void) {
 int corto_stop(void) {
 
     CORTO_OPERATIONAL = 2; /* Initializing */
-
-    /* Call unload handlers */
-    corto_unload();
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the

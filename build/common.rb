@@ -14,18 +14,20 @@ CORTO_PLATFORM ||= CORTO_OS + "-" + CORTO_MACHINE
 
 # Set verbosity
 if not defined? VERBOSE then
-    if ENV['verbose'] == "true" then
-        VERBOSE ||= true
-    else
-        VERBOSE ||= false
-    end
+  if ENV['verbose'] == "true" then
+    VERBOSE ||= true
+  else
+    VERBOSE ||= false
+  end
 end
 
 # Set covergae
-if ENV['coverage'] == "true" then
-    COVERAGE ||= true
-else
+if not defined? COVERAGE then
+  if ENV['coverage'] == "false" then
     COVERAGE ||= false
+  else
+    COVERAGE ||= true
+  end
 end
 
 # Set colors

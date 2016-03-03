@@ -526,13 +526,6 @@ void corto__destructor(corto_object o) {
     }
 }
 
-void corto__setState(corto_object o, corto_uint8 state) {
-    corto__object* _o;
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    _o->attrs.state |= state;
-}
-
 static corto_equalityKind corto_compareDefault(corto_type this, const void* o1, const void* o2) {
     int r;
     CORTO_UNUSED(this);

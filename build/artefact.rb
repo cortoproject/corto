@@ -58,11 +58,6 @@ CFLAGS.unshift("-Wall")
 # Default CXXFLAGS
 CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC" << "-Wno-write-strings"
 
-# Add compiler flags for coverage testing
-if COVERAGE then
-
-end
-
 # Set default compiler
 if LANGUAGE == "c" then
     COMPILER = CC
@@ -81,9 +76,13 @@ end
 
 # Enable debug info, coverage and disable optimizations in debug
 if ENV['target'] == "debug" then
-  CFLAGS << "-g" << "-O0" << "-fprofile-arcs" << "-ftest-coverage"
-  CXXFLAGS << "-g" << "-O0" << "-fprofile-arcs" << "-ftest-coverage"
-  LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+  CFLAGS << "-g" << "-O0"
+  CXXFLAGS << "-g" << "-O0"
+  if COVERAGE == true then
+    CFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+    CXXFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+    LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+  end
 end
 
 # Crawl src directory to get list of source files
@@ -265,7 +264,7 @@ task :gcov => SOURCES.ext(".gcov") do
       if (item['uncovered'] != 0) then
         if (item['pct'] < 0.7) then
           print "#{item['source']}: #{C_FAIL}#{"%.2f" % (item['pct']*100)}%#{C_NORMAL} (#{item['uncovered']} uncovered)\n"
-        elsif (item['pct'] > 0.8) then
+        elsif (item['pct'] >= 0.8) then
           print "#{item['source']}: #{C_OK}#{"%.2f" % (item['pct']*100)}%#{C_NORMAL} (#{item['uncovered']} uncovered)\n"
         else
           print "#{item['source']}: #{"%.2f" % (item['pct']*100)}% (#{item['uncovered']} uncovered)\n"
@@ -276,7 +275,7 @@ task :gcov => SOURCES.ext(".gcov") do
     pct = covered / total
     if (pct < 0.7) then
       print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_FAIL} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
-    elsif (pct > 0.8) then
+    elsif (pct >= 0.8) then
       print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_OK} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
     else
       print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")

@@ -58,6 +58,18 @@ extern "C" {
 #define TRUE (!FALSE)
 #endif
 
+#define CORTO_BLACK   "\033[1;30m"
+#define CORTO_RED     "\033[1;31m"
+#define CORTO_GREEN   "\033[0;32m"
+#define CORTO_YELLOW  "\033[0;33m"
+#define CORTO_BLUE    "\033[1;34m"
+#define CORTO_MAGENTA "\033[1;35m"
+#define CORTO_CYAN    "\033[1;36m"
+#define CORTO_WHITE   "\033[1;37m"
+#define CORTO_GREY    "\033[0;37m"
+#define CORTO_NORMAL  "\033[0;49m"
+#define CORTO_BOLD    "\033[1;49m"
+
 /* Macro used to prevent type checking macro's from expanding */
 #define ___
 

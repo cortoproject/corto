@@ -33,95 +33,84 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, vo
     CORTO_UNUSED(s);
 
     switch(corto_primitive(type)->kind) {
-        case CORTO_BINARY:
-            switch(corto_primitive(type)->width) {
-                case CORTO_WIDTH_8:
-                    result = CORTO_COMPARE(corto_octet, this, value);
-                    break;
-                case CORTO_WIDTH_16:
-                    result = CORTO_COMPARE(corto_uint16, this, value);
-                    break;
-                case CORTO_WIDTH_32:
-                    result = CORTO_COMPARE(corto_uint32, this, value);
-                    break;
-                case CORTO_WIDTH_64:
-                    result = CORTO_COMPARE(corto_uint64, this, value);
-                    break;
-                case CORTO_WIDTH_WORD:
-                    result = CORTO_COMPARE(corto_word, this, value);
-                    break;
-            }
+    case CORTO_BOOLEAN:
+        result = CORTO_COMPARE(corto_bool, this, value);
+        break;
+    case CORTO_CHARACTER:
+        result = CORTO_COMPARE(corto_char, this, value);
+        break;
+    case CORTO_INTEGER:
+    case CORTO_ENUM:
+        switch(corto_primitive(type)->width) {
+        case CORTO_WIDTH_8:
+            result = CORTO_COMPARE(corto_int8, this, value);
             break;
-        case CORTO_BOOLEAN:
-            result = CORTO_COMPARE(corto_bool, this, value);
+        case CORTO_WIDTH_16:
+            result = CORTO_COMPARE(corto_int16, this, value);
             break;
-        case CORTO_CHARACTER:
-            result = CORTO_COMPARE(corto_char, this, value);
-            break;
-        case CORTO_INTEGER:
-            switch(corto_primitive(type)->width) {
-                case CORTO_WIDTH_8:
-                    result = CORTO_COMPARE(corto_int8, this, value);
-                    break;
-                case CORTO_WIDTH_16:
-                    result = CORTO_COMPARE(corto_int16, this, value);
-                    break;
-                case CORTO_WIDTH_32:
-                    result = CORTO_COMPARE(corto_int32, this, value);
-                    break;
-                case CORTO_WIDTH_64:
-                    result = CORTO_COMPARE(corto_int64, this, value);
-                    break;
-                case CORTO_WIDTH_WORD:
-                    result = CORTO_COMPARE(intptr_t, this, value);
-                    break;
-            }
-            break;
-        case CORTO_UINTEGER:
-            switch(corto_primitive(type)->width) {
-                case CORTO_WIDTH_8:
-                    result = CORTO_COMPARE(corto_uint8, this, value);
-                    break;
-                case CORTO_WIDTH_16:
-                    result = CORTO_COMPARE(corto_uint16, this, value);
-                    break;
-                case CORTO_WIDTH_32:
-                    result = CORTO_COMPARE(corto_uint32, this, value);
-                    break;
-                case CORTO_WIDTH_64:
-                    result = CORTO_COMPARE(corto_uint64, this, value);
-                    break;
-                case CORTO_WIDTH_WORD:
-                    result = CORTO_COMPARE(uintptr_t, this, value);
-                    break;
-            }
-            break;
-        case CORTO_FLOAT:
-            switch(corto_primitive(type)->width) {
-                case CORTO_WIDTH_32:
-                    result = CORTO_COMPARE(corto_float32, this, value);
-                    break;
-                case CORTO_WIDTH_64:
-                    result = CORTO_COMPARE(corto_float64, this, value);
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case CORTO_TEXT: {
-            corto_string thisStr = *(corto_string*)this;
-            corto_string valueStr = *(corto_string*)value;
-            if (thisStr && valueStr) {
-                result = strcmp(thisStr, valueStr);
-            } else {
-                result = !(thisStr == valueStr);
-            }
-            break;
-        }
-        case CORTO_ENUM:
-        case CORTO_BITMASK:
+        case CORTO_WIDTH_32:
             result = CORTO_COMPARE(corto_int32, this, value);
             break;
+        case CORTO_WIDTH_64:
+            result = CORTO_COMPARE(corto_int64, this, value);
+            break;
+        case CORTO_WIDTH_WORD:
+            result = CORTO_COMPARE(intptr_t, this, value);
+            break;
+        }
+        break;
+    case CORTO_BINARY:
+    case CORTO_UINTEGER:
+    case CORTO_BITMASK:
+        switch(corto_primitive(type)->width) {
+        case CORTO_WIDTH_8:
+            result = CORTO_COMPARE(corto_uint8, this, value);
+            break;
+        case CORTO_WIDTH_16:
+            result = CORTO_COMPARE(corto_uint16, this, value);
+            break;
+        case CORTO_WIDTH_32:
+            result = CORTO_COMPARE(corto_uint32, this, value);
+            break;
+        case CORTO_WIDTH_64:
+            result = CORTO_COMPARE(corto_uint64, this, value);
+            break;
+        case CORTO_WIDTH_WORD:
+            result = CORTO_COMPARE(uintptr_t, this, value);
+            break;
+        }
+        break;
+    case CORTO_FLOAT:
+        switch(corto_primitive(type)->width) {
+        case CORTO_WIDTH_32:
+            result = CORTO_COMPARE(corto_float32, this, value);
+            break;
+        case CORTO_WIDTH_64:
+            result = CORTO_COMPARE(corto_float64, this, value);
+            break;
+        default:
+            break;
+        }
+        break;
+    case CORTO_TEXT: {
+        corto_string thisStr = *(corto_string*)this;
+        corto_string valueStr = *(corto_string*)value;
+        if (thisStr && valueStr) {
+            result = strcmp(thisStr, valueStr);
+            if (result < 0) {
+                result = CORTO_LT;
+            } else if (result > 0) {
+                result = CORTO_GT;
+            }
+        } else {
+            if (thisStr == valueStr) {
+                result = CORTO_EQ;
+            } else {
+                result = thisStr ? CORTO_GT : CORTO_LT;
+            }
+        }
+        break;
+    }
     }
 
     data->result = result;

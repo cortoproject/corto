@@ -73,7 +73,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
         {"--verbose", &verbose, NULL},
-        {"--no-coverage", &coverage, NULL},
+        {"--nocoverage", &coverage, NULL},
         {"--optimize", &optimize, NULL},
         {"--release", &release, NULL},
         {"--debug", &debug, NULL},
@@ -119,7 +119,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"--silent", NULL, NULL},
         {"--mute", NULL, NULL},
         {"--verbose", &verbose, NULL},
-        {"--no-coverage", NULL, NULL}, /* Ignore coverage */
+        {"--nocoverage", NULL, NULL}, /* Ignore coverage */
         {"--optimize", NULL, NULL}, /* Ignore optimize */
         {"--release", NULL, NULL}, /* Ignore release */
         {"--debug", NULL, NULL}, /* Ignore debug */
@@ -176,6 +176,12 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
         verbose ? "verbose=true" : "verbose=false",
         NULL
       }, FALSE, FALSE);
+
+    corto_argclean(data);
+
+    if (ret) {
+        goto error;
+    }
 
     return 0;
 error:

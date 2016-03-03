@@ -28,7 +28,7 @@ error:
 }
 
 corto_int16 cortotool_add(int argc, char* argv[]) {
-    corto_ll silent, mute, nobuild, project, packages;
+    corto_ll silent, mute, nobuild, nocoverage, project, packages;
     corto_bool build = FALSE;
     CORTO_UNUSED(argc);
 
@@ -40,6 +40,7 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
         {"--nobuild", &nobuild, NULL},
+        {"--nocoverage", &nocoverage, NULL},
 
         /* Match at most one project directory */
         {"$?*", &project, NULL},
@@ -107,6 +108,7 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
           "build",
           silent ? "--silent" : "",
           mute ? "--mute" : "",
+          nocoverage ? "--nocoverage" : "",
           NULL
         });
     }

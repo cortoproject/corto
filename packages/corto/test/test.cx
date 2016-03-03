@@ -5,6 +5,9 @@ int8 constructCalled: 0
 int8 destructCalled: 0
 
 // Support types
+uint uintw: WIDTH_WORD
+int intw: WIDTH_WORD
+
 class Foo::
     fail: bool, local
     x, y: int32
@@ -27,14 +30,17 @@ struct Line::
 array PrimitiveArray: int32, 4
 array CompositeArray: Point, 4
 array ObjectArray: object, 4
+array AllocArray: int64, 4
 
 sequence PrimitiveSequence: int32
 sequence CompositeSequence: Point
 sequence ObjectSequence: object
+sequence AllocSequence: int64
 
 list PrimitiveList: int32
 list CompositeList: Point
 list ObjectList: object
+list AllocList: int64
 
 struct VoidParent: parentType = void::
     foo: int32
@@ -114,6 +120,41 @@ test::Suite ObjectMgmt::
     void tc_deleteTreeExplicit()
     void tc_deleteWithReference()
     void tc_deleteRedeclaration()
+
+// Test compare function
+test::Suite Compare::
+    void tc_uint8()
+    void tc_uint16()
+    void tc_uint32()
+    void tc_uint64()
+    void tc_uintw()
+    void tc_int8()
+    void tc_int16()
+    void tc_int32()
+    void tc_int64()
+    void tc_intw()
+    void tc_float32()
+    void tc_float64()
+    void tc_bool()
+    void tc_char()
+    void tc_string()
+    void tc_stringNull()
+    void tc_any()
+    void tc_reference()
+    void tc_array()
+    void tc_sequence()
+    void tc_list()
+    void tc_arrayWithSequence()
+    void tc_arrayWithList()
+    void tc_listWithArray()
+    void tc_sequenceWithList()
+    void tc_arrayWithSequenceAlloc()
+    void tc_arrayWithListAlloc()
+    void tc_sequenceWithListAlloc()
+    void tc_listWithListAlloc()
+    void tc_sequenceSizeMismatch()
+    void tc_listSizeMismatch()
+
 
 // Class with method for testing ownership onInvoke
 class MethodForwardTest::
