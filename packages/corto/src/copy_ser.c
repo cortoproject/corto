@@ -91,7 +91,7 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
         }
 
         if (elementType->reference) {
-            *(corto_object*)v1.value = *(corto_object*)v2.value;
+            corto_setref(v1.value, *(corto_object*)v2.value);
         } else {
             result = corto_type_copy(v1, v2);
         }
@@ -162,7 +162,8 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
 
 
 /* Resize list */
-static void corto_collection_resizeArray(corto_collection t, void* sequence, corto_uint32 size) {
+static void* corto_collection_resizeArray(corto_collection t, void* sequence, corto_uint32 size) {
+    void *result = sequence;
     /* Only sequences can be resized */
     if (t->kind == CORTO_SEQUENCE) {
         corto_uint32 ownSize = ((corto_objectseq*)sequence)->length;
@@ -175,18 +176,22 @@ static void corto_collection_resizeArray(corto_collection t, void* sequence, cor
                 corto_collection_deinitElement(t, CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i));
             }
             /* Reallocate buffer */
-            ((corto_objectseq*)sequence)->buffer = corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
+            result = ((corto_objectseq*)sequence)->buffer =
+              corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
 
             /* If there are less elements in the destination, add new elements */
         } else if (ownSize < size) {
             /* Reallocate buffer */
-            ((corto_objectseq*)sequence)->buffer = corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
+            result = ((corto_objectseq*)sequence)->buffer =
+            corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
 
             /* Memset new memory */
             memset(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
         }
         ((corto_objectseq*)sequence)->length = size;
     }
+
+    return result;
 }
 
 /* Copy collections */
@@ -259,11 +264,11 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
             if (array2) {
                 corto_copy_ser_t privateData;
 
-                /* This is a bit tricky: I'm passing the pointer to what is potentially a sequence-buffer
-                 * while I provide a sequence type. */
+                /* This is a bit tricky: passing the pointer to what is potentially a sequence-buffer
+                 * while providing a sequence type. */
+                array2 = corto_collection_resizeArray(corto_collection(t2), v2, size1);
                 corto_valueValueInit(&privateData.value, NULL, corto_type(t2), array2);
                 privateData.base = array1;
-                corto_collection_resizeArray(corto_collection(t2), v2, size1);
                 result = corto_serializeElements(s, info, &privateData);
             } else if (list2) {
                 corto_collection_resizeList(corto_collection(t1), list2, size1);
@@ -271,7 +276,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
             }
         } else if (list1) {
             if (array2) {
-                corto_collection_resizeArray(corto_collection(t2), v2, size1);
+                array2 = corto_collection_resizeArray(corto_collection(t2), v2, size1);
                 result = corto_collection_copyListToArray(corto_collection(t1), array2, elementSize, list1, FALSE);
             } else if (list2) {
                 corto_collection_resizeList(corto_collection(t1), list2, size1);
@@ -285,6 +290,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
 
 static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
+    corto_int16 ret;
     CORTO_UNUSED(s);
 
     corto_type t1 = corto_valueType(info);
@@ -292,7 +298,13 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
 
     data->base = corto_valueValue(info);
 
-    return !corto_type_castable(t2, t1);
+    ret = !corto_type_castable(t2, t1);
+    if (ret) {
+        corto_seterr("cannot copy value of type '%s' to '%s'",
+            corto_fullpath(NULL, t1), corto_fullpath(NULL, t2));
+    }
+
+    return ret;
 }
 
 struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {

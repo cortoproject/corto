@@ -4227,7 +4227,7 @@ corto_int16 corto_deinita(corto_any a) {
     return corto_deinitv(&v);
 }
 
-corto_int16 corto_copy(corto_object *dst, corto_object src) {
+corto_int16 _corto_copy(corto_object *dst, corto_object src) {
     struct corto_serializer_s s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     corto_int16 result;
@@ -4283,10 +4283,8 @@ corto_int16 corto_copya(corto_any *dst, corto_any src) {
     corto_value vdst;
     corto_value vsrc;
     corto_int16 result;
-    corto_valueValueInit(&vdst, NULL, src.type, dst->value);
-    corto_valueValueInit(&vsrc, NULL, src.type, src.value);
+    corto_valueValueInit(&vdst, NULL, corto_type(corto_any_o), dst);
+    corto_valueValueInit(&vsrc, NULL, corto_type(corto_any_o), &src);
     result = corto_copyv(&vdst, &vsrc);
-    dst->value = corto_valueValue(&vdst);
-    dst->type = src.type;
     return result;
 }

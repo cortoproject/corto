@@ -121,7 +121,7 @@ test::Suite ObjectMgmt::
     void tc_deleteWithReference()
     void tc_deleteRedeclaration()
 
-// Test compare function
+// Test compare serializer
 test::Suite Compare::
     void tc_uint8()
     void tc_uint16()
@@ -154,6 +154,28 @@ test::Suite Compare::
     void tc_listWithListAlloc()
     void tc_sequenceSizeMismatch()
     void tc_listSizeMismatch()
+
+// Test copy serializer
+test::Suite Copy::
+    void tc_any()
+    void tc_int()
+    void tc_string()
+    void tc_arrayToArray()
+    void tc_arrayToList()
+    void tc_sequenceToSequence()
+    void tc_sequenceToSequenceResize()
+    void tc_listToArray()
+    void tc_listToSequence()
+    void tc_listToList()
+    void tc_listToListResize()
+    void tc_arrayToArrayAlloc()
+    void tc_arrayToListAlloc()
+    void tc_sequenceToSequenceAlloc()
+    void tc_sequenceToSequenceResizeAlloc()
+    void tc_listToArrayAlloc()
+    void tc_listToSequenceAlloc()
+    void tc_listToListAlloc()
+    void tc_listToListResizeAlloc()
 
 
 // Class with method for testing ownership onInvoke

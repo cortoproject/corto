@@ -144,7 +144,7 @@ corto_int16 _corto_fromStrp(void *p, corto_type type, corto_string string);
 corto_int16 corto_fromStra(corto_any *a, corto_string string);
 
 /* Copy */
-corto_int16 corto_copy(corto_object *dst, corto_object src);
+corto_int16 _corto_copy(corto_object *dst, corto_object src);
 corto_int16 corto_copyv(corto_value *dst, corto_value *src);
 corto_int16 _corto_copyp(void *dst, corto_type type, void *src);
 corto_int16 corto_copya(corto_any *dst, corto_any src);
@@ -174,6 +174,7 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_declareChild(parent, name, type) _corto_declareChild(parent, name, corto_type(type))
 #define corto_strp(p, type, maxLength) _corto_strp(p, corto_type(type), maxLength)
 #define corto_fromStrp(out, type, string) _corto_fromStrp(out, corto_type(type), string)
+#define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)
 #define corto_copyp(p, type, src) _corto_copyp(p, corto_type(type), src)
 #define corto_comparep(p1, type, p2) _corto_comparep(p1, corto_type(type), p2)
 #define corto_initp(p, type) _corto_initp(p, corto_type(type))
