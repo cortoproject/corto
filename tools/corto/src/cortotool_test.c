@@ -2,6 +2,7 @@
 
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testCase = NULL;
+    corto_int8 ret, sig, err = 0;
 
     if (argc > 1) {
         if (corto_chdir(argv[1])) {
@@ -13,41 +14,26 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         }
     }
 
-    if (corto_fileTest("test")) {
-        corto_int8 ret = 0, sig = 0, err = 0;
-        corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", "test", "--silent", "--nocoverage", NULL});
+    if (!testCase) {
+        corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {
             if (sig > 0) {
                 corto_error("corto: the tests failed to build (build aborted with signal %d)", sig);
-            } else {
-                corto_error("corto: the tests failed to build (build returned %d)", ret);
             }
             err = 1;
         }
-
-        if (corto_fileTest("test/.corto/libtest.so")) {
-            if (err) {
-                corto_error("corto: trying to run previous testbuild, results may be outdated");
-            }
-
-            corto_chdir("test");
+    } else {
+        if (!corto_chdir("test")) {
             corto_loadPackages();
-            if (!testCase) {
-                ret = corto_load("./.corto/libtest.so", 1, (char*[]){"./.corto/libtest.so", NULL});
-            } else {
-                ret = corto_load("./.corto/libtest.so", 2, (char*[]){"./.corto/libtest.so", testCase, NULL});
+            if (corto_load("./.corto/libtest.so", 2, (char*[]){"./.corto/libtest.so", testCase, NULL})) {
+                err = 1;
             }
-            if (ret) {
-                goto error;
-            }
-        }
-
-        if (err) {
-            goto error;
         }
     }
 
-    /* If a project doesn't have any tests, that counts as a PASS */
+    if (err) {
+        goto error;
+    }
 
     return 0;
 error:

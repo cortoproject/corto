@@ -246,10 +246,23 @@ task :all => :default
 # Run test for project
 task :test do
   verbose(VERBOSE)
-  begin
-    sh "corto test"
-  rescue
-    abort
+  file = ""
+  if File.exists? "test/rakefile" then
+    sh "rake -f test/rakefile silent=true"
+    if File.exists? "test/.corto/libtest.so" then
+      Dir.chdir("test")
+      file = ".corto/libtest.so"
+    end
+  elsif File.exists? ".corto/libtest.so" then
+    file = ".corto/libtest.so"
+  end
+
+  if file != "" then
+    begin
+      sh "corto #{file}"
+    rescue
+      abort
+    end
   end
 end
 

@@ -136,7 +136,6 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include "Ownership.h"
 #include "Point.h"
 #include "Point3D.h"
-#include "Project.h"
 #include "RelativeName.h"
 #include "ReplicatorRequest.h"
 #include "Resolver.h"
@@ -146,7 +145,6 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include "StringReplicator.h"
 #include "StringSerializer.h"
 #include "VoidParent.h"
-#include "corto/test/test.h"
 #include "corto/test/test.h"
 
 #ifdef __cplusplus

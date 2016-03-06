@@ -789,40 +789,6 @@ test::Suite Env::
     void tc_setenvVariableNotFound()
     void tc_setenvNull()
 
-// Test corto create command
-test::Suite Project::
-    void setup() method
-    void teardown() method
-    void tc_app()
-    void tc_appNoTest()
-    void tc_appDependency()
-    void tc_appNestedDependency()
-    void tc_appNoCortoDependency()
-    void tc_appNoCortoNestedDependency()
-    void tc_appCortoDependencyNoCorto()
-    void tc_appCortoNestedDependencyNoCorto()
-    void tc_packageNoCorto()
-    void tc_packageNoCortoNested()
-    void tc_packageNoCortoDependency()
-    void tc_packageNoCortoNestedDependency()
-    void tc_packageCortoDependencyNoCorto()
-    void tc_packageCortoNestedDependencyNoCorto()
-    void tc_packageNoCortoLocal()
-    void tc_packageNodef()
-    void tc_packageNodefLocal()
-    void tc_packageNested()
-    void tc_packageNestedColons()
-    void tc_packageNestedFullyScoped()
-    void tc_packageNestedFullyScopedColons()
-    void tc_packageDependency()
-    void tc_packageDependencyColons()
-    void tc_packageNestedDependency()
-    void tc_packageNestedDependencyColons()
-    void tc_packageNestedDependencyFullyScoped()
-    void tc_packageNestedDependencyFullyScopedColons()
-    void tc_packagePublicHeaderRemoval()
-    void tc_publishNotag()
-
 // Test argument parser
 test::Suite Args::
     void tc_matchSingle()

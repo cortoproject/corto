@@ -1,7 +1,6 @@
 
-PACKAGE = 'test'
+COMPONENTS = %w(
+    corto
+)
 
-LOCAL = true
-COVERAGE = false
-
-require "#{ENV['CORTO_BUILD']}/package"
+require "#{ENV['CORTO_BUILD']}/forward"
