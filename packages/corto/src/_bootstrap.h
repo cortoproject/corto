@@ -1026,12 +1026,13 @@ CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINE
     CORTO_METHOD_O(replicator, setContentType, "(string type)", int16, FALSE, corto_replicator_setContentType);
     CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_invoke);
     CORTO_METHOD_O(replicator, request, "(string parent,string expr,string param,bool setContent)", resultIter, FALSE, corto_replicator_request);
+    CORTO_METHOD_O(replicator, resume, "(string parent,string name,object o)", object, FALSE, corto_replicator_resume);
     CORTO_METHOD_O(replicator, onInvoke, "(object instance,function proc,octetseq args)", void, TRUE, corto_replicator_onInvoke_v);
     CORTO_METHOD_O(replicator, onRequest, "(string parent,string expr,string param,bool setContent)", resultIter, TRUE, corto_replicator_onRequest_v);
+    CORTO_METHOD_O(replicator, onResume, "(string parent,string name,object o)", object, TRUE, corto_replicator_onResume_v);
     CORTO_METHOD_O(replicator, onDeclare, "(object observable)", void, TRUE, corto_replicator_onDeclare_v);
     CORTO_METHOD_O(replicator, onUpdate, "(object observable)", void, TRUE, corto_replicator_onUpdate_v);
     CORTO_METHOD_O(replicator, onDelete, "(object observable)", void, TRUE, corto_replicator_onDelete_v);
-    CORTO_MEMBER_O(replicator, onResolve, resolveAction, CORTO_GLOBAL);
     CORTO_OBSERVER_O(replicator, on_declare, corto_replicator_on_declare);
     CORTO_OBSERVER_O(replicator, on_update, corto_replicator_on_update);
     CORTO_OBSERVER_O(replicator, on_delete, corto_replicator_on_delete);

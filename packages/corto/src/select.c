@@ -664,6 +664,10 @@ static void corto_selectIterateReplicators(
 
             while (corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
+                if (!result) {
+                    corto_error("replicator returned NULL result");
+                    continue;
+                }
                 if (!frame->filter ||
                     corto_selectMatch(expr, result->id))
                 {
@@ -1117,7 +1121,7 @@ corto_int16 corto_select(
 {
     corto_selectData *data = corto_selectDataGet();
     if (expr && *expr) {
-        /* If expression starts with a parent token, prepend the scope to the
+        /* If expression starts with a 'this' token, prepend the scope to the
          * expression & cleanup. */
         if (scope && (expr[0] == '.') && (expr[1] == '.')) {
             corto_string buff;
@@ -1141,7 +1145,11 @@ corto_int16 corto_select(
     data->contentType = NULL;
 
     if (scope && *scope) {
-        data->scope = corto_strdup(scope);
+        if (*scope != '/') {
+            corto_asprintf(&data->scope, "/%s", scope);
+        } else {
+            data->scope = corto_strdup(scope);
+        }
     } else {
         data->scope = NULL;
     }

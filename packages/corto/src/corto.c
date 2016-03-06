@@ -525,6 +525,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, replicator_destruct_);\
     SSO_OP_OBJ(op, replicator_invoke_);\
     SSO_OP_OBJ(op, replicator_request_);\
+    SSO_OP_OBJ(op, replicator_resume_);\
     SSO_OP_OBJ(op, replicator_setContentType_);\
     SSO_OP_OBJ(op, replicator_post_);\
     SSO_OP_OBJ(op, replicator_onDeclare_);\
@@ -532,6 +533,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, replicator_onDelete_);\
     SSO_OP_OBJ(op, replicator_onInvoke_);\
     SSO_OP_OBJ(op, replicator_onRequest_);\
+    SSO_OP_OBJ(op, replicator_onResume_);\
     SSO_OP_OBJ(op, replicator_on_declare);\
     SSO_OP_OBJ(op, replicator_on_update);\
     SSO_OP_OBJ(op, replicator_on_delete);\

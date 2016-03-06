@@ -549,9 +549,9 @@ CORTO_EXPORT corto_result* corto_resultListAppendAlloc(corto_resultList list);
 CORTO_EXPORT corto_result* corto_resultListAppend(corto_resultList list, corto_result* element);
 CORTO_EXPORT corto_result* corto_resultListTakeFirst(corto_resultList list);
 CORTO_EXPORT corto_result* corto_resultListLast(corto_resultList list);
-CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 CORTO_EXPORT corto_result* corto_resultListGet(corto_resultList list, corto_uint32 index);
 CORTO_EXPORT corto_uint32 corto_resultListSize(corto_resultList list);
+CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 #define corto_resultIterForeach(iter, elem) \
     corto_result elem;\
     while(corto_iterHasNext(&iter) ? elem = *(corto_result*)(corto_word)corto_iterNext(&iter), TRUE : FALSE)

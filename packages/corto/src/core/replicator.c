@@ -63,6 +63,7 @@ corto_int16 _corto_replicator_construct(
     }
 
     corto_listen(this, corto_replicator_on_declare_o, CORTO_ON_DECLARE | mask, observable, this);
+    //corto_listen(this, corto_replicator_on_define_o, CORTO_ON_DEFINE | mask, observable, this);
     corto_listen(this, corto_replicator_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, this);
     corto_listen(this, corto_replicator_on_delete_o, CORTO_ON_DELETE | mask, observable, this);
 
@@ -200,6 +201,22 @@ corto_resultIter _corto_replicator_onRequest_v(
 /* $end */
 }
 
+corto_object _corto_replicator_onResume_v(
+    corto_replicator this,
+    corto_string parent,
+    corto_string name,
+    corto_object o)
+{
+/* $begin(corto/core/replicator/onResume) */
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(parent);
+    CORTO_UNUSED(name);
+    CORTO_UNUSED(o);
+
+    return NULL;
+/* $end */
+}
+
 corto_void _corto_replicator_onUpdate_v(
     corto_replicator this,
     corto_object observable)
@@ -233,6 +250,17 @@ corto_resultIter _corto_replicator_request(
 {
 /* $begin(corto/core/replicator/request) */
     return corto_replicator_onRequest(this, parent, expr, param, setContent);
+/* $end */
+}
+
+corto_object _corto_replicator_resume(
+    corto_replicator this,
+    corto_string parent,
+    corto_string name,
+    corto_object o)
+{
+/* $begin(corto/core/replicator/resume) */
+    return corto_replicator_onResume(this, parent, name, o);
 /* $end */
 }
 

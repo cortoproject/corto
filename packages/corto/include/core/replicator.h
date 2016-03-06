@@ -97,6 +97,20 @@ CORTO_EXPORT corto_resultIter _corto_replicator_onRequest_v(
     corto_bool setContent);
 #define corto_replicator_onRequest_v(_this, parent, expr, param, setContent) _corto_replicator_onRequest_v(corto_replicator(_this), parent, expr, param, setContent)
 
+CORTO_EXPORT corto_object _corto_replicator_onResume(
+    corto_replicator _this,
+    corto_string parent,
+    corto_string name,
+    corto_object o);
+#define corto_replicator_onResume(_this, parent, name, o) _corto_replicator_onResume(corto_replicator(_this), parent, name, o)
+
+CORTO_EXPORT corto_object _corto_replicator_onResume_v(
+    corto_replicator _this,
+    corto_string parent,
+    corto_string name,
+    corto_object o);
+#define corto_replicator_onResume_v(_this, parent, name, o) _corto_replicator_onResume_v(corto_replicator(_this), parent, name, o)
+
 CORTO_EXPORT void _corto_replicator_onUpdate(
     corto_replicator _this,
     corto_object observable);
@@ -119,6 +133,13 @@ CORTO_EXPORT corto_resultIter _corto_replicator_request(
     corto_string param,
     corto_bool setContent);
 #define corto_replicator_request(_this, parent, expr, param, setContent) _corto_replicator_request(corto_replicator(_this), parent, expr, param, setContent)
+
+CORTO_EXPORT corto_object _corto_replicator_resume(
+    corto_replicator _this,
+    corto_string parent,
+    corto_string name,
+    corto_object o);
+#define corto_replicator_resume(_this, parent, name, o) _corto_replicator_resume(corto_replicator(_this), parent, name, o)
 
 CORTO_EXPORT corto_int16 _corto_replicator_setContentType(
     corto_replicator _this,

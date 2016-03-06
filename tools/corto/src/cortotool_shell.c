@@ -229,8 +229,7 @@ static void cxsh_ls(char* arg) {
         corto_error("error: %s", corto_lasterr());
     } else {
         corto_resultIterForeach(iter, item) {
-            corto_result *item = corto_iterNext(&iter);
-            cxsh_printRow(item->parent, item->name, item->type);
+            cxsh_printRow(item.parent, item.name, item.type);
             i ++; /* Count objects so total can be printed afterwards */
         }
     }

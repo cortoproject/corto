@@ -15,6 +15,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child);
 static corto_int32 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
 static void corto_olsDestroy(corto__scope *scope);
 
+extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_threadKey CORTO_KEY_ATTR;
 
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
@@ -1093,6 +1094,37 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     return result;
 }
 
+static corto_object corto_resumePersistent(corto_object o) {
+    corto_object result = NULL;
+
+    corto_ll replicatorList =
+      corto_olsGet(corto_parentof(o), CORTO_OLS_REPLICATOR);
+    if (replicatorList) {
+        corto_id parent;
+        corto_path(parent, root_o, corto_parentof(o), "/");
+        corto_iter iter = corto_llIter(replicatorList);
+
+        while (corto_iterHasNext(&iter)) {
+            corto_replicator_olsData_t *rData = corto_iterNext(&iter);
+            /* If replicator implements resume, this will load the
+             * persistent copy in memory */
+            if (corto_replicator_resume(
+                rData->replicator,
+                parent,
+                corto_nameof(o),
+                o))
+            {
+                /* The first replicator that has the object
+                 * takes precedence */
+                result = o;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
 /* Define object */
 corto_int16 corto_define(corto_object o) {
     corto_int16 result = 0;
@@ -1106,6 +1138,12 @@ corto_int16 corto_define(corto_object o) {
 
             if ((_p = corto__objectPersistent(_o))) {
                 _p->owner = corto_getOwner();
+
+                /* If object is persistent and locally owned, check if a
+                 * persistent copy is already available */
+                if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+                    corto_resumePersistent(o);
+                }
             }
 
             /* Don't invoke constructor if object is not locally owned */
@@ -1916,21 +1954,21 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
     return buffer;
 }
 
-corto_int32 corto_pathToArray(corto_string path, char *elements[]) {
+corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep) {
     corto_int32 count = 0;
     char *ptr = path;
 
-    if (*ptr == '/') {
+    if (*ptr == *sep) {
         ptr++;
     }
 
     do {
-        if (*ptr == '/') {
+        if (*ptr == *sep) {
             *ptr = '\0';
             ptr++;
         }
         elements[count ++] = ptr;
-    } while ((ptr = strchr(ptr, '/')));
+    } while ((ptr = strchr(ptr, *sep)));
 
     return count;
 }
@@ -2421,15 +2459,19 @@ typedef struct corto_observerAlignData {
 int corto_observerAlignScope(corto_object o, void *userData) {
     corto_observerAlignData *data = userData;
 
-    if ((data->mask & CORTO_ON_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
-    {
-        corto_notifyObserver(data->observer, o, o, CORTO_ON_DECLARE, data->depth);
+    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+        if ((data->mask & CORTO_ON_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
+        {
+            corto_notifyObserver(data->observer, o, o, CORTO_ON_DECLARE, data->depth);
+        }
     }
 
-    if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
-        corto_checkState(o, CORTO_DEFINED))
-    {
-        corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
+    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+        if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
+            corto_checkState(o, CORTO_DEFINED))
+        {
+            corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
+        }
     }
 
     if (data->mask & CORTO_ON_TREE) {
@@ -2459,9 +2501,11 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     walkData.mask = mask;
     walkData.depth = 0;
 
-    if (((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DECLARED)) ||
-        ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DEFINED))) {
-        corto_notifyObserver(observer, observable, observable, mask, 0);
+    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
+        if (((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DECLARED)) ||
+            ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DEFINED))) {
+            corto_notifyObserver(observer, observable, observable, mask, 0);
+        }
     }
 
     scope = corto_scopeClaim(observable);
