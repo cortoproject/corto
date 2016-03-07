@@ -25,6 +25,10 @@ CORTO_EXPORT corto_void _corto_replicator_destruct(
     corto_replicator _this);
 #define corto_replicator_destruct(_this) _corto_replicator_destruct(corto_replicator(_this))
 
+CORTO_EXPORT corto_int16 _corto_replicator_init(
+    corto_replicator _this);
+#define corto_replicator_init(_this) _corto_replicator_init(corto_replicator(_this))
+
 CORTO_EXPORT corto_void _corto_replicator_invoke(
     corto_replicator _this,
     corto_object instance,

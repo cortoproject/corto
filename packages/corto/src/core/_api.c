@@ -1322,7 +1322,7 @@ corto_int16 _corto_queryCompare(corto_query dst, corto_query src) {
     return corto_compare(dst, src);
 }
 
-corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_string contentType) {
+corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
     corto_replicator this;
     this = corto_declare(corto_replicator_o);
     if (!this) {
@@ -1330,6 +1330,7 @@ corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, 
     }
     corto_setref(&((corto_replicator)this)->mount, mount);
     corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
     if (corto_define(this)) {
         corto_release(this);
@@ -1338,7 +1339,7 @@ corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, 
     return this;
 }
 
-corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_string contentType) {
+corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
     corto_replicator this;
     this = corto_declareChild(_parent, _name, corto_replicator_o);
     if (!this) {
@@ -1346,6 +1347,7 @@ corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string
     }
     corto_setref(&((corto_replicator)this)->mount, mount);
     corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
     if (corto_define(this)) {
         corto_release(this);
@@ -1354,11 +1356,12 @@ corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string
     return this;
 }
 
-corto_int16 _corto_replicatorUpdate(corto_replicator this, corto_object mount, corto_query query, corto_string contentType) {
+corto_int16 _corto_replicatorUpdate(corto_replicator this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
     CORTO_UNUSED(this);
     if (!corto_updateBegin(this)) {
         corto_setref(&((corto_replicator)this)->mount, mount);
         corto_setref(&((corto_replicator)this)->query, query);
+        ((corto_replicator)this)->kind = kind;
         corto_setstr(&((corto_replicator)this)->contentType, contentType);
         corto_updateEnd(this);
     } else {
@@ -1385,18 +1388,20 @@ corto_replicator _corto_replicatorDeclareChild(corto_object _parent, corto_strin
     return this;
 }
 
-corto_int16 _corto_replicatorDefine(corto_replicator this, corto_object mount, corto_query query, corto_string contentType) {
+corto_int16 _corto_replicatorDefine(corto_replicator this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
     CORTO_UNUSED(this);
     corto_setref(&((corto_replicator)this)->mount, mount);
     corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
     return corto_define(this);
 }
 
-void _corto_replicatorSet(corto_replicator this, corto_object mount, corto_query query, corto_string contentType) {
+void _corto_replicatorSet(corto_replicator this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
     CORTO_UNUSED(this);
     corto_setref(&((corto_replicator)this)->mount, mount);
     corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
 }
 
@@ -1415,6 +1420,108 @@ corto_replicator corto_replicatorFromStr(corto_replicator value, corto_string st
 
 corto_int16 _corto_replicatorCompare(corto_replicator dst, corto_replicator src) {
     return corto_compare(dst, src);
+}
+
+corto_replicatorKind* _corto_replicatorKindCreate(corto_replicatorKind value) {
+    corto_replicatorKind* this;
+    this = corto_declare(corto_replicatorKind_o);
+    if (!this) {
+        return NULL;
+    }
+    *this = value;
+    if (corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_replicatorKind* _corto_replicatorKindCreateChild(corto_object _parent, corto_string _name, corto_replicatorKind value) {
+    corto_replicatorKind* this;
+    this = corto_declareChild(_parent, _name, corto_replicatorKind_o);
+    if (!this) {
+        return NULL;
+    }
+    *this = value;
+    if (corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_replicatorKindUpdate(corto_replicatorKind* this, corto_replicatorKind value) {
+    CORTO_UNUSED(this);
+    if (!corto_updateBegin(this)) {
+        *this = value;
+        corto_updateEnd(this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_replicatorKind* _corto_replicatorKindDeclare(void) {
+    corto_replicatorKind* this;
+    this = corto_declare(corto_replicatorKind_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_replicatorKind* _corto_replicatorKindDeclareChild(corto_object _parent, corto_string _name) {
+    corto_replicatorKind* this;
+    this = corto_declareChild(_parent, _name, corto_replicatorKind_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_replicatorKindDefine(corto_replicatorKind* this, corto_replicatorKind value) {
+    CORTO_UNUSED(this);
+    *this = value;
+    return corto_define(this);
+}
+
+void _corto_replicatorKindSet(corto_replicatorKind* this, corto_replicatorKind value) {
+    CORTO_UNUSED(this);
+    *this = value;
+}
+
+corto_string _corto_replicatorKindStr(corto_replicatorKind value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_replicatorKind_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_replicatorKind* corto_replicatorKindFromStr(corto_replicatorKind* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_replicatorKind_o), str);
+    return value;
+}
+
+corto_int16 corto_replicatorKindCompare(corto_replicatorKind dst, corto_replicatorKind src) {
+    return corto_comparep(&dst, corto_replicatorKind_o, &src);
+}
+
+corto_int16 _corto_replicatorKindInit(corto_replicatorKind* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_replicatorKind_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_replicatorKind_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_replicatorKindDeinit(corto_replicatorKind* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_replicatorKind_o), value);
+    result = corto_deinitv(&v);
+    return result;
 }
 
 corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {

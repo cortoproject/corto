@@ -518,11 +518,15 @@ static void corto_selectParseFilter(
     }
 }
 
-static corto_int16 corto_selectRequestReplicators(
+/* Function returns FALSE if a SINK is found, which means that for this scope
+ * the object store should not be walked */
+static corto_bool corto_selectRequestReplicators(
     corto_selectData *data,
     corto_selectStack *frame,
     corto__scope *scope)
 {
+    corto_bool result = TRUE;
+
     if (data->activeReplicators < 0) {
         corto_id parent, expr;
         corto_bool releaseScope = FALSE;
@@ -561,7 +565,12 @@ static corto_int16 corto_selectRequestReplicators(
                                 &data->srcSer[data->activeReplicators],
                                 odata->replicator->contentType))
                             {
-                                goto error;
+                                corto_error("contentType '%s' for %s not found",
+                                  odata->replicator->contentType,
+                                  corto_fullpath(NULL, corto_typeof(odata->replicator)));
+
+                                /* Ignore replicator */
+                                continue;
                             }
                         }
                     }
@@ -575,6 +584,10 @@ static corto_int16 corto_selectRequestReplicators(
                             data->param,
                             data->contentType ? TRUE : FALSE
                         );
+
+                    if (odata->replicator->kind == CORTO_SINK) {
+                        result = FALSE;
+                    }
                 }
             }
         }
@@ -584,9 +597,7 @@ static corto_int16 corto_selectRequestReplicators(
         }
     }
 
-    return 0;
-error:
-    return -1;
+    return result;
 }
 
 static corto_word corto_selectConvert(
@@ -772,14 +783,22 @@ static void corto_selectScope(
 
     /* Request replicators once per scope, and do it before iterating over
      * corto store objects so replicators have more time to fetch data. */
-    corto_selectRequestReplicators(data, frame, scope);
+    corto_bool walkScope = corto_selectRequestReplicators(data, frame, scope);
 
     data->next = NULL;
 
     /* If not iterating over a replicator, we're iterating over the store */
-    if ((data->currentReplicator == -1) && !data->scopes[data->currentScope].parentQuery) {
+    if ((data->currentReplicator == -1) &&
+        !data->scopes[data->currentScope].parentQuery)
+    {
         while ((o = corto_selectIterNext(frame, lastKey))) {
-            if (!frame->filter || corto_selectMatch(frame->filter, corto_nameof(o))) {
+            /* Skip object if walkScope is FALSE (which means that there is a
+             * SINK replicator attached) *and* the object is not PERSISTENT
+             * (a replicator won't persist non-PERSISTENT objects) */
+            if ((!frame->filter ||
+                corto_selectMatch(frame->filter, corto_nameof(o))) &&
+                (walkScope || !corto_checkAttr(o, CORTO_ATTR_PERSISTENT)))
+            {
                 data->next = &data->item;
                 corto_setItemData(o, data->next, data);
                 break;
@@ -804,13 +823,16 @@ static void corto_selectTree(
 
     /* Request replicators once per scope, and do it before iterating over
      * corto store objects so replicators have more time to fetch data. */
-    corto_selectRequestReplicators(data, frame, NULL);
+    corto_bool walkScope = corto_selectRequestReplicators(data, frame, NULL);
 
     data->next = NULL;
 
-    if ((data->currentReplicator == -1) && !data->scopes[data->currentScope].parentQuery) {
+    if ((data->currentReplicator == -1) &&
+        !data->scopes[data->currentScope].parentQuery)
+    {
+        corto_object o = NULL;
+
         do {
-            corto_object o = NULL;
             corto_object claimed = frame->o;
             corto__scopeClaim(claimed);
 
@@ -840,8 +862,9 @@ static void corto_selectTree(
                 data->next = NULL;
             }
             corto__scopeRelease(claimed);
-        } while (frame->filter && (data->next &&
-            !corto_selectMatch(frame->filter, data->next->name)));
+        } while ((frame->filter && (data->next &&
+            !corto_selectMatch(frame->filter, data->next->name))) &&
+            (walkScope || !corto_checkAttr(o, CORTO_ATTR_PERSISTENT)));
     }
 
     /* Handle replicator iteration outside of scope lock */

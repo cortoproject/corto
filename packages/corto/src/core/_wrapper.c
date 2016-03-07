@@ -198,6 +198,13 @@ void __corto_replicator_destruct(corto_function f, void *result, void *args) {
         corto_replicator(*(void**)args));
 }
 
+void __corto_replicator_init(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(args);
+    *(corto_int16*)result = _corto_replicator_init(
+        corto_replicator(*(void**)args));
+}
+
 void __corto_replicator_invoke(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);

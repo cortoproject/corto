@@ -1100,12 +1100,19 @@ static corto_object corto_resumePersistent(corto_object o) {
     corto_ll replicatorList =
       corto_olsGet(corto_parentof(o), CORTO_OLS_REPLICATOR);
     if (replicatorList) {
-        corto_id parent;
-        corto_path(parent, root_o, corto_parentof(o), "/");
         corto_iter iter = corto_llIter(replicatorList);
 
         while (corto_iterHasNext(&iter)) {
             corto_replicator_olsData_t *rData = corto_iterNext(&iter);
+            corto_id parent;
+
+            /* Parent must be relative to mount point of replicator */
+            corto_path(
+                parent,
+                rData->replicator->mount,
+                corto_parentof(o),
+                "/");
+
             /* If replicator implements resume, this will load the
              * persistent copy in memory */
             if (corto_replicator_resume(

@@ -161,6 +161,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, procedureKind);\
     SSO_OP_VALUE(op, equalityKind);\
     SSO_OP_VALUE(op, operatorKind);\
+    SSO_OP_VALUE(op, replicatorKind);\
     SSO_OP_VALUE(op, modifier);\
     SSO_OP_VALUE(op, eventMask);\
     SSO_OP_VALUE(op, state);\
@@ -299,6 +300,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, equalityKind_LT);\
     SSO_OP_OBJ(op, equalityKind_GT);\
     SSO_OP_OBJ(op, equalityKind_NEQ);\
+    /* replicatorKind */\
+    SSO_OP_OBJ(op, replicatorKind_SOURCE);\
+    SSO_OP_OBJ(op, replicatorKind_SINK);\
+    SSO_OP_OBJ(op, replicatorKind_CACHE);\
     /* operatorKind */\
     SSO_OP_OBJ(op, operatorKind_ASSIGN);\
     SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
@@ -520,7 +525,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* replicator */\
     SSO_OP_OBJ(op, replicator_mount);\
     SSO_OP_OBJ(op, replicator_query);\
+    SSO_OP_OBJ(op, replicator_kind);\
     SSO_OP_OBJ(op, replicator_contentType);\
+    SSO_OP_OBJ(op, replicator_init_);\
     SSO_OP_OBJ(op, replicator_construct_);\
     SSO_OP_OBJ(op, replicator_destruct_);\
     SSO_OP_OBJ(op, replicator_invoke_);\

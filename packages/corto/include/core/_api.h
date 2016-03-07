@@ -380,14 +380,14 @@ CORTO_EXPORT corto_int16 _corto_queryCompare(corto_query dst, corto_query src);
 #define corto_queryCompare(dst, src) _corto_queryCompare(corto_query(dst), corto_query(src))
 
 /* /corto/core/replicator */
-CORTO_EXPORT corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_string contentType);
-#define corto_replicatorCreate(mount, query, contentType) _corto_replicatorCreate(mount, corto_query(query), contentType)
-#define corto_replicatorCreate_auto(_name, mount, query, contentType) corto_replicator _name = corto_replicatorCreate(mount, query, contentType); (void)_name
-CORTO_EXPORT corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_string contentType);
-#define corto_replicatorCreateChild(_parent, _name, mount, query, contentType) _corto_replicatorCreateChild(_parent, _name, mount, corto_query(query), contentType)
-#define corto_replicatorCreateChild_auto(_parent, _name, mount, query, contentType) corto_replicator _name = corto_replicatorCreateChild(_parent, #_name, mount, query, contentType); (void)_name
-CORTO_EXPORT corto_int16 _corto_replicatorUpdate(corto_replicator _this, corto_object mount, corto_query query, corto_string contentType);
-#define corto_replicatorUpdate(_this, mount, query, contentType) _corto_replicatorUpdate(corto_replicator(_this), mount, corto_query(query), contentType)
+CORTO_EXPORT corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType);
+#define corto_replicatorCreate(mount, query, kind, contentType) _corto_replicatorCreate(mount, corto_query(query), kind, contentType)
+#define corto_replicatorCreate_auto(_name, mount, query, kind, contentType) corto_replicator _name = corto_replicatorCreate(mount, query, kind, contentType); (void)_name
+CORTO_EXPORT corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType);
+#define corto_replicatorCreateChild(_parent, _name, mount, query, kind, contentType) _corto_replicatorCreateChild(_parent, _name, mount, corto_query(query), kind, contentType)
+#define corto_replicatorCreateChild_auto(_parent, _name, mount, query, kind, contentType) corto_replicator _name = corto_replicatorCreateChild(_parent, #_name, mount, query, kind, contentType); (void)_name
+CORTO_EXPORT corto_int16 _corto_replicatorUpdate(corto_replicator _this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType);
+#define corto_replicatorUpdate(_this, mount, query, kind, contentType) _corto_replicatorUpdate(corto_replicator(_this), mount, corto_query(query), kind, contentType)
 
 CORTO_EXPORT corto_replicator _corto_replicatorDeclare(void);
 #define corto_replicatorDeclare() _corto_replicatorDeclare()
@@ -395,15 +395,45 @@ CORTO_EXPORT corto_replicator _corto_replicatorDeclare(void);
 CORTO_EXPORT corto_replicator _corto_replicatorDeclareChild(corto_object _parent, corto_string _name);
 #define corto_replicatorDeclareChild(_parent, _name) _corto_replicatorDeclareChild(_parent, _name)
 #define corto_replicatorDeclareChild_auto(_parent, _name) corto_replicator _name = corto_replicatorDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_replicatorDefine(corto_replicator _this, corto_object mount, corto_query query, corto_string contentType);
-#define corto_replicatorDefine(_this, mount, query, contentType) _corto_replicatorDefine(corto_replicator(_this), mount, corto_query(query), contentType)
-CORTO_EXPORT void _corto_replicatorSet(corto_replicator _this, corto_object mount, corto_query query, corto_string contentType);
-#define corto_replicatorSet(_this, mount, query, contentType) _corto_replicatorSet(corto_replicator(_this), mount, corto_query(query), contentType)
+CORTO_EXPORT corto_int16 _corto_replicatorDefine(corto_replicator _this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType);
+#define corto_replicatorDefine(_this, mount, query, kind, contentType) _corto_replicatorDefine(corto_replicator(_this), mount, corto_query(query), kind, contentType)
+CORTO_EXPORT void _corto_replicatorSet(corto_replicator _this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType);
+#define corto_replicatorSet(_this, mount, query, kind, contentType) _corto_replicatorSet(corto_replicator(_this), mount, corto_query(query), kind, contentType)
 CORTO_EXPORT corto_string _corto_replicatorStr(corto_replicator value);
 #define corto_replicatorStr(value) _corto_replicatorStr(corto_replicator(value))
 CORTO_EXPORT corto_replicator corto_replicatorFromStr(corto_replicator value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_replicatorCompare(corto_replicator dst, corto_replicator src);
 #define corto_replicatorCompare(dst, src) _corto_replicatorCompare(corto_replicator(dst), corto_replicator(src))
+
+/* /corto/core/replicatorKind */
+CORTO_EXPORT corto_replicatorKind* _corto_replicatorKindCreate(corto_replicatorKind value);
+#define corto_replicatorKindCreate(value) _corto_replicatorKindCreate(value)
+#define corto_replicatorKindCreate_auto(_name, value) corto_replicatorKind* _name = corto_replicatorKindCreate(value); (void)_name
+CORTO_EXPORT corto_replicatorKind* _corto_replicatorKindCreateChild(corto_object _parent, corto_string _name, corto_replicatorKind value);
+#define corto_replicatorKindCreateChild(_parent, _name, value) _corto_replicatorKindCreateChild(_parent, _name, value)
+#define corto_replicatorKindCreateChild_auto(_parent, _name, value) corto_replicatorKind* _name = corto_replicatorKindCreateChild(_parent, #_name, value); (void)_name
+CORTO_EXPORT corto_int16 _corto_replicatorKindUpdate(corto_replicatorKind* _this, corto_replicatorKind value);
+#define corto_replicatorKindUpdate(_this, value) _corto_replicatorKindUpdate(_this, value)
+
+CORTO_EXPORT corto_replicatorKind* _corto_replicatorKindDeclare(void);
+#define corto_replicatorKindDeclare() _corto_replicatorKindDeclare()
+#define corto_replicatorKindDeclare_auto(_name) corto_replicatorKind* _name = corto_replicatorKindDeclare(); (void)_name
+CORTO_EXPORT corto_replicatorKind* _corto_replicatorKindDeclareChild(corto_object _parent, corto_string _name);
+#define corto_replicatorKindDeclareChild(_parent, _name) _corto_replicatorKindDeclareChild(_parent, _name)
+#define corto_replicatorKindDeclareChild_auto(_parent, _name) corto_replicatorKind* _name = corto_replicatorKindDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_replicatorKindDefine(corto_replicatorKind* _this, corto_replicatorKind value);
+#define corto_replicatorKindDefine(_this, value) _corto_replicatorKindDefine(_this, value)
+CORTO_EXPORT void _corto_replicatorKindSet(corto_replicatorKind* _this, corto_replicatorKind value);
+#define corto_replicatorKindSet(_this, value) _corto_replicatorKindSet(_this, value)
+CORTO_EXPORT corto_string _corto_replicatorKindStr(corto_replicatorKind value);
+#define corto_replicatorKindStr(value) _corto_replicatorKindStr(value)
+CORTO_EXPORT corto_replicatorKind* corto_replicatorKindFromStr(corto_replicatorKind* value, corto_string str);
+CORTO_EXPORT corto_int16 corto_replicatorKindCompare(corto_replicatorKind dst, corto_replicatorKind src);
+
+CORTO_EXPORT corto_int16 _corto_replicatorKindInit(corto_replicatorKind* value);
+#define corto_replicatorKindInit(value) _corto_replicatorKindInit(value)
+CORTO_EXPORT corto_int16 _corto_replicatorKindDeinit(corto_replicatorKind* value);
+#define corto_replicatorKindDeinit(value) _corto_replicatorKindDeinit(value)
 
 /* /corto/core/result */
 CORTO_EXPORT corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);

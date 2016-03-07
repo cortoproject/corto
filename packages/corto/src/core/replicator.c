@@ -53,6 +53,7 @@ corto_int16 _corto_replicator_construct(
 
     if (!observable) {
         observable = root_o;
+        corto_setref(&this->mount, observable);
     }
 
     /* Attach replicator to the observable if mask != ON_SELF */
@@ -63,7 +64,6 @@ corto_int16 _corto_replicator_construct(
     }
 
     corto_listen(this, corto_replicator_on_declare_o, CORTO_ON_DECLARE | mask, observable, this);
-    //corto_listen(this, corto_replicator_on_define_o, CORTO_ON_DEFINE | mask, observable, this);
     corto_listen(this, corto_replicator_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, this);
     corto_listen(this, corto_replicator_on_delete_o, CORTO_ON_DELETE | mask, observable, this);
 
@@ -80,6 +80,17 @@ corto_void _corto_replicator_destruct(
 
     CORTO_UNUSED(this);
 
+/* $end */
+}
+
+corto_int16 _corto_replicator_init(
+    corto_replicator this)
+{
+/* $begin(corto/core/replicator/init) */
+
+    this->kind = CORTO_SOURCE;
+
+    return 0;
 /* $end */
 }
 
