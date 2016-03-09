@@ -682,12 +682,8 @@ static void corto_selectIterateReplicators(
         /* Walk over iterators until one with data available has been found */
         while ((data->currentReplicator < data->activeReplicators)) {
             corto_resultIter *iter = &data->replicators[data->currentReplicator];
-            corto_int64 itemsLeft =
-                (data->offset > data->count)
-                ? data->limit
-                : data->limit - (data->count - data->offset);
 
-            while ((!data->limit || itemsLeft) && corto_iterHasNext(iter)) {
+            while (corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
                 if (!result) {
                     corto_error("replicator returned NULL result");
@@ -775,13 +771,11 @@ static void corto_selectIterateReplicators(
                         data->destSer.contentRelease(data->item.value);
                         data->item.value = corto_selectConvert(data, result);
                     }
-                    break;
-                }
 
-                itemsLeft =
-                    (data->offset > data->count)
-                    ? data->limit
-                    : data->limit - (data->count - data->offset);
+                    if (data->count > data->offset) {
+                        break;
+                    }
+                }
             }
 
             if (!data->next) {
