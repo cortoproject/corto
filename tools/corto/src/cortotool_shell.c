@@ -13,6 +13,7 @@
 #define CXSH_CMD_MAX (1024)
 
 #define CXSH_COL_NAME     (46)
+#define CXSH_COL_ID       (18)
 #define CXSH_COL_TYPE     (32)
 #define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE)
 
@@ -176,30 +177,30 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
     return buff;
 }
 
-static int cxsh_printRow(corto_string parent, corto_string name, corto_string type) {
+static int cxsh_printRow(corto_string parent, corto_string id, corto_string name, corto_string type) {
     corto_string remaining = 0;
     corto_string objcolor = OBJECT_COLOR;
-    corto_int32 colName = CXSH_COL_NAME;
+    corto_uint32 colId = CXSH_COL_ID;
 
     /* Print columns */
     cxsh_color(objcolor);
     if (strcmp(parent, scope) && strcmp(parent, ".")) {
         printf("%s/", parent);
-        colName -= strlen(parent) + 1;
+        colId -= strlen(parent) + 1;
     }
-    remaining = cxsh_printColumnValue(name, colName);
+    cxsh_printColumnValue(id, colId);
     cxsh_color(NORMAL);
+    remaining = cxsh_printColumnValue(name, CXSH_COL_NAME);
     cxsh_color(TYPE_COLOR); printf("%s", type); cxsh_color(NORMAL);
     printf("\n");
 
     /* Print remainder of the name */
     while (remaining) {
-        cxsh_color(objcolor);
-        printf("    ");
+        printf("%*s    ", CXSH_COL_ID, " ");
         remaining = cxsh_printColumnValue(remaining, CXSH_COL_NAME - 4);
-        cxsh_color(NORMAL);
         printf("\n");
     }
+
     return 1;
 }
 
@@ -229,7 +230,7 @@ static void cxsh_ls(char* arg) {
         corto_error("error: %s", corto_lasterr());
     } else {
         corto_resultIterForeach(iter, item) {
-            cxsh_printRow(item.parent, item.name, item.type);
+            cxsh_printRow(item.parent, item.id, item.name, item.type);
             i ++; /* Count objects so total can be printed afterwards */
         }
     }
@@ -265,7 +266,7 @@ static void cxsh_cd(char* arg) {
                 return;
             }
             /* Use fully qualified path for scope */
-            sprintf(result, "%s/%s/%s", scope, e.parent, e.name);
+            sprintf(result, "%s/%s/%s", scope, e.parent, e.id);
             count++;
         }
 
@@ -741,7 +742,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             corto_select(scope, expr, &iter);
             corto_resultIterForeach(iter, item) {
                 corto_id scopedItem;
-                sprintf(scopedItem, "%s/%s", item.parent, item.name);
+                sprintf(scopedItem, "%s/%s", item.parent, item.id);
                 if (appendSlash) {
                     strcat(scopedItem, "/");
                 }
@@ -754,9 +755,9 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                 corto_resultIterForeach(iter, item) {
                     corto_id scopedItem;
                     if (strcmp(item.parent, ".")) {
-                        sprintf(scopedItem, "corto/%s/%s", item.parent, item.name);
+                        sprintf(scopedItem, "corto/%s/%s", item.parent, item.id);
                     } else {
-                        sprintf(scopedItem, "corto/%s", item.name);
+                        sprintf(scopedItem, "corto/%s", item.id);
                     }
                     if (appendSlash) {
                         strcat(scopedItem, "/");

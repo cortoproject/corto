@@ -30,10 +30,7 @@ void test_StringReplicator_iterRelease(corto_iter *iter) {
 /* $end */
 corto_resultIter _test_StringReplicator_onRequest(
     test_StringReplicator this,
-    corto_string parent,
-    corto_string expr,
-    corto_string param,
-    corto_bool setContent)
+    corto_request *request)
 {
 /* $begin(test/StringReplicator/onRequest) */
     corto_ll data = corto_llNew();

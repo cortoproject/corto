@@ -132,10 +132,7 @@ void test_ListReplicator_iterRelease(corto_iter *iter) {
 /* $end */
 corto_resultIter _test_ListReplicator_onRequest(
     test_ListReplicator this,
-    corto_string parent,
-    corto_string expr,
-    corto_string param,
-    corto_bool setContent)
+    corto_request *request)
 {
 /* $begin(test/ListReplicator/onRequest) */
     corto_iter iter = corto_llIter(this->items);
@@ -143,7 +140,7 @@ corto_resultIter _test_ListReplicator_onRequest(
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
-        if (!fnmatch(parent, e.parent, 0)) {
+        if (!fnmatch(request->parent, e.parent, 0)) {
             corto_resultSet(
                 corto_resultListAppendAlloc(data),
                 e.id,

@@ -463,6 +463,7 @@ CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
 CORTO_FWDECL(struct, result);
+CORTO_FWDECL(struct, request);
 
 /* Abstract classes */
 CORTO_FWDECL(interface, dispatcher);
@@ -534,6 +535,7 @@ CORTO_FWDECL(observer, replicator_on_delete);
 CORTO_FWDECL(iterator, resultIter);
 
 CORTO_FWDECL(struct, time);
+CORTO_FWDECL(struct, position);
 
 /* database root */
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
@@ -1011,6 +1013,15 @@ CORTO_STRUCT_O(corto_core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, N
     CORTO_MEMBER_O(result, value, word, CORTO_GLOBAL);
     CORTO_METHOD_O(result, getText, "()", string, FALSE, corto_result_getText);
 
+/* /corto/lang/request */
+CORTO_STRUCT_O(corto_core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(request, parent, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(request, expr, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(request, offset, uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(request, limit, uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(request, content, bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(request, param, string, CORTO_GLOBAL);
+
 /* /corto/lang/dispatcher */
 CORTO_INTERFACE_O(corto_core, dispatcher);
     CORTO_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
@@ -1033,10 +1044,10 @@ CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINE
     CORTO_METHOD_O(replicator, post, "(event e)", void, FALSE, corto_replicator_post);
     CORTO_METHOD_O(replicator, setContentType, "(string type)", int16, FALSE, corto_replicator_setContentType);
     CORTO_METHOD_O(replicator, invoke, "(object instance,function proc,octetseq args)", void, FALSE, corto_replicator_invoke);
-    CORTO_METHOD_O(replicator, request, "(string parent,string expr,string param,bool setContent)", resultIter, FALSE, corto_replicator_request);
+    CORTO_METHOD_O(replicator, request, "(core/request request)", resultIter, FALSE, corto_replicator_request);
     CORTO_METHOD_O(replicator, resume, "(string parent,string name,object o)", object, FALSE, corto_replicator_resume);
     CORTO_METHOD_O(replicator, onInvoke, "(object instance,function proc,octetseq args)", void, TRUE, corto_replicator_onInvoke_v);
-    CORTO_METHOD_O(replicator, onRequest, "(string parent,string expr,string param,bool setContent)", resultIter, TRUE, corto_replicator_onRequest_v);
+    CORTO_METHOD_O(replicator, onRequest, "(core/request request)", resultIter, TRUE, corto_replicator_onRequest_v);
     CORTO_METHOD_O(replicator, onResume, "(string parent,string name,object o)", object, TRUE, corto_replicator_onResume_v);
     CORTO_METHOD_O(replicator, onDeclare, "(object observable)", void, TRUE, corto_replicator_onDeclare_v);
     CORTO_METHOD_O(replicator, onUpdate, "(object observable)", void, TRUE, corto_replicator_onUpdate_v);
@@ -1131,6 +1142,11 @@ CORTO_STRUCT_O(corto_lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL
 CORTO_STRUCT_O(corto_core, time, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(time, sec, int32, CORTO_GLOBAL);
     CORTO_MEMBER_O(time, nanosec, int32, CORTO_GLOBAL);
+
+/* /corto/core/position */
+CORTO_STRUCT_O(corto_core, position, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(position, latitude, float64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(position, longitude, float64, CORTO_GLOBAL);
 
 #ifdef __cplusplus
 }

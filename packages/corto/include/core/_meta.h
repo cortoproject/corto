@@ -29,6 +29,7 @@ CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, replicator);
 CORTO_META_OBJECT(struct, result);
+CORTO_META_OBJECT(struct, request);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(enum, equalityKind);
@@ -47,6 +48,7 @@ CORTO_META_OBJECT(delegate, requestAction);
 
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(struct, time);
+CORTO_META_OBJECT(struct, position);
 
 #ifdef __cplusplus
 }

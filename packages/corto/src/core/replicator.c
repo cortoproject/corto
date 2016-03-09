@@ -193,19 +193,13 @@ corto_void _corto_replicator_onInvoke_v(
 
 corto_resultIter _corto_replicator_onRequest_v(
     corto_replicator this,
-    corto_string parent,
-    corto_string expr,
-    corto_string param,
-    corto_bool setContent)
+    corto_request *request)
 {
 /* $begin(corto/core/replicator/onRequest) */
     corto_resultIter result;
-
+    
     CORTO_UNUSED(this);
-    CORTO_UNUSED(parent);
-    CORTO_UNUSED(expr);
-    CORTO_UNUSED(param);
-    CORTO_UNUSED(setContent);
+    CORTO_UNUSED(request);
 
     memset(&result, 0, sizeof(corto_iter));
     return result;
@@ -254,13 +248,10 @@ corto_void _corto_replicator_post(
 
 corto_resultIter _corto_replicator_request(
     corto_replicator this,
-    corto_string parent,
-    corto_string expr,
-    corto_string param,
-    corto_bool setContent)
+    corto_request *request)
 {
 /* $begin(corto/core/replicator/request) */
-    return corto_replicator_onRequest(this, parent, expr, param, setContent);
+    return corto_replicator_onRequest(this, request);
 /* $end */
 }
 

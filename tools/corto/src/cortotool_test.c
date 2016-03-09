@@ -1,4 +1,5 @@
 #include "cortotool_test.h"
+#include "cortotool_build.h"
 
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testCase = NULL;
@@ -24,10 +25,20 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         }
     } else {
         if (!corto_chdir("test")) {
-            corto_loadPackages();
-            if (corto_load("./.corto/libtest.so", 2, (char*[]){"./.corto/libtest.so", testCase, NULL})) {
+            if (cortotool_build(2, (char*[]){"build", "--silent"})) {
                 err = 1;
+            } else {
+                corto_loadPackages();
+                if (corto_load("./.corto/libtest.so", 2,
+                   (char*[]){"./.corto/libtest.so", testCase, NULL})) {
+                    err = 1;
+                }
             }
+        } else {
+            /* If an explicit testcase is provided but there are no tests,
+             * report an error*/
+            corto_error("corto: no tests found for project %s", corto_cwd());
+            err = 1;
         }
     }
 

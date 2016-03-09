@@ -1232,6 +1232,113 @@ corto_int16 _corto_packageCompare(corto_package dst, corto_package src) {
     return corto_compare(dst, src);
 }
 
+corto_position* _corto_positionCreate(corto_float64 latitude, corto_float64 longitude) {
+    corto_position* this;
+    this = corto_declare(corto_position_o);
+    if (!this) {
+        return NULL;
+    }
+    ((corto_position*)this)->latitude = latitude;
+    ((corto_position*)this)->longitude = longitude;
+    if (corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_position* _corto_positionCreateChild(corto_object _parent, corto_string _name, corto_float64 latitude, corto_float64 longitude) {
+    corto_position* this;
+    this = corto_declareChild(_parent, _name, corto_position_o);
+    if (!this) {
+        return NULL;
+    }
+    ((corto_position*)this)->latitude = latitude;
+    ((corto_position*)this)->longitude = longitude;
+    if (corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_positionUpdate(corto_position* this, corto_float64 latitude, corto_float64 longitude) {
+    CORTO_UNUSED(this);
+    if (!corto_updateBegin(this)) {
+        ((corto_position*)this)->latitude = latitude;
+        ((corto_position*)this)->longitude = longitude;
+        corto_updateEnd(this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_position* _corto_positionDeclare(void) {
+    corto_position* this;
+    this = corto_declare(corto_position_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_position* _corto_positionDeclareChild(corto_object _parent, corto_string _name) {
+    corto_position* this;
+    this = corto_declareChild(_parent, _name, corto_position_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_positionDefine(corto_position* this, corto_float64 latitude, corto_float64 longitude) {
+    CORTO_UNUSED(this);
+    ((corto_position*)this)->latitude = latitude;
+    ((corto_position*)this)->longitude = longitude;
+    return corto_define(this);
+}
+
+void _corto_positionSet(corto_position* this, corto_float64 latitude, corto_float64 longitude) {
+    CORTO_UNUSED(this);
+    ((corto_position*)this)->latitude = latitude;
+    ((corto_position*)this)->longitude = longitude;
+}
+
+corto_string _corto_positionStr(corto_position* value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_position_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_position* corto_positionFromStr(corto_position* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_position_o), str);
+    return value;
+}
+
+corto_int16 corto_positionCompare(corto_position* dst, corto_position* src) {
+    return corto_comparep(dst, corto_position_o, src);
+}
+
+corto_int16 _corto_positionInit(corto_position* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_position_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_position_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_positionDeinit(corto_position* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_position_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_query _corto_queryCreate(corto_object from, corto_eventMask mask) {
     corto_query this;
     this = corto_declare(corto_query_o);
@@ -1520,6 +1627,133 @@ corto_int16 _corto_replicatorKindDeinit(corto_replicatorKind* value) {
     corto_int16 result;
     corto_value v;
     corto_valueValueInit(&v, NULL, corto_type(corto_replicatorKind_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
+corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param) {
+    corto_request* this;
+    this = corto_declare(corto_request_o);
+    if (!this) {
+        return NULL;
+    }
+    corto_setstr(&((corto_request*)this)->parent, parent);
+    corto_setstr(&((corto_request*)this)->expr, expr);
+    ((corto_request*)this)->offset = offset;
+    ((corto_request*)this)->limit = limit;
+    ((corto_request*)this)->content = content;
+    corto_setstr(&((corto_request*)this)->param, param);
+    if (corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_request* _corto_requestCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param) {
+    corto_request* this;
+    this = corto_declareChild(_parent, _name, corto_request_o);
+    if (!this) {
+        return NULL;
+    }
+    corto_setstr(&((corto_request*)this)->parent, parent);
+    corto_setstr(&((corto_request*)this)->expr, expr);
+    ((corto_request*)this)->offset = offset;
+    ((corto_request*)this)->limit = limit;
+    ((corto_request*)this)->content = content;
+    corto_setstr(&((corto_request*)this)->param, param);
+    if (corto_define(this)) {
+        corto_release(this);
+        this = NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_requestUpdate(corto_request* this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param) {
+    CORTO_UNUSED(this);
+    if (!corto_updateBegin(this)) {
+        corto_setstr(&((corto_request*)this)->parent, parent);
+        corto_setstr(&((corto_request*)this)->expr, expr);
+        ((corto_request*)this)->offset = offset;
+        ((corto_request*)this)->limit = limit;
+        ((corto_request*)this)->content = content;
+        corto_setstr(&((corto_request*)this)->param, param);
+        corto_updateEnd(this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_request* _corto_requestDeclare(void) {
+    corto_request* this;
+    this = corto_declare(corto_request_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_request* _corto_requestDeclareChild(corto_object _parent, corto_string _name) {
+    corto_request* this;
+    this = corto_declareChild(_parent, _name, corto_request_o);
+    if (!this) {
+        return NULL;
+    }
+    return this;
+}
+
+corto_int16 _corto_requestDefine(corto_request* this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param) {
+    CORTO_UNUSED(this);
+    corto_setstr(&((corto_request*)this)->parent, parent);
+    corto_setstr(&((corto_request*)this)->expr, expr);
+    ((corto_request*)this)->offset = offset;
+    ((corto_request*)this)->limit = limit;
+    ((corto_request*)this)->content = content;
+    corto_setstr(&((corto_request*)this)->param, param);
+    return corto_define(this);
+}
+
+void _corto_requestSet(corto_request* this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param) {
+    CORTO_UNUSED(this);
+    corto_setstr(&((corto_request*)this)->parent, parent);
+    corto_setstr(&((corto_request*)this)->expr, expr);
+    ((corto_request*)this)->offset = offset;
+    ((corto_request*)this)->limit = limit;
+    ((corto_request*)this)->content = content;
+    corto_setstr(&((corto_request*)this)->param, param);
+}
+
+corto_string _corto_requestStr(corto_request* value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_request_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_request* corto_requestFromStr(corto_request* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_request_o), str);
+    return value;
+}
+
+corto_int16 corto_requestCompare(corto_request* dst, corto_request* src) {
+    return corto_comparep(dst, corto_request_o, src);
+}
+
+corto_int16 _corto_requestInit(corto_request* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_request_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_request_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_requestDeinit(corto_request* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_request_o), value);
     result = corto_deinitv(&v);
     return result;
 }

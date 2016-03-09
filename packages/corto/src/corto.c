@@ -178,6 +178,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, resultList);\
     SSO_OP_VALUE(op, parameter);\
     SSO_OP_VALUE(op, result);\
+    SSO_OP_VALUE(op, request);\
     SSO_OP_VALUE(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_VALUE(op, initAction);\
@@ -185,6 +186,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, notifyAction);\
     SSO_OP_VALUE(op, resultIter);\
     SSO_OP_VALUE(op, time);\
+    SSO_OP_VALUE(op, position);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
@@ -598,12 +600,21 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, result_type);\
     SSO_OP_OBJ(op, result_value);\
     SSO_OP_OBJ(op, result_getText_);\
+    /* request */\
+    SSO_OP_OBJ(op, request_parent);\
+    SSO_OP_OBJ(op, request_expr);\
+    SSO_OP_OBJ(op, request_offset);\
+    SSO_OP_OBJ(op, request_limit);\
+    SSO_OP_OBJ(op, request_content);\
+    SSO_OP_OBJ(op, request_param);\
     /* package */\
     SSO_OP_OBJ(op, package_url);\
     /* time */\
     SSO_OP_OBJ(op, time_sec);\
-    SSO_OP_OBJ(op, time_nanosec);
-
+    SSO_OP_OBJ(op, time_nanosec);\
+    /* position */\
+    SSO_OP_OBJ(op, position_latitude);\
+    SSO_OP_OBJ(op, position_longitude);
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \

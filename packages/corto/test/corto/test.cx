@@ -285,7 +285,7 @@ test::Suite Select::
     void setup() method
     void teardown() method
 
-    resultList collect(string @scope, string expr) function
+    resultList collect(string @scope, string expr, uint64 offset, uint64 limit) function
     bool hasObject(resultList items, string parent, string name, string type) function
 
     void tc_selectErrParentTree()
@@ -354,15 +354,26 @@ test::Suite Select::
 
     void tc_selectParentNoSlash()
 
+    void tc_selectOffsetScope()
+    void tc_selectOffsetTree()
+    void tc_selectOffsetLimitOvershootScope()
+    void tc_selectOffsetLimitOvershootTree()
+    void tc_selectOffsetLimit()
+    void tc_selectOffsetLimit()
+    void tc_selectLimitScope()
+    void tc_selectLimitTree()
+    void tc_selectLimitOvershootScope()
+    void tc_selectLimitOvershootTree()
+
 class JsonReplicator : replicator, hidden::
     alias mount: replicator/mount
     int16 construct()
-    resultIter onRequest(string parent, string expr, string param, bool setContent)
+    resultIter onRequest(core/request request)
 
 class StringReplicator : replicator, hidden::
     alias mount: replicator/mount
     int16 construct()
-    resultIter onRequest(string parent, string expr, string param, bool setContent)
+    resultIter onRequest(core/request request)
 
 // Test setting content types
 test::Suite SelectContentType::
@@ -380,7 +391,7 @@ class ListReplicator : replicator, hidden::
     alias mount : replicator/mount
     items: resultList, private
     int16 construct()
-    resultIter onRequest(string parent, string expr, string param, bool setContent)
+    resultIter onRequest(core/request request)
 
 // Test corto_select requesting data from replicators
 test::Suite ReplicatorRequest::

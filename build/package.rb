@@ -31,6 +31,8 @@ else
     TARGETDIR = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 end
 
+DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}\"'"
+
 # Rule for creating packages.txt
 file ".corto/packages.txt" do
     verbose(VERBOSE)

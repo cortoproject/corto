@@ -218,3 +218,7 @@ char* corto_filePath(char* file, char* buffer) {
 
     return (i != -1) ? buffer : NULL;
 }
+
+corto_bool corto_fileEof(corto_file file) {
+    return feof((FILE*)file);
+}

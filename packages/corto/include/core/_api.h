@@ -353,6 +353,36 @@ CORTO_EXPORT corto_package corto_packageFromStr(corto_package value, corto_strin
 CORTO_EXPORT corto_int16 _corto_packageCompare(corto_package dst, corto_package src);
 #define corto_packageCompare(dst, src) _corto_packageCompare(corto_package(dst), corto_package(src))
 
+/* /corto/core/position */
+CORTO_EXPORT corto_position* _corto_positionCreate(corto_float64 latitude, corto_float64 longitude);
+#define corto_positionCreate(latitude, longitude) _corto_positionCreate(latitude, longitude)
+#define corto_positionCreate_auto(_name, latitude, longitude) corto_position* _name = corto_positionCreate(latitude, longitude); (void)_name
+CORTO_EXPORT corto_position* _corto_positionCreateChild(corto_object _parent, corto_string _name, corto_float64 latitude, corto_float64 longitude);
+#define corto_positionCreateChild(_parent, _name, latitude, longitude) _corto_positionCreateChild(_parent, _name, latitude, longitude)
+#define corto_positionCreateChild_auto(_parent, _name, latitude, longitude) corto_position* _name = corto_positionCreateChild(_parent, #_name, latitude, longitude); (void)_name
+CORTO_EXPORT corto_int16 _corto_positionUpdate(corto_position* _this, corto_float64 latitude, corto_float64 longitude);
+#define corto_positionUpdate(_this, latitude, longitude) _corto_positionUpdate(_this, latitude, longitude)
+
+CORTO_EXPORT corto_position* _corto_positionDeclare(void);
+#define corto_positionDeclare() _corto_positionDeclare()
+#define corto_positionDeclare_auto(_name) corto_position* _name = corto_positionDeclare(); (void)_name
+CORTO_EXPORT corto_position* _corto_positionDeclareChild(corto_object _parent, corto_string _name);
+#define corto_positionDeclareChild(_parent, _name) _corto_positionDeclareChild(_parent, _name)
+#define corto_positionDeclareChild_auto(_parent, _name) corto_position* _name = corto_positionDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_positionDefine(corto_position* _this, corto_float64 latitude, corto_float64 longitude);
+#define corto_positionDefine(_this, latitude, longitude) _corto_positionDefine(_this, latitude, longitude)
+CORTO_EXPORT void _corto_positionSet(corto_position* _this, corto_float64 latitude, corto_float64 longitude);
+#define corto_positionSet(_this, latitude, longitude) _corto_positionSet(_this, latitude, longitude)
+CORTO_EXPORT corto_string _corto_positionStr(corto_position* value);
+#define corto_positionStr(value) _corto_positionStr(value)
+CORTO_EXPORT corto_position* corto_positionFromStr(corto_position* value, corto_string str);
+CORTO_EXPORT corto_int16 corto_positionCompare(corto_position* dst, corto_position* src);
+
+CORTO_EXPORT corto_int16 _corto_positionInit(corto_position* value);
+#define corto_positionInit(value) _corto_positionInit(value)
+CORTO_EXPORT corto_int16 _corto_positionDeinit(corto_position* value);
+#define corto_positionDeinit(value) _corto_positionDeinit(value)
+
 /* /corto/core/query */
 CORTO_EXPORT corto_query _corto_queryCreate(corto_object from, corto_eventMask mask);
 #define corto_queryCreate(from, mask) _corto_queryCreate(from, mask)
@@ -434,6 +464,36 @@ CORTO_EXPORT corto_int16 _corto_replicatorKindInit(corto_replicatorKind* value);
 #define corto_replicatorKindInit(value) _corto_replicatorKindInit(value)
 CORTO_EXPORT corto_int16 _corto_replicatorKindDeinit(corto_replicatorKind* value);
 #define corto_replicatorKindDeinit(value) _corto_replicatorKindDeinit(value)
+
+/* /corto/core/request */
+CORTO_EXPORT corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);
+#define corto_requestCreate(parent, expr, offset, limit, content, param) _corto_requestCreate(parent, expr, offset, limit, content, param)
+#define corto_requestCreate_auto(_name, parent, expr, offset, limit, content, param) corto_request* _name = corto_requestCreate(parent, expr, offset, limit, content, param); (void)_name
+CORTO_EXPORT corto_request* _corto_requestCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);
+#define corto_requestCreateChild(_parent, _name, parent, expr, offset, limit, content, param) _corto_requestCreateChild(_parent, _name, parent, expr, offset, limit, content, param)
+#define corto_requestCreateChild_auto(_parent, _name, parent, expr, offset, limit, content, param) corto_request* _name = corto_requestCreateChild(_parent, #_name, parent, expr, offset, limit, content, param); (void)_name
+CORTO_EXPORT corto_int16 _corto_requestUpdate(corto_request* _this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);
+#define corto_requestUpdate(_this, parent, expr, offset, limit, content, param) _corto_requestUpdate(_this, parent, expr, offset, limit, content, param)
+
+CORTO_EXPORT corto_request* _corto_requestDeclare(void);
+#define corto_requestDeclare() _corto_requestDeclare()
+#define corto_requestDeclare_auto(_name) corto_request* _name = corto_requestDeclare(); (void)_name
+CORTO_EXPORT corto_request* _corto_requestDeclareChild(corto_object _parent, corto_string _name);
+#define corto_requestDeclareChild(_parent, _name) _corto_requestDeclareChild(_parent, _name)
+#define corto_requestDeclareChild_auto(_parent, _name) corto_request* _name = corto_requestDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_requestDefine(corto_request* _this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);
+#define corto_requestDefine(_this, parent, expr, offset, limit, content, param) _corto_requestDefine(_this, parent, expr, offset, limit, content, param)
+CORTO_EXPORT void _corto_requestSet(corto_request* _this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);
+#define corto_requestSet(_this, parent, expr, offset, limit, content, param) _corto_requestSet(_this, parent, expr, offset, limit, content, param)
+CORTO_EXPORT corto_string _corto_requestStr(corto_request* value);
+#define corto_requestStr(value) _corto_requestStr(value)
+CORTO_EXPORT corto_request* corto_requestFromStr(corto_request* value, corto_string str);
+CORTO_EXPORT corto_int16 corto_requestCompare(corto_request* dst, corto_request* src);
+
+CORTO_EXPORT corto_int16 _corto_requestInit(corto_request* value);
+#define corto_requestInit(value) _corto_requestInit(value)
+CORTO_EXPORT corto_int16 _corto_requestDeinit(corto_request* value);
+#define corto_requestDeinit(value) _corto_requestDeinit(value)
 
 /* /corto/core/result */
 CORTO_EXPORT corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);

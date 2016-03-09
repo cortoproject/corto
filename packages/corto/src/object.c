@@ -1094,7 +1094,7 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     return result;
 }
 
-static corto_object corto_resumePersistent(corto_object o) {
+corto_object corto_resumePersistent(corto_object o) {
     corto_object result = NULL;
 
     corto_ll replicatorList =
@@ -2204,12 +2204,18 @@ corto_bool corto_owned(corto_object o) {
 
     if (owner == current) {
         return TRUE;
-    } else {
-        if (!current && owner) {
-            return !corto_instanceof(corto_replicator_o, owner);
+    } else if (!current && owner) {
+        if (corto_instanceof(corto_replicator_o, owner)) {
+            if (corto_replicator(owner)->kind != CORTO_SINK) {
+                return FALSE;
+            } else {
+                return TRUE;
+            }
         } else {
-            return FALSE;
+            return TRUE;
         }
+    } else {
+        return FALSE;
     }
 }
 

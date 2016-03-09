@@ -31,6 +31,7 @@ char* corto_fileSearch(const char* file, corto_ll locations);
 
 unsigned int corto_fileSize(corto_file);
 unsigned int corto_fileTell(corto_file);
+corto_bool corto_fileEof(corto_file);
 
 char* corto_fileReadLine(corto_file file, char* buf, unsigned int length);
 

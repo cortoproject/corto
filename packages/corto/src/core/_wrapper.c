@@ -335,10 +335,7 @@ void __corto_replicator_onInvoke_v(corto_function f, void *result, void *args) {
 
 corto_resultIter _corto_replicator_onRequest(
     corto_replicator this,
-    corto_string parent,
-    corto_string expr,
-    corto_string param,
-    corto_bool setContent) {
+    corto_request *request) {
     static corto_uint32 _methodId;
     corto_method _method;
     corto_resultIter _result;
@@ -348,15 +345,15 @@ corto_resultIter _corto_replicator_onRequest(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(string parent,string expr,string param,bool setContent)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(core/request request)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(string parent,string expr,string param,bool setContent)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(string parent,string expr,string param,bool setContent)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_nameof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, parent, expr, param, setContent);
+    corto_call(corto_function(_method), &_result, this, request);
     
     return _result;
 }
@@ -365,10 +362,7 @@ void __corto_replicator_onRequest_v(corto_function f, void *result, void *args) 
     CORTO_UNUSED(f);
     *(corto_resultIter*)result = _corto_replicator_onRequest_v(
         corto_replicator(*(void**)args),
-        *(corto_string*)((intptr_t)args + sizeof(void*)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)),
-        *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string) + sizeof(corto_string)));
+        *(void**)((intptr_t)args + sizeof(void*)));
 }
 
 corto_object _corto_replicator_onResume(
@@ -449,10 +443,7 @@ void __corto_replicator_request(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     *(corto_resultIter*)result = _corto_replicator_request(
         corto_replicator(*(void**)args),
-        *(corto_string*)((intptr_t)args + sizeof(void*)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)),
-        *(corto_bool*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string) + sizeof(corto_string)));
+        *(void**)((intptr_t)args + sizeof(void*)));
 }
 
 void __corto_replicator_resume(corto_function f, void *result, void *args) {

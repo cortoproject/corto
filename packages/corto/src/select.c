@@ -76,6 +76,11 @@ typedef struct corto_selectData {
     /* Serializers for source content types */
     corto_contentType srcSer[CORTO_MAX_REPLICATORS];
 
+    /* Limit results */
+    corto_uint64 offset;
+    corto_uint64 limit;
+    corto_uint64 count;
+
     /* Pre allocated for selectItem */
     corto_id id;
     corto_id name;
@@ -576,13 +581,18 @@ static corto_bool corto_selectRequestReplicators(
                     }
 
                     /* Make select request to replicator */
+                    corto_request r = {
+                      parent,
+                      expr,
+                      (data->offset > data->count) ? data->offset - data->count : 0,
+                      (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
+                      data->contentType ? TRUE : FALSE,
+                      data->param};
+
                     data->replicators[data->activeReplicators ++] =
                         corto_replicator_request(
                             odata->replicator,
-                            parent, /* Parent is relative to registered scope */
-                            expr,
-                            data->param,
-                            data->contentType ? TRUE : FALSE
+                            &r
                         );
 
                     if (odata->replicator->kind == CORTO_SINK) {
@@ -672,8 +682,12 @@ static void corto_selectIterateReplicators(
         /* Walk over iterators until one with data available has been found */
         while ((data->currentReplicator < data->activeReplicators)) {
             corto_resultIter *iter = &data->replicators[data->currentReplicator];
+            corto_int64 itemsLeft =
+                (data->offset > data->count)
+                ? data->limit
+                : data->limit - (data->count - data->offset);
 
-            while (corto_iterHasNext(iter)) {
+            while ((!data->limit || itemsLeft) && corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
                 if (!result) {
                     corto_error("replicator returned NULL result");
@@ -683,6 +697,7 @@ static void corto_selectIterateReplicators(
                     corto_selectMatch(expr, result->id))
                 {
                     data->next = &data->item;
+                    data->count ++;
 
                     /* Copy data, so replicator can safely release it */
                     if (result->id) {
@@ -762,6 +777,11 @@ static void corto_selectIterateReplicators(
                     }
                     break;
                 }
+
+                itemsLeft =
+                    (data->offset > data->count)
+                    ? data->limit
+                    : data->limit - (data->count - data->offset);
             }
 
             if (!data->next) {
@@ -799,9 +819,12 @@ static void corto_selectScope(
                 corto_selectMatch(frame->filter, corto_nameof(o))) &&
                 (walkScope || !corto_checkAttr(o, CORTO_ATTR_PERSISTENT)))
             {
-                data->next = &data->item;
-                corto_setItemData(o, data->next, data);
-                break;
+                data->count ++;
+                if (data->count > data->offset) {
+                    data->next = &data->item;
+                    corto_setItemData(o, data->next, data);
+                    break;
+                }
             }
         }
     }
@@ -820,6 +843,7 @@ static void corto_selectTree(
     corto_selectStack *frame)
 {
     corto_string lastKey = data->item.name;
+    corto_bool noMatch = TRUE;
 
     /* Request replicators once per scope, and do it before iterating over
      * corto store objects so replicators have more time to fetch data. */
@@ -862,9 +886,18 @@ static void corto_selectTree(
                 data->next = NULL;
             }
             corto__scopeRelease(claimed);
-        } while ((frame->filter && (data->next &&
-            !corto_selectMatch(frame->filter, data->next->name))) &&
-            (walkScope || !corto_checkAttr(o, CORTO_ATTR_PERSISTENT)));
+
+            noMatch = ((frame->filter && (data->next &&
+              !corto_selectMatch(frame->filter, data->next->name))) &&
+              (walkScope || !corto_checkAttr(o, CORTO_ATTR_PERSISTENT)));
+
+            if (!noMatch) {
+                data->count ++;
+                if (data->count <= data->offset) {
+                    noMatch = TRUE;
+                }
+            }
+        } while (noMatch);
     }
 
     /* Handle replicator iteration outside of scope lock */
@@ -1009,6 +1042,15 @@ static int corto_selectHasNext(corto_resultIter *iter) {
 
     CORTO_UNUSED(iter);
 
+    if (data->limit) {
+         if ((data->count > data->offset) &&
+             (data->limit <= (data->count - data->offset)))
+         {
+              /* Limit is reached */
+              goto error;
+         }
+    }
+
     do {
         if (!data->next) {
             if (corto_selectRun(data)) {
@@ -1137,6 +1179,18 @@ static corto_int16 corto_selectParseScope(corto_selectData *data) {
     return 0;
 }
 
+corto_int16 corto_selectLimit(
+    corto_resultIter *iter,
+    corto_uint64 offset,
+    corto_uint64 limit)
+{
+    CORTO_UNUSED(iter);
+    corto_selectData *data = corto_selectDataGet();
+    data->offset = offset;
+    data->limit = limit;
+    return 0;
+}
+
 corto_int16 corto_select(
     corto_string scope,
     corto_string expr,
@@ -1183,6 +1237,9 @@ corto_int16 corto_select(
     data->activeReplicators = -1;
     data->currentReplicator = -1;
     data->currentScope = 0;
+    data->offset = 0;
+    data->limit = 0;
+    data->count = 0;
 
     if (corto_selectParseScope(data)) {
         goto error;
