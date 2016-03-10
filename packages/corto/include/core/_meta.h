@@ -28,6 +28,7 @@ CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, replicator);
+CORTO_META_OBJECT(struct, augmentData);
 CORTO_META_OBJECT(struct, result);
 CORTO_META_OBJECT(struct, request);
 CORTO_META_OBJECT(interface, dispatcher);
@@ -41,6 +42,7 @@ CORTO_META_OBJECT(bitmask, state);
 CORTO_META_OBJECT(bitmask, attr);
 
 CORTO_META_OBJECT(list, resultList);
+CORTO_META_OBJECT(sequence, augmentseq);
 
 CORTO_META_OBJECT(delegate, notifyAction);
 CORTO_META_OBJECT(delegate, invokeAction);

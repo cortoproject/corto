@@ -151,6 +151,11 @@ typedef struct corto_ll_s* corto_ll;
  * most. */
 #define CORTO_MAX_REPLICATORS (16)
 
+/* The maximum number of augments that can attached to the same path.
+ * This number controls the number of augments a select call will process per
+ * object at most. */
+#define CORTO_MAX_AUGMENTS (16)
+
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG

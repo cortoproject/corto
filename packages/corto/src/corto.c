@@ -53,6 +53,7 @@ corto_threadKey CORTO_KEY_THREAD_STRING;
 
 /* OLS keys */
 corto_int8 CORTO_OLS_REPLICATOR;
+corto_int8 CORTO_OLS_AUGMENT;
 
 /* When enabled, components may trace debug information */
 int8_t CORTO_DEBUG_ENABLED = 0;
@@ -172,11 +173,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, parameterseq);\
     SSO_OP_VALUE(op, observerseq);\
     SSO_OP_VALUE(op, octetseq);\
+    SSO_OP_VALUE(op, augmentseq);\
     SSO_OP_VALUE(op, vtable);\
     SSO_OP_VALUE(op, interfaceVectorseq);\
     SSO_OP_VALUE(op, interfaceVector);\
     SSO_OP_VALUE(op, resultList);\
     SSO_OP_VALUE(op, parameter);\
+    SSO_OP_VALUE(op, augmentData);\
     SSO_OP_VALUE(op, result);\
     SSO_OP_VALUE(op, request);\
     SSO_OP_VALUE(op, delegatedata);\
@@ -593,12 +596,16 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
+    /* augmentData */\
+    SSO_OP_OBJ(op, augmentData_id);\
+    SSO_OP_OBJ(op, augmentData_data);\
     /* result */\
     SSO_OP_OBJ(op, result_id);\
     SSO_OP_OBJ(op, result_name);\
     SSO_OP_OBJ(op, result_parent);\
     SSO_OP_OBJ(op, result_type);\
     SSO_OP_OBJ(op, result_value);\
+    SSO_OP_OBJ(op, result_augments);\
     SSO_OP_OBJ(op, result_getText_);\
     /* request */\
     SSO_OP_OBJ(op, request_parent);\
@@ -754,6 +761,7 @@ int corto_start(void) {
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
 
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
+    CORTO_OLS_AUGMENT = corto_olsKey(NULL);
 
     /* Init admin-lock */
     corto_mutexNew(&corto_adminLock);

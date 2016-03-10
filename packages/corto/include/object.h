@@ -92,8 +92,12 @@ corto_object corto_resolve(corto_object scope, corto_string expr);
 /* Iterate over object metadata matching a expression */
 corto_int16 corto_selectContentType(corto_resultIter *iter, corto_string contentType);
 corto_int16 corto_selectLimit(corto_resultIter *iter, corto_uint64 offset, corto_uint64 limit);
+corto_int16 corto_selectAugment(corto_resultIter *iter, corto_string filter);
 corto_int16 corto_selectParam(corto_resultIter *iter, corto_string param);
 corto_int16 corto_select(corto_string scope, corto_string expr, corto_resultIter *iter_out);
+
+/* Augment data */
+corto_int16 _corto_augment(corto_type t, corto_string id, corto_replicator r);
 
 /* Notifications */
 corto_object corto_setOwner(corto_object owner);
@@ -181,6 +185,8 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_initp(p, type) _corto_initp(p, corto_type(type))
 #define corto_deinitp(p, type) _corto_deinitp(p, corto_type(type))
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
+#define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_replicator(r))
+
 
 #ifdef __cplusplus
 }

@@ -94,6 +94,11 @@ typedef struct corto_replicator_olsData_t {
     corto_eventMask mask;
 } corto_replicator_olsData_t;
 
+typedef struct corto_augment_olsData_t {
+    corto_replicator replicator;
+    corto_string id;
+} corto_augment_olsData_t;
+
 /* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
 corto_int16 corto__freeSSO(corto_object sso);

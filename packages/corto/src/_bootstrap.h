@@ -462,6 +462,7 @@ CORTO_FWDECL(class, uint);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
+CORTO_FWDECL(struct, augmentData);
 CORTO_FWDECL(struct, result);
 CORTO_FWDECL(struct, request);
 
@@ -519,6 +520,7 @@ CORTO_FWDECL(sequence, observerseq);
 CORTO_FWDECL(sequence, octetseq);
 CORTO_FWDECL(sequence, parameterseq);
 CORTO_FWDECL(sequence, vtable);
+CORTO_FWDECL(sequence, augmentseq);
 
 CORTO_FWDECL(list, resultList);
 
@@ -717,6 +719,7 @@ CORTO_SEQUENCE_O(corto_core, observerseq, observer, 0);
 CORTO_SEQUENCE_O(corto_lang, vtable, function, 0);
 CORTO_SEQUENCE_O(corto_lang, interfaceVectorseq, interfaceVector, 0);
 CORTO_SEQUENCE_O(corto_lang, octetseq, octet, 0);
+CORTO_SEQUENCE_O(corto_core, augmentseq, augmentData, 0);
 CORTO_LIST_O(corto_core, resultList, result, 0);
 
 /* Delegate types */
@@ -1004,16 +1007,22 @@ CORTO_PROCEDURE_NOBASE_O(corto_lang, function, CORTO_FUNCTION, NULL, CORTO_DECLA
     CORTO_FUNCTION_O(function, stringToParameterSeq, "(string name,object scope)", parameterseq, corto_function_stringToParameterSeq);
     CORTO_METHOD_O(function, parseParamString, "(string params)", int16, FALSE, corto_function_parseParamString);
 
-/* /corto/lang/result */
+/* /corto/core/augmentData */
+CORTO_STRUCT_O(corto_core, augmentData, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(augmentData, id, string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(augmentData, data, word, CORTO_GLOBAL);
+
+/* /corto/core/result */
 CORTO_STRUCT_O(corto_core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(result, id, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, name, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, value, word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, augments, augmentseq, CORTO_GLOBAL);
     CORTO_METHOD_O(result, getText, "()", string, FALSE, corto_result_getText);
 
-/* /corto/lang/request */
+/* /corto/core/request */
 CORTO_STRUCT_O(corto_core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(request, parent, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(request, expr, string, CORTO_GLOBAL);

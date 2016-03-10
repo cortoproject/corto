@@ -16,6 +16,7 @@ static corto_int32 corto_notify(corto__observable *_o, corto_object observable, 
 static void corto_olsDestroy(corto__scope *scope);
 
 extern corto_int8 CORTO_OLS_REPLICATOR;
+extern corto_int8 CORTO_OLS_AUGMENT;
 extern corto_threadKey CORTO_KEY_ATTR;
 
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
@@ -4344,4 +4345,30 @@ corto_int16 corto_copya(corto_any *dst, corto_any src) {
     corto_valueValueInit(&vsrc, NULL, corto_type(corto_any_o), &src);
     result = corto_copyv(&vdst, &vsrc);
     return result;
+}
+
+corto_int16 _corto_augment(corto_type o, corto_string id, corto_replicator r) {
+    corto_ll augments = corto_olsLockGet(o, CORTO_OLS_AUGMENT);
+    corto_augment_olsData_t *data = NULL;
+
+    if (!augments) {
+        augments = corto_llNew();
+    }
+
+    if (corto_llSize(augments) >= CORTO_MAX_AUGMENTS) {
+        corto_seterr("maximum number of augments for scope set");
+        corto_olsUnlockSet(o, CORTO_OLS_AUGMENT, augments);
+        goto error;
+    }
+
+    data = corto_alloc(sizeof(corto_augment_olsData_t));
+    data->replicator = r;
+    data->id = corto_strdup(id);
+    corto_llAppend(augments, data);
+
+    corto_olsUnlockSet(o, CORTO_OLS_AUGMENT, augments);
+
+    return 0;
+error:
+    return -1;
 }

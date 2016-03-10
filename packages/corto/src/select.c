@@ -3,6 +3,7 @@
 #include "_object.h"
 
 extern corto_int8 CORTO_OLS_REPLICATOR;
+extern corto_int8 CORTO_OLS_AUGMENT;
 extern corto_threadKey CORTO_KEY_SELECT;
 #define CORTO_SELECT_MAX_OP (32)
 
@@ -81,11 +82,15 @@ typedef struct corto_selectData {
     corto_uint64 limit;
     corto_uint64 count;
 
+    /* Augment filter */
+    corto_string augmentFilter;
+
     /* Pre allocated for selectItem */
     corto_id id;
     corto_id name;
     corto_id parent;
     corto_id type;
+    corto_augmentData augmentBuffer[CORTO_MAX_AUGMENTS];
     corto_result item;
     corto_result *next;
 } corto_selectData;
@@ -379,6 +384,118 @@ error:
     return -1;
 }
 
+static corto_word corto_selectConvert(
+    corto_selectData *data,
+    corto_string type,
+    corto_word value)
+{
+    corto_word result = 0;
+
+    corto_int16 ___ (*toCorto)(corto_object o, corto_word content) =
+        data->srcSer[data->currentReplicator].contentToCorto;
+    corto_word ___ (*fromCorto)(corto_object o) =
+        data->destSer.contentFromCorto;
+
+    /* If source serializer is loaded, a conversion is
+     * needed */
+    if (toCorto) {
+        corto_object t = corto_resolve(NULL, type);
+        if (!t) {
+            corto_seterr("unresolved type '%s'", type);
+            goto error;
+        } else {
+            corto_object o = corto_create(t);
+
+            /* Convert from source format to object */
+            if (toCorto(o, value)) {
+                corto_seterr("failed to convert value to '%s' (%s)",
+                    type,
+                    corto_lasterr());
+                goto error;
+            }
+
+            /* Convert from object to destination format */
+            if (!(result = fromCorto(o))) {
+                corto_seterr("failed to convert value to '%s' (%s)",
+                    data->contentType,
+                    corto_lasterr());
+                goto error;
+            }
+
+            corto_delete(o);
+        }
+    } else {
+        /* If formats are equal, just pass through */
+        result = value;
+    }
+
+    return result;
+error:
+    return 0;
+}
+
+static void corto_loadAugments(
+    corto_string parent,
+    corto_string expr,
+    corto_string type,
+    corto_result *item,
+    corto_selectData *data)
+{
+    corto_type t = corto_resolve(NULL, type);
+
+    if (t) {
+        corto_ll augments = corto_olsGet(t, CORTO_OLS_AUGMENT);
+        if (augments) {
+            corto_iter it = corto_llIter(augments);
+            item->augments.buffer = data->augmentBuffer;
+
+            while (corto_iterHasNext(&it)) {
+                corto_augment_olsData_t *ols = corto_iterNext(&it);
+
+                if (!fnmatch(data->augmentFilter, ols->id, 0)) {
+                    corto_augmentData *augment = &item->augments.buffer[item->augments.length];
+
+                    item->augments.length++;
+                    augment->id = ols->id;
+
+                    /* Request augmentdata if user wants content */
+                    if (data->contentType) {
+                        corto_iter augmentIt;
+                        corto_request r = {
+                            parent, expr, 0, 1, data->contentType == NULL, NULL
+                        };
+
+                        augmentIt = corto_replicator_request(
+                          ols->replicator,
+                          &r);
+
+                        /* Expecting a single result */
+                        if (augmentIt.hasNext(&augmentIt)) {
+                            corto_result *result = augmentIt.next(&augmentIt);
+                            if (result) {
+                                if (augment->data) {
+                                    data->destSer.contentRelease(augment->data);
+                                }
+
+                                augment->data = corto_selectConvert(
+                                    data,
+                                    item->type,
+                                    result->value);
+                            }
+                        }
+
+                        if (augmentIt.release) {
+                            augmentIt.release(&augmentIt);
+                        }
+                    }
+                }
+            }
+        }
+
+        corto_release(t);
+    }
+}
+
 static void corto_setItemData(
     corto_object o,
     corto_result *item,
@@ -610,55 +727,6 @@ static corto_bool corto_selectRequestReplicators(
     return result;
 }
 
-static corto_word corto_selectConvert(
-    corto_selectData *data,
-    corto_result *src)
-{
-    corto_word result = 0;
-
-    corto_int16 ___ (*toCorto)(corto_object o, corto_word content) =
-        data->srcSer[data->currentReplicator].contentToCorto;
-    corto_word ___ (*fromCorto)(corto_object o) =
-        data->destSer.contentFromCorto;
-
-    /* If source serializer is loaded, a conversion is
-     * needed */
-    if (toCorto) {
-        corto_object t = corto_resolve(NULL, src->type);
-        if (!t) {
-            corto_seterr("unresolved type '%s'", src->type);
-            goto error;
-        } else {
-            corto_object o = corto_create(t);
-
-            /* Convert from source format to object */
-            if (toCorto(o, src->value)) {
-                corto_seterr("failed to convert value to '%s' (%s)",
-                    src->type,
-                    corto_lasterr());
-                goto error;
-            }
-
-            /* Convert from object to destination format */
-            if (!(result = fromCorto(o))) {
-                corto_seterr("failed to convert value to '%s' (%s)",
-                    data->contentType,
-                    corto_lasterr());
-                goto error;
-            }
-
-            corto_delete(o);
-        }
-    } else {
-        /* If formats are equal, just pass through */
-        result = src->value;
-    }
-
-    return result;
-error:
-    return 0;
-}
-
 static void corto_selectIterateReplicators(
     corto_selectData *data,
     corto_selectStack *frame)
@@ -710,6 +778,16 @@ static void corto_selectIterateReplicators(
                         } else {
                             strcpy(data->item.name, result->id);
                         }
+                    }
+
+                    /* If augmentFilter is provided, load augments */
+                    if (data->augmentFilter) {
+                        corto_loadAugments(
+                          result->parent,
+                          result->id,
+                          result->type,
+                          &data->item,
+                          data);
                     }
 
                     if (result->parent) {
@@ -769,7 +847,8 @@ static void corto_selectIterateReplicators(
 
                     if (data->contentType) {
                         data->destSer.contentRelease(data->item.value);
-                        data->item.value = corto_selectConvert(data, result);
+                        data->item.value = corto_selectConvert(
+                          data, result->type, result->value);
                     }
 
                     if (data->count > data->offset) {
@@ -922,7 +1001,6 @@ static int corto_selectRun(corto_selectData *data) {
 
     data->next = NULL;
     frame->next = corto_selectScope;
-
 
     /* Traverse program until a token has been found that requires iterating,
      * which is then taken care of by hasNext */
@@ -1113,6 +1191,7 @@ static void corto_selectRelease(corto_iter *iter) {
     if (data->expr) corto_dealloc(data->expr);
     if (data->tokens) corto_dealloc(data->tokens);
     if (data->scope) corto_dealloc(data->scope);
+    if (data->augmentFilter) corto_dealloc(data->augmentFilter);
 
     corto_selectReset(data);
 
@@ -1185,6 +1264,13 @@ corto_int16 corto_selectLimit(
     return 0;
 }
 
+corto_int16 corto_selectAugment(corto_resultIter *iter, corto_string filter) {
+    CORTO_UNUSED(iter);
+    corto_selectData *data = corto_selectDataGet();
+    data->augmentFilter = corto_strdup(filter);
+    return 0;
+}
+
 corto_int16 corto_select(
     corto_string scope,
     corto_string expr,
@@ -1228,12 +1314,14 @@ corto_int16 corto_select(
     data->sp = 0;
     data->next = NULL;
     data->item.value = 0;
+    data->item.augments.length = 0;
     data->activeReplicators = -1;
     data->currentReplicator = -1;
     data->currentScope = 0;
     data->offset = 0;
     data->limit = 0;
     data->count = 0;
+    data->augmentFilter = NULL;
 
     if (corto_selectParseScope(data)) {
         goto error;

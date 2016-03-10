@@ -14,6 +14,8 @@ extern "C" {
 
 /* Casting macro's for classes */
 #define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
+#define corto_augmentData(o) ((corto_augmentData*)corto_assertType((corto_type)corto_augmentData_o, o))
+#define corto_augmentseq(o) ((corto_augmentseq*)corto_assertType((corto_type)corto_augmentseq_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
 #define corto_equalityKind(o) ((corto_equalityKind*)corto_assertType((corto_type)corto_equalityKind_o, o))
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
@@ -43,6 +45,16 @@ CORTO_BITMASK(corto_attr);
     #define CORTO_ATTR_OBSERVABLE (0x4)
     #define CORTO_ATTR_PERSISTENT (0x8)
     #define CORTO_ATTR_DEFAULT (0x10)
+
+/*  /corto/core/augmentData */
+typedef struct corto_augmentData corto_augmentData;
+
+struct corto_augmentData {
+    corto_string id;
+    corto_word data;
+};
+
+CORTO_SEQUENCE(corto_augmentseq, corto_augmentData,);
 
 /*  /corto/core/dispatcher */
 CORTO_INTERFACE(corto_dispatcher);
@@ -220,6 +232,7 @@ struct corto_result {
     corto_string parent;
     corto_string type;
     corto_word value;
+    corto_augmentseq augments;
 };
 
 CORTO_ITERATOR(corto_resultIter);
