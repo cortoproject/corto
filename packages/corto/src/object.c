@@ -427,7 +427,7 @@ corto_int16 corto__freeSSO(corto_object sso) {
     o = CORTO_OFFSET(sso, -sizeof(corto__object));
     scope = corto__objectScope(o);
 
-    corto_assert(scope != NULL, "corto__freeSSO: static scoped object has no scope")
+    corto_assert(scope != NULL, "corto__freeSSO: static scoped object has no scope");
 
     corto__orphan(sso);
 

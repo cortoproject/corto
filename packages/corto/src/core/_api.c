@@ -1987,7 +1987,7 @@ corto_int16 _corto_requestDeinit(corto_request* value) {
     return result;
 }
 
-corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments) {
+corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
     corto_result* this;
     this = corto_declare(corto_result_o);
     if (!this) {
@@ -1998,7 +1998,6 @@ corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_stri
     corto_setstr(&((corto_result*)this)->parent, parent);
     corto_setstr(&((corto_result*)this)->type, type);
     ((corto_result*)this)->value = value;
-    corto_copyp(&((corto_result*)this)->augments, corto_augmentseq_o, &augments);
     if (corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -2006,7 +2005,7 @@ corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_stri
     return this;
 }
 
-corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments) {
+corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
     corto_result* this;
     this = corto_declareChild(_parent, _name, corto_result_o);
     if (!this) {
@@ -2017,7 +2016,6 @@ corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name,
     corto_setstr(&((corto_result*)this)->parent, parent);
     corto_setstr(&((corto_result*)this)->type, type);
     ((corto_result*)this)->value = value;
-    corto_copyp(&((corto_result*)this)->augments, corto_augmentseq_o, &augments);
     if (corto_define(this)) {
         corto_release(this);
         this = NULL;
@@ -2025,7 +2023,7 @@ corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name,
     return this;
 }
 
-corto_int16 _corto_resultUpdate(corto_result* this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments) {
+corto_int16 _corto_resultUpdate(corto_result* this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
     CORTO_UNUSED(this);
     if (!corto_updateBegin(this)) {
         corto_setstr(&((corto_result*)this)->id, id);
@@ -2033,7 +2031,6 @@ corto_int16 _corto_resultUpdate(corto_result* this, corto_string id, corto_strin
         corto_setstr(&((corto_result*)this)->parent, parent);
         corto_setstr(&((corto_result*)this)->type, type);
         ((corto_result*)this)->value = value;
-        corto_copyp(&((corto_result*)this)->augments, corto_augmentseq_o, &augments);
         corto_updateEnd(this);
     } else {
         return -1;
@@ -2059,25 +2056,23 @@ corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _name
     return this;
 }
 
-corto_int16 _corto_resultDefine(corto_result* this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments) {
+corto_int16 _corto_resultDefine(corto_result* this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
     CORTO_UNUSED(this);
     corto_setstr(&((corto_result*)this)->id, id);
     corto_setstr(&((corto_result*)this)->name, name);
     corto_setstr(&((corto_result*)this)->parent, parent);
     corto_setstr(&((corto_result*)this)->type, type);
     ((corto_result*)this)->value = value;
-    corto_copyp(&((corto_result*)this)->augments, corto_augmentseq_o, &augments);
     return corto_define(this);
 }
 
-void _corto_resultSet(corto_result* this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments) {
+void _corto_resultSet(corto_result* this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
     CORTO_UNUSED(this);
     corto_setstr(&((corto_result*)this)->id, id);
     corto_setstr(&((corto_result*)this)->name, name);
     corto_setstr(&((corto_result*)this)->parent, parent);
     corto_setstr(&((corto_result*)this)->type, type);
     ((corto_result*)this)->value = value;
-    corto_copyp(&((corto_result*)this)->augments, corto_augmentseq_o, &augments);
 }
 
 corto_string _corto_resultStr(corto_result* value) {

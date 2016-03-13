@@ -556,14 +556,14 @@ CORTO_EXPORT corto_int16 _corto_requestDeinit(corto_request* value);
 #define corto_requestDeinit(value) _corto_requestDeinit(value)
 
 /* /corto/core/result */
-CORTO_EXPORT corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments);
-#define corto_resultCreate(id, name, parent, type, value, augments) _corto_resultCreate(id, name, parent, type, value, augments)
-#define corto_resultCreate_auto(_name, id, name, parent, type, value, augments) corto_result* _name = corto_resultCreate(id, name, parent, type, value, augments); (void)_name
-CORTO_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments);
-#define corto_resultCreateChild(_parent, _name, id, name, parent, type, value, augments) _corto_resultCreateChild(_parent, _name, id, name, parent, type, value, augments)
-#define corto_resultCreateChild_auto(_parent, _name, id, name, parent, type, value, augments) corto_result* _name = corto_resultCreateChild(_parent, #_name, id, name, parent, type, value, augments); (void)_name
-CORTO_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments);
-#define corto_resultUpdate(_this, id, name, parent, type, value, augments) _corto_resultUpdate(_this, id, name, parent, type, value, augments)
+CORTO_EXPORT corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultCreate(id, name, parent, type, value) _corto_resultCreate(id, name, parent, type, value)
+#define corto_resultCreate_auto(_name, id, name, parent, type, value) corto_result* _name = corto_resultCreate(id, name, parent, type, value); (void)_name
+CORTO_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultCreateChild(_parent, _name, id, name, parent, type, value) _corto_resultCreateChild(_parent, _name, id, name, parent, type, value)
+#define corto_resultCreateChild_auto(_parent, _name, id, name, parent, type, value) corto_result* _name = corto_resultCreateChild(_parent, #_name, id, name, parent, type, value); (void)_name
+CORTO_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultUpdate(_this, id, name, parent, type, value) _corto_resultUpdate(_this, id, name, parent, type, value)
 
 CORTO_EXPORT corto_result* _corto_resultDeclare(void);
 #define corto_resultDeclare() _corto_resultDeclare()
@@ -571,10 +571,10 @@ CORTO_EXPORT corto_result* _corto_resultDeclare(void);
 CORTO_EXPORT corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _name);
 #define corto_resultDeclareChild(_parent, _name) _corto_resultDeclareChild(_parent, _name)
 #define corto_resultDeclareChild_auto(_parent, _name) corto_result* _name = corto_resultDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_resultDefine(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments);
-#define corto_resultDefine(_this, id, name, parent, type, value, augments) _corto_resultDefine(_this, id, name, parent, type, value, augments)
-CORTO_EXPORT void _corto_resultSet(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_augmentseq augments);
-#define corto_resultSet(_this, id, name, parent, type, value, augments) _corto_resultSet(_this, id, name, parent, type, value, augments)
+CORTO_EXPORT corto_int16 _corto_resultDefine(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultDefine(_this, id, name, parent, type, value) _corto_resultDefine(_this, id, name, parent, type, value)
+CORTO_EXPORT void _corto_resultSet(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value);
+#define corto_resultSet(_this, id, name, parent, type, value) _corto_resultSet(_this, id, name, parent, type, value)
 CORTO_EXPORT corto_string _corto_resultStr(corto_result* value);
 #define corto_resultStr(value) _corto_resultStr(value)
 CORTO_EXPORT corto_result* corto_resultFromStr(corto_result* value, corto_string str);

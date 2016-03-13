@@ -15,15 +15,13 @@ corto_resultList _test_Select_collect(
     corto_uint64 limit)
 {
 /* $begin(test/Select/collect) */
-    corto_iter iter;
-
-    if (corto_select(scope, expr, &iter)) {
-        return NULL;
-    }
+    corto_selectSelector r = corto_select(scope, expr);
 
     if (offset || limit) {
-        corto_selectLimit(&iter, offset, limit);
+        r.limit(offset, limit);
     }
+
+    corto_iter iter = r.iter( return NULL );
 
     corto_ll result = corto_llNew();
 
@@ -116,12 +114,11 @@ corto_void _test_Select_tc_selectDeleteCurrent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteCurrent) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -149,12 +146,11 @@ corto_void _test_Select_tc_selectDeleteFirst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteFirst) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -178,12 +174,11 @@ corto_void _test_Select_tc_selectDeleteNext(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteNext) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -207,12 +202,11 @@ corto_void _test_Select_tc_selectDeleteParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteParent) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -233,12 +227,11 @@ corto_void _test_Select_tc_selectDeletePrevious(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeletePrevious) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -327,9 +320,8 @@ corto_void _test_Select_tc_selectErrParentAst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentAst) */
-    corto_iter iter;
-
-    corto_int16 ret = corto_select("/", "..*", &iter);
+    corto_int16 ret = 0;
+    corto_select("/", "..*").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..*' failed: unexpected '*' after '..'"));
@@ -341,9 +333,8 @@ corto_void _test_Select_tc_selectErrParentId(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentId) */
-    corto_iter iter;
-
-    corto_int16 ret = corto_select(NULL, "..id", &iter);
+    corto_int16 ret = 0;
+    corto_select(NULL, "..id").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..id' failed: unexpected 'identifier' after '..'"));
@@ -355,9 +346,8 @@ corto_void _test_Select_tc_selectErrParentTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentTree) */
-    corto_iter iter;
-
-    corto_int16 ret = corto_select(NULL, "...", &iter);
+    corto_int16 ret = 0;
+    corto_select(NULL, "...").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '...' failed: unexpected '.' after '..'"));
@@ -369,9 +359,8 @@ corto_void _test_Select_tc_selectErrParentWc(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentWc) */
-    corto_iter iter;
-
-    corto_int16 ret = corto_select(NULL, "..?", &iter);
+    corto_int16 ret = 0;
+    corto_select(NULL, "..?").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..?' failed: unexpected '?' after '..'"));
@@ -383,9 +372,8 @@ corto_void _test_Select_tc_selectErrScopeScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrScopeScope) */
-    corto_iter iter;
-
-    corto_int16 ret = corto_select(NULL, "::::", &iter);
+    corto_int16 ret = 0;
+    corto_select(NULL, "::::").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '::::' failed: '/' unexpected at end of expression"));
@@ -925,10 +913,9 @@ corto_void _test_Select_tc_selectOrder(
 {
 /* $begin(test/Select/tc_selectOrder) */
     corto_result *item;
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
 
-    ret = corto_select(NULL, "a//*", &iter);
+    corto_iter iter = corto_select(NULL, "a//*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1318,12 +1305,11 @@ corto_void _test_Select_tc_selectTreeDeleteCurrent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteCurrent) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    ret = corto_select(NULL, "a//*", &iter);
+    corto_iter iter = corto_select(NULL, "a//*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1351,12 +1337,11 @@ corto_void _test_Select_tc_selectTreeDeleteFirst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteFirst) */
-    corto_iter iter;
-    corto_int16 ret;
     corto_result *item;
+    corto_int16 ret = 0;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1380,12 +1365,11 @@ corto_void _test_Select_tc_selectTreeDeleteGrandparent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteGrandparent) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
-    ret = corto_select(NULL, "a//*", &iter);
+    corto_iter iter = corto_select(NULL, "a//*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1453,12 +1437,11 @@ corto_void _test_Select_tc_selectTreeDeleteNext(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteNext) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1482,12 +1465,11 @@ corto_void _test_Select_tc_selectTreeDeleteParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteParent) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1509,12 +1491,11 @@ corto_void _test_Select_tc_selectTreeDeletePrevious(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeletePrevious) */
-    corto_iter iter;
-    corto_int16 ret;
+    corto_int16 ret = 0;
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    ret = corto_select(NULL, "a/*", &iter);
+    corto_iter iter = corto_select(NULL, "a/*").iter( ret = 1 );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));

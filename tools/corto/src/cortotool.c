@@ -34,10 +34,10 @@ static void cortotool_printUsage(corto_bool expert) {
     printf("   install              Install a package.\n");
     printf("   uninstall            Uninstall a package.\n");
     printf("   update               Update a package\n");
-    printf("   run                  Run a project.\n");
-    printf("   build                Build a project (not needed for apps!).\n");
-    printf("   rebuild              Clean, then build a project.\n");
+    printf("   run                  Run and build a project.\n");
     printf("   clean                Clean a project.\n");
+    printf("   build                Build a project.\n");
+    printf("   rebuild              Clean, then build a project.\n");
     printf("   test                 Run tests for a project\n");
     printf("   coverage             Print coverage report for project\n");
     printf("   shell                Start the corto shell.\n");
@@ -50,7 +50,7 @@ static void cortotool_printUsage(corto_bool expert) {
         printf("   untar                Unpackage a project to the global environment.\n");
         printf("\n");
     }
-    printf("See 'corto help <command>' for details on a commnad.\n\n");
+    printf("See 'corto help <command>' for details on a command.\n\n");
 }
 
 int main(int argc, char* argv[]) {

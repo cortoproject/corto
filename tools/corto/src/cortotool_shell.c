@@ -206,7 +206,6 @@ static int cxsh_printRow(corto_string parent, corto_string id, corto_string name
 
 /* List scope */
 static void cxsh_ls(char* arg) {
-    corto_iter iter;
     corto_uint32 i = 0;
     corto_id buff;
     char ch;
@@ -226,13 +225,11 @@ static void cxsh_ls(char* arg) {
         strcpy(buff, "*");
     }
 
-    if (corto_select(scope, buff, &iter)) {
-        corto_error("error: %s", corto_lasterr());
-    } else {
-        corto_resultIterForeach(iter, item) {
-            cxsh_printRow(item.parent, item.id, item.name, item.type);
-            i ++; /* Count objects so total can be printed afterwards */
-        }
+    corto_iter iter = corto_select(scope, buff).iter( goto error );
+
+    corto_resultIterForeach(iter, item) {
+        cxsh_printRow(item.parent, item.id, item.name, item.type);
+        i ++; /* Count objects so total can be printed afterwards */
     }
 
     if (!i) {
@@ -242,6 +239,10 @@ static void cxsh_ls(char* arg) {
     } else {
         corto_print("  %d object\n", i);
     }
+
+    return;
+error:
+    corto_error("%s", corto_lasterr());
 }
 
 /* Navigate scopes */
@@ -249,21 +250,18 @@ static void cxsh_cd(char* arg) {
     if (!arg || !strcmp(arg, "/")) {
         strcpy(scope, "/");
     } else {
-        corto_resultIter iter;
         corto_id result;
         corto_int32 count = 0;
 
         corto_seterr(NULL);
-        if (corto_select(scope, arg, &iter)) {
-            corto_error("%s", corto_lasterr());
-            return;
-        }
+
+        corto_resultIter iter = corto_select(scope, arg).iter(goto error);
 
         /* Reuse request to temporarily store result, count results */
         corto_resultIterForeach(iter, e) {
             if (count) {
-                corto_error("more than one result returned by 'cd %s'", arg);
-                return;
+                corto_seterr("more than one result returned by 'cd %s'", arg);
+                goto error;
             }
             /* Use fully qualified path for scope */
             sprintf(result, "%s/%s/%s", scope, e.parent, e.id);
@@ -274,13 +272,16 @@ static void cxsh_cd(char* arg) {
             strcpy(scope, result);
             corto_cleanpath(scope);
         } else {
-            if (corto_lasterr()) {
-                corto_error("%s", corto_lasterr());
-            } else {
-                corto_error("'%s' did not match any objects", arg);
+            if (!corto_lasterr()) {
+                corto_seterr("'%s' did not match any objects", arg);
             }
+            goto error;
         }
     }
+
+    return;
+error:
+    corto_error("%s", corto_lasterr());
 }
 
 corto_bool cxsh_readline(corto_string cmd) {
@@ -739,7 +740,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             }
         } else {
             corto_int32 i = 0;
-            corto_select(scope, expr, &iter);
+            iter = corto_select(scope, expr).iter ( goto error );
             corto_resultIterForeach(iter, item) {
                 corto_id scopedItem;
                 sprintf(scopedItem, "%s/%s", item.parent, item.id);
@@ -751,7 +752,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             }
 
             if (!i) {
-                corto_select("/corto", expr, &iter);
+                iter = corto_select("/corto", expr).iter ( goto error );
                 corto_resultIterForeach(iter, item) {
                     corto_id scopedItem;
                     if (strcmp(item.parent, ".")) {
@@ -768,7 +769,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             }
 
             if (!i) {
-                corto_select("/corto/lang", expr, &iter);
+                iter = corto_select("/corto/lang", expr).iter ( goto error );
                 while (corto_iterHasNext(&iter)) {
                     corto_result *item = corto_iterNext(&iter);
                     corto_id scopedItem;
@@ -799,6 +800,10 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
     }
 
     return result;
+error:
+    corto_llFree(result);
+    corto_error("%s", corto_lasterr());
+    return NULL;
 }
 
 /* Execute command */
@@ -810,31 +815,31 @@ int cxsh_command(int argc, char* argv[], char *cmd) {
 corto_uint32 cxsh_countSelect(char *expr) {
     corto_uint32 result = 0;
     corto_iter iter;
-    if (!corto_select("/corto/lang", expr, &iter)) {
+    iter = corto_select(scope, expr).iter( goto error );
+    while (corto_iterHasNext(&iter)) {
+        result++;
+        break;
+    }
+    if (!result) {
+        iter = corto_select(scope, expr).iter( goto error );
         while (corto_iterHasNext(&iter)) {
+            corto_iterNext(&iter);
             result++;
             break;
         }
     }
     if (!result) {
-        if (!corto_select("/corto", expr, &iter)) {
-            while (corto_iterHasNext(&iter)) {
-                corto_iterNext(&iter);
-                result++;
-                break;
-            }
+        iter = corto_select(scope, expr).iter( goto error );
+        while (corto_iterHasNext(&iter)) {
+            corto_iterNext(&iter);
+            result++;
+            break;
         }
     }
-    if (!result) {
-        if (!corto_select(scope, expr, &iter)) {
-            while (corto_iterHasNext(&iter)) {
-                corto_iterNext(&iter);
-                result++;
-                break;
-            }
-        }
-    }
+
     return result;
+error:
+    return 0;
 }
 
 /* Print command */

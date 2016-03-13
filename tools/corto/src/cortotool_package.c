@@ -2,6 +2,8 @@
 #include "cortotool_package.h"
 #include "cortotool_build.h"
 
+#define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
+
 static corto_string cortotool_lookupPackage(corto_string str) {
     corto_object p = corto_resolve(NULL, str);
     corto_string package = NULL;
@@ -92,11 +94,11 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
                 build = TRUE;
 
                 if (!silent) {
-                    printf("corto: package '%s' added to project\n", package);
+                    printf(CORTO_PROMPT "package '%s' added to project\n", package);
                 }
             } else {
                 if (!silent) {
-                    printf("corto: package '%s' is already added to the project\n", package);
+                    printf(CORTO_PROMPT "package '%s' is already added to the project\n", package);
                 }
             }
 
@@ -117,7 +119,7 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 
     return 0;
 error:
-    corto_error("corto: add: %s", corto_lasterr());
+    corto_error(CORTO_PROMPT "add: %s", corto_lasterr());
     return -1;
 }
 
@@ -188,7 +190,7 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
                 goto error;
             } else {
                 build = TRUE;
-                printf("corto: package '%s' removed from project\n", package);
+                printf(CORTO_PROMPT "package '%s' removed from project\n", package);
             }
         }
     }
@@ -218,13 +220,17 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
 
     if (packages && corto_llSize(packages)) {
         corto_iter iter = corto_llIter(packages);
-        printf("packages:\n");
         while (corto_iterHasNext(&iter)) {
             corto_string str = corto_iterNext(&iter);
-            printf("  %s  =>  %s\n", str, corto_locate(str, CORTO_LOCATION_LIB));
+            corto_string package = corto_locate(str, CORTO_LOCATION_LIB);
+            if (package) {
+                printf("  %s%s%s  =>  %s\n", CORTO_CYAN, str, CORTO_NORMAL, package);
+            } else {
+              printf("  %s%s%s  =>  %smissing%s\n", CORTO_CYAN, str, CORTO_NORMAL, CORTO_RED, CORTO_NORMAL);
+            }
         }
     } else {
-        printf("corto: no packages to list\n");
+        printf(CORTO_PROMPT "no packages to list\n");
     }
 
     if (packages) {

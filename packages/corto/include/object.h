@@ -89,12 +89,25 @@ corto_bool corto_owned(corto_object o);
 corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
-/* Iterate over object metadata matching a expression */
-corto_int16 corto_selectContentType(corto_resultIter *iter, corto_string contentType);
-corto_int16 corto_selectLimit(corto_resultIter *iter, corto_uint64 offset, corto_uint64 limit);
-corto_int16 corto_selectAugment(corto_resultIter *iter, corto_string filter);
-corto_int16 corto_selectParam(corto_resultIter *iter, corto_string param);
-corto_int16 corto_select(corto_string scope, corto_string expr, corto_resultIter *iter_out);
+/* Iterate over objects matching an expression */
+typedef struct corto_selectRequest {
+    corto_int16 err;
+    corto_string scope;
+    corto_string expr;
+    corto_uint64 offset;
+    corto_uint64 limit;
+    corto_string augment;
+    corto_string contentType;
+} corto_selectRequest;
+#define iter(...) _iter(); if (corto_selectErr()) {__VA_ARGS__;}
+typedef struct corto_selectSelector {
+    struct corto_selectSelector (*contentType)(corto_string contentType);
+    struct corto_selectSelector (*limit)(corto_uint64 offset, corto_uint64 limit);
+    struct corto_selectSelector (*augment)(corto_string filter);
+    corto_resultIter ___ (*_iter)(void);
+} corto_selectSelector;
+corto_int16 corto_selectErr(void);
+struct corto_selectSelector corto_select(corto_string scope, corto_string expr);
 
 /* Augment data */
 corto_int16 _corto_augment(corto_type t, corto_string id, corto_replicator r);

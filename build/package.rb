@@ -73,8 +73,12 @@ if not defined? NOCORTO then
 
             if LOCAL then
                 localStr = "--attr local=true"
-            elsif (`corto locate corto/gen/doc/doc` != "corto: package 'corto/gen/doc/doc' not found\n") then
+            else
+              begin
+                sh "corto locate corto/gen/doc/doc --silent"
                 docStr = "-g doc/doc"
+              rescue
+              end
             end
 
             command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
@@ -128,16 +132,18 @@ end
 task :doc do
     verbose(VERBOSE)
     if `which corto` != "" then
-        if `corto locate corto::md` != "corto: package 'corto::md' not found\n" then
-            if File.exists? "#{NAME}.md" and not LOCAL then
-                command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
-                begin
-                    sh command
-                rescue
-                    STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
-                    abort
-                end
-            end
+        begin
+          sh "corto locate corto/md --silent"
+          if File.exists? "#{NAME}.md" and not LOCAL then
+              command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
+              begin
+                  sh command
+              rescue
+                  STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+                  abort
+              end
+          end
+        rescue
         end
     end
 end
@@ -233,8 +239,15 @@ task :install do
         etc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
         sh "rm -rf #{etc}"
         sh "mkdir -p #{etc}"
+
         if File.exists? "etc/everywhere" then
             sh "cp -r etc/everywhere/. #{etc}/"
+            if CORTO_OS == "Darwin" then
+                access = `stat -f '%A' etc/everywhere`[0...-1]
+            else
+                access = `stat -c '%a' etc/everywhere`[0...-1]
+            end
+            sh "chmod #{access} #{etc}"
         end
         platformStr = "etc/" + CORTO_PLATFORM
         if File.exists? platformStr then

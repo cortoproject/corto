@@ -1,6 +1,8 @@
 
 #include "cortotool_install.h"
 
+#define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
+
 static corto_bool cortotool_validProject(void) {
     if (!corto_fileTest("rakefile")) {
         corto_error("corto: need a valid project directory to install (no rakefile found)!");
@@ -152,9 +154,9 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     corto_int32 procresult, i = 0;
     corto_int8 rc = 0;
     if (!installRemote) {
-        printf("corto: installing...  ");
+        printf(CORTO_PROMPT "installing...  ");
     } else {
-        printf("corto: installing %s...  ", argv[1]);
+        printf(CORTO_PROMPT "installing %s...  ", argv[1]);
     }
     while(!(procresult = corto_proccheck(pid, &rc))) {
         i++;
@@ -201,7 +203,7 @@ corto_int16 cortotool_uninstallAll(void) {
         corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "uninstall.sh", NULL});
         corto_char progress[] = {'|', '/', '-', '\\'};
         corto_int32 i = 0;
-        printf("corto: uninstalling...  ");
+        printf(CORTO_PROMPT "uninstalling...  ");
         while(!corto_proccheck(pid, NULL)) {
             i++;
             printf("\b%c", progress[i % 4]);
@@ -275,7 +277,7 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
         corto_dealloc(dir);
 
         if (!err) {
-            corto_print("corto: package '%s' uninstalled", argv[1]);
+            corto_print(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
         } else if (!found) {
             corto_error("corto: package '%s' not found", argv[1]);
             goto error;
@@ -307,7 +309,7 @@ corto_int16 cortotool_update(int argc, char *argv[]) {
     corto_char progress[] = {'|', '/', '-', '\\'};
     corto_int32 procresult, i = 0;
     corto_int8 rc = 0;
-    printf("corto: updating %s...  ", package);
+    printf(CORTO_PROMPT "updating %s...  ", package);
     while(!(procresult = corto_proccheck(pid, &rc))) {
         i++;
         printf("\b%c", progress[i % 4]);
@@ -342,10 +344,10 @@ void cortotool_toLibPath(char *location) {
 
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
-    corto_bool lib = FALSE, path = FALSE, env = FALSE;
+    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE;
 
     if (argc <= 1) {
-        printf("corto: please provide a package name\n");
+        printf(CORTO_PROMPT "please provide a package name\n");
         goto error;
     }
 
@@ -358,6 +360,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 path = TRUE;
             } else if (!strcmp(argv[i], "--env")) {
                 env = TRUE;
+            } else if (!strcmp(argv[i], "--silent")) {
+                silent = TRUE;
             }
         }
     }
@@ -380,12 +384,12 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
 
         if (lib || path || env) {
-            printf("%s\n", location);
+            if (!silent) printf("%s\n", location);
         } else {
-            printf("corto: '%s' => '%s'\n", argv[1], location);
+            if (!silent) printf(CORTO_PROMPT "'%s' => '%s'\n", argv[1], location);
         }
     } else {
-        printf("corto: package '%s' not found\n", argv[1]);
+        if (!silent) printf(CORTO_PROMPT "package '%s' not found\n", argv[1]);
         goto error;
     }
 
@@ -437,7 +441,7 @@ corto_int16 cortotool_tar(int argc, char* argv[]) {
     corto_pid pid = corto_procrun("sh", (char*[]){"sh", "tar.sh", NULL});
     corto_char progress[] = {'|', '/', '-', '\\'};
     corto_int32 i = 0;
-    printf("corto: tarring...  ");
+    printf(CORTO_PROMPT "tarring...  ");
     while(!corto_proccheck(pid, NULL)) {
         i++;
         printf("\b%c", progress[i % 4]);
@@ -479,7 +483,7 @@ corto_int16 cortotool_untar(int argc, char* argv[]) {
     corto_pid pid = corto_procrun("sudo", (char*[]){"sudo", "sh", "untar.sh", NULL});
     corto_char progress[] = {'|', '/', '-', '\\'};
     corto_int32 i = 0;
-    printf("corto: untarring...  ");
+    printf(CORTO_PROMPT "untarring...  ");
     while(!corto_proccheck(pid, NULL)) {
         i++;
         printf("\b%c", progress[i % 4]);
@@ -506,7 +510,7 @@ void cortotool_installHelp(void) {
     printf("name.\n\n");
     printf("Examples:\n");
     printf("corto install ./myPackage\n");
-    printf("corto install corto::web\n");
+    printf("corto install corto/web\n");
     printf("\n");
     printf("Note: installation requires root priviledges.\n");
     printf("\n");
@@ -531,7 +535,7 @@ void cortotool_updateHelp(void) {
     printf("updated to the latest version.\n\n");
     printf("Examples:\n");
     printf("corto update\n");
-    printf("corto update corto::web\n");
+    printf("corto update corto/web\n");
     printf("\n");
     printf("Note: installation requires root priviledges.\n");
     printf("\n");

@@ -1019,7 +1019,7 @@ CORTO_STRUCT_O(corto_core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, N
     CORTO_MEMBER_O(result, parent, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, type, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(result, value, word, CORTO_GLOBAL);
-    CORTO_MEMBER_O(result, augments, augmentseq, CORTO_GLOBAL);
+    CORTO_MEMBER_O(result, augments, augmentseq, CORTO_HIDDEN);
     CORTO_METHOD_O(result, getText, "()", string, FALSE, corto_result_getText);
 
 /* /corto/core/request */

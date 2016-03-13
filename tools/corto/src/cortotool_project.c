@@ -3,6 +3,8 @@
 #include "cortotool_package.h"
 #include "cortotool_build.h"
 
+#define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
+
 static corto_int16 cortotool_setupProject(
     const char *projectKind,
     const char *name,
@@ -12,7 +14,7 @@ static corto_int16 cortotool_setupProject(
     CORTO_UNUSED(isLocal);
 
     if (!isSilent) {
-        printf ("corto: create %s '%s'\n", projectKind, name);
+        printf (CORTO_PROMPT " create %s '%s'\n", projectKind, name);
     }
 
     if (corto_fileTest(name)) {
@@ -309,7 +311,7 @@ static corto_int16 cortotool_app (
     }
 
     if (!silent) {
-        printf("corto: done\n\n");
+        printf(CORTO_PROMPT " done\n\n");
     }
 
     return 0;
@@ -601,7 +603,7 @@ static corto_int16 cortotool_package(
     }
 
     if (!silent) {
-        printf("corto: done\n\n");
+        printf(CORTO_PROMPT " done\n\n");
     }
 
     corto_dealloc(includeMem);
