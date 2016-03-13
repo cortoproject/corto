@@ -1627,7 +1627,7 @@ void* corto_olsFind(corto__scope *scope, corto_int8 key) {
     if (ols) {
         do {
             if (ols->key == key) break;
-        } while ((ols++)->key);
+        } while ((++ols)->key);
         return ols->key ? ols : NULL;
     } else {
         return NULL;
@@ -1639,7 +1639,7 @@ static corto_uint8 corto_olsSize(corto__scope *scope) {
     corto__ols *ols = scope->ols;
     if (ols) {
         do {
-        } while ((ols++)->key);
+        } while ((++ols)->key);
         result = ols - scope->ols - 1;
     }
     return result;
@@ -1667,9 +1667,10 @@ void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
         } else {
             corto_uint8 size = corto_olsSize(scope);
             scope->ols = corto_realloc(scope->ols,
-                (size + 1) * sizeof(corto__ols));
+                (size + 2) * sizeof(corto__ols));
             ols = &scope->ols[size];
             ols->key = key;
+            (ols + 1)->key = 0;
         }
         ols->value = value;
 

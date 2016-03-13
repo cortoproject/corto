@@ -194,6 +194,9 @@ repeat:
                         corto_release(lookup);
                     }
                     lookup = o;
+                    if (!o) {
+                        break;
+                    }
                 }
             }
 
