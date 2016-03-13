@@ -28,7 +28,6 @@ extern "C" {
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
-#define corto_query(o) ((corto_query)corto_assertType((corto_type)corto_query_o, o))
 #define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
 #define corto_replicatorKind(o) ((corto_replicatorKind*)corto_assertType((corto_type)corto_replicatorKind_o, o))
 #define corto_request(o) ((corto_request*)corto_assertType((corto_type)corto_request_o, o))
@@ -89,14 +88,6 @@ CORTO_BITMASK(corto_eventMask);
     #define CORTO_ON_VALUE (0x100)
     #define CORTO_ON_METAVALUE (0x200)
 
-/*  /corto/core/query */
-CORTO_CLASS(corto_query);
-
-CORTO_CLASS_DEF(corto_query) {
-    corto_object from;
-    corto_eventMask mask;
-};
-
 /* /corto/core/replicatorKind */
 typedef enum corto_replicatorKind {
     CORTO_SOURCE = 0,
@@ -109,7 +100,7 @@ CORTO_CLASS(corto_replicator);
 
 CORTO_CLASS_DEF(corto_replicator) {
     corto_object mount;
-    corto_query query;
+    corto_eventMask mask;
     corto_replicatorKind kind;
     corto_string contentType;
 };

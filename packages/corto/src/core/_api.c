@@ -1568,104 +1568,14 @@ corto_int16 _corto_positionDeinit(corto_position* value) {
     return result;
 }
 
-corto_query _corto_queryCreate(corto_object from, corto_eventMask mask) {
-    corto_query this;
-    this = corto_declare(corto_query_o);
-    if (!this) {
-        return NULL;
-    }
-    corto_setref(&((corto_query)this)->from, from);
-    ((corto_query)this)->mask = mask;
-    if (corto_define(this)) {
-        corto_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-corto_query _corto_queryCreateChild(corto_object _parent, corto_string _name, corto_object from, corto_eventMask mask) {
-    corto_query this;
-    this = corto_declareChild(_parent, _name, corto_query_o);
-    if (!this) {
-        return NULL;
-    }
-    corto_setref(&((corto_query)this)->from, from);
-    ((corto_query)this)->mask = mask;
-    if (corto_define(this)) {
-        corto_release(this);
-        this = NULL;
-    }
-    return this;
-}
-
-corto_int16 _corto_queryUpdate(corto_query this, corto_object from, corto_eventMask mask) {
-    CORTO_UNUSED(this);
-    if (!corto_updateBegin(this)) {
-        corto_setref(&((corto_query)this)->from, from);
-        ((corto_query)this)->mask = mask;
-        corto_updateEnd(this);
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_query _corto_queryDeclare(void) {
-    corto_query this;
-    this = corto_declare(corto_query_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-corto_query _corto_queryDeclareChild(corto_object _parent, corto_string _name) {
-    corto_query this;
-    this = corto_declareChild(_parent, _name, corto_query_o);
-    if (!this) {
-        return NULL;
-    }
-    return this;
-}
-
-corto_int16 _corto_queryDefine(corto_query this, corto_object from, corto_eventMask mask) {
-    CORTO_UNUSED(this);
-    corto_setref(&((corto_query)this)->from, from);
-    ((corto_query)this)->mask = mask;
-    return corto_define(this);
-}
-
-void _corto_querySet(corto_query this, corto_object from, corto_eventMask mask) {
-    CORTO_UNUSED(this);
-    corto_setref(&((corto_query)this)->from, from);
-    ((corto_query)this)->mask = mask;
-}
-
-corto_string _corto_queryStr(corto_query value) {
-    corto_string result;
-    corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_query_o));
-    result = corto_strv(&v, 0);
-    return result;
-}
-
-corto_query corto_queryFromStr(corto_query value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_query_o), str);
-    return value;
-}
-
-corto_int16 _corto_queryCompare(corto_query dst, corto_query src) {
-    return corto_compare(dst, src);
-}
-
-corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
+corto_replicator _corto_replicatorCreate(corto_object mount, corto_eventMask mask, corto_replicatorKind kind, corto_string contentType) {
     corto_replicator this;
     this = corto_declare(corto_replicator_o);
     if (!this) {
         return NULL;
     }
     corto_setref(&((corto_replicator)this)->mount, mount);
-    corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->mask = mask;
     ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
     if (corto_define(this)) {
@@ -1675,14 +1585,14 @@ corto_replicator _corto_replicatorCreate(corto_object mount, corto_query query, 
     return this;
 }
 
-corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
+corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_replicatorKind kind, corto_string contentType) {
     corto_replicator this;
     this = corto_declareChild(_parent, _name, corto_replicator_o);
     if (!this) {
         return NULL;
     }
     corto_setref(&((corto_replicator)this)->mount, mount);
-    corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->mask = mask;
     ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
     if (corto_define(this)) {
@@ -1692,11 +1602,11 @@ corto_replicator _corto_replicatorCreateChild(corto_object _parent, corto_string
     return this;
 }
 
-corto_int16 _corto_replicatorUpdate(corto_replicator this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
+corto_int16 _corto_replicatorUpdate(corto_replicator this, corto_object mount, corto_eventMask mask, corto_replicatorKind kind, corto_string contentType) {
     CORTO_UNUSED(this);
     if (!corto_updateBegin(this)) {
         corto_setref(&((corto_replicator)this)->mount, mount);
-        corto_setref(&((corto_replicator)this)->query, query);
+        ((corto_replicator)this)->mask = mask;
         ((corto_replicator)this)->kind = kind;
         corto_setstr(&((corto_replicator)this)->contentType, contentType);
         corto_updateEnd(this);
@@ -1724,19 +1634,19 @@ corto_replicator _corto_replicatorDeclareChild(corto_object _parent, corto_strin
     return this;
 }
 
-corto_int16 _corto_replicatorDefine(corto_replicator this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
+corto_int16 _corto_replicatorDefine(corto_replicator this, corto_object mount, corto_eventMask mask, corto_replicatorKind kind, corto_string contentType) {
     CORTO_UNUSED(this);
     corto_setref(&((corto_replicator)this)->mount, mount);
-    corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->mask = mask;
     ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
     return corto_define(this);
 }
 
-void _corto_replicatorSet(corto_replicator this, corto_object mount, corto_query query, corto_replicatorKind kind, corto_string contentType) {
+void _corto_replicatorSet(corto_replicator this, corto_object mount, corto_eventMask mask, corto_replicatorKind kind, corto_string contentType) {
     CORTO_UNUSED(this);
     corto_setref(&((corto_replicator)this)->mount, mount);
-    corto_setref(&((corto_replicator)this)->query, query);
+    ((corto_replicator)this)->mask = mask;
     ((corto_replicator)this)->kind = kind;
     corto_setstr(&((corto_replicator)this)->contentType, contentType);
 }

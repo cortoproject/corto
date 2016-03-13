@@ -48,8 +48,8 @@ corto_int16 _corto_replicator_construct(
     corto_replicator this)
 {
 /* $begin(corto/core/replicator/construct) */
-    corto_object observable = this->query ? this->query->from : this->mount;
-    corto_eventMask mask = this->query ? this->query->mask : CORTO_ON_SCOPE;
+    corto_object observable = this->mount;
+    corto_eventMask mask = this->mask;
 
     if (observable) {
         /* Attach replicator to the observable if mask != ON_SELF */

@@ -450,7 +450,6 @@ CORTO_FWDECL(class, observableEvent);
 CORTO_FWDECL(class, package);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
-CORTO_FWDECL(class, query);
 CORTO_FWDECL(class, replicator);
 CORTO_FWDECL(class, template);
 CORTO_FWDECL(class, sequence);
@@ -458,6 +457,8 @@ CORTO_FWDECL(class, struct);
 CORTO_FWDECL(class, text);
 CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
+
+CORTO_FWDECL(class, query);
 
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
@@ -1035,16 +1036,11 @@ CORTO_STRUCT_O(corto_core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, 
 CORTO_INTERFACE_O(corto_core, dispatcher);
     CORTO_IMETHOD_O(dispatcher, post, "(event e)", void, FALSE);
 
-/* /corto/lang/query */
-CORTO_CLASS_NOBASE_O(corto_core, query, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(query, from, object, CORTO_GLOBAL);
-    CORTO_MEMBER_O(query, mask, eventMask, CORTO_GLOBAL);
-
 /* /corto/lang/replicator */
 CORTO_FW_CD(replicator);
 CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_MEMBER_O(replicator, mount, object, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, query, query, CORTO_GLOBAL);
+    CORTO_MEMBER_O(replicator, mask, eventMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, kind, replicatorKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, contentType, string, CORTO_GLOBAL);
     CORTO_METHOD_O(replicator, init, "()", int16, FALSE, corto_replicator_construct);
