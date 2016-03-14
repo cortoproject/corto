@@ -302,11 +302,11 @@ corto_void _test_ObjectMgmt_tc_createChildParentTypeErr(
     test_assert(!corto_checkState(o, CORTO_DEFINED));
 
     corto_object p = corto_createChild(o, "p", test_VoidParent_o);
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not '/corto/lang/void'"));
+    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
     test_assert(p == NULL);
 
     corto_object q = test_VoidParentCreateChild(o, "q", 0);
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not '/corto/lang/void'"));
+    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
     test_assert(q == NULL);
 
     corto_delete(o);
@@ -789,11 +789,11 @@ corto_void _test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_assert(!corto_checkState(o, CORTO_DEFINED));
 
     corto_object p = corto_declareChild(o, "p", test_VoidParent_o);
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not '/corto/lang/void'"));
+    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
     test_assert(p == NULL);
 
     corto_object q = test_VoidParentDeclareChild(o, "q");
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not '/corto/lang/void'"));
+    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
     test_assert(q == NULL);
 
     corto_delete(o);

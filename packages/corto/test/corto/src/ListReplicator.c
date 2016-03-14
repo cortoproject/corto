@@ -23,7 +23,7 @@ corto_int16 _test_ListReplicator_construct(
         "x",
         NULL,
         ".",
-        "/foo",
+        "uint32",
         0
     );
     corto_resultSet(
@@ -31,7 +31,7 @@ corto_int16 _test_ListReplicator_construct(
         "yz",
         NULL,
         ".",
-        "/bar",
+        "string",
         0
     );
     corto_resultSet(
@@ -39,7 +39,7 @@ corto_int16 _test_ListReplicator_construct(
         "xyz",
         NULL,
         ".",
-        "/panda",
+        "float64",
         0
     );
 
@@ -49,7 +49,7 @@ corto_int16 _test_ListReplicator_construct(
         "a",
         NULL,
         "x",
-        "/type",
+        "uint32",
         0
     );
 
@@ -58,7 +58,7 @@ corto_int16 _test_ListReplicator_construct(
         "b",
         NULL,
         "x",
-        "/type",
+        "uint32",
         0
     );
 
@@ -67,7 +67,7 @@ corto_int16 _test_ListReplicator_construct(
         "c",
         NULL,
         "x",
-        "/type",
+        "uint32",
         0
     );
 
@@ -76,7 +76,7 @@ corto_int16 _test_ListReplicator_construct(
         "a",
         NULL,
         "xyz",
-        "/type",
+        "uint32",
         0
     );
 
@@ -85,7 +85,7 @@ corto_int16 _test_ListReplicator_construct(
         "abc",
         NULL,
         "xyz",
-        "/type",
+        "uint32",
         0
     );
 
@@ -94,7 +94,7 @@ corto_int16 _test_ListReplicator_construct(
         "bc",
         NULL,
         "xyz",
-        "/type",
+        "uint32",
         0
     );
 
@@ -103,7 +103,7 @@ corto_int16 _test_ListReplicator_construct(
         "foo",
         NULL,
         "xyz/abc",
-        "/type",
+        "uint32",
         0
     );
 
@@ -112,10 +112,11 @@ corto_int16 _test_ListReplicator_construct(
         "bar",
         NULL,
         "xyz/abc",
-        "/type",
+        "uint32",
         0
     );
 
+    corto_replicator_setContentType(this, "text/json");
 
     return corto_replicator_construct(this);
 /* $end */

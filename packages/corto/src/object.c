@@ -1925,6 +1925,8 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
 
     if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         sprintf(buffer, "<%p>", o);
+    } else if (corto_parentof(o) == corto_lang_o) {
+        strcpy(buffer, corto_nameof(o));
     } else {
         do {
             stack[depth++] = o;

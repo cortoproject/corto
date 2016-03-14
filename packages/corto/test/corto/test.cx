@@ -389,6 +389,8 @@ test::Suite SelectContentType::
 
 class ListReplicator : replicator, hidden::
     alias mount : replicator/mount
+    alias mask : replicator/mask
+    alias kind : replicator/kind
     items: resultList, private
     int16 construct()
     resultIter onRequest(core/request request)
@@ -420,6 +422,19 @@ test::Suite ReplicatorRequest::
     void tc_selectScopeNestedFromVirtualScope()
     void tc_selectScopeNestedDirtyFromVirtualScope()
     void tc_selectScopeFilterFromVirtualScope()
+
+// Request data from a SINK ON_TREE replicator
+test::Suite TreeSinkReplicator::
+    void setup() method
+    void teardown() method
+    replicator: ListReplicator
+
+    void tc_resolveFromMount()
+    void tc_resolveFromNested()
+    void tc_resolveFromMount()
+    void tc_selectFromNestedVirtual()
+    void tc_selectFromNestedReal()
+
 
 // Event test support type
 class EventTest::

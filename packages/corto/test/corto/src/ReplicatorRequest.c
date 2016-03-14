@@ -19,7 +19,7 @@ corto_void _test_ReplicatorRequest_setup(
     corto_setAttr(old);
 
     /* Create replicator */
-    this->replicator = test_ListReplicatorCreate(a_o);
+    this->replicator = test_ListReplicatorCreate(a_o, 0, CORTO_SOURCE);
 
 /* $end */
 }
@@ -40,7 +40,7 @@ corto_void _test_ReplicatorRequest_tc_selectScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "x"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/foo"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -48,7 +48,7 @@ corto_void _test_ReplicatorRequest_tc_selectScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "yz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/bar"));
+    test_assert(!strcmp(result->type, "string"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -56,7 +56,7 @@ corto_void _test_ReplicatorRequest_tc_selectScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -80,7 +80,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilter(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "yz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/bar"));
+    test_assert(!strcmp(result->type, "string"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -88,7 +88,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilter(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -111,7 +111,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "yz"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/bar"));
+    test_assert(!strcmp(result->type, "string"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -119,7 +119,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -142,7 +142,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -150,7 +150,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -173,7 +173,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "x"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/foo"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -181,7 +181,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "yz"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/bar"));
+    test_assert(!strcmp(result->type, "string"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -189,7 +189,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -212,7 +212,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -220,7 +220,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -228,7 +228,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 /* $end */
@@ -282,7 +282,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "x"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/foo"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -290,7 +290,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "yz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/bar"));
+    test_assert(!strcmp(result->type, "string"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -298,7 +298,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -321,7 +321,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNested(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -329,7 +329,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNested(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -337,7 +337,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNested(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -360,7 +360,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -368,7 +368,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -376,7 +376,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -399,7 +399,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -407,7 +407,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -415,7 +415,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -438,7 +438,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "foo"));
     test_assert(!strcmp(result->parent, "abc"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -446,7 +446,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bar"));
     test_assert(!strcmp(result->parent, "abc"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -469,7 +469,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -477,7 +477,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -485,7 +485,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -508,7 +508,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "foo"));
     test_assert(!strcmp(result->parent, "abc"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -516,7 +516,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bar"));
     test_assert(!strcmp(result->parent, "abc"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -539,7 +539,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingle(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "a"));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -562,7 +562,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "xyz"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/panda"));
+    test_assert(!strcmp(result->type, "float64"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -585,7 +585,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "."));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -608,7 +608,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNested(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "abc"));
     test_assert(!strcmp(result->parent, "a/xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -631,7 +631,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "bc"));
     test_assert(!strcmp(result->parent, "xyz"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 
@@ -654,7 +654,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "foo"));
     test_assert(!strcmp(result->parent, "abc"));
-    test_assert(!strcmp(result->type, "/type"));
+    test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
 

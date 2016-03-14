@@ -1374,7 +1374,7 @@ corto_void _test_StringDeserializer_tc_errTypeMismatch(
     test_assert(o != NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "type of object ('/corto/lang/bool') does not match string ('/corto/lang/string')"));
+    test_assert(!strcmp(err, "type of object ('bool') does not match string ('string')"));
     corto_delete(o);
 
 /* $end */
