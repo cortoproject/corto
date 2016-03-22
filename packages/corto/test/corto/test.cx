@@ -415,6 +415,7 @@ test::Suite ReplicatorRequest::
     void tc_selectScopeNestedFromScope()
     void tc_selectScopeNestedDirtyFromScope()
     void tc_selectScopeFilterFromScope()
+    void tc_selectParentFromScope()
 
     void tc_selectSingleFromVirtualScope()
     void tc_selectSingleNestedFromVirtualScope()
@@ -422,6 +423,10 @@ test::Suite ReplicatorRequest::
     void tc_selectScopeNestedFromVirtualScope()
     void tc_selectScopeNestedDirtyFromVirtualScope()
     void tc_selectScopeFilterFromVirtualScope()
+    void tc_selectParentFromVirtualScope()
+    void tc_selectGrandparentFromVirtualScope()
+    void tc_selectVirtualParentFromVirtualScope()
+    void tc_selectVirtualGrandparentFromVirtualScope()
 
 // Request data from a SINK ON_TREE replicator
 test::Suite TreeSinkReplicator::

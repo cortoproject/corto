@@ -24,6 +24,74 @@ corto_void _test_ReplicatorRequest_setup(
 /* $end */
 }
 
+corto_void _test_ReplicatorRequest_tc_selectGrandparentFromVirtualScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectGrandparentFromVirtualScope) */
+    corto_result *result;
+    corto_int16 ret = 0;
+
+    corto_iter iter = corto_select("/a/xyz", "../..").iter( ret = 1 );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, ""));
+    test_assert(!strcmp(result->parent, "../.."));
+    test_assert(!strcmp(result->type, "/corto/core/package"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectParentFromScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectParentFromScope) */
+    corto_result *result;
+    corto_int16 ret = 0;
+
+    corto_iter iter = corto_select("/a", "..").iter( ret = 1 );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, ""));
+    test_assert(!strcmp(result->parent, ".."));
+    test_assert(!strcmp(result->type, "/corto/core/package"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectParentFromVirtualScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectParentFromVirtualScope) */
+    corto_result *result;
+    corto_int16 ret = 0;
+
+    corto_iter iter = corto_select("/a/xyz", "..").iter(ret = 1);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "../.."));
+    test_assert(!strcmp(result->type, "void"));
+
+    test_assert(!corto_iterHasNext(&iter));
+/* $end */
+}
+
 corto_void _test_ReplicatorRequest_tc_selectScope(
     test_ReplicatorRequest this)
 {
@@ -654,6 +722,52 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "foo"));
     test_assert(!strcmp(result->parent, "abc"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectVirtualGrandparentFromVirtualScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectVirtualGrandparentFromVirtualScope) */
+    corto_result *result;
+    corto_int16 ret = 0;
+
+    corto_iter iter = corto_select("/a/xyz/abc/foo", "../..").iter( ret = 1 );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "xyz"));
+    test_assert(!strcmp(result->parent, "../../.."));
+    test_assert(!strcmp(result->type, "float64"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectVirtualParentFromVirtualScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectVirtualParentFromVirtualScope) */
+    corto_result *result;
+    corto_int16 ret = 0;
+
+    corto_iter iter = corto_select("/a/xyz/abc/foo", "..").iter( ret = 1 );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "abc"));
+    test_assert(!strcmp(result->parent, "../.."));
     test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));

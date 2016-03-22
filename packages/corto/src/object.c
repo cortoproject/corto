@@ -1914,16 +1914,14 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
 
     depth = 0;
 
-    if (!o) {
-        o = root_o;
-    }
-
     if (!buffer) {
         buffer = corto_alloc(sizeof(corto_id));
         threadStr = TRUE;
     }
 
-    if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (!o) {
+        buffer[0] = '\0';
+    } else if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         sprintf(buffer, "<%p>", o);
     } else if (corto_parentof(o) == corto_lang_o) {
         strcpy(buffer, corto_nameof(o));
@@ -1970,16 +1968,19 @@ corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep) {
     char *ptr = path;
 
     if (*ptr == *sep) {
-        ptr++;
-    }
-
-    do {
-        if (*ptr == *sep) {
-            *ptr = '\0';
-            ptr++;
-        }
         elements[count ++] = ptr;
-    } while ((ptr = strchr(ptr, *sep)));
+        *ptr = '\0';
+        ptr ++;
+    }
+    if (*ptr) {
+        do {
+            if (*ptr == *sep) {
+                *ptr = '\0';
+                ptr++;
+            }
+            elements[count ++] = ptr;
+        } while ((ptr = strchr(ptr, *sep)));
+    }
 
     return count;
 }
