@@ -259,7 +259,7 @@ task :test do
 
   if file != "" then
     begin
-      sh "corto #{file}"
+      sh "corto #{file} #{ENV['testcase']}"
     rescue
       abort
     end
