@@ -79,7 +79,7 @@ extern "C" {
 #define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
 
 /* Type definitions */
-/* /corto/lang/typeKind */
+/* typeKind */
 typedef enum corto_typeKind {
     CORTO_VOID = 0,
     CORTO_ANY = 1,
@@ -89,35 +89,35 @@ typedef enum corto_typeKind {
     CORTO_ITERATOR = 5
 } corto_typeKind;
 
-/* /corto/lang/bool */
+/* bool */
 typedef char corto_bool;
 
-/* /corto/lang/uint32 */
+/* uint32 */
 typedef uint32_t corto_uint32;
 
-/* /corto/lang/uint16 */
+/* uint16 */
 typedef uint16_t corto_uint16;
 
-/*  /corto/lang/type */
+/*  type */
 CORTO_CLASS(corto_type);
 
-/* /corto/lang/state */
+/* state */
 CORTO_BITMASK(corto_state);
     #define CORTO_VALID (0x1)
     #define CORTO_DECLARED (0x2)
     #define CORTO_DEFINED (0x4)
     #define CORTO_DESTRUCTED (0x8)
 
-/* /corto/lang/word */
+/* word */
 typedef uintptr_t corto_word;
 
-/* /corto/lang/object */
+/* object */
 typedef void *corto_object;
 
-/* /corto/lang/string */
+/* string */
 typedef char* corto_string;
 
-/*  /corto/lang/parameter */
+/*  parameter */
 typedef struct corto_parameter corto_parameter;
 
 struct corto_parameter {
@@ -128,7 +128,7 @@ struct corto_parameter {
 
 CORTO_SEQUENCE(corto_parameterseq, corto_parameter,);
 
-/*  /corto/lang/function */
+/*  function */
 CORTO_CLASS(corto_function);
 
 CORTO_CLASS_DEF(corto_function) {
@@ -146,7 +146,7 @@ CORTO_CLASS_DEF(corto_function) {
 
 CORTO_SEQUENCE(corto_vtable, corto_function,);
 
-/*  /corto/lang/delegatedata */
+/*  delegatedata */
 typedef struct corto_delegatedata corto_delegatedata;
 
 struct corto_delegatedata {
@@ -154,7 +154,7 @@ struct corto_delegatedata {
     corto_function procedure;
 };
 
-/*  /corto/lang/initAction */
+/*  initAction */
 typedef struct corto_initAction corto_initAction;
 
 struct corto_initAction {
@@ -176,7 +176,7 @@ CORTO_CLASS_DEF(corto_type) {
     corto_initAction init;
 };
 
-/* /corto/lang/modifier */
+/* modifier */
 CORTO_BITMASK(corto_modifier);
     #define CORTO_GLOBAL (0x0)
     #define CORTO_LOCAL (0x1)
@@ -185,7 +185,7 @@ CORTO_BITMASK(corto_modifier);
     #define CORTO_CONST (0x8)
     #define CORTO_HIDDEN (0x10)
 
-/*  /corto/lang/member */
+/*  member */
 CORTO_CLASS(corto_member);
 
 CORTO_CLASS_DEF(corto_member) {
@@ -197,7 +197,7 @@ CORTO_CLASS_DEF(corto_member) {
     corto_uint32 offset;
 };
 
-/*  /corto/lang/alias */
+/*  alias */
 CORTO_CLASS(corto_alias);
 
 CORTO_CLASS_DEF(corto_alias) {
@@ -205,10 +205,10 @@ CORTO_CLASS_DEF(corto_alias) {
     corto_member member;
 };
 
-/* /corto/lang/any */
+/* any */
 CORTO_ANY(corto_any);
 
-/* /corto/lang/collectionKind */
+/* collectionKind */
 typedef enum corto_collectionKind {
     CORTO_ARRAY = 0,
     CORTO_SEQUENCE = 1,
@@ -216,7 +216,7 @@ typedef enum corto_collectionKind {
     CORTO_MAP = 3
 } corto_collectionKind;
 
-/*  /corto/lang/collection */
+/*  collection */
 CORTO_CLASS(corto_collection);
 
 CORTO_CLASS_DEF(corto_collection) {
@@ -226,7 +226,7 @@ CORTO_CLASS_DEF(corto_collection) {
     corto_uint32 max;
 };
 
-/*  /corto/lang/array */
+/*  array */
 CORTO_CLASS(corto_array);
 
 CORTO_CLASS_DEF(corto_array) {
@@ -234,7 +234,7 @@ CORTO_CLASS_DEF(corto_array) {
     corto_type elementType;
 };
 
-/* /corto/lang/primitiveKind */
+/* primitiveKind */
 typedef enum corto_primitiveKind {
     CORTO_BINARY = 0,
     CORTO_BOOLEAN = 1,
@@ -247,7 +247,7 @@ typedef enum corto_primitiveKind {
     CORTO_BITMASK = 8
 } corto_primitiveKind;
 
-/* /corto/lang/width */
+/* width */
 typedef enum corto_width {
     CORTO_WIDTH_8 = 0,
     CORTO_WIDTH_16 = 1,
@@ -256,10 +256,10 @@ typedef enum corto_width {
     CORTO_WIDTH_WORD = 4
 } corto_width;
 
-/* /corto/lang/uint8 */
+/* uint8 */
 typedef uint8_t corto_uint8;
 
-/*  /corto/lang/primitive */
+/*  primitive */
 CORTO_CLASS(corto_primitive);
 
 CORTO_CLASS_DEF(corto_primitive) {
@@ -269,7 +269,7 @@ CORTO_CLASS_DEF(corto_primitive) {
     corto_uint8 convertId;
 };
 
-/*  /corto/lang/binary */
+/*  binary */
 CORTO_CLASS(corto_binary);
 
 CORTO_CLASS_DEF(corto_binary) {
@@ -278,7 +278,7 @@ CORTO_CLASS_DEF(corto_binary) {
 
 CORTO_SEQUENCE(corto_objectseq, corto_object,);
 
-/*  /corto/lang/enum */
+/*  enum */
 CORTO_CLASS(corto_enum);
 
 CORTO_CLASS_DEF(corto_enum) {
@@ -286,31 +286,31 @@ CORTO_CLASS_DEF(corto_enum) {
     corto_objectseq constants;
 };
 
-/*  /corto/lang/bitmask */
+/*  bitmask */
 CORTO_CLASS(corto_bitmask);
 
 CORTO_CLASS_DEF(corto_bitmask) {
     CORTO_EXTEND(corto_enum);
 };
 
-/*  /corto/lang/boolean */
+/*  boolean */
 CORTO_CLASS(corto_boolean);
 
 CORTO_CLASS_DEF(corto_boolean) {
     CORTO_EXTEND(corto_primitive);
 };
 
-/* /corto/lang/char */
+/* char */
 typedef char corto_char;
 
-/*  /corto/lang/character */
+/*  character */
 CORTO_CLASS(corto_character);
 
 CORTO_CLASS_DEF(corto_character) {
     CORTO_EXTEND(corto_primitive);
 };
 
-/* /corto/lang/compositeKind */
+/* compositeKind */
 typedef enum corto_compositeKind {
     CORTO_INTERFACE = 0,
     CORTO_STRUCT = 1,
@@ -321,7 +321,7 @@ typedef enum corto_compositeKind {
 
 CORTO_SEQUENCE(corto_memberseq, corto_member,);
 
-/*  /corto/lang/interface */
+/*  interface */
 CORTO_CLASS(corto_interface);
 
 CORTO_CLASS_DEF(corto_interface) {
@@ -333,7 +333,7 @@ CORTO_CLASS_DEF(corto_interface) {
     corto_interface base;
 };
 
-/*  /corto/lang/struct */
+/*  struct */
 CORTO_CLASS(corto_struct);
 
 CORTO_CLASS_DEF(corto_struct) {
@@ -343,7 +343,7 @@ CORTO_CLASS_DEF(corto_struct) {
 
 CORTO_SEQUENCE(corto_interfaceseq, corto_interface,);
 
-/*  /corto/lang/interfaceVector */
+/*  interfaceVector */
 typedef struct corto_interfaceVector corto_interfaceVector;
 
 struct corto_interfaceVector {
@@ -353,14 +353,14 @@ struct corto_interfaceVector {
 
 CORTO_SEQUENCE(corto_interfaceVectorseq, corto_interfaceVector,);
 
-/*  /corto/lang/destructAction */
+/*  destructAction */
 typedef struct corto_destructAction corto_destructAction;
 
 struct corto_destructAction {
     corto_delegatedata _parent;
 };
 
-/*  /corto/lang/class */
+/*  class */
 CORTO_CLASS(corto_class);
 
 CORTO_CLASS_DEF(corto_class) {
@@ -371,10 +371,10 @@ CORTO_CLASS_DEF(corto_class) {
     corto_destructAction destruct;
 };
 
-/* /corto/lang/constant */
+/* constant */
 typedef int32_t corto_constant;
 
-/*  /corto/lang/delegate */
+/*  delegate */
 CORTO_CLASS(corto_delegate);
 
 CORTO_CLASS_DEF(corto_delegate) {
@@ -384,10 +384,10 @@ CORTO_CLASS_DEF(corto_delegate) {
     corto_parameterseq parameters;
 };
 
-/* /corto/lang/float64 */
+/* float64 */
 typedef double corto_float64;
 
-/*  /corto/lang/float */
+/*  float */
 CORTO_CLASS(corto_float);
 
 CORTO_CLASS_DEF(corto_float) {
@@ -396,13 +396,13 @@ CORTO_CLASS_DEF(corto_float) {
     corto_float64 max;
 };
 
-/* /corto/lang/float32 */
+/* float32 */
 typedef float corto_float32;
 
-/* /corto/lang/int64 */
+/* int64 */
 typedef int64_t corto_int64;
 
-/*  /corto/lang/int */
+/*  int */
 CORTO_CLASS(corto_int);
 
 CORTO_CLASS_DEF(corto_int) {
@@ -411,16 +411,16 @@ CORTO_CLASS_DEF(corto_int) {
     corto_int64 max;
 };
 
-/* /corto/lang/int16 */
+/* int16 */
 typedef int16_t corto_int16;
 
-/* /corto/lang/int32 */
+/* int32 */
 typedef int32_t corto_int32;
 
-/* /corto/lang/int8 */
+/* int8 */
 typedef int8_t corto_int8;
 
-/*  /corto/lang/iterator */
+/*  iterator */
 CORTO_CLASS(corto_iterator);
 
 CORTO_CLASS_DEF(corto_iterator) {
@@ -428,14 +428,14 @@ CORTO_CLASS_DEF(corto_iterator) {
     corto_type elementType;
 };
 
-/*  /corto/lang/list */
+/*  list */
 CORTO_CLASS(corto_list);
 
 CORTO_CLASS_DEF(corto_list) {
     CORTO_EXTEND(corto_collection);
 };
 
-/*  /corto/lang/map */
+/*  map */
 CORTO_CLASS(corto_map);
 
 CORTO_CLASS_DEF(corto_map) {
@@ -445,7 +445,7 @@ CORTO_CLASS_DEF(corto_map) {
     corto_uint32 max;
 };
 
-/*  /corto/lang/metaprocedure */
+/*  metaprocedure */
 CORTO_CLASS(corto_metaprocedure);
 
 CORTO_CLASS_DEF(corto_metaprocedure) {
@@ -453,7 +453,7 @@ CORTO_CLASS_DEF(corto_metaprocedure) {
     corto_bool referenceOnly;
 };
 
-/*  /corto/lang/method */
+/*  method */
 CORTO_CLASS(corto_method);
 
 CORTO_CLASS_DEF(corto_method) {
@@ -461,12 +461,12 @@ CORTO_CLASS_DEF(corto_method) {
     corto_bool _virtual;
 };
 
-/* /corto/lang/octet */
+/* octet */
 typedef uint8_t corto_octet;
 
 CORTO_SEQUENCE(corto_octetseq, corto_octet,);
 
-/* /corto/lang/procedureKind */
+/* procedureKind */
 typedef enum corto_procedureKind {
     CORTO_FUNCTION = 0,
     CORTO_METHOD = 1,
@@ -474,7 +474,7 @@ typedef enum corto_procedureKind {
     CORTO_METAPROCEDURE = 3
 } corto_procedureKind;
 
-/*  /corto/lang/procedure */
+/*  procedure */
 CORTO_CLASS(corto_procedure);
 
 CORTO_CLASS_DEF(corto_procedure) {
@@ -483,17 +483,17 @@ CORTO_CLASS_DEF(corto_procedure) {
     corto_initAction bind;
 };
 
-/*  /corto/lang/sequence */
+/*  sequence */
 CORTO_CLASS(corto_sequence);
 
 CORTO_CLASS_DEF(corto_sequence) {
     CORTO_EXTEND(corto_collection);
 };
 
-/* /corto/lang/uint64 */
+/* uint64 */
 typedef uint64_t corto_uint64;
 
-/*  /corto/lang/text */
+/*  text */
 CORTO_CLASS(corto_text);
 
 CORTO_CLASS_DEF(corto_text) {
@@ -502,7 +502,7 @@ CORTO_CLASS_DEF(corto_text) {
     corto_uint64 length;
 };
 
-/*  /corto/lang/uint */
+/*  uint */
 CORTO_CLASS(corto_uint);
 
 CORTO_CLASS_DEF(corto_uint) {
@@ -511,14 +511,14 @@ CORTO_CLASS_DEF(corto_uint) {
     corto_uint64 max;
 };
 
-/*  /corto/lang/virtual */
+/*  virtual */
 CORTO_CLASS(corto_virtual);
 
 CORTO_CLASS_DEF(corto_virtual) {
     CORTO_EXTEND(corto_method);
 };
 
-/* /corto/lang/void */
+/* void */
 typedef void corto_void;
 
 #ifdef __cplusplus

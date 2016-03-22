@@ -183,6 +183,89 @@ void __corto_observer_unbind(corto_function f, void *result, void *args) {
         corto_observer(*(corto_observer*)args));
 }
 
+void __corto_packages_construct(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(args);
+    *(corto_int16*)result = _corto_packages_construct(
+        corto_packages(*(void**)args));
+}
+
+void __corto_packages_destruct(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(args);
+    CORTO_UNUSED(result);
+    _corto_packages_destruct(
+        corto_packages(*(void**)args));
+}
+
+corto_resultIter _corto_packages_onRequest(
+    corto_packages this,
+    corto_request *request) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_resultIter _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(core/request request)");
+    }
+    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), &_result, this, request);
+    
+    return _result;
+}
+
+void __corto_packages_onRequest_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_resultIter*)result = _corto_packages_onRequest_v(
+        corto_packages(*(void**)args),
+        *(void**)((intptr_t)args + sizeof(void*)));
+}
+
+corto_object _corto_packages_onResume(
+    corto_packages this,
+    corto_string parent,
+    corto_string name,
+    corto_object o) {
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_object _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object o)");
+    }
+    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_nameof(this), _methodId);
+
+    corto_call(corto_function(_method), &_result, this, parent, name, o);
+    
+    return _result;
+}
+
+void __corto_packages_onResume_v(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    *(corto_object*)result = _corto_packages_onResume_v(
+        corto_packages(*(void**)args),
+        *(corto_string*)((intptr_t)args + sizeof(void*)),
+        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
+        *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
+}
+
 void __corto_replicator_construct(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);

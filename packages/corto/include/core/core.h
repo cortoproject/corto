@@ -24,6 +24,7 @@ extern "C" {
 #include "corto/core/observableEvent.h"
 #include "corto/core/observer.h"
 #include "corto/core/package.h"
+#include "corto/core/packages.h"
 #include "corto/core/position.h"
 #include "corto/core/replicator.h"
 #include "corto/core/request.h"

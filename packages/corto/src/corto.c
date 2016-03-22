@@ -122,7 +122,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
-    SSO_OP_CLASS(op, replicator);
+    SSO_OP_CLASS(op, replicator);\
+    SSO_OP_CLASS(op, packages);
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -526,6 +527,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* replicator */\
     SSO_OP_OBJ(op, replicator_mount);\
     SSO_OP_OBJ(op, replicator_mask);\
+    SSO_OP_OBJ(op, replicator_type);\
     SSO_OP_OBJ(op, replicator_kind);\
     SSO_OP_OBJ(op, replicator_contentType);\
     SSO_OP_OBJ(op, replicator_init_);\
@@ -545,6 +547,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, replicator_on_declare);\
     SSO_OP_OBJ(op, replicator_on_update);\
     SSO_OP_OBJ(op, replicator_on_delete);\
+    /* packages */\
+    SSO_OP_OBJ(op, packages_construct_);\
+    SSO_OP_OBJ(op, packages_destruct_);\
+    SSO_OP_OBJ(op, packages_onResume_);\
+    SSO_OP_OBJ(op, packages_onRequest_);\
     /* delegatedata */\
     SSO_OP_OBJ(op, delegatedata_instance);\
     SSO_OP_OBJ(op, delegatedata_procedure);\

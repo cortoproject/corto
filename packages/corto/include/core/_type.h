@@ -27,6 +27,7 @@ extern "C" {
 #define corto_observerseq(o) ((corto_observerseq*)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
+#define corto_packages(o) ((corto_packages)corto_assertType((corto_type)corto_packages_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
 #define corto_replicatorKind(o) ((corto_replicatorKind*)corto_assertType((corto_type)corto_replicatorKind_o, o))
@@ -101,6 +102,7 @@ CORTO_CLASS(corto_replicator);
 CORTO_CLASS_DEF(corto_replicator) {
     corto_object mount;
     corto_eventMask mask;
+    corto_type type;
     corto_replicatorKind kind;
     corto_string contentType;
 };
@@ -192,6 +194,13 @@ CORTO_CLASS(corto_package);
 
 CORTO_CLASS_DEF(corto_package) {
     corto_string url;
+};
+
+/*  /corto/core/packages */
+CORTO_CLASS(corto_packages);
+
+CORTO_CLASS_DEF(corto_packages) {
+    CORTO_EXTEND(corto_replicator);
 };
 
 /*  /corto/core/position */

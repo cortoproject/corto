@@ -448,6 +448,7 @@ CORTO_FWDECL(class, member);
 CORTO_FWDECL(class, notifyEvent);
 CORTO_FWDECL(class, observableEvent);
 CORTO_FWDECL(class, package);
+CORTO_FWDECL(class, packages);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
 CORTO_FWDECL(class, replicator);
@@ -1041,6 +1042,7 @@ CORTO_FW_CD(replicator);
 CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_MEMBER_O(replicator, mount, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, mask, eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(replicator, type, type, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, kind, replicatorKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, contentType, string, CORTO_GLOBAL);
     CORTO_METHOD_O(replicator, init, "()", int16, FALSE, corto_replicator_construct);
@@ -1060,6 +1062,14 @@ CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINE
     CORTO_OBSERVER_O(replicator, on_declare, corto_replicator_on_declare);
     CORTO_OBSERVER_O(replicator, on_update, corto_replicator_on_update);
     CORTO_OBSERVER_O(replicator, on_delete, corto_replicator_on_delete);
+
+/* /corto/core/packages */
+CORTO_FW_CD(packages);
+CORTO_CLASS_O(corto_core, packages, replicator, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_METHOD_O(packages, construct, "()", int16, FALSE, corto_packages_construct);
+    CORTO_METHOD_O(packages, destruct, "()", void, FALSE, corto_packages_destruct);
+    CORTO_METHOD_O(packages, onRequest, "(core/request request)", resultIter, TRUE, corto_packages_onRequest_v);
+    CORTO_METHOD_O(packages, onResume, "(string parent,string name,object o)", object, TRUE, corto_packages_onResume_v);
 
 /* /corto/lang/event */
 CORTO_CLASS_NOBASE_O(corto_core, event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);

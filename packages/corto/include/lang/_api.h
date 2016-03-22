@@ -12,7 +12,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* /corto/lang/alias */
+/* alias */
 CORTO_EXPORT corto_alias _corto_aliasCreate(corto_member member);
 #define corto_aliasCreate(member) _corto_aliasCreate(corto_member(member))
 #define corto_aliasCreate_auto(_name, member) corto_alias _name = corto_aliasCreate(member); (void)_name
@@ -38,7 +38,7 @@ CORTO_EXPORT corto_alias corto_aliasFromStr(corto_alias value, corto_string str)
 CORTO_EXPORT corto_int16 _corto_aliasCompare(corto_alias dst, corto_alias src);
 #define corto_aliasCompare(dst, src) _corto_aliasCompare(corto_alias(dst), corto_alias(src))
 
-/* /corto/lang/any */
+/* any */
 CORTO_EXPORT corto_any* _corto_anyCreate(corto_type type, void *value);
 #define corto_anyCreate(type, value) _corto_anyCreate(corto_type(type), value)
 #define corto_anyCreate_auto(_name, type, value) corto_any* _name = corto_anyCreate(type, value); (void)_name
@@ -68,7 +68,7 @@ CORTO_EXPORT corto_int16 _corto_anyInit(corto_any* value);
 CORTO_EXPORT corto_int16 _corto_anyDeinit(corto_any* value);
 #define corto_anyDeinit(value) _corto_anyDeinit(value)
 
-/* /corto/lang/array */
+/* array */
 CORTO_EXPORT corto_array _corto_arrayCreate(corto_type elementType, corto_uint32 max);
 #define corto_arrayCreate(elementType, max) _corto_arrayCreate(corto_type(elementType), max)
 #define corto_arrayCreate_auto(_name, elementType, max) corto_array _name = corto_arrayCreate(elementType, max); (void)_name
@@ -94,7 +94,7 @@ CORTO_EXPORT corto_array corto_arrayFromStr(corto_array value, corto_string str)
 CORTO_EXPORT corto_int16 _corto_arrayCompare(corto_array dst, corto_array src);
 #define corto_arrayCompare(dst, src) _corto_arrayCompare(corto_array(dst), corto_array(src))
 
-/* /corto/lang/binary */
+/* binary */
 CORTO_EXPORT corto_binary _corto_binaryCreate(corto_width width);
 #define corto_binaryCreate(width) _corto_binaryCreate(width)
 #define corto_binaryCreate_auto(_name, width) corto_binary _name = corto_binaryCreate(width); (void)_name
@@ -120,7 +120,7 @@ CORTO_EXPORT corto_binary corto_binaryFromStr(corto_binary value, corto_string s
 CORTO_EXPORT corto_int16 _corto_binaryCompare(corto_binary dst, corto_binary src);
 #define corto_binaryCompare(dst, src) _corto_binaryCompare(corto_binary(dst), corto_binary(src))
 
-/* /corto/lang/bitmask */
+/* bitmask */
 CORTO_EXPORT corto_bitmask _corto_bitmaskCreate(void);
 #define corto_bitmaskCreate() _corto_bitmaskCreate()
 #define corto_bitmaskCreate_auto(_name) corto_bitmask _name = corto_bitmaskCreate(); (void)_name
@@ -146,7 +146,7 @@ CORTO_EXPORT corto_bitmask corto_bitmaskFromStr(corto_bitmask value, corto_strin
 CORTO_EXPORT corto_int16 _corto_bitmaskCompare(corto_bitmask dst, corto_bitmask src);
 #define corto_bitmaskCompare(dst, src) _corto_bitmaskCompare(corto_bitmask(dst), corto_bitmask(src))
 
-/* /corto/lang/bool */
+/* bool */
 CORTO_EXPORT corto_bool* _corto_boolCreate(corto_bool value);
 #define corto_boolCreate(value) _corto_boolCreate(value)
 #define corto_boolCreate_auto(_name, value) corto_bool* _name = corto_boolCreate(value); (void)_name
@@ -176,7 +176,7 @@ CORTO_EXPORT corto_int16 _corto_boolInit(corto_bool* value);
 CORTO_EXPORT corto_int16 _corto_boolDeinit(corto_bool* value);
 #define corto_boolDeinit(value) _corto_boolDeinit(value)
 
-/* /corto/lang/boolean */
+/* boolean */
 CORTO_EXPORT corto_boolean _corto_booleanCreate(void);
 #define corto_booleanCreate() _corto_booleanCreate()
 #define corto_booleanCreate_auto(_name) corto_boolean _name = corto_booleanCreate(); (void)_name
@@ -202,7 +202,7 @@ CORTO_EXPORT corto_boolean corto_booleanFromStr(corto_boolean value, corto_strin
 CORTO_EXPORT corto_int16 _corto_booleanCompare(corto_boolean dst, corto_boolean src);
 #define corto_booleanCompare(dst, src) _corto_booleanCompare(corto_boolean(dst), corto_boolean(src))
 
-/* /corto/lang/char */
+/* char */
 CORTO_EXPORT corto_char* _corto_charCreate(corto_char value);
 #define corto_charCreate(value) _corto_charCreate(value)
 #define corto_charCreate_auto(_name, value) corto_char* _name = corto_charCreate(value); (void)_name
@@ -232,7 +232,7 @@ CORTO_EXPORT corto_int16 _corto_charInit(corto_char* value);
 CORTO_EXPORT corto_int16 _corto_charDeinit(corto_char* value);
 #define corto_charDeinit(value) _corto_charDeinit(value)
 
-/* /corto/lang/character */
+/* character */
 CORTO_EXPORT corto_character _corto_characterCreate(corto_width width);
 #define corto_characterCreate(width) _corto_characterCreate(width)
 #define corto_characterCreate_auto(_name, width) corto_character _name = corto_characterCreate(width); (void)_name
@@ -258,7 +258,7 @@ CORTO_EXPORT corto_character corto_characterFromStr(corto_character value, corto
 CORTO_EXPORT corto_int16 _corto_characterCompare(corto_character dst, corto_character src);
 #define corto_characterCompare(dst, src) _corto_characterCompare(corto_character(dst), corto_character(src))
 
-/* /corto/lang/class */
+/* class */
 CORTO_EXPORT corto_class _corto_classCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
 #define corto_classCreate(base, baseAccess, implements) _corto_classCreate(corto_interface(base), baseAccess, implements)
 #define corto_classCreate_auto(_name, base, baseAccess, implements) corto_class _name = corto_classCreate(base, baseAccess, implements); (void)_name
@@ -284,7 +284,7 @@ CORTO_EXPORT corto_class corto_classFromStr(corto_class value, corto_string str)
 CORTO_EXPORT corto_int16 _corto_classCompare(corto_class dst, corto_class src);
 #define corto_classCompare(dst, src) _corto_classCompare(corto_class(dst), corto_class(src))
 
-/* /corto/lang/collection */
+/* collection */
 CORTO_EXPORT corto_collection _corto_collectionCreate(corto_type elementType, corto_uint32 max);
 #define corto_collectionCreate(elementType, max) _corto_collectionCreate(corto_type(elementType), max)
 #define corto_collectionCreate_auto(_name, elementType, max) corto_collection _name = corto_collectionCreate(elementType, max); (void)_name
@@ -310,7 +310,7 @@ CORTO_EXPORT corto_collection corto_collectionFromStr(corto_collection value, co
 CORTO_EXPORT corto_int16 _corto_collectionCompare(corto_collection dst, corto_collection src);
 #define corto_collectionCompare(dst, src) _corto_collectionCompare(corto_collection(dst), corto_collection(src))
 
-/* /corto/lang/collectionKind */
+/* collectionKind */
 CORTO_EXPORT corto_collectionKind* _corto_collectionKindCreate(corto_collectionKind value);
 #define corto_collectionKindCreate(value) _corto_collectionKindCreate(value)
 #define corto_collectionKindCreate_auto(_name, value) corto_collectionKind* _name = corto_collectionKindCreate(value); (void)_name
@@ -340,7 +340,7 @@ CORTO_EXPORT corto_int16 _corto_collectionKindInit(corto_collectionKind* value);
 CORTO_EXPORT corto_int16 _corto_collectionKindDeinit(corto_collectionKind* value);
 #define corto_collectionKindDeinit(value) _corto_collectionKindDeinit(value)
 
-/* /corto/lang/compositeKind */
+/* compositeKind */
 CORTO_EXPORT corto_compositeKind* _corto_compositeKindCreate(corto_compositeKind value);
 #define corto_compositeKindCreate(value) _corto_compositeKindCreate(value)
 #define corto_compositeKindCreate_auto(_name, value) corto_compositeKind* _name = corto_compositeKindCreate(value); (void)_name
@@ -370,7 +370,7 @@ CORTO_EXPORT corto_int16 _corto_compositeKindInit(corto_compositeKind* value);
 CORTO_EXPORT corto_int16 _corto_compositeKindDeinit(corto_compositeKind* value);
 #define corto_compositeKindDeinit(value) _corto_compositeKindDeinit(value)
 
-/* /corto/lang/constant */
+/* constant */
 CORTO_EXPORT corto_constant* _corto_constantCreate(corto_constant value);
 #define corto_constantCreate(value) _corto_constantCreate(value)
 #define corto_constantCreate_auto(_name, value) corto_constant* _name = corto_constantCreate(value); (void)_name
@@ -400,7 +400,7 @@ CORTO_EXPORT corto_int16 _corto_constantInit(corto_constant* value);
 CORTO_EXPORT corto_int16 _corto_constantDeinit(corto_constant* value);
 #define corto_constantDeinit(value) _corto_constantDeinit(value)
 
-/* /corto/lang/delegate */
+/* delegate */
 CORTO_EXPORT corto_delegate _corto_delegateCreate(corto_type returnType, corto_bool returnsReference, corto_parameterseq parameters);
 #define corto_delegateCreate(returnType, returnsReference, parameters) _corto_delegateCreate(corto_type(returnType), returnsReference, parameters)
 #define corto_delegateCreate_auto(_name, returnType, returnsReference, parameters) corto_delegate _name = corto_delegateCreate(returnType, returnsReference, parameters); (void)_name
@@ -426,7 +426,7 @@ CORTO_EXPORT corto_delegate corto_delegateFromStr(corto_delegate value, corto_st
 CORTO_EXPORT corto_int16 _corto_delegateCompare(corto_delegate dst, corto_delegate src);
 #define corto_delegateCompare(dst, src) _corto_delegateCompare(corto_delegate(dst), corto_delegate(src))
 
-/* /corto/lang/delegatedata */
+/* delegatedata */
 CORTO_EXPORT corto_delegatedata* _corto_delegatedataCreate(corto_object instance, corto_function procedure);
 #define corto_delegatedataCreate(instance, procedure) _corto_delegatedataCreate(instance, corto_function(procedure))
 #define corto_delegatedataCreate_auto(_name, instance, procedure) corto_delegatedata* _name = corto_delegatedataCreate(instance, procedure); (void)_name
@@ -456,7 +456,7 @@ CORTO_EXPORT corto_int16 _corto_delegatedataInit(corto_delegatedata* value);
 CORTO_EXPORT corto_int16 _corto_delegatedataDeinit(corto_delegatedata* value);
 #define corto_delegatedataDeinit(value) _corto_delegatedataDeinit(value)
 
-/* /corto/lang/destructAction */
+/* destructAction */
 CORTO_EXPORT corto_destructAction* _corto_destructActionCreate(corto_object instance, corto_function procedure);
 #define corto_destructActionCreate(instance, procedure) _corto_destructActionCreate(instance, corto_function(procedure))
 #define corto_destructActionCreate_auto(_name, instance, procedure) corto_destructAction* _name = corto_destructActionCreate(instance, procedure); (void)_name
@@ -491,7 +491,7 @@ corto_int16 corto_destructActionCall(corto_destructAction *_delegate);
 CORTO_EXPORT corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*callback)(void));
 #define corto_destructActionInitCInstance_auto(d, instance, callback)corto_destructAction d; corto_destructActionInitCInstance(&d, instance, callback)
 CORTO_EXPORT corto_int16 corto_destructActionInitCInstance(corto_destructAction *d, corto_object instance, corto_void ___ (*callback)(corto_object));
-/* /corto/lang/enum */
+/* enum */
 CORTO_EXPORT corto_enum _corto_enumCreate(void);
 #define corto_enumCreate() _corto_enumCreate()
 #define corto_enumCreate_auto(_name) corto_enum _name = corto_enumCreate(); (void)_name
@@ -517,7 +517,7 @@ CORTO_EXPORT corto_enum corto_enumFromStr(corto_enum value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_enumCompare(corto_enum dst, corto_enum src);
 #define corto_enumCompare(dst, src) _corto_enumCompare(corto_enum(dst), corto_enum(src))
 
-/* /corto/lang/float */
+/* float */
 CORTO_EXPORT corto_float _corto_floatCreate(corto_width width, corto_float64 min, corto_float64 max);
 #define corto_floatCreate(width, min, max) _corto_floatCreate(width, min, max)
 #define corto_floatCreate_auto(_name, width, min, max) corto_float _name = corto_floatCreate(width, min, max); (void)_name
@@ -543,7 +543,7 @@ CORTO_EXPORT corto_float corto_floatFromStr(corto_float value, corto_string str)
 CORTO_EXPORT corto_int16 _corto_floatCompare(corto_float dst, corto_float src);
 #define corto_floatCompare(dst, src) _corto_floatCompare(corto_float(dst), corto_float(src))
 
-/* /corto/lang/float32 */
+/* float32 */
 CORTO_EXPORT corto_float32* _corto_float32Create(corto_float32 value);
 #define corto_float32Create(value) _corto_float32Create(value)
 #define corto_float32Create_auto(_name, value) corto_float32* _name = corto_float32Create(value); (void)_name
@@ -573,7 +573,7 @@ CORTO_EXPORT corto_int16 _corto_float32Init(corto_float32* value);
 CORTO_EXPORT corto_int16 _corto_float32Deinit(corto_float32* value);
 #define corto_float32Deinit(value) _corto_float32Deinit(value)
 
-/* /corto/lang/float64 */
+/* float64 */
 CORTO_EXPORT corto_float64* _corto_float64Create(corto_float64 value);
 #define corto_float64Create(value) _corto_float64Create(value)
 #define corto_float64Create_auto(_name, value) corto_float64* _name = corto_float64Create(value); (void)_name
@@ -603,7 +603,7 @@ CORTO_EXPORT corto_int16 _corto_float64Init(corto_float64* value);
 CORTO_EXPORT corto_int16 _corto_float64Deinit(corto_float64* value);
 #define corto_float64Deinit(value) _corto_float64Deinit(value)
 
-/* /corto/lang/function */
+/* function */
 CORTO_EXPORT corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args));
 #define corto_functionCreate(returnType, returnsReference, _impl) _corto_functionCreate(corto_type(returnType), returnsReference, _impl)
 #define corto_functionCreate_auto(_name, returnType, returnsReference, _impl) corto_function _name = corto_functionCreate(returnType, returnsReference, _impl); (void)_name
@@ -629,7 +629,7 @@ CORTO_EXPORT corto_function corto_functionFromStr(corto_function value, corto_st
 CORTO_EXPORT corto_int16 _corto_functionCompare(corto_function dst, corto_function src);
 #define corto_functionCompare(dst, src) _corto_functionCompare(corto_function(dst), corto_function(src))
 
-/* /corto/lang/initAction */
+/* initAction */
 CORTO_EXPORT corto_initAction* _corto_initActionCreate(corto_object instance, corto_function procedure);
 #define corto_initActionCreate(instance, procedure) _corto_initActionCreate(instance, corto_function(procedure))
 #define corto_initActionCreate_auto(_name, instance, procedure) corto_initAction* _name = corto_initActionCreate(instance, procedure); (void)_name
@@ -664,7 +664,7 @@ corto_int16 corto_initActionCall(corto_initAction *_delegate, corto_int16* _resu
 CORTO_EXPORT corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callback)(void));
 #define corto_initActionInitCInstance_auto(d, instance, callback)corto_initAction d; corto_initActionInitCInstance(&d, instance, callback)
 CORTO_EXPORT corto_int16 corto_initActionInitCInstance(corto_initAction *d, corto_object instance, corto_int16 ___ (*callback)(corto_object));
-/* /corto/lang/int */
+/* int */
 CORTO_EXPORT corto_int _corto_intCreate(corto_width width, corto_int64 min, corto_int64 max);
 #define corto_intCreate(width, min, max) _corto_intCreate(width, min, max)
 #define corto_intCreate_auto(_name, width, min, max) corto_int _name = corto_intCreate(width, min, max); (void)_name
@@ -690,7 +690,7 @@ CORTO_EXPORT corto_int corto_intFromStr(corto_int value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_intCompare(corto_int dst, corto_int src);
 #define corto_intCompare(dst, src) _corto_intCompare(corto_int(dst), corto_int(src))
 
-/* /corto/lang/int16 */
+/* int16 */
 CORTO_EXPORT corto_int16* _corto_int16Create(corto_int16 value);
 #define corto_int16Create(value) _corto_int16Create(value)
 #define corto_int16Create_auto(_name, value) corto_int16* _name = corto_int16Create(value); (void)_name
@@ -720,7 +720,7 @@ CORTO_EXPORT corto_int16 _corto_int16Init(corto_int16* value);
 CORTO_EXPORT corto_int16 _corto_int16Deinit(corto_int16* value);
 #define corto_int16Deinit(value) _corto_int16Deinit(value)
 
-/* /corto/lang/int32 */
+/* int32 */
 CORTO_EXPORT corto_int32* _corto_int32Create(corto_int32 value);
 #define corto_int32Create(value) _corto_int32Create(value)
 #define corto_int32Create_auto(_name, value) corto_int32* _name = corto_int32Create(value); (void)_name
@@ -750,7 +750,7 @@ CORTO_EXPORT corto_int16 _corto_int32Init(corto_int32* value);
 CORTO_EXPORT corto_int16 _corto_int32Deinit(corto_int32* value);
 #define corto_int32Deinit(value) _corto_int32Deinit(value)
 
-/* /corto/lang/int64 */
+/* int64 */
 CORTO_EXPORT corto_int64* _corto_int64Create(corto_int64 value);
 #define corto_int64Create(value) _corto_int64Create(value)
 #define corto_int64Create_auto(_name, value) corto_int64* _name = corto_int64Create(value); (void)_name
@@ -780,7 +780,7 @@ CORTO_EXPORT corto_int16 _corto_int64Init(corto_int64* value);
 CORTO_EXPORT corto_int16 _corto_int64Deinit(corto_int64* value);
 #define corto_int64Deinit(value) _corto_int64Deinit(value)
 
-/* /corto/lang/int8 */
+/* int8 */
 CORTO_EXPORT corto_int8* _corto_int8Create(corto_int8 value);
 #define corto_int8Create(value) _corto_int8Create(value)
 #define corto_int8Create_auto(_name, value) corto_int8* _name = corto_int8Create(value); (void)_name
@@ -810,7 +810,7 @@ CORTO_EXPORT corto_int16 _corto_int8Init(corto_int8* value);
 CORTO_EXPORT corto_int16 _corto_int8Deinit(corto_int8* value);
 #define corto_int8Deinit(value) _corto_int8Deinit(value)
 
-/* /corto/lang/interface */
+/* interface */
 CORTO_EXPORT corto_interface _corto_interfaceCreate(corto_interface base);
 #define corto_interfaceCreate(base) _corto_interfaceCreate(corto_interface(base))
 #define corto_interfaceCreate_auto(_name, base) corto_interface _name = corto_interfaceCreate(base); (void)_name
@@ -836,7 +836,7 @@ CORTO_EXPORT corto_interface corto_interfaceFromStr(corto_interface value, corto
 CORTO_EXPORT corto_int16 _corto_interfaceCompare(corto_interface dst, corto_interface src);
 #define corto_interfaceCompare(dst, src) _corto_interfaceCompare(corto_interface(dst), corto_interface(src))
 
-/* /corto/lang/interfaceseq */
+/* interfaceseq */
 CORTO_EXPORT corto_interfaceseq* _corto_interfaceseqCreate(corto_uint32 length, corto_interface* elements);
 #define corto_interfaceseqCreate(length, elements) _corto_interfaceseqCreate(length, elements)
 #define corto_interfaceseqCreate_auto(_name, length, elements) corto_interfaceseq* _name = corto_interfaceseqCreate(length, elements); (void)_name
@@ -866,7 +866,7 @@ CORTO_EXPORT corto_int16 _corto_interfaceseqInit(corto_interfaceseq* value);
 CORTO_EXPORT corto_int16 _corto_interfaceseqDeinit(corto_interfaceseq* value);
 #define corto_interfaceseqDeinit(value) _corto_interfaceseqDeinit(value)
 
-/* /corto/lang/interfaceVector */
+/* interfaceVector */
 CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorCreate(corto_interface interface, corto_vtable vector);
 #define corto_interfaceVectorCreate(interface, vector) _corto_interfaceVectorCreate(corto_interface(interface), vector)
 #define corto_interfaceVectorCreate_auto(_name, interface, vector) corto_interfaceVector* _name = corto_interfaceVectorCreate(interface, vector); (void)_name
@@ -896,7 +896,7 @@ CORTO_EXPORT corto_int16 _corto_interfaceVectorInit(corto_interfaceVector* value
 CORTO_EXPORT corto_int16 _corto_interfaceVectorDeinit(corto_interfaceVector* value);
 #define corto_interfaceVectorDeinit(value) _corto_interfaceVectorDeinit(value)
 
-/* /corto/lang/interfaceVectorseq */
+/* interfaceVectorseq */
 CORTO_EXPORT corto_interfaceVectorseq* _corto_interfaceVectorseqCreate(corto_uint32 length, corto_interfaceVector* elements);
 #define corto_interfaceVectorseqCreate(length, elements) _corto_interfaceVectorseqCreate(length, elements)
 #define corto_interfaceVectorseqCreate_auto(_name, length, elements) corto_interfaceVectorseq* _name = corto_interfaceVectorseqCreate(length, elements); (void)_name
@@ -926,7 +926,7 @@ CORTO_EXPORT corto_int16 _corto_interfaceVectorseqInit(corto_interfaceVectorseq*
 CORTO_EXPORT corto_int16 _corto_interfaceVectorseqDeinit(corto_interfaceVectorseq* value);
 #define corto_interfaceVectorseqDeinit(value) _corto_interfaceVectorseqDeinit(value)
 
-/* /corto/lang/iterator */
+/* iterator */
 CORTO_EXPORT corto_iterator _corto_iteratorCreate(corto_type elementType);
 #define corto_iteratorCreate(elementType) _corto_iteratorCreate(corto_type(elementType))
 #define corto_iteratorCreate_auto(_name, elementType) corto_iterator _name = corto_iteratorCreate(elementType); (void)_name
@@ -952,7 +952,7 @@ CORTO_EXPORT corto_iterator corto_iteratorFromStr(corto_iterator value, corto_st
 CORTO_EXPORT corto_int16 _corto_iteratorCompare(corto_iterator dst, corto_iterator src);
 #define corto_iteratorCompare(dst, src) _corto_iteratorCompare(corto_iterator(dst), corto_iterator(src))
 
-/* /corto/lang/list */
+/* list */
 CORTO_EXPORT corto_list _corto_listCreate(corto_type elementType, corto_uint32 max);
 #define corto_listCreate(elementType, max) _corto_listCreate(corto_type(elementType), max)
 #define corto_listCreate_auto(_name, elementType, max) corto_list _name = corto_listCreate(elementType, max); (void)_name
@@ -978,7 +978,7 @@ CORTO_EXPORT corto_list corto_listFromStr(corto_list value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_listCompare(corto_list dst, corto_list src);
 #define corto_listCompare(dst, src) _corto_listCompare(corto_list(dst), corto_list(src))
 
-/* /corto/lang/map */
+/* map */
 CORTO_EXPORT corto_map _corto_mapCreate(corto_type elementType, corto_type keyType, corto_uint32 max);
 #define corto_mapCreate(elementType, keyType, max) _corto_mapCreate(corto_type(elementType), corto_type(keyType), max)
 #define corto_mapCreate_auto(_name, elementType, keyType, max) corto_map _name = corto_mapCreate(elementType, keyType, max); (void)_name
@@ -1004,7 +1004,7 @@ CORTO_EXPORT corto_map corto_mapFromStr(corto_map value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_mapCompare(corto_map dst, corto_map src);
 #define corto_mapCompare(dst, src) _corto_mapCompare(corto_map(dst), corto_map(src))
 
-/* /corto/lang/member */
+/* member */
 CORTO_EXPORT corto_member _corto_memberCreate(corto_type type, corto_modifier modifiers);
 #define corto_memberCreate(type, modifiers) _corto_memberCreate(corto_type(type), modifiers)
 #define corto_memberCreate_auto(_name, type, modifiers) corto_member _name = corto_memberCreate(type, modifiers); (void)_name
@@ -1030,7 +1030,7 @@ CORTO_EXPORT corto_member corto_memberFromStr(corto_member value, corto_string s
 CORTO_EXPORT corto_int16 _corto_memberCompare(corto_member dst, corto_member src);
 #define corto_memberCompare(dst, src) _corto_memberCompare(corto_member(dst), corto_member(src))
 
-/* /corto/lang/memberseq */
+/* memberseq */
 CORTO_EXPORT corto_memberseq* _corto_memberseqCreate(corto_uint32 length, corto_member* elements);
 #define corto_memberseqCreate(length, elements) _corto_memberseqCreate(length, elements)
 #define corto_memberseqCreate_auto(_name, length, elements) corto_memberseq* _name = corto_memberseqCreate(length, elements); (void)_name
@@ -1060,7 +1060,7 @@ CORTO_EXPORT corto_int16 _corto_memberseqInit(corto_memberseq* value);
 CORTO_EXPORT corto_int16 _corto_memberseqDeinit(corto_memberseq* value);
 #define corto_memberseqDeinit(value) _corto_memberseqDeinit(value)
 
-/* /corto/lang/metaprocedure */
+/* metaprocedure */
 CORTO_EXPORT corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args));
 #define corto_metaprocedureCreate(returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureCreate(corto_type(returnType), returnsReference, referenceOnly, _impl)
 #define corto_metaprocedureCreate_auto(_name, returnType, returnsReference, referenceOnly, _impl) corto_metaprocedure _name = corto_metaprocedureCreate(returnType, returnsReference, referenceOnly, _impl); (void)_name
@@ -1086,7 +1086,7 @@ CORTO_EXPORT corto_metaprocedure corto_metaprocedureFromStr(corto_metaprocedure 
 CORTO_EXPORT corto_int16 _corto_metaprocedureCompare(corto_metaprocedure dst, corto_metaprocedure src);
 #define corto_metaprocedureCompare(dst, src) _corto_metaprocedureCompare(corto_metaprocedure(dst), corto_metaprocedure(src))
 
-/* /corto/lang/method */
+/* method */
 CORTO_EXPORT corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
 #define corto_methodCreate(returnType, returnsReference, _virtual, _impl) _corto_methodCreate(corto_type(returnType), returnsReference, _virtual, _impl)
 #define corto_methodCreate_auto(_name, returnType, returnsReference, _virtual, _impl) corto_method _name = corto_methodCreate(returnType, returnsReference, _virtual, _impl); (void)_name
@@ -1112,7 +1112,7 @@ CORTO_EXPORT corto_method corto_methodFromStr(corto_method value, corto_string s
 CORTO_EXPORT corto_int16 _corto_methodCompare(corto_method dst, corto_method src);
 #define corto_methodCompare(dst, src) _corto_methodCompare(corto_method(dst), corto_method(src))
 
-/* /corto/lang/modifier */
+/* modifier */
 CORTO_EXPORT corto_modifier* _corto_modifierCreate(corto_modifier value);
 #define corto_modifierCreate(value) _corto_modifierCreate(value)
 #define corto_modifierCreate_auto(_name, value) corto_modifier* _name = corto_modifierCreate(value); (void)_name
@@ -1142,7 +1142,7 @@ CORTO_EXPORT corto_int16 _corto_modifierInit(corto_modifier* value);
 CORTO_EXPORT corto_int16 _corto_modifierDeinit(corto_modifier* value);
 #define corto_modifierDeinit(value) _corto_modifierDeinit(value)
 
-/* /corto/lang/object */
+/* object */
 CORTO_EXPORT corto_object _corto_objectCreate(void);
 #define corto_objectCreate() _corto_objectCreate()
 #define corto_objectCreate_auto(_name) corto_object _name = corto_objectCreate(); (void)_name
@@ -1152,7 +1152,7 @@ CORTO_EXPORT corto_object _corto_objectCreateChild(corto_object _parent, corto_s
 CORTO_EXPORT corto_int16 _corto_objectUpdate(corto_object _this);
 #define corto_objectUpdate(_this) _corto_objectUpdate(_this)
 
-/* /corto/lang/objectseq */
+/* objectseq */
 CORTO_EXPORT corto_objectseq* _corto_objectseqCreate(corto_uint32 length, corto_object* elements);
 #define corto_objectseqCreate(length, elements) _corto_objectseqCreate(length, elements)
 #define corto_objectseqCreate_auto(_name, length, elements) corto_objectseq* _name = corto_objectseqCreate(length, elements); (void)_name
@@ -1182,7 +1182,7 @@ CORTO_EXPORT corto_int16 _corto_objectseqInit(corto_objectseq* value);
 CORTO_EXPORT corto_int16 _corto_objectseqDeinit(corto_objectseq* value);
 #define corto_objectseqDeinit(value) _corto_objectseqDeinit(value)
 
-/* /corto/lang/octet */
+/* octet */
 CORTO_EXPORT corto_octet* _corto_octetCreate(corto_octet value);
 #define corto_octetCreate(value) _corto_octetCreate(value)
 #define corto_octetCreate_auto(_name, value) corto_octet* _name = corto_octetCreate(value); (void)_name
@@ -1212,7 +1212,7 @@ CORTO_EXPORT corto_int16 _corto_octetInit(corto_octet* value);
 CORTO_EXPORT corto_int16 _corto_octetDeinit(corto_octet* value);
 #define corto_octetDeinit(value) _corto_octetDeinit(value)
 
-/* /corto/lang/octetseq */
+/* octetseq */
 CORTO_EXPORT corto_octetseq* _corto_octetseqCreate(corto_uint32 length, corto_octet* elements);
 #define corto_octetseqCreate(length, elements) _corto_octetseqCreate(length, elements)
 #define corto_octetseqCreate_auto(_name, length, elements) corto_octetseq* _name = corto_octetseqCreate(length, elements); (void)_name
@@ -1242,7 +1242,7 @@ CORTO_EXPORT corto_int16 _corto_octetseqInit(corto_octetseq* value);
 CORTO_EXPORT corto_int16 _corto_octetseqDeinit(corto_octetseq* value);
 #define corto_octetseqDeinit(value) _corto_octetseqDeinit(value)
 
-/* /corto/lang/parameter */
+/* parameter */
 CORTO_EXPORT corto_parameter* _corto_parameterCreate(corto_string name, corto_type type, corto_bool passByReference);
 #define corto_parameterCreate(name, type, passByReference) _corto_parameterCreate(name, corto_type(type), passByReference)
 #define corto_parameterCreate_auto(_name, name, type, passByReference) corto_parameter* _name = corto_parameterCreate(name, type, passByReference); (void)_name
@@ -1272,7 +1272,7 @@ CORTO_EXPORT corto_int16 _corto_parameterInit(corto_parameter* value);
 CORTO_EXPORT corto_int16 _corto_parameterDeinit(corto_parameter* value);
 #define corto_parameterDeinit(value) _corto_parameterDeinit(value)
 
-/* /corto/lang/parameterseq */
+/* parameterseq */
 CORTO_EXPORT corto_parameterseq* _corto_parameterseqCreate(corto_uint32 length, corto_parameter* elements);
 #define corto_parameterseqCreate(length, elements) _corto_parameterseqCreate(length, elements)
 #define corto_parameterseqCreate_auto(_name, length, elements) corto_parameterseq* _name = corto_parameterseqCreate(length, elements); (void)_name
@@ -1302,7 +1302,7 @@ CORTO_EXPORT corto_int16 _corto_parameterseqInit(corto_parameterseq* value);
 CORTO_EXPORT corto_int16 _corto_parameterseqDeinit(corto_parameterseq* value);
 #define corto_parameterseqDeinit(value) _corto_parameterseqDeinit(value)
 
-/* /corto/lang/primitive */
+/* primitive */
 CORTO_EXPORT corto_primitive _corto_primitiveCreate(corto_width width);
 #define corto_primitiveCreate(width) _corto_primitiveCreate(width)
 #define corto_primitiveCreate_auto(_name, width) corto_primitive _name = corto_primitiveCreate(width); (void)_name
@@ -1328,7 +1328,7 @@ CORTO_EXPORT corto_primitive corto_primitiveFromStr(corto_primitive value, corto
 CORTO_EXPORT corto_int16 _corto_primitiveCompare(corto_primitive dst, corto_primitive src);
 #define corto_primitiveCompare(dst, src) _corto_primitiveCompare(corto_primitive(dst), corto_primitive(src))
 
-/* /corto/lang/primitiveKind */
+/* primitiveKind */
 CORTO_EXPORT corto_primitiveKind* _corto_primitiveKindCreate(corto_primitiveKind value);
 #define corto_primitiveKindCreate(value) _corto_primitiveKindCreate(value)
 #define corto_primitiveKindCreate_auto(_name, value) corto_primitiveKind* _name = corto_primitiveKindCreate(value); (void)_name
@@ -1358,7 +1358,7 @@ CORTO_EXPORT corto_int16 _corto_primitiveKindInit(corto_primitiveKind* value);
 CORTO_EXPORT corto_int16 _corto_primitiveKindDeinit(corto_primitiveKind* value);
 #define corto_primitiveKindDeinit(value) _corto_primitiveKindDeinit(value)
 
-/* /corto/lang/procedure */
+/* procedure */
 CORTO_EXPORT corto_procedure _corto_procedureCreate(corto_procedureKind kind_1);
 #define corto_procedureCreate(kind_1) _corto_procedureCreate(kind_1)
 #define corto_procedureCreate_auto(_name, kind_1) corto_procedure _name = corto_procedureCreate(kind_1); (void)_name
@@ -1384,7 +1384,7 @@ CORTO_EXPORT corto_procedure corto_procedureFromStr(corto_procedure value, corto
 CORTO_EXPORT corto_int16 _corto_procedureCompare(corto_procedure dst, corto_procedure src);
 #define corto_procedureCompare(dst, src) _corto_procedureCompare(corto_procedure(dst), corto_procedure(src))
 
-/* /corto/lang/procedureKind */
+/* procedureKind */
 CORTO_EXPORT corto_procedureKind* _corto_procedureKindCreate(corto_procedureKind value);
 #define corto_procedureKindCreate(value) _corto_procedureKindCreate(value)
 #define corto_procedureKindCreate_auto(_name, value) corto_procedureKind* _name = corto_procedureKindCreate(value); (void)_name
@@ -1414,7 +1414,7 @@ CORTO_EXPORT corto_int16 _corto_procedureKindInit(corto_procedureKind* value);
 CORTO_EXPORT corto_int16 _corto_procedureKindDeinit(corto_procedureKind* value);
 #define corto_procedureKindDeinit(value) _corto_procedureKindDeinit(value)
 
-/* /corto/lang/sequence */
+/* sequence */
 CORTO_EXPORT corto_sequence _corto_sequenceCreate(corto_type elementType, corto_uint32 max);
 #define corto_sequenceCreate(elementType, max) _corto_sequenceCreate(corto_type(elementType), max)
 #define corto_sequenceCreate_auto(_name, elementType, max) corto_sequence _name = corto_sequenceCreate(elementType, max); (void)_name
@@ -1440,7 +1440,7 @@ CORTO_EXPORT corto_sequence corto_sequenceFromStr(corto_sequence value, corto_st
 CORTO_EXPORT corto_int16 _corto_sequenceCompare(corto_sequence dst, corto_sequence src);
 #define corto_sequenceCompare(dst, src) _corto_sequenceCompare(corto_sequence(dst), corto_sequence(src))
 
-/* /corto/lang/state */
+/* state */
 CORTO_EXPORT corto_state* _corto_stateCreate(corto_state value);
 #define corto_stateCreate(value) _corto_stateCreate(value)
 #define corto_stateCreate_auto(_name, value) corto_state* _name = corto_stateCreate(value); (void)_name
@@ -1470,7 +1470,7 @@ CORTO_EXPORT corto_int16 _corto_stateInit(corto_state* value);
 CORTO_EXPORT corto_int16 _corto_stateDeinit(corto_state* value);
 #define corto_stateDeinit(value) _corto_stateDeinit(value)
 
-/* /corto/lang/string */
+/* string */
 CORTO_EXPORT corto_string* _corto_stringCreate(corto_string value);
 #define corto_stringCreate(value) _corto_stringCreate(value)
 #define corto_stringCreate_auto(_name, value) corto_string* _name = corto_stringCreate(value); (void)_name
@@ -1500,7 +1500,7 @@ CORTO_EXPORT corto_int16 _corto_stringInit(corto_string* value);
 CORTO_EXPORT corto_int16 _corto_stringDeinit(corto_string* value);
 #define corto_stringDeinit(value) _corto_stringDeinit(value)
 
-/* /corto/lang/struct */
+/* struct */
 CORTO_EXPORT corto_struct _corto_structCreate(corto_interface base, corto_modifier baseAccess);
 #define corto_structCreate(base, baseAccess) _corto_structCreate(corto_interface(base), baseAccess)
 #define corto_structCreate_auto(_name, base, baseAccess) corto_struct _name = corto_structCreate(base, baseAccess); (void)_name
@@ -1526,7 +1526,7 @@ CORTO_EXPORT corto_struct corto_structFromStr(corto_struct value, corto_string s
 CORTO_EXPORT corto_int16 _corto_structCompare(corto_struct dst, corto_struct src);
 #define corto_structCompare(dst, src) _corto_structCompare(corto_struct(dst), corto_struct(src))
 
-/* /corto/lang/text */
+/* text */
 CORTO_EXPORT corto_text _corto_textCreate(corto_width charWidth, corto_uint64 length);
 #define corto_textCreate(charWidth, length) _corto_textCreate(charWidth, length)
 #define corto_textCreate_auto(_name, charWidth, length) corto_text _name = corto_textCreate(charWidth, length); (void)_name
@@ -1552,7 +1552,7 @@ CORTO_EXPORT corto_text corto_textFromStr(corto_text value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_textCompare(corto_text dst, corto_text src);
 #define corto_textCompare(dst, src) _corto_textCompare(corto_text(dst), corto_text(src))
 
-/* /corto/lang/type */
+/* type */
 CORTO_EXPORT corto_type _corto_typeCreate(corto_typeKind kind, corto_bool reference);
 #define corto_typeCreate(kind, reference) _corto_typeCreate(kind, reference)
 #define corto_typeCreate_auto(_name, kind, reference) corto_type _name = corto_typeCreate(kind, reference); (void)_name
@@ -1578,7 +1578,7 @@ CORTO_EXPORT corto_type corto_typeFromStr(corto_type value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_typeCompare(corto_type dst, corto_type src);
 #define corto_typeCompare(dst, src) _corto_typeCompare(corto_type(dst), corto_type(src))
 
-/* /corto/lang/typeKind */
+/* typeKind */
 CORTO_EXPORT corto_typeKind* _corto_typeKindCreate(corto_typeKind value);
 #define corto_typeKindCreate(value) _corto_typeKindCreate(value)
 #define corto_typeKindCreate_auto(_name, value) corto_typeKind* _name = corto_typeKindCreate(value); (void)_name
@@ -1608,7 +1608,7 @@ CORTO_EXPORT corto_int16 _corto_typeKindInit(corto_typeKind* value);
 CORTO_EXPORT corto_int16 _corto_typeKindDeinit(corto_typeKind* value);
 #define corto_typeKindDeinit(value) _corto_typeKindDeinit(value)
 
-/* /corto/lang/uint */
+/* uint */
 CORTO_EXPORT corto_uint _corto_uintCreate(corto_width width, corto_uint64 min, corto_uint64 max);
 #define corto_uintCreate(width, min, max) _corto_uintCreate(width, min, max)
 #define corto_uintCreate_auto(_name, width, min, max) corto_uint _name = corto_uintCreate(width, min, max); (void)_name
@@ -1634,7 +1634,7 @@ CORTO_EXPORT corto_uint corto_uintFromStr(corto_uint value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_uintCompare(corto_uint dst, corto_uint src);
 #define corto_uintCompare(dst, src) _corto_uintCompare(corto_uint(dst), corto_uint(src))
 
-/* /corto/lang/uint16 */
+/* uint16 */
 CORTO_EXPORT corto_uint16* _corto_uint16Create(corto_uint16 value);
 #define corto_uint16Create(value) _corto_uint16Create(value)
 #define corto_uint16Create_auto(_name, value) corto_uint16* _name = corto_uint16Create(value); (void)_name
@@ -1664,7 +1664,7 @@ CORTO_EXPORT corto_int16 _corto_uint16Init(corto_uint16* value);
 CORTO_EXPORT corto_int16 _corto_uint16Deinit(corto_uint16* value);
 #define corto_uint16Deinit(value) _corto_uint16Deinit(value)
 
-/* /corto/lang/uint32 */
+/* uint32 */
 CORTO_EXPORT corto_uint32* _corto_uint32Create(corto_uint32 value);
 #define corto_uint32Create(value) _corto_uint32Create(value)
 #define corto_uint32Create_auto(_name, value) corto_uint32* _name = corto_uint32Create(value); (void)_name
@@ -1694,7 +1694,7 @@ CORTO_EXPORT corto_int16 _corto_uint32Init(corto_uint32* value);
 CORTO_EXPORT corto_int16 _corto_uint32Deinit(corto_uint32* value);
 #define corto_uint32Deinit(value) _corto_uint32Deinit(value)
 
-/* /corto/lang/uint64 */
+/* uint64 */
 CORTO_EXPORT corto_uint64* _corto_uint64Create(corto_uint64 value);
 #define corto_uint64Create(value) _corto_uint64Create(value)
 #define corto_uint64Create_auto(_name, value) corto_uint64* _name = corto_uint64Create(value); (void)_name
@@ -1724,7 +1724,7 @@ CORTO_EXPORT corto_int16 _corto_uint64Init(corto_uint64* value);
 CORTO_EXPORT corto_int16 _corto_uint64Deinit(corto_uint64* value);
 #define corto_uint64Deinit(value) _corto_uint64Deinit(value)
 
-/* /corto/lang/uint8 */
+/* uint8 */
 CORTO_EXPORT corto_uint8* _corto_uint8Create(corto_uint8 value);
 #define corto_uint8Create(value) _corto_uint8Create(value)
 #define corto_uint8Create_auto(_name, value) corto_uint8* _name = corto_uint8Create(value); (void)_name
@@ -1754,7 +1754,7 @@ CORTO_EXPORT corto_int16 _corto_uint8Init(corto_uint8* value);
 CORTO_EXPORT corto_int16 _corto_uint8Deinit(corto_uint8* value);
 #define corto_uint8Deinit(value) _corto_uint8Deinit(value)
 
-/* /corto/lang/virtual */
+/* virtual */
 CORTO_EXPORT corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
 #define corto_virtualCreate(returnType, returnsReference, _virtual, _impl) _corto_virtualCreate(corto_type(returnType), returnsReference, _virtual, _impl)
 #define corto_virtualCreate_auto(_name, returnType, returnsReference, _virtual, _impl) corto_virtual _name = corto_virtualCreate(returnType, returnsReference, _virtual, _impl); (void)_name
@@ -1780,7 +1780,7 @@ CORTO_EXPORT corto_virtual corto_virtualFromStr(corto_virtual value, corto_strin
 CORTO_EXPORT corto_int16 _corto_virtualCompare(corto_virtual dst, corto_virtual src);
 #define corto_virtualCompare(dst, src) _corto_virtualCompare(corto_virtual(dst), corto_virtual(src))
 
-/* /corto/lang/void */
+/* void */
 CORTO_EXPORT corto_void* _corto_voidCreate(void);
 #define corto_voidCreate() _corto_voidCreate()
 #define corto_voidCreate_auto(_name) corto_void* _name = corto_voidCreate(); (void)_name
@@ -1790,7 +1790,7 @@ CORTO_EXPORT corto_void* _corto_voidCreateChild(corto_object _parent, corto_stri
 CORTO_EXPORT corto_int16 _corto_voidUpdate(corto_void* _this);
 #define corto_voidUpdate(_this) _corto_voidUpdate(_this)
 
-/* /corto/lang/vtable */
+/* vtable */
 CORTO_EXPORT corto_vtable* _corto_vtableCreate(corto_uint32 length, corto_function* elements);
 #define corto_vtableCreate(length, elements) _corto_vtableCreate(length, elements)
 #define corto_vtableCreate_auto(_name, length, elements) corto_vtable* _name = corto_vtableCreate(length, elements); (void)_name
@@ -1820,7 +1820,7 @@ CORTO_EXPORT corto_int16 _corto_vtableInit(corto_vtable* value);
 CORTO_EXPORT corto_int16 _corto_vtableDeinit(corto_vtable* value);
 #define corto_vtableDeinit(value) _corto_vtableDeinit(value)
 
-/* /corto/lang/width */
+/* width */
 CORTO_EXPORT corto_width* _corto_widthCreate(corto_width value);
 #define corto_widthCreate(value) _corto_widthCreate(value)
 #define corto_widthCreate_auto(_name, value) corto_width* _name = corto_widthCreate(value); (void)_name
@@ -1850,7 +1850,7 @@ CORTO_EXPORT corto_int16 _corto_widthInit(corto_width* value);
 CORTO_EXPORT corto_int16 _corto_widthDeinit(corto_width* value);
 #define corto_widthDeinit(value) _corto_widthDeinit(value)
 
-/* /corto/lang/word */
+/* word */
 CORTO_EXPORT corto_word* _corto_wordCreate(corto_word value);
 #define corto_wordCreate(value) _corto_wordCreate(value)
 #define corto_wordCreate_auto(_name, value) corto_word* _name = corto_wordCreate(value); (void)_name
@@ -1881,7 +1881,7 @@ CORTO_EXPORT corto_int16 _corto_wordDeinit(corto_word* value);
 #define corto_wordDeinit(value) _corto_wordDeinit(value)
 
 
-/* /corto/lang/interfaceseq */
+/* interfaceseq */
 #define corto_interfaceseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_interface elem;\
@@ -1892,7 +1892,7 @@ CORTO_EXPORT corto_interface* corto_interfaceseqAppendAlloc(corto_interfaceseq *
 CORTO_EXPORT void corto_interfaceseqSize(corto_interfaceseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_interfaceseqClear(corto_interfaceseq *seq);
 
-/* /corto/lang/interfaceVectorseq */
+/* interfaceVectorseq */
 #define corto_interfaceVectorseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_interfaceVector elem;\
@@ -1903,7 +1903,7 @@ CORTO_EXPORT corto_interfaceVector* corto_interfaceVectorseqAppendAlloc(corto_in
 CORTO_EXPORT void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_interfaceVectorseqClear(corto_interfaceVectorseq *seq);
 
-/* /corto/lang/memberseq */
+/* memberseq */
 #define corto_memberseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_member elem;\
@@ -1914,7 +1914,7 @@ CORTO_EXPORT corto_member* corto_memberseqAppendAlloc(corto_memberseq *seq);
 CORTO_EXPORT void corto_memberseqSize(corto_memberseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_memberseqClear(corto_memberseq *seq);
 
-/* /corto/lang/objectseq */
+/* objectseq */
 #define corto_objectseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_object elem;\
@@ -1925,7 +1925,7 @@ CORTO_EXPORT corto_object* corto_objectseqAppendAlloc(corto_objectseq *seq);
 CORTO_EXPORT void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_objectseqClear(corto_objectseq *seq);
 
-/* /corto/lang/octetseq */
+/* octetseq */
 #define corto_octetseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_octet elem;\
@@ -1936,7 +1936,7 @@ CORTO_EXPORT corto_octet* corto_octetseqAppendAlloc(corto_octetseq *seq);
 CORTO_EXPORT void corto_octetseqSize(corto_octetseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_octetseqClear(corto_octetseq *seq);
 
-/* /corto/lang/parameterseq */
+/* parameterseq */
 #define corto_parameterseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_parameter elem;\
@@ -1947,7 +1947,7 @@ CORTO_EXPORT corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *
 CORTO_EXPORT void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_parameterseqClear(corto_parameterseq *seq);
 
-/* /corto/lang/vtable */
+/* vtable */
 #define corto_vtableForeach(seq, elem) \
     corto_uint32 elem##_iter;\
     corto_function elem;\

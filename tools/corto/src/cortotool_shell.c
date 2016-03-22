@@ -260,7 +260,7 @@ static void cxsh_cd(char* arg) {
         /* Reuse request to temporarily store result, count results */
         corto_resultIterForeach(iter, e) {
             if (count) {
-                corto_seterr("more than one result returned by 'cd %s'", arg);
+                corto_seterr("more than one result returned by 'cd %s' (%s/%s/%s)", arg, scope, e.parent, e.id);
                 goto error;
             }
             /* Use fully qualified path for scope */
@@ -997,9 +997,15 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
         }
     }
 
+    /* Start packages replicator */
+    // corto_packages p = corto_packagesCreate();
+
     /* Set scope to root */
     strcpy(scope, "/");
     cxsh_shell();
+
+    /* Delete packags replicator */
+    //corto_delete(p);
 
     return 0;
 }
