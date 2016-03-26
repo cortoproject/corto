@@ -156,7 +156,7 @@ typedef struct sso_##type {\
     struct { /* vtable */\
         corto_uint32 length;\
         void* buffer;\
-    }vtable;\
+    } vtable;\
     corto_object vbuff[16];\
 }sso_##type
 
@@ -168,6 +168,7 @@ typedef struct corto_SSO {
 
 /* Static Scoped Observable Object */
 typedef struct corto_SSOO {
+    corto__persistent p;
     corto__observable v;
     corto__scope s;
     corto__object o;
@@ -216,11 +217,11 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FWDECL(type, name) CORTO_FWDECL_SSO(type, name); corto_##type corto_##name##_o = &name##__o.v
 
 /* SSO */
-#define CORTO_ATTR_SSOO {1, 0, 1, 0, CORTO_VALID | CORTO_DECLARED}
+#define CORTO_ATTR_SSOO {1, 0, 1, 1, CORTO_VALID | CORTO_DECLARED}
 #define CORTO_ATTR_SSO {1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}
 #define CORTO_ATTR_SO {0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}
-#define CORTO_ROOT_V() {{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v}}, {uri}
+#define CORTO_ROOT_V() {{NULL},{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, uri) {{NULL},{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&package__o.v}}, {uri}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
 #define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
 
@@ -1042,7 +1043,7 @@ CORTO_FW_CD(replicator);
 CORTO_CLASS_NOBASE_O(corto_core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_MEMBER_O(replicator, mount, object, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, mask, eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(replicator, type, type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(replicator, type, string, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, kind, replicatorKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(replicator, contentType, string, CORTO_GLOBAL);
     CORTO_METHOD_O(replicator, init, "()", int16, FALSE, corto_replicator_construct);

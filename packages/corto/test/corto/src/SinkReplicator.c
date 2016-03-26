@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * ListReplicator.c
+ * SinkReplicator.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,48 +8,48 @@
 
 #include "test.h"
 
-/* $header() */
-#include "fnmatch.h"
-/* $end */
-
-corto_int16 _test_ListReplicator_construct(
-    test_ListReplicator this)
+corto_int16 _test_SinkReplicator_construct(
+    test_SinkReplicator this)
 {
-/* $begin(test/ListReplicator/construct) */
+/* $begin(test/SinkReplicator/construct) */
+    corto_string type =
+      corto_replicator(this)->type ? corto_replicator(this)->type : "int32";
 
-    /* Create top level objects */
+    // First tier
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "x",
         NULL,
         ".",
-        "uint32",
-        0
-    );
-    corto_resultSet(
-        corto_resultListAppendAlloc(this->items),
-        "yz",
-        NULL,
-        ".",
-        "string",
-        0
-    );
-    corto_resultSet(
-        corto_resultListAppendAlloc(this->items),
-        "xyz",
-        NULL,
-        ".",
-        "float64",
+        type,
         0
     );
 
-    /* Create nested objects */
+    corto_resultSet(
+        corto_resultListAppendAlloc(this->items),
+        "y",
+        NULL,
+        ".",
+        type,
+        0
+    );
+
+    corto_resultSet(
+        corto_resultListAppendAlloc(this->items),
+        "z",
+        NULL,
+        ".",
+        type,
+        0
+    );
+
+    // Second tier
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
         "a",
         NULL,
         "x",
-        "uint32",
+        type,
         0
     );
 
@@ -58,7 +58,7 @@ corto_int16 _test_ListReplicator_construct(
         "b",
         NULL,
         "x",
-        "uint32",
+        type,
         0
     );
 
@@ -67,75 +67,87 @@ corto_int16 _test_ListReplicator_construct(
         "c",
         NULL,
         "x",
-        "uint32",
+        type,
+        0
+    );
+
+    // Third tier
+    corto_resultSet(
+        corto_resultListAppendAlloc(this->items),
+        "k",
+        NULL,
+        "x/a",
+        type,
         0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
-        "a",
+        "l",
         NULL,
-        "xyz",
-        "uint32",
+        "x/a",
+        type,
         0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
-        "abc",
+        "m",
         NULL,
-        "xyz",
-        "uint32",
+        "x/a",
+        type,
+        0
+    );
+
+    // Fourth tier
+    corto_resultSet(
+        corto_resultListAppendAlloc(this->items),
+        "n",
+        NULL,
+        "x/a/k",
+        type,
         0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
-        "bc",
+        "o",
         NULL,
-        "xyz",
-        "uint32",
+        "x/a/k",
+        type,
         0
     );
 
     corto_resultSet(
         corto_resultListAppendAlloc(this->items),
-        "foo",
+        "p",
         NULL,
-        "xyz/abc",
-        "uint32",
+        "x/a/k",
+        type,
         0
     );
 
-    corto_resultSet(
-        corto_resultListAppendAlloc(this->items),
-        "bar",
-        NULL,
-        "xyz/abc",
-        "uint32",
-        0
-    );
-
-    corto_replicator_setContentType(this, "text/json");
+    corto_replicator(this)->kind = CORTO_SINK;
+    corto_replicator(this)->mask = CORTO_ON_TREE;
 
     return corto_replicator_construct(this);
 /* $end */
 }
 
-/* $header(test/ListReplicator/onRequest) */
+/* $header(test/SinkReplicator/onRequest) */
 /* Custom release function */
-void test_ListReplicator_iterRelease(corto_iter *iter) {
+static void test_SinkReplicator_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
     corto_resultListClear(data->list);
     corto_llFree(data->list);
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_ListReplicator_onRequest(
-    test_ListReplicator this,
+corto_resultIter _test_SinkReplicator_onRequest(
+    test_SinkReplicator this,
     corto_request *request)
 {
-/* $begin(test/ListReplicator/onRequest) */
+/* $begin(test/SinkReplicator/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();
 
@@ -159,10 +171,9 @@ corto_resultIter _test_ListReplicator_onRequest(
     corto_iter result = corto_llIterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
-    result.release = test_ListReplicator_iterRelease;
+    result.release = test_SinkReplicator_iterRelease;
 
     /* Return persistent iterator to request */
     return result;
-
 /* $end */
 }

@@ -102,7 +102,7 @@ CORTO_CLASS(corto_replicator);
 CORTO_CLASS_DEF(corto_replicator) {
     corto_object mount;
     corto_eventMask mask;
-    corto_type type;
+    corto_string type;
     corto_replicatorKind kind;
     corto_string contentType;
 };

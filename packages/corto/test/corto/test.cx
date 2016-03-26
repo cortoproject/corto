@@ -222,6 +222,7 @@ test::Suite Fullname::
     void tc_twolevels()
     void tc_null()
     void tc_nullBuffer()
+    void tc_fromLang()
 
 // Generate names relative to an object
 test::Suite RelativeName::
@@ -428,18 +429,45 @@ test::Suite ReplicatorRequest::
     void tc_selectVirtualParentFromVirtualScope()
     void tc_selectVirtualGrandparentFromVirtualScope()
 
-// Request data from a SINK ON_TREE replicator
-test::Suite TreeSinkReplicator::
+class SinkReplicator : core/replicator, hidden::
+    alias mount: replicator/mount
+    alias type: replicator/type
+    items: resultList, private
+    int16 construct()
+    resultIter onRequest(core/request request)
+
+// Request data from a SINK replicator
+test::Suite SelectSink::
     void setup() method
     void teardown() method
-    replicator: ListReplicator
 
-    void tc_resolveFromMount()
-    void tc_resolveFromNested()
-    void tc_resolveFromMount()
-    void tc_selectFromNestedVirtual()
-    void tc_selectFromNestedReal()
+    void tc_selectSingle()
+    void tc_selectSingleVirtualNested1()
+    void tc_selectSingleVirtualNested2()
+    void tc_selectVirtualSingleNested1()
+    void tc_selectVirtualSingleNested2()
+    void tc_selectScope()
+    void tc_selectVirtualScopeNested1()
+    void tc_selectVirtualScopeNested2()
+    void tc_selectVirtualScopeVirtualNested1()
+    void tc_selectVirtualScopeVirtualNested2()
+    void tc_selectMixedScope()
+    void tc_selectMixedScopeNested1()
+    void tc_selectMixedScopeNested2()
 
+// Request data from a SINK replicator with a type
+test::Suite SelectSinkWithType::
+    void setup() method
+    void teardown() method
+
+    void tc_selectMount()
+    void tc_selectMountFromParent()
+    void tc_selectMountFromVirtualParent()
+    void tc_selectSingleMatch()
+    void tc_selectSingleNoMatch()
+    void tc_selectMixedScope()
+    void tc_selectMixedScopeNested1()
+    void tc_selectMixedScopeNested2()
 
 // Event test support type
 class EventTest::

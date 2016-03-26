@@ -159,6 +159,8 @@ repeat:
                         }
 
                         if (!o) {
+                            /* corto_resolveExternal(); */
+
                             if (!i &&
                                 (prev != corto_lang_o) &&
                                 (prev != corto_core_o) &&

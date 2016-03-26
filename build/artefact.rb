@@ -87,7 +87,7 @@ end
 
 # Crawl src directory to get list of source files
 SOURCES = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
-OBJECTS =   SOURCES.ext(".o")
+OBJECTS = SOURCES.ext(".o")
               .pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
             Rake::FileList[GENERATED_SOURCES]
               .ext(".o")

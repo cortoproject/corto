@@ -8,6 +8,19 @@
 
 #include "test.h"
 
+corto_void _test_Fullname_tc_fromLang(
+    test_Fullname this)
+{
+/* $begin(test/Fullname/tc_fromLang) */
+    corto_id id;
+
+    corto_string result = corto_fullpath(id, corto_int32_o);
+    test_assert(result == id);
+    test_assert(!strcmp(result, "int32"));
+
+/* $end */
+}
+
 corto_void _test_Fullname_tc_null(
     test_Fullname this)
 {

@@ -255,6 +255,26 @@ task :install do
         end
         UNINSTALL << etc
     end
+    if File.exists?("lib") then
+        lib = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        sh "rm -rf #{lib}"
+        sh "mkdir -p #{lib}"
+
+        if File.exists? "lib/everywhere" then
+            sh "cp -r lib/everywhere/. #{lib}/"
+            if CORTO_OS == "Darwin" then
+                access = `stat -f '%A' lib/everywhere`[0...-1]
+            else
+                access = `stat -c '%a' lib/everywhere`[0...-1]
+            end
+            sh "chmod #{access} #{lib}"
+        end
+        platformStr = "lib/" + CORTO_PLATFORM
+        if File.exists? platformStr then
+            sh "cp -r " + platformStr + "/. #{lib}"
+        end
+        UNINSTALL << lib
+    end
     if File.exists?("install") then
         platformStr = "install/" + CORTO_PLATFORM
         if File.exists? platformStr then

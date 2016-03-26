@@ -15,7 +15,7 @@ corto_int16 _corto_packages_construct(
     corto_setref(&corto_replicator(this)->mount, root_o);
     corto_replicator(this)->mask = CORTO_ON_TREE;
     corto_replicator(this)->kind = CORTO_SINK;
-    corto_setref(&corto_replicator(this)->type, corto_package_o);
+    corto_setstr(&corto_replicator(this)->type, "/corto/core/package");
     return corto_replicator_construct(this);
 /* $end */
 }
@@ -51,7 +51,11 @@ corto_bool corto_packages_checkIfAdded(corto_ll list, corto_string name) {
     return FALSE;
 }
 
-void corto_packages_addDir(corto_ll list, corto_string path) {
+void corto_packages_addDir(
+    corto_ll list,
+    corto_string path,
+    corto_string expr)
+{
     corto_ll dirs = corto_opendir(path);
 
     /* Walk files, add files to result */
@@ -61,7 +65,7 @@ void corto_packages_addDir(corto_ll list, corto_string path) {
         while (corto_iterHasNext(&iter)) {
             corto_string f = corto_iterNext(&iter);
 
-            if (!corto_packages_checkIfAdded(list, f)) {
+            if (!fnmatch(expr, f, 0) && !corto_packages_checkIfAdded(list, f)) {
                 struct stat attr;
 
                 /* Build full path to file from current directory */
@@ -108,8 +112,8 @@ corto_resultIter _corto_packages_onRequest_v(
     globalPath = corto_envparse("/usr/local/lib/corto/$CORTO_VERSION/%s", request->parent);
     corto_cleanpath(globalPath);
 
-    corto_packages_addDir(data, localPath);
-    corto_packages_addDir(data, globalPath);
+    corto_packages_addDir(data, localPath, request->expr);
+    corto_packages_addDir(data, globalPath, request->expr);
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */

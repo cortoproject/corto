@@ -229,7 +229,7 @@ static void cxsh_ls(char* arg) {
 
     corto_resultIterForeach(iter, item) {
         cxsh_printRow(item.parent, item.id, item.name, item.type);
-        i ++; /* Count objects so total can be printed afterwards */
+        i ++; /* Count objects so total can be printed */
     }
 
     if (!i) {
@@ -429,7 +429,7 @@ static int cxsh_show(char* object) {
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
             printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR,
-                corto_fullpath(NULL, corto_valueType(&result)) + 1, NORMAL);
+                corto_fullpath(NULL, corto_valueType(&result)), NORMAL);
         }
 
         /* Initialize serializer userData */
@@ -998,14 +998,14 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     }
 
     /* Start packages replicator */
-    // corto_packages p = corto_packagesCreate();
+    corto_packages p = corto_packagesCreate();
 
     /* Set scope to root */
     strcpy(scope, "/");
     cxsh_shell();
 
     /* Delete packags replicator */
-    //corto_delete(p);
+    corto_delete(p);
 
     return 0;
 }

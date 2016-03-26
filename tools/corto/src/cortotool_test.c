@@ -18,11 +18,10 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     if (testCase) {
         sprintf(testCaseArg, "testcase=%s", testCase);
-    } else {
-        testCaseArg[0] = '\0';
+        testCase = testCaseArg;
     }
 
-    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", testCaseArg, NULL});
+    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", testCase, NULL});
     if ((sig = corto_procwait(pid, &ret) || ret)) {
         if (sig > 0) {
             corto_error("corto: tests failed");

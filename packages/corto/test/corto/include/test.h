@@ -141,10 +141,12 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include "Resolver.h"
 #include "Select.h"
 #include "SelectContentType.h"
+#include "SelectSink.h"
+#include "SelectSinkWithType.h"
+#include "SinkReplicator.h"
 #include "StringDeserializer.h"
 #include "StringReplicator.h"
 #include "StringSerializer.h"
-#include "TreeSinkReplicator.h"
 #include "VoidParent.h"
 #include "corto/test/test.h"
 

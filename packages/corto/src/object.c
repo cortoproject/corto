@@ -1098,6 +1098,10 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
 corto_object corto_resumePersistent(corto_object o) {
     corto_object result = NULL;
 
+    if (o == root_o) {
+        return o;
+    }
+
     corto_ll replicatorList =
       corto_olsGet(corto_parentof(o), CORTO_OLS_REPLICATOR);
     if (replicatorList) {

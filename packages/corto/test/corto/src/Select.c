@@ -324,7 +324,7 @@ corto_void _test_Select_tc_selectErrParentAst(
     corto_select("/", "..*").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "select '..*' failed: unexpected '*' after '..'"));
+    test_assert(!strcmp(corto_lasterr(), "select '..*' failed: unexpected 'filter' after '..'"));
 
 /* $end */
 }
@@ -363,7 +363,7 @@ corto_void _test_Select_tc_selectErrParentWc(
     corto_select(NULL, "..?").iter( ret = 1 );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "select '..?' failed: unexpected '?' after '..'"));
+    test_assert(!strcmp(corto_lasterr(), "select '..?' failed: unexpected 'filter' after '..'"));
 
 /* $end */
 }
