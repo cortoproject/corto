@@ -1164,6 +1164,10 @@ corto_int16 corto_define(corto_object o) {
             if ((_p = corto__objectPersistent(_o))) {
                 _p->owner = corto_getOwner();
 
+                if (_p->owner) {
+                    corto_claim(_p->owner);
+                }
+
                 /* If object is persistent and locally owned, check if a
                  * persistent copy is already available */
                 if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
@@ -1274,6 +1278,9 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             /* Call object destructor */
             if (!owner || !corto_instanceof(corto_replicator_o, owner)) {
                 corto__destructor(o);
+            }
+            if (owner) {
+                corto_release(owner);
             }
         }
 

@@ -34,6 +34,9 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
     corto_bool build = FALSE;
     CORTO_UNUSED(argc);
 
+    /* Start loader replicator */
+    corto_loader p = corto_loaderCreate();
+
     corto_argdata *data = corto_argparse(
       argv,
       (corto_argdata[]){
@@ -117,6 +120,9 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 
     corto_argclean(data);
 
+    /* Delete loader replicator */
+    corto_delete(p);
+
     return 0;
 error:
     corto_error(CORTO_PROMPT "add: %s", corto_lasterr());
@@ -144,6 +150,9 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
     corto_bool build = FALSE;
 
     CORTO_UNUSED(argc);
+
+    /* Start loader replicator */
+    corto_loader p = corto_loaderCreate();
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -205,6 +214,9 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
     }
 
     corto_argclean(data);
+
+    /* Delete loader replicator */
+    corto_delete(p);
 
     return 0;
 error:
