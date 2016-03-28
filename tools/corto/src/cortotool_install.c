@@ -48,7 +48,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
     fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
     /* Build libraries to global environment */
-    fprintf(install, "rake silent=%s verbose=%s\n",
+    fprintf(install, "rake silent=%s verbose=%s coverage=false\n",
         verbose ? "false" : "true",
         verbose ? "true" : "false");
 

@@ -61,6 +61,8 @@ CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC" << "-Wno-write-strings"
 # Set default compiler
 if LANGUAGE == "c" then
     COMPILER = CC
+elsif LANGUAGE == "c4cpp" then
+    COMPILER = CXX
 elsif LANGUAGE == "c++" then
     COMPILER = CXX
 else

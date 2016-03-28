@@ -23,7 +23,15 @@ corto_int16 cortotool_language(char *language) {
         corto_llAppend(generators, "c/api");
         corto_llAppend(attributes, "c=src");
         corto_llAppend(attributes, "h=include");
-
+    } else if (!strcmp(language, "c4cpp")) {
+        corto_llAppend(generators, "c/project");
+        corto_llAppend(generators, "c/type");
+        corto_llAppend(generators, "c/interface");
+        corto_llAppend(generators, "c/load");
+        corto_llAppend(generators, "c/api");
+        corto_llAppend(attributes, "c=src");
+        corto_llAppend(attributes, "h=include");
+        corto_llAppend(attributes, "c4cpp=true");
     } else if (!strcmp(language, "cpp")) {
         corto_llAppend(generators, "cpp_class");
         corto_llAppend(generators, "c_type");

@@ -1000,12 +1000,12 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
         }
     }
 
-    /* Delete loader replicator */
-    corto_delete(p);
-
     /* Set scope to root */
     strcpy(scope, "/");
     cxsh_shell();
+
+    /* Delete loader replicator */
+    corto_delete(p);
 
     return 0;
 }

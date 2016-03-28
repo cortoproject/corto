@@ -82,7 +82,7 @@ if not defined? NOCORTO then
             end
 
             command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
-                      "--prefix #{PREFIX} #{localStr} #{docStr} --lang c"
+                      "--prefix #{PREFIX} #{localStr} #{docStr} --lang #{LANGUAGE}"
 
             begin
               sh command

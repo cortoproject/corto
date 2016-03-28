@@ -7,6 +7,12 @@
 static corto_string cortotool_lookupPackage(corto_string str) {
     corto_object p = corto_resolve(NULL, str);
     corto_string package = NULL;
+    static corto_loader l;
+
+    if (!l) {
+        /* This will leak, but at least it'll leak only once */
+        l = corto_loaderCreate();
+    }
 
     if (!p) {
         if (!corto_locate(str, CORTO_LOCATION_LIB)) {
@@ -33,9 +39,6 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
     corto_ll silent, mute, nobuild, nocoverage, project, packages;
     corto_bool build = FALSE;
     CORTO_UNUSED(argc);
-
-    /* Start loader replicator */
-    corto_loader p = corto_loaderCreate();
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -120,9 +123,6 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 
     corto_argclean(data);
 
-    /* Delete loader replicator */
-    corto_delete(p);
-
     return 0;
 error:
     corto_error(CORTO_PROMPT "add: %s", corto_lasterr());
@@ -150,9 +150,6 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
     corto_bool build = FALSE;
 
     CORTO_UNUSED(argc);
-
-    /* Start loader replicator */
-    corto_loader p = corto_loaderCreate();
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -214,9 +211,6 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
     }
 
     corto_argclean(data);
-
-    /* Delete loader replicator */
-    corto_delete(p);
 
     return 0;
 error:
