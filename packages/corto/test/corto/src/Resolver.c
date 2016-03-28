@@ -46,7 +46,11 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
     test_assert(r == o);
     corto_release(r);
 
-    corto_scopeWalk(o, tc_resolveAllWalk, NULL);
+    corto_objectseq scope = corto_scopeClaim(o);
+    corto_objectseqForeach(scope, child) {
+        tc_resolveAllWalk(child, NULL);
+    }
+    corto_scopeRelease(scope);
 
     return 1;
 }
@@ -55,9 +59,11 @@ corto_void _test_Resolver_tc_resolveAll(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveAll) */
-
-    corto_scopeWalk(root_o, tc_resolveAllWalk, NULL);
-
+    corto_objectseq scope = corto_scopeClaim(root_o);
+    corto_objectseqForeach(scope, o) {
+        tc_resolveAllWalk(o, NULL);
+    }
+    corto_scopeRelease(scope);
 /* $end */
 }
 
@@ -126,11 +132,16 @@ corto_void _test_Resolver_tc_resolveIo(
 {
 /* $begin(test/Resolver/tc_resolveIo) */
 
+    /* Start loader replicator */
+    corto_loader p = corto_loaderCreate();
     corto_object o = corto_resolve(NULL, "io");
     test_assert(o != NULL);
     test_assert (!strcmp(corto_nameof(o), "io"));
     test_assert (corto_parentof(o) == corto_o);
     corto_release(o);
+
+    /* Delete loader replicator */
+    corto_delete(p);
 
 /* $end */
 }

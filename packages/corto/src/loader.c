@@ -18,6 +18,7 @@ static corto_ll fileAdmin = NULL;
 struct corto_fileAdmin {
     corto_string name;
     corto_bool loading;
+    corto_int16 result;
 };
 
 struct corto_fileHandler {
@@ -314,6 +315,7 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
             corto_backtrace(stderr);
             abort();
         } else {
+            result = lib->result;
             goto loaded;
         }
     }
@@ -339,6 +341,7 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
         lib = corto_fileAdminAdd(str);
         result = h->load(str, argc, argv, h->userData);
         lib->loading = FALSE;
+        lib->result = result;
     } else {
         if (!try) {
             corto_seterr(
@@ -346,6 +349,7 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
                 ext);
             goto error;
         }
+        result = -1;
     }
 
     corto_setAttr(prevAttr);
@@ -355,7 +359,7 @@ error:
     return -1;
 loaded:
     corto_setAttr(prevAttr);
-    return 0;
+    return result;
 }
 
 /* Load a package */

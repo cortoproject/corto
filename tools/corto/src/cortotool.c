@@ -21,7 +21,7 @@ void cortotool_locateHelp(void) {
 
 static void cortotool_printUsage(corto_bool expert) {
     printf("Usage: corto [-d] <command> [args]\n");
-    printf("       corto [-d] [files] [packages]\n");
+    printf("       corto [-d] [files] [loader]\n");
     printf("       corto [--version] [-v] [--help] [-h] [--expert]\n");
     printf("\n");
     printf("Without arguments, 'corto' starts the corto shell.\n");
@@ -30,7 +30,7 @@ static void cortotool_printUsage(corto_bool expert) {
     printf("   create               Create a new project.\n");
     printf("   add                  Add a package to a project\n");
     printf("   remove               Remove a package from a project\n");
-    printf("   list                 List packages of a project\n");
+    printf("   list                 List loader of a project\n");
     printf("   install              Install a package.\n");
     printf("   uninstall            Uninstall a package.\n");
     printf("   update               Update a package\n");
@@ -64,6 +64,8 @@ int main(int argc, char* argv[]) {
             if (*(argv[i]+1) == 'h') {
                 cortotool_printUsage(FALSE);
                 break;
+            } else if (*(argv[i]+1) == 'd') {
+                CORTO_DEBUG_ENABLED = TRUE;
             } else if (*(argv[i]+1) == 'v') {
                 printf("%s\n", CORTO_VERSION);
             } else if (*(argv[i]+1) == '-') {
@@ -98,6 +100,8 @@ int main(int argc, char* argv[]) {
                     break;
                 } else if (*(argv[i]+1) == 'v') {
                     /* Already handled */
+                } else if (*(argv[i]+1) == 'd') {
+                      /* Already handled */
                 } else if (*(argv[i]+1) == 'p') {
                     if (corto_load(argv[i + 1], 0, NULL)) {
                         corto_error("%s: %s", argv[i + 1], corto_lasterr());
@@ -122,6 +126,7 @@ int main(int argc, char* argv[]) {
                         /* Already handled */
                     } else if (!strcmp(argv[i] + 2, "trace-memory")) {
                         /* Already handled */
+                        i++;
                     } else if (!strcmp(argv[i] + 2, "trace-stack")) {
                         /* Already handled */
                     } else {

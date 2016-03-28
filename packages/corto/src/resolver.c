@@ -141,48 +141,24 @@ repeat:
             } else {
                 if (!overload) {
                     corto_object prev = o;
-                    int i;
-                    for (i = 0; i < 2; i++) {
-                        o = corto_lookupLowercase(o, bufferLc);
-                        if (lookup) {
-                            corto_release(lookup); /* Free reference */
-                        }
-                        lookup = o;
-                        if (o) {
-                            if (corto_instanceof(corto_function_o, o)) {
-                                if (corto_function(o)->overloaded == TRUE) {
-                                    corto_release(o);
-                                    corto_seterr("ambiguous reference to '%s'", str);
-                                    goto error;
-                                }
-                            }
-                        }
 
-                        if (!o) {
-                            /* corto_resolveExternal(); */
+                    o = corto_lookupLowercase(o, bufferLc);
+                    if (lookup) {
+                        corto_release(lookup); /* Free reference */
+                    }
 
-                            if (!i &&
-                                (prev != corto_lang_o) &&
-                                (prev != corto_core_o) &&
-                                corto_instanceof(corto_type(corto_package_o), prev))
-                            {
-                                corto_id load;
-                                if (prev != root_o) {
-                                    sprintf(load, "%s/%s",
-                                        corto_fullpath(NULL, prev), buffer);
-                                } else {
-                                    sprintf(load, "/%s", buffer);
-                                }
-                                if (corto_loadTry(load, 0, NULL)) {
-                                    corto_seterr(NULL);
-                                    break;
-                                }
-                                o = prev;
-                            } else {
-                                break;
+                    if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
+                        o = corto_resume(prev, buffer, NULL);
+                    }
+
+                    lookup = o;
+                    if (o) {
+                        if (corto_instanceof(corto_function_o, o)) {
+                            if (corto_function(o)->overloaded == TRUE) {
+                                corto_release(o);
+                                corto_seterr("ambiguous reference to '%s'", str);
+                                goto error;
                             }
-                        } else {
-                            break;
                         }
                     }
 

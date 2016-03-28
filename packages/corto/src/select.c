@@ -698,7 +698,7 @@ static void corto_selectParseFilter(
     }
 }
 
-static void corto_selectRequestReplicator(
+static corto_resultIter corto_selectRequestReplicator(
     corto_replicator replicator,
     corto_string parent,
     corto_string expr,
@@ -712,11 +712,7 @@ static void corto_selectRequestReplicator(
       data->contentType ? TRUE : FALSE,
       data->param};
 
-    data->replicators[data->activeReplicators].iter =
-        corto_replicator_request(
-            replicator,
-            &r
-        );
+    return corto_replicator_request(replicator, &r);
 }
 
 /* Function returns TRUE if a SINK is found, which means that for this scope
@@ -729,22 +725,15 @@ static void corto_selectRequestReplicators(
     corto_bool dryRun)
 {
     if (data->activeReplicators < 0) {
-        corto_id parent, expr;
         corto_bool releaseScope = FALSE;
+        corto_bool requestStart = 0;
 
         data->activeReplicators = 0;
-
-        if (frame->scopeQuery) {
-            strcpy(parent, frame->scopeQuery);
-        } else {
-            *parent = '\0';
-        }
-
-        corto_selectParseFilter(frame->filter, parent, expr);
 
         /* 1: Count replicators registered on parent scopes */
         while (data->replicators[data->activeReplicators].r) {
             data->activeReplicators ++;
+            requestStart = data->activeReplicators;
         }
 
         /* 2: Request data from replicators registered on current scope */
@@ -783,9 +772,6 @@ static void corto_selectRequestReplicators(
                         }
                     }
 
-                    if (!dryRun) {
-                        corto_selectRequestReplicator(odata->replicator, parent, expr, data);
-                    }
                     data->replicators[data->activeReplicators].r = odata->replicator;
                     data->activeReplicators ++;
                 }
@@ -794,6 +780,30 @@ static void corto_selectRequestReplicators(
 
         if (releaseScope) {
             corto__scopeRelease(frame->scope);
+        }
+
+        /* Request data outside of lock */
+        if (!dryRun) {
+            corto_int32 i;
+            for (i = requestStart; i < data->activeReplicators; i++) {
+                corto_id parent, expr;
+                corto_path(parent, data->replicators[i].r->mount, frame->scope, "/");
+                if (frame->scopeQuery) {
+                    if (parent[0]) {
+                        strcat(parent, "/");
+                    }
+                    strcat(parent, frame->scopeQuery);
+                }
+
+                corto_selectParseFilter(frame->filter, parent, expr);
+                corto_cleanpath(parent);
+
+                data->replicators[i].iter = corto_selectRequestReplicator(
+                    data->replicators[i].r,
+                    parent,
+                    expr,
+                    data);
+            }
         }
     }
 
@@ -915,11 +925,9 @@ static void corto_selectThis(
     corto_selectStack *frame)
 {
     if (frame->scopeQuery) {
-        corto__scope *scope = corto__scopeClaim(frame->scope);
         frame->filter = frame->scopeQuery;
         frame->scopeQuery = NULL;
-        corto_selectRequestReplicators(data, frame, scope, FALSE);
-        corto__scopeRelease(frame->scope);
+        corto_selectRequestReplicators(data, frame, NULL, FALSE);
         corto_selectIterateReplicators(data, frame);
     } else {
         /* Ensure that SINK replicators are loaded so any filters will be
@@ -957,13 +965,14 @@ static void corto_selectScope(
 {
     corto_object o = NULL;
     corto_string lastKey = data->item.name;
-    corto__scope *scope = corto__scopeClaim(frame->scope);
 
     /* Request replicators once per scope, and do it before iterating over
      * corto store objects so replicators have more time to fetch data. */
-    corto_selectRequestReplicators(data, frame, scope, FALSE);
+    corto_selectRequestReplicators(data, frame, NULL, FALSE);
 
+    corto__scopeClaim(frame->scope);
     data->next = NULL;
+
 
     /* If not iterating over a replicator, iterate over the store */
     if ((data->currentReplicator == -1) &&

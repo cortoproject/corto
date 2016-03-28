@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * packages.c
+ * loader.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,10 +8,10 @@
 
 #include "corto/core/core.h"
 
-corto_int16 _corto_packages_construct(
-    corto_packages this)
+corto_int16 _corto_loader_construct(
+    corto_loader this)
 {
-/* $begin(corto/core/packages/construct) */
+/* $begin(corto/core/loader/construct) */
     corto_setref(&corto_replicator(this)->mount, root_o);
     corto_replicator(this)->mask = CORTO_ON_TREE;
     corto_replicator(this)->kind = CORTO_SINK;
@@ -20,16 +20,16 @@ corto_int16 _corto_packages_construct(
 /* $end */
 }
 
-corto_void _corto_packages_destruct(
-    corto_packages this)
+corto_void _corto_loader_destruct(
+    corto_loader this)
 {
-/* $begin(corto/core/packages/destruct) */
+/* $begin(corto/core/loader/destruct) */
     corto_replicator_destruct(this);
 /* $end */
 }
 
-/* $header(corto/core/packages/onRequest) */
-void corto_packages_iterRelease(corto_iter *iter) {
+/* $header(corto/core/loader/onRequest) */
+void corto_loader_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
 
     /* Delete data from request */
@@ -40,7 +40,7 @@ void corto_packages_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 
-corto_bool corto_packages_checkIfAdded(corto_ll list, corto_string name) {
+corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
     corto_iter it = corto_llIter(list);
     while (corto_iterHasNext(&it)) {
         corto_result *r = corto_iterNext(&it);
@@ -51,7 +51,7 @@ corto_bool corto_packages_checkIfAdded(corto_ll list, corto_string name) {
     return FALSE;
 }
 
-void corto_packages_addDir(
+void corto_loader_addDir(
     corto_ll list,
     corto_string path,
     corto_string expr)
@@ -65,7 +65,7 @@ void corto_packages_addDir(
         while (corto_iterHasNext(&iter)) {
             corto_string f = corto_iterNext(&iter);
 
-            if (!fnmatch(expr, f, 0) && !corto_packages_checkIfAdded(list, f)) {
+            if (!fnmatch(expr, f, 0) && !corto_loader_checkIfAdded(list, f)) {
                 struct stat attr;
 
                 /* Build full path to file from current directory */
@@ -96,11 +96,11 @@ void corto_packages_addDir(
     }
 }
 /* $end */
-corto_resultIter _corto_packages_onRequest_v(
-    corto_packages this,
+corto_resultIter _corto_loader_onRequest_v(
+    corto_loader this,
     corto_request *request)
 {
-/* $begin(corto/core/packages/onRequest) */
+/* $begin(corto/core/loader/onRequest) */
     corto_ll data = corto_llNew(); /* Will contain result of request */
     corto_iter result;
 
@@ -112,29 +112,38 @@ corto_resultIter _corto_packages_onRequest_v(
     globalPath = corto_envparse("/usr/local/lib/corto/$CORTO_VERSION/%s", request->parent);
     corto_cleanpath(globalPath);
 
-    corto_packages_addDir(data, localPath, request->expr);
-    corto_packages_addDir(data, globalPath, request->expr);
+    corto_loader_addDir(data, localPath, request->expr);
+    corto_loader_addDir(data, globalPath, request->expr);
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */
     result = corto_llIterAlloc(data);
-    result.release = corto_packages_iterRelease;
+    result.release = corto_loader_iterRelease;
 
     return result;
 /* $end */
 }
 
-corto_object _corto_packages_onResume_v(
-    corto_packages this,
+corto_object _corto_loader_onResume_v(
+    corto_loader this,
     corto_string parent,
     corto_string name,
     corto_object o)
 {
-/* $begin(corto/core/packages/onResume) */
+/* $begin(corto/core/loader/onResume) */
     CORTO_UNUSED(this);
-    CORTO_UNUSED(parent);
-    CORTO_UNUSED(name);
-    CORTO_UNUSED(o);
-    return NULL;
+
+    if (!o) {
+        corto_id path;
+        sprintf(path, "%s/%s", parent, name);
+        corto_cleanpath(path);
+        if (!corto_load(path, 0, NULL)) {
+            o = corto_lookup(NULL, path);
+        }
+    } else {
+        o = NULL;
+    }
+
+    return o;
 /* $end */
 }

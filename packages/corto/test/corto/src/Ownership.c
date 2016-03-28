@@ -214,6 +214,8 @@ corto_void _test_Ownership_tc_deleteNotOwned(
 
     corto_int16 result = corto_delete(o);
     test_assert(result != 0);
+    test_assert(corto_lasterr() != NULL);
+    test_assert(!strcmp(corto_lasterr(), "can't delete /o: not owned by thread (use corto_suspend)"));
 
     result = corto_delete(r);
     test_assert(result == 0);

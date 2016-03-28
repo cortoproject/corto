@@ -37,6 +37,7 @@ corto_object _corto_declare(corto_type type);
 corto_object _corto_declareChild(corto_object parent, corto_string name, corto_type type);
 corto_int16 corto_define(corto_object o);
 corto_int16 corto_delete(corto_object o);
+corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
 corto_int16 corto_suspend(corto_object o);
 corto_int32 corto_claim(corto_object o);
 corto_int32 corto_release(corto_object o);

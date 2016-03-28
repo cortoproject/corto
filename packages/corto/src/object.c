@@ -1095,43 +1095,56 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     return result;
 }
 
-corto_object corto_resumePersistent(corto_object o) {
-    corto_object result = NULL;
-
+corto_object corto_resume(
+    corto_object parent,
+    corto_string expr,
+    corto_object o)
+{
     if (o == root_o) {
         return o;
     }
 
-    corto_ll replicatorList =
-      corto_olsGet(corto_parentof(o), CORTO_OLS_REPLICATOR);
-    if (replicatorList) {
-        corto_iter iter = corto_llIter(replicatorList);
+    corto_object result = NULL;
+    corto_object p = parent;
 
-        while (corto_iterHasNext(&iter)) {
-            corto_replicator_olsData_t *rData = corto_iterNext(&iter);
-            corto_id parent;
+    while (!result && p) {
+        corto_ll replicatorList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
+        if (replicatorList) {
+            corto_iter iter = corto_llIter(replicatorList);
+            corto_id parentId;
 
             /* Parent must be relative to mount point of replicator */
             corto_path(
+                parentId,
+                p,
                 parent,
-                rData->replicator->mount,
-                corto_parentof(o),
                 "/");
 
-            /* If replicator implements resume, this will load the
-             * persistent copy in memory */
-            if (corto_replicator_resume(
-                rData->replicator,
-                parent,
-                corto_nameof(o),
-                o))
-            {
-                /* The first replicator that has the object
-                 * takes precedence */
-                result = o;
-                break;
+            while (corto_iterHasNext(&iter)) {
+                corto_replicator_olsData_t *rData = corto_iterNext(&iter);
+
+                /* Either the replicator registered for the direct parent of the
+                 * provided object, or the replicator must have ON_TREE set */
+                if ((p == parent) ||
+                  (rData->replicator->mask == CORTO_ON_TREE)) {
+                    corto_object requested;
+                    /* If replicator implements resume, this will load the
+                     * persistent copy in memory */
+                    if ((requested = corto_replicator_resume(
+                        rData->replicator,
+                        parentId,
+                        expr,
+                        o)))
+                    {
+                        /* The first replicator that has the object
+                         * takes precedence */
+                        result = requested;
+                        break;
+                    }
+                }
             }
         }
+        p = corto_parentof(p);
     }
 
     return result;
@@ -1154,7 +1167,9 @@ corto_int16 corto_define(corto_object o) {
                 /* If object is persistent and locally owned, check if a
                  * persistent copy is already available */
                 if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                    corto_resumePersistent(o);
+                    corto_resume(corto_parentof(o), corto_nameof(o), o);
+                    /* Ignore result: if there are no replicators that contain
+                     * a copy of the object, use the initial value */
                 }
             }
 
@@ -2275,60 +2290,85 @@ corto_int32 corto_release(corto_object o) {
 }
 
 corto_object corto_lookupLowercase(corto_object o, corto_string name) {
-    corto_object result;
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rbtree tree;
+    char *elements[CORTO_MAX_SCOPE_DEPTH];
+    corto_object prev = NULL;
+
+    /* Important: Lowercase expects a buffer that it may modify. pathToArray
+     * inserts '\0' where it finds a separator. */
+    corto_int32 i, count = corto_pathToArray(name, elements, "/");
 
     if (!o) {
         o = root_o;
     }
 
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
+    for (i = 0; i < count; i++) {
+        _o = CORTO_OFFSET(o, -sizeof(corto__object));
+        scope = corto__objectScope(_o);
+        if (i) {
+            prev = o;
+        }
 
-    if (scope) {
-        corto_rwmutexRead(&scope->scopeLock);
-        if ((tree = scope->scope)) {
-            if ((!corto_rbtreeHasKey_w_cmp(tree, name, (void**)&result, corto_compareLookup))) {
-                result = NULL;
-            } else {
-                /* If an object was returned with a ( in its name but
-                 * the request didn't have one, check scope again for an object
-                 * that matches the request exactly */
-                if (strchr(corto_nameof(result), '(') && !strchr(name, '(')) {
-                    corto_object checkNoArgs = NULL;
-                    if (corto_rbtreeHasKey_w_cmp(tree, name, (void**)&checkNoArgs, corto_compareLookupNoArgMatching)) {
-                        result = checkNoArgs;
+        if (scope) {
+            corto_rwmutexRead(&scope->scopeLock);
+            if ((tree = scope->scope)) {
+                if ((!corto_rbtreeHasKey_w_cmp(
+                    tree,
+                    elements[i],
+                    (void**)&o,
+                    corto_compareLookup)))
+                {
+                    o = NULL;
+                } else {
+                    /* If an object was returned with a ( in its name but
+                     * the request didn't have one, check scope again for an object
+                     * that matches the request exactly */
+                    if (strchr(corto_nameof(o), '(') && !strchr(elements[i], '(')) {
+                        corto_object checkNoArgs = NULL;
+                        if (corto_rbtreeHasKey_w_cmp(
+                              tree, elements[i],
+                              (void**)&checkNoArgs,
+                              corto_compareLookupNoArgMatching))
+                        {
+                            o = checkNoArgs;
+                        }
+                    }
+
+                    /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
+                    if (corto_claim(o) == 1) {
+                         /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
+                          * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
+                          * function also needs the parent's scopelock to remove the object from the scope.
+                          *
+                          * The refcount needs to be re-set to zero, because after the scopeLock is released, other threads - other than the destruct
+                          * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
+                          * that the object is being deleted.
+                          */
+                        _result = CORTO_OFFSET(o, -sizeof(corto__object));
+                        _result->refcount = 0;
+                        o = NULL;
                     }
                 }
-
-                /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
-                if (corto_claim(result) == 1) {
-                     /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
-                      * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
-                      * function also needs the parent's scopelock to remove the object from the scope.
-                      *
-                      * The refcount needs to be re-set to zero, because after the scopeLock is released, other threads - other than the destruct
-                      * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
-                      * that the object is being deleted.
-                      */
-                    _result = CORTO_OFFSET(result, -sizeof(corto__object));
-                    _result->refcount = 0;
-                    result = NULL;
-                }
+            } else {
+                o = NULL;
             }
+            corto_rwmutexUnlock(&scope->scopeLock);
         } else {
-            result = NULL;
+            corto_seterr("corto_lookup: object '%s' has no scope",
+                corto_fullpath(NULL, o));
+            goto error;
         }
-        corto_rwmutexUnlock(&scope->scopeLock);
-    } else {
-        corto_seterr("corto_lookup: object '%s' has no scope",
-            corto_fullpath(NULL, o));
-        goto error;
+        if (prev) {
+            corto_release(prev);
+        }
+        if (!o) {
+            break;
+        }
     }
 
-    return result;
+    return o;
 error:
     return NULL;
 }

@@ -239,6 +239,7 @@ corto_void _corto_replicator_post(
 
     CORTO_UNUSED(this);
     corto_event_handle(e);
+    corto_release(e);
 
 /* $end */
 }

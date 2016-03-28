@@ -987,6 +987,9 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     printf("corto shell - type 'help' for instructions.\n");
     cxsh_color(NORMAL);
 
+    /* Start loader replicator */
+    corto_loader p = corto_loaderCreate();
+
     /* Parse arguments */
     for(i=1; i<argc; i++) {
         if (!strcmp(argv[i], "-d")) {
@@ -997,15 +1000,12 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
         }
     }
 
-    /* Start packages replicator */
-    corto_packages p = corto_packagesCreate();
+    /* Delete loader replicator */
+    corto_delete(p);
 
     /* Set scope to root */
     strcpy(scope, "/");
     cxsh_shell();
-
-    /* Delete packags replicator */
-    corto_delete(p);
 
     return 0;
 }
