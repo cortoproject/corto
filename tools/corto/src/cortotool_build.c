@@ -102,7 +102,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: build: %s", corto_lasterr());
+    corto_error("corto: %s", corto_lasterr());
     return -1;
 }
 
@@ -145,7 +145,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: clean: %s", corto_lasterr());
+    corto_error("corto: %s", corto_lasterr());
     return -1;
 }
 
@@ -185,7 +185,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: coverage: %s", corto_lasterr());
+    corto_error("corto: %s", corto_lasterr());
     return -1;
 }
 

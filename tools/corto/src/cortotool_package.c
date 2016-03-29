@@ -11,7 +11,7 @@ static corto_string cortotool_lookupPackage(corto_string str) {
         /* This will leak, but at least it'll leak only once */
         l = corto_loaderCreate();
     }
-    
+
     corto_object p = corto_resolve(NULL, str);
 
     if (!p) {
@@ -182,7 +182,7 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
             corto_string arg = corto_iterNext(&iter);
             corto_string package = cortotool_lookupPackage(arg);
             if (!package) {
-                goto error;
+                package = arg; /* Try to remove by matching string */
             }
 
             corto_ll packages = corto_loadGetPackages();

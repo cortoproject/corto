@@ -97,6 +97,7 @@ OBJECTS = SOURCES.ext(".o")
 
 # Load packages from file
 if File.exists? ".corto/packages.txt" then
+    verbose(false)
     f = File.open(".corto/packages.txt")
     f.each_line {|l|
         p = l[0...-1]
@@ -166,7 +167,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         if (not File.exists? lib) and (CORTO_OS == "Darwin") then
             lib = prefix + "lib" + File.basename(l) + ".dylib"
             if (not File.exists? lib) then
-                abort "\033[1;31m[ #{l} not found ]\033[0;49m"
+                abort "\033[1;31mcorto:\033[0;49m #{l} not found"
             end
         end
         lib
@@ -196,7 +197,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     begin
       sh cc_command
     rescue
-      STDERR.puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
+      STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
       abort
     end
 
@@ -230,6 +231,10 @@ task :prebuild do
   # Load dependency build instructions before anything else
   USE_PACKAGE.each {|p|
       location = `corto locate #{p} --path`[0...-1]
+      if not $?.to_i == 0 then
+        STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+        abort
+      end
       buildscript = location + "/build.rb"
       if File.exists? buildscript then
           require "#{buildscript}"
@@ -388,7 +393,7 @@ def build_source(source, target, echo)
     begin
       sh cc_command
     rescue
-      STDERR.puts "\033[1;31mcommand failed: #{cc_command}\033[0;49m"
+      STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
       abort
     end
 end
