@@ -56,7 +56,7 @@ CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_X
 CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
-CXXFLAGS << "-Wall" << "-std=c++11" << "-fPIC" << "-Wno-write-strings"
+CXXFLAGS << "-Wall" << "-std=c++0x" << "-fPIC" << "-Wno-write-strings"
 
 # Set default compiler
 if LANGUAGE == "c" then
