@@ -100,12 +100,11 @@ typedef struct corto_selectRequest {
     corto_string augment;
     corto_string contentType;
 } corto_selectRequest;
-#define iter(...) _iter(); if (corto_selectErr()) {__VA_ARGS__;}
 typedef struct corto_selectSelector {
     struct corto_selectSelector (*contentType)(corto_string contentType);
     struct corto_selectSelector (*limit)(corto_uint64 offset, corto_uint64 limit);
     struct corto_selectSelector (*augment)(corto_string filter);
-    corto_resultIter ___ (*_iter)(void);
+    corto_resultIter ___ (*iter)(corto_int16 *ret);
 } corto_selectSelector;
 corto_int16 corto_selectErr(void);
 struct corto_selectSelector corto_select(corto_string scope, corto_string expr);

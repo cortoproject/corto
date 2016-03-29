@@ -50,9 +50,6 @@ corto_type corto_valueType(corto_value* val) {
     case CORTO_MEMBER:
         result = val->is.member.t->type;
         break;
-    case CORTO_CALL:
-        result = val->is.call.t->returnType;
-        break;
     case CORTO_CONSTANT:
         result = corto_valueType(val->parent);
         break;
@@ -88,9 +85,6 @@ corto_void* corto_valueValue(corto_value* val) {
         break;
     case CORTO_MEMBER:
         result = val->is.member.v;
-        break;
-    case CORTO_CALL:
-        result = NULL; /* A call has no value */
         break;
     case CORTO_CONSTANT:
         result = val->is.constant.v;
@@ -128,9 +122,6 @@ corto_object corto_valueObject(corto_value* val) {
     case CORTO_MEMBER:
         result = val->is.member.o;
         break;
-    case CORTO_CALL:
-        result = val->is.call.o;
-        break;
     case CORTO_CONSTANT:
         result = val->is.constant.o;
         break;
@@ -161,9 +152,6 @@ corto_function corto_valueFunction(corto_value* val) {
             result = NULL;
         }
         break;
-    case CORTO_CALL:
-        result = val->is.call.t;
-        break;
     default:
        corto_seterr("value does not represent a function");
        result = NULL;
@@ -183,27 +171,6 @@ corto_uint32 corto_valueIndex(corto_value* val) {
         corto_error("cannot obtain index from non-element value");
         break;
     }
-    return result;
-}
-
-corto_void *corto_valueThis(corto_value* val) {
-    corto_void *result;
-
-    switch(val->kind) {
-    case CORTO_CALL:
-        if (val->parent) {
-            result = corto_valueValue(val->parent);
-        } else {
-            corto_critical("valuestack corrupt (cannot obtain this)");
-            result = NULL;
-        }
-        break;
-    default:
-        corto_error("value does not represent a method");
-        result = NULL;
-        break;
-    }
-
     return result;
 }
 
@@ -368,12 +335,6 @@ void corto_valueMemberInit(corto_value* val, corto_object o, corto_member t, cor
     val->is.member.o = o;
     val->is.member.t = t;
     val->is.member.v = v;
-}
-void corto_valueCallInit(corto_value* val, corto_object o, corto_function t) {
-    val->kind = CORTO_CALL;
-    val->parent = NULL;
-    val->is.call.o = o;
-    val->is.call.t = t;
 }
 void corto_valueConstantInit(corto_value* val, corto_object o, corto_constant* t, corto_void* v) {
     val->kind = CORTO_CONSTANT;

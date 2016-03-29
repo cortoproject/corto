@@ -13,7 +13,7 @@ INCLUDE << "include"
 GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
 
-GENERATED_SOURCES << ".corto/_load.c"
+GENERATED_SOURCES << ".corto/_load.#{EXT}"
 GENERATED_HEADERS << "include/_interface.h"
 
 USE_PACKAGE << "corto"
@@ -24,10 +24,14 @@ INCLUDE <<
 
 CLOBBER.include ".corto/#{TARGET}.h"
 
-file ".corto/_load.c" => [".corto/packages.txt"] do
+file ".corto/_load.#{EXT}" => [".corto/packages.txt"] do
     verbose(false)
     sh "mkdir -p .corto"
-    command = "corto pp --name #{TARGET} --attr local=true --attr h=include --attr app=true -g c/project"
+    c4cppStr = ""
+    if LANGUAGE == "c4cpp" then
+        c4cppStr = "--attr c4cpp=true"
+    end
+    command = "corto pp --name #{TARGET} --attr local=true --attr h=include --attr app=true #{c4cppStr} -g c/project"
     begin
         sh command
     rescue
@@ -36,6 +40,6 @@ file ".corto/_load.c" => [".corto/packages.txt"] do
     end
 end
 
-task :prebuild => ".corto/_load.c"
+task :prebuild => ".corto/_load.#{EXT}"
 
 require "#{ENV['CORTO_BUILD']}/artefact"

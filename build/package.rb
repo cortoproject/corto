@@ -51,10 +51,10 @@ if not defined? NOCORTO then
 
         GENFILE = DEFFILES[0]
         GENERATED_SOURCES <<
-            ".corto/_api.c" <<
-            ".corto/_wrapper.c" <<
-            ".corto/_meta.c" <<
-            ".corto/_load.c"
+            ".corto/_api.#{EXT}" <<
+            ".corto/_wrapper.#{EXT}" <<
+            ".corto/_meta.#{EXT}" <<
+            ".corto/_load.#{EXT}"
 
         GENERATED_HEADERS ||= [] <<
             "include/_api.h" <<
@@ -66,7 +66,7 @@ if not defined? NOCORTO then
             verbose(VERBOSE)
             preload = PP_PRELOAD.join(" ")
             sh "mkdir -p .corto"
-            sh "touch .corto/_wrapper.c"
+            sh "touch .corto/_wrapper.#{EXT}"
 
             localStr = ""
             docStr = ""

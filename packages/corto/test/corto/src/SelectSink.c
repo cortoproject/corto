@@ -44,7 +44,7 @@ corto_void _test_SelectSink_tc_selectMixedScope(
 
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -98,7 +98,7 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested1(
 
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -153,7 +153,7 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested2(
 
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/a/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -192,7 +192,7 @@ corto_void _test_SelectSink_tc_selectScope(
 /* $begin(test/SelectSink/tc_selectScope) */
     corto_int16 ret = 0;
     corto_result *result;
-    corto_iter iter = corto_select("/mount", "*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -231,7 +231,7 @@ corto_void _test_SelectSink_tc_selectSingle(
 /* $begin(test/SelectSink/tc_selectSingle) */
     corto_int16 ret = 0;
     corto_result *result;
-    corto_iter iter = corto_select("/mount", "x").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -254,7 +254,7 @@ corto_void _test_SelectSink_tc_selectSingleVirtualNested1(
 /* $begin(test/SelectSink/tc_selectSingleVirtualNested1) */
     corto_int16 ret = 0;
     corto_result *result;
-    corto_iter iter = corto_select("/mount", "x/a").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -283,7 +283,7 @@ corto_void _test_SelectSink_tc_selectSingleVirtualNested2(
 /* $begin(test/SelectSink/tc_selectSingleVirtualNested2) */
     corto_int16 ret = 0;
     corto_result *result;
-    corto_iter iter = corto_select("/mount", "x/a/k").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/k").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -312,7 +312,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeNested1(
     corto_int32CreateChild(mount, "x", 0);
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/a/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -358,7 +358,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeNested2(
     corto_int32CreateChild_auto(x, a, 0);
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/a/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -397,7 +397,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
 /* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested1) */
     corto_int16 ret = 0;
     corto_result *result;
-    corto_iter iter = corto_select("/mount", "x/a/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -436,7 +436,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
 /* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested2) */
     corto_int16 ret = 0;
     corto_result *result;
-    corto_iter iter = corto_select("/mount", "x/a/k/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/k/*").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -480,7 +480,7 @@ corto_void _test_SelectSink_tc_selectVirtualSingleNested1(
     corto_int32CreateChild_auto(mount, x, 0);
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/a").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -508,7 +508,7 @@ corto_void _test_SelectSink_tc_selectVirtualSingleNested2(
     corto_int32CreateChild_auto(mount, x, 0);
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/a/k").iter( ret = 1 );
+    corto_iter iter = corto_select("/mount", "x/a/k").iter( &ret );
 
     test_assert(ret == 0);
 

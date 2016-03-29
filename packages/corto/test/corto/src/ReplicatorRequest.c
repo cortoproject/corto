@@ -31,7 +31,7 @@ corto_void _test_ReplicatorRequest_tc_selectGrandparentFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "../..").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "../..").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -54,7 +54,7 @@ corto_void _test_ReplicatorRequest_tc_selectParentFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "..").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "..").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -77,7 +77,7 @@ corto_void _test_ReplicatorRequest_tc_selectParentFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "..").iter(ret = 1);
+    corto_iter iter = corto_select("/a/xyz", "..").iter(&ret);
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -99,7 +99,7 @@ corto_void _test_ReplicatorRequest_tc_selectScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/", "a/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -138,7 +138,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilter(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/", "a/*z").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/*z").iter( &ret );
 
     test_assert(ret == 0);
 
@@ -170,7 +170,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "*z").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "*z").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -201,7 +201,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "*c").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "*c").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -232,7 +232,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "*").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -271,7 +271,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "*").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -317,7 +317,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
     corto_voidCreateChild(a, "abc");
     corto_release(a);
 
-    corto_iter iter = corto_select("/", "a/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -380,7 +380,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNested(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/", "a/xyz/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/xyz/*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -419,7 +419,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/", "a/../a/./xyz/./*").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/../a/./xyz/./*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -458,7 +458,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "../a/./xyz/./*").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "../a/./xyz/./*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -497,7 +497,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "../../a/../a/./xyz/./abc/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "../../a/../a/./xyz/./abc/*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -528,7 +528,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "xyz/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "xyz/*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -567,7 +567,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "abc/*").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "abc/*").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -598,7 +598,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingle(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/", "a/xyz").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/xyz").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -621,7 +621,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "xyz").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "xyz").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -644,7 +644,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "bc").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "bc").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -667,7 +667,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNested(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/", "a/xyz/abc").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "a/xyz/abc").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -690,7 +690,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a", "xyz/bc").iter( ret = 1 );
+    corto_iter iter = corto_select("/a", "xyz/bc").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -713,7 +713,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz", "abc/foo").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz", "abc/foo").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -736,7 +736,7 @@ corto_void _test_ReplicatorRequest_tc_selectVirtualGrandparentFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz/abc/foo", "../..").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz/abc/foo", "../..").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -759,7 +759,7 @@ corto_void _test_ReplicatorRequest_tc_selectVirtualParentFromVirtualScope(
     corto_result *result;
     corto_int16 ret = 0;
 
-    corto_iter iter = corto_select("/a/xyz/abc/foo", "..").iter( ret = 1 );
+    corto_iter iter = corto_select("/a/xyz/abc/foo", "..").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));

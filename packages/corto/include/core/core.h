@@ -20,11 +20,11 @@ extern "C" {
 #include "corto/core/dispatcher.h"
 #include "corto/core/event.h"
 #include "corto/core/invokeEvent.h"
+#include "corto/core/loader.h"
 #include "corto/core/notifyAction.h"
 #include "corto/core/observableEvent.h"
 #include "corto/core/observer.h"
 #include "corto/core/package.h"
-#include "corto/core/loader.h"
 #include "corto/core/position.h"
 #include "corto/core/replicator.h"
 #include "corto/core/request.h"
@@ -35,3 +35,4 @@ extern "C" {
 }
 #endif
 #endif
+

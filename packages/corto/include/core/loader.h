@@ -3,8 +3,8 @@
  * This file contains generated code. Do not modify!
  */
 
-#ifndef CORTO_CORE_PACKAGES_H
-#define CORTO_CORE_PACKAGES_H
+#ifndef CORTO_CORE_LOADER_H
+#define CORTO_CORE_LOADER_H
 
 #include "corto/corto.h"
 #include "corto/core/_type.h"
@@ -53,3 +53,4 @@ CORTO_EXPORT corto_object _corto_loader_onResume_v(
 }
 #endif
 #endif
+

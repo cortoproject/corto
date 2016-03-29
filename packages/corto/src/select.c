@@ -1427,13 +1427,19 @@ static corto_selectSelector corto_selectorAugment(
     return corto_selectSelectorGet();
 }
 
-static corto_resultIter corto_selectorIter(void)
+static corto_resultIter corto_selectorIter(corto_int16 *ret)
 {
     corto_resultIter result;
+
+    if (ret) *ret = 0;
+
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_SELECT);
     if (request) {
         result = corto_selectPrepareIterator(request);
+        if (request->err && ret) {
+            *ret = -1;
+        }
     }
     return result;
 }
@@ -1444,7 +1450,7 @@ static corto_selectSelector corto_selectSelectorGet(void)
     result.contentType = corto_selectorContentType;
     result.limit = corto_selectorLimit;
     result.augment = corto_selectorAugment;
-    result._iter = corto_selectorIter;
+    result.iter = corto_selectorIter;
     return result;
 }
 

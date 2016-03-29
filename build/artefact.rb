@@ -299,16 +299,16 @@ task :gcov => SOURCES.ext(".gcov") do
 end
 
 # Rules for generated files
-rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '_meta.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_meta.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '_wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '_load.o' => ->(t){t.pathmap(".corto/%f").ext(".c")} do |task|
+rule '_load.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
     build_source(task.source, task.name, false)
 end
 

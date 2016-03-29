@@ -21,13 +21,13 @@ extern "C" {
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
+#define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
 #define corto_observerseq(o) ((corto_observerseq*)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
-#define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
 #define corto_replicatorKind(o) ((corto_replicatorKind*)corto_assertType((corto_type)corto_replicatorKind_o, o))
@@ -118,6 +118,13 @@ CORTO_CLASS_DEF(corto_invokeEvent) {
     corto_octetseq args;
 };
 
+/*  /corto/core/loader */
+CORTO_CLASS(corto_loader);
+
+CORTO_CLASS_DEF(corto_loader) {
+    CORTO_EXTEND(corto_replicator);
+};
+
 /*  /corto/core/notifyAction */
 typedef struct corto_notifyAction corto_notifyAction;
 
@@ -196,13 +203,6 @@ CORTO_CLASS_DEF(corto_package) {
     corto_string url;
 };
 
-/*  /corto/core/loader */
-CORTO_CLASS(corto_loader);
-
-CORTO_CLASS_DEF(corto_loader) {
-    CORTO_EXTEND(corto_replicator);
-};
-
 /*  /corto/core/position */
 typedef struct corto_position corto_position;
 
@@ -251,3 +251,4 @@ struct corto_time {
 }
 #endif
 #endif
+

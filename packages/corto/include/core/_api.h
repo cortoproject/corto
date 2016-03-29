@@ -240,6 +240,32 @@ CORTO_EXPORT corto_invokeEvent corto_invokeEventFromStr(corto_invokeEvent value,
 CORTO_EXPORT corto_int16 _corto_invokeEventCompare(corto_invokeEvent dst, corto_invokeEvent src);
 #define corto_invokeEventCompare(dst, src) _corto_invokeEventCompare(corto_invokeEvent(dst), corto_invokeEvent(src))
 
+/* /corto/core/loader */
+CORTO_EXPORT corto_loader _corto_loaderCreate(void);
+#define corto_loaderCreate() _corto_loaderCreate()
+#define corto_loaderCreate_auto(_name) corto_loader _name = corto_loaderCreate(); (void)_name
+CORTO_EXPORT corto_loader _corto_loaderCreateChild(corto_object _parent, corto_string _name);
+#define corto_loaderCreateChild(_parent, _name) _corto_loaderCreateChild(_parent, _name)
+#define corto_loaderCreateChild_auto(_parent, _name) corto_loader _name = corto_loaderCreateChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_loaderUpdate(corto_loader _this);
+#define corto_loaderUpdate(_this) _corto_loaderUpdate(corto_loader(_this))
+
+CORTO_EXPORT corto_loader _corto_loaderDeclare(void);
+#define corto_loaderDeclare() _corto_loaderDeclare()
+#define corto_loaderDeclare_auto(_name) corto_loader _name = corto_loaderDeclare(); (void)_name
+CORTO_EXPORT corto_loader _corto_loaderDeclareChild(corto_object _parent, corto_string _name);
+#define corto_loaderDeclareChild(_parent, _name) _corto_loaderDeclareChild(_parent, _name)
+#define corto_loaderDeclareChild_auto(_parent, _name) corto_loader _name = corto_loaderDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_loaderDefine(corto_loader _this);
+#define corto_loaderDefine(_this) _corto_loaderDefine(corto_loader(_this))
+CORTO_EXPORT void _corto_loaderSet(corto_loader _this);
+#define corto_loaderSet(_this) _corto_loaderSet(corto_loader(_this))
+CORTO_EXPORT corto_string _corto_loaderStr(corto_loader value);
+#define corto_loaderStr(value) _corto_loaderStr(corto_loader(value))
+CORTO_EXPORT corto_loader corto_loaderFromStr(corto_loader value, corto_string str);
+CORTO_EXPORT corto_int16 _corto_loaderCompare(corto_loader dst, corto_loader src);
+#define corto_loaderCompare(dst, src) _corto_loaderCompare(corto_loader(dst), corto_loader(src))
+
 /* /corto/core/notifyAction */
 CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure);
 #define corto_notifyActionCreate(instance, procedure) _corto_notifyActionCreate(instance, corto_function(procedure))
@@ -412,32 +438,6 @@ CORTO_EXPORT corto_string _corto_packageStr(corto_package value);
 CORTO_EXPORT corto_package corto_packageFromStr(corto_package value, corto_string str);
 CORTO_EXPORT corto_int16 _corto_packageCompare(corto_package dst, corto_package src);
 #define corto_packageCompare(dst, src) _corto_packageCompare(corto_package(dst), corto_package(src))
-
-/* /corto/core/loader */
-CORTO_EXPORT corto_loader _corto_loaderCreate(void);
-#define corto_loaderCreate() _corto_loaderCreate()
-#define corto_loaderCreate_auto(_name) corto_loader _name = corto_loaderCreate(); (void)_name
-CORTO_EXPORT corto_loader _corto_loaderCreateChild(corto_object _parent, corto_string _name);
-#define corto_loaderCreateChild(_parent, _name) _corto_loaderCreateChild(_parent, _name)
-#define corto_loaderCreateChild_auto(_parent, _name) corto_loader _name = corto_loaderCreateChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_loaderUpdate(corto_loader _this);
-#define corto_loaderUpdate(_this) _corto_loaderUpdate(corto_loader(_this))
-
-CORTO_EXPORT corto_loader _corto_loaderDeclare(void);
-#define corto_loaderDeclare() _corto_loaderDeclare()
-#define corto_loaderDeclare_auto(_name) corto_loader _name = corto_loaderDeclare(); (void)_name
-CORTO_EXPORT corto_loader _corto_loaderDeclareChild(corto_object _parent, corto_string _name);
-#define corto_loaderDeclareChild(_parent, _name) _corto_loaderDeclareChild(_parent, _name)
-#define corto_loaderDeclareChild_auto(_parent, _name) corto_loader _name = corto_loaderDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_loaderDefine(corto_loader _this);
-#define corto_loaderDefine(_this) _corto_loaderDefine(corto_loader(_this))
-CORTO_EXPORT void _corto_loaderSet(corto_loader _this);
-#define corto_loaderSet(_this) _corto_loaderSet(corto_loader(_this))
-CORTO_EXPORT corto_string _corto_loaderStr(corto_loader value);
-#define corto_loaderStr(value) _corto_loaderStr(corto_loader(value))
-CORTO_EXPORT corto_loader corto_loaderFromStr(corto_loader value, corto_string str);
-CORTO_EXPORT corto_int16 _corto_loaderCompare(corto_loader dst, corto_loader src);
-#define corto_loaderCompare(dst, src) _corto_loaderCompare(corto_loader(dst), corto_loader(src))
 
 /* /corto/core/position */
 CORTO_EXPORT corto_position* _corto_positionCreate(corto_float64 latitude, corto_float64 longitude);
@@ -722,3 +722,4 @@ CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 }
 #endif
 #endif
+

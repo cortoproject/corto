@@ -48,6 +48,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
     fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
 
     /* Build libraries to global environment */
+    fprintf(install, "rake clean 2> /dev/null\n");
     fprintf(install, "rake silent=%s verbose=%s coverage=false\n",
         verbose ? "false" : "true",
         verbose ? "true" : "false");
@@ -123,9 +124,21 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     CORTO_UNUSED(argc);
     CORTO_UNUSED(argv);
     corto_bool installRemote = FALSE;
+    corto_ll verbose = NULL, dirs = NULL;
 
-    if (argc > 1) {
-        if (strchr(argv[1], ':') || corto_chdir(argv[1])) {
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'install' */
+        {"--verbose", &verbose, NULL},
+        {"$*", &dirs, NULL},
+        {NULL}
+      }
+    );
+
+    if (dirs && corto_llSize(dirs)) {
+        corto_string dir = corto_llGet(dirs, 0);
+        if (strchr(dir, ':') || corto_chdir(dir)) {
             installRemote = TRUE;
         } else {
             if (!cortotool_validProject()) {
@@ -135,7 +148,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     }
 
     if (!installRemote) {
-        if (cortotool_installFromSource(FALSE)) {
+        if (cortotool_installFromSource(verbose ? TRUE : FALSE)) {
             goto error;
         }
     } else {
@@ -172,6 +185,8 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         corto_rm("install.sh");
         printf("\bdone!\n");
     }
+
+    corto_argclean(data);
 
     return 0;
 error:

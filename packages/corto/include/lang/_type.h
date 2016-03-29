@@ -14,6 +14,7 @@ extern "C" {
 
 /* Casting macro's for classes */
 #define corto_alias(o) ((corto_alias)corto_assertType((corto_type)corto_alias_o, o))
+#define corto_any(o) ((corto_any*)corto_assertType((corto_type)corto_any_o, o))
 #define corto_array(o) ((corto_array)corto_assertType((corto_type)corto_array_o, o))
 #define corto_binary(o) ((corto_binary)corto_assertType((corto_type)corto_binary_o, o))
 #define corto_bitmask(o) ((corto_bitmask)corto_assertType((corto_type)corto_bitmask_o, o))
@@ -52,6 +53,7 @@ extern "C" {
 #define corto_metaprocedure(o) ((corto_metaprocedure)corto_assertType((corto_type)corto_metaprocedure_o, o))
 #define corto_method(o) ((corto_method)corto_assertType((corto_type)corto_method_o, o))
 #define corto_modifier(o) ((corto_modifier*)corto_assertType((corto_type)corto_modifier_o, o))
+#define corto_object(o) ((corto_object)corto_assertType((corto_type)corto_object_o, o))
 #define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
 #define corto_octet(o) ((corto_octet*)corto_assertType((corto_type)corto_octet_o, o))
 #define corto_octetseq(o) ((corto_octetseq*)corto_assertType((corto_type)corto_octetseq_o, o))
@@ -74,6 +76,7 @@ extern "C" {
 #define corto_uint64(o) ((corto_uint64*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_uint8(o) ((corto_uint8*)corto_assertType((corto_type)corto_uint8_o, o))
 #define corto_virtual(o) ((corto_virtual)corto_assertType((corto_type)corto_virtual_o, o))
+#define corto_void(o) ((corto_void*)corto_assertType((corto_type)corto_void_o, o))
 #define corto_vtable(o) ((corto_vtable*)corto_assertType((corto_type)corto_vtable_o, o))
 #define corto_width(o) ((corto_width*)corto_assertType((corto_type)corto_width_o, o))
 #define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))

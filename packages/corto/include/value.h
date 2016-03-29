@@ -20,10 +20,9 @@ typedef enum corto_valueKind {
     CORTO_VALUE = 2,
     CORTO_LITERAL = 3,
     CORTO_MEMBER = 4,
-    CORTO_CALL = 5,
-    CORTO_ELEMENT = 6,
-    CORTO_MAP_ELEMENT = 7,
-    CORTO_CONSTANT = 8/* must be last */
+    CORTO_ELEMENT = 5,
+    CORTO_MAP_ELEMENT = 6,
+    CORTO_CONSTANT = 7/* must be last */
 }corto_valueKind;
 
 typedef enum corto_literalKind {
@@ -77,10 +76,6 @@ struct corto_value {
         } member;
         struct {
             corto_object o;
-            corto_function t;
-        } call;
-        struct {
-            corto_object o;
             corto_constant* t;
             corto_void* v;
         } constant;
@@ -110,8 +105,6 @@ corto_type corto_valueType(corto_value* val);
 corto_void* corto_valueValue(corto_value* val);
 corto_object corto_valueObject(corto_value* val);
 corto_uint32 corto_valueIndex(corto_value* val);
-corto_function corto_valueFunction(corto_value* val);
-corto_void *corto_valueThis(corto_value* val);
 char* corto_strving(corto_value* val, char* buffer, unsigned int length);
 char* corto_valueExpr(corto_value* val, char* buffer, unsigned int length);
 void corto_valueFree(corto_value* val);
@@ -122,7 +115,6 @@ void corto_valueObjectInit(corto_value* val, corto_object o, corto_type t);
 void corto_valueBaseInit(corto_value* val, corto_void *v, corto_type t);
 void corto_valueValueInit(corto_value* val, corto_object o, corto_type t, corto_void* v);
 void corto_valueMemberInit(corto_value* val, corto_object o, corto_member t, corto_void* v);
-void corto_valueCallInit(corto_value* val, corto_object o, corto_function t);
 void corto_valueConstantInit(corto_value* val, corto_object o, corto_constant* c, corto_void* v);
 void corto_valueElementInit(corto_value* val, corto_object o, corto_type t, corto_uint32 index, corto_void* v);
 void corto_valueMapElementInit(corto_value* val, corto_object o, corto_type t, corto_type keyType, corto_void *key, corto_void* v);

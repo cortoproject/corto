@@ -83,3 +83,10 @@ CXX ||= if ENV['CXX'].nil? or ENV['CXX'].empty?
 else
   ENV['CXX']
 end
+
+# Set default extension
+EXT = if LANGUAGE == "c" then
+  "c"
+else
+  "cpp"
+end

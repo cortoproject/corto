@@ -44,7 +44,7 @@ corto_void _test_SelectContentType_tc_selectJsonFromJson(
     corto_result *result;
     corto_string json;
 
-    corto_iter iter = corto_select("/", "/json/*").contentType("text/json").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "/json/*").contentType("text/json").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -92,7 +92,7 @@ corto_void _test_SelectContentType_tc_selectJsonFromObjects(
     corto_result *result;
     corto_string json;
 
-    iter = corto_select("/", "/obj/*").contentType("text/json").iter( ret = 1 );
+    iter = corto_select("/", "/obj/*").contentType("text/json").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -139,7 +139,7 @@ corto_void _test_SelectContentType_tc_selectJsonFromString(
     corto_result *result;
     corto_string json;
 
-    corto_iter iter = corto_select("/", "/str/*").contentType("text/json").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "/str/*").contentType("text/json").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -186,7 +186,7 @@ corto_void _test_SelectContentType_tc_selectStringFromJson(
     corto_result *result;
     corto_string str;
 
-    corto_iter iter = corto_select("/", "/json/*").contentType("text/corto").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "/json/*").contentType("text/corto").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -233,7 +233,7 @@ corto_void _test_SelectContentType_tc_selectStringFromObjects(
     corto_result *result;
     corto_string str;
 
-    corto_iter iter = corto_select("/", "/obj/*").contentType("text/corto").iter( ret = 1 );
+    corto_iter iter = corto_select("/", "/obj/*").contentType("text/corto").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -281,7 +281,7 @@ corto_void _test_SelectContentType_tc_selectStringFromString(
     corto_result *result;
     corto_string str;
 
-    iter = corto_select("/", "/str/*").contentType("text/corto").iter( ret = 1 );
+    iter = corto_select("/", "/str/*").contentType("text/corto").iter( &ret );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));

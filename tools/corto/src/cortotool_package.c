@@ -5,14 +5,14 @@
 #define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
 
 static corto_string cortotool_lookupPackage(corto_string str) {
-    corto_object p = corto_resolve(NULL, str);
     corto_string package = NULL;
     static corto_loader l;
-
     if (!l) {
         /* This will leak, but at least it'll leak only once */
         l = corto_loaderCreate();
     }
+    
+    corto_object p = corto_resolve(NULL, str);
 
     if (!p) {
         if (!corto_locate(str, CORTO_LOCATION_LIB)) {
