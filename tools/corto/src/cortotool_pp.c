@@ -30,6 +30,7 @@ corto_int16 cortotool_language(char *language) {
         corto_llAppend(generators, "c/load");
         corto_llAppend(generators, "c/api");
         corto_llAppend(attributes, "c=src");
+        corto_llAppend(attributes, "cpp=src");
         corto_llAppend(attributes, "h=include");
         corto_llAppend(attributes, "c4cpp=true");
     } else if (!strcmp(language, "cpp")) {
