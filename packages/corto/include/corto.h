@@ -18,6 +18,7 @@ extern "C" {
 
 #include "corto/arg.h"
 #include "corto/async.h"
+#include "corto/buffer.h"
 #include "corto/call.h"
 #include "corto/compare_ser.h"
 #include "corto/convert.h"
@@ -75,4 +76,3 @@ extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 }
 #endif
 #endif
-

@@ -1561,14 +1561,12 @@ corto_object _corto_assertType(corto_type type, corto_object o) {
 }
 
 corto_bool _corto_instanceof(corto_type type, corto_object o) {
-    corto_type objectType = corto_typeof(o);
+    corto_type t = corto_typeof(o);
     corto_bool result = TRUE;
 
-    if (type != objectType) {
-        corto_type t;
+    if (type != t) {
 
         result = FALSE;
-        t = corto_typeof(o);
 
         if (t->kind == type->kind) {
             switch(type->kind) {
@@ -1609,6 +1607,12 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
                 break;
             default:
                 break;
+            }
+        } else {
+            if ((type->kind == CORTO_VOID) && (type->reference)) {
+                if (t->reference) {
+                    result = TRUE;
+                }
             }
         }
     }
@@ -4098,9 +4102,9 @@ void corto_setstr(corto_string* ptr, corto_string value) {
 corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     corto_string_ser_t serData;
     struct corto_serializer_s s;
-    serData.buffer = NULL;
-    serData.length = 0;
-    serData.maxlength = maxLength;
+    serData.buffer.str = NULL;
+    serData.buffer.len = 0;
+    serData.buffer.max = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
     serData.enableColors = FALSE;
@@ -4108,15 +4112,15 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
     corto_serialize(&s, object, &serData);
 
-    return serData.buffer;
+    return serData.buffer.str;
 }
 
 corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     corto_string_ser_t serData;
     struct corto_serializer_s s;
-    serData.buffer = NULL;
-    serData.length = 0;
-    serData.maxlength = maxLength;
+    serData.buffer.str = NULL;
+    serData.buffer.len = 0;
+    serData.buffer.max = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
     serData.enableColors = FALSE;
@@ -4124,7 +4128,7 @@ corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
     corto_serializeValue(&s, v, &serData);
 
-    return serData.buffer;
+    return serData.buffer.str;
 }
 
 corto_string _corto_strp(void *p, corto_type type, corto_uint32 maxLength) {

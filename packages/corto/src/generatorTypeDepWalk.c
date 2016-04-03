@@ -143,9 +143,11 @@ static int corto_genTypeAnyDependencies(corto_type t, corto_genTypeWalk_t* data)
 
     if (!decl->printed) {
         /* Print forward declaration */
-        if (g_mustParse(data->g, corto_type_o) &&
-            data->onDeclare(corto_type_o, data->userData)) {
-            goto error;
+        if (data->onDeclare) {
+            if (g_mustParse(data->g, corto_type_o) &&
+                data->onDeclare(corto_type_o, data->userData)) {
+                goto error;
+            }
         }
         decl->printed = TRUE;
     }
@@ -207,8 +209,10 @@ static int corto_genTypeInterfaceDependencies(corto_interface t, corto_bool allo
 
             if (!decl->printed && g_mustParse(data->g, m->type)) {
                 /* Print forward declaration */
-                if (data->onDeclare(m->type, data->userData)) {
-                    goto error;
+                if (data->onDeclare) {
+                    if (data->onDeclare(m->type, data->userData)) {
+                        goto error;
+                    }
                 }
                 decl->printed = TRUE;
             }
@@ -375,8 +379,16 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
     }
 
     /* If object is procedure, parse dependencies, but do not declare\define. */
-    if (corto_class_instanceof(corto_procedure_o, corto_typeof(o))) {
+    if (corto_instanceof(corto_procedure_o, corto_typeof(o))) {
         corto_genTypeProcedureDependencies(corto_function(o), data);
+    } else if (!corto_instanceof(corto_type_o, o)) {
+        /* If an object is found that is not a type or procedure, check if the
+         * object has an anonymous type */
+        if (!corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+            if (corto_genTypeParse(corto_typeof(o), TRUE, NULL, data)) {
+                goto error;
+            }
+        }
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
     if (!corto_checkState(o, CORTO_DEFINED)) {
@@ -409,8 +421,10 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
                     /* Print forward declaration */
                     if (!decl->printed && g_mustParse(data->g, o)) {
                         /* Write end-of-line and comment with name before each definition */
-                        if (data->onDeclare(o, data->userData)) {
-                            goto error;
+                        if (data->onDeclare) {
+                            if (data->onDeclare(o, data->userData)) {
+                                goto error;
+                            }
                         }
                         decl->printed = TRUE;
                     }
@@ -438,17 +452,27 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
                     /* If an typedef object equals it's real pointer, than it's the type itself. Otherwise it
                      * is a typedef. */
                     if (corto_type(o) != o) {
-                        if (data->onDefine(o, data->userData)) goto error;
+                        if (data->onDefine) {
+                            if (data->onDefine(o, data->userData)) goto error;
+                        }
                     } else {
                         switch(corto_type(o)->kind) {
                         case CORTO_COMPOSITE:
                             /* Composite types must be forward-declared */
                             if (!decl->printed) {
-                                if (data->onDeclare(o, data->userData)) goto error;
+                                if (data->onDeclare) {
+                                    if (data->onDeclare(o, data->userData)) {
+                                        goto error;
+                                    }
+                                }
                             }
                             /* no break */
                         default:
-                            if (data->onDefine(o, data->userData)) goto error;
+                            if (data->onDefine) {
+                                if (data->onDefine(o, data->userData)) {
+                                    goto error;
+                                }
+                            }
                             break;
                         }
                     }

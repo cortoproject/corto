@@ -17,9 +17,7 @@ extern "C" {
 /* String serializer data */
 typedef struct corto_string_ser_t {
     /* Public */
-    char* buffer;
-    unsigned int length;
-    unsigned int maxlength;
+    corto_buffer buffer;
     corto_bool prefixType;
     corto_bool enableColors;
 

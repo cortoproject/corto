@@ -448,14 +448,14 @@ static int cxsh_show(char* object) {
 
         /* Serialize value to string */
         corto_serializeValue(&s, &result, &sdata);
-        if (sdata.buffer) {
+        if (sdata.buffer.str) {
             if (o) {
                 printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
             }
-            printf("%s\n", sdata.buffer);
+            printf("%s\n", sdata.buffer.str);
 
-            corto_dealloc(sdata.buffer);
-            sdata.buffer = NULL;
+            corto_dealloc(sdata.buffer.str);
+            sdata.buffer.str = NULL;
             sdata.ptr = NULL;
         }
 
@@ -465,9 +465,9 @@ static int cxsh_show(char* object) {
                 s.accessKind = CORTO_NOT;
                 s.aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
                 corto_metaWalk(&s, o, &sdata);
-                if (sdata.buffer) {
-                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer);
-                    corto_dealloc(sdata.buffer);
+                if (sdata.buffer.str) {
+                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer.str);
+                    corto_dealloc(sdata.buffer.str);
                 }
             }
             printf("\n");

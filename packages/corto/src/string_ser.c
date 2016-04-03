@@ -30,70 +30,11 @@
 
 static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* userData);
 
-static corto_bool corto_ser_appendstrbuff(corto_string_ser_t* data, char* str) {
-    if (!data->ptr) {
-        data->ptr = data->buffer;
-    }
-    if (!data->ptr) {
-        data->buffer = corto_strdup(str);
-        data->ptr = data->buffer;
-    } else {
-        corto_uint32 length, bufferLength;
-
-        if (!data->length) {
-            data->buffer = corto_realloc(data->buffer, strlen(data->buffer) + strlen(str) + 1);
-            data->ptr = data->buffer;
-        }
-
-        length = strlen(str);
-        bufferLength = strlen(data->buffer);
-
-        if (data->maxlength && ((bufferLength + length) >= data->maxlength)) {
-            strncat(data->ptr, str, data->maxlength - bufferLength);
-            goto maxreached;
-        } else {
-            strcat(data->ptr, str);
-        }
-    }
-
-    return TRUE;
-maxreached:
-    return FALSE;
-}
-
-/* Append string to serializer-result */
-static corto_bool corto_ser_appendstr(corto_string_ser_t* data, corto_string fmt, ...) {
-    char alloc[1024];
-    char *buff = alloc;
-    va_list args;
-    corto_uint32 memRequired;
-    corto_uint32 result = TRUE;
-
-    if (data) {
-        va_start(args, fmt);
-        memRequired = vsnprintf(buff, 1024, fmt, args);
-        if (memRequired >= 1024) {
-            va_end(args);
-            va_start(args, fmt);
-            buff = corto_alloc(memRequired + 1);
-            vsprintf(buff, fmt, args);
-        }
-        va_end(args);
-
-        result = corto_ser_appendstrbuff(data, buff);
-        if (buff != alloc) {
-            corto_dealloc(buff);
-        }
-    }
-
-    return result;
-}
-
 /* Insert color if enabled */
 static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string color) {
     corto_bool result = TRUE;
     if (data->enableColors) {
-        result = corto_ser_appendstr(data, color);
+        result = corto_buffer_append(&data->buffer, color);
     }
     return result;
 }
@@ -107,7 +48,7 @@ static corto_int16 corto_ser_any(corto_serializer s, corto_value* v, void* userD
     corto_value anyValue;
     corto_valueValueInit(&anyValue, NULL, this->type, this->value);
 
-    if (!corto_ser_appendstr(data, "{%s,", corto_fullpath(id, this->type))) {
+    if (!corto_buffer_append(&data->buffer, "{%s,", corto_fullpath(id, this->type))) {
         goto finished;
     }
 
@@ -115,7 +56,7 @@ static corto_int16 corto_ser_any(corto_serializer s, corto_value* v, void* userD
         return result;
     }
 
-    if (!corto_ser_appendstr(data, "}")) {
+    if (!corto_buffer_append(&data->buffer, "}")) {
         goto finished;
     }
 
@@ -142,11 +83,11 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
     if (corto_primitive(t)->kind == CORTO_TEXT) {
         corto_ser_appendColor(data, STRING);
         if (*(corto_string*)o) {
-            if (!corto_ser_appendstr(data, "\"%s\"", *(corto_string*)o)) {
+            if (!corto_buffer_append(&data->buffer, "\"%s\"", *(corto_string*)o)) {
                 goto finished;
             }
         } else {
-            if (!corto_ser_appendstr(data, "null")) {
+            if (!corto_buffer_append(&data->buffer, "null")) {
                 goto finished;
             }
         }
@@ -154,11 +95,11 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
     } else if (corto_primitive(t)->kind == CORTO_CHARACTER) {
         corto_ser_appendColor(data, STRING);
         if (*(corto_char*)o) {
-            if (!corto_ser_appendstr(data, "'%c'", *(corto_char*)o)) {
+            if (!corto_buffer_append(&data->buffer, "'%c'", *(corto_char*)o)) {
                 goto finished;
             }
         } else {
-            if (!corto_ser_appendstr(data, "''")) {
+            if (!corto_buffer_append(&data->buffer, "''")) {
                 goto finished;
             }
         }
@@ -185,7 +126,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
         corto_convert(corto_primitive(t), o, corto_primitive(corto_string_o), &result);
 
         /* Append conversionresult to serializer-result*/
-        if (!corto_ser_appendstr(data, "%s", result)) {
+        if (!corto_buffer_append(&data->buffer, "%s", result)) {
             corto_dealloc(result);
             goto finished;
         }
@@ -234,9 +175,9 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
             } else {
                 corto_value v;
 
-                walkData.buffer = NULL;
-                walkData.length = 0;
-                walkData.maxlength = data->maxlength;
+                walkData.buffer.str = NULL;
+                walkData.buffer.len = 0;
+                walkData.buffer.max = data->buffer.max;
                 walkData.compactNotation = data->compactNotation;
                 walkData.ptr = NULL;
                 walkData.prefixType = TRUE;
@@ -244,7 +185,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 walkData.enableColors = data->enableColors;
 
                 corto_llAppend(data->anonymousObjects, object);
-                corto_ser_appendstr(userData, "<%d>", corto_llSize(data->anonymousObjects));
+                corto_buffer_append(&data->buffer, "<%d>", corto_llSize(data->anonymousObjects));
 
                 corto_valueObjectInit(&v, object, NULL);
                 if (corto_ser_object(s, &v, &walkData)) {
@@ -252,7 +193,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 }
 
                 data->anonymousObjects = walkData.anonymousObjects;
-                str = walkData.buffer;
+                str = walkData.buffer.str;
             }
         }
     } else {
@@ -260,7 +201,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     }
 
     /* Append name to serializer-result */
-    if (!corto_ser_appendstrbuff(userData, str)) {
+    if (!corto_buffer_append(&data->buffer, "%s", str)) {
         goto finished;
     }
     corto_ser_appendColor(data, NORMAL);
@@ -288,7 +229,7 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
 
     /* Serialize composite members */
     if (!corto_ser_appendColor(&privateData, BOLD)) goto finished;
-    if (!corto_ser_appendstr(&privateData, "{")) {
+    if (!corto_buffer_append(&privateData.buffer, "{")) {
         goto finished;
     }
     if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
@@ -301,7 +242,7 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     }
     if (!result) {
         if (!corto_ser_appendColor(&privateData, BOLD)) goto finished;
-        if (!corto_ser_appendstr(&privateData, "}")) {
+        if (!corto_buffer_append(&privateData.buffer, "}")) {
             goto finished;
         }
         if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
@@ -324,11 +265,11 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
     /* Append ',' if this is not the first item */
     if (data->itemCount) {
         if (!data->compactNotation) {
-            if (!corto_ser_appendstr(data, " ")) {
+            if (!corto_buffer_append(&data->buffer, " ")) {
                 goto finished;
             }
         } else {
-            if (!corto_ser_appendstr(data, ",")) {
+            if (!corto_buffer_append(&data->buffer, ",")) {
                 goto finished;
             }
         }
@@ -337,9 +278,9 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
     if (!data->compactNotation) {
         if (v->kind == CORTO_MEMBER) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
-            if (!corto_ser_appendstr(data, "%s", corto_nameof(v->is.member.t))) goto finished;
+            if (!corto_buffer_append(&data->buffer, "%s", corto_nameof(v->is.member.t))) goto finished;
             if (!corto_ser_appendColor(data, BOLD)) goto finished;
-            if (!corto_ser_appendstr(data, "=")) goto finished;
+            if (!corto_buffer_append(&data->buffer, "=")) goto finished;
             if (!corto_ser_appendColor(data, NORMAL)) goto finished;
         }
     }
@@ -377,26 +318,26 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
         }
 
         if (corto_typeof(o)->kind != CORTO_PRIMITIVE) {
-            if (data->buffer) {
-                result = corto_alloc(strlen(data->buffer) + strlen(id) + 1);
-                sprintf(result, "%s%s", id, data->buffer);
+            if (data->buffer.str) {
+                result = corto_alloc(strlen(data->buffer.str) + strlen(id) + 1);
+                sprintf(result, "%s%s", id, data->buffer.str);
             } else {
                 result = corto_strdup(id);
             }
         } else {
-            if (data->buffer) {
-                result = corto_alloc(strlen(data->buffer) + strlen(id) + 2 + 1);
-                sprintf(result, "%s{%s}", id, data->buffer);
+            if (data->buffer.str) {
+                result = corto_alloc(strlen(data->buffer.str) + strlen(id) + 2 + 1);
+                sprintf(result, "%s{%s}", id, data->buffer.str);
             } else {
                 corto_critical("failed to serialize value to string");
             }
         }
 
-        if (!data->length) {
-            corto_dealloc(data->buffer); /* Serializer manages memory of buffer */
-            data->buffer = result;
+        if (!data->buffer.len) {
+            corto_dealloc(data->buffer.str); /* Serializer manages memory of buffer */
+            data->buffer.str = result;
         } else { /* Application  manages memory of buffer */
-            strcpy(data->buffer, result);
+            strcpy(data->buffer.str, result);
             corto_dealloc(result);
         }
     }
@@ -409,12 +350,11 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
     CORTO_UNUSED(info);
 
     corto_string_ser_t* data = userData;
-    data->ptr = data->buffer;
     data->itemCount = 0;
     data->anonymousObjects = NULL;
-    if (data->buffer) {
-        *(data->buffer) = '\0';
-        if (!data->length) {
+    if (data->buffer.str) {
+        *(data->buffer.str) = '\0';
+        if (!data->buffer.len) {
             corto_error("buffer set without a length in string serializer");
             goto error;
         }
