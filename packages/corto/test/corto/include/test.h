@@ -12,6 +12,8 @@
 #include "_meta.h"
 #include "_interface.h"
 
+#include "corto/test/test.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -148,7 +150,6 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include "StringReplicator.h"
 #include "StringSerializer.h"
 #include "VoidParent.h"
-#include "corto/test/test.h"
 
 #ifdef __cplusplus
 }

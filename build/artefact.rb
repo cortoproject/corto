@@ -338,7 +338,7 @@ rule '.o' => ->(t) {
 end
 
 # Rule for creating a gcov file
-rule '.gcov' => ->(t){t.ext(".c")} do |task|
+rule '.gcov' => ->(t){t.ext(".#{EXT}")} do |task|
   if File.basename(task.name)[0] != "_" then
     gcov_dir = File.dirname(task.source.pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p"))
     begin
@@ -348,14 +348,6 @@ rule '.gcov' => ->(t){t.ext(".c")} do |task|
       lines = data.split(" ")[3].to_i
       covered += (pct) * lines
       total += lines
-
-      if (pct < 0.7) then
-        #print "#{task.source}:#{C_FAIL} #{"%.2f" % (pct*100)}%#{C_NORMAL}#{C_BOLD}#{C_NORMAL} of #{lines}\n"
-      elsif (pct > 0.8) then
-        #print "#{task.source}:#{C_OK} #{"%.2f" % (pct*100)}%#{C_NORMAL}#{C_BOLD}#{C_NORMAL} of #{lines}\n"
-      else
-        #print "#{task.source}:#{C_NORMAL} #{"%.2f" % (pct*100)}%#{C_NORMAL}#{C_BOLD}#{C_NORMAL} of #{lines}\n"
-      end
       coverage_report << {'pct' => pct, 'uncovered' => (lines - lines * pct).round, 'source' => task.source}
     rescue
     end

@@ -634,7 +634,7 @@ CORTO_ENUM_O(corto_lang, procedureKind);
     CORTO_CONSTANT_O(procedureKind, OBSERVER);
     CORTO_CONSTANT_O(procedureKind, METAPROCEDURE);
 
-CORTO_ENUM_O(corto_core, equalityKind);
+CORTO_ENUM_O(corto_lang, equalityKind);
     CORTO_CONSTANT_O(equalityKind, EQ);
     CORTO_CONSTANT_O(equalityKind, LT);
     CORTO_CONSTANT_O(equalityKind, GT);

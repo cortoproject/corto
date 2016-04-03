@@ -86,7 +86,7 @@ corto_alias corto_aliasFromStr(corto_alias value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_aliasCompare(corto_alias dst, corto_alias src) {
+corto_equalityKind _corto_aliasCompare(corto_alias dst, corto_alias src) {
     return corto_compare(dst, src);
 }
 
@@ -191,7 +191,7 @@ corto_any* corto_anyFromStr(corto_any* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_anyCompare(corto_any dst, corto_any src) {
+corto_equalityKind corto_anyCompare(corto_any dst, corto_any src) {
     return corto_comparep(&dst, corto_any_o, &src);
 }
 
@@ -298,7 +298,7 @@ corto_array corto_arrayFromStr(corto_array value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_arrayCompare(corto_array dst, corto_array src) {
+corto_equalityKind _corto_arrayCompare(corto_array dst, corto_array src) {
     return corto_compare(dst, src);
 }
 
@@ -383,7 +383,7 @@ corto_binary corto_binaryFromStr(corto_binary value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_binaryCompare(corto_binary dst, corto_binary src) {
+corto_equalityKind _corto_binaryCompare(corto_binary dst, corto_binary src) {
     return corto_compare(dst, src);
 }
 
@@ -463,7 +463,7 @@ corto_bitmask corto_bitmaskFromStr(corto_bitmask value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_bitmaskCompare(corto_bitmask dst, corto_bitmask src) {
+corto_equalityKind _corto_bitmaskCompare(corto_bitmask dst, corto_bitmask src) {
     return corto_compare(dst, src);
 }
 
@@ -548,7 +548,7 @@ corto_bool* corto_boolFromStr(corto_bool* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_boolCompare(corto_bool dst, corto_bool src) {
+corto_equalityKind corto_boolCompare(corto_bool dst, corto_bool src) {
     return corto_comparep(&dst, corto_bool_o, &src);
 }
 
@@ -645,7 +645,7 @@ corto_boolean corto_booleanFromStr(corto_boolean value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_booleanCompare(corto_boolean dst, corto_boolean src) {
+corto_equalityKind _corto_booleanCompare(corto_boolean dst, corto_boolean src) {
     return corto_compare(dst, src);
 }
 
@@ -730,7 +730,7 @@ corto_char* corto_charFromStr(corto_char* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_charCompare(corto_char dst, corto_char src) {
+corto_equalityKind corto_charCompare(corto_char dst, corto_char src) {
     return corto_comparep(&dst, corto_char_o, &src);
 }
 
@@ -832,7 +832,7 @@ corto_character corto_characterFromStr(corto_character value, corto_string str) 
     return value;
 }
 
-corto_int16 _corto_characterCompare(corto_character dst, corto_character src) {
+corto_equalityKind _corto_characterCompare(corto_character dst, corto_character src) {
     return corto_compare(dst, src);
 }
 
@@ -927,7 +927,7 @@ corto_class corto_classFromStr(corto_class value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_classCompare(corto_class dst, corto_class src) {
+corto_equalityKind _corto_classCompare(corto_class dst, corto_class src) {
     return corto_compare(dst, src);
 }
 
@@ -1017,7 +1017,7 @@ corto_collection corto_collectionFromStr(corto_collection value, corto_string st
     return value;
 }
 
-corto_int16 _corto_collectionCompare(corto_collection dst, corto_collection src) {
+corto_equalityKind _corto_collectionCompare(corto_collection dst, corto_collection src) {
     return corto_compare(dst, src);
 }
 
@@ -1102,7 +1102,7 @@ corto_collectionKind* corto_collectionKindFromStr(corto_collectionKind* value, c
     return value;
 }
 
-corto_int16 corto_collectionKindCompare(corto_collectionKind dst, corto_collectionKind src) {
+corto_equalityKind corto_collectionKindCompare(corto_collectionKind dst, corto_collectionKind src) {
     return corto_comparep(&dst, corto_collectionKind_o, &src);
 }
 
@@ -1204,7 +1204,7 @@ corto_compositeKind* corto_compositeKindFromStr(corto_compositeKind* value, cort
     return value;
 }
 
-corto_int16 corto_compositeKindCompare(corto_compositeKind dst, corto_compositeKind src) {
+corto_equalityKind corto_compositeKindCompare(corto_compositeKind dst, corto_compositeKind src) {
     return corto_comparep(&dst, corto_compositeKind_o, &src);
 }
 
@@ -1306,7 +1306,7 @@ corto_constant* corto_constantFromStr(corto_constant* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_constantCompare(corto_constant dst, corto_constant src) {
+corto_equalityKind corto_constantCompare(corto_constant dst, corto_constant src) {
     return corto_comparep(&dst, corto_constant_o, &src);
 }
 
@@ -1418,7 +1418,7 @@ corto_delegate corto_delegateFromStr(corto_delegate value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_delegateCompare(corto_delegate dst, corto_delegate src) {
+corto_equalityKind _corto_delegateCompare(corto_delegate dst, corto_delegate src) {
     return corto_compare(dst, src);
 }
 
@@ -1508,7 +1508,7 @@ corto_delegatedata* corto_delegatedataFromStr(corto_delegatedata* value, corto_s
     return value;
 }
 
-corto_int16 corto_delegatedataCompare(corto_delegatedata* dst, corto_delegatedata* src) {
+corto_equalityKind corto_delegatedataCompare(corto_delegatedata* dst, corto_delegatedata* src) {
     return corto_comparep(dst, corto_delegatedata_o, src);
 }
 
@@ -1615,7 +1615,7 @@ corto_destructAction* corto_destructActionFromStr(corto_destructAction* value, c
     return value;
 }
 
-corto_int16 corto_destructActionCompare(corto_destructAction* dst, corto_destructAction* src) {
+corto_equalityKind corto_destructActionCompare(corto_destructAction* dst, corto_destructAction* src) {
     return corto_comparep(dst, corto_destructAction_o, src);
 }
 
@@ -1747,8 +1747,110 @@ corto_enum corto_enumFromStr(corto_enum value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_enumCompare(corto_enum dst, corto_enum src) {
+corto_equalityKind _corto_enumCompare(corto_enum dst, corto_enum src) {
     return corto_compare(dst, src);
+}
+
+corto_equalityKind* _corto_equalityKindCreate(corto_equalityKind value) {
+    corto_equalityKind* _this;
+    _this = corto_equalityKind(corto_declare(corto_equalityKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    *_this = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_equalityKind* _corto_equalityKindCreateChild(corto_object _parent, corto_string _name, corto_equalityKind value) {
+    corto_equalityKind* _this;
+    _this = corto_equalityKind(corto_declareChild(_parent, _name, corto_equalityKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    *_this = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_equalityKindUpdate(corto_equalityKind* _this, corto_equalityKind value) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        *_this = value;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_equalityKind* _corto_equalityKindDeclare(void) {
+    corto_equalityKind* _this;
+    _this = corto_equalityKind(corto_declare(corto_equalityKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_equalityKind* _corto_equalityKindDeclareChild(corto_object _parent, corto_string _name) {
+    corto_equalityKind* _this;
+    _this = corto_equalityKind(corto_declareChild(_parent, _name, corto_equalityKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_equalityKindDefine(corto_equalityKind* _this, corto_equalityKind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+    return corto_define(_this);
+}
+
+void _corto_equalityKindSet(corto_equalityKind* _this, corto_equalityKind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+}
+
+corto_string _corto_equalityKindStr(corto_equalityKind value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_equalityKind_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_equalityKind* corto_equalityKindFromStr(corto_equalityKind* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_equalityKind_o), str);
+    return value;
+}
+
+corto_equalityKind corto_equalityKindCompare(corto_equalityKind dst, corto_equalityKind src) {
+    return corto_comparep(&dst, corto_equalityKind_o, &src);
+}
+
+corto_int16 _corto_equalityKindInit(corto_equalityKind* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_equalityKind_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_equalityKind_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_equalityKindDeinit(corto_equalityKind* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_equalityKind_o), value);
+    result = corto_deinitv(&v);
+    return result;
 }
 
 corto_float _corto_floatCreate(corto_width width, corto_float64 min, corto_float64 max) {
@@ -1842,7 +1944,7 @@ corto_float corto_floatFromStr(corto_float value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_floatCompare(corto_float dst, corto_float src) {
+corto_equalityKind _corto_floatCompare(corto_float dst, corto_float src) {
     return corto_compare(dst, src);
 }
 
@@ -1927,7 +2029,7 @@ corto_float32* corto_float32FromStr(corto_float32* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_float32Compare(corto_float32 dst, corto_float32 src) {
+corto_equalityKind corto_float32Compare(corto_float32 dst, corto_float32 src) {
     return corto_comparep(&dst, corto_float32_o, &src);
 }
 
@@ -2029,7 +2131,7 @@ corto_float64* corto_float64FromStr(corto_float64* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_float64Compare(corto_float64 dst, corto_float64 src) {
+corto_equalityKind corto_float64Compare(corto_float64 dst, corto_float64 src) {
     return corto_comparep(&dst, corto_float64_o, &src);
 }
 
@@ -2141,7 +2243,7 @@ corto_function corto_functionFromStr(corto_function value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_functionCompare(corto_function dst, corto_function src) {
+corto_equalityKind _corto_functionCompare(corto_function dst, corto_function src) {
     return corto_compare(dst, src);
 }
 
@@ -2231,7 +2333,7 @@ corto_initAction* corto_initActionFromStr(corto_initAction* value, corto_string 
     return value;
 }
 
-corto_int16 corto_initActionCompare(corto_initAction* dst, corto_initAction* src) {
+corto_equalityKind corto_initActionCompare(corto_initAction* dst, corto_initAction* src) {
     return corto_comparep(dst, corto_initAction_o, src);
 }
 
@@ -2378,7 +2480,7 @@ corto_int corto_intFromStr(corto_int value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_intCompare(corto_int dst, corto_int src) {
+corto_equalityKind _corto_intCompare(corto_int dst, corto_int src) {
     return corto_compare(dst, src);
 }
 
@@ -2463,7 +2565,7 @@ corto_int16* corto_int16FromStr(corto_int16* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_int16Compare(corto_int16 dst, corto_int16 src) {
+corto_equalityKind corto_int16Compare(corto_int16 dst, corto_int16 src) {
     return corto_comparep(&dst, corto_int16_o, &src);
 }
 
@@ -2565,7 +2667,7 @@ corto_int32* corto_int32FromStr(corto_int32* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_int32Compare(corto_int32 dst, corto_int32 src) {
+corto_equalityKind corto_int32Compare(corto_int32 dst, corto_int32 src) {
     return corto_comparep(&dst, corto_int32_o, &src);
 }
 
@@ -2667,7 +2769,7 @@ corto_int64* corto_int64FromStr(corto_int64* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_int64Compare(corto_int64 dst, corto_int64 src) {
+corto_equalityKind corto_int64Compare(corto_int64 dst, corto_int64 src) {
     return corto_comparep(&dst, corto_int64_o, &src);
 }
 
@@ -2769,7 +2871,7 @@ corto_int8* corto_int8FromStr(corto_int8* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_int8Compare(corto_int8 dst, corto_int8 src) {
+corto_equalityKind corto_int8Compare(corto_int8 dst, corto_int8 src) {
     return corto_comparep(&dst, corto_int8_o, &src);
 }
 
@@ -2871,7 +2973,7 @@ corto_interface corto_interfaceFromStr(corto_interface value, corto_string str) 
     return value;
 }
 
-corto_int16 _corto_interfaceCompare(corto_interface dst, corto_interface src) {
+corto_equalityKind _corto_interfaceCompare(corto_interface dst, corto_interface src) {
     return corto_compare(dst, src);
 }
 
@@ -2976,7 +3078,7 @@ corto_interfaceseq* corto_interfaceseqFromStr(corto_interfaceseq* value, corto_s
     return value;
 }
 
-corto_int16 corto_interfaceseqCompare(corto_interfaceseq dst, corto_interfaceseq src) {
+corto_equalityKind corto_interfaceseqCompare(corto_interfaceseq dst, corto_interfaceseq src) {
     return corto_comparep(&dst, corto_interfaceseq_o, &src);
 }
 
@@ -3083,7 +3185,7 @@ corto_interfaceVector* corto_interfaceVectorFromStr(corto_interfaceVector* value
     return value;
 }
 
-corto_int16 corto_interfaceVectorCompare(corto_interfaceVector* dst, corto_interfaceVector* src) {
+corto_equalityKind corto_interfaceVectorCompare(corto_interfaceVector* dst, corto_interfaceVector* src) {
     return corto_comparep(dst, corto_interfaceVector_o, src);
 }
 
@@ -3205,7 +3307,7 @@ corto_interfaceVectorseq* corto_interfaceVectorseqFromStr(corto_interfaceVectors
     return value;
 }
 
-corto_int16 corto_interfaceVectorseqCompare(corto_interfaceVectorseq dst, corto_interfaceVectorseq src) {
+corto_equalityKind corto_interfaceVectorseqCompare(corto_interfaceVectorseq dst, corto_interfaceVectorseq src) {
     return corto_comparep(&dst, corto_interfaceVectorseq_o, &src);
 }
 
@@ -3307,7 +3409,7 @@ corto_iterator corto_iteratorFromStr(corto_iterator value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_iteratorCompare(corto_iterator dst, corto_iterator src) {
+corto_equalityKind _corto_iteratorCompare(corto_iterator dst, corto_iterator src) {
     return corto_compare(dst, src);
 }
 
@@ -3397,7 +3499,7 @@ corto_list corto_listFromStr(corto_list value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_listCompare(corto_list dst, corto_list src) {
+corto_equalityKind _corto_listCompare(corto_list dst, corto_list src) {
     return corto_compare(dst, src);
 }
 
@@ -3492,7 +3594,7 @@ corto_map corto_mapFromStr(corto_map value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_mapCompare(corto_map dst, corto_map src) {
+corto_equalityKind _corto_mapCompare(corto_map dst, corto_map src) {
     return corto_compare(dst, src);
 }
 
@@ -3582,7 +3684,7 @@ corto_member corto_memberFromStr(corto_member value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_memberCompare(corto_member dst, corto_member src) {
+corto_equalityKind _corto_memberCompare(corto_member dst, corto_member src) {
     return corto_compare(dst, src);
 }
 
@@ -3687,7 +3789,7 @@ corto_memberseq* corto_memberseqFromStr(corto_memberseq* value, corto_string str
     return value;
 }
 
-corto_int16 corto_memberseqCompare(corto_memberseq dst, corto_memberseq src) {
+corto_equalityKind corto_memberseqCompare(corto_memberseq dst, corto_memberseq src) {
     return corto_comparep(&dst, corto_memberseq_o, &src);
 }
 
@@ -3804,7 +3906,7 @@ corto_metaprocedure corto_metaprocedureFromStr(corto_metaprocedure value, corto_
     return value;
 }
 
-corto_int16 _corto_metaprocedureCompare(corto_metaprocedure dst, corto_metaprocedure src) {
+corto_equalityKind _corto_metaprocedureCompare(corto_metaprocedure dst, corto_metaprocedure src) {
     return corto_compare(dst, src);
 }
 
@@ -3904,7 +4006,7 @@ corto_method corto_methodFromStr(corto_method value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_methodCompare(corto_method dst, corto_method src) {
+corto_equalityKind _corto_methodCompare(corto_method dst, corto_method src) {
     return corto_compare(dst, src);
 }
 
@@ -3989,7 +4091,7 @@ corto_modifier* corto_modifierFromStr(corto_modifier* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_modifierCompare(corto_modifier dst, corto_modifier src) {
+corto_equalityKind corto_modifierCompare(corto_modifier dst, corto_modifier src) {
     return corto_comparep(&dst, corto_modifier_o, &src);
 }
 
@@ -4134,7 +4236,7 @@ corto_objectseq* corto_objectseqFromStr(corto_objectseq* value, corto_string str
     return value;
 }
 
-corto_int16 corto_objectseqCompare(corto_objectseq dst, corto_objectseq src) {
+corto_equalityKind corto_objectseqCompare(corto_objectseq dst, corto_objectseq src) {
     return corto_comparep(&dst, corto_objectseq_o, &src);
 }
 
@@ -4236,7 +4338,7 @@ corto_octet* corto_octetFromStr(corto_octet* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_octetCompare(corto_octet dst, corto_octet src) {
+corto_equalityKind corto_octetCompare(corto_octet dst, corto_octet src) {
     return corto_comparep(&dst, corto_octet_o, &src);
 }
 
@@ -4358,7 +4460,7 @@ corto_octetseq* corto_octetseqFromStr(corto_octetseq* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_octetseqCompare(corto_octetseq dst, corto_octetseq src) {
+corto_equalityKind corto_octetseqCompare(corto_octetseq dst, corto_octetseq src) {
     return corto_comparep(&dst, corto_octetseq_o, &src);
 }
 
@@ -4470,7 +4572,7 @@ corto_parameter* corto_parameterFromStr(corto_parameter* value, corto_string str
     return value;
 }
 
-corto_int16 corto_parameterCompare(corto_parameter* dst, corto_parameter* src) {
+corto_equalityKind corto_parameterCompare(corto_parameter* dst, corto_parameter* src) {
     return corto_comparep(dst, corto_parameter_o, src);
 }
 
@@ -4592,7 +4694,7 @@ corto_parameterseq* corto_parameterseqFromStr(corto_parameterseq* value, corto_s
     return value;
 }
 
-corto_int16 corto_parameterseqCompare(corto_parameterseq dst, corto_parameterseq src) {
+corto_equalityKind corto_parameterseqCompare(corto_parameterseq dst, corto_parameterseq src) {
     return corto_comparep(&dst, corto_parameterseq_o, &src);
 }
 
@@ -4694,7 +4796,7 @@ corto_primitive corto_primitiveFromStr(corto_primitive value, corto_string str) 
     return value;
 }
 
-corto_int16 _corto_primitiveCompare(corto_primitive dst, corto_primitive src) {
+corto_equalityKind _corto_primitiveCompare(corto_primitive dst, corto_primitive src) {
     return corto_compare(dst, src);
 }
 
@@ -4779,7 +4881,7 @@ corto_primitiveKind* corto_primitiveKindFromStr(corto_primitiveKind* value, cort
     return value;
 }
 
-corto_int16 corto_primitiveKindCompare(corto_primitiveKind dst, corto_primitiveKind src) {
+corto_equalityKind corto_primitiveKindCompare(corto_primitiveKind dst, corto_primitiveKind src) {
     return corto_comparep(&dst, corto_primitiveKind_o, &src);
 }
 
@@ -4881,7 +4983,7 @@ corto_procedure corto_procedureFromStr(corto_procedure value, corto_string str) 
     return value;
 }
 
-corto_int16 _corto_procedureCompare(corto_procedure dst, corto_procedure src) {
+corto_equalityKind _corto_procedureCompare(corto_procedure dst, corto_procedure src) {
     return corto_compare(dst, src);
 }
 
@@ -4966,7 +5068,7 @@ corto_procedureKind* corto_procedureKindFromStr(corto_procedureKind* value, cort
     return value;
 }
 
-corto_int16 corto_procedureKindCompare(corto_procedureKind dst, corto_procedureKind src) {
+corto_equalityKind corto_procedureKindCompare(corto_procedureKind dst, corto_procedureKind src) {
     return corto_comparep(&dst, corto_procedureKind_o, &src);
 }
 
@@ -5073,7 +5175,7 @@ corto_sequence corto_sequenceFromStr(corto_sequence value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_sequenceCompare(corto_sequence dst, corto_sequence src) {
+corto_equalityKind _corto_sequenceCompare(corto_sequence dst, corto_sequence src) {
     return corto_compare(dst, src);
 }
 
@@ -5158,7 +5260,7 @@ corto_state* corto_stateFromStr(corto_state* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_stateCompare(corto_state dst, corto_state src) {
+corto_equalityKind corto_stateCompare(corto_state dst, corto_state src) {
     return corto_comparep(&dst, corto_state_o, &src);
 }
 
@@ -5260,7 +5362,7 @@ corto_string* corto_stringFromStr(corto_string* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_stringCompare(corto_string dst, corto_string src) {
+corto_equalityKind corto_stringCompare(corto_string dst, corto_string src) {
     return corto_comparep(&dst, corto_string_o, &src);
 }
 
@@ -5367,7 +5469,7 @@ corto_struct corto_structFromStr(corto_struct value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_structCompare(corto_struct dst, corto_struct src) {
+corto_equalityKind _corto_structCompare(corto_struct dst, corto_struct src) {
     return corto_compare(dst, src);
 }
 
@@ -5457,7 +5559,7 @@ corto_text corto_textFromStr(corto_text value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_textCompare(corto_text dst, corto_text src) {
+corto_equalityKind _corto_textCompare(corto_text dst, corto_text src) {
     return corto_compare(dst, src);
 }
 
@@ -5547,7 +5649,7 @@ corto_type corto_typeFromStr(corto_type value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_typeCompare(corto_type dst, corto_type src) {
+corto_equalityKind _corto_typeCompare(corto_type dst, corto_type src) {
     return corto_compare(dst, src);
 }
 
@@ -5632,7 +5734,7 @@ corto_typeKind* corto_typeKindFromStr(corto_typeKind* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_typeKindCompare(corto_typeKind dst, corto_typeKind src) {
+corto_equalityKind corto_typeKindCompare(corto_typeKind dst, corto_typeKind src) {
     return corto_comparep(&dst, corto_typeKind_o, &src);
 }
 
@@ -5744,7 +5846,7 @@ corto_uint corto_uintFromStr(corto_uint value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_uintCompare(corto_uint dst, corto_uint src) {
+corto_equalityKind _corto_uintCompare(corto_uint dst, corto_uint src) {
     return corto_compare(dst, src);
 }
 
@@ -5829,7 +5931,7 @@ corto_uint16* corto_uint16FromStr(corto_uint16* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_uint16Compare(corto_uint16 dst, corto_uint16 src) {
+corto_equalityKind corto_uint16Compare(corto_uint16 dst, corto_uint16 src) {
     return corto_comparep(&dst, corto_uint16_o, &src);
 }
 
@@ -5931,7 +6033,7 @@ corto_uint32* corto_uint32FromStr(corto_uint32* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_uint32Compare(corto_uint32 dst, corto_uint32 src) {
+corto_equalityKind corto_uint32Compare(corto_uint32 dst, corto_uint32 src) {
     return corto_comparep(&dst, corto_uint32_o, &src);
 }
 
@@ -6033,7 +6135,7 @@ corto_uint64* corto_uint64FromStr(corto_uint64* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_uint64Compare(corto_uint64 dst, corto_uint64 src) {
+corto_equalityKind corto_uint64Compare(corto_uint64 dst, corto_uint64 src) {
     return corto_comparep(&dst, corto_uint64_o, &src);
 }
 
@@ -6135,7 +6237,7 @@ corto_uint8* corto_uint8FromStr(corto_uint8* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_uint8Compare(corto_uint8 dst, corto_uint8 src) {
+corto_equalityKind corto_uint8Compare(corto_uint8 dst, corto_uint8 src) {
     return corto_comparep(&dst, corto_uint8_o, &src);
 }
 
@@ -6252,7 +6354,7 @@ corto_virtual corto_virtualFromStr(corto_virtual value, corto_string str) {
     return value;
 }
 
-corto_int16 _corto_virtualCompare(corto_virtual dst, corto_virtual src) {
+corto_equalityKind _corto_virtualCompare(corto_virtual dst, corto_virtual src) {
     return corto_compare(dst, src);
 }
 
@@ -6380,7 +6482,7 @@ corto_vtable* corto_vtableFromStr(corto_vtable* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_vtableCompare(corto_vtable dst, corto_vtable src) {
+corto_equalityKind corto_vtableCompare(corto_vtable dst, corto_vtable src) {
     return corto_comparep(&dst, corto_vtable_o, &src);
 }
 
@@ -6482,7 +6584,7 @@ corto_width* corto_widthFromStr(corto_width* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_widthCompare(corto_width dst, corto_width src) {
+corto_equalityKind corto_widthCompare(corto_width dst, corto_width src) {
     return corto_comparep(&dst, corto_width_o, &src);
 }
 
@@ -6584,7 +6686,7 @@ corto_word* corto_wordFromStr(corto_word* value, corto_string str) {
     return value;
 }
 
-corto_int16 corto_wordCompare(corto_word dst, corto_word src) {
+corto_equalityKind corto_wordCompare(corto_word dst, corto_word src) {
     return corto_comparep(&dst, corto_word_o, &src);
 }
 
