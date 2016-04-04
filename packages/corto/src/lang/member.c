@@ -52,7 +52,7 @@ corto_int16 _corto_member_init(
         } else {
             corto_seterr(
               "invalid declaration of member '%s' in non-composite scope '%s'",
-              corto_nameof(this), corto_fullpath(NULL, parent));
+              corto_idof(this), corto_fullpath(NULL, parent));
             goto error;
         }
     }

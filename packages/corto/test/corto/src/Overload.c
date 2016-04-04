@@ -55,7 +55,7 @@ corto_void _test_Overload_tc_anyChar(
     corto_object o = corto_resolve(test_o, "ol_any(char)");
     test_assert(o != NULL);
     test_assert(o == test_ol_any_char_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(char a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(char a)"));
     corto_release(o);
 
 /* $end */
@@ -69,7 +69,7 @@ corto_void _test_Overload_tc_anyColor(
     corto_object o = corto_resolve(test_o, "ol_any(Color)");
     test_assert(o != NULL);
     test_assert(o == test_ol_any__test_Color_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(/test/Color a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(/test/Color a)"));
     corto_release(o);
 
 /* $end */
@@ -83,7 +83,7 @@ corto_void _test_Overload_tc_anyFloat32(
     corto_object o = corto_resolve(test_o, "ol_any(float32)");
     test_assert(o != NULL);
     test_assert(o == test_ol_any_float32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(float32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(float32 a)"));
     corto_release(o);
 
 /* $end */
@@ -97,7 +97,7 @@ corto_void _test_Overload_tc_anyFloat64(
     corto_object o = corto_resolve(test_o, "ol_any(float64)");
     test_assert(o != NULL);
     test_assert(o == test_ol_any_float32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(float32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(float32 a)"));
     corto_release(o);
 
 /* $end */
@@ -111,7 +111,7 @@ corto_void _test_Overload_tc_anyInt16(
     corto_object o = corto_resolve(test_o, "ol_any(int16)");
     test_assert(o != NULL);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -127,7 +127,7 @@ corto_void _test_Overload_tc_anyInt32(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -143,7 +143,7 @@ corto_void _test_Overload_tc_anyInt64(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -159,7 +159,7 @@ corto_void _test_Overload_tc_anyInt8(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -175,7 +175,7 @@ corto_void _test_Overload_tc_anyOctet(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -191,7 +191,7 @@ corto_void _test_Overload_tc_anyString(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_string_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(string a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(string a)"));
     corto_release(o);
 
 /* $end */
@@ -207,7 +207,7 @@ corto_void _test_Overload_tc_anyUint16(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -223,7 +223,7 @@ corto_void _test_Overload_tc_anyUint32(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -239,7 +239,7 @@ corto_void _test_Overload_tc_anyUint64(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -255,7 +255,7 @@ corto_void _test_Overload_tc_anyUint8(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -271,7 +271,7 @@ corto_void _test_Overload_tc_anyWord(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_any_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_any(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_any(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -287,7 +287,7 @@ corto_void _test_Overload_tc_inheritanceBase(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_inherit__test_Animal_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_inherit(/test/Animal a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_inherit(/test/Animal a)"));
 
 /* $end */
 }
@@ -302,7 +302,7 @@ corto_void _test_Overload_tc_inheritanceMatchSub(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_inherit__test_Dog_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_inherit(/test/Dog a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_inherit(/test/Dog a)"));
 
 /* $end */
 }
@@ -317,7 +317,7 @@ corto_void _test_Overload_tc_inheritanceSub(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_inherit__test_Dog_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_inherit(/test/Dog a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_inherit(/test/Dog a)"));
 
 /* $end */
 }
@@ -332,7 +332,7 @@ corto_void _test_Overload_tc_inheritSibling(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_inherit__test_Animal_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_inherit(/test/Animal a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_inherit(/test/Animal a)"));
 
 /* $end */
 }
@@ -392,7 +392,7 @@ corto_void _test_Overload_tc_numChar(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -408,7 +408,7 @@ corto_void _test_Overload_tc_numColor(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -424,7 +424,7 @@ corto_void _test_Overload_tc_numFloat32(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_float64_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(float64 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(float64 a)"));
     corto_release(o);
 
 /* $end */
@@ -440,7 +440,7 @@ corto_void _test_Overload_tc_numFloat64(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_float64_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(float64 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(float64 a)"));
     corto_release(o);
 
 /* $end */
@@ -456,7 +456,7 @@ corto_void _test_Overload_tc_numInt16(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -472,7 +472,7 @@ corto_void _test_Overload_tc_numInt32(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -488,7 +488,7 @@ corto_void _test_Overload_tc_numInt64(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -504,7 +504,7 @@ corto_void _test_Overload_tc_numInt8(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
     corto_release(o);
 
 /* $end */
@@ -520,7 +520,7 @@ corto_void _test_Overload_tc_numOctet(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
 
 /* $end */
 }
@@ -547,7 +547,7 @@ corto_void _test_Overload_tc_numUint16(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
 
 /* $end */
 }
@@ -562,7 +562,7 @@ corto_void _test_Overload_tc_numUint32(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
 
 /* $end */
 }
@@ -577,7 +577,7 @@ corto_void _test_Overload_tc_numUint64(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
 
 /* $end */
 }
@@ -592,7 +592,7 @@ corto_void _test_Overload_tc_numUint8(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
 
 /* $end */
 }
@@ -607,7 +607,7 @@ corto_void _test_Overload_tc_numWord(
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
     test_assert(o == test_ol_num_int32_o);
-    test_assert(!strcmp(corto_nameof(o), "ol_num(int32 a)"));
+    test_assert(!strcmp(corto_idof(o), "ol_num(int32 a)"));
 
 /* $end */
 }
@@ -620,7 +620,7 @@ corto_void _test_Overload_tc_wildcard(
     corto_object o = corto_resolve(test_o, "ol_wildcard(int32,?)");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
-    test_assert(!strcmp(corto_nameof(o), "ol_wildcard(int32 a,string b)"));
+    test_assert(!strcmp(corto_idof(o), "ol_wildcard(int32 a,string b)"));
 
 /* $end */
 }

@@ -27,6 +27,7 @@ extern "C" {
 #define corto_vtable(o) ((corto_vtable*)corto_assertType((corto_type)corto_vtable_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assertType((corto_type)corto_delegatedata_o, o))
 #define corto_initAction(o) ((corto_initAction*)corto_assertType((corto_type)corto_initAction_o, o))
+#define corto_nameAction(o) ((corto_nameAction*)corto_assertType((corto_type)corto_nameAction_o, o))
 #define corto_type(o) ((corto_type)corto_assertType((corto_type)corto_type_o, o))
 #define corto_modifier(o) ((corto_modifier*)corto_assertType((corto_type)corto_modifier_o, o))
 #define corto_member(o) ((corto_member)corto_assertType((corto_type)corto_member_o, o))
@@ -165,6 +166,13 @@ struct corto_initAction {
     corto_delegatedata _parent;
 };
 
+/*  nameAction */
+typedef struct corto_nameAction corto_nameAction;
+
+struct corto_nameAction {
+    corto_delegatedata _parent;
+};
+
 CORTO_CLASS_DEF(corto_type) {
     corto_typeKind kind;
     corto_bool reference;
@@ -178,6 +186,7 @@ CORTO_CLASS_DEF(corto_type) {
     corto_type defaultProcedureType;
     corto_vtable metaprocedures;
     corto_initAction init;
+    corto_nameAction nameof;
 };
 
 /* modifier */

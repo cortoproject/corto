@@ -169,7 +169,7 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
             memberSize = corto_type_sizeof(memberType);
             if (!memberSize) {
                 corto_seterr("member '%s' of type '%s' is of invalid type '%s'",
-                    corto_nameof(m),
+                    corto_idof(m),
                     corto_fullpath(NULL, this),
                     corto_fullpath(NULL, memberType));
                 goto error;
@@ -333,7 +333,7 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
                     }
                 } else if (!corto_type_castable(p1, p2)) { /* This virtual function can only be called after the bootstrap is complete. */
                     corto_seterr("type of parameter %s of function '%s' is incompatible with function '%s'",
-                        corto_nameof(o2->parameters.buffer[i].type),
+                        corto_idof(o2->parameters.buffer[i].type),
                         corto_fullpath(NULL, o2),
                         corto_fullpath(NULL, o1));
                 }
@@ -423,12 +423,12 @@ corto_int16 _corto_interface_bindMethod(
     corto_int32 d;
 
     /* Check if a method with the same name is already in the vtable */
-    virtual = (corto_method *)corto_vtableLookup(&corto_interface(this)->methods, corto_nameof(method), &d);
+    virtual = (corto_method *)corto_vtableLookup(&corto_interface(this)->methods, corto_idof(method), &d);
 
     /* vtableLookup failed (probably due to a failed overloading request) */
     if (!virtual && (d == -1)) {
         if (!corto_lasterr()) {
-            corto_seterr("method lookup error for '%s'", corto_nameof(method));
+            corto_seterr("method lookup error for '%s'", corto_idof(method));
         }
         goto error;
     }
@@ -599,7 +599,7 @@ corto_member _corto_interface_resolveMember_v(
     result = NULL;
 
     for (i=0; i<this->members.length; i++) {
-        if (!strcmp(corto_nameof(this->members.buffer[i]), name)) {
+        if (!strcmp(corto_idof(this->members.buffer[i]), name)) {
             result = this->members.buffer[i];
             break;
         }

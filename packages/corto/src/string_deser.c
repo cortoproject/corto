@@ -57,7 +57,7 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
             /* Ambiguous members must always be referenced from their own scope.
              * Even if the current scope does not have a member with the
              * specified name, implicit referencing is not allowed. */
-            if (!strcmp(corto_nameof(info->m), member) && (!info->parsed)) {
+            if (!strcmp(corto_idof(info->m), member) && (!info->parsed)) {
                 found = TRUE;
                 data->iterData = *(corto_llIter_s*)iter.udata;
                 data->currentIter = iter;
@@ -393,7 +393,7 @@ static corto_int16 corto_string_deserParseValue(
 
     /* Can typically occur when mixing short with default notation. */
     if (info->parsed) {
-        corto_seterr("member '%s' is already parsed", corto_nameof(info->m));
+        corto_seterr("member '%s' is already parsed", corto_idof(info->m));
         goto error;
     }
 

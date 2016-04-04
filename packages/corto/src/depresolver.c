@@ -131,7 +131,7 @@ static int g_itemResolveDependency(void* o, void* userData) {
         case CORTO_DECLARED:
             dep->item->declareCount--;
 
-            corto_assert(dep->item->declareCount >= 0, "negative declareCount for item '%s'.", corto_nameof(dep->item->o));
+            corto_assert(dep->item->declareCount >= 0, "negative declareCount for item '%s'.", corto_idof(dep->item->o));
 
             if (!dep->item->declareCount) {
                 corto_llInsert(data->toPrint, dep->item);
@@ -140,7 +140,7 @@ static int g_itemResolveDependency(void* o, void* userData) {
         case CORTO_DEFINED:
             dep->item->defineCount--;
 
-            corto_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", corto_nameof(dep->item->o));
+            corto_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", corto_idof(dep->item->o));
 
             if (!dep->item->defineCount) {
                 corto_llInsert(data->toPrint, dep->item);

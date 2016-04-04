@@ -529,6 +529,7 @@ CORTO_FWDECL(list, resultList);
 
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
+CORTO_FWDECL(delegate, nameAction);
 CORTO_FWDECL(delegate, notifyAction);
 CORTO_FWDECL(delegate, requestAction);
 CORTO_FWDECL(delegate, invokeAction);
@@ -727,10 +728,10 @@ CORTO_LIST_O(corto_core, resultList, result, 0);
 
 /* Delegate types */
 CORTO_DELEGATE_O(corto_lang, initAction, int16);
+CORTO_DELEGATE_O(corto_lang, nameAction, string);
 CORTO_DELEGATE_O(corto_lang, destructAction, void);
 CORTO_DELEGATE_O(corto_core, notifyAction, void);
 CORTO_DELEGATE_O(corto_core, invokeAction, void);
-CORTO_DELEGATE_O(corto_core, resolveAction, void);
 CORTO_DELEGATE_O(corto_core, requestAction, resultIter);
 
 /* Iterator types */
@@ -751,6 +752,7 @@ CORTO_CLASS_NOBASE_O(corto_lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NUL
     CORTO_REFERENCE_O(type, defaultProcedureType, type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
     CORTO_MEMBER_O(type, metaprocedures, vtable, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(type, init, initAction, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(type, nameof, nameAction, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(type, sizeof, "()", uint32, FALSE, corto_type_sizeof);
     CORTO_METHOD_O(type, alignmentof, "()", uint16, FALSE, corto_type_alignmentof);
     CORTO_METHOD_O(type, castable, "(type type)", bool, TRUE, corto_type_castable_v);
@@ -759,10 +761,10 @@ CORTO_CLASS_NOBASE_O(corto_lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NUL
     CORTO_METHOD_O(type, init, "()", int16, FALSE, corto_type_init);
     CORTO_METHOD_O(type, construct, "()", int16, FALSE, corto_type_construct);
     CORTO_METHOD_O(type, destruct, "()", void, FALSE, corto_type_destruct);
-    CORTO_METAPROCEDURE_O(type, parentof, "()", object, TRUE, corto_type_parentof);
-    CORTO_METAPROCEDURE_O(type, nameof, "()", string, TRUE, corto_type_nameof);
-    CORTO_METAPROCEDURE_O(type, fullname, "()", string, TRUE, corto_type_fullname);
-    CORTO_METAPROCEDURE_O(type, relname, "(object from)", string, TRUE, corto_type_relname);
+    CORTO_METAPROCEDURE_O(type, parent, "()", object, TRUE, corto_type_parent);
+    CORTO_METAPROCEDURE_O(type, name, "()", string, TRUE, corto_type_name);
+    CORTO_METAPROCEDURE_O(type, fullpath, "()", string, TRUE, corto_type_fullpath);
+    CORTO_METAPROCEDURE_O(type, path, "(object from)", string, TRUE, corto_type_path);
     CORTO_METAPROCEDURE_O(type, declare, "(string name,type type)", object, TRUE, corto_type_declare);
     CORTO_METAPROCEDURE_O(type, define, "()", int16, TRUE, corto_type_define);
     CORTO_METAPROCEDURE_O(type, delete, "()", void, TRUE, corto_type_delete);
@@ -771,11 +773,11 @@ CORTO_CLASS_NOBASE_O(corto_lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NUL
     CORTO_METAPROCEDURE_O(type, lookup, "(string name)", object, TRUE, corto_type_lookup);
     CORTO_METAPROCEDURE_O(type, checkAttr, "(attr attributes)", bool, TRUE, corto_type_checkAttr);
     CORTO_METAPROCEDURE_O(type, checkState, "(state state)", bool, TRUE, corto_type_checkState);
-    CORTO_METAPROCEDURE_O(type, typeof, "()", type, FALSE, corto_type_typeof);
+    CORTO_METAPROCEDURE_O(type, type, "()", type, FALSE, corto_type_type);
     CORTO_METAPROCEDURE_O(type, instanceof, "(type type)", bool, TRUE, corto_type_instanceof);
     CORTO_METAPROCEDURE_O(type, compare, "(any value)", equalityKind, FALSE, corto_type_compare);
     CORTO_METAPROCEDURE_O(type, copy, "(any value)", int16, FALSE, corto_type_copy);
-    CORTO_METAPROCEDURE_O(type, toString, "()", string, FALSE, corto_type_toString);
+    CORTO_METAPROCEDURE_O(type, str, "()", string, FALSE, corto_type_str);
 
 /* /corto/lang/primitive */
 CORTO_FW_IC(primitive);

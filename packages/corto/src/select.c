@@ -556,9 +556,9 @@ static void corto_setItemData(
     strcpy(from, data->scope ? data->scope : "");
     corto_pathstr(item->parent, from, to, "/");
 
-    if (corto_nameof(o)) {
-        strcpy(item->id, corto_nameof(o));
-        strcpy(item->name, corto_nameof(o));
+    if (corto_idof(o)) {
+        strcpy(item->id, corto_idof(o));
+        corto_nameof(item->name, o);
     } else {
         item->id[0] = '\0';
         item->name[0] = '\0';
@@ -605,7 +605,7 @@ static corto_bool corto_selectMatch(
         corto_id filterLc, nameLc;
 
         strcpy(filterLc, frame->filter);
-        strcpy(nameLc, corto_nameof(o));
+        strcpy(nameLc, corto_idof(o));
         corto_strlower(filterLc);
         corto_strlower(nameLc);
 
@@ -650,7 +650,7 @@ static corto_object corto_selectIterNext(
         frame->iter = _corto_rbtreeIter(corto_scopeof(frame->scope), &frame->trav);
         while (corto_iterHasNext(&frame->iter)) {
             corto_object o = corto_iterNext(&frame->iter);
-            if (stricmp(corto_nameof(o), lastKey) > 0) {
+            if (stricmp(corto_idof(o), lastKey) > 0) {
                 result = o;
                 break;
             }
@@ -1024,7 +1024,7 @@ static void corto_selectTree(
             while (!(o = corto_selectIterNext(frame, lastKey)) && data->sp) {
                 corto__scopeRelease(claimed);
                 /* Cache name as next line might delete object */
-                strcpy(data->item.name, corto_nameof(frame->scope));
+                strcpy(data->item.name, corto_idof(frame->scope));
                 corto_setref(&frame->scope, NULL);
                 data->sp --;
                 frame = &data->stack[data->sp];

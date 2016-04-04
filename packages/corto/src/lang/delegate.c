@@ -20,7 +20,7 @@ corto_int16 _corto_delegate_bind(
         corto_member m = NULL;
 
         /* Get function name, lookup delegate, assign function */
-        corto_signatureName(corto_nameof(object), functionName);
+        corto_signatureName(corto_idof(object), functionName);
         if (corto_checkState(corto_type_o, CORTO_DEFINED) && (m = corto_interface_resolveMember(type, functionName)) &&
             (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE)) {
             if (corto_delegate_instanceof(corto_delegate(m->type), object)) {
@@ -35,7 +35,7 @@ corto_int16 _corto_delegate_bind(
                  * signature, always report error */
                 corto_seterr(
                     "member '%s' of delegate type '%s' does not match signature of '%s'",
-                    corto_nameof(m),
+                    corto_idof(m),
                     corto_fullpath(NULL, m->type),
                     corto_fullpath(NULL, object));
                 goto error;

@@ -23,6 +23,14 @@ void __corto_initAction(corto_function f, void *result, void *args) {
         *(void**)args);
 }
 
+void __corto_nameAction(corto_function f, void *result, void *args) {
+    CORTO_UNUSED(f);
+    CORTO_UNUSED(args);
+    corto_string ___ (*_fptr)(corto_object) = (corto_string ___ (*)(corto_object))f->implData;
+    *(corto_string*)result = _fptr(
+        *(void**)args);
+}
+
 void __corto_alias_construct(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
@@ -142,7 +150,7 @@ corto_bool _corto_collection_castable(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -174,7 +182,7 @@ corto_bool _corto_collection_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -239,7 +247,7 @@ corto_bool _corto_delegate_castable(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -271,7 +279,7 @@ corto_bool _corto_delegate_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -409,7 +417,7 @@ corto_bool _corto_interface_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -463,7 +471,7 @@ corto_member _corto_interface_resolveMember(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, name);
     
@@ -516,7 +524,7 @@ corto_bool _corto_iterator_castable(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -548,7 +556,7 @@ corto_bool _corto_iterator_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -696,7 +704,7 @@ corto_bool _corto_primitive_castable(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -728,7 +736,7 @@ corto_bool _corto_primitive_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -825,7 +833,7 @@ corto_bool _corto_struct_castable(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -857,7 +865,7 @@ corto_bool _corto_struct_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -903,7 +911,7 @@ corto_member _corto_struct_resolveMember(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, name);
     
@@ -949,7 +957,7 @@ corto_bool _corto_type_castable(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -1002,7 +1010,7 @@ corto_bool _corto_type_compatible(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, type);
     
@@ -1061,10 +1069,10 @@ void __corto_type_destruct(corto_function f, void *result, void *args) {
         corto_type(*(void**)args));
 }
 
-void __corto_type_fullname(corto_function f, void *result, void *args) {
+void __corto_type_fullpath(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_string*)result = _corto_type_fullname(
+    *(corto_string*)result = _corto_type_fullpath(
         *(corto_any*)args);
 }
 
@@ -1097,23 +1105,23 @@ void __corto_type_lookup(corto_function f, void *result, void *args) {
         *(corto_string*)((intptr_t)args + sizeof(corto_any)));
 }
 
-void __corto_type_nameof(corto_function f, void *result, void *args) {
+void __corto_type_name(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_string*)result = _corto_type_nameof(
+    *(corto_string*)result = _corto_type_name(
         *(corto_any*)args);
 }
 
-void __corto_type_parentof(corto_function f, void *result, void *args) {
+void __corto_type_parent(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_object*)result = _corto_type_parentof(
+    *(corto_object*)result = _corto_type_parent(
         *(corto_any*)args);
 }
 
-void __corto_type_relname(corto_function f, void *result, void *args) {
+void __corto_type_path(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
-    *(corto_string*)result = _corto_type_relname(
+    *(corto_string*)result = _corto_type_path(
         *(corto_any*)args,
         *(corto_object*)((intptr_t)args + sizeof(corto_any)));
 }
@@ -1139,17 +1147,17 @@ void __corto_type_sizeof(corto_function f, void *result, void *args) {
         corto_type(*(void**)args));
 }
 
-void __corto_type_toString(corto_function f, void *result, void *args) {
+void __corto_type_str(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_string*)result = _corto_type_toString(
+    *(corto_string*)result = _corto_type_str(
         *(corto_any*)args);
 }
 
-void __corto_type_typeof(corto_function f, void *result, void *args) {
+void __corto_type_type(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_type*)result = _corto_type_typeof(
+    *(corto_type*)result = _corto_type_type(
         *(corto_any*)args);
 }
 

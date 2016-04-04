@@ -162,7 +162,7 @@ CORTO_DECL_TRANSFORM(enum, string) {
             corto_fullpath(NULL, fromType));
         return -1;
     }
-    *(corto_string*)to = corto_strdup(corto_nameof(constant));
+    *(corto_string*)to = corto_strdup(corto_idof(constant));
     return 0;
 }
 
@@ -236,7 +236,7 @@ CORTO_DECL_TRANSFORM(bitmask, string) {
         cv = *(corto_constant*)constant;
 
         if ((((cv & v) == cv) && cv) || !(cv | v)) {
-            length += strlen(corto_nameof(constant));
+            length += strlen(corto_idof(constant));
             if (!result) {
                 result = corto_realloc(result, length);
                 *result = '\0';
@@ -246,7 +246,7 @@ CORTO_DECL_TRANSFORM(bitmask, string) {
                 strcat(result, "|");
             }
 
-            strcat(result, corto_nameof(constant));
+            strcat(result, corto_idof(constant));
         }
     }
 

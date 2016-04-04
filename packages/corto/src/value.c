@@ -235,11 +235,11 @@ char* corto_strving(corto_value* v, char* buffer, unsigned int length) {
             break;
         }
         if (m) {
-            if ((strlen(buffer) + strlen(corto_nameof(m)) + 1) >= length) {
+            if ((strlen(buffer) + strlen(corto_idof(m)) + 1) >= length) {
                 corto_error("buffer passed to corto_strving is too short for member name");
             } else {
                 strcat(buffer, ".");
-                strcat(buffer, corto_nameof(m));
+                strcat(buffer, corto_idof(m));
             }
         }
     }
@@ -290,11 +290,11 @@ char* corto_valueExpr(corto_value* v, char* buffer, unsigned int length) {
             goto error;
         }
         if (m) {
-            if ((strlen(buffer) + strlen(corto_nameof(m)) + 1) >= length) {
+            if ((strlen(buffer) + strlen(corto_idof(m)) + 1) >= length) {
                 corto_error("buffer passed to corto_strving is too short for member name");
             } else {
                 strcat(buffer, ".");
-                strcat(buffer, corto_nameof(m));
+                strcat(buffer, corto_idof(m));
             }
         }
     }

@@ -4112,6 +4112,148 @@ corto_int16 _corto_modifierDeinit(corto_modifier* value) {
     return result;
 }
 
+corto_nameAction* _corto_nameActionCreate(corto_object instance, corto_function procedure) {
+    corto_nameAction* _this;
+    _this = corto_nameAction(corto_declare(corto_nameAction_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_nameAction* _corto_nameActionCreateChild(corto_object _parent, corto_string _name, corto_object instance, corto_function procedure) {
+    corto_nameAction* _this;
+    _this = corto_nameAction(corto_declareChild(_parent, _name, corto_nameAction_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_nameActionUpdate(corto_nameAction* _this, corto_object instance, corto_function procedure) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_nameAction* _corto_nameActionDeclare(void) {
+    corto_nameAction* _this;
+    _this = corto_nameAction(corto_declare(corto_nameAction_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_nameAction* _corto_nameActionDeclareChild(corto_object _parent, corto_string _name) {
+    corto_nameAction* _this;
+    _this = corto_nameAction(corto_declareChild(_parent, _name, corto_nameAction_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_nameActionDefine(corto_nameAction* _this, corto_object instance, corto_function procedure) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+    return corto_define(_this);
+}
+
+void _corto_nameActionSet(corto_nameAction* _this, corto_object instance, corto_function procedure) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+}
+
+corto_string _corto_nameActionStr(corto_nameAction* value) {
+    corto_string result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_nameAction_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_nameAction* corto_nameActionFromStr(corto_nameAction* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_nameAction_o), str);
+    return value;
+}
+
+corto_equalityKind corto_nameActionCompare(corto_nameAction* dst, corto_nameAction* src) {
+    return corto_comparep(dst, corto_nameAction_o, src);
+}
+
+corto_int16 _corto_nameActionInit(corto_nameAction* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_nameAction_o)->size);
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_nameAction_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_nameActionDeinit(corto_nameAction* value) {
+    corto_int16 result;
+    corto_value v;
+    corto_valueValueInit(&v, NULL, corto_type(corto_nameAction_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
+corto_int16 corto_nameActionCall(corto_nameAction *_delegate, corto_string* _result) {
+    if (_delegate->_parent.procedure) {
+        if (_delegate->_parent.instance) {
+            corto_call(_delegate->_parent.procedure, _result, _delegate->_parent.instance);
+        } else {
+            corto_call(_delegate->_parent.procedure, _result);
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_int16 corto_nameActionInitC(corto_nameAction *d, corto_string ___ (*callback)(void)) {
+    d->_parent.procedure = corto_functionDeclare();
+    void __corto_nameAction(corto_function f, void *result, void *args);
+    d->_parent.procedure->impl = (corto_word)__corto_nameAction;
+    corto_function_parseParamString(d->_parent.procedure, "()");
+    d->_parent.procedure->implData = (corto_word)callback;
+    corto_define(d->_parent.procedure);
+    return 0;
+}
+
+corto_int16 corto_nameActionInitCInstance(corto_nameAction *d, corto_object instance, corto_string ___ (*callback)(corto_object)) {
+    d->_parent.instance = instance;
+    corto_claim(instance);
+    d->_parent.procedure = corto_functionDeclare();
+    void __corto_nameAction(corto_function f, void *result, void *args);
+    d->_parent.procedure->impl = (corto_word)__corto_nameAction;
+    corto_function_parseParamString(d->_parent.procedure, "(object instance)");
+    d->_parent.procedure->implData = (corto_word)callback;
+    corto_define(d->_parent.procedure);
+    return 0;
+}
+
 corto_object _corto_objectCreate(void) {
     corto_object _this;
     _this = corto_object(corto_declare(corto_object_o));

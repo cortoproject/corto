@@ -86,7 +86,7 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
 
     if (o != data->f) {
         if ((corto_class_instanceof(corto_procedure_o, corto_typeof(o)))) {
-            if (corto_overload(o, corto_nameof(data->f), &d)) {
+            if (corto_overload(o, corto_idof(data->f), &d)) {
                 data->error = TRUE;
                 goto finish;
             }
@@ -107,7 +107,7 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
                 corto_id id;
 
                 /* Get name of function */
-                corto_signatureName(corto_nameof(o), id);
+                corto_signatureName(corto_idof(o), id);
 
                 /* Set overloading flags if a function with same name is found. */
                 if (!strcmp(data->name, id)) {
@@ -136,7 +136,7 @@ corto_int16 _corto_function_init(
 
         walkData.f = this;
         walkData.error = FALSE;
-        corto_signatureName(corto_nameof(this), walkData.name);
+        corto_signatureName(corto_idof(this), walkData.name);
 
         for (i = 0; i < scope.length; i++) {
             if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
@@ -150,7 +150,7 @@ corto_int16 _corto_function_init(
         corto_scopeRelease(scope);
 
         /* Parse arguments from name */
-        if (corto_function_parseParamString(this, corto_nameof(this))) {
+        if (corto_function_parseParamString(this, corto_idof(this))) {
           goto error;
         }
     }

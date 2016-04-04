@@ -156,7 +156,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     if (object) {
         if (corto_checkAttr(object, CORTO_ATTR_SCOPED) || (corto_valueObject(v) == object)) {
             if (corto_parentof(object) == corto_lang_o) {
-                strcpy(id, corto_nameof(object));
+                strcpy(id, corto_idof(object));
                 str = id;
             } else {
                 str = (char*)corto_fullpath(id, object);
@@ -278,7 +278,7 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
     if (!data->compactNotation) {
         if (v->kind == CORTO_MEMBER) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
-            if (!corto_buffer_append(&data->buffer, "%s", corto_nameof(v->is.member.t))) goto finished;
+            if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.t))) goto finished;
             if (!corto_ser_appendColor(data, BOLD)) goto finished;
             if (!corto_buffer_append(&data->buffer, "=")) goto finished;
             if (!corto_ser_appendColor(data, NORMAL)) goto finished;
@@ -312,7 +312,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
 
         o = corto_valueObject(v);
         if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED) && corto_parentof(corto_typeof(o)) == corto_lang_o) {
-            strcpy(id, corto_nameof(corto_typeof(o)));
+            strcpy(id, corto_idof(corto_typeof(o)));
         } else {
             corto_fullpath(id, corto_typeof(o));
         }

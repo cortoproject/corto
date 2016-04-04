@@ -73,7 +73,7 @@ corto_string g_getName(corto_generator g) {
     if (g->name) {
         result = g->name;
     } else if (g->current) {
-        result = corto_nameof(g->current->o);
+        result = corto_idof(g->current->o);
     }
 
     return result;
@@ -814,7 +814,7 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
         while(count) {
             count--;
             strcat(_id, "/");
-            strcat(_id, corto_nameof(scopes[count]));
+            strcat(_id, corto_idof(scopes[count]));
         }
 
     /* If no prefix is found for object, just use the scoped identifier */
@@ -867,12 +867,12 @@ corto_string g_oid(corto_generator g, corto_object o, corto_id id) {
         if (prefix->o == o) {
             strcpy(cid, prefix->prefix);
         } else {
-            strcpy(cid, corto_nameof(o));
+            strcpy(cid, corto_idof(o));
         }
 
     /* If no prefix is found for object, just use the identifier */
     } else {
-        strcpy(cid, corto_nameof(o));
+        strcpy(cid, corto_idof(o));
     }
 
     g_oidTransform(g, o, cid, g->idKind);
@@ -1272,7 +1272,7 @@ static corto_uint32 corto_genMemberCacheCount(corto_ll cache, corto_member m) {
     memberIter = corto_llIter(cache);
     while(corto_iterHasNext(&memberIter)) {
         member = corto_iterNext(&memberIter);
-        if (!strcmp(corto_nameof(member->member), corto_nameof(m))) {
+        if (!strcmp(corto_idof(member->member), corto_idof(m))) {
             result++;
         }
     }
@@ -1323,9 +1323,9 @@ corto_char* corto_genMemberName(corto_generator g, corto_ll cache, corto_member 
     corto_id temp;
 
     if ((count = corto_genMemberCacheGet(cache, m))) {
-        sprintf(temp, "%s_%d", corto_nameof(m), count);
+        sprintf(temp, "%s_%d", corto_idof(m), count);
     } else {
-        strcpy(temp, corto_nameof(m));
+        strcpy(temp, corto_idof(m));
     }
 
     g_id(g, temp, result);

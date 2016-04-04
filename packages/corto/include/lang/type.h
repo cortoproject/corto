@@ -76,8 +76,8 @@ CORTO_EXPORT corto_void _corto_type_destruct(
     corto_type _this);
 #define corto_type_destruct(_this) _corto_type_destruct(corto_type(_this))
 
-CORTO_EXPORT corto_string _corto_type_fullname(corto_any _this);
-#define corto_type_fullname(_this) _corto_type_fullname(_this)
+CORTO_EXPORT corto_string _corto_type_fullpath(corto_any _this);
+#define corto_type_fullpath(_this) _corto_type_fullpath(_this)
 
 CORTO_EXPORT corto_int16 _corto_type_init(
     corto_type _this);
@@ -94,15 +94,15 @@ CORTO_EXPORT corto_object _corto_type_lookup(corto_any _this,
     corto_string name);
 #define corto_type_lookup(_this, name) _corto_type_lookup(_this, name)
 
-CORTO_EXPORT corto_string _corto_type_nameof(corto_any _this);
-#define corto_type_nameof(_this) _corto_type_nameof(_this)
+CORTO_EXPORT corto_string _corto_type_name(corto_any _this);
+#define corto_type_name(_this) _corto_type_name(_this)
 
-CORTO_EXPORT corto_object _corto_type_parentof(corto_any _this);
-#define corto_type_parentof(_this) _corto_type_parentof(_this)
+CORTO_EXPORT corto_object _corto_type_parent(corto_any _this);
+#define corto_type_parent(_this) _corto_type_parent(_this)
 
-CORTO_EXPORT corto_string _corto_type_relname(corto_any _this,
+CORTO_EXPORT corto_string _corto_type_path(corto_any _this,
     corto_object from);
-#define corto_type_relname(_this, from) _corto_type_relname(_this, from)
+#define corto_type_path(_this, from) _corto_type_path(_this, from)
 
 CORTO_EXPORT corto_object _corto_type_resolve(corto_any _this,
     corto_string name);
@@ -117,11 +117,11 @@ CORTO_EXPORT corto_uint32 _corto_type_sizeof(
     corto_type _this);
 #define corto_type_sizeof(_this) _corto_type_sizeof(corto_type(_this))
 
-CORTO_EXPORT corto_string _corto_type_toString(corto_any _this);
-#define corto_type_toString(_this) _corto_type_toString(_this)
+CORTO_EXPORT corto_string _corto_type_str(corto_any _this);
+#define corto_type_str(_this) _corto_type_str(_this)
 
-CORTO_EXPORT corto_type _corto_type_typeof(corto_any _this);
-#define corto_type_typeof(_this) _corto_type_typeof(_this)
+CORTO_EXPORT corto_type _corto_type_type(corto_any _this);
+#define corto_type_type(_this) _corto_type_type(_this)
 
 #ifdef __cplusplus
 }

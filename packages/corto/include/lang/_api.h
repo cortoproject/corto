@@ -1172,6 +1172,41 @@ CORTO_EXPORT corto_int16 _corto_modifierInit(corto_modifier* value);
 CORTO_EXPORT corto_int16 _corto_modifierDeinit(corto_modifier* value);
 #define corto_modifierDeinit(value) _corto_modifierDeinit(value)
 
+/* nameAction */
+CORTO_EXPORT corto_nameAction* _corto_nameActionCreate(corto_object instance, corto_function procedure);
+#define corto_nameActionCreate(instance, procedure) _corto_nameActionCreate(instance, corto_function(procedure))
+#define corto_nameActionCreate_auto(_name, instance, procedure) corto_nameAction* _name = corto_nameActionCreate(instance, procedure); (void)_name
+CORTO_EXPORT corto_nameAction* _corto_nameActionCreateChild(corto_object _parent, corto_string _name, corto_object instance, corto_function procedure);
+#define corto_nameActionCreateChild(_parent, _name, instance, procedure) _corto_nameActionCreateChild(_parent, _name, instance, corto_function(procedure))
+#define corto_nameActionCreateChild_auto(_parent, _name, instance, procedure) corto_nameAction* _name = corto_nameActionCreateChild(_parent, #_name, instance, procedure); (void)_name
+CORTO_EXPORT corto_int16 _corto_nameActionUpdate(corto_nameAction* _this, corto_object instance, corto_function procedure);
+#define corto_nameActionUpdate(_this, instance, procedure) _corto_nameActionUpdate(_this, instance, corto_function(procedure))
+
+CORTO_EXPORT corto_nameAction* _corto_nameActionDeclare(void);
+#define corto_nameActionDeclare() _corto_nameActionDeclare()
+#define corto_nameActionDeclare_auto(_name) corto_nameAction* _name = corto_nameActionDeclare(); (void)_name
+CORTO_EXPORT corto_nameAction* _corto_nameActionDeclareChild(corto_object _parent, corto_string _name);
+#define corto_nameActionDeclareChild(_parent, _name) _corto_nameActionDeclareChild(_parent, _name)
+#define corto_nameActionDeclareChild_auto(_parent, _name) corto_nameAction* _name = corto_nameActionDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_nameActionDefine(corto_nameAction* _this, corto_object instance, corto_function procedure);
+#define corto_nameActionDefine(_this, instance, procedure) _corto_nameActionDefine(_this, instance, corto_function(procedure))
+CORTO_EXPORT void _corto_nameActionSet(corto_nameAction* _this, corto_object instance, corto_function procedure);
+#define corto_nameActionSet(_this, instance, procedure) _corto_nameActionSet(_this, instance, corto_function(procedure))
+CORTO_EXPORT corto_string _corto_nameActionStr(corto_nameAction* value);
+#define corto_nameActionStr(value) _corto_nameActionStr(value)
+CORTO_EXPORT corto_nameAction* corto_nameActionFromStr(corto_nameAction* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_nameActionCompare(corto_nameAction* dst, corto_nameAction* src);
+
+CORTO_EXPORT corto_int16 _corto_nameActionInit(corto_nameAction* value);
+#define corto_nameActionInit(value) _corto_nameActionInit(value)
+CORTO_EXPORT corto_int16 _corto_nameActionDeinit(corto_nameAction* value);
+#define corto_nameActionDeinit(value) _corto_nameActionDeinit(value)
+
+corto_int16 corto_nameActionCall(corto_nameAction *_delegate, corto_string* _result);
+#define corto_nameActionInitC_auto(d, callback) corto_nameAction d; corto_nameActionInitC(&d, callback)
+CORTO_EXPORT corto_int16 corto_nameActionInitC(corto_nameAction *d, corto_string ___ (*callback)(void));
+#define corto_nameActionInitCInstance_auto(d, instance, callback)corto_nameAction d; corto_nameActionInitCInstance(&d, instance, callback)
+CORTO_EXPORT corto_int16 corto_nameActionInitCInstance(corto_nameAction *d, corto_object instance, corto_string ___ (*callback)(corto_object));
 /* object */
 CORTO_EXPORT corto_object _corto_objectCreate(void);
 #define corto_objectCreate() _corto_objectCreate()

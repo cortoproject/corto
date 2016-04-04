@@ -108,6 +108,7 @@ CORTO_META_OBJECT(sequence, octetseq);
 CORTO_META_OBJECT(list, resultList);
 
 CORTO_META_OBJECT(delegate, initAction);
+CORTO_META_OBJECT(delegate, nameAction);
 CORTO_META_OBJECT(delegate, destructAction);
 CORTO_META_OBJECT(delegate, notifyAction);
 CORTO_META_OBJECT(delegate, invokeAction);

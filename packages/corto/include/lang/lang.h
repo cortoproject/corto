@@ -41,6 +41,7 @@ extern "C" {
 #include "corto/lang/member.h"
 #include "corto/lang/metaprocedure.h"
 #include "corto/lang/method.h"
+#include "corto/lang/nameAction.h"
 #include "corto/lang/parameter.h"
 #include "corto/lang/primitive.h"
 #include "corto/lang/procedure.h"

@@ -185,6 +185,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, delegatedata);\
     SSO_OP_VOID(op, dispatcher);\
     SSO_OP_VALUE(op, initAction);\
+    SSO_OP_VALUE(op, nameAction);\
     SSO_OP_VALUE(op, destructAction);\
     SSO_OP_VALUE(op, notifyAction);\
     SSO_OP_VALUE(op, resultIter);\
@@ -385,6 +386,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, type_defaultProcedureType);\
     SSO_OP_OBJ(op, type_metaprocedures);\
     SSO_OP_OBJ(op, type_init);\
+    SSO_OP_OBJ(op, type_nameof);\
     SSO_OP_OBJ(op, type_sizeof_);\
     SSO_OP_OBJ(op, type_alignmentof_);\
     SSO_OP_OBJ(op, type_compatible_);\
@@ -393,8 +395,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, type_init_);\
     SSO_OP_OBJ(op, type_construct_);\
     SSO_OP_OBJ(op, type_destruct_);\
-    SSO_OP_OBJ(op, type_parentof);\
-    SSO_OP_OBJ(op, type_nameof);\
+    SSO_OP_OBJ(op, type_parent);\
+    SSO_OP_OBJ(op, type_name);\
     SSO_OP_OBJ(op, type_declare);\
     SSO_OP_OBJ(op, type_define);\
     SSO_OP_OBJ(op, type_delete);\
@@ -403,13 +405,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, type_lookup);\
     SSO_OP_OBJ(op, type_checkAttr);\
     SSO_OP_OBJ(op, type_checkState);\
-    SSO_OP_OBJ(op, type_typeof);\
+    SSO_OP_OBJ(op, type_type);\
     SSO_OP_OBJ(op, type_instanceof);\
-    SSO_OP_OBJ(op, type_fullname);\
-    SSO_OP_OBJ(op, type_relname);\
+    SSO_OP_OBJ(op, type_fullpath);\
+    SSO_OP_OBJ(op, type_path);\
     SSO_OP_OBJ(op, type_compare);\
     SSO_OP_OBJ(op, type_copy);\
-    SSO_OP_OBJ(op, type_toString);\
+    SSO_OP_OBJ(op, type_str);\
     /* primitive */\
     SSO_OP_OBJ(op, primitive_kind);\
     SSO_OP_OBJ(op, primitive_width);\
@@ -662,7 +664,7 @@ static void corto_initType(corto_object o, corto_uint32 size) {
 /* Define object */
 static void corto_defineObject(corto_object o) {
     if (corto_define(o)) {
-        corto_error("construction of builtin-object '%s' failed (%s)", corto_nameof(o), corto_lasterr());
+        corto_error("construction of builtin-object '%s' failed (%s)", corto_idof(o), corto_lasterr());
     }
 }
 

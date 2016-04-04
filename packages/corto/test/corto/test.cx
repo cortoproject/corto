@@ -20,6 +20,7 @@ class Bar::
 
 struct Point::
     x, y: int32
+    string nameof()
 
 struct Point3D: Point::
     z: int32
@@ -120,6 +121,9 @@ test::Suite ObjectMgmt::
     void tc_deleteTreeExplicit()
     void tc_deleteWithReference()
     void tc_deleteRedeclaration()
+
+    void tc_nameof()
+    void tc_nameofOverride()
 
 // Test compare serializer
 test::Suite Compare::

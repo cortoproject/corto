@@ -39,7 +39,7 @@ typedef struct corto__ols {
 
 typedef struct corto__scope {
     corto_object parent;
-    corto_string name;
+    corto_string id;
     corto_rbtree scope;
     struct corto_rwmutex_s scopeLock;
     corto__ols *ols;

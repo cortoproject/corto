@@ -32,7 +32,7 @@ void _corto_dispatcher_post(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this, e);
 }
@@ -61,7 +61,7 @@ void _corto_event_handle(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this);
 }
@@ -97,7 +97,7 @@ void _corto_invokeEvent_handle(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this);
 }
@@ -143,7 +143,7 @@ corto_resultIter _corto_loader_onRequest(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, request);
     
@@ -177,7 +177,7 @@ corto_object _corto_loader_onResume(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, parent, name, o);
     
@@ -209,7 +209,7 @@ void _corto_observableEvent_handle(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this);
 }
@@ -339,7 +339,7 @@ void _corto_replicator_onDeclare(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this, observable);
 }
@@ -369,7 +369,7 @@ void _corto_replicator_onDelete(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onDelete(object observable)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onDelete(object observable)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this, observable);
 }
@@ -401,7 +401,7 @@ void _corto_replicator_onInvoke(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,octetseq args)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,octetseq args)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this, instance, proc, args);
 }
@@ -434,7 +434,7 @@ corto_resultIter _corto_replicator_onRequest(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, request);
     
@@ -468,7 +468,7 @@ corto_object _corto_replicator_onResume(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, parent, name, o);
     
@@ -501,7 +501,7 @@ void _corto_replicator_onUpdate(
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onUpdate(object observable)@%d'", corto_nameof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onUpdate(object observable)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this, observable);
 }

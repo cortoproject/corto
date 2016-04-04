@@ -228,7 +228,7 @@ static void* corto__objectStartAddr(corto__object* o) {
 }
 
 /* Initialze scope-part of object */
-static corto_object corto__initScope(corto_object o, corto_string name, corto_object parent) {
+static corto_object corto__initScope(corto_object o, corto_string id, corto_object parent) {
     corto__object* _o;
     corto__scope* scope;
     corto_object result = NULL;
@@ -238,7 +238,7 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
     corto_assert(scope != NULL,
       "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
-    scope->name = corto_strdup(name);
+    scope->id = corto_strdup(id);
 
     /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
@@ -269,7 +269,7 @@ static corto_object corto__initScope(corto_object o, corto_string name, corto_ob
     }
 
     if (result != o) {
-        corto_dealloc(scope->name);
+        corto_dealloc(scope->id);
         corto_rwmutexFree(&scope->scopeLock);
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
@@ -299,9 +299,9 @@ static void corto__deinitScope(corto_object o) {
     /* We cannot remove the scope itself, since there might be childs
     * which have multiple cycles, which must be resolved first. */
 
-    /* Deleting the name of the object is also postponed until the object itself
+    /* Deleting the id of the object is also postponed until the object itself
      * is deleted. This makes it easier to debug scenarios with cycles where
-     * otherwise lots of objects with NULL names would show up. It also
+     * otherwise lots of objects with NULL ids would show up. It also
      * allows the select function to more efficiently determine what the
      * last iterated object was after a tree has changed. */
 
@@ -404,7 +404,7 @@ void corto__newSSO(corto_object sso) {
     scope = corto__objectScope(o);
     corto_assert(scope != NULL, "SSO object without a scope? That's bad.");
 
-    /* Don't call initScope because name is already set. */
+    /* Don't call initScope because id is already set. */
     corto_rwmutexNew(&scope->scopeLock);
     if (scope->parent) {
         corto__adoptSSO(sso);
@@ -440,7 +440,7 @@ corto_int16 corto__freeSSO(corto_object sso) {
          * be reported without there actually being a problem
         if (corto_rbtreeSize(scope->scope)) {
             corto_error("corto__freeSSO: scope of object '%s' is not empty (%p/%p: %d left)",
-                corto_nameof(sso),
+                corto_idof(sso),
                 sso,
                 scope->scope,
                 corto_rbtreeSize(scope->scope));
@@ -691,10 +691,10 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 p_scope->scope = corto_rbtreeNew_w_func(corto_compareDefault);
             }
 
-            corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->name, child);
+            corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->id, child);
             if (existing) {
                 if (corto_typeof(existing) != corto_typeof(child)) {
-                    corto_seterr("'%s' is already declared with a different type", c_scope->name);
+                    corto_seterr("'%s' is already declared with a different type", c_scope->id);
                     goto err_existing;
                 } else {
                     child = existing;
@@ -741,7 +741,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
 
 err_invalid_parent:
     c_scope->parent = NULL;
-    corto_rbtreeRemove(p_scope->scope, c_scope->name);
+    corto_rbtreeRemove(p_scope->scope, c_scope->id);
 err_existing:
     corto_rwmutexUnlock(&p_scope->scopeLock);
 error:
@@ -762,7 +762,7 @@ void corto__orphan(corto_object o) {
 
         /* Remove object from parent scope */
         if (corto_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
-        corto_rbtreeRemove(p_scope->scope, (void*)corto_nameof(o));
+        corto_rbtreeRemove(p_scope->scope, (void*)corto_idof(o));
 
         if (corto_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
     }
@@ -950,15 +950,15 @@ error:
 }
 
 /* Declare object */
-corto_object _corto_declareChild(corto_object parent, corto_string name, corto_type type) {
+corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
     corto_object o = NULL;
 
     if (!parent) {
         parent = root_o;
     }
 
-    if (!name || !strlen(name)) {
-        corto_seterr("invalid name");
+    if (!id || !strlen(id)) {
+        corto_seterr("invalid id");
         goto error;
     }
 
@@ -972,7 +972,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
         corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
         /* Initialize object parameters. */
-        if ((o_ret = corto__initScope(o, name, parent))) {
+        if ((o_ret = corto__initScope(o, id, parent))) {
 
             if (o_ret == o) {
                 /* Observable administration needs to be initialized after the
@@ -1016,7 +1016,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string name, corto_t
                 corto_seterr(
                   "object '%s/%s' is referenced after initializer failed. details:\n    %s",
                   corto_fullpath(NULL, parent),
-                  name,
+                  id,
                   corto_lasterr());
             } else {
                 corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
@@ -1055,8 +1055,8 @@ corto_object _corto_create(corto_type type) {
     return result;
 }
 
-corto_object _corto_createChild(corto_object parent, corto_string name, corto_type type) {
-    corto_object result = corto_declareChild(parent, name, type);
+corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type) {
+    corto_object result = corto_declareChild(parent, id, type);
     if (result && corto_checkState(result, CORTO_VALID)) {
         corto_define(result);
     }
@@ -1171,7 +1171,7 @@ corto_int16 corto_define(corto_object o) {
                 /* If object is persistent and locally owned, check if a
                  * persistent copy is already available */
                 if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                    corto_resume(corto_parentof(o), corto_nameof(o), o);
+                    corto_resume(corto_parentof(o), corto_idof(o), o);
                     /* Ignore result: if there are no replicators that contain
                      * a copy of the object, use the initial value */
                 }
@@ -1348,9 +1348,9 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
                 corto_rbtreeFree(scope->scope);
             }
 
-            if (scope->name) {
-                corto_dealloc(scope->name);
-                scope->name = NULL;
+            if (scope->id) {
+                corto_dealloc(scope->id);
+                scope->id = NULL;
             }
         }
 
@@ -1845,7 +1845,54 @@ err_not_scoped:
 }
 
 /* Get name (requires scoped object) */
-corto_string corto_nameof(corto_object o) {
+corto_string corto_nameof(corto_id buffer, corto_object o) {
+    corto_type t = corto_typeof(o);
+    corto_string str = NULL;
+    corto_bool threadStr = FALSE;
+    corto_function delegate = NULL;
+
+    if (t->kind == CORTO_COMPOSITE) {
+        corto_interface i = corto_interface(t);
+        do {
+            delegate = corto_type(i)->nameof._parent.procedure;
+            i = i->base;
+        } while(i && !delegate);
+    } else {
+        delegate = t->nameof._parent.procedure;
+    }
+
+    if (delegate) {
+        if(delegate->kind == CORTO_PROCEDURE_CDECL) {
+            ((void(*)(corto_function f, void *result, void *args))delegate->impl)(delegate, &str, &o);
+        } else {
+            corto_call(delegate, &str, o);
+        }
+        if (!buffer) {
+            buffer = str;
+            threadStr = TRUE;
+        } else {
+            strcpy(buffer, str);
+            corto_dealloc(str);
+        }
+    } else {
+        if (!buffer) {
+            buffer = corto_alloc(sizeof(corto_id));
+            threadStr = TRUE;
+        }
+        strcpy(buffer, corto_idof(o));
+    }
+
+    if (threadStr) {
+        corto_string tmp = buffer;
+        buffer = corto_setThreadString(buffer);
+        corto_dealloc(tmp);
+    }
+
+    return buffer;
+}
+
+/* Get id (requires scoped object) */
+corto_string corto_idof(corto_object o) {
     corto__object* _o;
     corto__scope* scope;
     corto_string result;
@@ -1854,14 +1901,14 @@ corto_string corto_nameof(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     scope = corto__objectScope(_o);
     if (scope) {
-        result = scope->name;
+        result = scope->id;
     } else {
         goto err_not_scoped;
     }
 
     return result;
 err_not_scoped:
-    corto_critical("corto_nameof: object %p is not scoped.", o);
+    corto_critical("corto_idof: object %p is not scoped.", o);
     return NULL;
 }
 
@@ -1882,7 +1929,7 @@ corto_rbtree corto_scopeof(corto_object o) {
 
     return result;
 err_not_scoped:
-    corto_critical("corto_nameof: object %p is not scoped.", o);
+    corto_critical("corto_idof: object %p is not scoped.", o);
     return NULL;
 }
 
@@ -1937,7 +1984,7 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* 
 corto_string corto_fullpath(corto_id buffer, corto_object o) {
     corto_object stack[CORTO_MAX_SCOPE_DEPTH];
     corto_uint32 depth;
-    corto_string name;
+    corto_string id;
     corto_char* ptr;
     corto_uint32 len;
     corto_bool threadStr = FALSE;
@@ -1954,7 +2001,7 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
     } else if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         sprintf(buffer, "<%p>", o);
     } else if (corto_parentof(o) == corto_lang_o) {
-        strcpy(buffer, corto_nameof(o));
+        strcpy(buffer, corto_idof(o));
     } else {
         do {
             stack[depth++] = o;
@@ -1969,14 +2016,14 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
                 depth--;
                 o = stack[depth];
 
-                if ((name = corto_nameof(o))) {
+                if ((id = corto_idof(o))) {
                     /* Copy scope operator */
                     *ptr = '/';
                     ptr += 1;
 
-                    /* Copy name */
-                    len = strlen(name);
-                    memcpy(ptr, name, len + 1);
+                    /* Copy id */
+                    len = strlen(id);
+                    memcpy(ptr, id, len + 1);
                     ptr += len;
                 }
             }
@@ -2108,8 +2155,8 @@ corto_string corto_path(
             ptr = &buffer[strlen(buffer)];
             while(count) {
                 if (!reverse) {
-                    length = strlen(corto_nameof(o_s[count]));
-                    memcpy(ptr, corto_nameof(o_s[count]), length);
+                    length = strlen(corto_idof(o_s[count]));
+                    memcpy(ptr, corto_idof(o_s[count]), length);
                 } else {
                     length = 2;
                     memcpy(ptr, "..", 2);
@@ -2120,8 +2167,8 @@ corto_string corto_path(
                 count--;
             }
             if (!reverse) {
-                length = strlen(corto_nameof(o_s[count]));
-                memcpy(ptr, corto_nameof(o_s[count]), length);
+                length = strlen(corto_idof(o_s[count]));
+                memcpy(ptr, corto_idof(o_s[count]), length);
             } else {
                 length = 2;
                 memcpy(ptr, "..", 2);
@@ -2300,7 +2347,7 @@ corto_int32 corto_release(corto_object o) {
     return corto_release_ext(NULL, o, NULL);
 }
 
-corto_object corto_lookupLowercase(corto_object o, corto_string name) {
+corto_object corto_lookupLowercase(corto_object o, corto_string id) {
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rbtree tree;
@@ -2309,7 +2356,7 @@ corto_object corto_lookupLowercase(corto_object o, corto_string name) {
 
     /* Important: Lowercase expects a buffer that it may modify. pathToArray
      * inserts '\0' where it finds a separator. */
-    corto_int32 i, count = corto_pathToArray(name, elements, "/");
+    corto_int32 i, count = corto_pathToArray(id, elements, "/");
 
     if (!o) {
         o = root_o;
@@ -2333,10 +2380,10 @@ corto_object corto_lookupLowercase(corto_object o, corto_string name) {
                 {
                     o = NULL;
                 } else {
-                    /* If an object was returned with a ( in its name but
+                    /* If an object was returned with a ( in its id but
                      * the request didn't have one, check scope again for an object
                      * that matches the request exactly */
-                    if (strchr(corto_nameof(o), '(') && !strchr(elements[i], '(')) {
+                    if (strchr(corto_idof(o), '(') && !strchr(elements[i], '(')) {
                         corto_object checkNoArgs = NULL;
                         if (corto_rbtreeHasKey_w_cmp(
                               tree, elements[i],
@@ -2384,11 +2431,11 @@ error:
     return NULL;
 }
 
-corto_object corto_lookup(corto_object o, corto_string name) {
+corto_object corto_lookup(corto_object o, corto_string id) {
     corto_id lower; *lower = '\0';
-    char *ptr = name, ch;
+    char *ptr = id, ch;
     char *bptr = lower;
-    if (name) {
+    if (id) {
         for(; (ch = *ptr); ptr++) *(bptr++) = tolower(ch);
         *bptr = '\0';
     }
@@ -2979,7 +3026,7 @@ corto_int16 corto_update(corto_object o) {
 
     if (!corto_owned(o)) {
         corto_seterr("cannot update '%s', process does not own object",
-            corto_nameof(o));
+            corto_idof(o));
         goto error;
     }
 
@@ -3004,7 +3051,7 @@ corto_int16 corto_updateBegin(corto_object o) {
 
     if (!corto_owned(o)) {
         corto_seterr("cannot update '%s', process does not own object",
-            corto_nameof(o));
+            corto_idof(o));
         goto error;
     }
 
@@ -3703,7 +3750,7 @@ static void corto_signatureFromDelegate(corto_object o, corto_id buffer) {
     corto_uint32 i;
 
     /* Construct signature */
-    corto_string signature = corto_signatureOpen(corto_nameof(o));
+    corto_string signature = corto_signatureOpen(corto_idof(o));
     for (i = 0; i < type->parameters.length; i++) {
         corto_parameter *p = &type->parameters.buffer[i];
         signature = corto_signatureAdd(signature, p->type, p->passByReference ? CORTO_PARAMETER_FORCEREFERENCE : 0);
@@ -3728,7 +3775,7 @@ corto_int16 corto_signature(corto_object object, corto_id buffer) {
         corto_signatureFromDelegate(object, buffer);
         break;
     case CORTO_PROCEDURE:
-        strcpy(buffer, corto_nameof(object));
+        strcpy(buffer, corto_idof(object));
         break;
     default:
         goto error;
@@ -3915,7 +3962,7 @@ int corto_lookupFunctionWalk(corto_object *ptr, void* userData) {
                 goto found;
             }
         } else {
-            corto_id sigName; corto_signatureName(corto_nameof(o), sigName);
+            corto_id sigName; corto_signatureName(corto_idof(o), sigName);
             if (!strcmp(sigName, data->request)) {
                 if (!corto_function(o)->overloaded) {
                     data->d = 0;
@@ -3939,7 +3986,7 @@ int corto_lookupFunctionWalk(corto_object *ptr, void* userData) {
             }
         }
     } else {
-        if (!stricmp(corto_nameof(o), data->request)) {
+        if (!stricmp(corto_idof(o), data->request)) {
             data->d = 0;
             data->result = (corto_object*)ptr;
             goto found;
@@ -4026,7 +4073,7 @@ corto_string corto_signatureAdd(corto_string sig, corto_type type, int flags) {
             corto_fullpath(id, type);
         } else
         {
-            strcpy(id, corto_nameof(type));
+            strcpy(id, corto_idof(type));
         }
     } else if (wildcard) {
         strcpy(id, "?");

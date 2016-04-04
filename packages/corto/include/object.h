@@ -69,7 +69,8 @@ corto_object _corto_assertType(corto_type type, corto_object o);
 #endif
 
 /* Scoped data */
-corto_string corto_nameof(corto_object o);
+corto_string corto_idof(corto_object o);
+corto_string corto_nameof(corto_id str, corto_object o);
 corto_object corto_parentof(corto_object o);
 corto_uint32 corto_scopeSize(corto_object o);
 corto_objectseq corto_scopeClaim(corto_object o);
@@ -199,7 +200,6 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_deinitp(p, type) _corto_deinitp(p, corto_type(type))
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
 #define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_replicator(r))
-
 
 #ifdef __cplusplus
 }

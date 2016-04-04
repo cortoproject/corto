@@ -324,7 +324,7 @@ static int corto_genTypeDependencies(corto_object o, corto_bool allowDeclared, c
         }
         break;
     default:
-        corto_seterr("typeKind '%s' not handled by code-generator.", corto_nameof(corto_enum_constant(corto_typeKind_o, corto_type(t)->kind)));
+        corto_seterr("typeKind '%s' not handled by code-generator.", corto_idof(corto_enum_constant(corto_typeKind_o, corto_type(t)->kind)));
         goto error;
         break;
     }

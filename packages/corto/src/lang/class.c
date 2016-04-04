@@ -29,7 +29,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
         m_interface = (corto_method)interface->methods.buffer[i];
 
         m_class = NULL;
-        m_classPtr = (corto_method*)corto_vtableLookup(&corto_interface(this)->methods, corto_nameof(m_interface), &distance);
+        m_classPtr = (corto_method*)corto_vtableLookup(&corto_interface(this)->methods, corto_idof(m_interface), &distance);
         if (m_classPtr) {
             m_class = *m_classPtr;
         }

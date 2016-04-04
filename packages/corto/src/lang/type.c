@@ -16,7 +16,7 @@ corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure pr
     corto_int32 d = 0;
 
     /* Check if function is overloaded */
-    if ((f = corto_vtableLookup(&this->metaprocedures, corto_nameof(procedure), &d))) {
+    if ((f = corto_vtableLookup(&this->metaprocedures, corto_idof(procedure), &d))) {
         if (d) {
             corto_function(*f)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
             corto_function(procedure)->overloaded = TRUE;
@@ -230,9 +230,9 @@ corto_void _corto_type_destruct(
 /* $end */
 }
 
-corto_string _corto_type_fullname(corto_any this)
+corto_string _corto_type_fullpath(corto_any this)
 {
-/* $begin(corto/lang/type/fullname) */
+/* $begin(corto/lang/type/fullpath) */
     corto_string result = NULL;
 
     if (this.value) {
@@ -280,13 +280,13 @@ corto_object _corto_type_lookup(corto_any this,
 /* $end */
 }
 
-corto_string _corto_type_nameof(corto_any this)
+corto_string _corto_type_name(corto_any this)
 {
-/* $begin(corto/lang/type/nameof) */
+/* $begin(corto/lang/type/name) */
     corto_string result = NULL;
 
     if (this.value) {
-        result = corto_nameof(this.value);
+        result = corto_idof(this.value);
         if(result) {
             result = corto_strdup(result);
         }
@@ -298,9 +298,9 @@ corto_string _corto_type_nameof(corto_any this)
 /* $end */
 }
 
-corto_object _corto_type_parentof(corto_any this)
+corto_object _corto_type_parent(corto_any this)
 {
-/* $begin(corto/lang/type/parentof) */
+/* $begin(corto/lang/type/parent) */
     corto_string result = NULL;
 
    if (corto_checkAttr(this.value, CORTO_ATTR_SCOPED)) {
@@ -318,10 +318,10 @@ corto_object _corto_type_parentof(corto_any this)
 /* $end */
 }
 
-corto_string _corto_type_relname(corto_any this,
+corto_string _corto_type_path(corto_any this,
     corto_object from)
 {
-/* $begin(corto/lang/type/relname) */
+/* $begin(corto/lang/type/path) */
     corto_string result = NULL;
     corto_id id;
 
@@ -391,9 +391,9 @@ corto_uint32 _corto_type_sizeof(
 /* $end */
 }
 
-corto_string _corto_type_toString(corto_any this)
+corto_string _corto_type_str(corto_any this)
 {
-/* $begin(corto/lang/type/toString) */
+/* $begin(corto/lang/type/str) */
     corto_value value;
     corto_string result;
 
@@ -412,9 +412,9 @@ corto_string _corto_type_toString(corto_any this)
 /* $end */
 }
 
-corto_type _corto_type_typeof(corto_any this)
+corto_type _corto_type_type(corto_any this)
 {
-/* $begin(corto/lang/type/typeof) */
+/* $begin(corto/lang/type/type) */
     corto_type result = NULL;
 
     result = this.type;

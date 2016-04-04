@@ -136,7 +136,7 @@ corto_void _test_Resolver_tc_resolveIo(
     corto_loader p = corto_loaderCreate();
     corto_object o = corto_resolve(NULL, "io");
     test_assert(o != NULL);
-    test_assert (!strcmp(corto_nameof(o), "io"));
+    test_assert (!strcmp(corto_idof(o), "io"));
     test_assert (corto_parentof(o) == corto_o);
     corto_release(o);
 
@@ -153,7 +153,7 @@ corto_void _test_Resolver_tc_resolveLang(
 
     corto_object o = corto_resolve(NULL, "lang");
     test_assert(o != NULL);
-    test_assert (!strcmp(corto_nameof(o), "lang"));
+    test_assert (!strcmp(corto_idof(o), "lang"));
     test_assert (o == corto_lang_o);
     corto_release(o);
 
@@ -179,7 +179,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunction(
 
     corto_object o = corto_voidCreateChild(NULL, "o()");
     test_assert(o != NULL);
-    test_assert(!strcmp(corto_nameof(o), "o()"));
+    test_assert(!strcmp(corto_idof(o), "o()"));
 
     corto_object p = corto_resolve(NULL, "o()");
     test_assert(p != NULL);
@@ -198,7 +198,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(
 
     corto_object o = corto_voidCreateChild(NULL, "o(uint32 a)");
     test_assert(o != NULL);
-    test_assert(!strcmp(corto_nameof(o), "o(uint32 a)"));
+    test_assert(!strcmp(corto_idof(o), "o(uint32 a)"));
 
     corto_object p = corto_resolve(NULL, "o(uint32 a)");
     test_assert(p != NULL);
@@ -219,7 +219,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(
 
     corto_object o = corto_voidCreateChild(parent, "o(uint32 a)");
     test_assert(o != NULL);
-    test_assert(!strcmp(corto_nameof(o), "o(uint32 a)"));
+    test_assert(!strcmp(corto_idof(o), "o(uint32 a)"));
     test_assert(!strcmp(corto_fullpath(NULL, o), "/parent/o(uint32 a)"));
 
     corto_object p = corto_resolve(NULL, "/parent/o(uint32 a)");
@@ -240,7 +240,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(
 
     corto_object o = corto_voidCreateChild(NULL, "o(uint32 a)");
     test_assert(o != NULL);
-    test_assert(!strcmp(corto_nameof(o), "o(uint32 a)"));
+    test_assert(!strcmp(corto_idof(o), "o(uint32 a)"));
 
     corto_object p = corto_resolve(NULL, "o(uint16 a)");
     test_assert(p == NULL);
@@ -259,7 +259,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(
 
     corto_object o = corto_voidCreateChild(parent, "o(uint32 a)");
     test_assert(o != NULL);
-    test_assert(!strcmp(corto_nameof(o), "o(uint32 a)"));
+    test_assert(!strcmp(corto_idof(o), "o(uint32 a)"));
     test_assert(!strcmp(corto_fullpath(NULL, o), "/parent/o(uint32 a)"));
 
     corto_object p = corto_resolve(NULL, "/parent/o(uint16 a)");
@@ -282,7 +282,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(
 
     corto_object o = corto_voidCreateChild(parent, "o()");
     test_assert(o != NULL);
-    test_assert(!strcmp(corto_nameof(o), "o()"));
+    test_assert(!strcmp(corto_idof(o), "o()"));
     test_assert(!strcmp(corto_fullpath(id, o), "/parent/o()"));
 
     corto_object p = corto_resolve(NULL, "/parent/o()");

@@ -403,7 +403,7 @@ static int cxsh_show(char* object) {
                       INTERFACE_COLOR,
                       NORMAL,
                       OBJECT_COLOR,
-                      corto_nameof(o),
+                      corto_idof(o),
                       NORMAL);
                 }
                 if (o != root_o) {
@@ -626,7 +626,7 @@ static corto_int16 cxsh_ser_member(
   void *userData)
 {
     cxsh_memberSer_t *data = userData;
-    corto_string m = corto_nameof(info->is.member.t);
+    corto_string m = corto_idof(info->is.member.t);
     CORTO_UNUSED(s);
 
     if (m && !fnmatch(data->filter, m, 0)) {
@@ -736,7 +736,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     /* Add methods to auto complete */
                     corto_vtableForeach(corto_interface(t)->methods, m) {
                         corto_id method, sigName;
-                        corto_signatureName(corto_nameof(m), sigName);
+                        corto_signatureName(corto_idof(m), sigName);
                         if (!fnmatch(filter, sigName, 0)) {
                             sprintf(method, "%s.%s(", objExpr, sigName);
                             corto_llAppend(result, corto_strdup(method));
