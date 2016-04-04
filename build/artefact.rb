@@ -185,7 +185,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
       }.join(" ")
 
     # Check if there were any new files created during code generation
-    Rake::FileList["src/*.c"].each do |file|
+    Rake::FileList["src/*.{c,cc,cpp,cxx}"].each do |file|
         obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
         if not OBJECTS.include? obj
             build_source(file, obj, true)

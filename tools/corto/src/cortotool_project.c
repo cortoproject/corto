@@ -63,7 +63,8 @@ static corto_int16 cortotool_createRakefile(
     const char *shortName,
     corto_bool isLocal,
     corto_bool nocorto,
-    corto_bool nocoverage)
+    corto_bool nocoverage,
+    corto_string language)
 {
     FILE *file;
     corto_id buff;
@@ -91,7 +92,9 @@ static corto_int16 cortotool_createRakefile(
     if (nocoverage) {
         fprintf(file, "COVERAGE = false\n\n");
     }
-
+    if (strcmp(language, "c")) {
+        fprintf(file, "LANGUAGE = \"%s\"\n\n", language);
+    }
 
     fprintf(file, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", projectKind);
     fclose(file);
@@ -101,7 +104,7 @@ error:
     return -1;
 }
 
-static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage, corto_bool isLocal) {
+static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage, corto_bool isLocal, corto_string language) {
     FILE *file;
 
     if (corto_mkdir("test")) {
@@ -115,13 +118,30 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
 
     if (cortotool_create(
         8,
-        (char*[]){"create", "package", "::test", "--notest", "--local", "--silent", "--nobuild", "--nocoverage", NULL}
+        (char*[]){
+            "create",
+            "package",
+            "/test",
+            "--notest",
+            "--local",
+            "--silent",
+            "--nobuild",
+            "--nocoverage",
+            "--lang",
+            language,
+            NULL}
     )) {
         corto_error("corto: couldn't create test skeleton (check permissions)");
         goto error;
     }
 
-    file = fopen("src/test.c", "w");
+    corto_id filename;
+    if (!strcmp(language, "c")) {
+        sprintf(filename, "src/test.c");
+    } else {
+        sprintf(filename, "src/test.cpp");
+    }
+    file = fopen(filename, "w");
     if (file) {
         fprintf(file, "/* $begin(main) */\n");
         fprintf(file, "    int result = 0;\n");
@@ -135,7 +155,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
         fprintf(file, "/* $end */\n");
         fclose(file);
     } else {
-        corto_error("corto: couldn't create 'test/src/test.c' (check permissions)");
+        corto_error("corto: couldn't create 'test/%s' (check permissions)", filename);
         goto error;
     }
 
@@ -152,7 +172,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
 
     if (cortotool_add(
         4,
-        (char*[]){"add", "::corto::test", "--silent", "--nobuild", NULL}
+        (char*[]){"add", "/corto/test", "--silent", "--nobuild", NULL}
     )) {
         goto error;
     }
@@ -244,7 +264,8 @@ static corto_int16 cortotool_app (
     corto_bool notest,
     corto_bool local,
     corto_bool nocorto,
-    corto_bool nocoverage)
+    corto_bool nocoverage,
+    corto_string language)
 {
     corto_id buff;
     FILE *file;
@@ -255,7 +276,7 @@ static corto_int16 cortotool_app (
         goto error;
     }
 
-    if (cortotool_createRakefile(projectKind, name, name, local, nocorto, nocoverage)) {
+    if (cortotool_createRakefile(projectKind, name, name, local, nocorto, nocoverage, language)) {
         goto error;
     }
 
@@ -275,7 +296,11 @@ static corto_int16 cortotool_app (
         goto error;
     }
 
-    sprintf(buff, "%s/src/%s.c", name, name);
+    if (!strcmp(language, "c")) {
+        sprintf(buff, "%s/src/%s.c", name, name);
+    } else {
+        sprintf(buff, "%s/src/%s.cpp", name, name);
+    }
     file = fopen(buff, "w");
     if (file) {
         fprintf(file, "#include \"%s.h\"\n\n", name);
@@ -304,7 +329,8 @@ static corto_int16 cortotool_app (
         if (cortotool_createTest(
             name,
             FALSE,
-            local))
+            local,
+            language))
         {
             goto error;
         }
@@ -328,7 +354,8 @@ static corto_int16 cortotool_package(
     corto_bool local,
     corto_bool nocorto,
     corto_bool nodef,
-    corto_bool nocoverage)
+    corto_bool nocoverage,
+    corto_string language)
 {
     corto_id cxfile, srcfile, srcdir, parentName;
     corto_char *ptr, *name;
@@ -387,7 +414,7 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, local, nocorto, nocoverage)) {
+    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, local, nocorto, nocoverage, language)) {
         goto error;
     }
 
@@ -508,7 +535,11 @@ static corto_int16 cortotool_package(
         }
     }
 
-    snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name);
+    if (!strcmp(language, "c")) {
+        snprintf(srcfile, sizeof(srcfile), "%s/src/%s.c", name, name);
+    } else {
+        snprintf(srcfile, sizeof(srcfile), "%s/src/%s.cpp", name, name);
+    }
     if (nocorto) {
         /* Don't overwrite file if it already exists */
         if (!corto_fileTest(srcfile)) {
@@ -591,13 +622,13 @@ static corto_int16 cortotool_package(
     }
 
     if (!nobuild) {
-        if (cortotool_build(2, (char*[]){"build", "--silent", nocoverage ? "--nocoverage" : "", NULL})) {
+        if (cortotool_build(2, (char*[]){"build", "--verbose", nocoverage ? "--nocoverage" : "", NULL})) {
             goto error;
         }
     }
 
     if (!notest) {
-        if (cortotool_createTest(include, TRUE, local)) {
+        if (cortotool_createTest(include, TRUE, local, language)) {
             goto error;
         }
     }
@@ -617,7 +648,8 @@ error:
 corto_int16 cortotool_create(int argc, char *argv[]) {
     corto_ll silent, mute, nobuild, notest, local;
     corto_ll apps, packages, nocorto, nodef, nocoverage;
-    corto_ll apps_noname, packages_noname;
+    corto_ll apps_noname, packages_noname, lang;
+    corto_string language = "c";
 
     CORTO_UNUSED(argc);
 
@@ -633,6 +665,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         {"--nodef", &nodef, NULL},
         {"--local", &local, NULL},
         {"--nocoverage", &nocoverage, NULL},
+        {"--lang", NULL, &lang},
         {CORTO_APPLICATION, NULL, &apps},
         {CORTO_PACKAGE, NULL, &packages},
         {CORTO_APPLICATION, &apps_noname, NULL},
@@ -651,6 +684,10 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         notest = nocorto;
     }
 
+    if (lang) {
+        language = corto_llGet(lang, 0);
+    }
+
     /* If no arguments are provided, create an application with a random name */
     if (!apps && !packages && !apps_noname && !packages_noname)
     {
@@ -664,7 +701,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
             notest != NULL,
             local != NULL,
             nocorto != NULL,
-            nocoverage != NULL))
+            nocoverage != NULL,
+            language))
         {
             goto error;
         }
@@ -683,7 +721,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 notest != NULL,
                 local != NULL,
                 nocorto != NULL,
-                nocoverage != NULL))
+                nocoverage != NULL,
+                language))
             {
                 goto error;
             }
@@ -704,7 +743,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 notest != NULL,
                 local != NULL,
                 nocorto != NULL,
-                nocoverage != NULL))
+                nocoverage != NULL,
+                language))
             {
                 goto error;
             }
@@ -724,7 +764,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 local != NULL,
                 nocorto != NULL,
                 nodef != NULL,
-                nocoverage != NULL))
+                nocoverage != NULL,
+                language))
             {
                 goto error;
             }
@@ -745,7 +786,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
                 local != NULL,
                 nocorto != NULL,
                 nodef != NULL,
-                nocoverage != NULL))
+                nocoverage != NULL,
+                language))
             {
                 goto error;
             }
