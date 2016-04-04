@@ -622,7 +622,7 @@ static corto_int16 cortotool_package(
     }
 
     if (!nobuild) {
-        if (cortotool_build(2, (char*[]){"build", "--verbose", nocoverage ? "--nocoverage" : "", NULL})) {
+        if (cortotool_build(2, (char*[]){"build", "--silent", nocoverage ? "--nocoverage" : "", NULL})) {
             goto error;
         }
     }

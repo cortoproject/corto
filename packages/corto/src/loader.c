@@ -480,6 +480,13 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     case CORTO_LOCATION_LIB:
         /* Result is already pointing to the lib */
         break;
+    case CORTO_LOCATION_LIBPATH: {
+        corto_dealloc(result);
+        corto_string lib;
+        corto_asprintf(&lib, base, "lib");
+        corto_asprintf(&result, "%s/%s", lib, package);
+        break;
+    }
     case CORTO_LOCATION_INCLUDE: {
         corto_dealloc(result);
         corto_string include;
@@ -519,7 +526,7 @@ error:
     return NULL;
 }
 
-static corto_ll corto_loadGetDependencies(corto_string file) {
+corto_ll corto_loadGetDependencies(corto_string file) {
     corto_ll result = NULL;
 
     if (corto_fileTest(file)) {

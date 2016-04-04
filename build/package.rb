@@ -319,6 +319,10 @@ task :install do
         sh "mkdir -p #{libpath}/.corto"
         sh "cp .corto/packages.txt #{libpath}/.corto"
     end
+    if File.exists? ".corto/version.txt" then
+      sh "mkdir -p #{libpath}/.corto"
+      sh "cp .corto/version.txt #{libpath}/.corto"
+    end
 end
 
 # Collect files in preparation for creating a tar

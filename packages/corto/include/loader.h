@@ -22,6 +22,7 @@ int corto_load(corto_string package, int argc, char* argv[]);
 /* Try loading a package (doesn't generate errors when not found) */
 int corto_loadTry(corto_string str, int argc, char* argv[]);
 
+corto_ll corto_loadGetDependencies(corto_string file);
 corto_ll corto_loadGetPackages(void);
 void corto_loadFreePackages(corto_ll packages);
 corto_bool corto_loadRequiresPackage(corto_string package);
@@ -34,6 +35,7 @@ void (*corto_loaderResolveProc(corto_string procName))(void);
 typedef enum corto_loaderLocationKind {
     CORTO_LOCATION_ENV,
     CORTO_LOCATION_LIB,
+    CORTO_LOCATION_LIBPATH,
     CORTO_LOCATION_INCLUDE,
     CORTO_LOCATION_NAME,
     CORTO_LOCATION_FULLNAME

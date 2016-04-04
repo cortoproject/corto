@@ -23,6 +23,7 @@ corto_generator gen_new(corto_string name, corto_string language) {
 
     /* No imports are resolved */
     result->imports = NULL;
+    result->importsNested = NULL;
 
     /* Set objects */
     result->objects = NULL;
@@ -340,6 +341,37 @@ void gen_free(corto_generator g) {
     corto_dealloc(g);
 }
 
+corto_int16 g_loadPrefixes(corto_generator g, corto_ll list) {
+    corto_iter iter = corto_llIter(list);
+
+    while (corto_iterHasNext(&iter)) {
+        corto_object p = corto_iterNext(&iter);
+        corto_string prefixFileStr;
+        corto_string prefix;
+        corto_string includePath =
+            corto_locate(
+                corto_path(NULL, root_o, p, "/"), CORTO_LOCATION_INCLUDE);
+
+        if (!includePath) {
+            goto error;
+        }
+
+        corto_asprintf(&prefixFileStr, "%s/.prefix", includePath);
+        prefix = corto_fileLoad(prefixFileStr);
+        if (prefix) {
+            gen_parse(g, p, FALSE, FALSE, prefix);
+        }
+
+        corto_dealloc(prefix);
+        corto_dealloc(prefixFileStr);
+        corto_dealloc(includePath);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 /* Start generator */
 corto_int16 gen_start(corto_generator g) {
     /* Find dependent packages, configure associated API prefixes */
@@ -355,28 +387,13 @@ corto_int16 gen_start(corto_generator g) {
 
     /* Find include paths for packages, load prefix file into generator */
     if (g->imports) {
-        corto_iter iter = corto_llIter(g->imports)
-        while (corto_iterHasNext(&iter)) {
-            corto_object p = corto_iterNext(&iter);
-            corto_string prefixFileStr;
-            corto_string prefix;
-            corto_string includePath =
-                corto_locate(
-                    corto_path(NULL, root_o, p, "/"), CORTO_LOCATION_INCLUDE);
-
-            if (!includePath) {
-                goto error;
-            }
-
-            corto_asprintf(&prefixFileStr, "%s/.prefix", includePath);
-            prefix = corto_fileLoad(prefixFileStr);
-            if (prefix) {
-                gen_parse(g, p, FALSE, FALSE, prefix);
-            }
-
-            corto_dealloc(prefix);
-            corto_dealloc(prefixFileStr);
-            corto_dealloc(includePath);
+        if (g_loadPrefixes(g, g->imports)) {
+            goto error;
+        }
+    }
+    if (g->importsNested) {
+        if (g_loadPrefixes(g, g->importsNested)) {
+            goto error;
         }
     }
 
@@ -386,7 +403,52 @@ error:
 }
 
 /* ==== Generator utility functions */
-corto_int16 g_importsEvalReference(corto_generator g, corto_object o) {
+typedef struct g_serializeImports_t {
+    corto_generator g;
+    corto_object stack[1024]; /* Maximum serializer-depth */
+    corto_uint32 count;
+    corto_bool nested;
+}g_serializeImports_t;
+
+corto_int16 g_crawlDependencies(
+    corto_generator g,
+    corto_object parent)
+{
+    corto_string packageDir = corto_locate(
+        corto_fullpath(NULL, parent),
+        CORTO_LOCATION_LIBPATH
+    );
+
+    corto_string packagesTxt;
+    corto_asprintf(&packagesTxt, "%s/.corto/packages.txt", packageDir);
+
+    corto_ll deps = corto_loadGetDependencies(packagesTxt);
+    if (deps) {
+        if (!g->importsNested) {
+            g->importsNested = corto_llNew();
+        }
+        corto_iter it = corto_llIter(deps);
+        while (corto_iterHasNext(&it)) {
+            corto_string dep = corto_iterNext(&it);
+            corto_object o = corto_resolve(NULL, dep);
+            if (o) {
+                if (!corto_llHasObject(g->importsNested, o)) {
+                    corto_llAppend(g->importsNested, o);
+                } else {
+                    corto_release(o);
+                }
+            }
+        }
+        corto_loadFreePackages(deps);
+    }
+
+    return 0;
+}
+
+corto_int16 g_importsEvalReference(
+    corto_generator g,
+    corto_object o)
+{
     if (!g_mustParse(g, o)) {
         corto_object parent = o;
 
@@ -400,6 +462,9 @@ corto_int16 g_importsEvalReference(corto_generator g, corto_object o) {
             }
             if (!corto_llHasObject(g->imports, parent)) {
                 corto_llInsert(g->imports, parent);
+
+                /* Recursively obtain imports */
+                g_crawlDependencies(g, parent);
             }
         }
     }
@@ -407,11 +472,6 @@ corto_int16 g_importsEvalReference(corto_generator g, corto_object o) {
     return 0;
 }
 
-typedef struct g_serializeImports_t {
-    corto_generator g;
-    corto_object stack[1024]; /* Maximum serializer-depth */
-    corto_uint32 count;
-}g_serializeImports_t;
 corto_int16 g_serializeImportsReference(corto_serializer s, corto_value *v, void* userData) {
     corto_object o;
     g_serializeImports_t *data = userData;
@@ -444,9 +504,20 @@ corto_int16 g_serializeImportsReference(corto_serializer s, corto_value *v, void
     return 0;
 }
 
+corto_int16 g_serializeImportsObject(corto_serializer s, corto_value *v, void* userData) {
+    g_serializeImports_t *data = userData;
+
+    corto_object o = corto_valueObject(v);
+    g_importsEvalReference(data->g, corto_typeof(o));
+    corto_serializeValue(s, v, userData);
+
+    return 0;
+}
+
 struct corto_serializer_s g_serializeImportsSerializer(void) {
     struct corto_serializer_s result;
     corto_serializerInit(&result);
+    result.metaprogram[CORTO_OBJECT] = g_serializeImportsObject;
     result.reference = g_serializeImportsReference;
     result.access = CORTO_PRIVATE;
     result.accessKind = CORTO_NOT; /* Serialize not nothing, thus everything. */
@@ -466,6 +537,7 @@ int g_importWalk(corto_object o, void* userData) {
 
     walkData.count = 0;
     walkData.g = g;
+    walkData.nested = FALSE;
     s = g_serializeImportsSerializer();
     corto_serialize(&s, o, &walkData);
     g_importsEvalReference(g, corto_typeof(o));

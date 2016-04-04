@@ -48,6 +48,7 @@ CORTO_CLASS_DEF(corto_generator) {
     corto_ll files;
     corto_dl library;
     corto_ll imports;
+    corto_ll importsNested; /* Indirect imports must be loaded for prefixes */
     corto_string name;
     corto_string language;
     g_idKind idKind;
