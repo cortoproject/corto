@@ -191,6 +191,19 @@ extern int8_t CORTO_DEBUG_ENABLED;
 #define CORTO_SEQUENCE_EMPTY(name) (name){0, NULL}
 #define CORTO_LIST(type) typedef corto_ll type
 
+#ifdef __cplusplus
+}
+#define CORTO_OBSERVER(name)\
+    void __##name (corto_object, corto_object);\
+    void name (corto_function f, void *result, void *args) {\
+        CORTO_UNUSED(f);\
+        CORTO_UNUSED(result);\
+        __##name (\
+            *(void**)args,\
+            *(void**)((intptr_t)args + sizeof(void*)));\
+    }\
+    void __##name (corto_object _this, corto_object observable)
+#else
 #define CORTO_OBSERVER(name)\
     void __##name (corto_object, corto_object);\
     void name (corto_function f, void *result, void *args) {\
@@ -201,9 +214,6 @@ extern int8_t CORTO_DEBUG_ENABLED;
             *(void**)((intptr_t)args + sizeof(void*)));\
     }\
     void __##name (corto_object this, corto_object observable)
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif /* CORTO_DEF_H */
