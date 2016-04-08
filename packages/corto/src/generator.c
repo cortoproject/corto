@@ -353,6 +353,7 @@ corto_int16 g_loadPrefixes(corto_generator g, corto_ll list) {
                 corto_path(NULL, root_o, p, "/"), CORTO_LOCATION_INCLUDE);
 
         if (!includePath) {
+            corto_seterr("package %s not found", corto_path(NULL, root_o, p, "/"));
             goto error;
         }
 
@@ -378,6 +379,9 @@ corto_int16 gen_start(corto_generator g) {
 
     /* Resolve imports based on metadata. */
     if (g_resolveImports(g)) {
+        if (!corto_lasterr())  {
+            corto_seterr("failed to resolve imports");
+        }
         goto error;
     }
 
@@ -388,16 +392,26 @@ corto_int16 gen_start(corto_generator g) {
     /* Find include paths for packages, load prefix file into generator */
     if (g->imports) {
         if (g_loadPrefixes(g, g->imports)) {
+            if (!corto_lasterr())  {
+                corto_seterr("failed to load package prefixes");
+            }
             goto error;
         }
     }
     if (g->importsNested) {
         if (g_loadPrefixes(g, g->importsNested)) {
+            if (!corto_lasterr())  {
+                corto_seterr("failed to load prefixes for nested packages");
+            }
             goto error;
         }
     }
 
-    return g->start_action(g);
+    corto_int16 ret = g->start_action(g);
+    if (ret && !corto_lasterr())  {
+        corto_seterr("generator failed");
+    }
+    return ret;
 error:
     return -1;
 }
