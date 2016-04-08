@@ -107,9 +107,13 @@ corto_resultIter _corto_loader_onRequest_v(
     CORTO_UNUSED(this);
 
     corto_string localPath, globalPath;
-    localPath = corto_envparse("$CORTO_HOME/lib/corto/$CORTO_VERSION/%s", request->parent);
+    localPath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+      request->parent);
     corto_cleanpath(localPath);
-    globalPath = corto_envparse("/usr/local/lib/corto/$CORTO_VERSION/%s", request->parent);
+    globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+      request->parent);
     corto_cleanpath(globalPath);
 
     corto_loader_addDir(data, localPath, request->expr);
