@@ -124,6 +124,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     CORTO_UNUSED(argc);
     CORTO_UNUSED(argv);
     corto_bool installRemote = FALSE;
+    corto_bool installLocal = FALSE;
     corto_ll verbose = NULL, dirs = NULL;
 
     corto_argdata *data = corto_argparse(
@@ -131,30 +132,35 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore 'install' */
         {"--verbose", &verbose, NULL},
-        {"$*", &dirs, NULL},
+        {"*", &dirs, NULL},
         {NULL}
       }
     );
 
     if (dirs && corto_llSize(dirs)) {
         corto_string dir = corto_llGet(dirs, 0);
-        if (strchr(dir, ':') || corto_chdir(dir)) {
+        if (strchr(dir, '/') || corto_chdir(dir)) {
             installRemote = TRUE;
         } else {
             if (!cortotool_validProject()) {
                 installRemote = TRUE;
+            } else {
+                installLocal = TRUE;
             }
         }
     }
 
-    if (!installRemote) {
+    if (installLocal) {
         if (cortotool_installFromSource(verbose ? TRUE : FALSE)) {
             goto error;
         }
-    } else {
+    } else if (installRemote){
         if (cortotool_installFromRemote(argv[1])) {
             goto error;
         }
+    } else {
+        corto_error("corto: nothing to install");
+        goto error;
     }
 
     cortotool_promptPassword();
