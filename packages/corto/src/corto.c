@@ -86,6 +86,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 #define SSO_OP_VALUE(op, type) op(corto_##type##_o, sizeof(corto_##type))
 #define SSO_OP_CLASS(op, type) op(corto_##type##_o, sizeof(struct corto_##type##_s))
 
+#define SSO_OP_CORE_VOID(op, type) op(corto_##type##_o, 0)
+#define SSO_OP_CORE_VALUE(op, type) op(corto_##type##_o, sizeof(corto_##type))
+#define SSO_OP_CORE_CLASS(op, type) op(corto_#type##_o, sizeof(struct corto_##type##_s))
+
 /* The ordering of the lists of objects below is important to ensure correct
  * initialization\construction\destruction of objects. Especially the latter one
  * is tricky, since during destruction callback-vtables are destroyed, which in turn
@@ -123,7 +127,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
     SSO_OP_CLASS(op, replicator);\
-    SSO_OP_CLASS(op, loader);
+    SSO_OP_CLASS(op, loader);\
+    SSO_OP_CLASS(op, native_type);\
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -171,9 +176,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, interfaceseq);\
     SSO_OP_VALUE(op, memberseq);\
     SSO_OP_VALUE(op, parameterseq);\
-    SSO_OP_VALUE(op, observerseq);\
+    SSO_OP_CORE_VALUE(op, observerseq);\
     SSO_OP_VALUE(op, octetseq);\
-    SSO_OP_VALUE(op, augmentseq);\
+    SSO_OP_CORE_VALUE(op, augmentseq);\
     SSO_OP_VALUE(op, vtable);\
     SSO_OP_VALUE(op, interfaceVectorseq);\
     SSO_OP_VALUE(op, interfaceVector);\
@@ -183,7 +188,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, result);\
     SSO_OP_VALUE(op, request);\
     SSO_OP_VALUE(op, delegatedata);\
-    SSO_OP_VOID(op, dispatcher);\
+    SSO_OP_CORE_VOID(op, dispatcher);\
     SSO_OP_VALUE(op, initAction);\
     SSO_OP_VALUE(op, nameAction);\
     SSO_OP_VALUE(op, destructAction);\
@@ -195,7 +200,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASSTYPE(op);
 
 #define SSO_OBJECT(obj) CORTO_OFFSET(&obj##__o, sizeof(corto_SSO))
-#define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(obj))
+#define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(lang_##obj))
+#define SSO_OP_OBJ_CORE(op, obj) op(SSO_OBJECT(core_##obj))
+#define SSO_OP_OBJ_NATIVE(op, obj) op(SSO_OBJECT(native_##obj))
 
 /* 1st degree objects (members, methods and constants) */
 #define SSO_OP_OBJECT(op)\
@@ -227,41 +234,41 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* virtual */\
     SSO_OP_OBJ(op, virtual_init_);\
     /* observer */\
-    SSO_OP_OBJ(op, observer_mask);\
-    SSO_OP_OBJ(op, observer_observable);\
-    SSO_OP_OBJ(op, observer_me);\
-    SSO_OP_OBJ(op, observer_dispatcher);\
-    SSO_OP_OBJ(op, observer_template);\
-    SSO_OP_OBJ(op, observer_init_);\
-    SSO_OP_OBJ(op, observer_bind_);\
-    SSO_OP_OBJ(op, observer_unbind);\
-    SSO_OP_OBJ(op, observer_listen_);\
-    SSO_OP_OBJ(op, observer_silence_);\
-    SSO_OP_OBJ(op, observer_setDispatcher_);\
+    SSO_OP_OBJ_CORE(op, observer_mask);\
+    SSO_OP_OBJ_CORE(op, observer_observable);\
+    SSO_OP_OBJ_CORE(op, observer_me);\
+    SSO_OP_OBJ_CORE(op, observer_dispatcher);\
+    SSO_OP_OBJ_CORE(op, observer_template);\
+    SSO_OP_OBJ_CORE(op, observer_init_);\
+    SSO_OP_OBJ_CORE(op, observer_bind_);\
+    SSO_OP_OBJ_CORE(op, observer_unbind);\
+    SSO_OP_OBJ_CORE(op, observer_listen_);\
+    SSO_OP_OBJ_CORE(op, observer_silence_);\
+    SSO_OP_OBJ_CORE(op, observer_setDispatcher_);\
     /* metaprocedure */\
     SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
     SSO_OP_OBJ(op, metaprocedure_bind_);\
     /* dispatcher */\
-    SSO_OP_OBJ(op, dispatcher_post);\
+    SSO_OP_OBJ_CORE(op, dispatcher_post);\
     /* event */\
-    SSO_OP_OBJ(op, event_kind);\
-    SSO_OP_OBJ(op, event_handled);\
-    SSO_OP_OBJ(op, event_handle_);\
-    SSO_OP_OBJ(op, event_uniqueKind);\
+    SSO_OP_OBJ_CORE(op, event_kind);\
+    SSO_OP_OBJ_CORE(op, event_handled);\
+    SSO_OP_OBJ_CORE(op, event_handle_);\
+    SSO_OP_OBJ_CORE(op, event_uniqueKind);\
     /* observableEvent */\
-    SSO_OP_OBJ(op, observableEvent_observer);\
-    SSO_OP_OBJ(op, observableEvent_me);\
-    SSO_OP_OBJ(op, observableEvent_source);\
-    SSO_OP_OBJ(op, observableEvent_observable);\
-    SSO_OP_OBJ(op, observableEvent_mask);\
-    SSO_OP_OBJ(op, observableEvent_thread);\
-    SSO_OP_OBJ(op, observableEvent_handle_);\
+    SSO_OP_OBJ_CORE(op, observableEvent_observer);\
+    SSO_OP_OBJ_CORE(op, observableEvent_me);\
+    SSO_OP_OBJ_CORE(op, observableEvent_source);\
+    SSO_OP_OBJ_CORE(op, observableEvent_observable);\
+    SSO_OP_OBJ_CORE(op, observableEvent_mask);\
+    SSO_OP_OBJ_CORE(op, observableEvent_thread);\
+    SSO_OP_OBJ_CORE(op, observableEvent_handle_);\
     /* invokeEvent */\
-    SSO_OP_OBJ(op, invokeEvent_replicator);\
-    SSO_OP_OBJ(op, invokeEvent_instance);\
-    SSO_OP_OBJ(op, invokeEvent_function);\
-    SSO_OP_OBJ(op, invokeEvent_args);\
-    SSO_OP_OBJ(op, invokeEvent_handle_);\
+    SSO_OP_OBJ_CORE(op, invokeEvent_replicator);\
+    SSO_OP_OBJ_CORE(op, invokeEvent_instance);\
+    SSO_OP_OBJ_CORE(op, invokeEvent_function);\
+    SSO_OP_OBJ_CORE(op, invokeEvent_args);\
+    SSO_OP_OBJ_CORE(op, invokeEvent_handle_);\
     /* width */\
     SSO_OP_OBJ(op, width_WIDTH_8);\
     SSO_OP_OBJ(op, width_WIDTH_16);\
@@ -307,65 +314,65 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, equalityKind_GT);\
     SSO_OP_OBJ(op, equalityKind_NEQ);\
     /* replicatorKind */\
-    SSO_OP_OBJ(op, replicatorKind_SOURCE);\
-    SSO_OP_OBJ(op, replicatorKind_SINK);\
-    SSO_OP_OBJ(op, replicatorKind_CACHE);\
+    SSO_OP_OBJ_CORE(op, replicatorKind_SOURCE);\
+    SSO_OP_OBJ_CORE(op, replicatorKind_SINK);\
+    SSO_OP_OBJ_CORE(op, replicatorKind_CACHE);\
     /* operatorKind */\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_ADD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_SUB);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MUL);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_DIV);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_MOD);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_XOR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_OR);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_AND);\
-    SSO_OP_OBJ(op, operatorKind_ASSIGN_UPDATE);\
-    SSO_OP_OBJ(op, operatorKind_ADD);\
-    SSO_OP_OBJ(op, operatorKind_SUB);\
-    SSO_OP_OBJ(op, operatorKind_MUL);\
-    SSO_OP_OBJ(op, operatorKind_DIV);\
-    SSO_OP_OBJ(op, operatorKind_MOD);\
-    SSO_OP_OBJ(op, operatorKind_INC);\
-    SSO_OP_OBJ(op, operatorKind_DEC);\
-    SSO_OP_OBJ(op, operatorKind_XOR);\
-    SSO_OP_OBJ(op, operatorKind_OR);\
-    SSO_OP_OBJ(op, operatorKind_AND);\
-    SSO_OP_OBJ(op, operatorKind_NOT);\
-    SSO_OP_OBJ(op, operatorKind_COND_OR);\
-    SSO_OP_OBJ(op, operatorKind_COND_AND);\
-    SSO_OP_OBJ(op, operatorKind_COND_NOT);\
-    SSO_OP_OBJ(op, operatorKind_COND_EQ);\
-    SSO_OP_OBJ(op, operatorKind_COND_NEQ);\
-    SSO_OP_OBJ(op, operatorKind_COND_GT);\
-    SSO_OP_OBJ(op, operatorKind_COND_LT);\
-    SSO_OP_OBJ(op, operatorKind_COND_GTEQ);\
-    SSO_OP_OBJ(op, operatorKind_COND_LTEQ);\
-    SSO_OP_OBJ(op, operatorKind_SHIFT_LEFT);\
-    SSO_OP_OBJ(op, operatorKind_SHIFT_RIGHT);\
-    SSO_OP_OBJ(op, operatorKind_REF);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_ADD);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_SUB);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_MUL);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_DIV);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_MOD);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_XOR);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_OR);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_AND);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_UPDATE);\
+    SSO_OP_OBJ_CORE(op, operatorKind_ADD);\
+    SSO_OP_OBJ_CORE(op, operatorKind_SUB);\
+    SSO_OP_OBJ_CORE(op, operatorKind_MUL);\
+    SSO_OP_OBJ_CORE(op, operatorKind_DIV);\
+    SSO_OP_OBJ_CORE(op, operatorKind_MOD);\
+    SSO_OP_OBJ_CORE(op, operatorKind_INC);\
+    SSO_OP_OBJ_CORE(op, operatorKind_DEC);\
+    SSO_OP_OBJ_CORE(op, operatorKind_XOR);\
+    SSO_OP_OBJ_CORE(op, operatorKind_OR);\
+    SSO_OP_OBJ_CORE(op, operatorKind_AND);\
+    SSO_OP_OBJ_CORE(op, operatorKind_NOT);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_OR);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_AND);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_NOT);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_EQ);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_NEQ);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_GT);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_LT);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_GTEQ);\
+    SSO_OP_OBJ_CORE(op, operatorKind_COND_LTEQ);\
+    SSO_OP_OBJ_CORE(op, operatorKind_SHIFT_LEFT);\
+    SSO_OP_OBJ_CORE(op, operatorKind_SHIFT_RIGHT);\
+    SSO_OP_OBJ_CORE(op, operatorKind_REF);\
     /* state */\
     SSO_OP_OBJ(op, state_VALID);\
     SSO_OP_OBJ(op, state_DECLARED);\
     SSO_OP_OBJ(op, state_DEFINED);\
     SSO_OP_OBJ(op, state_DESTRUCTED);\
     /* attr */\
-    SSO_OP_OBJ(op, attr_ATTR_SCOPED);\
-    SSO_OP_OBJ(op, attr_ATTR_WRITABLE);\
-    SSO_OP_OBJ(op, attr_ATTR_OBSERVABLE);\
-    SSO_OP_OBJ(op, attr_ATTR_PERSISTENT);\
-    SSO_OP_OBJ(op, attr_ATTR_DEFAULT);\
+    SSO_OP_OBJ_CORE(op, attr_ATTR_SCOPED);\
+    SSO_OP_OBJ_CORE(op, attr_ATTR_WRITABLE);\
+    SSO_OP_OBJ_CORE(op, attr_ATTR_OBSERVABLE);\
+    SSO_OP_OBJ_CORE(op, attr_ATTR_PERSISTENT);\
+    SSO_OP_OBJ_CORE(op, attr_ATTR_DEFAULT);\
     /* eventKind */\
-    SSO_OP_OBJ(op, eventMask_ON_DECLARE);\
-    SSO_OP_OBJ(op, eventMask_ON_DEFINE);\
-    SSO_OP_OBJ(op, eventMask_ON_DELETE);\
-    SSO_OP_OBJ(op, eventMask_ON_INVALIDATE);\
-    SSO_OP_OBJ(op, eventMask_ON_UPDATE);\
-    SSO_OP_OBJ(op, eventMask_ON_SELF);\
-    SSO_OP_OBJ(op, eventMask_ON_SCOPE);\
-    SSO_OP_OBJ(op, eventMask_ON_TREE);\
-    SSO_OP_OBJ(op, eventMask_ON_VALUE);\
-    SSO_OP_OBJ(op, eventMask_ON_METAVALUE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_DECLARE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_DEFINE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_DELETE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_INVALIDATE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_UPDATE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_SELF);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_SCOPE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_TREE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_VALUE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_METAVALUE);\
     /* modifier */\
     SSO_OP_OBJ(op, modifier_GLOBAL);\
     SSO_OP_OBJ(op, modifier_LOCAL);\
@@ -527,33 +534,33 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, class_instanceof_);\
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
     /* replicator */\
-    SSO_OP_OBJ(op, replicator_mount);\
-    SSO_OP_OBJ(op, replicator_mask);\
-    SSO_OP_OBJ(op, replicator_type);\
-    SSO_OP_OBJ(op, replicator_kind);\
-    SSO_OP_OBJ(op, replicator_contentType);\
-    SSO_OP_OBJ(op, replicator_init_);\
-    SSO_OP_OBJ(op, replicator_construct_);\
-    SSO_OP_OBJ(op, replicator_destruct_);\
-    SSO_OP_OBJ(op, replicator_invoke_);\
-    SSO_OP_OBJ(op, replicator_request_);\
-    SSO_OP_OBJ(op, replicator_resume_);\
-    SSO_OP_OBJ(op, replicator_setContentType_);\
-    SSO_OP_OBJ(op, replicator_post_);\
-    SSO_OP_OBJ(op, replicator_onDeclare_);\
-    SSO_OP_OBJ(op, replicator_onUpdate_);\
-    SSO_OP_OBJ(op, replicator_onDelete_);\
-    SSO_OP_OBJ(op, replicator_onInvoke_);\
-    SSO_OP_OBJ(op, replicator_onRequest_);\
-    SSO_OP_OBJ(op, replicator_onResume_);\
-    SSO_OP_OBJ(op, replicator_on_declare);\
-    SSO_OP_OBJ(op, replicator_on_update);\
-    SSO_OP_OBJ(op, replicator_on_delete);\
+    SSO_OP_OBJ_CORE(op, replicator_mount);\
+    SSO_OP_OBJ_CORE(op, replicator_mask);\
+    SSO_OP_OBJ_CORE(op, replicator_type);\
+    SSO_OP_OBJ_CORE(op, replicator_kind);\
+    SSO_OP_OBJ_CORE(op, replicator_contentType);\
+    SSO_OP_OBJ_CORE(op, replicator_init_);\
+    SSO_OP_OBJ_CORE(op, replicator_construct_);\
+    SSO_OP_OBJ_CORE(op, replicator_destruct_);\
+    SSO_OP_OBJ_CORE(op, replicator_invoke_);\
+    SSO_OP_OBJ_CORE(op, replicator_request_);\
+    SSO_OP_OBJ_CORE(op, replicator_resume_);\
+    SSO_OP_OBJ_CORE(op, replicator_setContentType_);\
+    SSO_OP_OBJ_CORE(op, replicator_post_);\
+    SSO_OP_OBJ_CORE(op, replicator_onDeclare_);\
+    SSO_OP_OBJ_CORE(op, replicator_onUpdate_);\
+    SSO_OP_OBJ_CORE(op, replicator_onDelete_);\
+    SSO_OP_OBJ_CORE(op, replicator_onInvoke_);\
+    SSO_OP_OBJ_CORE(op, replicator_onRequest_);\
+    SSO_OP_OBJ_CORE(op, replicator_onResume_);\
+    SSO_OP_OBJ_CORE(op, replicator_on_declare);\
+    SSO_OP_OBJ_CORE(op, replicator_on_update);\
+    SSO_OP_OBJ_CORE(op, replicator_on_delete);\
     /* loader */\
-    SSO_OP_OBJ(op, loader_construct_);\
-    SSO_OP_OBJ(op, loader_destruct_);\
-    SSO_OP_OBJ(op, loader_onResume_);\
-    SSO_OP_OBJ(op, loader_onRequest_);\
+    SSO_OP_OBJ_CORE(op, loader_construct_);\
+    SSO_OP_OBJ_CORE(op, loader_destruct_);\
+    SSO_OP_OBJ_CORE(op, loader_onResume_);\
+    SSO_OP_OBJ_CORE(op, loader_onRequest_);\
     /* delegatedata */\
     SSO_OP_OBJ(op, delegatedata_instance);\
     SSO_OP_OBJ(op, delegatedata_procedure);\
@@ -602,31 +609,34 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, parameter_type);\
     SSO_OP_OBJ(op, parameter_passByReference);\
     /* augmentData */\
-    SSO_OP_OBJ(op, augmentData_id);\
-    SSO_OP_OBJ(op, augmentData_data);\
+    SSO_OP_OBJ_CORE(op, augmentData_id);\
+    SSO_OP_OBJ_CORE(op, augmentData_data);\
     /* result */\
-    SSO_OP_OBJ(op, result_id);\
-    SSO_OP_OBJ(op, result_name);\
-    SSO_OP_OBJ(op, result_parent);\
-    SSO_OP_OBJ(op, result_type);\
-    SSO_OP_OBJ(op, result_value);\
-    SSO_OP_OBJ(op, result_augments);\
-    SSO_OP_OBJ(op, result_getText_);\
+    SSO_OP_OBJ_CORE(op, result_id);\
+    SSO_OP_OBJ_CORE(op, result_name);\
+    SSO_OP_OBJ_CORE(op, result_parent);\
+    SSO_OP_OBJ_CORE(op, result_type);\
+    SSO_OP_OBJ_CORE(op, result_value);\
+    SSO_OP_OBJ_CORE(op, result_augments);\
+    SSO_OP_OBJ_CORE(op, result_getText_);\
     /* request */\
-    SSO_OP_OBJ(op, request_parent);\
-    SSO_OP_OBJ(op, request_expr);\
-    SSO_OP_OBJ(op, request_offset);\
-    SSO_OP_OBJ(op, request_limit);\
-    SSO_OP_OBJ(op, request_content);\
-    SSO_OP_OBJ(op, request_param);\
+    SSO_OP_OBJ_CORE(op, request_parent);\
+    SSO_OP_OBJ_CORE(op, request_expr);\
+    SSO_OP_OBJ_CORE(op, request_offset);\
+    SSO_OP_OBJ_CORE(op, request_limit);\
+    SSO_OP_OBJ_CORE(op, request_content);\
+    SSO_OP_OBJ_CORE(op, request_param);\
     /* package */\
-    SSO_OP_OBJ(op, package_url);\
+    SSO_OP_OBJ_CORE(op, package_url);\
     /* time */\
-    SSO_OP_OBJ(op, time_sec);\
-    SSO_OP_OBJ(op, time_nanosec);\
+    SSO_OP_OBJ_CORE(op, time_sec);\
+    SSO_OP_OBJ_CORE(op, time_nanosec);\
     /* position */\
-    SSO_OP_OBJ(op, position_latitude);\
-    SSO_OP_OBJ(op, position_longitude);
+    SSO_OP_OBJ_CORE(op, position_latitude);\
+    SSO_OP_OBJ_CORE(op, position_longitude);\
+    /* native/type */\
+    SSO_OP_OBJ_NATIVE(op, type_name);\
+    SSO_OP_OBJ_NATIVE(op, type_init_);\
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \
@@ -785,12 +795,14 @@ int corto_start(void) {
     corto_initObject(corto_o);
     corto_initObject(corto_lang_o);
     corto_initObject(corto_core_o);
+    corto_initObject(corto_native_o);
 
     /* Define builtin scopes */
     corto_defineObject(root_o);
     corto_defineObject(corto_o);
     corto_defineObject(corto_lang_o);
     corto_defineObject(corto_core_o);
+    corto_defineObject(corto_native_o);
 
     /* Init objects */
     SSO_OP_TYPE(corto_initType);
@@ -908,6 +920,7 @@ int corto_stop(void) {
     SSO_OP_TYPE(corto_releaseType);
 
     /* Deinitialize core loader */
+    if (corto__freeSSO(corto_native_o)) goto error;
     if (corto__freeSSO(corto_core_o)) goto error;
     if (corto__freeSSO(corto_lang_o)) goto error;
     if (corto__freeSSO(corto_o)) goto error;

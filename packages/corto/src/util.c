@@ -95,5 +95,6 @@ void corto_threadStringDealloc(void *tdata) {
 corto_bool corto_isBuiltinPackage(corto_object o) {
     return (o == corto_o) ||
            (o == corto_lang_o) ||
-           (o == corto_core_o);
+           (o == corto_core_o) ||
+           (o == corto_native_o);
 }

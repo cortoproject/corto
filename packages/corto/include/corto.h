@@ -15,6 +15,7 @@ extern "C" {
 /* $header() */
 #include "corto/lang/lang.h"
 #include "corto/core/core.h"
+#include "corto/native/native.h"
 
 #include "corto/arg.h"
 #include "corto/async.h"

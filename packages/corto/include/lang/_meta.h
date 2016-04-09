@@ -20,7 +20,6 @@ extern "C" {
 extern corto_package root_o;
 extern corto_package corto_o;
 extern corto_package corto_lang_o;
-extern corto_package corto_core_o;
 
 /* Forward declarations of classes */
 CORTO_META_OBJECT(class, typedef);

@@ -21,6 +21,15 @@ corto_int16 _corto_member_construct(
         goto error;
     }
 
+    if (corto_instanceof(corto_native_type_o, this->type) &&
+        !(this->modifiers & CORTO_LOCAL))
+    {
+        corto_seterr("member '%s' of native type '%s' is not local",
+            corto_fullpath(NULL, this),
+            corto_fullpath(NULL, this->type));
+        goto error;
+    }
+
     return 0;
 error:
     return -1;

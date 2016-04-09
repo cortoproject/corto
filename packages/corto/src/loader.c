@@ -470,56 +470,58 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     result = corto_locateLibraryIntern(relativePath, &base);
     corto_dealloc(relativePath);
 
-    switch(kind) {
-    case CORTO_LOCATION_ENV:
-        /* Quick & dirty trick to strip everything but the env */
-        corto_dealloc(result);
-        corto_asprintf(&result, base, "@");
-        *(strchr(result, '@') - 1) = '\0'; /* Also strip the '/' */
-        break;
-    case CORTO_LOCATION_LIB:
-        /* Result is already pointing to the lib */
-        break;
-    case CORTO_LOCATION_LIBPATH: {
-        corto_dealloc(result);
-        corto_string lib;
-        corto_asprintf(&lib, base, "lib");
-        corto_asprintf(&result, "%s/%s", lib, package);
-        break;
-    }
-    case CORTO_LOCATION_INCLUDE: {
-        corto_dealloc(result);
-        corto_string include;
-        corto_asprintf(&include, base, "include");
-        corto_asprintf(&result, "%s/%s", include, package);
-        corto_dealloc(include);
-        break;
-    }
-    case CORTO_LOCATION_NAME:
-    case CORTO_LOCATION_FULLNAME: {
-        corto_string name;
-        corto_dealloc(result);
-        result = corto_strdup(package);
-
-        if (package[0] == '/') {
-            name = corto_replaceColons(result, package + 1);
-        } else if (package[0] == ':') {
-            name = corto_replaceColons(result, package + 2);
-        } else {
-            name = corto_replaceColons(result, package);
-        }
-
-        if (kind == CORTO_LOCATION_NAME) {
-            name = corto_strdup(name);
+    if (result) {
+        switch(kind) {
+        case CORTO_LOCATION_ENV:
+            /* Quick & dirty trick to strip everything but the env */
             corto_dealloc(result);
-            result = name;
+            corto_asprintf(&result, base, "@");
+            *(strchr(result, '@') - 1) = '\0'; /* Also strip the '/' */
+            break;
+        case CORTO_LOCATION_LIB:
+            /* Result is already pointing to the lib */
+            break;
+        case CORTO_LOCATION_LIBPATH: {
+            corto_dealloc(result);
+            corto_string lib;
+            corto_asprintf(&lib, base, "lib");
+            corto_asprintf(&result, "%s/%s", lib, package);
+            break;
         }
+        case CORTO_LOCATION_INCLUDE: {
+            corto_dealloc(result);
+            corto_string include;
+            corto_asprintf(&include, base, "include");
+            corto_asprintf(&result, "%s/%s", include, package);
+            corto_dealloc(include);
+            break;
+        }
+        case CORTO_LOCATION_NAME:
+        case CORTO_LOCATION_FULLNAME: {
+            corto_string name;
+            corto_dealloc(result);
+            result = corto_strdup(package);
 
-        break;
-    }
+            if (package[0] == '/') {
+                name = corto_replaceColons(result, package + 1);
+            } else if (package[0] == ':') {
+                name = corto_replaceColons(result, package + 2);
+            } else {
+                name = corto_replaceColons(result, package);
+            }
+
+            if (kind == CORTO_LOCATION_NAME) {
+                name = corto_strdup(name);
+                corto_dealloc(result);
+                result = name;
+            }
+
+            break;
+        }
+        }
+        corto_dealloc(base);
     }
 
-    corto_dealloc(base);
 
     return result;
 error:
