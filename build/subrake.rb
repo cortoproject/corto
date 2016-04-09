@@ -80,3 +80,12 @@ task :gcov do
         end
     end
 end
+
+task :sha do
+    FileList.new("**/.git/config").each do |gitconfig|
+        git_dir = gitconfig.pathmap("%d")
+        remote = `git --git-dir #{git_dir} config --get remote.origin.url`.chomp.split("/").slice(-2, 2).join("/")
+        sha = `git --git-dir #{git_dir} rev-parse HEAD`.chomp
+        puts "#{remote}@#{sha}"
+    end
+end
