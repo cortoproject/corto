@@ -18,8 +18,8 @@ corto_void _test_ReplicatorRequest_setup(
     corto_object a_o = corto_voidCreateChild(root_o, "a");
     corto_setAttr(old);
 
-    /* Create replicator */
-    this->replicator = test_ListReplicatorCreate(a_o, 0, CORTO_SOURCE);
+    /* Create mount */
+    this->mount = test_ListReplicatorCreate(a_o, 0, CORTO_SOURCE);
 
 /* $end */
 }
@@ -780,8 +780,8 @@ corto_void _test_ReplicatorRequest_teardown(
 {
 /* $begin(test/ReplicatorRequest/teardown) */
 
-    corto_delete(this->replicator);
-    this->replicator = NULL;
+    corto_delete(this->mount);
+    this->mount = NULL;
 
 /* $end */
 }

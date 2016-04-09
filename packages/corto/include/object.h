@@ -111,7 +111,7 @@ corto_int16 corto_selectErr(void);
 struct corto_selectSelector corto_select(corto_string scope, corto_string expr);
 
 /* Augment data */
-corto_int16 _corto_augment(corto_type t, corto_string id, corto_replicator r);
+corto_int16 _corto_augment(corto_type t, corto_string id, corto_mount r);
 
 /* Notifications */
 corto_object corto_setOwner(corto_object owner);
@@ -199,7 +199,7 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_initp(p, type) _corto_initp(p, corto_type(type))
 #define corto_deinitp(p, type) _corto_deinitp(p, corto_type(type))
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
-#define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_replicator(r))
+#define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_mount(r))
 
 #ifdef __cplusplus
 }

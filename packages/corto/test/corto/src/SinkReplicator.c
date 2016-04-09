@@ -13,7 +13,7 @@ corto_int16 _test_SinkReplicator_construct(
 {
 /* $begin(test/SinkReplicator/construct) */
     corto_string type =
-      corto_replicator(this)->type ? corto_replicator(this)->type : "int32";
+      corto_mount(this)->type ? corto_mount(this)->type : "int32";
 
     // First tier
     corto_resultSet(
@@ -127,10 +127,10 @@ corto_int16 _test_SinkReplicator_construct(
         0
     );
 
-    corto_replicator(this)->kind = CORTO_SINK;
-    corto_replicator(this)->mask = CORTO_ON_TREE;
+    corto_mount(this)->kind = CORTO_SINK;
+    corto_mount(this)->mask = CORTO_ON_TREE;
 
-    return corto_replicator_construct(this);
+    return corto_mount_construct(this);
 /* $end */
 }
 

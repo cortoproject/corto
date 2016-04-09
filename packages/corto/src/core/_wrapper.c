@@ -266,64 +266,64 @@ void __corto_observer_unbind(corto_function f, void *result, void *args) {
         corto_observer(*(corto_observer*)args));
 }
 
-void __corto_replicator_construct(corto_function f, void *result, void *args) {
+void __corto_mount_construct(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_replicator_construct(
-        corto_replicator(*(void**)args));
+    *(corto_int16*)result = _corto_mount_construct(
+        corto_mount(*(void**)args));
 }
 
-void __corto_replicator_destruct(corto_function f, void *result, void *args) {
+void __corto_mount_destruct(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
     CORTO_UNUSED(result);
-    _corto_replicator_destruct(
-        corto_replicator(*(void**)args));
+    _corto_mount_destruct(
+        corto_mount(*(void**)args));
 }
 
-void __corto_replicator_init(corto_function f, void *result, void *args) {
+void __corto_mount_init(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_replicator_init(
-        corto_replicator(*(void**)args));
+    *(corto_int16*)result = _corto_mount_init(
+        corto_mount(*(void**)args));
 }
 
-void __corto_replicator_invoke(corto_function f, void *result, void *args) {
+void __corto_mount_invoke(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_invoke(
-        corto_replicator(*(void**)args),
+    _corto_mount_invoke(
+        corto_mount(*(void**)args),
         *(corto_object*)((intptr_t)args + sizeof(void*)),
         corto_function(*(corto_function*)((intptr_t)args + sizeof(void*) + sizeof(corto_object))),
         *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
 }
 
-void __corto_replicator_on_declare(corto_function f, void *result, void *args) {
+void __corto_mount_on_declare(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_on_declare(
-        corto_replicator(*(void**)args),
+    _corto_mount_on_declare(
+        corto_mount(*(void**)args),
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
-void __corto_replicator_on_delete(corto_function f, void *result, void *args) {
+void __corto_mount_on_delete(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_on_delete(
-        corto_replicator(*(void**)args),
+    _corto_mount_on_delete(
+        corto_mount(*(void**)args),
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
-void __corto_replicator_on_update(corto_function f, void *result, void *args) {
+void __corto_mount_on_update(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_on_update(
-        corto_replicator(*(void**)args),
+    _corto_mount_on_update(
+        corto_mount(*(void**)args),
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
-void _corto_replicator_onDeclare(
-    corto_replicator this,
+void _corto_mount_onDeclare(
+    corto_mount this,
     corto_object observable) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -344,16 +344,16 @@ void _corto_replicator_onDeclare(
     corto_call(corto_function(_method), NULL, this, observable);
 }
 
-void __corto_replicator_onDeclare_v(corto_function f, void *result, void *args) {
+void __corto_mount_onDeclare_v(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_onDeclare_v(
-        corto_replicator(*(void**)args),
+    _corto_mount_onDeclare_v(
+        corto_mount(*(void**)args),
         *(corto_object*)((intptr_t)args + sizeof(void*)));
 }
 
-void _corto_replicator_onDelete(
-    corto_replicator this,
+void _corto_mount_onDelete(
+    corto_mount this,
     corto_object observable) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -374,16 +374,16 @@ void _corto_replicator_onDelete(
     corto_call(corto_function(_method), NULL, this, observable);
 }
 
-void __corto_replicator_onDelete_v(corto_function f, void *result, void *args) {
+void __corto_mount_onDelete_v(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_onDelete_v(
-        corto_replicator(*(void**)args),
+    _corto_mount_onDelete_v(
+        corto_mount(*(void**)args),
         *(corto_object*)((intptr_t)args + sizeof(void*)));
 }
 
-void _corto_replicator_onInvoke(
-    corto_replicator this,
+void _corto_mount_onInvoke(
+    corto_mount this,
     corto_object instance,
     corto_function proc,
     corto_octetseq args) {
@@ -406,18 +406,18 @@ void _corto_replicator_onInvoke(
     corto_call(corto_function(_method), NULL, this, instance, proc, args);
 }
 
-void __corto_replicator_onInvoke_v(corto_function f, void *result, void *args) {
+void __corto_mount_onInvoke_v(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_onInvoke_v(
-        corto_replicator(*(void**)args),
+    _corto_mount_onInvoke_v(
+        corto_mount(*(void**)args),
         *(corto_object*)((intptr_t)args + sizeof(void*)),
         corto_function(*(corto_function*)((intptr_t)args + sizeof(void*) + sizeof(corto_object))),
         *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
 }
 
-corto_resultIter _corto_replicator_onRequest(
-    corto_replicator this,
+corto_resultIter _corto_mount_onRequest(
+    corto_mount this,
     corto_request *request) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -441,15 +441,15 @@ corto_resultIter _corto_replicator_onRequest(
     return _result;
 }
 
-void __corto_replicator_onRequest_v(corto_function f, void *result, void *args) {
+void __corto_mount_onRequest_v(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
-    *(corto_resultIter*)result = _corto_replicator_onRequest_v(
-        corto_replicator(*(void**)args),
+    *(corto_resultIter*)result = _corto_mount_onRequest_v(
+        corto_mount(*(void**)args),
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
-corto_object _corto_replicator_onResume(
-    corto_replicator this,
+corto_object _corto_mount_onResume(
+    corto_mount this,
     corto_string parent,
     corto_string name,
     corto_object o) {
@@ -475,17 +475,17 @@ corto_object _corto_replicator_onResume(
     return _result;
 }
 
-void __corto_replicator_onResume_v(corto_function f, void *result, void *args) {
+void __corto_mount_onResume_v(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
-    *(corto_object*)result = _corto_replicator_onResume_v(
-        corto_replicator(*(void**)args),
+    *(corto_object*)result = _corto_mount_onResume_v(
+        corto_mount(*(void**)args),
         *(corto_string*)((intptr_t)args + sizeof(void*)),
         *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
         *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
 }
 
-void _corto_replicator_onUpdate(
-    corto_replicator this,
+void _corto_mount_onUpdate(
+    corto_mount this,
     corto_object observable) {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -506,42 +506,42 @@ void _corto_replicator_onUpdate(
     corto_call(corto_function(_method), NULL, this, observable);
 }
 
-void __corto_replicator_onUpdate_v(corto_function f, void *result, void *args) {
+void __corto_mount_onUpdate_v(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_onUpdate_v(
-        corto_replicator(*(void**)args),
+    _corto_mount_onUpdate_v(
+        corto_mount(*(void**)args),
         *(corto_object*)((intptr_t)args + sizeof(void*)));
 }
 
-void __corto_replicator_post(corto_function f, void *result, void *args) {
+void __corto_mount_post(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
     CORTO_UNUSED(result);
-    _corto_replicator_post(
-        corto_replicator(*(void**)args),
+    _corto_mount_post(
+        corto_mount(*(void**)args),
         corto_event(*(corto_event*)((intptr_t)args + sizeof(void*))));
 }
 
-void __corto_replicator_request(corto_function f, void *result, void *args) {
+void __corto_mount_request(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
-    *(corto_resultIter*)result = _corto_replicator_request(
-        corto_replicator(*(void**)args),
+    *(corto_resultIter*)result = _corto_mount_request(
+        corto_mount(*(void**)args),
         *(void**)((intptr_t)args + sizeof(void*)));
 }
 
-void __corto_replicator_resume(corto_function f, void *result, void *args) {
+void __corto_mount_resume(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
-    *(corto_object*)result = _corto_replicator_resume(
-        corto_replicator(*(void**)args),
+    *(corto_object*)result = _corto_mount_resume(
+        corto_mount(*(void**)args),
         *(corto_string*)((intptr_t)args + sizeof(void*)),
         *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
         *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
 }
 
-void __corto_replicator_setContentType(corto_function f, void *result, void *args) {
+void __corto_mount_setContentType(corto_function f, void *result, void *args) {
     CORTO_UNUSED(f);
-    *(corto_int16*)result = _corto_replicator_setContentType(
-        corto_replicator(*(void**)args),
+    *(corto_int16*)result = _corto_mount_setContentType(
+        corto_mount(*(void**)args),
         *(corto_string*)((intptr_t)args + sizeof(void*)));
 }
 

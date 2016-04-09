@@ -26,7 +26,7 @@ struct corto_exitHandler {
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "2"
-#define VERSION_PATCH "13"
+#define VERSION_PATCH "14"
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
@@ -126,7 +126,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
-    SSO_OP_CLASS(op, replicator);\
+    SSO_OP_CLASS(op, mount);\
     SSO_OP_CLASS(op, loader);\
     SSO_OP_CLASS(op, native_type);\
 
@@ -167,7 +167,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, procedureKind);\
     SSO_OP_VALUE(op, equalityKind);\
     SSO_OP_VALUE(op, operatorKind);\
-    SSO_OP_VALUE(op, replicatorKind);\
+    SSO_OP_VALUE(op, mountKind);\
     SSO_OP_VALUE(op, modifier);\
     SSO_OP_VALUE(op, eventMask);\
     SSO_OP_VALUE(op, state);\
@@ -264,7 +264,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, observableEvent_thread);\
     SSO_OP_OBJ_CORE(op, observableEvent_handle_);\
     /* invokeEvent */\
-    SSO_OP_OBJ_CORE(op, invokeEvent_replicator);\
+    SSO_OP_OBJ_CORE(op, invokeEvent_mount);\
     SSO_OP_OBJ_CORE(op, invokeEvent_instance);\
     SSO_OP_OBJ_CORE(op, invokeEvent_function);\
     SSO_OP_OBJ_CORE(op, invokeEvent_args);\
@@ -313,10 +313,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, equalityKind_LT);\
     SSO_OP_OBJ(op, equalityKind_GT);\
     SSO_OP_OBJ(op, equalityKind_NEQ);\
-    /* replicatorKind */\
-    SSO_OP_OBJ_CORE(op, replicatorKind_SOURCE);\
-    SSO_OP_OBJ_CORE(op, replicatorKind_SINK);\
-    SSO_OP_OBJ_CORE(op, replicatorKind_CACHE);\
+    /* mountKind */\
+    SSO_OP_OBJ_CORE(op, mountKind_SOURCE);\
+    SSO_OP_OBJ_CORE(op, mountKind_SINK);\
+    SSO_OP_OBJ_CORE(op, mountKind_CACHE);\
     /* operatorKind */\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN);\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_ADD);\
@@ -533,29 +533,29 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, class_init_);\
     SSO_OP_OBJ(op, class_instanceof_);\
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
-    /* replicator */\
-    SSO_OP_OBJ_CORE(op, replicator_mount);\
-    SSO_OP_OBJ_CORE(op, replicator_mask);\
-    SSO_OP_OBJ_CORE(op, replicator_type);\
-    SSO_OP_OBJ_CORE(op, replicator_kind);\
-    SSO_OP_OBJ_CORE(op, replicator_contentType);\
-    SSO_OP_OBJ_CORE(op, replicator_init_);\
-    SSO_OP_OBJ_CORE(op, replicator_construct_);\
-    SSO_OP_OBJ_CORE(op, replicator_destruct_);\
-    SSO_OP_OBJ_CORE(op, replicator_invoke_);\
-    SSO_OP_OBJ_CORE(op, replicator_request_);\
-    SSO_OP_OBJ_CORE(op, replicator_resume_);\
-    SSO_OP_OBJ_CORE(op, replicator_setContentType_);\
-    SSO_OP_OBJ_CORE(op, replicator_post_);\
-    SSO_OP_OBJ_CORE(op, replicator_onDeclare_);\
-    SSO_OP_OBJ_CORE(op, replicator_onUpdate_);\
-    SSO_OP_OBJ_CORE(op, replicator_onDelete_);\
-    SSO_OP_OBJ_CORE(op, replicator_onInvoke_);\
-    SSO_OP_OBJ_CORE(op, replicator_onRequest_);\
-    SSO_OP_OBJ_CORE(op, replicator_onResume_);\
-    SSO_OP_OBJ_CORE(op, replicator_on_declare);\
-    SSO_OP_OBJ_CORE(op, replicator_on_update);\
-    SSO_OP_OBJ_CORE(op, replicator_on_delete);\
+    /* mount */\
+    SSO_OP_OBJ_CORE(op, mount_mount);\
+    SSO_OP_OBJ_CORE(op, mount_mask);\
+    SSO_OP_OBJ_CORE(op, mount_type);\
+    SSO_OP_OBJ_CORE(op, mount_kind);\
+    SSO_OP_OBJ_CORE(op, mount_contentType);\
+    SSO_OP_OBJ_CORE(op, mount_init_);\
+    SSO_OP_OBJ_CORE(op, mount_construct_);\
+    SSO_OP_OBJ_CORE(op, mount_destruct_);\
+    SSO_OP_OBJ_CORE(op, mount_invoke_);\
+    SSO_OP_OBJ_CORE(op, mount_request_);\
+    SSO_OP_OBJ_CORE(op, mount_resume_);\
+    SSO_OP_OBJ_CORE(op, mount_setContentType_);\
+    SSO_OP_OBJ_CORE(op, mount_post_);\
+    SSO_OP_OBJ_CORE(op, mount_onDeclare_);\
+    SSO_OP_OBJ_CORE(op, mount_onUpdate_);\
+    SSO_OP_OBJ_CORE(op, mount_onDelete_);\
+    SSO_OP_OBJ_CORE(op, mount_onInvoke_);\
+    SSO_OP_OBJ_CORE(op, mount_onRequest_);\
+    SSO_OP_OBJ_CORE(op, mount_onResume_);\
+    SSO_OP_OBJ_CORE(op, mount_on_declare);\
+    SSO_OP_OBJ_CORE(op, mount_on_update);\
+    SSO_OP_OBJ_CORE(op, mount_on_delete);\
     /* loader */\
     SSO_OP_OBJ_CORE(op, loader_construct_);\
     SSO_OP_OBJ_CORE(op, loader_destruct_);\
@@ -733,9 +733,9 @@ static void corto_genericTlsFree(void *o) {
 
 static void corto_patchSequences(void) {
     /* Replicator implements table */
-    corto_replicator_o->implements.length = 1;
-    corto_replicator_o->implements.buffer = corto_alloc(sizeof(corto_object));
-    corto_replicator_o->implements.buffer[0] = corto_dispatcher_o;
+    corto_mount_o->implements.length = 1;
+    corto_mount_o->implements.buffer = corto_alloc(sizeof(corto_object));
+    corto_mount_o->implements.buffer[0] = corto_dispatcher_o;
 
     /* notifyAction delegate parameters */
     corto_notifyAction_o->parameters.length = 1;

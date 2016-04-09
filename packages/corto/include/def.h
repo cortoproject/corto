@@ -146,8 +146,8 @@ typedef struct corto_ll_s* corto_ll;
  * length will take advantage of the memory. */
 #define CORTO_MAX_TLS_STRINGS_MAX (1024)
 
-/* The maximum number of replicators that can attached to the same path.
- * This number controls the number of replicators a select call will process at
+/* The maximum number of mounts that can attached to the same path.
+ * This number controls the number of mounts a select call will process at
  * most. */
 #define CORTO_MAX_REPLICATORS (16)
 

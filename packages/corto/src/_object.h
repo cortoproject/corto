@@ -89,13 +89,13 @@ struct corto__persistent {
     corto_object owner;
 };
 
-typedef struct corto_replicator_olsData_t {
-    corto_replicator replicator;
+typedef struct corto_mount_olsData_t {
+    corto_mount mount;
     corto_eventMask mask;
-} corto_replicator_olsData_t;
+} corto_mount_olsData_t;
 
 typedef struct corto_augment_olsData_t {
-    corto_replicator replicator;
+    corto_mount mount;
     corto_string id;
 } corto_augment_olsData_t;
 

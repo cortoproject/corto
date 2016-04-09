@@ -148,7 +148,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     CORTO_UNUSED(argc);
 
-    /* Start loader replicator */
+    /* Start loader mount */
     corto_loader p = corto_loaderCreate();
 
     corto_argdata *data = corto_argparse(
@@ -303,7 +303,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     /* Cleanup application resources */
     corto_argclean(data);
 
-    /* Delete loader replicator */
+    /* Delete loader mount */
     corto_delete(p);
 
     return 0;

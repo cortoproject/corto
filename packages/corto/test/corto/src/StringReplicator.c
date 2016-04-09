@@ -13,9 +13,9 @@ corto_int16 _test_StringReplicator_construct(
 {
 /* $begin(test/StringReplicator/construct) */
 
-    corto_replicator_setContentType(this, "text/corto");
+    corto_mount_setContentType(this, "text/corto");
 
-    return corto_replicator_construct(this);
+    return corto_mount_construct(this);
 /* $end */
 }
 

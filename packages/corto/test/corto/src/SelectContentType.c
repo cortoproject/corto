@@ -13,19 +13,19 @@ corto_void _test_SelectContentType_setup(
 {
 /* $begin(test/SelectContentType/setup) */
 
-    /* Create 'json' scope for JSON replicator */
+    /* Create 'json' scope for JSON mount */
     corto_object json_o = corto_voidCreateChild(root_o, "json");
 
-    /* Create 'string' scope for Corto string replicator */
+    /* Create 'string' scope for Corto string mount */
     corto_object str_o = corto_voidCreateChild(root_o, "str");
 
     /* Create 'obj' scope with Corto objects */
     corto_object obj_o = corto_voidCreateChild(root_o, "obj");
 
-    /* Attach json replicator to json scope */
+    /* Attach json mount to json scope */
     test_JsonReplicatorCreate(json_o);
 
-    /* Attach str replicator to str scope */
+    /* Attach str mount to str scope */
     test_StringReplicatorCreate(str_o);
 
     /* Create three objects in 'obj' scope */

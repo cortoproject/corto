@@ -132,7 +132,7 @@ corto_void _test_Resolver_tc_resolveIo(
 {
 /* $begin(test/Resolver/tc_resolveIo) */
 
-    /* Start loader replicator */
+    /* Start loader mount */
     corto_loader p = corto_loaderCreate();
     corto_object o = corto_resolve(NULL, "io");
     test_assert(o != NULL);
@@ -140,7 +140,7 @@ corto_void _test_Resolver_tc_resolveIo(
     test_assert (corto_parentof(o) == corto_o);
     corto_release(o);
 
-    /* Delete loader replicator */
+    /* Delete loader mount */
     corto_delete(p);
 
 /* $end */

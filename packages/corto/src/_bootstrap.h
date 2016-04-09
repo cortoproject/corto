@@ -454,7 +454,7 @@ CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
-CORTO_FWDECL_CORE(class, replicator);
+CORTO_FWDECL_CORE(class, mount);
 CORTO_FWDECL(class, sequence);
 CORTO_FWDECL(class, struct);
 CORTO_FWDECL(class, text);
@@ -506,7 +506,7 @@ CORTO_FWDECL(enum, equalityKind);
 CORTO_FWDECL(enum, primitiveKind);
 CORTO_FWDECL_CORE(enum, operatorKind);
 CORTO_FWDECL(enum, procedureKind);
-CORTO_FWDECL_CORE(enum, replicatorKind);
+CORTO_FWDECL_CORE(enum, mountKind);
 CORTO_FWDECL(enum, scopeStateKind);
 CORTO_FWDECL(enum, typeKind);
 CORTO_FWDECL(enum, width);
@@ -535,9 +535,9 @@ CORTO_FWDECL_CORE(delegate, notifyAction);
 CORTO_FWDECL_CORE(delegate, requestAction);
 CORTO_FWDECL_CORE(delegate, invokeAction);
 
-CORTO_FWDECL_CORE(observer, replicator_on_declare);
-CORTO_FWDECL_CORE(observer, replicator_on_update);
-CORTO_FWDECL_CORE(observer, replicator_on_delete);
+CORTO_FWDECL_CORE(observer, mount_on_declare);
+CORTO_FWDECL_CORE(observer, mount_on_update);
+CORTO_FWDECL_CORE(observer, mount_on_delete);
 
 CORTO_FWDECL_CORE(iterator, resultIter);
 
@@ -679,10 +679,10 @@ CORTO_ENUM_O(core, operatorKind);
     CORTO_CONSTANT_O(core_operatorKind, SHIFT_RIGHT);
     CORTO_CONSTANT_O(core_operatorKind, REF);
 
-CORTO_ENUM_O(core, replicatorKind);
-    CORTO_CONSTANT_O(core_replicatorKind, SOURCE);
-    CORTO_CONSTANT_O(core_replicatorKind, SINK);
-    CORTO_CONSTANT_O(core_replicatorKind, CACHE);
+CORTO_ENUM_O(core, mountKind);
+    CORTO_CONSTANT_O(core_mountKind, SOURCE);
+    CORTO_CONSTANT_O(core_mountKind, SINK);
+    CORTO_CONSTANT_O(core_mountKind, CACHE);
 
 CORTO_BITMASK_O(lang, state);
     CORTO_CONSTANT_O(lang_state, VALID);
@@ -1043,35 +1043,35 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 CORTO_INTERFACE_O(core, dispatcher);
     CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
 
-/* /corto/core/replicator */
-CORTO_FW_CD(core, replicator);
-CORTO_CLASS_NOBASE_O(core, replicator, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
-    CORTO_MEMBER_O(core_replicator, mount, lang_object, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_replicator, mask, core_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_replicator, type, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_replicator, kind, core_replicatorKind, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_replicator, contentType, lang_string, CORTO_GLOBAL);
-    CORTO_METHOD_O(core_replicator, init, "()", lang_int16, FALSE, corto_replicator_construct);
-    CORTO_METHOD_O(core_replicator, construct, "()", lang_int16, FALSE, corto_replicator_construct);
-    CORTO_METHOD_O(core_replicator, destruct, "()", lang_void, FALSE, corto_replicator_destruct);
-    CORTO_METHOD_O(core_replicator, post, "(event e)", lang_void, FALSE, corto_replicator_post);
-    CORTO_METHOD_O(core_replicator, setContentType, "(string type)", lang_int16, FALSE, corto_replicator_setContentType);
-    CORTO_METHOD_O(core_replicator, invoke, "(object instance,function proc,octetseq args)", lang_void, FALSE, corto_replicator_invoke);
-    CORTO_METHOD_O(core_replicator, request, "(core/request request)", core_resultIter, FALSE, corto_replicator_request);
-    CORTO_METHOD_O(core_replicator, resume, "(string parent,string name,object o)", lang_object, FALSE, corto_replicator_resume);
-    CORTO_METHOD_O(core_replicator, onInvoke, "(object instance,function proc,octetseq args)", lang_void, TRUE, corto_replicator_onInvoke_v);
-    CORTO_METHOD_O(core_replicator, onRequest, "(core/request request)", core_resultIter, TRUE, corto_replicator_onRequest_v);
-    CORTO_METHOD_O(core_replicator, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_replicator_onResume_v);
-    CORTO_METHOD_O(core_replicator, onDeclare, "(object observable)", lang_void, TRUE, corto_replicator_onDeclare_v);
-    CORTO_METHOD_O(core_replicator, onUpdate, "(object observable)", lang_void, TRUE, corto_replicator_onUpdate_v);
-    CORTO_METHOD_O(core_replicator, onDelete, "(object observable)", lang_void, TRUE, corto_replicator_onDelete_v);
-    CORTO_OBSERVER_O(core_replicator, on_declare, corto_replicator_on_declare);
-    CORTO_OBSERVER_O(core_replicator, on_update, corto_replicator_on_update);
-    CORTO_OBSERVER_O(core_replicator, on_delete, corto_replicator_on_delete);
+/* /corto/core/mount */
+CORTO_FW_CD(core, mount);
+CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(core_mount, mount, lang_object, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, mask, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, type, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, kind, core_mountKind, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, contentType, lang_string, CORTO_GLOBAL);
+    CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_construct);
+    CORTO_METHOD_O(core_mount, construct, "()", lang_int16, FALSE, corto_mount_construct);
+    CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);
+    CORTO_METHOD_O(core_mount, post, "(event e)", lang_void, FALSE, corto_mount_post);
+    CORTO_METHOD_O(core_mount, setContentType, "(string type)", lang_int16, FALSE, corto_mount_setContentType);
+    CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,octetseq args)", lang_void, FALSE, corto_mount_invoke);
+    CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, FALSE, corto_mount_request);
+    CORTO_METHOD_O(core_mount, resume, "(string parent,string name,object o)", lang_object, FALSE, corto_mount_resume);
+    CORTO_METHOD_O(core_mount, onInvoke, "(object instance,function proc,octetseq args)", lang_void, TRUE, corto_mount_onInvoke_v);
+    CORTO_METHOD_O(core_mount, onRequest, "(core/request request)", core_resultIter, TRUE, corto_mount_onRequest_v);
+    CORTO_METHOD_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_mount_onResume_v);
+    CORTO_METHOD_O(core_mount, onDeclare, "(object observable)", lang_void, TRUE, corto_mount_onDeclare_v);
+    CORTO_METHOD_O(core_mount, onUpdate, "(object observable)", lang_void, TRUE, corto_mount_onUpdate_v);
+    CORTO_METHOD_O(core_mount, onDelete, "(object observable)", lang_void, TRUE, corto_mount_onDelete_v);
+    CORTO_OBSERVER_O(core_mount, on_declare, corto_mount_on_declare);
+    CORTO_OBSERVER_O(core_mount, on_update, corto_mount_on_update);
+    CORTO_OBSERVER_O(core_mount, on_delete, corto_mount_on_delete);
 
 /* /corto/core/loader */
 CORTO_FW_CD(core, loader);
-CORTO_CLASS_O(core, loader, core_replicator, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+CORTO_CLASS_O(core, loader, core_mount, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_METHOD_O(core_loader, construct, "()", lang_int16, FALSE, corto_loader_construct);
     CORTO_METHOD_O(core_loader, destruct, "()", lang_void, FALSE, corto_loader_destruct);
     CORTO_METHOD_O(core_loader, onRequest, "(core/request request)", core_resultIter, TRUE, corto_loader_onRequest_v);
@@ -1096,7 +1096,7 @@ CORTO_CLASS_O(core, observableEvent, core_event, CORTO_READONLY, NULL, CORTO_DEC
 
 /* /corto/lang/invokeEvent */
 CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_REFERENCE_O(core_invokeEvent, replicator, core_replicator, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
+    CORTO_REFERENCE_O(core_invokeEvent, mount, core_mount, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, function, lang_function, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, args, lang_octetseq, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);

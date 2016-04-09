@@ -53,7 +53,7 @@ CORTO_META_OBJECT(class, observableEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
-CORTO_META_OBJECT(class, replicator);
+CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);
 CORTO_META_OBJECT(struct, parameter);
@@ -119,9 +119,9 @@ CORTO_META_OBJECT(procedure, virtual);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, metaprocedure);
 
-CORTO_META_OBJECT(observer, replicator_on_declare);
-CORTO_META_OBJECT(observer, replicator_on_update);
-CORTO_META_OBJECT(observer, replicator_on_delete);
+CORTO_META_OBJECT(observer, mount_on_declare);
+CORTO_META_OBJECT(observer, mount_on_update);
+CORTO_META_OBJECT(observer, mount_on_delete);
 
 CORTO_META_OBJECT(iterator, resultIter);
 

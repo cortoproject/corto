@@ -13,9 +13,9 @@ corto_int16 _test_JsonReplicator_construct(
 {
 /* $begin(test/JsonReplicator/construct) */
 
-    corto_replicator_setContentType(this, "application/json");
+    corto_mount_setContentType(this, "application/json");
 
-    return corto_replicator_construct(this);
+    return corto_mount_construct(this);
 /* $end */
 }
 

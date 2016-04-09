@@ -12,11 +12,11 @@ corto_int16 _corto_loader_construct(
     corto_loader this)
 {
 /* $begin(corto/core/loader/construct) */
-    corto_setref(&corto_replicator(this)->mount, root_o);
-    corto_replicator(this)->mask = CORTO_ON_TREE;
-    corto_replicator(this)->kind = CORTO_SINK;
-    corto_setstr(&corto_replicator(this)->type, "/corto/core/package");
-    return corto_replicator_construct(this);
+    corto_setref(&corto_mount(this)->mount, root_o);
+    corto_mount(this)->mask = CORTO_ON_TREE;
+    corto_mount(this)->kind = CORTO_SINK;
+    corto_setstr(&corto_mount(this)->type, "/corto/core/package");
+    return corto_mount_construct(this);
 /* $end */
 }
 
@@ -24,7 +24,7 @@ corto_void _corto_loader_destruct(
     corto_loader this)
 {
 /* $begin(corto/core/loader/destruct) */
-    corto_replicator_destruct(this);
+    corto_mount_destruct(this);
 /* $end */
 }
 

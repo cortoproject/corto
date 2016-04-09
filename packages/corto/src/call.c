@@ -89,13 +89,13 @@ static void corto_call_intern(corto_function f, corto_void* result, void* args) 
         corto_object instance = *(corto_object*)args;
         corto_object owner = corto_ownerof(instance);
 
-        if (owner && corto_instanceof(corto_replicator_o, owner)) {
+        if (owner && corto_instanceof(corto_mount_o, owner)) {
             if (!(owner == corto_getOwner())) {
                 corto_octetseq argbuff = {f->size, args};
-                corto_replicator_invoke(owner, instance, f, argbuff);
+                corto_mount_invoke(owner, instance, f, argbuff);
                 return;
             } else {
-                /* A replicator invoking a method on an object it owns? That is
+                /* A mount invoking a method on an object it owns? That is
                  * odd. Don't do anything. */
                 return;
             }

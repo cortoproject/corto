@@ -997,7 +997,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
                 /* The object already exists. Check if the existing object is
                  * owned by the same owner as the one registered */
                 corto_object owner = corto_ownerof(o);
-                if (owner && corto_instanceof(corto_replicator_o, owner)) {
+                if (owner && corto_instanceof(corto_mount_o, owner)) {
                     if (owner != corto_getOwner()) {
                         corto_release(o);
                         corto_seterr(
@@ -1108,12 +1108,12 @@ corto_object corto_resume(
     corto_object p = parent;
 
     while (!result && p) {
-        corto_ll replicatorList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
-        if (replicatorList) {
-            corto_iter iter = corto_llIter(replicatorList);
+        corto_ll mountList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
+        if (mountList) {
+            corto_iter iter = corto_llIter(mountList);
             corto_id parentId;
 
-            /* Parent must be relative to mount point of replicator */
+            /* Parent must be relative to mount point of mount */
             corto_path(
                 parentId,
                 p,
@@ -1121,22 +1121,22 @@ corto_object corto_resume(
                 "/");
 
             while (corto_iterHasNext(&iter)) {
-                corto_replicator_olsData_t *rData = corto_iterNext(&iter);
+                corto_mount_olsData_t *rData = corto_iterNext(&iter);
 
-                /* Either the replicator registered for the direct parent of the
-                 * provided object, or the replicator must have ON_TREE set */
+                /* Either the mount registered for the direct parent of the
+                 * provided object, or the mount must have ON_TREE set */
                 if ((p == parent) ||
-                  (rData->replicator->mask == CORTO_ON_TREE)) {
+                  (rData->mount->mask == CORTO_ON_TREE)) {
                     corto_object requested;
-                    /* If replicator implements resume, this will load the
+                    /* If mount implements resume, this will load the
                      * persistent copy in memory */
-                    if ((requested = corto_replicator_resume(
-                        rData->replicator,
+                    if ((requested = corto_mount_resume(
+                        rData->mount,
                         parentId,
                         expr,
                         o)))
                     {
-                        /* The first replicator that has the object
+                        /* The first mount that has the object
                          * takes precedence */
                         result = requested;
                         break;
@@ -1172,13 +1172,13 @@ corto_int16 corto_define(corto_object o) {
                  * persistent copy is already available */
                 if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
                     corto_resume(corto_parentof(o), corto_idof(o), o);
-                    /* Ignore result: if there are no replicators that contain
+                    /* Ignore result: if there are no mounts that contain
                      * a copy of the object, use the initial value */
                 }
             }
 
             /* Don't invoke constructor if object is not locally owned */
-            if (!_p || !_p->owner || !corto_instanceof(corto_replicator_o, _p->owner)) {
+            if (!_p || !_p->owner || !corto_instanceof(corto_mount_o, _p->owner)) {
                 /* If object is instance of a class, call the constructor */
                 if (corto_class_instanceof(corto_class_o, t)) {
                     /* Call constructor - will potentially override observer params */
@@ -1276,7 +1276,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             }
 
             /* Call object destructor */
-            if (!owner || !corto_instanceof(corto_replicator_o, owner)) {
+            if (!owner || !corto_instanceof(corto_mount_o, owner)) {
                 corto__destructor(o);
             }
             if (owner) {
@@ -2287,8 +2287,8 @@ corto_bool corto_owned(corto_object o) {
     if (owner == current) {
         return TRUE;
     } else if (!current && owner) {
-        if (corto_instanceof(corto_replicator_o, owner)) {
-            if (corto_replicator(owner)->kind != CORTO_SINK) {
+        if (corto_instanceof(corto_mount_o, owner)) {
+            if (corto_mount(owner)->kind != CORTO_SINK) {
                 return FALSE;
             } else {
                 return TRUE;
@@ -4453,7 +4453,7 @@ corto_int16 corto_copya(corto_any *dst, corto_any src) {
     return result;
 }
 
-corto_int16 _corto_augment(corto_type o, corto_string id, corto_replicator r) {
+corto_int16 _corto_augment(corto_type o, corto_string id, corto_mount r) {
     corto_ll augments = corto_olsLockGet(o, CORTO_OLS_AUGMENT);
     corto_augment_olsData_t *data = NULL;
 
@@ -4468,7 +4468,7 @@ corto_int16 _corto_augment(corto_type o, corto_string id, corto_replicator r) {
     }
 
     data = corto_alloc(sizeof(corto_augment_olsData_t));
-    data->replicator = r;
+    data->mount = r;
     data->id = corto_strdup(id);
     corto_llAppend(augments, data);
 

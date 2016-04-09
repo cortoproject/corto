@@ -1001,7 +1001,7 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     printf("corto shell - type 'help' for instructions.\n");
     cxsh_color(NORMAL);
 
-    /* Start loader replicator */
+    /* Start loader mount */
     corto_loader p = corto_loaderCreate();
 
     /* Parse arguments */
@@ -1018,7 +1018,7 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     strcpy(scope, "/");
     cxsh_shell();
 
-    /* Delete loader replicator */
+    /* Delete loader mount */
     corto_delete(p);
 
     return 0;

@@ -293,7 +293,7 @@ corto_void _test_Ownership_tc_invokeOwned(
     test_assert(o != NULL);
     test_assert(corto_ownerof(o) == r);
 
-    /* Invoke method in context of replicator. Nothing should happen */
+    /* Invoke method in context of mount. Nothing should happen */
     corto_call(corto_function(test_MethodForwardTest_func_o), NULL, o);
     test_assert(o->invoked == 0);
     test_assert(r->invoked == 0);

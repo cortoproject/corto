@@ -13,7 +13,7 @@ corto_void _test_SelectSink_setup(
 {
 /* $begin(test/SelectSink/setup) */
 
-    /* Register sink replicator */
+    /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
     test_SinkReplicatorCreateChild_auto(root_o, sinkMount, mount, NULL);
 
@@ -33,13 +33,13 @@ corto_void _test_SelectSink_tc_selectMixedScope(
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
 
-    /* Create duplicate of object in replicator */
+    /* Create duplicate of object in mount */
     corto_int32CreateChild_auto(mount, x, 0);
 
-    /* Create object that is not in replicator (should not show up) */
+    /* Create object that is not in mount (should not show up) */
     corto_int32CreateChild_auto(mount, i, 0);
 
-    /* Create float object that is not in replicator (should not show up) */
+    /* Create float object that is not in mount (should not show up) */
     corto_float32CreateChild_auto(mount, j, 0);
 
     corto_release(mount);
@@ -87,13 +87,13 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested1(
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
 
-    /* Create duplicate of object in replicator */
+    /* Create duplicate of object in mount */
     corto_int32CreateChild_auto(mount, x, 0);
 
-    /* Create object that is not in replicator (should not show up) */
+    /* Create object that is not in mount (should not show up) */
     corto_int32CreateChild_auto(x, i, 0);
 
-    /* Create float object that is not in replicator (should not show up) */
+    /* Create float object that is not in mount (should not show up) */
     corto_float32CreateChild_auto(x, j, 0);
 
     corto_release(mount);
@@ -141,14 +141,14 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested2(
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
 
-    /* Create duplicate of object in replicator */
+    /* Create duplicate of object in mount */
     corto_int32CreateChild_auto(mount, x, 0);
     corto_int32CreateChild_auto(x, a, 0);
 
-    /* Create object that is not in replicator (should not show up) */
+    /* Create object that is not in mount (should not show up) */
     corto_int32CreateChild_auto(a, i, 0);
 
-    /* Create float object that is not in replicator (should not show up) */
+    /* Create float object that is not in mount (should not show up) */
     corto_float32CreateChild_auto(a, j, 0);
 
     corto_release(mount);

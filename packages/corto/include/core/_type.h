@@ -19,8 +19,8 @@ extern "C" {
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
-#define corto_replicatorKind(o) ((corto_replicatorKind*)corto_assertType((corto_type)corto_replicatorKind_o, o))
-#define corto_replicator(o) ((corto_replicator)corto_assertType((corto_type)corto_replicator_o, o))
+#define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
+#define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
@@ -80,21 +80,21 @@ CORTO_BITMASK(corto_eventMask);
     #define CORTO_ON_VALUE (0x100)
     #define CORTO_ON_METAVALUE (0x200)
 
-/* /corto/core/replicatorKind */
-typedef enum corto_replicatorKind {
+/* /corto/core/mountKind */
+typedef enum corto_mountKind {
     CORTO_SOURCE = 0,
     CORTO_SINK = -1,
     CORTO_CACHE = 1
-} corto_replicatorKind;
+} corto_mountKind;
 
-/*  /corto/core/replicator */
-CORTO_CLASS(corto_replicator);
+/*  /corto/core/mount */
+CORTO_CLASS(corto_mount);
 
-CORTO_CLASS_DEF(corto_replicator) {
+CORTO_CLASS_DEF(corto_mount) {
     corto_object mount;
     corto_eventMask mask;
     corto_string type;
-    corto_replicatorKind kind;
+    corto_mountKind kind;
     corto_string contentType;
 };
 
@@ -103,7 +103,7 @@ CORTO_CLASS(corto_invokeEvent);
 
 CORTO_CLASS_DEF(corto_invokeEvent) {
     CORTO_EXTEND(corto_event);
-    corto_replicator replicator;
+    corto_mount mount;
     corto_object instance;
     corto_function function;
     corto_octetseq args;
@@ -113,7 +113,7 @@ CORTO_CLASS_DEF(corto_invokeEvent) {
 CORTO_CLASS(corto_loader);
 
 CORTO_CLASS_DEF(corto_loader) {
-    CORTO_EXTEND(corto_replicator);
+    CORTO_EXTEND(corto_mount);
 };
 
 /*  /corto/core/notifyAction */

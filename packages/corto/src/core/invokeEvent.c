@@ -13,7 +13,7 @@ corto_void _corto_invokeEvent_handle_v(
 {
 /* $begin(corto/core/invokeEvent/handle) */
 
-    corto_replicator_onInvoke(this->replicator, this->instance, this->function, this->args);
+    corto_mount_onInvoke(this->mount, this->instance, this->function, this->args);
 
 /* $end */
 }

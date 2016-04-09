@@ -116,9 +116,9 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_replicator_setContentType(this, "text/json");
+    corto_mount_setContentType(this, "text/json");
 
-    return corto_replicator_construct(this);
+    return corto_mount_construct(this);
 /* $end */
 }
 

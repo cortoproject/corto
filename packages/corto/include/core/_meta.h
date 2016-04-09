@@ -27,7 +27,7 @@ CORTO_META_OBJECT(class, observableEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
-CORTO_META_OBJECT(class, replicator);
+CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(class, loader);
 CORTO_META_OBJECT(struct, augmentData);
 CORTO_META_OBJECT(struct, result);
@@ -38,7 +38,7 @@ CORTO_META_OBJECT(enum, equalityKind);
 CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(bitmask, eventMask);
 CORTO_META_OBJECT(bitmask, modifier);
-CORTO_META_OBJECT(enum, replicatorKind);
+CORTO_META_OBJECT(enum, mountKind);
 CORTO_META_OBJECT(bitmask, state);
 CORTO_META_OBJECT(bitmask, attr);
 
