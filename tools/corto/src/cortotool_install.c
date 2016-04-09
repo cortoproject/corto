@@ -148,6 +148,10 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                 installLocal = TRUE;
             }
         }
+    } else {
+        if (cortotool_validProject()) {
+            installLocal = TRUE;
+        }
     }
 
     if (installLocal) {
