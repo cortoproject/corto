@@ -188,8 +188,8 @@ class MethodForwardTest::
     invoked: int32, readonly
 
 // Replicator for ownership testcase
-class FooReplicator : replicator, hidden ::
-    alias mount: replicator/mount
+class FooReplicator : mount, hidden ::
+    alias mount: mount/mount
     void onInvoke(object instance, function proc, octetseq args)
     invoked: uint32, readonly
 
@@ -370,13 +370,13 @@ test::Suite Select::
     void tc_selectLimitOvershootScope()
     void tc_selectLimitOvershootTree()
 
-class JsonReplicator : replicator, hidden::
-    alias mount: replicator/mount
+class JsonReplicator : mount, hidden::
+    alias mount: mount/mount
     int16 construct()
     resultIter onRequest(core/request request)
 
-class StringReplicator : replicator, hidden::
-    alias mount: replicator/mount
+class StringReplicator : mount, hidden::
+    alias mount: mount/mount
     int16 construct()
     resultIter onRequest(core/request request)
 
@@ -392,19 +392,19 @@ test::Suite SelectContentType::
     void tc_selectJsonFromString()
     void tc_selectJsonFromJson()
 
-class ListReplicator : replicator, hidden::
-    alias mount : replicator/mount
-    alias mask : replicator/mask
-    alias kind : replicator/kind
+class ListReplicator : mount, hidden::
+    alias mount : mount/mount
+    alias mask : mount/mask
+    alias kind : mount/kind
     items: resultList, private
     int16 construct()
     resultIter onRequest(core/request request)
 
-// Test corto_select requesting data from replicators
+// Test corto_select requesting data from mounts
 test::Suite ReplicatorRequest::
     void setup() method
     void teardown() method
-    replicator: ListReplicator
+    mount: ListReplicator
 
     void tc_selectSingle()
     void tc_selectSingleNested()
@@ -433,14 +433,14 @@ test::Suite ReplicatorRequest::
     void tc_selectVirtualParentFromVirtualScope()
     void tc_selectVirtualGrandparentFromVirtualScope()
 
-class SinkReplicator : core/replicator, hidden::
-    alias mount: replicator/mount
-    alias type: replicator/type
+class SinkReplicator : core/mount, hidden::
+    alias mount: mount/mount
+    alias type: mount/type
     items: resultList, private
     int16 construct()
     resultIter onRequest(core/request request)
 
-// Request data from a SINK replicator
+// Request data from a SINK mount
 test::Suite SelectSink::
     void setup() method
     void teardown() method
@@ -459,7 +459,7 @@ test::Suite SelectSink::
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
 
-// Request data from a SINK replicator with a type
+// Request data from a SINK mount with a type
 test::Suite SelectSinkWithType::
     void setup() method
     void teardown() method
