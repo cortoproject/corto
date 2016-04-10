@@ -3235,7 +3235,10 @@ corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value
     /* Clear any errors set by previous code  */
     corto_seterr(NULL);
 
-    corto_object o = corto_resolve(scope, expr);
+    corto_object o = NULL;
+    if (!strchr(expr, ' ')) {
+        corto_resolve(scope, expr);
+    }
     if (o) {
         corto_valueObjectInit(value, o, NULL);
         result = 0;
