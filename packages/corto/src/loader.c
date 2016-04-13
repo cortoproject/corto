@@ -619,6 +619,11 @@ int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
     CORTO_UNUSED(udata);
     corto_id testName;
 
+    /* Always try loading packages before anything else */
+    if (!corto_packageLoader(file)) {
+        return 0;
+    }
+
     sprintf(testName, "%s.xml", file);
     if (corto_fileTest(testName)) {
         if (!corto_load("corto/fmt/xml", 0, NULL)) {
@@ -631,10 +636,6 @@ int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
         if (!corto_load("corto/ast", 0, NULL)) {
             return corto_load(testName, argc, argv);
         }
-    }
-
-    if (!corto_packageLoader(file)) {
-        return 0;
     }
 
     return -1;

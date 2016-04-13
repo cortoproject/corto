@@ -134,8 +134,12 @@ task :doc do
     if `which corto` != "" then
         begin
           sh "corto locate corto/md --silent"
-          if File.exists? "#{NAME}.md" and not LOCAL then
-              command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
+          if File.exists? "#{NAME}.md" then
+              if not LOCAL and not NOCORTO then
+                command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
+              else
+                command = "corto pp #{NAME}.md -g doc/html"
+              end
               begin
                   sh command
               rescue
@@ -201,7 +205,7 @@ task :uninstaller do
 end
 
 task :uninstall do
-    verbose(FALSE)
+    verbose(VERBOSE)
     if not LOCAL then
         dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
         if File.exists? "#{dir}/uninstall.txt" then
@@ -312,6 +316,11 @@ task :install do
         # package files are made while a running application is using it.
         sh "echo \"`pwd`\" >> source.txt"
         libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+        if File.exists? "#{libpath}/source.txt" then
+          if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
+            sh "echo \"\033[1;31mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m\""
+          end
+        end
         sh "mkdir -p #{libpath}"
         sh "mv source.txt #{libpath}/source.txt"
     end
