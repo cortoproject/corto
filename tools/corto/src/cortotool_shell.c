@@ -447,16 +447,19 @@ static int cxsh_show(char* object) {
         s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
 
         /* Serialize value to string */
-        corto_serializeValue(&s, &result, &sdata);
-        if (sdata.buffer.str) {
-            if (o) {
-                printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
-            }
-            printf("%s\n", sdata.buffer.str);
+        if (corto_valueValue(&result)) {
+            corto_serializeValue(&s, &result, &sdata);
+            corto_string str = corto_buffer_str(&sdata.buffer);
+            if (str) {
+                if (o) {
+                    printf("%svalue:%s        ", INTERFACE_COLOR, NORMAL);
+                }
+                printf("%s\n", str);
 
-            corto_dealloc(sdata.buffer.str);
-            sdata.buffer.str = NULL;
-            sdata.ptr = NULL;
+                corto_dealloc(str);
+                sdata.buffer.buf = NULL;
+                sdata.ptr = NULL;
+            }
         }
 
         if (o) {
@@ -465,9 +468,10 @@ static int cxsh_show(char* object) {
                 s.accessKind = CORTO_NOT;
                 s.aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
                 corto_metaWalk(&s, o, &sdata);
-                if (sdata.buffer.str) {
-                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, sdata.buffer.str);
-                    corto_dealloc(sdata.buffer.str);
+                corto_string str = corto_buffer_str(&sdata.buffer);
+                if (str) {
+                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, NORMAL, str);
+                    corto_dealloc(str);
                 }
             }
             printf("\n");

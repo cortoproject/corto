@@ -59,9 +59,15 @@ corto_int16 _corto_mount_construct(
             }
         }
 
-        corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, this);
-        corto_listen(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, this);
-        corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, this);
+        if (corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, this)) {
+            goto error;
+        }
+        if (corto_listen(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, this)) {
+            goto error;
+        }
+        if (corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, this)) {
+            goto error;
+        }
     }
 
     return 0;

@@ -570,8 +570,8 @@ static void corto_setItemData(
         corto_string_ser_t serData;
         struct corto_serializer_s s;
 
-        serData.buffer.str = item->type;
-        serData.buffer.len = CORTO_MAX_PATH_LENGTH;
+        serData.buffer = CORTO_BUFFER_INIT;
+        serData.buffer.buf = item->type;
         serData.buffer.max = CORTO_MAX_PATH_LENGTH;
         serData.compactNotation = TRUE;
         serData.prefixType = FALSE;

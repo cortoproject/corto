@@ -48,6 +48,9 @@ char* corto_strdup(const char* str);
 int corto_asprintf (char **str, const char *fmt, ...);
 int corto_vasprintf (char **str, const char *fmt, va_list args);
 
+/* Replace substring in string */
+char* corto_replace(char *orig, char *rep, char *with);
+
 #ifdef __cplusplus
 }
 #endif

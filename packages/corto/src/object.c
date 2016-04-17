@@ -2286,18 +2286,18 @@ corto_bool corto_owned(corto_object o) {
 
     if (owner == current) {
         return TRUE;
-    } else if (!current && owner) {
-        if (corto_instanceof(corto_mount_o, owner)) {
+    } else if (owner && corto_instanceof(corto_mount_o, owner)) {
+        if (!current) {
             if (corto_mount(owner)->kind != CORTO_SINK) {
                 return FALSE;
             } else {
                 return TRUE;
             }
         } else {
-            return TRUE;
+            return FALSE;
         }
     } else {
-        return FALSE;
+        return TRUE;
     }
 }
 
@@ -4152,8 +4152,8 @@ void corto_setstr(corto_string* ptr, corto_string value) {
 corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     corto_string_ser_t serData;
     struct corto_serializer_s s;
-    serData.buffer.str = NULL;
-    serData.buffer.len = 0;
+
+    serData.buffer = CORTO_BUFFER_INIT;
     serData.buffer.max = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
@@ -4162,14 +4162,14 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
     corto_serialize(&s, object, &serData);
 
-    return serData.buffer.str;
+    return corto_buffer_str(&serData.buffer);
 }
 
 corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     corto_string_ser_t serData;
     struct corto_serializer_s s;
-    serData.buffer.str = NULL;
-    serData.buffer.len = 0;
+
+    serData.buffer = CORTO_BUFFER_INIT;
     serData.buffer.max = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
@@ -4178,7 +4178,7 @@ corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
     corto_serializeValue(&s, v, &serData);
 
-    return serData.buffer.str;
+    return corto_buffer_str(&serData.buffer);
 }
 
 corto_string _corto_strp(void *p, corto_type type, corto_uint32 maxLength) {
