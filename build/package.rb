@@ -42,6 +42,7 @@ end
 
 # Code generation
 if not defined? NOCORTO then
+    verbose(VERBOSE)
     DEFFILES = Rake::FileList["#{NAME}.{cx,idl,xml}"]
 
     if DEFFILES.length != 0 then
@@ -99,7 +100,7 @@ if not defined? NOCORTO then
         GENERATED_SOURCES <<
             ".corto/_load.c"
 
-        file "include/#{NAME}.h" => [".corto/packages.txt"] do
+        file ".corto/_load.c" => [".corto/packages.txt"] do
             verbose(VERBOSE)
             preload = PP_PRELOAD.join(" ")
             sh "mkdir -p .corto"
@@ -124,7 +125,7 @@ if not defined? NOCORTO then
               abort()
             end
         end
-        task :prebuild => ["include/#{NAME}.h"]
+        task :prebuild => [".corto/_load.c"]
     end
 end
 
@@ -211,7 +212,10 @@ task :uninstall do
         if File.exists? "#{dir}/uninstall.txt" then
             File.open("#{dir}/uninstall.txt") {|file|
                 file.each_line{|l|
-                    sh "rm -rf #{l}"
+                    # That will not happen to me
+                    if l.strip.length > "/usr/local".length then
+                      sh "rm -rf #{l}"
+                    end
                 }
             }
         end
@@ -311,7 +315,7 @@ task :install do
             end
         end
     end
-    if ENV['CORTO_TARGET'] != "/usr/local" then
+    if not LOCAL and ENV['CORTO_TARGET'] != "/usr/local" then
         # Using this file, corto can auto-rebuild the package when changes in
         # package files are made while a running application is using it.
         sh "echo \"`pwd`\" >> source.txt"
@@ -324,11 +328,11 @@ task :install do
         sh "mkdir -p #{libpath}"
         sh "mv source.txt #{libpath}/source.txt"
     end
-    if File.exists? ".corto/packages.txt" then
+    if not LOCAL and File.exists? ".corto/packages.txt" then
         sh "mkdir -p #{libpath}/.corto"
         sh "cp .corto/packages.txt #{libpath}/.corto"
     end
-    if File.exists? ".corto/version.txt" then
+    if not LOCAL and File.exists? ".corto/version.txt" then
       sh "mkdir -p #{libpath}/.corto"
       sh "cp .corto/version.txt #{libpath}/.corto"
     end
