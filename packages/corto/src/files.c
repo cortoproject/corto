@@ -117,15 +117,30 @@ int corto_cp(const char *sourcePath, const char *destinationPath) {
 
     if (!(sourceFile = fopen(sourcePath, "rb"))) {
         _errno = errno;
-        sprintf(msg, "cannot open file '%s'", sourcePath);
+        sprintf(msg, "cannot open sourcefile '%s'", sourcePath);
         goto error;
     }
 
     if (!(destinationFile = fopen(destinationPath, "wb"))) {
-        _errno = errno;
-        sprintf(msg, "cannot open file '%s'", sourcePath);
-        fclose(sourceFile);
-        goto error;
+        /* If destination is a directory, append filename to directory and try
+         * again */
+        if (errno == EISDIR) {
+            corto_id fileName, dest;
+            strcpy(fileName, sourcePath);
+            corto_nameFromFullname(fileName);
+            sprintf(dest, "%s/%s", destinationPath, fileName);
+            if (!(destinationFile = fopen(dest, "wb"))) {
+                _errno = errno;
+                sprintf(msg, "cannot open destinationfile '%s'", dest);
+                fclose(sourceFile);
+                goto error;
+            }
+        } else {
+            _errno = errno;
+            sprintf(msg, "cannot open destinationfile '%s'", destinationPath);
+            fclose(sourceFile);
+            goto error;
+        }
     }
 
     /* "no real standard portability"
