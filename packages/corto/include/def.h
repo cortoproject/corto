@@ -43,6 +43,8 @@
 #include "corto/iter.h"
 
 #ifdef __cplusplus
+#include <utility>
+
 extern "C" {
 #endif
 
