@@ -8,25 +8,24 @@
 #ifndef CORTO_DEF_H
 #define CORTO_DEF_H
 
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <alloca.h>
 #include <assert.h>
+#include <ctype.h>
 #include <errno.h>
-#include <time.h>
+#include <limits.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <math.h>
-#include <limits.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include <fnmatch.h>
 #include <inttypes.h>
-#include <alloca.h>
 #include <execinfo.h>
 #include <dlfcn.h>
-#include <ctype.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>

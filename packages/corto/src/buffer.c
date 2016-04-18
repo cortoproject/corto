@@ -51,36 +51,36 @@ static corto_int32 corto_buffer_spaceLeft(corto_buffer *b) {
     }
 }
 
-/* Append a format string to a buffer */
-corto_bool corto_buffer_append(
-    corto_buffer *b,
-    corto_string fmt,
-    ...)
-{
-    va_list args;
-    va_list argcpy;
-    corto_bool result = TRUE;
-
-    /* If this is the first time append is called, initialize buffer structure */
+static void corto_buffer_init(corto_buffer *b) {
+    /* Initialize buffer structure only once */
     if (!b->elementCount) {
         b->firstElement.next = NULL;
         b->firstElement.pos = 0;
         b->elementCount ++;
         b->current = &b->firstElement;
     }
+}
+
+/* Append a format string to a buffer */
+static corto_bool corto_buffer_appendIntern(
+    corto_buffer *b,
+    corto_string str,
+    void *data,
+    corto_uint32 ___ (*copy)(char *dst, char *str, corto_int32 len, void *data))
+{
+    corto_bool result = TRUE;
+
+    corto_buffer_init(b);
 
     corto_int32 spaceLeftInElement = corto_buffer_spaceLeftInCurrentElement(b);
     corto_int32 spaceLeft = corto_buffer_spaceLeft(b);
 
     /* Compute the memory required to add the string to the buffer */
-    va_start(args, fmt);
-    va_copy(argcpy, args);
-    corto_int32 memRequired = vsnprintf(
+    corto_int32 memRequired = copy(
         corto_buffer_ptr(b),
+        str,
         (b->max && (spaceLeft < spaceLeftInElement)) ? spaceLeft : spaceLeftInElement + 1,
-        fmt,
-        args);
-    va_end(args);
+        data);
 
     if (b->max && (spaceLeft < memRequired)) {
         result = FALSE;
@@ -109,7 +109,7 @@ corto_bool corto_buffer_append(
                     len = memRequired - spaceLeftInElement;
                 }
 
-                vsprintf(corto_buffer_ptr(b), fmt, argcpy);
+                copy(corto_buffer_ptr(b), str, CORTO_BUFFER_ELEMENT_SIZE, data);
                 memmove(
                     corto_buffer_ptr(b),
                     corto_buffer_ptr(b) + spaceLeftInElement,
@@ -120,10 +120,10 @@ corto_bool corto_buffer_append(
              * temporary string that will hold the full value, then distribute
              * the results over the new elements */
             } else {
-                corto_string str = corto_alloc(memRequired + 1);
-                char *ptr = str + spaceLeftInElement;
+                corto_string dst = corto_alloc(memRequired + 1);
+                char *ptr = dst + spaceLeftInElement;
                 corto_int32 memLeft = memRequired - spaceLeftInElement;
-                vsprintf(str, fmt, argcpy);
+                copy(dst, str, memRequired, data);
 
                 while (memLeft > 0) {
                     corto_buffer_grow(b);
@@ -136,8 +136,7 @@ corto_bool corto_buffer_append(
                         memLeft = 0;
                     }
                 }
-
-                corto_dealloc(str);
+                corto_dealloc(dst);
             }
         } else {
             result = FALSE;
@@ -146,9 +145,102 @@ corto_bool corto_buffer_append(
         b->current->pos += memRequired;
     }
 
-    va_end(argcpy);
+    return result;
+}
+
+typedef struct corto_buffer_fmt_t {
+    va_list args;
+    va_list argcpy;
+    corto_int8 call;
+} corto_buffer_fmt_t;
+
+static corto_uint32 corto_buffer_fmtcpy(
+    char *dst,
+    char *src,
+    corto_int32 len,
+    void *userData)
+{
+    corto_buffer_fmt_t *data = userData;
+    data->call ++;
+    return vsnprintf(dst, len, src, data->call == 1 ? data->args: data->argcpy);
+}
+
+corto_bool corto_buffer_append(
+    corto_buffer *b,
+    corto_string fmt,
+    ...)
+{
+    corto_buffer_fmt_t data;
+
+    va_start(data.args, fmt);
+    va_copy(data.argcpy, data.args);
+    data.call = 0;
+
+    corto_bool result = corto_buffer_appendIntern(
+        b, fmt, &data, corto_buffer_fmtcpy
+    );
+
+    va_end(data.args);
+    va_end(data.argcpy);
 
     return result;
+}
+
+static corto_uint32 corto_buffer_strcpy(
+    char *dst,
+    char *src,
+    corto_int32 len,
+    void *userData)
+{
+    char *ptr, ch, *bptr = dst;
+    CORTO_UNUSED(userData);
+
+    /* Prevent doing both a strcpy and a strlen */
+    for(ptr = src; (ch = *ptr); ptr++) {
+        if ((ptr - src) < len) {
+            *(bptr++) = ch;
+        }
+    }
+
+    return ptr - src;
+}
+
+corto_bool corto_buffer_appendstr(
+    corto_buffer *b,
+    corto_string str)
+{
+    return corto_buffer_appendIntern(
+        b, str, NULL, corto_buffer_strcpy
+    );
+}
+
+static corto_uint32 corto_buffer_strncpy(
+    char *dst,
+    char *src,
+    corto_int32 len,
+    void *userData)
+{
+    char *ptr, ch, *bptr = dst;
+    corto_uint32 srclen = *(corto_uint32*)userData;
+
+    /* Prevent doing both a strcpy and a strlen */
+    for(ptr = src; (ch = *ptr) && ((ptr - src) < srclen); ptr++) {
+        if ((ptr - src) < len) {
+            *(bptr++) = ch;
+        }
+    }
+
+    return srclen;
+}
+
+corto_bool corto_buffer_appendstrn(
+    corto_buffer *b,
+    corto_string str,
+    corto_uint32 len)
+{
+    return corto_buffer_appendIntern(
+        b, str, &len, corto_buffer_strncpy
+    );
 }
 
 corto_string corto_buffer_str(corto_buffer *b) {

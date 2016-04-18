@@ -44,12 +44,25 @@ typedef struct corto_buffer {
     corto_buffer_element *current;
 } corto_buffer;
 
-/* Append to a buffer.
+/* Append format string to a buffer.
  * Returns false when max is reached, true when there is still space */
 corto_bool corto_buffer_append(
     corto_buffer *buffer,
     corto_string fmt,
     ...);
+
+/* Append string to buffer.
+ * Returns false when max is reached, true when there is still space */
+corto_bool corto_buffer_appendstr(
+    corto_buffer *buffer,
+    corto_string str);
+
+/* Append n characters to buffer.
+ * Returns false when max is reached, true when there is still space */
+corto_bool corto_buffer_appendstrn(
+    corto_buffer *buffer,
+    corto_string str,
+    corto_uint32 n);
 
 /* Return result string */
 corto_string corto_buffer_str(corto_buffer *buffer);
