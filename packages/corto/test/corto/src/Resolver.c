@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "test.h"
+#include <test.h>
 
 corto_void _test_Resolver_setup(
     test_Resolver this)

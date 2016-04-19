@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "test.h"
+#include <test.h>
 
 corto_void _test_SelectContentType_setup(
     test_SelectContentType this)

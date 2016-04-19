@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "test.h"
+#include <test.h>
 
 corto_int16 _test_EventTest_construct(
     test_EventTest this)

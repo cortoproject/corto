@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "test.h"
+#include <test.h>
 
 corto_void _test_FooReplicator_onInvoke(
     test_FooReplicator this,

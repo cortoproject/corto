@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "test.h"
+#include <test.h>
 
 corto_void _test_Fullname_tc_fromLang(
     test_Fullname this)
