@@ -46,20 +46,38 @@ corto_ll corto_anonymousObjects = NULL;
 typedef struct corto_observerElement {
     corto__observer ** observers;
     corto_bool free;
-}corto_observerElement;
+} corto_observerElement;
 
 typedef struct corto_observerAdmin {
     corto_thread id;
     corto_observerElement stack[CORTO_MAX_NOTIFY_DEPTH];
     corto_uint32 sp;
     corto_object from;
-}corto_observerAdmin;
+} corto_observerAdmin;
 static corto_observerAdmin observerAdmin[CORTO_MAX_THREADS];
 
 /* Stack for tracing memory management operations */
 static corto_string memtrace[50];
 static corto_int8 memtraceSp = 0;
 static corto_int8 memtraceCount = 0;
+
+/* Assumption: no more notifications are in progress when the thread
+ * exits */
+void corto_observerAdminFree(void *admin) {
+    corto_uint32 i;
+    corto_thread self = corto_threadSelf();
+
+    /* No actual memory is allocated in admin. This function just clears up the
+     * slot in the thread administration */
+    CORTO_UNUSED(admin);
+
+    for(i = 0; i < CORTO_MAX_THREADS; i++) {
+        if (observerAdmin[i].id && (observerAdmin[i].id == self)) {
+            /* Free up slot of this thread */
+            observerAdmin[i].id = 0;
+        }
+    }
+}
 
 static struct corto_observerAdmin* corto_observerAdminGet(void) {
     corto_observerAdmin *admin = corto_threadTlsGet(CORTO_KEY_OBSERVER_ADMIN);
@@ -74,8 +92,9 @@ static struct corto_observerAdmin* corto_observerAdminGet(void) {
                     corto_critical("maximum number of supported threads reached! (%d)", CORTO_MAX_THREADS);
                 }
             }
-        }while(!corto_cas(&observerAdmin[i].id,0,thr));
+        } while(!corto_cas(&observerAdmin[i].id,0,thr));
         admin = &observerAdmin[i];
+        admin->sp = 0;
         corto_threadTlsSet(CORTO_KEY_OBSERVER_ADMIN, admin);
     }
     return admin;
@@ -119,7 +138,7 @@ corto_bool corto_observersWaitForUnused(corto__observer** observers) {
             if (observerAdmin[i].id) {
                 /* Check whether the observer array is in use by threads other than myself */
                 if ((observerAdmin[i].id != self)) {
-                    for(j=0; j<observerAdmin[i].sp; j++) {
+                    for(j = 0; j < observerAdmin[i].sp; j++) {
                         if (observerAdmin[i].stack[j].observers == observers) {
                             inUse = TRUE; /* Array is found, so keep waiting */
                         }
@@ -128,7 +147,7 @@ corto_bool corto_observersWaitForUnused(corto__observer** observers) {
                 /* Check whether the observer array is in use by my own thread */
                 } else {
                     freeArray = TRUE;
-                    for(j=0; j<observerAdmin[i].sp; j++) {
+                    for(j = 0; j < observerAdmin[i].sp; j++) {
                         /* The array is in use by my own thread so I can't keep spinning. Notify the observing function to
                          * free the array */
                         if (observerAdmin[i].stack[j].observers == observers) {
@@ -140,7 +159,7 @@ corto_bool corto_observersWaitForUnused(corto__observer** observers) {
                 }
             }
         }
-    }while(inUse);
+    } while(inUse);
 
     return freeArray;
 }
@@ -2766,15 +2785,20 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
      * The administration where this information is stored is not protected by
      * locking so that notifying objects can remain lock-free. There is however
      * a slight chance that a notification pushed the old array to the
-     * administration but that this change is not yet visible due to a number of
-     * issues w.r.t. concurrency. In this case the functions below will assume
-     * the array is unused, which is incorrect.
+     * administration but that this change is not yet visible. In this case the
+     * functions below will assume the array is unused, which is incorrect. The
+     * chance of this happening is extremely slim as this scenario illustrates:
+     *
+     * notify: push observable array
+     * notify: call observers...
+     * listen: add observer (build new observable array)
+     * listen: waitForUnused <- due to out of order execution this thread
+     *                          can in theory not have seen the push yet.
      *
      * To be absolutely sure that the observed administration is up to date a
      * memory barrier is required here. A simple mutex will not do since this
      * would encumber the notifications too much.
      */
-     /*__atomic_thread_fence (__ATOMIC_SEQ_CST);*/
 
     if (corto_observersWaitForUnused(oldSelfArray)) {
         corto_observersArrayFree(oldSelfArray);
@@ -2984,7 +3008,6 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
 
     /* Notify direct observers */
     if (_o) {
-
         /* Notify observers of observable */
         observers = corto_observersPush(&_o->onSelfArray, &this);
         corto_notifyObservers(observers, observable, this, mask, 0);

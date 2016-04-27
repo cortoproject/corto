@@ -31,6 +31,7 @@ else
     TARGETDIR = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 end
 
+# Define a convenience macro in the package that points to the installed ETC directory
 DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}\"'"
 
 # Rule for creating packages.txt

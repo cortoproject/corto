@@ -14,6 +14,9 @@
 /* Declaration of the C-binding call-handler */
 void corto_call_cdecl(corto_function f, corto_void* result, void* args);
 
+/* TLS callback to cleanup observer administration */
+void corto_observerAdminFree(void *admin);
+
 #ifdef CORTO_VM
 void corto_call_vm(corto_function f, corto_void* result, void* args);
 void corto_callDestruct_vm(corto_function f);
@@ -767,7 +770,7 @@ int corto_start(void) {
     }
 
     /* Initialize threadkeys */
-    corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, NULL);
+    corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
