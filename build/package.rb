@@ -2,7 +2,6 @@ require "#{ENV['CORTO_BUILD']}/common"
 
 PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
-INCLUDE_PUBLIC ||= [] + INCLUDE
 LIB_PUBLIC ||= [] + LIB
 LINK_PUBLIC ||= ["."] + LINK
 GENERATED_SOURCES ||= []
@@ -158,6 +157,7 @@ end
 task :buildscript do
     verbose(VERBOSE)
     if not LOCAL then
+        INCLUDE_PUBLIC ||= [] + INCLUDE
         if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
             dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
             sh "mkdir -p #{dir}"
