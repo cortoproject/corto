@@ -84,8 +84,14 @@ end
 task :sha do
     FileList.new("**/.git/config").each do |gitconfig|
         git_dir = gitconfig.pathmap("%d")
-        remote = `git --git-dir #{git_dir} config --get remote.origin.url`.chomp.split("/").slice(-2, 2).join("/")
-        sha = `git --git-dir #{git_dir} rev-parse HEAD`.chomp
+        remote = `git --git-dir #{git_dir} config --get remote.origin.url`
+        if not remote.empty?
+            remote = remote.chomp().split("/").slice(-2, 2).join("/")
+            sha = `git --git-dir #{git_dir} rev-parse HEAD`.chomp()
+        else
+            remote = git_dir.pathmap("%d")
+            sha = "unknown"
+        end
         puts "#{remote}@#{sha}"
     end
 end
