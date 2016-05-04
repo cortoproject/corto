@@ -104,10 +104,9 @@ static corto_ll cortotool_waitForChanges(corto_pid pid, corto_ll files, corto_ll
 }
 
 static int cortotool_addDirToMonitor(corto_string dir, corto_ll monitorList) {
-    corto_id cortoDir, srcDir, testDir;
+    corto_id cortoDir, srcDir;
     sprintf(cortoDir, "%s/.corto", dir);
     sprintf(srcDir, "%s/src", dir);
-    sprintf(testDir, "%s/test/src", dir);
 
     corto_ll files = corto_opendir(srcDir);
     if (!files || !corto_fileTest(cortoDir)) {
@@ -122,18 +121,6 @@ static int cortotool_addDirToMonitor(corto_string dir, corto_ll monitorList) {
         sprintf(srcFile, "%s/src/%s", dir, file);
         corto_fileMonitor *mon = cortotool_monitorNew(srcFile, dir);
         corto_llAppend(monitorList, mon);
-    }
-
-    corto_ll testFiles = corto_opendir(testDir);
-    if (testFiles) {
-        corto_iter iter = corto_llIter(testFiles);
-        while (corto_iterHasNext(&iter)) {
-            corto_id srcFile;
-            corto_string file = corto_iterNext(&iter);
-            sprintf(srcFile, "%s/test/src/%s", dir, file);
-            corto_fileMonitor *mon = cortotool_monitorNew(srcFile, dir);
-            corto_llAppend(monitorList, mon);
-        }
     }
 
     corto_closedir(files);
