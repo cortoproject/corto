@@ -154,25 +154,6 @@ static int cortotool_buildDependency(corto_string path, corto_bool test) {
         goto error;
     }
 
-    /* Build test */
-    sprintf(testPath, "%s/test", path);
-    if (corto_fileTest(testPath)) {
-        corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", testPath, "--silent", NULL});
-        if (corto_procwait(pid, &procResult) || procResult) {
-            printf("corto: failed to build '%s'\n", testPath);
-            goto error;
-        }
-    }
-
-    /* Test */
-    if (test) {
-        pid = corto_procrun("corto", (char*[]){"corto", "test", path, NULL});
-        if (corto_procwait(pid, &procResult) || procResult) {
-            printf("corto: test failed for '%s'\n", path);
-            goto error;
-        }
-    }
-
     return 0;
 error:
     return -1;
