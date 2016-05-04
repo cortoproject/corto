@@ -176,7 +176,9 @@ corto_int16 _corto_function_parseParamString(
         scope = root_o;
     }
 
-    this->parameters = corto_function_stringToParameterSeq(params, scope);
+    if (!this->parameters.length) {
+        this->parameters = corto_function_stringToParameterSeq(params, scope);
+    }
 
     return this->parameters.length == (corto_uint32)-1;
 /* $end */
@@ -192,67 +194,65 @@ corto_parameterseq _corto_function_stringToParameterSeq(
     corto_char* ptr;
 
     ptr = strchr(name, '(');
-    if (!ptr) {
-        corto_seterr("missing argumentlist in name for signature '%s'", name);
-        goto error;
-    }
-    ptr++;
+    if (ptr) {
+        ptr++;
 
-    /* Check if function has arguments */
-    if (*ptr != ')') {
-        corto_int32 count = 0, i = 0;
-        corto_id id;
-        int flags = 0;
+        /* Check if function has arguments */
+        if (*ptr != ')') {
+            corto_int32 count = 0, i = 0;
+            corto_id id;
+            int flags = 0;
 
-        /* Count number of parameters for function */
-        count = corto_signatureParamCount(name);
-        if (count == -1) {
-            goto error;
-        }
-
-        /* Allocate size for parameters */
-        result.length = count;
-        result.buffer = corto_alloc(sizeof(corto_parameter) * count);
-        memset(result.buffer, 0, sizeof(corto_parameter) * count);
-
-        /* Parse arguments */
-        for(i=0; i<count; i++) {
-            if (corto_signatureParamType(name, i, id, &flags)) {
-                corto_seterr(
-                    "error occurred while parsing type of parameter '%d' for signature '%s'",
-                    i,
-                    name);
+            /* Count number of parameters for function */
+            count = corto_signatureParamCount(name);
+            if (count == -1) {
                 goto error;
             }
 
-            /* Set reference */
-            result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
+            /* Allocate size for parameters */
+            result.length = count;
+            result.buffer = corto_alloc(sizeof(corto_parameter) * count);
+            memset(result.buffer, 0, sizeof(corto_parameter) * count);
 
-            /* Assign type */
-            result.buffer[i].type = corto_resolve(scope, id);
-            if (!result.buffer[i].type) {
-                corto_seterr("%s: '%s' not found", name, id);
-                goto error;
+            /* Parse arguments */
+            for(i=0; i<count; i++) {
+                if (corto_signatureParamType(name, i, id, &flags)) {
+                    corto_seterr(
+                        "error occurred while parsing type of parameter '%d' for signature '%s'",
+                        i,
+                        name);
+                    goto error;
+                }
+
+                /* Set reference */
+                result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
+
+                /* Assign type */
+                result.buffer[i].type = corto_resolve(scope, id);
+                if (!result.buffer[i].type) {
+                    corto_seterr("%s: '%s' not found", name, id);
+                    goto error;
+                }
+
+                /* Validate whether reference is not redundantly applied */
+                if (result.buffer[i].passByReference && result.buffer[i].type->reference) {
+                    corto_seterr(
+                        "redundant '&' qualifier for parameter %d, type '%s' is already a reference",
+                        i,
+                        corto_fullpath(NULL, result.buffer[i].type));
+                    goto error;
+                }
+
+                /* Parse name */
+                if (corto_signatureParamName(name, i, id)) {
+                    corto_seterr(
+                        "error occurred while parsing name of argument '%s' for signature '%s'",
+                        name);
+                    goto error;
+                }
+
+                result.buffer[i].name = corto_strdup(id);
             }
-
-            /* Validate whether reference is not redundantly applied */
-            if (result.buffer[i].passByReference && result.buffer[i].type->reference) {
-                corto_seterr(
-                    "redundant '&' qualifier for parameter %d, type '%s' is already a reference",
-                    i,
-                    corto_fullpath(NULL, result.buffer[i].type));
-                goto error;
-            }
-
-            /* Parse name */
-            if (corto_signatureParamName(name, i, id)) {
-                corto_seterr(
-                    "error occurred while parsing name of argument '%s' for signature '%s'",
-                    name);
-                goto error;
-            }
-
-            result.buffer[i].name = corto_strdup(id);
         }
     }
 

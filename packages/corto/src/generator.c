@@ -722,11 +722,6 @@ static corto_char* g_oidTransform(corto_generator g, corto_object o, corto_id _i
             ptr = strchr(_id, '(');
             if (ptr) {
                 *ptr = '\0';
-            } else {
-                if (corto_procedure(corto_typeof(o))->kind != CORTO_OBSERVER) {
-                    corto_warning("function object '%s' without argument list.",
-                        corto_fullpath(NULL, o));
-                }
             }
         } else {
             /* If function is overloaded, construct the 'request' string, that
