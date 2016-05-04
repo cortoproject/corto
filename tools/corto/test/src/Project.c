@@ -2237,6 +2237,84 @@ corto_void _test_Project_tc_packageNodef(
 /* $end */
 }
 
+corto_void _test_Project_tc_packageNodefC4cpp(
+    test_Project this)
+{
+/* $begin(test/Project/tc_packageNodefC4cpp) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "Project",
+            "--nodef",
+            "--silent",
+            "--nocoverage",
+            "--lang",
+            "c4cpp",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project"));
+    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(!corto_fileTest("Project/Project.md"));
+    test_assert(!corto_fileTest("Project/Project.cx"));
+
+    test_assert(corto_fileTest("Project/src"));
+    test_assert(corto_fileTest("Project/src/Project.cpp"));
+
+    test_assert(corto_fileTest("Project/include"));
+    test_assert(corto_fileTest("Project/include/Project.h"));
+
+    test_assert(corto_fileTest("Project/test"));
+    test_assert(!corto_fileTest("Project/test/test"));
+    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/test.cx"));
+    test_assert(corto_fileTest("Project/test/src"));
+    test_assert(corto_fileTest("Project/test/src/test.cpp"));
+    test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
+    test_assert(corto_fileTest("Project/test/include"));
+    test_assert(corto_fileTest("Project/test/include/test.h"));
+    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
+    test_assert(corto_fileTest("Project/test/include/_api.h"));
+    test_assert(corto_fileTest("Project/test/include/_interface.h"));
+    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_type.h"));
+
+    test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/libProject.so"));
+
+    test_assert(!corto_fileTest("Project/doc"));
+
+    test_assert(corto_fileTest(
+        "$HOME/.corto/lib/corto/%s.%s/Project",
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(corto_fileTest(
+      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(corto_fileTest(
+      "$HOME/.corto/include/corto/%s.%s/Project",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(corto_fileTest(
+      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+/* $end */
+}
+
 corto_void _test_Project_tc_packageNodefLocal(
     test_Project this)
 {
@@ -2282,6 +2360,85 @@ corto_void _test_Project_tc_packageNodefLocal(
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.c"));
     test_assert(corto_fileTest("Project/test/src/MySuite.c"));
+    test_assert(corto_fileTest("Project/test/include"));
+    test_assert(corto_fileTest("Project/test/include/test.h"));
+    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
+    test_assert(corto_fileTest("Project/test/include/_api.h"));
+    test_assert(corto_fileTest("Project/test/include/_interface.h"));
+    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_type.h"));
+
+    test_assert(corto_fileTest("Project/.corto"));
+    test_assert(corto_fileTest("Project/.corto/libProject.so"));
+
+    test_assert(!corto_fileTest("Project/doc"));
+
+    test_assert(!corto_fileTest(
+        "$HOME/.corto/lib/corto/%s.%s/Project",
+        CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(!corto_fileTest(
+      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(!corto_fileTest(
+      "$HOME/.corto/include/corto/%s.%s/Project",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+    test_assert(!corto_fileTest(
+      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
+
+/* $end */
+}
+
+corto_void _test_Project_tc_packageNodefLocalC4cpp(
+    test_Project this)
+{
+/* $begin(test/Project/tc_packageNodefLocalC4cpp) */
+    corto_int8 ret;
+    corto_int16 waitResult;
+
+    corto_pid pid = corto_procrun(
+        "corto",
+        (char*[]){
+            "corto",
+            "create",
+            "package",
+            "Project",
+            "--nodef",
+            "--local",
+            "--silent",
+            "--nocoverage",
+            "--lang",
+            "c4cpp",
+            NULL
+        });
+
+    test_assert(pid != 0);
+
+    waitResult = corto_procwait(pid, &ret);
+    test_assert(waitResult == 0);
+    test_assert(ret == 0);
+
+    test_assert(corto_fileTest("Project"));
+    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(!corto_fileTest("Project/Project.md"));
+    test_assert(!corto_fileTest("Project/Project.cx"));
+
+    test_assert(corto_fileTest("Project/src"));
+    test_assert(corto_fileTest("Project/src/Project.cpp"));
+
+    test_assert(corto_fileTest("Project/include"));
+    test_assert(corto_fileTest("Project/include/Project.h"));
+
+    test_assert(corto_fileTest("Project/test"));
+    test_assert(!corto_fileTest("Project/test/test"));
+    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/test.cx"));
+    test_assert(corto_fileTest("Project/test/src"));
+    test_assert(corto_fileTest("Project/test/src/test.cpp"));
+    test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
     test_assert(corto_fileTest("Project/test/include/MySuite.h"));

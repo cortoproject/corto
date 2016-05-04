@@ -21,6 +21,8 @@ test::Suite Project::
     void tc_packageNoCortoLocal()
     void tc_packageNodef()
     void tc_packageNodefLocal()
+    void tc_packageNodefC4cpp()
+    void tc_packageNodefLocalC4cpp()
     void tc_packageNested()
     void tc_packageNestedColons()
     void tc_packageNestedFullyScoped()

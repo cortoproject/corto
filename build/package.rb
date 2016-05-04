@@ -98,9 +98,9 @@ if not defined? NOCORTO then
         task :prebuild => ["include/_type.h"]
     else
         GENERATED_SOURCES <<
-            ".corto/_load.c"
+            ".corto/_load.#{EXT}"
 
-        file ".corto/_load.c" => [".corto/packages.txt"] do
+        file ".corto/_load.#{EXT}" => [".corto/packages.txt"] do
             verbose(VERBOSE)
             preload = PP_PRELOAD.join(" ")
             sh "mkdir -p .corto"
@@ -110,10 +110,13 @@ if not defined? NOCORTO then
             if LOCAL then
                 localStr = "--attr local=true"
             end
+            if LANGUAGE == "c4cpp" then
+                langStr = "--attr c4cpp=true"
+            end
 
             command =
                 "corto pp #{preload} #{localStr} --name #{PACKAGE} " +
-                "--attr h=include --attr c=src -g c/project"
+                "--attr h=include --attr c=src -g c/project #{langStr}"
 
             begin
               sh command
@@ -125,7 +128,7 @@ if not defined? NOCORTO then
               abort()
             end
         end
-        task :prebuild => [".corto/_load.c"]
+        task :prebuild => [".corto/_load.#{EXT}"]
     end
 end
 
