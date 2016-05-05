@@ -101,27 +101,33 @@ struct corto_value {
 
 typedef corto_value corto_valueStack[64];
 
-corto_type corto_valueType(corto_value* val);
-corto_void* corto_valueValue(corto_value* val);
-corto_object corto_valueObject(corto_value* val);
-corto_uint32 corto_valueIndex(corto_value* val);
-char* corto_strving(corto_value* val, char* buffer, unsigned int length);
-char* corto_valueExpr(corto_value* val, char* buffer, unsigned int length);
-void corto_valueFree(corto_value* val);
-void corto_valueStackFree(corto_value* valueStack, corto_uint32 count);
+corto_type corto_value_getType(corto_value* val);
+corto_void* corto_value_getPtr(corto_value* val);
+corto_object corto_value_getObject(corto_value* val);
+corto_uint32 corto_value_getIndex(corto_value* val);
 
 /* Initializers */
-void corto_valueObjectInit(corto_value* val, corto_object o, corto_type t);
-void corto_valueBaseInit(corto_value* val, corto_void *v, corto_type t);
-void corto_valueValueInit(corto_value* val, corto_object o, corto_type t, corto_void* v);
-void corto_valueMemberInit(corto_value* val, corto_object o, corto_member t, corto_void* v);
-void corto_valueConstantInit(corto_value* val, corto_object o, corto_constant* c, corto_void* v);
-void corto_valueElementInit(corto_value* val, corto_object o, corto_type t, corto_uint32 index, corto_void* v);
-void corto_valueMapElementInit(corto_value* val, corto_object o, corto_type t, corto_type keyType, corto_void *key, corto_void* v);
-void corto_valueLiteralInit(corto_value* val, corto_literalKind kind, corto_void* value);
+corto_value _corto_value_object(corto_object o, corto_type t);
+corto_value _corto_value_base(corto_void *v, corto_type t);
+corto_value _corto_value_value(corto_type t, corto_void* v);
+corto_value corto_value_member(corto_object o, corto_member t, corto_void* v);
+corto_value corto_value_constant(corto_object o, corto_constant* c, corto_void* v);
+corto_value _corto_value_element(corto_object o, corto_type t, corto_uint32 index, corto_void* v);
+corto_value corto_value_mapElement(corto_object o, corto_type t, corto_type keyType, corto_void *key, corto_void* v);
+corto_value corto_value_literal(corto_literalKind kind, corto_void* value);
+
+/* Type safe macro's */
+#define corto_value_object(o, t) _corto_value_object(o, corto_type(t))
+#define corto_value_base(v, t) _corto_value_base(v, corto_type(t))
+#define corto_value_value(t, v) _corto_value_value(corto_type(t), v)
+#define corto_value_element(o, t, i, v) _corto_value_element(o, corto_type(t), i, v)
+#define corto_value_mapElement(o, t, kt, k, v) _corto_value_mapElement(o, corto_type(t), corto_type(kt), k, v)
 
 /* Helpers */
 void corto_valueSetValue(corto_value* val, corto_void* v);
+char* corto_strving(corto_value* val, char* buffer, unsigned int length);
+char* corto_valueExpr(corto_value* val, char* buffer, unsigned int length);
+
 
 #ifdef __cplusplus
 }

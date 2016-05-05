@@ -68,17 +68,17 @@ static void corto_list_do(corto_any object, corto_any element, corto_bool insert
     } else if (corto_collection_requiresAlloc(corto_collection(object.type)->elementType)) {
         corto_uint32 size = corto_type_sizeof(corto_collection(object.type)->elementType);
         value = corto_calloc(size);
-        corto_valueValueInit(&dst, NULL, corto_collection(object.type)->elementType, value);
+        dst = corto_value_value(corto_collection(object.type)->elementType, value);
         corto_initv(&dst);
-        corto_valueValueInit(&src, NULL, corto_collection(object.type)->elementType, element.value);
+        src = corto_value_value(corto_collection(object.type)->elementType, element.value);
     } else {
         value = NULL;
-        corto_valueValueInit(&dst, NULL, corto_collection(object.type)->elementType, &value);
+        dst = corto_value_value(corto_collection(object.type)->elementType, &value);
         corto_initv(&dst);
         if (element.type->reference) {
-            corto_valueValueInit(&src, NULL, corto_collection(object.type)->elementType, &element.value);
+            src = corto_value_value(corto_collection(object.type)->elementType, &element.value);
         } else {
-            corto_valueValueInit(&src, NULL, corto_collection(object.type)->elementType, element.value);
+            src = corto_value_value(corto_collection(object.type)->elementType, element.value);
         }
     }
 
@@ -106,11 +106,11 @@ static void* corto_list_do_(corto_any object, corto_bool insert) {
     if (corto_collection_requiresAlloc(corto_collection(object.type)->elementType)) {
         corto_uint32 size = corto_type_sizeof(corto_collection(object.type)->elementType);
         value = corto_calloc(size);
-        corto_valueValueInit(&dst, NULL, corto_collection(object.type)->elementType, value);
+        dst = corto_value_value(corto_collection(object.type)->elementType, value);
         corto_initv(&dst);
     } else {
         value = NULL;
-        corto_valueValueInit(&dst, NULL, corto_collection(object.type)->elementType, &value);
+        dst = corto_value_value(corto_collection(object.type)->elementType, &value);
         corto_initv(&dst);
     }
 

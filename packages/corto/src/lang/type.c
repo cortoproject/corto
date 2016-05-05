@@ -101,8 +101,8 @@ corto_equalityKind _corto_type_compare(corto_any this,
     struct corto_serializer_s s;
     corto_value v1;
 
-    corto_valueValueInit(&v1, NULL, corto_type(this.type), this.value);
-    corto_valueValueInit(&data.value, NULL, corto_type(value.type), value.value);
+    v1 = corto_value_value(corto_type(this.type), this.value);
+    data.value = corto_value_value(corto_type(value.type), value.value);
 
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
 
@@ -168,11 +168,11 @@ corto_int16 _corto_type_copy(corto_any this,
     corto_int16 result;
 
     if (this.type->reference || value.type->reference) {
-        corto_valueObjectInit(&data.value, this.value, NULL);
-        corto_valueObjectInit(&v1, value.value, NULL);
+        data.value = corto_value_object(this.value, NULL);
+        v1 = corto_value_object(value.value, NULL);
     } else {
-        corto_valueValueInit(&data.value, NULL, corto_type(this.type), this.value);
-        corto_valueValueInit(&v1, NULL, corto_type(value.type), value.value);
+        data.value = corto_value_value(corto_type(this.type), this.value);
+        v1 = corto_value_value(corto_type(value.type), value.value);
     }
 
     s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
@@ -399,9 +399,9 @@ corto_string _corto_type_str(corto_any this)
 
     if (this.value) {
         if (this.type->reference) {
-            corto_valueObjectInit(&value, this.value, NULL);
+            value = corto_value_object(this.value, NULL);
         } else {
-            corto_valueValueInit(&value, NULL, this.type, this.value);
+            value = corto_value_value(this.type, this.value);
         }
         result = corto_strv(&value, 0);
     } else {

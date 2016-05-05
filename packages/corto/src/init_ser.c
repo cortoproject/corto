@@ -11,8 +11,8 @@ corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* u
     corto_type t;
     void* o;
 
-    t = corto_valueType(v);
-    o = corto_valueValue(v);
+    t = corto_value_getType(v);
+    o = corto_value_getPtr(v);
 
     switch(corto_collection(t)->kind) {
         case CORTO_ARRAY:

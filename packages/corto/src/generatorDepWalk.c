@@ -36,7 +36,7 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
     CORTO_UNUSED(s);
 
     data = userData;
-    o = *(corto_object*)corto_valueValue(info);
+    o = *(corto_object*)corto_value_getPtr(info);
 
     if (o && g_mustParse(data->data->g, o)) {
         corto_member m;

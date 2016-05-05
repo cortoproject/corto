@@ -76,7 +76,7 @@ void _corto_aliasSet(corto_alias _this, corto_member member) {
 corto_string _corto_aliasStr(corto_alias value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_alias_o));
+    v = corto_value_object(value, corto_type(corto_alias_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -181,7 +181,7 @@ void _corto_anySet(corto_any* _this, corto_type type, void *value) {
 corto_string _corto_anyStr(corto_any value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_any_o), &value);
+    v = corto_value_value(corto_type(corto_any_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -199,7 +199,7 @@ corto_int16 _corto_anyInit(corto_any* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_any_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_any_o), value);
+    v = corto_value_value(corto_type(corto_any_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -207,7 +207,7 @@ corto_int16 _corto_anyInit(corto_any* value) {
 corto_int16 _corto_anyDeinit(corto_any* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_any_o), value);
+    v = corto_value_value(corto_type(corto_any_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -288,7 +288,7 @@ void _corto_arraySet(corto_array _this, corto_type elementType, corto_uint32 max
 corto_string _corto_arrayStr(corto_array value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_array_o));
+    v = corto_value_object(value, corto_type(corto_array_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -373,7 +373,7 @@ void _corto_binarySet(corto_binary _this, corto_width width) {
 corto_string _corto_binaryStr(corto_binary value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_binary_o));
+    v = corto_value_object(value, corto_type(corto_binary_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -453,7 +453,7 @@ void _corto_bitmaskSet(corto_bitmask _this) {
 corto_string _corto_bitmaskStr(corto_bitmask value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_bitmask_o));
+    v = corto_value_object(value, corto_type(corto_bitmask_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -538,7 +538,7 @@ void _corto_boolSet(corto_bool* _this, corto_bool value) {
 corto_string _corto_boolStr(corto_bool value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_bool_o), &value);
+    v = corto_value_value(corto_type(corto_bool_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -556,7 +556,7 @@ corto_int16 _corto_boolInit(corto_bool* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_bool_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_bool_o), value);
+    v = corto_value_value(corto_type(corto_bool_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -564,7 +564,7 @@ corto_int16 _corto_boolInit(corto_bool* value) {
 corto_int16 _corto_boolDeinit(corto_bool* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_bool_o), value);
+    v = corto_value_value(corto_type(corto_bool_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -635,7 +635,7 @@ void _corto_booleanSet(corto_boolean _this) {
 corto_string _corto_booleanStr(corto_boolean value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_boolean_o));
+    v = corto_value_object(value, corto_type(corto_boolean_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -720,7 +720,7 @@ void _corto_charSet(corto_char* _this, corto_char value) {
 corto_string _corto_charStr(corto_char value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_char_o), &value);
+    v = corto_value_value(corto_type(corto_char_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -738,7 +738,7 @@ corto_int16 _corto_charInit(corto_char* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_char_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_char_o), value);
+    v = corto_value_value(corto_type(corto_char_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -746,7 +746,7 @@ corto_int16 _corto_charInit(corto_char* value) {
 corto_int16 _corto_charDeinit(corto_char* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_char_o), value);
+    v = corto_value_value(corto_type(corto_char_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -822,7 +822,7 @@ void _corto_characterSet(corto_character _this, corto_width width) {
 corto_string _corto_characterStr(corto_character value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_character_o));
+    v = corto_value_object(value, corto_type(corto_character_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -917,7 +917,7 @@ void _corto_classSet(corto_class _this, corto_interface base, corto_modifier bas
 corto_string _corto_classStr(corto_class value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_class_o));
+    v = corto_value_object(value, corto_type(corto_class_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1007,7 +1007,7 @@ void _corto_collectionSet(corto_collection _this, corto_type elementType, corto_
 corto_string _corto_collectionStr(corto_collection value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_collection_o));
+    v = corto_value_object(value, corto_type(corto_collection_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1092,7 +1092,7 @@ void _corto_collectionKindSet(corto_collectionKind* _this, corto_collectionKind 
 corto_string _corto_collectionKindStr(corto_collectionKind value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_collectionKind_o), &value);
+    v = corto_value_value(corto_type(corto_collectionKind_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1110,7 +1110,7 @@ corto_int16 _corto_collectionKindInit(corto_collectionKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_collectionKind_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_collectionKind_o), value);
+    v = corto_value_value(corto_type(corto_collectionKind_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -1118,7 +1118,7 @@ corto_int16 _corto_collectionKindInit(corto_collectionKind* value) {
 corto_int16 _corto_collectionKindDeinit(corto_collectionKind* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_collectionKind_o), value);
+    v = corto_value_value(corto_type(corto_collectionKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -1194,7 +1194,7 @@ void _corto_compositeKindSet(corto_compositeKind* _this, corto_compositeKind val
 corto_string _corto_compositeKindStr(corto_compositeKind value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_compositeKind_o), &value);
+    v = corto_value_value(corto_type(corto_compositeKind_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1212,7 +1212,7 @@ corto_int16 _corto_compositeKindInit(corto_compositeKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_compositeKind_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_compositeKind_o), value);
+    v = corto_value_value(corto_type(corto_compositeKind_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -1220,7 +1220,7 @@ corto_int16 _corto_compositeKindInit(corto_compositeKind* value) {
 corto_int16 _corto_compositeKindDeinit(corto_compositeKind* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_compositeKind_o), value);
+    v = corto_value_value(corto_type(corto_compositeKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -1296,7 +1296,7 @@ void _corto_constantSet(corto_constant* _this, corto_constant value) {
 corto_string _corto_constantStr(corto_constant value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_constant_o), &value);
+    v = corto_value_value(corto_type(corto_constant_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1314,7 +1314,7 @@ corto_int16 _corto_constantInit(corto_constant* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_constant_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_constant_o), value);
+    v = corto_value_value(corto_type(corto_constant_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -1322,7 +1322,7 @@ corto_int16 _corto_constantInit(corto_constant* value) {
 corto_int16 _corto_constantDeinit(corto_constant* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_constant_o), value);
+    v = corto_value_value(corto_type(corto_constant_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -1408,7 +1408,7 @@ void _corto_delegateSet(corto_delegate _this, corto_type returnType, corto_bool 
 corto_string _corto_delegateStr(corto_delegate value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_delegate_o));
+    v = corto_value_object(value, corto_type(corto_delegate_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1498,7 +1498,7 @@ void _corto_delegatedataSet(corto_delegatedata* _this, corto_object instance, co
 corto_string _corto_delegatedataStr(corto_delegatedata* value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_delegatedata_o), value);
+    v = corto_value_value(corto_type(corto_delegatedata_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1516,7 +1516,7 @@ corto_int16 _corto_delegatedataInit(corto_delegatedata* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_delegatedata_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_delegatedata_o), value);
+    v = corto_value_value(corto_type(corto_delegatedata_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -1524,7 +1524,7 @@ corto_int16 _corto_delegatedataInit(corto_delegatedata* value) {
 corto_int16 _corto_delegatedataDeinit(corto_delegatedata* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_delegatedata_o), value);
+    v = corto_value_value(corto_type(corto_delegatedata_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -1605,7 +1605,7 @@ void _corto_destructActionSet(corto_destructAction* _this, corto_object instance
 corto_string _corto_destructActionStr(corto_destructAction* value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_destructAction_o), value);
+    v = corto_value_value(corto_type(corto_destructAction_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1623,7 +1623,7 @@ corto_int16 _corto_destructActionInit(corto_destructAction* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_destructAction_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_destructAction_o), value);
+    v = corto_value_value(corto_type(corto_destructAction_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -1631,7 +1631,7 @@ corto_int16 _corto_destructActionInit(corto_destructAction* value) {
 corto_int16 _corto_destructActionDeinit(corto_destructAction* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_destructAction_o), value);
+    v = corto_value_value(corto_type(corto_destructAction_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -1737,7 +1737,7 @@ void _corto_enumSet(corto_enum _this) {
 corto_string _corto_enumStr(corto_enum value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_enum_o));
+    v = corto_value_object(value, corto_type(corto_enum_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1822,7 +1822,7 @@ void _corto_equalityKindSet(corto_equalityKind* _this, corto_equalityKind value)
 corto_string _corto_equalityKindStr(corto_equalityKind value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_equalityKind_o), &value);
+    v = corto_value_value(corto_type(corto_equalityKind_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -1840,7 +1840,7 @@ corto_int16 _corto_equalityKindInit(corto_equalityKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_equalityKind_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_equalityKind_o), value);
+    v = corto_value_value(corto_type(corto_equalityKind_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -1848,7 +1848,7 @@ corto_int16 _corto_equalityKindInit(corto_equalityKind* value) {
 corto_int16 _corto_equalityKindDeinit(corto_equalityKind* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_equalityKind_o), value);
+    v = corto_value_value(corto_type(corto_equalityKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -1934,7 +1934,7 @@ void _corto_floatSet(corto_float _this, corto_width width, corto_float64 min, co
 corto_string _corto_floatStr(corto_float value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_float_o));
+    v = corto_value_object(value, corto_type(corto_float_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2019,7 +2019,7 @@ void _corto_float32Set(corto_float32* _this, corto_float32 value) {
 corto_string _corto_float32Str(corto_float32 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_float32_o), &value);
+    v = corto_value_value(corto_type(corto_float32_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2037,7 +2037,7 @@ corto_int16 _corto_float32Init(corto_float32* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_float32_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_float32_o), value);
+    v = corto_value_value(corto_type(corto_float32_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2045,7 +2045,7 @@ corto_int16 _corto_float32Init(corto_float32* value) {
 corto_int16 _corto_float32Deinit(corto_float32* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_float32_o), value);
+    v = corto_value_value(corto_type(corto_float32_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2121,7 +2121,7 @@ void _corto_float64Set(corto_float64* _this, corto_float64 value) {
 corto_string _corto_float64Str(corto_float64 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_float64_o), &value);
+    v = corto_value_value(corto_type(corto_float64_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2139,7 +2139,7 @@ corto_int16 _corto_float64Init(corto_float64* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_float64_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_float64_o), value);
+    v = corto_value_value(corto_type(corto_float64_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2147,7 +2147,7 @@ corto_int16 _corto_float64Init(corto_float64* value) {
 corto_int16 _corto_float64Deinit(corto_float64* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_float64_o), value);
+    v = corto_value_value(corto_type(corto_float64_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2233,7 +2233,7 @@ void _corto_functionSet(corto_function _this, corto_type returnType, corto_bool 
 corto_string _corto_functionStr(corto_function value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_function_o));
+    v = corto_value_object(value, corto_type(corto_function_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2323,7 +2323,7 @@ void _corto_initActionSet(corto_initAction* _this, corto_object instance, corto_
 corto_string _corto_initActionStr(corto_initAction* value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_initAction_o), value);
+    v = corto_value_value(corto_type(corto_initAction_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2341,7 +2341,7 @@ corto_int16 _corto_initActionInit(corto_initAction* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_initAction_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_initAction_o), value);
+    v = corto_value_value(corto_type(corto_initAction_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2349,7 +2349,7 @@ corto_int16 _corto_initActionInit(corto_initAction* value) {
 corto_int16 _corto_initActionDeinit(corto_initAction* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_initAction_o), value);
+    v = corto_value_value(corto_type(corto_initAction_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2470,7 +2470,7 @@ void _corto_intSet(corto_int _this, corto_width width, corto_int64 min, corto_in
 corto_string _corto_intStr(corto_int value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_int_o));
+    v = corto_value_object(value, corto_type(corto_int_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2555,7 +2555,7 @@ void _corto_int16Set(corto_int16* _this, corto_int16 value) {
 corto_string _corto_int16Str(corto_int16 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int16_o), &value);
+    v = corto_value_value(corto_type(corto_int16_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2573,7 +2573,7 @@ corto_int16 _corto_int16Init(corto_int16* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_int16_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int16_o), value);
+    v = corto_value_value(corto_type(corto_int16_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2581,7 +2581,7 @@ corto_int16 _corto_int16Init(corto_int16* value) {
 corto_int16 _corto_int16Deinit(corto_int16* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int16_o), value);
+    v = corto_value_value(corto_type(corto_int16_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2657,7 +2657,7 @@ void _corto_int32Set(corto_int32* _this, corto_int32 value) {
 corto_string _corto_int32Str(corto_int32 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int32_o), &value);
+    v = corto_value_value(corto_type(corto_int32_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2675,7 +2675,7 @@ corto_int16 _corto_int32Init(corto_int32* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_int32_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int32_o), value);
+    v = corto_value_value(corto_type(corto_int32_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2683,7 +2683,7 @@ corto_int16 _corto_int32Init(corto_int32* value) {
 corto_int16 _corto_int32Deinit(corto_int32* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int32_o), value);
+    v = corto_value_value(corto_type(corto_int32_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2759,7 +2759,7 @@ void _corto_int64Set(corto_int64* _this, corto_int64 value) {
 corto_string _corto_int64Str(corto_int64 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int64_o), &value);
+    v = corto_value_value(corto_type(corto_int64_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2777,7 +2777,7 @@ corto_int16 _corto_int64Init(corto_int64* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_int64_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int64_o), value);
+    v = corto_value_value(corto_type(corto_int64_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2785,7 +2785,7 @@ corto_int16 _corto_int64Init(corto_int64* value) {
 corto_int16 _corto_int64Deinit(corto_int64* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int64_o), value);
+    v = corto_value_value(corto_type(corto_int64_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2861,7 +2861,7 @@ void _corto_int8Set(corto_int8* _this, corto_int8 value) {
 corto_string _corto_int8Str(corto_int8 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int8_o), &value);
+    v = corto_value_value(corto_type(corto_int8_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -2879,7 +2879,7 @@ corto_int16 _corto_int8Init(corto_int8* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_int8_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int8_o), value);
+    v = corto_value_value(corto_type(corto_int8_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -2887,7 +2887,7 @@ corto_int16 _corto_int8Init(corto_int8* value) {
 corto_int16 _corto_int8Deinit(corto_int8* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_int8_o), value);
+    v = corto_value_value(corto_type(corto_int8_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2963,7 +2963,7 @@ void _corto_interfaceSet(corto_interface _this, corto_interface base) {
 corto_string _corto_interfaceStr(corto_interface value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_interface_o));
+    v = corto_value_object(value, corto_type(corto_interface_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3068,7 +3068,7 @@ void _corto_interfaceseqSet(corto_interfaceseq* _this, corto_uint32 length, cort
 corto_string _corto_interfaceseqStr(corto_interfaceseq value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceseq_o), &value);
+    v = corto_value_value(corto_type(corto_interfaceseq_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3086,7 +3086,7 @@ corto_int16 _corto_interfaceseqInit(corto_interfaceseq* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_interfaceseq_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceseq_o), value);
+    v = corto_value_value(corto_type(corto_interfaceseq_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -3094,7 +3094,7 @@ corto_int16 _corto_interfaceseqInit(corto_interfaceseq* value) {
 corto_int16 _corto_interfaceseqDeinit(corto_interfaceseq* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceseq_o), value);
+    v = corto_value_value(corto_type(corto_interfaceseq_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -3175,7 +3175,7 @@ void _corto_interfaceVectorSet(corto_interfaceVector* _this, corto_interface int
 corto_string _corto_interfaceVectorStr(corto_interfaceVector* value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), value);
+    v = corto_value_value(corto_type(corto_interfaceVector_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3193,7 +3193,7 @@ corto_int16 _corto_interfaceVectorInit(corto_interfaceVector* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_interfaceVector_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), value);
+    v = corto_value_value(corto_type(corto_interfaceVector_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -3201,7 +3201,7 @@ corto_int16 _corto_interfaceVectorInit(corto_interfaceVector* value) {
 corto_int16 _corto_interfaceVectorDeinit(corto_interfaceVector* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), value);
+    v = corto_value_value(corto_type(corto_interfaceVector_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -3297,7 +3297,7 @@ void _corto_interfaceVectorseqSet(corto_interfaceVectorseq* _this, corto_uint32 
 corto_string _corto_interfaceVectorseqStr(corto_interfaceVectorseq value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVectorseq_o), &value);
+    v = corto_value_value(corto_type(corto_interfaceVectorseq_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3315,7 +3315,7 @@ corto_int16 _corto_interfaceVectorseqInit(corto_interfaceVectorseq* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_interfaceVectorseq_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVectorseq_o), value);
+    v = corto_value_value(corto_type(corto_interfaceVectorseq_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -3323,7 +3323,7 @@ corto_int16 _corto_interfaceVectorseqInit(corto_interfaceVectorseq* value) {
 corto_int16 _corto_interfaceVectorseqDeinit(corto_interfaceVectorseq* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVectorseq_o), value);
+    v = corto_value_value(corto_type(corto_interfaceVectorseq_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -3399,7 +3399,7 @@ void _corto_iteratorSet(corto_iterator _this, corto_type elementType) {
 corto_string _corto_iteratorStr(corto_iterator value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_iterator_o));
+    v = corto_value_object(value, corto_type(corto_iterator_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3489,7 +3489,7 @@ void _corto_listSet(corto_list _this, corto_type elementType, corto_uint32 max) 
 corto_string _corto_listStr(corto_list value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_list_o));
+    v = corto_value_object(value, corto_type(corto_list_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3584,7 +3584,7 @@ void _corto_mapSet(corto_map _this, corto_type elementType, corto_type keyType, 
 corto_string _corto_mapStr(corto_map value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_map_o));
+    v = corto_value_object(value, corto_type(corto_map_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3674,7 +3674,7 @@ void _corto_memberSet(corto_member _this, corto_type type, corto_modifier modifi
 corto_string _corto_memberStr(corto_member value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_member_o));
+    v = corto_value_object(value, corto_type(corto_member_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3779,7 +3779,7 @@ void _corto_memberseqSet(corto_memberseq* _this, corto_uint32 length, corto_memb
 corto_string _corto_memberseqStr(corto_memberseq value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_memberseq_o), &value);
+    v = corto_value_value(corto_type(corto_memberseq_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3797,7 +3797,7 @@ corto_int16 _corto_memberseqInit(corto_memberseq* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_memberseq_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_memberseq_o), value);
+    v = corto_value_value(corto_type(corto_memberseq_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -3805,7 +3805,7 @@ corto_int16 _corto_memberseqInit(corto_memberseq* value) {
 corto_int16 _corto_memberseqDeinit(corto_memberseq* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_memberseq_o), value);
+    v = corto_value_value(corto_type(corto_memberseq_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -3896,7 +3896,7 @@ void _corto_metaprocedureSet(corto_metaprocedure _this, corto_type returnType, c
 corto_string _corto_metaprocedureStr(corto_metaprocedure value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_metaprocedure_o));
+    v = corto_value_object(value, corto_type(corto_metaprocedure_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -3996,7 +3996,7 @@ void _corto_methodSet(corto_method _this, corto_type returnType, corto_bool retu
 corto_string _corto_methodStr(corto_method value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_method_o));
+    v = corto_value_object(value, corto_type(corto_method_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4081,7 +4081,7 @@ void _corto_modifierSet(corto_modifier* _this, corto_modifier value) {
 corto_string _corto_modifierStr(corto_modifier value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_modifier_o), &value);
+    v = corto_value_value(corto_type(corto_modifier_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4099,7 +4099,7 @@ corto_int16 _corto_modifierInit(corto_modifier* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_modifier_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_modifier_o), value);
+    v = corto_value_value(corto_type(corto_modifier_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4107,7 +4107,7 @@ corto_int16 _corto_modifierInit(corto_modifier* value) {
 corto_int16 _corto_modifierDeinit(corto_modifier* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_modifier_o), value);
+    v = corto_value_value(corto_type(corto_modifier_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4188,7 +4188,7 @@ void _corto_nameActionSet(corto_nameAction* _this, corto_object instance, corto_
 corto_string _corto_nameActionStr(corto_nameAction* value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_nameAction_o), value);
+    v = corto_value_value(corto_type(corto_nameAction_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4206,7 +4206,7 @@ corto_int16 _corto_nameActionInit(corto_nameAction* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_nameAction_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_nameAction_o), value);
+    v = corto_value_value(corto_type(corto_nameAction_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4214,7 +4214,7 @@ corto_int16 _corto_nameActionInit(corto_nameAction* value) {
 corto_int16 _corto_nameActionDeinit(corto_nameAction* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_nameAction_o), value);
+    v = corto_value_value(corto_type(corto_nameAction_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4368,7 +4368,7 @@ void _corto_objectseqSet(corto_objectseq* _this, corto_uint32 length, corto_obje
 corto_string _corto_objectseqStr(corto_objectseq value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_objectseq_o), &value);
+    v = corto_value_value(corto_type(corto_objectseq_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4386,7 +4386,7 @@ corto_int16 _corto_objectseqInit(corto_objectseq* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_objectseq_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_objectseq_o), value);
+    v = corto_value_value(corto_type(corto_objectseq_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4394,7 +4394,7 @@ corto_int16 _corto_objectseqInit(corto_objectseq* value) {
 corto_int16 _corto_objectseqDeinit(corto_objectseq* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_objectseq_o), value);
+    v = corto_value_value(corto_type(corto_objectseq_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4470,7 +4470,7 @@ void _corto_octetSet(corto_octet* _this, corto_octet value) {
 corto_string _corto_octetStr(corto_octet value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_octet_o), &value);
+    v = corto_value_value(corto_type(corto_octet_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4488,7 +4488,7 @@ corto_int16 _corto_octetInit(corto_octet* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_octet_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_octet_o), value);
+    v = corto_value_value(corto_type(corto_octet_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4496,7 +4496,7 @@ corto_int16 _corto_octetInit(corto_octet* value) {
 corto_int16 _corto_octetDeinit(corto_octet* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_octet_o), value);
+    v = corto_value_value(corto_type(corto_octet_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4592,7 +4592,7 @@ void _corto_octetseqSet(corto_octetseq* _this, corto_uint32 length, corto_octet*
 corto_string _corto_octetseqStr(corto_octetseq value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_octetseq_o), &value);
+    v = corto_value_value(corto_type(corto_octetseq_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4610,7 +4610,7 @@ corto_int16 _corto_octetseqInit(corto_octetseq* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_octetseq_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_octetseq_o), value);
+    v = corto_value_value(corto_type(corto_octetseq_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4618,7 +4618,7 @@ corto_int16 _corto_octetseqInit(corto_octetseq* value) {
 corto_int16 _corto_octetseqDeinit(corto_octetseq* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_octetseq_o), value);
+    v = corto_value_value(corto_type(corto_octetseq_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4704,7 +4704,7 @@ void _corto_parameterSet(corto_parameter* _this, corto_string name, corto_type t
 corto_string _corto_parameterStr(corto_parameter* value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), value);
+    v = corto_value_value(corto_type(corto_parameter_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4722,7 +4722,7 @@ corto_int16 _corto_parameterInit(corto_parameter* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_parameter_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), value);
+    v = corto_value_value(corto_type(corto_parameter_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4730,7 +4730,7 @@ corto_int16 _corto_parameterInit(corto_parameter* value) {
 corto_int16 _corto_parameterDeinit(corto_parameter* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), value);
+    v = corto_value_value(corto_type(corto_parameter_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4826,7 +4826,7 @@ void _corto_parameterseqSet(corto_parameterseq* _this, corto_uint32 length, cort
 corto_string _corto_parameterseqStr(corto_parameterseq value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_parameterseq_o), &value);
+    v = corto_value_value(corto_type(corto_parameterseq_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -4844,7 +4844,7 @@ corto_int16 _corto_parameterseqInit(corto_parameterseq* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_parameterseq_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_parameterseq_o), value);
+    v = corto_value_value(corto_type(corto_parameterseq_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -4852,7 +4852,7 @@ corto_int16 _corto_parameterseqInit(corto_parameterseq* value) {
 corto_int16 _corto_parameterseqDeinit(corto_parameterseq* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_parameterseq_o), value);
+    v = corto_value_value(corto_type(corto_parameterseq_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -4928,7 +4928,7 @@ void _corto_primitiveSet(corto_primitive _this, corto_width width) {
 corto_string _corto_primitiveStr(corto_primitive value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_primitive_o));
+    v = corto_value_object(value, corto_type(corto_primitive_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5013,7 +5013,7 @@ void _corto_primitiveKindSet(corto_primitiveKind* _this, corto_primitiveKind val
 corto_string _corto_primitiveKindStr(corto_primitiveKind value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_primitiveKind_o), &value);
+    v = corto_value_value(corto_type(corto_primitiveKind_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5031,7 +5031,7 @@ corto_int16 _corto_primitiveKindInit(corto_primitiveKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_primitiveKind_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_primitiveKind_o), value);
+    v = corto_value_value(corto_type(corto_primitiveKind_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -5039,7 +5039,7 @@ corto_int16 _corto_primitiveKindInit(corto_primitiveKind* value) {
 corto_int16 _corto_primitiveKindDeinit(corto_primitiveKind* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_primitiveKind_o), value);
+    v = corto_value_value(corto_type(corto_primitiveKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -5115,7 +5115,7 @@ void _corto_procedureSet(corto_procedure _this, corto_procedureKind kind_1) {
 corto_string _corto_procedureStr(corto_procedure value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_procedure_o));
+    v = corto_value_object(value, corto_type(corto_procedure_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5200,7 +5200,7 @@ void _corto_procedureKindSet(corto_procedureKind* _this, corto_procedureKind val
 corto_string _corto_procedureKindStr(corto_procedureKind value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_procedureKind_o), &value);
+    v = corto_value_value(corto_type(corto_procedureKind_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5218,7 +5218,7 @@ corto_int16 _corto_procedureKindInit(corto_procedureKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_procedureKind_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_procedureKind_o), value);
+    v = corto_value_value(corto_type(corto_procedureKind_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -5226,7 +5226,7 @@ corto_int16 _corto_procedureKindInit(corto_procedureKind* value) {
 corto_int16 _corto_procedureKindDeinit(corto_procedureKind* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_procedureKind_o), value);
+    v = corto_value_value(corto_type(corto_procedureKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -5307,7 +5307,7 @@ void _corto_sequenceSet(corto_sequence _this, corto_type elementType, corto_uint
 corto_string _corto_sequenceStr(corto_sequence value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_sequence_o));
+    v = corto_value_object(value, corto_type(corto_sequence_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5392,7 +5392,7 @@ void _corto_stateSet(corto_state* _this, corto_state value) {
 corto_string _corto_stateStr(corto_state value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_state_o), &value);
+    v = corto_value_value(corto_type(corto_state_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5410,7 +5410,7 @@ corto_int16 _corto_stateInit(corto_state* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_state_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_state_o), value);
+    v = corto_value_value(corto_type(corto_state_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -5418,7 +5418,7 @@ corto_int16 _corto_stateInit(corto_state* value) {
 corto_int16 _corto_stateDeinit(corto_state* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_state_o), value);
+    v = corto_value_value(corto_type(corto_state_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -5494,7 +5494,7 @@ void _corto_stringSet(corto_string* _this, corto_string value) {
 corto_string _corto_stringStr(corto_string value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_string_o), &value);
+    v = corto_value_value(corto_type(corto_string_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5512,7 +5512,7 @@ corto_int16 _corto_stringInit(corto_string* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_string_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_string_o), value);
+    v = corto_value_value(corto_type(corto_string_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -5520,7 +5520,7 @@ corto_int16 _corto_stringInit(corto_string* value) {
 corto_int16 _corto_stringDeinit(corto_string* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_string_o), value);
+    v = corto_value_value(corto_type(corto_string_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -5601,7 +5601,7 @@ void _corto_structSet(corto_struct _this, corto_interface base, corto_modifier b
 corto_string _corto_structStr(corto_struct value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_struct_o));
+    v = corto_value_object(value, corto_type(corto_struct_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5691,7 +5691,7 @@ void _corto_textSet(corto_text _this, corto_width charWidth, corto_uint64 length
 corto_string _corto_textStr(corto_text value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_text_o));
+    v = corto_value_object(value, corto_type(corto_text_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5781,7 +5781,7 @@ void _corto_typeSet(corto_type _this, corto_typeKind kind, corto_bool reference)
 corto_string _corto_typeStr(corto_type value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_type_o));
+    v = corto_value_object(value, corto_type(corto_type_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5866,7 +5866,7 @@ void _corto_typeKindSet(corto_typeKind* _this, corto_typeKind value) {
 corto_string _corto_typeKindStr(corto_typeKind value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_typeKind_o), &value);
+    v = corto_value_value(corto_type(corto_typeKind_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -5884,7 +5884,7 @@ corto_int16 _corto_typeKindInit(corto_typeKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_typeKind_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_typeKind_o), value);
+    v = corto_value_value(corto_type(corto_typeKind_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -5892,7 +5892,7 @@ corto_int16 _corto_typeKindInit(corto_typeKind* value) {
 corto_int16 _corto_typeKindDeinit(corto_typeKind* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_typeKind_o), value);
+    v = corto_value_value(corto_type(corto_typeKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -5978,7 +5978,7 @@ void _corto_uintSet(corto_uint _this, corto_width width, corto_uint64 min, corto
 corto_string _corto_uintStr(corto_uint value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_uint_o));
+    v = corto_value_object(value, corto_type(corto_uint_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6063,7 +6063,7 @@ void _corto_uint16Set(corto_uint16* _this, corto_uint16 value) {
 corto_string _corto_uint16Str(corto_uint16 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint16_o), &value);
+    v = corto_value_value(corto_type(corto_uint16_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6081,7 +6081,7 @@ corto_int16 _corto_uint16Init(corto_uint16* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_uint16_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint16_o), value);
+    v = corto_value_value(corto_type(corto_uint16_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6089,7 +6089,7 @@ corto_int16 _corto_uint16Init(corto_uint16* value) {
 corto_int16 _corto_uint16Deinit(corto_uint16* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint16_o), value);
+    v = corto_value_value(corto_type(corto_uint16_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6165,7 +6165,7 @@ void _corto_uint32Set(corto_uint32* _this, corto_uint32 value) {
 corto_string _corto_uint32Str(corto_uint32 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint32_o), &value);
+    v = corto_value_value(corto_type(corto_uint32_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6183,7 +6183,7 @@ corto_int16 _corto_uint32Init(corto_uint32* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_uint32_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint32_o), value);
+    v = corto_value_value(corto_type(corto_uint32_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6191,7 +6191,7 @@ corto_int16 _corto_uint32Init(corto_uint32* value) {
 corto_int16 _corto_uint32Deinit(corto_uint32* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint32_o), value);
+    v = corto_value_value(corto_type(corto_uint32_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6267,7 +6267,7 @@ void _corto_uint64Set(corto_uint64* _this, corto_uint64 value) {
 corto_string _corto_uint64Str(corto_uint64 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint64_o), &value);
+    v = corto_value_value(corto_type(corto_uint64_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6285,7 +6285,7 @@ corto_int16 _corto_uint64Init(corto_uint64* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_uint64_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint64_o), value);
+    v = corto_value_value(corto_type(corto_uint64_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6293,7 +6293,7 @@ corto_int16 _corto_uint64Init(corto_uint64* value) {
 corto_int16 _corto_uint64Deinit(corto_uint64* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint64_o), value);
+    v = corto_value_value(corto_type(corto_uint64_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6369,7 +6369,7 @@ void _corto_uint8Set(corto_uint8* _this, corto_uint8 value) {
 corto_string _corto_uint8Str(corto_uint8 value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint8_o), &value);
+    v = corto_value_value(corto_type(corto_uint8_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6387,7 +6387,7 @@ corto_int16 _corto_uint8Init(corto_uint8* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_uint8_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint8_o), value);
+    v = corto_value_value(corto_type(corto_uint8_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6395,7 +6395,7 @@ corto_int16 _corto_uint8Init(corto_uint8* value) {
 corto_int16 _corto_uint8Deinit(corto_uint8* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_uint8_o), value);
+    v = corto_value_value(corto_type(corto_uint8_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6486,7 +6486,7 @@ void _corto_virtualSet(corto_virtual _this, corto_type returnType, corto_bool re
 corto_string _corto_virtualStr(corto_virtual value) {
     corto_string result;
     corto_value v;
-    corto_valueObjectInit(&v, value, corto_type(corto_virtual_o));
+    v = corto_value_object(value, corto_type(corto_virtual_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6614,7 +6614,7 @@ void _corto_vtableSet(corto_vtable* _this, corto_uint32 length, corto_function* 
 corto_string _corto_vtableStr(corto_vtable value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_vtable_o), &value);
+    v = corto_value_value(corto_type(corto_vtable_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6632,7 +6632,7 @@ corto_int16 _corto_vtableInit(corto_vtable* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_vtable_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_vtable_o), value);
+    v = corto_value_value(corto_type(corto_vtable_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6640,7 +6640,7 @@ corto_int16 _corto_vtableInit(corto_vtable* value) {
 corto_int16 _corto_vtableDeinit(corto_vtable* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_vtable_o), value);
+    v = corto_value_value(corto_type(corto_vtable_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6716,7 +6716,7 @@ void _corto_widthSet(corto_width* _this, corto_width value) {
 corto_string _corto_widthStr(corto_width value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_width_o), &value);
+    v = corto_value_value(corto_type(corto_width_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6734,7 +6734,7 @@ corto_int16 _corto_widthInit(corto_width* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_width_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_width_o), value);
+    v = corto_value_value(corto_type(corto_width_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6742,7 +6742,7 @@ corto_int16 _corto_widthInit(corto_width* value) {
 corto_int16 _corto_widthDeinit(corto_width* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_width_o), value);
+    v = corto_value_value(corto_type(corto_width_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6818,7 +6818,7 @@ void _corto_wordSet(corto_word* _this, corto_word value) {
 corto_string _corto_wordStr(corto_word value) {
     corto_string result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_word_o), &value);
+    v = corto_value_value(corto_type(corto_word_o), &value);
     result = corto_strv(&v, 0);
     return result;
 }
@@ -6836,7 +6836,7 @@ corto_int16 _corto_wordInit(corto_word* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_word_o)->size);
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_word_o), value);
+    v = corto_value_value(corto_type(corto_word_o), value);
     result = corto_initv(&v);
     return result;
 }
@@ -6844,7 +6844,7 @@ corto_int16 _corto_wordInit(corto_word* value) {
 corto_int16 _corto_wordDeinit(corto_word* value) {
     corto_int16 result;
     corto_value v;
-    corto_valueValueInit(&v, NULL, corto_type(corto_word_o), value);
+    v = corto_value_value(corto_type(corto_word_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -6875,7 +6875,7 @@ void corto_interfaceseqSize(corto_interfaceseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_interface_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_interface_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -6894,7 +6894,7 @@ corto_interfaceVector* corto_interfaceVectorseqAppend(corto_interfaceVectorseq *
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[seq->length-1]);
         corto_initv(&v);
     }
     corto_copyp(&seq->buffer[seq->length-1], corto_interfaceVector_o, &element);
@@ -6908,7 +6908,7 @@ corto_interfaceVector* corto_interfaceVectorseqAppendAlloc(corto_interfaceVector
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[seq->length-1]);
         corto_initv(&v);
     }
     return &seq->buffer[seq->length-1];
@@ -6921,7 +6921,7 @@ void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 le
         for(i=length; i<seq->length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -6933,7 +6933,7 @@ void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 le
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_interfaceVector_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -6971,7 +6971,7 @@ void corto_memberseqSize(corto_memberseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_member_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_member_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -7009,7 +7009,7 @@ void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_object_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_object_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -7058,7 +7058,7 @@ corto_parameter* corto_parameterseqAppend(corto_parameterseq *seq, corto_paramet
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[seq->length-1]);
         corto_initv(&v);
     }
     corto_copyp(&seq->buffer[seq->length-1], corto_parameter_o, &element);
@@ -7072,7 +7072,7 @@ corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *seq) {
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[seq->length-1]);
         corto_initv(&v);
     }
     return &seq->buffer[seq->length-1];
@@ -7085,7 +7085,7 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
         for(i=length; i<seq->length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -7097,7 +7097,7 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_parameter_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -7135,7 +7135,7 @@ void corto_vtableSize(corto_vtable *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                corto_valueValueInit(&v, NULL, corto_type(corto_function_o), &seq->buffer[i]);
+                v = corto_value_value(corto_type(corto_function_o), &seq->buffer[i]);
                 corto_deinitv(&v);
             }
         }
@@ -7146,4 +7146,3 @@ void corto_vtableSize(corto_vtable *seq, corto_uint32 length) {
 void corto_vtableClear(corto_vtable *seq) {
     corto_vtableSize(seq, 0);
 }
-

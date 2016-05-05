@@ -42,11 +42,11 @@ static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string c
 /* Serialize any */
 static corto_int16 corto_ser_any(corto_serializer s, corto_value* v, void* userData) {
     corto_string_ser_t* data = userData;
-    corto_any *this = corto_valueValue(v);
+    corto_any *this = corto_value_getPtr(v);
     corto_int16 result = 0;
     corto_id id;
     corto_value anyValue;
-    corto_valueValueInit(&anyValue, NULL, this->type, this->value);
+    anyValue = corto_value_value(this->type, this->value);
 
     if (!corto_buffer_append(&data->buffer, "{%s,", corto_fullpath(id, this->type))) {
         goto finished;
@@ -76,8 +76,8 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
     result = NULL;
 
     data = (corto_string_ser_t*)userData;
-    t = corto_valueType(v);
-    o = corto_valueValue(v);
+    t = corto_value_getType(v);
+    o = corto_value_getPtr(v);
 
     /* If src is string and value is null, put NULL in result. */
     if (corto_primitive(t)->kind == CORTO_TEXT) {
@@ -149,13 +149,13 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     corto_string_ser_t* data;
 
     data = userData;
-    o = corto_valueValue(v);
+    o = corto_value_getPtr(v);
     object = *(corto_object*)o;
 
     /* Obtain fully scoped name */
     corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        if (corto_checkAttr(object, CORTO_ATTR_SCOPED) || (corto_valueObject(v) == object)) {
+        if (corto_checkAttr(object, CORTO_ATTR_SCOPED) || (corto_value_getObject(v) == object)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_idof(object));
                 str = id;
@@ -187,7 +187,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 corto_llAppend(data->anonymousObjects, object);
                 corto_buffer_append(&data->buffer, "<%d>", corto_llSize(data->anonymousObjects));
 
-                corto_valueObjectInit(&v, object, NULL);
+                v = corto_value_object(object, NULL);
                 if (corto_ser_object(s, &v, &walkData)) {
                     goto error;
                 }
@@ -225,7 +225,7 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     corto_type t;
 
     data = userData;
-    t = corto_valueType(v);
+    t = corto_value_getType(v);
     result = 0;
 
     /* Nested data has private itemCount, which prevents superfluous ',' to be added to the result. */
@@ -326,7 +326,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
         corto_string str = corto_buffer_str(&data->buffer);
 
         if (str) {
-            o = corto_valueObject(v);
+            o = corto_value_getObject(v);
             corto_fullpath(id, corto_typeof(o));
 
             if (corto_typeof(o)->kind != CORTO_PRIMITIVE) {

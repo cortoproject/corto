@@ -2,17 +2,17 @@
 #include "corto/corto.h"
 
 static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *userData) {
-    corto_any *this = corto_valueValue(info);
+    corto_any *this = corto_value_getPtr(info);
     corto_copy_ser_t *data = userData, privateData;
-    corto_any *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_any *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
     corto_value v;
 
     if (this->type->kind == CORTO_PRIMITIVE) {
         value->value = corto_calloc(corto_type_sizeof(this->type));
     }
 
-    corto_valueValueInit(&v, NULL, this->type, this->value);
-    corto_valueValueInit(&privateData.value, NULL, value->type, value->value);
+    v = corto_value_value(this->type, this->value);
+    privateData.value = corto_value_value(value->type, value->value);
 
     /* Set base of privateData. Because we're reusing the serializer, the
      * construct callback won't be called again */
@@ -27,10 +27,10 @@ static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *us
 }
 
 static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, void *userData) {
-    corto_type type = corto_valueType(info);
+    corto_type type = corto_value_getType(info);
     corto_copy_ser_t *data = userData;
-    void *this = corto_valueValue(info);
-    void *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
+    void *this = corto_value_getPtr(info);
+    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
 
     CORTO_UNUSED(s);
 
@@ -45,8 +45,8 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, vo
 
 static corto_int16 corto_ser_reference(corto_serializer s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
-    void *this = corto_valueValue(info);
-    void *value = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)this - (corto_word)data->base));
+    void *this = corto_value_getPtr(info);
+    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
     CORTO_UNUSED(s);
 
     corto_setref(value, *(corto_object*)this);
@@ -58,9 +58,9 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value *info, vo
 void corto_collection_deinitElement(corto_collection t, void *ptr) {
     corto_value v;
     if (corto_collection_requiresAlloc(t->elementType)) {
-        corto_valueValueInit(&v, NULL, corto_type(t->elementType), ptr);
+        v = corto_value_value(corto_type(t->elementType), ptr);
     } else {
-        corto_valueValueInit(&v, NULL, corto_type(t->elementType), &ptr);
+        v = corto_value_value(corto_type(t->elementType), &ptr);
     }
     corto_deinitv(&v);
 }
@@ -208,16 +208,16 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
      * base-object was a collection, the collection type can be different. When the base-object
      * was a composite type, the collection type has to be equal, since different composite
      * types are considered non-comparable. */
-    t1 = corto_valueType(info);
-    v1 = corto_valueValue(info);
+    t1 = corto_value_getType(info);
+    v1 = corto_value_getPtr(info);
 
     /* Verify whether current serialized object is the base-object */
     if (info->parent) {
         t2 = t1;
-        v2 = (void*)((corto_word)corto_valueValue(&data->value) + ((corto_word)v1 - (corto_word)data->base));
+        v2 = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)v1 - (corto_word)data->base));
     } else {
-        t2 = corto_valueType(&data->value);
-        v2 = corto_valueValue(&data->value);
+        t2 = corto_value_getType(&data->value);
+        v2 = corto_value_getPtr(&data->value);
     }
 
     {
@@ -267,7 +267,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
                 /* This is a bit tricky: passing the pointer to what is potentially a sequence-buffer
                  * while providing a sequence type. */
                 array2 = corto_collection_resizeArray(corto_collection(t2), v2, size1);
-                corto_valueValueInit(&privateData.value, NULL, corto_type(t2), array2);
+                privateData.value = corto_value_value(corto_type(t2), array2);
                 privateData.base = array1;
                 result = corto_serializeElements(s, info, &privateData);
             } else if (list2) {
@@ -293,10 +293,10 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
     corto_int16 ret;
     CORTO_UNUSED(s);
 
-    corto_type t1 = corto_valueType(info);
-    corto_type t2 = corto_valueType(&data->value);
+    corto_type t1 = corto_value_getType(info);
+    corto_type t2 = corto_value_getType(&data->value);
 
-    data->base = corto_valueValue(info);
+    data->base = corto_value_getPtr(info);
 
     ret = !corto_type_castable(t2, t1);
     if (ret) {

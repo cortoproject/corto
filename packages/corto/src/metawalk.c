@@ -31,7 +31,7 @@ corto_int16 corto_serializeConstants(corto_serializer s, corto_value* v, void* u
     corto_enum t;
     corto_uint32 i;
 
-    t = corto_enum(corto_valueType(v));
+    t = corto_enum(corto_value_getType(v));
 
     /* If there is a callback for constants, serialize them */
     if (s->metaprogram[CORTO_CONSTANT]) {
@@ -42,7 +42,7 @@ corto_int16 corto_serializeConstants(corto_serializer s, corto_value* v, void* u
             info.kind = CORTO_CONSTANT;
             info.is.constant.t = t->constants.buffer[i];
             info.is.constant.v = NULL;
-            info.is.constant.o = corto_valueObject(v);
+            info.is.constant.o = corto_value_getObject(v);
 
             /* Serialize constant */
             if (s->metaprogram[CORTO_CONSTANT](s, &info, userData)) {

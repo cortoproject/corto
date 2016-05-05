@@ -491,7 +491,7 @@ corto_int16 g_serializeImportsReference(corto_serializer s, corto_value *v, void
     g_serializeImports_t *data = userData;
     corto_generator g = data->g;
 
-    o = *(corto_object*)corto_valueValue(v);
+    o = *(corto_object*)corto_value_getPtr(v);
     if (o) {
         /* Search unscoped object for references to other modules */
         if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
@@ -521,7 +521,7 @@ corto_int16 g_serializeImportsReference(corto_serializer s, corto_value *v, void
 corto_int16 g_serializeImportsObject(corto_serializer s, corto_value *v, void* userData) {
     g_serializeImports_t *data = userData;
 
-    corto_object o = corto_valueObject(v);
+    corto_object o = corto_value_getObject(v);
     g_importsEvalReference(data->g, corto_typeof(o));
     corto_serializeValue(s, v, userData);
 

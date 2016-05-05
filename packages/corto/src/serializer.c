@@ -20,7 +20,7 @@ corto_int16 corto_serializeValue(corto_serializer this, corto_value* info, void*
     corto_int16 result;
     corto_serializerCallback cb;
 
-    t = corto_valueType(info);
+    t = corto_value_getType(info);
 
     cb = NULL;
 
@@ -156,11 +156,11 @@ corto_int16 corto_serializeAny(corto_serializer this, corto_value* info, void* u
     corto_any *any;
     corto_int16 result = 0;
 
-    any = corto_valueValue(info);
+    any = corto_value_getPtr(info);
 
     if (any->type) {
         v.parent = info;
-        corto_valueValueInit(&v, corto_valueObject(info), corto_type(any->type), any->value);
+        v = corto_value_value(corto_type(any->type), any->value);
         result = corto_serializeValue(this, &v, userData);
     }
 
@@ -177,9 +177,9 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     corto_serializerCallback cb;
     corto_object o;
 
-    t = corto_interface(corto_valueType(info));
-    v = corto_valueValue(info);
-    o = corto_valueObject(info);
+    t = corto_interface(corto_value_getType(info));
+    v = corto_value_getPtr(info);
+    o = corto_value_getObject(info);
 
     /* Process inheritance */
     if (corto_class_instanceof(corto_struct_o, t) && corto_serializeMatchAccess(this->accessKind, this->access, corto_struct(t)->baseAccess)) {
@@ -295,12 +295,12 @@ corto_int16 corto_serializeElements(corto_serializer this, corto_value* info, vo
     corto_void* v;
     corto_value elementInfo;
 
-    t = corto_collection(corto_valueType(info));
-    v = corto_valueValue(info);
+    t = corto_collection(corto_value_getType(info));
+    v = corto_value_getPtr(info);
 
     /* Value object for element */
     elementInfo.kind = CORTO_ELEMENT;
-    elementInfo.is.element.o = corto_valueObject(info);
+    elementInfo.is.element.o = corto_value_getObject(info);
     elementInfo.parent = info;
     elementInfo.is.element.t.type = t->elementType;
     elementInfo.is.element.t.index = 0;

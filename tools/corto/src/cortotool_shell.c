@@ -386,7 +386,7 @@ static int cxsh_show(char* object) {
     if (!corto_expr(scope_o, expr, &result)) {
         corto_object o = NULL;
         if (result.kind == CORTO_OBJECT) {
-            o = corto_valueObject(&result);
+            o = corto_value_getObject(&result);
         }
 
         /* Release scope as soon as possible */
@@ -435,7 +435,7 @@ static int cxsh_show(char* object) {
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, NORMAL, META_COLOR, cxsh_attrStr(o, attr), NORMAL);
             printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, NORMAL, OBJECT_COLOR,
-                corto_fullpath(NULL, corto_valueType(&result)), NORMAL);
+                corto_fullpath(NULL, corto_value_getType(&result)), NORMAL);
         }
 
         /* Initialize serializer userData */
@@ -447,7 +447,7 @@ static int cxsh_show(char* object) {
         s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
 
         /* Serialize value to string */
-        if (corto_valueValue(&result)) {
+        if (corto_value_getPtr(&result)) {
             corto_serializeValue(&s, &result, &sdata);
             corto_string str = corto_buffer_str(&sdata.buffer);
             if (str) {

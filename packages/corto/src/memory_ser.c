@@ -13,7 +13,7 @@ corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* us
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
 
-    o = *(corto_object*)corto_valueValue(v);
+    o = *(corto_object*)corto_value_getPtr(v);
     if (o) {
         corto_bool weak = FALSE;
         if (v->kind == CORTO_MEMBER) {
@@ -36,8 +36,8 @@ corto_int16 corto_ser_freePrimitive(corto_serializer s, corto_value* v, void* ud
     CORTO_UNUSED(s);
     CORTO_UNUSED(udata);
 
-    t = corto_valueType(v);
-    o = corto_valueValue(v);
+    t = corto_value_getType(v);
+    o = corto_value_getPtr(v);
 
     /* Free strings */
     switch(corto_primitive(t)->kind) {
@@ -65,8 +65,8 @@ corto_int16 corto_ser_freeCollection(corto_serializer s, corto_value* v, void* u
     corto_type t;
     void* o;
 
-    t = corto_valueType(v);
-    o = corto_valueValue(v);
+    t = corto_value_getType(v);
+    o = corto_value_getPtr(v);
 
     /* Serialize elements */
     if (corto_serializeElements(s, v, userData)) {
@@ -120,7 +120,7 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
 
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
-    optr = corto_valueValue(v);
+    optr = corto_value_getPtr(v);
 
     if ((o = *optr)) {
         corto_bool weak = FALSE;
