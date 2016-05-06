@@ -32,9 +32,10 @@ install:
   - git clone https://github.com/cortoproject/cortodoc.git
   - git clone https://github.com/cortoproject/test.git
   - git clone https://github.com/cortoproject/json.git
+  - git clone https://github.com/cortoproject/t.git
   - git clone https://github.com/cortoproject/examples.git
   - |+
-    echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json)
+    echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json t)
     require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
 
 script:

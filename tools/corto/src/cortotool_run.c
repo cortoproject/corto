@@ -132,7 +132,6 @@ error:
 
 static int cortotool_buildDependency(corto_string path, corto_bool test) {
     corto_int8 procResult = 0;
-    corto_id testPath;
 
     /* Build */
     corto_pid pid = corto_procrun("corto", (char*[]){"corto", "build", path, "--silent", NULL});

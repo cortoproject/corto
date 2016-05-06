@@ -35,8 +35,8 @@ corto_void _test_Args_tc_matchAddNoProject(
     test_assert(corto_llSize(silent) == 1);
     test_assert(corto_llSize(packages) == 1);
 
-    test_assert(!strcmp(corto_llGet(silent, 0), "--silent"));
-    test_assert(!strcmp(corto_llGet(packages, 0), "::corto::test"));
+    test_assertstr(corto_llGet(silent, 0), "--silent");
+    test_assertstr(corto_llGet(packages, 0), "::corto::test");
 
     corto_argclean(data);
 
