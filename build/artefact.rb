@@ -255,7 +255,12 @@ task :test do
   verbose(VERBOSE)
   file = ""
   if File.exists? "test/rakefile" then
-    sh "rake -f test/rakefile silent=true"
+    begin
+      sh "rake -f test/rakefile silent=true"
+    rescue
+      STDERR.puts "\033[1;31mcorto:\033[0;49m failed to build test"
+      abort
+    end
     if File.exists? "test/.corto/libtest.so" then
       Dir.chdir("test")
       file = ".corto/libtest.so"

@@ -46,13 +46,15 @@ task :clobber do
 end
 
 task :test do
+    verbose(VERBOSE)
     error = 0
     COMPONENTS.each do |e|
-        verbose(VERBOSE)
-        begin
-          sh "rake test -f #{e}/rakefile"
-        rescue
-          error = 1
+        if File.exists? "#{e}" then
+          begin
+            sh "rake test -f #{e}/rakefile"
+          rescue
+            error = 1
+          end
         end
     end
     if File.exists? "test" then
@@ -64,7 +66,7 @@ task :test do
         end
     end
     if error != 0 then
-      abort()
+      abort
     end
 end
 
