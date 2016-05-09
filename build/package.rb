@@ -234,6 +234,10 @@ end
 # Crawl project directory for files that need to be installed with binary
 task :install do
     verbose(VERBOSE)
+    libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+    if not File.exists? libpath then
+      sh "mkdir -p #{libpath}"
+    end
     if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
         includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
         installFiles = Dir.glob("include/*")
@@ -268,24 +272,20 @@ task :install do
         UNINSTALL << etc
     end
     if File.exists?("lib") then
-        lib = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-        sh "rm -rf #{lib}"
-        sh "mkdir -p #{lib}"
-
         if File.exists? "lib/everywhere" then
-            sh "cp -r lib/everywhere/. #{lib}/"
+            sh "cp -r lib/everywhere/. #{libpath}/"
             if CORTO_OS == "Darwin" then
                 access = `stat -f '%A' lib/everywhere`[0...-1]
             else
                 access = `stat -c '%a' lib/everywhere`[0...-1]
             end
-            sh "chmod #{access} #{lib}"
+            sh "chmod #{access} #{libpath}"
         end
         platformStr = "lib/" + CORTO_PLATFORM
         if File.exists? platformStr then
-            sh "cp -r " + platformStr + "/. #{lib}"
+            sh "cp -r " + platformStr + "/. #{libpath}"
         end
-        UNINSTALL << lib
+        UNINSTALL << libpath
     end
     if File.exists?("install") then
         platformStr = "install/" + CORTO_PLATFORM
@@ -323,22 +323,18 @@ task :install do
         # Using this file, corto can auto-rebuild the package when changes in
         # package files are made while a running application is using it.
         sh "echo \"`pwd`\" >> source.txt"
-        libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
         if File.exists? "#{libpath}/source.txt" then
           if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
-            sh "echo \"\033[1;31mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m\""
+            STDERR.puts "\033[1;31mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m"
           end
         end
-        sh "mkdir -p #{libpath}"
         sh "mv source.txt #{libpath}/source.txt"
     end
     if not LOCAL and File.exists? ".corto/packages.txt" then
-        sh "mkdir -p #{libpath}/.corto"
-        sh "cp .corto/packages.txt #{libpath}/.corto"
+        sh "cp .corto/packages.txt #{libpath}"
     end
     if not LOCAL and File.exists? ".corto/version.txt" then
-      sh "mkdir -p #{libpath}/.corto"
-      sh "cp .corto/version.txt #{libpath}/.corto"
+      sh "cp .corto/version.txt #{libpath}"
     end
 end
 

@@ -88,7 +88,7 @@ if ENV['target'] == "debug" then
 end
 
 # Crawl src directory to get list of source files
-SOURCES = Rake::FileList["src/**/*.{c,cc,cpp,cxx}"]
+SOURCES = Rake::FileList["src/**/*.{c,cpp}"]
 OBJECTS = SOURCES.ext(".o")
               .pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
             Rake::FileList[GENERATED_SOURCES]
@@ -150,9 +150,12 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
 end
 
 # Build artefact
-file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(VERBOSE)
-    sh "mkdir -p #{TARGETDIR}"
+
+    if not File.exists? TARGETDIR then
+      sh "mkdir -p #{TARGETDIR}"
+    end
 
     # Create list of files that are going to be linked with. Abstract away from the
     # difference between dll, so and dylib. When a dylib is encountered, perform  a
@@ -185,7 +188,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
       }.join(" ")
 
     # Check if there were any new files created during code generation
-    Rake::FileList["src/*.{c,cc,cpp,cxx}"].each do |file|
+    Rake::FileList["src/*.{c,cpp}"].each do |file|
         obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
         if not OBJECTS.include? obj
             build_source(file, obj, true)
@@ -220,7 +223,7 @@ file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     end
 
     if ENV['silent'] != "true" then
-        sh "echo '#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
+        print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'\n"
     end
 end
 
@@ -337,8 +340,10 @@ rule '.o' => ->(t) {
   end
   file
 } do |task|
-  sh "rm -f #{task.name.ext(".gcda")}"
-  sh "rm -f #{task.name.ext(".gcno")}"
+  if COVERAGE then
+    sh "rm -f #{task.name.ext(".gcda")}"
+    sh "rm -f #{task.name.ext(".gcno")}"
+  end
   build_source(task.source, task.name, true)
 end
 
@@ -382,7 +387,7 @@ def build_source(source, target, echo)
 
     if echo
         if ENV['silent'] != "true" then
-            sh "echo '#{source}'"
+            print "#{source}\n"
         end
     end
 
