@@ -7,6 +7,13 @@
 
 #include "corto/corto.h"
 
+/* Keep include local because of clashing macro's with other libraries (yacc) */
+#ifdef __MACH__
+#include "ffi/ffi.h"
+#else
+#include "ffi.h"
+#endif
+
 typedef struct bindingHandler {
     corto_callHandler function;
     corto_contextSwitchHandler onSwitch;
@@ -95,33 +102,57 @@ static void corto_call_intern(corto_function f, corto_void* result, void* args) 
                 corto_mount_invoke(owner, instance, f, argbuff);
                 return;
             } else {
-                /* A mount invoking a method on an object it owns? That is
+                /* A mount invoking a method on an object it own? That is
                  * odd. Don't do anything. */
                 return;
             }
         }
     }
 
-    ((void(*)(corto_function, void*, void*))f->impl)(f, result, args);
+    ffi_call((ffi_cif*)f->implData, (void(*)())f->impl, result, args);
 }
+
+#define argcpy(args, type) ptr = alloca(sizeof(type)), *(type*)ptr = va_arg(args, type), ptr
 
 /* Call with variable argument list */
 void corto_callv(corto_function f, corto_void* result, va_list args) {
-    void *ptr, *buffer;
-    corto_uint32 s = f->size;
+    corto_int32 i;
+    void **argptrs = alloca(f->parameters.length * sizeof(void*));
+    void *ptr;
 
-    if(s % sizeof(corto_uint64)) {
-        s = ((s / sizeof(corto_uint64)) + 1) * sizeof(corto_uint64);
+    for (i = 0; i < f->parameters.length; i ++) {
+        corto_parameter *p = &f->parameters.buffer[i];
+        switch(p->type->kind) {
+        case CORTO_ANY:
+            argptrs[i] = argcpy(args, corto_any);
+            break;
+        case CORTO_ITERATOR:
+            argptrs[i] = argcpy(args, corto_iter);
+            break;
+        case CORTO_PRIMITIVE:
+            switch(corto_primitive(p->type)->width) {
+            case CORTO_WIDTH_8: argptrs[i] = argcpy(args, corto_uint8); break;
+            case CORTO_WIDTH_16: argptrs[i] = argcpy(args, corto_uint16); break;
+            case CORTO_WIDTH_32: argptrs[i] = argcpy(args, corto_uint32); break;
+            case CORTO_WIDTH_64: argptrs[i] = argcpy(args, corto_uint64); break;
+            case CORTO_WIDTH_WORD: argptrs[i] = argcpy(args, corto_word); break;
+                break;
+            }
+            break;
+        case CORTO_COMPOSITE:
+            argptrs[i] = argcpy(args, void*);
+            break;
+        case CORTO_COLLECTION:
+            if(corto_collection(p->type)->kind == CORTO_SEQUENCE) {
+                argptrs[i] = argcpy(args, corto_objectseq);
+            } else {
+                argptrs[i] = argcpy(args, void*);
+            }
+            break;
+        }
     }
-    ptr = buffer = alloca(s);
 
-    while (s) {
-        *(corto_uint64*)ptr = va_arg(args, corto_uint64);
-        ptr = (void*)((corto_word)ptr + sizeof(corto_uint64));
-        s -= sizeof(corto_uint64);
-    }
-
-    corto_call_intern(f, result, buffer);
+    corto_call_intern(f, result, argptrs);
 }
 
 /* Call with variable arguments */

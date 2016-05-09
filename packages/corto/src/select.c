@@ -1429,7 +1429,7 @@ static corto_selectSelector corto_selectorAugment(
 
 static corto_resultIter corto_selectorIter(corto_int16 *ret)
 {
-    corto_resultIter result;
+    corto_resultIter result = {NULL};
 
     if (ret) *ret = 0;
 

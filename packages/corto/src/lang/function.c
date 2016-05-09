@@ -8,43 +8,187 @@
 
 #include "corto/lang/lang.h"
 
+/* $header() */
+
+/* Keep include local because of clashing macro's with other libraries (yacc) */
+#ifdef __MACH__
+#include "ffi/ffi.h"
+#else
+#include "ffi.h"
+#endif
+
+/* ANY type */
+ffi_type *corto_ffi_type_any_elements[] = {
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_uint8,
+    NULL
+};
+ffi_type corto_ffi_type_any = {
+    .size = 0,
+    .alignment = 0,
+    .type = FFI_TYPE_STRUCT,
+    .elements = (ffi_type**)&corto_ffi_type_any_elements
+};
+
+/* SEQUENCE type */
+ffi_type *corto_ffi_type_sequence_elements[] = {
+    &ffi_type_uint32,
+    &ffi_type_pointer,
+    NULL
+};
+ffi_type corto_ffi_type_sequence = {
+    .size = 0,
+    .alignment = 0,
+    .type = FFI_TYPE_STRUCT,
+    .elements = (ffi_type**)&corto_ffi_type_sequence_elements
+};
+
+/* ITERATOR type */
+ffi_type *corto_ffi_type_iterator_elements[] = {
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    &ffi_type_pointer,
+    NULL
+};
+ffi_type corto_ffi_type_iterator = {
+    .size = 0,
+    .alignment = 0,
+    .type = FFI_TYPE_STRUCT,
+    .elements = (ffi_type**)&corto_ffi_type_iterator_elements
+};
+
+ffi_type* corto_ffi_type(corto_type t) {
+    ffi_type *result = NULL;
+
+    if (t->reference) {
+        result = &ffi_type_pointer;
+    } else {
+        switch(t->kind) {
+        case CORTO_VOID:
+            result = &ffi_type_void;
+            break;
+        case CORTO_ANY:
+            result = &corto_ffi_type_any;
+            break;
+        case CORTO_ITERATOR:
+            result = &corto_ffi_type_iterator;
+            break;
+        case CORTO_PRIMITIVE:
+            switch(corto_primitive(t)->kind) {
+            case CORTO_BINARY:
+            case CORTO_BITMASK:
+            case CORTO_BOOLEAN:
+            case CORTO_CHARACTER:
+            case CORTO_UINTEGER:
+                switch(corto_primitive(t)->width) {
+                case CORTO_WIDTH_8: result = &ffi_type_uint8; break;
+                case CORTO_WIDTH_16: result = &ffi_type_uint16; break;
+                case CORTO_WIDTH_32: result = &ffi_type_uint32; break;
+                case CORTO_WIDTH_64: result = &ffi_type_uint64; break;
+                case CORTO_WIDTH_WORD: result = &ffi_type_pointer; break;
+                    break;
+                }
+                break;
+            case CORTO_ENUM:
+            case CORTO_INTEGER:
+                switch(corto_primitive(t)->width) {
+                case CORTO_WIDTH_8: result = &ffi_type_sint8; break;
+                case CORTO_WIDTH_16: result = &ffi_type_sint16; break;
+                case CORTO_WIDTH_32: result = &ffi_type_sint32; break;
+                case CORTO_WIDTH_64: result = &ffi_type_sint64; break;
+                case CORTO_WIDTH_WORD: result = &ffi_type_pointer; break;
+                    break;
+                }
+                break;
+            case CORTO_FLOAT:
+                switch(corto_primitive(t)->width) {
+                case CORTO_WIDTH_32: result = &ffi_type_float; break;
+                case CORTO_WIDTH_64: result = &ffi_type_double; break;
+                    break;
+                default:
+                    result = NULL;
+                    break;
+                }
+                break;
+            case CORTO_TEXT:
+                result = &ffi_type_pointer;
+                break;
+            }
+            break;
+        case CORTO_COMPOSITE:
+            result = &ffi_type_pointer;
+            break;
+        case CORTO_COLLECTION:
+            if (corto_collection(t)->kind == CORTO_SEQUENCE) {
+                result = &corto_ffi_type_sequence;
+            } else {
+                result = &ffi_type_pointer;
+            }
+            break;
+        }
+    }
+
+    return result;
+}
+/* $end */
+
 corto_int16 _corto_function_bind(
     corto_function this)
 {
 /* $begin(corto/lang/function/bind) */
     /* Count the size based on the parameters and store parameters in slots */
+    ffi_cif *cif = corto_alloc(sizeof(ffi_cif));
+    ffi_type **args = alloca(sizeof(ffi_type*) * this->parameters.length + 1);
+    corto_uint8 hasThis = 0;
+
     if (!this->size) {
+        /* Add size of this-pointer */
+        if (!(corto_typeof(this) == corto_type(corto_function_o))) {
+            if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
+                this->size += sizeof(corto_any);
+                args[0] = &corto_ffi_type_any;
+            } else {
+                this->size += sizeof(corto_object);
+                args[0] = &ffi_type_pointer;
+            }
+            hasThis = 1;
+        }
+
         corto_uint32 i;
         for(i=0; i<this->parameters.length; i++) {
             if (this->parameters.buffer[i].passByReference) {
                 this->size += sizeof(corto_word);
+                args[i + hasThis] = &ffi_type_pointer;
             } else {
                 corto_type paramType = this->parameters.buffer[i].type;
                 switch(paramType->kind) {
                 case CORTO_ANY:
                     this->size += sizeof(corto_any);
+                    args[i + hasThis] = &corto_ffi_type_any;
                     break;
                 case CORTO_PRIMITIVE:
                     this->size += corto_type_sizeof(paramType);
+                    args[i + hasThis] = corto_ffi_type(paramType);
                     break;
                 case CORTO_COLLECTION:
                     if (corto_collection(paramType)->kind == CORTO_SEQUENCE) {
                         this->size += sizeof(corto_objectseq);
+                        args[i + hasThis] = &corto_ffi_type_sequence;
                         break;
                     }
                 default:
                     this->size += sizeof(void*);
+                    args[i + hasThis] = &ffi_type_pointer;
                     break;
                 }
-            }
-        }
-
-        /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
-        if (!(corto_typeof(this) == corto_type(corto_function_o))) {
-            if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
-                this->size += sizeof(corto_any);
-            } else {
-                this->size += sizeof(corto_object);
             }
         }
     }
@@ -57,6 +201,16 @@ corto_int16 _corto_function_bind(
     if (this->returnType->reference) {
         this->returnsReference = TRUE;
     }
+
+    /* Prepare call interface */
+    ffi_prep_cif(
+        cif,
+        FFI_DEFAULT_ABI,
+        this->parameters.length + hasThis,
+        this->returnsReference ? &ffi_type_pointer : corto_ffi_type(this->returnType),
+        args);
+
+    this->implData = (corto_word)cif;
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {

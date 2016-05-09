@@ -150,7 +150,7 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
 end
 
 # Build artefact
-file "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     verbose(VERBOSE)
     sh "mkdir -p #{TARGETDIR}"
 
