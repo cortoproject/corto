@@ -12,6 +12,13 @@
 #include "_object.h"
 #include "_equals.h"
 
+/* Keep include local because of clashing macro's with other libraries (yacc) */
+#ifdef __MACH__
+#include "ffi/ffi.h"
+#else
+#include "ffi.h"
+#endif
+
 /* Notes about the typesystem
  *
  * Composite objects
@@ -379,38 +386,38 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 /* function object */
 #define CORTO_FUNCTION_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 #define CORTO_FUNCTION_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 #define CORTO_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
 
 /* method object */
 #define CORTO_METHOD_O(parent, name, args, returnType, virtual, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_method parent##_##name##___o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##___o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* interface method object */
 #define CORTO_IMETHOD_O(parent, name, args, returnType, virtual) \
-        sso_method parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
 
 /* interface method object */
 #define CORTO_OBSERVER_O(parent, name, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_observer parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, core_observer), {{(corto_type)&lang_void##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0,{0,NULL},0}, 0}, VTABLE_V}
+        sso_observer parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, core_observer), {{(corto_type)&lang_void##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, 0}, VTABLE_V}
 
 /* metaprocedure object */
 #define CORTO_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
 #define CORTO_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #actualName args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)__##impl, (corto_word)_##impl, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #actualName args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
 
 /* member object */
 #define CORTO_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_member), CORTO_MEMBER_V(type, access, CORTO_DECLARED | CORTO_DEFINED, FALSE), VTABLE_V}
@@ -1004,7 +1011,8 @@ CORTO_PROCEDURE_NOBASE_O(lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | 
     CORTO_MEMBER_O(lang_function, overloaded, lang_bool, CORTO_LOCAL | CORTO_READONLY);
     CORTO_MEMBER_O(lang_function, kind, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_function, impl, lang_word, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_function, implData, lang_word, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_function, fptr, lang_word, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_function, fdata, lang_word, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_REFERENCE_O(lang_function, resource, lang_object, CORTO_LOCAL|CORTO_PRIVATE, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(lang_function, size, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_function, parameters, lang_parameterseq, CORTO_LOCAL | CORTO_HIDDEN);

@@ -142,7 +142,8 @@ CORTO_CLASS_DEF(corto_function) {
     corto_bool overloaded;
     corto_uint32 kind;
     corto_word impl;
-    corto_word implData;
+    corto_word fptr;
+    corto_word fdata;
     corto_object resource;
     corto_uint16 size;
     corto_parameterseq parameters;
@@ -546,4 +547,3 @@ typedef void corto_void;
 }
 #endif
 #endif
-

@@ -515,11 +515,7 @@ void corto_delegateDestruct(corto_type t, corto_object o) {
     }
 
     if (delegate) {
-        if(delegate->kind == CORTO_PROCEDURE_CDECL) {
-            ((void(*)(corto_function f, void *result, void *args))delegate->impl)(delegate, NULL, &o);
-        } else {
-            corto_call(delegate, NULL, o);
-        }
+        corto_call(delegate, NULL, o);
     }
 }
 
@@ -733,10 +729,12 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 /* Check if parentState matches scopeState of child type */
                 if (childType->parentState && !corto__checkStateXOR(parent, childType->parentState)) {
                     corto_uint32 childState = childType->parentState;
-                    corto_seterr("'%s' is %s, must be %s",
+
+                    /* TODO: translate state to string */
+                    corto_seterr("'%s' is %d, must be %d",
                         corto_fullpath(NULL, parent),
-                        corto_stateStr(_parent->attrs.state),
-                        corto_stateStr(childState));
+                        _parent->attrs.state,
+                        childState);
                     goto err_invalid_parent;
                 }
             }
@@ -809,10 +807,10 @@ corto_int16 corto_delegateInit(corto_type t, void *o) {
     }
 
     if (delegate) {
-        if(delegate->kind == CORTO_PROCEDURE_CDECL) {
-            ((void(*)(corto_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
+        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
+            result = ((corto_int16 ___ (*)(corto_object))delegate->fptr)(o);
         } else {
-            corto_call(delegate, &result, o);
+            corto_callb(delegate, &result, (void*[]){&o});
         }
     }
 
@@ -1105,9 +1103,9 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
 
     if (delegate) {
         if (delegate->kind == CORTO_PROCEDURE_CDECL) {
-            ((corto_int16 ___ (*)(corto_function f, void *result, void *args))delegate->impl)(delegate, &result, &o);
+            result = ((corto_int16 ___ (*)(corto_object))delegate->fptr)(o);
         } else {
-            corto_call(delegate, &result, o);
+            corto_callb(delegate, &result, (void*[]){&o});
         }
     }
 
@@ -1881,11 +1879,8 @@ corto_string corto_nameof(corto_id buffer, corto_object o) {
     }
 
     if (delegate) {
-        if(delegate->kind == CORTO_PROCEDURE_CDECL) {
-            ((void(*)(corto_function f, void *result, void *args))delegate->impl)(delegate, &str, &o);
-        } else {
-            corto_call(delegate, &str, o);
-        }
+        corto_call(delegate, &str, o);
+
         if (!buffer) {
             buffer = str;
             threadStr = TRUE;
@@ -3159,94 +3154,6 @@ corto_int16 corto_updateCancel(corto_object observable) {
     return 0;
 error:
     return -1;
-}
-
-static void corto_waitObserver(corto_object me, corto_object observable, corto_object source) {
-    corto_waitForObject *waitAdmin;
-    CORTO_UNUSED(source);
-
-    waitAdmin = (corto_waitForObject*)me;
-
-    if (corto_ainc(&waitAdmin->triggerCount) == 1) {
-        corto_uint32 i;
-
-        waitAdmin->triggered = observable;
-        corto_semPost(waitAdmin->semaphore);
-
-        /* Silence this observer */
-        for(i=0; i<waitAdmin->count; i++) {
-            corto_silence(me, waitAdmin->observer, CORTO_ON_UPDATE, waitAdmin->objects[i]);
-        }
-    }
-    corto_adec(&waitAdmin->triggerCount);
-}
-
-static void __corto_waitObserver(corto_function f, void* result, void* args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    corto_waitObserver(
-        *(corto_object*)args,
-        *(corto_object*)((intptr_t)args + sizeof(corto_object)),
-        *(corto_object*)((intptr_t)args + sizeof(corto_object) * 2));
-}
-
-corto_int16 corto_waitfor(corto_object observable) {
-    corto_waitForObject *waitAdmin;
-
-    /* Obtain waitadministration */
-    waitAdmin = corto_threadTlsGet(CORTO_KEY_WAIT_ADMIN);
-    if (!waitAdmin) {
-        corto_observer observer;
-
-        /* Create thread-specific waitadministration */
-        waitAdmin = corto_alloc(sizeof(corto_waitForObject));
-        memset(waitAdmin, 0, sizeof(corto_waitForObject));
-        waitAdmin->semaphore = corto_semNew(0);
-
-        /* Create observer */
-        observer = corto_declare(corto_type(corto_observer_o));
-        corto_function(observer)->impl = (corto_word)__corto_waitObserver;
-        corto_function(observer)->implData = (corto_word)corto_waitObserver;
-        corto_function(observer)->kind = CORTO_PROCEDURE_CDECL;
-        observer->mask = CORTO_ON_UPDATE;
-
-        corto_define(observer);
-        waitAdmin->observer = observer;
-        corto_threadTlsSet(CORTO_KEY_WAIT_ADMIN, waitAdmin);
-    }
-
-    /* Add object to waitadministration */
-    waitAdmin->objects[waitAdmin->count] = observable;
-    waitAdmin->count++;
-
-    return 0;
-}
-
-corto_object corto_wait(corto_int32 timeout_sec, corto_int32 timeout_nanosec) {
-    corto_waitForObject *waitAdmin;
-    corto_object result = NULL;
-    CORTO_UNUSED(timeout_sec);
-    CORTO_UNUSED(timeout_nanosec);
-
-    /* Obtain waitadministration */
-    waitAdmin = corto_threadTlsGet(CORTO_KEY_WAIT_ADMIN);
-    if (waitAdmin) {
-        corto_uint32 i;
-
-        /* Setup observer for observables */
-        for(i=0; i<waitAdmin->count; i++) {
-            corto_listen((corto_object)waitAdmin, waitAdmin->observer, CORTO_ON_UPDATE, waitAdmin->objects[i], NULL);
-        }
-
-        /* Do the wait */
-        corto_semWait(waitAdmin->semaphore);
-
-        result = waitAdmin->triggered;
-    } else {
-        corto_error("wait called without objects that are being waited for");
-    }
-
-    return result;
 }
 
 /* REPL functionality */

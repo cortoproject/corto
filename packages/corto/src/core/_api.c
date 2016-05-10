@@ -903,28 +903,6 @@ corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object o
     return 0;
 }
 
-corto_int16 corto_notifyActionInitC(corto_notifyAction *d, corto_void ___ (*callback)(corto_object)) {
-    d->_parent.procedure = corto_functionDeclare();
-    void __corto_notifyAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_notifyAction;
-    corto_function_parseParamString(d->_parent.procedure, "(object observable)");
-    d->_parent.procedure->implData = (corto_word)callback;
-    corto_define(d->_parent.procedure);
-    return 0;
-}
-
-corto_int16 corto_notifyActionInitCInstance(corto_notifyAction *d, corto_object instance, corto_void ___ (*callback)(corto_object, corto_object)) {
-    d->_parent.instance = instance;
-    corto_claim(instance);
-    d->_parent.procedure = corto_functionDeclare();
-    void __corto_notifyAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_notifyAction;
-    corto_function_parseParamString(d->_parent.procedure, "(object instance, object observable)");
-    d->_parent.procedure->implData = (corto_word)callback;
-    corto_define(d->_parent.procedure);
-    return 0;
-}
-
 corto_observableEvent _corto_observableEventCreate(corto_observer observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, corto_word thread) {
     corto_observableEvent _this;
     _this = corto_observableEvent(corto_declare(corto_observableEvent_o));

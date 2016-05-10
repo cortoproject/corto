@@ -218,9 +218,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, function_returnType);\
     SSO_OP_OBJ(op, function_returnsReference);\
     SSO_OP_OBJ(op, function_overloaded);\
-    SSO_OP_OBJ(op, function_kind);\
     SSO_OP_OBJ(op, function_impl);\
-    SSO_OP_OBJ(op, function_implData);\
+    SSO_OP_OBJ(op, function_fptr);\
+    SSO_OP_OBJ(op, function_fdata);\
     SSO_OP_OBJ(op, function_resource);\
     SSO_OP_OBJ(op, function_size);\
     SSO_OP_OBJ(op, function_parameters);\
@@ -844,13 +844,6 @@ int corto_start(void) {
 
     int corto_fileLoader(corto_string file, int argc, char* argv[], void *data);
     corto_loaderRegister("", corto_fileLoader, NULL);
-
-    /* Register C-binding and vm-binding */
-    {
-        corto_uint32 id;
-        id = corto_callRegisterBinding(NULL, NULL, NULL, NULL);
-        corto_assert(id == 1, "C-binding did not receive binding-id 1.");
-    }
 
     /* Always randomize seed */
     srand (time(NULL));

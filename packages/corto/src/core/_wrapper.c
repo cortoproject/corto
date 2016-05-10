@@ -6,15 +6,6 @@
 #include "corto/core/core.h"
 #include "corto/core/_meta.h"
 
-void __corto_notifyAction(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    corto_void ___ (*_fptr)(corto_object,corto_object) = (corto_void ___ (*)(corto_object,corto_object))f->implData;
-    CORTO_UNUSED(result);
-    _fptr(
-        *(void**)args,
-        *(corto_object*)((intptr_t)args + sizeof(void*)));
-}
-
 void _corto_dispatcher_post(
     corto_dispatcher this,
     corto_event e) {
@@ -34,7 +25,7 @@ void _corto_dispatcher_post(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, e);
+    corto_callb(corto_function(_method), NULL, (void*[]){&this, &e});
 }
 
 void __corto_dispatcher_post_v(corto_function f, void *result, void *args) {
@@ -146,7 +137,7 @@ corto_resultIter _corto_loader_onRequest(
     corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, request);
-    
+
     return _result;
 }
 
@@ -180,7 +171,7 @@ corto_object _corto_loader_onResume(
     corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, parent, name, o);
-    
+
     return _result;
 }
 
@@ -437,7 +428,7 @@ corto_resultIter _corto_mount_onRequest(
     corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, request);
-    
+
     return _result;
 }
 
@@ -471,7 +462,7 @@ corto_object _corto_mount_onResume(
     corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), &_result, this, parent, name, o);
-    
+
     return _result;
 }
 

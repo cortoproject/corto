@@ -210,7 +210,7 @@ corto_int16 _corto_function_bind(
         this->returnsReference ? &ffi_type_pointer : corto_ffi_type(this->returnType),
         args);
 
-    this->implData = (corto_word)cif;
+    this->fdata = (corto_word)cif;
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
@@ -424,8 +424,6 @@ corto_void _corto_function_unbind(
 {
 /* $begin(corto/lang/function/unbind) */
     corto_uint32 i;
-
-    corto_callDestroy(object);
 
     /* Deinitialize parameters */
     for(i=0; i<object->parameters.length; i++) {
