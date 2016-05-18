@@ -144,12 +144,25 @@ corto_int16 _corto_function_bind(
     corto_function this)
 {
 /* $begin(corto/lang/function/bind) */
+    /* If no returntype is set, make it void */
+    if (!this->returnType) {
+        corto_setref(&this->returnType, corto_void_o);
+    }
+
+    if (this->returnType->reference) {
+        this->returnsReference = TRUE;
+    }
+
     /* Count the size based on the parameters and store parameters in slots */
-    ffi_cif *cif = corto_alloc(sizeof(ffi_cif));
-    ffi_type **args = alloca(sizeof(ffi_type*) * this->parameters.length + 1);
-    corto_uint8 hasThis = 0;
 
     if (!this->size) {
+        /* Allocate a single block so the arglist is freed automatically with
+         * the cif */
+        corto_uint32 argsSize = sizeof(ffi_type*) * (this->parameters.length + 1);
+        ffi_cif *cif = corto_alloc(sizeof(ffi_cif) + argsSize);
+        ffi_type **args = CORTO_OFFSET(cif, sizeof(ffi_cif));
+        corto_uint8 hasThis = 0;
+
         /* Add size of this-pointer */
         if (!(corto_typeof(this) == corto_type(corto_function_o))) {
             if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
@@ -191,26 +204,17 @@ corto_int16 _corto_function_bind(
                 }
             }
         }
+
+        /* Prepare call interface */
+        ffi_prep_cif(
+            cif,
+            FFI_DEFAULT_ABI,
+            this->parameters.length + hasThis,
+            this->returnsReference ? &ffi_type_pointer : corto_ffi_type(this->returnType),
+            args);
+
+        this->fdata = (corto_word)cif;
     }
-
-    /* If no returntype is set, make it void */
-    if (!this->returnType) {
-        corto_setref(&this->returnType, corto_void_o);
-    }
-
-    if (this->returnType->reference) {
-        this->returnsReference = TRUE;
-    }
-
-    /* Prepare call interface */
-    ffi_prep_cif(
-        cif,
-        FFI_DEFAULT_ABI,
-        this->parameters.length + hasThis,
-        this->returnsReference ? &ffi_type_pointer : corto_ffi_type(this->returnType),
-        args);
-
-    this->fdata = (corto_word)cif;
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {

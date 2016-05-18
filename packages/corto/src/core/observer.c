@@ -22,8 +22,6 @@ corto_int16 _corto_observer_bind(
         this->_template = 1;
     }
 
-    corto_function(this)->size = sizeof(corto_object) * 3;
-
     /* Listen to observable */
     if (!this->_template) {
         if (corto_observer_listen(this, this->observable, this->me)) {
@@ -31,7 +29,7 @@ corto_int16 _corto_observer_bind(
         }
     }
 
-    return 0;
+    return corto_function_bind(this);
 error:
     return -1;
 /* $end */

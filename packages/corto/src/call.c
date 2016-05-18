@@ -17,12 +17,12 @@
 #define CORTO_CALL \
     /* If process does not own object, forward call */\
     if (corto_instanceof(corto_method_o, f)) {\
-        corto_object instance = argptrs[0];\
+        corto_object instance = *(corto_object*)argptrs[0];\
         corto_object owner = corto_ownerof(instance);\
         if (owner && corto_instanceof(corto_mount_o, owner)) {\
             if (!(owner == corto_getOwner())) {\
-                corto_octetseq argbuff = {f->size, argptrs};\
-                corto_mount_invoke(owner, instance, f, argbuff);\
+                /*corto_octetseq argbuff = {f->size, argptrs};\
+                corto_mount_invoke(owner, instance, f, argbuff);\*/\
                 return;\
             } else {\
                 /* Odd */\
@@ -30,7 +30,7 @@
             }\
         }\
     }\
-    ((void(*)(void*,(void(*)()),void*,void**))f->impl)((void*)f->fdata, (void(*)())f->fptr, result, argptrs);
+    ((corto_callHandler)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);
 
 #define argcpytype(args, dst, src) \
   ptr = alloca(sizeof(dst)), *(dst*)ptr = va_arg(args, src), ptr
