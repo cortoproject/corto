@@ -190,7 +190,7 @@ class MethodForwardTest::
 // Replicator for ownership testcase
 class FooReplicator : mount, hidden ::
     alias mount: mount/mount
-    void onInvoke(object instance, function proc, octetseq args)
+    void onInvoke(object instance, function proc, word argptrs)
     invoked: uint32, readonly
 
 // Test ownership scenarios

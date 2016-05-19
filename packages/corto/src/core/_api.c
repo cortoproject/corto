@@ -603,7 +603,7 @@ corto_int16 _corto_eventMaskDeinit(corto_eventMask* value) {
     return result;
 }
 
-corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, corto_octetseq args) {
+corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, corto_word args) {
     corto_invokeEvent _this;
     _this = corto_invokeEvent(corto_declare(corto_invokeEvent_o));
     if (!_this) {
@@ -612,7 +612,7 @@ corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object insta
     corto_setref(&((corto_invokeEvent)_this)->mount, mount);
     corto_setref(&((corto_invokeEvent)_this)->instance, instance);
     corto_setref(&((corto_invokeEvent)_this)->function, function);
-    corto_copyp(&((corto_invokeEvent)_this)->args, corto_octetseq_o, &args);
+    ((corto_invokeEvent)_this)->args = args;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -620,7 +620,7 @@ corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object insta
     return _this;
 }
 
-corto_invokeEvent _corto_invokeEventCreateChild(corto_object _parent, corto_string _name, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args) {
+corto_invokeEvent _corto_invokeEventCreateChild(corto_object _parent, corto_string _name, corto_mount mount, corto_object instance, corto_function function, corto_word args) {
     corto_invokeEvent _this;
     _this = corto_invokeEvent(corto_declareChild(_parent, _name, corto_invokeEvent_o));
     if (!_this) {
@@ -629,7 +629,7 @@ corto_invokeEvent _corto_invokeEventCreateChild(corto_object _parent, corto_stri
     corto_setref(&((corto_invokeEvent)_this)->mount, mount);
     corto_setref(&((corto_invokeEvent)_this)->instance, instance);
     corto_setref(&((corto_invokeEvent)_this)->function, function);
-    corto_copyp(&((corto_invokeEvent)_this)->args, corto_octetseq_o, &args);
+    ((corto_invokeEvent)_this)->args = args;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -637,13 +637,13 @@ corto_invokeEvent _corto_invokeEventCreateChild(corto_object _parent, corto_stri
     return _this;
 }
 
-corto_int16 _corto_invokeEventUpdate(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args) {
+corto_int16 _corto_invokeEventUpdate(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_word args) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_invokeEvent)_this)->mount, mount);
         corto_setref(&((corto_invokeEvent)_this)->instance, instance);
         corto_setref(&((corto_invokeEvent)_this)->function, function);
-        corto_copyp(&((corto_invokeEvent)_this)->args, corto_octetseq_o, &args);
+        ((corto_invokeEvent)_this)->args = args;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -669,21 +669,21 @@ corto_invokeEvent _corto_invokeEventDeclareChild(corto_object _parent, corto_str
     return _this;
 }
 
-corto_int16 _corto_invokeEventDefine(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args) {
+corto_int16 _corto_invokeEventDefine(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_word args) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_invokeEvent)_this)->mount, mount);
     corto_setref(&((corto_invokeEvent)_this)->instance, instance);
     corto_setref(&((corto_invokeEvent)_this)->function, function);
-    corto_copyp(&((corto_invokeEvent)_this)->args, corto_octetseq_o, &args);
+    ((corto_invokeEvent)_this)->args = args;
     return corto_define(_this);
 }
 
-void _corto_invokeEventSet(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args) {
+void _corto_invokeEventSet(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_word args) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_invokeEvent)_this)->mount, mount);
     corto_setref(&((corto_invokeEvent)_this)->instance, instance);
     corto_setref(&((corto_invokeEvent)_this)->function, function);
-    corto_copyp(&((corto_invokeEvent)_this)->args, corto_octetseq_o, &args);
+    ((corto_invokeEvent)_this)->args = args;
 }
 
 corto_string _corto_invokeEventStr(corto_invokeEvent value) {

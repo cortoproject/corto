@@ -177,7 +177,7 @@ corto_void _corto_mount_onInvoke(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_octetseq args)
+    corto_word argptrs)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -187,15 +187,15 @@ corto_void _corto_mount_onInvoke(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,octetseq args)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,word argptrs)");
     }
-    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,octetseq args)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,word argptrs)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,octetseq args)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,word argptrs)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, instance, proc, args);
+    corto_call(corto_function(_method), NULL, this, instance, proc, argptrs);
 }
 
 corto_resultIter _corto_mount_onRequest(

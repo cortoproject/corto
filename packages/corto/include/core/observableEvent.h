@@ -17,11 +17,11 @@ extern "C" {
 #endif
 
 CORTO_EXPORT corto_void _corto_observableEvent_handle(
-    corto_observableEvent this);
+    corto_observableEvent _this);
 #define corto_observableEvent_handle(_this) _corto_observableEvent_handle(corto_observableEvent(_this))
 
 CORTO_EXPORT corto_void _corto_observableEvent_handle_v(
-    corto_observableEvent this);
+    corto_observableEvent _this);
 #define corto_observableEvent_handle_v(_this) _corto_observableEvent_handle_v(corto_observableEvent(_this))
 
 #ifdef __cplusplus

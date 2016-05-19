@@ -18,7 +18,7 @@ extern "C" {
 
 
 CORTO_EXPORT corto_int16 _corto_boolean_init(
-    corto_boolean this);
+    corto_boolean _this);
 #define corto_boolean_init(_this) _corto_boolean_init(corto_boolean(_this))
 
 #ifdef __cplusplus

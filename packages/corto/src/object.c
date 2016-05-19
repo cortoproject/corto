@@ -729,12 +729,10 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 /* Check if parentState matches scopeState of child type */
                 if (childType->parentState && !corto__checkStateXOR(parent, childType->parentState)) {
                     corto_uint32 childState = childType->parentState;
-
-                    /* TODO: translate state to string */
-                    corto_seterr("'%s' is %d, must be %d",
+                    corto_seterr("'%s' is %s, must be %s",
                         corto_fullpath(NULL, parent),
-                        _parent->attrs.state,
-                        childState);
+                        corto_stateStr(_parent->attrs.state),
+                        corto_stateStr(childState));
                     goto err_invalid_parent;
                 }
             }

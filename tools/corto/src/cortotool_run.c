@@ -130,7 +130,7 @@ error:
     return -1;
 }
 
-static int cortotool_buildDependency(corto_string path, corto_bool test) {
+static int cortotool_buildDependency(corto_string path) {
     corto_int8 procResult = 0;
 
     /* Build */
@@ -180,7 +180,7 @@ static corto_ll cortotool_gatherFiles(void) {
 
             /* Strip newline */
             path[strlen(path)-1] = '\0';
-            cortotool_buildDependency(path, FALSE);
+            cortotool_buildDependency(path);
 
             if (cortotool_addDirToMonitor(path, result)) {
                 goto error;
@@ -252,7 +252,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                 corto_string lib = corto_iterNext(&iter);
                 if (lib && strcmp(lib, ".")) {
                     printf("corto: '%s' changed, rebuilding\n", lib);
-                    if (!cortotool_buildDependency(lib, TRUE)) {
+                    if (!cortotool_buildDependency(lib)) {
                         rebuild++;
                     } else {
                         depErrors++;

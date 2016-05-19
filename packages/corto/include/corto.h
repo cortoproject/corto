@@ -8,10 +8,6 @@
 
 #include <corto/corto.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* $header() */
 #include "corto/lang/lang.h"
 #include "corto/core/core.h"
@@ -72,6 +68,10 @@ extern int8_t CORTO_TRACE_NOTIFICATIONS;
 extern int8_t CORTO_BACKTRACE_ENABLED;
 extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 /* $end */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifdef __cplusplus
 }

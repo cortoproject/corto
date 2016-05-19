@@ -17,26 +17,26 @@ extern "C" {
 #endif
 
 CORTO_EXPORT corto_bool _corto_iterator_castable(
-    corto_iterator this,
+    corto_iterator _this,
     corto_type type);
 #define corto_iterator_castable(_this, type) _corto_iterator_castable(corto_iterator(_this), corto_type(type))
 
 CORTO_EXPORT corto_bool _corto_iterator_castable_v(
-    corto_iterator this,
+    corto_iterator _this,
     corto_type type);
 #define corto_iterator_castable_v(_this, type) _corto_iterator_castable_v(corto_iterator(_this), corto_type(type))
 CORTO_EXPORT corto_bool _corto_iterator_compatible(
-    corto_iterator this,
+    corto_iterator _this,
     corto_type type);
 #define corto_iterator_compatible(_this, type) _corto_iterator_compatible(corto_iterator(_this), corto_type(type))
 
 CORTO_EXPORT corto_bool _corto_iterator_compatible_v(
-    corto_iterator this,
+    corto_iterator _this,
     corto_type type);
 #define corto_iterator_compatible_v(_this, type) _corto_iterator_compatible_v(corto_iterator(_this), corto_type(type))
 
 CORTO_EXPORT corto_int16 _corto_iterator_init(
-    corto_iterator this);
+    corto_iterator _this);
 #define corto_iterator_init(_this) _corto_iterator_init(corto_iterator(_this))
 
 #ifdef __cplusplus

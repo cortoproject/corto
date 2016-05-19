@@ -18,11 +18,11 @@ extern "C" {
 
 
 CORTO_EXPORT corto_int16 _corto_map_construct(
-    corto_map this);
+    corto_map _this);
 #define corto_map_construct(_this) _corto_map_construct(corto_map(_this))
 
 CORTO_EXPORT corto_int16 _corto_map_init(
-    corto_map this);
+    corto_map _this);
 #define corto_map_init(_this) _corto_map_init(corto_map(_this))
 
 #ifdef __cplusplus

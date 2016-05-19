@@ -59,8 +59,7 @@ void corto_callDeinit(corto_function f) {
         corto_object owner = corto_ownerof(instance);\
         if (owner && corto_instanceof(corto_mount_o, owner)) {\
             if (!(owner == corto_getOwner())) {\
-                /*corto_octetseq argbuff = {f->size, argptrs};\
-                corto_mount_invoke(owner, instance, f, argbuff);\*/\
+                corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
                 return;\
             } else {\
                 /* Odd */\

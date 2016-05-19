@@ -18,7 +18,7 @@ extern "C" {
 
 
 CORTO_EXPORT corto_int16 _corto_bitmask_init(
-    corto_bitmask this);
+    corto_bitmask _this);
 #define corto_bitmask_init(_this) _corto_bitmask_init(corto_bitmask(_this))
 
 #ifdef __cplusplus

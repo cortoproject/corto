@@ -18,7 +18,7 @@ extern "C" {
 
 
 CORTO_EXPORT corto_int16 _corto_character_init(
-    corto_character this);
+    corto_character _this);
 #define corto_character_init(_this) _corto_character_init(corto_character(_this))
 
 #ifdef __cplusplus

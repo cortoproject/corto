@@ -17,12 +17,12 @@ extern "C" {
 #endif
 
 CORTO_EXPORT corto_void _corto_dispatcher_post(
-    corto_dispatcher this,
+    corto_dispatcher _this,
     corto_event e);
 #define corto_dispatcher_post(_this, e) _corto_dispatcher_post(corto_dispatcher(_this), corto_event(e))
 
 CORTO_EXPORT corto_void _corto_dispatcher_post_v(
-    corto_dispatcher this,
+    corto_dispatcher _this,
     corto_event e);
 #define corto_dispatcher_post_v(_this, e) _corto_dispatcher_post_v(corto_dispatcher(_this), corto_event(e))
 

@@ -1064,10 +1064,10 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);
     CORTO_METHOD_O(core_mount, post, "(event e)", lang_void, FALSE, corto_mount_post);
     CORTO_METHOD_O(core_mount, setContentType, "(string type)", lang_int16, FALSE, corto_mount_setContentType);
-    CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,octetseq args)", lang_void, FALSE, corto_mount_invoke);
+    CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, FALSE, corto_mount_invoke);
     CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, FALSE, corto_mount_request);
     CORTO_METHOD_O(core_mount, resume, "(string parent,string name,object o)", lang_object, FALSE, corto_mount_resume);
-    CORTO_METHOD_O(core_mount, onInvoke, "(object instance,function proc,octetseq args)", lang_void, TRUE, corto_mount_onInvoke_v);
+    CORTO_METHOD_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, TRUE, corto_mount_onInvoke_v);
     CORTO_METHOD_O(core_mount, onRequest, "(core/request request)", core_resultIter, TRUE, corto_mount_onRequest_v);
     CORTO_METHOD_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_mount_onResume_v);
     CORTO_METHOD_O(core_mount, onDeclare, "(object observable)", lang_void, TRUE, corto_mount_onDeclare_v);
@@ -1107,7 +1107,7 @@ CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, NULL, CORTO_DECLARE
     CORTO_REFERENCE_O(core_invokeEvent, mount, core_mount, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, function, lang_function, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
-    CORTO_REFERENCE_O(core_invokeEvent, args, lang_octetseq, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
+    CORTO_REFERENCE_O(core_invokeEvent, args, lang_word, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_METHOD_O(core_invokeEvent, handle, "()", lang_void, TRUE, corto_invokeEvent_handle_v);
 
 /* /corto/lang/method */

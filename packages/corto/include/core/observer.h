@@ -18,26 +18,26 @@ extern "C" {
 
 
 CORTO_EXPORT corto_int16 _corto_observer_bind(
-    corto_observer this);
+    corto_observer _this);
 #define corto_observer_bind(_this) _corto_observer_bind(corto_observer(_this))
 
 CORTO_EXPORT corto_int16 _corto_observer_init(
-    corto_observer this);
+    corto_observer _this);
 #define corto_observer_init(_this) _corto_observer_init(corto_observer(_this))
 
 CORTO_EXPORT corto_int16 _corto_observer_listen(
-    corto_observer this,
+    corto_observer _this,
     corto_object observable,
     corto_object me);
 #define corto_observer_listen(_this, observable, me) _corto_observer_listen(corto_observer(_this), observable, me)
 
 CORTO_EXPORT corto_void _corto_observer_setDispatcher(
-    corto_observer this,
+    corto_observer _this,
     corto_dispatcher dispatcher);
 #define corto_observer_setDispatcher(_this, dispatcher) _corto_observer_setDispatcher(corto_observer(_this), corto_dispatcher(dispatcher))
 
 CORTO_EXPORT corto_int16 _corto_observer_silence(
-    corto_observer this,
+    corto_observer _this,
     corto_object me);
 #define corto_observer_silence(_this, me) _corto_observer_silence(corto_observer(_this), me)
 

@@ -106,7 +106,7 @@ CORTO_CLASS_DEF(corto_invokeEvent) {
     corto_mount mount;
     corto_object instance;
     corto_function function;
-    corto_octetseq args;
+    corto_word args;
 };
 
 /*  /corto/core/loader */

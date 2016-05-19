@@ -185,13 +185,13 @@ CORTO_EXPORT corto_int16 _corto_eventMaskDeinit(corto_eventMask* value);
 #define corto_eventMaskDeinit(value) _corto_eventMaskDeinit(value)
 
 /* /corto/core/invokeEvent */
-CORTO_EXPORT corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, corto_octetseq args);
+CORTO_EXPORT corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, corto_word args);
 #define corto_invokeEventCreate(mount, instance, function, args) _corto_invokeEventCreate(corto_mount(mount), instance, corto_function(function), args)
 #define corto_invokeEventCreate_auto(_name, mount, instance, function, args) corto_invokeEvent _name = corto_invokeEventCreate(mount, instance, function, args); (void)_name
-CORTO_EXPORT corto_invokeEvent _corto_invokeEventCreateChild(corto_object _parent, corto_string _name, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args);
+CORTO_EXPORT corto_invokeEvent _corto_invokeEventCreateChild(corto_object _parent, corto_string _name, corto_mount mount, corto_object instance, corto_function function, corto_word args);
 #define corto_invokeEventCreateChild(_parent, _name, mount, instance, function, args) _corto_invokeEventCreateChild(_parent, _name, corto_mount(mount), instance, corto_function(function), args)
 #define corto_invokeEventCreateChild_auto(_parent, _name, mount, instance, function, args) corto_invokeEvent _name = corto_invokeEventCreateChild(_parent, #_name, mount, instance, function, args); (void)_name
-CORTO_EXPORT corto_int16 _corto_invokeEventUpdate(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args);
+CORTO_EXPORT corto_int16 _corto_invokeEventUpdate(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_word args);
 #define corto_invokeEventUpdate(_this, mount, instance, function, args) _corto_invokeEventUpdate(corto_invokeEvent(_this), corto_mount(mount), instance, corto_function(function), args)
 
 CORTO_EXPORT corto_invokeEvent _corto_invokeEventDeclare(void);
@@ -200,9 +200,9 @@ CORTO_EXPORT corto_invokeEvent _corto_invokeEventDeclare(void);
 CORTO_EXPORT corto_invokeEvent _corto_invokeEventDeclareChild(corto_object _parent, corto_string _name);
 #define corto_invokeEventDeclareChild(_parent, _name) _corto_invokeEventDeclareChild(_parent, _name)
 #define corto_invokeEventDeclareChild_auto(_parent, _name) corto_invokeEvent _name = corto_invokeEventDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_invokeEventDefine(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args);
+CORTO_EXPORT corto_int16 _corto_invokeEventDefine(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_word args);
 #define corto_invokeEventDefine(_this, mount, instance, function, args) _corto_invokeEventDefine(corto_invokeEvent(_this), corto_mount(mount), instance, corto_function(function), args)
-CORTO_EXPORT void _corto_invokeEventSet(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_octetseq args);
+CORTO_EXPORT void _corto_invokeEventSet(corto_invokeEvent _this, corto_mount mount, corto_object instance, corto_function function, corto_word args);
 #define corto_invokeEventSet(_this, mount, instance, function, args) _corto_invokeEventSet(corto_invokeEvent(_this), corto_mount(mount), instance, corto_function(function), args)
 CORTO_EXPORT corto_string _corto_invokeEventStr(corto_invokeEvent value);
 #define corto_invokeEventStr(value) _corto_invokeEventStr(corto_invokeEvent(value))
