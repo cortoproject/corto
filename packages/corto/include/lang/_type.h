@@ -7,7 +7,7 @@
 #ifndef CORTO_LANG__TYPE_H
 #define CORTO_LANG__TYPE_H
 
-#include "corto/def.h"
+#include <corto/def.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -142,7 +142,8 @@ CORTO_CLASS_DEF(corto_function) {
     corto_bool overloaded;
     corto_uint32 kind;
     corto_word impl;
-    corto_word implData;
+    corto_word fptr;
+    corto_word fdata;
     corto_object resource;
     corto_uint16 size;
     corto_parameterseq parameters;

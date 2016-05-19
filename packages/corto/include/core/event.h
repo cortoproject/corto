@@ -6,18 +6,17 @@
 #ifndef CORTO_CORE_EVENT_H
 #define CORTO_CORE_EVENT_H
 
-#include "corto/corto.h"
-#include "corto/core/_type.h"
-#include "corto/core/_api.h"
-#include "corto/core/_meta.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
+#include <corto/core/_type.h>
+#include <corto/core/_api.h>
+#include <corto/core/_meta.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-CORTO_EXPORT void _corto_event_handle(
+CORTO_EXPORT corto_void _corto_event_handle(
     corto_event _this);
 #define corto_event_handle(_this) _corto_event_handle(corto_event(_this))
 

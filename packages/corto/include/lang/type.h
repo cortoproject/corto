@@ -6,11 +6,11 @@
 #ifndef CORTO_LANG_TYPE_H
 #define CORTO_LANG_TYPE_H
 
-#include "corto/corto.h"
-#include "corto/lang/_type.h"
-#include "corto/lang/_api.h"
-#include "corto/lang/_meta.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
+#include <corto/lang/_type.h>
+#include <corto/lang/_api.h>
+#include <corto/lang/_meta.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,7 +20,6 @@ extern "C" {
 CORTO_EXPORT corto_uint16 _corto_type_alignmentof(
     corto_type _this);
 #define corto_type_alignmentof(_this) _corto_type_alignmentof(corto_type(_this))
-
 CORTO_EXPORT corto_bool _corto_type_castable(
     corto_type _this,
     corto_type type);
@@ -42,7 +41,6 @@ CORTO_EXPORT corto_bool _corto_type_checkState(corto_any _this,
 CORTO_EXPORT corto_equalityKind _corto_type_compare(corto_any _this,
     corto_any value);
 #define corto_type_compare(_this, value) _corto_type_compare(_this, value)
-
 CORTO_EXPORT corto_bool _corto_type_compatible(
     corto_type _this,
     corto_type type);

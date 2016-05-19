@@ -6,14 +6,34 @@
  * when the file is regenerated.
  */
 
-#include "corto/lang/lang.h"
+#include <corto/lang/lang.h>
 
 corto_int16 _corto_function_bind(
     corto_function this)
 {
 /* $begin(corto/lang/function/bind) */
+    /* If no returntype is set, make it void */
+    if (!this->returnType) {
+        corto_setref(&this->returnType, corto_void_o);
+    }
+
+    if (this->returnType->reference) {
+        this->returnsReference = TRUE;
+    }
+
     /* Count the size based on the parameters and store parameters in slots */
+
     if (!this->size) {
+
+        /* Add size of this-pointer */
+        if (!(corto_typeof(this) == corto_type(corto_function_o))) {
+            if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
+                this->size += sizeof(corto_any);
+            } else {
+                this->size += sizeof(corto_object);
+            }
+        }
+
         corto_uint32 i;
         for(i=0; i<this->parameters.length; i++) {
             if (this->parameters.buffer[i].passByReference) {
@@ -38,24 +58,6 @@ corto_int16 _corto_function_bind(
                 }
             }
         }
-
-        /* Add size of this-pointer - this must be moved to impl of methods, delegates and callbacks. */
-        if (!(corto_typeof(this) == corto_type(corto_function_o))) {
-            if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
-                this->size += sizeof(corto_any);
-            } else {
-                this->size += sizeof(corto_object);
-            }
-        }
-    }
-
-    /* If no returntype is set, make it void */
-    if (!this->returnType) {
-        corto_setref(&this->returnType, corto_void_o);
-    }
-
-    if (this->returnType->reference) {
-        this->returnsReference = TRUE;
     }
 
     /* Bind with interface if possible */
@@ -63,6 +65,11 @@ corto_int16 _corto_function_bind(
         if (corto_delegate_bind(this)) {
             goto error;
         }
+    }
+
+    /* Initialize binding-specific data */
+    if (corto_callInit(this)) {
+        goto error;
     }
 
     return 0;
@@ -271,7 +278,7 @@ corto_void _corto_function_unbind(
 /* $begin(corto/lang/function/unbind) */
     corto_uint32 i;
 
-    corto_callDestroy(object);
+    corto_callDeinit(object);
 
     /* Deinitialize parameters */
     for(i=0; i<object->parameters.length; i++) {

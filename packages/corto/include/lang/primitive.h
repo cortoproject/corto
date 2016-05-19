@@ -6,16 +6,15 @@
 #ifndef CORTO_LANG_PRIMITIVE_H
 #define CORTO_LANG_PRIMITIVE_H
 
-#include "corto/corto.h"
-#include "corto/lang/_type.h"
-#include "corto/lang/_api.h"
-#include "corto/lang/_meta.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
+#include <corto/lang/_type.h>
+#include <corto/lang/_api.h>
+#include <corto/lang/_meta.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 CORTO_EXPORT corto_bool _corto_primitive_castable(
     corto_primitive _this,
@@ -26,7 +25,6 @@ CORTO_EXPORT corto_bool _corto_primitive_castable_v(
     corto_primitive _this,
     corto_type type);
 #define corto_primitive_castable_v(_this, type) _corto_primitive_castable_v(corto_primitive(_this), corto_type(type))
-
 CORTO_EXPORT corto_bool _corto_primitive_compatible(
     corto_primitive _this,
     corto_type type);

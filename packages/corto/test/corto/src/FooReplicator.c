@@ -12,12 +12,12 @@ corto_void _test_FooReplicator_onInvoke(
     test_FooReplicator this,
     corto_object instance,
     corto_function proc,
-    corto_octetseq args)
+    corto_word argptrs)
 {
 /* $begin(test/FooReplicator/onInvoke) */
     CORTO_UNUSED(instance);
     CORTO_UNUSED(proc);
-    CORTO_UNUSED(args);
+    CORTO_UNUSED(argptrs);
 
     this->invoked ++;
 

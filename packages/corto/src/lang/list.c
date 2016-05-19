@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/lang/lang.h"
+#include <corto/lang/lang.h>
 
 /* $header() */
 typedef void (*corto_list_action)(corto_ll list, void *value, void *userData);

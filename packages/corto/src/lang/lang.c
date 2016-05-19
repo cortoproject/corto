@@ -6,4 +6,4 @@
  * when the file is regenerated.
  */
 
-#include "corto/lang/lang.h"
+#include <corto/lang/lang.h>

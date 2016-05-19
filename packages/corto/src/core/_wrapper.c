@@ -3,21 +3,13 @@
  * This file contains wrapper functions for /corto/core.
  */
 
-#include "corto/core/core.h"
-#include "corto/core/_meta.h"
+#include <corto/core/core.h>
+#include <corto/core/_meta.h>
 
-void __corto_notifyAction(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    corto_void ___ (*_fptr)(corto_object,corto_object) = (corto_void ___ (*)(corto_object,corto_object))f->implData;
-    CORTO_UNUSED(result);
-    _fptr(
-        *(void**)args,
-        *(corto_object*)((intptr_t)args + sizeof(void*)));
-}
-
-void _corto_dispatcher_post(
+corto_void _corto_dispatcher_post(
     corto_dispatcher this,
-    corto_event e) {
+    corto_event e)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -37,16 +29,9 @@ void _corto_dispatcher_post(
     corto_call(corto_function(_method), NULL, this, e);
 }
 
-void __corto_dispatcher_post_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_dispatcher_post_v(
-        corto_dispatcher(*(void**)args),
-        corto_event(*(corto_event*)((intptr_t)args + sizeof(void*))));
-}
-
-void _corto_event_handle(
-    corto_event this) {
+corto_void _corto_event_handle(
+    corto_event this)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -66,23 +51,9 @@ void _corto_event_handle(
     corto_call(corto_function(_method), NULL, this);
 }
 
-void __corto_event_handle_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    CORTO_UNUSED(result);
-    _corto_event_handle_v(
-        corto_event(*(void**)args));
-}
-
-void __corto_event_uniqueKind(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_event_uniqueKind(
-        );
-}
-
-void _corto_invokeEvent_handle(
-    corto_invokeEvent this) {
+corto_void _corto_invokeEvent_handle(
+    corto_invokeEvent this)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -100,34 +71,12 @@ void _corto_invokeEvent_handle(
     corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
     corto_call(corto_function(_method), NULL, this);
-}
-
-void __corto_invokeEvent_handle_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    CORTO_UNUSED(result);
-    _corto_invokeEvent_handle_v(
-        corto_invokeEvent(*(void**)args));
-}
-
-void __corto_loader_construct(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_loader_construct(
-        corto_loader(*(void**)args));
-}
-
-void __corto_loader_destruct(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    CORTO_UNUSED(result);
-    _corto_loader_destruct(
-        corto_loader(*(void**)args));
 }
 
 corto_resultIter _corto_loader_onRequest(
     corto_loader this,
-    corto_request *request) {
+    corto_request *request)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_resultIter _result;
@@ -150,18 +99,12 @@ corto_resultIter _corto_loader_onRequest(
     return _result;
 }
 
-void __corto_loader_onRequest_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_resultIter*)result = _corto_loader_onRequest_v(
-        corto_loader(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)));
-}
-
 corto_object _corto_loader_onResume(
     corto_loader this,
     corto_string parent,
     corto_string name,
-    corto_object o) {
+    corto_object o)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_object _result;
@@ -184,147 +127,10 @@ corto_object _corto_loader_onResume(
     return _result;
 }
 
-void __corto_loader_onResume_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_object*)result = _corto_loader_onResume_v(
-        corto_loader(*(void**)args),
-        *(corto_string*)((intptr_t)args + sizeof(void*)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
-}
-
-void _corto_observableEvent_handle(
-    corto_observableEvent this) {
-    static corto_uint32 _methodId;
-    corto_method _method;
-    corto_interface _abstract;
-
-    _abstract = corto_interface(corto_typeof(this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
-    }
-    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
-
-    /* Lookup method-object. */
-    _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
-
-    corto_call(corto_function(_method), NULL, this);
-}
-
-void __corto_observableEvent_handle_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    CORTO_UNUSED(result);
-    _corto_observableEvent_handle_v(
-        corto_observableEvent(*(void**)args));
-}
-
-void __corto_observer_bind(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_observer_bind(
-        corto_observer(*(void**)args));
-}
-
-void __corto_observer_init(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_observer_init(
-        corto_observer(*(void**)args));
-}
-
-void __corto_observer_listen(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_int16*)result = _corto_observer_listen(
-        corto_observer(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)),
-        *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_object)));
-}
-
-void __corto_observer_setDispatcher(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_observer_setDispatcher(
-        corto_observer(*(void**)args),
-        corto_dispatcher(*(corto_dispatcher*)((intptr_t)args + sizeof(void*))));
-}
-
-void __corto_observer_silence(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_int16*)result = _corto_observer_silence(
-        corto_observer(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)));
-}
-
-void __corto_observer_unbind(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_observer_unbind(
-        corto_observer(*(corto_observer*)args));
-}
-
-void __corto_mount_construct(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_mount_construct(
-        corto_mount(*(void**)args));
-}
-
-void __corto_mount_destruct(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    CORTO_UNUSED(result);
-    _corto_mount_destruct(
-        corto_mount(*(void**)args));
-}
-
-void __corto_mount_init(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_int16*)result = _corto_mount_init(
-        corto_mount(*(void**)args));
-}
-
-void __corto_mount_invoke(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_invoke(
-        corto_mount(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)),
-        corto_function(*(corto_function*)((intptr_t)args + sizeof(void*) + sizeof(corto_object))),
-        *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
-}
-
-void __corto_mount_on_declare(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_on_declare(
-        corto_mount(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)));
-}
-
-void __corto_mount_on_delete(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_on_delete(
-        corto_mount(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)));
-}
-
-void __corto_mount_on_update(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_on_update(
-        corto_mount(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)));
-}
-
-void _corto_mount_onDeclare(
+corto_void _corto_mount_onDeclare(
     corto_mount this,
-    corto_object observable) {
+    corto_object observable)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -344,17 +150,10 @@ void _corto_mount_onDeclare(
     corto_call(corto_function(_method), NULL, this, observable);
 }
 
-void __corto_mount_onDeclare_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_onDeclare_v(
-        corto_mount(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)));
-}
-
-void _corto_mount_onDelete(
+corto_void _corto_mount_onDelete(
     corto_mount this,
-    corto_object observable) {
+    corto_object observable)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -374,19 +173,12 @@ void _corto_mount_onDelete(
     corto_call(corto_function(_method), NULL, this, observable);
 }
 
-void __corto_mount_onDelete_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_onDelete_v(
-        corto_mount(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)));
-}
-
-void _corto_mount_onInvoke(
+corto_void _corto_mount_onInvoke(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_octetseq args) {
+    corto_word argptrs)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -395,30 +187,21 @@ void _corto_mount_onInvoke(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,octetseq args)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,word argptrs)");
     }
-    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,octetseq args)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,word argptrs)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,octetseq args)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,word argptrs)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, instance, proc, args);
-}
-
-void __corto_mount_onInvoke_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_onInvoke_v(
-        corto_mount(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)),
-        corto_function(*(corto_function*)((intptr_t)args + sizeof(void*) + sizeof(corto_object))),
-        *(corto_octetseq*)((intptr_t)args + sizeof(void*) + sizeof(corto_object) + sizeof(corto_function)));
+    corto_call(corto_function(_method), NULL, this, instance, proc, argptrs);
 }
 
 corto_resultIter _corto_mount_onRequest(
     corto_mount this,
-    corto_request *request) {
+    corto_request *request)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_resultIter _result;
@@ -441,18 +224,12 @@ corto_resultIter _corto_mount_onRequest(
     return _result;
 }
 
-void __corto_mount_onRequest_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_resultIter*)result = _corto_mount_onRequest_v(
-        corto_mount(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)));
-}
-
 corto_object _corto_mount_onResume(
     corto_mount this,
     corto_string parent,
     corto_string name,
-    corto_object o) {
+    corto_object o)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_object _result;
@@ -475,18 +252,10 @@ corto_object _corto_mount_onResume(
     return _result;
 }
 
-void __corto_mount_onResume_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_object*)result = _corto_mount_onResume_v(
-        corto_mount(*(void**)args),
-        *(corto_string*)((intptr_t)args + sizeof(void*)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
-}
-
-void _corto_mount_onUpdate(
+corto_void _corto_mount_onUpdate(
     corto_mount this,
-    corto_object observable) {
+    corto_object observable)
+{
     static corto_uint32 _methodId;
     corto_method _method;
     corto_interface _abstract;
@@ -506,48 +275,24 @@ void _corto_mount_onUpdate(
     corto_call(corto_function(_method), NULL, this, observable);
 }
 
-void __corto_mount_onUpdate_v(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_onUpdate_v(
-        corto_mount(*(void**)args),
-        *(corto_object*)((intptr_t)args + sizeof(void*)));
-}
+corto_void _corto_observableEvent_handle(
+    corto_observableEvent this)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
 
-void __corto_mount_post(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(result);
-    _corto_mount_post(
-        corto_mount(*(void**)args),
-        corto_event(*(corto_event*)((intptr_t)args + sizeof(void*))));
-}
+    _abstract = corto_interface(corto_typeof(this));
 
-void __corto_mount_request(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_resultIter*)result = _corto_mount_request(
-        corto_mount(*(void**)args),
-        *(void**)((intptr_t)args + sizeof(void*)));
-}
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
+    }
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
 
-void __corto_mount_resume(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_object*)result = _corto_mount_resume(
-        corto_mount(*(void**)args),
-        *(corto_string*)((intptr_t)args + sizeof(void*)),
-        *(corto_string*)((intptr_t)args + sizeof(void*) + sizeof(corto_string)),
-        *(corto_object*)((intptr_t)args + sizeof(void*) + sizeof(corto_string) + sizeof(corto_string)));
-}
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
-void __corto_mount_setContentType(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    *(corto_int16*)result = _corto_mount_setContentType(
-        corto_mount(*(void**)args),
-        *(corto_string*)((intptr_t)args + sizeof(void*)));
-}
-
-void __corto_result_getText(corto_function f, void *result, void *args) {
-    CORTO_UNUSED(f);
-    CORTO_UNUSED(args);
-    *(corto_string*)result = _corto_result_getText(
-        corto_result(*(void**)args));
+    corto_call(corto_function(_method), NULL, this);
 }

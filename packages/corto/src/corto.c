@@ -10,6 +10,7 @@
 #include "_object.h"
 
 #include "corto/corto.h"
+#include "corto/cdeclhandler.h"
 
 /* Declaration of the C-binding call-handler */
 void corto_call_cdecl(corto_function f, corto_void* result, void* args);
@@ -220,7 +221,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, function_overloaded);\
     SSO_OP_OBJ(op, function_kind);\
     SSO_OP_OBJ(op, function_impl);\
-    SSO_OP_OBJ(op, function_implData);\
+    SSO_OP_OBJ(op, function_fptr);\
+    SSO_OP_OBJ(op, function_fdata);\
     SSO_OP_OBJ(op, function_resource);\
     SSO_OP_OBJ(op, function_size);\
     SSO_OP_OBJ(op, function_parameters);\
@@ -769,17 +771,23 @@ int corto_start(void) {
         corto_setenv("CORTO_TARGET", "~/.corto");
     }
 
-    /* Initialize threadkeys */
+    /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
-
     void corto_threadStringDealloc(void *data);
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
 
+    /* Initialize OLS keys */
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
     CORTO_OLS_AUGMENT = corto_olsKey(NULL);
+
+    /* Register CDECL as first binding */
+    if (corto_callRegister(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {
+        /* Sanity check */
+        corto_critical("CDECL binding did not register with id 1");
+    }
 
     /* Init admin-lock */
     corto_mutexNew(&corto_adminLock);
@@ -844,13 +852,6 @@ int corto_start(void) {
 
     int corto_fileLoader(corto_string file, int argc, char* argv[], void *data);
     corto_loaderRegister("", corto_fileLoader, NULL);
-
-    /* Register C-binding and vm-binding */
-    {
-        corto_uint32 id;
-        id = corto_callRegisterBinding(NULL, NULL, NULL, NULL);
-        corto_assert(id == 1, "C-binding did not receive binding-id 1.");
-    }
 
     /* Always randomize seed */
     srand (time(NULL));

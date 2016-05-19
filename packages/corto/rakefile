@@ -1,6 +1,6 @@
 PACKAGE = 'corto'
 
-LIB = ['rt', 'dl', 'm']
+LIB = ['rt', 'dl', 'm', 'ffi']
 LIB_PUBLIC = [] # projects don't need to link with rt, dl and m
 CFLAGS ||= ["-Wunused-parameter"]
 

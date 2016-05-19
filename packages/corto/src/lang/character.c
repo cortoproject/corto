@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/lang/lang.h"
+#include <corto/lang/lang.h>
 
 corto_int16 _corto_character_init(
     corto_character this)

@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include "corto/lang/lang.h"
+#include <corto/lang/lang.h>
 corto_alias _corto_aliasCreate(corto_member member) {
     corto_alias _this;
     _this = corto_alias(corto_declare(corto_alias_o));
@@ -1651,10 +1651,9 @@ corto_int16 corto_destructActionCall(corto_destructAction *_delegate) {
 
 corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*callback)(void)) {
     d->_parent.procedure = corto_functionDeclare();
-    void __corto_destructAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_destructAction;
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "()");
-    d->_parent.procedure->implData = (corto_word)callback;
+    d->_parent.procedure->fptr = (corto_word)callback;
     corto_define(d->_parent.procedure);
     return 0;
 }
@@ -1663,10 +1662,9 @@ corto_int16 corto_destructActionInitCInstance(corto_destructAction *d, corto_obj
     d->_parent.instance = instance;
     corto_claim(instance);
     d->_parent.procedure = corto_functionDeclare();
-    void __corto_destructAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_destructAction;
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "(object instance)");
-    d->_parent.procedure->implData = (corto_word)callback;
+    d->_parent.procedure->fptr = (corto_word)callback;
     corto_define(d->_parent.procedure);
     return 0;
 }
@@ -2152,7 +2150,7 @@ corto_int16 _corto_float64Deinit(corto_float64* value) {
     return result;
 }
 
-corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsReference, void(*_impl)(void)) {
     corto_function _this;
     _this = corto_function(corto_declare(corto_function_o));
     if (!_this) {
@@ -2160,7 +2158,8 @@ corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsRe
     }
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -2168,7 +2167,7 @@ corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsRe
     return _this;
 }
 
-corto_function _corto_functionCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_function _corto_functionCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, void(*_impl)(void)) {
     corto_function _this;
     _this = corto_function(corto_declareChild(_parent, _name, corto_function_o));
     if (!_this) {
@@ -2176,7 +2175,8 @@ corto_function _corto_functionCreateChild(corto_object _parent, corto_string _na
     }
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -2184,12 +2184,13 @@ corto_function _corto_functionCreateChild(corto_object _parent, corto_string _na
     return _this;
 }
 
-corto_int16 _corto_functionUpdate(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_functionUpdate(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_function)_this)->returnType, returnType);
         ((corto_function)_this)->returnsReference = returnsReference;
-        corto_function(_this)->impl = (corto_word)_impl;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -2215,19 +2216,21 @@ corto_function _corto_functionDeclareChild(corto_object _parent, corto_string _n
     return _this;
 }
 
-corto_int16 _corto_functionDefine(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_functionDefine(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-void _corto_functionSet(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args)) {
+void _corto_functionSet(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
 }
 
 corto_string _corto_functionStr(corto_function value) {
@@ -2369,10 +2372,9 @@ corto_int16 corto_initActionCall(corto_initAction *_delegate, corto_int16* _resu
 
 corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callback)(void)) {
     d->_parent.procedure = corto_functionDeclare();
-    void __corto_initAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_initAction;
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "()");
-    d->_parent.procedure->implData = (corto_word)callback;
+    d->_parent.procedure->fptr = (corto_word)callback;
     corto_define(d->_parent.procedure);
     return 0;
 }
@@ -2381,10 +2383,9 @@ corto_int16 corto_initActionInitCInstance(corto_initAction *d, corto_object inst
     d->_parent.instance = instance;
     corto_claim(instance);
     d->_parent.procedure = corto_functionDeclare();
-    void __corto_initAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_initAction;
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "(object instance)");
-    d->_parent.procedure->implData = (corto_word)callback;
+    d->_parent.procedure->fptr = (corto_word)callback;
     corto_define(d->_parent.procedure);
     return 0;
 }
@@ -3810,7 +3811,7 @@ corto_int16 _corto_memberseqDeinit(corto_memberseq* value) {
     return result;
 }
 
-corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void)) {
     corto_metaprocedure _this;
     _this = corto_metaprocedure(corto_declare(corto_metaprocedure_o));
     if (!_this) {
@@ -3819,7 +3820,8 @@ corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -3827,7 +3829,7 @@ corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool
     return _this;
 }
 
-corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void)) {
     corto_metaprocedure _this;
     _this = corto_metaprocedure(corto_declareChild(_parent, _name, corto_metaprocedure_o));
     if (!_this) {
@@ -3836,7 +3838,8 @@ corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -3844,13 +3847,14 @@ corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_
     return _this;
 }
 
-corto_int16 _corto_metaprocedureUpdate(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_metaprocedureUpdate(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_function)_this)->returnType, returnType);
         ((corto_function)_this)->returnsReference = returnsReference;
         ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-        corto_function(_this)->impl = (corto_word)_impl;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -3876,21 +3880,23 @@ corto_metaprocedure _corto_metaprocedureDeclareChild(corto_object _parent, corto
     return _this;
 }
 
-corto_int16 _corto_metaprocedureDefine(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_metaprocedureDefine(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-void _corto_metaprocedureSet(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args)) {
+void _corto_metaprocedureSet(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
 }
 
 corto_string _corto_metaprocedureStr(corto_metaprocedure value) {
@@ -3910,7 +3916,7 @@ corto_equalityKind _corto_metaprocedureCompare(corto_metaprocedure dst, corto_me
     return corto_compare(dst, src);
 }
 
-corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     corto_method _this;
     _this = corto_method(corto_declare(corto_method_o));
     if (!_this) {
@@ -3919,7 +3925,8 @@ corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsRefere
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -3927,7 +3934,7 @@ corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsRefere
     return _this;
 }
 
-corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     corto_method _this;
     _this = corto_method(corto_declareChild(_parent, _name, corto_method_o));
     if (!_this) {
@@ -3936,7 +3943,8 @@ corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, 
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -3944,13 +3952,14 @@ corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, 
     return _this;
 }
 
-corto_int16 _corto_methodUpdate(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_methodUpdate(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_function)_this)->returnType, returnType);
         ((corto_function)_this)->returnsReference = returnsReference;
         ((corto_method)_this)->_virtual = _virtual;
-        corto_function(_this)->impl = (corto_word)_impl;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -3976,21 +3985,23 @@ corto_method _corto_methodDeclareChild(corto_object _parent, corto_string _name)
     return _this;
 }
 
-corto_int16 _corto_methodDefine(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_methodDefine(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-void _corto_methodSet(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+void _corto_methodSet(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
 }
 
 corto_string _corto_methodStr(corto_method value) {
@@ -4234,10 +4245,9 @@ corto_int16 corto_nameActionCall(corto_nameAction *_delegate, corto_string* _res
 
 corto_int16 corto_nameActionInitC(corto_nameAction *d, corto_string ___ (*callback)(void)) {
     d->_parent.procedure = corto_functionDeclare();
-    void __corto_nameAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_nameAction;
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "()");
-    d->_parent.procedure->implData = (corto_word)callback;
+    d->_parent.procedure->fptr = (corto_word)callback;
     corto_define(d->_parent.procedure);
     return 0;
 }
@@ -4246,10 +4256,9 @@ corto_int16 corto_nameActionInitCInstance(corto_nameAction *d, corto_object inst
     d->_parent.instance = instance;
     corto_claim(instance);
     d->_parent.procedure = corto_functionDeclare();
-    void __corto_nameAction(corto_function f, void *result, void *args);
-    d->_parent.procedure->impl = (corto_word)__corto_nameAction;
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "(object instance)");
-    d->_parent.procedure->implData = (corto_word)callback;
+    d->_parent.procedure->fptr = (corto_word)callback;
     corto_define(d->_parent.procedure);
     return 0;
 }
@@ -6400,7 +6409,7 @@ corto_int16 _corto_uint8Deinit(corto_uint8* value) {
     return result;
 }
 
-corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     corto_virtual _this;
     _this = corto_virtual(corto_declare(corto_virtual_o));
     if (!_this) {
@@ -6409,7 +6418,8 @@ corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsRefe
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -6417,7 +6427,7 @@ corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsRefe
     return _this;
 }
 
-corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     corto_virtual _this;
     _this = corto_virtual(corto_declareChild(_parent, _name, corto_virtual_o));
     if (!_this) {
@@ -6426,7 +6436,8 @@ corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -6434,13 +6445,14 @@ corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name
     return _this;
 }
 
-corto_int16 _corto_virtualUpdate(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_virtualUpdate(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_function)_this)->returnType, returnType);
         ((corto_function)_this)->returnsReference = returnsReference;
         ((corto_method)_this)->_virtual = _virtual;
-        corto_function(_this)->impl = (corto_word)_impl;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -6466,21 +6478,23 @@ corto_virtual _corto_virtualDeclareChild(corto_object _parent, corto_string _nam
     return _this;
 }
 
-corto_int16 _corto_virtualDefine(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_virtualDefine(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-void _corto_virtualSet(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args)) {
+void _corto_virtualSet(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_function)_this)->returnType, returnType);
     ((corto_function)_this)->returnsReference = returnsReference;
     ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
 }
 
 corto_string _corto_virtualStr(corto_virtual value) {
@@ -7146,3 +7160,4 @@ void corto_vtableSize(corto_vtable *seq, corto_uint32 length) {
 void corto_vtableClear(corto_vtable *seq) {
     corto_vtableSize(seq, 0);
 }
+

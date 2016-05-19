@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/core/core.h"
+#include <corto/core/core.h>
 
 corto_string _corto_result_getText(
     corto_result* this)

@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/lang/lang.h"
+#include <corto/lang/lang.h>
 
 corto_bool _corto_iterator_castable_v(
     corto_iterator this,

@@ -6,11 +6,11 @@
 #ifndef CORTO_NATIVE_TYPE_H
 #define CORTO_NATIVE_TYPE_H
 
-#include "corto/corto.h"
-#include "corto/native/_type.h"
-#include "corto/native/_api.h"
-#include "corto/native/_meta.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
+#include <corto/native/_type.h>
+#include <corto/native/_api.h>
+#include <corto/native/_meta.h>
 
 #ifdef __cplusplus
 extern "C" {

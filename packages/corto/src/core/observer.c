@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/core/core.h"
+#include <corto/core/core.h>
 
 /* $header() */
 #include "../lang/_class.h"
@@ -22,7 +22,12 @@ corto_int16 _corto_observer_bind(
         this->_template = 1;
     }
 
-    corto_function(this)->size = sizeof(corto_object) * 3;
+    /* Bind function. Run this function before listening to observable, as
+     * the call handler must be initialized before the observer can be invoked.
+     */
+    if (corto_function_bind(this)) {
+        goto error;
+    }
 
     /* Listen to observable */
     if (!this->_template) {

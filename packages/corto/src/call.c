@@ -7,136 +7,143 @@
 
 #include "corto/corto.h"
 
-typedef struct bindingHandler {
-    corto_callHandler function;
-    corto_contextSwitchHandler onSwitch;
-    corto_contextRestoreHandler onRestore;
-    corto_callDestructHandler onDestruct;
-}bindingHandler;
+/* Keep include local because of clashing macro's with other libraries (yacc) */
+#ifdef __MACH__
+#include "ffi/ffi.h"
+#else
+#include "ffi.h"
+#endif
+
+typedef struct corto_callHandler {
+    corto_callInit_f init;
+    corto_callDeinit_f deinit;
+} corto_callHandler;
+
+corto_int16 corto_stubInit(corto_function f) {
+    CORTO_UNUSED(f);
+    return 0;
+}
+void corto_stubDeinit(corto_function f) {
+    CORTO_UNUSED(f);
+}
 
 static int languageId = 1;
-static bindingHandler bindings[CORTO_MAX_BINDINGS];
+static corto_callHandler handlers[CORTO_MAX_BINDINGS] =
+{
+  {corto_stubInit, corto_stubDeinit}
+};
 
 /* Register language */
-int corto_callRegisterBinding(corto_callHandler handler, corto_contextSwitchHandler onSwitch, corto_contextRestoreHandler onRestore, corto_callDestructHandler onDestruct) {
+int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit) {
     int nextId;
 
     nextId = corto_ainc(&languageId)-1;
-    bindings[nextId].function = handler;
-    bindings[nextId].onSwitch = onSwitch;
-    bindings[nextId].onRestore = onRestore;
-    bindings[nextId].onDestruct = onDestruct;
+    handlers[nextId].init = init;
+    handlers[nextId].deinit = deinit;
 
     return nextId;
 }
 
-struct corto_context_s {
-    corto_object object;
-    void* context[CORTO_MAX_BINDINGS];
-};
-
-corto_context corto_contextSwitch(corto_object object) {
-    corto_context context;
-    int i;
-
-    /* Allocate context */
-    context = corto_alloc(sizeof(struct corto_context_s));
-
-    /* Store object that effectuates the contextswitch in context */
-    context->object = object;
-
-    /* For each binding, call context switch */
-    for(i=0; i<languageId; i++) {
-        if (bindings[i].onSwitch) {
-            /* Store binding-specific context information */
-            context->context[i] = bindings[i].onSwitch();
-        }
-    }
-
-    return context;
+corto_int16 corto_callInit(corto_function f) {
+    return handlers[f->kind].init(f);
 }
 
-corto_object corto_contextRestore(corto_context context) {
-    int i;
-    corto_object object;
-
-    /* For each binding, call context restore */
-    for(i=0; i<languageId; i++) {
-        if (bindings[i].onRestore) {
-            /* Restore binding-specific context information */
-            bindings[i].onRestore(context->context[i]);
-        }
-    }
-
-    /* Store object pointer before destroying context */
-    object = context->object;
-    corto_dealloc(context);
-
-    /* Return object */
-    return object;
+void corto_callDeinit(corto_function f) {
+    handlers[f->kind].deinit(f);
 }
 
-void corto_callDestroy(corto_function f) {
-    if (bindings[f->kind].onDestruct) {
-        bindings[f->kind].onDestruct(f);
-    }
-}
+#define CORTO_CALL \
+    /* If process does not own object, forward call */\
+    if (corto_instanceof(corto_method_o, f)) {\
+        corto_object instance = *(corto_object*)argptrs[0];\
+        corto_object owner = corto_ownerof(instance);\
+        if (owner && corto_instanceof(corto_mount_o, owner)) {\
+            if (!(owner == corto_getOwner())) {\
+                corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
+                return;\
+            } else {\
+                /* Odd */\
+                return;\
+            }\
+        }\
+    }\
+    ((corto_callInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);
 
-/* Call with buffer (on most platforms this will be the same as corto_callv) */
-static void corto_call_intern(corto_function f, corto_void* result, void* args) {
-    /* If process does not own object, forward call */
-    if (corto_instanceof(corto_method_o, f)) {
-        corto_object instance = *(corto_object*)args;
-        corto_object owner = corto_ownerof(instance);
+#define argcpytype(args, dst, src) \
+  ptr = alloca(sizeof(dst)), *(dst*)ptr = va_arg(args, src), ptr
 
-        if (owner && corto_instanceof(corto_mount_o, owner)) {
-            if (!(owner == corto_getOwner())) {
-                corto_octetseq argbuff = {f->size, args};
-                corto_mount_invoke(owner, instance, f, argbuff);
-                return;
-            } else {
-                /* A mount invoking a method on an object it owns? That is
-                 * odd. Don't do anything. */
-                return;
-            }
-        }
-    }
+#define argcpyint(args, dst) argcpytype(args, dst, int)
+#define argcpy(args, type) argcpytype(args, type, type)
 
-    ((void(*)(corto_function, void*, void*))f->impl)(f, result, args);
-}
+/* Implement as macro to limit the number of frames on the stack (otherwise call
+ * would have to rely on the public callv function) */
+#define CORTO_CALLV \
+    corto_int32 i, arg = 0;\
+    void **argptrs = alloca((f->parameters.length + 1) * sizeof(void*));\
+    void *ptr;\
+    /* Add this */\
+    if (f->kind != CORTO_FUNCTION) {\
+        if (f->kind == CORTO_METAPROCEDURE) {\
+            argptrs[arg] = argcpy(args, corto_any);\
+        } else {\
+            argptrs[arg] = argcpy(args, void*);\
+        }\
+        arg++;\
+    }\
+    for (i = 0; i < f->parameters.length; i ++, arg ++) {\
+        corto_parameter *p = &f->parameters.buffer[i];\
+        if (p->type->reference) {\
+            argptrs[arg] = argcpy(args, void*);\
+        } else {\
+            switch(p->type->kind) {\
+            case CORTO_VOID:\
+                break;\
+            case CORTO_ANY:\
+                argptrs[arg] = argcpy(args, corto_any);\
+                break;\
+            case CORTO_ITERATOR:\
+                argptrs[arg] = argcpy(args, corto_iter);\
+                break;\
+            case CORTO_PRIMITIVE:\
+                switch(corto_primitive(p->type)->width) {\
+                case CORTO_WIDTH_8: argptrs[arg] = argcpyint(args, corto_uint8); break;\
+                case CORTO_WIDTH_16: argptrs[arg] = argcpyint(args, corto_uint16); break;\
+                case CORTO_WIDTH_32: argptrs[arg] = argcpyint(args, corto_uint32); break;\
+                case CORTO_WIDTH_64: argptrs[arg] = argcpy(args, corto_uint64); break;\
+                case CORTO_WIDTH_WORD: argptrs[arg] = argcpy(args, corto_word); break;\
+                    break;\
+                }\
+                break;\
+            case CORTO_COMPOSITE:\
+                argptrs[arg] = argcpy(args, void*);\
+                break;\
+            case CORTO_COLLECTION:\
+                if(corto_collection(p->type)->kind == CORTO_SEQUENCE) {\
+                    argptrs[arg] = argcpy(args, corto_objectseq);\
+                } else {\
+                    argptrs[arg] = argcpy(args, void*);\
+                }\
+                break;\
+            }\
+        }\
+    }\
+    CORTO_CALL
 
 /* Call with variable argument list */
 void corto_callv(corto_function f, corto_void* result, va_list args) {
-    void *ptr, *buffer;
-    corto_uint32 s = f->size;
-
-    if(s % sizeof(corto_uint64)) {
-        s = ((s / sizeof(corto_uint64)) + 1) * sizeof(corto_uint64);
-    }
-    ptr = buffer = alloca(s);
-
-    while (s) {
-        *(corto_uint64*)ptr = va_arg(args, corto_uint64);
-        ptr = (void*)((corto_word)ptr + sizeof(corto_uint64));
-        s -= sizeof(corto_uint64);
-    }
-
-    corto_call_intern(f, result, buffer);
+    CORTO_CALLV
 }
 
 /* Call with variable arguments */
 void corto_call(corto_function f, corto_void* result, ...) {
-    va_list list;
+    va_list args;
 
-    va_start(list, result);
-    corto_callv(f, result, list);
-    va_end(list);
+    va_start(args, result);
+    CORTO_CALLV
+    va_end(args);
 }
 
-/* Call with array of values */
-int corto_calla(corto_function f, corto_void* result, corto_uint32 argc, void* argv[]);
-
-/* Call with buffer (on most platforms this will be the same as corto_callv) */
-void corto_callb(corto_function f, corto_void* result, void* args) {
-    corto_call_intern(f, result, args);
+/* Call with buffer */
+void corto_callb(corto_function f, corto_void* result, void** argptrs) {
+    CORTO_CALL
 }

@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/core/core.h"
+#include <corto/core/core.h>
 
 /* $header() */
 #include "_object.h"
@@ -101,16 +101,16 @@ corto_void _corto_mount_invoke(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_octetseq args)
+    corto_word argptrs)
 {
 /* $begin(corto/core/mount/invoke) */
     corto_object owner = corto_ownerof(instance);
 
     if (owner == this) {
-        corto_mount_onInvoke(this, instance, proc, args);
+        corto_mount_onInvoke(this, instance, proc, argptrs);
     } else {
         corto_object prevowner = corto_setOwner(corto_ownerof(instance));
-        corto_callb(proc, NULL, args.buffer);
+        corto_callb(proc, NULL, (void**)argptrs);
         corto_setOwner(prevowner);
     }
 
@@ -182,14 +182,14 @@ corto_void _corto_mount_onInvoke_v(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_octetseq args)
+    corto_word argptrs)
 {
 /* $begin(corto/core/mount/onInvoke) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(instance);
     CORTO_UNUSED(proc);
-    CORTO_UNUSED(args);
+    CORTO_UNUSED(argptrs);
 
 /* $end */
 }

@@ -6,18 +6,17 @@
 #ifndef CORTO_CORE_DISPATCHER_H
 #define CORTO_CORE_DISPATCHER_H
 
-#include "corto/corto.h"
-#include "corto/core/_type.h"
-#include "corto/core/_api.h"
-#include "corto/core/_meta.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
+#include <corto/core/_type.h>
+#include <corto/core/_api.h>
+#include <corto/core/_meta.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-CORTO_EXPORT void _corto_dispatcher_post(
+CORTO_EXPORT corto_void _corto_dispatcher_post(
     corto_dispatcher _this,
     corto_event e);
 #define corto_dispatcher_post(_this, e) _corto_dispatcher_post(corto_dispatcher(_this), corto_event(e))

@@ -7,8 +7,8 @@
 #ifndef CORTO_NATIVE__API_H
 #define CORTO_NATIVE__API_H
 
-#include "corto/corto.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
