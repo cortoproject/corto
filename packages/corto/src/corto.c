@@ -10,6 +10,7 @@
 #include "_object.h"
 
 #include "corto/corto.h"
+#include "corto/cdeclhandler.h"
 
 /* Declaration of the C-binding call-handler */
 void corto_call_cdecl(corto_function f, corto_void* result, void* args);
@@ -770,17 +771,23 @@ int corto_start(void) {
         corto_setenv("CORTO_TARGET", "~/.corto");
     }
 
-    /* Initialize threadkeys */
+    /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
-
     void corto_threadStringDealloc(void *data);
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
 
+    /* Initialize OLS keys */
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
     CORTO_OLS_AUGMENT = corto_olsKey(NULL);
+
+    /* Register CDECL as first binding */
+    if (corto_callRegister(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {
+        /* Sanity check */
+        corto_critical("CDECL binding did not register with id 1");
+    }
 
     /* Init admin-lock */
     corto_mutexNew(&corto_adminLock);

@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include "corto/native/native.h"
+#include <corto/native/native.h>
 corto_native_type _corto_native_typeCreate(corto_string name) {
     corto_native_type _this;
     _this = corto_native_type(corto_declare(corto_native_type_o));
@@ -89,3 +89,4 @@ corto_native_type corto_native_typeFromStr(corto_native_type value, corto_string
 corto_equalityKind _corto_native_typeCompare(corto_native_type dst, corto_native_type src) {
     return corto_compare(dst, src);
 }
+

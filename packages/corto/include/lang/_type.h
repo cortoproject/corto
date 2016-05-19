@@ -7,7 +7,7 @@
 #ifndef CORTO_LANG__TYPE_H
 #define CORTO_LANG__TYPE_H
 
-#include "corto/def.h"
+#include <corto/def.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -547,3 +547,4 @@ typedef void corto_void;
 }
 #endif
 #endif
+

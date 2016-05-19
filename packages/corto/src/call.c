@@ -14,6 +14,44 @@
 #include "ffi.h"
 #endif
 
+typedef struct corto_callHandler {
+    corto_callInit_f init;
+    corto_callDeinit_f deinit;
+} corto_callHandler;
+
+corto_int16 corto_stubInit(corto_function f) {
+    CORTO_UNUSED(f);
+    return 0;
+}
+void corto_stubDeinit(corto_function f) {
+    CORTO_UNUSED(f);
+}
+
+static int languageId = 1;
+static corto_callHandler handlers[CORTO_MAX_BINDINGS] =
+{
+  {corto_stubInit, corto_stubDeinit}
+};
+
+/* Register language */
+int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit) {
+    int nextId;
+
+    nextId = corto_ainc(&languageId)-1;
+    handlers[nextId].init = init;
+    handlers[nextId].deinit = deinit;
+
+    return nextId;
+}
+
+corto_int16 corto_callInit(corto_function f) {
+    return handlers[f->kind].init(f);
+}
+
+void corto_callDeinit(corto_function f) {
+    handlers[f->kind].deinit(f);
+}
+
 #define CORTO_CALL \
     /* If process does not own object, forward call */\
     if (corto_instanceof(corto_method_o, f)) {\
@@ -30,7 +68,7 @@
             }\
         }\
     }\
-    ((corto_callHandler)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);
+    ((corto_callInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);
 
 #define argcpytype(args, dst, src) \
   ptr = alloca(sizeof(dst)), *(dst*)ptr = va_arg(args, src), ptr

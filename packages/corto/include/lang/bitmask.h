@@ -6,11 +6,11 @@
 #ifndef CORTO_LANG_BITMASK_H
 #define CORTO_LANG_BITMASK_H
 
-#include "corto/corto.h"
-#include "corto/lang/_type.h"
-#include "corto/lang/_api.h"
-#include "corto/lang/_meta.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
+#include <corto/lang/_type.h>
+#include <corto/lang/_api.h>
+#include <corto/lang/_meta.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,7 +18,7 @@ extern "C" {
 
 
 CORTO_EXPORT corto_int16 _corto_bitmask_init(
-    corto_bitmask _this);
+    corto_bitmask this);
 #define corto_bitmask_init(_this) _corto_bitmask_init(corto_bitmask(_this))
 
 #ifdef __cplusplus

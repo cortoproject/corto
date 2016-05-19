@@ -7,8 +7,8 @@
 #ifndef CORTO_CORE__API_H
 #define CORTO_CORE__API_H
 
-#include "corto/corto.h"
-#include "corto/_interface.h"
+#include <corto/corto.h>
+#include <corto/_interface.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -236,6 +236,62 @@ CORTO_EXPORT corto_loader corto_loaderFromStr(corto_loader value, corto_string s
 CORTO_EXPORT corto_equalityKind _corto_loaderCompare(corto_loader dst, corto_loader src);
 #define corto_loaderCompare(dst, src) _corto_loaderCompare(corto_loader(dst), corto_loader(src))
 
+/* /corto/core/mount */
+CORTO_EXPORT corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
+#define corto_mountCreate(mount, mask, type, kind, contentType) _corto_mountCreate(mount, mask, type, kind, contentType)
+#define corto_mountCreate_auto(_name, mount, mask, type, kind, contentType) corto_mount _name = corto_mountCreate(mount, mask, type, kind, contentType); (void)_name
+CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
+#define corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType) _corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType)
+#define corto_mountCreateChild_auto(_parent, _name, mount, mask, type, kind, contentType) corto_mount _name = corto_mountCreateChild(_parent, #_name, mount, mask, type, kind, contentType); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
+#define corto_mountUpdate(_this, mount, mask, type, kind, contentType) _corto_mountUpdate(corto_mount(_this), mount, mask, type, kind, contentType)
+
+CORTO_EXPORT corto_mount _corto_mountDeclare(void);
+#define corto_mountDeclare() _corto_mountDeclare()
+#define corto_mountDeclare_auto(_name) corto_mount _name = corto_mountDeclare(); (void)_name
+CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountDeclareChild(_parent, _name) _corto_mountDeclareChild(_parent, _name)
+#define corto_mountDeclareChild_auto(_parent, _name) corto_mount _name = corto_mountDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
+#define corto_mountDefine(_this, mount, mask, type, kind, contentType) _corto_mountDefine(corto_mount(_this), mount, mask, type, kind, contentType)
+CORTO_EXPORT void _corto_mountSet(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
+#define corto_mountSet(_this, mount, mask, type, kind, contentType) _corto_mountSet(corto_mount(_this), mount, mask, type, kind, contentType)
+CORTO_EXPORT corto_string _corto_mountStr(corto_mount value);
+#define corto_mountStr(value) _corto_mountStr(corto_mount(value))
+CORTO_EXPORT corto_mount corto_mountFromStr(corto_mount value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_mountCompare(corto_mount dst, corto_mount src);
+#define corto_mountCompare(dst, src) _corto_mountCompare(corto_mount(dst), corto_mount(src))
+
+/* /corto/core/mountKind */
+CORTO_EXPORT corto_mountKind* _corto_mountKindCreate(corto_mountKind value);
+#define corto_mountKindCreate(value) _corto_mountKindCreate(value)
+#define corto_mountKindCreate_auto(_name, value) corto_mountKind* _name = corto_mountKindCreate(value); (void)_name
+CORTO_EXPORT corto_mountKind* _corto_mountKindCreateChild(corto_object _parent, corto_string _name, corto_mountKind value);
+#define corto_mountKindCreateChild(_parent, _name, value) _corto_mountKindCreateChild(_parent, _name, value)
+#define corto_mountKindCreateChild_auto(_parent, _name, value) corto_mountKind* _name = corto_mountKindCreateChild(_parent, #_name, value); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountKindUpdate(corto_mountKind* _this, corto_mountKind value);
+#define corto_mountKindUpdate(_this, value) _corto_mountKindUpdate(_this, value)
+
+CORTO_EXPORT corto_mountKind* _corto_mountKindDeclare(void);
+#define corto_mountKindDeclare() _corto_mountKindDeclare()
+#define corto_mountKindDeclare_auto(_name) corto_mountKind* _name = corto_mountKindDeclare(); (void)_name
+CORTO_EXPORT corto_mountKind* _corto_mountKindDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountKindDeclareChild(_parent, _name) _corto_mountKindDeclareChild(_parent, _name)
+#define corto_mountKindDeclareChild_auto(_parent, _name) corto_mountKind* _name = corto_mountKindDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountKindDefine(corto_mountKind* _this, corto_mountKind value);
+#define corto_mountKindDefine(_this, value) _corto_mountKindDefine(_this, value)
+CORTO_EXPORT void _corto_mountKindSet(corto_mountKind* _this, corto_mountKind value);
+#define corto_mountKindSet(_this, value) _corto_mountKindSet(_this, value)
+CORTO_EXPORT corto_string _corto_mountKindStr(corto_mountKind value);
+#define corto_mountKindStr(value) _corto_mountKindStr(value)
+CORTO_EXPORT corto_mountKind* corto_mountKindFromStr(corto_mountKind* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_mountKindCompare(corto_mountKind dst, corto_mountKind src);
+
+CORTO_EXPORT corto_int16 _corto_mountKindInit(corto_mountKind* value);
+#define corto_mountKindInit(value) _corto_mountKindInit(value)
+CORTO_EXPORT corto_int16 _corto_mountKindDeinit(corto_mountKind* value);
+#define corto_mountKindDeinit(value) _corto_mountKindDeinit(value)
+
 /* /corto/core/notifyAction */
 CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure);
 #define corto_notifyActionCreate(instance, procedure) _corto_notifyActionCreate(instance, corto_function(procedure))
@@ -438,62 +494,6 @@ CORTO_EXPORT corto_int16 _corto_positionInit(corto_position* value);
 #define corto_positionInit(value) _corto_positionInit(value)
 CORTO_EXPORT corto_int16 _corto_positionDeinit(corto_position* value);
 #define corto_positionDeinit(value) _corto_positionDeinit(value)
-
-/* /corto/core/mount */
-CORTO_EXPORT corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountCreate(mount, mask, type, kind, contentType) _corto_mountCreate(mount, mask, type, kind, contentType)
-#define corto_mountCreate_auto(_name, mount, mask, type, kind, contentType) corto_mount _name = corto_mountCreate(mount, mask, type, kind, contentType); (void)_name
-CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType) _corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType)
-#define corto_mountCreateChild_auto(_parent, _name, mount, mask, type, kind, contentType) corto_mount _name = corto_mountCreateChild(_parent, #_name, mount, mask, type, kind, contentType); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountUpdate(_this, mount, mask, type, kind, contentType) _corto_mountUpdate(corto_mount(_this), mount, mask, type, kind, contentType)
-
-CORTO_EXPORT corto_mount _corto_mountDeclare(void);
-#define corto_mountDeclare() _corto_mountDeclare()
-#define corto_mountDeclare_auto(_name) corto_mount _name = corto_mountDeclare(); (void)_name
-CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name);
-#define corto_mountDeclareChild(_parent, _name) _corto_mountDeclareChild(_parent, _name)
-#define corto_mountDeclareChild_auto(_parent, _name) corto_mount _name = corto_mountDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountDefine(_this, mount, mask, type, kind, contentType) _corto_mountDefine(corto_mount(_this), mount, mask, type, kind, contentType)
-CORTO_EXPORT void _corto_mountSet(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountSet(_this, mount, mask, type, kind, contentType) _corto_mountSet(corto_mount(_this), mount, mask, type, kind, contentType)
-CORTO_EXPORT corto_string _corto_mountStr(corto_mount value);
-#define corto_mountStr(value) _corto_mountStr(corto_mount(value))
-CORTO_EXPORT corto_mount corto_mountFromStr(corto_mount value, corto_string str);
-CORTO_EXPORT corto_equalityKind _corto_mountCompare(corto_mount dst, corto_mount src);
-#define corto_mountCompare(dst, src) _corto_mountCompare(corto_mount(dst), corto_mount(src))
-
-/* /corto/core/mountKind */
-CORTO_EXPORT corto_mountKind* _corto_mountKindCreate(corto_mountKind value);
-#define corto_mountKindCreate(value) _corto_mountKindCreate(value)
-#define corto_mountKindCreate_auto(_name, value) corto_mountKind* _name = corto_mountKindCreate(value); (void)_name
-CORTO_EXPORT corto_mountKind* _corto_mountKindCreateChild(corto_object _parent, corto_string _name, corto_mountKind value);
-#define corto_mountKindCreateChild(_parent, _name, value) _corto_mountKindCreateChild(_parent, _name, value)
-#define corto_mountKindCreateChild_auto(_parent, _name, value) corto_mountKind* _name = corto_mountKindCreateChild(_parent, #_name, value); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountKindUpdate(corto_mountKind* _this, corto_mountKind value);
-#define corto_mountKindUpdate(_this, value) _corto_mountKindUpdate(_this, value)
-
-CORTO_EXPORT corto_mountKind* _corto_mountKindDeclare(void);
-#define corto_mountKindDeclare() _corto_mountKindDeclare()
-#define corto_mountKindDeclare_auto(_name) corto_mountKind* _name = corto_mountKindDeclare(); (void)_name
-CORTO_EXPORT corto_mountKind* _corto_mountKindDeclareChild(corto_object _parent, corto_string _name);
-#define corto_mountKindDeclareChild(_parent, _name) _corto_mountKindDeclareChild(_parent, _name)
-#define corto_mountKindDeclareChild_auto(_parent, _name) corto_mountKind* _name = corto_mountKindDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountKindDefine(corto_mountKind* _this, corto_mountKind value);
-#define corto_mountKindDefine(_this, value) _corto_mountKindDefine(_this, value)
-CORTO_EXPORT void _corto_mountKindSet(corto_mountKind* _this, corto_mountKind value);
-#define corto_mountKindSet(_this, value) _corto_mountKindSet(_this, value)
-CORTO_EXPORT corto_string _corto_mountKindStr(corto_mountKind value);
-#define corto_mountKindStr(value) _corto_mountKindStr(value)
-CORTO_EXPORT corto_mountKind* corto_mountKindFromStr(corto_mountKind* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_mountKindCompare(corto_mountKind dst, corto_mountKind src);
-
-CORTO_EXPORT corto_int16 _corto_mountKindInit(corto_mountKind* value);
-#define corto_mountKindInit(value) _corto_mountKindInit(value)
-CORTO_EXPORT corto_int16 _corto_mountKindDeinit(corto_mountKind* value);
-#define corto_mountKindDeinit(value) _corto_mountKindDeinit(value)
 
 /* /corto/core/request */
 CORTO_EXPORT corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);

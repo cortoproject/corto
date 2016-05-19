@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include "corto/core/core.h"
+#include <corto/core/core.h>
 
 corto_int16 _corto_loader_construct(
     corto_loader this)

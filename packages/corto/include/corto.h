@@ -6,6 +6,13 @@
 #ifndef CORTO_H
 #define CORTO_H
 
+#include <corto/corto.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* $header() */
 #include "corto/lang/lang.h"
 #include "corto/core/core.h"
 #include "corto/native/native.h"
@@ -51,11 +58,6 @@
 #include "corto/value.h"
 #include "cxstr.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* $header() */
 int corto_start(void);
 int corto_stop(void);
 corto_string corto_getBuild(void);
@@ -75,3 +77,4 @@ extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 }
 #endif
 #endif
+

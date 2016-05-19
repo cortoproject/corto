@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include "corto/core/core.h"
+#include <corto/core/core.h>
 corto_attr* _corto_attrCreate(corto_attr value) {
     corto_attr* _this;
     _this = corto_attr(corto_declare(corto_attr_o));
@@ -783,6 +783,213 @@ corto_equalityKind _corto_loaderCompare(corto_loader dst, corto_loader src) {
     return corto_compare(dst, src);
 }
 
+corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+    corto_mount _this;
+    _this = corto_mount(corto_declare(corto_mount_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setref(&((corto_mount)_this)->mount, mount);
+    ((corto_mount)_this)->mask = mask;
+    corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->kind = kind;
+    corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+    corto_mount _this;
+    _this = corto_mount(corto_declareChild(_parent, _name, corto_mount_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setref(&((corto_mount)_this)->mount, mount);
+    ((corto_mount)_this)->mask = mask;
+    corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->kind = kind;
+    corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_setref(&((corto_mount)_this)->mount, mount);
+        ((corto_mount)_this)->mask = mask;
+        corto_setstr(&((corto_mount)_this)->type, type);
+        ((corto_mount)_this)->kind = kind;
+        corto_setstr(&((corto_mount)_this)->contentType, contentType);
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mount _corto_mountDeclare(void) {
+    corto_mount _this;
+    _this = corto_mount(corto_declare(corto_mount_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mount _this;
+    _this = corto_mount(corto_declareChild(_parent, _name, corto_mount_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_mount)_this)->mount, mount);
+    ((corto_mount)_this)->mask = mask;
+    corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->kind = kind;
+    corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    return corto_define(_this);
+}
+
+void _corto_mountSet(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_mount)_this)->mount, mount);
+    ((corto_mount)_this)->mask = mask;
+    corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->kind = kind;
+    corto_setstr(&((corto_mount)_this)->contentType, contentType);
+}
+
+corto_string _corto_mountStr(corto_mount value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_object(value, corto_type(corto_mount_o));
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_mount corto_mountFromStr(corto_mount value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mount_o), str);
+    return value;
+}
+
+corto_equalityKind _corto_mountCompare(corto_mount dst, corto_mount src) {
+    return corto_compare(dst, src);
+}
+
+corto_mountKind* _corto_mountKindCreate(corto_mountKind value) {
+    corto_mountKind* _this;
+    _this = corto_mountKind(corto_declare(corto_mountKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    *_this = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_mountKind* _corto_mountKindCreateChild(corto_object _parent, corto_string _name, corto_mountKind value) {
+    corto_mountKind* _this;
+    _this = corto_mountKind(corto_declareChild(_parent, _name, corto_mountKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    *_this = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountKindUpdate(corto_mountKind* _this, corto_mountKind value) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        *_this = value;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mountKind* _corto_mountKindDeclare(void) {
+    corto_mountKind* _this;
+    _this = corto_mountKind(corto_declare(corto_mountKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_mountKind* _corto_mountKindDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mountKind* _this;
+    _this = corto_mountKind(corto_declareChild(_parent, _name, corto_mountKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountKindDefine(corto_mountKind* _this, corto_mountKind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+    return corto_define(_this);
+}
+
+void _corto_mountKindSet(corto_mountKind* _this, corto_mountKind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+}
+
+corto_string _corto_mountKindStr(corto_mountKind value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountKind_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_mountKind* corto_mountKindFromStr(corto_mountKind* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mountKind_o), str);
+    return value;
+}
+
+corto_equalityKind corto_mountKindCompare(corto_mountKind dst, corto_mountKind src) {
+    return corto_comparep(&dst, corto_mountKind_o, &src);
+}
+
+corto_int16 _corto_mountKindInit(corto_mountKind* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_mountKind_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountKind_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_mountKindDeinit(corto_mountKind* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountKind_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure) {
     corto_notifyAction* _this;
     _this = corto_notifyAction(corto_declare(corto_notifyAction_o));
@@ -900,6 +1107,26 @@ corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object o
     } else {
         return -1;
     }
+    return 0;
+}
+
+corto_int16 corto_notifyActionInitC(corto_notifyAction *d, corto_void ___ (*callback)(corto_object)) {
+    d->_parent.procedure = corto_functionDeclare();
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_function_parseParamString(d->_parent.procedure, "(object observable)");
+    d->_parent.procedure->fptr = (corto_word)callback;
+    corto_define(d->_parent.procedure);
+    return 0;
+}
+
+corto_int16 corto_notifyActionInitCInstance(corto_notifyAction *d, corto_object instance, corto_void ___ (*callback)(corto_object, corto_object)) {
+    d->_parent.instance = instance;
+    corto_claim(instance);
+    d->_parent.procedure = corto_functionDeclare();
+    d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_function_parseParamString(d->_parent.procedure, "(object instance, object observable)");
+    d->_parent.procedure->fptr = (corto_word)callback;
+    corto_define(d->_parent.procedure);
     return 0;
 }
 
@@ -1520,213 +1747,6 @@ corto_int16 _corto_positionDeinit(corto_position* value) {
     corto_int16 result;
     corto_value v;
     v = corto_value_value(corto_type(corto_position_o), value);
-    result = corto_deinitv(&v);
-    return result;
-}
-
-corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
-    corto_mount _this;
-    _this = corto_mount(corto_declare(corto_mount_o));
-    if (!_this) {
-        return NULL;
-    }
-    corto_setref(&((corto_mount)_this)->mount, mount);
-    ((corto_mount)_this)->mask = mask;
-    corto_setstr(&((corto_mount)_this)->type, type);
-    ((corto_mount)_this)->kind = kind;
-    corto_setstr(&((corto_mount)_this)->contentType, contentType);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
-    }
-    return _this;
-}
-
-corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
-    corto_mount _this;
-    _this = corto_mount(corto_declareChild(_parent, _name, corto_mount_o));
-    if (!_this) {
-        return NULL;
-    }
-    corto_setref(&((corto_mount)_this)->mount, mount);
-    ((corto_mount)_this)->mask = mask;
-    corto_setstr(&((corto_mount)_this)->type, type);
-    ((corto_mount)_this)->kind = kind;
-    corto_setstr(&((corto_mount)_this)->contentType, contentType);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
-    CORTO_UNUSED(_this);
-    if (!corto_updateBegin(_this)) {
-        corto_setref(&((corto_mount)_this)->mount, mount);
-        ((corto_mount)_this)->mask = mask;
-        corto_setstr(&((corto_mount)_this)->type, type);
-        ((corto_mount)_this)->kind = kind;
-        corto_setstr(&((corto_mount)_this)->contentType, contentType);
-        corto_updateEnd(_this);
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_mount _corto_mountDeclare(void) {
-    corto_mount _this;
-    _this = corto_mount(corto_declare(corto_mount_o));
-    if (!_this) {
-        return NULL;
-    }
-    return _this;
-}
-
-corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name) {
-    corto_mount _this;
-    _this = corto_mount(corto_declareChild(_parent, _name, corto_mount_o));
-    if (!_this) {
-        return NULL;
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
-    CORTO_UNUSED(_this);
-    corto_setref(&((corto_mount)_this)->mount, mount);
-    ((corto_mount)_this)->mask = mask;
-    corto_setstr(&((corto_mount)_this)->type, type);
-    ((corto_mount)_this)->kind = kind;
-    corto_setstr(&((corto_mount)_this)->contentType, contentType);
-    return corto_define(_this);
-}
-
-void _corto_mountSet(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
-    CORTO_UNUSED(_this);
-    corto_setref(&((corto_mount)_this)->mount, mount);
-    ((corto_mount)_this)->mask = mask;
-    corto_setstr(&((corto_mount)_this)->type, type);
-    ((corto_mount)_this)->kind = kind;
-    corto_setstr(&((corto_mount)_this)->contentType, contentType);
-}
-
-corto_string _corto_mountStr(corto_mount value) {
-    corto_string result;
-    corto_value v;
-    v = corto_value_object(value, corto_type(corto_mount_o));
-    result = corto_strv(&v, 0);
-    return result;
-}
-
-corto_mount corto_mountFromStr(corto_mount value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_mount_o), str);
-    return value;
-}
-
-corto_equalityKind _corto_mountCompare(corto_mount dst, corto_mount src) {
-    return corto_compare(dst, src);
-}
-
-corto_mountKind* _corto_mountKindCreate(corto_mountKind value) {
-    corto_mountKind* _this;
-    _this = corto_mountKind(corto_declare(corto_mountKind_o));
-    if (!_this) {
-        return NULL;
-    }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
-    }
-    return _this;
-}
-
-corto_mountKind* _corto_mountKindCreateChild(corto_object _parent, corto_string _name, corto_mountKind value) {
-    corto_mountKind* _this;
-    _this = corto_mountKind(corto_declareChild(_parent, _name, corto_mountKind_o));
-    if (!_this) {
-        return NULL;
-    }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountKindUpdate(corto_mountKind* _this, corto_mountKind value) {
-    CORTO_UNUSED(_this);
-    if (!corto_updateBegin(_this)) {
-        *_this = value;
-        corto_updateEnd(_this);
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_mountKind* _corto_mountKindDeclare(void) {
-    corto_mountKind* _this;
-    _this = corto_mountKind(corto_declare(corto_mountKind_o));
-    if (!_this) {
-        return NULL;
-    }
-    return _this;
-}
-
-corto_mountKind* _corto_mountKindDeclareChild(corto_object _parent, corto_string _name) {
-    corto_mountKind* _this;
-    _this = corto_mountKind(corto_declareChild(_parent, _name, corto_mountKind_o));
-    if (!_this) {
-        return NULL;
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountKindDefine(corto_mountKind* _this, corto_mountKind value) {
-    CORTO_UNUSED(_this);
-    *_this = value;
-    return corto_define(_this);
-}
-
-void _corto_mountKindSet(corto_mountKind* _this, corto_mountKind value) {
-    CORTO_UNUSED(_this);
-    *_this = value;
-}
-
-corto_string _corto_mountKindStr(corto_mountKind value) {
-    corto_string result;
-    corto_value v;
-    v = corto_value_value(corto_type(corto_mountKind_o), &value);
-    result = corto_strv(&v, 0);
-    return result;
-}
-
-corto_mountKind* corto_mountKindFromStr(corto_mountKind* value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_mountKind_o), str);
-    return value;
-}
-
-corto_equalityKind corto_mountKindCompare(corto_mountKind dst, corto_mountKind src) {
-    return corto_comparep(&dst, corto_mountKind_o, &src);
-}
-
-corto_int16 _corto_mountKindInit(corto_mountKind* value) {
-    corto_int16 result;
-    memset(value, 0, corto_type(corto_mountKind_o)->size);
-    corto_value v;
-    v = corto_value_value(corto_type(corto_mountKind_o), value);
-    result = corto_initv(&v);
-    return result;
-}
-
-corto_int16 _corto_mountKindDeinit(corto_mountKind* value) {
-    corto_int16 result;
-    corto_value v;
-    v = corto_value_value(corto_type(corto_mountKind_o), value);
     result = corto_deinitv(&v);
     return result;
 }
@@ -2463,3 +2483,4 @@ void corto_resultListClear(corto_resultList list) {
     }
     corto_llClear(list);
 }
+

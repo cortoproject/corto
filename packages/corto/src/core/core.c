@@ -6,4 +6,4 @@
  * when the file is regenerated.
  */
 
-#include "corto/core/core.h"
+#include <corto/core/core.h>
