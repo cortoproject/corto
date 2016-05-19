@@ -218,6 +218,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, function_returnType);\
     SSO_OP_OBJ(op, function_returnsReference);\
     SSO_OP_OBJ(op, function_overloaded);\
+    SSO_OP_OBJ(op, function_kind);\
     SSO_OP_OBJ(op, function_impl);\
     SSO_OP_OBJ(op, function_fptr);\
     SSO_OP_OBJ(op, function_fdata);\
