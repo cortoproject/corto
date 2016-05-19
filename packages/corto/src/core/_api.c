@@ -1240,7 +1240,7 @@ corto_equalityKind _corto_observableEventCompare(corto_observableEvent dst, cort
     return corto_compare(dst, src);
 }
 
-corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
     corto_observer _this;
     _this = corto_observer(corto_declare(corto_observer_o));
     if (!_this) {
@@ -1248,7 +1248,8 @@ corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observab
     }
     ((corto_observer)_this)->mask = mask;
     corto_setref(&((corto_observer)_this)->observable, observable);
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -1256,7 +1257,7 @@ corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observab
     return _this;
 }
 
-corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
     corto_observer _this;
     _this = corto_observer(corto_declareChild(_parent, _name, corto_observer_o));
     if (!_this) {
@@ -1264,7 +1265,8 @@ corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _na
     }
     ((corto_observer)_this)->mask = mask;
     corto_setref(&((corto_observer)_this)->observable, observable);
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -1272,12 +1274,13 @@ corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _na
     return _this;
 }
 
-corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         ((corto_observer)_this)->mask = mask;
         corto_setref(&((corto_observer)_this)->observable, observable);
-        corto_function(_this)->impl = (corto_word)_impl;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -1303,19 +1306,21 @@ corto_observer _corto_observerDeclareChild(corto_object _parent, corto_string _n
     return _this;
 }
 
-corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args)) {
+corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     ((corto_observer)_this)->mask = mask;
     corto_setref(&((corto_observer)_this)->observable, observable);
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-void _corto_observerSet(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args)) {
+void _corto_observerSet(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     ((corto_observer)_this)->mask = mask;
     corto_setref(&((corto_observer)_this)->observable, observable);
-    corto_function(_this)->impl = (corto_word)_impl;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
 }
 
 corto_string _corto_observerStr(corto_observer value) {

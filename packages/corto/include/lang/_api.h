@@ -634,14 +634,14 @@ CORTO_EXPORT corto_int16 _corto_float64Deinit(corto_float64* value);
 #define corto_float64Deinit(value) _corto_float64Deinit(value)
 
 /* function */
-CORTO_EXPORT corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_functionCreate(returnType, returnsReference, _impl) _corto_functionCreate(corto_type(returnType), returnsReference, _impl)
+CORTO_EXPORT corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsReference, void(*_impl)(void));
+#define corto_functionCreate(returnType, returnsReference, _impl) _corto_functionCreate(corto_type(returnType), returnsReference, (void(*)(void))_impl)
 #define corto_functionCreate_auto(_name, returnType, returnsReference, _impl) corto_function _name = corto_functionCreate(returnType, returnsReference, _impl); (void)_name
-CORTO_EXPORT corto_function _corto_functionCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_functionCreateChild(_parent, _name, returnType, returnsReference, _impl) _corto_functionCreateChild(_parent, _name, corto_type(returnType), returnsReference, _impl)
+CORTO_EXPORT corto_function _corto_functionCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, void(*_impl)(void));
+#define corto_functionCreateChild(_parent, _name, returnType, returnsReference, _impl) _corto_functionCreateChild(_parent, _name, corto_type(returnType), returnsReference, (void(*)(void))_impl)
 #define corto_functionCreateChild_auto(_parent, _name, returnType, returnsReference, _impl) corto_function _name = corto_functionCreateChild(_parent, #_name, returnType, returnsReference, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_functionUpdate(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_functionUpdate(_this, returnType, returnsReference, _impl) _corto_functionUpdate(corto_function(_this), corto_type(returnType), returnsReference, _impl)
+CORTO_EXPORT corto_int16 _corto_functionUpdate(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void));
+#define corto_functionUpdate(_this, returnType, returnsReference, _impl) _corto_functionUpdate(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_function _corto_functionDeclare(void);
 #define corto_functionDeclare() _corto_functionDeclare()
@@ -649,10 +649,10 @@ CORTO_EXPORT corto_function _corto_functionDeclare(void);
 CORTO_EXPORT corto_function _corto_functionDeclareChild(corto_object _parent, corto_string _name);
 #define corto_functionDeclareChild(_parent, _name) _corto_functionDeclareChild(_parent, _name)
 #define corto_functionDeclareChild_auto(_parent, _name) corto_function _name = corto_functionDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_functionDefine(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_functionDefine(_this, returnType, returnsReference, _impl) _corto_functionDefine(corto_function(_this), corto_type(returnType), returnsReference, _impl)
-CORTO_EXPORT void _corto_functionSet(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_functionSet(_this, returnType, returnsReference, _impl) _corto_functionSet(corto_function(_this), corto_type(returnType), returnsReference, _impl)
+CORTO_EXPORT corto_int16 _corto_functionDefine(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void));
+#define corto_functionDefine(_this, returnType, returnsReference, _impl) _corto_functionDefine(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
+CORTO_EXPORT void _corto_functionSet(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void));
+#define corto_functionSet(_this, returnType, returnsReference, _impl) _corto_functionSet(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_functionStr(corto_function value);
 #define corto_functionStr(value) _corto_functionStr(corto_function(value))
 CORTO_EXPORT corto_function corto_functionFromStr(corto_function value, corto_string str);
@@ -1091,14 +1091,14 @@ CORTO_EXPORT corto_int16 _corto_memberseqDeinit(corto_memberseq* value);
 #define corto_memberseqDeinit(value) _corto_memberseqDeinit(value)
 
 /* metaprocedure */
-CORTO_EXPORT corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_metaprocedureCreate(returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureCreate(corto_type(returnType), returnsReference, referenceOnly, _impl)
+CORTO_EXPORT corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedureCreate(returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureCreate(corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
 #define corto_metaprocedureCreate_auto(_name, returnType, returnsReference, referenceOnly, _impl) corto_metaprocedure _name = corto_metaprocedureCreate(returnType, returnsReference, referenceOnly, _impl); (void)_name
-CORTO_EXPORT corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_metaprocedureCreateChild(_parent, _name, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureCreateChild(_parent, _name, corto_type(returnType), returnsReference, referenceOnly, _impl)
+CORTO_EXPORT corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedureCreateChild(_parent, _name, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureCreateChild(_parent, _name, corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
 #define corto_metaprocedureCreateChild_auto(_parent, _name, returnType, returnsReference, referenceOnly, _impl) corto_metaprocedure _name = corto_metaprocedureCreateChild(_parent, #_name, returnType, returnsReference, referenceOnly, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_metaprocedureUpdate(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_metaprocedureUpdate(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureUpdate(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, _impl)
+CORTO_EXPORT corto_int16 _corto_metaprocedureUpdate(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedureUpdate(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureUpdate(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_metaprocedure _corto_metaprocedureDeclare(void);
 #define corto_metaprocedureDeclare() _corto_metaprocedureDeclare()
@@ -1106,10 +1106,10 @@ CORTO_EXPORT corto_metaprocedure _corto_metaprocedureDeclare(void);
 CORTO_EXPORT corto_metaprocedure _corto_metaprocedureDeclareChild(corto_object _parent, corto_string _name);
 #define corto_metaprocedureDeclareChild(_parent, _name) _corto_metaprocedureDeclareChild(_parent, _name)
 #define corto_metaprocedureDeclareChild_auto(_parent, _name) corto_metaprocedure _name = corto_metaprocedureDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_metaprocedureDefine(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_metaprocedureDefine(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureDefine(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, _impl)
-CORTO_EXPORT void _corto_metaprocedureSet(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_metaprocedureSet(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureSet(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, _impl)
+CORTO_EXPORT corto_int16 _corto_metaprocedureDefine(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedureDefine(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureDefine(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
+CORTO_EXPORT void _corto_metaprocedureSet(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedureSet(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureSet(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_metaprocedureStr(corto_metaprocedure value);
 #define corto_metaprocedureStr(value) _corto_metaprocedureStr(corto_metaprocedure(value))
 CORTO_EXPORT corto_metaprocedure corto_metaprocedureFromStr(corto_metaprocedure value, corto_string str);
@@ -1117,14 +1117,14 @@ CORTO_EXPORT corto_equalityKind _corto_metaprocedureCompare(corto_metaprocedure 
 #define corto_metaprocedureCompare(dst, src) _corto_metaprocedureCompare(corto_metaprocedure(dst), corto_metaprocedure(src))
 
 /* method */
-CORTO_EXPORT corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_methodCreate(returnType, returnsReference, _virtual, _impl) _corto_methodCreate(corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_methodCreate(returnType, returnsReference, _virtual, _impl) _corto_methodCreate(corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 #define corto_methodCreate_auto(_name, returnType, returnsReference, _virtual, _impl) corto_method _name = corto_methodCreate(returnType, returnsReference, _virtual, _impl); (void)_name
-CORTO_EXPORT corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_methodCreateChild(_parent, _name, returnType, returnsReference, _virtual, _impl) _corto_methodCreateChild(_parent, _name, corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_methodCreateChild(_parent, _name, returnType, returnsReference, _virtual, _impl) _corto_methodCreateChild(_parent, _name, corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 #define corto_methodCreateChild_auto(_parent, _name, returnType, returnsReference, _virtual, _impl) corto_method _name = corto_methodCreateChild(_parent, #_name, returnType, returnsReference, _virtual, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_methodUpdate(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_methodUpdate(_this, returnType, returnsReference, _virtual, _impl) _corto_methodUpdate(corto_method(_this), corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_int16 _corto_methodUpdate(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_methodUpdate(_this, returnType, returnsReference, _virtual, _impl) _corto_methodUpdate(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_method _corto_methodDeclare(void);
 #define corto_methodDeclare() _corto_methodDeclare()
@@ -1132,10 +1132,10 @@ CORTO_EXPORT corto_method _corto_methodDeclare(void);
 CORTO_EXPORT corto_method _corto_methodDeclareChild(corto_object _parent, corto_string _name);
 #define corto_methodDeclareChild(_parent, _name) _corto_methodDeclareChild(_parent, _name)
 #define corto_methodDeclareChild_auto(_parent, _name) corto_method _name = corto_methodDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_methodDefine(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_methodDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_methodDefine(corto_method(_this), corto_type(returnType), returnsReference, _virtual, _impl)
-CORTO_EXPORT void _corto_methodSet(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_methodSet(_this, returnType, returnsReference, _virtual, _impl) _corto_methodSet(corto_method(_this), corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_int16 _corto_methodDefine(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_methodDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_methodDefine(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+CORTO_EXPORT void _corto_methodSet(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_methodSet(_this, returnType, returnsReference, _virtual, _impl) _corto_methodSet(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_methodStr(corto_method value);
 #define corto_methodStr(value) _corto_methodStr(corto_method(value))
 CORTO_EXPORT corto_method corto_methodFromStr(corto_method value, corto_string str);
@@ -1820,14 +1820,14 @@ CORTO_EXPORT corto_int16 _corto_uint8Deinit(corto_uint8* value);
 #define corto_uint8Deinit(value) _corto_uint8Deinit(value)
 
 /* virtual */
-CORTO_EXPORT corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_virtualCreate(returnType, returnsReference, _virtual, _impl) _corto_virtualCreate(corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_virtualCreate(returnType, returnsReference, _virtual, _impl) _corto_virtualCreate(corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 #define corto_virtualCreate_auto(_name, returnType, returnsReference, _virtual, _impl) corto_virtual _name = corto_virtualCreate(returnType, returnsReference, _virtual, _impl); (void)_name
-CORTO_EXPORT corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_virtualCreateChild(_parent, _name, returnType, returnsReference, _virtual, _impl) _corto_virtualCreateChild(_parent, _name, corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_virtualCreateChild(_parent, _name, returnType, returnsReference, _virtual, _impl) _corto_virtualCreateChild(_parent, _name, corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 #define corto_virtualCreateChild_auto(_parent, _name, returnType, returnsReference, _virtual, _impl) corto_virtual _name = corto_virtualCreateChild(_parent, #_name, returnType, returnsReference, _virtual, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_virtualUpdate(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_virtualUpdate(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualUpdate(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_int16 _corto_virtualUpdate(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_virtualUpdate(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualUpdate(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_virtual _corto_virtualDeclare(void);
 #define corto_virtualDeclare() _corto_virtualDeclare()
@@ -1835,10 +1835,10 @@ CORTO_EXPORT corto_virtual _corto_virtualDeclare(void);
 CORTO_EXPORT corto_virtual _corto_virtualDeclareChild(corto_object _parent, corto_string _name);
 #define corto_virtualDeclareChild(_parent, _name) _corto_virtualDeclareChild(_parent, _name)
 #define corto_virtualDeclareChild_auto(_parent, _name) corto_virtual _name = corto_virtualDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_virtualDefine(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_virtualDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualDefine(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, _impl)
-CORTO_EXPORT void _corto_virtualSet(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_virtualSet(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualSet(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, _impl)
+CORTO_EXPORT corto_int16 _corto_virtualDefine(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_virtualDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualDefine(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+CORTO_EXPORT void _corto_virtualSet(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_virtualSet(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualSet(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_virtualStr(corto_virtual value);
 #define corto_virtualStr(value) _corto_virtualStr(corto_virtual(value))
 CORTO_EXPORT corto_virtual corto_virtualFromStr(corto_virtual value, corto_string str);

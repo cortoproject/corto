@@ -354,14 +354,14 @@ CORTO_EXPORT corto_equalityKind _corto_observableEventCompare(corto_observableEv
 #define corto_observableEventCompare(dst, src) _corto_observableEventCompare(corto_observableEvent(dst), corto_observableEvent(src))
 
 /* /corto/core/observer */
-CORTO_EXPORT corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_observerCreate(mask, observable, _impl) _corto_observerCreate(mask, observable, _impl)
+CORTO_EXPORT corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, void(*_impl)(void));
+#define corto_observerCreate(mask, observable, _impl) _corto_observerCreate(mask, observable, (void(*)(void))_impl)
 #define corto_observerCreate_auto(_name, mask, observable, _impl) corto_observer _name = corto_observerCreate(mask, observable, _impl); (void)_name
-CORTO_EXPORT corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_observerCreateChild(_parent, _name, mask, observable, _impl) _corto_observerCreateChild(_parent, _name, mask, observable, _impl)
+CORTO_EXPORT corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, void(*_impl)(void));
+#define corto_observerCreateChild(_parent, _name, mask, observable, _impl) _corto_observerCreateChild(_parent, _name, mask, observable, (void(*)(void))_impl)
 #define corto_observerCreateChild_auto(_parent, _name, mask, observable, _impl) corto_observer _name = corto_observerCreateChild(_parent, #_name, mask, observable, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_observerUpdate(_this, mask, observable, _impl) _corto_observerUpdate(corto_observer(_this), mask, observable, _impl)
+CORTO_EXPORT corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void));
+#define corto_observerUpdate(_this, mask, observable, _impl) _corto_observerUpdate(corto_observer(_this), mask, observable, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_observer _corto_observerDeclare(void);
 #define corto_observerDeclare() _corto_observerDeclare()
@@ -369,10 +369,10 @@ CORTO_EXPORT corto_observer _corto_observerDeclare(void);
 CORTO_EXPORT corto_observer _corto_observerDeclareChild(corto_object _parent, corto_string _name);
 #define corto_observerDeclareChild(_parent, _name) _corto_observerDeclareChild(_parent, _name)
 #define corto_observerDeclareChild_auto(_parent, _name) corto_observer _name = corto_observerDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_observerDefine(_this, mask, observable, _impl) _corto_observerDefine(corto_observer(_this), mask, observable, _impl)
-CORTO_EXPORT void _corto_observerSet(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(corto_function f, void *result, void *args));
-#define corto_observerSet(_this, mask, observable, _impl) _corto_observerSet(corto_observer(_this), mask, observable, _impl)
+CORTO_EXPORT corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void));
+#define corto_observerDefine(_this, mask, observable, _impl) _corto_observerDefine(corto_observer(_this), mask, observable, (void(*)(void))_impl)
+CORTO_EXPORT void _corto_observerSet(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void));
+#define corto_observerSet(_this, mask, observable, _impl) _corto_observerSet(corto_observer(_this), mask, observable, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_observerStr(corto_observer value);
 #define corto_observerStr(value) _corto_observerStr(corto_observer(value))
 CORTO_EXPORT corto_observer corto_observerFromStr(corto_observer value, corto_string str);

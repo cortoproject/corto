@@ -22,6 +22,13 @@ corto_int16 _corto_observer_bind(
         this->_template = 1;
     }
 
+    /* Bind function. Run this function before listening to observable, as
+     * the call handler must be initialized before the observer can be invoked.
+     */
+    if (corto_function_bind(this)) {
+        goto error;
+    }
+
     /* Listen to observable */
     if (!this->_template) {
         if (corto_observer_listen(this, this->observable, this->me)) {
@@ -29,7 +36,7 @@ corto_int16 _corto_observer_bind(
         }
     }
 
-    return corto_function_bind(this);
+    return 0;
 error:
     return -1;
 /* $end */
