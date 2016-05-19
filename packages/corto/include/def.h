@@ -195,26 +195,10 @@ extern int8_t CORTO_DEBUG_ENABLED;
 #ifdef __cplusplus
 }
 #define CORTO_OBSERVER(name)\
-    void __##name (corto_object, corto_object);\
-    void name (corto_function f, void *result, void *args) {\
-        CORTO_UNUSED(f);\
-        CORTO_UNUSED(result);\
-        __##name (\
-            *(void**)args,\
-            *(void**)((intptr_t)args + sizeof(void*)));\
-    }\
-    void __##name (corto_object _this, corto_object observable)
+    void name (corto_object _this, corto_object observable)
 #else
 #define CORTO_OBSERVER(name)\
-    void __##name (corto_object, corto_object);\
-    void name (corto_function f, void *result, void *args) {\
-        CORTO_UNUSED(f);\
-        CORTO_UNUSED(result);\
-        __##name (\
-            *(void**)args,\
-            *(void**)((intptr_t)args + sizeof(void*)));\
-    }\
-    void __##name (corto_object this, corto_object observable)
+    void name (corto_object this, corto_object observable)
 #endif
 
 #endif /* CORTO_DEF_H */
