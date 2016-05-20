@@ -516,7 +516,7 @@ void corto_convertInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-corto_int16 corto_convert(corto_primitive fromType, void *from, corto_primitive toType, void *to) {
+corto_int16 _corto_convert(corto_primitive fromType, void *from, corto_primitive toType, void *to) {
     corto_conversion c;
 
     /* Get conversion */

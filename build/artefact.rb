@@ -223,7 +223,7 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     end
 
     if ENV['silent'] != "true" then
-        print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'\n"
+        print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}\n"
     end
 end
 

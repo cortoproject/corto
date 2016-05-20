@@ -18,7 +18,8 @@ extern "C" {
 #endif
 
 void corto_convertInit(void);
-corto_int16 corto_convert(corto_primitive fromType, void *from, corto_primitive toType, void *to);
+corto_int16 _corto_convert(corto_primitive fromType, void *from, corto_primitive toType, void *to);
+#define corto_convert(fromType, from, toType, to) _corto_convert(corto_primitive(fromType), from, corto_primitive(toType), to)
 
 #ifdef __cplusplus
 }
