@@ -60,6 +60,7 @@ corto_int8 corto_stateof(corto_object o);
 corto_bool corto_checkState(corto_object o, corto_int8 state);
 corto_bool corto_checkAttr(corto_object o, corto_int8 attr);
 corto_bool _corto_instanceof(corto_type type, corto_object o);
+corto_bool _corto_instanceofType(corto_type type, corto_type valueType);
 
 corto_object _corto_assertType(corto_type type, corto_object o);
 #ifndef NDEBUG
@@ -199,6 +200,7 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_initp(p, type) _corto_initp(p, corto_type(type))
 #define corto_deinitp(p, type) _corto_deinitp(p, corto_type(type))
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
+#define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
 #define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_mount(r))
 
 #ifdef __cplusplus

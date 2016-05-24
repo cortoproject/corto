@@ -1575,12 +1575,10 @@ corto_object _corto_assertType(corto_type type, corto_object o) {
     return o;
 }
 
-corto_bool _corto_instanceof(corto_type type, corto_object o) {
-    corto_type t = corto_typeof(o);
+corto_bool _corto_instanceofType(corto_type type, corto_type t) {
     corto_bool result = TRUE;
 
     if (type != t) {
-
         result = FALSE;
 
         if (t->kind == type->kind) {
@@ -1608,18 +1606,6 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
                 }
                 break;
             }
-            case CORTO_PRIMITIVE:
-                switch(corto_primitive(type)->kind) {
-                case CORTO_ENUM:
-                case CORTO_BITMASK:
-                    if (corto_parentof(o) == type) {
-                        result = TRUE;
-                    }
-                    break;
-                default:
-                    break;
-                }
-                break;
             default:
                 break;
             }
@@ -1633,6 +1619,20 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
     }
 
     return result;
+}
+
+corto_bool _corto_instanceof(corto_type type, corto_object o) {
+    corto_type t = corto_typeof(o);
+
+    /* A bit of gibberish to ensure that a constant of an enumeration or bitmask
+     * will evaluate TRUE when used with the enum/bitmask type.  */
+    if (t == (corto_type)corto_constant_o) {
+        if (type == (corto_type)corto_constant_o) {
+            return TRUE;
+        }
+        t = corto_parentof(o);
+    }
+    return corto_instanceofType(type, t);
 }
 
 static void(*destructors[CORTO_MAX_OLS_KEY])(void*);
