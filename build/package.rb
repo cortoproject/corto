@@ -246,10 +246,13 @@ task :install do
       if installFiles.length != 0 then
         includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 
-        # Copy new header files
         sh "mkdir -p #{includePath}"
 
         if not SOFTLINKS then
+          # cp won't copy when a file exists that is identical to the source-
+          # even when this file is a link. Make sure that the folder is clean
+          # before the copy command.
+          sh "rm -rf #{installFiles.map {|f| f.pathmap("#{includePath}/%{^include/,}p")}.join(" ")}"
           sh "cp -r include/. #{includePath}/"
         end
 
