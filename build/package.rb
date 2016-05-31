@@ -213,12 +213,19 @@ task :uninstall do
     verbose(VERBOSE)
     if not LOCAL then
         dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
-        if File.exists? "#{dir}/uninstall.txt" then
+        if File.exists?("#{dir}/uninstall.txt") then
             File.open("#{dir}/uninstall.txt") {|file|
                 file.each_line{|l|
                     # That will not happen to me
-                    if l.strip.length > "/usr/local".length then
-                      sh "rm -rf #{l}"
+                    if l.strip.length > "/usr/local\n".length then
+                      file = l[0...-1]
+                      if File.directory? file then
+                        if not Dir.glob("#{file}/*").length then
+                          sh "rm -rf #{l[0...-1]}"
+                        end
+                      else
+                        sh "rm -f #{l[0...-1]}"
+                      end
                     end
                 }
             }
@@ -249,10 +256,6 @@ task :install do
         sh "mkdir -p #{includePath}"
 
         if not SOFTLINKS then
-          # cp won't copy when a file exists that is identical to the source-
-          # even when this file is a link. Make sure that the folder is clean
-          # before the copy command.
-          sh "rm -rf #{installFiles.map {|f| f.pathmap("#{includePath}/%{^include/,}p")}.join(" ")}"
           sh "cp -r include/. #{includePath}/"
         end
 
