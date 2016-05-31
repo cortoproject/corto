@@ -91,6 +91,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
           optimize ? "optimize=true" : "optimize=false",
           release ? "target=release" : "target=debug",
           verbose ? "verbose=true" : "verbose=false",
+          "softlinks=true",
           NULL
       }, silent != NULL, mute != NULL);
 

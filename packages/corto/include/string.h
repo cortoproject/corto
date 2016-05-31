@@ -49,7 +49,7 @@ int corto_asprintf (char **str, const char *fmt, ...);
 int corto_vasprintf (char **str, const char *fmt, va_list args);
 
 /* Replace substring in string */
-char* corto_replace(char *orig, char *rep, char *with);
+char* corto_replace(char *s, char *old, char *_new);
 
 #ifdef __cplusplus
 }

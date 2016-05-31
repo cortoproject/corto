@@ -246,8 +246,9 @@ error:
     return -1;
 }
 
-corto_int16 cortotool_uninstaller(corto_string dir) {
-    corto_bool err = FALSE;
+/* Return -1 when failed to remove file, 1 when uninstaller can't be found */
+int cortotool_uninstaller(corto_string dir) {
+    corto_bool err = 0;
 
     corto_string uninstall;
     corto_asprintf(&uninstall, "%s/uninstall.txt", dir);
@@ -259,14 +260,58 @@ corto_int16 cortotool_uninstaller(corto_string dir) {
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
             if (corto_rm(dependency)) {
                 corto_error("failed to remove %s: %s", dependency, corto_lasterr());
-                err = TRUE;
+                err = -1;
             }
         }
         corto_fileClose(f);
+    } else {
+        err = 1;
     }
     corto_dealloc(uninstall);
 
     return err;
+}
+
+corto_bool cortotool_forceCleanup(corto_string env, corto_string package) {
+    corto_bool result = FALSE;
+
+    corto_string d = corto_envparse(
+        "%s/include/corto/%s.%s/%s",
+        env,
+        CORTO_VERSION_MAJOR,
+        CORTO_VERSION_MINOR,
+        package);
+    if (corto_fileTest(d)) {
+        corto_rm(d);
+        result = TRUE;
+    }
+    corto_dealloc(d);
+
+    d = corto_envparse(
+        "%s/etc/corto/%s.%s/%s",
+        env,
+        CORTO_VERSION_MAJOR,
+        CORTO_VERSION_MINOR,
+        package);
+    if (corto_fileTest(d)) {
+        corto_rm(d);
+        result = TRUE;
+    }
+    corto_dealloc(d);
+
+    d = corto_envparse(
+        "%s/bin/corto/%s.%s/%s",
+        env,
+        CORTO_VERSION_MAJOR,
+        CORTO_VERSION_MINOR,
+        package);
+    if (corto_fileTest(d)) {
+        corto_rm(d);
+        result = TRUE;
+    }
+    corto_dealloc(d);
+
+    return result;
 }
 
 corto_int16 cortotool_uninstall(int argc, char *argv[]) {
@@ -281,10 +326,22 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
             CORTO_VERSION_MAJOR,
             CORTO_VERSION_MINOR,
             argv[1]);
+
         if (corto_fileTest(dir)) {
-            err = cortotool_uninstaller(dir);
+            if ((err = cortotool_uninstaller(dir)) == 1) {
+                /* If uninstaller isn't found, manually remove directories */
+                corto_warning(
+                    "corto: warning: no uninstaller file found for '%s', recursively cleaning package.",
+                    argv[1]);
+                cortotool_forceCleanup("$CORTO_TARGET", argv[1]);
+            }
             corto_rm(dir);
             found = TRUE;
+        /* Ensure that there aren't any other directories left besides lib */
+        } else {
+            if (cortotool_forceCleanup("$CORTO_TARGET", argv[1])) {
+                corto_print(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
+            }
         }
         corto_dealloc(dir);
 
@@ -295,13 +352,23 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
             CORTO_VERSION_MINOR,
             argv[1]);
         if (corto_fileTest(dir)) {
-            err = cortotool_uninstaller(dir);
+            if ((err = cortotool_uninstaller(dir)) == 1) {
+                /* If uninstaller isn't found, manually remove directories */
+                corto_warning(
+                    "corto: warning: no uninstaller file found for '%s', recursively cleaning packagec.",
+                    argv[1]);
+                cortotool_forceCleanup("/usr/local", argv[1]);
+            }
             corto_rm(dir);
             found = TRUE;
+        } else {
+            if (cortotool_forceCleanup("$CORTO_TARGET", argv[1])) {
+                corto_print(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
+            }
         }
         corto_dealloc(dir);
 
-        if (!err) {
+        if (found) {
             corto_print(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
         } else if (!found) {
             corto_error("corto: package '%s' not found", argv[1]);

@@ -233,23 +233,35 @@ end
 
 # Crawl project directory for files that need to be installed with binary
 task :install do
-    verbose(VERBOSE)
+  verbose(VERBOSE)
+
+  if not LOCAL then
     libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
     if not File.exists? libpath then
       sh "mkdir -p #{libpath}"
     end
-    if File.exists?("include") and Dir.glob("include/**/*").length != 0 then
+    if File.exists?("include") then
+      installFiles = Dir.glob("include/*")
+
+      if installFiles.length != 0 then
         includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-        installFiles = Dir.glob("include/*")
 
         # Copy new header files
         sh "mkdir -p #{includePath}"
-        sh "cp -r include/. #{includePath}/"
+
+        if not SOFTLINKS then
+          sh "cp -r include/. #{includePath}/"
+        end
 
         # Keep track of installed include files
         installFiles.each {|f|
-          UNINSTALL << f.pathmap("#{includePath}/%{^include/,}p")
+          newFile = f.pathmap("#{includePath}/%{^include/,}p")
+          if SOFTLINKS then
+            sh "ln -fs #{Dir.getwd + "/" + f} #{newFile}"
+          end
+          UNINSTALL << newFile
         }
+      end
     end
     if File.exists?("etc") then
         etc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
@@ -336,6 +348,7 @@ task :install do
     if not LOCAL and File.exists? ".corto/version.txt" then
       sh "cp .corto/version.txt #{libpath}"
     end
+  end
 end
 
 # Collect files in preparation for creating a tar

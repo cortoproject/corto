@@ -21,12 +21,21 @@ if not defined? VERBOSE then
   end
 end
 
-# Set covergae
+# Set coverage
 if not defined? COVERAGE then
-  if ENV['coverage'] == "false" then
-    COVERAGE ||= false
-  else
+  if ENV['coverage'] == "true" then
     COVERAGE ||= true
+  else
+    COVERAGE ||= false
+  end
+end
+
+# Set softlinks
+if not defined? SOFTLINKS then
+  if ENV['softlinks'] == "true" then
+    SOFTLINKS ||= true
+  else
+    SOFTLINKS ||= false
   end
 end
 
