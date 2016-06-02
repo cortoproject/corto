@@ -688,7 +688,7 @@ static void corto_selectParseFilter(
             if (*parent) strcat(parent, "/");
             strcat(parent, filter);
             parent[strlen(parent) - (strlen(exprStart) + (ptr ? 0 : 1))] = '\0';
-            corto_cleanpath(parent);
+            corto_cleanpath(parent, parent);
         } else if (!*parent) {
             strcpy(parent, ".");
         }
@@ -796,7 +796,7 @@ static void corto_selectRequestReplicators(
                 }
 
                 corto_selectParseFilter(frame->filter, parent, expr);
-                corto_cleanpath(parent);
+                corto_cleanpath(parent, parent);
 
                 data->mounts[i].iter = corto_selectRequestReplicator(
                     data->mounts[i].r,
@@ -886,7 +886,7 @@ static void corto_selectIterateReplicators(
                     strcat(rpath, parent);
                     strcat(rpath, "/");
                     strcat(rpath, result->parent);
-                    corto_cleanpath(rpath);
+                    corto_cleanpath(rpath, rpath);
 
                     corto_pathstr(data->item.parent, path, rpath, "/");
 
@@ -1305,7 +1305,7 @@ static corto_int16 corto_selectRun(corto_selectData *data) {
         }
     }
 
-    corto_cleanpath(fullscope);
+    corto_cleanpath(fullscope, fullscope);
     corto_setstr(&data->fullscope, fullscope);
 
     if (quit) {

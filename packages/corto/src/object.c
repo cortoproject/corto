@@ -2215,10 +2215,19 @@ static char *strsep(char **str, char delim) {
     return result;
 }
 
-corto_string corto_cleanpath(corto_id path) {
-    corto_id work;
+corto_string corto_cleanpath(corto_id buf, char *path) {
+    corto_id work, tempbuf;
     char *cp, *thisp, *nextp = work;
-    corto_id buf;
+    corto_bool threadStr = FALSE;
+    corto_bool equalBuf = TRUE;
+
+    if (!buf) {
+        buf = corto_alloc(sizeof(corto_id));
+        threadStr = TRUE;
+    } else if (buf == path) {
+        equalBuf = TRUE;
+        buf = tempbuf;
+    }
 
     cp = strchr(path, '/');
 
@@ -2273,7 +2282,15 @@ corto_string corto_cleanpath(corto_id path) {
 
     if (buf[0] == '\0') strcpy(buf, ".");
 
-    strcpy(path, buf);
+    if (threadStr) {
+        corto_string tmp = buf;
+        path = corto_setThreadString(buf);
+        corto_dealloc(tmp);
+    } else if (equalBuf) {
+        strcpy(path, buf);
+    } else {
+        path = buf;
+    }
 
     return path;
 }

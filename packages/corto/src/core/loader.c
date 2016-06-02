@@ -110,11 +110,11 @@ corto_resultIter _corto_loader_onRequest_v(
     localPath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       request->parent);
-    corto_cleanpath(localPath);
+    corto_cleanpath(localPath, localPath);
     globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       request->parent);
-    corto_cleanpath(globalPath);
+    corto_cleanpath(globalPath, globalPath);
 
     corto_loader_addDir(data, localPath, request->expr);
     corto_loader_addDir(data, globalPath, request->expr);
@@ -140,7 +140,7 @@ corto_object _corto_loader_onResume_v(
     if (!o) {
         corto_id path;
         sprintf(path, "%s/%s", parent, name);
-        corto_cleanpath(path);
+        corto_cleanpath(path, path);
         if (!corto_load(path, 0, NULL)) {
             o = corto_lookup(NULL, path);
         }

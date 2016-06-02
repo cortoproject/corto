@@ -276,7 +276,7 @@ static void cxsh_cd(char* arg) {
 
         if (count == 1) {
             strcpy(scope, result);
-            corto_cleanpath(scope);
+            corto_cleanpath(scope, scope);
         } else {
             if (!corto_lasterr()) {
                 corto_seterr("'%s' did not match any objects", arg);
