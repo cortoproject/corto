@@ -81,7 +81,7 @@ void corto_threadStringDealloc(void *tdata) {
 
     if (data) {
         corto_int32 i;
-        for (i = 0; i < CORTO_MAX_TLS_STRINGS_MAX; i++) {
+        for (i = 0; i < CORTO_MAX_TLS_STRINGS; i++) {
             if (data->strings[i]) {
                 corto_dealloc(data->strings[i]);
             }
