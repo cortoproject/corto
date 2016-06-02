@@ -53,7 +53,7 @@ struct DeclaredParent: parentState = declared::
     foo: int32
 
 // Object management testcases
-test::Suite ObjectMgmt::
+test/Suite ObjectMgmt::
     prevAttr: core::attr, local|private
 
     void setup() method
@@ -126,7 +126,7 @@ test::Suite ObjectMgmt::
     void tc_nameofOverride()
 
 // Test compare serializer
-test::Suite Compare::
+test/Suite Compare::
     void tc_uint8()
     void tc_uint16()
     void tc_uint32()
@@ -160,7 +160,7 @@ test::Suite Compare::
     void tc_listSizeMismatch()
 
 // Test copy serializer
-test::Suite Copy::
+test/Suite Copy::
     void tc_any()
     void tc_int()
     void tc_string()
@@ -194,7 +194,7 @@ class FooReplicator : mount, hidden ::
     invoked: uint32, readonly
 
 // Test ownership scenarios
-test::Suite Ownership::
+test/Suite Ownership::
     observable: word
 
     void setup() method
@@ -220,7 +220,7 @@ test::Suite Ownership::
     observer onDelete: ON_DELETE
 
 // Generate fully scoped names
-test::Suite Fullname::
+test/Suite Fullname::
     void tc_root()
     void tc_onelevel()
     void tc_twolevels()
@@ -229,7 +229,7 @@ test::Suite Fullname::
     void tc_fromLang()
 
 // Generate names relative to an object
-test::Suite RelativeName::
+test/Suite RelativeName::
     void setup() method
     void teardown() method
 
@@ -257,7 +257,7 @@ test::Suite RelativeName::
 void functionToResolve(int32 a, int32 b)
 
 // Test corto_resolve
-test::Suite Resolver::
+test/Suite Resolver::
     void setup() method
     void teardown() method
 
@@ -286,7 +286,7 @@ test::Suite Resolver::
     void tc_resolveAll()
 
 // Test corto_select
-test::Suite Select::
+test/Suite Select::
     void setup() method
     void teardown() method
 
@@ -381,7 +381,7 @@ class StringReplicator : mount, hidden::
     resultIter onRequest(core/request request)
 
 // Test setting content types
-test::Suite SelectContentType::
+test/Suite SelectContentType::
     void setup() method
 
     void tc_selectStringFromObjects()
@@ -401,7 +401,7 @@ class ListReplicator : mount, hidden::
     resultIter onRequest(core/request request)
 
 // Test corto_select requesting data from mounts
-test::Suite ReplicatorRequest::
+test/Suite ReplicatorRequest::
     void setup() method
     void teardown() method
     mount: ListReplicator
@@ -441,7 +441,7 @@ class SinkReplicator : core/mount, hidden::
     resultIter onRequest(core/request request)
 
 // Request data from a SINK mount
-test::Suite SelectSink::
+test/Suite SelectSink::
     void setup() method
     void teardown() method
 
@@ -460,7 +460,7 @@ test::Suite SelectSink::
     void tc_selectMixedScopeNested2()
 
 // Request data from a SINK mount with a type
-test::Suite SelectSinkWithType::
+test/Suite SelectSinkWithType::
     void setup() method
     void teardown() method
 
@@ -519,7 +519,7 @@ class EventTest::
     countDeleteTree: uint32, readonly
 
 // Test notifications
-test::Suite Event::
+test/Suite Event::
     void setup() method
     void teardown() method
 
@@ -592,7 +592,7 @@ void ol_inherit(Animal a)
 void ol_inherit(Dog a)
 
 // Functio overloading test suite
-test::Suite Overload::
+test/Suite Overload::
     void tc_ambiguous()
     void tc_ambiguousWildcard()
     void tc_ambiguousNull()
@@ -659,7 +659,7 @@ class MethodTesterInherit: MethodTester::
     void virtualOverload(int32 a)
 
 // Test resolving methods
-test::Suite MethodResolver::
+test/Suite MethodResolver::
     void tc_simple()
     void tc_simpleNoArgs()
     void tc_simpleErr()
@@ -696,7 +696,7 @@ test::Suite MethodResolver::
     void tc_redeclare()
 
 // Test Corto string serializer
-test::Suite StringSerializer::
+test/Suite StringSerializer::
     void tc_serBoolTrue()
     void tc_serBoolFalse()
 
@@ -742,7 +742,7 @@ class AnonymousTest::
     objects: list{object}
 
 // String deserializer testcases
-test::Suite StringDeserializer::
+test/Suite StringDeserializer::
     void setup() method
     void teardown() method
 
@@ -835,7 +835,7 @@ test::Suite StringDeserializer::
     void tc_deserAnonymousReuseNested()
 
 // Test environment variable parsing functions
-test::Suite Env::
+test/Suite Env::
     void tc_envparseSimpleFormat()
     void tc_envparseSimpleReplace()
     void tc_envparseReplaceMultiple()
@@ -853,7 +853,7 @@ test::Suite Env::
     void tc_setenvNull()
 
 // Test argument parser
-test::Suite Args::
+test/Suite Args::
     void tc_matchSingle()
     void tc_matchMultiple()
     void tc_matchDuplicate()
@@ -879,3 +879,16 @@ test::Suite Args::
     void tc_matchCreatePackageAndAppEscaped()
     void tc_matchCreatePackageOptions()
     void tc_matchAddNoProject()
+
+// Test buffer implementation
+test/Suite Buffer::
+    void tc_append()
+    void tc_appendToExisting()
+    void tc_appendEmpty()
+    void tc_appendEmptyToExisting()
+    void tc_appendNull()
+    void tc_appendNullToExisting()
+    void tc_appendLarge()
+    void tc_appendLargeMulti()
+    void tc_appendLargeOverflow()
+    void tc_appendOverflow()

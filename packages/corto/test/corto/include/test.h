@@ -113,6 +113,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <AnonymousTest.h>
 #include <Args.h>
 #include <Bar.h>
+#include <Buffer.h>
 #include <Cat.h>
 #include <Compare.h>
 #include <Copy.h>

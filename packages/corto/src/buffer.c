@@ -70,6 +70,11 @@ static corto_bool corto_buffer_appendIntern(
 {
     corto_bool result = TRUE;
 
+    if (!str) {
+        return result;
+    }
+
+
     corto_buffer_init(b);
 
     corto_int32 spaceLeftInElement = corto_buffer_spaceLeftInCurrentElement(b);
@@ -123,8 +128,11 @@ static corto_bool corto_buffer_appendIntern(
                 corto_string dst = corto_alloc(memRequired + 1);
                 char *ptr = dst + spaceLeftInElement;
                 corto_int32 memLeft = memRequired - spaceLeftInElement;
-                copy(dst, str, memRequired, data);
 
+                /* Copy entire string to heap memory */
+                copy(dst, str, memRequired + 1, data);
+
+                /* Copy string to elements */
                 while (memLeft > 0) {
                     corto_buffer_grow(b);
                     if (memLeft > CORTO_BUFFER_ELEMENT_SIZE) {
