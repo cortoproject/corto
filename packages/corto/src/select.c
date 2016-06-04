@@ -619,7 +619,10 @@ static corto_bool corto_selectMatch(
         for (i = 0; i < data->activeReplicators; i++) {
             corto_mount r = data->mounts[i].r;
 
-            if (r->kind == CORTO_SINK) {
+            /* If a SINK mount doesn't return a valid iterator, which typically
+             * happens if it doesn't implement the onRequest method, select will
+             * return the contents of the object store */
+            if ((r->kind == CORTO_SINK) && data->mounts[i].iter.next) {
                 if (r->type) {
                     /* If the type matches, the object is managed by the
                      * mount. This prevents returning duplicate results. */
@@ -1136,7 +1139,7 @@ static corto_bool corto_selectNextScope(corto_selectData *data) {
     if (data->scopes[data->currentScope + 1].scope) {
         corto_selectStack *frame = &data->stack[0];
 
-        /* Only continue of previous scope didn't return a single object, in
+        /* Only continue if previous scope didn't return a single object, in
          * which case 'next' will have been set to NULL */
         if (frame->next) {
             corto_selectFilterReplicators(data);
