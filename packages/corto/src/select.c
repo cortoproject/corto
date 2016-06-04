@@ -49,10 +49,10 @@ typedef struct corto_scopeSegment {
     corto_string scopeQuery;
 } corto_scopeSegment;
 
-typedef struct corto_selectReplicator {
+typedef struct corto_selectMount {
     corto_mount r;
     corto_resultIter iter;
-} corto_selectReplicator;
+} corto_selectMount;
 
 typedef struct corto_selectData {
     corto_string scope;                      /* Scope passed to select */
@@ -71,14 +71,14 @@ typedef struct corto_selectData {
     corto_selectStack stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     corto_uint8 sp;
 
-    /* Replicators loaded for the scope that is currently evaluated */
-    corto_selectReplicator mounts[CORTO_MAX_REPLICATORS];
+    /* Mounts loaded for the scope that is currently evaluated */
+    corto_selectMount mounts[CORTO_MAX_REPLICATORS];
 
-    /* Replicators with outstanding requests */
-    corto_int8 activeReplicators;
+    /* Mounts with outstanding requests */
+    corto_int8 activeMounts;
 
     /* Current mount being evaluated */
-    corto_int8 currentReplicator;
+    corto_int8 currentMount;
 
     /* Serializer for requested content type */
     corto_contentType destSer;
@@ -383,7 +383,7 @@ static corto_word corto_selectConvert(
     corto_word result = 0;
 
     corto_int16 ___ (*toCorto)(corto_object o, corto_word content) =
-        data->srcSer[data->currentReplicator].contentToCorto;
+        data->srcSer[data->currentMount].contentToCorto;
     corto_word ___ (*fromCorto)(corto_object o) =
         data->destSer.contentFromCorto;
 
@@ -616,7 +616,7 @@ static corto_bool corto_selectMatch(
     if (result && corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
         corto_int32 i;
         corto_id type; corto_fullpath(type, corto_typeof(o));
-        for (i = 0; i < data->activeReplicators; i++) {
+        for (i = 0; i < data->activeMounts; i++) {
             corto_mount r = data->mounts[i].r;
 
             /* If a SINK mount doesn't return a valid iterator, which typically
@@ -701,7 +701,7 @@ static void corto_selectParseFilter(
     }
 }
 
-static corto_resultIter corto_selectRequestReplicator(
+static corto_resultIter corto_selectRequestMount(
     corto_mount mount,
     corto_string parent,
     corto_string expr,
@@ -721,22 +721,22 @@ static corto_resultIter corto_selectRequestReplicator(
 /* Function returns TRUE if a SINK is found, which means that for this scope
  * the object store should not be walked (or specific types should not be
  * walked) */
-static void corto_selectRequestReplicators(
+static void corto_selectRequestMounts(
     corto_selectData *data,
     corto_selectStack *frame,
     corto__scope *scope,
     corto_bool dryRun)
 {
-    if (data->activeReplicators < 0) {
+    if (data->activeMounts < 0) {
         corto_bool releaseScope = FALSE;
         corto_bool requestStart = 0;
 
-        data->activeReplicators = 0;
+        data->activeMounts = 0;
 
         /* 1: Count mounts registered on parent scopes */
-        while (data->mounts[data->activeReplicators].r) {
-            data->activeReplicators ++;
-            requestStart = data->activeReplicators;
+        while (data->mounts[data->activeMounts].r) {
+            data->activeMounts ++;
+            requestStart = data->activeMounts;
         }
 
         /* 2: Request data from mounts registered on current scope */
@@ -762,7 +762,7 @@ static void corto_selectRequestReplicators(
                               odata->mount->contentType))
                         {
                             if (corto_loadContentType(
-                                &data->srcSer[data->activeReplicators],
+                                &data->srcSer[data->activeMounts],
                                 odata->mount->contentType))
                             {
                                 corto_error("contentType '%s' for %s not found",
@@ -775,8 +775,8 @@ static void corto_selectRequestReplicators(
                         }
                     }
 
-                    data->mounts[data->activeReplicators].r = odata->mount;
-                    data->activeReplicators ++;
+                    data->mounts[data->activeMounts].r = odata->mount;
+                    data->activeMounts ++;
                 }
             }
         }
@@ -788,7 +788,7 @@ static void corto_selectRequestReplicators(
         /* Request data outside of lock */
         if (!dryRun) {
             corto_int32 i;
-            for (i = requestStart; i < data->activeReplicators; i++) {
+            for (i = requestStart; i < data->activeMounts; i++) {
                 corto_id parent, expr;
                 corto_path(parent, data->mounts[i].r->mount, frame->scope, "/");
                 if (frame->scopeQuery) {
@@ -801,7 +801,7 @@ static void corto_selectRequestReplicators(
                 corto_selectParseFilter(frame->filter, parent, expr);
                 corto_cleanpath(parent, parent);
 
-                data->mounts[i].iter = corto_selectRequestReplicator(
+                data->mounts[i].iter = corto_selectRequestMount(
                     data->mounts[i].r,
                     parent,
                     expr,
@@ -810,16 +810,16 @@ static void corto_selectRequestReplicators(
         }
     }
 
-    if (data->activeReplicators == 0) {
-        data->activeReplicators = -1;
+    if (data->activeMounts == 0) {
+        data->activeMounts = -1;
     }
 }
 
-static void corto_selectIterateReplicators(
+static void corto_selectIterateMounts(
     corto_selectData *data,
     corto_selectStack *frame)
 {
-    if (data->activeReplicators) {
+    if (data->activeMounts) {
         corto_id parent, expr;
 
         /* Parse filter into parent and expression */
@@ -831,17 +831,17 @@ static void corto_selectIterateReplicators(
 
         corto_selectParseFilter(frame->filter, parent, expr);
 
-        if (data->currentReplicator < 0) {
-            data->currentReplicator = 0;
+        if (data->currentMount < 0) {
+            data->currentMount = 0;
         }
 
-        while (!data->mounts[data->currentReplicator].iter.hasNext) {
-            data->currentReplicator ++;
+        while (!data->mounts[data->currentMount].iter.hasNext) {
+            data->currentMount ++;
         }
 
         /* Walk over iterators until one with data available has been found */
-        while ((data->currentReplicator < data->activeReplicators)) {
-            corto_resultIter *iter = &data->mounts[data->currentReplicator].iter;
+        while ((data->currentMount < data->activeMounts)) {
+            corto_resultIter *iter = &data->mounts[data->currentMount].iter;
 
             while (corto_iterHasNext(iter)) {
                 corto_result *result = corto_iterNext(iter);
@@ -915,7 +915,7 @@ static void corto_selectIterateReplicators(
             }
 
             if (!data->next) {
-                data->currentReplicator ++;
+                data->currentMount ++;
             } else {
                 break;
             }
@@ -930,8 +930,8 @@ static void corto_selectThis(
     if (frame->scopeQuery) {
         frame->filter = frame->scopeQuery;
         frame->scopeQuery = NULL;
-        corto_selectRequestReplicators(data, frame, NULL, FALSE);
-        corto_selectIterateReplicators(data, frame);
+        corto_selectRequestMounts(data, frame, NULL, FALSE);
+        corto_selectIterateMounts(data, frame);
     } else {
         /* Ensure that SINK mounts are loaded so any filters will be
          * correctly applied by corto_selectMatch */
@@ -941,7 +941,7 @@ static void corto_selectThis(
         corto_object o = frame->scope;
         frame->scope = corto_parentof(frame->scope);
         if (frame->scope) {
-            corto_selectRequestReplicators(data, frame, NULL, TRUE);
+            corto_selectRequestMounts(data, frame, NULL, TRUE);
         }
         if (!data->next) {
             if (!frame->scope || corto_selectMatch(frame, o, data)) {
@@ -971,14 +971,14 @@ static void corto_selectScope(
 
     /* Request mounts once per scope, and do it before iterating over
      * corto store objects so mounts have more time to fetch data. */
-    corto_selectRequestReplicators(data, frame, NULL, FALSE);
+    corto_selectRequestMounts(data, frame, NULL, FALSE);
 
     corto__scopeClaim(frame->scope);
     data->next = NULL;
 
 
     /* If not iterating over a mount, iterate over the store */
-    if ((data->currentReplicator == -1) &&
+    if ((data->currentMount == -1) &&
         !data->scopes[data->currentScope].scopeQuery)
     {
         while ((o = corto_selectIterNext(frame, lastKey))) {
@@ -997,7 +997,7 @@ static void corto_selectScope(
 
     /* Handle mount iteration outside of scope lock */
     if (!data->next) {
-        corto_selectIterateReplicators(data, frame);
+        corto_selectIterateMounts(data, frame);
     }
 }
 
@@ -1011,11 +1011,11 @@ static void corto_selectTree(
 
     /* Request mounts once per scope, and do it before iterating over
      * corto store objects so mounts have more time to fetch data. */
-    corto_selectRequestReplicators(data, frame, NULL, TRUE);
+    corto_selectRequestMounts(data, frame, NULL, TRUE);
 
     data->next = NULL;
 
-    if ((data->currentReplicator == -1) &&
+    if ((data->currentMount == -1) &&
         !data->scopes[data->currentScope].scopeQuery)
     {
         corto_object o = NULL;
@@ -1065,7 +1065,7 @@ static void corto_selectTree(
 
     /* Handle mount iteration outside of scope lock */
     if (!data->next) {
-        corto_selectIterateReplicators(data, frame);
+        corto_selectIterateMounts(data, frame);
     }
 }
 
@@ -1073,9 +1073,14 @@ static void corto_selectTree(
 static void corto_selectReset(corto_selectData *data) {
     corto_int32 i = 0;
 
-    for (i = 0; i < data->activeReplicators; i ++) {
+    for (i = 0; i < data->activeMounts; i ++) {
         corto_iterRelease(&data->mounts[i].iter);
         data->mounts[i].iter.hasNext = NULL;
+        /* Don't reset 'iter.next' and 'r', as subsequent iterations will scan the
+         * activeMount list for SINK mounts in ON_TREE mode. Also,
+         * .iter.next is used to determine whether a SINK mount returned a
+         * valid iterator, and thus whether the object store should be
+         * suppressed or not. */
     }
 
     if (data->item.value && data->destSer.contentRelease) {
@@ -1093,8 +1098,8 @@ static void corto_selectReset(corto_selectData *data) {
 
     data->sp = 0;
     data->item.value = 0;
-    data->activeReplicators = -1;
-    data->currentReplicator = -1;
+    data->activeMounts = -1;
+    data->currentMount = -1;
 }
 
 static void corto_selectPrepareFrame(
@@ -1116,21 +1121,21 @@ static void corto_selectPrepareFrame(
 /* When moving to the next scope element, filter out active mounts that
  * don't operate on a tree, as they don't contain relevant data for
  * a child scope. */
-static void corto_selectFilterReplicators(corto_selectData *data) {
+static void corto_selectFilterMounts(corto_selectData *data) {
     corto_int32 i = 0;
-    for (i = 0; i < data->activeReplicators; i ++) {
+    for (i = 0; i < data->activeMounts; i ++) {
         if (!(data->mounts[i].r->mask & CORTO_ON_TREE)) {
-            if (i == (data->activeReplicators - 1)) {
+            if (i == (data->activeMounts - 1)) {
                 data->mounts[i].r = NULL;
             } else {
                 /* Don't move whole array forward, just move the last mount
                  * to the current position in the array. A user should make no
                  * assumptions on in which order mounts are invoked */
                 data->mounts[i].r =
-                  data->mounts[data->activeReplicators - 1].r;
-                data->mounts[data->activeReplicators - 1].r = NULL;
+                  data->mounts[data->activeMounts - 1].r;
+                data->mounts[data->activeMounts - 1].r = NULL;
             }
-            data->activeReplicators --;
+            data->activeMounts --;
         }
     }
 }
@@ -1142,7 +1147,7 @@ static corto_bool corto_selectNextScope(corto_selectData *data) {
         /* Only continue if previous scope didn't return a single object, in
          * which case 'next' will have been set to NULL */
         if (frame->next) {
-            corto_selectFilterReplicators(data);
+            corto_selectFilterMounts(data);
             corto_selectReset(data);
             corto_selectPrepareFrame(data, frame, ++data->currentScope);
             return TRUE;
@@ -1212,7 +1217,7 @@ static void corto_selectRelease(corto_iter *iter) {
  * /a/b + "c"
  * /a/b/c
  *
- * Replicators registered for /, /a, /a/b and /a/b/c will be invoked with the
+ * Mounts registered for /, /a, /a/b and /a/b/c will be invoked with the
  * respective string remainders ("a/b/c", "b/c", "c").
  *
  * The function will only create elements for actual (not virtual) objects.
@@ -1357,8 +1362,8 @@ static corto_resultIter corto_selectPrepareIterator (
 
     data->tokens = corto_strdup(data->expr);
     data->contentType = r->contentType;
-    data->activeReplicators = -1;
-    data->currentReplicator = -1;
+    data->activeMounts = -1;
+    data->currentMount = -1;
     data->offset = r->offset;
     data->limit = r->limit;
     data->augmentFilter = r->augment;

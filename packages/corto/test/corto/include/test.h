@@ -120,6 +120,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <DeclaredParent.h>
 #include <DefinedParent.h>
 #include <Dog.h>
+#include <EmptySinkReplicator.h>
 #include <Env.h>
 #include <Event.h>
 #include <EventTest.h>
@@ -145,6 +146,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Select.h>
 #include <SelectContentType.h>
 #include <SelectSink.h>
+#include <SelectSinkNoOnRequest.h>
 #include <SelectSinkWithType.h>
 #include <SinkReplicator.h>
 #include <StringDeserializer.h>

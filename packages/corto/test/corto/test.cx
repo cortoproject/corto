@@ -473,6 +473,18 @@ test/Suite SelectSinkWithType::
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
 
+class EmptySinkReplicator : core/mount, hidden::
+    alias mount: mount/mount
+    int16 construct()
+
+// Test pass-through behavior for SINK mounts that don't override onRequest
+test/Suite SelectSinkNoOnRequest::
+    void setup() method
+    void teardown() method
+
+    void tc_selectSingle()
+    void tc_selectScope()
+
 // Event test support type
 class EventTest::
     @scope: object
