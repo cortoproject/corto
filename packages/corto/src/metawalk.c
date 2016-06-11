@@ -14,6 +14,11 @@ corto_int16 corto_metaWalk(corto_serializer s, corto_type type, void* userData) 
     corto__object* o;
     corto_int16 result;
 
+    if (!type) {
+        corto_seterr("corto_metawalk called on NULL type");
+        goto error;
+    }
+
     /* Instantiate dummy-object */
     o = corto_alloc(sizeof(corto__object) + type->size); /* alloca is dangerous here because objects can get large, causing stack overflows. */
     memset(o, 0, sizeof(corto__object) + type->size);
@@ -24,6 +29,9 @@ corto_int16 corto_metaWalk(corto_serializer s, corto_type type, void* userData) 
     corto_dealloc(o);
 
     return result;
+
+error:
+    return -1;
 }
 
 /* Serialize constants of enumeration */
