@@ -710,6 +710,8 @@ CORTO_BITMASK_O(core, eventMask);
     CORTO_CONSTANT_O(core_eventMask, ON_DELETE);
     CORTO_CONSTANT_O(core_eventMask, ON_INVALIDATE);
     CORTO_CONSTANT_O(core_eventMask, ON_UPDATE);
+    CORTO_CONSTANT_O(core_eventMask, ON_RESUME);
+    CORTO_CONSTANT_O(core_eventMask, ON_SUSPEND);
     CORTO_CONSTANT_O(core_eventMask, ON_SELF);
     CORTO_CONSTANT_O(core_eventMask, ON_SCOPE);
     CORTO_CONSTANT_O(core_eventMask, ON_TREE);

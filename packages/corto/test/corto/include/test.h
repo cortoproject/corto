@@ -143,6 +143,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <RelativeName.h>
 #include <ReplicatorRequest.h>
 #include <Resolver.h>
+#include <ResumeSink.h>
 #include <Select.h>
 #include <SelectContentType.h>
 #include <SelectSink.h>

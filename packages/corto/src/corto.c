@@ -373,6 +373,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, eventMask_ON_DELETE);\
     SSO_OP_OBJ_CORE(op, eventMask_ON_INVALIDATE);\
     SSO_OP_OBJ_CORE(op, eventMask_ON_UPDATE);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_RESUME);\
+    SSO_OP_OBJ_CORE(op, eventMask_ON_SUSPEND);\
     SSO_OP_OBJ_CORE(op, eventMask_ON_SELF);\
     SSO_OP_OBJ_CORE(op, eventMask_ON_SCOPE);\
     SSO_OP_OBJ_CORE(op, eventMask_ON_TREE);\

@@ -594,9 +594,7 @@ corto_member _corto_interface_resolveMember_v(
 {
 /* $begin(corto/lang/interface/resolveMember) */
     corto_uint32 i;
-    corto_member result;
-
-    result = NULL;
+    corto_member result = NULL;
 
     for (i=0; i<this->members.length; i++) {
         if (!strcmp(corto_idof(this->members.buffer[i]), name)) {

@@ -436,9 +436,11 @@ test/Suite ReplicatorRequest::
 class SinkReplicator : core/mount, hidden::
     alias mount: mount/mount
     alias type: mount/type
+    value: string
     items: resultList, private
     int16 construct()
     resultIter onRequest(core/request request)
+    object onResume(string parent, string name, object o)
 
 // Request data from a SINK mount
 test/Suite SelectSink::
@@ -458,6 +460,32 @@ test/Suite SelectSink::
     void tc_selectMixedScope()
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
+
+// Resume data from SINK mount
+test/Suite ResumeSink::
+    void setup() method
+    void teardown() method
+    void tc_resolve()
+    void tc_resolveNested1()
+    void tc_resolveNested2()
+    void tc_resolveFromMount()
+    void tc_resolveNested1FromMount()
+    void tc_resolveNested2FromMount()
+    void tc_define()
+    void tc_defineNested1()
+    void tc_defineNested2()
+    void tc_resolveNotExist()
+    void tc_resolveNested1NotExist()
+    void tc_resolveNested2NotExist()
+
+    observer onDeclare{}
+    observer onDefine{}
+    observer onUpdate{}
+    observer onDelete{}
+    observer onResume{}
+    observer onSuspend{}
+
+    declared, defined, updated, deleted, resumed, suspended: int8
 
 // Request data from a SINK mount with a type
 test/Suite SelectSinkWithType::
@@ -542,21 +570,29 @@ test/Suite Event::
     void tc_onDeclareSelf()
     void tc_onDeclareScope()
     void tc_onDeclareTree()
+    void tc_onDeclareScopeNotObservable()
+    void tc_onDeclareTreeNotObservable()
 
     void tc_onDefine()
     void tc_onDefineSelf()
     void tc_onDefineScope()
     void tc_onDefineTree()
+    void tc_onDefineScopeNotObservable()
+    void tc_onDefineTreeNotObservable()
 
     void tc_onUpdate()
     void tc_onUpdateSelf()
     void tc_onUpdateScope()
     void tc_onUpdateTree()
+    void tc_onUpdateScopeNotObservable()
+    void tc_onUpdateTreeNotObservable()
 
     void tc_onDelete()
     void tc_onDeleteSelf()
     void tc_onDeleteScope()
     void tc_onDeleteTree()
+    void tc_onDeleteScopeNotObservable()
+    void tc_onDeleteTreeNotObservable()
 
     void tc_updateVoidErr()
     void tc_updateUndefined()

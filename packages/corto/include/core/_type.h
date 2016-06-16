@@ -74,11 +74,13 @@ CORTO_BITMASK(corto_eventMask);
     #define CORTO_ON_DELETE (0x4)
     #define CORTO_ON_INVALIDATE (0x8)
     #define CORTO_ON_UPDATE (0x10)
-    #define CORTO_ON_SELF (0x20)
-    #define CORTO_ON_SCOPE (0x40)
-    #define CORTO_ON_TREE (0x80)
-    #define CORTO_ON_VALUE (0x100)
-    #define CORTO_ON_METAVALUE (0x200)
+    #define CORTO_ON_RESUME (0x20)
+    #define CORTO_ON_SUSPEND (0x40)
+    #define CORTO_ON_SELF (0x80)
+    #define CORTO_ON_SCOPE (0x100)
+    #define CORTO_ON_TREE (0x200)
+    #define CORTO_ON_VALUE (0x400)
+    #define CORTO_ON_METAVALUE (0x800)
 
 /* /corto/core/mountKind */
 typedef enum corto_mountKind {

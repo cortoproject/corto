@@ -77,7 +77,7 @@ if not defined? NOCORTO then
             else
               begin
                 sh "corto locate corto/gen/doc/doc --silent"
-                docStr = "-g doc/doc"
+                # docStr = "-g doc/doc"
               rescue
               end
             end

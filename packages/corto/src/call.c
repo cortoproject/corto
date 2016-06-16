@@ -57,7 +57,10 @@ void corto_callDeinit(corto_function f) {
     if (corto_instanceof(corto_method_o, f)) {\
         corto_object instance = *(corto_object*)argptrs[0];\
         corto_object owner = corto_ownerof(instance);\
-        if (owner && corto_instanceof(corto_mount_o, owner)) {\
+        if (owner \
+            && corto_instanceof(corto_mount_o, owner) \
+            && (corto_mount(owner)->kind != CORTO_SINK)) \
+        {\
             if (!(owner == corto_getOwner())) {\
                 corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
                 return;\

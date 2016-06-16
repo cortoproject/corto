@@ -266,7 +266,18 @@ corto_object _corto_mount_resume(
     corto_object o)
 {
 /* $begin(corto/core/mount/resume) */
-    return corto_mount_onResume(this, parent, name, o);
+    /* Ensure that if object is created, owner & attributes are set correctly */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
+    corto_object prevOwner = corto_setOwner(this);
+
+    /* Resume object */
+    corto_object result = corto_mount_onResume(this, parent, name, o);
+
+    /* Restore owner & attributes */
+    corto_setAttr(prevAttr);
+    corto_setOwner(prevOwner);
+
+    return result;
 /* $end */
 }
 

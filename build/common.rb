@@ -24,7 +24,12 @@ end
 # Set coverage
 if not defined? COVERAGE then
   if ENV['coverage'] == "true" then
-    COVERAGE ||= true
+    # An update in binutils broke code coverage
+    if CORTO_OS != "Darwin" then
+      COVERAGE ||= false
+    else
+      COVERAGE ||= true
+    end
   else
     COVERAGE ||= false
   end

@@ -140,15 +140,22 @@ repeat:
                 corto_setref(&lookup, o);
             } else {
                 if (!overload) {
-                    corto_object prev = o;
+                    corto_object prev = o, prevLookup = lookup;
 
                     o = corto_lookupLowercase(o, bufferLc);
-                    if (lookup) {
-                        corto_release(lookup); /* Free reference */
-                    }
 
                     if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
                         o = corto_resume(prev, buffer, NULL);
+                    }
+
+                    /* Release lookup after(!) potentially resuming an object. In
+                     * case of a nested resume, a parent will have been
+                     * resumed first. Releasing the parent before resuming the
+                     * child will remove the parent from the store. Becuase the
+                     * child claims the parent, this won't happen after the
+                     * resume. */
+                    if (prevLookup) {
+                        corto_release(prevLookup); /* Free reference */
                     }
 
                     lookup = o;

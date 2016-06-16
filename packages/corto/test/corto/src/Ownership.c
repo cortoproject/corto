@@ -295,11 +295,11 @@ corto_void _test_Ownership_tc_invokeOwned(
 
     /* Invoke method in context of mount. Nothing should happen */
     corto_call(corto_function(test_MethodForwardTest_func_o), NULL, o);
-    test_assert(o->invoked == 0);
-    test_assert(r->invoked == 0);
+    test_assertint(o->invoked, 0);
+    test_assertint(r->invoked, 0);
 
     corto_int16 result = corto_delete(o);
-    test_assert(result == 0);
+    test_assertint(result, 0);
 
     corto_setOwner(NULL);
 

@@ -105,6 +105,51 @@ corto_void _test_Event_tc_onDeclareScope(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDeclareScopeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeclareScopeNotObservable) */
+    corto_int16 ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countDeclareScope == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countDeclareScope == 1);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == o);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareScope == 1);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countDeclareScope == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == p);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countDeclareScope == 2);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    corto_define(q);
+    test_assert(this->et->countDeclareScope == 2);
+
+    corto_delete(o);
+    corto_delete(p);
+
+    test_assert(this->et->countDeclareScope == 2);
+
+    corto_setAttr(prevAttr);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDeclareSelf(
     test_Event this)
 {
@@ -180,6 +225,54 @@ corto_void _test_Event_tc_onDeclareTree(
     corto_delete(p);
 
     test_assert(this->et->countDeclareTree == 3);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDeclareTreeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeclareTreeNotObservable) */
+    corto_int16 ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countDeclareTree == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countDeclareTree == 1);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == o);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareTree == 1);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countDeclareTree == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == p);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countDeclareTree == 3);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == q);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareTree == 3);
+
+    corto_delete(o);
+    corto_delete(p);
+
+    test_assert(this->et->countDeclareTree == 3);
+
+    corto_setAttr(prevAttr);
 
 /* $end */
 }
@@ -265,6 +358,52 @@ corto_void _test_Event_tc_onDefineScope(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDefineScopeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDefineScopeNotObservable) */
+    corto_int16 ret;
+    corto_attr attr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countDefineScope == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countDefineScope == 0);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineScope == 1);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == o);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countDefineScope == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == p);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countDefineScope == 2);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineScope == 2);
+
+    corto_delete(o);
+    corto_delete(p);
+
+    test_assert(this->et->countDefineScope == 2);
+
+    corto_setAttr(attr);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDefineSelf(
     test_Event this)
 {
@@ -343,6 +482,54 @@ corto_void _test_Event_tc_onDefineTree(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDefineTreeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDefineTreeNotObservable) */
+    corto_int16 ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countDefineTree == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countDefineTree == 0);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineTree == 1);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == o);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countDefineTree == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == p);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countDefineTree == 2);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineTree == 3);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == q);
+
+    corto_delete(o);
+    corto_delete(p);
+
+    test_assert(this->et->countDefineTree == 3);
+
+    corto_setAttr(prevAttr);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDelete(
     test_Event this)
 {
@@ -417,6 +604,49 @@ corto_void _test_Event_tc_onDeleteScope(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDeleteScopeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeleteScopeNotObservable) */
+    corto_int16 ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countDeleteScope == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countDeleteScope == 0);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteScope == 0);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countDeleteScope == 0);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countDeleteScope == 0);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteScope == 0);
+
+    corto_delete(o);
+    test_assert(this->et->countDeleteScope == 1);
+
+    corto_delete(p);
+    test_assert(this->et->countDeleteScope == 2);
+
+    corto_setAttr(prevAttr);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDeleteSelf(
     test_Event this)
 {
@@ -487,6 +717,49 @@ corto_void _test_Event_tc_onDeleteTree(
 
     corto_delete(p);
     test_assert(this->et->countDeleteTree == 3);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDeleteTreeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeleteTreeNotObservable) */
+    corto_int16 ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countDeleteTree == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countDeleteTree == 0);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteTree == 0);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countDeleteTree == 0);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countDeleteTree == 0);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteTree == 0);
+
+    corto_delete(o);
+    test_assert(this->et->countDeleteTree == 1);
+
+    corto_delete(p);
+    test_assert(this->et->countDeleteTree == 3);
+
+    corto_setAttr(prevAttr);
 
 /* $end */
 }
@@ -651,6 +924,90 @@ corto_void _test_Event_tc_onUpdateScope(
 /* $end */
 }
 
+corto_void _test_Event_tc_onUpdateScopeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateScopeNotObservable) */
+    int ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countUpdateScope == 0);
+
+    ret = corto_update(testScope);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateScope == 0);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == -1);
+    test_assert(this->et->countUpdateScope == 0);
+    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 1);
+
+    corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == o);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countUpdateScope == 3);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_updateBegin(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 3);
+
+    corto_updateEnd(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 4);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == p);
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countUpdateScope == 4);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_updateBegin(q);
+    test_assert(ret == -1);
+    test_assert(this->et->countUpdateScope == 4);
+    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 4);
+
+    ret = corto_updateBegin(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 4);
+
+    corto_updateEnd(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 4);
+
+    corto_delete(o);
+    corto_delete(p);
+
+    test_assert(this->et->countUpdateScope == 4);
+
+    corto_setAttr(prevAttr);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onUpdateSelf(
     test_Event this)
 {
@@ -803,6 +1160,92 @@ corto_void _test_Event_tc_onUpdateTree(
     corto_delete(p);
 
     test_assert(this->et->countUpdateTree == 6);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onUpdateTreeNotObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateTreeNotObservable) */
+    int ret;
+    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+
+    test_assert(this->et->countUpdateTree == 0);
+
+    ret = corto_update(testScope);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 0);
+
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateTree == 0);
+    test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == -1);
+    test_assert(this->et->countUpdateTree == 0);
+    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 1);
+
+    corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == o);
+
+    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    test_assert(p != NULL);
+    test_assert(this->et->countUpdateTree == 3);
+    test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_updateBegin(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 3);
+
+    corto_updateEnd(p);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 4);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == p);
+
+    corto_object q = corto_int32DeclareChild(p, "q");
+    test_assert(q != NULL);
+    test_assert(this->et->countUpdateTree == 4);
+    test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
+
+    ret = corto_updateBegin(q);
+    test_assert(ret == -1);
+    test_assert(this->et->countUpdateTree == 4);
+    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
+
+    ret = corto_define(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 5);
+
+    ret = corto_updateBegin(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 5);
+
+    corto_updateEnd(q);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 6);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == q);
+
+    corto_delete(o);
+    corto_delete(p);
+
+    test_assert(this->et->countUpdateTree == 6);
+
+    corto_setAttr(prevAttr);
 
 /* $end */
 }

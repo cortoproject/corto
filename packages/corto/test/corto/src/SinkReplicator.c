@@ -22,7 +22,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         ".",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -31,7 +31,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         ".",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -40,7 +40,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         ".",
         type,
-        0
+        (corto_word)this->value
     );
 
     // Second tier
@@ -50,7 +50,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -59,7 +59,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -68,7 +68,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x",
         type,
-        0
+        (corto_word)this->value
     );
 
     // Third tier
@@ -78,7 +78,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -87,7 +87,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -96,7 +96,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a",
         type,
-        0
+        (corto_word)this->value
     );
 
     // Fourth tier
@@ -106,7 +106,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a/k",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -115,7 +115,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a/k",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_resultSet(
@@ -124,7 +124,7 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a/k",
         type,
-        0
+        (corto_word)this->value
     );
 
     corto_mount(this)->kind = CORTO_SINK;
@@ -175,5 +175,73 @@ corto_resultIter _test_SinkReplicator_onRequest(
 
     /* Return persistent iterator to request */
     return result;
+/* $end */
+}
+
+corto_object _test_SinkReplicator_onResume(
+    test_SinkReplicator this,
+    corto_string parent,
+    corto_string name,
+    corto_object o)
+{
+/* $begin(test/SinkReplicator/onResume) */
+    corto_iter iter = corto_llIter(this->items);
+    corto_object result = NULL;
+
+    /* Find object. Do proper error handling, so testcases are easy to debug */
+    corto_resultIterForeach(iter, e) {
+        if (!strcmp(parent, e.parent)) {
+            if (!strcmp(name, e.id)) {
+                corto_type t = corto_resolve(NULL, e.type);
+                if (!t) {
+                    corto_seterr("cannot resume object, unknown type '%s'",
+                      e.type);
+                    goto error;
+                }
+
+                if (o && (t != corto_typeof(o))) {
+                    corto_seterr("type '%s' does not match type of object '%s'",
+                      e.type, corto_fullpath(NULL, corto_typeof(o)));
+                }
+
+                corto_object p = corto_resolve(
+                    corto_mount(this)->mount,
+                    e.parent
+                );
+                if (!p) {
+                    corto_seterr("cannot find parent '%s'", e.parent);
+                    goto error;
+                }
+
+                if (o && (p != corto_parentof(o))) {
+                    corto_seterr("parent '%s' does not match parent of object '%s'",
+                      e.type, corto_fullpath(NULL, corto_parentof(o)));
+                    goto error;
+                }
+
+                if (o) {
+                    result = o;
+                } else {
+                    result = corto_createChild(p, e.id, t);
+                    if (!result) {
+                        corto_seterr("cannot create object '%s': %s",
+                            e.id, corto_lasterr());
+                        goto error;
+                    }
+                }
+
+                if (e.value) {
+                    corto_fromStr(&result, (corto_string)e.value);
+                }
+
+                corto_release(t);
+                corto_release(p);
+            }
+        }
+    }
+
+    return result;
+error:
+    return NULL;
 /* $end */
 }

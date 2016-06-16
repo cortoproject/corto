@@ -15,7 +15,7 @@ corto_void _test_SelectSink_setup(
 
     /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
-    test_SinkReplicatorCreateChild_auto(root_o, sinkMount, mount, NULL);
+    test_SinkReplicatorCreateChild_auto(root_o, sinkMount, mount, NULL, NULL);
 
     /* Ensure all objects are created with persistency enabled */
     corto_setAttr(CORTO_ATTR_PERSISTENT);

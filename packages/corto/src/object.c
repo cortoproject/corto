@@ -524,6 +524,7 @@ void corto__destructor(corto_object o) {
     corto_type t;
     corto__object* _o;
 
+
     t = corto_typeof(o);
     if (corto_checkState(o, CORTO_DEFINED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -1022,7 +1023,6 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
                         goto owner_error;
                     }
                 }
-
                 goto ok;
             }
         } else {
@@ -1042,9 +1042,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
         }
 
         /* Notify parent of new object */
-        if (corto__objectObservable(_o)) {
-            corto_notify(corto__objectObservable(_o), o, CORTO_ON_DECLARE);
-        }
+        corto_notify(corto__objectObservable(_o), o, CORTO_ON_DECLARE);
 
         /* void objects are instantly defined because they have no value. */
         if (type->kind == CORTO_VOID) {
@@ -1075,6 +1073,7 @@ corto_object _corto_createChild(corto_object parent, corto_string id, corto_type
     if (result && corto_checkState(result, CORTO_VALID)) {
         corto_define(result);
     }
+
     return result;
 }
 
@@ -1143,6 +1142,7 @@ corto_object corto_resume(
                 if ((p == parent) ||
                   (rData->mount->mask == CORTO_ON_TREE)) {
                     corto_object requested;
+
                     /* If mount implements resume, this will load the
                      * persistent copy in memory */
                     if ((requested = corto_mount_resume(
@@ -1154,6 +1154,13 @@ corto_object corto_resume(
                         /* The first mount that has the object
                          * takes precedence */
                         result = requested;
+
+                        /* Assign owner */
+                        corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
+                        corto__persistent *_p = corto__objectPersistent(_o);
+                        corto_assert(p != NULL, "cannot resume object that is not persistent");
+                        corto_setref(&_p->owner, rData->mount);
+
                         break;
                     }
                 }
@@ -1168,6 +1175,7 @@ corto_object corto_resume(
 /* Define object */
 corto_int16 corto_define(corto_object o) {
     corto_int16 result = 0;
+    corto_bool resumed = FALSE;
 
     /* Only define valid, undefined objects */
     if (corto_checkState(o, CORTO_DECLARED)) {
@@ -1186,14 +1194,21 @@ corto_int16 corto_define(corto_object o) {
                 /* If object is persistent and locally owned, check if a
                  * persistent copy is already available */
                 if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                    corto_resume(corto_parentof(o), corto_idof(o), o);
-                    /* Ignore result: if there are no mounts that contain
-                     * a copy of the object, use the initial value */
+                    if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
+                        resumed = TRUE;
+                    }
+
+                /* If owner of an object is a SINK, object is resumed */
+                } else if (_p->owner
+                  && corto_instanceof(corto_mount_o, _p->owner)
+                  && (corto_mount(_p->owner)->kind == CORTO_SINK))
+                {
+                    resumed = TRUE;
                 }
             }
 
             /* Don't invoke constructor if object is not locally owned */
-            if (!_p || !_p->owner || !corto_instanceof(corto_mount_o, _p->owner)) {
+            if (corto_owned(o)) {
                 /* If object is instance of a class, call the constructor */
                 if (corto_class_instanceof(corto_class_o, t)) {
                     /* Call constructor - will potentially override observer params */
@@ -1210,7 +1225,11 @@ corto_int16 corto_define(corto_object o) {
                 }
 
                 /* Notify observers of defined object */
-                corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE|CORTO_ON_UPDATE);
+                if (!resumed) {
+                    corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE|CORTO_ON_UPDATE);
+                } else {
+                    corto_notify(corto__objectObservable(_o), o, CORTO_ON_RESUME);
+                }
             } else {
                 /* Remove valid state */
                 corto_invalidate(o);
@@ -1288,10 +1307,12 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
                     corto_drop(o, delete);
                 }
                 corto_notify(corto__objectObservable(_o), o, CORTO_ON_DELETE);
+            } else {
+                corto_notify(corto__objectObservable(_o), o, CORTO_ON_SUSPEND);
             }
 
             /* Call object destructor */
-            if (!owner || !corto_instanceof(corto_mount_o, owner)) {
+            if (corto_owned(o)) {
                 corto__destructor(o);
             }
             if (owner) {
@@ -1741,7 +1762,7 @@ void* corto_olsGet(corto_object o, corto_int8 key) {
     if (scope) {
         corto__ols *ols = NULL;
         if (corto_rwmutexWrite(&scope->scopeLock)) {
-            corto_seterr("aquiring scopelock failed");
+            corto_seterr("aquiring scopelock failed: %s", corto_lasterr());
             goto error;
         }
 
@@ -2312,22 +2333,25 @@ corto_object corto_ownerof(corto_object o) {
 corto_bool corto_owned(corto_object o) {
     corto_object owner = corto_ownerof(o);
     corto_object current = corto_getOwner();
+    corto_bool result = FALSE;
 
     if (owner == current) {
-        return TRUE;
+        result = TRUE;
     } else if (owner && corto_instanceof(corto_mount_o, owner)) {
         if (!current) {
             if (corto_mount(owner)->kind != CORTO_SINK) {
-                return FALSE;
+                result = FALSE;
             } else {
-                return TRUE;
+                result = TRUE;
             }
         } else {
-            return FALSE;
+            result = FALSE;
         }
     } else {
-        return TRUE;
+        result = TRUE;
     }
+
+    return result;
 }
 
 corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string context) {
