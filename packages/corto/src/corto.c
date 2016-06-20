@@ -108,6 +108,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, collection);\
     SSO_OP_CLASS(op, iterator);\
     SSO_OP_CLASS(op, struct);\
+    SSO_OP_CLASS(op, union);\
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
     SSO_OP_CLASS(op, observableEvent);\
@@ -126,6 +127,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, list);\
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
+    SSO_OP_CLASS(op, case);\
+    SSO_OP_CLASS(op, label);\
+    SSO_OP_CLASS(op, default);\
     SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, delegate);\
@@ -176,6 +180,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, eventMask);\
     SSO_OP_VALUE(op, state);\
     SSO_OP_VALUE(op, attr);\
+    SSO_OP_VALUE(op, int32seq);\
     SSO_OP_VALUE(op, objectseq);\
     SSO_OP_VALUE(op, interfaceseq);\
     SSO_OP_VALUE(op, memberseq);\
@@ -300,6 +305,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* compositeKind */\
     SSO_OP_OBJ(op, compositeKind_INTERFACE);\
     SSO_OP_OBJ(op, compositeKind_STRUCT);\
+    SSO_OP_OBJ(op, compositeKind_UNION);\
     SSO_OP_OBJ(op, compositeKind_CLASS);\
     SSO_OP_OBJ(op, compositeKind_DELEGATE);\
     SSO_OP_OBJ(op, compositeKind_PROCEDURE);\
@@ -519,6 +525,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, struct_compatible_);\
     SSO_OP_OBJ(op, struct_castable_);\
     SSO_OP_OBJ(op, struct_resolveMember_);\
+    /* union */\
+    SSO_OP_OBJ(op, union_discriminator);\
+    SSO_OP_OBJ(op, union_parentType);\
+    SSO_OP_OBJ(op, union_parentState);\
+    SSO_OP_OBJ(op, union_defaultType);\
+    SSO_OP_OBJ(op, union_defaultProcedureType);\
+    SSO_OP_OBJ(op, union_init_);\
+    SSO_OP_OBJ(op, union_construct_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
     SSO_OP_OBJ(op, procedure_bind);\
@@ -611,6 +625,17 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, alias_member);\
     SSO_OP_OBJ(op, alias_init_);\
     SSO_OP_OBJ(op, alias_construct_);\
+    /* case */\
+    SSO_OP_OBJ(op, case_type);\
+    SSO_OP_OBJ(op, case_discriminator);\
+    SSO_OP_OBJ(op, case_construct_);\
+    /* label */\
+    SSO_OP_OBJ(op, label_type);\
+    SSO_OP_OBJ(op, label_discriminator);\
+    SSO_OP_OBJ(op, label_construct_);\
+    /* default */\
+    SSO_OP_OBJ(op, default_type);\
+    SSO_OP_OBJ(op, default_construct_);\
     /* parameter */\
     SSO_OP_OBJ(op, parameter_name);\
     SSO_OP_OBJ(op, parameter_type);\

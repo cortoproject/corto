@@ -21,10 +21,12 @@ extern "C" {
 #include <corto/lang/binary.h>
 #include <corto/lang/bitmask.h>
 #include <corto/lang/boolean.h>
+#include <corto/lang/case.h>
 #include <corto/lang/character.h>
 #include <corto/lang/class.h>
 #include <corto/lang/collection.h>
 #include <corto/lang/constant.h>
+#include <corto/lang/default.h>
 #include <corto/lang/delegate.h>
 #include <corto/lang/delegatedata.h>
 #include <corto/lang/destructAction.h>
@@ -36,6 +38,7 @@ extern "C" {
 #include <corto/lang/interface.h>
 #include <corto/lang/interfaceVector.h>
 #include <corto/lang/iterator.h>
+#include <corto/lang/label.h>
 #include <corto/lang/list.h>
 #include <corto/lang/map.h>
 #include <corto/lang/member.h>
@@ -50,6 +53,7 @@ extern "C" {
 #include <corto/lang/text.h>
 #include <corto/lang/type.h>
 #include <corto/lang/uint.h>
+#include <corto/lang/union.h>
 #include <corto/lang/virtual.h>
 
 #ifdef __cplusplus

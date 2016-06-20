@@ -45,6 +45,9 @@ extern "C" {
 #define corto_enum(o) ((corto_enum)corto_assertType((corto_type)corto_enum_o, o))
 #define corto_bitmask(o) ((corto_bitmask)corto_assertType((corto_type)corto_bitmask_o, o))
 #define corto_boolean(o) ((corto_boolean)corto_assertType((corto_type)corto_boolean_o, o))
+#define corto_int32(o) ((corto_int32*)corto_assertType((corto_type)corto_int32_o, o))
+#define corto_int32seq(o) ((corto_int32seq*)corto_assertType((corto_type)corto_int32seq_o, o))
+#define corto_case(o) ((corto_case)corto_assertType((corto_type)corto_case_o, o))
 #define corto_char(o) ((corto_char*)corto_assertType((corto_type)corto_char_o, o))
 #define corto_character(o) ((corto_character)corto_assertType((corto_type)corto_character_o, o))
 #define corto_compositeKind(o) ((corto_compositeKind*)corto_assertType((corto_type)corto_compositeKind_o, o))
@@ -57,6 +60,8 @@ extern "C" {
 #define corto_destructAction(o) ((corto_destructAction*)corto_assertType((corto_type)corto_destructAction_o, o))
 #define corto_class(o) ((corto_class)corto_assertType((corto_type)corto_class_o, o))
 #define corto_constant(o) ((corto_constant*)corto_assertType((corto_type)corto_constant_o, o))
+#define corto_label(o) ((corto_label)corto_assertType((corto_type)corto_label_o, o))
+#define corto_default(o) ((corto_default)corto_assertType((corto_type)corto_default_o, o))
 #define corto_delegate(o) ((corto_delegate)corto_assertType((corto_type)corto_delegate_o, o))
 #define corto_equalityKind(o) ((corto_equalityKind*)corto_assertType((corto_type)corto_equalityKind_o, o))
 #define corto_float64(o) ((corto_float64*)corto_assertType((corto_type)corto_float64_o, o))
@@ -65,7 +70,6 @@ extern "C" {
 #define corto_int64(o) ((corto_int64*)corto_assertType((corto_type)corto_int64_o, o))
 #define corto_int(o) ((corto_int)corto_assertType((corto_type)corto_int_o, o))
 #define corto_int16(o) ((corto_int16*)corto_assertType((corto_type)corto_int16_o, o))
-#define corto_int32(o) ((corto_int32*)corto_assertType((corto_type)corto_int32_o, o))
 #define corto_int8(o) ((corto_int8*)corto_assertType((corto_type)corto_int8_o, o))
 #define corto_iterator(o) ((corto_iterator)corto_assertType((corto_type)corto_iterator_o, o))
 #define corto_list(o) ((corto_list)corto_assertType((corto_type)corto_list_o, o))
@@ -80,6 +84,7 @@ extern "C" {
 #define corto_uint64(o) ((corto_uint64*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
+#define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
 #define corto_virtual(o) ((corto_virtual)corto_assertType((corto_type)corto_virtual_o, o))
 #define corto_void(o) ((corto_void*)o)
 
@@ -314,6 +319,19 @@ CORTO_CLASS_DEF(corto_boolean) {
     CORTO_EXTEND(corto_primitive);
 };
 
+/* int32 */
+typedef int32_t corto_int32;
+
+CORTO_SEQUENCE(corto_int32seq, corto_int32,);
+
+/*  case */
+CORTO_CLASS(corto_case);
+
+CORTO_CLASS_DEF(corto_case) {
+    CORTO_EXTEND(corto_member);
+    corto_int32seq discriminator;
+};
+
 /* char */
 typedef char corto_char;
 
@@ -328,9 +346,10 @@ CORTO_CLASS_DEF(corto_character) {
 typedef enum corto_compositeKind {
     CORTO_INTERFACE = 0,
     CORTO_STRUCT = 1,
-    CORTO_CLASS = 2,
-    CORTO_DELEGATE = 3,
-    CORTO_PROCEDURE = 4
+    CORTO_UNION = 2,
+    CORTO_CLASS = 3,
+    CORTO_DELEGATE = 4,
+    CORTO_PROCEDURE = 5
 } corto_compositeKind;
 
 CORTO_SEQUENCE(corto_memberseq, corto_member,);
@@ -388,6 +407,21 @@ CORTO_CLASS_DEF(corto_class) {
 /* constant */
 typedef int32_t corto_constant;
 
+/*  label */
+CORTO_CLASS(corto_label);
+
+CORTO_CLASS_DEF(corto_label) {
+    CORTO_EXTEND(corto_case);
+    corto_int32 discriminator;
+};
+
+/*  default */
+CORTO_CLASS(corto_default);
+
+CORTO_CLASS_DEF(corto_default) {
+    CORTO_EXTEND(corto_label);
+};
+
 /*  delegate */
 CORTO_CLASS(corto_delegate);
 
@@ -435,9 +469,6 @@ CORTO_CLASS_DEF(corto_int) {
 
 /* int16 */
 typedef int16_t corto_int16;
-
-/* int32 */
-typedef int32_t corto_int32;
 
 /* int8 */
 typedef int8_t corto_int8;
@@ -531,6 +562,14 @@ CORTO_CLASS_DEF(corto_uint) {
     CORTO_EXTEND(corto_primitive);
     corto_uint64 min;
     corto_uint64 max;
+};
+
+/*  union */
+CORTO_CLASS(corto_union);
+
+CORTO_CLASS_DEF(corto_union) {
+    CORTO_EXTEND(corto_interface);
+    corto_type discriminator;
 };
 
 /*  virtual */
