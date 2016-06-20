@@ -180,6 +180,8 @@ test/Suite Copy::
     void tc_listToSequenceAlloc()
     void tc_listToListAlloc()
     void tc_listToListResizeAlloc()
+    void tc_sequenceToSequenceComposite()
+    void tc_sequenceToSequenceValueComposite()
 
 
 // Class with method for testing ownership onInvoke

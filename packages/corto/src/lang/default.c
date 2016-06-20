@@ -13,7 +13,7 @@ corto_int16 _corto_default_construct(
 {
 /* $begin(corto/lang/default/construct) */
 
-    /* << Insert implementation >> */
+    return corto_case_construct(this);
 
 /* $end */
 }

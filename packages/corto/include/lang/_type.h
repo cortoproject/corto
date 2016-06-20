@@ -60,7 +60,6 @@ extern "C" {
 #define corto_destructAction(o) ((corto_destructAction*)corto_assertType((corto_type)corto_destructAction_o, o))
 #define corto_class(o) ((corto_class)corto_assertType((corto_type)corto_class_o, o))
 #define corto_constant(o) ((corto_constant*)corto_assertType((corto_type)corto_constant_o, o))
-#define corto_label(o) ((corto_label)corto_assertType((corto_type)corto_label_o, o))
 #define corto_default(o) ((corto_default)corto_assertType((corto_type)corto_default_o, o))
 #define corto_delegate(o) ((corto_delegate)corto_assertType((corto_type)corto_delegate_o, o))
 #define corto_equalityKind(o) ((corto_equalityKind*)corto_assertType((corto_type)corto_equalityKind_o, o))
@@ -72,6 +71,7 @@ extern "C" {
 #define corto_int16(o) ((corto_int16*)corto_assertType((corto_type)corto_int16_o, o))
 #define corto_int8(o) ((corto_int8*)corto_assertType((corto_type)corto_int8_o, o))
 #define corto_iterator(o) ((corto_iterator)corto_assertType((corto_type)corto_iterator_o, o))
+#define corto_label(o) ((corto_label)corto_assertType((corto_type)corto_label_o, o))
 #define corto_list(o) ((corto_list)corto_assertType((corto_type)corto_list_o, o))
 #define corto_map(o) ((corto_map)corto_assertType((corto_type)corto_map_o, o))
 #define corto_metaprocedure(o) ((corto_metaprocedure)corto_assertType((corto_type)corto_metaprocedure_o, o))
@@ -407,19 +407,11 @@ CORTO_CLASS_DEF(corto_class) {
 /* constant */
 typedef int32_t corto_constant;
 
-/*  label */
-CORTO_CLASS(corto_label);
-
-CORTO_CLASS_DEF(corto_label) {
-    CORTO_EXTEND(corto_case);
-    corto_int32 discriminator;
-};
-
 /*  default */
 CORTO_CLASS(corto_default);
 
 CORTO_CLASS_DEF(corto_default) {
-    CORTO_EXTEND(corto_label);
+    CORTO_EXTEND(corto_case);
 };
 
 /*  delegate */
@@ -479,6 +471,14 @@ CORTO_CLASS(corto_iterator);
 CORTO_CLASS_DEF(corto_iterator) {
     CORTO_EXTEND(corto_type);
     corto_type elementType;
+};
+
+/*  label */
+CORTO_CLASS(corto_label);
+
+CORTO_CLASS_DEF(corto_label) {
+    CORTO_EXTEND(corto_case);
+    corto_int32 discriminator;
 };
 
 /*  list */

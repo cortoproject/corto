@@ -938,8 +938,8 @@ CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | 
     CORTO_ALIAS_O (lang_union, parentState, lang_interface_parentState, CORTO_HIDDEN);
     CORTO_ALIAS_O (lang_union, defaultType, lang_interface_defaultType, CORTO_HIDDEN);
     CORTO_ALIAS_O (lang_union, defaultProcedureType, lang_interface_defaultProcedureType, CORTO_HIDDEN);
-    CORTO_METHOD_O(lang_union, init, "()", lang_int16, FALSE, corto_struct_init);
-    CORTO_METHOD_O(lang_union, construct, "()", lang_int16, FALSE, corto_struct_construct);
+    CORTO_METHOD_O(lang_union, init, "()", lang_int16, FALSE, corto_union_init);
+    CORTO_METHOD_O(lang_union, construct, "()", lang_int16, FALSE, corto_union_construct);
 
 /* /corto/lang/interfaceVector */
 CORTO_STRUCT_O(lang, interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
@@ -1190,20 +1190,20 @@ CORTO_FW_C(lang, case);
 CORTO_CLASS_O(lang, case, lang_member, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
     CORTO_ALIAS_O (lang_case, type, lang_member_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_case, discriminator, lang_int32seq, CORTO_GLOBAL);
-    CORTO_METHOD_O(lang_case, construct, "()", lang_int16, FALSE, corto_member_construct);
+    CORTO_METHOD_O(lang_case, construct, "()", lang_int16, FALSE, corto_case_construct);
 
 /* /corto/lang/label */
 CORTO_FW_C(lang, label);
 CORTO_CLASS_O(lang, label, lang_case, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
     CORTO_ALIAS_O (lang_label, type, lang_case_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_label, discriminator, lang_int32, CORTO_GLOBAL);
-    CORTO_METHOD_O(lang_label, construct, "()", lang_int16, FALSE, corto_member_construct);
+    CORTO_METHOD_O(lang_label, construct, "()", lang_int16, FALSE, corto_label_construct);
 
 /* /corto/lang/default */
 CORTO_FW_C(lang, default);
-CORTO_CLASS_O(lang, default, lang_label, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
-    CORTO_ALIAS_O (lang_default, type, lang_label_type, CORTO_GLOBAL);
-    CORTO_METHOD_O(lang_default, construct, "()", lang_int16, FALSE, corto_member_construct);
+CORTO_CLASS_O(lang, default, lang_case, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
+    CORTO_ALIAS_O (lang_default, type, lang_case_type, CORTO_GLOBAL);
+    CORTO_METHOD_O(lang_default, construct, "()", lang_int16, FALSE, corto_default_construct);
 
 /* /corto/lang/parameter */
 CORTO_STRUCT_O(lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

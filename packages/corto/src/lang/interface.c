@@ -541,7 +541,7 @@ corto_int16 _corto_interface_construct(
         goto error;
     }
 
-    return corto_type_construct(corto_type(this));
+    return corto_type_construct(this);
 error:
     return -1;
 /* $end */
