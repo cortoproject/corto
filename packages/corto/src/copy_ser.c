@@ -183,7 +183,7 @@ static void* corto_collection_resizeArray(corto_collection t, void* sequence, co
         } else if (ownSize < size) {
             /* Reallocate buffer */
             result = ((corto_objectseq*)sequence)->buffer =
-            corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
+              corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
 
             /* Memset new memory */
             memset(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
@@ -201,6 +201,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
     corto_uint32 size1 = 0;
     corto_copy_ser_t *data = userData;
     corto_uint32 result = 0;
+    corto_bool v1IsArray = FALSE, v2IsArray = FALSE;
 
     CORTO_UNUSED(s);
 
@@ -232,11 +233,13 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
                 array1 = v1;
                 elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
                 size1 = corto_collection(t1)->max;
+                v1IsArray = TRUE;
                 break;
             case CORTO_SEQUENCE:
                 array1 = ((corto_objectseq*)v1)->buffer;
                 elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
                 size1 = ((corto_objectseq*)v1)->length;
+                v1IsArray = TRUE;
                 break;
             case CORTO_LIST:
                 list1 = *(corto_ll*)v1;
@@ -249,9 +252,11 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
         switch(corto_collection(t2)->kind) {
             case CORTO_ARRAY:
                 array2 = v2;
+                v2IsArray = TRUE;
                 break;
             case CORTO_SEQUENCE:
                 array2 = ((corto_objectseq*)v2)->buffer;
+                v2IsArray = TRUE;
                 break;
             case CORTO_LIST:
                 list2 = *(corto_ll*)v2;
@@ -260,13 +265,14 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
                 break;
         }
 
-        if (array1) {
-            if (array2) {
+        if (v1IsArray) {
+            if (v2IsArray) {
                 corto_copy_ser_t privateData;
 
                 /* This is a bit tricky: passing the pointer to what is potentially a sequence-buffer
                  * while providing a sequence type. */
                 array2 = corto_collection_resizeArray(corto_collection(t2), v2, size1);
+
                 privateData.value = corto_value_value(corto_type(t2), array2);
                 privateData.base = array1;
                 result = corto_serializeElements(s, info, &privateData);
