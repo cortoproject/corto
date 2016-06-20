@@ -50,21 +50,47 @@ corto_int16 _corto_observer_init(
 
     corto_setref(&corto_function(this)->returnType, corto_void_o);
 
-    /* Set parameters of observer: (this, observable, source) */
-    corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
-    corto_function(this)->parameters.length = 1;
+    /* Set parameters of observer: (this, observable) */
+    if (!corto_checkAttr(this, CORTO_ATTR_SCOPED) || !strchr(corto_idof(this), '(')) {
+        corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
+        corto_function(this)->parameters.length = 1;
 
-    /* Parameter observable */
-    p = &corto_function(this)->parameters.buffer[0];
-    p->name = corto_strdup("observable");
-    p->passByReference = TRUE;
-    if (this->observable && (!(this->mask & CORTO_ON_SCOPE) && !(this->mask & CORTO_ON_DECLARE))) {
-        corto_setref(&p->type, corto_typeof(this->observable));
+        /* Parameter observable */
+        p = &corto_function(this)->parameters.buffer[0];
+        p->name = corto_strdup("observable");
+        p->passByReference = TRUE;
+        if (this->observable && (!(this->mask & CORTO_ON_SCOPE) && !(this->mask & CORTO_ON_DECLARE))) {
+            corto_setref(&p->type, corto_typeof(this->observable));
+        } else {
+            corto_setref(&p->type, corto_type(corto_object_o));
+        }
+
+        /* Don't call function/init which would parse parameters based on
+         * function id, and there are none */
+        return 0;
     } else {
-        corto_setref(&p->type, corto_type(corto_object_o));
+        /* id of function contains a parameter list, parse in function/init */
+        corto_int16 result = corto_function_init(this);
+        if (result) {
+            goto error;
+        }
+
+        if (corto_function(this)->parameters.length != 1) {
+            corto_seterr("observers should have exactly one parameter");
+            goto error;
+        }
+
+        if (!corto_function(this)->parameters.buffer[0].passByReference &&
+            !corto_function(this)->parameters.buffer[0].type->reference)
+        {
+            corto_seterr("observer parameter must be of a reference type");
+            goto error;
+        }
     }
 
-    return 0; /* Don't call function::init, observers do not have parseable parameters, which is currently the only thing a function initializer does. */
+    return 0;
+error:
+    return -1;
 /* $end */
 }
 

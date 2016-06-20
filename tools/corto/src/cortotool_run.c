@@ -210,21 +210,13 @@ corto_int16 cortotool_debug(int argc, char *argv[]) {
     return 0;
 }
 
-corto_int16 cortotool_run(int argc, char *argv[]) {
+corto_int16 cortotool_monitor(char *argv[]) {
     corto_pid pid = 0;
     corto_ll files;
     corto_ll changed = NULL;
     corto_uint32 retries = 0;
     corto_int32 rebuild = 0;
     corto_int32 depErrors = 0;
-
-    if (argc > 1) {
-        corto_chdir(argv[1]);
-    }
-
-		if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
-        return -1;
-    }
 
     files = cortotool_gatherFiles();
     if (!files) {
@@ -325,6 +317,49 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     }
 
     return 0;
+}
+
+corto_int16 cortotool_run(int argc, char *argv[]) {
+    corto_ll monitor, dir;
+    CORTO_UNUSED(argc);
+
+    /* Build first */
+    if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
+        return -1;
+    }
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'run' */
+        {"--monitor", &monitor, NULL},
+        {"$1", &dir, NULL},
+        {NULL}
+      }
+    );
+
+    if (dir) {
+        corto_chdir(corto_llGet(dir, 0));
+    }
+
+    if (monitor) {
+        if (cortotool_monitor(argv)) {
+            goto error;
+        }
+    } else {
+        corto_pid pid = corto_procrun(".corto/app", &argv[1]);
+        if (!pid) {
+            corto_error("failed to start proces");
+            goto error;
+        }
+        corto_procwait(pid, NULL);
+    }
+
+    corto_argclean(data);
+
+    return 0;
+error:
+    return -1;
 }
 
 void cortotool_runHelp(void) {

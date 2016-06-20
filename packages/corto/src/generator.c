@@ -387,7 +387,7 @@ corto_int16 gen_start(corto_generator g) {
 
     /* packages.txt may contain more packages than is found by looking at the
      * metadata, however no code will be generated based on those packages so
-     * they don't have to be configered for code generators */
+     * they don't have to be configured for code generators */
 
     /* Find include paths for packages, load prefix file into generator */
     if (g->imports) {
