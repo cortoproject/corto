@@ -80,7 +80,9 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *
 
 /* Obtain object path */
 corto_string corto_fullpath(corto_id str, corto_object o);
+corto_string corto_fullname(corto_id str, corto_object o);
 corto_string corto_path(corto_id str, corto_object from, corto_object o, const char* sep);
+corto_string corto_pathname(corto_id str, corto_object from, corto_object o, const char* sep);
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 corto_string corto_cleanpath(corto_id buffer, char* path);
 

@@ -974,7 +974,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
     }
 
     if (!id || !strlen(id)) {
-        corto_seterr("invalid id");
+        corto_seterr("invalid id (cannot be null or an empty string)");
         goto error;
     }
 
@@ -1035,6 +1035,10 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
                   corto_lasterr());
             } else {
                 corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
+                corto_seterr("initializing object '%s' of type '%s' failed: %s",
+                    id,
+                    corto_fullpath(NULL, type),
+                    corto_lasterr());
             }
             corto_release(type);
             o = NULL;
@@ -1226,7 +1230,7 @@ corto_int16 corto_define(corto_object o) {
 
                 /* Notify observers of defined object */
                 if (!resumed) {
-                    corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE|CORTO_ON_UPDATE);
+                    corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE);
                 } else {
                     corto_notify(corto__objectObservable(_o), o, CORTO_ON_RESUME);
                 }
@@ -1912,7 +1916,11 @@ corto_string corto_nameof(corto_id buffer, corto_object o) {
             buffer = corto_alloc(sizeof(corto_id));
             threadStr = TRUE;
         }
-        strcpy(buffer, corto_idof(o));
+        if (corto_idof(o)) {
+            strcpy(buffer, corto_idof(o));
+        } else {
+            buffer[0] = '\0';
+        }
     }
 
     if (threadStr) {
@@ -2014,10 +2022,9 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* 
 }
 
 /* Obtain scoped identifier (serves as global unique identifier) */
-corto_string corto_fullpath(corto_id buffer, corto_object o) {
+corto_string corto_fullpath_intern(corto_id buffer, corto_object o, corto_bool useName) {
     corto_object stack[CORTO_MAX_SCOPE_DEPTH];
     corto_uint32 depth;
-    corto_string id;
     corto_char* ptr;
     corto_uint32 len;
     corto_bool threadStr = FALSE;
@@ -2034,7 +2041,11 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
     } else if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         sprintf(buffer, "<%p>", o);
     } else if (corto_parentof(o) == corto_lang_o) {
-        strcpy(buffer, corto_idof(o));
+        if (useName) {
+            corto_nameof(buffer, o);
+        } else {
+            strcpy(buffer, corto_idof(o));
+        }
     } else {
         do {
             stack[depth++] = o;
@@ -2048,8 +2059,18 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
             while(depth) {
                 depth--;
                 o = stack[depth];
+                char* id;
+                corto_id buff;
+                if (useName) {
+                    id = corto_nameof(buff, o);
+                    if (!*id) {
+                        id = NULL;
+                    }
+                } else {
+                    id = corto_idof(o);
+                }
 
-                if ((id = corto_idof(o))) {
+                if (id) {
                     /* Copy scope operator */
                     *ptr = '/';
                     ptr += 1;
@@ -2071,6 +2092,14 @@ corto_string corto_fullpath(corto_id buffer, corto_object o) {
     }
 
     return buffer;
+}
+
+corto_string corto_fullpath(corto_id buffer, corto_object o) {
+    return corto_fullpath_intern(buffer, o, FALSE);
+}
+
+corto_string corto_fullname(corto_id buffer, corto_object o) {
+    return corto_fullpath_intern(buffer, o, TRUE);
 }
 
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep) {
@@ -2118,11 +2147,12 @@ static corto_object* corto_scopeStack(
     return scopeStack;
 }
 
-corto_string corto_path(
+corto_string corto_path_intern(
     corto_id buffer,
     corto_object from,
     corto_object o,
-    const char *sep)
+    const char *sep,
+    corto_bool useName)
 {
     corto_object from_s[CORTO_MAX_SCOPE_DEPTH];
     corto_object o_s[CORTO_MAX_SCOPE_DEPTH];
@@ -2188,8 +2218,15 @@ corto_string corto_path(
             ptr = &buffer[strlen(buffer)];
             while(count) {
                 if (!reverse) {
-                    length = strlen(corto_idof(o_s[count]));
-                    memcpy(ptr, corto_idof(o_s[count]), length);
+                    char* id;
+                    corto_id buff;
+                    if (useName) {
+                        id = corto_nameof(buff, o_s[count]);
+                    } else {
+                        id = corto_idof(o_s[count]);
+                    }
+                    length = strlen(id);
+                    memcpy(ptr, id, length);
                 } else {
                     length = 2;
                     memcpy(ptr, "..", 2);
@@ -2200,8 +2237,15 @@ corto_string corto_path(
                 count--;
             }
             if (!reverse) {
-                length = strlen(corto_idof(o_s[count]));
-                memcpy(ptr, corto_idof(o_s[count]), length);
+                char* id;
+                corto_id buff;
+                if (useName) {
+                    id = corto_nameof(buff, o_s[count]);
+                } else {
+                    id = corto_idof(o_s[count]);
+                }
+                length = strlen(id);
+                memcpy(ptr, id, length);
             } else {
                 length = 2;
                 memcpy(ptr, "..", 2);
@@ -2220,6 +2264,24 @@ corto_string corto_path(
     return buffer;
 error:
     return NULL;
+}
+
+corto_string corto_path(
+    corto_id buffer,
+    corto_object from,
+    corto_object o,
+    const char *sep)
+{
+    return corto_path_intern(buffer, from, o, sep, FALSE);
+}
+
+corto_string corto_pathname(
+    corto_id buffer,
+    corto_object from,
+    corto_object o,
+    const char *sep)
+{
+    return corto_path_intern(buffer, from, o, sep, TRUE);
 }
 
 static char *strsep(char **str, char delim) {
@@ -3558,11 +3620,7 @@ error:
 corto_uint32 corto_overloadParamCount(corto_object o) {
     corto_uint32 result;
     if (corto_interface(corto_typeof(o))->kind == CORTO_PROCEDURE) {
-        if (corto_procedure(corto_typeof(o))->kind != CORTO_OBSERVER) {
-            result = corto_function(o)->parameters.length;
-        } else {
-            result = 0;
-        }
+        result = corto_function(o)->parameters.length;
     } else {
         result = corto_delegate(corto_typeof(o))->parameters.length;
     }
