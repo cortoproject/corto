@@ -87,6 +87,9 @@ void corto_llReverse(corto_ll list);
 /* Clear list */
 void corto_llClear(corto_ll list);
 
+/* Copy list */
+corto_ll corto_llCopy(corto_ll list);
+
 /* Iterator implementation */
 void corto_llIterMoveFirst(corto_iter* iter);
 void *corto_llIterMove(corto_iter* iter, unsigned int index);

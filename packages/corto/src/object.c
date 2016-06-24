@@ -730,7 +730,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 /* Check if parentState matches scopeState of child type */
                 if (childType->parentState && !corto__checkStateXOR(parent, childType->parentState)) {
                     corto_uint32 childState = childType->parentState;
-                    corto_seterr("'%s' is %s, must be %s",
+                    corto_seterr("parent '%s' is %s, must be %s",
                         corto_fullpath(NULL, parent),
                         corto_stateStr(_parent->attrs.state),
                         corto_stateStr(childState));
@@ -1035,7 +1035,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
                   corto_lasterr());
             } else {
                 corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
-                corto_seterr("initializing object '%s' of type '%s' failed: %s",
+                corto_seterr("init for '%s' of '%s' failed: %s",
                     id,
                     corto_fullpath(NULL, type),
                     corto_lasterr());

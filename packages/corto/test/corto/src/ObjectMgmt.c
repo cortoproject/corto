@@ -103,7 +103,7 @@ corto_void _test_ObjectMgmt_tc_createChildInitFail(
 
     corto_object o = corto_createChild(NULL, "o", test_Bar_o);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "/test/Bar/init failed"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'o' of '/test/Bar' failed: /test/Bar/init failed"));
 
 /* $end */
 }
@@ -279,11 +279,11 @@ corto_void _test_ObjectMgmt_tc_createChildParentStateErr(
     test_assert(!corto_checkState(o, CORTO_DEFINED));
 
     corto_object p = corto_createChild(o, "p", test_DefinedParent_o);
-    test_assert(!strcmp(corto_lasterr(), "'/o' is VALID|DECLARED, must be DEFINED"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED"));
     test_assert(p == NULL);
 
     corto_object q = test_DefinedParentCreateChild(o, "q", 0);
-    test_assert(!strcmp(corto_lasterr(), "'/o' is VALID|DECLARED, must be DEFINED"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED"));
     test_assert(q == NULL);
 
     corto_delete(o);
@@ -302,11 +302,11 @@ corto_void _test_ObjectMgmt_tc_createChildParentTypeErr(
     test_assert(!corto_checkState(o, CORTO_DEFINED));
 
     corto_object p = corto_createChild(o, "p", test_VoidParent_o);
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'p' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(p == NULL);
 
     corto_object q = test_VoidParentCreateChild(o, "q", 0);
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'q' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(q == NULL);
 
     corto_delete(o);
@@ -650,7 +650,7 @@ corto_void _test_ObjectMgmt_tc_declareChildInitFail(
 
     corto_object o = corto_declareChild(NULL, "o", test_Bar_o);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "/test/Bar/init failed"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'o' of '/test/Bar' failed: /test/Bar/init failed"));
 
 /* $end */
 }
@@ -789,11 +789,11 @@ corto_void _test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_assert(!corto_checkState(o, CORTO_DEFINED));
 
     corto_object p = corto_declareChild(o, "p", test_VoidParent_o);
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'p' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(p == NULL);
 
     corto_object q = test_VoidParentDeclareChild(o, "q");
-    test_assert(!strcmp(corto_lasterr(), "type of '/o' is not 'void'"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'q' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(q == NULL);
 
     corto_delete(o);
@@ -1667,17 +1667,17 @@ corto_void _test_ObjectMgmt_tc_redeclareWithDifferentType(
     corto_object a = corto_float64DeclareChild(NULL, "a");
     test_assert(a == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "'a' is already declared with a different type"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'a' of 'float64' failed: 'a' is already declared with a different type"));
 
     corto_object b = corto_float64DeclareChild(NULL, "b");
     test_assert(b == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "'b' is already declared with a different type"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'b' of 'float64' failed: 'b' is already declared with a different type"));
 
     corto_object c = corto_float64DeclareChild(NULL, "c");
     test_assert(c == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "'c' is already declared with a different type"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'c' of 'float64' failed: 'c' is already declared with a different type"));
 
 /* $end */
 }

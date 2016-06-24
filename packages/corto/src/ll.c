@@ -324,6 +324,19 @@ void corto_llReverse(corto_ll list) {
     }
 }
 
+/* Copy list */
+corto_ll corto_llCopy(corto_ll list) {
+    corto_iter iter = corto_llIter(list);
+    corto_ll result = NULL;
+    if (list) {
+        result = corto_llNew();
+        while (corto_iterHasNext(&iter)) {
+            corto_llAppend(result, corto_iterNext(&iter));
+        }
+    }
+    return result;
+}
+
 /* Clear list */
 void corto_llClear(corto_ll list) {
     while(list->size) {
