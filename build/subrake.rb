@@ -89,11 +89,12 @@ task :sha do
         remote = `git --git-dir #{git_dir} config --get remote.origin.url`
         if not remote.empty?
             remote = remote.chomp().split("/").slice(-2, 2).join("/")
-            sha = `git --git-dir #{git_dir} rev-parse HEAD`.chomp()
+            sha = `git --git-dir #{git_dir} rev-parse --short HEAD`.chomp()
         else
             remote = git_dir.pathmap("%d")
             sha = "unknown"
         end
-        puts "#{remote}@#{sha}"
+        branch_name = `git --git-dir #{git_dir} rev-parse --abbrev-ref HEAD`.chomp()
+        puts "#{remote}@#{sha} (#{branch_name})"
     end
 end
