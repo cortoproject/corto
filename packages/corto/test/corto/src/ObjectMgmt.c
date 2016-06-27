@@ -1353,7 +1353,7 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
     test_assert(*test_destructCalled_o == 1);
 
     result = corto_delete(o2);
-    test_assert(result == 0);c
+    test_assert(result == 0);
     test_assert(corto_countof(o) == 2);
 
     test_assert(e->countDeleteSelf == 1);
