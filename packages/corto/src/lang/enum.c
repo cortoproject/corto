@@ -14,7 +14,7 @@
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
-        *c = corto_scopeSize(this);
+        *c = corto_scopeSize(this) - 1;
     }
     this->constants.buffer = corto_realloc(this->constants.buffer, (this->constants.length+1) * sizeof(corto_constant*));
     this->constants.buffer[this->constants.length] = c;

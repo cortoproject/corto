@@ -1318,7 +1318,7 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
     test_assert(o == o2);
     test_assert(corto_countof(o) == 2);
 
-    test_assert(*test_initCalled_o == 2);
+    test_assert(*test_initCalled_o == 1);
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 0);
 
@@ -1348,19 +1348,19 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
     test_assert(e->countDeleteScope == 0);
     test_assert(e->countDeleteTree == 0);
 
-    test_assert(*test_initCalled_o == 2);
+    test_assert(*test_initCalled_o == 1);
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
     result = corto_delete(o2);
-    test_assert(result == 0);
+    test_assert(result == 0);c
     test_assert(corto_countof(o) == 2);
 
     test_assert(e->countDeleteSelf == 1);
     test_assert(e->countDeleteScope == 0);
     test_assert(e->countDeleteTree == 0);
 
-    test_assert(*test_initCalled_o == 2);
+    test_assert(*test_initCalled_o == 1);
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 

@@ -263,23 +263,6 @@ static corto_object corto__initScope(corto_object o, corto_string id, corto_obje
     scope->parent = parent;
     corto_rwmutexNew(&scope->scopeLock);
 
-    /* Call framework initializer. Do this before adopting the
-     * object, so that when the initializer failed, it hasn't
-     * yet been added to the scope. */
-    if (corto_init(o)) {
-        corto_string err = corto_lasterr();
-        if (err) {
-            corto_seterr(
-              "%s/init failed: %s", corto_fullpath(NULL, corto_typeof(o)), err);
-        } else {
-            corto_seterr(
-              "%s/init failed", corto_fullpath(NULL, corto_typeof(o)));
-        }
-        /* Reset parent so deinitScope won't release it */
-        scope->parent = NULL;
-        goto error;
-    }
-
     /* Add object to the scope of the parent-object */
     if (!(result = corto_adopt(parent, o))) {
         /* Reset parent so deinitScope won't release it */
@@ -292,6 +275,26 @@ static corto_object corto__initScope(corto_object o, corto_string id, corto_obje
         corto_rwmutexFree(&scope->scopeLock);
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
+    } else {
+
+        /* Call framework initializer. */
+        if (corto_init(o)) {
+            corto_string err = corto_lasterr();
+            if (err) {
+                corto_seterr(
+                  "%s/init failed: %s", corto_fullpath(NULL, corto_typeof(o)), err);
+            } else {
+                corto_seterr(
+                  "%s/init failed", corto_fullpath(NULL, corto_typeof(o)));
+            }
+
+            /* Remove object from scope */
+            corto__orphan(o);
+
+            /* Reset parent so deinitScope won't release it */
+            scope->parent = NULL;
+            goto error;
+        }
     }
 
     return result;
