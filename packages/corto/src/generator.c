@@ -359,6 +359,9 @@ corto_int16 g_loadPrefixes(corto_generator g, corto_ll list) {
 
         corto_asprintf(&prefixFileStr, "%s/.prefix", includePath);
         prefix = corto_fileLoad(prefixFileStr);
+        if (prefix[strlen(prefix) - 1] == '\n') {
+            prefix[strlen(prefix) - 1] = '\0';
+        }
         if (prefix) {
             gen_parse(g, p, FALSE, FALSE, prefix);
         }

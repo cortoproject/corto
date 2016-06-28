@@ -267,6 +267,9 @@ task :install do
           end
           UNINSTALL << newFile
         }
+
+        # Write package prefix to include path
+        sh "echo \"#{PREFIX}\" >> #{includePath}/.prefix"
       end
     end
     if File.exists?("etc") then
