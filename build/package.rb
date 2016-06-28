@@ -269,7 +269,7 @@ task :install do
         }
 
         # Write package prefix to include path
-        sh "rm #{includePath}/.prefix"
+        sh "rm -f #{includePath}/.prefix"
         sh "echo \"#{PREFIX}\" >> #{includePath}/.prefix"
       end
     end
