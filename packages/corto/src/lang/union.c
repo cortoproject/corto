@@ -55,6 +55,7 @@ corto_int16 _corto_union_construct(
 
     /* Add size of discriminator */
     size += sizeof(corto_uint32);
+    size = alignment ? CORTO_ALIGN(size, alignment) : size;
 
     corto_type(this)->size = size;
     corto_type(this)->alignment = alignment;

@@ -10,7 +10,6 @@ DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
 PREFIX ||= TARGET
 NAME ||= PACKAGE_FWSLASH.split("/").last
 ARTEFACT = "lib#{TARGET}.so"
-LFLAGS << "--shared"
 
 # Include corto package only when not building the core
 if TARGET != "corto" and not defined? NOCORTO then USE_PACKAGE << "corto" end

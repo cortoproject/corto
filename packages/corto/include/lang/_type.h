@@ -71,7 +71,6 @@ extern "C" {
 #define corto_int16(o) ((corto_int16*)corto_assertType((corto_type)corto_int16_o, o))
 #define corto_int8(o) ((corto_int8*)corto_assertType((corto_type)corto_int8_o, o))
 #define corto_iterator(o) ((corto_iterator)corto_assertType((corto_type)corto_iterator_o, o))
-#define corto_label(o) ((corto_label)corto_assertType((corto_type)corto_label_o, o))
 #define corto_list(o) ((corto_list)corto_assertType((corto_type)corto_list_o, o))
 #define corto_map(o) ((corto_map)corto_assertType((corto_type)corto_map_o, o))
 #define corto_metaprocedure(o) ((corto_metaprocedure)corto_assertType((corto_type)corto_metaprocedure_o, o))
@@ -471,14 +470,6 @@ CORTO_CLASS(corto_iterator);
 CORTO_CLASS_DEF(corto_iterator) {
     CORTO_EXTEND(corto_type);
     corto_type elementType;
-};
-
-/*  label */
-CORTO_CLASS(corto_label);
-
-CORTO_CLASS_DEF(corto_label) {
-    CORTO_EXTEND(corto_case);
-    corto_int32 discriminator;
 };
 
 /*  list */

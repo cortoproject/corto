@@ -35,7 +35,11 @@ error:
 }
 
 /* Serialize constants of enumeration */
-corto_int16 corto_serializeConstants(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_serializeConstants(
+    corto_serializer s,
+    corto_value* v,
+    void* userData)
+{
     corto_enum t;
     corto_uint32 i;
 
@@ -44,7 +48,7 @@ corto_int16 corto_serializeConstants(corto_serializer s, corto_value* v, void* u
     /* If there is a callback for constants, serialize them */
     if (s->metaprogram[CORTO_CONSTANT]) {
         corto_value info;
-        for(i=0; i<t->constants.length; i++) {
+        for(i = 0; i < t->constants.length; i++) {
             /* Fill info */
             info.parent = v;
             info.kind = CORTO_CONSTANT;
@@ -54,6 +58,36 @@ corto_int16 corto_serializeConstants(corto_serializer s, corto_value* v, void* u
 
             /* Serialize constant */
             if (s->metaprogram[CORTO_CONSTANT](s, &info, userData)) {
+                goto error;
+            }
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+/* Serialize union cases */
+corto_int16 corto_serializeCases(
+    corto_serializer s,
+    corto_value *v,
+    void *userData)
+{
+    corto_union t = corto_union(corto_value_getType(v));
+    corto_uint32 i;
+
+    if (s->metaprogram[CORTO_MEMBER]) {
+        for (i = 0; i < corto_interface(t)->members.length; i++) {
+            corto_member m = corto_interface(t)->members.buffer[i];
+            corto_value memberValue = corto_value_member(
+                corto_value_getObject(v),
+                m,
+                NULL
+            );
+
+            /* Serialize case */
+            if (s->metaprogram[CORTO_MEMBER](s, &memberValue, userData)) {
                 goto error;
             }
         }

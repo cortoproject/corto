@@ -128,7 +128,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
     SSO_OP_CLASS(op, case);\
-    SSO_OP_CLASS(op, label);\
     SSO_OP_CLASS(op, default);\
     SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
@@ -626,13 +625,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, alias_init_);\
     SSO_OP_OBJ(op, alias_construct_);\
     /* case */\
-    SSO_OP_OBJ(op, case_type);\
     SSO_OP_OBJ(op, case_discriminator);\
+    SSO_OP_OBJ(op, case_type);\
     SSO_OP_OBJ(op, case_construct_);\
-    /* label */\
-    SSO_OP_OBJ(op, label_type);\
-    SSO_OP_OBJ(op, label_discriminator);\
-    SSO_OP_OBJ(op, label_construct_);\
     /* default */\
     SSO_OP_OBJ(op, default_type);\
     SSO_OP_OBJ(op, default_construct_);\

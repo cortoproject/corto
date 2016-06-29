@@ -177,16 +177,22 @@ static int corto_genTypeInterfaceDependencies(corto_interface t, corto_bool allo
     corto_member m;
     corto_bool declAllowed;
 
-    /* Serialize base */
-    if (corto_interface(t)->base)  {
-        if (corto_genTypeParse(corto_type(corto_interface(t)->base), FALSE, recursion, data)) {
-            goto error;
-        }
+    /* Serialize base for structs, discriminator types for unions */
+    if (corto_class_instanceof(corto_struct_o, t)) {
+        if (corto_interface(t)->base)  {
+            if (corto_genTypeParse(corto_type(corto_interface(t)->base), FALSE, recursion, data)) {
+                goto error;
+            }
 
-        /* If recursion occurred, this type cannot be parsed (yet). */
-        if (recursion && *recursion) {
-            goto recursion;
+            /* If recursion occurred, this type cannot be parsed (yet). */
+            if (recursion && *recursion) {
+                goto recursion;
+            }
         }
+    } else if (corto_typeof(t) == corto_type(corto_union_o)) {
+      if (corto_genTypeParse(corto_type(corto_union(t)->discriminator), FALSE, recursion, data)) {
+          goto error;
+      }
     }
 
     /* Walk members of composite type */
@@ -290,6 +296,7 @@ static int corto_genTypeDependencies(corto_object o, corto_bool allowDeclared, c
     case CORTO_COMPOSITE:
         switch(corto_interface(o)->kind) {
         case CORTO_STRUCT:
+        case CORTO_UNION:
         case CORTO_INTERFACE:
         case CORTO_CLASS:
         case CORTO_DELEGATE:

@@ -459,7 +459,6 @@ CORTO_FWDECL(class, iterator);
 CORTO_FWDECL(class, list);
 CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
-CORTO_FWDECL(class, label);
 CORTO_FWDECL(class, case);
 CORTO_FWDECL(class, default);
 CORTO_FWDECL_CORE(class, notifyEvent);
@@ -932,7 +931,7 @@ CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED |
 
 /* /corto/lang/union */
 CORTO_FW_IC(lang, union);
-CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_label), CORTO_TYPE_ID(lang_method), CORTO_IC);
+CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_case), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_MEMBER_O(lang_union, discriminator, lang_type, CORTO_GLOBAL);
     CORTO_ALIAS_O (lang_union, parentType, lang_interface_parentType, CORTO_HIDDEN);
     CORTO_ALIAS_O (lang_union, parentState, lang_interface_parentState, CORTO_HIDDEN);
@@ -1188,16 +1187,9 @@ CORTO_CLASS_O(lang, alias, lang_member, CORTO_HIDDEN, CORTO_TYPE_ID(lang_struct)
 /* /corto/lang/case */
 CORTO_FW_C(lang, case);
 CORTO_CLASS_O(lang, case, lang_member, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
-    CORTO_ALIAS_O (lang_case, type, lang_member_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_case, discriminator, lang_int32seq, CORTO_GLOBAL);
+    CORTO_ALIAS_O (lang_case, type, lang_member_type, CORTO_GLOBAL);
     CORTO_METHOD_O(lang_case, construct, "()", lang_int16, FALSE, corto_case_construct);
-
-/* /corto/lang/label */
-CORTO_FW_C(lang, label);
-CORTO_CLASS_O(lang, label, lang_case, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
-    CORTO_ALIAS_O (lang_label, type, lang_case_type, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_label, discriminator, lang_int32, CORTO_GLOBAL);
-    CORTO_METHOD_O(lang_label, construct, "()", lang_int16, FALSE, corto_label_construct);
 
 /* /corto/lang/default */
 CORTO_FW_C(lang, default);

@@ -223,7 +223,9 @@ corto_augmentseq* _corto_augmentseqCreate(corto_uint32 length, corto_augmentData
     corto_augmentseqSize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
-        corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        if (&elements[i]) {
+            corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        }
     }
     if (corto_define(_this)) {
         corto_release(_this);
@@ -241,7 +243,9 @@ corto_augmentseq* _corto_augmentseqCreateChild(corto_object _parent, corto_strin
     corto_augmentseqSize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
-        corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        if (&elements[i]) {
+            corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        }
     }
     if (corto_define(_this)) {
         corto_release(_this);
@@ -256,7 +260,9 @@ corto_int16 _corto_augmentseqUpdate(corto_augmentseq* _this, corto_uint32 length
         corto_augmentseqSize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
-            corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+            if (&elements[i]) {
+                corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+            }
         }
         corto_updateEnd(_this);
     } else {
@@ -288,7 +294,9 @@ corto_int16 _corto_augmentseqDefine(corto_augmentseq* _this, corto_uint32 length
     corto_augmentseqSize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
-        corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        if (&elements[i]) {
+            corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        }
     }
     return corto_define(_this);
 }
@@ -298,7 +306,9 @@ void _corto_augmentseqSet(corto_augmentseq* _this, corto_uint32 length, corto_au
     corto_augmentseqSize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
-        corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        if (&elements[i]) {
+            corto_copyp(&_this->buffer[i], corto_augmentData_o, &elements[i]);
+        }
     }
 }
 
@@ -1111,6 +1121,7 @@ corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object o
 }
 
 corto_int16 corto_notifyActionInitC(corto_notifyAction *d, corto_void ___ (*callback)(corto_object)) {
+    d->_parent.instance = NULL;
     d->_parent.procedure = corto_functionDeclare();
     d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "(object observable)");
