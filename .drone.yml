@@ -6,5 +6,6 @@ build:
   pull: true
   commands:
     - source ./configure
+    - gem install rake
     - rake
     - corto test
