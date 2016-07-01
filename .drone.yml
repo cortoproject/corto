@@ -5,6 +5,6 @@ build:
   shell: mingw32
   pull: true
   commands:
-    - ./configure
-    - make
-    - make check
+    - source ./configure
+    - rake
+    - corto test
