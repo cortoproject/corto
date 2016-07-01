@@ -532,6 +532,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, union_defaultProcedureType);\
     SSO_OP_OBJ(op, union_init_);\
     SSO_OP_OBJ(op, union_construct_);\
+    SSO_OP_OBJ(op, union_findCase_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
     SSO_OP_OBJ(op, procedure_bind);\

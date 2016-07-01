@@ -269,30 +269,7 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     /* Process members */
     if (corto_typeof(t) == corto_type(corto_union_o)) {
         corto_int32 discriminator = *(corto_int32*)v;
-        corto_member member = NULL;
-        corto_bool found = TRUE;
-
-        for(i = 0; i < t->members.length; i  ++) {
-            corto_case c = corto_case(t->members.buffer[i]);
-
-            /* If discriminator list is empty, this is a default */
-            if (!c->discriminator.length) {
-                member = corto_member(c);
-
-            /* Otherwise loop discriminators to see if there's a match */
-            } else {
-                corto_int32seqForeach(c->discriminator, caseDiscriminator) {
-                    if (discriminator == caseDiscriminator) {
-                        member = corto_member(c);
-                        found = TRUE;
-                        break;
-                    }
-                }
-                if (found) {
-                    break;
-                }
-            }
-        }
+        corto_member member = corto_union_findCase(t, discriminator);
         if (member) {
             if (corto_serializeMember(this, member, o, v, cb, info, userData)) {
                 goto error;

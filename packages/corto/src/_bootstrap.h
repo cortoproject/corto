@@ -939,6 +939,7 @@ CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | 
     CORTO_ALIAS_O (lang_union, defaultProcedureType, lang_interface_defaultProcedureType, CORTO_HIDDEN);
     CORTO_METHOD_O(lang_union, init, "()", lang_int16, FALSE, corto_union_init);
     CORTO_METHOD_O(lang_union, construct, "()", lang_int16, FALSE, corto_union_construct);
+    CORTO_METHOD_O(lang_union, findCase, "(int32 discriminator)", lang_member, FALSE, corto_union_findCase);
 
 /* /corto/lang/interfaceVector */
 CORTO_STRUCT_O(lang, interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

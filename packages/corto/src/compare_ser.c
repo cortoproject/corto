@@ -190,6 +190,32 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
     return result;
 }
 
+/* Compare composites */
+static corto_int16 corto_ser_composite(corto_serializer s, corto_value *info, void* userData) {
+    corto_compare_ser_t *data = userData;
+    corto_type t = corto_value_getType(info);
+    void *this = corto_value_getPtr(info);
+    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
+
+    if (corto_interface(t)->kind == CORTO_UNION) {
+        corto_int32 d1 = *(corto_int32*)this;
+        corto_int32 d2 = *(corto_int32*)value;
+
+        if (d1 != d2) {
+            corto_member m1 = corto_union_findCase(t, d1);
+            corto_member m2 = corto_union_findCase(t, d2);
+            if (m1 != m2) {
+                goto nomatch;
+            }
+        }
+    }
+
+    return corto_serializeMembers(s, info, userData);
+nomatch:
+    data->result = CORTO_NEQ;
+    return 1;
+}
+
 /* Compare collections */
 static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, void* userData) {
     corto_type t1, t2;
@@ -364,6 +390,7 @@ struct corto_serializer_s corto_compare_ser(corto_modifier access, corto_operato
     s.program[CORTO_VOID] = NULL;
     s.program[CORTO_ANY] = corto_ser_any;
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
+    s.program[CORTO_COMPOSITE] = corto_ser_composite;
     s.program[CORTO_COLLECTION] = corto_ser_collection;
     s.reference = corto_ser_reference;
 
