@@ -27,7 +27,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", testCase, NULL});
     if ((sig = corto_procwait(pid, &ret) || ret)) {
         if (sig > 0) {
-            corto_error("corto: tests failed");
+            corto_error("Aww, tests failed.");
         }
         err = 1;
     }

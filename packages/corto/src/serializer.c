@@ -194,7 +194,11 @@ static corto_int16 corto_serializeMember(
             member.parent = info;
             member.is.member.o = o;
             member.is.member.t = m;
-            member.is.member.v = CORTO_OFFSET(v, m->offset);
+            if (modifiers & CORTO_OPTIONAL) {
+                member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
+            } else {
+                member.is.member.v = CORTO_OFFSET(v, m->offset);
+            }
 #ifdef CORTO_SERIALIZER_TRACING
             {
                 corto_id id, id2;
@@ -208,7 +212,7 @@ static corto_int16 corto_serializeMember(
             /* Don't serialize if member is optional and not set */
             if (!(modifiers & CORTO_OPTIONAL) ||
                 (this->optionalAction == CORTO_SERIALIZER_OPTIONAL_ALWAYS) ||
-                *(void**)member.is.member.v)
+                member.is.member.v)
             {
                 if (cb(this, &member, userData)) {
                     goto error;
