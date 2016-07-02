@@ -323,11 +323,6 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     corto_ll monitor, dir;
     CORTO_UNUSED(argc);
 
-    /* Build first */
-    if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
-        return -1;
-    }
-
     corto_argdata *data = corto_argparse(
       argv,
       (corto_argdata[]){
@@ -340,6 +335,11 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
 
     if (dir) {
         corto_chdir(corto_llGet(dir, 0));
+    }
+
+    /* Build first */
+    if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
+        return -1;
     }
 
     if (monitor) {
