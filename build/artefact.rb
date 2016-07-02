@@ -4,17 +4,17 @@ require "#{ENV['CORTO_BUILD']}/libmapping"
 CHDIR_SET ||= false
 
 if !CHDIR_SET then
-    Dir.chdir(File.dirname(Rake.application.rakefile))
+  Dir.chdir(File.dirname(Rake.application.rakefile))
 end
 
 if not ENV['CORTO_BUILD'] then
-    raise "CORTO_BUILD not defined (did you forget to 'source configure'?)"
+  raise "CORTO_BUILD not defined (did you forget to 'source configure'?)"
 end
 if not defined? ARTEFACT then
-    raise "artefact: ARTEFACT not specified\n"
+  raise "artefact: ARTEFACT not specified\n"
 end
 if not ENV['target'] then
-    ENV['target'] = "debug"
+  ENV['target'] = "debug"
 end
 
 # Private variables
@@ -25,14 +25,14 @@ USE_PACKAGE_LOADED ||=[]
 
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
-    LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
+  LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
 end
 
 # Add default include paths
 INCLUDE <<
-    "src" <<
-    "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}" <<
-    "/usr/local/include/corto/#{CORTO_VERSION}"
+  "src" <<
+  "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}" <<
+  "/usr/local/include/corto/#{CORTO_VERSION}"
 
 # Default CFLAGS
 CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
@@ -80,13 +80,13 @@ OBJECTS = SOURCES.ext(".o")
 
 # Load packages from file
 if File.exists? ".corto/packages.txt" then
-    verbose(false)
-    f = File.open(".corto/packages.txt")
-    f.each_line {|l|
-        p = l[0...-1]
-        USE_PACKAGE_LOADED.push p
-        USE_PACKAGE.push p
-    }
+  verbose(false)
+  f = File.open(".corto/packages.txt")
+  f.each_line do |l|
+    p = l[0...-1]
+    USE_PACKAGE_LOADED.push p
+    USE_PACKAGE.push p
+  end
 end
 
 # Setup default clean & clobber rules
@@ -101,7 +101,7 @@ CLOBBER.include(GENERATED_HEADERS)
 
 # If packages.txt is empty, clobber it
 if USE_PACKAGE_LOADED.length == 0 then
-    CLOBBER.include(".corto/packages.txt")
+  CLOBBER.include(".corto/packages.txt")
 end
 
 
@@ -110,110 +110,110 @@ end
 # Task that collects all artefacts from the build and store them in a 'pack'
 # folder, where they can be tarred for redistribution.
 task :collect do
-    verbose(VERBOSE)
-    artefact = "#{TARGETDIR}/#{ARTEFACT}"
-    target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
-    targetDir = target.split("/")[0...-1].join("/")
-    sh "mkdir -p #{targetDir}"
-    sh "cp #{artefact} #{target}"
+  verbose(VERBOSE)
+  artefact = "#{TARGETDIR}/#{ARTEFACT}"
+  target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
+  targetDir = target.split("/")[0...-1].join("/")
+  sh "mkdir -p #{targetDir}"
+  sh "cp #{artefact} #{target}"
 
-    if File.exists? "#{TARGETDIR}/build.sh" then
-        sh "cp #{TARGETDIR}/build.sh #{targetDir}/build.sh"
-    end
+  if File.exists? "#{TARGETDIR}/build.sh" then
+    sh "cp #{TARGETDIR}/build.sh #{targetDir}/build.sh"
+  end
 end
 
 # Rule to automatically create packages.txt
 file ".corto/packages.txt" do
-    verbose(VERBOSE)
-    sh "mkdir -p .corto"
-    sh "touch .corto/packages.txt"
+  verbose(VERBOSE)
+  sh "mkdir -p .corto"
+  sh "touch .corto/packages.txt"
 end
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
-    UNINSTALL << TARGETDIR
+  UNINSTALL << TARGETDIR
 end
 
 # Build artefact
 multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
-    verbose(VERBOSE)
+  verbose(VERBOSE)
 
-    if not File.exists? TARGETDIR then
-      sh "mkdir -p #{TARGETDIR}"
+  if not File.exists? TARGETDIR then
+    sh "mkdir -p #{TARGETDIR}"
+  end
+
+  # Create list of files that are going to be linked with. Abstract away from the
+  # difference between dll, so and dylib. When a dylib is encountered, perform  a
+  # bit of magic to ensure that the executable can find the shared object.
+  LINKED = LINK.map do |l|
+    l = corto_replace(l)
+    prefix = ""
+    if File.dirname(l) != "." then
+      prefix = File.dirname(l) + "/"
     end
-
-    # Create list of files that are going to be linked with. Abstract away from the
-    # difference between dll, so and dylib. When a dylib is encountered, perform  a
-    # bit of magic to ensure that the executable can find the shared object.
-    LINKED = LINK.map do |l|
-        l = corto_replace(l)
-        prefix = ""
-        if File.dirname(l) != "." then
-          prefix = File.dirname(l) + "/"
-        end
-        lib = prefix + "lib" + File.basename(l) + ".so"
-        if (not File.exists? lib) and (CORTO_OS == "Darwin") then
-            lib = prefix + "lib" + File.basename(l) + ".dylib"
-            if (not File.exists? lib) then
-                abort "\033[1;31mcorto:\033[0;49m #{l} not found"
-            end
-        end
-        lib
+    lib = prefix + "lib" + File.basename(l) + ".so"
+    if (not File.exists? lib) and (CORTO_OS == "Darwin") then
+      lib = prefix + "lib" + File.basename(l) + ".dylib"
+      if (not File.exists? lib) then
+        abort "\033[1;31mcorto:\033[0;49m #{l} not found"
+      end
     end
+    lib
+  end
 
-    OBJECTS.concat(LINKED)
-    objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
-    libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
-    libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
-    lflags = "#{LFLAGS.join(" ")}"
+  OBJECTS.concat(LINKED)
+  objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
+  libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
+  libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
+  lflags = "#{LFLAGS.join(" ")}"
 
-    use_link =
-      USE_LIBRARY.map {|i|
-        "#{ENV['CORTO_HOME']}/lib/corto/#{CORTO_VERSION}/libraries/lib" + i + ".so"
-      }.join(" ")
+  use_link =
+    USE_LIBRARY.map {|i|
+      "#{ENV['CORTO_HOME']}/lib/corto/#{CORTO_VERSION}/libraries/lib" + i + ".so"
+    }.join(" ")
 
-    # Check if there were any new files created during code generation
-    Rake::FileList["src/*.{c,cpp}"].each do |file|
-        obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
-        if not OBJECTS.include? obj
-            build_source(file, obj, true)
-            objects += " " + obj
-        end
+  # Check if there were any new files created during code generation
+  Rake::FileList["src/*.{c,cpp}"].each do |file|
+      obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
+      if not OBJECTS.include? obj
+          build_source(file, obj, true)
+          objects += " " + obj
+      end
+  end
+
+  linkShared = ""
+  if File.extname(ARTEFACT) == ".so" then
+    linkShared = "--shared"
+  end
+
+  cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
+  begin
+    sh cc_command
+  rescue
+    STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
+    abort
+  end
+
+  # If required, alter paths to dylib files
+  LINKED.each do |lib|
+    if File.extname(lib) == ".dylib" then
+      # Obtain name of library, check if its different from target path. If
+      # names don't match, setup a task to alter the name in the executable
+      # path.
+      libname = `otool -L #{lib}`.split("\n")[1].split[0]
+      if libname != lib then
+          sh "install_name_tool -change #{libname} #{lib} #{TARGETDIR}/#{ARTEFACT}"
+      end
     end
+  end
 
-    linkShared = ""
-    if File.extname(ARTEFACT) == ".so" then
-      linkShared = "--shared"
-    end
+  # If target is release, strip binary
+  if ENV['target'] == "release" then
+    sh "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
+  end
 
-    cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
-    begin
-      sh cc_command
-    rescue
-      STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
-      abort
-    end
-
-    # If required, alter paths to dylib files
-    LINKED.each do |lib|
-        if File.extname(lib) == ".dylib" then
-            # Obtain name of library, check if its different from target path. If
-            # names don't match, setup a task to alter the name in the executable
-            # path.
-            libname = `otool -L #{lib}`.split("\n")[1].split[0]
-            if libname != lib then
-                sh "install_name_tool -change #{libname} #{lib} #{TARGETDIR}/#{ARTEFACT}"
-            end
-        end
-    end
-
-    # If target is release, strip binary
-    if ENV['target'] == "release" then
-      sh "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
-    end
-
-    if ENV['silent'] != "true" then
-        print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}\n"
-    end
+  if ENV['silent'] != "true" then
+      print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}\n"
+  end
 end
 
 # These tasks allow projects to define actions that should happen before and
@@ -221,17 +221,17 @@ end
 task :prebuild do
   verbose(VERBOSE)
   # Load dependency build instructions before anything else
-  USE_PACKAGE.each {|p|
-      location = `corto locate #{p} --path`[0...-1]
-      if not $?.to_i == 0 then
-        STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
-        abort
-      end
-      buildscript = location + "/build.rb"
-      if File.exists? buildscript then
-          require "#{buildscript}"
-      end
-  }
+  USE_PACKAGE.each do |p|
+    location = `corto locate #{p} --path`.split
+    if not $?.to_i == 0 then
+      STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+      abort
+    end
+    buildscript = location + "/build.rb"
+    if File.exists? buildscript then
+      require "#{buildscript}"
+    end
+  end
 end
 
 task :postbuild
