@@ -476,7 +476,7 @@ CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
 CORTO_FWDECL_NATIVE(class, type);
 
-
+CORTO_FWDECL(struct, typespec);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
@@ -734,6 +734,7 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, READONLY);
     CORTO_CONSTANT_O(lang_modifier, CONST);
     CORTO_CONSTANT_O(lang_modifier, HIDDEN);
+    CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
 
 /* Collections */
 CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);
@@ -800,6 +801,11 @@ CORTO_CLASS_NOBASE_O(lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_METAPROCEDURE_O(lang_type, compare, "(any value)", lang_equalityKind, FALSE, corto_type_compare);
     CORTO_METAPROCEDURE_O(lang_type, copy, "(any value)", lang_int16, FALSE, corto_type_copy);
     CORTO_METAPROCEDURE_O(lang_type, str, "()", lang_string, FALSE, corto_type_str);
+
+/* /corto/lang/typespec */
+CORTO_STRUCT_O(lang, typespec, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(lang_typespec, type, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_typespec, reference, lang_bool, CORTO_GLOBAL);
 
 /* /corto/lang/primitive */
 CORTO_FW_IC(lang, primitive);

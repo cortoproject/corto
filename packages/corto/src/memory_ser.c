@@ -152,6 +152,7 @@ struct corto_serializer_s corto_ser_keep(corto_modifier access, corto_operatorKi
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
     s.reference = corto_ser_keepReference;
     return s;
 }
@@ -165,6 +166,7 @@ struct corto_serializer_s corto_ser_free(corto_modifier access, corto_operatorKi
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
     s.reference = corto_ser_freeReference;
     return s;
 }
@@ -178,6 +180,7 @@ struct corto_serializer_s corto_ser_freeResources(corto_modifier access, corto_o
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
     s.program[CORTO_PRIMITIVE] = corto_ser_freePrimitive;
     s.program[CORTO_COLLECTION] = corto_ser_freeCollection;
     s.reference = corto_ser_freeReference;

@@ -445,6 +445,7 @@ static int cxsh_show(char* object) {
         s.access = CORTO_PRIVATE;
         s.accessKind = CORTO_NOT;
         s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+        s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
 
         /* Serialize value to string */
         if (corto_value_getPtr(&result)) {
@@ -467,6 +468,7 @@ static int cxsh_show(char* object) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
                 s.aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
+                s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
                 corto_metaWalk(&s, o, &sdata);
                 corto_string str = corto_buffer_str(&sdata.buffer);
                 if (str) {

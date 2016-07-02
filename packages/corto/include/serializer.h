@@ -34,12 +34,18 @@ typedef enum corto_aliasActionKind {
     CORTO_SERIALIZER_ALIAS_PASSTHROUGH
 } corto_aliasActionKind;
 
+typedef enum corto_optionalActionKind {
+    CORTO_SERIALIZER_OPTIONAL_IF_SET,
+    CORTO_SERIALIZER_OPTIONAL_ALWAYS,
+} corto_optionalActionKind;
+
 CORTO_CLASS_DEF(corto_serializer) {
     corto_bool initialized;
     corto_bool constructed;
     corto_modifier access;
     corto_operatorKind accessKind; /* OR, XOR, NOT */
     corto_aliasActionKind aliasAction;
+    corto_optionalActionKind optionalAction;
     corto_serializerTraceKind traceKind;
     corto_serializerConstruct construct;
     corto_serializerDestruct destruct;

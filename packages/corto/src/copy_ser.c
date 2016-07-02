@@ -335,6 +335,7 @@ struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKi
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
     s.construct = corto_ser_construct;
     s.program[CORTO_VOID] = NULL;
     s.program[CORTO_ANY] = corto_ser_any;

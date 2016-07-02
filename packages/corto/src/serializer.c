@@ -68,6 +68,7 @@ void corto_serializerInit(corto_serializer this) {
     this->access = CORTO_GLOBAL;
     this->accessKind = CORTO_XOR;
     this->aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
+    this->optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
 }
 
 /* Start serializing */
@@ -204,8 +205,14 @@ static corto_int16 corto_serializeMember(
             }
             indent++;
 #endif
-            if (cb(this, &member, userData)) {
-                goto error;
+            /* Don't serialize if member is optional and not set */
+            if (!(modifiers & CORTO_OPTIONAL) ||
+                (this->optionalAction == CORTO_SERIALIZER_OPTIONAL_ALWAYS) ||
+                *(void**)member.is.member.v)
+            {
+                if (cb(this, &member, userData)) {
+                    goto error;
+                }
             }
 #ifdef CORTO_SERIALIZER_TRACING
             indent--;
