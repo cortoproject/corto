@@ -281,9 +281,9 @@ task :install do
         if File.exists? "etc/everywhere" then
             sh "cp -r etc/everywhere/. #{etc}/"
             if CORTO_OS == "Darwin" then
-                access = `stat -f '%A' etc/everywhere`[0...-1]
+                access = `stat -f '%A' etc/everywhere`.strip
             else
-                access = `stat -c '%a' etc/everywhere`[0...-1]
+                access = `stat -c '%a' etc/everywhere`.strip
             end
             sh "chmod #{access} #{etc}"
         end

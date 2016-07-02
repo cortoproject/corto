@@ -104,3 +104,24 @@ EXT = if LANGUAGE == "c" then
 else
   "cpp"
 end
+
+# Utility that replaces buildsystem tokens with actual values
+def corto_replace(str)
+    str = str.gsub("$(CORTO_OS)", CORTO_OS)
+    str = str.gsub("$(CORTO_MACHINE)", CORTO_MACHINE)
+    str = str.gsub("$(CORTO_PLATFORM)", CORTO_PLATFORM)
+    str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
+    str = str.gsub("$(CORTO_VERSION)", CORTO_VERSION)
+    projectPath = ""
+    if defined? PACKAGEDIR then
+        projectPath = PACKAGEDIR
+    end
+    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto/#{CORTO_VERSION}/" + projectPath)
+    str = str.gsub("$(CORTO_INCLUDE)", ENV['CORTO_TARGET'] + "/include/corto/#{CORTO_VERSION}/" + projectPath)
+    str = str.gsub("$(CORTO_LIB)", ENV['CORTO_TARGET'] + "/lib/corto/#{CORTO_VERSION}/" + projectPath)
+end
+
+def corto_section(package, section)
+    s = ENV["CORTO_TARGET"] + "/#{section}/corto/#{CORTO_VERSION}/#{package}"
+    corto_replace(s)
+end

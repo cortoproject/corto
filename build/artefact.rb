@@ -17,23 +17,6 @@ if not ENV['target'] then
     ENV['target'] = "debug"
 end
 
-# --- DATA PROCESSING
-
-# Utility that replaces buildsystem tokens with actual values
-def corto_replace(str)
-    str = str.gsub("$(CORTO_OS)", CORTO_OS)
-    str = str.gsub("$(CORTO_MACHINE)", CORTO_MACHINE)
-    str = str.gsub("$(CORTO_PLATFORM)", CORTO_PLATFORM)
-    str = str.gsub("$(CORTO_TARGET)", TARGETDIR)
-    projectPath = ""
-    if defined? PACKAGEDIR then
-        projectPath = PACKAGEDIR
-    end
-    str = str.gsub("$(CORTO_ETC)", ENV['CORTO_TARGET'] + "/etc/corto/#{CORTO_VERSION}/" + projectPath)
-    str = str.gsub("$(CORTO_INCLUDE)", ENV['CORTO_TARGET'] + "/include/corto/#{CORTO_VERSION}/" + projectPath)
-    str = str.gsub("$(CORTO_LIB)", ENV['CORTO_TARGET'] + "/include/corto/#{CORTO_VERSION}/" + projectPath)
-end
-
 # Private variables
 TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
 GENERATED_SOURCES ||= []
