@@ -36,7 +36,7 @@ corto_resultIter _test_StringReplicator_onRequest(
     corto_ll data = corto_llNew();
 
     /* Create top level objects */
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(data),
         "a",
         NULL,
@@ -44,7 +44,7 @@ corto_resultIter _test_StringReplicator_onRequest(
         "/test/Point",
         (corto_word)corto_strdup("{10,20}")
     );
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(data),
         "b",
         NULL,
@@ -52,7 +52,7 @@ corto_resultIter _test_StringReplicator_onRequest(
         "/test/Point",
         (corto_word)corto_strdup("{30,40}")
     );
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(data),
         "c",
         NULL,

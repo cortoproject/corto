@@ -1,6 +1,9 @@
 #include "cortotool_test.h"
 #include "cortotool_build.h"
 
+#define GREEN   "\033[1;32m"
+#define NORMAL  "\033[0;49m"
+
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testCase = NULL;
     corto_id testCaseArg;
@@ -31,6 +34,8 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     if (err) {
         goto error;
+    } else {
+        printf("%sYay, all green :-)%s\n", GREEN, NORMAL);
     }
 
     return 0;

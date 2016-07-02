@@ -18,7 +18,7 @@ corto_int16 _test_ListReplicator_construct(
 /* $begin(test/ListReplicator/construct) */
 
     /* Create top level objects */
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "x",
         NULL,
@@ -26,7 +26,7 @@ corto_int16 _test_ListReplicator_construct(
         "uint32",
         0
     );
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "yz",
         NULL,
@@ -34,7 +34,7 @@ corto_int16 _test_ListReplicator_construct(
         "string",
         0
     );
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "xyz",
         NULL,
@@ -44,7 +44,7 @@ corto_int16 _test_ListReplicator_construct(
     );
 
     /* Create nested objects */
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "a",
         NULL,
@@ -53,7 +53,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "b",
         NULL,
@@ -62,7 +62,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "c",
         NULL,
@@ -71,7 +71,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "a",
         NULL,
@@ -80,7 +80,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "abc",
         NULL,
@@ -89,7 +89,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "bc",
         NULL,
@@ -98,7 +98,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "foo",
         NULL,
@@ -107,7 +107,7 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "bar",
         NULL,
@@ -143,7 +143,7 @@ corto_resultIter _test_ListReplicator_onRequest(
     corto_resultIterForeach(iter, e) {
         if (!fnmatch(request->parent, e.parent, 0)) {
             if (!fnmatch(request->expr, e.id, 0)) {
-                corto_resultSet(
+                corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,
                     e.id,
