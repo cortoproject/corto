@@ -65,11 +65,13 @@ int main(int argc, char* argv[]) {
                 cortotool_printUsage(FALSE);
                 break;
             } else if (*(argv[i]+1) == 'd') {
+                fprintf(stderr, "corto: debugging enabled\n");
                 CORTO_DEBUG_ENABLED = TRUE;
             } else if (*(argv[i]+1) == 'v') {
                 printf("%s\n", CORTO_VERSION);
             } else if (*(argv[i]+1) == '-') {
                 if (!strcmp(argv[i], "--debug")) {
+                    fprintf(stderr, "corto: debugging enabled\n");
                     CORTO_DEBUG_ENABLED = TRUE;
                 } else if (!strcmp(argv[i], "--trace-memory")) {
                     CORTO_TRACE_OBJECT = argv[i + 1];

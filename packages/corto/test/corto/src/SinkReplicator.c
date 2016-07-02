@@ -16,7 +16,7 @@ corto_int16 _test_SinkReplicator_construct(
       corto_mount(this)->type ? corto_mount(this)->type : "int32";
 
     // First tier
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "x",
         NULL,
@@ -25,7 +25,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "y",
         NULL,
@@ -34,7 +34,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "z",
         NULL,
@@ -44,7 +44,7 @@ corto_int16 _test_SinkReplicator_construct(
     );
 
     // Second tier
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "a",
         NULL,
@@ -53,7 +53,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "b",
         NULL,
@@ -62,7 +62,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "c",
         NULL,
@@ -72,7 +72,7 @@ corto_int16 _test_SinkReplicator_construct(
     );
 
     // Third tier
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "k",
         NULL,
@@ -81,7 +81,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "l",
         NULL,
@@ -90,7 +90,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "m",
         NULL,
@@ -100,7 +100,7 @@ corto_int16 _test_SinkReplicator_construct(
     );
 
     // Fourth tier
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "n",
         NULL,
@@ -109,7 +109,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "o",
         NULL,
@@ -118,7 +118,7 @@ corto_int16 _test_SinkReplicator_construct(
         (corto_word)this->value
     );
 
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "p",
         NULL,
@@ -155,7 +155,7 @@ corto_resultIter _test_SinkReplicator_onRequest(
     corto_resultIterForeach(iter, e) {
         if (!fnmatch(request->parent, e.parent, 0)) {
             if (!fnmatch(request->expr, e.id, 0)) {
-                corto_resultSet(
+                corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,
                     e.id,

@@ -459,7 +459,6 @@ CORTO_FWDECL(class, iterator);
 CORTO_FWDECL(class, list);
 CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
-CORTO_FWDECL(class, label);
 CORTO_FWDECL(class, case);
 CORTO_FWDECL(class, default);
 CORTO_FWDECL_CORE(class, notifyEvent);
@@ -477,7 +476,7 @@ CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
 CORTO_FWDECL_NATIVE(class, type);
 
-
+CORTO_FWDECL(struct, typespec);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
@@ -735,6 +734,7 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, READONLY);
     CORTO_CONSTANT_O(lang_modifier, CONST);
     CORTO_CONSTANT_O(lang_modifier, HIDDEN);
+    CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
 
 /* Collections */
 CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);
@@ -801,6 +801,11 @@ CORTO_CLASS_NOBASE_O(lang, type, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
     CORTO_METAPROCEDURE_O(lang_type, compare, "(any value)", lang_equalityKind, FALSE, corto_type_compare);
     CORTO_METAPROCEDURE_O(lang_type, copy, "(any value)", lang_int16, FALSE, corto_type_copy);
     CORTO_METAPROCEDURE_O(lang_type, str, "()", lang_string, FALSE, corto_type_str);
+
+/* /corto/lang/typespec */
+CORTO_STRUCT_O(lang, typespec, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(lang_typespec, type, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_typespec, reference, lang_bool, CORTO_GLOBAL);
 
 /* /corto/lang/primitive */
 CORTO_FW_IC(lang, primitive);
@@ -932,7 +937,7 @@ CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED |
 
 /* /corto/lang/union */
 CORTO_FW_IC(lang, union);
-CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_label), CORTO_TYPE_ID(lang_method), CORTO_IC);
+CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_case), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_MEMBER_O(lang_union, discriminator, lang_type, CORTO_GLOBAL);
     CORTO_ALIAS_O (lang_union, parentType, lang_interface_parentType, CORTO_HIDDEN);
     CORTO_ALIAS_O (lang_union, parentState, lang_interface_parentState, CORTO_HIDDEN);
@@ -940,6 +945,7 @@ CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, NULL, CORTO_DECLARED | 
     CORTO_ALIAS_O (lang_union, defaultProcedureType, lang_interface_defaultProcedureType, CORTO_HIDDEN);
     CORTO_METHOD_O(lang_union, init, "()", lang_int16, FALSE, corto_union_init);
     CORTO_METHOD_O(lang_union, construct, "()", lang_int16, FALSE, corto_union_construct);
+    CORTO_METHOD_O(lang_union, findCase, "(int32 discriminator)", lang_member, FALSE, corto_union_findCase);
 
 /* /corto/lang/interfaceVector */
 CORTO_STRUCT_O(lang, interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
@@ -1188,16 +1194,9 @@ CORTO_CLASS_O(lang, alias, lang_member, CORTO_HIDDEN, CORTO_TYPE_ID(lang_struct)
 /* /corto/lang/case */
 CORTO_FW_C(lang, case);
 CORTO_CLASS_O(lang, case, lang_member, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
-    CORTO_ALIAS_O (lang_case, type, lang_member_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_case, discriminator, lang_int32seq, CORTO_GLOBAL);
+    CORTO_ALIAS_O (lang_case, type, lang_member_type, CORTO_GLOBAL);
     CORTO_METHOD_O(lang_case, construct, "()", lang_int16, FALSE, corto_case_construct);
-
-/* /corto/lang/label */
-CORTO_FW_C(lang, label);
-CORTO_CLASS_O(lang, label, lang_case, CORTO_HIDDEN, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_C);
-    CORTO_ALIAS_O (lang_label, type, lang_case_type, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_label, discriminator, lang_int32, CORTO_GLOBAL);
-    CORTO_METHOD_O(lang_label, construct, "()", lang_int16, FALSE, corto_label_construct);
 
 /* /corto/lang/default */
 CORTO_FW_C(lang, default);

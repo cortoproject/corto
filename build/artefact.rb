@@ -95,6 +95,7 @@ CLEAN.include("doc")
 CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
+CLOBBER.include(TARGETDIR + "/" + ARTEFACT.ext(".a"))
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
 
@@ -163,7 +164,7 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
     libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
     libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
-    lflags = "#{LFLAGS.join(" ")} -o #{TARGETDIR}/#{ARTEFACT}"
+    lflags = "#{LFLAGS.join(" ")}"
 
     use_link =
       USE_LIBRARY.map {|i|
@@ -179,7 +180,12 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
         end
     end
 
-    cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags}"
+    linkShared = ""
+    if File.extname(ARTEFACT) == ".so" then
+      linkShared = "--shared"
+    end
+
+    cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
     begin
       sh cc_command
     rescue

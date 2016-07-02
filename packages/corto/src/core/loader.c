@@ -79,7 +79,7 @@ void corto_loader_addDir(
                 }
 
                 if (S_ISDIR(attr.st_mode)) {
-                    corto_resultSet(
+                    corto_resultAssign(
                         corto_resultListAppendAlloc(list),
                         f, /* Name */
                         NULL,

@@ -54,6 +54,19 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value *info, vo
     return 0;
 }
 
+static corto_int16 corto_ser_composite(corto_serializer s, corto_value *info, void *userData) {
+    corto_copy_ser_t *data = userData;
+    void *this = corto_value_getPtr(info);
+    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_type t = corto_value_getType(info);
+
+    if (corto_interface(t)->kind == CORTO_UNION) {
+        *(corto_int32*)value = *(corto_int32*)this;
+    }
+
+    return corto_serializeMembers(s, info, userData);
+}
+
 /* Deinit element */
 void corto_collection_deinitElement(corto_collection t, void *ptr) {
     corto_value v;
@@ -322,10 +335,12 @@ struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKi
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
     s.construct = corto_ser_construct;
     s.program[CORTO_VOID] = NULL;
     s.program[CORTO_ANY] = corto_ser_any;
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
+    s.program[CORTO_COMPOSITE] = corto_ser_composite;
     s.program[CORTO_COLLECTION] = corto_ser_collection;
     s.reference = corto_ser_reference;
     return s;

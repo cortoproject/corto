@@ -134,7 +134,11 @@ corto_uint16 corto__interface_calculateAlignment(corto_interface this) {
     for (i=0; i<this->members.length; i++) {
         corto_uint16 memberAlignment;
         member = this->members.buffer[i];
-        memberAlignment = corto_type_alignmentof(member->type);
+        if (member->modifiers & CORTO_OPTIONAL) {
+            memberAlignment = CORTO_ALIGNMENT(void*);
+        } else {
+            memberAlignment = corto_type_alignmentof(member->type);
+        }
         if (memberAlignment) {
             if (memberAlignment > alignment) {
                 alignment = memberAlignment;
@@ -166,7 +170,11 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
         memberType = m->type;
 
         if (!corto_instanceof(corto_alias_o, m)) {
-            memberSize = corto_type_sizeof(memberType);
+            if (m->modifiers & CORTO_OPTIONAL) {
+                memberSize = sizeof(void*);
+            } else {
+                memberSize = corto_type_sizeof(memberType);
+            }
             if (!memberSize) {
                 corto_seterr("member '%s' of type '%s' is of invalid type '%s'",
                     corto_idof(m),

@@ -38,7 +38,6 @@ extern "C" {
 #include <corto/lang/interface.h>
 #include <corto/lang/interfaceVector.h>
 #include <corto/lang/iterator.h>
-#include <corto/lang/label.h>
 #include <corto/lang/list.h>
 #include <corto/lang/map.h>
 #include <corto/lang/member.h>
@@ -52,6 +51,7 @@ extern "C" {
 #include <corto/lang/struct.h>
 #include <corto/lang/text.h>
 #include <corto/lang/type.h>
+#include <corto/lang/typespec.h>
 #include <corto/lang/uint.h>
 #include <corto/lang/union.h>
 #include <corto/lang/virtual.h>

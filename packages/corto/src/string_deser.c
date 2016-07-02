@@ -256,8 +256,37 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
 
     /* Build index for type */
     if (info->type->kind == CORTO_COMPOSITE) {
-        if (corto_metaWalk(corto_string_deserBuildIndex(), info->type, &privateData)) {
-            goto error;
+        if (corto_interface(info->type)->kind == CORTO_UNION) {
+            /* Parse discriminator */
+            struct corto_string_deserIndexInfo dInfo;
+            dInfo.type = (corto_type)corto_int32_o;
+            dInfo.parsed = FALSE;
+            dInfo.m = NULL;
+            str = corto_string_deserParse(str + 1, &dInfo, &privateData);
+            if (!str) {
+                goto error;
+            }
+
+            /* Find corresponding union case */
+            corto_int32 d = *(corto_int32*)ptr;
+            corto_member m = corto_union_findCase(info->type, d);
+            if (!m) {
+                corto_seterr("discriminator '%d' invalid for union '%s'",
+                    d, corto_fullpath(NULL, info->type));
+                goto error;
+            }
+
+            /* Build index for one member */
+            struct corto_string_deserIndexInfo *caseInfo =
+                corto_alloc(sizeof(struct corto_string_deserIndexInfo));
+            caseInfo->type = m->type;
+            caseInfo->parsed = FALSE;
+            caseInfo->m = m;
+            corto_string_deserIndexInsert(&privateData, caseInfo);
+        } else {
+            if (corto_metaWalk(corto_string_deserBuildIndex(), info->type, &privateData)) {
+                goto error;
+            }
         }
 
         /* Create iterator for index */
@@ -606,7 +635,6 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
     memberInfo = NULL;
 
     if (info) {
-        /* Get first member or element */
         memberInfo = corto_string_deserIndexNext(data);
     }
 
@@ -717,7 +745,7 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
         case ',': /* End of value */
             if (buffer != bptr) {
                 *nonWs = '\0';
-                if (corto_string_deserParseValue(buffer, memberInfo, data)) {
+                if (corto_string_deserParseValue(buffer, memberInfo ? memberInfo : info, data)) {
                     goto error;
                 }
                 bptr = buffer;
@@ -727,13 +755,19 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
             /* If memberInfo contains a member, get next member, otherwise it contains
              * an element. The same information applies to each element therefore it is only present
              * once in the index. */
-            if (memberInfo->m) {
-                memberInfo = corto_string_deserIndexNext(data);
-                if (!memberInfo) {
-                    excess = TRUE;
+            if (memberInfo) {
+                if (memberInfo->m) {
+                    memberInfo = corto_string_deserIndexNext(data);
+                    if (!memberInfo) {
+                        excess = TRUE;
+                    }
                 }
+                data->current++;
+            } else {
+                /* A comma without memberInfo means that a discriminator of a
+                 * union was parsed */
+                proceed = FALSE;
             }
-            data->current++;
             break;
         default:
             *bptr = ch;

@@ -8,8 +8,8 @@ else
 end
 
 # Set platform variables
-CORTO_OS ||= `uname -s`[0...-1]
-CORTO_MACHINE ||= `uname -m`[0...-1]
+CORTO_OS ||= `uname -s`.strip
+CORTO_MACHINE ||= `uname -m`.strip
 CORTO_PLATFORM ||= CORTO_OS + "-" + CORTO_MACHINE
 
 # Set verbosity

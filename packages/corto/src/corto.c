@@ -128,7 +128,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, map);\
     SSO_OP_CLASS(op, member);\
     SSO_OP_CLASS(op, case);\
-    SSO_OP_CLASS(op, label);\
     SSO_OP_CLASS(op, default);\
     SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
@@ -192,6 +191,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, interfaceVectorseq);\
     SSO_OP_VALUE(op, interfaceVector);\
     SSO_OP_VALUE(op, resultList);\
+    SSO_OP_VALUE(op, typespec);\
     SSO_OP_VALUE(op, parameter);\
     SSO_OP_VALUE(op, augmentData);\
     SSO_OP_VALUE(op, result);\
@@ -393,6 +393,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, modifier_READONLY);\
     SSO_OP_OBJ(op, modifier_CONST);\
     SSO_OP_OBJ(op, modifier_HIDDEN);\
+    SSO_OP_OBJ(op, modifier_OPTIONAL);\
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\
@@ -432,6 +433,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, type_compare);\
     SSO_OP_OBJ(op, type_copy);\
     SSO_OP_OBJ(op, type_str);\
+    /* typespec */\
+    SSO_OP_OBJ(op, typespec_type);\
+    SSO_OP_OBJ(op, typespec_reference);\
     /* primitive */\
     SSO_OP_OBJ(op, primitive_kind);\
     SSO_OP_OBJ(op, primitive_width);\
@@ -533,6 +537,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, union_defaultProcedureType);\
     SSO_OP_OBJ(op, union_init_);\
     SSO_OP_OBJ(op, union_construct_);\
+    SSO_OP_OBJ(op, union_findCase_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
     SSO_OP_OBJ(op, procedure_bind);\
@@ -626,13 +631,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, alias_init_);\
     SSO_OP_OBJ(op, alias_construct_);\
     /* case */\
-    SSO_OP_OBJ(op, case_type);\
     SSO_OP_OBJ(op, case_discriminator);\
+    SSO_OP_OBJ(op, case_type);\
     SSO_OP_OBJ(op, case_construct_);\
-    /* label */\
-    SSO_OP_OBJ(op, label_type);\
-    SSO_OP_OBJ(op, label_discriminator);\
-    SSO_OP_OBJ(op, label_construct_);\
     /* default */\
     SSO_OP_OBJ(op, default_type);\
     SSO_OP_OBJ(op, default_construct_);\

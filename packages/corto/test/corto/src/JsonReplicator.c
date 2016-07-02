@@ -36,7 +36,7 @@ corto_resultIter _test_JsonReplicator_onRequest(
     corto_ll data = corto_llNew();
 
     /* Create top level objects */
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(data),
         "a",
         NULL,
@@ -44,7 +44,7 @@ corto_resultIter _test_JsonReplicator_onRequest(
         "/test/Point",
         (corto_word)corto_strdup("{\"x\":10,\"y\":20}")
     );
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(data),
         "b",
         NULL,
@@ -52,7 +52,7 @@ corto_resultIter _test_JsonReplicator_onRequest(
         "/test/Point",
         (corto_word)corto_strdup("{\"x\":30,\"y\":40}")
     );
-    corto_resultSet(
+    corto_resultAssign(
         corto_resultListAppendAlloc(data),
         "c",
         NULL,

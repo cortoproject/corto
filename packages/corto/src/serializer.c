@@ -68,6 +68,7 @@ void corto_serializerInit(corto_serializer this) {
     this->access = CORTO_GLOBAL;
     this->accessKind = CORTO_XOR;
     this->aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
+    this->optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
 }
 
 /* Start serializing */
@@ -167,12 +168,72 @@ corto_int16 corto_serializeAny(corto_serializer this, corto_value* info, void* u
     return result;
 }
 
+/* Serialize a single member */
+static corto_int16 corto_serializeMember(
+    corto_serializer this,
+    corto_member m,
+    corto_object o,
+    void *v,
+    corto_serializerCallback cb,
+    corto_value *info,
+    void *userData)
+{
+    corto_value member;
+    corto_modifier modifiers = m->modifiers;
+    corto_bool isAlias = corto_instanceof(corto_alias_o, m);
+
+    if (isAlias && (this->aliasAction == CORTO_SERIALIZER_ALIAS_FOLLOW)) {
+        while (corto_instanceof(corto_alias_o, m)) {
+            m = corto_alias(m)->member;
+        }
+    }
+
+    if (!isAlias || (this->aliasAction != CORTO_SERIALIZER_ALIAS_IGNORE)) {
+        if (corto_serializeMatchAccess(this->accessKind, this->access, modifiers)) {
+            member.kind = CORTO_MEMBER;
+            member.parent = info;
+            member.is.member.o = o;
+            member.is.member.t = m;
+            if (modifiers & CORTO_OPTIONAL) {
+                member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
+            } else {
+                member.is.member.v = CORTO_OFFSET(v, m->offset);
+            }
+#ifdef CORTO_SERIALIZER_TRACING
+            {
+                corto_id id, id2;
+                printf("%*smember(%s : %s)\n", indent, " ",
+                    corto_fullname(m, id2),
+                    corto_fullname(member.is.member.t->type, id));
+                fflush(stdout);
+            }
+            indent++;
+#endif
+            /* Don't serialize if member is optional and not set */
+            if (!(modifiers & CORTO_OPTIONAL) ||
+                (this->optionalAction == CORTO_SERIALIZER_OPTIONAL_ALWAYS) ||
+                member.is.member.v)
+            {
+                if (cb(this, &member, userData)) {
+                    goto error;
+                }
+            }
+#ifdef CORTO_SERIALIZER_TRACING
+            indent--;
+#endif
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 /* Serialize members */
 corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, void* userData) {
     corto_interface t;
     corto_void* v;
     corto_uint32 i;
-    corto_value member;
     corto_member m;
     corto_serializerCallback cb;
     corto_object o;
@@ -182,7 +243,9 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     o = corto_value_getObject(info);
 
     /* Process inheritance */
-    if (corto_class_instanceof(corto_struct_o, t) && corto_serializeMatchAccess(this->accessKind, this->access, corto_struct(t)->baseAccess)) {
+    if (corto_class_instanceof(corto_struct_o, t) &&
+        corto_serializeMatchAccess(this->accessKind, this->access, corto_struct(t)->baseAccess))
+    {
         corto_value base;
 
         cb = this->metaprogram[CORTO_BASE];
@@ -215,37 +278,25 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     }
 
     /* Process members */
-    for(i=0; i<t->members.length; i++) {
-        m = t->members.buffer[i];
-        corto_modifier modifiers = m->modifiers;
-        corto_bool isAlias = corto_instanceof(corto_alias_o, m);
-
-        if (isAlias && (this->aliasAction == CORTO_SERIALIZER_ALIAS_FOLLOW)) {
-            while (corto_instanceof(corto_alias_o, m)) {
-                m = corto_alias(m)->member;
+    if (corto_typeof(t) == corto_type(corto_union_o)) {
+        corto_int32 discriminator = *(corto_int32*)v;
+        corto_member member = corto_union_findCase(t, discriminator);
+        if (member) {
+            if (corto_serializeMember(this, member, o, v, cb, info, userData)) {
+                goto error;
             }
+        } else {
+            /* Member not found? That means the discriminator is invalid. */
+            corto_seterr("discriminator %d invalid for union '%s'\n",
+                discriminator,
+                corto_fullpath(NULL, t));
+            goto error;
         }
-
-        if (!isAlias || (this->aliasAction != CORTO_SERIALIZER_ALIAS_IGNORE)) {
-            if (corto_serializeMatchAccess(this->accessKind, this->access, modifiers)) {
-                member.kind = CORTO_MEMBER;
-                member.parent = info;
-                member.is.member.o = o;
-                member.is.member.t = m;
-                member.is.member.v = CORTO_OFFSET(v, m->offset);
-    #ifdef CORTO_SERIALIZER_TRACING
-                {
-                    corto_id id, id2;
-                    printf("%*smember(%s : %s)\n", indent, " ", corto_fullname(m, id2), corto_fullname(member.is.member.t->type, id)); fflush(stdout);
-                }
-                indent++;
-    #endif
-                if (cb(this, &member, userData)) {
-                    goto error;
-                }
-    #ifdef CORTO_SERIALIZER_TRACING
-                indent--;
-    #endif
+    } else {
+        for(i = 0; i < t->members.length; i  ++) {
+            m = t->members.buffer[i];
+            if (corto_serializeMember(this, m, o, v, cb, info, userData)) {
+                goto error;
             }
         }
     }

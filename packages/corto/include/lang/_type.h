@@ -71,7 +71,6 @@ extern "C" {
 #define corto_int16(o) ((corto_int16*)corto_assertType((corto_type)corto_int16_o, o))
 #define corto_int8(o) ((corto_int8*)corto_assertType((corto_type)corto_int8_o, o))
 #define corto_iterator(o) ((corto_iterator)corto_assertType((corto_type)corto_iterator_o, o))
-#define corto_label(o) ((corto_label)corto_assertType((corto_type)corto_label_o, o))
 #define corto_list(o) ((corto_list)corto_assertType((corto_type)corto_list_o, o))
 #define corto_map(o) ((corto_map)corto_assertType((corto_type)corto_map_o, o))
 #define corto_metaprocedure(o) ((corto_metaprocedure)corto_assertType((corto_type)corto_metaprocedure_o, o))
@@ -83,6 +82,7 @@ extern "C" {
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_uint64(o) ((corto_uint64*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
+#define corto_typespec(o) ((corto_typespec*)corto_assertType((corto_type)corto_typespec_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
 #define corto_virtual(o) ((corto_virtual)corto_assertType((corto_type)corto_virtual_o, o))
@@ -203,6 +203,7 @@ CORTO_BITMASK(corto_modifier);
     #define CORTO_READONLY (0x4)
     #define CORTO_CONST (0x8)
     #define CORTO_HIDDEN (0x10)
+    #define CORTO_OPTIONAL (0x20)
 
 /*  member */
 CORTO_CLASS(corto_member);
@@ -473,14 +474,6 @@ CORTO_CLASS_DEF(corto_iterator) {
     corto_type elementType;
 };
 
-/*  label */
-CORTO_CLASS(corto_label);
-
-CORTO_CLASS_DEF(corto_label) {
-    CORTO_EXTEND(corto_case);
-    corto_int32 discriminator;
-};
-
 /*  list */
 CORTO_CLASS(corto_list);
 
@@ -553,6 +546,14 @@ CORTO_CLASS_DEF(corto_text) {
     CORTO_EXTEND(corto_primitive);
     corto_width charWidth;
     corto_uint64 length;
+};
+
+/*  typespec */
+typedef struct corto_typespec corto_typespec;
+
+struct corto_typespec {
+    corto_type type;
+    corto_bool reference;
 };
 
 /*  uint */

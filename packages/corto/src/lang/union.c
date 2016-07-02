@@ -50,11 +50,12 @@ corto_int16 _corto_union_construct(
             size = memberSize;
         }
         /* All members start at the same offset */
-        m->offset = sizeof(corto_uint32);
+        m->offset = CORTO_ALIGN(sizeof(corto_uint32), alignment);
     }
 
     /* Add size of discriminator */
     size += sizeof(corto_uint32);
+    size = alignment ? CORTO_ALIGN(size, alignment) : size;
 
     corto_type(this)->size = size;
     corto_type(this)->alignment = alignment;
@@ -62,6 +63,41 @@ corto_int16 _corto_union_construct(
     return corto_type_construct(this);
 error:
     return -1;
+/* $end */
+}
+
+corto_member _corto_union_findCase(
+    corto_union this,
+    corto_int32 discriminator)
+{
+/* $begin(corto/lang/union/findCase) */
+    corto_member member = NULL;
+    corto_bool found = FALSE;
+    corto_uint32 i = 0;
+
+    for(i = 0; i < corto_interface(this)->members.length; i  ++) {
+        corto_case c = corto_case(corto_interface(this)->members.buffer[i]);
+
+        /* If discriminator list is empty, this is a default */
+        if (!c->discriminator.length) {
+            member = corto_member(c);
+
+        /* Otherwise loop discriminators to see if there's a match */
+        } else {
+            corto_int32seqForeach(c->discriminator, caseDiscriminator) {
+                if (discriminator == caseDiscriminator) {
+                    member = corto_member(c);
+                    found = TRUE;
+                    break;
+                }
+            }
+            if (found) {
+                break;
+            }
+        }
+    }
+
+    return member;
 /* $end */
 }
 

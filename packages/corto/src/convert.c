@@ -134,6 +134,14 @@ CORTO_DECL_TRANSFORM(string, octet) {
     return 0;
 }
 
+/* string to word */
+CORTO_DECL_TRANSFORM(string, word) {
+    CORTO_UNUSED(toType);
+    CORTO_UNUSED(fromType);
+    *(corto_word*)to = (corto_int64)strtol(*(corto_string*)from, NULL, 16);
+    return 0;
+}
+
 /* string to boolean */
 CORTO_DECL_TRANSFORM(string, boolean) {
     corto_string str;
@@ -491,8 +499,9 @@ void corto_convertInit(void) {
     CORTO_CONVERT_INIT_NUM(CORTO_UINTEGER, CORTO_WIDTH_64, CORTO_BITMASK, CORTO_WIDTH_32, int64, enum);
     CORTO_CONVERT_INIT_NUM(CORTO_BITMASK, CORTO_WIDTH_32, CORTO_BOOLEAN, CORTO_WIDTH_8, int32, bool);
 
-    /* string to octet */
+    /* string to binary */
     CORTO_CONVERT_INIT_NUM(CORTO_TEXT, CORTO_WIDTH_WORD, CORTO_BINARY, CORTO_WIDTH_8, string, octet);
+    CORTO_CONVERT_INIT_NUM(CORTO_TEXT, CORTO_WIDTH_WORD, CORTO_BINARY, CORTO_WIDTH_WORD, string, word);
 
     /* string to character */
     CORTO_CONVERT_INIT_NUM(CORTO_TEXT, CORTO_WIDTH_WORD, CORTO_CHARACTER, CORTO_WIDTH_8, string, char8);

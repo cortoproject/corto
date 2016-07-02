@@ -68,9 +68,10 @@ corto_int16 _corto_native_typeDefine(corto_native_type _this, corto_string name)
     return corto_define(_this);
 }
 
-void _corto_native_typeSet(corto_native_type _this, corto_string name) {
+corto_native_type _corto_native_typeAssign(corto_native_type _this, corto_string name) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_native_type)_this)->name, name);
+    return _this;
 }
 
 corto_string _corto_native_typeStr(corto_native_type value) {

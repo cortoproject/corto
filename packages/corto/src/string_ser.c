@@ -243,6 +243,11 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     }
     if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
     if (t->kind == CORTO_COMPOSITE) {
+        if (corto_interface(t)->kind == CORTO_UNION) {
+            void *ptr = corto_value_getPtr(v);
+            corto_buffer_append(&privateData.buffer, "%d", *(corto_int32*)ptr);
+            privateData.itemCount = 1;
+        }
         result = corto_serializeMembers(s, v, &privateData);
     } else if (t->kind == CORTO_COLLECTION){
         result = corto_serializeElements(s, v, &privateData);
@@ -289,8 +294,8 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
         }
     }
 
-    if (!data->compactNotation) {
-        if (v->kind == CORTO_MEMBER) {
+    if (v->kind == CORTO_MEMBER) {
+        if (!data->compactNotation) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
             if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.t))) goto finished;
             if (!corto_ser_appendColor(data, BOLD)) goto finished;

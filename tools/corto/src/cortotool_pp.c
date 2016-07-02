@@ -73,6 +73,7 @@ corto_int16 cortotool_core(void) {
     });
     if (corto_procwait(pid, &ret) || ret) {
         corto_error("failed to generate code for corto/core (%d)", ret);
+        printf("   command: corto pp --prefix corto --name corto --scope corto/core --attr c=src/core --attr h=include/core --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
         goto error;
     }
 
@@ -93,6 +94,7 @@ corto_int16 cortotool_core(void) {
     });
     if (corto_procwait(pid, &ret) || ret) {
         corto_error("failed to generate code for corto/lang (%d)", ret);
+        printf("   command: corto pp --prefix corto --name corto --scope corto/lang --attr c=src/lang --attr h=include/lang --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
         goto error;
     }
 
@@ -112,7 +114,8 @@ corto_int16 cortotool_core(void) {
       NULL
     });
     if (corto_procwait(pid, &ret) || ret) {
-        corto_error("failed to generate code for corto/lang (%d)", ret);
+        corto_error("failed to generate code for corto/native (%d)", ret);
+        printf("   command: corto pp --prefix corto --name corto --scope corto/native --attr c=src/native --attr h=include/native --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
         goto error;
     }
 
@@ -130,6 +133,7 @@ corto_int16 cortotool_core(void) {
     });
     if (corto_procwait(pid, &ret) || ret) {
         corto_error("failed to setup project for corto (%d)", ret);
+        printf("   command: corto pp --prefix corto --name corto --attr c=src --attr h=include --attr bootstrap=true --attr stubs=false -g c/project\n");
         goto error;
     }
 

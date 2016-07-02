@@ -1,6 +1,9 @@
 #include "cortotool_test.h"
 #include "cortotool_build.h"
 
+#define GREEN   "\033[1;32m"
+#define NORMAL  "\033[0;49m"
+
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testCase = NULL;
     corto_id testCaseArg;
@@ -24,13 +27,15 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", testCase, NULL});
     if ((sig = corto_procwait(pid, &ret) || ret)) {
         if (sig > 0) {
-            corto_error("corto: tests failed");
+            corto_error("Aww, tests failed.");
         }
         err = 1;
     }
 
     if (err) {
         goto error;
+    } else {
+        printf("%sYay, all green :-)%s\n", GREEN, NORMAL);
     }
 
     return 0;
