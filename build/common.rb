@@ -4,7 +4,7 @@ require 'rake/clean'
 if ENV['CORTO_VERSION'] then
   CORTO_VERSION ||= ENV['CORTO_VERSION']
 else
-  CORTO_VERSION ||= `corto --minor`[0...-1]
+  CORTO_VERSION ||= `corto --minor`.strip
 end
 
 # Set platform variables
