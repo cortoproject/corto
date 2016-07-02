@@ -83,7 +83,7 @@ if File.exists? ".corto/packages.txt" then
   verbose(false)
   f = File.open(".corto/packages.txt")
   f.each_line do |l|
-    p = l[0...-1]
+    p = l.strip
     USE_PACKAGE_LOADED.push p
     USE_PACKAGE.push p
   end
@@ -222,7 +222,7 @@ task :prebuild do
   verbose(VERBOSE)
   # Load dependency build instructions before anything else
   USE_PACKAGE.each do |p|
-    location = `corto locate #{p} --path`[0...-1]
+    location = `corto locate #{p} --path`.strip
     if not $?.to_i == 0 then
       STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
       abort
@@ -277,7 +277,7 @@ coverage_report = []
 
 # Run gcov for project
 task :gcov => SOURCES.ext(".gcov") do
-  coverage_report.sort_by {|item| item['uncovered']}.reverse!.each {|item|
+  coverage_report.sort_by { |item| item['uncovered'] }.reverse!.each do |item|
     if (item['uncovered'] != 0) then
       if (item['pct'] < 0.7) then
         print "#{item['source']}: #{C_FAIL}#{"%.2f" % (item['pct']*100)}%#{C_NORMAL} (#{item['uncovered']} uncovered)\n"
@@ -287,7 +287,7 @@ task :gcov => SOURCES.ext(".gcov") do
         print "#{item['source']}: #{"%.2f" % (item['pct']*100)}% (#{item['uncovered']} uncovered)\n"
       end
     end
-  }
+  end
   if (total != 0) then
     pct = covered / total
     if (pct < 0.7) then

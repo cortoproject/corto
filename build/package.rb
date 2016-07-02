@@ -296,9 +296,9 @@ task :install do
       if File.exists? "lib/everywhere" then
         sh "cp -r lib/everywhere/. #{libpath}/"
         if CORTO_OS == "Darwin" then
-          access = `stat -f '%A' lib/everywhere`[0...-1]
+          access = `stat -f '%A' lib/everywhere`.strip
         else
-          access = `stat -c '%a' lib/everywhere`[0...-1]
+          access = `stat -c '%a' lib/everywhere`.strip
         end
         sh "chmod #{access} #{libpath}"
       end
