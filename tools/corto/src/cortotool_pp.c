@@ -2,7 +2,7 @@
 #include "cortotool_pp.h"
 
 static corto_ll silent, mute, attributes, names, prefixes, generators, scopes;
-static corto_ll languages, includes;
+static corto_ll objects, languages, includes;
 static corto_string prefix = NULL;
 static corto_string name = NULL;
 
@@ -142,12 +142,46 @@ error:
     return -1;
 }
 
+corto_int16 cortotool_ppParse(
+    corto_generator g,
+    corto_ll list,
+    corto_bool parseSelf,
+    corto_bool parseScope)
+{
+    corto_iter iter = corto_llIter(list);
+    while (corto_iterHasNext(&iter)) {
+        corto_id id;
+        char *objId = corto_iterNext(&iter);
+
+        /* Ensure the scope is fully qualified */
+        if ((objId[0] != '/') && (objId[0] != ':')) {
+            sprintf(id, "/%s", objId);
+        } else {
+            strcpy(id, objId);
+        }
+
+        /* Resolve object */
+        corto_object o = corto_resolve(NULL, id);
+        if (!o) {
+            corto_error("corto: unresolved scope '%s'.", id);
+            goto error;
+        }
+        corto_release(o);
+
+        /* Parse object as scope, with provided prefix */
+        gen_parse(g, o, parseSelf, parseScope, prefix);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 corto_int16 cortotool_pp(int argc, char *argv[]) {
     corto_generator g;
     corto_string lib, include;
     corto_iter iter;
-    corto_string scope, attr;
-    corto_object o;
+    corto_string attr;
     corto_ll core;
 
     CORTO_UNUSED(argc);
@@ -166,6 +200,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
         {"--name", NULL, &names},
         {"--prefix", NULL, &prefixes},
         {"--scope", NULL, &scopes},
+        {"--object", NULL, &objects},
         {"-p", NULL, &prefixes},
         {"-s", NULL, &scopes},
         {"$+--generator", NULL, &generators},
@@ -247,29 +282,10 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Generate for all scopes */
             if (scopes) {
-                iter = corto_llIter(scopes);
-                while (corto_iterHasNext(&iter)) {
-                    corto_id scopeId;
-                    scope = corto_iterNext(&iter);
-
-                    /* Ensure the scope is fully qualified */
-                    if ((scope[0] != '/') && (scope[0] != ':')) {
-                        sprintf(scopeId, "/%s", scope);
-                    } else {
-                        strcpy(scopeId, scope);
-                    }
-
-                    /* Resolve object */
-                    o = corto_resolve(NULL, scopeId);
-                    if (!o) {
-                        corto_error("corto: unresolved scope '%s'.", scopeId);
-                        goto error;
-                    }
-                    corto_release(o);
-
-                    /* Parse object as scope, with provided prefix */
-                    gen_parse(g, o, TRUE, TRUE, prefix);
-                }
+                cortotool_ppParse(g, scopes, TRUE, TRUE);
+            }
+            if (objects) {
+                cortotool_ppParse(g, objects, TRUE, FALSE);
             }
 
             /* Set attributes */

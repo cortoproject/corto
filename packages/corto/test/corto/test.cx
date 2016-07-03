@@ -28,6 +28,12 @@ struct Point3D: Point::
 struct Line::
     start, stop: Point
 
+struct CompositeWithString::
+    a: int32
+    b: string
+    c: string
+    d: int32
+
 array PrimitiveArray: int32, 4
 array CompositeArray: Point, 4
 array ObjectArray: object, 4
@@ -186,7 +192,7 @@ test/Suite Copy::
 
 // Class with method for testing ownership onInvoke
 class MethodForwardTest::
-    void func()
+    void func() remote
     invoked: int32, readonly
 
 // Replicator for ownership testcase
@@ -851,6 +857,8 @@ test/Suite StringDeserializer::
     void tc_deserStringWhitespace()
     void tc_deserStringWhitespaceTrailing()
     void tc_deserStringWhitespaceTrailingNoType()
+    void tc_deserStringMember()
+    void tc_deserStringMemberNoQuotes()
 
     void tc_deserComposite()
     void tc_deserCompositeNoType()

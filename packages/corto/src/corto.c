@@ -142,6 +142,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, function);\
     SSO_OP_CLASS(op, method);\
     SSO_OP_CLASS(op, virtual);\
+    SSO_OP_CLASS(op, remote);\
     SSO_OP_CLASS(op, observer);\
     SSO_OP_CLASS(op, metaprocedure);
 

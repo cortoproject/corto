@@ -116,6 +116,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Buffer.h>
 #include <Cat.h>
 #include <Compare.h>
+#include <CompositeWithString.h>
 #include <Copy.h>
 #include <DeclaredParent.h>
 #include <DefinedParent.h>

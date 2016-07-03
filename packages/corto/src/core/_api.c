@@ -1784,6 +1784,112 @@ corto_int16 _corto_positionDeinit(corto_position* value) {
     return result;
 }
 
+corto_remote _corto_remoteCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
+    corto_remote _this;
+    _this = corto_remote(corto_declare(corto_remote_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setref(&((corto_function)_this)->returnType, returnType);
+    ((corto_function)_this)->returnsReference = returnsReference;
+    ((corto_method)_this)->_virtual = _virtual;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_remote _corto_remoteCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
+    corto_remote _this;
+    _this = corto_remote(corto_declareChild(_parent, _name, corto_remote_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setref(&((corto_function)_this)->returnType, returnType);
+    ((corto_function)_this)->returnsReference = returnsReference;
+    ((corto_method)_this)->_virtual = _virtual;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_remoteUpdate(corto_remote _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_method)_this)->_virtual = _virtual;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_remote _corto_remoteDeclare(void) {
+    corto_remote _this;
+    _this = corto_remote(corto_declare(corto_remote_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_remote _corto_remoteDeclareChild(corto_object _parent, corto_string _name) {
+    corto_remote _this;
+    _this = corto_remote(corto_declareChild(_parent, _name, corto_remote_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_remoteDefine(corto_remote _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_function)_this)->returnType, returnType);
+    ((corto_function)_this)->returnsReference = returnsReference;
+    ((corto_method)_this)->_virtual = _virtual;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
+    return corto_define(_this);
+}
+
+corto_remote _corto_remoteAssign(corto_remote _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void)) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_function)_this)->returnType, returnType);
+    ((corto_function)_this)->returnsReference = returnsReference;
+    ((corto_method)_this)->_virtual = _virtual;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
+    return _this;
+}
+
+corto_string _corto_remoteStr(corto_remote value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_object(value, corto_type(corto_remote_o));
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_remote corto_remoteFromStr(corto_remote value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_remote_o), str);
+    return value;
+}
+
+corto_equalityKind _corto_remoteCompare(corto_remote dst, corto_remote src) {
+    return corto_compare(dst, src);
+}
+
 corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param) {
     corto_request* _this;
     _this = corto_request(corto_declare(corto_request_o));

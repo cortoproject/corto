@@ -281,7 +281,7 @@ static corto_int16 cortotool_app (
     }
 
     if (strchr(name, '/')) {
-        corto_error("corto: app name should'nt contain '/' characters");
+        corto_error("corto: app name shouldn't contain '/' characters");
         goto error;
     }
 
@@ -303,9 +303,13 @@ static corto_int16 cortotool_app (
     }
     file = fopen(buff, "w");
     if (file) {
-        fprintf(file, "#include \"%s.h\"\n\n", name);
-        fprintf(file, "int %sMain(int argc, char *argv[]) {\n\n", name);
-        fprintf(file, "    printf(\"Hello Corto!\\n\");\n\n");
+        if (!nocorto) {
+            fprintf(file, "#include \"%s.h\"\n\n", name);
+        }
+        fprintf(file, "int %s%s(int argc, char *argv[]) {\n\n", nocorto ? "" : name, nocorto ? "main" : "Main");
+        if (!nocorto) {
+            fprintf(file, "    printf(\"Hello Corto!\\n\");\n\n");
+        }
         fprintf(file, "    return 0;\n");
         fprintf(file, "}\n");
         fclose(file);

@@ -30,6 +30,7 @@ extern "C" {
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
+#define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
 #define corto_request(o) ((corto_request*)corto_assertType((corto_type)corto_request_o, o))
 #define corto_result(o) ((corto_result*)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter*)corto_assertType((corto_type)corto_resultIter_o, o))
@@ -202,6 +203,13 @@ typedef struct corto_position corto_position;
 struct corto_position {
     corto_float64 latitude;
     corto_float64 longitude;
+};
+
+/*  /corto/core/remote */
+CORTO_CLASS(corto_remote);
+
+CORTO_CLASS_DEF(corto_remote) {
+    CORTO_EXTEND(corto_method);
 };
 
 /*  /corto/core/request */

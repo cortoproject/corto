@@ -79,6 +79,24 @@ corto_string g_getName(corto_generator g) {
     return result;
 }
 
+/* Get name from generator name (strip path) */
+char* g_getProjectName(corto_generator g) {
+    char *package = g_getName(g);
+    char *ptr = &package[strlen(package) - 1];
+    while ((ptr != package)) {
+        ptr --;
+        if (*ptr == '/') {
+            ptr ++;
+            break;
+        }
+        if (*ptr == ':') {
+            ptr ++;
+            break;
+        }
+    }
+    return ptr;
+}
+
 /* Get current object */
 corto_object g_getCurrent(corto_generator g) {
     corto_object result;

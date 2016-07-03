@@ -563,6 +563,36 @@ CORTO_EXPORT corto_int16 _corto_positionInit(corto_position* value);
 CORTO_EXPORT corto_int16 _corto_positionDeinit(corto_position* value);
 #define corto_positionDeinit(value) _corto_positionDeinit(value)
 
+/* /corto/core/remote */
+CORTO_EXPORT corto_remote _corto_remoteCreate(corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_remoteCreate(returnType, returnsReference, _virtual, _impl) _corto_remoteCreate(corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+#define corto_remoteCreate_auto(_name, returnType, returnsReference, _virtual, _impl) corto_remote _name = corto_remoteCreate(returnType, returnsReference, _virtual, _impl); (void)_name
+CORTO_EXPORT corto_remote _corto_remoteCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_remoteCreateChild(_parent, _name, returnType, returnsReference, _virtual, _impl) _corto_remoteCreateChild(_parent, _name, corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+#define corto_remoteCreateChild_auto(_parent, _name, returnType, returnsReference, _virtual, _impl) corto_remote _name = corto_remoteCreateChild(_parent, #_name, returnType, returnsReference, _virtual, _impl); (void)_name
+CORTO_EXPORT corto_int16 _corto_remoteUpdate(corto_remote _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_remoteUpdate(_this, returnType, returnsReference, _virtual, _impl) _corto_remoteUpdate(corto_remote(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+
+CORTO_EXPORT corto_remote _corto_remoteDeclare(void);
+#define corto_remoteDeclare() _corto_remoteDeclare()
+#define corto_remoteDeclare_auto(_name) corto_remote _name = corto_remoteDeclare(); (void)_name
+CORTO_EXPORT corto_remote _corto_remoteDeclareChild(corto_object _parent, corto_string _name);
+#define corto_remoteDeclareChild(_parent, _name) _corto_remoteDeclareChild(_parent, _name)
+#define corto_remoteDeclareChild_auto(_parent, _name) corto_remote _name = corto_remoteDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_remoteDefine(corto_remote _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_remoteDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_remoteDefine(corto_remote(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+CORTO_EXPORT corto_remote _corto_remoteAssign(corto_remote _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
+#define corto_remote__optional_NotSet NULL
+#define corto_remote__optional_Set(returnType, returnsReference, _virtual, _impl) corto_remoteAssign(corto_calloc(sizeof(corto_remote)), returnType, returnsReference, _virtual, _impl)
+#define corto_remoteUnset(_this) _this ? corto_deinitp(_this, corto_remote_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_remoteAssign(_this, returnType, returnsReference, _virtual, _impl) _corto_remoteAssign(corto_remote(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+#define corto_remoteSet(_this, returnType, returnsReference, _virtual, _impl) _this = _this ? _this : corto_calloc(sizeof(corto_remote_o)); _corto_remoteAssign(corto_remote(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+CORTO_EXPORT corto_string _corto_remoteStr(corto_remote value);
+#define corto_remoteStr(value) _corto_remoteStr(corto_remote(value))
+CORTO_EXPORT corto_remote corto_remoteFromStr(corto_remote value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_remoteCompare(corto_remote dst, corto_remote src);
+#define corto_remoteCompare(dst, src) _corto_remoteCompare(corto_remote(dst), corto_remote(src))
+
 /* /corto/core/request */
 CORTO_EXPORT corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_string param);
 #define corto_requestCreate(parent, expr, offset, limit, content, param) _corto_requestCreate(parent, expr, offset, limit, content, param)

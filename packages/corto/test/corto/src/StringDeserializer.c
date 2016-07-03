@@ -1121,6 +1121,42 @@ corto_void _test_StringDeserializer_tc_deserStringEscape(
 /* $end */
 }
 
+corto_void _test_StringDeserializer_tc_deserStringMember(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserStringMember) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/CompositeWithString{10, \"Hello World\", \"Foo Bar\", 20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_CompositeWithString_o);
+    test_assertint(test_CompositeWithString(o)->a, 10);
+    test_assertstr(test_CompositeWithString(o)->b, "Hello World");
+    test_assertstr(test_CompositeWithString(o)->c, "Foo Bar");
+    test_assertint(test_CompositeWithString(o)->d, 20);
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserStringMemberNoQuotes(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserStringMemberNoQuotes) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/CompositeWithString{10, Hello World, Foo Bar, 20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_CompositeWithString_o);
+    test_assertint(test_CompositeWithString(o)->a, 10);
+    test_assertstr(test_CompositeWithString(o)->b, "Hello World");
+    test_assertstr(test_CompositeWithString(o)->c, "Foo Bar");
+    test_assertint(test_CompositeWithString(o)->d, 20);
+    corto_delete(o);
+
+/* $end */
+}
+
 corto_void _test_StringDeserializer_tc_deserStringQuotes(
     test_StringDeserializer this)
 {

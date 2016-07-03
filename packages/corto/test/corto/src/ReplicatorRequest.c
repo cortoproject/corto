@@ -19,7 +19,7 @@ corto_void _test_ReplicatorRequest_setup(
     corto_setAttr(old);
 
     /* Create mount */
-    this->mount = test_ListReplicatorCreate(a_o, 0, CORTO_SOURCE);
+    this->mount = test_ListReplicatorCreate(a_o, CORTO_ON_SCOPE, CORTO_SOURCE);
 
 /* $end */
 }

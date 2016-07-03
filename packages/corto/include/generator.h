@@ -88,6 +88,9 @@ g_idKind g_setIdKind(corto_generator g, g_idKind kind);
 /* Obtain generator name. */
 corto_string g_getName(corto_generator g);
 
+/* Obtain project name */
+corto_string g_getProjectName(corto_generator g);
+
 /* Obtain generator object that is currently parsed. */
 corto_object g_getCurrent(corto_generator g);
 

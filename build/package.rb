@@ -5,11 +5,20 @@ PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 LIB_PUBLIC ||= [] + LIB
 LINK_PUBLIC ||= ["."] + LINK
 GENERATED_SOURCES ||= []
-TARGET = PACKAGE_FWSLASH.split("/").last
+TARGET ||= PACKAGE_FWSLASH.split("/").last
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
 PREFIX ||= TARGET
 NAME ||= PACKAGE_FWSLASH.split("/").last
-ARTEFACT = "lib#{TARGET}.so"
+ARTEFACT ||= "lib#{TARGET}.so"
+
+# Preprocessor variables
+PP_ATTR ||= []
+if not defined? PP_OBJECTS then
+  PP_SCOPES ||= [PACKAGE]
+else
+  PP_SCOPES ||= []
+end
+PP_OBJECTS ||= []
 
 # Include corto package only when not building the core
 if TARGET != "corto" and not defined? NOCORTO then USE_PACKAGE << "corto" end
@@ -21,12 +30,12 @@ Dir.chdir(File.dirname(Rake.application.rakefile))
 # Support for local packages (packages that are not installed to environment)
 if LOCAL == true then
   TARGETPATH = "./.corto"
-  TARGETDIR = TARGETPATH
+  TARGETDIR ||= TARGETPATH
   INCLUDE << "include"
 else
   PACKAGEDIR = PACKAGE_FWSLASH
   TARGETPATH = PACKAGEDIR
-  TARGETDIR = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+  TARGETDIR ||= "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
 end
 
 # Define a convenience macro in the package that points to the installed ETC directory
@@ -81,7 +90,10 @@ if not defined? NOCORTO then
         end
       end
 
-      command = "corto pp #{preload} #{GENFILE} --scope #{PACKAGE} " +
+      command = "corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
+                "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
+                "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
+                "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
                 "--prefix #{PREFIX} #{localStr} #{docStr} --lang #{LANGUAGE}"
 
       begin
@@ -115,7 +127,7 @@ if not defined? NOCORTO then
 
       command =
         "corto pp #{preload} #{localStr} --name #{PACKAGE} " +
-        "--attr h=include --attr c=src -g c/project #{langStr}"
+        "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} -g c/project #{langStr}"
 
       begin
         sh command

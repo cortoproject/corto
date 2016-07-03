@@ -799,7 +799,10 @@ corto_int16 corto_delegateInit(corto_type t, void *o) {
     delegate = t->init._parent.procedure;
 
     if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) || ((corto_interface(t)->kind == CORTO_PROCEDURE))) {
+        if ((corto_interface(t)->kind == CORTO_CLASS) ||
+            (corto_interface(t)->kind == CORTO_STRUCT) ||
+            (corto_interface(t)->kind == CORTO_PROCEDURE))
+        {
             corto_interface i = corto_interface(t)->base;
             while(i && !delegate) {
                 delegate = corto_type(i)->init._parent.procedure;
@@ -2412,8 +2415,16 @@ corto_bool corto_owned(corto_object o) {
         } else {
             result = FALSE;
         }
-    } else {
-        result = TRUE;
+    } else if (current && corto_instanceof(corto_mount_o, current)) {
+        if (!owner) {
+            if (corto_mount(current)->kind != CORTO_SINK) {
+                result = FALSE;
+            } else {
+                result = TRUE;
+            }
+        } else {
+            result = FALSE;
+        }
     }
 
     return result;

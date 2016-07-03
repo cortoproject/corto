@@ -51,7 +51,7 @@ corto_int16 _corto_mount_construct(
     corto_object observable = this->mount;
     corto_eventMask mask = this->mask;
 
-    if (observable) {
+    if (observable && mask) {
         /* Attach mount to the observable if mask != ON_SELF */
         if (mask != CORTO_ON_SELF) {
             if (corto_mount_attach(this, observable, mask)) {
@@ -92,6 +92,7 @@ corto_int16 _corto_mount_init(
 /* $begin(corto/core/mount/init) */
 
     this->kind = CORTO_SOURCE;
+    this->mask = CORTO_ON_SCOPE;
 
     return 0;
 /* $end */
@@ -124,7 +125,14 @@ corto_void _corto_mount_on_declare(
 /* $begin(corto/core/mount/on_declare) */
 
     if (observable != root_o) {
-        corto_mount_onDeclare(this, observable);
+        if (this->type) {
+            corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+            if (!strcmp(this->type, srcType)) {
+                corto_mount_onDeclare(this, observable);
+            }
+        } else {
+            corto_mount_onDeclare(this, observable);
+        }
     }
 
 /* $end */
@@ -136,7 +144,14 @@ corto_void _corto_mount_on_delete(
 {
 /* $begin(corto/core/mount/on_delete) */
 
-    corto_mount_onDelete(this, observable);
+    if (this->type) {
+        corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+        if (!strcmp(this->type, srcType)) {
+            corto_mount_onDelete(this, observable);
+        }
+    } else {
+        corto_mount_onDelete(this, observable);
+    }
 
 /* $end */
 }
@@ -148,7 +163,14 @@ corto_void _corto_mount_on_update(
 /* $begin(corto/core/mount/on_update) */
 
     if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
-        corto_mount_onUpdate(this, observable);
+        if (this->type) {
+            corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+            if (!strcmp(this->type, srcType)) {
+                corto_mount_onUpdate(this, observable);
+            }
+        } else {
+            corto_mount_onUpdate(this, observable);
+        }
     }
 
 /* $end */

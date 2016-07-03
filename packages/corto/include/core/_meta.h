@@ -49,6 +49,7 @@ CORTO_META_OBJECT(delegate, notifyAction);
 CORTO_META_OBJECT(delegate, invokeAction);
 CORTO_META_OBJECT(delegate, requestAction);
 
+CORTO_META_OBJECT(procedure, remote);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(struct, time);
 CORTO_META_OBJECT(struct, position);

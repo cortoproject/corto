@@ -54,7 +54,7 @@ void corto_callDeinit(corto_function f) {
 
 #define CORTO_CALL \
     /* If process does not own object, forward call */\
-    if (corto_instanceof(corto_method_o, f)) {\
+    if (corto_instanceof(corto_remote_o, f)) {\
         corto_object instance = *(corto_object*)argptrs[0];\
         corto_object owner = corto_ownerof(instance);\
         if (owner \

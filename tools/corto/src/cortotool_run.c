@@ -329,12 +329,21 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
         {"$0", NULL, NULL}, /* Ignore 'run' */
         {"--monitor", &monitor, NULL},
         {"$1", &dir, NULL},
+        {"*", NULL, NULL},
         {NULL}
       }
     );
 
+    if (!data) {
+        corto_error("corto: %s", corto_lasterr());
+        goto error;
+    }
+
     if (dir) {
-        corto_chdir(corto_llGet(dir, 0));
+        if (corto_chdir(corto_llGet(dir, 0))) {
+            corto_error("corto: %s", corto_lasterr());
+            goto error;
+        }
     }
 
     /* Build first */
@@ -352,7 +361,15 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
             corto_error("failed to start proces");
             goto error;
         }
-        corto_procwait(pid, NULL);
+        corto_int8 result = 0, sig = 0;
+        if ((sig = corto_procwait(pid, &result)) || result) {
+            if (sig > 0) {
+                corto_error("corto: process crashed (%d)", sig);
+                printf("   debug with: %s/.corto/app\n", corto_cwd());
+            } else {
+                corto_error("corto: process returned with error %d", result);
+            }
+        }
     }
 
     corto_argclean(data);
