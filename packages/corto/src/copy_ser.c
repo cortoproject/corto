@@ -177,16 +177,18 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
 /* Resize list */
 static void* corto_collection_resizeArray(corto_collection t, void* sequence, corto_uint32 size) {
     void *result = sequence;
+
     /* Only sequences can be resized */
     if (t->kind == CORTO_SEQUENCE) {
         corto_uint32 ownSize = ((corto_objectseq*)sequence)->length;
         corto_type elementType = t->elementType;
+        result = ((corto_objectseq*)sequence)->buffer;
 
         /* If there are more elements in the destination, remove superfluous elements */
         if (ownSize > size) {
             corto_uint32 i;
-            for(i=size; i<ownSize; i++) {
-                corto_collection_deinitElement(t, CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i));
+            for(i = size; i < ownSize; i++) {
+                corto_deinitp(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i), elementType);
             }
             /* Reallocate buffer */
             result = ((corto_objectseq*)sequence)->buffer =
@@ -217,6 +219,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
     corto_bool v1IsArray = FALSE, v2IsArray = FALSE;
 
     CORTO_UNUSED(s);
+
 
     /* If this function is reached, collection-types are either equal or comparable. When the
      * base-object was a collection, the collection type can be different. When the base-object

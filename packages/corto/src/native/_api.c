@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/native/native.h>
+#include <corto/corto.h>
 corto_native_type _corto_native_typeCreate(corto_string name) {
     corto_native_type _this;
     _this = corto_native_type(corto_declare(corto_native_type_o));

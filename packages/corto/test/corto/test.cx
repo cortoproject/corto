@@ -35,16 +35,19 @@ struct CompositeWithString::
     d: int32
 
 array PrimitiveArray: int32, 4
+array StringArray: string, 4
 array CompositeArray: Point, 4
 array ObjectArray: object, 4
 array AllocArray: int64, 4
 
 sequence PrimitiveSequence: int32
+sequence StringSequence: string
 sequence CompositeSequence: Point
 sequence ObjectSequence: object
 sequence AllocSequence: int64
 
 list PrimitiveList: int32
+list StringList: string
 list CompositeList: Point
 list ObjectList: object
 list AllocList: int64
@@ -172,11 +175,15 @@ test/Suite Copy::
     void tc_string()
     void tc_arrayToArray()
     void tc_arrayToList()
+    void tc_arrayToExistingList()
     void tc_sequenceToSequence()
+    void tc_sequenceToExistingSequence()
     void tc_sequenceToSequenceResize()
     void tc_listToArray()
     void tc_listToSequence()
+    void tc_listToExistingSequence()
     void tc_listToList()
+    void tc_listToExistingList()
     void tc_listToListResize()
     void tc_arrayToArrayAlloc()
     void tc_arrayToListAlloc()
@@ -188,6 +195,21 @@ test/Suite Copy::
     void tc_listToListResizeAlloc()
     void tc_sequenceToSequenceComposite()
     void tc_sequenceToSequenceValueComposite()
+    void tc_arrayToArrayString()
+    void tc_arrayToExistingArrayString()
+    void tc_arrayToListString()
+    void tc_arrayToExistingListString()
+    void tc_sequenceToSequenceString()
+    void tc_sequenceToExistingSequenceString()
+    void tc_sequenceToSequenceStringStack()
+    void tc_sequenceToExistingSequenceStringStack()
+    void tc_sequenceToExistingSequenceStringStackSmaller()
+    void tc_sequenceToExistingSequenceStringStackLarger()
+    void tc_listToArrayString()
+    void tc_listToSequenceString()
+    void tc_listToExistingSequenceString()
+    void tc_listToListString()
+    void tc_listToExistingListString()
 
 
 // Class with method for testing ownership onInvoke

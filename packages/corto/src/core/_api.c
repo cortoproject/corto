@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 corto_attr* _corto_attrCreate(corto_attr value) {
     corto_attr* _this;
     _this = corto_attr(corto_declare(corto_attr_o));
