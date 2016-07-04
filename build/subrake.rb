@@ -82,19 +82,3 @@ task :gcov do
         end
     end
 end
-
-task :sha do
-    FileList.new("**/.git/config").each do |gitconfig|
-        git_dir = gitconfig.pathmap("%d")
-        remote = `git --git-dir #{git_dir} config --get remote.origin.url`
-        if not remote.empty?
-            remote = remote.chomp().split("/").slice(-2, 2).join("/")
-            sha = `git --git-dir #{git_dir} rev-parse --short HEAD`.chomp()
-        else
-            remote = git_dir.pathmap("%d")
-            sha = "unknown"
-        end
-        branch_name = `git --git-dir #{git_dir} rev-parse --abbrev-ref HEAD`.chomp()
-        puts "#{remote}@#{sha} (#{branch_name})"
-    end
-end
