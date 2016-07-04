@@ -17,6 +17,16 @@ extern "C" {
 void corto_drop(corto_object o, corto_bool delete);
 corto_object corto_resumePersistent(corto_object o);
 
+typedef struct corto_contentType {
+    corto_word ___ (*contentFromCorto)(corto_object o);
+    corto_int16 ___ (*contentToCorto)(corto_object o, corto_word content);
+    void (*contentRelease)(corto_word content);
+} corto_contentType;
+
+corto_int16 corto_loadContentType(
+    corto_contentType *type_out,
+    corto_string contentType);
+
 typedef struct corto__attr {
     unsigned scope:1;
     unsigned write:1;

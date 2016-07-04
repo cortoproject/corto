@@ -38,12 +38,6 @@ typedef struct corto_selectStack {
         struct corto_selectStack *frame);
 } corto_selectStack;
 
-typedef struct corto_contentType {
-    corto_word ___ (*contentFromCorto)(corto_object o);
-    corto_int16 ___ (*contentToCorto)(corto_object o, corto_word content);
-    void (*contentRelease)(corto_word content);
-} corto_contentType;
-
 typedef struct corto_scopeSegment {
     corto_object scope;
     corto_string scopeQuery;
@@ -112,7 +106,7 @@ static corto_int16 corto_selectFromStr(corto_object o, corto_string str) {
     return corto_fromStr(&o, str);
 }
 
-static corto_int16 corto_loadContentType(
+corto_int16 corto_loadContentType(
     corto_contentType *type_out,
     corto_string contentType)
 {

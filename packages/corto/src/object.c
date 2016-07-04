@@ -1562,6 +1562,35 @@ corto_int8 corto_stateof(corto_object o) {
     return state;
 }
 
+/* Get contentstring */
+corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o) {
+    corto_contentType type;
+    corto_string result = NULL;
+
+    if (corto_loadContentType(&type, contentType)) {
+        corto_seterr("contentType '%s' not found", contentType);
+        return NULL;
+    }
+
+    corto_string c = (corto_string)type.contentFromCorto(o);
+    if (!c) {
+        goto error;
+    }
+
+    if (str) {
+        strncpy(str, c, sizeof(corto_id));
+        str[sizeof(corto_id) - 1] = '\0';
+        result = str;
+    } else {
+        result = corto_setThreadString(c);
+        corto_dealloc(c);
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
 /* Check for a state */
 corto_bool corto_checkState(corto_object o, corto_int8 state) {
     corto__object* _o;

@@ -57,6 +57,7 @@ void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
 corto_type corto_typeof(corto_object o);
 corto_int32 corto_countof(corto_object o);
 corto_int8 corto_stateof(corto_object o);
+corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
 corto_bool corto_checkState(corto_object o, corto_int8 state);
 corto_bool corto_checkAttr(corto_object o, corto_int8 attr);
 corto_bool _corto_instanceof(corto_type type, corto_object o);
