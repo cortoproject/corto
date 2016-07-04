@@ -33,6 +33,7 @@ CORTO_EXPORT corto_int16 _corto_native_typeDefine(corto_native_type _this, corto
 CORTO_EXPORT corto_native_type _corto_native_typeAssign(corto_native_type _this, corto_string name);
 #define corto_native_type__optional_NotSet NULL
 #define corto_native_type__optional_Set(name) corto_native_typeAssign(corto_calloc(sizeof(corto_native_type)), name)
+#define corto_native_type__optional_SetCond(cond, name) cond ? corto_native_typeAssign(corto_calloc(sizeof(corto_native_type)), name) : NULL
 #define corto_native_typeUnset(_this) _this ? corto_deinitp(_this, corto_native_type_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_native_typeAssign(_this, name) _corto_native_typeAssign(corto_native_type(_this), name)
 #define corto_native_typeSet(_this, name) _this = _this ? _this : corto_calloc(sizeof(corto_native_type_o)); _corto_native_typeAssign(corto_native_type(_this), name)
