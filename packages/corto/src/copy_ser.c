@@ -37,7 +37,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, vo
     if (corto_primitive(type)->kind != CORTO_TEXT) {
         memcpy(value, this, type->size);
     } else {
-        *(corto_string*)value = corto_strdup(*(corto_string*)this);
+        corto_setstr((corto_string*)value, *(corto_string*)this);
     }
 
     return 0;

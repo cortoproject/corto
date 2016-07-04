@@ -268,6 +268,7 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
 
     corto_string str = corto_buffer_str(&privateData.buffer);
     corto_buffer_append(&data->buffer, str);
+    corto_dealloc(str);
 
     return result;
 finished:
