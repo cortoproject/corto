@@ -88,7 +88,7 @@ corto_void _test_Copy_tc_arrayToExistingArrayString(
 {
 /* $begin(test/Copy/tc_arrayToExistingArrayString) */
     corto_string v1[] = {"HELLO", "WORLD", "FOO", "BAR"};
-    corto_string v2[] = {"Foo", "Bar", "Hello", "World"};
+    corto_string v2[] = {NULL, NULL, NULL, NULL};
     corto_int16 ret;
 
     ret = corto_copyp(v2, test_StringArray_o, v1);
@@ -97,6 +97,14 @@ corto_void _test_Copy_tc_arrayToExistingArrayString(
     test_assertstr(v2[1], "WORLD");
     test_assertstr(v2[2], "FOO");
     test_assertstr(v2[3], "BAR");
+
+    corto_string v3[] = {"Foo", "Bar", "Hello", "World"};
+    ret = corto_copyp(v2, test_StringArray_o, v3);
+    test_assert(ret == 0);
+    test_assertstr(v2[0], "Foo");
+    test_assertstr(v2[1], "Bar");
+    test_assertstr(v2[2], "Hello");
+    test_assertstr(v2[3], "World");
 
     corto_deinitp(v2, test_StringArray_o);
 
