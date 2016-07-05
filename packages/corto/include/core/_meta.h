@@ -32,7 +32,8 @@ CORTO_META_OBJECT(class, loader);
 CORTO_META_OBJECT(struct, augmentData);
 CORTO_META_OBJECT(struct, result);
 CORTO_META_OBJECT(struct, request);
-CORTO_META_OBJECT(struct, mountstats);
+CORTO_META_OBJECT(struct, mountStats);
+CORTO_META_OBJECT(struct, mountPolicy);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(enum, equalityKind);

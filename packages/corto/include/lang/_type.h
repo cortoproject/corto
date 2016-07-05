@@ -75,6 +75,7 @@ extern "C" {
 #define corto_map(o) ((corto_map)corto_assertType((corto_type)corto_map_o, o))
 #define corto_metaprocedure(o) ((corto_metaprocedure)corto_assertType((corto_type)corto_metaprocedure_o, o))
 #define corto_method(o) ((corto_method)corto_assertType((corto_type)corto_method_o, o))
+#define corto_objectlist(o) ((corto_objectlist*)corto_assertType((corto_type)corto_objectlist_o, o))
 #define corto_octet(o) ((corto_octet*)corto_assertType((corto_type)corto_octet_o, o))
 #define corto_octetseq(o) ((corto_octetseq*)corto_assertType((corto_type)corto_octetseq_o, o))
 #define corto_procedureKind(o) ((corto_procedureKind*)corto_assertType((corto_type)corto_procedureKind_o, o))
@@ -506,6 +507,8 @@ CORTO_CLASS_DEF(corto_method) {
     CORTO_EXTEND(corto_function);
     corto_bool _virtual;
 };
+
+CORTO_LIST(corto_objectlist);
 
 /* octet */
 typedef uint8_t corto_octet;

@@ -44,6 +44,26 @@ error:
 }
 /* $end */
 
+/* $header(corto/core/mount/construct) */
+void* corto_mount_thread(void* arg) {
+    corto_mount this = arg;
+    corto_float64 frequency = this->policies.sampleRate;
+    corto_uint32 sec = 1.0 / frequency;
+    frequency -= sec;
+    corto_uint32 nanosec = 0;
+
+    if (frequency >= 0) {
+        nanosec = (1.0 / frequency) * 100000000.0;
+    }
+
+    while (!this->quit) {
+        corto_mount_onPoll(this);
+        corto_sleep(sec, nanosec);
+    }
+
+    return NULL;
+}
+/* $end */
 corto_int16 _corto_mount_construct(
     corto_mount this)
 {
@@ -74,6 +94,25 @@ corto_int16 _corto_mount_construct(
         if (corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, this)) {
             goto error;
         }
+    }
+
+    /* Parse policies */
+    if (this->policy) {
+        corto_string value;
+        void *policies = &this->policies;
+        corto_asprintf(&value, "{%s}", this->policy);
+        if (corto_fromStrp(&policies, corto_mountPolicy_o, value)) {
+            corto_dealloc(value);
+            goto error;
+        }
+        corto_dealloc(value);
+    }
+
+    /* If rate limiting is enabled, start thread */
+    if (this->policies.sampleRate) {
+        this->thread = (corto_word)corto_threadNew(
+            corto_mount_thread,
+            this);
     }
 
     return 0;
@@ -230,6 +269,30 @@ corto_void _corto_mount_onInvoke_v(
 /* $end */
 }
 
+corto_void _corto_mount_onPoll_v(
+    corto_mount this)
+{
+/* $begin(corto/core/mount/onPoll) */
+    corto_event e;
+    corto_ll events = corto_llNew();
+
+    /* Collect events */
+    corto_lock(this);
+    while ((e = corto_llTakeFirst(this->events))) {
+        corto_llAppend(events, e);
+    }
+    corto_unlock(this);
+
+    /* Handle events outside of lock */
+    while ((e = corto_llTakeFirst(events))) {
+        corto_event_handle(e);
+        corto_release(e);
+    }
+
+    corto_llFree(events);
+/* $end */
+}
+
 corto_resultIter _corto_mount_onRequest_v(
     corto_mount this,
     corto_request *request)
@@ -274,15 +337,64 @@ corto_void _corto_mount_onUpdate_v(
 /* $end */
 }
 
+/* $header(corto/core/mount/post) */
+static corto_observableEvent corto_mount_findEvent(corto_mount this, corto_observableEvent e) {
+    corto_iter iter = corto_llIter(this->events);
+    corto_observableEvent e2;
+    while ((corto_iterHasNext(&iter))) {
+        e2 = corto_iterNext(&iter);
+        if ((e2->me == e->me) &&
+          (e2->observable == e->observable) &&
+          (e2->source == e->source) &&
+          (e2->observer == e->observer)) {
+            return e2;
+        }
+    }
+    return NULL;
+}
+
+#define MOUNT_QUEUE_THRESHOLD 100
+#define MOUNT_QUEUE_THRESHOLD_SLEEP 10000000
+
+/* $end */
 corto_void _corto_mount_post(
     corto_mount this,
     corto_event e)
 {
 /* $begin(corto/core/mount/post) */
 
-    CORTO_UNUSED(this);
-    corto_event_handle(e);
-    corto_release(e);
+    /* If sampleRate != 0, post event to list. Another thread will process it
+     * at the specified rate. */
+    if (this->policies.sampleRate) {
+        corto_uint32 size = 0;
+        corto_observableEvent e2;
+
+        /* Append new event to queue */
+        corto_lock(this);
+
+        /* Check if there is already another event in the queue for the same object.
+         * if so, replace event with latest update. */
+        if ((e2 = corto_mount_findEvent(this, corto_observableEvent(e)))) {
+            corto_llReplace(this->events, e2, e);
+            if (e2->mask & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
+            if (e2->mask & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
+            if (e2->mask & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
+            corto_release(e2);
+        } else {
+            corto_llAppend(this->events, e);
+        }
+
+        size = corto_llSize(this->events);
+        corto_unlock(this);
+
+        /* If queue is getting big, slow down publisher */
+        if (size > MOUNT_QUEUE_THRESHOLD) {
+            corto_sleep(0, MOUNT_QUEUE_THRESHOLD_SLEEP);
+        }
+    } else {
+        corto_event_handle(e);
+        corto_release(e);
+    }
 
 /* $end */
 }

@@ -191,13 +191,15 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, vtable);\
     SSO_OP_VALUE(op, interfaceVectorseq);\
     SSO_OP_VALUE(op, interfaceVector);\
+    SSO_OP_VALUE(op, objectlist);\
     SSO_OP_VALUE(op, resultList);\
     SSO_OP_VALUE(op, typespec);\
     SSO_OP_VALUE(op, parameter);\
     SSO_OP_VALUE(op, augmentData);\
     SSO_OP_VALUE(op, result);\
     SSO_OP_VALUE(op, request);\
-    SSO_OP_VALUE(op, mountstats);\
+    SSO_OP_VALUE(op, mountStats);\
+    SSO_OP_VALUE(op, mountPolicy);\
     SSO_OP_VALUE(op, delegatedata);\
     SSO_OP_CORE_VOID(op, dispatcher);\
     SSO_OP_VALUE(op, initAction);\
@@ -561,18 +563,26 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, class_init_);\
     SSO_OP_OBJ(op, class_instanceof_);\
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
-    /* mountstats */\
-    SSO_OP_OBJ_CORE(op, mountstats_declares);\
-    SSO_OP_OBJ_CORE(op, mountstats_updates);\
-    SSO_OP_OBJ_CORE(op, mountstats_deletes);\
+    /* mountStats */\
+    SSO_OP_OBJ_CORE(op, mountStats_declares);\
+    SSO_OP_OBJ_CORE(op, mountStats_updates);\
+    SSO_OP_OBJ_CORE(op, mountStats_deletes);\
+    /* mountPolicy */\
+    SSO_OP_OBJ_CORE(op, mountPolicy_sampleRate);\
     /* mount */\
     SSO_OP_OBJ_CORE(op, mount_mount);\
     SSO_OP_OBJ_CORE(op, mount_mask);\
     SSO_OP_OBJ_CORE(op, mount_type);\
     SSO_OP_OBJ_CORE(op, mount_kind);\
     SSO_OP_OBJ_CORE(op, mount_contentType);\
+    SSO_OP_OBJ_CORE(op, mount_policy);\
     SSO_OP_OBJ_CORE(op, mount_sent);\
     SSO_OP_OBJ_CORE(op, mount_received);\
+    SSO_OP_OBJ_CORE(op, mount_sentDiscarded);\
+    SSO_OP_OBJ_CORE(op, mount_policies);\
+    SSO_OP_OBJ_CORE(op, mount_events);\
+    SSO_OP_OBJ_CORE(op, mount_thread);\
+    SSO_OP_OBJ_CORE(op, mount_quit);\
     SSO_OP_OBJ_CORE(op, mount_init_);\
     SSO_OP_OBJ_CORE(op, mount_construct_);\
     SSO_OP_OBJ_CORE(op, mount_destruct_);\
@@ -581,6 +591,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_resume_);\
     SSO_OP_OBJ_CORE(op, mount_setContentType_);\
     SSO_OP_OBJ_CORE(op, mount_post_);\
+    SSO_OP_OBJ_CORE(op, mount_onPoll_);\
     SSO_OP_OBJ_CORE(op, mount_onDeclare_);\
     SSO_OP_OBJ_CORE(op, mount_onUpdate_);\
     SSO_OP_OBJ_CORE(op, mount_onDelete_);\

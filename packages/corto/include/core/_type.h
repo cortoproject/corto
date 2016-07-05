@@ -20,7 +20,8 @@ extern "C" {
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
 #define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
-#define corto_mountstats(o) ((corto_mountstats*)corto_assertType((corto_type)corto_mountstats_o, o))
+#define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
+#define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
 #define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
@@ -91,13 +92,20 @@ typedef enum corto_mountKind {
     CORTO_CACHE = 1
 } corto_mountKind;
 
-/*  /corto/core/mountstats */
-typedef struct corto_mountstats corto_mountstats;
+/*  /corto/core/mountStats */
+typedef struct corto_mountStats corto_mountStats;
 
-struct corto_mountstats {
+struct corto_mountStats {
     corto_uint64 declares;
     corto_uint64 updates;
     corto_uint64 deletes;
+};
+
+/*  /corto/core/mountPolicy */
+typedef struct corto_mountPolicy corto_mountPolicy;
+
+struct corto_mountPolicy {
+    corto_float64 sampleRate;
 };
 
 /*  /corto/core/mount */
@@ -109,8 +117,14 @@ CORTO_CLASS_DEF(corto_mount) {
     corto_string type;
     corto_mountKind kind;
     corto_string contentType;
-    corto_mountstats sent;
-    corto_mountstats received;
+    corto_string policy;
+    corto_mountStats sent;
+    corto_mountStats received;
+    corto_mountStats sentDiscarded;
+    corto_mountPolicy policies;
+    corto_objectlist events;
+    corto_word thread;
+    corto_bool quit;
 };
 
 /*  /corto/core/invokeEvent */

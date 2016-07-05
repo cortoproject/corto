@@ -277,14 +277,14 @@ CORTO_EXPORT corto_equalityKind _corto_loaderCompare(corto_loader dst, corto_loa
 #define corto_loaderCompare(dst, src) _corto_loaderCompare(corto_loader(dst), corto_loader(src))
 
 /* /corto/core/mount */
-CORTO_EXPORT corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountCreate(mount, mask, type, kind, contentType) _corto_mountCreate(mount, mask, type, kind, contentType)
-#define corto_mountCreate_auto(_name, mount, mask, type, kind, contentType) corto_mount _name = corto_mountCreate(mount, mask, type, kind, contentType); (void)_name
-CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType) _corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType)
-#define corto_mountCreateChild_auto(_parent, _name, mount, mask, type, kind, contentType) corto_mount _name = corto_mountCreateChild(_parent, #_name, mount, mask, type, kind, contentType); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountUpdate(_this, mount, mask, type, kind, contentType) _corto_mountUpdate(corto_mount(_this), mount, mask, type, kind, contentType)
+CORTO_EXPORT corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountCreate(mount, mask, type, kind, contentType, policy) _corto_mountCreate(mount, mask, type, kind, contentType, policy)
+#define corto_mountCreate_auto(_name, mount, mask, type, kind, contentType, policy) corto_mount _name = corto_mountCreate(mount, mask, type, kind, contentType, policy); (void)_name
+CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType, policy) _corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType, policy)
+#define corto_mountCreateChild_auto(_parent, _name, mount, mask, type, kind, contentType, policy) corto_mount _name = corto_mountCreateChild(_parent, #_name, mount, mask, type, kind, contentType, policy); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountUpdate(_this, mount, mask, type, kind, contentType, policy) _corto_mountUpdate(corto_mount(_this), mount, mask, type, kind, contentType, policy)
 
 CORTO_EXPORT corto_mount _corto_mountDeclare(void);
 #define corto_mountDeclare() _corto_mountDeclare()
@@ -292,15 +292,15 @@ CORTO_EXPORT corto_mount _corto_mountDeclare(void);
 CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name);
 #define corto_mountDeclareChild(_parent, _name) _corto_mountDeclareChild(_parent, _name)
 #define corto_mountDeclareChild_auto(_parent, _name) corto_mount _name = corto_mountDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
-#define corto_mountDefine(_this, mount, mask, type, kind, contentType) _corto_mountDefine(corto_mount(_this), mount, mask, type, kind, contentType)
-CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType);
+CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountDefine(_this, mount, mask, type, kind, contentType, policy) _corto_mountDefine(corto_mount(_this), mount, mask, type, kind, contentType, policy)
+CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
 #define corto_mount__optional_NotSet NULL
-#define corto_mount__optional_Set(mount, mask, type, kind, contentType) corto_mountAssign(corto_calloc(sizeof(corto_mount)), mount, mask, type, kind, contentType)
-#define corto_mount__optional_SetCond(cond, mount, mask, type, kind, contentType) cond ? corto_mountAssign(corto_calloc(sizeof(corto_mount)), mount, mask, type, kind, contentType) : NULL
+#define corto_mount__optional_Set(mount, mask, type, kind, contentType, policy) corto_mountAssign(corto_calloc(sizeof(corto_mount)), mount, mask, type, kind, contentType, policy)
+#define corto_mount__optional_SetCond(cond, mount, mask, type, kind, contentType, policy) cond ? corto_mountAssign(corto_calloc(sizeof(corto_mount)), mount, mask, type, kind, contentType, policy) : NULL
 #define corto_mountUnset(_this) _this ? corto_deinitp(_this, corto_mount_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_mountAssign(_this, mount, mask, type, kind, contentType) _corto_mountAssign(corto_mount(_this), mount, mask, type, kind, contentType)
-#define corto_mountSet(_this, mount, mask, type, kind, contentType) _this = _this ? _this : corto_calloc(sizeof(corto_mount_o)); _corto_mountAssign(corto_mount(_this), mount, mask, type, kind, contentType)
+#define corto_mountAssign(_this, mount, mask, type, kind, contentType, policy) _corto_mountAssign(corto_mount(_this), mount, mask, type, kind, contentType, policy)
+#define corto_mountSet(_this, mount, mask, type, kind, contentType, policy) _this = _this ? _this : corto_calloc(sizeof(corto_mount_o)); _corto_mountAssign(corto_mount(_this), mount, mask, type, kind, contentType, policy)
 CORTO_EXPORT corto_string _corto_mountStr(corto_mount value);
 #define corto_mountStr(value) _corto_mountStr(corto_mount(value))
 CORTO_EXPORT corto_mount corto_mountFromStr(corto_mount value, corto_string str);
@@ -342,40 +342,75 @@ CORTO_EXPORT corto_int16 _corto_mountKindInit(corto_mountKind* value);
 CORTO_EXPORT corto_int16 _corto_mountKindDeinit(corto_mountKind* value);
 #define corto_mountKindDeinit(value) _corto_mountKindDeinit(value)
 
-/* /corto/core/mountstats */
-CORTO_EXPORT corto_mountstats* _corto_mountstatsCreate(corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
-#define corto_mountstatsCreate(declares, updates, deletes) _corto_mountstatsCreate(declares, updates, deletes)
-#define corto_mountstatsCreate_auto(_name, declares, updates, deletes) corto_mountstats* _name = corto_mountstatsCreate(declares, updates, deletes); (void)_name
-CORTO_EXPORT corto_mountstats* _corto_mountstatsCreateChild(corto_object _parent, corto_string _name, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
-#define corto_mountstatsCreateChild(_parent, _name, declares, updates, deletes) _corto_mountstatsCreateChild(_parent, _name, declares, updates, deletes)
-#define corto_mountstatsCreateChild_auto(_parent, _name, declares, updates, deletes) corto_mountstats* _name = corto_mountstatsCreateChild(_parent, #_name, declares, updates, deletes); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountstatsUpdate(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
-#define corto_mountstatsUpdate(_this, declares, updates, deletes) _corto_mountstatsUpdate(_this, declares, updates, deletes)
+/* /corto/core/mountPolicy */
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreate(corto_float64 sampleRate);
+#define corto_mountPolicyCreate(sampleRate) _corto_mountPolicyCreate(sampleRate)
+#define corto_mountPolicyCreate_auto(_name, sampleRate) corto_mountPolicy* _name = corto_mountPolicyCreate(sampleRate); (void)_name
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _name, corto_float64 sampleRate);
+#define corto_mountPolicyCreateChild(_parent, _name, sampleRate) _corto_mountPolicyCreateChild(_parent, _name, sampleRate)
+#define corto_mountPolicyCreateChild_auto(_parent, _name, sampleRate) corto_mountPolicy* _name = corto_mountPolicyCreateChild(_parent, #_name, sampleRate); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_float64 sampleRate);
+#define corto_mountPolicyUpdate(_this, sampleRate) _corto_mountPolicyUpdate(_this, sampleRate)
 
-CORTO_EXPORT corto_mountstats* _corto_mountstatsDeclare(void);
-#define corto_mountstatsDeclare() _corto_mountstatsDeclare()
-#define corto_mountstatsDeclare_auto(_name) corto_mountstats* _name = corto_mountstatsDeclare(); (void)_name
-CORTO_EXPORT corto_mountstats* _corto_mountstatsDeclareChild(corto_object _parent, corto_string _name);
-#define corto_mountstatsDeclareChild(_parent, _name) _corto_mountstatsDeclareChild(_parent, _name)
-#define corto_mountstatsDeclareChild_auto(_parent, _name) corto_mountstats* _name = corto_mountstatsDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountstatsDefine(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
-#define corto_mountstatsDefine(_this, declares, updates, deletes) _corto_mountstatsDefine(_this, declares, updates, deletes)
-CORTO_EXPORT corto_mountstats* _corto_mountstatsAssign(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
-#define corto_mountstats__optional_NotSet NULL
-#define corto_mountstats__optional_Set(declares, updates, deletes) corto_mountstatsAssign(corto_calloc(sizeof(corto_mountstats)), declares, updates, deletes)
-#define corto_mountstats__optional_SetCond(cond, declares, updates, deletes) cond ? corto_mountstatsAssign(corto_calloc(sizeof(corto_mountstats)), declares, updates, deletes) : NULL
-#define corto_mountstatsUnset(_this) _this ? corto_deinitp(_this, corto_mountstats_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_mountstatsAssign(_this, declares, updates, deletes) _corto_mountstatsAssign(_this, declares, updates, deletes)
-#define corto_mountstatsSet(_this, declares, updates, deletes) _this = _this ? _this : corto_calloc(sizeof(corto_mountstats_o)); _corto_mountstatsAssign(_this, declares, updates, deletes)
-CORTO_EXPORT corto_string _corto_mountstatsStr(corto_mountstats* value);
-#define corto_mountstatsStr(value) _corto_mountstatsStr(value)
-CORTO_EXPORT corto_mountstats* corto_mountstatsFromStr(corto_mountstats* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_mountstatsCompare(corto_mountstats* dst, corto_mountstats* src);
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclare(void);
+#define corto_mountPolicyDeclare() _corto_mountPolicyDeclare()
+#define corto_mountPolicyDeclare_auto(_name) corto_mountPolicy* _name = corto_mountPolicyDeclare(); (void)_name
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountPolicyDeclareChild(_parent, _name) _corto_mountPolicyDeclareChild(_parent, _name)
+#define corto_mountPolicyDeclareChild_auto(_parent, _name) corto_mountPolicy* _name = corto_mountPolicyDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_float64 sampleRate);
+#define corto_mountPolicyDefine(_this, sampleRate) _corto_mountPolicyDefine(_this, sampleRate)
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_float64 sampleRate);
+#define corto_mountPolicy__optional_NotSet NULL
+#define corto_mountPolicy__optional_Set(sampleRate) corto_mountPolicyAssign(corto_calloc(sizeof(corto_mountPolicy)), sampleRate)
+#define corto_mountPolicy__optional_SetCond(cond, sampleRate) cond ? corto_mountPolicyAssign(corto_calloc(sizeof(corto_mountPolicy)), sampleRate) : NULL
+#define corto_mountPolicyUnset(_this) _this ? corto_deinitp(_this, corto_mountPolicy_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_mountPolicyAssign(_this, sampleRate) _corto_mountPolicyAssign(_this, sampleRate)
+#define corto_mountPolicySet(_this, sampleRate) _this = _this ? _this : corto_calloc(sizeof(corto_mountPolicy_o)); _corto_mountPolicyAssign(_this, sampleRate)
+CORTO_EXPORT corto_string _corto_mountPolicyStr(corto_mountPolicy* value);
+#define corto_mountPolicyStr(value) _corto_mountPolicyStr(value)
+CORTO_EXPORT corto_mountPolicy* corto_mountPolicyFromStr(corto_mountPolicy* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_mountPolicyCompare(corto_mountPolicy* dst, corto_mountPolicy* src);
 
-CORTO_EXPORT corto_int16 _corto_mountstatsInit(corto_mountstats* value);
-#define corto_mountstatsInit(value) _corto_mountstatsInit(value)
-CORTO_EXPORT corto_int16 _corto_mountstatsDeinit(corto_mountstats* value);
-#define corto_mountstatsDeinit(value) _corto_mountstatsDeinit(value)
+CORTO_EXPORT corto_int16 _corto_mountPolicyInit(corto_mountPolicy* value);
+#define corto_mountPolicyInit(value) _corto_mountPolicyInit(value)
+CORTO_EXPORT corto_int16 _corto_mountPolicyDeinit(corto_mountPolicy* value);
+#define corto_mountPolicyDeinit(value) _corto_mountPolicyDeinit(value)
+
+/* /corto/core/mountStats */
+CORTO_EXPORT corto_mountStats* _corto_mountStatsCreate(corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountStatsCreate(declares, updates, deletes) _corto_mountStatsCreate(declares, updates, deletes)
+#define corto_mountStatsCreate_auto(_name, declares, updates, deletes) corto_mountStats* _name = corto_mountStatsCreate(declares, updates, deletes); (void)_name
+CORTO_EXPORT corto_mountStats* _corto_mountStatsCreateChild(corto_object _parent, corto_string _name, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountStatsCreateChild(_parent, _name, declares, updates, deletes) _corto_mountStatsCreateChild(_parent, _name, declares, updates, deletes)
+#define corto_mountStatsCreateChild_auto(_parent, _name, declares, updates, deletes) corto_mountStats* _name = corto_mountStatsCreateChild(_parent, #_name, declares, updates, deletes); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountStatsUpdate(corto_mountStats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountStatsUpdate(_this, declares, updates, deletes) _corto_mountStatsUpdate(_this, declares, updates, deletes)
+
+CORTO_EXPORT corto_mountStats* _corto_mountStatsDeclare(void);
+#define corto_mountStatsDeclare() _corto_mountStatsDeclare()
+#define corto_mountStatsDeclare_auto(_name) corto_mountStats* _name = corto_mountStatsDeclare(); (void)_name
+CORTO_EXPORT corto_mountStats* _corto_mountStatsDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountStatsDeclareChild(_parent, _name) _corto_mountStatsDeclareChild(_parent, _name)
+#define corto_mountStatsDeclareChild_auto(_parent, _name) corto_mountStats* _name = corto_mountStatsDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountStatsDefine(corto_mountStats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountStatsDefine(_this, declares, updates, deletes) _corto_mountStatsDefine(_this, declares, updates, deletes)
+CORTO_EXPORT corto_mountStats* _corto_mountStatsAssign(corto_mountStats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountStats__optional_NotSet NULL
+#define corto_mountStats__optional_Set(declares, updates, deletes) corto_mountStatsAssign(corto_calloc(sizeof(corto_mountStats)), declares, updates, deletes)
+#define corto_mountStats__optional_SetCond(cond, declares, updates, deletes) cond ? corto_mountStatsAssign(corto_calloc(sizeof(corto_mountStats)), declares, updates, deletes) : NULL
+#define corto_mountStatsUnset(_this) _this ? corto_deinitp(_this, corto_mountStats_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_mountStatsAssign(_this, declares, updates, deletes) _corto_mountStatsAssign(_this, declares, updates, deletes)
+#define corto_mountStatsSet(_this, declares, updates, deletes) _this = _this ? _this : corto_calloc(sizeof(corto_mountStats_o)); _corto_mountStatsAssign(_this, declares, updates, deletes)
+CORTO_EXPORT corto_string _corto_mountStatsStr(corto_mountStats* value);
+#define corto_mountStatsStr(value) _corto_mountStatsStr(value)
+CORTO_EXPORT corto_mountStats* corto_mountStatsFromStr(corto_mountStats* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_mountStatsCompare(corto_mountStats* dst, corto_mountStats* src);
+
+CORTO_EXPORT corto_int16 _corto_mountStatsInit(corto_mountStats* value);
+#define corto_mountStatsInit(value) _corto_mountStatsInit(value)
+CORTO_EXPORT corto_int16 _corto_mountStatsDeinit(corto_mountStats* value);
+#define corto_mountStatsDeinit(value) _corto_mountStatsDeinit(value)
 
 /* /corto/core/notifyAction */
 CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure);

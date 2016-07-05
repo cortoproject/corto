@@ -801,7 +801,7 @@ corto_equalityKind _corto_loaderCompare(corto_loader dst, corto_loader src) {
     return corto_compare(dst, src);
 }
 
-corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
     corto_mount _this;
     _this = corto_mount(corto_declare(corto_mount_o));
     if (!_this) {
@@ -812,6 +812,7 @@ corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_s
     corto_setstr(&((corto_mount)_this)->type, type);
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    corto_setstr(&((corto_mount)_this)->policy, policy);
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -819,7 +820,7 @@ corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_s
     return _this;
 }
 
-corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
     corto_mount _this;
     _this = corto_mount(corto_declareChild(_parent, _name, corto_mount_o));
     if (!_this) {
@@ -830,6 +831,7 @@ corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, co
     corto_setstr(&((corto_mount)_this)->type, type);
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    corto_setstr(&((corto_mount)_this)->policy, policy);
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -837,7 +839,7 @@ corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, co
     return _this;
 }
 
-corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_mount)_this)->mount, mount);
@@ -845,6 +847,7 @@ corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_even
         corto_setstr(&((corto_mount)_this)->type, type);
         ((corto_mount)_this)->kind = kind;
         corto_setstr(&((corto_mount)_this)->contentType, contentType);
+        corto_setstr(&((corto_mount)_this)->policy, policy);
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -870,23 +873,25 @@ corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name) {
     return _this;
 }
 
-corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_mount)_this)->mount, mount);
     ((corto_mount)_this)->mask = mask;
     corto_setstr(&((corto_mount)_this)->type, type);
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    corto_setstr(&((corto_mount)_this)->policy, policy);
     return corto_define(_this);
 }
 
-corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType) {
+corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_mount)_this)->mount, mount);
     ((corto_mount)_this)->mask = mask;
     corto_setstr(&((corto_mount)_this)->type, type);
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
+    corto_setstr(&((corto_mount)_this)->policy, policy);
     return _this;
 }
 
@@ -1010,15 +1015,13 @@ corto_int16 _corto_mountKindDeinit(corto_mountKind* value) {
     return result;
 }
 
-corto_mountstats* _corto_mountstatsCreate(corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
-    corto_mountstats* _this;
-    _this = corto_mountstats(corto_declare(corto_mountstats_o));
+corto_mountPolicy* _corto_mountPolicyCreate(corto_float64 sampleRate) {
+    corto_mountPolicy* _this;
+    _this = corto_mountPolicy(corto_declare(corto_mountPolicy_o));
     if (!_this) {
         return NULL;
     }
-    ((corto_mountstats*)_this)->declares = declares;
-    ((corto_mountstats*)_this)->updates = updates;
-    ((corto_mountstats*)_this)->deletes = deletes;
+    ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -1026,15 +1029,13 @@ corto_mountstats* _corto_mountstatsCreate(corto_uint64 declares, corto_uint64 up
     return _this;
 }
 
-corto_mountstats* _corto_mountstatsCreateChild(corto_object _parent, corto_string _name, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
-    corto_mountstats* _this;
-    _this = corto_mountstats(corto_declareChild(_parent, _name, corto_mountstats_o));
+corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _name, corto_float64 sampleRate) {
+    corto_mountPolicy* _this;
+    _this = corto_mountPolicy(corto_declareChild(_parent, _name, corto_mountPolicy_o));
     if (!_this) {
         return NULL;
     }
-    ((corto_mountstats*)_this)->declares = declares;
-    ((corto_mountstats*)_this)->updates = updates;
-    ((corto_mountstats*)_this)->deletes = deletes;
+    ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -1042,12 +1043,10 @@ corto_mountstats* _corto_mountstatsCreateChild(corto_object _parent, corto_strin
     return _this;
 }
 
-corto_int16 _corto_mountstatsUpdate(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_float64 sampleRate) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
-        ((corto_mountstats*)_this)->declares = declares;
-        ((corto_mountstats*)_this)->updates = updates;
-        ((corto_mountstats*)_this)->deletes = deletes;
+        ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -1055,70 +1054,179 @@ corto_int16 _corto_mountstatsUpdate(corto_mountstats* _this, corto_uint64 declar
     return 0;
 }
 
-corto_mountstats* _corto_mountstatsDeclare(void) {
-    corto_mountstats* _this;
-    _this = corto_mountstats(corto_declare(corto_mountstats_o));
+corto_mountPolicy* _corto_mountPolicyDeclare(void) {
+    corto_mountPolicy* _this;
+    _this = corto_mountPolicy(corto_declare(corto_mountPolicy_o));
     if (!_this) {
         return NULL;
     }
     return _this;
 }
 
-corto_mountstats* _corto_mountstatsDeclareChild(corto_object _parent, corto_string _name) {
-    corto_mountstats* _this;
-    _this = corto_mountstats(corto_declareChild(_parent, _name, corto_mountstats_o));
+corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mountPolicy* _this;
+    _this = corto_mountPolicy(corto_declareChild(_parent, _name, corto_mountPolicy_o));
     if (!_this) {
         return NULL;
     }
     return _this;
 }
 
-corto_int16 _corto_mountstatsDefine(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_float64 sampleRate) {
     CORTO_UNUSED(_this);
-    ((corto_mountstats*)_this)->declares = declares;
-    ((corto_mountstats*)_this)->updates = updates;
-    ((corto_mountstats*)_this)->deletes = deletes;
+    ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
     return corto_define(_this);
 }
 
-corto_mountstats* _corto_mountstatsAssign(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_float64 sampleRate) {
     CORTO_UNUSED(_this);
-    ((corto_mountstats*)_this)->declares = declares;
-    ((corto_mountstats*)_this)->updates = updates;
-    ((corto_mountstats*)_this)->deletes = deletes;
+    ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
     return _this;
 }
 
-corto_string _corto_mountstatsStr(corto_mountstats* value) {
+corto_string _corto_mountPolicyStr(corto_mountPolicy* value) {
     corto_string result;
     corto_value v;
-    v = corto_value_value(corto_type(corto_mountstats_o), value);
+    v = corto_value_value(corto_type(corto_mountPolicy_o), value);
     result = corto_strv(&v, 0);
     return result;
 }
 
-corto_mountstats* corto_mountstatsFromStr(corto_mountstats* value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_mountstats_o), str);
+corto_mountPolicy* corto_mountPolicyFromStr(corto_mountPolicy* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mountPolicy_o), str);
     return value;
 }
 
-corto_equalityKind corto_mountstatsCompare(corto_mountstats* dst, corto_mountstats* src) {
-    return corto_comparep(dst, corto_mountstats_o, src);
+corto_equalityKind corto_mountPolicyCompare(corto_mountPolicy* dst, corto_mountPolicy* src) {
+    return corto_comparep(dst, corto_mountPolicy_o, src);
 }
 
-corto_int16 _corto_mountstatsInit(corto_mountstats* value) {
+corto_int16 _corto_mountPolicyInit(corto_mountPolicy* value) {
     corto_int16 result;
-    memset(value, 0, corto_type(corto_mountstats_o)->size);
+    memset(value, 0, corto_type(corto_mountPolicy_o)->size);
     corto_value v;
-    v = corto_value_value(corto_type(corto_mountstats_o), value);
+    v = corto_value_value(corto_type(corto_mountPolicy_o), value);
     result = corto_initv(&v);
     return result;
 }
 
-corto_int16 _corto_mountstatsDeinit(corto_mountstats* value) {
+corto_int16 _corto_mountPolicyDeinit(corto_mountPolicy* value) {
     corto_int16 result;
     corto_value v;
-    v = corto_value_value(corto_type(corto_mountstats_o), value);
+    v = corto_value_value(corto_type(corto_mountPolicy_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
+corto_mountStats* _corto_mountStatsCreate(corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    corto_mountStats* _this;
+    _this = corto_mountStats(corto_declare(corto_mountStats_o));
+    if (!_this) {
+        return NULL;
+    }
+    ((corto_mountStats*)_this)->declares = declares;
+    ((corto_mountStats*)_this)->updates = updates;
+    ((corto_mountStats*)_this)->deletes = deletes;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_mountStats* _corto_mountStatsCreateChild(corto_object _parent, corto_string _name, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    corto_mountStats* _this;
+    _this = corto_mountStats(corto_declareChild(_parent, _name, corto_mountStats_o));
+    if (!_this) {
+        return NULL;
+    }
+    ((corto_mountStats*)_this)->declares = declares;
+    ((corto_mountStats*)_this)->updates = updates;
+    ((corto_mountStats*)_this)->deletes = deletes;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountStatsUpdate(corto_mountStats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        ((corto_mountStats*)_this)->declares = declares;
+        ((corto_mountStats*)_this)->updates = updates;
+        ((corto_mountStats*)_this)->deletes = deletes;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mountStats* _corto_mountStatsDeclare(void) {
+    corto_mountStats* _this;
+    _this = corto_mountStats(corto_declare(corto_mountStats_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_mountStats* _corto_mountStatsDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mountStats* _this;
+    _this = corto_mountStats(corto_declareChild(_parent, _name, corto_mountStats_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountStatsDefine(corto_mountStats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    CORTO_UNUSED(_this);
+    ((corto_mountStats*)_this)->declares = declares;
+    ((corto_mountStats*)_this)->updates = updates;
+    ((corto_mountStats*)_this)->deletes = deletes;
+    return corto_define(_this);
+}
+
+corto_mountStats* _corto_mountStatsAssign(corto_mountStats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    CORTO_UNUSED(_this);
+    ((corto_mountStats*)_this)->declares = declares;
+    ((corto_mountStats*)_this)->updates = updates;
+    ((corto_mountStats*)_this)->deletes = deletes;
+    return _this;
+}
+
+corto_string _corto_mountStatsStr(corto_mountStats* value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountStats_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_mountStats* corto_mountStatsFromStr(corto_mountStats* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mountStats_o), str);
+    return value;
+}
+
+corto_equalityKind corto_mountStatsCompare(corto_mountStats* dst, corto_mountStats* src) {
+    return corto_comparep(dst, corto_mountStats_o, src);
+}
+
+corto_int16 _corto_mountStatsInit(corto_mountStats* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_mountStats_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountStats_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_mountStatsDeinit(corto_mountStats* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountStats_o), value);
     result = corto_deinitv(&v);
     return result;
 }
