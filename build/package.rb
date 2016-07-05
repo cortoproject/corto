@@ -3,6 +3,7 @@ require "#{ENV['CORTO_BUILD']}/common"
 PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
 LIB_PUBLIC ||= [] + LIB
+LIBPATH_PUBLIC ||= [] + LIBPATH
 LINK_PUBLIC ||= ["."] + LINK
 GENERATED_SOURCES ||= []
 TARGET ||= PACKAGE_FWSLASH.split("/").last
@@ -179,6 +180,14 @@ task :buildscript do
         if INCLUDE_PUBLIC.length != 0 then
           file.write "INCLUDE"
           INCLUDE_PUBLIC.each do |i|
+            file.write " << \"#{corto_replace(i)}\""
+          end
+          file.write "\n"
+        end
+
+        if LIBPATH_PUBLIC.length != 0 then
+          file.write "LIBPATH"
+          LIBPATH_PUBLIC.each do |i|
             file.write " << \"#{corto_replace(i)}\""
           end
           file.write "\n"
