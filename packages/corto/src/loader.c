@@ -15,9 +15,11 @@ static corto_ll fileHandlers = NULL;
 static corto_ll libraries = NULL;
 static corto_ll fileAdmin = NULL;
 
+extern corto_mutex_s corto_adminLock;
+
 struct corto_fileAdmin {
     corto_string name;
-    corto_bool loading;
+    corto_thread loading;
     corto_int16 result;
 };
 
@@ -82,7 +84,7 @@ static struct corto_fileAdmin* corto_fileAdminFind(corto_string library) {
 static struct corto_fileAdmin* corto_fileAdminAdd(corto_string library) {
     struct corto_fileAdmin *lib = corto_alloc(sizeof(struct corto_fileAdmin));
     lib->name = corto_strdup(library);
-    lib->loading = TRUE;
+    lib->loading = corto_threadSelf();
     if (!fileAdmin) {
         fileAdmin = corto_llNew();
     }
@@ -300,10 +302,10 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     /* Packages should be loaded with minimal attributes to conserve memory */
     corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT);
 
+    corto_mutexLock(&corto_adminLock);
     lib = corto_fileAdminFind(str);
-
     if (lib) {
-        if (lib->loading) {
+        if (lib->loading == corto_threadSelf()) {
             corto_error("illegal recursive load of file '%s' from:", lib->name);
             corto_iter iter = corto_llIter(fileAdmin);
             while (corto_iterHasNext(&iter)) {
@@ -316,9 +318,16 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
             abort();
         } else {
             result = lib->result;
+            corto_mutexUnlock(&corto_adminLock);
+
+            /* Other thread is loading library. Wait until finished */
+            while (lib->loading) {
+                corto_sleep(1, 0);
+            }
             goto loaded;
         }
     }
+    corto_mutexUnlock(&corto_adminLock);
 
     /* Get extension from filename */
     if (!corto_fileExtension(str, ext)) {
@@ -338,10 +347,14 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     h = corto_lookupExt(ext);
     if (h) {
         /* Load file */
+        corto_mutexLock(&corto_adminLock);
         lib = corto_fileAdminAdd(str);
+        corto_mutexUnlock(&corto_adminLock);
         result = h->load(str, argc, argv, h->userData);
-        lib->loading = FALSE;
+        corto_mutexLock(&corto_adminLock);
+        lib->loading = 0;
         lib->result = result;
+        corto_mutexUnlock(&corto_adminLock);
     } else {
         if (!try) {
             corto_seterr(
@@ -648,7 +661,7 @@ void corto_loaderOnExit(void* udata) {
 
     CORTO_UNUSED(udata);
 
-    /* Free loaded administration */
+    /* Free loaded administration (always happens from mainthread) */
 
     if (fileAdmin) {
         iter = corto_llIter(fileAdmin);

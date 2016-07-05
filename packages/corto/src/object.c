@@ -2742,7 +2742,9 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
             }
         }
 #ifndef NDEBUG
-        indent--;
+        if (CORTO_TRACE_NOTIFICATIONS) {
+            indent--;
+        }
 #endif
     }
 }

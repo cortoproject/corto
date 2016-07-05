@@ -141,19 +141,18 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
 
         n = strlen(msg);
 
-        strcat(msg, "\n");
         n++;
 
         if (kind == CORTO_ERROR) {
-            fprintf(f, "%s%s%s", RED, msg, NORMAL);
+            fprintf(f, "%s%s%s%*s\n", RED, msg, NORMAL, (int)(80 - n), " ");
         } else if (kind == CORTO_WARNING) {
-            fprintf(f, "%s%s%s", YELLOW, msg, NORMAL);
+            fprintf(f, "%s%s%s%*s\n", YELLOW, msg, NORMAL, (int)(80 - n), " ");
         } else if (kind == CORTO_OK) {
-            fprintf(f, "%s%s%s", GREEN, msg, NORMAL);
+            fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)(80 - n), " ");
         } else if (kind == CORTO_TRACE) {
-            fprintf(f, "%s%s%s", GREY, msg, NORMAL);
+            fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)(80 - n), " ");
         } else {
-            fprintf(f, "%s", msg);
+            fprintf(f, "%s%*s\n", msg, (int)(80 - n), " ");
         }
 
         if (alloc) {
