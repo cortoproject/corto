@@ -340,7 +340,7 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
         /* Ensure that there aren't any other directories left besides lib */
         } else {
             if (cortotool_forceCleanup("$CORTO_TARGET", argv[1])) {
-                corto_print(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
+                corto_info(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
             }
         }
         corto_dealloc(dir);
@@ -363,13 +363,13 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
             found = TRUE;
         } else {
             if (cortotool_forceCleanup("$CORTO_TARGET", argv[1])) {
-                corto_print(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
+                corto_info(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
             }
         }
         corto_dealloc(dir);
 
         if (found) {
-            corto_print(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
+            corto_info(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
         } else if (!found) {
             corto_error("corto: package '%s' not found", argv[1]);
             goto error;

@@ -1569,7 +1569,7 @@ corto_string corto_contentof(corto_id str, corto_string contentType, corto_objec
 
     if (corto_loadContentType(&type, contentType)) {
         corto_seterr("contentType '%s' not found", contentType);
-        return NULL;
+        goto error;
     }
 
     corto_string c = (corto_string)type.contentFromCorto(o);
@@ -1590,6 +1590,20 @@ corto_string corto_contentof(corto_id str, corto_string contentType, corto_objec
 error:
     return NULL;
 }
+
+corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content) {
+    corto_contentType type;
+
+    if (corto_loadContentType(&type, contentType)) {
+        corto_seterr("contentType '%s' not found", contentType);
+        goto error;
+    }
+
+    return type.contentToCorto(o, (corto_word)content);
+error:
+    return -1;
+}
+
 
 /* Check for a state */
 corto_bool corto_checkState(corto_object o, corto_int8 state) {
@@ -1745,7 +1759,7 @@ static corto_uint8 corto_olsSize(corto__scope *scope) {
     if (ols) {
         do {
         } while ((++ols)->key);
-        result = ols - scope->ols - 1;
+        result = ols - scope->ols;
     }
     return result;
 }
@@ -1768,6 +1782,7 @@ void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
 
         ols = corto_olsFind(scope, key);
         if (ols) {
+            corto_assert(ols->key == key, "returned wrong OLS data");
             old = ols->value;
         } else {
             corto_uint8 size = corto_olsSize(scope);
@@ -1807,6 +1822,7 @@ void* corto_olsGet(corto_object o, corto_int8 key) {
 
         ols = corto_olsFind(scope, key);
         if (ols) {
+            corto_assert(ols->key == key, "returned wrong OLS data");
             result = ols->value;
         }
 
@@ -1844,6 +1860,8 @@ void* corto_olsLockGet(corto_object o, corto_int8 key) {
             ols = &scope->ols[size];
             ols->key = key;
             ols->value = NULL;
+        } else {
+            corto_assert(ols->key == key, "returned wrong OLS data");
         }
 
         result = ols->value;
@@ -1866,6 +1884,7 @@ void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value) {
     if (scope) {
         corto__ols *ols = corto_olsFind(scope, key);
         if (ols) {
+            corto_assert(ols->key == key, "returned wrong OLS data");
             ols->value = value;
         }
         corto_rwmutexUnlock(&scope->scopeLock);
@@ -2432,27 +2451,32 @@ corto_bool corto_owned(corto_object o) {
     corto_object current = corto_getOwner();
     corto_bool result = FALSE;
 
-    if (owner == current) {
+    if (!corto_checkState(o, CORTO_DEFINED)) {
+        /* If object is not DEFINED it is not owned yet, and it's fair game */
         result = TRUE;
-    } else if (owner && corto_instanceof(corto_mount_o, owner)) {
-        if (!current) {
-            if (corto_mount(owner)->kind != CORTO_SINK) {
-                result = FALSE;
+    } else {
+        if (owner == current) {
+            result = TRUE;
+        } else if (owner && corto_instanceof(corto_mount_o, owner)) {
+            if (!current) {
+                if (corto_mount(owner)->kind != CORTO_SINK) {
+                    result = FALSE;
+                } else {
+                    result = TRUE;
+                }
             } else {
-                result = TRUE;
-            }
-        } else {
-            result = FALSE;
-        }
-    } else if (current && corto_instanceof(corto_mount_o, current)) {
-        if (!owner) {
-            if (corto_mount(current)->kind != CORTO_SINK) {
                 result = FALSE;
-            } else {
-                result = TRUE;
             }
-        } else {
-            result = FALSE;
+        } else if (current && corto_instanceof(corto_mount_o, current)) {
+            if (!owner) {
+                if (corto_mount(current)->kind != CORTO_SINK) {
+                    result = FALSE;
+                } else {
+                    result = TRUE;
+                }
+            } else {
+                result = FALSE;
+            }
         }
     }
 
@@ -3142,8 +3166,25 @@ corto_object corto_getOwner() {
 static corto_int32 corto_notify(corto__observable* _o, corto_object observable, corto_uint32 mask) {
     corto_object *parent;
     corto_object this = NULL;
+    corto_object owner = NULL;
     corto__observer **observers;
     int depth = 0;
+
+    /* If a mount is notifying, update statistics */
+    if ((owner = corto_getOwner())) {
+        if (corto_instanceof(corto_mount_o, owner)) {
+            corto_mount m = owner;
+            if (mask & CORTO_ON_DECLARE) {
+                m->received.declares ++;
+            }
+            if (mask & (CORTO_ON_UPDATE | CORTO_ON_DEFINE)) {
+                m->received.updates ++;
+            }
+            if (mask & CORTO_ON_DELETE) {
+                m->received.deletes ++;
+            }
+        }
+    }
 
     /* Notify direct observers */
     if (_o) {

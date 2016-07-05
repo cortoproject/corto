@@ -48,6 +48,12 @@ corto_int16 _corto_mount_construct(
     corto_mount this)
 {
 /* $begin(corto/core/mount/construct) */
+
+    /* If mount isn't set, and object is scoped, mount data on itself */
+    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+        corto_setref(&this->mount, this);
+    }
+
     corto_object observable = this->mount;
     corto_eventMask mask = this->mask;
 
@@ -128,9 +134,11 @@ corto_void _corto_mount_on_declare(
         if (this->type) {
             corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
             if (!strcmp(this->type, srcType)) {
+                this->sent.declares ++;
                 corto_mount_onDeclare(this, observable);
             }
         } else {
+            this->sent.declares ++;
             corto_mount_onDeclare(this, observable);
         }
     }
@@ -147,9 +155,11 @@ corto_void _corto_mount_on_delete(
     if (this->type) {
         corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
         if (!strcmp(this->type, srcType)) {
+            this->sent.deletes ++;
             corto_mount_onDelete(this, observable);
         }
     } else {
+        this->sent.deletes ++;
         corto_mount_onDelete(this, observable);
     }
 
@@ -166,9 +176,11 @@ corto_void _corto_mount_on_update(
         if (this->type) {
             corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
             if (!strcmp(this->type, srcType)) {
+                this->sent.updates ++;
                 corto_mount_onUpdate(this, observable);
             }
         } else {
+            this->sent.updates ++;
             corto_mount_onUpdate(this, observable);
         }
     }
@@ -181,9 +193,10 @@ corto_void _corto_mount_onDeclare_v(
     corto_object observable)
 {
 /* $begin(corto/core/mount/onDeclare) */
-
-    CORTO_UNUSED(this);
     CORTO_UNUSED(observable);
+
+    /* If mount doesn't implement onDeclare, nothing has been sent */
+    this->sent.declares --;
 
 /* $end */
 }
@@ -193,9 +206,10 @@ corto_void _corto_mount_onDelete_v(
     corto_object observable)
 {
 /* $begin(corto/core/mount/onDelete) */
-
-    CORTO_UNUSED(this);
     CORTO_UNUSED(observable);
+
+    /* If mount doesn't implement onDelete, nothing has been sent */
+    this->sent.deletes --;
 
 /* $end */
 }
@@ -252,9 +266,10 @@ corto_void _corto_mount_onUpdate_v(
     corto_object observable)
 {
 /* $begin(corto/core/mount/onUpdate) */
-
-    CORTO_UNUSED(this);
     CORTO_UNUSED(observable);
+
+    /* If mount doesn't implement onUpdate, nothing has been sent */
+    this->sent.updates --;
 
 /* $end */
 }

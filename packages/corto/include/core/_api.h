@@ -342,6 +342,41 @@ CORTO_EXPORT corto_int16 _corto_mountKindInit(corto_mountKind* value);
 CORTO_EXPORT corto_int16 _corto_mountKindDeinit(corto_mountKind* value);
 #define corto_mountKindDeinit(value) _corto_mountKindDeinit(value)
 
+/* /corto/core/mountstats */
+CORTO_EXPORT corto_mountstats* _corto_mountstatsCreate(corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountstatsCreate(declares, updates, deletes) _corto_mountstatsCreate(declares, updates, deletes)
+#define corto_mountstatsCreate_auto(_name, declares, updates, deletes) corto_mountstats* _name = corto_mountstatsCreate(declares, updates, deletes); (void)_name
+CORTO_EXPORT corto_mountstats* _corto_mountstatsCreateChild(corto_object _parent, corto_string _name, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountstatsCreateChild(_parent, _name, declares, updates, deletes) _corto_mountstatsCreateChild(_parent, _name, declares, updates, deletes)
+#define corto_mountstatsCreateChild_auto(_parent, _name, declares, updates, deletes) corto_mountstats* _name = corto_mountstatsCreateChild(_parent, #_name, declares, updates, deletes); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountstatsUpdate(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountstatsUpdate(_this, declares, updates, deletes) _corto_mountstatsUpdate(_this, declares, updates, deletes)
+
+CORTO_EXPORT corto_mountstats* _corto_mountstatsDeclare(void);
+#define corto_mountstatsDeclare() _corto_mountstatsDeclare()
+#define corto_mountstatsDeclare_auto(_name) corto_mountstats* _name = corto_mountstatsDeclare(); (void)_name
+CORTO_EXPORT corto_mountstats* _corto_mountstatsDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountstatsDeclareChild(_parent, _name) _corto_mountstatsDeclareChild(_parent, _name)
+#define corto_mountstatsDeclareChild_auto(_parent, _name) corto_mountstats* _name = corto_mountstatsDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountstatsDefine(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountstatsDefine(_this, declares, updates, deletes) _corto_mountstatsDefine(_this, declares, updates, deletes)
+CORTO_EXPORT corto_mountstats* _corto_mountstatsAssign(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes);
+#define corto_mountstats__optional_NotSet NULL
+#define corto_mountstats__optional_Set(declares, updates, deletes) corto_mountstatsAssign(corto_calloc(sizeof(corto_mountstats)), declares, updates, deletes)
+#define corto_mountstats__optional_SetCond(cond, declares, updates, deletes) cond ? corto_mountstatsAssign(corto_calloc(sizeof(corto_mountstats)), declares, updates, deletes) : NULL
+#define corto_mountstatsUnset(_this) _this ? corto_deinitp(_this, corto_mountstats_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_mountstatsAssign(_this, declares, updates, deletes) _corto_mountstatsAssign(_this, declares, updates, deletes)
+#define corto_mountstatsSet(_this, declares, updates, deletes) _this = _this ? _this : corto_calloc(sizeof(corto_mountstats_o)); _corto_mountstatsAssign(_this, declares, updates, deletes)
+CORTO_EXPORT corto_string _corto_mountstatsStr(corto_mountstats* value);
+#define corto_mountstatsStr(value) _corto_mountstatsStr(value)
+CORTO_EXPORT corto_mountstats* corto_mountstatsFromStr(corto_mountstats* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_mountstatsCompare(corto_mountstats* dst, corto_mountstats* src);
+
+CORTO_EXPORT corto_int16 _corto_mountstatsInit(corto_mountstats* value);
+#define corto_mountstatsInit(value) _corto_mountstatsInit(value)
+CORTO_EXPORT corto_int16 _corto_mountstatsDeinit(corto_mountstats* value);
+#define corto_mountstatsDeinit(value) _corto_mountstatsDeinit(value)
+
 /* /corto/core/notifyAction */
 CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure);
 #define corto_notifyActionCreate(instance, procedure) _corto_notifyActionCreate(instance, corto_function(procedure))

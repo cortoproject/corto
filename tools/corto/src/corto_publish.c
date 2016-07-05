@@ -96,7 +96,7 @@ corto_int16 cortotool_publish(int argc, char *argv[]) {
     corto_dealloc(version);
 
     if (!silent) {
-        corto_print("corto: version updated to %u.%u.%u", major, minor, patch);
+        corto_info("corto: version updated to %u.%u.%u", major, minor, patch);
     }
 
     return 0;

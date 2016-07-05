@@ -237,11 +237,11 @@ static void cxsh_ls(char* arg) {
     }
 
     if (!i) {
-        corto_print("  no objects.");
+        corto_info("  no objects.");
     } else if (i > 1) {
-        corto_print("  %d objects\n", i);
+        corto_info("  %d objects\n", i);
     } else {
-        corto_print("  %d object\n", i);
+        corto_info("  %d object\n", i);
     }
 
     return;

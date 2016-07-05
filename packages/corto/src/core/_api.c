@@ -1010,6 +1010,119 @@ corto_int16 _corto_mountKindDeinit(corto_mountKind* value) {
     return result;
 }
 
+corto_mountstats* _corto_mountstatsCreate(corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    corto_mountstats* _this;
+    _this = corto_mountstats(corto_declare(corto_mountstats_o));
+    if (!_this) {
+        return NULL;
+    }
+    ((corto_mountstats*)_this)->declares = declares;
+    ((corto_mountstats*)_this)->updates = updates;
+    ((corto_mountstats*)_this)->deletes = deletes;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_mountstats* _corto_mountstatsCreateChild(corto_object _parent, corto_string _name, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    corto_mountstats* _this;
+    _this = corto_mountstats(corto_declareChild(_parent, _name, corto_mountstats_o));
+    if (!_this) {
+        return NULL;
+    }
+    ((corto_mountstats*)_this)->declares = declares;
+    ((corto_mountstats*)_this)->updates = updates;
+    ((corto_mountstats*)_this)->deletes = deletes;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountstatsUpdate(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        ((corto_mountstats*)_this)->declares = declares;
+        ((corto_mountstats*)_this)->updates = updates;
+        ((corto_mountstats*)_this)->deletes = deletes;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mountstats* _corto_mountstatsDeclare(void) {
+    corto_mountstats* _this;
+    _this = corto_mountstats(corto_declare(corto_mountstats_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_mountstats* _corto_mountstatsDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mountstats* _this;
+    _this = corto_mountstats(corto_declareChild(_parent, _name, corto_mountstats_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountstatsDefine(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    CORTO_UNUSED(_this);
+    ((corto_mountstats*)_this)->declares = declares;
+    ((corto_mountstats*)_this)->updates = updates;
+    ((corto_mountstats*)_this)->deletes = deletes;
+    return corto_define(_this);
+}
+
+corto_mountstats* _corto_mountstatsAssign(corto_mountstats* _this, corto_uint64 declares, corto_uint64 updates, corto_uint64 deletes) {
+    CORTO_UNUSED(_this);
+    ((corto_mountstats*)_this)->declares = declares;
+    ((corto_mountstats*)_this)->updates = updates;
+    ((corto_mountstats*)_this)->deletes = deletes;
+    return _this;
+}
+
+corto_string _corto_mountstatsStr(corto_mountstats* value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountstats_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_mountstats* corto_mountstatsFromStr(corto_mountstats* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mountstats_o), str);
+    return value;
+}
+
+corto_equalityKind corto_mountstatsCompare(corto_mountstats* dst, corto_mountstats* src) {
+    return corto_comparep(dst, corto_mountstats_o, src);
+}
+
+corto_int16 _corto_mountstatsInit(corto_mountstats* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_mountstats_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountstats_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_mountstatsDeinit(corto_mountstats* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountstats_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure) {
     corto_notifyAction* _this;
     _this = corto_notifyAction(corto_declare(corto_notifyAction_o));

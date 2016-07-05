@@ -57,7 +57,6 @@ void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
 corto_type corto_typeof(corto_object o);
 corto_int32 corto_countof(corto_object o);
 corto_int8 corto_stateof(corto_object o);
-corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
 corto_bool corto_checkState(corto_object o, corto_int8 state);
 corto_bool corto_checkAttr(corto_object o, corto_int8 attr);
 corto_bool _corto_instanceof(corto_type type, corto_object o);
@@ -69,6 +68,10 @@ corto_object _corto_assertType(corto_type type, corto_object o);
 #else
 #define corto_assertType(type, o) (o)
 #endif
+
+/* Object content */
+corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
+corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content);
 
 /* Scoped data */
 corto_string corto_idof(corto_object o);

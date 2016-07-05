@@ -22,6 +22,7 @@ extern "C" {
 #include <corto/core/invokeEvent.h>
 #include <corto/core/loader.h>
 #include <corto/core/mount.h>
+#include <corto/core/mountstats.h>
 #include <corto/core/notifyAction.h>
 #include <corto/core/observableEvent.h>
 #include <corto/core/observer.h>

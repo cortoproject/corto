@@ -484,6 +484,7 @@ CORTO_FWDECL(struct, parameter);
 CORTO_FWDECL_CORE(struct, augmentData);
 CORTO_FWDECL_CORE(struct, result);
 CORTO_FWDECL_CORE(struct, request);
+CORTO_FWDECL_CORE(struct, mountstats);
 
 /* Abstract classes */
 CORTO_FWDECL_CORE(interface, dispatcher);
@@ -1083,6 +1084,12 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 CORTO_INTERFACE_O(core, dispatcher);
     CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
 
+/* /corto/core/mountstats */
+CORTO_STRUCT_O(core, mountstats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_mountstats, declares, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountstats, updates, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountstats, deletes, lang_uint64, CORTO_GLOBAL);
+
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);
 CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
@@ -1091,6 +1098,8 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_MEMBER_O(core_mount, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mount, kind, core_mountKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mount, contentType, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, sent, core_mountstats, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, received, core_mountstats, CORTO_READONLY);
     CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_init);
     CORTO_METHOD_O(core_mount, construct, "()", lang_int16, FALSE, corto_mount_construct);
     CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);

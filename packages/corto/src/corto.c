@@ -59,7 +59,7 @@ corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_int8 CORTO_OLS_REPLICATOR;
 corto_int8 CORTO_OLS_AUGMENT;
 
-/* When enabled, components may trace debug information */
+/* variables that control verbosity of logging functions */
 int8_t CORTO_DEBUG_ENABLED = 0;
 
 /* When set, the core traces memory management information for this object */
@@ -197,6 +197,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, augmentData);\
     SSO_OP_VALUE(op, result);\
     SSO_OP_VALUE(op, request);\
+    SSO_OP_VALUE(op, mountstats);\
     SSO_OP_VALUE(op, delegatedata);\
     SSO_OP_CORE_VOID(op, dispatcher);\
     SSO_OP_VALUE(op, initAction);\
@@ -560,12 +561,18 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, class_init_);\
     SSO_OP_OBJ(op, class_instanceof_);\
     SSO_OP_OBJ(op, class_resolveInterfaceMethod_);\
+    /* mountstats */\
+    SSO_OP_OBJ_CORE(op, mountstats_declares);\
+    SSO_OP_OBJ_CORE(op, mountstats_updates);\
+    SSO_OP_OBJ_CORE(op, mountstats_deletes);\
     /* mount */\
     SSO_OP_OBJ_CORE(op, mount_mount);\
     SSO_OP_OBJ_CORE(op, mount_mask);\
     SSO_OP_OBJ_CORE(op, mount_type);\
     SSO_OP_OBJ_CORE(op, mount_kind);\
     SSO_OP_OBJ_CORE(op, mount_contentType);\
+    SSO_OP_OBJ_CORE(op, mount_sent);\
+    SSO_OP_OBJ_CORE(op, mount_received);\
     SSO_OP_OBJ_CORE(op, mount_init_);\
     SSO_OP_OBJ_CORE(op, mount_construct_);\
     SSO_OP_OBJ_CORE(op, mount_destruct_);\

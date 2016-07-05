@@ -22,6 +22,7 @@
 
 // static char* corto_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static corto_threadKey corto_errKey = 0;
+static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
 
 #define MAX_ERRORS (20)
 
@@ -120,35 +121,44 @@ char* corto_backtraceString(void) {
 #define CORTO_MAX_LOG (1024)
 
 corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
-    char buff[CORTO_MAX_LOG + 1];
-    size_t n = 0;
-    corto_string alloc = NULL;
-    corto_string msg = buff;
-    va_list argcpy;
-    va_copy(argcpy, arg); /* Make copy of arglist in
-                           * case vsnprintf needs to be called twice */
 
-    CORTO_UNUSED(level);
+    if (kind >= CORTO_LOG_LEVEL) {
+        char buff[CORTO_MAX_LOG + 1];
+        size_t n = 0;
+        corto_string alloc = NULL;
+        corto_string msg = buff;
+        va_list argcpy;
+        va_copy(argcpy, arg); /* Make copy of arglist in
+                               * case vsnprintf needs to be called twice */
 
-    if ((n = (vsnprintf(buff, CORTO_MAX_LOG, fmt, arg) + 1)) > CORTO_MAX_LOG) {
-        alloc = corto_alloc(n + 2);
-        vsnprintf(alloc, n, fmt, argcpy);
-        msg = alloc;
-    }
+        CORTO_UNUSED(level);
 
-    n = strlen(msg);
+        if ((n = (vsnprintf(buff, CORTO_MAX_LOG, fmt, arg) + 1)) > CORTO_MAX_LOG) {
+            alloc = corto_alloc(n + 2);
+            vsnprintf(alloc, n, fmt, argcpy);
+            msg = alloc;
+        }
 
-    strcat(msg, "\n");
-    n++;
+        n = strlen(msg);
 
-    if (f == stderr) {
-        fprintf(f,  "%s%s%s", RED, msg, NORMAL);
-    } else {
-        fprintf(f, "%s", msg);
-    }
+        strcat(msg, "\n");
+        n++;
 
-    if (alloc) {
-        corto_dealloc(alloc);
+        if (kind == CORTO_ERROR) {
+            fprintf(f, "%s%s%s", RED, msg, NORMAL);
+        } else if (kind == CORTO_WARNING) {
+            fprintf(f, "%s%s%s", YELLOW, msg, NORMAL);
+        } else if (kind == CORTO_OK) {
+            fprintf(f, "%s%s%s", GREEN, msg, NORMAL);
+        } else if (kind == CORTO_TRACE) {
+            fprintf(f, "%s%s%s", GREY, msg, NORMAL);
+        } else {
+            fprintf(f, "%s", msg);
+        }
+
+        if (alloc) {
+            corto_dealloc(alloc);
+        }
     }
 
     return kind;
@@ -170,14 +180,11 @@ void corto_criticalv(char* fmt, va_list args) {
 }
 
 corto_err corto_debugv(char* fmt, va_list args) {
-    return corto_logv(CORTO_DEBUG, 0, fmt, args, stdout);
+    return corto_logv(CORTO_DEBUG, 0, fmt, args, stderr);
 }
 
 corto_err corto_tracev(char* fmt, va_list args) {
-    if (CORTO_DEBUG_ENABLED) {
-        return corto_logv(CORTO_TRACE, 0, fmt, args, stdout);
-    }
-    return 0;
+    return corto_logv(CORTO_TRACE, 0, fmt, args, stderr);
 }
 
 corto_err corto_warningv(char* fmt, va_list args) {
@@ -191,8 +198,12 @@ corto_err corto_errorv(char* fmt, va_list args) {
     return corto_logv(CORTO_ERROR, 0, fmt, args, stderr);
 }
 
-void corto_printv(char* fmt, va_list args) {
-    corto_logv(CORTO_OK, 0, fmt, args, stdout);
+corto_err corto_okv(char* fmt, va_list args) {
+    return corto_logv(CORTO_OK, 0, fmt, args, stderr);
+}
+
+corto_err corto_infov(char* fmt, va_list args) {
+    return corto_logv(CORTO_INFO, 0, fmt, args, stdout);
 }
 
 void corto_seterrv(char *fmt, va_list args) {
@@ -260,12 +271,26 @@ corto_err corto_error(char* fmt, ...) {
     return result;
 }
 
-void corto_print(char* fmt, ...) {
+corto_err corto_info(char* fmt, ...) {
     va_list arglist;
+    corto_err result;
 
     va_start(arglist, fmt);
-    corto_printv(fmt, arglist);
+    result = corto_infov(fmt, arglist);
     va_end(arglist);
+
+    return result;
+}
+
+corto_err corto_ok(char* fmt, ...) {
+    va_list arglist;
+    corto_err result;
+
+    va_start(arglist, fmt);
+    result = corto_okv(fmt, arglist);
+    va_end(arglist);
+
+    return result;
 }
 
 void corto_critical(char* fmt, ...) {
@@ -294,4 +319,15 @@ void corto_seterr(char *fmt, ...) {
     va_start(arglist, fmt);
     corto_seterrv(fmt, arglist);
     va_end(arglist);
+}
+
+void corto_verbosity(corto_err level) {
+    CORTO_LOG_LEVEL = level;
+    if (level == CORTO_DEBUG) {
+        CORTO_DEBUG_ENABLED = 1;
+        CORTO_TRACE_NOTIFICATIONS = 1;
+    } else {
+        CORTO_DEBUG_ENABLED = 0;
+        CORTO_TRACE_NOTIFICATIONS = 0;
+    }
 }
