@@ -129,7 +129,7 @@ corto_bool corto_listening(corto_object observable, corto_observer, corto_object
 corto_int16 corto_update(corto_object observable);
 corto_int16 corto_updateBegin(corto_object observable);
 corto_int16 corto_updateTry(corto_object observable);
-void corto_updateEnd(corto_object observable);
+corto_int16 corto_updateEnd(corto_object observable);
 corto_int16 corto_updateCancel(corto_object observable);
 
 /* Read locking */

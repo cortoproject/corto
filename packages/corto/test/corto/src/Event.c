@@ -782,11 +782,6 @@ corto_void _test_Event_tc_onUpdate(
     test_assert(o != NULL);
     test_assert(this->et->countUpdate == 1);
 
-    ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdate == 1);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 1);
@@ -818,11 +813,6 @@ corto_void _test_Event_tc_onUpdate(
     corto_object q = corto_int32DeclareChild(p, "q");
     test_assert(q != NULL);
     test_assert(this->et->countUpdate == 3);
-
-    ret = corto_updateBegin(q);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdate == 3);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
 
     ret = corto_define(q);
     test_assert(ret == 0);
@@ -862,11 +852,6 @@ corto_void _test_Event_tc_onUpdateScope(
     test_assert(o != NULL);
     test_assert(this->et->countUpdateScope == 0);
 
-    ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateScope == 0);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
@@ -898,11 +883,6 @@ corto_void _test_Event_tc_onUpdateScope(
     corto_object q = corto_int32DeclareChild(p, "q");
     test_assert(q != NULL);
     test_assert(this->et->countUpdateScope == 2);
-
-    ret = corto_updateBegin(q);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateScope == 2);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
 
     ret = corto_define(q);
     test_assert(ret == 0);
@@ -942,11 +922,6 @@ corto_void _test_Event_tc_onUpdateScopeNotObservable(
     test_assert(this->et->countUpdateScope == 0);
     test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateScope == 0);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
@@ -980,11 +955,6 @@ corto_void _test_Event_tc_onUpdateScopeNotObservable(
     test_assert(q != NULL);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
-
-    ret = corto_updateBegin(q);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateScope == 2);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
 
     ret = corto_define(q);
     test_assert(ret == 0);
@@ -1026,11 +996,6 @@ corto_void _test_Event_tc_onUpdateSelf(
     test_assert(o != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateSelf == 1);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
@@ -1058,11 +1023,6 @@ corto_void _test_Event_tc_onUpdateSelf(
     corto_object q = corto_int32DeclareChild(p, "q");
     test_assert(q != NULL);
     test_assert(this->et->countUpdateSelf == 1);
-
-    ret = corto_updateBegin(q);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateSelf == 1);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
 
     ret = corto_define(q);
     test_assert(ret == 0);
@@ -1100,11 +1060,6 @@ corto_void _test_Event_tc_onUpdateTree(
     test_assert(o != NULL);
     test_assert(this->et->countUpdateTree == 0);
 
-    ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateTree == 0);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
@@ -1136,11 +1091,6 @@ corto_void _test_Event_tc_onUpdateTree(
     corto_object q = corto_int32DeclareChild(p, "q");
     test_assert(q != NULL);
     test_assert(this->et->countUpdateTree == 2);
-
-    ret = corto_updateBegin(q);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateTree == 2);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
 
     ret = corto_define(q);
     test_assert(ret == 0);
@@ -1182,11 +1132,6 @@ corto_void _test_Event_tc_onUpdateTreeNotObservable(
     test_assert(this->et->countUpdateTree == 0);
     test_assert(!corto_checkAttr(o, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateTree == 0);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
@@ -1221,11 +1166,6 @@ corto_void _test_Event_tc_onUpdateTreeNotObservable(
     test_assert(this->et->countUpdateTree == 2);
     test_assert(!corto_checkAttr(q, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(q);
-    test_assert(ret == -1);
-    test_assert(this->et->countUpdateTree == 2);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
-
     ret = corto_define(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
@@ -1254,14 +1194,26 @@ corto_void _test_Event_tc_updateUndefined(
     test_Event this)
 {
 /* $begin(test/Event/tc_updateUndefined) */
+    test_assert(this->et->countDefine == 1);
 
-    corto_object o = corto_int32DeclareChild(NULL, "o");
+    corto_object o = corto_int32DeclareChild(testScope, "o");
+    test_assert(this->et->countUpdate == 0);
+    test_assert(this->et->countDefine == 1);
     test_assert(o != NULL);
 
     corto_int16 ret = corto_updateBegin(o);
-    test_assert(ret == -1);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "cannot update undefined object"));
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 0);
+    test_assert(this->et->countDefine == 1);
+    test_assert(!corto_checkState(o, CORTO_DEFINED));
+
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(this->et->countUpdate == 1);
+    test_assert(this->et->countDefine == 2);
+
+    corto_delete(o);
 
 /* $end */
 }

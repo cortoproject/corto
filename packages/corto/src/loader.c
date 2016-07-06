@@ -125,6 +125,7 @@ int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userD
     struct corto_fileHandler* h;
 
     /* Check if extension is already registered */
+    corto_mutexLock(&corto_adminLock);
     if ((h = corto_lookupExt(ext))) {
         if (h->load != handler) {
             corto_error("corto_loaderRegister: extension '%s' is already registered with another loader.", ext);
@@ -143,6 +144,7 @@ int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userD
 
         corto_llAppend(fileHandlers, h);
     }
+    corto_mutexUnlock(&corto_adminLock);
 
     return 0;
 error:
@@ -257,13 +259,13 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
         }
     }
 
-
-
     /* Add library to libraries list */
+    corto_mutexLock (&corto_adminLock);
     if (!libraries) {
         libraries = corto_llNew();
     }
     corto_llInsert(libraries, dl);
+    corto_mutexUnlock (&corto_adminLock);
 
     return 0;
 error:
@@ -275,11 +277,13 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
     void (*result)(void) = NULL;
 
     /* Search libraries for specified symbol */
+    corto_mutexLock (&corto_adminLock);
     corto_iter iter = corto_llIter(libraries);
     while (!result && corto_iterHasNext(&iter)) {
         corto_dl dl = corto_iterNext(&iter);
         result = (void(*)(void))corto_dlProc(dl, procName);
     }
+    corto_mutexUnlock (&corto_adminLock);
 
     return result;
 }
@@ -344,26 +348,27 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     }
 
     /* Lookup extension */
+    corto_mutexLock(&corto_adminLock);
     h = corto_lookupExt(ext);
     if (h) {
         /* Load file */
-        corto_mutexLock(&corto_adminLock);
         lib = corto_fileAdminAdd(str);
         corto_mutexUnlock(&corto_adminLock);
         result = h->load(str, argc, argv, h->userData);
         corto_mutexLock(&corto_adminLock);
         lib->loading = 0;
         lib->result = result;
-        corto_mutexUnlock(&corto_adminLock);
     } else {
         if (!try) {
             corto_seterr(
                 "unknown file extension '%s'",
                 ext);
+            corto_mutexUnlock(&corto_adminLock);
             goto error;
         }
         result = -1;
     }
+    corto_mutexUnlock(&corto_adminLock);
 
     corto_setAttr(prevAttr);
     return result;

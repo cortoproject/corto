@@ -1182,72 +1182,81 @@ corto_object corto_resume(
     return result;
 }
 
+/* Resume a declared object */
+corto_bool corto_resumeDeclared(corto_object o) {
+    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+    corto__persistent *_p = NULL;
+    corto_bool resumed = FALSE;
+
+    if ((_p = corto__objectPersistent(_o))) {
+        _p->owner = corto_getOwner();
+
+        if (_p->owner) {
+            corto_claim(_p->owner);
+        }
+
+        /* If object is persistent and locally owned, check if a
+         * persistent copy is already available */
+        if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
+                resumed = TRUE;
+            }
+
+        /* If owner of an object is a SINK, object is resumed */
+        } else if (_p->owner
+          && corto_instanceof(corto_mount_o, _p->owner)
+          && (corto_mount(_p->owner)->kind == CORTO_SINK))
+        {
+            resumed = TRUE;
+        }
+    }
+
+    return resumed;
+}
+
+/* Resume a declared object */
+corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
+    corto_int16 result = 0;
+    corto_type t = corto_typeof(o);
+    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+
+    /* Don't invoke constructor if object is not locally owned */
+    if (corto_owned(o)) {
+        /* If object is instance of a class, call the constructor */
+        if (corto_class_instanceof(corto_class_o, t)) {
+            /* Call constructor - will potentially override observer params */
+            result = corto_delegateConstruct(t, o);
+        } else if (corto_class_instanceof(corto_procedure_o, t)) {
+            result = corto_delegateConstruct(t, o);
+        }
+    }
+
+    if (!result) {
+        _o->attrs.state |= CORTO_DEFINED;
+        if (!corto_checkState(o, CORTO_VALID)) {
+            _o->attrs.state |= CORTO_VALID;
+        }
+
+        /* Notify observers of defined object */
+        corto_notify(corto__objectObservable(_o), o, mask);
+    } else {
+        /* Remove valid state */
+        corto_invalidate(o);
+    }
+
+    return result;
+}
+
 /* Define object */
 corto_int16 corto_define(corto_object o) {
     corto_int16 result = 0;
-    corto_bool resumed = FALSE;
 
     /* Only define valid, undefined objects */
     if (corto_checkState(o, CORTO_DECLARED)) {
-        corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
-        corto__persistent *_p = NULL;
         if (!corto_checkState(o, CORTO_DEFINED)) {
-            corto_type t = corto_typeof(o);
-
-            if ((_p = corto__objectPersistent(_o))) {
-                _p->owner = corto_getOwner();
-
-                if (_p->owner) {
-                    corto_claim(_p->owner);
-                }
-
-                /* If object is persistent and locally owned, check if a
-                 * persistent copy is already available */
-                if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-                    if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
-                        resumed = TRUE;
-                    }
-
-                /* If owner of an object is a SINK, object is resumed */
-                } else if (_p->owner
-                  && corto_instanceof(corto_mount_o, _p->owner)
-                  && (corto_mount(_p->owner)->kind == CORTO_SINK))
-                {
-                    resumed = TRUE;
-                }
-            }
-
-            /* Don't invoke constructor if object is not locally owned */
-            if (corto_owned(o)) {
-                /* If object is instance of a class, call the constructor */
-                if (corto_class_instanceof(corto_class_o, t)) {
-                    /* Call constructor - will potentially override observer params */
-                    result = corto_delegateConstruct(t, o);
-                } else if (corto_class_instanceof(corto_procedure_o, t)) {
-                    result = corto_delegateConstruct(t, o);
-                }
-            }
-
-            if (!result) {
-                _o->attrs.state |= CORTO_DEFINED;
-                if (!corto_checkState(o, CORTO_VALID)) {
-                    _o->attrs.state |= CORTO_VALID;
-                }
-
-                /* Notify observers of defined object */
-                if (!resumed) {
-                    corto_notify(corto__objectObservable(_o), o, CORTO_ON_DEFINE);
-                } else {
-                    corto_notify(corto__objectObservable(_o), o, CORTO_ON_RESUME);
-                }
-            } else {
-                /* Remove valid state */
-                corto_invalidate(o);
-            }
-
+            corto_bool resumed = corto_resumeDeclared(o);
+            result = corto_defineDeclared(o, resumed ? CORTO_ON_RESUME : CORTO_ON_DEFINE);
             if (CORTO_TRACE_OBJECT) corto_memtrace("define", o, NULL);
-        } else {
-            corto_notify(corto__objectObservable(_o), o, CORTO_ON_UPDATE);
         }
     }
 
@@ -3222,11 +3231,16 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
 
 /* Update object */
 corto_int16 corto_update(corto_object o) {
-    corto__observable *_o;
+    corto_int16 result = 0;
+    corto_eventMask mask = CORTO_ON_UPDATE;
 
     if (corto_typeof(o)->kind != CORTO_VOID) {
         corto_seterr("use updateBegin/updateEnd for non-void objects");
         goto error;
+    }
+
+    if (!corto_checkState(o, CORTO_DEFINED)) {
+        mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
     }
 
     if (!corto_owned(o)) {
@@ -3235,12 +3249,16 @@ corto_int16 corto_update(corto_object o) {
         goto error;
     }
 
-    _o = corto__objectObservable(CORTO_OFFSET(o, -sizeof(corto__object)));
-    if (corto_notify(_o, o, CORTO_ON_UPDATE)) {
-        goto error;
+    if (!corto_checkState(o, CORTO_DEFINED)) {
+        result = corto_defineDeclared(o, mask);
+    } else {
+        corto__observable *_o = corto__objectObservable(CORTO_OFFSET(o, -sizeof(corto__object)));
+        if (corto_notify(_o, o, CORTO_ON_UPDATE)) {
+            goto error;
+        }
     }
 
-    return 0;
+    return result;
 error:
     return -1;
 }
@@ -3250,8 +3268,7 @@ corto_int16 corto_updateBegin(corto_object o) {
     corto__writable* _wr;
 
     if (!corto_checkState(o, CORTO_DEFINED)) {
-        corto_seterr("cannot update undefined object");
-        goto error;
+        corto_resumeDeclared(o);
     }
 
     if (!corto_owned(o)) {
@@ -3300,14 +3317,30 @@ busy:
     return CORTO_LOCK_BUSY;
 }
 
-void corto_updateEnd(corto_object observable) {
+corto_int16 corto_updateEnd(corto_object observable) {
     corto__writable* _wr;
     corto__observable *_o;
+    corto_int16 result = 0;
 
-    _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-
-    if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
-        corto_assert(0, "notify failed");
+    if (!corto_checkState(observable, CORTO_DEFINED)) {
+        corto_object owner = corto_ownerof(observable);
+        corto_eventMask mask = CORTO_ON_UPDATE;
+        if (owner && corto_instanceof(corto_mount_o, owner) &&
+            (corto_mount(owner)->kind == CORTO_SINK))
+        {
+            /* If not defined, and owner is a SINK, object is resumed */
+            mask |= CORTO_ON_RESUME;
+        } else
+        {
+            mask |= CORTO_ON_DEFINE;
+        }
+        
+        result = corto_defineDeclared(observable, mask);
+    } else {
+        _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
+        if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
+            corto_assert(0, "notify failed");
+        }
     }
 
     if (_o) {
@@ -3319,6 +3352,8 @@ void corto_updateEnd(corto_object observable) {
             }
         }
     }
+
+    return result;
 }
 
 corto_int16 corto_updateCancel(corto_object observable) {

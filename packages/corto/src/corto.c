@@ -45,7 +45,10 @@ const char* CORTO_VERSION_MAJOR = VERSION_MAJOR;
 const char* CORTO_VERSION_MINOR = VERSION_MINOR;
 const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 
+/* Single lock to protect infrequent actions on global corto data */
 corto_mutex_s corto_adminLock;
+
+/* Actions to be run at shutdown */
 static corto_ll corto_exitHandlers = NULL;
 
 /* TLS keys */
