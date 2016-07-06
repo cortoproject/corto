@@ -9,6 +9,8 @@ Corto has been validated on the following platforms:
  * OS X 10.10.2 (64 bit)
  * Yocto 2.1 (32 bit)
 
+This README contains information for people that want to do development with the latest version of the repository, and also serves as a good background on the internal workings of corto package management. Most of the things described here are automated when using the corto tools and buildsystem, however if you want to use your own buildsystem you'll find this information helpful.
+
 ## Building Corto
 Corto uses rake for building, which is a platform-independent, ruby based buildsystem. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (on Ubuntu):
 ```
@@ -18,8 +20,6 @@ cd corto
 source configure
 rake
 ```
-
-This README contains information for people that want to do development with the latest version of the repository, and also serves as a good background on the internal workings of corto package management. Most of the things described here are automated when using the corto tools and buildsystem, however if you want to use your own buildsystem you'll find this information helpful.
 
 ## Building development add-ons
 It is recommended to install the following packages if you will be doing corto development. These packages are development only, and not required when you're deploying your application:
