@@ -85,7 +85,7 @@ gcc -I$(CORTO_TARGET)/include/corto/0.2 -fPIC $(CORTO_TARGET)/lib/corto/0.2/cort
 ```
 
 ## The Corto code generator
-One of the most prominent features of corto is to translate a language-independent description of a datamodel into a specific language. The corto library has an extensive API for describing types, and with these types code can be generated. At this point the only well-supported language is `C`, with `C++` and `python` bindings underway.
+One of the most prominent features of corto is the ability to translate a language-independent description of a datamodel into a specific language. The corto library has an extensive API for describing types, and with these types code can be generated. At this point the only well-supported language is `C`, with `C++` and `python` bindings underway.
 
 Before generating code, typedefinitions have to be inserted into corto. The easiest way to do this is by writing a definition file that contains the types, and then invoking a generator on the inserted types. A definition file can be in any format supported by corto. Currently projects are using `XML`, `IDL` and the native corto definition language. See this link for an example definition file (IPSO definitions, in IDL): https://github.com/cortoproject/ipso/blob/master/ipso.idl
 
