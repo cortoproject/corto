@@ -20,7 +20,7 @@ rake
 ```
 
 ## Building development add-ons
-It is recommended to install the following packages if you will be doing corto development (these packages are development only, and not required when you're deploying your application):
+It is recommended to install the following packages if you will be doing corto development. These packages are development only, and not required when you're deploying your application:
  * c-binding
  * xml
  * corto-language
