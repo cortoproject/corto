@@ -106,4 +106,4 @@ If you want to use a definition language that is not natively supported by corto
 ```
 corto pp ospl/idl ipso.idl --scope ipso --lang c
 ```
-The `ospl/idl` package will register its filetype with corto, after which it will be able to recognize IDL files.
+The `ospl/idl` package will register its filetype with corto, after which corto will be able to recognize IDL files.
