@@ -12,7 +12,7 @@ Corto has been validated on the following platforms:
 This README contains information for people that want to do development with the latest version of the repository, and also serves as a good background on the internal workings of corto package management. Most of the things described here are automated when using the corto tools and buildsystem, however if you want to use your own buildsystem you'll find this information helpful.
 
 ## Building Corto
-Corto uses rake for building, which is a platform-independent, ruby based buildsystem. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (on Ubuntu):
+Corto uses rake (https://en.wikipedia.org/wiki/Rake_(software) for building, which is a platform-independent, ruby based buildsystem writtem by Jim Weirich. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (on Ubuntu):
 ```
 sudo apt-get install rake libffi-dev
 git clone https://github.com/cortoproject/corto
