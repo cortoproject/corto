@@ -10,7 +10,7 @@ Corto has been validated on the following platforms:
  * Yocto 2.1 (32 bit)
 
 ## Building Corto
-Corto uses rake for building, which is a platform-independent, ruby based buildsystem. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (assuming an Ubuntu system, replace `apt-get` with your package manager of choice):
+Corto uses rake for building, which is a platform-independent, ruby based buildsystem. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (on Ubuntu):
 ```
 sudo apt-get install rake libffi-dev
 git clone https://github.com/cortoproject/corto
