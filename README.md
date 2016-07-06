@@ -134,7 +134,7 @@ If your project is using the corto buildsystem, adding a package to your project
 ```
 corto add <myproject> <package>
 ```
-When you are using your own buildsystem, you'll need to list your dependencies in a `packages.txt` file. This file must be located in a `.corto` directory in your project root. For example, if you want to add the dependency `/bar` to your `foo` project, add a the following to `foo/.corto/packages.txt`:
+When you are using your own buildsystem, you'll need to list your dependencies in a `packages.txt` file. This file must be located in a `.corto` directory in your project root. For example, if you want to add the dependency `/bar` to your `foo` project, add the following line to `foo/.corto/packages.txt`:
 ```
 /bar
 ```
