@@ -101,7 +101,7 @@ When you want to run all code generators for a specific language, you can use th
 ```
 corto pp foo.xml --scope foo --lang c
 ```
-## Using a 3rd party definition languages
+## Using 3rd party definition languages
 If you want to use a definition language that is not natively supported by corto you have to load it first. Definition languages are ordinary packages, and can be loaded by just providing them on the command line of the code generator. For example, to generate code from the above IPSO definitions you'll need the IDL package from `cortoproject/ospl`, which then can be added to the command like this:
 ```
 corto pp ospl/idl ipso.idl --scope ipso --lang c
