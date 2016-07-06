@@ -56,7 +56,7 @@ corto run MyApp
 ```
 If you want to use your own buildsystem, you'll need to know where corto libraries and include files are located. This is detailed in the next section on packages.
 
-## Using packages
+## Package management
 Corto features a plugin-architecture with add-ons stored in a hierarchically organized package repository. Packages are stored in well-defined locations, so corto can load packages just by their logical name, rather than their physical location. This makes it easy to share packages and their dependencies across systems.
 
 If you built the corto repository from scratch, the package repository has been instantiated in `~/.corto`, where `~` is your home directory. Inside you will find the following subdirectories:
@@ -84,7 +84,7 @@ The following command shows the recommended way of building a corto project, usi
 gcc -I$(CORTO_TARGET)/include/corto/0.2 -fPIC $(CORTO_TARGET)/lib/corto/0.2/corto/libcorto.so -o myApp 
 ```
 
-## The Corto code generator
+## Code generation
 One of the most prominent features of corto is the ability to translate a language-independent description of a datamodel into a specific language. The corto library has an extensive API for describing types, and with these types code can be generated. At this point the only well-supported language is `C`, with `C++` and `python` bindings underway.
 
 Before generating code, typedefinitions have to be inserted into corto. The easiest way to do this is by writing a definition file that contains the types, and then invoking a generator on the inserted types. A definition file can be in any format supported by corto. Currently projects are using `XML`, `IDL` and the native corto definition language. See this link for an example definition file (IPSO definitions, in IDL): https://github.com/cortoproject/ipso/blob/master/ipso.idl
@@ -108,8 +108,14 @@ corto pp ospl/idl ipso.idl --scope ipso --lang c
 ```
 The `ospl/idl` package will register its filetype with corto, after which corto will be able to recognize IDL files.
 
-## Writing Corto packages
-A package is an ordinary C library which must have a `cortomain` function defined. This function is executed upon loading the package into corto. The signature of `cortomain` is:
+## Writing packages
+Creating a new package with the corto tool can be done with the following command:
+```
+corto create package mypackage
+```
+This will create a minimal package project, with a definition file and a source file that contains the entry function of your package. Note that it is a convention that packages start with a lowercase letter. 
+
+If you want to use your own buildsystem, the following information details which conventions must be followed. A package is an ordinary C library which must have a `cortomain` function defined. This function is executed upon loading the package into corto. The signature of `cortomain` is:
 ```
 int cortomain(int argc, char* argv[]);
 ```
@@ -123,3 +129,18 @@ When using the corto buildsystem, packages are installed automatically to the pa
 
 Corto code generators automatically add include files to the generated code for dependencies, which is why there must be at least one header file with the package name present.
  
+## Using package dependencies
+If your project is using the corto buildsystem, adding a package to your project can be done with the following command:
+```
+corto add <myproject> <package>
+```
+When you are using your own buildsystem, you'll need to list your dependencies in a `packages.txt` file. This file must be located in a `.corto` directory in your project root. For example, if you want to add the dependency `/bar` to your `foo` project, add a the following to `foo/.corto/packages.txt`:
+```
+/bar
+```
+This will tell the corto code generators which packages to include in the generated headerfiles. This subsequently ensures that if your package uses types from dependencies, everything will build properly.
+
+Additionally, when using your own buildsystem you will also have to manually link to the package library. Note that you should *not* add the include path to the package include folder, as include files must be specified using their fully qualified path. Thus one include path should suffice for any corto project. The following command shows a project `foo` linking with corto and package `bar`:
+```
+gcc -I~/.corto/include/corto/0.2 -fPIC ~/.corto/lib/corto/0.2/corto/libcorto.so ~/.corto/lib/corto/0.2/bar/libbar.so -o foo
+```
