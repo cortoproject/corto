@@ -12,15 +12,39 @@ Corto has been validated on the following platforms:
 ## Building Corto
 Corto uses rake for building, which is a platform-independent, ruby based buildsystem. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (assuming an Ubuntu system, replace `apt-get` with your package manager of choice):
 ```
-sudo apt-get install rake
+sudo apt-get install rake libffi-dev
 git clone https://github.com/cortoproject/corto
 cd corto
 source configure
 rake
 ```
 
+## Building development add-ons
+It is recommended to install the following packages if you will be doing corto development (these packages are development only, and not required when you're deploying your application):
+ * c-binding
+ * xml
+ * corto-language
+
+To build these from scratch, ensure the following libraries are installed on your machine:
+ * libxml2-dev
+ * flex
+ * bison
+
+Also make sure to have corto built using the steps in the previous section. To build the latest versions of these packages, do (on Ubuntu):
+```
+sudo apt-get install libxml2-dev flex bison
+git clone https://github.com/cortoproject/c-binding
+git clone https://github.com/cortoproject/xml
+git clone https://github.com/cortoproject/corto-language
+corto build c-binding xml corto-language
+```
+The `corto build` tool is a front-end for the rake buildsystem. You can also manually invoke rake, like this:
+```
+rake -f c-binding/rakefile
+```
+
 ## Creating a project
-You can either use your own buildsystem to create a new project, or you can use corto's rake-based buildsystem. If you use the latter, the corto tool that comes with this repository makes it easy to create, run and test projects. To create a new, buildable project, simply type:
+You can either use your own buildsystem to create a new project, or you can use corto's rake-based buildsystem. If you use the latter, the corto tool that comes with this repository makes it easy to create, run and test projects. Before trying this out, make sure to have the development packages installed. To create a new, buildable project, simply type:
 ```
 corto create MyApp
 ```
@@ -28,7 +52,7 @@ Subsequently, you can run this project by typing (it will build automatically):
 ```
 corto run MyApp
 ```
-If you want to use your own buildsystem, you'll need to know where corto libraries and include files are located. The next section on packages explains this.
+If you want to use your own buildsystem, you'll need to know where corto libraries and include files are located. This is detailed in the next section on packages.
 
 ## Using packages
 Corto features a plugin-architecture with add-ons stored in a hierarchically organized package repository. Packages are stored in well-defined locations, so corto can load packages just by their logical name, rather than their physical location. This makes it easy to share packages and their dependencies across systems.
