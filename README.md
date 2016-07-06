@@ -2,7 +2,7 @@
 [![Build Status](https://tea-ci.org/api/badges/cortoproject/corto/status.svg)](https://tea-ci.org/cortoproject/corto)
 [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at https://gitter.im/cortolang/corto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortoproject/corto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Corto is an open source, super easy to use ORM that can connect to any source of data, so you can build native apps faster.
+Corto is a tested, proven architecture for normalizing data from different technologies into one view regardless of location, format or datamodel. This repository contains the core library of corto and the corto tool, which makes it easy to build, run and test corto projects.
 
 Corto has been validated on the following platforms:
  * Ubuntu 14.04 (32/64 bit)
@@ -10,23 +10,50 @@ Corto has been validated on the following platforms:
  * Yocto 2.1 (32 bit)
 
 ## Building Corto
-Download and unpack Corto on your machine. Run the following command to build it:
+Corto uses rake for building, which is a platform-independent, ruby based buildsystem. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (assuming an Ubuntu system, replace `apt-get` with your package manager of choice):
 ```
-source configure; rake
-```
-### Dependencies
-Building Corto depends on the following libraries for building - make sure to have them installed:
- * rake
-
-## Getting started
-The corto library is at the core of the corto platform. You can use the library by itself as a powerful embedded data management abstraction, but we recommend you also check out the rest of the platform. It comes with many nice things such as package management, XML and JSON bindings, a documentation and test framework and a scripting language.
-
-To install the Corto platform to your computer, simply do (the installer will ask for your computer password):
-```
-curl http://corto.io/install | sh
+sudo apt-get install rake
+git clone https://github.com/cortoproject/corto
+cd corto
+source configure
+rake
 ```
 
-We have a tutorial that will take about 15 minutes to finish, and you'll learn everything you need to start writing your first Corto applications: http://www.corto.io/getstarted.html
+## Creating a project
+You can either use your own buildsystem to create a new project, or you can use corto's rake-based buildsystem. If you use the latter, the corto tool that comes with this repository makes it easy to create, run and test projects. To create a new, buildable project, simply type:
+```
+corto create MyApp
+```
+Subsequently, you can run this project by typing (it will build automatically):
+```
+corto run MyApp
+```
+If you want to use your own buildsystem, you'll need to know where corto libraries and include files are located. The next section on packages explains this.
 
-Check out our examples for a quick start:
-http://www.github.com/cortoproject/examples
+## Using packages
+Corto features a plugin-architecture with add-ons stored in a hierarchically organized package repository. Packages are stored in well-defined locations, so corto can load packages just by their logical name, rather than their physical location. This makes it easy to share packages and their dependencies across systems.
+
+If you built the corto repository from scratch, the package repository has been instantiated in `~/.corto`, where `~` is your home directory. Inside you will find the following subdirectories:
+```
+bin etc include lib
+```
+`bin` contains executables, `lib` contains package libraries, `include` contains package include files and `etc` contains supporting files for packages. It is not a coïncidence that this structure looks similar to your `/usr` and `/usr/local` directory. When installing corto, files are copied to `/usr/local`.
+
+The actual files in each of these directories are stored in `/corto/0.2`, where `0.2` is your current major and minor corto version. From there the file structure mimics the hierarchy of the package repository. For example, the corto library itself is stored here:
+```
+~/.corto/lib/corto/0.2/corto/libcorto.so
+```
+Include files for the corto project are stored here:
+```
+~/.corto/include/corto/0.2/corto
+```
+Corto projects use the fully qualified include path, so that name clashes between packages are prevented. The corto include file should be included like this:
+```
+#include <corto/corto.h>
+```
+Also, since not all packages are stored in a single location (again, to prevent name clashes) it is recommended to hard-code the library path in your executable. This will ensure that your application can always find the library, regardless of your environment. Alternatively, you can specify each path in `LD_LIBRARY_PATH`.
+
+The following command shows the recommended way of building a corto project, using gcc (or similar):
+```
+gcc -I$(CORTO_TARGET)/include/corto/0.2 -fPIC $(CORTO_TARGET)/lib/corto/0.2/corto/libcorto.so -o myApp 
+```
