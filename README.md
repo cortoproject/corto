@@ -107,3 +107,19 @@ If you want to use a definition language that is not natively supported by corto
 corto pp ospl/idl ipso.idl --scope ipso --lang c
 ```
 The `ospl/idl` package will register its filetype with corto, after which corto will be able to recognize IDL files.
+
+## Writing Corto packages
+A package is an ordinary C library which must have a `cortomain` function defined. This function is executed upon loading the package into corto. The signature of `cortomain` is:
+```
+int cortomain(int argc, char* argv[]);
+```
+If the package loaded successfully, this function must return zero. If failed, the function must return a non-zero value.
+
+When using the corto buildsystem, packages are installed automatically to the package repository as part of the build process. If you are using your own buildsystem, make sure to do the following when adding your package to the corto repository:
+ * create a directory with your package name in `~/.corto/lib/corto/0.2/foo`
+ * create a directory with your package name in `~/.corto/include/corto/0.2/foo`
+ * copy the library to the lib folder (name must follow `libfoo.so` convention)
+ * copy at least one headerfile with the name of your package to the include folder (`foo.h`)
+
+Corto code generators automatically add include files to the generated code for dependencies, which is why there must be at least one header file with the package name present.
+ 
