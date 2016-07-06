@@ -19,6 +19,8 @@ source configure
 rake
 ```
 
+This README contains information for people that want to do development with the latest version of the repository, and also serves as a good background on the internal workings of corto package management. Most of the things described here are automated when using the corto tools and buildsystem, however if you want to use your own buildsystem you'll find this information helpful.
+
 ## Building development add-ons
 It is recommended to install the following packages if you will be doing corto development. These packages are development only, and not required when you're deploying your application:
  * c-binding
