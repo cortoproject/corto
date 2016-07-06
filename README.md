@@ -77,9 +77,9 @@ Corto projects use the fully qualified include path, so that name clashes betwee
 ```
 #include <corto/corto.h>
 ```
-Also, since not all packages are stored in a single location (again, to prevent name clashes) it is recommended to hard-code the library path in your executable. This will ensure that your application always uses the right library, regardless of your environment. This is also a security measure, when a library is installed in a protected location a user with ill intentions won't be able to spoof the library. Alternatively, you can use the less robust method of specifying each path in `LD_LIBRARY_PATH`.
+Also, since not all packages are stored in a single location (again, to prevent name clashes) it is recommended to hard-code the library path in your executable. This will ensure that your application always uses the right library, regardless of your environment. This is also a security measure. When a library is installed in a protected location a user with ill intentions won't be able to spoof the library. Alternatively, you can use the less robust method of specifying each path in `LD_LIBRARY_PATH`.
 
-The following command shows the recommended way of building a corto project, using gcc (or similar):
+The following command shows the recommended way of building a corto project, using gcc (or similar), where `CORTO_TARGET` is set to either `~/.corto` or `/usr/lib`, depending on whether it's installed in your local or global environment:
 ```
 gcc -I$(CORTO_TARGET)/include/corto/0.2 -fPIC $(CORTO_TARGET)/lib/corto/0.2/corto/libcorto.so -o myApp 
 ```
