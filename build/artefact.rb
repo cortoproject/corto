@@ -64,9 +64,9 @@ if ENV['target'] == "debug" then
   CFLAGS << "-g" << "-O0"
   CXXFLAGS << "-g" << "-O0"
   if COVERAGE == true then
-    CFLAGS << "-fprofile-arcs" << "-ftest-coverage"
-    CXXFLAGS << "-fprofile-arcs" << "-ftest-coverage"
-    LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+#    CFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+#    CXXFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+#    LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
   end
 end
 
