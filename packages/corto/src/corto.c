@@ -57,6 +57,7 @@ corto_threadKey CORTO_KEY_WAIT_ADMIN;
 corto_threadKey CORTO_KEY_ATTR;
 corto_threadKey CORTO_KEY_SELECT;
 corto_threadKey CORTO_KEY_THREAD_STRING;
+corto_threadKey CORTO_KEY_MOUNT_RESULT;
 
 /* OLS keys */
 corto_int8 CORTO_OLS_REPLICATOR;
@@ -593,6 +594,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_request_);\
     SSO_OP_OBJ_CORE(op, mount_resume_);\
     SSO_OP_OBJ_CORE(op, mount_setContentType_);\
+    SSO_OP_OBJ_CORE(op, mount_return_);\
     SSO_OP_OBJ_CORE(op, mount_post_);\
     SSO_OP_OBJ_CORE(op, mount_onPoll_);\
     SSO_OP_OBJ_CORE(op, mount_onDeclare_);\
@@ -828,6 +830,7 @@ int corto_start(void) {
     corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
     void corto_threadStringDealloc(void *data);
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
+    corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
 
     /* Initialize OLS keys */
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);

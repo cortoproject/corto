@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 #define CORTO_ITER_STACK_LIMIT (64)
+#define CORTO_ITERATOR_EMPTY (corto_iter){NULL}
 
 /* Create a typedef, so generic iterator functions can be used with user
  * defined iterator types */
@@ -18,10 +19,10 @@ extern "C" {
 
 typedef struct corto_iter corto_iter;
 struct corto_iter {
+    int (*hasNext)(corto_iter*);
     void *udata;
     void (*moveFirst)(corto_iter*);
     void* (*move)(corto_iter*, unsigned int);
-    int (*hasNext)(corto_iter*);
     void* (*next)(corto_iter*);
     void* (*nextPtr)(corto_iter*);
     void* (*remove)(corto_iter*);

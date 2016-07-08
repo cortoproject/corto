@@ -137,6 +137,11 @@ CORTO_EXPORT corto_object _corto_mount_resume(
     corto_object o);
 #define corto_mount_resume(_this, parent, name, o) _corto_mount_resume(corto_mount(_this), parent, name, o)
 
+CORTO_EXPORT corto_void _corto_mount_return(
+    corto_mount _this,
+    corto_result *r);
+#define corto_mount_return(_this, r) _corto_mount_return(corto_mount(_this), r)
+
 CORTO_EXPORT corto_int16 _corto_mount_setContentType(
     corto_mount _this,
     corto_string type);

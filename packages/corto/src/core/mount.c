@@ -11,6 +11,7 @@
 /* $header() */
 #include "_object.h"
 extern corto_int8 CORTO_OLS_REPLICATOR;
+extern corto_threadKey CORTO_KEY_MOUNT_RESULT;
 
 /* Add mount entry to object OLS */
 corto_int16 corto_mount_attach(
@@ -399,12 +400,35 @@ corto_void _corto_mount_post(
 /* $end */
 }
 
+/* $header(corto/core/mount/request) */
+void corto_mount_requestRelease(corto_iter *iter) {
+    corto_llIter_s *data = iter->udata;
+    corto_resultListClear(data->list);
+    corto_llFree(data->list);
+    corto_llIterRelease(iter);
+}
+/* $end */
 corto_resultIter _corto_mount_request(
     corto_mount this,
     corto_request *request)
 {
 /* $begin(corto/core/mount/request) */
-    return corto_mount_onRequest(this, request);
+    corto_iter result;
+    corto_ll r, prevResult = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
+    corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, NULL);
+
+    result = corto_mount_onRequest(this, request);
+
+    /* If mount isn't returning anything with the iterator, check if there's
+     * anything in the result list. */
+    if (!result.hasNext && (r = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT))) {
+        result = corto_llIterAlloc(r);
+        result.release = corto_mount_requestRelease;
+    }
+
+    corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, prevResult);
+
+    return result;
 /* $end */
 }
 
@@ -427,6 +451,33 @@ corto_object _corto_mount_resume(
     corto_setOwner(prevOwner);
 
     return result;
+/* $end */
+}
+
+corto_void _corto_mount_return(
+    corto_mount this,
+    corto_result *r)
+{
+/* $begin(corto/core/mount/return) */
+    corto_ll result = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
+
+    CORTO_UNUSED(this);
+
+    if (!result) {
+        result = corto_llNew();
+        corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, result);
+    }
+
+    /* Create and initialize new result element */
+    corto_resultAssign(
+        corto_resultListAppendAlloc(result),
+        r->id,
+        r->name,
+        r->parent,
+        r->type,
+        r->value
+    );
+
 /* $end */
 }
 
