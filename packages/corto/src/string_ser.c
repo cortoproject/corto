@@ -245,7 +245,15 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     if (t->kind == CORTO_COMPOSITE) {
         if (corto_interface(t)->kind == CORTO_UNION) {
             void *ptr = corto_value_getPtr(v);
-            corto_buffer_append(&privateData.buffer, "%d", *(corto_int32*)ptr);
+            char *d;
+            if (corto_convert(corto_union(t)->discriminator, ptr, corto_string_o, &d)) {
+                corto_seterr("invalid discriminator value '%d' for union '%s'",
+                  *(corto_int32*)ptr,
+                  corto_fullpath(NULL, t));
+                  goto finished;
+            }
+            corto_buffer_appendstr(&privateData.buffer, d);
+            corto_dealloc(d);
             privateData.itemCount = 1;
         }
         result = corto_serializeMembers(s, v, &privateData);

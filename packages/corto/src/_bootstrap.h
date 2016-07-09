@@ -1243,7 +1243,7 @@ CORTO_STRUCT_O(lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL
 /* /corto/core/time */
 CORTO_STRUCT_O(core, time, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_time, sec, lang_int32, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_time, nanosec, lang_int32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_time, nanosec, lang_uint32, CORTO_GLOBAL);
 
 /* /corto/core/position */
 CORTO_STRUCT_O(core, position, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

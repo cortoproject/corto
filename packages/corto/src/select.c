@@ -829,7 +829,9 @@ static void corto_selectIterateMounts(
             data->currentMount = 0;
         }
 
-        while (!data->mounts[data->currentMount].iter.hasNext) {
+        while (!data->mounts[data->currentMount].iter.hasNext &&
+               (data->currentMount < CORTO_MAX_REPLICATORS))
+        {
             data->currentMount ++;
         }
 
