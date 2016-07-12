@@ -510,3 +510,17 @@ void corto_llIterSet(corto_iter* iter, void* o) {
         corto_critical("Illegal use of 'set' by corto_iter: no element selected. Use 'next' to select an element first.");
     }
 }
+
+corto_ll corto_llMap(corto_ll l, corto_mapAction f, void* data)
+{
+    corto_ll ll = corto_llNew();
+    {
+        corto_iter i = corto_llIter(l);
+        while (corto_iterHasNext(&i)) {
+            void* e = corto_iterNext(&i);
+            void* r = f(e, data);
+            corto_llAppend(ll, r);
+        }
+    }
+    return ll;
+}
