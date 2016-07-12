@@ -100,6 +100,11 @@ void* corto_llIterRemove(corto_iter* iter);
 void corto_llIterInsert(corto_iter* iter, void* o);
 void corto_llIterSet(corto_iter* iter, void* o);
 
+/* Functional-style */
+typedef void* (*corto_mapAction)(void* elem, void* data);
+corto_ll corto_llMap(corto_ll l, corto_mapAction f, void* data);
+
+
 #ifdef __cplusplus
 }
 #endif
