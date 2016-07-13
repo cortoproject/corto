@@ -20,23 +20,45 @@ struct g_itemWalk_t {
     corto_bool bootstrap;
     corto_depresolver_action onDeclare;
     corto_depresolver_action onDefine;
+    corto_ll anonymousObjects;
 };
 
 typedef struct g_depWalk_t* g_depWalk_t;
 struct g_depWalk_t  {
     corto_object o;
     g_itemWalk_t data;
+    corto_ll anonymousObjects;
 };
+
+corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
+    corto_object result = o;
+
+    if (!data->anonymousObjects) {
+        data->anonymousObjects = corto_llNew();
+    }
+
+    corto_iter iter = corto_llIter(data->anonymousObjects);
+    while (corto_iterHasNext(&iter)) {
+        corto_object a = corto_iterNext(&iter);
+        if (corto_compare(o, a) == CORTO_EQ) {
+            result = a;
+            break;
+        }
+    }
+
+    if (o == result) {
+        corto_llAppend(data->anonymousObjects, o);
+    }
+
+    return result;
+}
 
 /* Serialize dependencies on references */
 corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* userData) {
-    corto_object o;
-    g_depWalk_t data;
+    corto_object o = *(corto_object*)corto_value_getPtr(info);
+    g_depWalk_t data = userData;
 
     CORTO_UNUSED(s);
-
-    data = userData;
-    o = *(corto_object*)corto_value_getPtr(info);
 
     if (o && g_mustParse(data->data->g, o)) {
         corto_member m;
@@ -50,16 +72,22 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
             }
         }
 
+        /* Include dependencies on anonymous types */
+        if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            /* Look for equivalent anonymous objects. Since anonymous objects do
+             * not have their own identity, they are equal if they have the same
+             * value. Therefore, if multiple anonymous objects are found with
+             * the same value, only insert it once in the dependency administration.
+             */
+            o = corto_genDepFindAnonymous(data, o);
+            corto_genDepBuildAction(o, data->data);
+        }
+
         /* Add dependency on item */
         if (m) {
             corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, m->state);
         } else {
             corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, CORTO_DEFINED);
-        }
-
-        /* Include dependencies on anonymous types */
-        if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_genDepBuildAction(o, data->data);
         }
     }
 
@@ -156,10 +184,12 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
         /* Insert dependencies on references in the object-value */
         walkData.o = o;
         walkData.data = data;
+        walkData.anonymousObjects = data->anonymousObjects;
         s = corto_genDepSerializer();
         if (corto_serialize(&s, o, &walkData)) {
             goto error;
         }
+        data->anonymousObjects = walkData.anonymousObjects;
 
         result = 1;
     }
@@ -188,16 +218,6 @@ static int corto_genDefineAction(corto_object o, void* userData) {
     return 1;
 }
 
-int corto_genCollectAnonymous(void* o, void* userData) {
-    corto_ll list = userData;
-
-    if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        corto_llInsert(list, o);
-    }
-
-    return 1;
-}
-
 int corto_genDepWalk(corto_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData) {
     struct g_itemWalk_t walkData;
     corto_depresolver resolver = corto_depresolverCreate(corto_genDeclareAction, corto_genDefineAction, &walkData);
@@ -209,6 +229,7 @@ int corto_genDepWalk(corto_generator g, corto_depresolver_action onDeclare, cort
     walkData.onDefine = onDefine;
     walkData.onDeclare = onDeclare;
     walkData.bootstrap = FALSE;
+    walkData.anonymousObjects = NULL;
 
     /* Build dependency administration */
     if (!g_walkRecursive(g, corto_genDepBuildAction, &walkData)) {
@@ -219,6 +240,10 @@ int corto_genDepWalk(corto_generator g, corto_depresolver_action onDeclare, cort
             g_walkRecursive(g, corto_genDeclareAction, &walkData);
             g_walkRecursive(g, corto_genDefineAction, &walkData);
         }
+    }
+
+    if (walkData.anonymousObjects) {
+        corto_llFree(walkData.anonymousObjects);
     }
 
     return corto_depresolver_walk(resolver);

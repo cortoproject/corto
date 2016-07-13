@@ -32,11 +32,11 @@ CORTO_EXPORT corto_int16 _corto_aliasDefine(corto_alias _this, corto_member memb
 #define corto_aliasDefine(_this, member) _corto_aliasDefine(corto_alias(_this), corto_member(member))
 CORTO_EXPORT corto_alias _corto_aliasAssign(corto_alias _this, corto_member member);
 #define corto_alias__optional_NotSet NULL
-#define corto_alias__optional_Set(member) corto_aliasAssign(corto_calloc(sizeof(corto_alias)), member)
-#define corto_alias__optional_SetCond(cond, member) cond ? corto_aliasAssign(corto_calloc(sizeof(corto_alias)), member) : NULL
+#define corto_alias__optional_Set(member) corto_aliasAssign((corto_alias*)corto_calloc(sizeof(corto_alias)), member)
+#define corto_alias__optional_SetCond(cond, member) cond ? corto_aliasAssign((corto_alias*)corto_calloc(sizeof(corto_alias)), member) : NULL
 #define corto_aliasUnset(_this) _this ? corto_deinitp(_this, corto_alias_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_aliasAssign(_this, member) _corto_aliasAssign(corto_alias(_this), corto_member(member))
-#define corto_aliasSet(_this, member) _this = _this ? _this : corto_calloc(sizeof(corto_alias_o)); _corto_aliasAssign(corto_alias(_this), corto_member(member))
+#define corto_aliasSet(_this, member) _this = _this ? _this : (corto_alias*)corto_calloc(sizeof(corto_alias)); _corto_aliasAssign(corto_alias(_this), corto_member(member))
 CORTO_EXPORT corto_string _corto_aliasStr(corto_alias value);
 #define corto_aliasStr(value) _corto_aliasStr(corto_alias(value))
 CORTO_EXPORT corto_alias corto_aliasFromStr(corto_alias value, corto_string str);
@@ -63,11 +63,11 @@ CORTO_EXPORT corto_int16 _corto_anyDefine(corto_any* _this, corto_type type, voi
 #define corto_anyDefine(_this, type, value) _corto_anyDefine(_this, corto_type(type), value)
 CORTO_EXPORT corto_any* _corto_anyAssign(corto_any* _this, corto_type type, void *value);
 #define corto_any__optional_NotSet NULL
-#define corto_any__optional_Set(type, value) corto_anyAssign(corto_calloc(sizeof(corto_any)), type, value)
-#define corto_any__optional_SetCond(cond, type, value) cond ? corto_anyAssign(corto_calloc(sizeof(corto_any)), type, value) : NULL
+#define corto_any__optional_Set(type, value) corto_anyAssign((corto_any*)corto_calloc(sizeof(corto_any)), type, value)
+#define corto_any__optional_SetCond(cond, type, value) cond ? corto_anyAssign((corto_any*)corto_calloc(sizeof(corto_any)), type, value) : NULL
 #define corto_anyUnset(_this) _this ? corto_deinitp(_this, corto_any_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_anyAssign(_this, type, value) _corto_anyAssign(_this, corto_type(type), value)
-#define corto_anySet(_this, type, value) _this = _this ? _this : corto_calloc(sizeof(corto_any_o)); _corto_anyAssign(_this, corto_type(type), value)
+#define corto_anySet(_this, type, value) _this = _this ? _this : (corto_any*)corto_calloc(sizeof(corto_any)); _corto_anyAssign(_this, corto_type(type), value)
 CORTO_EXPORT corto_string _corto_anyStr(corto_any value);
 #define corto_anyStr(value) _corto_anyStr(value)
 CORTO_EXPORT corto_any* corto_anyFromStr(corto_any* value, corto_string str);
@@ -98,11 +98,11 @@ CORTO_EXPORT corto_int16 _corto_arrayDefine(corto_array _this, corto_type elemen
 #define corto_arrayDefine(_this, elementType, max) _corto_arrayDefine(corto_array(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_array _corto_arrayAssign(corto_array _this, corto_type elementType, corto_uint32 max);
 #define corto_array__optional_NotSet NULL
-#define corto_array__optional_Set(elementType, max) corto_arrayAssign(corto_calloc(sizeof(corto_array)), elementType, max)
-#define corto_array__optional_SetCond(cond, elementType, max) cond ? corto_arrayAssign(corto_calloc(sizeof(corto_array)), elementType, max) : NULL
+#define corto_array__optional_Set(elementType, max) corto_arrayAssign((corto_array*)corto_calloc(sizeof(corto_array)), elementType, max)
+#define corto_array__optional_SetCond(cond, elementType, max) cond ? corto_arrayAssign((corto_array*)corto_calloc(sizeof(corto_array)), elementType, max) : NULL
 #define corto_arrayUnset(_this) _this ? corto_deinitp(_this, corto_array_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_arrayAssign(_this, elementType, max) _corto_arrayAssign(corto_array(_this), corto_type(elementType), max)
-#define corto_arraySet(_this, elementType, max) _this = _this ? _this : corto_calloc(sizeof(corto_array_o)); _corto_arrayAssign(corto_array(_this), corto_type(elementType), max)
+#define corto_arraySet(_this, elementType, max) _this = _this ? _this : (corto_array*)corto_calloc(sizeof(corto_array)); _corto_arrayAssign(corto_array(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_string _corto_arrayStr(corto_array value);
 #define corto_arrayStr(value) _corto_arrayStr(corto_array(value))
 CORTO_EXPORT corto_array corto_arrayFromStr(corto_array value, corto_string str);
@@ -129,11 +129,11 @@ CORTO_EXPORT corto_int16 _corto_binaryDefine(corto_binary _this, corto_width wid
 #define corto_binaryDefine(_this, width) _corto_binaryDefine(corto_binary(_this), width)
 CORTO_EXPORT corto_binary _corto_binaryAssign(corto_binary _this, corto_width width);
 #define corto_binary__optional_NotSet NULL
-#define corto_binary__optional_Set(width) corto_binaryAssign(corto_calloc(sizeof(corto_binary)), width)
-#define corto_binary__optional_SetCond(cond, width) cond ? corto_binaryAssign(corto_calloc(sizeof(corto_binary)), width) : NULL
+#define corto_binary__optional_Set(width) corto_binaryAssign((corto_binary*)corto_calloc(sizeof(corto_binary)), width)
+#define corto_binary__optional_SetCond(cond, width) cond ? corto_binaryAssign((corto_binary*)corto_calloc(sizeof(corto_binary)), width) : NULL
 #define corto_binaryUnset(_this) _this ? corto_deinitp(_this, corto_binary_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_binaryAssign(_this, width) _corto_binaryAssign(corto_binary(_this), width)
-#define corto_binarySet(_this, width) _this = _this ? _this : corto_calloc(sizeof(corto_binary_o)); _corto_binaryAssign(corto_binary(_this), width)
+#define corto_binarySet(_this, width) _this = _this ? _this : (corto_binary*)corto_calloc(sizeof(corto_binary)); _corto_binaryAssign(corto_binary(_this), width)
 CORTO_EXPORT corto_string _corto_binaryStr(corto_binary value);
 #define corto_binaryStr(value) _corto_binaryStr(corto_binary(value))
 CORTO_EXPORT corto_binary corto_binaryFromStr(corto_binary value, corto_string str);
@@ -160,11 +160,11 @@ CORTO_EXPORT corto_int16 _corto_bitmaskDefine(corto_bitmask _this);
 #define corto_bitmaskDefine(_this) _corto_bitmaskDefine(corto_bitmask(_this))
 CORTO_EXPORT corto_bitmask _corto_bitmaskAssign(corto_bitmask _this);
 #define corto_bitmask__optional_NotSet NULL
-#define corto_bitmask__optional_Set() corto_bitmaskAssign(corto_calloc(sizeof(corto_bitmask)))
-#define corto_bitmask__optional_SetCond(cond) cond ? corto_bitmaskAssign(corto_calloc(sizeof(corto_bitmask))) : NULL
+#define corto_bitmask__optional_Set() corto_bitmaskAssign((corto_bitmask*)corto_calloc(sizeof(corto_bitmask)))
+#define corto_bitmask__optional_SetCond(cond) cond ? corto_bitmaskAssign((corto_bitmask*)corto_calloc(sizeof(corto_bitmask))) : NULL
 #define corto_bitmaskUnset(_this) _this ? corto_deinitp(_this, corto_bitmask_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_bitmaskAssign(_this) _corto_bitmaskAssign(corto_bitmask(_this))
-#define corto_bitmaskSet(_this) _this = _this ? _this : corto_calloc(sizeof(corto_bitmask_o)); _corto_bitmaskAssign(corto_bitmask(_this))
+#define corto_bitmaskSet(_this) _this = _this ? _this : (corto_bitmask*)corto_calloc(sizeof(corto_bitmask)); _corto_bitmaskAssign(corto_bitmask(_this))
 CORTO_EXPORT corto_string _corto_bitmaskStr(corto_bitmask value);
 #define corto_bitmaskStr(value) _corto_bitmaskStr(corto_bitmask(value))
 CORTO_EXPORT corto_bitmask corto_bitmaskFromStr(corto_bitmask value, corto_string str);
@@ -191,11 +191,11 @@ CORTO_EXPORT corto_int16 _corto_boolDefine(corto_bool* _this, corto_bool value);
 #define corto_boolDefine(_this, value) _corto_boolDefine(_this, value)
 CORTO_EXPORT corto_bool* _corto_boolAssign(corto_bool* _this, corto_bool value);
 #define corto_bool__optional_NotSet NULL
-#define corto_bool__optional_Set(value) corto_boolAssign(corto_calloc(sizeof(corto_bool)), value)
-#define corto_bool__optional_SetCond(cond, value) cond ? corto_boolAssign(corto_calloc(sizeof(corto_bool)), value) : NULL
+#define corto_bool__optional_Set(value) corto_boolAssign((corto_bool*)corto_calloc(sizeof(corto_bool)), value)
+#define corto_bool__optional_SetCond(cond, value) cond ? corto_boolAssign((corto_bool*)corto_calloc(sizeof(corto_bool)), value) : NULL
 #define corto_boolUnset(_this) _this ? corto_deinitp(_this, corto_bool_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_boolAssign(_this, value) _corto_boolAssign(_this, value)
-#define corto_boolSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_bool_o)); _corto_boolAssign(_this, value)
+#define corto_boolSet(_this, value) _this = _this ? _this : (corto_bool*)corto_calloc(sizeof(corto_bool)); _corto_boolAssign(_this, value)
 CORTO_EXPORT corto_string _corto_boolStr(corto_bool value);
 #define corto_boolStr(value) _corto_boolStr(value)
 CORTO_EXPORT corto_bool* corto_boolFromStr(corto_bool* value, corto_string str);
@@ -226,11 +226,11 @@ CORTO_EXPORT corto_int16 _corto_booleanDefine(corto_boolean _this);
 #define corto_booleanDefine(_this) _corto_booleanDefine(corto_boolean(_this))
 CORTO_EXPORT corto_boolean _corto_booleanAssign(corto_boolean _this);
 #define corto_boolean__optional_NotSet NULL
-#define corto_boolean__optional_Set() corto_booleanAssign(corto_calloc(sizeof(corto_boolean)))
-#define corto_boolean__optional_SetCond(cond) cond ? corto_booleanAssign(corto_calloc(sizeof(corto_boolean))) : NULL
+#define corto_boolean__optional_Set() corto_booleanAssign((corto_boolean*)corto_calloc(sizeof(corto_boolean)))
+#define corto_boolean__optional_SetCond(cond) cond ? corto_booleanAssign((corto_boolean*)corto_calloc(sizeof(corto_boolean))) : NULL
 #define corto_booleanUnset(_this) _this ? corto_deinitp(_this, corto_boolean_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_booleanAssign(_this) _corto_booleanAssign(corto_boolean(_this))
-#define corto_booleanSet(_this) _this = _this ? _this : corto_calloc(sizeof(corto_boolean_o)); _corto_booleanAssign(corto_boolean(_this))
+#define corto_booleanSet(_this) _this = _this ? _this : (corto_boolean*)corto_calloc(sizeof(corto_boolean)); _corto_booleanAssign(corto_boolean(_this))
 CORTO_EXPORT corto_string _corto_booleanStr(corto_boolean value);
 #define corto_booleanStr(value) _corto_booleanStr(corto_boolean(value))
 CORTO_EXPORT corto_boolean corto_booleanFromStr(corto_boolean value, corto_string str);
@@ -257,11 +257,11 @@ CORTO_EXPORT corto_int16 _corto_caseDefine(corto_case _this, corto_int32seq disc
 #define corto_caseDefine(_this, discriminator, type) _corto_caseDefine(corto_case(_this), discriminator, corto_type(type))
 CORTO_EXPORT corto_case _corto_caseAssign(corto_case _this, corto_int32seq discriminator, corto_type type);
 #define corto_case__optional_NotSet NULL
-#define corto_case__optional_Set(discriminator, type) corto_caseAssign(corto_calloc(sizeof(corto_case)), discriminator, type)
-#define corto_case__optional_SetCond(cond, discriminator, type) cond ? corto_caseAssign(corto_calloc(sizeof(corto_case)), discriminator, type) : NULL
+#define corto_case__optional_Set(discriminator, type) corto_caseAssign((corto_case*)corto_calloc(sizeof(corto_case)), discriminator, type)
+#define corto_case__optional_SetCond(cond, discriminator, type) cond ? corto_caseAssign((corto_case*)corto_calloc(sizeof(corto_case)), discriminator, type) : NULL
 #define corto_caseUnset(_this) _this ? corto_deinitp(_this, corto_case_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_caseAssign(_this, discriminator, type) _corto_caseAssign(corto_case(_this), discriminator, corto_type(type))
-#define corto_caseSet(_this, discriminator, type) _this = _this ? _this : corto_calloc(sizeof(corto_case_o)); _corto_caseAssign(corto_case(_this), discriminator, corto_type(type))
+#define corto_caseSet(_this, discriminator, type) _this = _this ? _this : (corto_case*)corto_calloc(sizeof(corto_case)); _corto_caseAssign(corto_case(_this), discriminator, corto_type(type))
 CORTO_EXPORT corto_string _corto_caseStr(corto_case value);
 #define corto_caseStr(value) _corto_caseStr(corto_case(value))
 CORTO_EXPORT corto_case corto_caseFromStr(corto_case value, corto_string str);
@@ -288,11 +288,11 @@ CORTO_EXPORT corto_int16 _corto_charDefine(corto_char* _this, corto_char value);
 #define corto_charDefine(_this, value) _corto_charDefine(_this, value)
 CORTO_EXPORT corto_char* _corto_charAssign(corto_char* _this, corto_char value);
 #define corto_char__optional_NotSet NULL
-#define corto_char__optional_Set(value) corto_charAssign(corto_calloc(sizeof(corto_char)), value)
-#define corto_char__optional_SetCond(cond, value) cond ? corto_charAssign(corto_calloc(sizeof(corto_char)), value) : NULL
+#define corto_char__optional_Set(value) corto_charAssign((corto_char*)corto_calloc(sizeof(corto_char)), value)
+#define corto_char__optional_SetCond(cond, value) cond ? corto_charAssign((corto_char*)corto_calloc(sizeof(corto_char)), value) : NULL
 #define corto_charUnset(_this) _this ? corto_deinitp(_this, corto_char_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_charAssign(_this, value) _corto_charAssign(_this, value)
-#define corto_charSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_char_o)); _corto_charAssign(_this, value)
+#define corto_charSet(_this, value) _this = _this ? _this : (corto_char*)corto_calloc(sizeof(corto_char)); _corto_charAssign(_this, value)
 CORTO_EXPORT corto_string _corto_charStr(corto_char value);
 #define corto_charStr(value) _corto_charStr(value)
 CORTO_EXPORT corto_char* corto_charFromStr(corto_char* value, corto_string str);
@@ -323,11 +323,11 @@ CORTO_EXPORT corto_int16 _corto_characterDefine(corto_character _this, corto_wid
 #define corto_characterDefine(_this, width) _corto_characterDefine(corto_character(_this), width)
 CORTO_EXPORT corto_character _corto_characterAssign(corto_character _this, corto_width width);
 #define corto_character__optional_NotSet NULL
-#define corto_character__optional_Set(width) corto_characterAssign(corto_calloc(sizeof(corto_character)), width)
-#define corto_character__optional_SetCond(cond, width) cond ? corto_characterAssign(corto_calloc(sizeof(corto_character)), width) : NULL
+#define corto_character__optional_Set(width) corto_characterAssign((corto_character*)corto_calloc(sizeof(corto_character)), width)
+#define corto_character__optional_SetCond(cond, width) cond ? corto_characterAssign((corto_character*)corto_calloc(sizeof(corto_character)), width) : NULL
 #define corto_characterUnset(_this) _this ? corto_deinitp(_this, corto_character_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_characterAssign(_this, width) _corto_characterAssign(corto_character(_this), width)
-#define corto_characterSet(_this, width) _this = _this ? _this : corto_calloc(sizeof(corto_character_o)); _corto_characterAssign(corto_character(_this), width)
+#define corto_characterSet(_this, width) _this = _this ? _this : (corto_character*)corto_calloc(sizeof(corto_character)); _corto_characterAssign(corto_character(_this), width)
 CORTO_EXPORT corto_string _corto_characterStr(corto_character value);
 #define corto_characterStr(value) _corto_characterStr(corto_character(value))
 CORTO_EXPORT corto_character corto_characterFromStr(corto_character value, corto_string str);
@@ -354,11 +354,11 @@ CORTO_EXPORT corto_int16 _corto_classDefine(corto_class _this, corto_interface b
 #define corto_classDefine(_this, base, baseAccess, implements) _corto_classDefine(corto_class(_this), corto_interface(base), baseAccess, implements)
 CORTO_EXPORT corto_class _corto_classAssign(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
 #define corto_class__optional_NotSet NULL
-#define corto_class__optional_Set(base, baseAccess, implements) corto_classAssign(corto_calloc(sizeof(corto_class)), base, baseAccess, implements)
-#define corto_class__optional_SetCond(cond, base, baseAccess, implements) cond ? corto_classAssign(corto_calloc(sizeof(corto_class)), base, baseAccess, implements) : NULL
+#define corto_class__optional_Set(base, baseAccess, implements) corto_classAssign((corto_class*)corto_calloc(sizeof(corto_class)), base, baseAccess, implements)
+#define corto_class__optional_SetCond(cond, base, baseAccess, implements) cond ? corto_classAssign((corto_class*)corto_calloc(sizeof(corto_class)), base, baseAccess, implements) : NULL
 #define corto_classUnset(_this) _this ? corto_deinitp(_this, corto_class_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_classAssign(_this, base, baseAccess, implements) _corto_classAssign(corto_class(_this), corto_interface(base), baseAccess, implements)
-#define corto_classSet(_this, base, baseAccess, implements) _this = _this ? _this : corto_calloc(sizeof(corto_class_o)); _corto_classAssign(corto_class(_this), corto_interface(base), baseAccess, implements)
+#define corto_classSet(_this, base, baseAccess, implements) _this = _this ? _this : (corto_class*)corto_calloc(sizeof(corto_class)); _corto_classAssign(corto_class(_this), corto_interface(base), baseAccess, implements)
 CORTO_EXPORT corto_string _corto_classStr(corto_class value);
 #define corto_classStr(value) _corto_classStr(corto_class(value))
 CORTO_EXPORT corto_class corto_classFromStr(corto_class value, corto_string str);
@@ -385,11 +385,11 @@ CORTO_EXPORT corto_int16 _corto_collectionDefine(corto_collection _this, corto_t
 #define corto_collectionDefine(_this, elementType, max) _corto_collectionDefine(corto_collection(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_collection _corto_collectionAssign(corto_collection _this, corto_type elementType, corto_uint32 max);
 #define corto_collection__optional_NotSet NULL
-#define corto_collection__optional_Set(elementType, max) corto_collectionAssign(corto_calloc(sizeof(corto_collection)), elementType, max)
-#define corto_collection__optional_SetCond(cond, elementType, max) cond ? corto_collectionAssign(corto_calloc(sizeof(corto_collection)), elementType, max) : NULL
+#define corto_collection__optional_Set(elementType, max) corto_collectionAssign((corto_collection*)corto_calloc(sizeof(corto_collection)), elementType, max)
+#define corto_collection__optional_SetCond(cond, elementType, max) cond ? corto_collectionAssign((corto_collection*)corto_calloc(sizeof(corto_collection)), elementType, max) : NULL
 #define corto_collectionUnset(_this) _this ? corto_deinitp(_this, corto_collection_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_collectionAssign(_this, elementType, max) _corto_collectionAssign(corto_collection(_this), corto_type(elementType), max)
-#define corto_collectionSet(_this, elementType, max) _this = _this ? _this : corto_calloc(sizeof(corto_collection_o)); _corto_collectionAssign(corto_collection(_this), corto_type(elementType), max)
+#define corto_collectionSet(_this, elementType, max) _this = _this ? _this : (corto_collection*)corto_calloc(sizeof(corto_collection)); _corto_collectionAssign(corto_collection(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_string _corto_collectionStr(corto_collection value);
 #define corto_collectionStr(value) _corto_collectionStr(corto_collection(value))
 CORTO_EXPORT corto_collection corto_collectionFromStr(corto_collection value, corto_string str);
@@ -416,11 +416,11 @@ CORTO_EXPORT corto_int16 _corto_collectionKindDefine(corto_collectionKind* _this
 #define corto_collectionKindDefine(_this, value) _corto_collectionKindDefine(_this, value)
 CORTO_EXPORT corto_collectionKind* _corto_collectionKindAssign(corto_collectionKind* _this, corto_collectionKind value);
 #define corto_collectionKind__optional_NotSet NULL
-#define corto_collectionKind__optional_Set(value) corto_collectionKindAssign(corto_calloc(sizeof(corto_collectionKind)), value)
-#define corto_collectionKind__optional_SetCond(cond, value) cond ? corto_collectionKindAssign(corto_calloc(sizeof(corto_collectionKind)), value) : NULL
+#define corto_collectionKind__optional_Set(value) corto_collectionKindAssign((corto_collectionKind*)corto_calloc(sizeof(corto_collectionKind)), value)
+#define corto_collectionKind__optional_SetCond(cond, value) cond ? corto_collectionKindAssign((corto_collectionKind*)corto_calloc(sizeof(corto_collectionKind)), value) : NULL
 #define corto_collectionKindUnset(_this) _this ? corto_deinitp(_this, corto_collectionKind_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_collectionKindAssign(_this, value) _corto_collectionKindAssign(_this, value)
-#define corto_collectionKindSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_collectionKind_o)); _corto_collectionKindAssign(_this, value)
+#define corto_collectionKindSet(_this, value) _this = _this ? _this : (corto_collectionKind*)corto_calloc(sizeof(corto_collectionKind)); _corto_collectionKindAssign(_this, value)
 CORTO_EXPORT corto_string _corto_collectionKindStr(corto_collectionKind value);
 #define corto_collectionKindStr(value) _corto_collectionKindStr(value)
 CORTO_EXPORT corto_collectionKind* corto_collectionKindFromStr(corto_collectionKind* value, corto_string str);
@@ -451,11 +451,11 @@ CORTO_EXPORT corto_int16 _corto_compositeKindDefine(corto_compositeKind* _this, 
 #define corto_compositeKindDefine(_this, value) _corto_compositeKindDefine(_this, value)
 CORTO_EXPORT corto_compositeKind* _corto_compositeKindAssign(corto_compositeKind* _this, corto_compositeKind value);
 #define corto_compositeKind__optional_NotSet NULL
-#define corto_compositeKind__optional_Set(value) corto_compositeKindAssign(corto_calloc(sizeof(corto_compositeKind)), value)
-#define corto_compositeKind__optional_SetCond(cond, value) cond ? corto_compositeKindAssign(corto_calloc(sizeof(corto_compositeKind)), value) : NULL
+#define corto_compositeKind__optional_Set(value) corto_compositeKindAssign((corto_compositeKind*)corto_calloc(sizeof(corto_compositeKind)), value)
+#define corto_compositeKind__optional_SetCond(cond, value) cond ? corto_compositeKindAssign((corto_compositeKind*)corto_calloc(sizeof(corto_compositeKind)), value) : NULL
 #define corto_compositeKindUnset(_this) _this ? corto_deinitp(_this, corto_compositeKind_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_compositeKindAssign(_this, value) _corto_compositeKindAssign(_this, value)
-#define corto_compositeKindSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_compositeKind_o)); _corto_compositeKindAssign(_this, value)
+#define corto_compositeKindSet(_this, value) _this = _this ? _this : (corto_compositeKind*)corto_calloc(sizeof(corto_compositeKind)); _corto_compositeKindAssign(_this, value)
 CORTO_EXPORT corto_string _corto_compositeKindStr(corto_compositeKind value);
 #define corto_compositeKindStr(value) _corto_compositeKindStr(value)
 CORTO_EXPORT corto_compositeKind* corto_compositeKindFromStr(corto_compositeKind* value, corto_string str);
@@ -486,11 +486,11 @@ CORTO_EXPORT corto_int16 _corto_constantDefine(corto_constant* _this, corto_cons
 #define corto_constantDefine(_this, value) _corto_constantDefine(_this, value)
 CORTO_EXPORT corto_constant* _corto_constantAssign(corto_constant* _this, corto_constant value);
 #define corto_constant__optional_NotSet NULL
-#define corto_constant__optional_Set(value) corto_constantAssign(corto_calloc(sizeof(corto_constant)), value)
-#define corto_constant__optional_SetCond(cond, value) cond ? corto_constantAssign(corto_calloc(sizeof(corto_constant)), value) : NULL
+#define corto_constant__optional_Set(value) corto_constantAssign((corto_constant*)corto_calloc(sizeof(corto_constant)), value)
+#define corto_constant__optional_SetCond(cond, value) cond ? corto_constantAssign((corto_constant*)corto_calloc(sizeof(corto_constant)), value) : NULL
 #define corto_constantUnset(_this) _this ? corto_deinitp(_this, corto_constant_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_constantAssign(_this, value) _corto_constantAssign(_this, value)
-#define corto_constantSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_constant_o)); _corto_constantAssign(_this, value)
+#define corto_constantSet(_this, value) _this = _this ? _this : (corto_constant*)corto_calloc(sizeof(corto_constant)); _corto_constantAssign(_this, value)
 CORTO_EXPORT corto_string _corto_constantStr(corto_constant value);
 #define corto_constantStr(value) _corto_constantStr(value)
 CORTO_EXPORT corto_constant* corto_constantFromStr(corto_constant* value, corto_string str);
@@ -521,11 +521,11 @@ CORTO_EXPORT corto_int16 _corto_defaultDefine(corto_default _this, corto_type ty
 #define corto_defaultDefine(_this, type) _corto_defaultDefine(corto_default(_this), corto_type(type))
 CORTO_EXPORT corto_default _corto_defaultAssign(corto_default _this, corto_type type);
 #define corto_default__optional_NotSet NULL
-#define corto_default__optional_Set(type) corto_defaultAssign(corto_calloc(sizeof(corto_default)), type)
-#define corto_default__optional_SetCond(cond, type) cond ? corto_defaultAssign(corto_calloc(sizeof(corto_default)), type) : NULL
+#define corto_default__optional_Set(type) corto_defaultAssign((corto_default*)corto_calloc(sizeof(corto_default)), type)
+#define corto_default__optional_SetCond(cond, type) cond ? corto_defaultAssign((corto_default*)corto_calloc(sizeof(corto_default)), type) : NULL
 #define corto_defaultUnset(_this) _this ? corto_deinitp(_this, corto_default_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_defaultAssign(_this, type) _corto_defaultAssign(corto_default(_this), corto_type(type))
-#define corto_defaultSet(_this, type) _this = _this ? _this : corto_calloc(sizeof(corto_default_o)); _corto_defaultAssign(corto_default(_this), corto_type(type))
+#define corto_defaultSet(_this, type) _this = _this ? _this : (corto_default*)corto_calloc(sizeof(corto_default)); _corto_defaultAssign(corto_default(_this), corto_type(type))
 CORTO_EXPORT corto_string _corto_defaultStr(corto_default value);
 #define corto_defaultStr(value) _corto_defaultStr(corto_default(value))
 CORTO_EXPORT corto_default corto_defaultFromStr(corto_default value, corto_string str);
@@ -552,11 +552,11 @@ CORTO_EXPORT corto_int16 _corto_delegateDefine(corto_delegate _this, corto_type 
 #define corto_delegateDefine(_this, returnType, returnsReference, parameters) _corto_delegateDefine(corto_delegate(_this), corto_type(returnType), returnsReference, parameters)
 CORTO_EXPORT corto_delegate _corto_delegateAssign(corto_delegate _this, corto_type returnType, corto_bool returnsReference, corto_parameterseq parameters);
 #define corto_delegate__optional_NotSet NULL
-#define corto_delegate__optional_Set(returnType, returnsReference, parameters) corto_delegateAssign(corto_calloc(sizeof(corto_delegate)), returnType, returnsReference, parameters)
-#define corto_delegate__optional_SetCond(cond, returnType, returnsReference, parameters) cond ? corto_delegateAssign(corto_calloc(sizeof(corto_delegate)), returnType, returnsReference, parameters) : NULL
+#define corto_delegate__optional_Set(returnType, returnsReference, parameters) corto_delegateAssign((corto_delegate*)corto_calloc(sizeof(corto_delegate)), returnType, returnsReference, parameters)
+#define corto_delegate__optional_SetCond(cond, returnType, returnsReference, parameters) cond ? corto_delegateAssign((corto_delegate*)corto_calloc(sizeof(corto_delegate)), returnType, returnsReference, parameters) : NULL
 #define corto_delegateUnset(_this) _this ? corto_deinitp(_this, corto_delegate_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_delegateAssign(_this, returnType, returnsReference, parameters) _corto_delegateAssign(corto_delegate(_this), corto_type(returnType), returnsReference, parameters)
-#define corto_delegateSet(_this, returnType, returnsReference, parameters) _this = _this ? _this : corto_calloc(sizeof(corto_delegate_o)); _corto_delegateAssign(corto_delegate(_this), corto_type(returnType), returnsReference, parameters)
+#define corto_delegateSet(_this, returnType, returnsReference, parameters) _this = _this ? _this : (corto_delegate*)corto_calloc(sizeof(corto_delegate)); _corto_delegateAssign(corto_delegate(_this), corto_type(returnType), returnsReference, parameters)
 CORTO_EXPORT corto_string _corto_delegateStr(corto_delegate value);
 #define corto_delegateStr(value) _corto_delegateStr(corto_delegate(value))
 CORTO_EXPORT corto_delegate corto_delegateFromStr(corto_delegate value, corto_string str);
@@ -583,11 +583,11 @@ CORTO_EXPORT corto_int16 _corto_delegatedataDefine(corto_delegatedata* _this, co
 #define corto_delegatedataDefine(_this, instance, procedure) _corto_delegatedataDefine(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_delegatedata* _corto_delegatedataAssign(corto_delegatedata* _this, corto_object instance, corto_function procedure);
 #define corto_delegatedata__optional_NotSet NULL
-#define corto_delegatedata__optional_Set(instance, procedure) corto_delegatedataAssign(corto_calloc(sizeof(corto_delegatedata)), instance, procedure)
-#define corto_delegatedata__optional_SetCond(cond, instance, procedure) cond ? corto_delegatedataAssign(corto_calloc(sizeof(corto_delegatedata)), instance, procedure) : NULL
+#define corto_delegatedata__optional_Set(instance, procedure) corto_delegatedataAssign((corto_delegatedata*)corto_calloc(sizeof(corto_delegatedata)), instance, procedure)
+#define corto_delegatedata__optional_SetCond(cond, instance, procedure) cond ? corto_delegatedataAssign((corto_delegatedata*)corto_calloc(sizeof(corto_delegatedata)), instance, procedure) : NULL
 #define corto_delegatedataUnset(_this) _this ? corto_deinitp(_this, corto_delegatedata_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_delegatedataAssign(_this, instance, procedure) _corto_delegatedataAssign(_this, instance, corto_function(procedure))
-#define corto_delegatedataSet(_this, instance, procedure) _this = _this ? _this : corto_calloc(sizeof(corto_delegatedata_o)); _corto_delegatedataAssign(_this, instance, corto_function(procedure))
+#define corto_delegatedataSet(_this, instance, procedure) _this = _this ? _this : (corto_delegatedata*)corto_calloc(sizeof(corto_delegatedata)); _corto_delegatedataAssign(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_string _corto_delegatedataStr(corto_delegatedata* value);
 #define corto_delegatedataStr(value) _corto_delegatedataStr(value)
 CORTO_EXPORT corto_delegatedata* corto_delegatedataFromStr(corto_delegatedata* value, corto_string str);
@@ -618,11 +618,11 @@ CORTO_EXPORT corto_int16 _corto_destructActionDefine(corto_destructAction* _this
 #define corto_destructActionDefine(_this, instance, procedure) _corto_destructActionDefine(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_destructAction* _corto_destructActionAssign(corto_destructAction* _this, corto_object instance, corto_function procedure);
 #define corto_destructAction__optional_NotSet NULL
-#define corto_destructAction__optional_Set(instance, procedure) corto_destructActionAssign(corto_calloc(sizeof(corto_destructAction)), instance, procedure)
-#define corto_destructAction__optional_SetCond(cond, instance, procedure) cond ? corto_destructActionAssign(corto_calloc(sizeof(corto_destructAction)), instance, procedure) : NULL
+#define corto_destructAction__optional_Set(instance, procedure) corto_destructActionAssign((corto_destructAction*)corto_calloc(sizeof(corto_destructAction)), instance, procedure)
+#define corto_destructAction__optional_SetCond(cond, instance, procedure) cond ? corto_destructActionAssign((corto_destructAction*)corto_calloc(sizeof(corto_destructAction)), instance, procedure) : NULL
 #define corto_destructActionUnset(_this) _this ? corto_deinitp(_this, corto_destructAction_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_destructActionAssign(_this, instance, procedure) _corto_destructActionAssign(_this, instance, corto_function(procedure))
-#define corto_destructActionSet(_this, instance, procedure) _this = _this ? _this : corto_calloc(sizeof(corto_destructAction_o)); _corto_destructActionAssign(_this, instance, corto_function(procedure))
+#define corto_destructActionSet(_this, instance, procedure) _this = _this ? _this : (corto_destructAction*)corto_calloc(sizeof(corto_destructAction)); _corto_destructActionAssign(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_string _corto_destructActionStr(corto_destructAction* value);
 #define corto_destructActionStr(value) _corto_destructActionStr(value)
 CORTO_EXPORT corto_destructAction* corto_destructActionFromStr(corto_destructAction* value, corto_string str);
@@ -658,11 +658,11 @@ CORTO_EXPORT corto_int16 _corto_enumDefine(corto_enum _this);
 #define corto_enumDefine(_this) _corto_enumDefine(corto_enum(_this))
 CORTO_EXPORT corto_enum _corto_enumAssign(corto_enum _this);
 #define corto_enum__optional_NotSet NULL
-#define corto_enum__optional_Set() corto_enumAssign(corto_calloc(sizeof(corto_enum)))
-#define corto_enum__optional_SetCond(cond) cond ? corto_enumAssign(corto_calloc(sizeof(corto_enum))) : NULL
+#define corto_enum__optional_Set() corto_enumAssign((corto_enum*)corto_calloc(sizeof(corto_enum)))
+#define corto_enum__optional_SetCond(cond) cond ? corto_enumAssign((corto_enum*)corto_calloc(sizeof(corto_enum))) : NULL
 #define corto_enumUnset(_this) _this ? corto_deinitp(_this, corto_enum_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_enumAssign(_this) _corto_enumAssign(corto_enum(_this))
-#define corto_enumSet(_this) _this = _this ? _this : corto_calloc(sizeof(corto_enum_o)); _corto_enumAssign(corto_enum(_this))
+#define corto_enumSet(_this) _this = _this ? _this : (corto_enum*)corto_calloc(sizeof(corto_enum)); _corto_enumAssign(corto_enum(_this))
 CORTO_EXPORT corto_string _corto_enumStr(corto_enum value);
 #define corto_enumStr(value) _corto_enumStr(corto_enum(value))
 CORTO_EXPORT corto_enum corto_enumFromStr(corto_enum value, corto_string str);
@@ -689,11 +689,11 @@ CORTO_EXPORT corto_int16 _corto_equalityKindDefine(corto_equalityKind* _this, co
 #define corto_equalityKindDefine(_this, value) _corto_equalityKindDefine(_this, value)
 CORTO_EXPORT corto_equalityKind* _corto_equalityKindAssign(corto_equalityKind* _this, corto_equalityKind value);
 #define corto_equalityKind__optional_NotSet NULL
-#define corto_equalityKind__optional_Set(value) corto_equalityKindAssign(corto_calloc(sizeof(corto_equalityKind)), value)
-#define corto_equalityKind__optional_SetCond(cond, value) cond ? corto_equalityKindAssign(corto_calloc(sizeof(corto_equalityKind)), value) : NULL
+#define corto_equalityKind__optional_Set(value) corto_equalityKindAssign((corto_equalityKind*)corto_calloc(sizeof(corto_equalityKind)), value)
+#define corto_equalityKind__optional_SetCond(cond, value) cond ? corto_equalityKindAssign((corto_equalityKind*)corto_calloc(sizeof(corto_equalityKind)), value) : NULL
 #define corto_equalityKindUnset(_this) _this ? corto_deinitp(_this, corto_equalityKind_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_equalityKindAssign(_this, value) _corto_equalityKindAssign(_this, value)
-#define corto_equalityKindSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_equalityKind_o)); _corto_equalityKindAssign(_this, value)
+#define corto_equalityKindSet(_this, value) _this = _this ? _this : (corto_equalityKind*)corto_calloc(sizeof(corto_equalityKind)); _corto_equalityKindAssign(_this, value)
 CORTO_EXPORT corto_string _corto_equalityKindStr(corto_equalityKind value);
 #define corto_equalityKindStr(value) _corto_equalityKindStr(value)
 CORTO_EXPORT corto_equalityKind* corto_equalityKindFromStr(corto_equalityKind* value, corto_string str);
@@ -724,11 +724,11 @@ CORTO_EXPORT corto_int16 _corto_floatDefine(corto_float _this, corto_width width
 #define corto_floatDefine(_this, width, min, max) _corto_floatDefine(corto_float(_this), width, min, max)
 CORTO_EXPORT corto_float _corto_floatAssign(corto_float _this, corto_width width, corto_float64 min, corto_float64 max);
 #define corto_float__optional_NotSet NULL
-#define corto_float__optional_Set(width, min, max) corto_floatAssign(corto_calloc(sizeof(corto_float)), width, min, max)
-#define corto_float__optional_SetCond(cond, width, min, max) cond ? corto_floatAssign(corto_calloc(sizeof(corto_float)), width, min, max) : NULL
+#define corto_float__optional_Set(width, min, max) corto_floatAssign((corto_float*)corto_calloc(sizeof(corto_float)), width, min, max)
+#define corto_float__optional_SetCond(cond, width, min, max) cond ? corto_floatAssign((corto_float*)corto_calloc(sizeof(corto_float)), width, min, max) : NULL
 #define corto_floatUnset(_this) _this ? corto_deinitp(_this, corto_float_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_floatAssign(_this, width, min, max) _corto_floatAssign(corto_float(_this), width, min, max)
-#define corto_floatSet(_this, width, min, max) _this = _this ? _this : corto_calloc(sizeof(corto_float_o)); _corto_floatAssign(corto_float(_this), width, min, max)
+#define corto_floatSet(_this, width, min, max) _this = _this ? _this : (corto_float*)corto_calloc(sizeof(corto_float)); _corto_floatAssign(corto_float(_this), width, min, max)
 CORTO_EXPORT corto_string _corto_floatStr(corto_float value);
 #define corto_floatStr(value) _corto_floatStr(corto_float(value))
 CORTO_EXPORT corto_float corto_floatFromStr(corto_float value, corto_string str);
@@ -755,11 +755,11 @@ CORTO_EXPORT corto_int16 _corto_float32Define(corto_float32* _this, corto_float3
 #define corto_float32Define(_this, value) _corto_float32Define(_this, value)
 CORTO_EXPORT corto_float32* _corto_float32Assign(corto_float32* _this, corto_float32 value);
 #define corto_float32__optional_NotSet NULL
-#define corto_float32__optional_Set(value) corto_float32Assign(corto_calloc(sizeof(corto_float32)), value)
-#define corto_float32__optional_SetCond(cond, value) cond ? corto_float32Assign(corto_calloc(sizeof(corto_float32)), value) : NULL
+#define corto_float32__optional_Set(value) corto_float32Assign((corto_float32*)corto_calloc(sizeof(corto_float32)), value)
+#define corto_float32__optional_SetCond(cond, value) cond ? corto_float32Assign((corto_float32*)corto_calloc(sizeof(corto_float32)), value) : NULL
 #define corto_float32Unset(_this) _this ? corto_deinitp(_this, corto_float32_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_float32Assign(_this, value) _corto_float32Assign(_this, value)
-#define corto_float32Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_float32_o)); _corto_float32Assign(_this, value)
+#define corto_float32Set(_this, value) _this = _this ? _this : (corto_float32*)corto_calloc(sizeof(corto_float32)); _corto_float32Assign(_this, value)
 CORTO_EXPORT corto_string _corto_float32Str(corto_float32 value);
 #define corto_float32Str(value) _corto_float32Str(value)
 CORTO_EXPORT corto_float32* corto_float32FromStr(corto_float32* value, corto_string str);
@@ -790,11 +790,11 @@ CORTO_EXPORT corto_int16 _corto_float64Define(corto_float64* _this, corto_float6
 #define corto_float64Define(_this, value) _corto_float64Define(_this, value)
 CORTO_EXPORT corto_float64* _corto_float64Assign(corto_float64* _this, corto_float64 value);
 #define corto_float64__optional_NotSet NULL
-#define corto_float64__optional_Set(value) corto_float64Assign(corto_calloc(sizeof(corto_float64)), value)
-#define corto_float64__optional_SetCond(cond, value) cond ? corto_float64Assign(corto_calloc(sizeof(corto_float64)), value) : NULL
+#define corto_float64__optional_Set(value) corto_float64Assign((corto_float64*)corto_calloc(sizeof(corto_float64)), value)
+#define corto_float64__optional_SetCond(cond, value) cond ? corto_float64Assign((corto_float64*)corto_calloc(sizeof(corto_float64)), value) : NULL
 #define corto_float64Unset(_this) _this ? corto_deinitp(_this, corto_float64_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_float64Assign(_this, value) _corto_float64Assign(_this, value)
-#define corto_float64Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_float64_o)); _corto_float64Assign(_this, value)
+#define corto_float64Set(_this, value) _this = _this ? _this : (corto_float64*)corto_calloc(sizeof(corto_float64)); _corto_float64Assign(_this, value)
 CORTO_EXPORT corto_string _corto_float64Str(corto_float64 value);
 #define corto_float64Str(value) _corto_float64Str(value)
 CORTO_EXPORT corto_float64* corto_float64FromStr(corto_float64* value, corto_string str);
@@ -825,11 +825,11 @@ CORTO_EXPORT corto_int16 _corto_functionDefine(corto_function _this, corto_type 
 #define corto_functionDefine(_this, returnType, returnsReference, _impl) _corto_functionDefine(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
 CORTO_EXPORT corto_function _corto_functionAssign(corto_function _this, corto_type returnType, corto_bool returnsReference, void(*_impl)(void));
 #define corto_function__optional_NotSet NULL
-#define corto_function__optional_Set(returnType, returnsReference, _impl) corto_functionAssign(corto_calloc(sizeof(corto_function)), returnType, returnsReference, _impl)
-#define corto_function__optional_SetCond(cond, returnType, returnsReference, _impl) cond ? corto_functionAssign(corto_calloc(sizeof(corto_function)), returnType, returnsReference, _impl) : NULL
+#define corto_function__optional_Set(returnType, returnsReference, _impl) corto_functionAssign((corto_function*)corto_calloc(sizeof(corto_function)), returnType, returnsReference, _impl)
+#define corto_function__optional_SetCond(cond, returnType, returnsReference, _impl) cond ? corto_functionAssign((corto_function*)corto_calloc(sizeof(corto_function)), returnType, returnsReference, _impl) : NULL
 #define corto_functionUnset(_this) _this ? corto_deinitp(_this, corto_function_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_functionAssign(_this, returnType, returnsReference, _impl) _corto_functionAssign(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_functionSet(_this, returnType, returnsReference, _impl) _this = _this ? _this : corto_calloc(sizeof(corto_function_o)); _corto_functionAssign(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
+#define corto_functionSet(_this, returnType, returnsReference, _impl) _this = _this ? _this : (corto_function*)corto_calloc(sizeof(corto_function)); _corto_functionAssign(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_functionStr(corto_function value);
 #define corto_functionStr(value) _corto_functionStr(corto_function(value))
 CORTO_EXPORT corto_function corto_functionFromStr(corto_function value, corto_string str);
@@ -856,11 +856,11 @@ CORTO_EXPORT corto_int16 _corto_initActionDefine(corto_initAction* _this, corto_
 #define corto_initActionDefine(_this, instance, procedure) _corto_initActionDefine(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_initAction* _corto_initActionAssign(corto_initAction* _this, corto_object instance, corto_function procedure);
 #define corto_initAction__optional_NotSet NULL
-#define corto_initAction__optional_Set(instance, procedure) corto_initActionAssign(corto_calloc(sizeof(corto_initAction)), instance, procedure)
-#define corto_initAction__optional_SetCond(cond, instance, procedure) cond ? corto_initActionAssign(corto_calloc(sizeof(corto_initAction)), instance, procedure) : NULL
+#define corto_initAction__optional_Set(instance, procedure) corto_initActionAssign((corto_initAction*)corto_calloc(sizeof(corto_initAction)), instance, procedure)
+#define corto_initAction__optional_SetCond(cond, instance, procedure) cond ? corto_initActionAssign((corto_initAction*)corto_calloc(sizeof(corto_initAction)), instance, procedure) : NULL
 #define corto_initActionUnset(_this) _this ? corto_deinitp(_this, corto_initAction_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_initActionAssign(_this, instance, procedure) _corto_initActionAssign(_this, instance, corto_function(procedure))
-#define corto_initActionSet(_this, instance, procedure) _this = _this ? _this : corto_calloc(sizeof(corto_initAction_o)); _corto_initActionAssign(_this, instance, corto_function(procedure))
+#define corto_initActionSet(_this, instance, procedure) _this = _this ? _this : (corto_initAction*)corto_calloc(sizeof(corto_initAction)); _corto_initActionAssign(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_string _corto_initActionStr(corto_initAction* value);
 #define corto_initActionStr(value) _corto_initActionStr(value)
 CORTO_EXPORT corto_initAction* corto_initActionFromStr(corto_initAction* value, corto_string str);
@@ -896,11 +896,11 @@ CORTO_EXPORT corto_int16 _corto_intDefine(corto_int _this, corto_width width, co
 #define corto_intDefine(_this, width, min, max) _corto_intDefine(corto_int(_this), width, min, max)
 CORTO_EXPORT corto_int _corto_intAssign(corto_int _this, corto_width width, corto_int64 min, corto_int64 max);
 #define corto_int__optional_NotSet NULL
-#define corto_int__optional_Set(width, min, max) corto_intAssign(corto_calloc(sizeof(corto_int)), width, min, max)
-#define corto_int__optional_SetCond(cond, width, min, max) cond ? corto_intAssign(corto_calloc(sizeof(corto_int)), width, min, max) : NULL
+#define corto_int__optional_Set(width, min, max) corto_intAssign((corto_int*)corto_calloc(sizeof(corto_int)), width, min, max)
+#define corto_int__optional_SetCond(cond, width, min, max) cond ? corto_intAssign((corto_int*)corto_calloc(sizeof(corto_int)), width, min, max) : NULL
 #define corto_intUnset(_this) _this ? corto_deinitp(_this, corto_int_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_intAssign(_this, width, min, max) _corto_intAssign(corto_int(_this), width, min, max)
-#define corto_intSet(_this, width, min, max) _this = _this ? _this : corto_calloc(sizeof(corto_int_o)); _corto_intAssign(corto_int(_this), width, min, max)
+#define corto_intSet(_this, width, min, max) _this = _this ? _this : (corto_int*)corto_calloc(sizeof(corto_int)); _corto_intAssign(corto_int(_this), width, min, max)
 CORTO_EXPORT corto_string _corto_intStr(corto_int value);
 #define corto_intStr(value) _corto_intStr(corto_int(value))
 CORTO_EXPORT corto_int corto_intFromStr(corto_int value, corto_string str);
@@ -927,11 +927,11 @@ CORTO_EXPORT corto_int16 _corto_int16Define(corto_int16* _this, corto_int16 valu
 #define corto_int16Define(_this, value) _corto_int16Define(_this, value)
 CORTO_EXPORT corto_int16* _corto_int16Assign(corto_int16* _this, corto_int16 value);
 #define corto_int16__optional_NotSet NULL
-#define corto_int16__optional_Set(value) corto_int16Assign(corto_calloc(sizeof(corto_int16)), value)
-#define corto_int16__optional_SetCond(cond, value) cond ? corto_int16Assign(corto_calloc(sizeof(corto_int16)), value) : NULL
+#define corto_int16__optional_Set(value) corto_int16Assign((corto_int16*)corto_calloc(sizeof(corto_int16)), value)
+#define corto_int16__optional_SetCond(cond, value) cond ? corto_int16Assign((corto_int16*)corto_calloc(sizeof(corto_int16)), value) : NULL
 #define corto_int16Unset(_this) _this ? corto_deinitp(_this, corto_int16_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_int16Assign(_this, value) _corto_int16Assign(_this, value)
-#define corto_int16Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_int16_o)); _corto_int16Assign(_this, value)
+#define corto_int16Set(_this, value) _this = _this ? _this : (corto_int16*)corto_calloc(sizeof(corto_int16)); _corto_int16Assign(_this, value)
 CORTO_EXPORT corto_string _corto_int16Str(corto_int16 value);
 #define corto_int16Str(value) _corto_int16Str(value)
 CORTO_EXPORT corto_int16* corto_int16FromStr(corto_int16* value, corto_string str);
@@ -962,11 +962,11 @@ CORTO_EXPORT corto_int16 _corto_int32Define(corto_int32* _this, corto_int32 valu
 #define corto_int32Define(_this, value) _corto_int32Define(_this, value)
 CORTO_EXPORT corto_int32* _corto_int32Assign(corto_int32* _this, corto_int32 value);
 #define corto_int32__optional_NotSet NULL
-#define corto_int32__optional_Set(value) corto_int32Assign(corto_calloc(sizeof(corto_int32)), value)
-#define corto_int32__optional_SetCond(cond, value) cond ? corto_int32Assign(corto_calloc(sizeof(corto_int32)), value) : NULL
+#define corto_int32__optional_Set(value) corto_int32Assign((corto_int32*)corto_calloc(sizeof(corto_int32)), value)
+#define corto_int32__optional_SetCond(cond, value) cond ? corto_int32Assign((corto_int32*)corto_calloc(sizeof(corto_int32)), value) : NULL
 #define corto_int32Unset(_this) _this ? corto_deinitp(_this, corto_int32_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_int32Assign(_this, value) _corto_int32Assign(_this, value)
-#define corto_int32Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_int32_o)); _corto_int32Assign(_this, value)
+#define corto_int32Set(_this, value) _this = _this ? _this : (corto_int32*)corto_calloc(sizeof(corto_int32)); _corto_int32Assign(_this, value)
 CORTO_EXPORT corto_string _corto_int32Str(corto_int32 value);
 #define corto_int32Str(value) _corto_int32Str(value)
 CORTO_EXPORT corto_int32* corto_int32FromStr(corto_int32* value, corto_string str);
@@ -997,11 +997,11 @@ CORTO_EXPORT corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint
 #define corto_int32seqDefine(_this, length, elements) _corto_int32seqDefine(_this, length, elements)
 CORTO_EXPORT corto_int32seq* _corto_int32seqAssign(corto_int32seq* _this, corto_uint32 length, corto_int32* elements);
 #define corto_int32seq__optional_NotSet NULL
-#define corto_int32seq__optional_Set(length, elements) corto_int32seqAssign(corto_calloc(sizeof(corto_int32seq)), length, elements)
-#define corto_int32seq__optional_SetCond(cond, length, elements) cond ? corto_int32seqAssign(corto_calloc(sizeof(corto_int32seq)), length, elements) : NULL
+#define corto_int32seq__optional_Set(length, elements) corto_int32seqAssign((corto_int32seq*)corto_calloc(sizeof(corto_int32seq)), length, elements)
+#define corto_int32seq__optional_SetCond(cond, length, elements) cond ? corto_int32seqAssign((corto_int32seq*)corto_calloc(sizeof(corto_int32seq)), length, elements) : NULL
 #define corto_int32seqUnset(_this) _this ? corto_deinitp(_this, corto_int32seq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_int32seqAssign(_this, length, elements) _corto_int32seqAssign(_this, length, elements)
-#define corto_int32seqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_int32seq_o)); _corto_int32seqAssign(_this, length, elements)
+#define corto_int32seqSet(_this, length, elements) _this = _this ? _this : (corto_int32seq*)corto_calloc(sizeof(corto_int32seq)); _corto_int32seqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_int32seqStr(corto_int32seq value);
 #define corto_int32seqStr(value) _corto_int32seqStr(value)
 CORTO_EXPORT corto_int32seq* corto_int32seqFromStr(corto_int32seq* value, corto_string str);
@@ -1032,11 +1032,11 @@ CORTO_EXPORT corto_int16 _corto_int64Define(corto_int64* _this, corto_int64 valu
 #define corto_int64Define(_this, value) _corto_int64Define(_this, value)
 CORTO_EXPORT corto_int64* _corto_int64Assign(corto_int64* _this, corto_int64 value);
 #define corto_int64__optional_NotSet NULL
-#define corto_int64__optional_Set(value) corto_int64Assign(corto_calloc(sizeof(corto_int64)), value)
-#define corto_int64__optional_SetCond(cond, value) cond ? corto_int64Assign(corto_calloc(sizeof(corto_int64)), value) : NULL
+#define corto_int64__optional_Set(value) corto_int64Assign((corto_int64*)corto_calloc(sizeof(corto_int64)), value)
+#define corto_int64__optional_SetCond(cond, value) cond ? corto_int64Assign((corto_int64*)corto_calloc(sizeof(corto_int64)), value) : NULL
 #define corto_int64Unset(_this) _this ? corto_deinitp(_this, corto_int64_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_int64Assign(_this, value) _corto_int64Assign(_this, value)
-#define corto_int64Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_int64_o)); _corto_int64Assign(_this, value)
+#define corto_int64Set(_this, value) _this = _this ? _this : (corto_int64*)corto_calloc(sizeof(corto_int64)); _corto_int64Assign(_this, value)
 CORTO_EXPORT corto_string _corto_int64Str(corto_int64 value);
 #define corto_int64Str(value) _corto_int64Str(value)
 CORTO_EXPORT corto_int64* corto_int64FromStr(corto_int64* value, corto_string str);
@@ -1067,11 +1067,11 @@ CORTO_EXPORT corto_int16 _corto_int8Define(corto_int8* _this, corto_int8 value);
 #define corto_int8Define(_this, value) _corto_int8Define(_this, value)
 CORTO_EXPORT corto_int8* _corto_int8Assign(corto_int8* _this, corto_int8 value);
 #define corto_int8__optional_NotSet NULL
-#define corto_int8__optional_Set(value) corto_int8Assign(corto_calloc(sizeof(corto_int8)), value)
-#define corto_int8__optional_SetCond(cond, value) cond ? corto_int8Assign(corto_calloc(sizeof(corto_int8)), value) : NULL
+#define corto_int8__optional_Set(value) corto_int8Assign((corto_int8*)corto_calloc(sizeof(corto_int8)), value)
+#define corto_int8__optional_SetCond(cond, value) cond ? corto_int8Assign((corto_int8*)corto_calloc(sizeof(corto_int8)), value) : NULL
 #define corto_int8Unset(_this) _this ? corto_deinitp(_this, corto_int8_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_int8Assign(_this, value) _corto_int8Assign(_this, value)
-#define corto_int8Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_int8_o)); _corto_int8Assign(_this, value)
+#define corto_int8Set(_this, value) _this = _this ? _this : (corto_int8*)corto_calloc(sizeof(corto_int8)); _corto_int8Assign(_this, value)
 CORTO_EXPORT corto_string _corto_int8Str(corto_int8 value);
 #define corto_int8Str(value) _corto_int8Str(value)
 CORTO_EXPORT corto_int8* corto_int8FromStr(corto_int8* value, corto_string str);
@@ -1102,11 +1102,11 @@ CORTO_EXPORT corto_int16 _corto_interfaceDefine(corto_interface _this, corto_int
 #define corto_interfaceDefine(_this, base) _corto_interfaceDefine(corto_interface(_this), corto_interface(base))
 CORTO_EXPORT corto_interface _corto_interfaceAssign(corto_interface _this, corto_interface base);
 #define corto_interface__optional_NotSet NULL
-#define corto_interface__optional_Set(base) corto_interfaceAssign(corto_calloc(sizeof(corto_interface)), base)
-#define corto_interface__optional_SetCond(cond, base) cond ? corto_interfaceAssign(corto_calloc(sizeof(corto_interface)), base) : NULL
+#define corto_interface__optional_Set(base) corto_interfaceAssign((corto_interface*)corto_calloc(sizeof(corto_interface)), base)
+#define corto_interface__optional_SetCond(cond, base) cond ? corto_interfaceAssign((corto_interface*)corto_calloc(sizeof(corto_interface)), base) : NULL
 #define corto_interfaceUnset(_this) _this ? corto_deinitp(_this, corto_interface_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_interfaceAssign(_this, base) _corto_interfaceAssign(corto_interface(_this), corto_interface(base))
-#define corto_interfaceSet(_this, base) _this = _this ? _this : corto_calloc(sizeof(corto_interface_o)); _corto_interfaceAssign(corto_interface(_this), corto_interface(base))
+#define corto_interfaceSet(_this, base) _this = _this ? _this : (corto_interface*)corto_calloc(sizeof(corto_interface)); _corto_interfaceAssign(corto_interface(_this), corto_interface(base))
 CORTO_EXPORT corto_string _corto_interfaceStr(corto_interface value);
 #define corto_interfaceStr(value) _corto_interfaceStr(corto_interface(value))
 CORTO_EXPORT corto_interface corto_interfaceFromStr(corto_interface value, corto_string str);
@@ -1133,11 +1133,11 @@ CORTO_EXPORT corto_int16 _corto_interfaceseqDefine(corto_interfaceseq* _this, co
 #define corto_interfaceseqDefine(_this, length, elements) _corto_interfaceseqDefine(_this, length, elements)
 CORTO_EXPORT corto_interfaceseq* _corto_interfaceseqAssign(corto_interfaceseq* _this, corto_uint32 length, corto_interface* elements);
 #define corto_interfaceseq__optional_NotSet NULL
-#define corto_interfaceseq__optional_Set(length, elements) corto_interfaceseqAssign(corto_calloc(sizeof(corto_interfaceseq)), length, elements)
-#define corto_interfaceseq__optional_SetCond(cond, length, elements) cond ? corto_interfaceseqAssign(corto_calloc(sizeof(corto_interfaceseq)), length, elements) : NULL
+#define corto_interfaceseq__optional_Set(length, elements) corto_interfaceseqAssign((corto_interfaceseq*)corto_calloc(sizeof(corto_interfaceseq)), length, elements)
+#define corto_interfaceseq__optional_SetCond(cond, length, elements) cond ? corto_interfaceseqAssign((corto_interfaceseq*)corto_calloc(sizeof(corto_interfaceseq)), length, elements) : NULL
 #define corto_interfaceseqUnset(_this) _this ? corto_deinitp(_this, corto_interfaceseq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_interfaceseqAssign(_this, length, elements) _corto_interfaceseqAssign(_this, length, elements)
-#define corto_interfaceseqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_interfaceseq_o)); _corto_interfaceseqAssign(_this, length, elements)
+#define corto_interfaceseqSet(_this, length, elements) _this = _this ? _this : (corto_interfaceseq*)corto_calloc(sizeof(corto_interfaceseq)); _corto_interfaceseqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_interfaceseqStr(corto_interfaceseq value);
 #define corto_interfaceseqStr(value) _corto_interfaceseqStr(value)
 CORTO_EXPORT corto_interfaceseq* corto_interfaceseqFromStr(corto_interfaceseq* value, corto_string str);
@@ -1168,11 +1168,11 @@ CORTO_EXPORT corto_int16 _corto_interfaceVectorDefine(corto_interfaceVector* _th
 #define corto_interfaceVectorDefine(_this, interface, vector) _corto_interfaceVectorDefine(_this, corto_interface(interface), vector)
 CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorAssign(corto_interfaceVector* _this, corto_interface interface, corto_vtable vector);
 #define corto_interfaceVector__optional_NotSet NULL
-#define corto_interfaceVector__optional_Set(interface, vector) corto_interfaceVectorAssign(corto_calloc(sizeof(corto_interfaceVector)), interface, vector)
-#define corto_interfaceVector__optional_SetCond(cond, interface, vector) cond ? corto_interfaceVectorAssign(corto_calloc(sizeof(corto_interfaceVector)), interface, vector) : NULL
+#define corto_interfaceVector__optional_Set(interface, vector) corto_interfaceVectorAssign((corto_interfaceVector*)corto_calloc(sizeof(corto_interfaceVector)), interface, vector)
+#define corto_interfaceVector__optional_SetCond(cond, interface, vector) cond ? corto_interfaceVectorAssign((corto_interfaceVector*)corto_calloc(sizeof(corto_interfaceVector)), interface, vector) : NULL
 #define corto_interfaceVectorUnset(_this) _this ? corto_deinitp(_this, corto_interfaceVector_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_interfaceVectorAssign(_this, interface, vector) _corto_interfaceVectorAssign(_this, corto_interface(interface), vector)
-#define corto_interfaceVectorSet(_this, interface, vector) _this = _this ? _this : corto_calloc(sizeof(corto_interfaceVector_o)); _corto_interfaceVectorAssign(_this, corto_interface(interface), vector)
+#define corto_interfaceVectorSet(_this, interface, vector) _this = _this ? _this : (corto_interfaceVector*)corto_calloc(sizeof(corto_interfaceVector)); _corto_interfaceVectorAssign(_this, corto_interface(interface), vector)
 CORTO_EXPORT corto_string _corto_interfaceVectorStr(corto_interfaceVector* value);
 #define corto_interfaceVectorStr(value) _corto_interfaceVectorStr(value)
 CORTO_EXPORT corto_interfaceVector* corto_interfaceVectorFromStr(corto_interfaceVector* value, corto_string str);
@@ -1203,11 +1203,11 @@ CORTO_EXPORT corto_int16 _corto_interfaceVectorseqDefine(corto_interfaceVectorse
 #define corto_interfaceVectorseqDefine(_this, length, elements) _corto_interfaceVectorseqDefine(_this, length, elements)
 CORTO_EXPORT corto_interfaceVectorseq* _corto_interfaceVectorseqAssign(corto_interfaceVectorseq* _this, corto_uint32 length, corto_interfaceVector* elements);
 #define corto_interfaceVectorseq__optional_NotSet NULL
-#define corto_interfaceVectorseq__optional_Set(length, elements) corto_interfaceVectorseqAssign(corto_calloc(sizeof(corto_interfaceVectorseq)), length, elements)
-#define corto_interfaceVectorseq__optional_SetCond(cond, length, elements) cond ? corto_interfaceVectorseqAssign(corto_calloc(sizeof(corto_interfaceVectorseq)), length, elements) : NULL
+#define corto_interfaceVectorseq__optional_Set(length, elements) corto_interfaceVectorseqAssign((corto_interfaceVectorseq*)corto_calloc(sizeof(corto_interfaceVectorseq)), length, elements)
+#define corto_interfaceVectorseq__optional_SetCond(cond, length, elements) cond ? corto_interfaceVectorseqAssign((corto_interfaceVectorseq*)corto_calloc(sizeof(corto_interfaceVectorseq)), length, elements) : NULL
 #define corto_interfaceVectorseqUnset(_this) _this ? corto_deinitp(_this, corto_interfaceVectorseq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_interfaceVectorseqAssign(_this, length, elements) _corto_interfaceVectorseqAssign(_this, length, elements)
-#define corto_interfaceVectorseqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_interfaceVectorseq_o)); _corto_interfaceVectorseqAssign(_this, length, elements)
+#define corto_interfaceVectorseqSet(_this, length, elements) _this = _this ? _this : (corto_interfaceVectorseq*)corto_calloc(sizeof(corto_interfaceVectorseq)); _corto_interfaceVectorseqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_interfaceVectorseqStr(corto_interfaceVectorseq value);
 #define corto_interfaceVectorseqStr(value) _corto_interfaceVectorseqStr(value)
 CORTO_EXPORT corto_interfaceVectorseq* corto_interfaceVectorseqFromStr(corto_interfaceVectorseq* value, corto_string str);
@@ -1238,11 +1238,11 @@ CORTO_EXPORT corto_int16 _corto_iteratorDefine(corto_iterator _this, corto_type 
 #define corto_iteratorDefine(_this, elementType) _corto_iteratorDefine(corto_iterator(_this), corto_type(elementType))
 CORTO_EXPORT corto_iterator _corto_iteratorAssign(corto_iterator _this, corto_type elementType);
 #define corto_iterator__optional_NotSet NULL
-#define corto_iterator__optional_Set(elementType) corto_iteratorAssign(corto_calloc(sizeof(corto_iterator)), elementType)
-#define corto_iterator__optional_SetCond(cond, elementType) cond ? corto_iteratorAssign(corto_calloc(sizeof(corto_iterator)), elementType) : NULL
+#define corto_iterator__optional_Set(elementType) corto_iteratorAssign((corto_iterator*)corto_calloc(sizeof(corto_iterator)), elementType)
+#define corto_iterator__optional_SetCond(cond, elementType) cond ? corto_iteratorAssign((corto_iterator*)corto_calloc(sizeof(corto_iterator)), elementType) : NULL
 #define corto_iteratorUnset(_this) _this ? corto_deinitp(_this, corto_iterator_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_iteratorAssign(_this, elementType) _corto_iteratorAssign(corto_iterator(_this), corto_type(elementType))
-#define corto_iteratorSet(_this, elementType) _this = _this ? _this : corto_calloc(sizeof(corto_iterator_o)); _corto_iteratorAssign(corto_iterator(_this), corto_type(elementType))
+#define corto_iteratorSet(_this, elementType) _this = _this ? _this : (corto_iterator*)corto_calloc(sizeof(corto_iterator)); _corto_iteratorAssign(corto_iterator(_this), corto_type(elementType))
 CORTO_EXPORT corto_string _corto_iteratorStr(corto_iterator value);
 #define corto_iteratorStr(value) _corto_iteratorStr(corto_iterator(value))
 CORTO_EXPORT corto_iterator corto_iteratorFromStr(corto_iterator value, corto_string str);
@@ -1269,11 +1269,11 @@ CORTO_EXPORT corto_int16 _corto_listDefine(corto_list _this, corto_type elementT
 #define corto_listDefine(_this, elementType, max) _corto_listDefine(corto_list(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_list _corto_listAssign(corto_list _this, corto_type elementType, corto_uint32 max);
 #define corto_list__optional_NotSet NULL
-#define corto_list__optional_Set(elementType, max) corto_listAssign(corto_calloc(sizeof(corto_list)), elementType, max)
-#define corto_list__optional_SetCond(cond, elementType, max) cond ? corto_listAssign(corto_calloc(sizeof(corto_list)), elementType, max) : NULL
+#define corto_list__optional_Set(elementType, max) corto_listAssign((corto_list*)corto_calloc(sizeof(corto_list)), elementType, max)
+#define corto_list__optional_SetCond(cond, elementType, max) cond ? corto_listAssign((corto_list*)corto_calloc(sizeof(corto_list)), elementType, max) : NULL
 #define corto_listUnset(_this) _this ? corto_deinitp(_this, corto_list_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_listAssign(_this, elementType, max) _corto_listAssign(corto_list(_this), corto_type(elementType), max)
-#define corto_listSet(_this, elementType, max) _this = _this ? _this : corto_calloc(sizeof(corto_list_o)); _corto_listAssign(corto_list(_this), corto_type(elementType), max)
+#define corto_listSet(_this, elementType, max) _this = _this ? _this : (corto_list*)corto_calloc(sizeof(corto_list)); _corto_listAssign(corto_list(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_string _corto_listStr(corto_list value);
 #define corto_listStr(value) _corto_listStr(corto_list(value))
 CORTO_EXPORT corto_list corto_listFromStr(corto_list value, corto_string str);
@@ -1300,11 +1300,11 @@ CORTO_EXPORT corto_int16 _corto_mapDefine(corto_map _this, corto_type elementTyp
 #define corto_mapDefine(_this, elementType, keyType, max) _corto_mapDefine(corto_map(_this), corto_type(elementType), corto_type(keyType), max)
 CORTO_EXPORT corto_map _corto_mapAssign(corto_map _this, corto_type elementType, corto_type keyType, corto_uint32 max);
 #define corto_map__optional_NotSet NULL
-#define corto_map__optional_Set(elementType, keyType, max) corto_mapAssign(corto_calloc(sizeof(corto_map)), elementType, keyType, max)
-#define corto_map__optional_SetCond(cond, elementType, keyType, max) cond ? corto_mapAssign(corto_calloc(sizeof(corto_map)), elementType, keyType, max) : NULL
+#define corto_map__optional_Set(elementType, keyType, max) corto_mapAssign((corto_map*)corto_calloc(sizeof(corto_map)), elementType, keyType, max)
+#define corto_map__optional_SetCond(cond, elementType, keyType, max) cond ? corto_mapAssign((corto_map*)corto_calloc(sizeof(corto_map)), elementType, keyType, max) : NULL
 #define corto_mapUnset(_this) _this ? corto_deinitp(_this, corto_map_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_mapAssign(_this, elementType, keyType, max) _corto_mapAssign(corto_map(_this), corto_type(elementType), corto_type(keyType), max)
-#define corto_mapSet(_this, elementType, keyType, max) _this = _this ? _this : corto_calloc(sizeof(corto_map_o)); _corto_mapAssign(corto_map(_this), corto_type(elementType), corto_type(keyType), max)
+#define corto_mapSet(_this, elementType, keyType, max) _this = _this ? _this : (corto_map*)corto_calloc(sizeof(corto_map)); _corto_mapAssign(corto_map(_this), corto_type(elementType), corto_type(keyType), max)
 CORTO_EXPORT corto_string _corto_mapStr(corto_map value);
 #define corto_mapStr(value) _corto_mapStr(corto_map(value))
 CORTO_EXPORT corto_map corto_mapFromStr(corto_map value, corto_string str);
@@ -1331,11 +1331,11 @@ CORTO_EXPORT corto_int16 _corto_memberDefine(corto_member _this, corto_type type
 #define corto_memberDefine(_this, type, modifiers) _corto_memberDefine(corto_member(_this), corto_type(type), modifiers)
 CORTO_EXPORT corto_member _corto_memberAssign(corto_member _this, corto_type type, corto_modifier modifiers);
 #define corto_member__optional_NotSet NULL
-#define corto_member__optional_Set(type, modifiers) corto_memberAssign(corto_calloc(sizeof(corto_member)), type, modifiers)
-#define corto_member__optional_SetCond(cond, type, modifiers) cond ? corto_memberAssign(corto_calloc(sizeof(corto_member)), type, modifiers) : NULL
+#define corto_member__optional_Set(type, modifiers) corto_memberAssign((corto_member*)corto_calloc(sizeof(corto_member)), type, modifiers)
+#define corto_member__optional_SetCond(cond, type, modifiers) cond ? corto_memberAssign((corto_member*)corto_calloc(sizeof(corto_member)), type, modifiers) : NULL
 #define corto_memberUnset(_this) _this ? corto_deinitp(_this, corto_member_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_memberAssign(_this, type, modifiers) _corto_memberAssign(corto_member(_this), corto_type(type), modifiers)
-#define corto_memberSet(_this, type, modifiers) _this = _this ? _this : corto_calloc(sizeof(corto_member_o)); _corto_memberAssign(corto_member(_this), corto_type(type), modifiers)
+#define corto_memberSet(_this, type, modifiers) _this = _this ? _this : (corto_member*)corto_calloc(sizeof(corto_member)); _corto_memberAssign(corto_member(_this), corto_type(type), modifiers)
 CORTO_EXPORT corto_string _corto_memberStr(corto_member value);
 #define corto_memberStr(value) _corto_memberStr(corto_member(value))
 CORTO_EXPORT corto_member corto_memberFromStr(corto_member value, corto_string str);
@@ -1362,11 +1362,11 @@ CORTO_EXPORT corto_int16 _corto_memberseqDefine(corto_memberseq* _this, corto_ui
 #define corto_memberseqDefine(_this, length, elements) _corto_memberseqDefine(_this, length, elements)
 CORTO_EXPORT corto_memberseq* _corto_memberseqAssign(corto_memberseq* _this, corto_uint32 length, corto_member* elements);
 #define corto_memberseq__optional_NotSet NULL
-#define corto_memberseq__optional_Set(length, elements) corto_memberseqAssign(corto_calloc(sizeof(corto_memberseq)), length, elements)
-#define corto_memberseq__optional_SetCond(cond, length, elements) cond ? corto_memberseqAssign(corto_calloc(sizeof(corto_memberseq)), length, elements) : NULL
+#define corto_memberseq__optional_Set(length, elements) corto_memberseqAssign((corto_memberseq*)corto_calloc(sizeof(corto_memberseq)), length, elements)
+#define corto_memberseq__optional_SetCond(cond, length, elements) cond ? corto_memberseqAssign((corto_memberseq*)corto_calloc(sizeof(corto_memberseq)), length, elements) : NULL
 #define corto_memberseqUnset(_this) _this ? corto_deinitp(_this, corto_memberseq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_memberseqAssign(_this, length, elements) _corto_memberseqAssign(_this, length, elements)
-#define corto_memberseqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_memberseq_o)); _corto_memberseqAssign(_this, length, elements)
+#define corto_memberseqSet(_this, length, elements) _this = _this ? _this : (corto_memberseq*)corto_calloc(sizeof(corto_memberseq)); _corto_memberseqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_memberseqStr(corto_memberseq value);
 #define corto_memberseqStr(value) _corto_memberseqStr(value)
 CORTO_EXPORT corto_memberseq* corto_memberseqFromStr(corto_memberseq* value, corto_string str);
@@ -1397,11 +1397,11 @@ CORTO_EXPORT corto_int16 _corto_metaprocedureDefine(corto_metaprocedure _this, c
 #define corto_metaprocedureDefine(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureDefine(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
 CORTO_EXPORT corto_metaprocedure _corto_metaprocedureAssign(corto_metaprocedure _this, corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
 #define corto_metaprocedure__optional_NotSet NULL
-#define corto_metaprocedure__optional_Set(returnType, returnsReference, referenceOnly, _impl) corto_metaprocedureAssign(corto_calloc(sizeof(corto_metaprocedure)), returnType, returnsReference, referenceOnly, _impl)
-#define corto_metaprocedure__optional_SetCond(cond, returnType, returnsReference, referenceOnly, _impl) cond ? corto_metaprocedureAssign(corto_calloc(sizeof(corto_metaprocedure)), returnType, returnsReference, referenceOnly, _impl) : NULL
+#define corto_metaprocedure__optional_Set(returnType, returnsReference, referenceOnly, _impl) corto_metaprocedureAssign((corto_metaprocedure*)corto_calloc(sizeof(corto_metaprocedure)), returnType, returnsReference, referenceOnly, _impl)
+#define corto_metaprocedure__optional_SetCond(cond, returnType, returnsReference, referenceOnly, _impl) cond ? corto_metaprocedureAssign((corto_metaprocedure*)corto_calloc(sizeof(corto_metaprocedure)), returnType, returnsReference, referenceOnly, _impl) : NULL
 #define corto_metaprocedureUnset(_this) _this ? corto_deinitp(_this, corto_metaprocedure_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_metaprocedureAssign(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedureAssign(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
-#define corto_metaprocedureSet(_this, returnType, returnsReference, referenceOnly, _impl) _this = _this ? _this : corto_calloc(sizeof(corto_metaprocedure_o)); _corto_metaprocedureAssign(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
+#define corto_metaprocedureSet(_this, returnType, returnsReference, referenceOnly, _impl) _this = _this ? _this : (corto_metaprocedure*)corto_calloc(sizeof(corto_metaprocedure)); _corto_metaprocedureAssign(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_metaprocedureStr(corto_metaprocedure value);
 #define corto_metaprocedureStr(value) _corto_metaprocedureStr(corto_metaprocedure(value))
 CORTO_EXPORT corto_metaprocedure corto_metaprocedureFromStr(corto_metaprocedure value, corto_string str);
@@ -1428,11 +1428,11 @@ CORTO_EXPORT corto_int16 _corto_methodDefine(corto_method _this, corto_type retu
 #define corto_methodDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_methodDefine(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 CORTO_EXPORT corto_method _corto_methodAssign(corto_method _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
 #define corto_method__optional_NotSet NULL
-#define corto_method__optional_Set(returnType, returnsReference, _virtual, _impl) corto_methodAssign(corto_calloc(sizeof(corto_method)), returnType, returnsReference, _virtual, _impl)
-#define corto_method__optional_SetCond(cond, returnType, returnsReference, _virtual, _impl) cond ? corto_methodAssign(corto_calloc(sizeof(corto_method)), returnType, returnsReference, _virtual, _impl) : NULL
+#define corto_method__optional_Set(returnType, returnsReference, _virtual, _impl) corto_methodAssign((corto_method*)corto_calloc(sizeof(corto_method)), returnType, returnsReference, _virtual, _impl)
+#define corto_method__optional_SetCond(cond, returnType, returnsReference, _virtual, _impl) cond ? corto_methodAssign((corto_method*)corto_calloc(sizeof(corto_method)), returnType, returnsReference, _virtual, _impl) : NULL
 #define corto_methodUnset(_this) _this ? corto_deinitp(_this, corto_method_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_methodAssign(_this, returnType, returnsReference, _virtual, _impl) _corto_methodAssign(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
-#define corto_methodSet(_this, returnType, returnsReference, _virtual, _impl) _this = _this ? _this : corto_calloc(sizeof(corto_method_o)); _corto_methodAssign(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+#define corto_methodSet(_this, returnType, returnsReference, _virtual, _impl) _this = _this ? _this : (corto_method*)corto_calloc(sizeof(corto_method)); _corto_methodAssign(corto_method(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_methodStr(corto_method value);
 #define corto_methodStr(value) _corto_methodStr(corto_method(value))
 CORTO_EXPORT corto_method corto_methodFromStr(corto_method value, corto_string str);
@@ -1459,11 +1459,11 @@ CORTO_EXPORT corto_int16 _corto_modifierDefine(corto_modifier* _this, corto_modi
 #define corto_modifierDefine(_this, value) _corto_modifierDefine(_this, value)
 CORTO_EXPORT corto_modifier* _corto_modifierAssign(corto_modifier* _this, corto_modifier value);
 #define corto_modifier__optional_NotSet NULL
-#define corto_modifier__optional_Set(value) corto_modifierAssign(corto_calloc(sizeof(corto_modifier)), value)
-#define corto_modifier__optional_SetCond(cond, value) cond ? corto_modifierAssign(corto_calloc(sizeof(corto_modifier)), value) : NULL
+#define corto_modifier__optional_Set(value) corto_modifierAssign((corto_modifier*)corto_calloc(sizeof(corto_modifier)), value)
+#define corto_modifier__optional_SetCond(cond, value) cond ? corto_modifierAssign((corto_modifier*)corto_calloc(sizeof(corto_modifier)), value) : NULL
 #define corto_modifierUnset(_this) _this ? corto_deinitp(_this, corto_modifier_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_modifierAssign(_this, value) _corto_modifierAssign(_this, value)
-#define corto_modifierSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_modifier_o)); _corto_modifierAssign(_this, value)
+#define corto_modifierSet(_this, value) _this = _this ? _this : (corto_modifier*)corto_calloc(sizeof(corto_modifier)); _corto_modifierAssign(_this, value)
 CORTO_EXPORT corto_string _corto_modifierStr(corto_modifier value);
 #define corto_modifierStr(value) _corto_modifierStr(value)
 CORTO_EXPORT corto_modifier* corto_modifierFromStr(corto_modifier* value, corto_string str);
@@ -1494,11 +1494,11 @@ CORTO_EXPORT corto_int16 _corto_nameActionDefine(corto_nameAction* _this, corto_
 #define corto_nameActionDefine(_this, instance, procedure) _corto_nameActionDefine(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_nameAction* _corto_nameActionAssign(corto_nameAction* _this, corto_object instance, corto_function procedure);
 #define corto_nameAction__optional_NotSet NULL
-#define corto_nameAction__optional_Set(instance, procedure) corto_nameActionAssign(corto_calloc(sizeof(corto_nameAction)), instance, procedure)
-#define corto_nameAction__optional_SetCond(cond, instance, procedure) cond ? corto_nameActionAssign(corto_calloc(sizeof(corto_nameAction)), instance, procedure) : NULL
+#define corto_nameAction__optional_Set(instance, procedure) corto_nameActionAssign((corto_nameAction*)corto_calloc(sizeof(corto_nameAction)), instance, procedure)
+#define corto_nameAction__optional_SetCond(cond, instance, procedure) cond ? corto_nameActionAssign((corto_nameAction*)corto_calloc(sizeof(corto_nameAction)), instance, procedure) : NULL
 #define corto_nameActionUnset(_this) _this ? corto_deinitp(_this, corto_nameAction_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_nameActionAssign(_this, instance, procedure) _corto_nameActionAssign(_this, instance, corto_function(procedure))
-#define corto_nameActionSet(_this, instance, procedure) _this = _this ? _this : corto_calloc(sizeof(corto_nameAction_o)); _corto_nameActionAssign(_this, instance, corto_function(procedure))
+#define corto_nameActionSet(_this, instance, procedure) _this = _this ? _this : (corto_nameAction*)corto_calloc(sizeof(corto_nameAction)); _corto_nameActionAssign(_this, instance, corto_function(procedure))
 CORTO_EXPORT corto_string _corto_nameActionStr(corto_nameAction* value);
 #define corto_nameActionStr(value) _corto_nameActionStr(value)
 CORTO_EXPORT corto_nameAction* corto_nameActionFromStr(corto_nameAction* value, corto_string str);
@@ -1544,11 +1544,11 @@ CORTO_EXPORT corto_int16 _corto_objectlistDefine(corto_objectlist* _this, corto_
 #define corto_objectlistDefine(_this, length, elements) _corto_objectlistDefine(_this, length, elements)
 CORTO_EXPORT corto_objectlist* _corto_objectlistAssign(corto_objectlist* _this, corto_uint32 length, corto_object* elements);
 #define corto_objectlist__optional_NotSet NULL
-#define corto_objectlist__optional_Set(length, elements) corto_objectlistAssign(corto_calloc(sizeof(corto_objectlist)), length, elements)
-#define corto_objectlist__optional_SetCond(cond, length, elements) cond ? corto_objectlistAssign(corto_calloc(sizeof(corto_objectlist)), length, elements) : NULL
+#define corto_objectlist__optional_Set(length, elements) corto_objectlistAssign((corto_objectlist*)corto_calloc(sizeof(corto_objectlist)), length, elements)
+#define corto_objectlist__optional_SetCond(cond, length, elements) cond ? corto_objectlistAssign((corto_objectlist*)corto_calloc(sizeof(corto_objectlist)), length, elements) : NULL
 #define corto_objectlistUnset(_this) _this ? corto_deinitp(_this, corto_objectlist_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_objectlistAssign(_this, length, elements) _corto_objectlistAssign(_this, length, elements)
-#define corto_objectlistSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_objectlist_o)); _corto_objectlistAssign(_this, length, elements)
+#define corto_objectlistSet(_this, length, elements) _this = _this ? _this : (corto_objectlist*)corto_calloc(sizeof(corto_objectlist)); _corto_objectlistAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_objectlistStr(corto_objectlist value);
 #define corto_objectlistStr(value) _corto_objectlistStr(value)
 CORTO_EXPORT corto_objectlist* corto_objectlistFromStr(corto_objectlist* value, corto_string str);
@@ -1579,11 +1579,11 @@ CORTO_EXPORT corto_int16 _corto_objectseqDefine(corto_objectseq* _this, corto_ui
 #define corto_objectseqDefine(_this, length, elements) _corto_objectseqDefine(_this, length, elements)
 CORTO_EXPORT corto_objectseq* _corto_objectseqAssign(corto_objectseq* _this, corto_uint32 length, corto_object* elements);
 #define corto_objectseq__optional_NotSet NULL
-#define corto_objectseq__optional_Set(length, elements) corto_objectseqAssign(corto_calloc(sizeof(corto_objectseq)), length, elements)
-#define corto_objectseq__optional_SetCond(cond, length, elements) cond ? corto_objectseqAssign(corto_calloc(sizeof(corto_objectseq)), length, elements) : NULL
+#define corto_objectseq__optional_Set(length, elements) corto_objectseqAssign((corto_objectseq*)corto_calloc(sizeof(corto_objectseq)), length, elements)
+#define corto_objectseq__optional_SetCond(cond, length, elements) cond ? corto_objectseqAssign((corto_objectseq*)corto_calloc(sizeof(corto_objectseq)), length, elements) : NULL
 #define corto_objectseqUnset(_this) _this ? corto_deinitp(_this, corto_objectseq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_objectseqAssign(_this, length, elements) _corto_objectseqAssign(_this, length, elements)
-#define corto_objectseqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_objectseq_o)); _corto_objectseqAssign(_this, length, elements)
+#define corto_objectseqSet(_this, length, elements) _this = _this ? _this : (corto_objectseq*)corto_calloc(sizeof(corto_objectseq)); _corto_objectseqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_objectseqStr(corto_objectseq value);
 #define corto_objectseqStr(value) _corto_objectseqStr(value)
 CORTO_EXPORT corto_objectseq* corto_objectseqFromStr(corto_objectseq* value, corto_string str);
@@ -1614,11 +1614,11 @@ CORTO_EXPORT corto_int16 _corto_octetDefine(corto_octet* _this, corto_octet valu
 #define corto_octetDefine(_this, value) _corto_octetDefine(_this, value)
 CORTO_EXPORT corto_octet* _corto_octetAssign(corto_octet* _this, corto_octet value);
 #define corto_octet__optional_NotSet NULL
-#define corto_octet__optional_Set(value) corto_octetAssign(corto_calloc(sizeof(corto_octet)), value)
-#define corto_octet__optional_SetCond(cond, value) cond ? corto_octetAssign(corto_calloc(sizeof(corto_octet)), value) : NULL
+#define corto_octet__optional_Set(value) corto_octetAssign((corto_octet*)corto_calloc(sizeof(corto_octet)), value)
+#define corto_octet__optional_SetCond(cond, value) cond ? corto_octetAssign((corto_octet*)corto_calloc(sizeof(corto_octet)), value) : NULL
 #define corto_octetUnset(_this) _this ? corto_deinitp(_this, corto_octet_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_octetAssign(_this, value) _corto_octetAssign(_this, value)
-#define corto_octetSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_octet_o)); _corto_octetAssign(_this, value)
+#define corto_octetSet(_this, value) _this = _this ? _this : (corto_octet*)corto_calloc(sizeof(corto_octet)); _corto_octetAssign(_this, value)
 CORTO_EXPORT corto_string _corto_octetStr(corto_octet value);
 #define corto_octetStr(value) _corto_octetStr(value)
 CORTO_EXPORT corto_octet* corto_octetFromStr(corto_octet* value, corto_string str);
@@ -1649,11 +1649,11 @@ CORTO_EXPORT corto_int16 _corto_octetseqDefine(corto_octetseq* _this, corto_uint
 #define corto_octetseqDefine(_this, length, elements) _corto_octetseqDefine(_this, length, elements)
 CORTO_EXPORT corto_octetseq* _corto_octetseqAssign(corto_octetseq* _this, corto_uint32 length, corto_octet* elements);
 #define corto_octetseq__optional_NotSet NULL
-#define corto_octetseq__optional_Set(length, elements) corto_octetseqAssign(corto_calloc(sizeof(corto_octetseq)), length, elements)
-#define corto_octetseq__optional_SetCond(cond, length, elements) cond ? corto_octetseqAssign(corto_calloc(sizeof(corto_octetseq)), length, elements) : NULL
+#define corto_octetseq__optional_Set(length, elements) corto_octetseqAssign((corto_octetseq*)corto_calloc(sizeof(corto_octetseq)), length, elements)
+#define corto_octetseq__optional_SetCond(cond, length, elements) cond ? corto_octetseqAssign((corto_octetseq*)corto_calloc(sizeof(corto_octetseq)), length, elements) : NULL
 #define corto_octetseqUnset(_this) _this ? corto_deinitp(_this, corto_octetseq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_octetseqAssign(_this, length, elements) _corto_octetseqAssign(_this, length, elements)
-#define corto_octetseqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_octetseq_o)); _corto_octetseqAssign(_this, length, elements)
+#define corto_octetseqSet(_this, length, elements) _this = _this ? _this : (corto_octetseq*)corto_calloc(sizeof(corto_octetseq)); _corto_octetseqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_octetseqStr(corto_octetseq value);
 #define corto_octetseqStr(value) _corto_octetseqStr(value)
 CORTO_EXPORT corto_octetseq* corto_octetseqFromStr(corto_octetseq* value, corto_string str);
@@ -1684,11 +1684,11 @@ CORTO_EXPORT corto_int16 _corto_parameterDefine(corto_parameter* _this, corto_st
 #define corto_parameterDefine(_this, name, type, passByReference) _corto_parameterDefine(_this, name, corto_type(type), passByReference)
 CORTO_EXPORT corto_parameter* _corto_parameterAssign(corto_parameter* _this, corto_string name, corto_type type, corto_bool passByReference);
 #define corto_parameter__optional_NotSet NULL
-#define corto_parameter__optional_Set(name, type, passByReference) corto_parameterAssign(corto_calloc(sizeof(corto_parameter)), name, type, passByReference)
-#define corto_parameter__optional_SetCond(cond, name, type, passByReference) cond ? corto_parameterAssign(corto_calloc(sizeof(corto_parameter)), name, type, passByReference) : NULL
+#define corto_parameter__optional_Set(name, type, passByReference) corto_parameterAssign((corto_parameter*)corto_calloc(sizeof(corto_parameter)), name, type, passByReference)
+#define corto_parameter__optional_SetCond(cond, name, type, passByReference) cond ? corto_parameterAssign((corto_parameter*)corto_calloc(sizeof(corto_parameter)), name, type, passByReference) : NULL
 #define corto_parameterUnset(_this) _this ? corto_deinitp(_this, corto_parameter_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_parameterAssign(_this, name, type, passByReference) _corto_parameterAssign(_this, name, corto_type(type), passByReference)
-#define corto_parameterSet(_this, name, type, passByReference) _this = _this ? _this : corto_calloc(sizeof(corto_parameter_o)); _corto_parameterAssign(_this, name, corto_type(type), passByReference)
+#define corto_parameterSet(_this, name, type, passByReference) _this = _this ? _this : (corto_parameter*)corto_calloc(sizeof(corto_parameter)); _corto_parameterAssign(_this, name, corto_type(type), passByReference)
 CORTO_EXPORT corto_string _corto_parameterStr(corto_parameter* value);
 #define corto_parameterStr(value) _corto_parameterStr(value)
 CORTO_EXPORT corto_parameter* corto_parameterFromStr(corto_parameter* value, corto_string str);
@@ -1719,11 +1719,11 @@ CORTO_EXPORT corto_int16 _corto_parameterseqDefine(corto_parameterseq* _this, co
 #define corto_parameterseqDefine(_this, length, elements) _corto_parameterseqDefine(_this, length, elements)
 CORTO_EXPORT corto_parameterseq* _corto_parameterseqAssign(corto_parameterseq* _this, corto_uint32 length, corto_parameter* elements);
 #define corto_parameterseq__optional_NotSet NULL
-#define corto_parameterseq__optional_Set(length, elements) corto_parameterseqAssign(corto_calloc(sizeof(corto_parameterseq)), length, elements)
-#define corto_parameterseq__optional_SetCond(cond, length, elements) cond ? corto_parameterseqAssign(corto_calloc(sizeof(corto_parameterseq)), length, elements) : NULL
+#define corto_parameterseq__optional_Set(length, elements) corto_parameterseqAssign((corto_parameterseq*)corto_calloc(sizeof(corto_parameterseq)), length, elements)
+#define corto_parameterseq__optional_SetCond(cond, length, elements) cond ? corto_parameterseqAssign((corto_parameterseq*)corto_calloc(sizeof(corto_parameterseq)), length, elements) : NULL
 #define corto_parameterseqUnset(_this) _this ? corto_deinitp(_this, corto_parameterseq_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_parameterseqAssign(_this, length, elements) _corto_parameterseqAssign(_this, length, elements)
-#define corto_parameterseqSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_parameterseq_o)); _corto_parameterseqAssign(_this, length, elements)
+#define corto_parameterseqSet(_this, length, elements) _this = _this ? _this : (corto_parameterseq*)corto_calloc(sizeof(corto_parameterseq)); _corto_parameterseqAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_parameterseqStr(corto_parameterseq value);
 #define corto_parameterseqStr(value) _corto_parameterseqStr(value)
 CORTO_EXPORT corto_parameterseq* corto_parameterseqFromStr(corto_parameterseq* value, corto_string str);
@@ -1754,11 +1754,11 @@ CORTO_EXPORT corto_int16 _corto_primitiveDefine(corto_primitive _this, corto_wid
 #define corto_primitiveDefine(_this, width) _corto_primitiveDefine(corto_primitive(_this), width)
 CORTO_EXPORT corto_primitive _corto_primitiveAssign(corto_primitive _this, corto_width width);
 #define corto_primitive__optional_NotSet NULL
-#define corto_primitive__optional_Set(width) corto_primitiveAssign(corto_calloc(sizeof(corto_primitive)), width)
-#define corto_primitive__optional_SetCond(cond, width) cond ? corto_primitiveAssign(corto_calloc(sizeof(corto_primitive)), width) : NULL
+#define corto_primitive__optional_Set(width) corto_primitiveAssign((corto_primitive*)corto_calloc(sizeof(corto_primitive)), width)
+#define corto_primitive__optional_SetCond(cond, width) cond ? corto_primitiveAssign((corto_primitive*)corto_calloc(sizeof(corto_primitive)), width) : NULL
 #define corto_primitiveUnset(_this) _this ? corto_deinitp(_this, corto_primitive_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_primitiveAssign(_this, width) _corto_primitiveAssign(corto_primitive(_this), width)
-#define corto_primitiveSet(_this, width) _this = _this ? _this : corto_calloc(sizeof(corto_primitive_o)); _corto_primitiveAssign(corto_primitive(_this), width)
+#define corto_primitiveSet(_this, width) _this = _this ? _this : (corto_primitive*)corto_calloc(sizeof(corto_primitive)); _corto_primitiveAssign(corto_primitive(_this), width)
 CORTO_EXPORT corto_string _corto_primitiveStr(corto_primitive value);
 #define corto_primitiveStr(value) _corto_primitiveStr(corto_primitive(value))
 CORTO_EXPORT corto_primitive corto_primitiveFromStr(corto_primitive value, corto_string str);
@@ -1785,11 +1785,11 @@ CORTO_EXPORT corto_int16 _corto_primitiveKindDefine(corto_primitiveKind* _this, 
 #define corto_primitiveKindDefine(_this, value) _corto_primitiveKindDefine(_this, value)
 CORTO_EXPORT corto_primitiveKind* _corto_primitiveKindAssign(corto_primitiveKind* _this, corto_primitiveKind value);
 #define corto_primitiveKind__optional_NotSet NULL
-#define corto_primitiveKind__optional_Set(value) corto_primitiveKindAssign(corto_calloc(sizeof(corto_primitiveKind)), value)
-#define corto_primitiveKind__optional_SetCond(cond, value) cond ? corto_primitiveKindAssign(corto_calloc(sizeof(corto_primitiveKind)), value) : NULL
+#define corto_primitiveKind__optional_Set(value) corto_primitiveKindAssign((corto_primitiveKind*)corto_calloc(sizeof(corto_primitiveKind)), value)
+#define corto_primitiveKind__optional_SetCond(cond, value) cond ? corto_primitiveKindAssign((corto_primitiveKind*)corto_calloc(sizeof(corto_primitiveKind)), value) : NULL
 #define corto_primitiveKindUnset(_this) _this ? corto_deinitp(_this, corto_primitiveKind_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_primitiveKindAssign(_this, value) _corto_primitiveKindAssign(_this, value)
-#define corto_primitiveKindSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_primitiveKind_o)); _corto_primitiveKindAssign(_this, value)
+#define corto_primitiveKindSet(_this, value) _this = _this ? _this : (corto_primitiveKind*)corto_calloc(sizeof(corto_primitiveKind)); _corto_primitiveKindAssign(_this, value)
 CORTO_EXPORT corto_string _corto_primitiveKindStr(corto_primitiveKind value);
 #define corto_primitiveKindStr(value) _corto_primitiveKindStr(value)
 CORTO_EXPORT corto_primitiveKind* corto_primitiveKindFromStr(corto_primitiveKind* value, corto_string str);
@@ -1820,11 +1820,11 @@ CORTO_EXPORT corto_int16 _corto_procedureDefine(corto_procedure _this, corto_pro
 #define corto_procedureDefine(_this, kind_1) _corto_procedureDefine(corto_procedure(_this), kind_1)
 CORTO_EXPORT corto_procedure _corto_procedureAssign(corto_procedure _this, corto_procedureKind kind_1);
 #define corto_procedure__optional_NotSet NULL
-#define corto_procedure__optional_Set(kind_1) corto_procedureAssign(corto_calloc(sizeof(corto_procedure)), kind_1)
-#define corto_procedure__optional_SetCond(cond, kind_1) cond ? corto_procedureAssign(corto_calloc(sizeof(corto_procedure)), kind_1) : NULL
+#define corto_procedure__optional_Set(kind_1) corto_procedureAssign((corto_procedure*)corto_calloc(sizeof(corto_procedure)), kind_1)
+#define corto_procedure__optional_SetCond(cond, kind_1) cond ? corto_procedureAssign((corto_procedure*)corto_calloc(sizeof(corto_procedure)), kind_1) : NULL
 #define corto_procedureUnset(_this) _this ? corto_deinitp(_this, corto_procedure_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_procedureAssign(_this, kind_1) _corto_procedureAssign(corto_procedure(_this), kind_1)
-#define corto_procedureSet(_this, kind_1) _this = _this ? _this : corto_calloc(sizeof(corto_procedure_o)); _corto_procedureAssign(corto_procedure(_this), kind_1)
+#define corto_procedureSet(_this, kind_1) _this = _this ? _this : (corto_procedure*)corto_calloc(sizeof(corto_procedure)); _corto_procedureAssign(corto_procedure(_this), kind_1)
 CORTO_EXPORT corto_string _corto_procedureStr(corto_procedure value);
 #define corto_procedureStr(value) _corto_procedureStr(corto_procedure(value))
 CORTO_EXPORT corto_procedure corto_procedureFromStr(corto_procedure value, corto_string str);
@@ -1851,11 +1851,11 @@ CORTO_EXPORT corto_int16 _corto_procedureKindDefine(corto_procedureKind* _this, 
 #define corto_procedureKindDefine(_this, value) _corto_procedureKindDefine(_this, value)
 CORTO_EXPORT corto_procedureKind* _corto_procedureKindAssign(corto_procedureKind* _this, corto_procedureKind value);
 #define corto_procedureKind__optional_NotSet NULL
-#define corto_procedureKind__optional_Set(value) corto_procedureKindAssign(corto_calloc(sizeof(corto_procedureKind)), value)
-#define corto_procedureKind__optional_SetCond(cond, value) cond ? corto_procedureKindAssign(corto_calloc(sizeof(corto_procedureKind)), value) : NULL
+#define corto_procedureKind__optional_Set(value) corto_procedureKindAssign((corto_procedureKind*)corto_calloc(sizeof(corto_procedureKind)), value)
+#define corto_procedureKind__optional_SetCond(cond, value) cond ? corto_procedureKindAssign((corto_procedureKind*)corto_calloc(sizeof(corto_procedureKind)), value) : NULL
 #define corto_procedureKindUnset(_this) _this ? corto_deinitp(_this, corto_procedureKind_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_procedureKindAssign(_this, value) _corto_procedureKindAssign(_this, value)
-#define corto_procedureKindSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_procedureKind_o)); _corto_procedureKindAssign(_this, value)
+#define corto_procedureKindSet(_this, value) _this = _this ? _this : (corto_procedureKind*)corto_calloc(sizeof(corto_procedureKind)); _corto_procedureKindAssign(_this, value)
 CORTO_EXPORT corto_string _corto_procedureKindStr(corto_procedureKind value);
 #define corto_procedureKindStr(value) _corto_procedureKindStr(value)
 CORTO_EXPORT corto_procedureKind* corto_procedureKindFromStr(corto_procedureKind* value, corto_string str);
@@ -1886,11 +1886,11 @@ CORTO_EXPORT corto_int16 _corto_sequenceDefine(corto_sequence _this, corto_type 
 #define corto_sequenceDefine(_this, elementType, max) _corto_sequenceDefine(corto_sequence(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_sequence _corto_sequenceAssign(corto_sequence _this, corto_type elementType, corto_uint32 max);
 #define corto_sequence__optional_NotSet NULL
-#define corto_sequence__optional_Set(elementType, max) corto_sequenceAssign(corto_calloc(sizeof(corto_sequence)), elementType, max)
-#define corto_sequence__optional_SetCond(cond, elementType, max) cond ? corto_sequenceAssign(corto_calloc(sizeof(corto_sequence)), elementType, max) : NULL
+#define corto_sequence__optional_Set(elementType, max) corto_sequenceAssign((corto_sequence*)corto_calloc(sizeof(corto_sequence)), elementType, max)
+#define corto_sequence__optional_SetCond(cond, elementType, max) cond ? corto_sequenceAssign((corto_sequence*)corto_calloc(sizeof(corto_sequence)), elementType, max) : NULL
 #define corto_sequenceUnset(_this) _this ? corto_deinitp(_this, corto_sequence_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_sequenceAssign(_this, elementType, max) _corto_sequenceAssign(corto_sequence(_this), corto_type(elementType), max)
-#define corto_sequenceSet(_this, elementType, max) _this = _this ? _this : corto_calloc(sizeof(corto_sequence_o)); _corto_sequenceAssign(corto_sequence(_this), corto_type(elementType), max)
+#define corto_sequenceSet(_this, elementType, max) _this = _this ? _this : (corto_sequence*)corto_calloc(sizeof(corto_sequence)); _corto_sequenceAssign(corto_sequence(_this), corto_type(elementType), max)
 CORTO_EXPORT corto_string _corto_sequenceStr(corto_sequence value);
 #define corto_sequenceStr(value) _corto_sequenceStr(corto_sequence(value))
 CORTO_EXPORT corto_sequence corto_sequenceFromStr(corto_sequence value, corto_string str);
@@ -1917,11 +1917,11 @@ CORTO_EXPORT corto_int16 _corto_stateDefine(corto_state* _this, corto_state valu
 #define corto_stateDefine(_this, value) _corto_stateDefine(_this, value)
 CORTO_EXPORT corto_state* _corto_stateAssign(corto_state* _this, corto_state value);
 #define corto_state__optional_NotSet NULL
-#define corto_state__optional_Set(value) corto_stateAssign(corto_calloc(sizeof(corto_state)), value)
-#define corto_state__optional_SetCond(cond, value) cond ? corto_stateAssign(corto_calloc(sizeof(corto_state)), value) : NULL
+#define corto_state__optional_Set(value) corto_stateAssign((corto_state*)corto_calloc(sizeof(corto_state)), value)
+#define corto_state__optional_SetCond(cond, value) cond ? corto_stateAssign((corto_state*)corto_calloc(sizeof(corto_state)), value) : NULL
 #define corto_stateUnset(_this) _this ? corto_deinitp(_this, corto_state_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_stateAssign(_this, value) _corto_stateAssign(_this, value)
-#define corto_stateSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_state_o)); _corto_stateAssign(_this, value)
+#define corto_stateSet(_this, value) _this = _this ? _this : (corto_state*)corto_calloc(sizeof(corto_state)); _corto_stateAssign(_this, value)
 CORTO_EXPORT corto_string _corto_stateStr(corto_state value);
 #define corto_stateStr(value) _corto_stateStr(value)
 CORTO_EXPORT corto_state* corto_stateFromStr(corto_state* value, corto_string str);
@@ -1952,11 +1952,11 @@ CORTO_EXPORT corto_int16 _corto_stringDefine(corto_string* _this, corto_string v
 #define corto_stringDefine(_this, value) _corto_stringDefine(_this, value)
 CORTO_EXPORT corto_string* _corto_stringAssign(corto_string* _this, corto_string value);
 #define corto_string__optional_NotSet NULL
-#define corto_string__optional_Set(value) corto_stringAssign(corto_calloc(sizeof(corto_string)), value)
-#define corto_string__optional_SetCond(cond, value) cond ? corto_stringAssign(corto_calloc(sizeof(corto_string)), value) : NULL
+#define corto_string__optional_Set(value) corto_stringAssign((corto_string*)corto_calloc(sizeof(corto_string)), value)
+#define corto_string__optional_SetCond(cond, value) cond ? corto_stringAssign((corto_string*)corto_calloc(sizeof(corto_string)), value) : NULL
 #define corto_stringUnset(_this) _this ? corto_deinitp(_this, corto_string_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_stringAssign(_this, value) _corto_stringAssign(_this, value)
-#define corto_stringSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_string_o)); _corto_stringAssign(_this, value)
+#define corto_stringSet(_this, value) _this = _this ? _this : (corto_string*)corto_calloc(sizeof(corto_string)); _corto_stringAssign(_this, value)
 CORTO_EXPORT corto_string _corto_stringStr(corto_string value);
 #define corto_stringStr(value) _corto_stringStr(value)
 CORTO_EXPORT corto_string* corto_stringFromStr(corto_string* value, corto_string str);
@@ -1987,11 +1987,11 @@ CORTO_EXPORT corto_int16 _corto_structDefine(corto_struct _this, corto_interface
 #define corto_structDefine(_this, base, baseAccess) _corto_structDefine(corto_struct(_this), corto_interface(base), baseAccess)
 CORTO_EXPORT corto_struct _corto_structAssign(corto_struct _this, corto_interface base, corto_modifier baseAccess);
 #define corto_struct__optional_NotSet NULL
-#define corto_struct__optional_Set(base, baseAccess) corto_structAssign(corto_calloc(sizeof(corto_struct)), base, baseAccess)
-#define corto_struct__optional_SetCond(cond, base, baseAccess) cond ? corto_structAssign(corto_calloc(sizeof(corto_struct)), base, baseAccess) : NULL
+#define corto_struct__optional_Set(base, baseAccess) corto_structAssign((corto_struct*)corto_calloc(sizeof(corto_struct)), base, baseAccess)
+#define corto_struct__optional_SetCond(cond, base, baseAccess) cond ? corto_structAssign((corto_struct*)corto_calloc(sizeof(corto_struct)), base, baseAccess) : NULL
 #define corto_structUnset(_this) _this ? corto_deinitp(_this, corto_struct_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_structAssign(_this, base, baseAccess) _corto_structAssign(corto_struct(_this), corto_interface(base), baseAccess)
-#define corto_structSet(_this, base, baseAccess) _this = _this ? _this : corto_calloc(sizeof(corto_struct_o)); _corto_structAssign(corto_struct(_this), corto_interface(base), baseAccess)
+#define corto_structSet(_this, base, baseAccess) _this = _this ? _this : (corto_struct*)corto_calloc(sizeof(corto_struct)); _corto_structAssign(corto_struct(_this), corto_interface(base), baseAccess)
 CORTO_EXPORT corto_string _corto_structStr(corto_struct value);
 #define corto_structStr(value) _corto_structStr(corto_struct(value))
 CORTO_EXPORT corto_struct corto_structFromStr(corto_struct value, corto_string str);
@@ -2018,11 +2018,11 @@ CORTO_EXPORT corto_int16 _corto_textDefine(corto_text _this, corto_width charWid
 #define corto_textDefine(_this, charWidth, length) _corto_textDefine(corto_text(_this), charWidth, length)
 CORTO_EXPORT corto_text _corto_textAssign(corto_text _this, corto_width charWidth, corto_uint64 length);
 #define corto_text__optional_NotSet NULL
-#define corto_text__optional_Set(charWidth, length) corto_textAssign(corto_calloc(sizeof(corto_text)), charWidth, length)
-#define corto_text__optional_SetCond(cond, charWidth, length) cond ? corto_textAssign(corto_calloc(sizeof(corto_text)), charWidth, length) : NULL
+#define corto_text__optional_Set(charWidth, length) corto_textAssign((corto_text*)corto_calloc(sizeof(corto_text)), charWidth, length)
+#define corto_text__optional_SetCond(cond, charWidth, length) cond ? corto_textAssign((corto_text*)corto_calloc(sizeof(corto_text)), charWidth, length) : NULL
 #define corto_textUnset(_this) _this ? corto_deinitp(_this, corto_text_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_textAssign(_this, charWidth, length) _corto_textAssign(corto_text(_this), charWidth, length)
-#define corto_textSet(_this, charWidth, length) _this = _this ? _this : corto_calloc(sizeof(corto_text_o)); _corto_textAssign(corto_text(_this), charWidth, length)
+#define corto_textSet(_this, charWidth, length) _this = _this ? _this : (corto_text*)corto_calloc(sizeof(corto_text)); _corto_textAssign(corto_text(_this), charWidth, length)
 CORTO_EXPORT corto_string _corto_textStr(corto_text value);
 #define corto_textStr(value) _corto_textStr(corto_text(value))
 CORTO_EXPORT corto_text corto_textFromStr(corto_text value, corto_string str);
@@ -2049,11 +2049,11 @@ CORTO_EXPORT corto_int16 _corto_typeDefine(corto_type _this, corto_typeKind kind
 #define corto_typeDefine(_this, kind, reference) _corto_typeDefine(corto_type(_this), kind, reference)
 CORTO_EXPORT corto_type _corto_typeAssign(corto_type _this, corto_typeKind kind, corto_bool reference);
 #define corto_type__optional_NotSet NULL
-#define corto_type__optional_Set(kind, reference) corto_typeAssign(corto_calloc(sizeof(corto_type)), kind, reference)
-#define corto_type__optional_SetCond(cond, kind, reference) cond ? corto_typeAssign(corto_calloc(sizeof(corto_type)), kind, reference) : NULL
+#define corto_type__optional_Set(kind, reference) corto_typeAssign((corto_type*)corto_calloc(sizeof(corto_type)), kind, reference)
+#define corto_type__optional_SetCond(cond, kind, reference) cond ? corto_typeAssign((corto_type*)corto_calloc(sizeof(corto_type)), kind, reference) : NULL
 #define corto_typeUnset(_this) _this ? corto_deinitp(_this, corto_type_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_typeAssign(_this, kind, reference) _corto_typeAssign(corto_type(_this), kind, reference)
-#define corto_typeSet(_this, kind, reference) _this = _this ? _this : corto_calloc(sizeof(corto_type_o)); _corto_typeAssign(corto_type(_this), kind, reference)
+#define corto_typeSet(_this, kind, reference) _this = _this ? _this : (corto_type*)corto_calloc(sizeof(corto_type)); _corto_typeAssign(corto_type(_this), kind, reference)
 CORTO_EXPORT corto_string _corto_typeStr(corto_type value);
 #define corto_typeStr(value) _corto_typeStr(corto_type(value))
 CORTO_EXPORT corto_type corto_typeFromStr(corto_type value, corto_string str);
@@ -2080,11 +2080,11 @@ CORTO_EXPORT corto_int16 _corto_typeKindDefine(corto_typeKind* _this, corto_type
 #define corto_typeKindDefine(_this, value) _corto_typeKindDefine(_this, value)
 CORTO_EXPORT corto_typeKind* _corto_typeKindAssign(corto_typeKind* _this, corto_typeKind value);
 #define corto_typeKind__optional_NotSet NULL
-#define corto_typeKind__optional_Set(value) corto_typeKindAssign(corto_calloc(sizeof(corto_typeKind)), value)
-#define corto_typeKind__optional_SetCond(cond, value) cond ? corto_typeKindAssign(corto_calloc(sizeof(corto_typeKind)), value) : NULL
+#define corto_typeKind__optional_Set(value) corto_typeKindAssign((corto_typeKind*)corto_calloc(sizeof(corto_typeKind)), value)
+#define corto_typeKind__optional_SetCond(cond, value) cond ? corto_typeKindAssign((corto_typeKind*)corto_calloc(sizeof(corto_typeKind)), value) : NULL
 #define corto_typeKindUnset(_this) _this ? corto_deinitp(_this, corto_typeKind_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_typeKindAssign(_this, value) _corto_typeKindAssign(_this, value)
-#define corto_typeKindSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_typeKind_o)); _corto_typeKindAssign(_this, value)
+#define corto_typeKindSet(_this, value) _this = _this ? _this : (corto_typeKind*)corto_calloc(sizeof(corto_typeKind)); _corto_typeKindAssign(_this, value)
 CORTO_EXPORT corto_string _corto_typeKindStr(corto_typeKind value);
 #define corto_typeKindStr(value) _corto_typeKindStr(value)
 CORTO_EXPORT corto_typeKind* corto_typeKindFromStr(corto_typeKind* value, corto_string str);
@@ -2115,11 +2115,11 @@ CORTO_EXPORT corto_int16 _corto_typespecDefine(corto_typespec* _this, corto_type
 #define corto_typespecDefine(_this, type, reference) _corto_typespecDefine(_this, corto_type(type), reference)
 CORTO_EXPORT corto_typespec* _corto_typespecAssign(corto_typespec* _this, corto_type type, corto_bool reference);
 #define corto_typespec__optional_NotSet NULL
-#define corto_typespec__optional_Set(type, reference) corto_typespecAssign(corto_calloc(sizeof(corto_typespec)), type, reference)
-#define corto_typespec__optional_SetCond(cond, type, reference) cond ? corto_typespecAssign(corto_calloc(sizeof(corto_typespec)), type, reference) : NULL
+#define corto_typespec__optional_Set(type, reference) corto_typespecAssign((corto_typespec*)corto_calloc(sizeof(corto_typespec)), type, reference)
+#define corto_typespec__optional_SetCond(cond, type, reference) cond ? corto_typespecAssign((corto_typespec*)corto_calloc(sizeof(corto_typespec)), type, reference) : NULL
 #define corto_typespecUnset(_this) _this ? corto_deinitp(_this, corto_typespec_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_typespecAssign(_this, type, reference) _corto_typespecAssign(_this, corto_type(type), reference)
-#define corto_typespecSet(_this, type, reference) _this = _this ? _this : corto_calloc(sizeof(corto_typespec_o)); _corto_typespecAssign(_this, corto_type(type), reference)
+#define corto_typespecSet(_this, type, reference) _this = _this ? _this : (corto_typespec*)corto_calloc(sizeof(corto_typespec)); _corto_typespecAssign(_this, corto_type(type), reference)
 CORTO_EXPORT corto_string _corto_typespecStr(corto_typespec* value);
 #define corto_typespecStr(value) _corto_typespecStr(value)
 CORTO_EXPORT corto_typespec* corto_typespecFromStr(corto_typespec* value, corto_string str);
@@ -2150,11 +2150,11 @@ CORTO_EXPORT corto_int16 _corto_uintDefine(corto_uint _this, corto_width width, 
 #define corto_uintDefine(_this, width, min, max) _corto_uintDefine(corto_uint(_this), width, min, max)
 CORTO_EXPORT corto_uint _corto_uintAssign(corto_uint _this, corto_width width, corto_uint64 min, corto_uint64 max);
 #define corto_uint__optional_NotSet NULL
-#define corto_uint__optional_Set(width, min, max) corto_uintAssign(corto_calloc(sizeof(corto_uint)), width, min, max)
-#define corto_uint__optional_SetCond(cond, width, min, max) cond ? corto_uintAssign(corto_calloc(sizeof(corto_uint)), width, min, max) : NULL
+#define corto_uint__optional_Set(width, min, max) corto_uintAssign((corto_uint*)corto_calloc(sizeof(corto_uint)), width, min, max)
+#define corto_uint__optional_SetCond(cond, width, min, max) cond ? corto_uintAssign((corto_uint*)corto_calloc(sizeof(corto_uint)), width, min, max) : NULL
 #define corto_uintUnset(_this) _this ? corto_deinitp(_this, corto_uint_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_uintAssign(_this, width, min, max) _corto_uintAssign(corto_uint(_this), width, min, max)
-#define corto_uintSet(_this, width, min, max) _this = _this ? _this : corto_calloc(sizeof(corto_uint_o)); _corto_uintAssign(corto_uint(_this), width, min, max)
+#define corto_uintSet(_this, width, min, max) _this = _this ? _this : (corto_uint*)corto_calloc(sizeof(corto_uint)); _corto_uintAssign(corto_uint(_this), width, min, max)
 CORTO_EXPORT corto_string _corto_uintStr(corto_uint value);
 #define corto_uintStr(value) _corto_uintStr(corto_uint(value))
 CORTO_EXPORT corto_uint corto_uintFromStr(corto_uint value, corto_string str);
@@ -2181,11 +2181,11 @@ CORTO_EXPORT corto_int16 _corto_uint16Define(corto_uint16* _this, corto_uint16 v
 #define corto_uint16Define(_this, value) _corto_uint16Define(_this, value)
 CORTO_EXPORT corto_uint16* _corto_uint16Assign(corto_uint16* _this, corto_uint16 value);
 #define corto_uint16__optional_NotSet NULL
-#define corto_uint16__optional_Set(value) corto_uint16Assign(corto_calloc(sizeof(corto_uint16)), value)
-#define corto_uint16__optional_SetCond(cond, value) cond ? corto_uint16Assign(corto_calloc(sizeof(corto_uint16)), value) : NULL
+#define corto_uint16__optional_Set(value) corto_uint16Assign((corto_uint16*)corto_calloc(sizeof(corto_uint16)), value)
+#define corto_uint16__optional_SetCond(cond, value) cond ? corto_uint16Assign((corto_uint16*)corto_calloc(sizeof(corto_uint16)), value) : NULL
 #define corto_uint16Unset(_this) _this ? corto_deinitp(_this, corto_uint16_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_uint16Assign(_this, value) _corto_uint16Assign(_this, value)
-#define corto_uint16Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_uint16_o)); _corto_uint16Assign(_this, value)
+#define corto_uint16Set(_this, value) _this = _this ? _this : (corto_uint16*)corto_calloc(sizeof(corto_uint16)); _corto_uint16Assign(_this, value)
 CORTO_EXPORT corto_string _corto_uint16Str(corto_uint16 value);
 #define corto_uint16Str(value) _corto_uint16Str(value)
 CORTO_EXPORT corto_uint16* corto_uint16FromStr(corto_uint16* value, corto_string str);
@@ -2216,11 +2216,11 @@ CORTO_EXPORT corto_int16 _corto_uint32Define(corto_uint32* _this, corto_uint32 v
 #define corto_uint32Define(_this, value) _corto_uint32Define(_this, value)
 CORTO_EXPORT corto_uint32* _corto_uint32Assign(corto_uint32* _this, corto_uint32 value);
 #define corto_uint32__optional_NotSet NULL
-#define corto_uint32__optional_Set(value) corto_uint32Assign(corto_calloc(sizeof(corto_uint32)), value)
-#define corto_uint32__optional_SetCond(cond, value) cond ? corto_uint32Assign(corto_calloc(sizeof(corto_uint32)), value) : NULL
+#define corto_uint32__optional_Set(value) corto_uint32Assign((corto_uint32*)corto_calloc(sizeof(corto_uint32)), value)
+#define corto_uint32__optional_SetCond(cond, value) cond ? corto_uint32Assign((corto_uint32*)corto_calloc(sizeof(corto_uint32)), value) : NULL
 #define corto_uint32Unset(_this) _this ? corto_deinitp(_this, corto_uint32_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_uint32Assign(_this, value) _corto_uint32Assign(_this, value)
-#define corto_uint32Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_uint32_o)); _corto_uint32Assign(_this, value)
+#define corto_uint32Set(_this, value) _this = _this ? _this : (corto_uint32*)corto_calloc(sizeof(corto_uint32)); _corto_uint32Assign(_this, value)
 CORTO_EXPORT corto_string _corto_uint32Str(corto_uint32 value);
 #define corto_uint32Str(value) _corto_uint32Str(value)
 CORTO_EXPORT corto_uint32* corto_uint32FromStr(corto_uint32* value, corto_string str);
@@ -2251,11 +2251,11 @@ CORTO_EXPORT corto_int16 _corto_uint64Define(corto_uint64* _this, corto_uint64 v
 #define corto_uint64Define(_this, value) _corto_uint64Define(_this, value)
 CORTO_EXPORT corto_uint64* _corto_uint64Assign(corto_uint64* _this, corto_uint64 value);
 #define corto_uint64__optional_NotSet NULL
-#define corto_uint64__optional_Set(value) corto_uint64Assign(corto_calloc(sizeof(corto_uint64)), value)
-#define corto_uint64__optional_SetCond(cond, value) cond ? corto_uint64Assign(corto_calloc(sizeof(corto_uint64)), value) : NULL
+#define corto_uint64__optional_Set(value) corto_uint64Assign((corto_uint64*)corto_calloc(sizeof(corto_uint64)), value)
+#define corto_uint64__optional_SetCond(cond, value) cond ? corto_uint64Assign((corto_uint64*)corto_calloc(sizeof(corto_uint64)), value) : NULL
 #define corto_uint64Unset(_this) _this ? corto_deinitp(_this, corto_uint64_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_uint64Assign(_this, value) _corto_uint64Assign(_this, value)
-#define corto_uint64Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_uint64_o)); _corto_uint64Assign(_this, value)
+#define corto_uint64Set(_this, value) _this = _this ? _this : (corto_uint64*)corto_calloc(sizeof(corto_uint64)); _corto_uint64Assign(_this, value)
 CORTO_EXPORT corto_string _corto_uint64Str(corto_uint64 value);
 #define corto_uint64Str(value) _corto_uint64Str(value)
 CORTO_EXPORT corto_uint64* corto_uint64FromStr(corto_uint64* value, corto_string str);
@@ -2286,11 +2286,11 @@ CORTO_EXPORT corto_int16 _corto_uint8Define(corto_uint8* _this, corto_uint8 valu
 #define corto_uint8Define(_this, value) _corto_uint8Define(_this, value)
 CORTO_EXPORT corto_uint8* _corto_uint8Assign(corto_uint8* _this, corto_uint8 value);
 #define corto_uint8__optional_NotSet NULL
-#define corto_uint8__optional_Set(value) corto_uint8Assign(corto_calloc(sizeof(corto_uint8)), value)
-#define corto_uint8__optional_SetCond(cond, value) cond ? corto_uint8Assign(corto_calloc(sizeof(corto_uint8)), value) : NULL
+#define corto_uint8__optional_Set(value) corto_uint8Assign((corto_uint8*)corto_calloc(sizeof(corto_uint8)), value)
+#define corto_uint8__optional_SetCond(cond, value) cond ? corto_uint8Assign((corto_uint8*)corto_calloc(sizeof(corto_uint8)), value) : NULL
 #define corto_uint8Unset(_this) _this ? corto_deinitp(_this, corto_uint8_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_uint8Assign(_this, value) _corto_uint8Assign(_this, value)
-#define corto_uint8Set(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_uint8_o)); _corto_uint8Assign(_this, value)
+#define corto_uint8Set(_this, value) _this = _this ? _this : (corto_uint8*)corto_calloc(sizeof(corto_uint8)); _corto_uint8Assign(_this, value)
 CORTO_EXPORT corto_string _corto_uint8Str(corto_uint8 value);
 #define corto_uint8Str(value) _corto_uint8Str(value)
 CORTO_EXPORT corto_uint8* corto_uint8FromStr(corto_uint8* value, corto_string str);
@@ -2321,11 +2321,11 @@ CORTO_EXPORT corto_int16 _corto_unionDefine(corto_union _this, corto_type discri
 #define corto_unionDefine(_this, discriminator) _corto_unionDefine(corto_union(_this), corto_type(discriminator))
 CORTO_EXPORT corto_union _corto_unionAssign(corto_union _this, corto_type discriminator);
 #define corto_union__optional_NotSet NULL
-#define corto_union__optional_Set(discriminator) corto_unionAssign(corto_calloc(sizeof(corto_union)), discriminator)
-#define corto_union__optional_SetCond(cond, discriminator) cond ? corto_unionAssign(corto_calloc(sizeof(corto_union)), discriminator) : NULL
+#define corto_union__optional_Set(discriminator) corto_unionAssign((corto_union*)corto_calloc(sizeof(corto_union)), discriminator)
+#define corto_union__optional_SetCond(cond, discriminator) cond ? corto_unionAssign((corto_union*)corto_calloc(sizeof(corto_union)), discriminator) : NULL
 #define corto_unionUnset(_this) _this ? corto_deinitp(_this, corto_union_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_unionAssign(_this, discriminator) _corto_unionAssign(corto_union(_this), corto_type(discriminator))
-#define corto_unionSet(_this, discriminator) _this = _this ? _this : corto_calloc(sizeof(corto_union_o)); _corto_unionAssign(corto_union(_this), corto_type(discriminator))
+#define corto_unionSet(_this, discriminator) _this = _this ? _this : (corto_union*)corto_calloc(sizeof(corto_union)); _corto_unionAssign(corto_union(_this), corto_type(discriminator))
 CORTO_EXPORT corto_string _corto_unionStr(corto_union value);
 #define corto_unionStr(value) _corto_unionStr(corto_union(value))
 CORTO_EXPORT corto_union corto_unionFromStr(corto_union value, corto_string str);
@@ -2352,11 +2352,11 @@ CORTO_EXPORT corto_int16 _corto_virtualDefine(corto_virtual _this, corto_type re
 #define corto_virtualDefine(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualDefine(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 CORTO_EXPORT corto_virtual _corto_virtualAssign(corto_virtual _this, corto_type returnType, corto_bool returnsReference, corto_bool _virtual, void(*_impl)(void));
 #define corto_virtual__optional_NotSet NULL
-#define corto_virtual__optional_Set(returnType, returnsReference, _virtual, _impl) corto_virtualAssign(corto_calloc(sizeof(corto_virtual)), returnType, returnsReference, _virtual, _impl)
-#define corto_virtual__optional_SetCond(cond, returnType, returnsReference, _virtual, _impl) cond ? corto_virtualAssign(corto_calloc(sizeof(corto_virtual)), returnType, returnsReference, _virtual, _impl) : NULL
+#define corto_virtual__optional_Set(returnType, returnsReference, _virtual, _impl) corto_virtualAssign((corto_virtual*)corto_calloc(sizeof(corto_virtual)), returnType, returnsReference, _virtual, _impl)
+#define corto_virtual__optional_SetCond(cond, returnType, returnsReference, _virtual, _impl) cond ? corto_virtualAssign((corto_virtual*)corto_calloc(sizeof(corto_virtual)), returnType, returnsReference, _virtual, _impl) : NULL
 #define corto_virtualUnset(_this) _this ? corto_deinitp(_this, corto_virtual_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_virtualAssign(_this, returnType, returnsReference, _virtual, _impl) _corto_virtualAssign(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
-#define corto_virtualSet(_this, returnType, returnsReference, _virtual, _impl) _this = _this ? _this : corto_calloc(sizeof(corto_virtual_o)); _corto_virtualAssign(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
+#define corto_virtualSet(_this, returnType, returnsReference, _virtual, _impl) _this = _this ? _this : (corto_virtual*)corto_calloc(sizeof(corto_virtual)); _corto_virtualAssign(corto_virtual(_this), corto_type(returnType), returnsReference, _virtual, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_virtualStr(corto_virtual value);
 #define corto_virtualStr(value) _corto_virtualStr(corto_virtual(value))
 CORTO_EXPORT corto_virtual corto_virtualFromStr(corto_virtual value, corto_string str);
@@ -2393,11 +2393,11 @@ CORTO_EXPORT corto_int16 _corto_vtableDefine(corto_vtable* _this, corto_uint32 l
 #define corto_vtableDefine(_this, length, elements) _corto_vtableDefine(_this, length, elements)
 CORTO_EXPORT corto_vtable* _corto_vtableAssign(corto_vtable* _this, corto_uint32 length, corto_function* elements);
 #define corto_vtable__optional_NotSet NULL
-#define corto_vtable__optional_Set(length, elements) corto_vtableAssign(corto_calloc(sizeof(corto_vtable)), length, elements)
-#define corto_vtable__optional_SetCond(cond, length, elements) cond ? corto_vtableAssign(corto_calloc(sizeof(corto_vtable)), length, elements) : NULL
+#define corto_vtable__optional_Set(length, elements) corto_vtableAssign((corto_vtable*)corto_calloc(sizeof(corto_vtable)), length, elements)
+#define corto_vtable__optional_SetCond(cond, length, elements) cond ? corto_vtableAssign((corto_vtable*)corto_calloc(sizeof(corto_vtable)), length, elements) : NULL
 #define corto_vtableUnset(_this) _this ? corto_deinitp(_this, corto_vtable_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_vtableAssign(_this, length, elements) _corto_vtableAssign(_this, length, elements)
-#define corto_vtableSet(_this, length, elements) _this = _this ? _this : corto_calloc(sizeof(corto_vtable_o)); _corto_vtableAssign(_this, length, elements)
+#define corto_vtableSet(_this, length, elements) _this = _this ? _this : (corto_vtable*)corto_calloc(sizeof(corto_vtable)); _corto_vtableAssign(_this, length, elements)
 CORTO_EXPORT corto_string _corto_vtableStr(corto_vtable value);
 #define corto_vtableStr(value) _corto_vtableStr(value)
 CORTO_EXPORT corto_vtable* corto_vtableFromStr(corto_vtable* value, corto_string str);
@@ -2428,11 +2428,11 @@ CORTO_EXPORT corto_int16 _corto_widthDefine(corto_width* _this, corto_width valu
 #define corto_widthDefine(_this, value) _corto_widthDefine(_this, value)
 CORTO_EXPORT corto_width* _corto_widthAssign(corto_width* _this, corto_width value);
 #define corto_width__optional_NotSet NULL
-#define corto_width__optional_Set(value) corto_widthAssign(corto_calloc(sizeof(corto_width)), value)
-#define corto_width__optional_SetCond(cond, value) cond ? corto_widthAssign(corto_calloc(sizeof(corto_width)), value) : NULL
+#define corto_width__optional_Set(value) corto_widthAssign((corto_width*)corto_calloc(sizeof(corto_width)), value)
+#define corto_width__optional_SetCond(cond, value) cond ? corto_widthAssign((corto_width*)corto_calloc(sizeof(corto_width)), value) : NULL
 #define corto_widthUnset(_this) _this ? corto_deinitp(_this, corto_width_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_widthAssign(_this, value) _corto_widthAssign(_this, value)
-#define corto_widthSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_width_o)); _corto_widthAssign(_this, value)
+#define corto_widthSet(_this, value) _this = _this ? _this : (corto_width*)corto_calloc(sizeof(corto_width)); _corto_widthAssign(_this, value)
 CORTO_EXPORT corto_string _corto_widthStr(corto_width value);
 #define corto_widthStr(value) _corto_widthStr(value)
 CORTO_EXPORT corto_width* corto_widthFromStr(corto_width* value, corto_string str);
@@ -2463,11 +2463,11 @@ CORTO_EXPORT corto_int16 _corto_wordDefine(corto_word* _this, corto_word value);
 #define corto_wordDefine(_this, value) _corto_wordDefine(_this, value)
 CORTO_EXPORT corto_word* _corto_wordAssign(corto_word* _this, corto_word value);
 #define corto_word__optional_NotSet NULL
-#define corto_word__optional_Set(value) corto_wordAssign(corto_calloc(sizeof(corto_word)), value)
-#define corto_word__optional_SetCond(cond, value) cond ? corto_wordAssign(corto_calloc(sizeof(corto_word)), value) : NULL
+#define corto_word__optional_Set(value) corto_wordAssign((corto_word*)corto_calloc(sizeof(corto_word)), value)
+#define corto_word__optional_SetCond(cond, value) cond ? corto_wordAssign((corto_word*)corto_calloc(sizeof(corto_word)), value) : NULL
 #define corto_wordUnset(_this) _this ? corto_deinitp(_this, corto_word_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_wordAssign(_this, value) _corto_wordAssign(_this, value)
-#define corto_wordSet(_this, value) _this = _this ? _this : corto_calloc(sizeof(corto_word_o)); _corto_wordAssign(_this, value)
+#define corto_wordSet(_this, value) _this = _this ? _this : (corto_word*)corto_calloc(sizeof(corto_word)); _corto_wordAssign(_this, value)
 CORTO_EXPORT corto_string _corto_wordStr(corto_word value);
 #define corto_wordStr(value) _corto_wordStr(value)
 CORTO_EXPORT corto_word* corto_wordFromStr(corto_word* value, corto_string str);

@@ -25,6 +25,220 @@ corto_void _test_Event_setup(
 /* $end */
 }
 
+corto_void _test_Event_tc_observeNull(
+    test_Event this)
+{
+/* $begin(test/Event/tc_observeNull) */
+
+    corto_observer observer = corto_observerCreate(0, NULL, NULL);
+    test_assert(observer != NULL);
+
+    corto_int16 ret = corto_delete(observer);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
+/* $header(test/Event/tc_observeNullWithListen) */
+static int tc_observerNullWithListen_update = 0;
+void tc_observerNullWithListenOnUpdate(corto_object this, corto_object observable) {
+    tc_observerNullWithListen_update ++;
+}
+/* $end */
+corto_void _test_Event_tc_observeNullWithListen(
+    test_Event this)
+{
+/* $begin(test/Event/tc_observeNullWithListen) */
+
+    corto_voidCreateChild_auto(NULL, o);
+    corto_observer observer = corto_observerCreate(0, NULL, tc_observerNullWithListenOnUpdate);
+    test_assert(observer != NULL);
+
+    corto_int16 ret = corto_listen(NULL, observer, CORTO_ON_UPDATE, o, NULL);
+    test_assert(ret == 0);
+
+    ret = corto_update(o);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 1);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE, o);
+    test_assert(ret == 0);
+
+    ret = corto_update(o);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 1);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+
+    ret = corto_delete(observer);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_observeNullWithListenMultiBoth(
+    test_Event this)
+{
+/* $begin(test/Event/tc_observeNullWithListenMultiBoth) */
+
+    corto_voidCreateChild_auto(NULL, a);
+    corto_voidCreateChild_auto(a, b);
+    corto_observer observer = corto_observerCreate(0, NULL, tc_observerNullWithListenOnUpdate);
+    test_assert(observer != NULL);
+
+    corto_int16 ret = corto_listen(NULL, observer, CORTO_ON_UPDATE, a, NULL);
+    test_assert(ret == 0);
+    ret = corto_listen(NULL, observer, CORTO_ON_UPDATE|CORTO_ON_SCOPE, a, NULL);
+    test_assert(ret == 0);
+    ret = corto_listen(NULL, observer, CORTO_ON_UPDATE, b, NULL);
+    test_assert(ret == 0);
+
+    ret = corto_update(a);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 1);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 3);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE, a);
+    test_assert(ret == 0);
+
+    ret = corto_update(a);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 3);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 5);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE|CORTO_ON_SCOPE, a);
+    test_assert(ret == 0);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 6);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE, b);
+    test_assert(ret == 0);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 6);
+
+    ret = corto_delete(a);
+    test_assert(ret == 0);
+
+    ret = corto_delete(observer);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_observeNullWithListenMultiMask(
+    test_Event this)
+{
+/* $begin(test/Event/tc_observeNullWithListenMultiMask) */
+
+    corto_voidCreateChild_auto(NULL, a);
+    corto_voidCreateChild_auto(a, b);
+    corto_observer observer = corto_observerCreate(0, NULL, tc_observerNullWithListenOnUpdate);
+    test_assert(observer != NULL);
+
+    corto_int16 ret = corto_listen(NULL, observer, CORTO_ON_UPDATE, a, NULL);
+    test_assert(ret == 0);
+    ret = corto_listen(NULL, observer, CORTO_ON_UPDATE|CORTO_ON_SCOPE, a, NULL);
+    test_assert(ret == 0);
+
+    ret = corto_update(a);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 1);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 2);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE, a);
+    test_assert(ret == 0);
+
+    ret = corto_update(a);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 2);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 3);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE|CORTO_ON_SCOPE, a);
+    test_assert(ret == 0);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 3);
+
+    ret = corto_delete(a);
+    test_assert(ret == 0);
+
+    ret = corto_delete(observer);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_observeNullWithListenMultiObservable(
+    test_Event this)
+{
+/* $begin(test/Event/tc_observeNullWithListenMultiObservable) */
+
+    corto_voidCreateChild_auto(NULL, a);
+    corto_voidCreateChild_auto(NULL, b);
+    corto_observer observer = corto_observerCreate(0, NULL, tc_observerNullWithListenOnUpdate);
+    test_assert(observer != NULL);
+
+    corto_int16 ret = corto_listen(NULL, observer, CORTO_ON_UPDATE, a, NULL);
+    test_assert(ret == 0);
+    ret = corto_listen(NULL, observer, CORTO_ON_UPDATE, b, NULL);
+    test_assert(ret == 0);
+
+    ret = corto_update(a);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 1);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 2);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE, a);
+    test_assert(ret == 0);
+
+    ret = corto_update(a);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 2);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 3);
+
+    ret = corto_silence(NULL, observer, CORTO_ON_UPDATE, b);
+    test_assert(ret == 0);
+
+    ret = corto_update(b);
+    test_assert(ret == 0);
+    test_assertint(tc_observerNullWithListen_update, 3);
+
+    ret = corto_delete(a);
+    test_assert(ret == 0);
+
+    ret = corto_delete(b);
+    test_assert(ret == 0);
+
+    ret = corto_delete(observer);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDeclare(
     test_Event this)
 {

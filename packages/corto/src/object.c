@@ -2986,7 +2986,7 @@ error:
     return -1;
 }
 
-/* Remove observer from observable - TODO update parentObservers. */
+/* Remove observer from observable */
 corto_int16 corto_silence(corto_object this, corto_observer observer, corto_eventMask mask, corto_object observable) {
     corto__observer* observerData;
     corto__observable* _o;
@@ -2998,6 +2998,16 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
 
     if (!mask) {
         mask = observer->mask;
+    }
+
+    /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
+    if (!(mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
+        mask |= CORTO_ON_SELF;
+    }
+
+    /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
+    if (!((mask & CORTO_ON_VALUE) || (mask & CORTO_ON_METAVALUE))) {
+        mask |= CORTO_ON_VALUE;
     }
 
     if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
@@ -3319,7 +3329,7 @@ busy:
 
 corto_int16 corto_updateEnd(corto_object observable) {
     corto__writable* _wr;
-    corto__observable *_o;
+    corto__observable *_o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     corto_int16 result = 0;
 
     if (!corto_checkState(observable, CORTO_DEFINED)) {
@@ -3334,10 +3344,9 @@ corto_int16 corto_updateEnd(corto_object observable) {
         {
             mask |= CORTO_ON_DEFINE;
         }
-        
+
         result = corto_defineDeclared(observable, mask);
     } else {
-        _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         if (corto_notify(_o, observable, CORTO_ON_UPDATE)) {
             corto_assert(0, "notify failed");
         }

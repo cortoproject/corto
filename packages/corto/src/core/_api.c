@@ -2583,7 +2583,7 @@ corto_int16 _corto_resultListDeinit(corto_resultList* value) {
     return result;
 }
 
-corto_time* _corto_timeCreate(corto_int32 sec, corto_int32 nanosec) {
+corto_time* _corto_timeCreate(corto_int32 sec, corto_uint32 nanosec) {
     corto_time* _this;
     _this = corto_time(corto_declare(corto_time_o));
     if (!_this) {
@@ -2598,7 +2598,7 @@ corto_time* _corto_timeCreate(corto_int32 sec, corto_int32 nanosec) {
     return _this;
 }
 
-corto_time* _corto_timeCreateChild(corto_object _parent, corto_string _name, corto_int32 sec, corto_int32 nanosec) {
+corto_time* _corto_timeCreateChild(corto_object _parent, corto_string _name, corto_int32 sec, corto_uint32 nanosec) {
     corto_time* _this;
     _this = corto_time(corto_declareChild(_parent, _name, corto_time_o));
     if (!_this) {
@@ -2613,7 +2613,7 @@ corto_time* _corto_timeCreateChild(corto_object _parent, corto_string _name, cor
     return _this;
 }
 
-corto_int16 _corto_timeUpdate(corto_time* _this, corto_int32 sec, corto_int32 nanosec) {
+corto_int16 _corto_timeUpdate(corto_time* _this, corto_int32 sec, corto_uint32 nanosec) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         ((corto_time*)_this)->sec = sec;
@@ -2643,14 +2643,14 @@ corto_time* _corto_timeDeclareChild(corto_object _parent, corto_string _name) {
     return _this;
 }
 
-corto_int16 _corto_timeDefine(corto_time* _this, corto_int32 sec, corto_int32 nanosec) {
+corto_int16 _corto_timeDefine(corto_time* _this, corto_int32 sec, corto_uint32 nanosec) {
     CORTO_UNUSED(_this);
     ((corto_time*)_this)->sec = sec;
     ((corto_time*)_this)->nanosec = nanosec;
     return corto_define(_this);
 }
 
-corto_time* _corto_timeAssign(corto_time* _this, corto_int32 sec, corto_int32 nanosec) {
+corto_time* _corto_timeAssign(corto_time* _this, corto_int32 sec, corto_uint32 nanosec) {
     CORTO_UNUSED(_this);
     ((corto_time*)_this)->sec = sec;
     ((corto_time*)_this)->nanosec = nanosec;

@@ -271,7 +271,7 @@ typedef struct corto_time corto_time;
 
 struct corto_time {
     corto_int32 sec;
-    corto_int32 nanosec;
+    corto_uint32 nanosec;
 };
 
 #ifdef __cplusplus

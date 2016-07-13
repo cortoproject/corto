@@ -626,6 +626,11 @@ test/Suite Event::
 
     void tc_updateVoidErr()
     void tc_updateUndefined()
+    void tc_observeNull()
+    void tc_observeNullWithListen()
+    void tc_observeNullWithListenMultiMask()
+    void tc_observeNullWithListenMultiObservable()
+    void tc_observeNullWithListenMultiBoth()
 
 // Function overloading support types
 void ol_null(object a)

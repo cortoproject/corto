@@ -34,6 +34,11 @@ INCLUDE <<
   "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}" <<
   "/usr/local/include/corto/#{CORTO_VERSION}"
 
+# Don't overwhelm the compiler with potentially duplicate include paths that can
+# be introduced when the same package is included multiple times, by multiple
+# dependencies.
+INCLUDE.uniq
+
 # Default CFLAGS
 CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")

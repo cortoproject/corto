@@ -110,7 +110,7 @@ corto_int16 _corto_observer_listen(
         corto_critical("don't use observer::listen for instance observers (use class::listen)");
     }
 
-    if (corto_listening(observable, this, me)) {
+    if (oldObservable && corto_listening(oldObservable, this, me)) {
         corto_silence(me, this, this->mask, oldObservable);
     }
 

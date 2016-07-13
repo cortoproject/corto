@@ -170,7 +170,7 @@ corto_void _corto_mount_on_declare(
 {
 /* $begin(corto/core/mount/on_declare) */
 
-    if (observable != root_o) {
+    if ((observable != root_o) && corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
         if (this->type) {
             corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
             if (!strcmp(this->type, srcType)) {
@@ -192,15 +192,17 @@ corto_void _corto_mount_on_delete(
 {
 /* $begin(corto/core/mount/on_delete) */
 
-    if (this->type) {
-        corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
-        if (!strcmp(this->type, srcType)) {
+    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
+        if (this->type) {
+            corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+            if (!strcmp(this->type, srcType)) {
+                this->sent.deletes ++;
+                corto_mount_onDelete(this, observable);
+            }
+        } else {
             this->sent.deletes ++;
             corto_mount_onDelete(this, observable);
         }
-    } else {
-        this->sent.deletes ++;
-        corto_mount_onDelete(this, observable);
     }
 
 /* $end */
@@ -212,7 +214,7 @@ corto_void _corto_mount_on_update(
 {
 /* $begin(corto/core/mount/on_update) */
 
-    if (corto_checkAttr(observable, CORTO_ATTR_WRITABLE)) {
+    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
         if (this->type) {
             corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
             if (!strcmp(this->type, srcType)) {
