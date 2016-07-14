@@ -7573,7 +7573,7 @@ corto_int16 _corto_wordDeinit(corto_word* value) {
 corto_int32* corto_int32seqAppend(corto_int32seq *seq, corto_int32 element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
+    seq->buffer = (corto_int32*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     corto_copyp(&seq->buffer[seq->length-1], corto_int32_o, &element);
     return &seq->buffer[seq->length-1];
@@ -7582,14 +7582,14 @@ corto_int32* corto_int32seqAppend(corto_int32seq *seq, corto_int32 element) {
 corto_int32* corto_int32seqAppendAlloc(corto_int32seq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
+    seq->buffer = (corto_int32*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_int32seqSize(corto_int32seq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
+    seq->buffer = (corto_int32*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     if (length > seq->length) {
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
     }
@@ -7603,7 +7603,7 @@ void corto_int32seqClear(corto_int32seq *seq) {
 corto_interface* corto_interfaceseqAppend(corto_interfaceseq *seq, corto_interface element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
+    seq->buffer = (corto_interface*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     corto_setref(&seq->buffer[seq->length-1], element);
     return &seq->buffer[seq->length-1];
@@ -7612,14 +7612,14 @@ corto_interface* corto_interfaceseqAppend(corto_interfaceseq *seq, corto_interfa
 corto_interface* corto_interfaceseqAppendAlloc(corto_interfaceseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
+    seq->buffer = (corto_interface*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_interfaceseqSize(corto_interfaceseq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
+    seq->buffer = (corto_interface*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
@@ -7641,7 +7641,7 @@ void corto_interfaceseqClear(corto_interfaceseq *seq) {
 corto_interfaceVector* corto_interfaceVectorseqAppend(corto_interfaceVectorseq *seq, corto_interfaceVector element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interfaceVector_o))));
+    seq->buffer = (corto_interfaceVector*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interfaceVector_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
@@ -7655,7 +7655,7 @@ corto_interfaceVector* corto_interfaceVectorseqAppend(corto_interfaceVectorseq *
 corto_interfaceVector* corto_interfaceVectorseqAppendAlloc(corto_interfaceVectorseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interfaceVector_o))));
+    seq->buffer = (corto_interfaceVector*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_interfaceVector_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
@@ -7677,7 +7677,7 @@ void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 le
             }
         }
     }
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_interfaceVector_o))));
+    seq->buffer = (corto_interfaceVector*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_interfaceVector_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
@@ -7699,7 +7699,7 @@ void corto_interfaceVectorseqClear(corto_interfaceVectorseq *seq) {
 corto_member* corto_memberseqAppend(corto_memberseq *seq, corto_member element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_member_o))));
+    seq->buffer = (corto_member*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_member_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     corto_setref(&seq->buffer[seq->length-1], element);
     return &seq->buffer[seq->length-1];
@@ -7708,14 +7708,14 @@ corto_member* corto_memberseqAppend(corto_memberseq *seq, corto_member element) 
 corto_member* corto_memberseqAppendAlloc(corto_memberseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_member_o))));
+    seq->buffer = (corto_member*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_member_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_memberseqSize(corto_memberseq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_member_o))));
+    seq->buffer = (corto_member*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_member_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
@@ -7777,7 +7777,7 @@ void corto_objectlistClear(corto_objectlist list) {
 corto_object* corto_objectseqAppend(corto_objectseq *seq, corto_object element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_object_o))));
+    seq->buffer = (corto_object*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_object_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     corto_setref(&seq->buffer[seq->length-1], element);
     return &seq->buffer[seq->length-1];
@@ -7786,14 +7786,14 @@ corto_object* corto_objectseqAppend(corto_objectseq *seq, corto_object element) 
 corto_object* corto_objectseqAppendAlloc(corto_objectseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_object_o))));
+    seq->buffer = (corto_object*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_object_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_object_o))));
+    seq->buffer = (corto_object*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_object_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
@@ -7815,7 +7815,7 @@ void corto_objectseqClear(corto_objectseq *seq) {
 corto_octet* corto_octetseqAppend(corto_octetseq *seq, corto_octet element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_octet_o))));
+    seq->buffer = (corto_octet*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_octet_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     corto_copyp(&seq->buffer[seq->length-1], corto_octet_o, &element);
     return &seq->buffer[seq->length-1];
@@ -7824,14 +7824,14 @@ corto_octet* corto_octetseqAppend(corto_octetseq *seq, corto_octet element) {
 corto_octet* corto_octetseqAppendAlloc(corto_octetseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_octet_o))));
+    seq->buffer = (corto_octet*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_octet_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_octetseqSize(corto_octetseq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_octet_o))));
+    seq->buffer = (corto_octet*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_octet_o))));
     if (length > seq->length) {
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
     }
@@ -7845,7 +7845,7 @@ void corto_octetseqClear(corto_octetseq *seq) {
 corto_parameter* corto_parameterseqAppend(corto_parameterseq *seq, corto_parameter element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_parameter_o))));
+    seq->buffer = (corto_parameter*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_parameter_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
@@ -7859,7 +7859,7 @@ corto_parameter* corto_parameterseqAppend(corto_parameterseq *seq, corto_paramet
 corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_parameter_o))));
+    seq->buffer = (corto_parameter*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_parameter_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
@@ -7881,7 +7881,7 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
             }
         }
     }
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_parameter_o))));
+    seq->buffer = (corto_parameter*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_parameter_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
@@ -7903,7 +7903,7 @@ void corto_parameterseqClear(corto_parameterseq *seq) {
 corto_function* corto_vtableAppend(corto_vtable *seq, corto_function element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_function_o))));
+    seq->buffer = (corto_function*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_function_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     corto_setref(&seq->buffer[seq->length-1], element);
     return &seq->buffer[seq->length-1];
@@ -7912,14 +7912,14 @@ corto_function* corto_vtableAppend(corto_vtable *seq, corto_function element) {
 corto_function* corto_vtableAppendAlloc(corto_vtable *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_function_o))));
+    seq->buffer = (corto_function*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_function_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_vtableSize(corto_vtable *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_function_o))));
+    seq->buffer = (corto_function*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_function_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));

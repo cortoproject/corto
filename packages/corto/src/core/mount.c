@@ -327,6 +327,39 @@ corto_object _corto_mount_onResume_v(
 /* $end */
 }
 
+corto_word _corto_mount_onSubscribe_v(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask)
+{
+/* $begin(corto/core/mount/onSubscribe) */
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(parent);
+    CORTO_UNUSED(name);
+    CORTO_UNUSED(mask);
+
+    return 0;
+/* $end */
+}
+
+corto_void _corto_mount_onUnsubscribe_v(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask,
+    corto_word userData)
+{
+/* $begin(corto/core/mount/onUnsubscribe) */
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(parent);
+    CORTO_UNUSED(name);
+    CORTO_UNUSED(mask);
+    CORTO_UNUSED(userData);
+
+/* $end */
+}
+
 corto_void _corto_mount_onUpdate_v(
     corto_mount this,
     corto_object observable)
@@ -490,5 +523,85 @@ corto_int16 _corto_mount_setContentType(
 /* $begin(corto/core/mount/setContentType) */
     corto_setstr(&this->contentType, type);
     return 0;
+/* $end */
+}
+
+corto_void _corto_mount_subscribe(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask)
+{
+/* $begin(corto/core/mount/subscribe) */
+    corto_bool found = FALSE;
+    corto_mountSubscription *newSubscription = NULL;
+
+    corto_lock(this);
+    corto_mountSubscriptionListForeach(this->subscriptions, s) {
+        if (!strcmp(s->parent, parent) &&
+            !strcmp(s->expr, name) &&
+            s->mask == mask)
+        {
+            s->count ++;
+            found = TRUE;
+            break;
+        }
+    }
+    if (!found) {
+        newSubscription = corto_mountSubscriptionListAppendAlloc(
+            this->subscriptions);
+
+        corto_mountSubscriptionAssign(
+            newSubscription,
+            parent,
+            name,
+            mask,
+            1,
+            0);
+    }
+    corto_unlock(this);
+
+    if (newSubscription) {
+        newSubscription->userData = corto_mount_onSubscribe(
+            this, parent, name, mask);
+    }
+
+/* $end */
+}
+
+corto_void _corto_mount_unsubscribe(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask)
+{
+/* $begin(corto/core/mount/unsubscribe) */
+    corto_mountSubscription *found = NULL;
+
+    corto_lock(this);
+    corto_mountSubscriptionListForeach(this->subscriptions, s) {
+        if (!strcmp(s->parent, parent) &&
+            !strcmp(s->expr, name) &&
+            s->mask == mask)
+        {
+            found = s;
+            break;
+        }
+    }
+    if (found) {
+        if (! --found->count) {
+            corto_llRemove(this->subscriptions, found);
+        } else {
+            found = NULL;
+        }
+    }
+    corto_unlock(this);
+
+    if (found) {
+        corto_mount_onUnsubscribe(this, parent, name, mask, found->userData);
+        corto_deinitp(found, corto_mountSubscription_o);
+        corto_dealloc(found);
+    }
+
 /* $end */
 }
