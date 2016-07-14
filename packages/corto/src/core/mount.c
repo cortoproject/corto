@@ -54,7 +54,7 @@ void* corto_mount_thread(void* arg) {
     corto_uint32 nanosec = 0;
 
     if (frequency >= 0) {
-        nanosec = (1.0 / frequency) * 100000000.0;
+        nanosec = (1.0 / frequency) * 1000000000.0;
     }
 
     while (!this->quit) {

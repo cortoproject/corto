@@ -112,6 +112,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Animal.h>
 #include <AnonymousTest.h>
 #include <Args.h>
+#include <Attributes.h>
 #include <Bar.h>
 #include <Buffer.h>
 #include <Cat.h>
@@ -124,6 +125,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <EmptySinkReplicator.h>
 #include <Env.h>
 #include <Event.h>
+#include <EventReplicator.h>
 #include <EventTest.h>
 #include <Foo.h>
 #include <FooReplicator.h>
@@ -142,6 +144,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Point.h>
 #include <Point3D.h>
 #include <RelativeName.h>
+#include <ReplicatorEvent.h>
 #include <ReplicatorRequest.h>
 #include <Resolver.h>
 #include <ResumeSink.h>

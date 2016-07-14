@@ -61,6 +61,11 @@ struct DefinedParent: parentState = defined ::
 struct DeclaredParent: parentState = declared::
     foo: int32
 
+test/Suite Attributes::
+    void tc_testDefaultSet()
+    void tc_isDefaultPersistent()
+    void tc_isDefaultScopedPersistent()
+
 // Object management testcases
 test/Suite ObjectMgmt::
     prevAttr: core::attr, local|private
@@ -542,6 +547,35 @@ test/Suite SelectSinkNoOnRequest::
 
     void tc_selectSingle()
     void tc_selectScope()
+
+
+class EventReplicator: mount, hidden::
+  alias mount: mount/mount
+  alias mask: mount/mask
+  alias type: mount/type
+  alias policy: mount/policy
+
+  declareCount: int32, readonly
+  updateCount: int32, readonly
+  deleteCount: int32, readonly
+
+  void onDeclare(object observable)
+  void onUpdate(object observable)
+  void onDelete(object observable)
+
+// Test events received by replicator
+test/Suite ReplicatorEvent::
+  void tc_event()
+  void tc_eventDefineWithUpdate()
+  void tc_eventTree()
+  void tc_eventWithTree()
+  void tc_eventTreeWithTree()
+  void tc_matchingType()
+  void tc_nonPersistent()
+  void tc_ownedByMount()
+  void tc_rateLimitOneObject()
+  void tc_rateLimitThreeObjects()
+
 
 // Event test support type
 class EventTest::
