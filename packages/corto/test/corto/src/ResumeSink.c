@@ -492,12 +492,81 @@ corto_void _test_ResumeSink_tc_resolveNested1FromMount(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 0);
 
-    /* Foo constructor modifies members */
+    /* Foo constructor modifies values */
     test_assert(o->x == 10);
     test_assert(o->y == 20);
 
     /* This should remove o from the store and "suspend" it to the sink */
     corto_release(o);
+    corto_release(sinkMount);
+    corto_release(mount);
+
+    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_destructCalled_o, 2);
+    test_assertint(this->declared, 2);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 2);
+    test_assertint(this->suspended, 2);
+
+/* $end */
+}
+
+corto_void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveNested1FromObjectFromMount) */
+
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
+
+    corto_object sinkMount = corto_resolve(root_o, "sinkMount");
+    test_assert(sinkMount != NULL);
+
+    corto_object mount = corto_resolve(root_o, "mount");
+    test_assert(mount != NULL);
+
+    corto_object x = corto_resolve(mount, "x");
+    test_assert(x != NULL);
+
+    test_assertint(*test_constructCalled_o, 1);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 1);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 1);
+    test_assertint(this->suspended, 0);
+
+    test_Foo o = corto_resolve(x, "a");
+    test_assert(o != NULL);
+    test_assert(corto_typeof(o) == corto_type(test_Foo_o));
+    test_assert(corto_ownerof(o) == sinkMount);
+    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+
+    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 2);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 2);
+    test_assertint(this->suspended, 0);
+
+    test_assert(o->x == 10);
+    test_assert(o->y == 20);
+
+    /* This should remove o from the store and "suspend" it to the sink */
+    corto_release(o);
+    corto_release(x);
     corto_release(sinkMount);
     corto_release(mount);
 
@@ -640,6 +709,89 @@ corto_void _test_ResumeSink_tc_resolveNested2FromMount(
 
     /* This should remove o from the store and "suspend" it to the sink */
     corto_release(o);
+    corto_release(sinkMount);
+    corto_release(mount);
+
+    test_assertint(*test_constructCalled_o, 3);
+    test_assertint(*test_destructCalled_o, 3);
+    test_assertint(this->declared, 3);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 3);
+    test_assertint(this->suspended, 3);
+
+/* $end */
+}
+
+corto_void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveNested2FromObjectFromMount) */
+
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
+
+    corto_object sinkMount = corto_resolve(root_o, "sinkMount");
+    test_assert(sinkMount != NULL);
+
+    corto_object mount = corto_resolve(root_o, "mount");
+    test_assert(mount != NULL);
+
+    corto_object x = corto_resolve(mount, "x");
+    test_assert(x != NULL);
+
+    test_assertint(*test_constructCalled_o, 1);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 1);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 1);
+    test_assertint(this->suspended, 0);
+
+    corto_object a = corto_resolve(x, "a");
+    test_assert(a != NULL);
+
+    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 2);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 2);
+    test_assertint(this->suspended, 0);
+
+    test_Foo o = corto_resolve(a, "k");
+    test_assert(o != NULL);
+    test_assert(corto_typeof(o) == corto_type(test_Foo_o));
+    test_assert(corto_ownerof(o) == sinkMount);
+    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+
+    test_assertint(*test_constructCalled_o, 3);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 3);
+    test_assertint(this->defined, 0);
+    test_assertint(this->deleted, 0);
+    test_assertint(this->updated, 0);
+    test_assertint(this->resumed, 3);
+    test_assertint(this->suspended, 0);
+
+    /* Foo constructor modifies members */
+    test_assert(o->x == 10);
+    test_assert(o->y == 20);
+
+    /* This should remove o from the store and "suspend" it to the sink */
+    corto_release(o);
+    corto_release(a);
+    corto_release(x);
     corto_release(sinkMount);
     corto_release(mount);
 

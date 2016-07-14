@@ -1150,7 +1150,7 @@ corto_object corto_resume(
                 /* Either the mount registered for the direct parent of the
                  * provided object, or the mount must have ON_TREE set */
                 if ((p == parent) ||
-                  (rData->mount->mask == CORTO_ON_TREE)) {
+                  (rData->mount->mask & CORTO_ON_TREE)) {
                     corto_object requested;
 
                     /* If mount implements resume, this will load the

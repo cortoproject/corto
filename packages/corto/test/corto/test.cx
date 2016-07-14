@@ -506,6 +506,8 @@ test/Suite ResumeSink::
     void tc_resolveFromMount()
     void tc_resolveNested1FromMount()
     void tc_resolveNested2FromMount()
+    void tc_resolveNested1FromObjectFromMount()
+    void tc_resolveNested2FromObjectFromMount()
     void tc_define()
     void tc_defineNested1()
     void tc_defineNested2()
