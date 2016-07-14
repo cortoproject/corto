@@ -281,9 +281,13 @@ task :install do
 
         # Keep track of installed include files
         installFiles.each do |f|
-          newFile = f.pathmap("#{includePath}/%{^include/,}p")
           if SOFTLINKS then
-            sh "ln -fs #{Dir.getwd + "/" + f} #{newFile}"
+            file = Dir.getwd + "/" + f
+            newFile = f.pathmap("#{includePath}/%{^include/,}p")
+            if File.directory? file then
+              newFile = File.dirname(newFile) + "/"
+            end
+            sh "ln -fs #{file} #{newFile}"
           end
           UNINSTALL << newFile
         end
