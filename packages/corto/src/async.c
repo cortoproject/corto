@@ -250,15 +250,15 @@ int corto_semFree(corto_sem semaphore) {
 int corto_ainc(int* count) {
     int value;
 #ifdef __GNUC__
-    __asm__ __volatile__ (
+    /*__asm__ __volatile__ (
             "movl $1, %0\n\t"
             "lock\n\t"
             "xaddl %0, %2\n\t"
             "incl %0"
     :       "=&r" (value), "=m" (*count)
     :       "m" (*count)
-    :       "memory");
-
+    :       "memory");*/
+    value = __sync_add_and_fetch (count, 1);
     return value;
 #else
     AtomicModify( count, &value, 0, 1 );
@@ -269,15 +269,15 @@ int corto_ainc(int* count) {
 int corto_adec(int* count) {
     int value;
 #ifdef __GNUC__
-    __asm__ __volatile__ (
+    /*__asm__ __volatile__ (
             "movl $-1, %0\n\t"
             "lock\n\t"
             "xaddl %0, %2\n\t"
             "decl %0"
     :       "=&r" (value), "=m" (*count)
     :       "m" (*count)
-    :       "memory");
-
+    :       "memory");*/
+    value = __sync_sub_and_fetch (count, 1);
     return value;
 #else
     AtomicModify( count, &value, 0, -1 );
