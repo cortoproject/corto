@@ -127,7 +127,8 @@ corto_void _corto_mount_destruct(
 {
 /* $begin(corto/core/mount/destruct) */
 
-    CORTO_UNUSED(this);
+    this->quit = TRUE;
+    corto_threadJoin((corto_thread)this->thread, NULL);
 
 /* $end */
 }

@@ -1225,7 +1225,9 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
         /* If object is instance of a class, call the constructor */
         if (corto_class_instanceof(corto_class_o, t)) {
             /* Call constructor - will potentially override observer params */
+            corto_attr prev = corto_setAttr(CORTO_ATTR_DEFAULT);
             result = corto_delegateConstruct(t, o);
+            corto_setAttr(prev);
         } else if (corto_class_instanceof(corto_procedure_o, t)) {
             result = corto_delegateConstruct(t, o);
         }
@@ -1569,6 +1571,19 @@ corto_int8 corto_stateof(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto_int8 state = _o->attrs.state;
     return state;
+}
+
+corto_int8 corto_attrof(corto_object o) {
+    corto__object* _o;
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+
+    corto_int8 attr =
+      _o->attrs.scope |
+      (_o->attrs.write << 1) |
+      (_o->attrs.observable << 2) |
+      (_o->attrs.persistent << 3);
+
+    return attr;
 }
 
 /* Get contentstring */

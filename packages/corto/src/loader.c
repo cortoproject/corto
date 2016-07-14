@@ -303,9 +303,6 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     int result = -1;
     struct corto_fileAdmin *lib = NULL;
 
-    /* Packages should be loaded with minimal attributes to conserve memory */
-    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT);
-
     corto_mutexLock(&corto_adminLock);
     lib = corto_fileAdminFind(str);
     if (lib) {
@@ -370,13 +367,10 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     }
     corto_mutexUnlock(&corto_adminLock);
 
-    corto_setAttr(prevAttr);
     return result;
 error:
-    corto_setAttr(prevAttr);
     return -1;
 loaded:
-    corto_setAttr(prevAttr);
     return result;
 }
 

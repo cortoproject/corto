@@ -139,6 +139,15 @@ test/Suite ObjectMgmt::
     void tc_nameof()
     void tc_nameofOverride()
 
+// Test whether attributes are set correctly in different contexts
+class AttrConstructorTest::
+  int16 construct()
+  
+test/Suite AttrCheck::
+    void tc_packageMainAttr()
+    void tc_packageObjectAttr()
+    void tc_constructorAttr()
+
 // Test compare serializer
 test/Suite Compare::
     void tc_uint8()
