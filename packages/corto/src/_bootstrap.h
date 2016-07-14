@@ -468,7 +468,9 @@ CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
+CORTO_FWDECL_CORE(class, subscriber);
 CORTO_FWDECL_CORE(class, mount);
+
 CORTO_FWDECL(class, sequence);
 CORTO_FWDECL(class, struct);
 CORTO_FWDECL(class, union);
@@ -1089,6 +1091,16 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 /* /corto/lang/dispatcher */
 CORTO_INTERFACE_O(core, dispatcher);
     CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
+
+/* /corto/core/subscriber */
+CORTO_FW_CD(core, subscriber);
+CORTO_CLASS_NOBASE_O(core, subscriber, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, mask, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, observer, core_observer, CORTO_PRIVATE|CORTO_LOCAL);
+    CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, FALSE, corto_subscriber_construct);
+    CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, FALSE, corto_subscriber_destruct);
 
 /* /corto/core/mountStats */
 CORTO_STRUCT_O(core, mountStats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

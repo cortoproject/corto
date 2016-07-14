@@ -27,6 +27,7 @@ CORTO_META_OBJECT(class, observableEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
+CORTO_META_OBJECT(class, subscriber);
 CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(class, loader);
 CORTO_META_OBJECT(struct, augmentData);

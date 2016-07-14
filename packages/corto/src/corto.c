@@ -137,6 +137,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
+    SSO_OP_CLASS(op, subscriber);\
     SSO_OP_CLASS(op, mount);\
     SSO_OP_CLASS(op, loader);\
     SSO_OP_CLASS(op, native_type);\
@@ -581,6 +582,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mountSubscription_mask);\
     SSO_OP_OBJ_CORE(op, mountSubscription_count);\
     SSO_OP_OBJ_CORE(op, mountSubscription_userData);\
+    /* subscriber */\
+    SSO_OP_OBJ_CORE(op, subscriber_parent);\
+    SSO_OP_OBJ_CORE(op, subscriber_expr);\
+    SSO_OP_OBJ_CORE(op, subscriber_mask);\
+    SSO_OP_OBJ_CORE(op, subscriber_observer);\
+    SSO_OP_OBJ_CORE(op, subscriber_construct_);\
+    SSO_OP_OBJ_CORE(op, subscriber_destruct_);\
     /* mount */\
     SSO_OP_OBJ_CORE(op, mount_mount);\
     SSO_OP_OBJ_CORE(op, mount_mask);\

@@ -33,6 +33,7 @@ extern "C" {
 #include <corto/core/remote.h>
 #include <corto/core/request.h>
 #include <corto/core/result.h>
+#include <corto/core/subscriber.h>
 #include <corto/core/time.h>
 
 #ifdef __cplusplus

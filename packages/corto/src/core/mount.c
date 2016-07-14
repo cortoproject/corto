@@ -126,8 +126,18 @@ corto_void _corto_mount_destruct(
     corto_mount this)
 {
 /* $begin(corto/core/mount/destruct) */
+    corto_mountSubscription *s = NULL;
 
-    CORTO_UNUSED(this);
+    while ((s = corto_llTakeFirst(this->subscriptions))) {
+        corto_mount_onUnsubscribe(
+            this,
+            s->parent,
+            s->expr,
+            s->mask,
+            s->userData);
+        corto_deinitp(s, corto_mountSubscription_o);
+        corto_dealloc(s);
+    }
 
 /* $end */
 }

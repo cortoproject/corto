@@ -891,6 +891,37 @@ CORTO_EXPORT corto_int16 _corto_resultListInit(corto_resultList* value);
 CORTO_EXPORT corto_int16 _corto_resultListDeinit(corto_resultList* value);
 #define corto_resultListDeinit(value) _corto_resultListDeinit(value)
 
+/* /corto/core/subscriber */
+CORTO_EXPORT corto_subscriber _corto_subscriberCreate(corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberCreate(parent, expr, mask) _corto_subscriberCreate(parent, expr, mask)
+#define corto_subscriberCreate_auto(_name, parent, expr, mask) corto_subscriber _name = corto_subscriberCreate(parent, expr, mask); (void)_name
+CORTO_EXPORT corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberCreateChild(_parent, _name, parent, expr, mask) _corto_subscriberCreateChild(_parent, _name, parent, expr, mask)
+#define corto_subscriberCreateChild_auto(_parent, _name, parent, expr, mask) corto_subscriber _name = corto_subscriberCreateChild(_parent, #_name, parent, expr, mask); (void)_name
+CORTO_EXPORT corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberUpdate(_this, parent, expr, mask) _corto_subscriberUpdate(corto_subscriber(_this), parent, expr, mask)
+
+CORTO_EXPORT corto_subscriber _corto_subscriberDeclare(void);
+#define corto_subscriberDeclare() _corto_subscriberDeclare()
+#define corto_subscriberDeclare_auto(_name) corto_subscriber _name = corto_subscriberDeclare(); (void)_name
+CORTO_EXPORT corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_string _name);
+#define corto_subscriberDeclareChild(_parent, _name) _corto_subscriberDeclareChild(_parent, _name)
+#define corto_subscriberDeclareChild_auto(_parent, _name) corto_subscriber _name = corto_subscriberDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberDefine(_this, parent, expr, mask) _corto_subscriberDefine(corto_subscriber(_this), parent, expr, mask)
+CORTO_EXPORT corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriber__optional_NotSet NULL
+#define corto_subscriber__optional_Set(parent, expr, mask) corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), parent, expr, mask)
+#define corto_subscriber__optional_SetCond(cond, parent, expr, mask) cond ? corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), parent, expr, mask) : NULL
+#define corto_subscriberUnset(_this) _this ? corto_deinitp(_this, corto_subscriber_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_subscriberAssign(_this, parent, expr, mask) _corto_subscriberAssign(corto_subscriber(_this), parent, expr, mask)
+#define corto_subscriberSet(_this, parent, expr, mask) _this = _this ? _this : (corto_subscriber*)corto_calloc(sizeof(corto_subscriber)); _corto_subscriberAssign(corto_subscriber(_this), parent, expr, mask)
+CORTO_EXPORT corto_string _corto_subscriberStr(corto_subscriber value);
+#define corto_subscriberStr(value) _corto_subscriberStr(corto_subscriber(value))
+CORTO_EXPORT corto_subscriber corto_subscriberFromStr(corto_subscriber value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_subscriberCompare(corto_subscriber dst, corto_subscriber src);
+#define corto_subscriberCompare(dst, src) _corto_subscriberCompare(corto_subscriber(dst), corto_subscriber(src))
+
 /* /corto/core/time */
 CORTO_EXPORT corto_time* _corto_timeCreate(corto_int32 sec, corto_uint32 nanosec);
 #define corto_timeCreate(sec, nanosec) _corto_timeCreate(sec, nanosec)

@@ -1473,8 +1473,3 @@ corto_selectSelector corto_select(
     request->expr = expr;
     return corto_selectSelectorGet();
 }
-
-corto_int16 corto_selectErr() {
-    corto_selectRequest *request = corto_threadTlsGet(CORTO_KEY_SELECT);
-    return request != NULL ? request->err : -1;
-}
