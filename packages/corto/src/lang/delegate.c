@@ -8,10 +8,10 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_delegate_bind(
+corto_int16 _corto_delegate_construct(
     corto_function object)
 {
-/* $begin(corto/lang/delegate/bind) */
+/* $begin(corto/lang/delegate/construct) */
     corto_object parent = corto_parentof(object);
 
     if (corto_class_instanceof(corto_interface_o, corto_typeof(parent))) {

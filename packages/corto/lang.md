@@ -250,7 +250,7 @@ Scalar integer type used for enumerations and bitmasks.
 ## delegate
 Enables construction of delegate types.
 
-### bind(function object)
+### construct(function object)
 #### object
 #### Returns
 ### castable(type type)
@@ -317,7 +317,7 @@ Enables construction of floating point types.
 ## function
 Enables construction of procedure objects.
 
-### bind()
+### construct()
 #### Returns
 ### impl
 Callback to the language-binding specific handler for invoking functions.
@@ -355,7 +355,7 @@ The size on stack of the function argument list.
 #### name
 #### scope
 #### Returns
-### unbind(function object)
+### destruct(function object)
 #### object
 
 ## initAction
@@ -504,14 +504,14 @@ Sequence of member elements.
 ## metaprocedure
 Procedure defined on the meta (type of type) level.
 
-### bind()
+### construct()
 #### Returns
 ### referenceOnly
 
 ## method
 Procedure type that provides instance methods.
 
-### bind()
+### construct()
 #### Returns
 ### init()
 #### Returns
@@ -620,11 +620,11 @@ An unsigned integer value.
 ## procedure
 Enables construction of procedure types.
 
-### bind
+### construct
 ### init()
 #### Returns
 ### kind
-### unbind(function object)
+### destruct(function object)
 #### object
 
 ## procedureKind

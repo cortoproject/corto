@@ -8,10 +8,10 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_function_bind(
+corto_int16 _corto_function_construct(
     corto_function this)
 {
-/* $begin(corto/lang/function/bind) */
+/* $begin(corto/lang/function/construct) */
     /* If no returntype is set, make it void */
     if (!this->returnType) {
         corto_setref(&this->returnType, corto_void_o);
@@ -62,7 +62,7 @@ corto_int16 _corto_function_bind(
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        if (corto_delegate_bind(this)) {
+        if (corto_delegate_construct(this)) {
             goto error;
         }
     }
@@ -272,10 +272,10 @@ error:
 /* $end */
 }
 
-corto_void _corto_function_unbind(
+corto_void _corto_function_destruct(
     corto_function object)
 {
-/* $begin(corto/lang/function/unbind) */
+/* $begin(corto/lang/function/destruct) */
     corto_uint32 i;
 
     corto_callDeinit(object);

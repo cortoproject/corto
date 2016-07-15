@@ -8,13 +8,13 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_method_bind(
+corto_int16 _corto_method_construct(
     corto_method this)
 {
-/* $begin(corto/lang/method/bind) */
+/* $begin(corto/lang/method/construct) */
 
     /* Bind function */
-    if (corto_function_bind(corto_function(this))) {
+    if (corto_function_construct(corto_function(this))) {
         goto error;
     }
 

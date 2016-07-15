@@ -14,10 +14,10 @@ corto_int16 corto_type_bindMetaprocedure(
     corto_metaprocedure procedure);
 /* $end */
 
-corto_int16 _corto_metaprocedure_bind(
+corto_int16 _corto_metaprocedure_construct(
     corto_metaprocedure this)
 {
-/* $begin(corto/lang/metaprocedure/bind) */
+/* $begin(corto/lang/metaprocedure/construct) */
     corto_object parent;
 
     parent = corto_parentof(this);
@@ -31,7 +31,7 @@ corto_int16 _corto_metaprocedure_bind(
         goto error;
     }
 
-    return corto_function_bind(corto_function(this));
+    return corto_function_construct(corto_function(this));
 error:
     return -1;
 /* $end */

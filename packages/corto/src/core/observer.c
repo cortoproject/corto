@@ -12,12 +12,12 @@
 #include "../lang/_class.h"
 /* $end */
 
-corto_int16 _corto_observer_bind(
+corto_int16 _corto_observer_construct(
     corto_observer this)
 {
-/* $begin(corto/core/observer/bind) */
+/* $begin(corto/core/observer/construct) */
 
-    /* If this is a scoped observer, automatically bind with parent if it's a class. */
+    /* If this is a scoped observer, automatically construct with parent if it's a class. */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
         this->_template = 1;
     }
@@ -25,7 +25,7 @@ corto_int16 _corto_observer_bind(
     /* Bind function. Run this function before listening to observable, as
      * the call handler must be initialized before the observer can be invoked.
      */
-    if (corto_function_bind(this)) {
+    if (corto_function_construct(this)) {
         goto error;
     }
 
@@ -167,16 +167,16 @@ corto_int16 _corto_observer_silence(
 /* $end */
 }
 
-corto_void _corto_observer_unbind(
+corto_void _corto_observer_destruct(
     corto_observer object)
 {
-/* $begin(corto/core/observer/unbind) */
+/* $begin(corto/core/observer/destruct) */
     if (!object->_template) {
         if (object->observable) {
             corto_silence(object->me, object, object->mask, object->observable);
         }
     }
 
-    corto_function_unbind(corto_function(object));
+    corto_function_destruct(corto_function(object));
 /* $end */
 }

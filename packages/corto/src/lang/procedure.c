@@ -26,15 +26,15 @@ error:
 /* $end */
 }
 
-corto_void _corto_procedure_unbind(
+corto_void _corto_procedure_destruct(
     corto_procedure this,
     corto_function object)
 {
-/* $begin(corto/lang/procedure/unbind) */
+/* $begin(corto/lang/procedure/destruct) */
     if (this->kind == CORTO_OBSERVER){
-        corto_observer_unbind(corto_observer(object));
+        corto_observer_destruct(corto_observer(object));
     } else {
-        corto_function_unbind(object);
+        corto_function_destruct(object);
     }
 /* $end */
 }

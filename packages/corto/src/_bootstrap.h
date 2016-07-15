@@ -111,17 +111,17 @@
  *     visible in the object-state) during bootstrap-initialization, because all information is then already available
  *     during initialization. This localized solution keeps the bootstrap smal(ler) and easier to comprehend.
  *
- *  6. The unbind callbacks are not resolved using a regular delegate-lookup function, but instead are directly
- *     forwarded to the corto_function_unbind function. Because procedures are destructed after the destruction of
+ *  6. The destruct callbacks are not resolved using a regular delegate-lookup function, but instead are directly
+ *     forwarded to the corto_function_destruct function. Because procedures are destructed after the destruction of
  *     all classes, the vtable of corto_procedure_o does no longer exist, so the callback lookup would crash.
- *     Because lang/function is the only object with an unbind this is a safe workaround. Consequence is that
- *     end-users won't be able to use the procedure/unbind delegate, which is acceptable.
+ *     Because lang/function is the only object with an destruct this is a safe workaround. Consequence is that
+ *     end-users won't be able to use the procedure/destruct delegate, which is acceptable.
  *
- *  7. The virtual method 'interface/bindMethod' is required to bind methods to classes and interfaces. However,
+ *  7. The virtual method 'interface/bindMethod' is required to construct methods to classes and interfaces. However,
  *     there is a bootstrap issue here (who binds bindMethod) which cannot be easily solved by a hard-coded
- *     bind of bindMethod. Since virtual methods are looked-up by methodId's, and methodId's are only stable
+ *     construct of bindMethod. Since virtual methods are looked-up by methodId's, and methodId's are only stable
  *     after the parent of a method is defined, bindMethod can only be looked up after both 'interface' and
- *     'class' are defined. To get defined though, these classes need to bind all their methods, hence the
+ *     'class' are defined. To get defined though, these classes need to construct all their methods, hence the
  *     bootstrap. This issue is solved by calling the method/init initializer call the implementations of the
  *     virtual method 'interface/bindMethod' directly, so no methodId lookup is required.
  *     For delegate functions this is the same, but here the implementation is easier, since the delegate/init
@@ -231,15 +231,15 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FW_C(parent, name) sso_method CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_IC(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_ICD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
-#define CORTO_FW_IB(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_bind_)
-#define CORTO_FW_B(parent, name) sso_method CORTO_ID(parent##_##name##_bind_)
+#define CORTO_FW_IB(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
+#define CORTO_FW_B(parent, name) sso_method CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_CD(parent, name) sso_method CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 
 /* Delegate assignments */
 #define CORTO_DELEGATE(name, delegate) {{NULL, (corto_function)&CORTO_ID(name##_##delegate##_).v}}
 #define CORTO_INIT(name) CORTO_DELEGATE(name, init)
 #define CORTO_CONSTRUCT(name) CORTO_DELEGATE(name, construct)
-#define CORTO_BIND(name) CORTO_DELEGATE(name, bind)
+#define CORTO_BIND(name) CORTO_DELEGATE(name, construct)
 #define CORTO_DESTRUCT(name) CORTO_DELEGATE(name, destruct)
 
 #define CORTO_I_TYPE(name) CORTO_INIT(name)
@@ -985,15 +985,15 @@ CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, NULL, CORTO_DECLARED 
     CORTO_METHOD_O(lang_delegate, compatible, "(type type)", lang_bool, TRUE, corto_delegate_compatible_v);
     CORTO_METHOD_O(lang_delegate, castable, "(type type)", lang_bool, TRUE, corto_delegate_compatible_v);
     CORTO_METHOD_O(lang_delegate, instanceof, "(object object)", lang_bool, FALSE, corto_delegate_instanceof);
-    CORTO_FUNCTION_O(lang_delegate, bind, "(function object)", lang_int16, corto_delegate_bind);
+    CORTO_FUNCTION_O(lang_delegate, construct, "(function object)", lang_int16, corto_delegate_construct);
 
 /* /corto/lang/procedure */
 CORTO_FW_I(lang, procedure);
 CORTO_CLASS_O(lang, procedure, lang_struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(lang_procedure, kind, lang_procedureKind, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_procedure, bind, lang_initAction, CORTO_LOCAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_procedure, construct, lang_initAction, CORTO_LOCAL|CORTO_READONLY);
     CORTO_METHOD_O(lang_procedure, init, "()", lang_int16, FALSE, corto_procedure_init);
-    CORTO_METHOD_O(lang_procedure, unbind, "(function object)", lang_void, FALSE, corto_procedure_unbind);
+    CORTO_METHOD_O(lang_procedure, destruct, "(function object)", lang_void, FALSE, corto_procedure_destruct);
 
 /* /corto/lang/array */
 CORTO_FW_ICD(lang, array);
@@ -1047,8 +1047,8 @@ CORTO_PROCEDURE_NOBASE_O(lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | 
     CORTO_MEMBER_O(lang_function, parameters, lang_parameterseq, CORTO_LOCAL | CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_function, nextParameterId, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(lang_function, init, "()", lang_int16, FALSE, corto_function_init);
-    CORTO_METHOD_O(lang_function, bind, "()", lang_int16, FALSE, corto_function_bind);
-    CORTO_FUNCTION_O(lang_function, unbind, "(function object)", lang_void, corto_function_unbind);
+    CORTO_METHOD_O(lang_function, construct, "()", lang_int16, FALSE, corto_function_construct);
+    CORTO_FUNCTION_O(lang_function, destruct, "(function object)", lang_void, corto_function_destruct);
     CORTO_FUNCTION_O(lang_function, stringToParameterSeq, "(string name,object scope)", lang_parameterseq, corto_function_stringToParameterSeq);
     CORTO_METHOD_O(lang_function, parseParamString, "(string params)", lang_int16, FALSE, corto_function_parseParamString);
 
@@ -1187,7 +1187,7 @@ CORTO_FW_IB(lang, method);
 CORTO_PROCEDURE_O(lang, method, CORTO_METHOD, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_IC);
     CORTO_MEMBER_O(lang_method, virtual, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(lang_method, init, "()", lang_int16, FALSE, corto_method_init);
-    CORTO_METHOD_O(lang_method, bind, "()", lang_int16, FALSE, corto_method_bind);
+    CORTO_METHOD_O(lang_method, construct, "()", lang_int16, FALSE, corto_method_construct);
 
 /* /corto/lang/virtual */
 CORTO_FW_I(lang, virtual);
@@ -1206,16 +1206,16 @@ CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | C
     CORTO_REFERENCE_O(core_observer, dispatcher, core_dispatcher, CORTO_GLOBAL|CORTO_HIDDEN, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(core_observer, template, lang_uint32, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_METHOD_O(core_observer, init, "()", lang_int16, FALSE, corto_observer_init);
-    CORTO_METHOD_O(core_observer, bind, "()", lang_int16, FALSE, corto_observer_bind);
+    CORTO_METHOD_O(core_observer, construct, "()", lang_int16, FALSE, corto_observer_construct);
     CORTO_METHOD_O(core_observer, listen, "(object observable,object me)", lang_int16, FALSE, corto_observer_listen);
     CORTO_METHOD_O(core_observer, silence, "(object me)", lang_int16, FALSE, corto_observer_silence);
     CORTO_METHOD_O(core_observer, setDispatcher, "(core/dispatcher dispatcher)", lang_void, FALSE, corto_observer_setDispatcher);
-    CORTO_FUNCTION_O(core_observer, unbind, "(observer object)", lang_void, corto_observer_unbind);
+    CORTO_FUNCTION_O(core_observer, destruct, "(observer object)", lang_void, corto_observer_destruct);
 
 /* /corto/lang/metaprocedure */
 CORTO_FW_B(lang, metaprocedure);
 CORTO_PROCEDURE_O(lang, metaprocedure, CORTO_METAPROCEDURE, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_B);
-    CORTO_METHOD_O(lang_metaprocedure, bind, "()", lang_int16, FALSE, corto_metaprocedure_bind);
+    CORTO_METHOD_O(lang_metaprocedure, construct, "()", lang_int16, FALSE, corto_metaprocedure_construct);
     CORTO_MEMBER_O(lang_metaprocedure, referenceOnly, lang_bool, CORTO_GLOBAL);
 
 /* /corto/lang/member */
