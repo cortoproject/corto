@@ -1093,16 +1093,10 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_int16 result = 0;
 
     if (t->kind == CORTO_COMPOSITE) {
-        if (corto_interface(t)->kind == CORTO_CLASS) {
+        if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
             corto_interface i = corto_interface(t);
             do {
                 delegate = corto_class(i)->construct._parent.procedure;
-                i = i->base;
-            } while(i && !delegate);
-        } else if (corto_interface(t)->kind == CORTO_PROCEDURE) {
-            corto_interface i = corto_interface(t);
-            do {
-                delegate = corto_procedure(i)->construct._parent.procedure;
                 i = i->base;
             } while(i && !delegate);
         }

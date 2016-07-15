@@ -231,8 +231,6 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FW_C(parent, name) sso_method CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_IC(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_ICD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
-#define CORTO_FW_IB(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
-#define CORTO_FW_B(parent, name) sso_method CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_CD(parent, name) sso_method CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 
 /* Delegate assignments */
@@ -371,10 +369,11 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_MAP_O(parent, name, elementType, keyType, max) sso_map parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_map), {CORTO_COLLECTION_V(parent, name, CORTO_MAP, elementType, max), (corto_type)&keyType##__o.v}}
 
 /* procedure object */
-#define CORTO_PROCEDURE_O(parent, name, kind, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_procedure parent##_##name##__o = \
-        {CORTO_SSO_V(parent, #name, lang_procedure), {CORTO_STRUCT_V(parent, name, CORTO_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(parent##_##name)}}
 #define CORTO_PROCEDURE_NOBASE_O(parent, name, kind, scopeType, scopeStateKind, DELEGATE) sso_procedure parent##_##name##__o = \
-        {CORTO_SSO_V(parent, #name, lang_procedure), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_PROCEDURE, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(parent##_##name)}}
+    {CORTO_SSO_V(parent, #name, lang_procedure), {{CORTO_STRUCT_NOBASE_V(parent, name, CORTO_PROCEDURE, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), {0,NULL}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}, kind}}
+
+#define CORTO_PROCEDURE_O(parent, name, kind, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_procedure parent##_##name##__o = \
+        {CORTO_SSO_V(parent, #name, lang_procedure), {{CORTO_STRUCT_V(parent, name, CORTO_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), {0,NULL}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}, kind}}
 
 /* function object */
 #define CORTO_FUNCTION_O(parent, name, args, returnType, impl) \
@@ -989,11 +988,9 @@ CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, NULL, CORTO_DECLARED 
 
 /* /corto/lang/procedure */
 CORTO_FW_I(lang, procedure);
-CORTO_CLASS_O(lang, procedure, lang_struct, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_CLASS_O(lang, procedure, lang_class, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(lang_procedure, kind, lang_procedureKind, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_procedure, construct, lang_initAction, CORTO_LOCAL|CORTO_READONLY);
     CORTO_METHOD_O(lang_procedure, init, "()", lang_int16, FALSE, corto_procedure_init);
-    CORTO_METHOD_O(lang_procedure, destruct, "(function object)", lang_void, FALSE, corto_procedure_destruct);
 
 /* /corto/lang/array */
 CORTO_FW_ICD(lang, array);
@@ -1033,7 +1030,7 @@ CORTO_CLASS_O(lang, map, lang_collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CO
     CORTO_METHOD_O(lang_map, construct, "()", lang_int16, FALSE, corto_map_construct);
 
 /* /corto/lang/function */
-CORTO_FW_IB(lang, function);
+CORTO_FW_IC(lang, function);
 CORTO_PROCEDURE_NOBASE_O(lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_REFERENCE_O(lang_function, returnType, lang_type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(lang_function, returnsReference, lang_bool, CORTO_GLOBAL);
@@ -1183,7 +1180,7 @@ CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, NULL, CORTO_DECLARE
     CORTO_METHOD_O(core_invokeEvent, handle, "()", lang_void, TRUE, corto_invokeEvent_handle_v);
 
 /* /corto/lang/method */
-CORTO_FW_IB(lang, method);
+CORTO_FW_IC(lang, method);
 CORTO_PROCEDURE_O(lang, method, CORTO_METHOD, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_IC);
     CORTO_MEMBER_O(lang_method, virtual, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(lang_method, init, "()", lang_int16, FALSE, corto_method_init);
@@ -1198,7 +1195,7 @@ CORTO_PROCEDURE_O(lang, virtual, CORTO_METHOD, lang_method, CORTO_GLOBAL, CORTO_
 CORTO_PROCEDURE_O(core, remote, CORTO_METHOD, lang_method, CORTO_GLOBAL, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, CORTO_NODELEGATE);
 
 /* /corto/core/observer */
-CORTO_FW_IB(core, observer);
+CORTO_FW_IC(core, observer);
 CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_MEMBER_O(core_observer, mask, core_eventMask, CORTO_GLOBAL);
     CORTO_REFERENCE_O(core_observer, observable, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
@@ -1213,8 +1210,8 @@ CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | C
     CORTO_FUNCTION_O(core_observer, destruct, "(observer object)", lang_void, corto_observer_destruct);
 
 /* /corto/lang/metaprocedure */
-CORTO_FW_B(lang, metaprocedure);
-CORTO_PROCEDURE_O(lang, metaprocedure, CORTO_METAPROCEDURE, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_B);
+CORTO_FW_C(lang, metaprocedure);
+CORTO_PROCEDURE_O(lang, metaprocedure, CORTO_METAPROCEDURE, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_C);
     CORTO_METHOD_O(lang_metaprocedure, construct, "()", lang_int16, FALSE, corto_metaprocedure_construct);
     CORTO_MEMBER_O(lang_metaprocedure, referenceOnly, lang_bool, CORTO_GLOBAL);
 

@@ -527,9 +527,8 @@ typedef enum corto_procedureKind {
 CORTO_CLASS(corto_procedure);
 
 CORTO_CLASS_DEF(corto_procedure) {
-    CORTO_EXTEND(corto_struct);
+    CORTO_EXTEND(corto_class);
     corto_procedureKind kind;
-    corto_initAction construct;
 };
 
 /*  sequence */
@@ -590,4 +589,3 @@ typedef void corto_void;
 }
 #endif
 #endif
-

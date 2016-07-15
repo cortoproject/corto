@@ -228,7 +228,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 #define SSO_OP_OBJECT(op)\
     SSO_OP_OBJ(op, class_construct_);\
     SSO_OP_OBJ(op, class_destruct_);\
-    SSO_OP_OBJ(op, procedure_destruct_);\
     /* constant */\
     SSO_OP_OBJ(op, constant_init_);\
     /* function */\
@@ -551,7 +550,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, union_findCase_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
-    SSO_OP_OBJ(op, procedure_construct);\
     SSO_OP_OBJ(op, procedure_init_);\
     /* interfaceVector */\
     SSO_OP_OBJ(op, interfaceVector_interface);\
