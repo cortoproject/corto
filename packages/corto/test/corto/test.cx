@@ -139,6 +139,15 @@ test/Suite ObjectMgmt::
     void tc_nameof()
     void tc_nameofOverride()
 
+// Test whether attributes are set correctly in different contexts
+class AttrConstructorTest::
+  int16 construct()
+  
+test/Suite AttrCheck::
+    void tc_packageMainAttr()
+    void tc_packageObjectAttr()
+    void tc_constructorAttr()
+
 // Test compare serializer
 test/Suite Compare::
     void tc_uint8()
@@ -506,6 +515,8 @@ test/Suite ResumeSink::
     void tc_resolveFromMount()
     void tc_resolveNested1FromMount()
     void tc_resolveNested2FromMount()
+    void tc_resolveNested1FromObjectFromMount()
+    void tc_resolveNested2FromObjectFromMount()
     void tc_define()
     void tc_defineNested1()
     void tc_defineNested2()

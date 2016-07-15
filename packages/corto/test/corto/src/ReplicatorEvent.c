@@ -8,7 +8,7 @@
 
 #include <test.h>
 
-/* $header */
+/* $header() */
 #include <math.h>
 /* $end */
 

@@ -128,6 +128,10 @@ corto_void _corto_mount_destruct(
 /* $begin(corto/core/mount/destruct) */
     corto_mountSubscription *s = NULL;
 
+    /* Signal thread ASAP to stop */
+    this->quit = TRUE;
+
+    /* Unsubscribe from actibe subscriptions */
     while ((s = corto_llTakeFirst(this->subscriptions))) {
         corto_mount_onUnsubscribe(
             this,
@@ -138,6 +142,8 @@ corto_void _corto_mount_destruct(
         corto_deinitp(s, corto_mountSubscription_o);
         corto_dealloc(s);
     }
+
+    corto_threadJoin((corto_thread)this->thread, NULL);
 
 /* $end */
 }
