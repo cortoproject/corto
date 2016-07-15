@@ -149,22 +149,12 @@ extern "C" {
 typedef struct sso_##type {\
     corto_SSO o;\
     corto_##type v;\
-    struct { /* vtable */\
-        corto_uint32 length;\
-        void* buffer;\
-    }vtable;\
-    corto_object vbuff[16];\
 }sso_##type
 
 #define CORTO_STATIC_SCOPED_REFOBJECT(type)\
 typedef struct sso_##type {\
     corto_SSO o;\
     struct corto_##type##_s v;\
-    struct { /* vtable */\
-        corto_uint32 length;\
-        void* buffer;\
-    } vtable;\
-    corto_object vbuff[16];\
 }sso_##type
 
 /* Static Scoped Object */
@@ -175,7 +165,6 @@ typedef struct corto_SSO {
 
 /* Static Scoped Observable Object */
 typedef struct corto_SSOO {
-    corto__persistent p;
     corto__observable v;
     corto__scope s;
     corto__object o;
@@ -219,20 +208,19 @@ CORTO_STATIC_SCOPED_OBJECT(parameter);
 
 CORTO_STATIC_SCOPED_OBJECT(constant);
 
-#define VTABLE_V {16,NULL},{NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL}
 #define CORTO_FWDECL_SSO(type, name) sso_##type name##__o
 #define CORTO_FWDECL(type, name) CORTO_FWDECL_SSO(type, lang_##name); corto_##type corto_##name##_o = &lang_##name##__o.v
 #define CORTO_FWDECL_CORE(type, name) CORTO_FWDECL_SSO(type, core_##name); corto_##type corto_##name##_o = &core_##name##__o.v
 #define CORTO_FWDECL_NATIVE(type, name) CORTO_FWDECL_SSO(type, native_##name); corto_##type corto_native_##name##_o = &native_##name##__o.v
 
 /* SSO */
-#define CORTO_ATTR_SSOO {1, 0, 1, 1, CORTO_VALID | CORTO_DECLARED}
-#define CORTO_ATTR_SSO {1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}
-#define CORTO_ATTR_SO {0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}
-#define CORTO_ROOT_V() {{NULL},{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&core_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{NULL},{NULL,NULL,CORTO_RWMUTEX_INITIALIZER,CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&core_package__o.v}}, {uri}
-#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
-#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock)CORTO_RWMUTEX_INITIALIZER, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
+#define CORTO_ATTR_SSOO {{1, 0, 1, 0, CORTO_VALID | CORTO_DECLARED}}
+#define CORTO_ATTR_SSO {{1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
+#define CORTO_ATTR_SO {{0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
+#define CORTO_ROOT_V() {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&core_package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&core_package__o.v}}, {uri}
+#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
+#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
 
 /* SSO identifier */
 #define CORTO_ID(name) name##__o
@@ -317,127 +305,127 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_PACKAGE_O_SCOPE(parent, name, uri) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(parent, #name, uri)}
 
 /* type object */
-#define CORTO_TYPE_O(parent, name, kind, reference) static sso_type parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_type), CORTO_TYPE_V(parent, name, kind, reference, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), VTABLE_V}
+#define CORTO_TYPE_O(parent, name, kind, reference) static sso_type parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_type), CORTO_TYPE_V(parent, name, kind, reference, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE)}
 
 /* primitive object */
-#define CORTO_PRIMITIVE_O(parent, name, kind, width) sso_primitive parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_primitive), CORTO_PRIMITIVE_V(parent, name, kind, width, CORTO_NODELEGATE), VTABLE_V}
+#define CORTO_PRIMITIVE_O(parent, name, kind, width) sso_primitive parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_primitive), CORTO_PRIMITIVE_V(parent, name, kind, width, CORTO_NODELEGATE)}
 
 /* binary object */
-#define CORTO_BINARY_O(parent, name, width) sso_binary parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_binary), {CORTO_PRIMITIVE_V(parent, name, CORTO_BINARY, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
+#define CORTO_BINARY_O(parent, name, width) sso_binary parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_binary), {CORTO_PRIMITIVE_V(parent, name, CORTO_BINARY, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}}
 
 /* boolean object */
-#define CORTO_BOOLEAN_O(parent, name) sso_boolean parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_boolean), {CORTO_PRIMITIVE_V(parent, name, CORTO_BOOLEAN, CORTO_WIDTH_8, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
+#define CORTO_BOOLEAN_O(parent, name) sso_boolean parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_boolean), {CORTO_PRIMITIVE_V(parent, name, CORTO_BOOLEAN, CORTO_WIDTH_8, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}}
 
 /* character object */
-#define CORTO_CHARACTER_O(parent, name, width) sso_character parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_character), {CORTO_PRIMITIVE_V(parent, name, CORTO_CHARACTER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}, VTABLE_V}
+#define CORTO_CHARACTER_O(parent, name, width) sso_character parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_character), {CORTO_PRIMITIVE_V(parent, name, CORTO_CHARACTER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE)}}
 
 /* int object */
-#define CORTO_INT_O(parent, name, width, min, max, scopeType, scopeStateKind, DELEGATE) sso_int parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_int), {CORTO_PRIMITIVE_V(parent, name, CORTO_INTEGER, width, scopeType, scopeStateKind, DELEGATE), min, max}, VTABLE_V}
+#define CORTO_INT_O(parent, name, width, min, max, scopeType, scopeStateKind, DELEGATE) sso_int parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_int), {CORTO_PRIMITIVE_V(parent, name, CORTO_INTEGER, width, scopeType, scopeStateKind, DELEGATE), min, max}}
 
 /* uint object */
-#define CORTO_UINT_O(parent, name, width, min, max) sso_uint parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_uint), {CORTO_PRIMITIVE_V(parent, name, CORTO_UINTEGER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}, VTABLE_V}
+#define CORTO_UINT_O(parent, name, width, min, max) sso_uint parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_uint), {CORTO_PRIMITIVE_V(parent, name, CORTO_UINTEGER, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}}
 
 /* float object */
-#define CORTO_FLOAT_O(parent, name, width, min, max) sso_float parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_float), {CORTO_PRIMITIVE_V(parent, name, CORTO_FLOAT, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}, VTABLE_V}
+#define CORTO_FLOAT_O(parent, name, width, min, max) sso_float parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_float), {CORTO_PRIMITIVE_V(parent, name, CORTO_FLOAT, width, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), min, max}}
 
 /* text object */
-#define CORTO_TEXT_O(parent, name, width, length) sso_text parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_text), {CORTO_PRIMITIVE_V(parent, name, CORTO_TEXT, CORTO_WIDTH_WORD, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), width, length}, VTABLE_V}
+#define CORTO_TEXT_O(parent, name, width, length) sso_text parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_text), {CORTO_PRIMITIVE_V(parent, name, CORTO_TEXT, CORTO_WIDTH_WORD, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), width, length}}
 
 /* enum object */
-#define CORTO_ENUM_O(parent, name) sso_enum parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_enum), {CORTO_PRIMITIVE_V(parent, name, CORTO_ENUM, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}, VTABLE_V}
+#define CORTO_ENUM_O(parent, name) sso_enum parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_enum), {CORTO_PRIMITIVE_V(parent, name, CORTO_ENUM, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}}
 
 /* bitmask object */
-#define CORTO_BITMASK_O(parent, name) sso_bitmask parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_bitmask), {{CORTO_PRIMITIVE_V(parent, name, CORTO_BITMASK, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}}, VTABLE_V}
+#define CORTO_BITMASK_O(parent, name) sso_bitmask parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_bitmask), {{CORTO_PRIMITIVE_V(parent, name, CORTO_BITMASK, CORTO_WIDTH_32, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_NODELEGATE), CORTO_SEQUENCE_EMPTY_V(constant)}}}
 
 /* constant object */
-#define CORTO_CONSTANT_O(parent, name) sso_constant parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_constant), CORTO_##name, VTABLE_V}
+#define CORTO_CONSTANT_O(parent, name) sso_constant parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_constant), CORTO_##name}
 
 /* struct object */
 #define CORTO_STRUCT_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType) sso_struct parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_NOBASE_V(parent, name, CORTO_STRUCT, FALSE, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE), VTABLE_V}
+    {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_NOBASE_V(parent, name, CORTO_STRUCT, FALSE, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE)}
 
 /* interface object */
 #define CORTO_INTERFACE_O(parent, name) sso_interface parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_interface), CORTO_COMPOSITE_NOBASE_V(parent, name, CORTO_INTERFACE, TRUE, NULL, 0, NULL, CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE), VTABLE_V}
+    {CORTO_SSO_V(parent, #name, lang_interface), CORTO_COMPOSITE_NOBASE_V(parent, name, CORTO_INTERFACE, TRUE, NULL, 0, NULL, CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE)}
 
 /* class object */
 #define CORTO_CLASS_NOBASE_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE) sso_class parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_class), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}, VTABLE_V}
+    {CORTO_SSO_V(parent, #name, lang_class), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}}
 
 #define CORTO_CLASS_O(parent, name, base, baseAccess, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE) sso_class parent##_##name##__o = \
-        {CORTO_SSO_V(parent, #name, lang_class), {CORTO_STRUCT_V(parent, name, CORTO_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}, VTABLE_V}
+        {CORTO_SSO_V(parent, #name, lang_class), {CORTO_STRUCT_V(parent, name, CORTO_CLASS, base, baseAccess, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {0,NULL}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}}
 
 #define CORTO_CLASS_IMPLEMENTS_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType, interface, DELEGATE) sso_class parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_class), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {1,{interface}}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}, VTABLE_V}
+    {CORTO_SSO_V(parent, #name, lang_class), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_CLASS, TRUE, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE), {1,{interface}}, {0,NULL}, DELEGATE##_CLASS(parent##_##name)}}
 
 /* array object */
-#define CORTO_ARRAY_O(parent, name, elementType, size) sso_array parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_array), {CORTO_COLLECTION_V(parent, name, CORTO_ARRAY, elementType, size)}, VTABLE_V}
+#define CORTO_ARRAY_O(parent, name, elementType, size) sso_array parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_array), {CORTO_COLLECTION_V(parent, name, CORTO_ARRAY, elementType, size)}}
 
 /* sequence object */
-#define CORTO_SEQUENCE_O(parent, name, elementType, max) sso_sequence parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_sequence), {CORTO_COLLECTION_V(parent, name, CORTO_SEQUENCE, elementType, max)}, VTABLE_V}
+#define CORTO_SEQUENCE_O(parent, name, elementType, max) sso_sequence parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_sequence), {CORTO_COLLECTION_V(parent, name, CORTO_SEQUENCE, elementType, max)}}
 
 /* list object */
-#define CORTO_LIST_O(parent, name, elementType, max) sso_list parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_list), {CORTO_COLLECTION_V(parent, name, CORTO_LIST, elementType, max)}, VTABLE_V}
+#define CORTO_LIST_O(parent, name, elementType, max) sso_list parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_list), {CORTO_COLLECTION_V(parent, name, CORTO_LIST, elementType, max)}}
 
 /* map object */
-#define CORTO_MAP_O(parent, name, elementType, keyType, max) sso_map parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_map), {CORTO_COLLECTION_V(parent, name, CORTO_MAP, elementType, max), (corto_type)&keyType##__o.v}, VTABLE_V}
+#define CORTO_MAP_O(parent, name, elementType, keyType, max) sso_map parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_map), {CORTO_COLLECTION_V(parent, name, CORTO_MAP, elementType, max), (corto_type)&keyType##__o.v}}
 
 /* procedure object */
 #define CORTO_PROCEDURE_O(parent, name, kind, base, baseAccess, scopeType, scopeStateKind, DELEGATE) sso_procedure parent##_##name##__o = \
-        {CORTO_SSO_V(parent, #name, lang_procedure), {CORTO_STRUCT_V(parent, name, CORTO_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(parent##_##name)}, VTABLE_V}
+        {CORTO_SSO_V(parent, #name, lang_procedure), {CORTO_STRUCT_V(parent, name, CORTO_PROCEDURE, base, baseAccess, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(parent##_##name)}}
 #define CORTO_PROCEDURE_NOBASE_O(parent, name, kind, scopeType, scopeStateKind, DELEGATE) sso_procedure parent##_##name##__o = \
-        {CORTO_SSO_V(parent, #name, lang_procedure), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_PROCEDURE, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(parent##_##name)}, VTABLE_V}
+        {CORTO_SSO_V(parent, #name, lang_procedure), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_PROCEDURE, TRUE, scopeType, scopeStateKind, NULL, NULL, DELEGATE), kind, DELEGATE##_PROC(parent##_##name)}}
 
 /* function object */
 #define CORTO_FUNCTION_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}}
 
 #define CORTO_FUNCTION_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, #name args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}}
 
 #define CORTO_FUNCTION_OVERLOAD_OO_O(parent, name, args, returnType, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, VTABLE_V}
+        sso_function parent##_##name##__o = {CORTO_SSO_V(parent, args, lang_function), {(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}}
 
 /* method object */
 #define CORTO_METHOD_O(parent, name, args, returnType, virtual, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_method parent##_##name##___o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##___o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, virtual}}
 
 /* interface method object */
 #define CORTO_IMETHOD_O(parent, name, args, returnType, virtual) \
-        sso_method parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, 0, NULL, 0,{0,NULL},0}, virtual}, VTABLE_V}
+        sso_method parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, 0, NULL, 0,{0,NULL},0}, virtual}}
 
 /* interface method object */
 #define CORTO_OBSERVER_O(parent, name, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_observer parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, core_observer), {{(corto_type)&lang_void##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, 0}, VTABLE_V}
+        sso_observer parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, core_observer), {{(corto_type)&lang_void##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, 0}}
 
 /* metaprocedure object */
 #define CORTO_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}}
 
 #define CORTO_METAPROCEDURE_NAME_O(parent, name, actualName, args, returnType, referenceOnly, impl) \
         void __##impl(void *f, void *r, void *a); \
-        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #actualName args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}, VTABLE_V}
+        sso_metaprocedure parent##_##name##__o = {CORTO_SSO_PO_V(parent, #actualName args, lang_metaprocedure), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0, {0,NULL},0}, referenceOnly}}
 
 /* member object */
-#define CORTO_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_member), CORTO_MEMBER_V(type, access, CORTO_DECLARED | CORTO_DEFINED, FALSE), VTABLE_V}
+#define CORTO_MEMBER_O(parent, name, type, access) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_member), CORTO_MEMBER_V(type, access, CORTO_DECLARED | CORTO_DEFINED, FALSE)}
 
 /* member object */
-#define CORTO_ALIAS_O(parent, name, member, access) sso_alias parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_alias), {CORTO_MEMBER_V(lang_word, access, 0, FALSE), (corto_member)&member##__o.v}, VTABLE_V}
+#define CORTO_ALIAS_O(parent, name, member, access) sso_alias parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_alias), {CORTO_MEMBER_V(lang_word, access, 0, FALSE), (corto_member)&member##__o.v}}
 
 /* reference object */
-#define CORTO_REFERENCE_O(parent, name, type, access, state, weak) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_member), CORTO_MEMBER_V(type, access, state, weak), VTABLE_V}
+#define CORTO_REFERENCE_O(parent, name, type, access, state, weak) sso_member parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_member), CORTO_MEMBER_V(type, access, state, weak)}
 
 /* Delegate type */
 #define CORTO_DELEGATE_O(parent, name, returnType) sso_delegate parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_delegate), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_DELEGATE, FALSE, NULL, CORTO_DECLARED|CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&returnType##__o.v, FALSE, CORTO_SEQUENCE_EMPTY_V(parameter)}, VTABLE_V}
+    {CORTO_SSO_V(parent, #name, lang_delegate), {CORTO_STRUCT_NOBASE_V(parent, name, CORTO_DELEGATE, FALSE, NULL, CORTO_DECLARED|CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&returnType##__o.v, FALSE, CORTO_SEQUENCE_EMPTY_V(parameter)}}
 
-#define CORTO_ITERATOR_O(parent, name, elementType) sso_iterator parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_iterator), {CORTO_TYPE_V(parent, name, CORTO_ITERATOR, FALSE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&elementType##__o.v}, VTABLE_V}
+#define CORTO_ITERATOR_O(parent, name, elementType) sso_iterator parent##_##name##__o = {CORTO_SSO_V(parent, #name, lang_iterator), {CORTO_TYPE_V(parent, name, CORTO_ITERATOR, FALSE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE), (corto_type)&elementType##__o.v}}
 
 
 /* Forward declarations of classes */

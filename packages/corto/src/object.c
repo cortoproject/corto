@@ -167,7 +167,7 @@ corto_bool corto_observersWaitForUnused(corto__observer** observers) {
 static corto__scope* corto__objectScope(corto__object* o) {
     corto__scope* result = NULL;
 
-    if (o->attrs.scope) {
+    if (o->align.attrs.scope) {
         result = CORTO_OFFSET(o, -sizeof(corto__scope));
     }
 
@@ -177,10 +177,10 @@ static corto__scope* corto__objectScope(corto__object* o) {
 static corto__writable* corto__objectWritable(corto__object* o) {
     corto__writable* result = (void*)o;
 
-    if (o->attrs.scope) {
+    if (o->align.attrs.scope) {
         result = CORTO_OFFSET(result, -sizeof(corto__scope));
     }
-    if (o->attrs.write) {
+    if (o->align.attrs.write) {
         result = CORTO_OFFSET(result, -sizeof(corto__writable));
     } else {
         result = NULL;
@@ -192,13 +192,13 @@ static corto__writable* corto__objectWritable(corto__object* o) {
 static corto__observable* corto__objectObservable(corto__object* o) {
     corto__observable* result = (void*)o;
 
-    if (o->attrs.scope) {
+    if (o->align.attrs.scope) {
         result = CORTO_OFFSET(result, -sizeof(corto__scope));
     }
-    if (o->attrs.write) {
+    if (o->align.attrs.write) {
         result = CORTO_OFFSET(result, -sizeof(corto__writable));
     }
-    if (result && o->attrs.observable) {
+    if (result && o->align.attrs.observable) {
         result = CORTO_OFFSET(result, -sizeof(corto__observable));
     } else {
         result = NULL;
@@ -210,16 +210,16 @@ static corto__observable* corto__objectObservable(corto__object* o) {
 static corto__persistent* corto__objectPersistent(corto__object* o) {
     corto__persistent* result = (void*)o;
 
-    if (o->attrs.scope) {
+    if (o->align.attrs.scope) {
         result = CORTO_OFFSET(result, -sizeof(corto__scope));
     }
-    if (o->attrs.write) {
+    if (o->align.attrs.write) {
         result = CORTO_OFFSET(result, -sizeof(corto__writable));
     }
-    if (result && o->attrs.observable) {
+    if (result && o->align.attrs.observable) {
         result = CORTO_OFFSET(result, -sizeof(corto__observable));
     }
-    if (o->attrs.persistent) {
+    if (o->align.attrs.persistent) {
         result = CORTO_OFFSET(result, -sizeof(corto__persistent));
     } else {
         result = NULL;
@@ -231,16 +231,16 @@ static corto__persistent* corto__objectPersistent(corto__object* o) {
 static void* corto__objectStartAddr(corto__object* o) {
     void* result;
     result = o;
-    if (o->attrs.scope) {
+    if (o->align.attrs.scope) {
         result = CORTO_OFFSET(result, -sizeof(corto__scope));
     }
-    if (o->attrs.write) {
+    if (o->align.attrs.write) {
         result = CORTO_OFFSET(result, -sizeof(corto__writable));
     }
-    if (o->attrs.observable) {
+    if (o->align.attrs.observable) {
         result = CORTO_OFFSET(result, -sizeof(corto__observable));
     }
-    if (o->attrs.persistent) {
+    if (o->align.attrs.persistent) {
         result  = CORTO_OFFSET(result, -sizeof(corto__persistent));
     }
     return result;
@@ -261,7 +261,7 @@ static corto_object corto__initScope(corto_object o, corto_string id, corto_obje
 
     /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
-    corto_rwmutexNew(&scope->scopeLock);
+    corto_rwmutexNew(&scope->align.scopeLock);
 
     /* Add object to the scope of the parent-object */
     if (!(result = corto_adopt(parent, o))) {
@@ -272,7 +272,7 @@ static corto_object corto__initScope(corto_object o, corto_string id, corto_obje
 
     if (result != o) {
         corto_dealloc(scope->id);
-        corto_rwmutexFree(&scope->scopeLock);
+        corto_rwmutexFree(&scope->align.scopeLock);
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
     } else {
@@ -332,7 +332,7 @@ static void corto__deinitScope(corto_object o) {
     }
 
     /* Finally, free own scopeLock. */
-    corto_rwmutexFree(&scope->scopeLock);
+    corto_rwmutexFree(&scope->align.scopeLock);
 }
 
 /* Initialize writable-part of object */
@@ -344,7 +344,7 @@ static void corto__initWritable(corto_object o) {
     writable = corto__objectWritable(_o);
     corto_assert(writable != NULL, "corto__initWritable: created writable object, but corto__objectWritable returned NULL.");
 
-    corto_rwmutexNew(&writable->lock);
+    corto_rwmutexNew(&writable->align.lock);
 }
 
 static void corto__deinitWritable(corto_object o) {
@@ -355,7 +355,7 @@ static void corto__deinitWritable(corto_object o) {
     writable = corto__objectWritable(_o);
     corto_assert(writable != NULL, "corto__deinitWritable: called on non-writable object <%p>.", o);
 
-    corto_rwmutexFree(&writable->lock);
+    corto_rwmutexFree(&writable->align.lock);
 }
 
 /* Initialize observable-part of object */
@@ -367,7 +367,7 @@ static void corto__initObservable(corto_object o) {
     observable = corto__objectObservable(_o);
     corto_assert(observable != NULL, "corto__initObservable: created observable object, but corto__objectObservable returned NULL.");
 
-    corto_rwmutexNew(&observable->selfLock);
+    corto_rwmutexNew(&observable->align.selfLock);
 
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         corto_rwmutexNew(&observable->childLock);
@@ -411,7 +411,7 @@ static void corto__deinitObservable(corto_object o) {
         observable->onChild = NULL;
     }
 
-    corto_rwmutexFree(&observable->selfLock);
+    corto_rwmutexFree(&observable->align.selfLock);
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         corto_rwmutexFree(&observable->childLock);
     }
@@ -427,7 +427,7 @@ void corto__newSSO(corto_object sso) {
     corto_assert(scope != NULL, "SSO object without a scope? That's bad.");
 
     /* Don't call initScope because id is already set. */
-    corto_rwmutexNew(&scope->scopeLock);
+    corto_rwmutexNew(&scope->align.scopeLock);
     if (scope->parent) {
         corto__adoptSSO(sso);
     }
@@ -472,7 +472,7 @@ corto_int16 corto__freeSSO(corto_object sso) {
         scope->scope = NULL;
     }
 
-    corto_rwmutexFree(&scope->scopeLock);
+    corto_rwmutexFree(&scope->align.scopeLock);
 
     /* Deinitialize observable */
     if (corto_checkAttr(sso, CORTO_ATTR_OBSERVABLE)) {
@@ -540,7 +540,7 @@ void corto__destructor(corto_object o) {
             corto_procedure_unbind(corto_procedure(corto_typeof(o)), o);
         }
 
-        _o->attrs.state &= ~CORTO_DEFINED;
+        _o->align.attrs.state &= ~CORTO_DEFINED;
     } else {
         corto_critical("%s/destruct: object '%s' is not defined",
             corto_fullpath(NULL, t), corto_fullpath(NULL, o));
@@ -671,7 +671,7 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
 
-    ostate = _o->attrs.state;
+    ostate = _o->align.attrs.state;
     if (ostate & CORTO_DEFINED) {
         ostate = CORTO_DEFINED;
     }
@@ -703,7 +703,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
         if (c_scope) {
 
             /* Insert child in parent-scope */
-            if (corto_rwmutexWrite(&p_scope->scopeLock))
+            if (corto_rwmutexWrite(&p_scope->align.scopeLock))
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
@@ -735,7 +735,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                     corto_uint32 childState = childType->parentState;
                     corto_seterr("parent '%s' is %s, must be %s",
                         corto_fullpath(NULL, parent),
-                        corto_stateStr(_parent->attrs.state),
+                        corto_stateStr(_parent->align.attrs.state),
                         corto_stateStr(childState));
                     goto err_invalid_parent;
                 }
@@ -747,7 +747,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
             corto_claim(parent);
             if (CORTO_TRACE_OBJECT) corto_memtracePop();
 
-            if (corto_rwmutexUnlock(&p_scope->scopeLock))
+            if (corto_rwmutexUnlock(&p_scope->align.scopeLock))
                 corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");
         } else {
             corto_critical("corto_adopt: child-object is not scoped");
@@ -762,7 +762,7 @@ err_invalid_parent:
     c_scope->parent = NULL;
     corto_rbtreeRemove(p_scope->scope, c_scope->id);
 err_existing:
-    corto_rwmutexUnlock(&p_scope->scopeLock);
+    corto_rwmutexUnlock(&p_scope->align.scopeLock);
 error:
     return NULL;
 }
@@ -780,10 +780,10 @@ void corto__orphan(corto_object o) {
         p_scope = corto__objectScope(_parent);
 
         /* Remove object from parent scope */
-        if (corto_rwmutexWrite(&p_scope->scopeLock)) goto err_parent_mutex;
+        if (corto_rwmutexWrite(&p_scope->align.scopeLock)) goto err_parent_mutex;
         corto_rbtreeRemove(p_scope->scope, (void*)corto_idof(o));
 
-        if (corto_rwmutexUnlock(&p_scope->scopeLock)) goto err_parent_mutex;
+        if (corto_rwmutexUnlock(&p_scope->align.scopeLock)) goto err_parent_mutex;
     }
 
     return;
@@ -907,24 +907,24 @@ corto_object _corto_declare(corto_type type) {
 
         /* Set attributes */
         if (attrs & CORTO_ATTR_SCOPED) {
-            o->attrs.scope = TRUE;
+            o->align.attrs.scope = TRUE;
         }
         if (attrs & CORTO_ATTR_WRITABLE) {
             if (type->kind == CORTO_VOID) {
                 corto_warning("writable void object created");
             }
-            o->attrs.write = TRUE;
+            o->align.attrs.write = TRUE;
             corto__initWritable(CORTO_OFFSET(o, sizeof(corto__object)));
         }
         if (attrs & CORTO_ATTR_OBSERVABLE) {
-            o->attrs.observable = TRUE;
+            o->align.attrs.observable = TRUE;
         }
         if (attrs & CORTO_ATTR_PERSISTENT) {
-            o->attrs.persistent = TRUE;
+            o->align.attrs.persistent = TRUE;
         }
 
         /* Initially, an object is valid and declared */
-        o->attrs.state = CORTO_DECLARED;
+        o->align.attrs.state = CORTO_DECLARED;
 
         corto_claim(type);
 
@@ -935,7 +935,7 @@ corto_object _corto_declare(corto_type type) {
 
             /* Call framework initializer */
             if (!corto_init(CORTO_OFFSET(o, sizeof(corto__object)))) {
-                o->attrs.state |= CORTO_VALID;
+                o->align.attrs.state |= CORTO_VALID;
             } else {
                 corto_string err = corto_lasterr();
                 if (err) {
@@ -1005,7 +1005,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
                 }
 
                 /* Initially, an object is valid and declared */
-                _o->attrs.state |= CORTO_VALID;
+                _o->align.attrs.state |= CORTO_VALID;
             } else {
                 corto_release(type);
                 corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
@@ -1234,9 +1234,9 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
     }
 
     if (!result) {
-        _o->attrs.state |= CORTO_DEFINED;
+        _o->align.attrs.state |= CORTO_DEFINED;
         if (!corto_checkState(o, CORTO_VALID)) {
-            _o->attrs.state |= CORTO_VALID;
+            _o->align.attrs.state |= CORTO_VALID;
         }
 
         /* Notify observers of defined object */
@@ -1306,7 +1306,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
      * because they aren't allocated on heap */
     if (corto_isBuiltin(o)) {
         if (!corto_checkState(o, CORTO_DESTRUCTED)) {
-            _o->attrs.state |= CORTO_DESTRUCTED;
+            _o->align.attrs.state |= CORTO_DESTRUCTED;
         }
         return TRUE;
     }
@@ -1316,7 +1316,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         if (CORTO_TRACE_OBJECT) corto_memtracePush();
 
         /* From here, object is marked as destructed. */
-        _o->attrs.state |= CORTO_DESTRUCTED;
+        _o->align.attrs.state |= CORTO_DESTRUCTED;
 
         /* Only do the following steps if the object is defined */
         if (corto_checkState(o, CORTO_DEFINED)) {
@@ -1460,12 +1460,12 @@ void corto_drop(corto_object o, corto_bool delete) {
          * destruction of an object, this scopeLock is also required,
          * which would result in deadlocks. */
 
-        corto_rwmutexRead(&scope->scopeLock);
+        corto_rwmutexRead(&scope->align.scopeLock);
         walkData.objects = NULL;
         if (scope->scope) {
             corto_rbtreeWalk(scope->scope, corto_dropWalk, &walkData);
         }
-        corto_rwmutexUnlock(&scope->scopeLock);
+        corto_rwmutexUnlock(&scope->align.scopeLock);
 
         /* Free objects outside scopeLock */
         if (walkData.objects) {
@@ -1547,7 +1547,7 @@ error:
 void corto_invalidate(corto_object o) {
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    _o->attrs.state &= ~CORTO_VALID;
+    _o->align.attrs.state &= ~CORTO_VALID;
     /* Notify observers */
     corto_notify(corto__objectObservable(CORTO_OFFSET(o,-sizeof(corto__object))), o, CORTO_ON_INVALIDATE);
 }
@@ -1569,7 +1569,7 @@ corto_int32 corto_countof(corto_object o) {
 corto_int8 corto_stateof(corto_object o) {
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    corto_int8 state = _o->attrs.state;
+    corto_int8 state = _o->align.attrs.state;
     return state;
 }
 
@@ -1578,10 +1578,10 @@ corto_int8 corto_attrof(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
 
     corto_int8 attr =
-      _o->attrs.scope |
-      (_o->attrs.write << 1) |
-      (_o->attrs.observable << 2) |
-      (_o->attrs.persistent << 3);
+      _o->align.attrs.scope |
+      (_o->align.attrs.write << 1) |
+      (_o->align.attrs.observable << 2) |
+      (_o->align.attrs.persistent << 3);
 
     return attr;
 }
@@ -1633,7 +1633,7 @@ error:
 corto_bool corto_checkState(corto_object o, corto_int8 state) {
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    return (_o->attrs.state & state) == state;
+    return (_o->align.attrs.state & state) == state;
 }
 
 /* Check for an attribute */
@@ -1645,16 +1645,16 @@ corto_bool corto_checkAttr(corto_object o, corto_int8 attr) {
     result = TRUE;
 
     if (attr & CORTO_ATTR_SCOPED) {
-        if (!_o->attrs.scope) result = FALSE;
+        if (!_o->align.attrs.scope) result = FALSE;
     }
     if (attr & CORTO_ATTR_WRITABLE) {
-        if (!_o->attrs.write) result = FALSE;
+        if (!_o->align.attrs.write) result = FALSE;
     }
     if (attr & CORTO_ATTR_OBSERVABLE) {
-        if (!_o->attrs.observable) result = FALSE;
+        if (!_o->align.attrs.observable) result = FALSE;
     }
     if (attr & CORTO_ATTR_PERSISTENT) {
-        if (!_o->attrs.persistent) result = FALSE;
+        if (!_o->align.attrs.persistent) result = FALSE;
     }
     return result;
 }
@@ -1799,7 +1799,7 @@ void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
     if (scope) {
         corto__ols *ols = NULL;
 
-        if (corto_rwmutexWrite(&scope->scopeLock)) {
+        if (corto_rwmutexWrite(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed");
             goto error;
         }
@@ -1818,7 +1818,7 @@ void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
         }
         ols->value = value;
 
-        corto_rwmutexUnlock(&scope->scopeLock);
+        corto_rwmutexUnlock(&scope->align.scopeLock);
     } else {
         corto_seterr("object is not scoped");
         goto error;
@@ -1839,7 +1839,7 @@ void* corto_olsGet(corto_object o, corto_int8 key) {
     scope = corto__objectScope(_o);
     if (scope) {
         corto__ols *ols = NULL;
-        if (corto_rwmutexWrite(&scope->scopeLock)) {
+        if (corto_rwmutexWrite(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed: %s", corto_lasterr());
             goto error;
         }
@@ -1850,7 +1850,7 @@ void* corto_olsGet(corto_object o, corto_int8 key) {
             result = ols->value;
         }
 
-        corto_rwmutexUnlock(&scope->scopeLock);
+        corto_rwmutexUnlock(&scope->align.scopeLock);
     } else {
         corto_seterr("object is not scoped");
         goto error;
@@ -1870,7 +1870,7 @@ void* corto_olsLockGet(corto_object o, corto_int8 key) {
     scope = corto__objectScope(_o);
     if (scope) {
         corto__ols *ols = NULL;
-        if (corto_rwmutexWrite(&scope->scopeLock)) {
+        if (corto_rwmutexWrite(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed");
             goto error;
         }
@@ -1911,7 +1911,7 @@ void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value) {
             corto_assert(ols->key == key, "returned wrong OLS data");
             ols->value = value;
         }
-        corto_rwmutexUnlock(&scope->scopeLock);
+        corto_rwmutexUnlock(&scope->align.scopeLock);
     } else {
         corto_seterr("object is not scoped");
     }
@@ -1922,7 +1922,7 @@ corto__scope *corto__scopeClaim(corto_object o) {
     corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__scope *scope = corto__objectScope(_o);
     if (scope) {
-        if (corto_rwmutexRead(&scope->scopeLock)) {
+        if (corto_rwmutexRead(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed");
             goto error;
         }
@@ -1937,7 +1937,7 @@ void corto__scopeRelease(corto_object o) {
     corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__scope *scope = corto__objectScope(_o);
     if (scope) {
-        corto_rwmutexUnlock(&scope->scopeLock);
+        corto_rwmutexUnlock(&scope->align.scopeLock);
     }
 }
 
@@ -2090,9 +2090,9 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* 
     scope = corto__objectScope(CORTO_OFFSET(o, -sizeof(corto__object)));
     if (scope) {
         if (scope->scope) {
-            corto_rwmutexRead(&scope->scopeLock);
+            corto_rwmutexRead(&scope->align.scopeLock);
             result = corto_rbtreeWalk(scope->scope, (corto_walkAction)action, userData);
-            corto_rwmutexUnlock(&scope->scopeLock);
+            corto_rwmutexUnlock(&scope->align.scopeLock);
         }
     }
 
@@ -2576,7 +2576,7 @@ corto_object corto_lookupLowercase(corto_object o, corto_string id) {
         }
 
         if (scope) {
-            corto_rwmutexRead(&scope->scopeLock);
+            corto_rwmutexRead(&scope->align.scopeLock);
             if ((tree = scope->scope)) {
                 if ((!corto_rbtreeHasKey_w_cmp(
                     tree,
@@ -2618,7 +2618,7 @@ corto_object corto_lookupLowercase(corto_object o, corto_string id) {
             } else {
                 o = NULL;
             }
-            corto_rwmutexUnlock(&scope->scopeLock);
+            corto_rwmutexUnlock(&scope->align.scopeLock);
         } else {
             corto_seterr("corto_lookup: object '%s' has no scope",
                 corto_fullpath(NULL, o));
@@ -2919,7 +2919,7 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
 
     /* If observer must trigger on updates of me, add it to onSelf list */
     if (mask & CORTO_ON_SELF) {
-        corto_rwmutexWrite(&_o->selfLock);
+        corto_rwmutexWrite(&_o->align.selfLock);
         if (!corto_observerFind(_o->onSelf, observer, this)) {
             if (!_o->onSelf) {
                 _o->onSelf = corto_llNew();
@@ -2933,7 +2933,7 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
             oldSelfArray = _o->onSelfArray;
             _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
         }
-        corto_rwmutexUnlock(&_o->selfLock);
+        corto_rwmutexUnlock(&_o->align.selfLock);
     }
 
     /* If observer must trigger on updates of childs, add it to onChilds list */
@@ -3031,7 +3031,7 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
 
         /* If observer triggered on updates of me, remove from onSelf list */
         if (mask & CORTO_ON_SELF) {
-            corto_rwmutexWrite(&_o->selfLock);
+            corto_rwmutexWrite(&_o->align.selfLock);
             observerData = corto_observerFind(_o->onSelf, observer, this);
             if (observerData) {
                 corto_llRemove(_o->onSelf, observerData);
@@ -3065,7 +3065,7 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
                     goto error;
                 }
             }
-            corto_rwmutexUnlock(&_o->selfLock);
+            corto_rwmutexUnlock(&_o->align.selfLock);
         }
 
         /* If observer triggered on updates of childs, remove from onChilds list */
@@ -3136,12 +3136,12 @@ corto_bool corto_listening(corto_object observable, corto_observer observer, cor
     /* If observer triggered on updates of me, remove from onSelf list */
     if (_o) {
         if (observer->mask & CORTO_ON_SELF) {
-            corto_rwmutexWrite(&_o->selfLock);
+            corto_rwmutexWrite(&_o->align.selfLock);
             observerData = corto_observerFind(_o->onSelf, observer, this);
             if (observerData) {
                 result = TRUE;
             }
-            corto_rwmutexUnlock(&_o->selfLock);
+            corto_rwmutexUnlock(&_o->align.selfLock);
         }
 
         if (!result) {
@@ -3307,7 +3307,7 @@ corto_int16 corto_updateBegin(corto_object o) {
     if (_o) {
         _wr = corto__objectWritable(CORTO_OFFSET(o, -sizeof(corto__object)));
         if (_wr) {
-            if (corto_rwmutexWrite(&_wr->lock)) {
+            if (corto_rwmutexWrite(&_wr->align.lock)) {
                 corto_seterr("updateBegin: writelock on '%s' failed (%s)",
                     corto_fullpath(NULL, o), corto_lasterr());
                 goto error;
@@ -3329,7 +3329,7 @@ corto_int16 corto_updateTry(corto_object observable) {
 
     _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     if (_wr) {
-        if (corto_rwmutexTryWrite(&_wr->lock) == CORTO_LOCK_BUSY) {
+        if (corto_rwmutexTryWrite(&_wr->align.lock) == CORTO_LOCK_BUSY) {
             goto busy;
         }
     } else {
@@ -3370,7 +3370,7 @@ corto_int16 corto_updateEnd(corto_object observable) {
     if (_o) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         if (_wr) {
-            if (corto_rwmutexUnlock(&_wr->lock)) {
+            if (corto_rwmutexUnlock(&_wr->align.lock)) {
                 corto_seterr("updateEnd: unlock on '%s' failed (%s)",
                   corto_fullpath(NULL, observable), corto_lasterr());
             }
@@ -3387,7 +3387,7 @@ corto_int16 corto_updateCancel(corto_object observable) {
 
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
 
-        if (corto_rwmutexUnlock(&_wr->lock)) {
+        if (corto_rwmutexUnlock(&_wr->align.lock)) {
             corto_seterr("updateCancel: unlock on '%s' failed (%s)",
               corto_fullpath(NULL, observable), corto_lasterr());
         }
@@ -3493,7 +3493,7 @@ corto_int16 corto_readBegin(corto_object object) {
         corto__writable* _o;
 
         _o = corto__objectWritable(CORTO_OFFSET(object, -sizeof(corto__object)));
-        if (corto_rwmutexRead(&_o->lock)) {
+        if (corto_rwmutexRead(&_o->align.lock)) {
             corto_seterr("readBegin of '%s' failed: %s",
               corto_fullpath(NULL, object), corto_lasterr());
             goto error;
@@ -3515,7 +3515,7 @@ corto_int16 corto_lock(corto_object object) {
         corto__writable* _o;
 
         _o = corto__objectWritable(CORTO_OFFSET(object, -sizeof(corto__object)));
-        if (corto_rwmutexWrite(&_o->lock)) {
+        if (corto_rwmutexWrite(&_o->align.lock)) {
             goto error;
         }
     }
@@ -3530,7 +3530,7 @@ corto_int16 corto_unlock(corto_object object) {
         corto__writable* _o;
 
         _o = corto__objectWritable(CORTO_OFFSET(object, -sizeof(corto__object)));
-        if (corto_rwmutexUnlock(&_o->lock)) {
+        if (corto_rwmutexUnlock(&_o->align.lock)) {
             goto error;
         }
     }
