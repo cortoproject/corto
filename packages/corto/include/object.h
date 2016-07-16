@@ -123,6 +123,7 @@ typedef struct corto_subscribeRequest {
     corto_string expr;
     corto_eventMask mask;
     corto_string contentType;
+    void (*callback)(corto_subscriber, corto_eventMask mask, corto_result*);
 } corto_subscribeRequest;
 typedef struct corto_subscribeSelector {
     struct corto_subscribeSelector (*contentType)(corto_string contentType);

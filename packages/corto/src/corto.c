@@ -55,7 +55,7 @@ static corto_ll corto_exitHandlers = NULL;
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 corto_threadKey CORTO_KEY_WAIT_ADMIN;
 corto_threadKey CORTO_KEY_ATTR;
-corto_threadKey CORTO_KEY_SELECT;
+corto_threadKey CORTO_KEY_FLOW;
 corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_threadKey CORTO_KEY_MOUNT_RESULT;
 
@@ -848,7 +848,7 @@ int corto_start(void) {
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
-    corto_threadTlsKey(&CORTO_KEY_SELECT, NULL);
+    corto_threadTlsKey(&CORTO_KEY_FLOW, NULL);
     void corto_threadStringDealloc(void *data);
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
