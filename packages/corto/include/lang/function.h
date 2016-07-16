@@ -21,6 +21,10 @@ CORTO_EXPORT corto_int16 _corto_function_construct(
     corto_function _this);
 #define corto_function_construct(_this) _corto_function_construct(corto_function(_this))
 
+CORTO_EXPORT corto_void _corto_function_destruct(
+    corto_function object);
+#define corto_function_destruct(object) _corto_function_destruct(corto_function(object))
+
 CORTO_EXPORT corto_int16 _corto_function_init(
     corto_function _this);
 #define corto_function_init(_this) _corto_function_init(corto_function(_this))
@@ -35,11 +39,8 @@ CORTO_EXPORT corto_parameterseq _corto_function_stringToParameterSeq(
     corto_object scope);
 #define corto_function_stringToParameterSeq(name, scope) _corto_function_stringToParameterSeq(name, scope)
 
-CORTO_EXPORT corto_void _corto_function_destruct(
-    corto_function object);
-#define corto_function_destruct(object) _corto_function_destruct(corto_function(object))
-
 #ifdef __cplusplus
 }
 #endif
 #endif
+

@@ -113,7 +113,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, iterator);\
     SSO_OP_CLASS(op, struct);\
     SSO_OP_CLASS(op, union);\
-    SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
     SSO_OP_CLASS(op, observableEvent);\
     SSO_OP_CLASS(op, invokeEvent);\
@@ -135,6 +134,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, default);\
     SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
+    SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
     SSO_OP_CLASS(op, subscriber);\

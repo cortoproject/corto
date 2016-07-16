@@ -78,6 +78,27 @@ error:
 /* $end */
 }
 
+corto_void _corto_function_destruct(
+    corto_function object)
+{
+/* $begin(corto/lang/function/destruct) */
+    corto_uint32 i;
+
+    corto_callDeinit(object);
+
+    /* Deinitialize parameters */
+    for(i=0; i<object->parameters.length; i++) {
+        corto_dealloc(object->parameters.buffer[i].name);
+        object->parameters.buffer[i].name = NULL;
+        corto_release(object->parameters.buffer[i].type);
+        object->parameters.buffer[i].type = NULL;
+    }
+
+    corto_dealloc(object->parameters.buffer);
+    object->parameters.buffer = NULL;
+/* $end */
+}
+
 /* $header(corto/lang/function/init) */
 typedef struct corto_functionLookup_t {
     corto_function f;
@@ -269,26 +290,5 @@ error:
     corto_dealloc(result.buffer);
     result.buffer = NULL;
     return result;
-/* $end */
-}
-
-corto_void _corto_function_destruct(
-    corto_function object)
-{
-/* $begin(corto/lang/function/destruct) */
-    corto_uint32 i;
-
-    corto_callDeinit(object);
-
-    /* Deinitialize parameters */
-    for(i=0; i<object->parameters.length; i++) {
-        corto_dealloc(object->parameters.buffer[i].name);
-        object->parameters.buffer[i].name = NULL;
-        corto_release(object->parameters.buffer[i].type);
-        object->parameters.buffer[i].type = NULL;
-    }
-
-    corto_dealloc(object->parameters.buffer);
-    object->parameters.buffer = NULL;
 /* $end */
 }

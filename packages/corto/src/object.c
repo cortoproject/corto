@@ -535,9 +535,6 @@ void corto__destructor(corto_object o) {
 
             /* Call destructor */
             corto_delegateDestruct(corto_typeof(o), o);
-        } else if (corto_class_instanceof(corto_procedure_o, t)) {
-            /* Call destruct */
-            corto_procedure_destruct(corto_procedure(corto_typeof(o)), o);
         }
 
         _o->align.attrs.state &= ~CORTO_DEFINED;

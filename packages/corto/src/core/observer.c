@@ -42,6 +42,20 @@ error:
 /* $end */
 }
 
+corto_void _corto_observer_destruct(
+    corto_observer object)
+{
+/* $begin(corto/core/observer/destruct) */
+    if (!object->_template) {
+        if (object->observable) {
+            corto_silence(object->me, object, object->mask, object->observable);
+        }
+    }
+
+    corto_function_destruct(corto_function(object));
+/* $end */
+}
+
 corto_int16 _corto_observer_init(
     corto_observer this)
 {
@@ -164,19 +178,5 @@ corto_int16 _corto_observer_silence(
     }
 
     return 0;
-/* $end */
-}
-
-corto_void _corto_observer_destruct(
-    corto_observer object)
-{
-/* $begin(corto/core/observer/destruct) */
-    if (!object->_template) {
-        if (object->observable) {
-            corto_silence(object->me, object, object->mask, object->observable);
-        }
-    }
-
-    corto_function_destruct(corto_function(object));
 /* $end */
 }
