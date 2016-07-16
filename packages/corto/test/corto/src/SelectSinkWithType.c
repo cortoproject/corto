@@ -27,7 +27,7 @@ corto_void _test_SelectSinkWithType_tc_selectMixedScope(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectMixedScope) */
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
 
     /* Create actual objects */
@@ -44,7 +44,7 @@ corto_void _test_SelectSinkWithType_tc_selectMixedScope(
 
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "*").iter( &ret );
+    corto_int16 ret = corto_select("/mount", "*").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -89,7 +89,7 @@ corto_void _test_SelectSinkWithType_tc_selectMixedScopeNested1(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectMixedScopeNested1) */
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
 
     /* Create actual objects */
@@ -106,7 +106,7 @@ corto_void _test_SelectSinkWithType_tc_selectMixedScopeNested1(
 
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/*").iter( &ret );
+    corto_int16 ret = corto_select("/mount", "x/*").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -151,7 +151,7 @@ corto_void _test_SelectSinkWithType_tc_selectMixedScopeNested2(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectMixedScopeNested2) */
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
 
     /* Create actual objects */
@@ -169,7 +169,7 @@ corto_void _test_SelectSinkWithType_tc_selectMixedScopeNested2(
 
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "x/a/*").iter( &ret );
+    corto_int16 ret = corto_select("/mount", "x/a/*").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -214,10 +214,10 @@ corto_void _test_SelectSinkWithType_tc_selectMount(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectMount) */
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
 
-    corto_iter iter = corto_select("/", "mount").iter( &ret );
+    corto_int16 ret = corto_select("/", "mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -240,9 +240,9 @@ corto_void _test_SelectSinkWithType_tc_selectMountFromParent(
     corto_int32CreateChild_auto(mount, x, 0);
     corto_release(mount);
 
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
-    corto_iter iter = corto_select("/mount/x", "..").iter( &ret );
+    corto_int16 ret = corto_select("/mount/x", "..").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -261,9 +261,9 @@ corto_void _test_SelectSinkWithType_tc_selectMountFromVirtualParent(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectMountFromVirtualParent) */
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
-    corto_iter iter = corto_select("/mount/x", "..").iter( &ret );
+    corto_int16 ret = corto_select("/mount/x", "..").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -282,13 +282,13 @@ corto_void _test_SelectSinkWithType_tc_selectSingleMatch(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectSingleMatch) */
-    corto_int16 ret = 0;
+    corto_iter iter;
 
     corto_object mount = corto_resolve(root_o, "mount");
     corto_int32CreateChild_auto(mount, test, 0);
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "test").iter( &ret );
+    corto_int16 ret = corto_select("/mount", "test").iter( &iter );
 
     test_assert(ret == 0);
     test_assert(!corto_iterHasNext(&iter));
@@ -300,14 +300,14 @@ corto_void _test_SelectSinkWithType_tc_selectSingleNoMatch(
     test_SelectSinkWithType this)
 {
 /* $begin(test/SelectSinkWithType/tc_selectSingleNoMatch) */
-    corto_int16 ret = 0;
+    corto_iter iter;
     corto_result *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
     corto_float32CreateChild_auto(mount, test, 0);
     corto_release(mount);
 
-    corto_iter iter = corto_select("/mount", "test").iter( &ret );
+    corto_int16 ret = corto_select("/mount", "test").iter( &iter );
 
     test_assert(ret == 0);
 

@@ -1431,21 +1431,22 @@ static corto_selectSelector corto_selectorAugment(
     return corto_selectSelectorGet();
 }
 
-static corto_resultIter corto_selectorIter(corto_int16 *ret)
+static corto_int16 corto_selectorIter(corto_resultIter *ret)
 {
-    corto_resultIter result = {NULL};
-
-    if (ret) *ret = 0;
+    corto_assert(ret != NULL, "no iterator provided to .iter()");
 
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
-        result = corto_selectPrepareIterator(request);
-        if (request->err && ret) {
-            *ret = -1;
+        *ret = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
         }
     }
-    return result;
+
+    return 0;
+error:
+    return -1;
 }
 
 static corto_selectSelector corto_selectSelectorGet(void)

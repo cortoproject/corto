@@ -112,7 +112,7 @@ typedef struct corto_selectSelector {
     struct corto_selectSelector (*contentType)(corto_string contentType);
     struct corto_selectSelector (*limit)(corto_uint64 offset, corto_uint64 limit);
     struct corto_selectSelector (*augment)(corto_string filter);
-    corto_resultIter ___ (*iter)(corto_int16 *ret);
+    corto_int16 ___ (*iter)(corto_resultIter *ret);
 } corto_selectSelector;
 struct corto_selectSelector corto_select(corto_string scope, corto_string expr);
 

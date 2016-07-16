@@ -29,9 +29,9 @@ corto_void _test_ReplicatorRequest_tc_selectGrandparentFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectGrandparentFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "../..").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "../..").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -52,9 +52,9 @@ corto_void _test_ReplicatorRequest_tc_selectParentFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectParentFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "..").iter( &ret );
+    corto_int16 ret = corto_select("/a", "..").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -75,9 +75,9 @@ corto_void _test_ReplicatorRequest_tc_selectParentFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectParentFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "..").iter(&ret);
+    corto_int16 ret = corto_select("/a/xyz", "..").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -97,9 +97,9 @@ corto_void _test_ReplicatorRequest_tc_selectScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/", "a/*").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -136,9 +136,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilter(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeFilter) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/", "a/*z").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/*z").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -168,9 +168,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeFilterFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "*z").iter( &ret );
+    corto_int16 ret = corto_select("/a", "*z").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -199,9 +199,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeFilterFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "*c").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "*c").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -230,9 +230,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "*").iter( &ret );
+    corto_int16 ret = corto_select("/a", "*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -269,9 +269,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "*").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -307,7 +307,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeMixed) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
     /* Create additional three objects in scope of a */
     corto_object a = corto_resolve(NULL, "a");
@@ -317,7 +317,7 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
     corto_voidCreateChild(a, "abc");
     corto_release(a);
 
-    corto_iter iter = corto_select("/", "a/*").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -378,9 +378,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNested(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeNested) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/", "a/xyz/*").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/xyz/*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -417,9 +417,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirty) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/", "a/../a/./xyz/./*").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/../a/./xyz/./*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -456,9 +456,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirtyFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "../a/./xyz/./*").iter( &ret );
+    corto_int16 ret = corto_select("/a", "../a/./xyz/./*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -495,9 +495,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirtyFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "../../a/../a/./xyz/./abc/*").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "../../a/../a/./xyz/./abc/*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -526,9 +526,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeNestedFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "xyz/*").iter( &ret );
+    corto_int16 ret = corto_select("/a", "xyz/*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -565,9 +565,9 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectScopeNestedFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "abc/*").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "abc/*").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -596,9 +596,9 @@ corto_void _test_ReplicatorRequest_tc_selectSingle(
 {
 /* $begin(test/ReplicatorRequest/tc_selectSingle) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/", "a/xyz").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -619,9 +619,9 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectSingleFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "xyz").iter( &ret );
+    corto_int16 ret = corto_select("/a", "xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -642,9 +642,9 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectSingleFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "bc").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "bc").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -665,9 +665,9 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNested(
 {
 /* $begin(test/ReplicatorRequest/tc_selectSingleNested) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/", "a/xyz/abc").iter( &ret );
+    corto_int16 ret = corto_select("/", "a/xyz/abc").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -688,9 +688,9 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectSingleNestedFromScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a", "xyz/bc").iter( &ret );
+    corto_int16 ret = corto_select("/a", "xyz/bc").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -711,9 +711,9 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectSingleNestedFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz", "abc/foo").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz", "abc/foo").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -734,9 +734,9 @@ corto_void _test_ReplicatorRequest_tc_selectVirtualGrandparentFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectVirtualGrandparentFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz/abc/foo", "../..").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz/abc/foo", "../..").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -757,9 +757,9 @@ corto_void _test_ReplicatorRequest_tc_selectVirtualParentFromVirtualScope(
 {
 /* $begin(test/ReplicatorRequest/tc_selectVirtualParentFromVirtualScope) */
     corto_result *result;
-    corto_int16 ret = 0;
+    corto_iter iter;
 
-    corto_iter iter = corto_select("/a/xyz/abc/foo", "..").iter( &ret );
+    corto_int16 ret = corto_select("/a/xyz/abc/foo", "..").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
