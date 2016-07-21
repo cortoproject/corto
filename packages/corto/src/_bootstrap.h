@@ -456,7 +456,9 @@ CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
+CORTO_FWDECL_CORE(class, subscriber);
 CORTO_FWDECL_CORE(class, mount);
+
 CORTO_FWDECL(class, sequence);
 CORTO_FWDECL(class, struct);
 CORTO_FWDECL(class, union);
@@ -474,6 +476,7 @@ CORTO_FWDECL_CORE(struct, result);
 CORTO_FWDECL_CORE(struct, request);
 CORTO_FWDECL_CORE(struct, mountStats);
 CORTO_FWDECL_CORE(struct, mountPolicy);
+CORTO_FWDECL_CORE(struct, mountSubscription);
 
 /* Abstract classes */
 CORTO_FWDECL_CORE(interface, dispatcher);
@@ -535,6 +538,7 @@ CORTO_FWDECL_CORE(sequence, augmentseq);
 
 CORTO_FWDECL_CORE(list, resultList);
 CORTO_FWDECL(list, objectlist);
+CORTO_FWDECL_CORE(list, mountSubscriptionList);
 
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
@@ -742,6 +746,7 @@ CORTO_SEQUENCE_O(lang, int32seq, lang_int32, 0);
 CORTO_SEQUENCE_O(lang, vtable, lang_function, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(core, resultList, core_result, 0);
+CORTO_LIST_O(core, mountSubscriptionList, core_mountSubscription, 0);
 
 /* Delegate types */
 CORTO_DELEGATE_O(lang, initAction, lang_int16);
@@ -1075,15 +1080,33 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 CORTO_INTERFACE_O(core, dispatcher);
     CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
 
+/* /corto/core/subscriber */
+CORTO_FW_CD(core, subscriber);
+CORTO_CLASS_NOBASE_O(core, subscriber, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, mask, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, observer, core_observer, CORTO_PRIVATE|CORTO_LOCAL);
+    CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, FALSE, corto_subscriber_construct);
+    CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, FALSE, corto_subscriber_destruct);
+
 /* /corto/core/mountStats */
 CORTO_STRUCT_O(core, mountStats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_mountStats, declares, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mountStats, updates, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mountStats, deletes, lang_uint64, CORTO_GLOBAL);
 
-/* /corto/core/mountpolicy */
+/* /corto/core/mountPolicy */
 CORTO_STRUCT_O(core, mountPolicy, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
+
+/* /corto/core/mountSubscription */
+CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_mountSubscription, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, mask, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, count, lang_uint32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, userData, lang_word, CORTO_GLOBAL);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);
@@ -1098,6 +1121,7 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_MEMBER_O(core_mount, received, core_mountStats, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, sentDiscarded, core_mountStats, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, policies, core_mountPolicy, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, subscriptions, core_mountSubscriptionList, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, events, lang_objectlist, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, thread, lang_word, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
@@ -1111,12 +1135,16 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, FALSE, corto_mount_invoke);
     CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, FALSE, corto_mount_request);
     CORTO_METHOD_O(core_mount, resume, "(string parent,string name,object o)", lang_object, FALSE, corto_mount_resume);
+    CORTO_METHOD_O(core_mount, subscribe, "(string parent,string name,core/eventMask mask)", lang_void, FALSE, corto_mount_subscribe);
+    CORTO_METHOD_O(core_mount, unsubscribe, "(string parent,string name,core/eventMask mask)", lang_void, FALSE, corto_mount_unsubscribe);
     CORTO_METHOD_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, TRUE, corto_mount_onInvoke_v);
     CORTO_METHOD_O(core_mount, onRequest, "(core/request request)", core_resultIter, TRUE, corto_mount_onRequest_v);
     CORTO_METHOD_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_mount_onResume_v);
     CORTO_METHOD_O(core_mount, onDeclare, "(object observable)", lang_void, TRUE, corto_mount_onDeclare_v);
     CORTO_METHOD_O(core_mount, onUpdate, "(object observable)", lang_void, TRUE, corto_mount_onUpdate_v);
     CORTO_METHOD_O(core_mount, onDelete, "(object observable)", lang_void, TRUE, corto_mount_onDelete_v);
+    CORTO_METHOD_O(core_mount, onSubscribe, "(string parent,string name,core/eventMask mask)", lang_word, TRUE, corto_mount_onSubscribe_v);
+    CORTO_METHOD_O(core_mount, onUnsubscribe, "(string parent,string name,core/eventMask mask,lang/word userData)", lang_void, TRUE, corto_mount_onUnsubscribe_v);
     CORTO_OBSERVER_O(core_mount, on_declare, corto_mount_on_declare);
     CORTO_OBSERVER_O(core_mount, on_update, corto_mount_on_update);
     CORTO_OBSERVER_O(core_mount, on_delete, corto_mount_on_delete);

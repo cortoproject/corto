@@ -1231,6 +1231,252 @@ corto_int16 _corto_mountStatsDeinit(corto_mountStats* value) {
     return result;
 }
 
+corto_mountSubscription* _corto_mountSubscriptionCreate(corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData) {
+    corto_mountSubscription* _this;
+    _this = corto_mountSubscription(corto_declare(corto_mountSubscription_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setstr(&((corto_mountSubscription*)_this)->parent, parent);
+    corto_setstr(&((corto_mountSubscription*)_this)->expr, expr);
+    ((corto_mountSubscription*)_this)->mask = mask;
+    ((corto_mountSubscription*)_this)->count = count;
+    ((corto_mountSubscription*)_this)->userData = userData;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData) {
+    corto_mountSubscription* _this;
+    _this = corto_mountSubscription(corto_declareChild(_parent, _name, corto_mountSubscription_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setstr(&((corto_mountSubscription*)_this)->parent, parent);
+    corto_setstr(&((corto_mountSubscription*)_this)->expr, expr);
+    ((corto_mountSubscription*)_this)->mask = mask;
+    ((corto_mountSubscription*)_this)->count = count;
+    ((corto_mountSubscription*)_this)->userData = userData;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_setstr(&((corto_mountSubscription*)_this)->parent, parent);
+        corto_setstr(&((corto_mountSubscription*)_this)->expr, expr);
+        ((corto_mountSubscription*)_this)->mask = mask;
+        ((corto_mountSubscription*)_this)->count = count;
+        ((corto_mountSubscription*)_this)->userData = userData;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mountSubscription* _corto_mountSubscriptionDeclare(void) {
+    corto_mountSubscription* _this;
+    _this = corto_mountSubscription(corto_declare(corto_mountSubscription_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_mountSubscription* _corto_mountSubscriptionDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mountSubscription* _this;
+    _this = corto_mountSubscription(corto_declareChild(_parent, _name, corto_mountSubscription_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData) {
+    CORTO_UNUSED(_this);
+    corto_setstr(&((corto_mountSubscription*)_this)->parent, parent);
+    corto_setstr(&((corto_mountSubscription*)_this)->expr, expr);
+    ((corto_mountSubscription*)_this)->mask = mask;
+    ((corto_mountSubscription*)_this)->count = count;
+    ((corto_mountSubscription*)_this)->userData = userData;
+    return corto_define(_this);
+}
+
+corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mountSubscription* _this, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData) {
+    CORTO_UNUSED(_this);
+    corto_setstr(&((corto_mountSubscription*)_this)->parent, parent);
+    corto_setstr(&((corto_mountSubscription*)_this)->expr, expr);
+    ((corto_mountSubscription*)_this)->mask = mask;
+    ((corto_mountSubscription*)_this)->count = count;
+    ((corto_mountSubscription*)_this)->userData = userData;
+    return _this;
+}
+
+corto_string _corto_mountSubscriptionStr(corto_mountSubscription* value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountSubscription_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_mountSubscription* corto_mountSubscriptionFromStr(corto_mountSubscription* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mountSubscription_o), str);
+    return value;
+}
+
+corto_equalityKind corto_mountSubscriptionCompare(corto_mountSubscription* dst, corto_mountSubscription* src) {
+    return corto_comparep(dst, corto_mountSubscription_o, src);
+}
+
+corto_int16 _corto_mountSubscriptionInit(corto_mountSubscription* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_mountSubscription_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountSubscription_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_mountSubscriptionDeinit(corto_mountSubscription* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountSubscription_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
+corto_mountSubscriptionList* _corto_mountSubscriptionListCreate(corto_uint32 length, corto_mountSubscription* elements) {
+    corto_mountSubscriptionList* _this;
+    _this = corto_mountSubscriptionList(corto_declare(corto_mountSubscriptionList_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_uint32 i = 0;
+    corto_mountSubscriptionListClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_mountSubscriptionListAppend(*_this, &elements[i]);
+    }
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_mountSubscriptionList* _corto_mountSubscriptionListCreateChild(corto_object _parent, corto_string _name, corto_uint32 length, corto_mountSubscription* elements) {
+    corto_mountSubscriptionList* _this;
+    _this = corto_mountSubscriptionList(corto_declareChild(_parent, _name, corto_mountSubscriptionList_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_uint32 i = 0;
+    corto_mountSubscriptionListClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_mountSubscriptionListAppend(*_this, &elements[i]);
+    }
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountSubscriptionListUpdate(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_uint32 i = 0;
+        corto_mountSubscriptionListClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_mountSubscriptionListAppend(*_this, &elements[i]);
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mountSubscriptionList* _corto_mountSubscriptionListDeclare(void) {
+    corto_mountSubscriptionList* _this;
+    _this = corto_mountSubscriptionList(corto_declare(corto_mountSubscriptionList_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_mountSubscriptionList* _corto_mountSubscriptionListDeclareChild(corto_object _parent, corto_string _name) {
+    corto_mountSubscriptionList* _this;
+    _this = corto_mountSubscriptionList(corto_declareChild(_parent, _name, corto_mountSubscriptionList_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_mountSubscriptionListDefine(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements) {
+    CORTO_UNUSED(_this);
+    corto_uint32 i = 0;
+    corto_mountSubscriptionListClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_mountSubscriptionListAppend(*_this, &elements[i]);
+    }
+    return corto_define(_this);
+}
+
+corto_mountSubscriptionList* _corto_mountSubscriptionListAssign(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements) {
+    CORTO_UNUSED(_this);
+    corto_uint32 i = 0;
+    corto_mountSubscriptionListClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_mountSubscriptionListAppend(*_this, &elements[i]);
+    }
+    return _this;
+}
+
+corto_string _corto_mountSubscriptionListStr(corto_mountSubscriptionList value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountSubscriptionList_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_mountSubscriptionList* corto_mountSubscriptionListFromStr(corto_mountSubscriptionList* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_mountSubscriptionList_o), str);
+    return value;
+}
+
+corto_equalityKind corto_mountSubscriptionListCompare(corto_mountSubscriptionList dst, corto_mountSubscriptionList src) {
+    return corto_comparep(&dst, corto_mountSubscriptionList_o, &src);
+}
+
+corto_int16 _corto_mountSubscriptionListInit(corto_mountSubscriptionList* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_mountSubscriptionList_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountSubscriptionList_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_mountSubscriptionListDeinit(corto_mountSubscriptionList* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_mountSubscriptionList_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure) {
     corto_notifyAction* _this;
     _this = corto_notifyAction(corto_declare(corto_notifyAction_o));
@@ -2583,6 +2829,102 @@ corto_int16 _corto_resultListDeinit(corto_resultList* value) {
     return result;
 }
 
+corto_subscriber _corto_subscriberCreate(corto_string parent, corto_string expr, corto_eventMask mask) {
+    corto_subscriber _this;
+    _this = corto_subscriber(corto_declare(corto_subscriber_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setstr(&((corto_subscriber)_this)->parent, parent);
+    corto_setstr(&((corto_subscriber)_this)->expr, expr);
+    ((corto_subscriber)_this)->mask = mask;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_eventMask mask) {
+    corto_subscriber _this;
+    _this = corto_subscriber(corto_declareChild(_parent, _name, corto_subscriber_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_setstr(&((corto_subscriber)_this)->parent, parent);
+    corto_setstr(&((corto_subscriber)_this)->expr, expr);
+    ((corto_subscriber)_this)->mask = mask;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_setstr(&((corto_subscriber)_this)->parent, parent);
+        corto_setstr(&((corto_subscriber)_this)->expr, expr);
+        ((corto_subscriber)_this)->mask = mask;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_subscriber _corto_subscriberDeclare(void) {
+    corto_subscriber _this;
+    _this = corto_subscriber(corto_declare(corto_subscriber_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_string _name) {
+    corto_subscriber _this;
+    _this = corto_subscriber(corto_declareChild(_parent, _name, corto_subscriber_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask) {
+    CORTO_UNUSED(_this);
+    corto_setstr(&((corto_subscriber)_this)->parent, parent);
+    corto_setstr(&((corto_subscriber)_this)->expr, expr);
+    ((corto_subscriber)_this)->mask = mask;
+    return corto_define(_this);
+}
+
+corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask) {
+    CORTO_UNUSED(_this);
+    corto_setstr(&((corto_subscriber)_this)->parent, parent);
+    corto_setstr(&((corto_subscriber)_this)->expr, expr);
+    ((corto_subscriber)_this)->mask = mask;
+    return _this;
+}
+
+corto_string _corto_subscriberStr(corto_subscriber value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_object(value, corto_type(corto_subscriber_o));
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_subscriber corto_subscriberFromStr(corto_subscriber value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_subscriber_o), str);
+    return value;
+}
+
+corto_equalityKind _corto_subscriberCompare(corto_subscriber dst, corto_subscriber src) {
+    return corto_compare(dst, src);
+}
+
 corto_time* _corto_timeCreate(corto_int32 sec, corto_uint32 nanosec) {
     corto_time* _this;
     _this = corto_time(corto_declare(corto_time_o));
@@ -2694,7 +3036,7 @@ corto_int16 _corto_timeDeinit(corto_time* value) {
 corto_augmentData* corto_augmentseqAppend(corto_augmentseq *seq, corto_augmentData element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_augmentData_o))));
+    seq->buffer = (corto_augmentData*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_augmentData_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
@@ -2708,7 +3050,7 @@ corto_augmentData* corto_augmentseqAppend(corto_augmentseq *seq, corto_augmentDa
 corto_augmentData* corto_augmentseqAppendAlloc(corto_augmentseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_augmentData_o))));
+    seq->buffer = (corto_augmentData*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_augmentData_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
@@ -2730,7 +3072,7 @@ void corto_augmentseqSize(corto_augmentseq *seq, corto_uint32 length) {
             }
         }
     }
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_augmentData_o))));
+    seq->buffer = (corto_augmentData*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_augmentData_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
@@ -2749,10 +3091,72 @@ void corto_augmentseqClear(corto_augmentseq *seq) {
     corto_augmentseqSize(seq, 0);
 }
 
+corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list) {
+    corto_mountSubscription* result;
+    result = corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
+    {
+        corto_value v;
+        v = corto_value_value(corto_type(corto_mountSubscription_o), result);
+        corto_initv(&v);
+    }
+    corto_llInsert(list, result);
+    return result;
+}
+
+corto_mountSubscription* corto_mountSubscriptionListInsert(corto_mountSubscriptionList list, corto_mountSubscription* element) {
+    corto_mountSubscription *result = corto_mountSubscriptionListInsertAlloc(list);
+    corto_copyp(result, corto_mountSubscription_o, element);
+    return result;
+}
+
+corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubscriptionList list) {
+    corto_mountSubscription* result;
+    result = corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
+    {
+        corto_value v;
+        v = corto_value_value(corto_type(corto_mountSubscription_o), result);
+        corto_initv(&v);
+    }
+    corto_llAppend(list, result);
+    return result;
+}
+
+corto_mountSubscription* corto_mountSubscriptionListAppend(corto_mountSubscriptionList list, corto_mountSubscription* element) {
+    corto_mountSubscription *result = corto_mountSubscriptionListAppendAlloc(list);
+    corto_copyp(result, corto_mountSubscription_o, element);
+    return result;
+}
+
+corto_mountSubscription* corto_mountSubscriptionListTakeFirst(corto_mountSubscriptionList list) {
+    return (corto_mountSubscription*)(corto_word)corto_llTakeFirst(list);
+}
+
+corto_mountSubscription* corto_mountSubscriptionListLast(corto_mountSubscriptionList list) {
+    return (corto_mountSubscription*)(corto_word)corto_llLast(list);
+}
+
+corto_mountSubscription* corto_mountSubscriptionListGet(corto_mountSubscriptionList list, corto_uint32 index) {
+    return (corto_mountSubscription*)corto_llGet(list, index);
+}
+
+corto_uint32 corto_mountSubscriptionListSize(corto_mountSubscriptionList list) {
+    return corto_llSize(list);
+}
+
+void corto_mountSubscriptionListClear(corto_mountSubscriptionList list) {
+    corto_iter iter = corto_llIter(list);
+    while(corto_iterHasNext(&iter)) {
+        void *ptr = corto_iterNext(&iter);
+        corto_deinitp(ptr, corto_mountSubscription_o);
+        corto_dealloc(ptr);
+    }
+    corto_llClear(list);
+}
+
 corto_observer* corto_observerseqAppend(corto_observerseq *seq, corto_observer element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_observer_o))));
+    seq->buffer = (corto_observer*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_observer_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     corto_setref(&seq->buffer[seq->length-1], element);
     return &seq->buffer[seq->length-1];
@@ -2761,14 +3165,14 @@ corto_observer* corto_observerseqAppend(corto_observerseq *seq, corto_observer e
 corto_observer* corto_observerseqAppendAlloc(corto_observerseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_observer_o))));
+    seq->buffer = (corto_observer*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_observer_o))));
     memset(seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_observerseqSize(corto_observerseq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_observer_o))));
+    seq->buffer = (corto_observer*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_observer_o))));
     if (length > seq->length) {
         corto_uint32 i;
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));

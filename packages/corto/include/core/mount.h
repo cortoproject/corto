@@ -110,6 +110,34 @@ CORTO_EXPORT corto_object _corto_mount_onResume_v(
     corto_string name,
     corto_object o);
 #define corto_mount_onResume_v(_this, parent, name, o) _corto_mount_onResume_v(corto_mount(_this), parent, name, o)
+CORTO_EXPORT corto_word _corto_mount_onSubscribe(
+    corto_mount _this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask);
+#define corto_mount_onSubscribe(_this, parent, name, mask) _corto_mount_onSubscribe(corto_mount(_this), parent, name, mask)
+
+CORTO_EXPORT corto_word _corto_mount_onSubscribe_v(
+    corto_mount _this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask);
+#define corto_mount_onSubscribe_v(_this, parent, name, mask) _corto_mount_onSubscribe_v(corto_mount(_this), parent, name, mask)
+CORTO_EXPORT corto_void _corto_mount_onUnsubscribe(
+    corto_mount _this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask,
+    corto_word userData);
+#define corto_mount_onUnsubscribe(_this, parent, name, mask, userData) _corto_mount_onUnsubscribe(corto_mount(_this), parent, name, mask, userData)
+
+CORTO_EXPORT corto_void _corto_mount_onUnsubscribe_v(
+    corto_mount _this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask,
+    corto_word userData);
+#define corto_mount_onUnsubscribe_v(_this, parent, name, mask, userData) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, name, mask, userData)
 CORTO_EXPORT corto_void _corto_mount_onUpdate(
     corto_mount _this,
     corto_object observable);
@@ -146,6 +174,20 @@ CORTO_EXPORT corto_int16 _corto_mount_setContentType(
     corto_mount _this,
     corto_string type);
 #define corto_mount_setContentType(_this, type) _corto_mount_setContentType(corto_mount(_this), type)
+
+CORTO_EXPORT corto_void _corto_mount_subscribe(
+    corto_mount _this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask);
+#define corto_mount_subscribe(_this, parent, name, mask) _corto_mount_subscribe(corto_mount(_this), parent, name, mask)
+
+CORTO_EXPORT corto_void _corto_mount_unsubscribe(
+    corto_mount _this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask);
+#define corto_mount_unsubscribe(_this, parent, name, mask) _corto_mount_unsubscribe(corto_mount(_this), parent, name, mask)
 
 #ifdef __cplusplus
 }

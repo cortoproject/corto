@@ -22,6 +22,8 @@ extern "C" {
 #define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
 #define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
+#define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
+#define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assertType((corto_type)corto_mountSubscriptionList_o, o))
 #define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
@@ -37,6 +39,7 @@ extern "C" {
 #define corto_result(o) ((corto_result*)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter*)corto_assertType((corto_type)corto_resultIter_o, o))
 #define corto_resultList(o) ((corto_resultList*)corto_assertType((corto_type)corto_resultList_o, o))
+#define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
@@ -108,6 +111,19 @@ struct corto_mountPolicy {
     corto_float64 sampleRate;
 };
 
+/*  /corto/core/mountSubscription */
+typedef struct corto_mountSubscription corto_mountSubscription;
+
+struct corto_mountSubscription {
+    corto_string parent;
+    corto_string expr;
+    corto_eventMask mask;
+    corto_uint32 count;
+    corto_word userData;
+};
+
+CORTO_LIST(corto_mountSubscriptionList);
+
 /*  /corto/core/mount */
 CORTO_CLASS(corto_mount);
 
@@ -122,6 +138,7 @@ CORTO_CLASS_DEF(corto_mount) {
     corto_mountStats received;
     corto_mountStats sentDiscarded;
     corto_mountPolicy policies;
+    corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
     corto_word thread;
     corto_bool quit;
@@ -265,6 +282,16 @@ struct corto_result {
 CORTO_ITERATOR(corto_resultIter);
 
 CORTO_LIST(corto_resultList);
+
+/*  /corto/core/subscriber */
+CORTO_CLASS(corto_subscriber);
+
+CORTO_CLASS_DEF(corto_subscriber) {
+    corto_string parent;
+    corto_string expr;
+    corto_eventMask mask;
+    corto_observer observer;
+};
 
 /*  /corto/core/time */
 typedef struct corto_time corto_time;

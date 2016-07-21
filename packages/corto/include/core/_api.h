@@ -412,6 +412,76 @@ CORTO_EXPORT corto_int16 _corto_mountStatsInit(corto_mountStats* value);
 CORTO_EXPORT corto_int16 _corto_mountStatsDeinit(corto_mountStats* value);
 #define corto_mountStatsDeinit(value) _corto_mountStatsDeinit(value)
 
+/* /corto/core/mountSubscription */
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreate(corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData);
+#define corto_mountSubscriptionCreate(parent, expr, mask, count, userData) _corto_mountSubscriptionCreate(parent, expr, mask, count, userData)
+#define corto_mountSubscriptionCreate_auto(_name, parent, expr, mask, count, userData) corto_mountSubscription* _name = corto_mountSubscriptionCreate(parent, expr, mask, count, userData); (void)_name
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData);
+#define corto_mountSubscriptionCreateChild(_parent, _name, parent, expr, mask, count, userData) _corto_mountSubscriptionCreateChild(_parent, _name, parent, expr, mask, count, userData)
+#define corto_mountSubscriptionCreateChild_auto(_parent, _name, parent, expr, mask, count, userData) corto_mountSubscription* _name = corto_mountSubscriptionCreateChild(_parent, #_name, parent, expr, mask, count, userData); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData);
+#define corto_mountSubscriptionUpdate(_this, parent, expr, mask, count, userData) _corto_mountSubscriptionUpdate(_this, parent, expr, mask, count, userData)
+
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclare(void);
+#define corto_mountSubscriptionDeclare() _corto_mountSubscriptionDeclare()
+#define corto_mountSubscriptionDeclare_auto(_name) corto_mountSubscription* _name = corto_mountSubscriptionDeclare(); (void)_name
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountSubscriptionDeclareChild(_parent, _name) _corto_mountSubscriptionDeclareChild(_parent, _name)
+#define corto_mountSubscriptionDeclareChild_auto(_parent, _name) corto_mountSubscription* _name = corto_mountSubscriptionDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData);
+#define corto_mountSubscriptionDefine(_this, parent, expr, mask, count, userData) _corto_mountSubscriptionDefine(_this, parent, expr, mask, count, userData)
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mountSubscription* _this, corto_string parent, corto_string expr, corto_eventMask mask, corto_uint32 count, corto_word userData);
+#define corto_mountSubscription__optional_NotSet NULL
+#define corto_mountSubscription__optional_Set(parent, expr, mask, count, userData) corto_mountSubscriptionAssign((corto_mountSubscription*)corto_calloc(sizeof(corto_mountSubscription)), parent, expr, mask, count, userData)
+#define corto_mountSubscription__optional_SetCond(cond, parent, expr, mask, count, userData) cond ? corto_mountSubscriptionAssign((corto_mountSubscription*)corto_calloc(sizeof(corto_mountSubscription)), parent, expr, mask, count, userData) : NULL
+#define corto_mountSubscriptionUnset(_this) _this ? corto_deinitp(_this, corto_mountSubscription_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_mountSubscriptionAssign(_this, parent, expr, mask, count, userData) _corto_mountSubscriptionAssign(_this, parent, expr, mask, count, userData)
+#define corto_mountSubscriptionSet(_this, parent, expr, mask, count, userData) _this = _this ? _this : (corto_mountSubscription*)corto_calloc(sizeof(corto_mountSubscription)); _corto_mountSubscriptionAssign(_this, parent, expr, mask, count, userData)
+CORTO_EXPORT corto_string _corto_mountSubscriptionStr(corto_mountSubscription* value);
+#define corto_mountSubscriptionStr(value) _corto_mountSubscriptionStr(value)
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionFromStr(corto_mountSubscription* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_mountSubscriptionCompare(corto_mountSubscription* dst, corto_mountSubscription* src);
+
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionInit(corto_mountSubscription* value);
+#define corto_mountSubscriptionInit(value) _corto_mountSubscriptionInit(value)
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionDeinit(corto_mountSubscription* value);
+#define corto_mountSubscriptionDeinit(value) _corto_mountSubscriptionDeinit(value)
+
+/* /corto/core/mountSubscriptionList */
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListCreate(corto_uint32 length, corto_mountSubscription* elements);
+#define corto_mountSubscriptionListCreate(length, elements) _corto_mountSubscriptionListCreate(length, elements)
+#define corto_mountSubscriptionListCreate_auto(_name, length, elements) corto_mountSubscriptionList* _name = corto_mountSubscriptionListCreate(length, elements); (void)_name
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListCreateChild(corto_object _parent, corto_string _name, corto_uint32 length, corto_mountSubscription* elements);
+#define corto_mountSubscriptionListCreateChild(_parent, _name, length, elements) _corto_mountSubscriptionListCreateChild(_parent, _name, length, elements)
+#define corto_mountSubscriptionListCreateChild_auto(_parent, _name, length, elements) corto_mountSubscriptionList* _name = corto_mountSubscriptionListCreateChild(_parent, #_name, length, elements); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionListUpdate(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
+#define corto_mountSubscriptionListUpdate(_this, length, elements) _corto_mountSubscriptionListUpdate(_this, length, elements)
+
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListDeclare(void);
+#define corto_mountSubscriptionListDeclare() _corto_mountSubscriptionListDeclare()
+#define corto_mountSubscriptionListDeclare_auto(_name) corto_mountSubscriptionList* _name = corto_mountSubscriptionListDeclare(); (void)_name
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListDeclareChild(corto_object _parent, corto_string _name);
+#define corto_mountSubscriptionListDeclareChild(_parent, _name) _corto_mountSubscriptionListDeclareChild(_parent, _name)
+#define corto_mountSubscriptionListDeclareChild_auto(_parent, _name) corto_mountSubscriptionList* _name = corto_mountSubscriptionListDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionListDefine(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
+#define corto_mountSubscriptionListDefine(_this, length, elements) _corto_mountSubscriptionListDefine(_this, length, elements)
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListAssign(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
+#define corto_mountSubscriptionList__optional_NotSet NULL
+#define corto_mountSubscriptionList__optional_Set(length, elements) corto_mountSubscriptionListAssign((corto_mountSubscriptionList*)corto_calloc(sizeof(corto_mountSubscriptionList)), length, elements)
+#define corto_mountSubscriptionList__optional_SetCond(cond, length, elements) cond ? corto_mountSubscriptionListAssign((corto_mountSubscriptionList*)corto_calloc(sizeof(corto_mountSubscriptionList)), length, elements) : NULL
+#define corto_mountSubscriptionListUnset(_this) _this ? corto_deinitp(_this, corto_mountSubscriptionList_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_mountSubscriptionListAssign(_this, length, elements) _corto_mountSubscriptionListAssign(_this, length, elements)
+#define corto_mountSubscriptionListSet(_this, length, elements) _this = _this ? _this : (corto_mountSubscriptionList*)corto_calloc(sizeof(corto_mountSubscriptionList)); _corto_mountSubscriptionListAssign(_this, length, elements)
+CORTO_EXPORT corto_string _corto_mountSubscriptionListStr(corto_mountSubscriptionList value);
+#define corto_mountSubscriptionListStr(value) _corto_mountSubscriptionListStr(value)
+CORTO_EXPORT corto_mountSubscriptionList* corto_mountSubscriptionListFromStr(corto_mountSubscriptionList* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_mountSubscriptionListCompare(corto_mountSubscriptionList dst, corto_mountSubscriptionList src);
+
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionListInit(corto_mountSubscriptionList* value);
+#define corto_mountSubscriptionListInit(value) _corto_mountSubscriptionListInit(value)
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionListDeinit(corto_mountSubscriptionList* value);
+#define corto_mountSubscriptionListDeinit(value) _corto_mountSubscriptionListDeinit(value)
+
 /* /corto/core/notifyAction */
 CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure);
 #define corto_notifyActionCreate(instance, procedure) _corto_notifyActionCreate(instance, corto_function(procedure))
@@ -821,6 +891,37 @@ CORTO_EXPORT corto_int16 _corto_resultListInit(corto_resultList* value);
 CORTO_EXPORT corto_int16 _corto_resultListDeinit(corto_resultList* value);
 #define corto_resultListDeinit(value) _corto_resultListDeinit(value)
 
+/* /corto/core/subscriber */
+CORTO_EXPORT corto_subscriber _corto_subscriberCreate(corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberCreate(parent, expr, mask) _corto_subscriberCreate(parent, expr, mask)
+#define corto_subscriberCreate_auto(_name, parent, expr, mask) corto_subscriber _name = corto_subscriberCreate(parent, expr, mask); (void)_name
+CORTO_EXPORT corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberCreateChild(_parent, _name, parent, expr, mask) _corto_subscriberCreateChild(_parent, _name, parent, expr, mask)
+#define corto_subscriberCreateChild_auto(_parent, _name, parent, expr, mask) corto_subscriber _name = corto_subscriberCreateChild(_parent, #_name, parent, expr, mask); (void)_name
+CORTO_EXPORT corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberUpdate(_this, parent, expr, mask) _corto_subscriberUpdate(corto_subscriber(_this), parent, expr, mask)
+
+CORTO_EXPORT corto_subscriber _corto_subscriberDeclare(void);
+#define corto_subscriberDeclare() _corto_subscriberDeclare()
+#define corto_subscriberDeclare_auto(_name) corto_subscriber _name = corto_subscriberDeclare(); (void)_name
+CORTO_EXPORT corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_string _name);
+#define corto_subscriberDeclareChild(_parent, _name) _corto_subscriberDeclareChild(_parent, _name)
+#define corto_subscriberDeclareChild_auto(_parent, _name) corto_subscriber _name = corto_subscriberDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriberDefine(_this, parent, expr, mask) _corto_subscriberDefine(corto_subscriber(_this), parent, expr, mask)
+CORTO_EXPORT corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_string parent, corto_string expr, corto_eventMask mask);
+#define corto_subscriber__optional_NotSet NULL
+#define corto_subscriber__optional_Set(parent, expr, mask) corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), parent, expr, mask)
+#define corto_subscriber__optional_SetCond(cond, parent, expr, mask) cond ? corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), parent, expr, mask) : NULL
+#define corto_subscriberUnset(_this) _this ? corto_deinitp(_this, corto_subscriber_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_subscriberAssign(_this, parent, expr, mask) _corto_subscriberAssign(corto_subscriber(_this), parent, expr, mask)
+#define corto_subscriberSet(_this, parent, expr, mask) _this = _this ? _this : (corto_subscriber*)corto_calloc(sizeof(corto_subscriber)); _corto_subscriberAssign(corto_subscriber(_this), parent, expr, mask)
+CORTO_EXPORT corto_string _corto_subscriberStr(corto_subscriber value);
+#define corto_subscriberStr(value) _corto_subscriberStr(corto_subscriber(value))
+CORTO_EXPORT corto_subscriber corto_subscriberFromStr(corto_subscriber value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_subscriberCompare(corto_subscriber dst, corto_subscriber src);
+#define corto_subscriberCompare(dst, src) _corto_subscriberCompare(corto_subscriber(dst), corto_subscriber(src))
+
 /* /corto/core/time */
 CORTO_EXPORT corto_time* _corto_timeCreate(corto_int32 sec, corto_uint32 nanosec);
 #define corto_timeCreate(sec, nanosec) _corto_timeCreate(sec, nanosec)
@@ -867,6 +968,22 @@ CORTO_EXPORT corto_augmentData* corto_augmentseqAppend(corto_augmentseq *seq, co
 CORTO_EXPORT corto_augmentData* corto_augmentseqAppendAlloc(corto_augmentseq *seq);
 CORTO_EXPORT void corto_augmentseqSize(corto_augmentseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_augmentseqClear(corto_augmentseq *seq);
+
+/* /corto/core/mountSubscriptionList */
+#define corto_mountSubscriptionListForeach(list, elem) \
+    corto_iter elem##_iter = corto_llIter(list);\
+    corto_mountSubscription *elem;\
+    while(corto_iterHasNext(&elem##_iter) ? elem = corto_iterNext(&elem##_iter), TRUE : FALSE)
+
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsert(corto_mountSubscriptionList list, corto_mountSubscription* element);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListAppend(corto_mountSubscriptionList list, corto_mountSubscription* element);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListTakeFirst(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListLast(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListGet(corto_mountSubscriptionList list, corto_uint32 index);
+CORTO_EXPORT corto_uint32 corto_mountSubscriptionListSize(corto_mountSubscriptionList list);
+CORTO_EXPORT void corto_mountSubscriptionListClear(corto_mountSubscriptionList list);
 
 /* /corto/core/observerseq */
 #define corto_observerseqForeach(seq, elem) \

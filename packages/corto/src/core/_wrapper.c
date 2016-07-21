@@ -274,6 +274,60 @@ corto_object _corto_mount_onResume(
     return _result;
 }
 
+corto_word _corto_mount_onSubscribe(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_word _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(string parent,string name,core/eventMask mask)");
+    }
+    corto_assert(_methodId, "virtual 'onSubscribe(string parent,string name,core/eventMask mask)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(string parent,string name,core/eventMask mask)@%d'", corto_idof(this), _methodId);
+
+    corto_call(corto_function(_method), &_result, this, parent, name, mask);
+    
+    return _result;
+}
+
+corto_void _corto_mount_onUnsubscribe(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_eventMask mask,
+    corto_word userData)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)");
+    }
+    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)@%d'", corto_idof(this), _methodId);
+
+    corto_call(corto_function(_method), NULL, this, parent, name, mask, userData);
+}
+
 corto_void _corto_mount_onUpdate(
     corto_mount this,
     corto_object observable)
