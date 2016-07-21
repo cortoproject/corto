@@ -447,7 +447,7 @@ static void corto_loadAugments(
                     if (data->contentType) {
                         corto_iter augmentIt;
                         corto_request r = {
-                            parent, expr, 0, 1, data->contentType == NULL, NULL
+                            parent, expr, 0, 1, data->contentType == NULL, {0,0}, {0,0}, NULL
                         };
 
                         augmentIt = corto_mount_request(
@@ -707,6 +707,7 @@ static corto_resultIter corto_selectRequestMount(
       (data->offset > data->count) ? data->offset - data->count : 0,
       (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
       data->contentType ? TRUE : FALSE,
+      {0, 0}, {0, 0},
       data->param};
 
     return corto_mount_request(mount, &r);
@@ -1449,12 +1450,123 @@ error:
     return -1;
 }
 
+static corto_selectSelector corto_selectorFromNow(void)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->from.kind = CORTO_FRAME_NOW;
+        request->from.value = 0;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorFromTime(corto_time t)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->from.kind = CORTO_FRAME_TIME;
+        union {
+            corto_time t;
+            corto_uint64 i;
+        } toInt;
+        toInt.t = t;
+        request->from.value = toInt.i;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorFromSample(corto_uint64 sample)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->from.kind = CORTO_FRAME_SAMPLE;
+        request->from.value = sample;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorToNow(void)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->to.kind = CORTO_FRAME_NOW;
+        request->from.value = 0;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorToTime(corto_time t)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->to.kind = CORTO_FRAME_TIME;
+        union {
+            corto_time t;
+            corto_uint64 i;
+        } toInt;
+        toInt.t = t;
+        request->to.value = toInt.i;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorToSample(corto_uint64 sample)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->to.kind = CORTO_FRAME_SAMPLE;
+        request->to.value = sample;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorForDuration(corto_time t)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->to.kind = CORTO_FRAME_DURATION;
+        union {
+            corto_time t;
+            corto_uint64 i;
+        } toInt;
+        toInt.t = t;
+        request->to.value = toInt.i;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorForCount(corto_int64 count)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->to.kind = CORTO_FRAME_COUNT;
+        request->to.value = count;
+    }
+    return corto_selectSelectorGet();
+}
+
 static corto_selectSelector corto_selectSelectorGet(void)
 {
     corto_selectSelector result;
     result.contentType = corto_selectorContentType;
     result.limit = corto_selectorLimit;
     result.augment = corto_selectorAugment;
+    result.fromNow = corto_selectorFromNow;
+    result.fromTime = corto_selectorFromTime;
+    result.fromSample = corto_selectorFromSample;
+    result.toNow = corto_selectorToNow;
+    result.toTime = corto_selectorToTime;
+    result.toSample = corto_selectorToSample;
+    result.forDuration = corto_selectorForDuration;
+    result.forCount = corto_selectorForCount;
     result.iter = corto_selectorIter;
     return result;
 }

@@ -108,11 +108,21 @@ typedef struct corto_selectRequest {
     corto_uint64 limit;
     corto_string augment;
     corto_string contentType;
+    corto_frame from;
+    corto_frame to;
 } corto_selectRequest;
 typedef struct corto_selectSelector {
     struct corto_selectSelector (*contentType)(corto_string contentType);
     struct corto_selectSelector (*limit)(corto_uint64 offset, corto_uint64 limit);
     struct corto_selectSelector (*augment)(corto_string filter);
+    struct corto_selectSelector (*fromNow)(void);
+    struct corto_selectSelector (*fromTime)(corto_time t);
+    struct corto_selectSelector (*fromSample)(corto_uint64 sample);
+    struct corto_selectSelector (*toNow)(void);
+    struct corto_selectSelector (*toTime)(corto_time t);
+    struct corto_selectSelector (*toSample)(corto_uint64 sample);
+    struct corto_selectSelector (*forDuration)(corto_time t);
+    struct corto_selectSelector (*forCount)(corto_int64 count);
     corto_int16 ___ (*iter)(corto_resultIter *ret);
 } corto_selectSelector;
 struct corto_selectSelector corto_select(corto_string scope, corto_string expr);

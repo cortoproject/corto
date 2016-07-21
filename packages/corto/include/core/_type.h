@@ -284,6 +284,8 @@ struct corto_request {
     corto_uint64 offset;
     corto_uint64 limit;
     corto_bool content;
+    corto_frame from;
+    corto_frame to;
     corto_string param;
 };
 
@@ -325,4 +327,3 @@ struct corto_time {
 }
 #endif
 #endif
-

@@ -1081,6 +1081,8 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_request, offset, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, limit, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, content, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_request, from, core_frame, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_request, to, core_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, param, lang_string, CORTO_GLOBAL);
 
 /* /corto/lang/dispatcher */

@@ -203,6 +203,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, typespec);\
     SSO_OP_VALUE(op, parameter);\
     SSO_OP_VALUE(op, augmentData);\
+    SSO_OP_VALUE(op, frame);\
     SSO_OP_VALUE(op, result);\
     SSO_OP_VALUE(op, request);\
     SSO_OP_VALUE(op, mountStats);\
@@ -217,7 +218,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, resultIter);\
     SSO_OP_VALUE(op, time);\
     SSO_OP_VALUE(op, position);\
-    SSO_OP_VALUE(op, frame);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
@@ -710,6 +710,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, request_offset);\
     SSO_OP_OBJ_CORE(op, request_limit);\
     SSO_OP_OBJ_CORE(op, request_content);\
+    SSO_OP_OBJ_CORE(op, request_from);\
+    SSO_OP_OBJ_CORE(op, request_to);\
     SSO_OP_OBJ_CORE(op, request_param);\
     /* package */\
     SSO_OP_OBJ_CORE(op, package_url);\
