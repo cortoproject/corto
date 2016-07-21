@@ -88,6 +88,7 @@ extern "C" {
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
 #define corto_virtual(o) ((corto_virtual)corto_assertType((corto_type)corto_virtual_o, o))
 #define corto_void(o) ((corto_void*)o)
+#define corto_wordseq(o) ((corto_wordseq*)corto_assertType((corto_type)corto_wordseq_o, o))
 
 /* Type definitions */
 /* typeKind */
@@ -584,6 +585,8 @@ CORTO_CLASS_DEF(corto_virtual) {
 
 /* void */
 typedef void corto_void;
+
+CORTO_SEQUENCE(corto_wordseq, corto_word,);
 
 #ifdef __cplusplus
 }

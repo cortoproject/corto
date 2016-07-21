@@ -109,6 +109,7 @@ CORTO_META_OBJECT(sequence, observerseq);
 CORTO_META_OBJECT(sequence, vtable);
 CORTO_META_OBJECT(sequence, octetseq);
 CORTO_META_OBJECT(sequence, int32seq);
+CORTO_META_OBJECT(sequence, wordseq);
 CORTO_META_OBJECT(list, resultList);
 CORTO_META_OBJECT(list, objectlist);
 

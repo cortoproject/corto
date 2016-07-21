@@ -535,6 +535,7 @@ CORTO_FWDECL(sequence, octetseq);
 CORTO_FWDECL(sequence, parameterseq);
 CORTO_FWDECL(sequence, vtable);
 CORTO_FWDECL(sequence, int32seq);
+CORTO_FWDECL(sequence, wordseq);
 CORTO_FWDECL_CORE(sequence, augmentseq);
 
 CORTO_FWDECL_CORE(list, resultList);
@@ -752,6 +753,7 @@ CORTO_SEQUENCE_O(lang, objectseq, lang_object, 0);
 CORTO_SEQUENCE_O(lang, octetseq, lang_octet, 0);
 CORTO_SEQUENCE_O(lang, parameterseq, lang_parameter, 0);
 CORTO_SEQUENCE_O(lang, int32seq, lang_int32, 0);
+CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
 CORTO_SEQUENCE_O(lang, vtable, lang_function, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(core, resultList, core_result, 0);
@@ -1071,6 +1073,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, value, lang_word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_result, history, lang_wordseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
     CORTO_METHOD_O(core_result, getText, "()", lang_string, FALSE, corto_result_getText);
 

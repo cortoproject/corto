@@ -7570,6 +7570,129 @@ corto_int16 _corto_wordDeinit(corto_word* value) {
     return result;
 }
 
+corto_wordseq* _corto_wordseqCreate(corto_uint32 length, corto_word* elements) {
+    corto_wordseq* _this;
+    _this = corto_wordseq(corto_declare(corto_wordseq_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_wordseqSize(_this, length);
+    corto_uint32 i = 0;
+    for (i = 0; i < length; i ++) {
+        _this->buffer[i] = elements[i];
+    }
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _name, corto_uint32 length, corto_word* elements) {
+    corto_wordseq* _this;
+    _this = corto_wordseq(corto_declareChild(_parent, _name, corto_wordseq_o));
+    if (!_this) {
+        return NULL;
+    }
+    corto_wordseqSize(_this, length);
+    corto_uint32 i = 0;
+    for (i = 0; i < length; i ++) {
+        _this->buffer[i] = elements[i];
+    }
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, corto_word* elements) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_wordseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_wordseq* _corto_wordseqDeclare(void) {
+    corto_wordseq* _this;
+    _this = corto_wordseq(corto_declare(corto_wordseq_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_wordseq* _corto_wordseqDeclareChild(corto_object _parent, corto_string _name) {
+    corto_wordseq* _this;
+    _this = corto_wordseq(corto_declareChild(_parent, _name, corto_wordseq_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, corto_word* elements) {
+    CORTO_UNUSED(_this);
+    corto_wordseqSize(_this, length);
+    corto_uint32 i = 0;
+    for (i = 0; i < length; i ++) {
+        _this->buffer[i] = elements[i];
+    }
+    return corto_define(_this);
+}
+
+corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, corto_word* elements) {
+    CORTO_UNUSED(_this);
+    corto_wordseqSize(_this, length);
+    corto_uint32 i = 0;
+    for (i = 0; i < length; i ++) {
+        _this->buffer[i] = elements[i];
+    }
+    return _this;
+}
+
+corto_string _corto_wordseqStr(corto_wordseq value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_wordseq_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_wordseq* corto_wordseqFromStr(corto_wordseq* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_wordseq_o), str);
+    return value;
+}
+
+corto_equalityKind corto_wordseqCompare(corto_wordseq dst, corto_wordseq src) {
+    return corto_comparep(&dst, corto_wordseq_o, &src);
+}
+
+corto_int16 _corto_wordseqInit(corto_wordseq* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_wordseq_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_wordseq_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_wordseqDeinit(corto_wordseq* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_wordseq_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_int32* corto_int32seqAppend(corto_int32seq *seq, corto_int32 element) {
     corto_uint32 size;
     seq->length++;
@@ -7936,5 +8059,35 @@ void corto_vtableSize(corto_vtable *seq, corto_uint32 length) {
 
 void corto_vtableClear(corto_vtable *seq) {
     corto_vtableSize(seq, 0);
+}
+
+corto_word* corto_wordseqAppend(corto_wordseq *seq, corto_word element) {
+    corto_uint32 size;
+    seq->length++;
+    seq->buffer = (corto_word*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_word_o))));
+    memset(&seq->buffer[seq->length-1], 0, size);
+    corto_copyp(&seq->buffer[seq->length-1], corto_word_o, &element);
+    return &seq->buffer[seq->length-1];
+}
+
+corto_word* corto_wordseqAppendAlloc(corto_wordseq *seq) {
+    corto_uint32 size;
+    seq->length++;
+    seq->buffer = (corto_word*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_word_o))));
+    memset(&seq->buffer[seq->length-1], 0, size);
+    return &seq->buffer[seq->length-1];
+}
+
+void corto_wordseqSize(corto_wordseq *seq, corto_uint32 length) {
+    corto_uint32 size;
+    seq->buffer = (corto_word*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_word_o))));
+    if (length > seq->length) {
+        memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
+    }
+    seq->length = length;
+}
+
+void corto_wordseqClear(corto_wordseq *seq) {
+    corto_wordseqSize(seq, 0);
 }
 

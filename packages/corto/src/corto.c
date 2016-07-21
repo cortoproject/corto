@@ -187,6 +187,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, state);\
     SSO_OP_VALUE(op, attr);\
     SSO_OP_VALUE(op, int32seq);\
+    SSO_OP_VALUE(op, wordseq);\
     SSO_OP_VALUE(op, objectseq);\
     SSO_OP_VALUE(op, interfaceseq);\
     SSO_OP_VALUE(op, memberseq);\
@@ -702,6 +703,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_parent);\
     SSO_OP_OBJ_CORE(op, result_type);\
     SSO_OP_OBJ_CORE(op, result_value);\
+    SSO_OP_OBJ_CORE(op, result_history);\
     SSO_OP_OBJ_CORE(op, result_augments);\
     SSO_OP_OBJ_CORE(op, result_getText_);\
     /* request */\

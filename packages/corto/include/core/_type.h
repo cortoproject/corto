@@ -298,6 +298,7 @@ struct corto_result {
     corto_string parent;
     corto_string type;
     corto_word value;
+    corto_wordseq history;
     corto_augmentseq augments;
 };
 
@@ -327,3 +328,4 @@ struct corto_time {
 }
 #endif
 #endif
+

@@ -85,6 +85,10 @@ typedef struct corto_selectData {
     corto_uint64 limit;
     corto_uint64 count;
 
+    /* History */
+    corto_frame from;
+    corto_frame to;
+
     /* Augment filter */
     corto_string augmentFilter;
 
@@ -707,7 +711,8 @@ static corto_resultIter corto_selectRequestMount(
       (data->offset > data->count) ? data->offset - data->count : 0,
       (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
       data->contentType ? TRUE : FALSE,
-      {0, 0}, {0, 0},
+      data->from,
+      data->to,
       data->param};
 
     return corto_mount_request(mount, &r);
@@ -1364,6 +1369,8 @@ static corto_resultIter corto_selectPrepareIterator (
     data->offset = r->offset;
     data->limit = r->limit;
     data->augmentFilter = r->augment;
+    data->from = r->from;
+    data->to = r->to;
     data->item.parent = data->parent;
     data->item.name = data->name;
     data->item.type = data->type;

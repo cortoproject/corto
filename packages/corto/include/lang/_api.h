@@ -2478,6 +2478,41 @@ CORTO_EXPORT corto_int16 _corto_wordInit(corto_word* value);
 CORTO_EXPORT corto_int16 _corto_wordDeinit(corto_word* value);
 #define corto_wordDeinit(value) _corto_wordDeinit(value)
 
+/* wordseq */
+CORTO_EXPORT corto_wordseq* _corto_wordseqCreate(corto_uint32 length, corto_word* elements);
+#define corto_wordseqCreate(length, elements) _corto_wordseqCreate(length, elements)
+#define corto_wordseqCreate_auto(_name, length, elements) corto_wordseq* _name = corto_wordseqCreate(length, elements); (void)_name
+CORTO_EXPORT corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _name, corto_uint32 length, corto_word* elements);
+#define corto_wordseqCreateChild(_parent, _name, length, elements) _corto_wordseqCreateChild(_parent, _name, length, elements)
+#define corto_wordseqCreateChild_auto(_parent, _name, length, elements) corto_wordseq* _name = corto_wordseqCreateChild(_parent, #_name, length, elements); (void)_name
+CORTO_EXPORT corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, corto_word* elements);
+#define corto_wordseqUpdate(_this, length, elements) _corto_wordseqUpdate(_this, length, elements)
+
+CORTO_EXPORT corto_wordseq* _corto_wordseqDeclare(void);
+#define corto_wordseqDeclare() _corto_wordseqDeclare()
+#define corto_wordseqDeclare_auto(_name) corto_wordseq* _name = corto_wordseqDeclare(); (void)_name
+CORTO_EXPORT corto_wordseq* _corto_wordseqDeclareChild(corto_object _parent, corto_string _name);
+#define corto_wordseqDeclareChild(_parent, _name) _corto_wordseqDeclareChild(_parent, _name)
+#define corto_wordseqDeclareChild_auto(_parent, _name) corto_wordseq* _name = corto_wordseqDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, corto_word* elements);
+#define corto_wordseqDefine(_this, length, elements) _corto_wordseqDefine(_this, length, elements)
+CORTO_EXPORT corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, corto_word* elements);
+#define corto_wordseq__optional_NotSet NULL
+#define corto_wordseq__optional_Set(length, elements) corto_wordseqAssign((corto_wordseq*)corto_calloc(sizeof(corto_wordseq)), length, elements)
+#define corto_wordseq__optional_SetCond(cond, length, elements) cond ? corto_wordseqAssign((corto_wordseq*)corto_calloc(sizeof(corto_wordseq)), length, elements) : NULL
+#define corto_wordseqUnset(_this) _this ? corto_deinitp(_this, corto_wordseq_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_wordseqAssign(_this, length, elements) _corto_wordseqAssign(_this, length, elements)
+#define corto_wordseqSet(_this, length, elements) _this = _this ? _this : (corto_wordseq*)corto_calloc(sizeof(corto_wordseq)); _corto_wordseqAssign(_this, length, elements)
+CORTO_EXPORT corto_string _corto_wordseqStr(corto_wordseq value);
+#define corto_wordseqStr(value) _corto_wordseqStr(value)
+CORTO_EXPORT corto_wordseq* corto_wordseqFromStr(corto_wordseq* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_wordseqCompare(corto_wordseq dst, corto_wordseq src);
+
+CORTO_EXPORT corto_int16 _corto_wordseqInit(corto_wordseq* value);
+#define corto_wordseqInit(value) _corto_wordseqInit(value)
+CORTO_EXPORT corto_int16 _corto_wordseqDeinit(corto_wordseq* value);
+#define corto_wordseqDeinit(value) _corto_wordseqDeinit(value)
+
 
 /* int32seq */
 #define corto_int32seqForeach(seq, elem) \
@@ -2581,6 +2616,17 @@ CORTO_EXPORT corto_function* corto_vtableAppend(corto_vtable *seq, corto_functio
 CORTO_EXPORT corto_function* corto_vtableAppendAlloc(corto_vtable *seq);
 CORTO_EXPORT void corto_vtableSize(corto_vtable *seq, corto_uint32 length);
 CORTO_EXPORT void corto_vtableClear(corto_vtable *seq);
+
+/* wordseq */
+#define corto_wordseqForeach(seq, elem) \
+    corto_uint32 elem##_iter;\
+    corto_word elem;\
+    for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
+
+CORTO_EXPORT corto_word* corto_wordseqAppend(corto_wordseq *seq, corto_word element);
+CORTO_EXPORT corto_word* corto_wordseqAppendAlloc(corto_wordseq *seq);
+CORTO_EXPORT void corto_wordseqSize(corto_wordseq *seq, corto_uint32 length);
+CORTO_EXPORT void corto_wordseqClear(corto_wordseq *seq);
 
 #ifdef __cplusplus
 }
