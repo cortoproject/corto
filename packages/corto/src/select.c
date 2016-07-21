@@ -4,7 +4,7 @@
 
 extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_int8 CORTO_OLS_AUGMENT;
-extern corto_threadKey CORTO_KEY_SELECT;
+extern corto_threadKey CORTO_KEY_FLOW;
 #define CORTO_SELECT_MAX_OP (32)
 
 typedef enum corto_selectToken {
@@ -1007,7 +1007,7 @@ static void corto_selectTree(
 
     /* Request mounts once per scope, and do it before iterating over
      * corto store objects so mounts have more time to fetch data. */
-    corto_selectRequestMounts(data, frame, NULL, TRUE);
+    corto_selectRequestMounts(data, frame, NULL, FALSE);
 
     data->next = NULL;
 
@@ -1400,7 +1400,7 @@ static corto_selectSelector corto_selectorContentType(
     corto_string contentType)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_SELECT);
+      corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
         request->contentType = contentType;
     }
@@ -1412,7 +1412,7 @@ static corto_selectSelector corto_selectorLimit(
     corto_uint64 limit)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_SELECT);
+      corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
         request->offset = offset;
         request->limit = limit;
@@ -1424,28 +1424,29 @@ static corto_selectSelector corto_selectorAugment(
     corto_string augment)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_SELECT);
+      corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
         request->augment = augment;
     }
     return corto_selectSelectorGet();
 }
 
-static corto_resultIter corto_selectorIter(corto_int16 *ret)
+static corto_int16 corto_selectorIter(corto_resultIter *ret)
 {
-    corto_resultIter result = {NULL};
-
-    if (ret) *ret = 0;
+    corto_assert(ret != NULL, "no iterator provided to .iter()");
 
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_SELECT);
+      corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
-        result = corto_selectPrepareIterator(request);
-        if (request->err && ret) {
-            *ret = -1;
+        *ret = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
         }
     }
-    return result;
+
+    return 0;
+error:
+    return -1;
 }
 
 static corto_selectSelector corto_selectSelectorGet(void)
@@ -1462,10 +1463,10 @@ corto_selectSelector corto_select(
     corto_string scope,
     corto_string expr)
 {
-    corto_selectRequest *request = corto_threadTlsGet(CORTO_KEY_SELECT);
+    corto_selectRequest *request = corto_threadTlsGet(CORTO_KEY_FLOW);
     if (!request) {
         request = corto_calloc(sizeof(corto_selectRequest));
-        corto_threadTlsSet(CORTO_KEY_SELECT, request);
+        corto_threadTlsSet(CORTO_KEY_FLOW, request);
     } else {
         memset(request, 0, sizeof(corto_selectRequest));
     }

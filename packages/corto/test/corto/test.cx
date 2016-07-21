@@ -452,6 +452,8 @@ test/Suite ReplicatorRequest::
 
     void tc_selectSingle()
     void tc_selectSingleNested()
+    void tc_selectSingleTree()
+    void tc_selectSingleTree2()
     void tc_selectScope()
     void tc_selectScopeNested()
     void tc_selectScopeNestedDirty()
@@ -460,6 +462,8 @@ test/Suite ReplicatorRequest::
 
     void tc_selectSingleFromScope()
     void tc_selectSingleNestedFromScope()
+    void tc_selectSingleFromScopeTree()
+    void tc_selectSingleNestedFromScopeTree()
     void tc_selectScopeFromScope()
     void tc_selectScopeNestedFromScope()
     void tc_selectScopeNestedDirtyFromScope()
@@ -476,6 +480,12 @@ test/Suite ReplicatorRequest::
     void tc_selectGrandparentFromVirtualScope()
     void tc_selectVirtualParentFromVirtualScope()
     void tc_selectVirtualGrandparentFromVirtualScope()
+
+    void tc_selectTree()
+    void tc_selectTreeFromScope()
+    void tc_selectTreeFromNestedScope()
+    void tc_selectTreeFromVirtualScope()
+    void tc_selectTreeFromVirtualNestedScope()
 
 class SinkReplicator : core/mount, hidden::
     alias mount: mount/mount
