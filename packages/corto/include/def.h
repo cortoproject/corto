@@ -109,7 +109,7 @@ typedef struct corto_ll_s* corto_ll;
  */
 #define CORTO_MAX_INHERITANCE_DEPTH (16)
 
-/* The maximum number of languages you can bind to a single Corto process. */
+/* The maximum number of languages you can construct to a single Corto process. */
 #define CORTO_MAX_BINDINGS (16)
 
 /* The maximum number of threads that can make use of the Corto

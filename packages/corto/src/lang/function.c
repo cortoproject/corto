@@ -8,10 +8,10 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_function_bind(
+corto_int16 _corto_function_construct(
     corto_function this)
 {
-/* $begin(corto/lang/function/bind) */
+/* $begin(corto/lang/function/construct) */
     /* If no returntype is set, make it void */
     if (!this->returnType) {
         corto_setref(&this->returnType, corto_void_o);
@@ -62,7 +62,7 @@ corto_int16 _corto_function_bind(
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        if (corto_delegate_bind(this)) {
+        if (corto_delegate_construct(this)) {
             goto error;
         }
     }
@@ -75,6 +75,27 @@ corto_int16 _corto_function_bind(
     return 0;
 error:
     return -1;
+/* $end */
+}
+
+corto_void _corto_function_destruct(
+    corto_function object)
+{
+/* $begin(corto/lang/function/destruct) */
+    corto_uint32 i;
+
+    corto_callDeinit(object);
+
+    /* Deinitialize parameters */
+    for(i=0; i<object->parameters.length; i++) {
+        corto_dealloc(object->parameters.buffer[i].name);
+        object->parameters.buffer[i].name = NULL;
+        corto_release(object->parameters.buffer[i].type);
+        object->parameters.buffer[i].type = NULL;
+    }
+
+    corto_dealloc(object->parameters.buffer);
+    object->parameters.buffer = NULL;
 /* $end */
 }
 
@@ -269,26 +290,5 @@ error:
     corto_dealloc(result.buffer);
     result.buffer = NULL;
     return result;
-/* $end */
-}
-
-corto_void _corto_function_unbind(
-    corto_function object)
-{
-/* $begin(corto/lang/function/unbind) */
-    corto_uint32 i;
-
-    corto_callDeinit(object);
-
-    /* Deinitialize parameters */
-    for(i=0; i<object->parameters.length; i++) {
-        corto_dealloc(object->parameters.buffer[i].name);
-        object->parameters.buffer[i].name = NULL;
-        corto_release(object->parameters.buffer[i].type);
-        object->parameters.buffer[i].type = NULL;
-    }
-
-    corto_dealloc(object->parameters.buffer);
-    object->parameters.buffer = NULL;
 /* $end */
 }

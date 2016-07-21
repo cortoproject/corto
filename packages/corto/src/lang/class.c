@@ -63,7 +63,7 @@ corto_int16 _corto_class_construct(
     corto_int16 result;
     corto_uint32 i;
 
-    /* This will bind methods of potential base-class which is necessary before validating
+    /* This will construct methods of potential base-class which is necessary before validating
      * whether this class correctly (fully) implements its interface. */
     result = corto_struct_construct(this);
 

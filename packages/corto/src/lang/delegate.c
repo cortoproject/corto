@@ -8,47 +8,6 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_delegate_bind(
-    corto_function object)
-{
-/* $begin(corto/lang/delegate/bind) */
-    corto_object parent = corto_parentof(object);
-
-    if (corto_class_instanceof(corto_interface_o, corto_typeof(parent))) {
-        corto_interface type = corto_interface(corto_typeof(parent));
-        corto_id functionName;
-        corto_member m = NULL;
-
-        /* Get function name, lookup delegate, assign function */
-        corto_signatureName(corto_idof(object), functionName);
-        if (corto_checkState(corto_type_o, CORTO_DEFINED) && (m = corto_interface_resolveMember(type, functionName)) &&
-            (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE)) {
-            if (corto_delegate_instanceof(corto_delegate(m->type), object)) {
-                /* Bind instance of function is a method */
-                if (corto_procedure(corto_typeof(object))->kind == CORTO_METHOD) {
-                    corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
-                }
-                /* Bind procedure */
-                corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
-            } else {
-                /* If there is a member that corresponds to a delegate but has a non matching
-                 * signature, always report error */
-                corto_seterr(
-                    "member '%s' of delegate type '%s' does not match signature of '%s'",
-                    corto_idof(m),
-                    corto_fullpath(NULL, m->type),
-                    corto_fullpath(NULL, object));
-                goto error;
-            }
-        }
-    }
-
-    return 0;
-error:
-    return -1;
-/* $end */
-}
-
 corto_bool _corto_delegate_castable_v(
     corto_delegate this,
     corto_type type)
@@ -94,6 +53,47 @@ corto_bool _corto_delegate_compatible_v(
     }
 
     return result;
+/* $end */
+}
+
+corto_int16 _corto_delegate_construct(
+    corto_function object)
+{
+/* $begin(corto/lang/delegate/construct) */
+    corto_object parent = corto_parentof(object);
+
+    if (corto_class_instanceof(corto_interface_o, corto_typeof(parent))) {
+        corto_interface type = corto_interface(corto_typeof(parent));
+        corto_id functionName;
+        corto_member m = NULL;
+
+        /* Get function name, lookup delegate, assign function */
+        corto_signatureName(corto_idof(object), functionName);
+        if (corto_checkState(corto_type_o, CORTO_DEFINED) && (m = corto_interface_resolveMember(type, functionName)) &&
+            (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE)) {
+            if (corto_delegate_instanceof(corto_delegate(m->type), object)) {
+                /* Bind instance of function is a method */
+                if (corto_procedure(corto_typeof(object))->kind == CORTO_METHOD) {
+                    corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
+                }
+                /* Bind procedure */
+                corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
+            } else {
+                /* If there is a member that corresponds to a delegate but has a non matching
+                 * signature, always report error */
+                corto_seterr(
+                    "member '%s' of delegate type '%s' does not match signature of '%s'",
+                    corto_idof(m),
+                    corto_fullpath(NULL, m->type),
+                    corto_fullpath(NULL, object));
+                goto error;
+            }
+        }
+    }
+
+    return 0;
+error:
+    return -1;
 /* $end */
 }
 

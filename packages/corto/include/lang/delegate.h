@@ -16,10 +16,6 @@
 extern "C" {
 #endif
 
-
-CORTO_EXPORT corto_int16 _corto_delegate_bind(
-    corto_function object);
-#define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
 CORTO_EXPORT corto_bool _corto_delegate_castable(
     corto_delegate _this,
     corto_type type);
@@ -38,6 +34,10 @@ CORTO_EXPORT corto_bool _corto_delegate_compatible_v(
     corto_delegate _this,
     corto_type type);
 #define corto_delegate_compatible_v(_this, type) _corto_delegate_compatible_v(corto_delegate(_this), corto_type(type))
+
+CORTO_EXPORT corto_int16 _corto_delegate_construct(
+    corto_function object);
+#define corto_delegate_construct(object) _corto_delegate_construct(corto_function(object))
 
 CORTO_EXPORT corto_int16 _corto_delegate_init(
     corto_delegate _this);

@@ -17,9 +17,9 @@ extern "C" {
 #endif
 
 
-CORTO_EXPORT corto_int16 _corto_metaprocedure_bind(
+CORTO_EXPORT corto_int16 _corto_metaprocedure_construct(
     corto_metaprocedure _this);
-#define corto_metaprocedure_bind(_this) _corto_metaprocedure_bind(corto_metaprocedure(_this))
+#define corto_metaprocedure_construct(_this) _corto_metaprocedure_construct(corto_metaprocedure(_this))
 
 #ifdef __cplusplus
 }

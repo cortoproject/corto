@@ -469,7 +469,7 @@ corto_int16 _corto_interface_bindMethod(
     }
 
     if (!virtual || (d > 0)) {
-        /* If distance is non-zero, bind new method */
+        /* If distance is non-zero, construct new method */
         if (virtual) {
             corto_function(*virtual)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
             corto_function(method)->overloaded = TRUE;
@@ -531,7 +531,7 @@ corto_int16 _corto_interface_construct(
         ownTable = this->methods;
         this->methods = *superTable;
 
-        /* re-bind methods */
+        /* re-construct methods */
         if (ownTable.length) {
             for (i=0; i<ownTable.length; i++) {
                 if (corto_instanceof(corto_type(corto_method_o), ownTable.buffer[i])) {

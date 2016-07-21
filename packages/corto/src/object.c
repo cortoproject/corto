@@ -535,9 +535,6 @@ void corto__destructor(corto_object o) {
 
             /* Call destructor */
             corto_delegateDestruct(corto_typeof(o), o);
-        } else if (corto_class_instanceof(corto_procedure_o, t)) {
-            /* Call unbind */
-            corto_procedure_unbind(corto_procedure(corto_typeof(o)), o);
         }
 
         _o->align.attrs.state &= ~CORTO_DEFINED;
@@ -1093,16 +1090,10 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_int16 result = 0;
 
     if (t->kind == CORTO_COMPOSITE) {
-        if (corto_interface(t)->kind == CORTO_CLASS) {
+        if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
             corto_interface i = corto_interface(t);
             do {
                 delegate = corto_class(i)->construct._parent.procedure;
-                i = i->base;
-            } while(i && !delegate);
-        } else if (corto_interface(t)->kind == CORTO_PROCEDURE) {
-            corto_interface i = corto_interface(t);
-            do {
-                delegate = corto_procedure(i)->bind._parent.procedure;
                 i = i->base;
             } while(i && !delegate);
         }

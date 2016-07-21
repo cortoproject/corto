@@ -25,16 +25,3 @@ error:
     return -1;
 /* $end */
 }
-
-corto_void _corto_procedure_unbind(
-    corto_procedure this,
-    corto_function object)
-{
-/* $begin(corto/lang/procedure/unbind) */
-    if (this->kind == CORTO_OBSERVER){
-        corto_observer_unbind(corto_observer(object));
-    } else {
-        corto_function_unbind(object);
-    }
-/* $end */
-}

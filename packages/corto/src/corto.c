@@ -113,7 +113,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, iterator);\
     SSO_OP_CLASS(op, struct);\
     SSO_OP_CLASS(op, union);\
-    SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, event);\
     SSO_OP_CLASS(op, observableEvent);\
     SSO_OP_CLASS(op, invokeEvent);\
@@ -135,6 +134,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, default);\
     SSO_OP_CLASS(op, alias);\
     SSO_OP_CLASS(op, class);\
+    SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
     SSO_OP_CLASS(op, subscriber);\
@@ -228,7 +228,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 #define SSO_OP_OBJECT(op)\
     SSO_OP_OBJ(op, class_construct_);\
     SSO_OP_OBJ(op, class_destruct_);\
-    SSO_OP_OBJ(op, procedure_unbind_);\
     /* constant */\
     SSO_OP_OBJ(op, constant_init_);\
     /* function */\
@@ -244,14 +243,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, function_parameters);\
     SSO_OP_OBJ(op, function_nextParameterId);\
     SSO_OP_OBJ(op, function_init_);\
-    SSO_OP_OBJ(op, function_bind_);\
-    SSO_OP_OBJ(op, function_unbind);\
+    SSO_OP_OBJ(op, function_construct_);\
+    SSO_OP_OBJ(op, function_destruct);\
     SSO_OP_OBJ(op, function_stringToParameterSeq);\
     SSO_OP_OBJ(op, function_parseParamString_);\
     /* method */\
     SSO_OP_OBJ(op, method_virtual);\
     SSO_OP_OBJ(op, method_init_);\
-    SSO_OP_OBJ(op, method_bind_);\
+    SSO_OP_OBJ(op, method_construct_);\
     /* virtual */\
     SSO_OP_OBJ(op, virtual_init_);\
     /* observer */\
@@ -261,14 +260,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, observer_dispatcher);\
     SSO_OP_OBJ_CORE(op, observer_template);\
     SSO_OP_OBJ_CORE(op, observer_init_);\
-    SSO_OP_OBJ_CORE(op, observer_bind_);\
-    SSO_OP_OBJ_CORE(op, observer_unbind);\
+    SSO_OP_OBJ_CORE(op, observer_construct_);\
+    SSO_OP_OBJ_CORE(op, observer_destruct);\
     SSO_OP_OBJ_CORE(op, observer_listen_);\
     SSO_OP_OBJ_CORE(op, observer_silence_);\
     SSO_OP_OBJ_CORE(op, observer_setDispatcher_);\
     /* metaprocedure */\
     SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
-    SSO_OP_OBJ(op, metaprocedure_bind_);\
+    SSO_OP_OBJ(op, metaprocedure_construct_);\
     /* dispatcher */\
     SSO_OP_OBJ_CORE(op, dispatcher_post);\
     /* event */\
@@ -551,7 +550,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, union_findCase_);\
     /* procedure */\
     SSO_OP_OBJ(op, procedure_kind);\
-    SSO_OP_OBJ(op, procedure_bind);\
     SSO_OP_OBJ(op, procedure_init_);\
     /* interfaceVector */\
     SSO_OP_OBJ(op, interfaceVector_interface);\
@@ -643,7 +641,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, delegate_compatible_);\
     SSO_OP_OBJ(op, delegate_castable_);\
     SSO_OP_OBJ(op, delegate_instanceof_);\
-    SSO_OP_OBJ(op, delegate_bind);\
+    SSO_OP_OBJ(op, delegate_construct);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init_);\
@@ -867,7 +865,7 @@ int corto_start(void) {
     corto_mutexNew(&corto_adminLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
-     * argument-stack sizes for functions during function::bind. */
+     * argument-stack sizes for functions during function::construct. */
     corto_type(corto_string_o)->size = sizeof(corto_string);
     corto_type(corto_int32_o)->size = sizeof(corto_int32);
     corto_type(corto_uint32_o)->size = sizeof(corto_uint32);

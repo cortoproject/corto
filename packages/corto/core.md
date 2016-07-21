@@ -55,7 +55,7 @@ Contains core infrastructure types.
 ### source
 
 ## observer
-### bind()
+### construct()
 #### Returns
 ### dispatcher
 ### init()
@@ -73,7 +73,7 @@ Contains core infrastructure types.
 #### me
 #### Returns
 ### template
-### unbind(observer object)
+### destruct(observer object)
 #### object
 
 ## observerseq

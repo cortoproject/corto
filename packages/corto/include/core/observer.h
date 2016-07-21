@@ -17,9 +17,13 @@ extern "C" {
 #endif
 
 
-CORTO_EXPORT corto_int16 _corto_observer_bind(
+CORTO_EXPORT corto_int16 _corto_observer_construct(
     corto_observer _this);
-#define corto_observer_bind(_this) _corto_observer_bind(corto_observer(_this))
+#define corto_observer_construct(_this) _corto_observer_construct(corto_observer(_this))
+
+CORTO_EXPORT corto_void _corto_observer_destruct(
+    corto_observer object);
+#define corto_observer_destruct(object) _corto_observer_destruct(corto_observer(object))
 
 CORTO_EXPORT corto_int16 _corto_observer_init(
     corto_observer _this);
@@ -40,10 +44,6 @@ CORTO_EXPORT corto_int16 _corto_observer_silence(
     corto_observer _this,
     corto_object me);
 #define corto_observer_silence(_this, me) _corto_observer_silence(corto_observer(_this), me)
-
-CORTO_EXPORT corto_void _corto_observer_unbind(
-    corto_observer object);
-#define corto_observer_unbind(object) _corto_observer_unbind(corto_observer(object))
 
 #ifdef __cplusplus
 }
