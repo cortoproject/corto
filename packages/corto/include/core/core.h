@@ -19,6 +19,7 @@ extern "C" {
 #include <corto/core/augmentData.h>
 #include <corto/core/dispatcher.h>
 #include <corto/core/event.h>
+#include <corto/core/frame.h>
 #include <corto/core/invokeEvent.h>
 #include <corto/core/loader.h>
 #include <corto/core/mount.h>

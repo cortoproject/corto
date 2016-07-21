@@ -619,6 +619,217 @@ corto_int16 _corto_eventMaskDeinit(corto_eventMask* value) {
     return result;
 }
 
+corto_frame* _corto_frameCreate(corto_frameKind kind, corto_uint64 value) {
+    corto_frame* _this;
+    _this = corto_frame(corto_declare(corto_frame_o));
+    if (!_this) {
+        return NULL;
+    }
+    ((corto_frame*)_this)->kind = kind;
+    ((corto_frame*)_this)->value = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_frame* _corto_frameCreateChild(corto_object _parent, corto_string _name, corto_frameKind kind, corto_uint64 value) {
+    corto_frame* _this;
+    _this = corto_frame(corto_declareChild(_parent, _name, corto_frame_o));
+    if (!_this) {
+        return NULL;
+    }
+    ((corto_frame*)_this)->kind = kind;
+    ((corto_frame*)_this)->value = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind kind, corto_uint64 value) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        ((corto_frame*)_this)->kind = kind;
+        ((corto_frame*)_this)->value = value;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_frame* _corto_frameDeclare(void) {
+    corto_frame* _this;
+    _this = corto_frame(corto_declare(corto_frame_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_frame* _corto_frameDeclareChild(corto_object _parent, corto_string _name) {
+    corto_frame* _this;
+    _this = corto_frame(corto_declareChild(_parent, _name, corto_frame_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_frameDefine(corto_frame* _this, corto_frameKind kind, corto_uint64 value) {
+    CORTO_UNUSED(_this);
+    ((corto_frame*)_this)->kind = kind;
+    ((corto_frame*)_this)->value = value;
+    return corto_define(_this);
+}
+
+corto_frame* _corto_frameAssign(corto_frame* _this, corto_frameKind kind, corto_uint64 value) {
+    CORTO_UNUSED(_this);
+    ((corto_frame*)_this)->kind = kind;
+    ((corto_frame*)_this)->value = value;
+    return _this;
+}
+
+corto_string _corto_frameStr(corto_frame* value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_frame_o), value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_frame* corto_frameFromStr(corto_frame* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_frame_o), str);
+    return value;
+}
+
+corto_equalityKind corto_frameCompare(corto_frame* dst, corto_frame* src) {
+    return corto_comparep(dst, corto_frame_o, src);
+}
+
+corto_int16 _corto_frameInit(corto_frame* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_frame_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_frame_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_frameDeinit(corto_frame* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_frame_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
+corto_frameKind* _corto_frameKindCreate(corto_frameKind value) {
+    corto_frameKind* _this;
+    _this = corto_frameKind(corto_declare(corto_frameKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    *_this = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_frameKind* _corto_frameKindCreateChild(corto_object _parent, corto_string _name, corto_frameKind value) {
+    corto_frameKind* _this;
+    _this = corto_frameKind(corto_declareChild(_parent, _name, corto_frameKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    *_this = value;
+    if (corto_define(_this)) {
+        corto_release(_this);
+        _this = NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_frameKindUpdate(corto_frameKind* _this, corto_frameKind value) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        *_this = value;
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_frameKind* _corto_frameKindDeclare(void) {
+    corto_frameKind* _this;
+    _this = corto_frameKind(corto_declare(corto_frameKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_frameKind* _corto_frameKindDeclareChild(corto_object _parent, corto_string _name) {
+    corto_frameKind* _this;
+    _this = corto_frameKind(corto_declareChild(_parent, _name, corto_frameKind_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_frameKindDefine(corto_frameKind* _this, corto_frameKind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+    return corto_define(_this);
+}
+
+corto_frameKind* _corto_frameKindAssign(corto_frameKind* _this, corto_frameKind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+    return _this;
+}
+
+corto_string _corto_frameKindStr(corto_frameKind value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_frameKind_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_frameKind* corto_frameKindFromStr(corto_frameKind* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_frameKind_o), str);
+    return value;
+}
+
+corto_equalityKind corto_frameKindCompare(corto_frameKind dst, corto_frameKind src) {
+    return corto_comparep(&dst, corto_frameKind_o, &src);
+}
+
+corto_int16 _corto_frameKindInit(corto_frameKind* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_frameKind_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_frameKind_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_frameKindDeinit(corto_frameKind* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_frameKind_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, corto_word args) {
     corto_invokeEvent _this;
     _this = corto_invokeEvent(corto_declare(corto_invokeEvent_o));

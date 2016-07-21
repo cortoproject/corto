@@ -473,6 +473,7 @@ CORTO_FWDECL(struct, parameter);
 CORTO_FWDECL_CORE(struct, augmentData);
 CORTO_FWDECL_CORE(struct, result);
 CORTO_FWDECL_CORE(struct, request);
+CORTO_FWDECL_CORE(struct, frame);
 CORTO_FWDECL_CORE(struct, mountStats);
 CORTO_FWDECL_CORE(struct, mountPolicy);
 CORTO_FWDECL_CORE(struct, mountSubscription);
@@ -515,6 +516,7 @@ CORTO_FWDECL(enum, primitiveKind);
 CORTO_FWDECL_CORE(enum, operatorKind);
 CORTO_FWDECL(enum, procedureKind);
 CORTO_FWDECL_CORE(enum, mountKind);
+CORTO_FWDECL_CORE(enum, frameKind);
 CORTO_FWDECL(enum, scopeStateKind);
 CORTO_FWDECL(enum, typeKind);
 CORTO_FWDECL(enum, width);
@@ -695,6 +697,14 @@ CORTO_ENUM_O(core, mountKind);
     CORTO_CONSTANT_O(core_mountKind, SOURCE);
     CORTO_CONSTANT_O(core_mountKind, SINK);
     CORTO_CONSTANT_O(core_mountKind, CACHE);
+    CORTO_CONSTANT_O(core_mountKind, HISTORIAN);
+
+CORTO_ENUM_O(core, frameKind);
+    CORTO_CONSTANT_O(core_frameKind, FRAME_NOW);
+    CORTO_CONSTANT_O(core_frameKind, FRAME_TIME);
+    CORTO_CONSTANT_O(core_frameKind, FRAME_DURATION);
+    CORTO_CONSTANT_O(core_frameKind, FRAME_SAMPLE);
+    CORTO_CONSTANT_O(core_frameKind, FRAME_COUNT);
 
 CORTO_BITMASK_O(lang, state);
     CORTO_CONSTANT_O(lang_state, VALID);
@@ -1262,6 +1272,11 @@ CORTO_STRUCT_O(core, time, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 CORTO_STRUCT_O(core, position, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_position, latitude, lang_float64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_position, longitude, lang_float64, CORTO_GLOBAL);
+
+/* /corto/core/frame */
+CORTO_STRUCT_O(core, frame, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_frame, kind, core_frameKind, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_frame, value, lang_uint64, CORTO_GLOBAL);
 
 /* /corto/native/type */
 CORTO_FW_I(native, type);

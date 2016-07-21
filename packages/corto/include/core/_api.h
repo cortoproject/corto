@@ -214,6 +214,76 @@ CORTO_EXPORT corto_int16 _corto_eventMaskInit(corto_eventMask* value);
 CORTO_EXPORT corto_int16 _corto_eventMaskDeinit(corto_eventMask* value);
 #define corto_eventMaskDeinit(value) _corto_eventMaskDeinit(value)
 
+/* /corto/core/frame */
+CORTO_EXPORT corto_frame* _corto_frameCreate(corto_frameKind kind, corto_uint64 value);
+#define corto_frameCreate(kind, value) _corto_frameCreate(kind, value)
+#define corto_frameCreate_auto(_name, kind, value) corto_frame* _name = corto_frameCreate(kind, value); (void)_name
+CORTO_EXPORT corto_frame* _corto_frameCreateChild(corto_object _parent, corto_string _name, corto_frameKind kind, corto_uint64 value);
+#define corto_frameCreateChild(_parent, _name, kind, value) _corto_frameCreateChild(_parent, _name, kind, value)
+#define corto_frameCreateChild_auto(_parent, _name, kind, value) corto_frame* _name = corto_frameCreateChild(_parent, #_name, kind, value); (void)_name
+CORTO_EXPORT corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind kind, corto_uint64 value);
+#define corto_frameUpdate(_this, kind, value) _corto_frameUpdate(_this, kind, value)
+
+CORTO_EXPORT corto_frame* _corto_frameDeclare(void);
+#define corto_frameDeclare() _corto_frameDeclare()
+#define corto_frameDeclare_auto(_name) corto_frame* _name = corto_frameDeclare(); (void)_name
+CORTO_EXPORT corto_frame* _corto_frameDeclareChild(corto_object _parent, corto_string _name);
+#define corto_frameDeclareChild(_parent, _name) _corto_frameDeclareChild(_parent, _name)
+#define corto_frameDeclareChild_auto(_parent, _name) corto_frame* _name = corto_frameDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_frameDefine(corto_frame* _this, corto_frameKind kind, corto_uint64 value);
+#define corto_frameDefine(_this, kind, value) _corto_frameDefine(_this, kind, value)
+CORTO_EXPORT corto_frame* _corto_frameAssign(corto_frame* _this, corto_frameKind kind, corto_uint64 value);
+#define corto_frame__optional_NotSet NULL
+#define corto_frame__optional_Set(kind, value) corto_frameAssign((corto_frame*)corto_calloc(sizeof(corto_frame)), kind, value)
+#define corto_frame__optional_SetCond(cond, kind, value) cond ? corto_frameAssign((corto_frame*)corto_calloc(sizeof(corto_frame)), kind, value) : NULL
+#define corto_frameUnset(_this) _this ? corto_deinitp(_this, corto_frame_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_frameAssign(_this, kind, value) _corto_frameAssign(_this, kind, value)
+#define corto_frameSet(_this, kind, value) _this = _this ? _this : (corto_frame*)corto_calloc(sizeof(corto_frame)); _corto_frameAssign(_this, kind, value)
+CORTO_EXPORT corto_string _corto_frameStr(corto_frame* value);
+#define corto_frameStr(value) _corto_frameStr(value)
+CORTO_EXPORT corto_frame* corto_frameFromStr(corto_frame* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_frameCompare(corto_frame* dst, corto_frame* src);
+
+CORTO_EXPORT corto_int16 _corto_frameInit(corto_frame* value);
+#define corto_frameInit(value) _corto_frameInit(value)
+CORTO_EXPORT corto_int16 _corto_frameDeinit(corto_frame* value);
+#define corto_frameDeinit(value) _corto_frameDeinit(value)
+
+/* /corto/core/frameKind */
+CORTO_EXPORT corto_frameKind* _corto_frameKindCreate(corto_frameKind value);
+#define corto_frameKindCreate(value) _corto_frameKindCreate(value)
+#define corto_frameKindCreate_auto(_name, value) corto_frameKind* _name = corto_frameKindCreate(value); (void)_name
+CORTO_EXPORT corto_frameKind* _corto_frameKindCreateChild(corto_object _parent, corto_string _name, corto_frameKind value);
+#define corto_frameKindCreateChild(_parent, _name, value) _corto_frameKindCreateChild(_parent, _name, value)
+#define corto_frameKindCreateChild_auto(_parent, _name, value) corto_frameKind* _name = corto_frameKindCreateChild(_parent, #_name, value); (void)_name
+CORTO_EXPORT corto_int16 _corto_frameKindUpdate(corto_frameKind* _this, corto_frameKind value);
+#define corto_frameKindUpdate(_this, value) _corto_frameKindUpdate(_this, value)
+
+CORTO_EXPORT corto_frameKind* _corto_frameKindDeclare(void);
+#define corto_frameKindDeclare() _corto_frameKindDeclare()
+#define corto_frameKindDeclare_auto(_name) corto_frameKind* _name = corto_frameKindDeclare(); (void)_name
+CORTO_EXPORT corto_frameKind* _corto_frameKindDeclareChild(corto_object _parent, corto_string _name);
+#define corto_frameKindDeclareChild(_parent, _name) _corto_frameKindDeclareChild(_parent, _name)
+#define corto_frameKindDeclareChild_auto(_parent, _name) corto_frameKind* _name = corto_frameKindDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_frameKindDefine(corto_frameKind* _this, corto_frameKind value);
+#define corto_frameKindDefine(_this, value) _corto_frameKindDefine(_this, value)
+CORTO_EXPORT corto_frameKind* _corto_frameKindAssign(corto_frameKind* _this, corto_frameKind value);
+#define corto_frameKind__optional_NotSet NULL
+#define corto_frameKind__optional_Set(value) corto_frameKindAssign((corto_frameKind*)corto_calloc(sizeof(corto_frameKind)), value)
+#define corto_frameKind__optional_SetCond(cond, value) cond ? corto_frameKindAssign((corto_frameKind*)corto_calloc(sizeof(corto_frameKind)), value) : NULL
+#define corto_frameKindUnset(_this) _this ? corto_deinitp(_this, corto_frameKind_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_frameKindAssign(_this, value) _corto_frameKindAssign(_this, value)
+#define corto_frameKindSet(_this, value) _this = _this ? _this : (corto_frameKind*)corto_calloc(sizeof(corto_frameKind)); _corto_frameKindAssign(_this, value)
+CORTO_EXPORT corto_string _corto_frameKindStr(corto_frameKind value);
+#define corto_frameKindStr(value) _corto_frameKindStr(value)
+CORTO_EXPORT corto_frameKind* corto_frameKindFromStr(corto_frameKind* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_frameKindCompare(corto_frameKind dst, corto_frameKind src);
+
+CORTO_EXPORT corto_int16 _corto_frameKindInit(corto_frameKind* value);
+#define corto_frameKindInit(value) _corto_frameKindInit(value)
+CORTO_EXPORT corto_int16 _corto_frameKindDeinit(corto_frameKind* value);
+#define corto_frameKindDeinit(value) _corto_frameKindDeinit(value)
+
 /* /corto/core/invokeEvent */
 CORTO_EXPORT corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, corto_word args);
 #define corto_invokeEventCreate(mount, instance, function, args) _corto_invokeEventCreate(corto_mount(mount), instance, corto_function(function), args)

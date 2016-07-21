@@ -181,6 +181,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, equalityKind);\
     SSO_OP_VALUE(op, operatorKind);\
     SSO_OP_VALUE(op, mountKind);\
+    SSO_OP_VALUE(op, frameKind);\
     SSO_OP_VALUE(op, modifier);\
     SSO_OP_VALUE(op, eventMask);\
     SSO_OP_VALUE(op, state);\
@@ -216,6 +217,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, resultIter);\
     SSO_OP_VALUE(op, time);\
     SSO_OP_VALUE(op, position);\
+    SSO_OP_VALUE(op, frame);\
     SSO_OP_PROCEDURETYPE(op);\
     SSO_OP_CLASSTYPE(op);
 
@@ -338,6 +340,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mountKind_SOURCE);\
     SSO_OP_OBJ_CORE(op, mountKind_SINK);\
     SSO_OP_OBJ_CORE(op, mountKind_CACHE);\
+    SSO_OP_OBJ_CORE(op, mountKind_HISTORIAN);\
+    /* frameKind */\
+    SSO_OP_OBJ_CORE(op, frameKind_FRAME_NOW);\
+    SSO_OP_OBJ_CORE(op, frameKind_FRAME_TIME);\
+    SSO_OP_OBJ_CORE(op, frameKind_FRAME_DURATION);\
+    SSO_OP_OBJ_CORE(op, frameKind_FRAME_SAMPLE);\
+    SSO_OP_OBJ_CORE(op, frameKind_FRAME_COUNT);\
     /* operatorKind */\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN);\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_ADD);\
@@ -710,6 +719,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* position */\
     SSO_OP_OBJ_CORE(op, position_latitude);\
     SSO_OP_OBJ_CORE(op, position_longitude);\
+    /* frame */\
+    SSO_OP_OBJ_CORE(op, frame_kind);\
+    SSO_OP_OBJ_CORE(op, frame_value);\
     /* native/type */\
     SSO_OP_OBJ_NATIVE(op, type_name);\
     SSO_OP_OBJ_NATIVE(op, type_init_);\

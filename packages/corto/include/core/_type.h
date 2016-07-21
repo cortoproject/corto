@@ -19,6 +19,8 @@ extern "C" {
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
+#define corto_frameKind(o) ((corto_frameKind*)corto_assertType((corto_type)corto_frameKind_o, o))
+#define corto_frame(o) ((corto_frame*)corto_assertType((corto_type)corto_frame_o, o))
 #define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
 #define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
@@ -88,11 +90,29 @@ CORTO_BITMASK(corto_eventMask);
     #define CORTO_ON_VALUE (0x400)
     #define CORTO_ON_METAVALUE (0x800)
 
+/* /corto/core/frameKind */
+typedef enum corto_frameKind {
+    CORTO_FRAME_NOW = 0,
+    CORTO_FRAME_TIME = 1,
+    CORTO_FRAME_DURATION = 2,
+    CORTO_FRAME_SAMPLE = 3,
+    CORTO_FRAME_COUNT = 4
+} corto_frameKind;
+
+/*  /corto/core/frame */
+typedef struct corto_frame corto_frame;
+
+struct corto_frame {
+    corto_frameKind kind;
+    corto_uint64 value;
+};
+
 /* /corto/core/mountKind */
 typedef enum corto_mountKind {
     CORTO_SOURCE = 0,
-    CORTO_SINK = -1,
-    CORTO_CACHE = 1
+    CORTO_SINK = 1,
+    CORTO_CACHE = 2,
+    CORTO_HISTORIAN = 3
 } corto_mountKind;
 
 /*  /corto/core/mountStats */
