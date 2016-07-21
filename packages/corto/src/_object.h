@@ -37,7 +37,13 @@ typedef struct corto__attr {
 
 struct corto__object;
 typedef struct corto__object {
-    corto__attr attrs;
+    /* Force max alignment to be used for struct. This ensures that the
+     * member after this struct won't insert any padding bytes, regardless of
+     * its alignment. */
+    union {
+        corto__attr attrs;
+        corto_uint64 dummy;
+    } align; /* Anonymous union would've been nice, but not supported in C99 */
     corto_int32 refcount;
     corto_type type;
 }corto__object;
@@ -51,12 +57,21 @@ typedef struct corto__scope {
     corto_object parent;
     corto_string id;
     corto_rbtree scope;
-    struct corto_rwmutex_s scopeLock;
+
+    /* See corto__object */
+    union {
+        struct corto_rwmutex_s scopeLock;
+        corto_int64 dummy;
+    } align;
     corto__ols *ols;
 }corto__scope;
 
 typedef struct corto__writable {
-    struct corto_rwmutex_s lock;
+    /* See corto__object */
+    union {
+        struct corto_rwmutex_s lock;
+        corto_int64 dummy;
+    } align;
 }corto__writable;
 
 typedef struct corto__observer corto__observer;
@@ -75,7 +90,13 @@ struct corto__observable {
     /* Protected by lock */
     corto_ll onSelf;
     corto_ll onChild;
-    struct corto_rwmutex_s selfLock;
+
+    /* See corto__object */
+    union {
+        struct corto_rwmutex_s selfLock;
+        corto_int64 dummy;
+    } align;
+
     struct corto_rwmutex_s childLock;
 
     /* Lockless access to observers (zero-terminated)
@@ -96,6 +117,10 @@ struct corto__observable {
 
 typedef struct corto__persistent corto__persistent;
 struct corto__persistent {
+    /* This struct is 32 bit on 32 bit architectures, and could result in extra
+     * padding bytes in headers. However, as this attribute isn't used in
+     * builtin objects, it isn't necessary to take into account struct
+     * alignment. */
     corto_object owner;
 };
 

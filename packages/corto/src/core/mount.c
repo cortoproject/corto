@@ -139,6 +139,9 @@ corto_void _corto_mount_destruct(
         corto_dealloc(s);
     }
 
+    this->quit = TRUE;
+    corto_threadJoin((corto_thread)this->thread, NULL);
+
 /* $end */
 }
 

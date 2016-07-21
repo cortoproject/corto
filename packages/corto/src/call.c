@@ -73,7 +73,7 @@ void corto_callDeinit(corto_function f) {
     ((corto_callInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);
 
 #define argcpytype(args, dst, src) \
-  ptr = alloca(sizeof(dst)), *(dst*)ptr = va_arg(args, src), ptr
+  ptr = alloca(sizeof(dst)), *(dst*)ptr = va_arg(args, src)
 
 #define argcpyint(args, dst) argcpytype(args, dst, int)
 #define argcpy(args, type) argcpytype(args, type, type)
