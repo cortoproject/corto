@@ -637,6 +637,16 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromScope(
 /* $end */
 }
 
+corto_void _test_ReplicatorRequest_tc_selectSingleFromScopeTree(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectSingleFromScopeTree) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_ReplicatorRequest_tc_selectSingleFromVirtualScope(
     test_ReplicatorRequest this)
 {
@@ -706,6 +716,16 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScope(
 /* $end */
 }
 
+corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScopeTree(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectSingleNestedFromScopeTree) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
     test_ReplicatorRequest this)
 {
@@ -725,6 +745,285 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
     test_assert(!strcmp(result->type, "uint32"));
 
     test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectSingleTree(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectSingleTree) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/", "//a").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "x"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "xyz"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectSingleTree2(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectSingleTree2) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/", "//foo").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "foo"));
+    test_assert(!strcmp(result->parent, "xyz/abc"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectTree(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTree) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/", "//").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "x"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "x"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "b"));
+    test_assert(!strcmp(result->parent, "x"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "c"));
+    test_assert(!strcmp(result->parent, "x"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "yz"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "xyz"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "xyz"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "abc"));
+    test_assert(!strcmp(result->parent, "xyz"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "foo"));
+    test_assert(!strcmp(result->parent, "xyz/abc"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "bar"));
+    test_assert(!strcmp(result->parent, "xyz/abc"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "bc"));
+    test_assert(!strcmp(result->parent, "xyz"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectTreeFromNestedScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTreeFromNestedScope) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/xyz/abc", "//").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "foo"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "hello"));
+    test_assert(!strcmp(result->parent, "foo"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "world"));
+    test_assert(!strcmp(result->parent, "foo"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "bar"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectTreeFromScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTreeFromScope) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/xyz", "//").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "abc"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "foo"));
+    test_assert(!strcmp(result->parent, "abc"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "bar"));
+    test_assert(!strcmp(result->parent, "abc"));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "bc"));
+    test_assert(!strcmp(result->parent, "."));
+    test_assert(!strcmp(result->type, "uint32"));
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualNestedScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTreeFromVirtualNestedScope) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTreeFromVirtualScope) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }

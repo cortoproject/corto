@@ -116,6 +116,24 @@ corto_int16 _test_ListReplicator_construct(
         0
     );
 
+    corto_resultAssign(
+        corto_resultListAppendAlloc(this->items),
+        "hello",
+        NULL,
+        "xyz/abc/foo",
+        "uint32",
+        0
+    );
+
+    corto_resultAssign(
+        corto_resultListAppendAlloc(this->items),
+        "world",
+        NULL,
+        "xyz/abc/foo",
+        "uint32",
+        0
+    );
+
     corto_mount_setContentType(this, "text/json");
 
     return corto_mount_construct(this);

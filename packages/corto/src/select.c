@@ -1007,7 +1007,7 @@ static void corto_selectTree(
 
     /* Request mounts once per scope, and do it before iterating over
      * corto store objects so mounts have more time to fetch data. */
-    corto_selectRequestMounts(data, frame, NULL, TRUE);
+    corto_selectRequestMounts(data, frame, NULL, FALSE);
 
     data->next = NULL;
 
