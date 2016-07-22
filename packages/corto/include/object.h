@@ -122,7 +122,7 @@ typedef struct corto_selectSelector {
     struct corto_selectSelector (*toTime)(corto_time t);
     struct corto_selectSelector (*toSample)(corto_uint64 sample);
     struct corto_selectSelector (*forDuration)(corto_time t);
-    struct corto_selectSelector (*forCount)(corto_int64 count);
+    struct corto_selectSelector (*forDepth)(corto_int64 depth);
     corto_int16 ___ (*iter)(corto_resultIter *ret);
 } corto_selectSelector;
 struct corto_selectSelector corto_select(corto_string scope, corto_string expr);

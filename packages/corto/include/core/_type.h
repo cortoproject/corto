@@ -96,7 +96,7 @@ typedef enum corto_frameKind {
     CORTO_FRAME_TIME = 1,
     CORTO_FRAME_DURATION = 2,
     CORTO_FRAME_SAMPLE = 3,
-    CORTO_FRAME_COUNT = 4
+    CORTO_FRAME_DEPTH = 4
 } corto_frameKind;
 
 /*  /corto/core/frame */
@@ -328,4 +328,3 @@ struct corto_time {
 }
 #endif
 #endif
-

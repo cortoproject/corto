@@ -755,6 +755,16 @@ static void corto_selectRequestMounts(
                 while (corto_iterHasNext(&iter)) {
                     corto_mount_olsData_t *odata = corto_iterNext(&iter);
 
+                    /* If historical data is requested, only request from
+                     * historians and vice versa. */
+                    if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
+                        if (odata->mount->kind != CORTO_HISTORIAN) {
+                            continue;
+                        }
+                    } else if (odata->mount->kind == CORTO_HISTORIAN) {
+                        continue;
+                    }
+
                     /* If required, load mount content type */
                     if (data->contentType && odata->mount->contentType) {
                         if (strcmp(
@@ -906,9 +916,31 @@ static void corto_selectIterateMounts(
                 }
 
                 if (data->contentType) {
+                    /* Convert value */
                     data->destSer.contentRelease(data->item.value);
                     data->item.value = corto_selectConvert(
                       data, result->type, result->value);
+
+                    /* Convert history */
+                    if (data->item.history.length) {
+                        corto_int32 i = 0;
+                        for (i = 0; i < data->item.history.length; i++) {
+                            data->destSer.contentRelease(data->item.history.buffer[i]);
+                        }
+                    }
+                    if (data->item.history.length != result->history.length) {
+                        data->item.history.buffer = corto_realloc(
+                          data->item.history.buffer,
+                          result->history.length * sizeof(corto_word));
+                        data->item.history.length = result->history.length;
+                    }
+                    if (result->history.length) {
+                        corto_int32 i = 0;
+                        for (i = 0; i < result->history.length; i++) {
+                            data->item.history.buffer[i] = corto_selectConvert(
+                              data, result->type, result->history.buffer[i]);
+                        }
+                    }
                 }
 
                 if (data->count > data->offset) {
@@ -1087,6 +1119,16 @@ static void corto_selectReset(corto_selectData *data) {
 
     if (data->item.value && data->destSer.contentRelease) {
         data->destSer.contentRelease(data->item.value);
+    }
+
+    if (data->item.history.length) {
+        corto_int32 i;
+        for (i = 0; i < data->item.history.length; i ++) {
+            data->destSer.contentRelease(data->item.history.buffer[i]);
+        }
+        corto_dealloc(data->item.history.buffer);
+        data->item.history.length = 0;
+        data->item.history.buffer = NULL;
     }
 
     if (data->stack[0].scopeQuery) {
@@ -1549,13 +1591,13 @@ static corto_selectSelector corto_selectorForDuration(corto_time t)
     return corto_selectSelectorGet();
 }
 
-static corto_selectSelector corto_selectorForCount(corto_int64 count)
+static corto_selectSelector corto_selectorForDepth(corto_int64 depth)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
-        request->to.kind = CORTO_FRAME_COUNT;
-        request->to.value = count;
+        request->to.kind = CORTO_FRAME_DEPTH;
+        request->to.value = depth;
     }
     return corto_selectSelectorGet();
 }
@@ -1573,7 +1615,7 @@ static corto_selectSelector corto_selectSelectorGet(void)
     result.toTime = corto_selectorToTime;
     result.toSample = corto_selectorToSample;
     result.forDuration = corto_selectorForDuration;
-    result.forCount = corto_selectorForCount;
+    result.forDepth = corto_selectorForDepth;
     result.iter = corto_selectorIter;
     return result;
 }

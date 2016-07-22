@@ -705,7 +705,7 @@ CORTO_ENUM_O(core, frameKind);
     CORTO_CONSTANT_O(core_frameKind, FRAME_TIME);
     CORTO_CONSTANT_O(core_frameKind, FRAME_DURATION);
     CORTO_CONSTANT_O(core_frameKind, FRAME_SAMPLE);
-    CORTO_CONSTANT_O(core_frameKind, FRAME_COUNT);
+    CORTO_CONSTANT_O(core_frameKind, FRAME_DEPTH);
 
 CORTO_BITMASK_O(lang, state);
     CORTO_CONSTANT_O(lang_state, VALID);

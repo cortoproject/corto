@@ -347,7 +347,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, frameKind_FRAME_TIME);\
     SSO_OP_OBJ_CORE(op, frameKind_FRAME_DURATION);\
     SSO_OP_OBJ_CORE(op, frameKind_FRAME_SAMPLE);\
-    SSO_OP_OBJ_CORE(op, frameKind_FRAME_COUNT);\
+    SSO_OP_OBJ_CORE(op, frameKind_FRAME_DEPTH);\
     /* operatorKind */\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN);\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_ADD);\
