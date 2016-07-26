@@ -44,6 +44,15 @@ if not defined? SOFTLINKS then
   end
 end
 
+# Set multithreading
+if not defined? MULTITHREAD then
+  if ENV['multithread'] == "false" then
+    MULTITHREAD ||= false
+  else
+    MULTITHREAD ||= true
+  end
+end
+
 # Set colors
 if ENV['target'] == "release" then
   C_BOLD = "\033[1;36m"

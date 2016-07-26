@@ -134,7 +134,7 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
 end
 
 # Build artefact
-multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+def build_target()
   verbose(VERBOSE)
 
   if not File.exists? TARGETDIR then
@@ -144,7 +144,7 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
   # Create list of files that are going to be linked with. Abstract away from the
   # difference between dll, so and dylib. When a dylib is encountered, perform  a
   # bit of magic to ensure that the executable can find the shared object.
-  LINKED = LINK.map do |l|
+  linked = LINK.map do |l|
     l = corto_replace(l)
     prefix = ""
     if File.dirname(l) != "." then
@@ -160,7 +160,7 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
     lib
   end
 
-  OBJECTS.concat(LINKED)
+  OBJECTS.concat(linked)
   objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
   libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
   libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
@@ -194,7 +194,7 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
   end
 
   # If required, alter paths to dylib files
-  LINKED.each do |lib|
+  linked.each do |lib|
     if File.extname(lib) == ".dylib" then
       # Obtain name of library, check if its different from target path. If
       # names don't match, setup a task to alter the name in the executable
@@ -213,6 +213,16 @@ multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
 
   if ENV['silent'] != "true" then
     print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}\n"
+  end
+end
+
+if MULTITHREAD == true then
+  multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+    build_target()
+  end
+else
+  task "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+    build_target()
   end
 end
 

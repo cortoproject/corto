@@ -62,7 +62,7 @@ error:
 /* Build a project */
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll silent, mute, coverage, optimize, dirs, release, debug, verbose;
+    corto_ll silent, mute, coverage, optimize, dirs, release, debug, verbose, singlethread;
 
     CORTO_UNUSED(argc);
 
@@ -77,6 +77,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--optimize", &optimize, NULL},
         {"--release", &release, NULL},
         {"--debug", &debug, NULL},
+        {"--singlethread", &singlethread, NULL},
         {"*", &dirs, NULL},
         {NULL}
       }
@@ -91,6 +92,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
           optimize ? "optimize=true" : "optimize=false",
           release ? "target=release" : "target=debug",
           verbose ? "verbose=true" : "verbose=false",
+          singlethread ? "multithread=false" : "multithread=true",
           "softlinks=true",
           NULL
       }, silent != NULL, mute != NULL);
@@ -124,6 +126,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"--optimize", NULL, NULL}, /* Ignore optimize */
         {"--release", NULL, NULL}, /* Ignore release */
         {"--debug", NULL, NULL}, /* Ignore debug */
+        {"--singlethread", NULL, NULL}, /* Ignore singlethread */
         {"*", &dirs, NULL},
         {NULL}
       }
