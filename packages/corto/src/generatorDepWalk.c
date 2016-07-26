@@ -108,15 +108,16 @@ struct corto_serializer_s corto_genDepSerializer(void) {
 }
 
 /* Add dependencies for function arguments */
-static int corto_genDepBuildProc(corto_function f, g_itemWalk_t data) {
+static int corto_genDepBuildProc(corto_function f, struct g_depWalk_t* data) {
     corto_uint32 i;
     corto_type t;
 
     if (corto_procedure(corto_typeof(f))->kind != CORTO_OBSERVER) {
         for(i=0; i<f->parameters.length; i++) {
             t = f->parameters.buffer[i].type;
-            if (g_mustParse(data->g, t)) {
-                corto_depresolver_depend(data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
+            if (g_mustParse(data->data->g, t)) {
+                t = corto_genDepFindAnonymous(data, t);
+                corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
             }
         }
     }
@@ -137,6 +138,10 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
     }
 
     data = userData;
+
+    walkData.o = o;
+    walkData.data = data;
+    walkData.anonymousObjects = data->anonymousObjects;
 
     /* If object a builtin package, signal that a bootstrap is found, indicating
      * that dependencies should be disregarded. */
@@ -161,7 +166,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
             }
 
             /* Add dependencies on function parameters - types must be declared before function is declared. */
-            if (corto_genDepBuildProc(corto_function(o), data)) {
+            if (corto_genDepBuildProc(corto_function(o), &walkData)) {
                 goto error;
             }
         }
@@ -182,9 +187,6 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
         corto_depresolver_insert(data->resolver, o);
 
         /* Insert dependencies on references in the object-value */
-        walkData.o = o;
-        walkData.data = data;
-        walkData.anonymousObjects = data->anonymousObjects;
         s = corto_genDepSerializer();
         if (corto_serialize(&s, o, &walkData)) {
             goto error;
