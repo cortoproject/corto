@@ -276,7 +276,17 @@ task :install do
         sh "mkdir -p #{includePath}"
 
         if not SOFTLINKS then
-          sh "cp -r include/. #{includePath}/"
+          begin
+            sh "cp -r include/. #{includePath}/"
+          rescue
+            STDERR.puts "\033[1;31mwarning: failed to copy files in include/, retrying\033[0;49m"
+            installFiles.each do |f|
+              file = Dir.getwd + "/" + f
+              newFile = f.pathmap("#{includePath}/%{^include/,}p")
+              sh "rm -rf #{newFile}"
+            end
+            sh "cp -r include/. #{includePath}/"
+          end
         end
 
         # Keep track of installed include files

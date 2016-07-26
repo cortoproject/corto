@@ -1,5 +1,7 @@
-export CORTO_BUILD=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`/build
+DIR=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`
 export CORTO_HOME=$HOME/.corto
 export CORTO_TARGET=$HOME/.corto
 export PATH=$CORTO_TARGET/bin:$PATH
 export CORTO_VERSION=0.2
+export CORTO_BUILD=$HOME/.corto/lib/corto/$CORTO_VERSION/build
+cp -r $DIR/build/ $CORTO_BUILD
