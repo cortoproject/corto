@@ -151,7 +151,8 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
     } else {
         /* Insert type-dependency: object can be declared only after it's type is defined. */
         if (g_mustParse(data->g, corto_typeof(o))) {
-            corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, corto_typeof(o), CORTO_DEFINED);
+            corto_type t = corto_genDepFindAnonymous(&walkData, corto_typeof(o));
+            corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, t, CORTO_DEFINED);
         }
 
         /* TODO: this is not nice */
