@@ -259,6 +259,24 @@ if File.exists? "./.corto/dep.rb"
 end
 
 # Crawl project directory for files that need to be installed with binary
+def installFile(source, target)
+  if File.directory? source then
+    target = File.dirname(target) + "/"
+  end
+  if SOFTLINKS then
+    sh "ln -fs #{source} #{target}"
+  else
+    begin
+      sh "cp -r #{source} #{target}"
+    rescue
+      STDERR.puts "\033[1;31mwarning: failed to copy file #{source}, retrying\033[0;49m"
+      sh "rm -rf #{target}"
+      sh "cp -r #{source} #{target}"
+    end
+  end
+  UNINSTALL << target
+end
+
 task :install do
   verbose(VERBOSE)
 
@@ -275,31 +293,19 @@ task :install do
 
         sh "mkdir -p #{includePath}"
 
-        if not SOFTLINKS then
-          begin
-            sh "cp -r include/. #{includePath}/"
-          rescue
-            STDERR.puts "\033[1;31mwarning: failed to copy files in include/, retrying\033[0;49m"
-            installFiles.each do |f|
-              file = Dir.getwd + "/" + f
-              newFile = f.pathmap("#{includePath}/%{^include/,}p")
-              sh "rm -rf #{newFile}"
-            end
-            sh "cp -r include/. #{includePath}/"
-          end
-        end
-
         # Keep track of installed include files
         installFiles.each do |f|
-          if SOFTLINKS then
-            file = Dir.getwd + "/" + f
-            newFile = f.pathmap("#{includePath}/%{^include/,}p")
-            if File.directory? file then
-              newFile = File.dirname(newFile) + "/"
+          file = Dir.getwd + "/" + f
+          if File.basename(f).start_with?("Linux", "Darwin") then
+            if File.basename(f) == CORTO_PLATFORM then
+              Dir.glob(file + "/*").each do |pf|
+                installFile(pf, includePath + "/" + File.basename(pf))
+              end
             end
-            sh "ln -fs #{file} #{newFile}"
+          else
+            newFile = f.pathmap("#{includePath}/%{^include/,}p")
+            installFile(file, newFile)
           end
-          UNINSTALL << newFile
         end
 
         # Write package prefix to include path
