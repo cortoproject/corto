@@ -6,6 +6,7 @@ build:
   pull: true
   commands:
     - source ./configure
+    - pacman -S --noprogressbar --noconfirm ruby
     - gem install rake
     - rake
     - corto test
