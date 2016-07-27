@@ -260,21 +260,69 @@ end
 
 # Crawl project directory for files that need to be installed with binary
 def installFile(source, target)
-  if File.directory? source then
+  if File.directory? source and target[-1, 1] != "/" then
     target = File.dirname(target) + "/"
   end
   if SOFTLINKS then
-    sh "ln -fs #{source} #{target}"
+    begin
+      sh "ln -fs #{source} #{target}"
+    rescue
+      STDERR.puts "\033[1;31mwarning: failed to create link #{target}#{File.basename(source)}, retrying\033[0;49m"
+      if File.exists?(target) then
+        sh "rm -rf #{target}#{File.basename(source)}"
+      end
+      sh "ln -fs #{source} #{target}"
+      STDERR.puts " => OK"
+    end
   else
     begin
       sh "cp -r #{source} #{target}"
     rescue
       STDERR.puts "\033[1;31mwarning: failed to copy file #{source}, retrying\033[0;49m"
-      sh "rm -rf #{target}"
+      if File.exists?(target) then
+        sh "rm -rf #{target}"
+      end
       sh "cp -r #{source} #{target}"
+      STDERR.puts " => OK"
     end
   end
   UNINSTALL << target
+end
+
+def installDir(dir)
+  if File.exists?(dir) then
+    installFiles = Dir.glob("#{dir}/*")
+
+    if installFiles.length != 0 then
+      dstPath = "#{CORTO_TARGET}/#{dir}/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+      if not File.exists? dstPath then
+        sh "mkdir -p #{dstPath}"
+      end
+
+      # Keep track of installed include files
+      installFiles.each do |f|
+        file = Dir.getwd + "/" + f
+        if File.basename(f).start_with?("Linux", "Darwin") then
+          if File.basename(f) == CORTO_PLATFORM then
+            Dir.glob(file + "/*").each do |pf|
+              installFile(pf, dstPath + "/" + File.basename(pf))
+            end
+          end
+        elsif File.basename(f) == "everywhere" then
+          Dir.glob(file + "/*").each do |pf|
+            installFile(pf, dstPath + "/" + File.basename(pf))
+          end
+        else
+          newFile = f.pathmap("#{dstPath}/%{^#{dir}/,}p")
+          installFile(file, newFile)
+        end
+      end
+
+      # Write package prefix to include path
+      sh "rm -f #{dstPath}/.prefix"
+      sh "echo \"#{PREFIX}\" >> #{dstPath}/.prefix"
+    end
+  end
 end
 
 task :install do
@@ -285,70 +333,11 @@ task :install do
     if not File.exists? libpath then
       sh "mkdir -p #{libpath}"
     end
-    if File.exists?("include") then
-      installFiles = Dir.glob("include/*")
 
-      if installFiles.length != 0 then
-        includePath = "#{CORTO_TARGET}/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+    installDir("include")
+    installDir("etc")
+    installDir("lib")
 
-        sh "mkdir -p #{includePath}"
-
-        # Keep track of installed include files
-        installFiles.each do |f|
-          file = Dir.getwd + "/" + f
-          if File.basename(f).start_with?("Linux", "Darwin") then
-            if File.basename(f) == CORTO_PLATFORM then
-              Dir.glob(file + "/*").each do |pf|
-                installFile(pf, includePath + "/" + File.basename(pf))
-              end
-            end
-          else
-            newFile = f.pathmap("#{includePath}/%{^include/,}p")
-            installFile(file, newFile)
-          end
-        end
-
-        # Write package prefix to include path
-        sh "rm -f #{includePath}/.prefix"
-        sh "echo \"#{PREFIX}\" >> #{includePath}/.prefix"
-      end
-    end
-    if File.exists?("etc") then
-      etc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-      sh "rm -rf #{etc}"
-      sh "mkdir -p #{etc}"
-
-      if File.exists? "etc/everywhere" then
-        sh "cp -r etc/everywhere/. #{etc}/"
-        if CORTO_OS == "Darwin" then
-          access = `stat -f '%A' etc/everywhere`.strip
-        else
-          access = `stat -c '%a' etc/everywhere`.strip
-        end
-        sh "chmod #{access} #{etc}"
-      end
-      platformStr = "etc/" + CORTO_PLATFORM
-      if File.exists? platformStr then
-        sh "cp -r " + platformStr + "/. #{etc}"
-      end
-      UNINSTALL << etc
-    end
-    if File.exists?("lib") then
-      if File.exists? "lib/everywhere" then
-        sh "cp -r lib/everywhere/. #{libpath}/"
-        if CORTO_OS == "Darwin" then
-          access = `stat -f '%A' lib/everywhere`.strip
-        else
-          access = `stat -c '%a' lib/everywhere`.strip
-        end
-        sh "chmod #{access} #{libpath}"
-      end
-      platformStr = "lib/" + CORTO_PLATFORM
-      if File.exists? platformStr then
-        sh "cp -r " + platformStr + "/. #{libpath}"
-      end
-      UNINSTALL << libpath
-    end
     if File.exists?("install") then
       platformStr = "install/" + CORTO_PLATFORM
       if File.exists? platformStr then

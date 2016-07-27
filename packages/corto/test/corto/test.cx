@@ -142,7 +142,7 @@ test/Suite ObjectMgmt::
 // Test whether attributes are set correctly in different contexts
 class AttrConstructorTest::
   int16 construct()
-  
+
 test/Suite AttrCheck::
     void tc_packageMainAttr()
     void tc_packageObjectAttr()
