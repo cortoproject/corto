@@ -4,4 +4,5 @@ export CORTO_TARGET=$HOME/.corto
 export PATH=$CORTO_TARGET/bin:$PATH
 export CORTO_VERSION=0.2
 export CORTO_BUILD=$HOME/.corto/lib/corto/$CORTO_VERSION/build
+mkdir -p $HOME/.corto/lib/corto/$CORTO_VERSION
 cp -r $DIR/build $HOME/.corto/lib/corto/$CORTO_VERSION
