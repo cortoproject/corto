@@ -26,7 +26,7 @@
 #include "corto/env.h"
 #include "corto/err.h"
 #include "corto/file.h"
-#include "corto/files.h"
+#include "corto/os.h"
 #include "corto/generator.h"
 #include "corto/generatorDepWalk.h"
 #include "corto/generatorTypeDepWalk.h"
@@ -88,4 +88,3 @@ extern "C" {
 }
 #endif
 #endif
-

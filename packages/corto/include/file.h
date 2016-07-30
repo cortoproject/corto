@@ -10,7 +10,6 @@
 #ifndef C_FILE_H_
 #define C_FILE_H_
 
-#include "corto/files.h"
 #include "corto/ll.h"
 #include "stdio.h"
 
