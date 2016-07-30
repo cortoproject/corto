@@ -858,6 +858,34 @@ int corto_start(void) {
         corto_setenv("CORTO_TARGET", "~/.corto");
     }
 
+    corto_string verbosity = corto_getenv("CORTO_VERBOSITY");
+    if (verbosity) {
+        if (!strcmp(verbosity, "DEBUG")) {
+            corto_verbosity(CORTO_DEBUG);
+        }
+        if (!strcmp(verbosity, "TRACE")) {
+            corto_verbosity(CORTO_TRACE);
+        }
+        if (!strcmp(verbosity, "OK")) {
+            corto_verbosity(CORTO_OK);
+        }
+        if (!strcmp(verbosity, "INFO")) {
+            corto_verbosity(CORTO_INFO);
+        }
+        if (!strcmp(verbosity, "WARNING")) {
+            corto_verbosity(CORTO_WARNING);
+        }
+        if (!strcmp(verbosity, "ERROR")) {
+            corto_verbosity(CORTO_ERROR);
+        }
+        if (!strcmp(verbosity, "CRITICAL")) {
+            corto_verbosity(CORTO_CRITICAL);
+        }
+        if (!strcmp(verbosity, "ASSERT")) {
+            corto_verbosity(CORTO_ASSERT);
+        }
+    }
+
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);

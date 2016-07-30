@@ -34,6 +34,7 @@ typedef enum corto_err {
 
 /* Set verbosity */
 void corto_verbosity(corto_err level);
+corto_err corto_verbosityGet();
 
 /* Log errors to console */
 void _corto_assert(unsigned int condition, char* fmt, ...);

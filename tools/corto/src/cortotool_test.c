@@ -5,38 +5,54 @@
 #define NORMAL  "\033[0;49m"
 
 corto_int16 cortotool_test(int argc, char *argv[]) {
-    corto_string testCase = NULL;
-    corto_id testCaseArg;
+    corto_string testcaseArg = NULL;
     corto_int8 ret, sig, err = 0;
+    corto_ll verbose, project, testcase;
 
-    if (argc > 1) {
-        if (corto_chdir(argv[1])) {
-            corto_error("corto: can't change to directory '%s'", argv[1]);
+    CORTO_UNUSED(argc);
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'test' */
+        {"--verbose", &verbose, NULL},
+        {"$?*", &project, NULL},
+        {"$+*", &testcase, NULL},
+        {NULL}
+      }
+    );
+
+    if (project) {
+        if (corto_chdir(corto_llGet(project, 1))) {
+            corto_error("corto: can't change to directory '%s'", corto_llGet(project, 1));
             goto error;
         }
-        if (argc > 2) {
-            testCase = argv[2];
+    }
+
+    if (testcase) {
+        testcaseArg = corto_llGet(testcase, 0);
+    }
+
+    corto_int32 i = 0;
+    do {
+        corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", verbose ? "verbose=true" : "verbose=false", testcaseArg, NULL});
+        if ((sig = corto_procwait(pid, &ret) || ret)) {
+            if (sig > 0) {
+                corto_error("Aww, tests failed.");
+            }
+            err = 1;
         }
-    }
 
-    if (testCase) {
-        sprintf(testCaseArg, "testcase=%s", testCase);
-        testCase = testCaseArg;
-    }
-
-    corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", testCase, NULL});
-    if ((sig = corto_procwait(pid, &ret) || ret)) {
-        if (sig > 0) {
-            corto_error("Aww, tests failed.");
+        if (err) {
+            goto error;
+        } else {
+            printf("%sYay, all green :-)%s\n", GREEN, NORMAL);
         }
-        err = 1;
-    }
 
-    if (err) {
-        goto error;
-    } else {
-        printf("%sYay, all green :-)%s\n", GREEN, NORMAL);
-    }
+        i ++;
+    } while (testcase && (testcaseArg = corto_llGet(testcase, i)));
+
+    corto_argclean(data);
 
     return 0;
 error:

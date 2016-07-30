@@ -139,20 +139,23 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
             msg = alloc;
         }
 
-        n = strlen(msg);
-
-        n++;
+        n = strlen(msg) + 1;
+        if (n < 80) {
+            n = 80 - n;
+        } else {
+            n = 0;
+        }
 
         if (kind == CORTO_ERROR) {
-            fprintf(f, "%s%s%s%*s\n", RED, msg, NORMAL, (int)(80 - n), " ");
+            fprintf(f, "%s%s%s%*s\n", RED, msg, NORMAL, (int)n, " ");
         } else if (kind == CORTO_WARNING) {
-            fprintf(f, "%s%s%s%*s\n", YELLOW, msg, NORMAL, (int)(80 - n), " ");
+            fprintf(f, "%s%s%s%*s\n", YELLOW, msg, NORMAL, (int)n, " ");
         } else if (kind == CORTO_OK) {
-            fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)(80 - n), " ");
+            fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)n, " ");
         } else if (kind == CORTO_TRACE) {
-            fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)(80 - n), " ");
+            fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
         } else {
-            fprintf(f, "%s%*s\n", msg, (int)(80 - n), " ");
+            fprintf(f, "%s%*s\n", msg, (int)n, " ");
         }
 
         if (alloc) {
@@ -329,4 +332,8 @@ void corto_verbosity(corto_err level) {
         CORTO_DEBUG_ENABLED = 0;
         CORTO_TRACE_NOTIFICATIONS = 0;
     }
+}
+
+corto_err corto_verbosityGet() {
+    return CORTO_LOG_LEVEL;
 }

@@ -16,6 +16,7 @@ CORTO_PLATFORM ||= CORTO_OS + "-" + CORTO_MACHINE
 if not defined? VERBOSE then
   if ENV['verbose'] == "true" then
     VERBOSE ||= true
+    ENV['CORTO_VERBOSITY'] = "TRACE"
   else
     VERBOSE ||= false
   end
