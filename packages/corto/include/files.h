@@ -70,6 +70,9 @@ int corto_procwait(corto_pid pid, int8_t *rc);
 /* Check state of process */
 int corto_proccheck(corto_pid pid, int8_t *rc);
 
+/* Check whether process is being debugged */
+int corto_beingTraced(void);
+
 #ifdef __cplusplus
 }
 #endif
