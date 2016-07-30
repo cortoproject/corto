@@ -133,7 +133,7 @@ void* corto_llGet(corto_ll list, int index) {
     void* result;
     int i;
 
-    result = 0;
+    result = NULL;
     i = 0;
     node = list->first;
 

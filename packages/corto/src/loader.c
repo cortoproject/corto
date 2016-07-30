@@ -254,7 +254,9 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     if (proc) {
         /* Call main */
         if (proc(argc, argv)) {
-            corto_seterr("%s: cortomain failed", fileName);
+            if (!corto_lasterr()) {
+                corto_seterr("cortomain failed");
+            }
             goto error;
         }
     }

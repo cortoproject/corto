@@ -24,7 +24,7 @@ typedef enum corto_err {
     CORTO_ERROR = 5,    /* unsuccessful completion of a task */
     CORTO_CRITICAL = 6, /* task left application in undefined state (abort) */
     CORTO_ASSERT = 7    /* assertion failed (abort) */
-}corto_err;
+} corto_err;
 
 #ifndef NDEBUG
 #define corto_assert(condition, ...) if (!(condition)){_corto_assert(condition, "(" #condition ") " __VA_ARGS__);}
@@ -34,7 +34,7 @@ typedef enum corto_err {
 
 /* Set verbosity */
 void corto_verbosity(corto_err level);
-corto_err corto_verbosityGet();
+corto_err corto_verbosityGet(void);
 
 /* Log errors to console */
 void _corto_assert(unsigned int condition, char* fmt, ...);
