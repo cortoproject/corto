@@ -118,9 +118,52 @@ int corto_mutexTry(corto_mutex mutex) {
     return result;
 }
 
+// OS X does not have pthread_mutex_timedlock
+#ifdef __MACH__
+static int pthread_mutex_timedlock (
+    pthread_mutex_t *mutex,
+    struct timespec *timeout)
+{
+   corto_time timenow;
+   struct timespec sleeptime;
+   int retcode;
+
+   sleeptime.tv_sec = 0;
+   sleeptime.tv_nsec = 10000000; /* 10ms */
+
+   while ((retcode = pthread_mutex_trylock (mutex)) == EBUSY) {
+      corto_timeGet (&timenow);
+
+      if (timenow.sec >= timeout->tv_sec &&
+         (timenow.nanosec * 1000) >= timeout->tv_nsec)
+      {
+          return ETIMEDOUT;
+      }
+
+      nanosleep (&sleeptime, NULL);
+   }
+
+   return retcode;
+}
+#endif
+
+int corto_mutexLockTimed(corto_mutex mutex, corto_time timeout) {
+    int result;
+
+    struct timespec ts = {timeout.sec, timeout.nanosec};
+    if ((result = pthread_mutex_timedlock(&mutex->mutex, &ts))) {
+        if (result != ETIMEDOUT) {
+            corto_seterr("mutexTry failed: %s", strerror(result));
+        }
+    }
+
+    return result;
+}
+
 /* Create read-write mutex */
 int corto_rwmutexNew(struct corto_rwmutex_s *m) {
     int result = 0;
+
     if ((result = pthread_rwlock_init(&m->mutex, NULL))) {
         corto_seterr("rwmutexNew failed: %s", strerror(result));
     }

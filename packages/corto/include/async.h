@@ -41,6 +41,7 @@ int corto_mutexLock(corto_mutex mutex);
 int corto_mutexUnlock(corto_mutex mutex);
 int corto_mutexFree(corto_mutex mutex);
 int corto_mutexTry(corto_mutex mutex);
+int corto_mutexLockTimed(corto_mutex mutex, corto_time timeout);
 
 /* Read-write mutex */
 typedef struct corto_rwmutex_s* corto_rwmutex;
