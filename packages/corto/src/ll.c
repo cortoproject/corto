@@ -281,6 +281,21 @@ void corto_llReplace(corto_ll list, void* src, void* by) {
     }
 }
 
+void* corto_llReplaceCmp(corto_ll list, corto_compareAction compare, void* original, void* replacement)
+{
+    corto_llNode node = list->first;
+    void* old = NULL;
+    while (node) {
+        if (compare(original, node->data) == 0) {
+            old = node->data;
+            node->data = replacement;
+            break;
+        }
+        node = node->next;
+    }
+    return old;
+}
+
 /* Append one list to another */
 void corto_llAppendList(corto_ll l1, corto_ll l2) {
     corto_llNode ptr;
