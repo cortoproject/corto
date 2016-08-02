@@ -151,6 +151,7 @@ CORTO_CLASS_DEF(corto_mount) {
     corto_object mount;
     corto_eventMask mask;
     corto_string type;
+    corto_attr attr;
     corto_mountKind kind;
     corto_string contentType;
     corto_string policy;
@@ -300,6 +301,7 @@ struct corto_result {
     corto_word value;
     corto_wordseq history;
     corto_augmentseq augments;
+    corto_object mount;
 };
 
 CORTO_ITERATOR(corto_resultIter);
@@ -328,3 +330,4 @@ struct corto_time {
 }
 #endif
 #endif
+

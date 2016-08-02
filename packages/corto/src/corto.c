@@ -601,6 +601,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_mount);\
     SSO_OP_OBJ_CORE(op, mount_mask);\
     SSO_OP_OBJ_CORE(op, mount_type);\
+    SSO_OP_OBJ_CORE(op, mount_attr);\
     SSO_OP_OBJ_CORE(op, mount_kind);\
     SSO_OP_OBJ_CORE(op, mount_contentType);\
     SSO_OP_OBJ_CORE(op, mount_policy);\
@@ -705,6 +706,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_value);\
     SSO_OP_OBJ_CORE(op, result_history);\
     SSO_OP_OBJ_CORE(op, result_augments);\
+    SSO_OP_OBJ_CORE(op, result_mount);\
     SSO_OP_OBJ_CORE(op, result_getText_);\
     /* request */\
     SSO_OP_OBJ_CORE(op, request_parent);\

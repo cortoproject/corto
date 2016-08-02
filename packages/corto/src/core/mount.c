@@ -155,6 +155,7 @@ corto_int16 _corto_mount_init(
 
     this->kind = CORTO_SOURCE;
     this->mask = CORTO_ON_SCOPE;
+    this->attr = CORTO_ATTR_PERSISTENT;
 
     return 0;
 /* $end */

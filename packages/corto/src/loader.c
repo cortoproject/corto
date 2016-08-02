@@ -204,6 +204,7 @@ static corto_dl corto_loadValidLibrary(corto_string fileName) {
     corto_dl result = NULL;
     corto_string ___ (*build)(void);
 
+    corto_trace("corto: load '%s'", fileName);
     if (!(result = corto_dlOpen(fileName))) {
         corto_error("%s", corto_dlError());
         goto error;
@@ -640,6 +641,7 @@ int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
 
     sprintf(testName, "%s.xml", file);
     if (corto_fileTest(testName)) {
+        corto_trace("corto: load '%s'", testName);
         if (!corto_load("corto/fmt/xml", 0, NULL)) {
             return corto_load(testName, argc, argv);
         }
@@ -647,6 +649,7 @@ int corto_fileLoader(corto_string file, int argc, char* argv[], void* udata) {
 
     sprintf(testName, "%s.cx", file);
     if (corto_fileTest(testName)) {
+        corto_trace("corto: load '%s'", testName);
         if (!corto_load("corto/ast", 0, NULL)) {
             return corto_load(testName, argc, argv);
         }

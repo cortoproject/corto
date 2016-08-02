@@ -1012,7 +1012,7 @@ corto_equalityKind _corto_loaderCompare(corto_loader dst, corto_loader src) {
     return corto_compare(dst, src);
 }
 
-corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
+corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy) {
     corto_mount _this;
     _this = corto_mount(corto_declare(corto_mount_o));
     if (!_this) {
@@ -1021,6 +1021,7 @@ corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_s
     corto_setref(&((corto_mount)_this)->mount, mount);
     ((corto_mount)_this)->mask = mask;
     corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->attr = attr;
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
     corto_setstr(&((corto_mount)_this)->policy, policy);
@@ -1031,7 +1032,7 @@ corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_s
     return _this;
 }
 
-corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
+corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy) {
     corto_mount _this;
     _this = corto_mount(corto_declareChild(_parent, _name, corto_mount_o));
     if (!_this) {
@@ -1040,6 +1041,7 @@ corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, co
     corto_setref(&((corto_mount)_this)->mount, mount);
     ((corto_mount)_this)->mask = mask;
     corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->attr = attr;
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
     corto_setstr(&((corto_mount)_this)->policy, policy);
@@ -1050,12 +1052,13 @@ corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, co
     return _this;
 }
 
-corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
+corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setref(&((corto_mount)_this)->mount, mount);
         ((corto_mount)_this)->mask = mask;
         corto_setstr(&((corto_mount)_this)->type, type);
+        ((corto_mount)_this)->attr = attr;
         ((corto_mount)_this)->kind = kind;
         corto_setstr(&((corto_mount)_this)->contentType, contentType);
         corto_setstr(&((corto_mount)_this)->policy, policy);
@@ -1084,22 +1087,24 @@ corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name) {
     return _this;
 }
 
-corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
+corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_mount)_this)->mount, mount);
     ((corto_mount)_this)->mask = mask;
     corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->attr = attr;
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
     corto_setstr(&((corto_mount)_this)->policy, policy);
     return corto_define(_this);
 }
 
-corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy) {
+corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_mount)_this)->mount, mount);
     ((corto_mount)_this)->mask = mask;
     corto_setstr(&((corto_mount)_this)->type, type);
+    ((corto_mount)_this)->attr = attr;
     ((corto_mount)_this)->kind = kind;
     corto_setstr(&((corto_mount)_this)->contentType, contentType);
     corto_setstr(&((corto_mount)_this)->policy, policy);
@@ -3334,7 +3339,7 @@ void corto_augmentseqClear(corto_augmentseq *seq) {
 
 corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list) {
     corto_mountSubscription* result;
-    result = corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
+    result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
     {
         corto_value v;
         v = corto_value_value(corto_type(corto_mountSubscription_o), result);
@@ -3352,7 +3357,7 @@ corto_mountSubscription* corto_mountSubscriptionListInsert(corto_mountSubscripti
 
 corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubscriptionList list) {
     corto_mountSubscription* result;
-    result = corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
+    result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
     {
         corto_value v;
         v = corto_value_value(corto_type(corto_mountSubscription_o), result);
@@ -3434,7 +3439,7 @@ void corto_observerseqClear(corto_observerseq *seq) {
 
 corto_result* corto_resultListInsertAlloc(corto_resultList list) {
     corto_result* result;
-    result = corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
+    result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
         corto_value v;
         v = corto_value_value(corto_type(corto_result_o), result);
@@ -3452,7 +3457,7 @@ corto_result* corto_resultListInsert(corto_resultList list, corto_result* elemen
 
 corto_result* corto_resultListAppendAlloc(corto_resultList list) {
     corto_result* result;
-    result = corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
+    result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
         corto_value v;
         v = corto_value_value(corto_type(corto_result_o), result);

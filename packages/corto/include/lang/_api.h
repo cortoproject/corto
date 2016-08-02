@@ -2562,7 +2562,7 @@ CORTO_EXPORT void corto_memberseqClear(corto_memberseq *seq);
 #define corto_objectlistForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
     corto_object elem;\
-    while(corto_iterHasNext(&elem##_iter) ? elem = corto_iterNext(&elem##_iter), TRUE : FALSE)
+    while(corto_iterHasNext(&elem##_iter) ? elem = (corto_object)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
 
 CORTO_EXPORT void corto_objectlistInsert(corto_objectlist list, corto_object element);
 CORTO_EXPORT void corto_objectlistAppend(corto_objectlist list, corto_object element);

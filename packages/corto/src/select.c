@@ -589,6 +589,8 @@ static void corto_setItemData(
         }
         item->value = data->destSer.contentFromCorto(o);
     }
+
+    item->mount = NULL;
 }
 
 static corto_bool corto_selectMatch(
@@ -611,7 +613,7 @@ static corto_bool corto_selectMatch(
     }
 
     /* Check if there are SINK mounts active for the current scope */
-    if (result && corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+    if (result) {
         corto_int32 i;
         corto_id type; corto_fullpath(type, corto_typeof(o));
         for (i = 0; i < data->activeMounts; i++) {
@@ -627,10 +629,25 @@ static corto_bool corto_selectMatch(
                     if (!strcmp(r->type, type)) {
                         result = FALSE;
                         break;
+                    } else {
+                        continue;
                     }
                 } else {
                     /* A SINK mount that has no type specified blocks
                      * everything */
+                    result = FALSE;
+                    break;
+                }
+
+                /* Do the same for attributes */
+                if (r->attr) {
+                    if (corto_checkAttr(o, r->attr)) {
+                        result = FALSE;
+                        break;
+                    } else {
+                        continue;
+                    }
+                } else {
                     result = FALSE;
                     break;
                 }
@@ -864,6 +881,8 @@ static void corto_selectIterateMounts(
 
                 data->next = &data->item;
                 data->count ++;
+
+                data->item.mount = data->mounts[data->currentMount].r;
 
                 /* Copy data, so mount can safely release it */
                 if (result->id) {

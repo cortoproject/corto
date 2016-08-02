@@ -347,14 +347,14 @@ CORTO_EXPORT corto_equalityKind _corto_loaderCompare(corto_loader dst, corto_loa
 #define corto_loaderCompare(dst, src) _corto_loaderCompare(corto_loader(dst), corto_loader(src))
 
 /* /corto/core/mount */
-CORTO_EXPORT corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
-#define corto_mountCreate(mount, mask, type, kind, contentType, policy) _corto_mountCreate(mount, mask, type, kind, contentType, policy)
-#define corto_mountCreate_auto(_name, mount, mask, type, kind, contentType, policy) corto_mount _name = corto_mountCreate(mount, mask, type, kind, contentType, policy); (void)_name
-CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
-#define corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType, policy) _corto_mountCreateChild(_parent, _name, mount, mask, type, kind, contentType, policy)
-#define corto_mountCreateChild_auto(_parent, _name, mount, mask, type, kind, contentType, policy) corto_mount _name = corto_mountCreateChild(_parent, #_name, mount, mask, type, kind, contentType, policy); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
-#define corto_mountUpdate(_this, mount, mask, type, kind, contentType, policy) _corto_mountUpdate(corto_mount(_this), mount, mask, type, kind, contentType, policy)
+CORTO_EXPORT corto_mount _corto_mountCreate(corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountCreate(mount, mask, type, attr, kind, contentType, policy) _corto_mountCreate(mount, mask, type, attr, kind, contentType, policy)
+#define corto_mountCreate_auto(_name, mount, mask, type, attr, kind, contentType, policy) corto_mount _name = corto_mountCreate(mount, mask, type, attr, kind, contentType, policy); (void)_name
+CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountCreateChild(_parent, _name, mount, mask, type, attr, kind, contentType, policy) _corto_mountCreateChild(_parent, _name, mount, mask, type, attr, kind, contentType, policy)
+#define corto_mountCreateChild_auto(_parent, _name, mount, mask, type, attr, kind, contentType, policy) corto_mount _name = corto_mountCreateChild(_parent, #_name, mount, mask, type, attr, kind, contentType, policy); (void)_name
+CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountUpdate(_this, mount, mask, type, attr, kind, contentType, policy) _corto_mountUpdate(corto_mount(_this), mount, mask, type, attr, kind, contentType, policy)
 
 CORTO_EXPORT corto_mount _corto_mountDeclare(void);
 #define corto_mountDeclare() _corto_mountDeclare()
@@ -362,15 +362,15 @@ CORTO_EXPORT corto_mount _corto_mountDeclare(void);
 CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _name);
 #define corto_mountDeclareChild(_parent, _name) _corto_mountDeclareChild(_parent, _name)
 #define corto_mountDeclareChild_auto(_parent, _name) corto_mount _name = corto_mountDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
-#define corto_mountDefine(_this, mount, mask, type, kind, contentType, policy) _corto_mountDefine(corto_mount(_this), mount, mask, type, kind, contentType, policy)
-CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_mountKind kind, corto_string contentType, corto_string policy);
+CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy);
+#define corto_mountDefine(_this, mount, mask, type, attr, kind, contentType, policy) _corto_mountDefine(corto_mount(_this), mount, mask, type, attr, kind, contentType, policy)
+CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_object mount, corto_eventMask mask, corto_string type, corto_attr attr, corto_mountKind kind, corto_string contentType, corto_string policy);
 #define corto_mount__optional_NotSet NULL
-#define corto_mount__optional_Set(mount, mask, type, kind, contentType, policy) corto_mountAssign((corto_mount*)corto_calloc(sizeof(corto_mount)), mount, mask, type, kind, contentType, policy)
-#define corto_mount__optional_SetCond(cond, mount, mask, type, kind, contentType, policy) cond ? corto_mountAssign((corto_mount*)corto_calloc(sizeof(corto_mount)), mount, mask, type, kind, contentType, policy) : NULL
+#define corto_mount__optional_Set(mount, mask, type, attr, kind, contentType, policy) corto_mountAssign((corto_mount*)corto_calloc(sizeof(corto_mount)), mount, mask, type, attr, kind, contentType, policy)
+#define corto_mount__optional_SetCond(cond, mount, mask, type, attr, kind, contentType, policy) cond ? corto_mountAssign((corto_mount*)corto_calloc(sizeof(corto_mount)), mount, mask, type, attr, kind, contentType, policy) : NULL
 #define corto_mountUnset(_this) _this ? corto_deinitp(_this, corto_mount_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_mountAssign(_this, mount, mask, type, kind, contentType, policy) _corto_mountAssign(corto_mount(_this), mount, mask, type, kind, contentType, policy)
-#define corto_mountSet(_this, mount, mask, type, kind, contentType, policy) _this = _this ? _this : (corto_mount*)corto_calloc(sizeof(corto_mount)); _corto_mountAssign(corto_mount(_this), mount, mask, type, kind, contentType, policy)
+#define corto_mountAssign(_this, mount, mask, type, attr, kind, contentType, policy) _corto_mountAssign(corto_mount(_this), mount, mask, type, attr, kind, contentType, policy)
+#define corto_mountSet(_this, mount, mask, type, attr, kind, contentType, policy) _this = _this ? _this : (corto_mount*)corto_calloc(sizeof(corto_mount)); _corto_mountAssign(corto_mount(_this), mount, mask, type, attr, kind, contentType, policy)
 CORTO_EXPORT corto_string _corto_mountStr(corto_mount value);
 #define corto_mountStr(value) _corto_mountStr(corto_mount(value))
 CORTO_EXPORT corto_mount corto_mountFromStr(corto_mount value, corto_string str);
@@ -1043,7 +1043,7 @@ CORTO_EXPORT void corto_augmentseqClear(corto_augmentseq *seq);
 #define corto_mountSubscriptionListForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
     corto_mountSubscription *elem;\
-    while(corto_iterHasNext(&elem##_iter) ? elem = corto_iterNext(&elem##_iter), TRUE : FALSE)
+    while(corto_iterHasNext(&elem##_iter) ? elem = (corto_mountSubscription*)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
 
 CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list);
 CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsert(corto_mountSubscriptionList list, corto_mountSubscription* element);
@@ -1070,7 +1070,7 @@ CORTO_EXPORT void corto_observerseqClear(corto_observerseq *seq);
 #define corto_resultListForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
     corto_result *elem;\
-    while(corto_iterHasNext(&elem##_iter) ? elem = corto_iterNext(&elem##_iter), TRUE : FALSE)
+    while(corto_iterHasNext(&elem##_iter) ? elem = (corto_result*)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
 
 CORTO_EXPORT corto_result* corto_resultListInsertAlloc(corto_resultList list);
 CORTO_EXPORT corto_result* corto_resultListInsert(corto_resultList list, corto_result* element);

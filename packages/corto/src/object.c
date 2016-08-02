@@ -1089,6 +1089,7 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_function delegate = NULL;
     corto_int16 result = 0;
 
+
     if (t->kind == CORTO_COMPOSITE) {
         if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
             corto_interface i = corto_interface(t);
