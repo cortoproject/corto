@@ -322,6 +322,7 @@ corto_int16 cortotool_monitor(char *argv[]) {
 corto_int16 cortotool_run(int argc, char *argv[]) {
     corto_ll monitor, dir;
     CORTO_UNUSED(argc);
+    corto_id appName;
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -346,6 +347,16 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
         }
     }
 
+    {
+        char *ptr = corto_cwd();
+        corto_id noPath;
+        strcpy(noPath, ptr);
+        while ((ptr = strchr(ptr + 1, '/'))) {
+            strcpy(noPath, ptr + 1); /* A bit of redundancy for the sake of simplicity */
+        }
+        sprintf(appName, ".corto/%s", noPath);
+    }
+
     /* Build first */
     if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
         return -1;
@@ -356,7 +367,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
             goto error;
         }
     } else {
-        corto_pid pid = corto_procrun(".corto/app", &argv[1]);
+        corto_pid pid = corto_procrun(appName, &argv[1]);
         if (!pid) {
             corto_error("failed to start proces");
             goto error;

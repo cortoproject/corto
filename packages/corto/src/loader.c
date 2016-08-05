@@ -82,7 +82,7 @@ static struct corto_fileAdmin* corto_fileAdminFind(corto_string library) {
 
 /* Add file */
 static struct corto_fileAdmin* corto_fileAdminAdd(corto_string library) {
-    struct corto_fileAdmin *lib = corto_alloc(sizeof(struct corto_fileAdmin));
+    struct corto_fileAdmin *lib = corto_calloc(sizeof(struct corto_fileAdmin));
     lib->name = corto_strdup(library);
     lib->loading = corto_threadSelf();
     if (!fileAdmin) {

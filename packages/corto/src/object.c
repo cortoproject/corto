@@ -1018,12 +1018,15 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
                 corto_object owner = corto_ownerof(o);
                 if (owner && corto_instanceof(corto_mount_o, owner)) {
                     if (owner != corto_getOwner()) {
-                        corto_release(o);
-                        corto_seterr(
-                          "owner '%s' of existing object '%s' does not match",
-                          corto_fullpath(NULL, owner),
-                          corto_fullpath(NULL, o));
-                        goto owner_error;
+                        if (corto_getOwner() || corto_mount(owner)->kind != CORTO_SINK) {
+                            corto_release(o);
+                            corto_seterr(
+                              "owner '%s' of existing object '%s' does not match owner '%s'",
+                              corto_fullpath(NULL, owner),
+                              corto_fullpath(NULL, o),
+                              corto_fullpath(NULL, corto_getOwner()));
+                            goto owner_error;
+                        }
                     }
                 }
                 goto ok;
@@ -1515,9 +1518,15 @@ corto_int16 corto_delete(corto_object o) {
     }
 
     if (!corto_owned(o)) {
+        corto_object obj = corto_ownerof(o);
+        corto_object cur = corto_getOwner();
         corto_seterr(
-          "can't delete %s: not owned by thread (use corto_suspend)",
-          corto_fullpath(NULL, o));
+          "can't delete %s: not owned by thread (thread='%s' (%s), object='%s' (%s))",
+          corto_fullpath(NULL, o),
+          corto_fullpath(NULL, cur),
+          cur ? corto_fullpath(NULL, corto_typeof(cur)) : NULL,
+          corto_fullpath(NULL, obj),
+          obj ? corto_fullpath(NULL, corto_typeof(obj)) : NULL);
         goto error;
     }
 
@@ -2736,7 +2745,9 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
             corto_object this = data->_this;
             if (!this || (this != corto_getOwner())) {
                 corto_function f = corto_function(observer);
+                corto_object prevOwner = corto_setOwner(NULL);
                 corto_call(f, NULL, this, observable);
+                corto_setOwner(prevOwner);
             }
         } else {
             if (!data->_this || (data->_this != source)) {

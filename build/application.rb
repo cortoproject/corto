@@ -3,7 +3,7 @@ if not defined? TARGET then
     raise "library: TARGET not specified\n"
 end
 
-ARTEFACT = "app"
+ARTEFACT = TARGET.split("/").last
 USE_PACKAGE ||= []
 LIBPATH ||= []
 LOCAL = true

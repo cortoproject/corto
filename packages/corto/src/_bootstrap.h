@@ -1082,6 +1082,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_request, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_request, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, offset, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, limit, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, content, lang_bool, CORTO_GLOBAL);
@@ -1169,6 +1170,7 @@ CORTO_CLASS_O(core, loader, core_mount, CORTO_HIDDEN, NULL, CORTO_DECLARED | COR
     CORTO_METHOD_O(core_loader, construct, "()", lang_int16, FALSE, corto_loader_construct);
     CORTO_METHOD_O(core_loader, destruct, "()", lang_void, FALSE, corto_loader_destruct);
     CORTO_METHOD_O(core_loader, onRequest, "(core/request request)", core_resultIter, TRUE, corto_loader_onRequest_v);
+    CORTO_METHOD_O(core_loader, onDeclare, "(object observable)", lang_void, TRUE, corto_loader_onDeclare_v);
     CORTO_METHOD_O(core_loader, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_loader_onResume_v);
 
 /* /corto/lang/event */

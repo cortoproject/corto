@@ -2573,7 +2573,7 @@ corto_equalityKind _corto_remoteCompare(corto_remote dst, corto_remote src) {
     return corto_compare(dst, src);
 }
 
-corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
+corto_request* _corto_requestCreate(corto_string parent, corto_string expr, corto_string type, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
     corto_request* _this;
     _this = corto_request(corto_declare(corto_request_o));
     if (!_this) {
@@ -2581,6 +2581,7 @@ corto_request* _corto_requestCreate(corto_string parent, corto_string expr, cort
     }
     corto_setstr(&((corto_request*)_this)->parent, parent);
     corto_setstr(&((corto_request*)_this)->expr, expr);
+    corto_setstr(&((corto_request*)_this)->type, type);
     ((corto_request*)_this)->offset = offset;
     ((corto_request*)_this)->limit = limit;
     ((corto_request*)_this)->content = content;
@@ -2598,7 +2599,7 @@ corto_request* _corto_requestCreate(corto_string parent, corto_string expr, cort
     return _this;
 }
 
-corto_request* _corto_requestCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
+corto_request* _corto_requestCreateChild(corto_object _parent, corto_string _name, corto_string parent, corto_string expr, corto_string type, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
     corto_request* _this;
     _this = corto_request(corto_declareChild(_parent, _name, corto_request_o));
     if (!_this) {
@@ -2606,6 +2607,7 @@ corto_request* _corto_requestCreateChild(corto_object _parent, corto_string _nam
     }
     corto_setstr(&((corto_request*)_this)->parent, parent);
     corto_setstr(&((corto_request*)_this)->expr, expr);
+    corto_setstr(&((corto_request*)_this)->type, type);
     ((corto_request*)_this)->offset = offset;
     ((corto_request*)_this)->limit = limit;
     ((corto_request*)_this)->content = content;
@@ -2623,11 +2625,12 @@ corto_request* _corto_requestCreateChild(corto_object _parent, corto_string _nam
     return _this;
 }
 
-corto_int16 _corto_requestUpdate(corto_request* _this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
+corto_int16 _corto_requestUpdate(corto_request* _this, corto_string parent, corto_string expr, corto_string type, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setstr(&((corto_request*)_this)->parent, parent);
         corto_setstr(&((corto_request*)_this)->expr, expr);
+        corto_setstr(&((corto_request*)_this)->type, type);
         ((corto_request*)_this)->offset = offset;
         ((corto_request*)_this)->limit = limit;
         ((corto_request*)_this)->content = content;
@@ -2663,10 +2666,11 @@ corto_request* _corto_requestDeclareChild(corto_object _parent, corto_string _na
     return _this;
 }
 
-corto_int16 _corto_requestDefine(corto_request* _this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
+corto_int16 _corto_requestDefine(corto_request* _this, corto_string parent, corto_string expr, corto_string type, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_request*)_this)->parent, parent);
     corto_setstr(&((corto_request*)_this)->expr, expr);
+    corto_setstr(&((corto_request*)_this)->type, type);
     ((corto_request*)_this)->offset = offset;
     ((corto_request*)_this)->limit = limit;
     ((corto_request*)_this)->content = content;
@@ -2680,10 +2684,11 @@ corto_int16 _corto_requestDefine(corto_request* _this, corto_string parent, cort
     return corto_define(_this);
 }
 
-corto_request* _corto_requestAssign(corto_request* _this, corto_string parent, corto_string expr, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
+corto_request* _corto_requestAssign(corto_request* _this, corto_string parent, corto_string expr, corto_string type, corto_uint64 offset, corto_uint64 limit, corto_bool content, corto_frame* from, corto_frame* to, corto_string param) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_request*)_this)->parent, parent);
     corto_setstr(&((corto_request*)_this)->expr, expr);
+    corto_setstr(&((corto_request*)_this)->type, type);
     ((corto_request*)_this)->offset = offset;
     ((corto_request*)_this)->limit = limit;
     ((corto_request*)_this)->content = content;

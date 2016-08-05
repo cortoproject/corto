@@ -282,6 +282,7 @@ typedef struct corto_request corto_request;
 struct corto_request {
     corto_string parent;
     corto_string expr;
+    corto_string type;
     corto_uint64 offset;
     corto_uint64 limit;
     corto_bool content;

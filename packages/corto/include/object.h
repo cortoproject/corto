@@ -104,6 +104,7 @@ typedef struct corto_selectRequest {
     corto_int16 err;
     corto_string scope;
     corto_string expr;
+    corto_string type;
     corto_uint64 offset;
     corto_uint64 limit;
     corto_string augment;
@@ -115,6 +116,7 @@ typedef struct corto_selectSelector {
     struct corto_selectSelector (*contentType)(corto_string contentType);
     struct corto_selectSelector (*limit)(corto_uint64 offset, corto_uint64 limit);
     struct corto_selectSelector (*augment)(corto_string filter);
+    struct corto_selectSelector (*type)(corto_string filter);
     struct corto_selectSelector (*fromNow)(void);
     struct corto_selectSelector (*fromTime)(corto_time t);
     struct corto_selectSelector (*fromSample)(corto_uint64 sample);
@@ -132,6 +134,7 @@ typedef struct corto_subscribeRequest {
     corto_int16 err;
     corto_string scope;
     corto_string expr;
+    corto_string type;
     corto_eventMask mask;
     corto_string contentType;
     void (*callback)(corto_subscriber, corto_eventMask mask, corto_result*);
@@ -139,6 +142,7 @@ typedef struct corto_subscribeRequest {
 typedef struct corto_subscribeSelector {
     struct corto_subscribeSelector (*contentType)(corto_string contentType);
     struct corto_subscribeSelector (*mask)(corto_eventMask mask);
+    struct corto_subscribeSelector (*type)(corto_string type);
     corto_subscriber ___ (*callback)(void (*r)(corto_subscriber, corto_eventMask mask, corto_result*));
 } corto_subscribeSelector;
 struct corto_subscribeSelector corto_subscribe(corto_string scope, corto_string expr);

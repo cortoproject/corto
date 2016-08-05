@@ -29,6 +29,23 @@ corto_void _corto_loader_destruct(
 /* $end */
 }
 
+corto_void _corto_loader_onDeclare_v(
+    corto_loader this,
+    corto_object observable)
+{
+/* $begin(corto/core/loader/onDeclare) */
+    corto_id path;
+    corto_string localPath;
+    corto_path(path, corto_mount(this)->mount, observable, "/");
+    localPath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+      path);
+    corto_cleanpath(localPath, localPath);
+    corto_mkdir(localPath);
+    corto_dealloc(localPath);
+/* $end */
+}
+
 /* $header(corto/core/loader/onRequest) */
 void corto_loader_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
@@ -124,6 +141,9 @@ corto_resultIter _corto_loader_onRequest_v(
      * returned list is cleaned up after select is done iterating. */
     result = corto_llIterAlloc(data);
     result.release = corto_loader_iterRelease;
+
+    corto_dealloc(localPath);
+    corto_dealloc(globalPath);
 
     return result;
 /* $end */

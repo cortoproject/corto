@@ -73,6 +73,29 @@ corto_void _corto_invokeEvent_handle(
     corto_call(corto_function(_method), NULL, this);
 }
 
+corto_void _corto_loader_onDeclare(
+    corto_loader this,
+    corto_object observable)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
+    }
+    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_idof(this), _methodId);
+
+    corto_call(corto_function(_method), NULL, this, observable);
+}
+
 corto_resultIter _corto_loader_onRequest(
     corto_loader this,
     corto_request *request)

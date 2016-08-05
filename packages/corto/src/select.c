@@ -89,7 +89,8 @@ typedef struct corto_selectData {
     corto_frame from;
     corto_frame to;
 
-    /* Augment filter */
+    /* Filters */
+    corto_string typeFilter;
     corto_string augmentFilter;
 
     /* Pre allocated for selectItem */
@@ -451,7 +452,7 @@ static void corto_loadAugments(
                     if (data->contentType) {
                         corto_iter augmentIt;
                         corto_request r = {
-                            parent, expr, 0, 1, data->contentType == NULL, {0,0}, {0,0}, NULL
+                            parent, expr, data->type, 0, 1, data->contentType == NULL, {0,0}, {0,0}, NULL
                         };
 
                         augmentIt = corto_mount_request(
@@ -562,6 +563,8 @@ static void corto_setItemData(
         item->name[0] = '\0';
     }
 
+    item->mount = corto_ownerof(o);
+
     if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
     } else {
@@ -653,6 +656,11 @@ static corto_bool corto_selectMatch(
                 }
             }
         }
+
+        /* Filter type */
+        if (result && data->typeFilter) {
+            result = !fnmatch(data->typeFilter, type, 0);
+        }
     }
 
     return result;
@@ -725,6 +733,7 @@ static corto_resultIter corto_selectRequestMount(
     corto_request r = {
       parent,
       expr,
+      data->type,
       (data->offset > data->count) ? data->offset - data->count : 0,
       (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
       data->contentType ? TRUE : FALSE,
@@ -780,6 +789,14 @@ static void corto_selectRequestMounts(
                         }
                     } else if (odata->mount->kind == CORTO_HISTORIAN) {
                         continue;
+                    }
+
+                    /* If type is requested, test whether it is compatible with
+                     * the type of the mount */
+                    if (data->typeFilter && odata->mount->type) {
+                        if (fnmatch(data->typeFilter, odata->mount->type, 0)) {
+                            continue;
+                        }
                     }
 
                     /* If required, load mount content type */
@@ -1021,6 +1038,7 @@ static void corto_selectScope(
 {
     corto_object o = NULL;
     corto_string lastKey = data->item.name;
+
 
     /* Request mounts once per scope, and do it before iterating over
      * corto store objects so mounts have more time to fetch data. */
@@ -1430,6 +1448,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->offset = r->offset;
     data->limit = r->limit;
     data->augmentFilter = r->augment;
+    data->typeFilter = r->type;
     data->from = r->from;
     data->to = r->to;
     data->item.parent = data->parent;
@@ -1485,6 +1504,17 @@ static corto_selectSelector corto_selectorLimit(
     if (request) {
         request->offset = offset;
         request->limit = limit;
+    }
+    return corto_selectSelectorGet();
+}
+
+static corto_selectSelector corto_selectorType(
+    corto_string type)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLOW);
+    if (request) {
+        request->type = type;
     }
     return corto_selectSelectorGet();
 }
@@ -1626,6 +1656,7 @@ static corto_selectSelector corto_selectSelectorGet(void)
     corto_selectSelector result;
     result.contentType = corto_selectorContentType;
     result.limit = corto_selectorLimit;
+    result.type = corto_selectorType;
     result.augment = corto_selectorAugment;
     result.fromNow = corto_selectorFromNow;
     result.fromTime = corto_selectorFromTime;

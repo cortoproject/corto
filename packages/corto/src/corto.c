@@ -641,6 +641,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, loader_destruct_);\
     SSO_OP_OBJ_CORE(op, loader_onResume_);\
     SSO_OP_OBJ_CORE(op, loader_onRequest_);\
+    SSO_OP_OBJ_CORE(op, loader_onDeclare_);\
     /* delegatedata */\
     SSO_OP_OBJ(op, delegatedata_instance);\
     SSO_OP_OBJ(op, delegatedata_procedure);\
@@ -711,6 +712,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* request */\
     SSO_OP_OBJ_CORE(op, request_parent);\
     SSO_OP_OBJ_CORE(op, request_expr);\
+    SSO_OP_OBJ_CORE(op, request_type);\
     SSO_OP_OBJ_CORE(op, request_offset);\
     SSO_OP_OBJ_CORE(op, request_limit);\
     SSO_OP_OBJ_CORE(op, request_content);\

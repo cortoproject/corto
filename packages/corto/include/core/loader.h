@@ -24,6 +24,15 @@ CORTO_EXPORT corto_int16 _corto_loader_construct(
 CORTO_EXPORT corto_void _corto_loader_destruct(
     corto_loader _this);
 #define corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
+CORTO_EXPORT corto_void _corto_loader_onDeclare(
+    corto_loader _this,
+    corto_object observable);
+#define corto_loader_onDeclare(_this, observable) _corto_loader_onDeclare(corto_loader(_this), observable)
+
+CORTO_EXPORT corto_void _corto_loader_onDeclare_v(
+    corto_loader _this,
+    corto_object observable);
+#define corto_loader_onDeclare_v(_this, observable) _corto_loader_onDeclare_v(corto_loader(_this), observable)
 CORTO_EXPORT corto_resultIter _corto_loader_onRequest(
     corto_loader _this,
     corto_request *request);
