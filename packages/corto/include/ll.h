@@ -44,9 +44,6 @@ void corto_llRemove(corto_ll list, void* o);
 /* Replace object */
 void corto_llReplace(corto_ll list, void* o, void* by);
 
-/* Replace object matched against a comparison function */
-void* corto_llReplaceCmp(corto_ll list, corto_compareAction compare, void* original, void* replacement);
-
 /* Take first */
 void* corto_llTakeFirst(corto_ll);
 
