@@ -14,7 +14,7 @@ static corto_int16 cortotool_setupProject(
     CORTO_UNUSED(isLocal);
 
     if (!isSilent) {
-        printf (CORTO_PROMPT " create %s '%s'\n", projectKind, name);
+        printf (CORTO_PROMPT "create %s '%s'\n", projectKind, name);
     }
 
     if (corto_fileTest(name)) {
@@ -255,9 +255,67 @@ static char* cortotool_randomName(void) {
     return strdup(buffer);
 }
 
+static char* cortotool_fmtName(
+    corto_id buffer,
+    corto_id parentName,
+    char *projectname,
+    char **name_out)
+{
+    strcpy(buffer, projectname);
+    char *include = buffer;
+
+    /* Ignore initial colons and slashes */
+    if (include[0] == ':') {
+        if (include[1] == ':') {
+            include += 2;
+        } else {
+            corto_seterr("invalid package name");
+            goto error;
+        }
+    }
+    if (include[0] == '/') {
+        include += 1;
+    }
+
+    /* Extract left-most name from include variable & replace :: */
+    char *ptr = include;
+    char *name = include;
+    corto_int32 i, offset = 0;
+    for (i = 0; i < strlen(include); i++) {
+        if (*ptr == '/') {
+            name = ptr + 1;
+        } else if (*ptr == ':') {
+            offset ++;
+            ptr++;
+            *ptr = '/';
+            name = &ptr[-offset] + 1;
+        }
+        ptr[-offset] = *ptr;
+        ptr++;
+    }
+
+    if (name_out) *name_out = name;
+
+    if (parentName) {
+        parentName[0] = '\0';
+    }
+    if (parentName && (name != include)) {
+        strcpy(parentName, include);
+        if (parentName[name - include - 1] == '/') {
+            parentName[name - include - 1] = '\0';
+        } else {
+            parentName[name - include - 2] = '\0';
+        }
+    }
+
+    return include;
+error:
+    return NULL;
+}
+
 static corto_int16 cortotool_app (
     const char *projectKind,
-    char *name,
+    char *projectName,
     corto_bool silent,
     corto_bool mute,
     corto_bool nobuild,
@@ -267,26 +325,24 @@ static corto_int16 cortotool_app (
     corto_bool nocoverage,
     corto_string language)
 {
-    corto_id buff;
+    corto_id buff, includeMem;
     FILE *file;
+    char *name = NULL, *include;
 
     silent |= mute;
+
+    if (!(include = cortotool_fmtName(includeMem, NULL, projectName, &name))) {
+        if (!mute) {
+            corto_error("corto: %s", corto_lasterr());
+        }
+        goto error;
+    }
 
     if (cortotool_setupProject(projectKind, name, local, silent)) {
         goto error;
     }
 
-    if (cortotool_createRakefile(projectKind, name, name, local, nocorto, nocoverage, language)) {
-        goto error;
-    }
-
-    if (strchr(name, '/')) {
-        corto_error("corto: app name shouldn't contain '/' characters");
-        goto error;
-    }
-
-    if (strchr(name, ':')) {
-        corto_error("corto: app name shouldn't contain ':' characters");
+    if (cortotool_createRakefile(projectKind, include, name, local, nocorto, nocoverage, language)) {
         goto error;
     }
 
@@ -341,7 +397,7 @@ static corto_int16 cortotool_app (
     }
 
     if (!silent) {
-        printf(CORTO_PROMPT " done\n\n");
+        printf(CORTO_PROMPT "done\n\n");
     }
 
     return 0;
@@ -362,56 +418,17 @@ static corto_int16 cortotool_package(
     corto_string language)
 {
     corto_id cxfile, srcfile, srcdir, parentName;
-    corto_char *ptr, *name;
+    corto_id includeMem;
+    corto_char *name = NULL, *include = NULL;
     FILE *file;
-    corto_uint32 i;
-
-    /* Might change start address of include */
-    corto_char *includeMem = corto_strdup(projectname);
-    corto_char *include = includeMem;
 
     silent |= mute;
 
-    /* Ignore initial colons and slashes */
-    if (include[0] == ':') {
-        if (include[1] == ':') {
-            include += 2;
-        } else {
-            if (!mute) {
-                corto_error("corto: invalid package name");
-            }
-            goto error;
+    if (!(include = cortotool_fmtName(includeMem, parentName, projectname, &name))) {
+        if (!mute) {
+            corto_error("corto: %s", corto_lasterr());
         }
-    }
-    if (include[0] == '/') {
-        include += 1;
-    }
-
-    /* Extract left-most name from include variable & replace :: */
-    ptr = include;
-    name = include;
-    parentName[0] = '\0';
-    corto_int32 offset = 0;
-    for (i = 0; i < strlen(include); i++) {
-        if (*ptr == '/') {
-            name = ptr + 1;
-        } else if (*ptr == ':') {
-            offset ++;
-            ptr++;
-            *ptr = '/';
-            name = &ptr[-offset] + 1;
-        }
-        ptr[-offset] = *ptr;
-        ptr++;
-    }
-
-    if (name != include) {
-        strcpy(parentName, include);
-        if (parentName[name - include - 1] == '/') {
-            parentName[name - include - 1] = '\0';
-        } else {
-            parentName[name - include - 2] = '\0';
-        }
+        goto error;
     }
 
     if (cortotool_setupProject(CORTO_PACKAGE, name, local, silent)) {
@@ -641,11 +658,8 @@ static corto_int16 cortotool_package(
         printf(CORTO_PROMPT " done\n\n");
     }
 
-    corto_dealloc(includeMem);
-
     return 0;
 error:
-    corto_dealloc(includeMem);
     return -1;
 }
 
