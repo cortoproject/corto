@@ -70,7 +70,9 @@ void corto_callDeinit(corto_function f) {
             }\
         }\
     }\
-    ((corto_callInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);
+    if (f->kind != CORTO_PROCEDURE_STUB) {\
+        ((corto_callInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);\
+    }
 
 #define argcpytype(args, dst, src) \
   ptr = alloca(sizeof(dst)), *(dst*)ptr = va_arg(args, src)
