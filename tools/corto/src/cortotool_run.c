@@ -319,10 +319,18 @@ corto_int16 cortotool_monitor(char *argv[]) {
     return 0;
 }
 
+static void cortotool_stripPath(char *buffer, char *str) {
+    char *ptr = str;
+    strcpy(buffer, ptr);
+    while ((ptr = strchr(ptr + 1, '/'))) {
+        strcpy(buffer, ptr + 1); /* A bit of redundancy for the sake of simplicity */
+    }
+}
+
 corto_int16 cortotool_run(int argc, char *argv[]) {
     corto_ll monitor, dir;
     CORTO_UNUSED(argc);
-    corto_id appName;
+    corto_string appName = NULL;
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -341,25 +349,47 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     }
 
     if (dir) {
-        if (corto_chdir(corto_llGet(dir, 0))) {
-            corto_error("corto: %s", corto_lasterr());
-            goto error;
-        }
-    }
+        corto_string project = corto_llGet(dir, 0);
 
-    {
-        char *ptr = corto_cwd();
-        corto_id noPath;
-        strcpy(noPath, ptr);
-        while ((ptr = strchr(ptr + 1, '/'))) {
-            strcpy(noPath, ptr + 1); /* A bit of redundancy for the sake of simplicity */
-        }
-        sprintf(appName, ".corto/%s", noPath);
-    }
+        /* Maybe this function fails, which is ok as it doesn't directly mean
+         * an error. */
+        corto_int16 ret = corto_chdir(project);
 
-    /* Build first */
-    if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
-        return -1;
+        if (!ret && corto_fileTest(".corto")) {
+            corto_id noPath;
+            cortotool_stripPath(noPath, corto_cwd());
+            corto_asprintf(&appName, "./%s", noPath);
+            sprintf(appName, "./%s", noPath);
+
+            /* Only build when in a corto project */
+            if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
+                return -1;
+            }
+
+        /* If not in a Corto project, lookup application in either ~/.corto or /usr/local */
+        } else {
+            corto_id noPath;
+            cortotool_stripPath(noPath, project);
+
+            if (corto_fileTest(
+                "$CORTO_TARGET/bin/cortobin/$CORTO_VERSION/%s/%s",
+                project, noPath))
+            {
+                appName = corto_envparse(
+                    "$CORTO_TARGET/bin/cortobin/$CORTO_VERSION/%s/%s",
+                    project, noPath);
+            } else if (corto_fileTest(
+                "/usr/local/bin/cortobin/$CORTO_VERSION/%s/%s",
+                project, noPath))
+            {
+                appName = corto_envparse(
+                    "/usr/local/bin/cortobin/$CORTO_VERSION/%s/%s",
+                    project, noPath);
+            } else {
+                corto_error("corto: application '%s' not found");
+                goto error;
+            }
+        }
     }
 
     if (monitor) {

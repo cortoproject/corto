@@ -11,6 +11,7 @@ DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
 PREFIX ||= TARGET
 NAME ||= PACKAGE_FWSLASH.split("/").last
 ARTEFACT ||= "lib#{TARGET}.so"
+INSTALL ||= "lib/corto"
 
 # Preprocessor variables
 PP_ATTR ||= []
@@ -36,7 +37,7 @@ if LOCAL == true then
 else
   PACKAGEDIR = PACKAGE_FWSLASH
   TARGETPATH = PACKAGEDIR
-  TARGETDIR ||= "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+  TARGETDIR ||= "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
 end
 
 # Define a convenience macro in the package that points to the installed ETC directory

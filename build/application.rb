@@ -6,12 +6,20 @@ end
 ARTEFACT = TARGET.split("/").last
 USE_PACKAGE ||= []
 LIBPATH ||= []
-LOCAL = true
 PP_ATTR = ["app=true"]
 NAME = TARGET
 INCLUDE ||= []
 PACKAGE = TARGET
+INSTALL = "bin/cortobin"
 
 INCLUDE << "include"
+
+task :symlink do
+  sh "ln -fs #{TARGETDIR}/#{ARTEFACT} ./Foo"
+end
+
+if ENV['CORTO_TARGET'] != '/usr/local' then
+  task :postbuild => [:symlink]
+end
 
 require "#{ENV['CORTO_BUILD']}/package"
