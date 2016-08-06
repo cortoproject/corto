@@ -386,7 +386,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                     "/usr/local/bin/cortobin/$CORTO_VERSION/%s/%s",
                     project, noPath);
             } else {
-                corto_error("corto: application '%s' not found");
+                corto_error("corto: application '%s' not found", project);
                 goto error;
             }
         }
