@@ -46,8 +46,8 @@ DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/c
 # Rule for creating packages.txt
 file ".corto/packages.txt" do
   verbose(VERBOSE)
-  sh "mkdir -p .corto"
-  sh "touch .corto/packages.txt"
+  cmd "mkdir -p .corto"
+  cmd "touch .corto/packages.txt"
 end
 
 # Code generation
@@ -76,8 +76,8 @@ if not defined? NOCORTO then
     file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
       verbose(VERBOSE)
       preload = PP_PRELOAD.join(" ")
-      sh "mkdir -p .corto"
-      sh "touch .corto/_wrapper.#{EXT}"
+      cmd "mkdir -p .corto"
+      cmd "touch .corto/_wrapper.#{EXT}"
 
       localStr = ""
       docStr = ""
@@ -86,7 +86,7 @@ if not defined? NOCORTO then
         localStr = "--attr local=true"
       else
         begin
-          sh "corto locate corto/gen/doc/doc --silent"
+          cmd "corto locate corto/gen/doc/doc --silent"
           # docStr = "-g doc/doc"
         rescue
         end
@@ -99,11 +99,11 @@ if not defined? NOCORTO then
                 "--prefix #{PREFIX} #{localStr} #{docStr} --lang #{LANGUAGE}"
 
       begin
-        sh command
+        cmd command
       rescue
         STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
         if File.exists? "include/_type.h" then
-          sh "rm include/_type.h"
+          cmd "rm include/_type.h"
         end
         abort()
       end
@@ -116,7 +116,7 @@ if not defined? NOCORTO then
     file ".corto/_load.#{EXT}" => [".corto/packages.txt"] do
       verbose(VERBOSE)
       preload = PP_PRELOAD.join(" ")
-      sh "mkdir -p .corto"
+      cmd "mkdir -p .corto"
 
       localStr = ""
 
@@ -132,11 +132,11 @@ if not defined? NOCORTO then
         "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} -g c/project #{langStr}"
 
       begin
-        sh command
+        cmd command
       rescue
         STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
         if File.exists? "include/#{NAME}.h" then
-          sh "rm include/#{NAME}.h"
+          cmd "rm include/#{NAME}.h"
         end
         abort()
       end
@@ -150,7 +150,7 @@ task :doc do
   verbose(VERBOSE)
   if `which corto` != "" then
     begin
-      sh "corto locate corto/md --silent"
+      cmd "corto locate corto/md --silent"
       if File.exists? "#{NAME}.md" then
         if not LOCAL and not NOCORTO then
           command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
@@ -158,7 +158,7 @@ task :doc do
           command = "corto pp #{NAME}.md -g doc/html"
         end
         begin
-          sh command
+          cmd command
         rescue
           STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
           abort
@@ -176,7 +176,7 @@ task :buildscript do
     INCLUDE_PUBLIC ||= [] + INCLUDE
     if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
       dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-      sh "mkdir -p #{dir}"
+      cmd "mkdir -p #{dir}"
       File.open("#{dir}/build.rb", "w") do |file|
         if INCLUDE_PUBLIC.length != 0 then
           file.write "INCLUDE"
@@ -221,7 +221,7 @@ end
 task :uninstaller do
   if not LOCAL then
     dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
-    sh "mkdir -p #{dir}"
+    cmd "mkdir -p #{dir}"
     File.open("#{dir}/uninstall.txt", "w") do |file|
       UNINSTALL.each do |f|
         file.write("#{f}\n")
@@ -242,10 +242,10 @@ task :uninstall do
             file = l[0...-1]
             if File.directory? file then
               if not Dir.glob("#{file}/*").length then
-                sh "rm -rf #{l[0...-1]}"
+                cmd "rm -rf #{l[0...-1]}"
               end
             else
-              sh "rm -f #{l[0...-1]}"
+              cmd "rm -f #{l[0...-1]}"
             end
           end
         end
@@ -266,24 +266,24 @@ def installFile(source, target)
   end
   if SOFTLINKS then
     begin
-      sh "ln -fs #{source} #{target}"
+      cmd "ln -fs #{source} #{target}"
     rescue
       STDERR.puts "\033[1;31mwarning: failed to create link #{target}#{File.basename(source)}, retrying\033[0;49m"
       if File.exists?(target) then
-        sh "rm -rf #{target}#{File.basename(source)}"
+        cmd "rm -rf #{target}#{File.basename(source)}"
       end
-      sh "ln -fs #{source} #{target}"
+      cmd "ln -fs #{source} #{target}"
       STDERR.puts " => OK"
     end
   else
     begin
-      sh "cp -r #{source} #{target}"
+      cmd "cp -r #{source} #{target}"
     rescue
       STDERR.puts "\033[1;31mwarning: failed to copy file #{source}, retrying\033[0;49m"
       if File.exists?(target) then
-        sh "rm -rf #{target}"
+        cmd "rm -rf #{target}"
       end
-      sh "cp -r #{source} #{target}"
+      cmd "cp -r #{source} #{target}"
       STDERR.puts " => OK"
     end
   end
@@ -297,7 +297,7 @@ def installDir(dir)
     if installFiles.length != 0 then
       dstPath = "#{CORTO_TARGET}/#{dir}/corto/#{CORTO_VERSION}/#{TARGETPATH}"
       if not File.exists? dstPath then
-        sh "mkdir -p #{dstPath}"
+        cmd "mkdir -p #{dstPath}"
       end
 
       # Keep track of installed include files
@@ -320,8 +320,8 @@ def installDir(dir)
       end
 
       # Write package prefix to include path
-      sh "rm -f #{dstPath}/.prefix"
-      sh "echo \"#{PREFIX}\" >> #{dstPath}/.prefix"
+      cmd "rm -f #{dstPath}/.prefix"
+      cmd "echo \"#{PREFIX}\" >> #{dstPath}/.prefix"
     end
   end
 end
@@ -332,7 +332,7 @@ task :install do
   if not LOCAL then
     libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
     if not File.exists? libpath then
-      sh "mkdir -p #{libpath}"
+      cmd "mkdir -p #{libpath}"
     end
 
     installDir("include")
@@ -344,16 +344,16 @@ task :install do
       if File.exists? platformStr then
         install = "#{CORTO_TARGET}"
         if File.exists? "#{platformStr}/lib" then
-          sh "cp -r #{platformStr}/lib/. #{install}/lib"
+          cmd "cp -r #{platformStr}/lib/. #{install}/lib"
         end
         if File.exists? "#{platformStr}/bin" then
-          sh "cp -r #{platformStr}/bin/. #{install}/bin"
+          cmd "cp -r #{platformStr}/bin/. #{install}/bin"
         end
         if File.exists? "#{platformStr}/include" then
-          sh "cp -r #{platformStr}/include/. #{install}/include"
+          cmd "cp -r #{platformStr}/include/. #{install}/include"
         end
         if File.exists? "#{platformStr}/etc" then
-          sh "cp -r #{platformStr}/etc/. #{install}/etc"
+          cmd "cp -r #{platformStr}/etc/. #{install}/etc"
         end
 
         # Add installed files to FILES variable
@@ -374,19 +374,21 @@ task :install do
     if not LOCAL and ENV['CORTO_TARGET'] != "/usr/local" then
       # Using this file, corto can auto-rebuild the package when changes in
       # package files are made while a running application is using it.
-      sh "echo \"`pwd`\" >> source.txt"
-      if File.exists? "#{libpath}/source.txt" then
-        if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
-          STDERR.puts "\033[1;31mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m"
+      cmd "echo \"`pwd`\" >> source.txt"
+      if DRYRUN != true then
+        if File.exists? "#{libpath}/source.txt" then
+          if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
+            STDERR.puts "\033[1;31mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m"
+          end
         end
+        cmd "mv source.txt #{libpath}/source.txt"
       end
-      sh "mv source.txt #{libpath}/source.txt"
     end
     if not LOCAL and File.exists? ".corto/packages.txt" then
-      sh "cp .corto/packages.txt #{libpath}"
+      cmd "cp .corto/packages.txt #{libpath}"
     end
     if not LOCAL and File.exists? ".corto/version.txt" then
-      sh "cp .corto/version.txt #{libpath}"
+      cmd "cp .corto/version.txt #{libpath}"
     end
   end
 end
@@ -400,18 +402,18 @@ task :collect do
     abort
   end
   libPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-  sh "mkdir -p #{libPath}"
-  sh "cp -r #{buildScript} #{libPath}"
+  cmd "mkdir -p #{libPath}"
+  cmd "cp -r #{buildScript} #{libPath}"
   if File.exists?("include") then
     includePath = "#{ENV['HOME']}/.corto/pack/include/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-    sh "mkdir -p #{includePath}"
-    sh "cp -r include/. #{includePath}/"
+    cmd "mkdir -p #{includePath}"
+    cmd "cp -r include/. #{includePath}/"
   end
   if File.exists?("etc") then
     etc = "#{ENV['HOME']}/.corto/pack/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
     targetEtc = "#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}"
-    sh "mkdir -p #{etc}"
-    sh "cp -r #{targetEtc}/. #{etc}/"
+    cmd "mkdir -p #{etc}"
+    cmd "cp -r #{targetEtc}/. #{etc}/"
   end
 end
 

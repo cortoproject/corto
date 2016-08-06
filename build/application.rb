@@ -15,7 +15,7 @@ INSTALL = "bin/cortobin"
 INCLUDE << "include"
 
 task :symlink do
-  sh "ln -fs #{TARGETDIR}/#{ARTEFACT} ./#{ARTEFACT}"
+  cmd "ln -fs #{TARGETDIR}/#{ARTEFACT} ./#{ARTEFACT}"
 end
 
 if ENV['CORTO_TARGET'] != '/usr/local' then

@@ -229,6 +229,7 @@ void corto_seterrv(char *fmt, va_list args) {
     corto_dealloc(err);
 }
 
+#ifndef NDEBUG
 corto_err corto_debug(char* fmt, ...) {
     va_list arglist;
     corto_err result;
@@ -251,28 +252,6 @@ corto_err corto_trace(char* fmt, ...) {
     return result;
 }
 
-corto_err corto_warning(char* fmt, ...) {
-    va_list arglist;
-    corto_err result;
-
-    va_start(arglist, fmt);
-    result = corto_warningv(fmt, arglist);
-    va_end(arglist);
-
-    return result;
-}
-
-corto_err corto_error(char* fmt, ...) {
-    va_list arglist;
-    corto_err result;
-
-    va_start(arglist, fmt);
-    result = corto_errorv(fmt, arglist);
-    va_end(arglist);
-
-    return result;
-}
-
 corto_err corto_info(char* fmt, ...) {
     va_list arglist;
     corto_err result;
@@ -290,6 +269,30 @@ corto_err corto_ok(char* fmt, ...) {
 
     va_start(arglist, fmt);
     result = corto_okv(fmt, arglist);
+    va_end(arglist);
+
+    return result;
+}
+
+#endif
+
+corto_err corto_warning(char* fmt, ...) {
+    va_list arglist;
+    corto_err result;
+
+    va_start(arglist, fmt);
+    result = corto_warningv(fmt, arglist);
+    va_end(arglist);
+
+    return result;
+}
+
+corto_err corto_error(char* fmt, ...) {
+    va_list arglist;
+    corto_err result;
+
+    va_start(arglist, fmt);
+    result = corto_errorv(fmt, arglist);
     va_end(arglist);
 
     return result;

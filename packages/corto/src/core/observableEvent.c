@@ -18,12 +18,12 @@ corto_void _corto_observableEvent_handle_v(
 
     /* Don't readlock event for DELETE events */
     if (!lockRequired || !corto_readBegin(this->observable)) {
-        corto_call(
-            corto_function(this->observer),
-            NULL,
-            this->me,
-            this->observable,
-            this->source);
+        corto_function f = corto_function(this->observer);
+        if (f->kind == CORTO_PROCEDURE_CDECL) {
+            ((void(*)(corto_object, corto_object))f->fptr)(this->me, this->observable);
+        } else {
+            corto_call(f, NULL, this->me, this->observable);
+        }
         if (lockRequired) {
             corto_readEnd(this->observable);
         }

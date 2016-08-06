@@ -1,5 +1,19 @@
 require 'rake/clean'
 
+CWD = Dir.pwd
+
+def cmd(command)
+  if DRYRUN == true
+    verbose(false)
+    sh "#{command} 2>/dev/null"
+    command = "#{command}".gsub(CWD, ".")
+    command = "#{command}".gsub(ENV['HOME'], "$HOME")
+    print("#{command}\n".gsub(ENV['HOME'], "$HOME"))
+  else
+    sh "#{command}"
+  end
+end
+
 # Set Corto version variable
 if ENV['CORTO_VERSION'] then
   CORTO_VERSION ||= ENV['CORTO_VERSION']
@@ -38,10 +52,10 @@ end
 
 # Set softlinks
 if not defined? SOFTLINKS then
-  if ENV['softlinks'] == "true" then
-    SOFTLINKS ||= true
-  else
+  if ENV['softlinks'] == "false" then
     SOFTLINKS ||= false
+  else
+    SOFTLINKS ||= true
   end
 end
 
@@ -51,6 +65,15 @@ if not defined? MULTITHREAD then
     MULTITHREAD ||= false
   else
     MULTITHREAD ||= true
+  end
+end
+
+# Set dryrun
+if not defined? DRYRUN then
+  if ENV['dryrun'] == "true" then
+    DRYRUN ||= true
+  else
+    DRYRUN ||= false
   end
 end
 

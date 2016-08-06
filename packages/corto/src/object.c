@@ -518,7 +518,11 @@ void corto_delegateDestruct(corto_type t, corto_object o) {
     }
 
     if (delegate) {
-        corto_call(delegate, NULL, o);
+        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
+            ((void(*)(corto_object))delegate->fptr)(o);
+        } else {
+            corto_call(delegate, NULL, o);
+        }
     }
 }
 
@@ -1981,7 +1985,11 @@ corto_string corto_nameof(corto_id buffer, corto_object o) {
     }
 
     if (delegate) {
-        corto_call(delegate, &str, o);
+        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
+            str = ((corto_string ___ (*)(corto_object))(delegate->fptr))(o);
+        } else {
+            corto_call(delegate, &str, o);
+        }
 
         if (!buffer) {
             buffer = str;
@@ -2746,7 +2754,11 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
             if (!this || (this != corto_getOwner())) {
                 corto_function f = corto_function(observer);
                 corto_object prevOwner = corto_setOwner(NULL);
-                corto_call(f, NULL, this, observable);
+                if (f->kind == CORTO_PROCEDURE_CDECL) {
+                    ((void(*)(corto_object, corto_object))f->fptr)(this, observable);
+                } else {
+                    corto_call(f, NULL, this, observable);
+                }
                 corto_setOwner(prevOwner);
             }
         } else {

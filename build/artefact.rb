@@ -114,19 +114,19 @@ task :collect do
   artefact = "#{TARGETDIR}/#{ARTEFACT}"
   target = ENV['HOME'] + "/.corto/pack" + artefact["#{ENV['CORTO_TARGET']}".length..artefact.length]
   targetDir = target.split("/")[0...-1].join("/")
-  sh "mkdir -p #{targetDir}"
-  sh "cp #{artefact} #{target}"
+  cmd "mkdir -p #{targetDir}"
+  cmd "cp #{artefact} #{target}"
 
-  if File.exists? "#{TARGETDIR}/build.sh" then
-    sh "cp #{TARGETDIR}/build.sh #{targetDir}/build.sh"
+  if File.exists? "#{TARGETDIR}/build.cmd" then
+    cmd "cp #{TARGETDIR}/build.cmd #{targetDir}/build.cmd"
   end
 end
 
 # Rule to automatically create packages.txt
 file ".corto/packages.txt" do
   verbose(VERBOSE)
-  sh "mkdir -p .corto"
-  sh "touch .corto/packages.txt"
+  cmd "mkdir -p .corto"
+  cmd "touch .corto/packages.txt"
 end
 
 task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
@@ -138,7 +138,7 @@ def build_target()
   verbose(VERBOSE)
 
   if not File.exists? TARGETDIR then
-    sh "mkdir -p #{TARGETDIR}"
+    cmd "mkdir -p #{TARGETDIR}"
   end
 
   # Create list of files that are going to be linked with. Abstract away from the
@@ -187,7 +187,7 @@ def build_target()
 
   cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
   begin
-    sh cc_command
+    cmd cc_command
   rescue
     STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
     abort
@@ -201,14 +201,14 @@ def build_target()
       # path.
       libname = `otool -L #{lib}`.split("\n")[1].split[0]
       if libname != lib then
-        sh "install_name_tool -change #{libname} #{lib} #{TARGETDIR}/#{ARTEFACT}"
+        cmd "install_name_tool -change #{libname} #{lib} #{TARGETDIR}/#{ARTEFACT}"
       end
     end
   end
 
   # If target is release, strip binary
   if ENV['target'] == "release" then
-    sh "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
+    cmd "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
   end
 
   if ENV['silent'] != "true" then
@@ -263,7 +263,7 @@ task :test do
   file = ""
   if File.exists? "test/rakefile" then
     begin
-      sh "rake -f test/rakefile silent=true"
+      cmd "rake -f test/rakefile silent=true"
     rescue
       STDERR.puts "\033[1;31mcorto:\033[0;49m failed to build test"
       abort
@@ -278,7 +278,7 @@ task :test do
 
   if file != "" then
     begin
-      sh "corto #{file} #{ENV['testcase']}"
+      cmd "corto #{file} #{ENV['testcase']}"
     rescue
       abort
     end
@@ -345,8 +345,8 @@ rule '.o' => ->(t) {
   file
 } do |task|
   if COVERAGE then
-    sh "rm -f #{task.name.ext(".gcda")}"
-    sh "rm -f #{task.name.ext(".gcno")}"
+    cmd "rm -f #{task.name.ext(".gcda")}"
+    cmd "rm -f #{task.name.ext(".gcno")}"
   end
   build_source(task.source, task.name, true)
 end
@@ -386,18 +386,18 @@ def build_source(source, target, echo)
 
   path = File.dirname(target)
   if not File.exists? path then
-    sh "mkdir -p #{path}"
+    cmd "mkdir -p #{path}"
   end
 
   if echo
-    if ENV['silent'] != "true" then
+    if ENV['silent'] != "true" and DRYRUN != true then
       print "#{source}\n"
     end
   end
 
   cc_command = "#{COMPILER} -c #{flags.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + corto_replace(i)}.join(" ")} #{source} -o #{target}"
   begin
-    sh cc_command
+    cmd cc_command
   rescue
     STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
     abort

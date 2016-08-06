@@ -1230,52 +1230,29 @@ corto_object g_fileScopeGet(g_file file) {
 /* Write to file */
 int g_fileWrite(g_file file, char* fmt, ...) {
     va_list args;
-    corto_char *buffer;
+    corto_char *buffer = NULL;
     corto_uint32 len;
 
     va_start(args, fmt);
-    len = vsnprintf(NULL, 0, fmt, args);
+    corto_vasprintf(&buffer, fmt, args);
     va_end(args);
 
-    if (len) {
-        buffer = corto_alloc(len + 1);
-
-        va_start(args, fmt);
-        len = vsnprintf(buffer, len + 1, fmt, args);
-        va_end(args);
-
-        corto_assert(len == strlen(buffer), "calculated length(%d) does not correspond with length of resulting string(%d)!", len, strlen(buffer));
-
-        /*ptr = buffer;
-        while((ptr = strchr(ptr, '\n'))) {
-            switch(*(ptr+1)) {
-            case '\0':
-            case '\n':
-                break;
-            default:
-                corto_error("g_fileWrite: newline characters should be placed at end of string ('%s').", buffer);
-                break;
-            }
-            ptr++;
-        }*/
-
-        /* Write indentation & string */
-        if (file->indent && file->endLine) {
-            if (fprintf(corto_fileGet(file->file), "%*s%s", file->indent * 4, " ", buffer) < 0) {
-                corto_seterr("g_fileWrite: writing to outputfile failed.");
-                goto error;
-            }
-        } else {
-            if (fprintf(corto_fileGet(file->file), "%s", buffer) < 0) {
-                corto_seterr("g_fileWrite: writing to outputfile failed.");
-                goto error;
-            }
+    /* Write indentation & string */
+    if (file->indent && file->endLine) {
+        if (fprintf(corto_fileGet(file->file), "%*s%s", file->indent * 4, " ", buffer) < 0) {
+            corto_seterr("g_fileWrite: writing to outputfile failed.");
+            goto error;
         }
-
-        file->endLine = buffer[strlen(buffer)-1] == '\n';
-
-        corto_dealloc(buffer);
+    } else {
+        if (fprintf(corto_fileGet(file->file), "%s", buffer) < 0) {
+            corto_seterr("g_fileWrite: writing to outputfile failed.");
+            goto error;
+        }
     }
+
+    file->endLine = buffer[strlen(buffer)-1] == '\n';
+
+    corto_dealloc(buffer);
 
     return 0;
 error:

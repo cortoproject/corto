@@ -26,7 +26,11 @@ corto_void _corto_dispatcher_post(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, e);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_event))((corto_function)_method)->fptr)(this, e);
+    } else {
+        corto_call(corto_function(_method), NULL, this, e);
+    }
 }
 
 corto_void _corto_event_handle(
@@ -48,7 +52,11 @@ corto_void _corto_event_handle(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), NULL, this);
+    }
 }
 
 corto_void _corto_invokeEvent_handle(
@@ -70,7 +78,11 @@ corto_void _corto_invokeEvent_handle(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), NULL, this);
+    }
 }
 
 corto_void _corto_loader_onDeclare(
@@ -93,7 +105,11 @@ corto_void _corto_loader_onDeclare(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, observable);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_object))((corto_function)_method)->fptr)(this, observable);
+    } else {
+        corto_call(corto_function(_method), NULL, this, observable);
+    }
 }
 
 corto_resultIter _corto_loader_onRequest(
@@ -117,7 +133,11 @@ corto_resultIter _corto_loader_onRequest(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, request);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_request*))((corto_function)_method)->fptr)(this, request);
+    } else {
+        corto_call(corto_function(_method), &_result, this, request);
+    }
     
     return _result;
 }
@@ -145,7 +165,11 @@ corto_object _corto_loader_onResume(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, parent, name, o);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(this, parent, name, o);
+    } else {
+        corto_call(corto_function(_method), &_result, this, parent, name, o);
+    }
     
     return _result;
 }
@@ -170,7 +194,11 @@ corto_void _corto_mount_onDeclare(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, observable);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_object))((corto_function)_method)->fptr)(this, observable);
+    } else {
+        corto_call(corto_function(_method), NULL, this, observable);
+    }
 }
 
 corto_void _corto_mount_onDelete(
@@ -193,7 +221,11 @@ corto_void _corto_mount_onDelete(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onDelete(object observable)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, observable);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_object))((corto_function)_method)->fptr)(this, observable);
+    } else {
+        corto_call(corto_function(_method), NULL, this, observable);
+    }
 }
 
 corto_void _corto_mount_onInvoke(
@@ -218,7 +250,11 @@ corto_void _corto_mount_onInvoke(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,word argptrs)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, instance, proc, argptrs);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_object, corto_function, corto_word))((corto_function)_method)->fptr)(this, instance, proc, argptrs);
+    } else {
+        corto_call(corto_function(_method), NULL, this, instance, proc, argptrs);
+    }
 }
 
 corto_void _corto_mount_onPoll(
@@ -240,7 +276,11 @@ corto_void _corto_mount_onPoll(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onPoll()@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), NULL, this);
+    }
 }
 
 corto_resultIter _corto_mount_onRequest(
@@ -264,7 +304,11 @@ corto_resultIter _corto_mount_onRequest(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, request);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_request*))((corto_function)_method)->fptr)(this, request);
+    } else {
+        corto_call(corto_function(_method), &_result, this, request);
+    }
     
     return _result;
 }
@@ -292,7 +336,11 @@ corto_object _corto_mount_onResume(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, parent, name, o);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(this, parent, name, o);
+    } else {
+        corto_call(corto_function(_method), &_result, this, parent, name, o);
+    }
     
     return _result;
 }
@@ -320,7 +368,11 @@ corto_word _corto_mount_onSubscribe(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(string parent,string name,core/eventMask mask)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), &_result, this, parent, name, mask);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_word ___ (*)(corto_object, corto_string, corto_string, corto_eventMask))((corto_function)_method)->fptr)(this, parent, name, mask);
+    } else {
+        corto_call(corto_function(_method), &_result, this, parent, name, mask);
+    }
     
     return _result;
 }
@@ -348,7 +400,11 @@ corto_void _corto_mount_onUnsubscribe(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, parent, name, mask, userData);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_string, corto_string, corto_eventMask, corto_word))((corto_function)_method)->fptr)(this, parent, name, mask, userData);
+    } else {
+        corto_call(corto_function(_method), NULL, this, parent, name, mask, userData);
+    }
 }
 
 corto_void _corto_mount_onUpdate(
@@ -371,7 +427,11 @@ corto_void _corto_mount_onUpdate(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::onUpdate(object observable)@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this, observable);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_object))((corto_function)_method)->fptr)(this, observable);
+    } else {
+        corto_call(corto_function(_method), NULL, this, observable);
+    }
 }
 
 corto_void _corto_observableEvent_handle(
@@ -393,5 +453,9 @@ corto_void _corto_observableEvent_handle(
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
 
-    corto_call(corto_function(_method), NULL, this);
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), NULL, this);
+    }
 }
