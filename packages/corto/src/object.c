@@ -2751,16 +2751,16 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
 
         if (!dispatcher) {
             corto_object this = data->_this;
-            if (!this || (this != corto_getOwner())) {
+            corto_object prevOwner = corto_setOwner(NULL);
+            if (!this || (this != prevOwner)) {
                 corto_function f = corto_function(observer);
-                corto_object prevOwner = corto_setOwner(NULL);
                 if (f->kind == CORTO_PROCEDURE_CDECL) {
                     ((void(*)(corto_object, corto_object))f->fptr)(this, observable);
                 } else {
                     corto_call(f, NULL, this, observable);
                 }
-                corto_setOwner(prevOwner);
             }
+            corto_setOwner(prevOwner);
         } else {
             if (!data->_this || (data->_this != source)) {
                 corto_attr oldAttr = corto_setAttr(0);

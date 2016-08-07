@@ -69,6 +69,7 @@ corto_int16 _corto_mount_construct(
     corto_mount this)
 {
 /* $begin(corto/core/mount/construct) */
+    corto_object dispatcher = NULL;
 
     /* If mount isn't set, and object is scoped, mount data on itself */
     if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
@@ -77,25 +78,6 @@ corto_int16 _corto_mount_construct(
 
     corto_object observable = this->mount;
     corto_eventMask mask = this->mask;
-
-    if (observable && mask) {
-        /* Attach mount to the observable if mask != ON_SELF */
-        if (mask != CORTO_ON_SELF) {
-            if (corto_mount_attach(this, observable, mask)) {
-                goto error;
-            }
-        }
-
-        if (corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, this)) {
-            goto error;
-        }
-        if (corto_listen(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, this)) {
-            goto error;
-        }
-        if (corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, this)) {
-            goto error;
-        }
-    }
 
     /* Parse policies */
     if (this->policy) {
@@ -111,9 +93,29 @@ corto_int16 _corto_mount_construct(
 
     /* If rate limiting is enabled, start thread */
     if (this->policies.sampleRate) {
+        dispatcher = this;
         this->thread = (corto_word)corto_threadNew(
             corto_mount_thread,
             this);
+    }
+
+    if (observable && mask) {
+        /* Attach mount to the observable if mask != ON_SELF */
+        if (mask != CORTO_ON_SELF) {
+            if (corto_mount_attach(this, observable, mask)) {
+                goto error;
+            }
+        }
+
+        if (corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, dispatcher)) {
+            goto error;
+        }
+        if (corto_listen(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, dispatcher)) {
+            goto error;
+        }
+        if (corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, dispatcher)) {
+            goto error;
+        }
     }
 
     return 0;
@@ -131,7 +133,7 @@ corto_void _corto_mount_destruct(
     /* Signal thread ASAP to stop */
     this->quit = TRUE;
 
-    /* Unsubscribe from actibe subscriptions */
+    /* Unsubscribe from active subscriptions */
     while ((s = corto_llTakeFirst(this->subscriptions))) {
         corto_mount_onUnsubscribe(
             this,
@@ -143,7 +145,15 @@ corto_void _corto_mount_destruct(
         corto_dealloc(s);
     }
 
-    corto_threadJoin((corto_thread)this->thread, NULL);
+    if (this->thread) {
+        corto_threadJoin((corto_thread)this->thread, NULL);
+    }
+
+    if (this->mount && this->mask) {
+        corto_silence(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | this->mask, this->mount);
+        corto_silence(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | this->mask, this->mount);
+        corto_silence(this, corto_mount_on_delete_o, CORTO_ON_DELETE | this->mask, this->mount);
+    }
 
 /* $end */
 }
