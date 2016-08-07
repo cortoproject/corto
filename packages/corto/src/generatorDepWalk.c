@@ -33,21 +33,23 @@ struct g_depWalk_t  {
 corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
     corto_object result = o;
 
-    if (!data->anonymousObjects) {
-        data->anonymousObjects = corto_llNew();
-    }
-
-    corto_iter iter = corto_llIter(data->anonymousObjects);
-    while (corto_iterHasNext(&iter)) {
-        corto_object a = corto_iterNext(&iter);
-        if (corto_compare(o, a) == CORTO_EQ) {
-            result = a;
-            break;
+    if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (!data->anonymousObjects) {
+            data->anonymousObjects = corto_llNew();
         }
-    }
 
-    if (o == result) {
-        corto_llAppend(data->anonymousObjects, o);
+        corto_iter iter = corto_llIter(data->anonymousObjects);
+        while (corto_iterHasNext(&iter)) {
+            corto_object a = corto_iterNext(&iter);
+            if (corto_compare(o, a) == CORTO_EQ) {
+                result = a;
+                break;
+            }
+        }
+
+        if (o == result) {
+            corto_llAppend(data->anonymousObjects, o);
+        }
     }
 
     return result;
