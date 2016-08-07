@@ -3065,20 +3065,6 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
                         corto_fullpath(NULL, this));
                 }
 #endif
-
-            } else {
-                if (this) {
-                    corto_seterr("observer '%s' ('%s') is not observing '%s'",
-                            corto_fullpath(NULL, observer),
-                            corto_fullpath(NULL, this),
-                            corto_fullpath(NULL, observable));
-                    goto error;
-                } else {
-                    corto_seterr("observer '%s' is not observing '%s'",
-                        corto_fullpath(NULL, observer),
-                        corto_fullpath(NULL, observable));
-                    goto error;
-                }
             }
             corto_rwmutexUnlock(&_o->align.selfLock);
         }
@@ -3095,19 +3081,6 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
                     /* Build new observer array */
                     oldChildArray = _o->onChildArray;
                     _o->onChildArray = corto_observersArrayNew(_o->onChild);
-                } else {
-                    if (this) {
-                        corto_seterr("observer '%s' ('%s') is not observing '%s'",
-                            corto_fullpath(NULL, observer),
-                            corto_fullpath(NULL, this),
-                            corto_fullpath(NULL, observable));
-                        goto error;
-                    } else {
-                        corto_seterr("observer '%s' is not observing '%s'",
-                            corto_fullpath(NULL, observer),
-                            corto_fullpath(NULL, observable));
-                        goto error;
-                    }
                 }
                 corto_rwmutexUnlock(&_o->childLock);
             } else {

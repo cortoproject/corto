@@ -84,7 +84,7 @@ corto_void _test_Ownership_tc_createNotOwned(
     test_assert(p == NULL);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(),
-        "owner '/r' of existing object '/o' does not match"));
+        "owner '/r' of existing object '/o' does not match owner ''"));
 
     /* Set owner back to r so we can delete o */
     corto_setOwner(r);
@@ -153,7 +153,7 @@ corto_void _test_Ownership_tc_declareNotOwned(
     test_assert(p == NULL);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(),
-        "owner '/r' of existing object '/o' does not match"));
+        "owner '/r' of existing object '/o' does not match owner ''"));
 
     corto_setOwner(old);
 
