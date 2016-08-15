@@ -15,9 +15,9 @@ extern "C" {
 #endif
 
 #if INTPTR_MAX == INT32_MAX
-#define CORTO_CPU_X86
+#define CORTO_CPU_32BIT
 #elif INTPTR_MAX == INT64_MAX
-#define CORTO_CPU_X64
+#define CORTO_CPU_64BIT
 #else
 #warning "corto is not supported on platforms which are neither 32- nor 64-bit."
 #endif
@@ -32,10 +32,14 @@ extern "C" {
 #warning "corto is not supported on non-unix or windows operating systems."
 #endif
 
-#ifdef CORTO_CPU_X86
+#ifdef __i386__
 #define CORTO_CPU_STRING "x86"
-#else
+#elif __x86_64__
 #define CORTO_CPU_STRING "x64"
+#elif defined(__arm__) && defined(CORTO_CPU_32BIT)
+#define CORTO_CPU_STRING "Arm"
+#elif defined(__arm__) && defined(CORTO_CPU_64BIT)
+#define CORTO_CPU_STRING "Arm64"
 #endif
 
 #ifdef CORTO_OS_WINDOWS
