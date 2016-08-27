@@ -103,7 +103,8 @@ void corto_loader_addDir(
                         NULL,
                         ".", /* Parent */
                         "/corto/core/package",
-                        0
+                        0,
+                        FALSE
                     );
                 }
             }

@@ -17,6 +17,7 @@ void corto_call_cdecl(corto_function f, corto_void* result, void* args);
 
 /* TLS callback to cleanup observer administration */
 void corto_observerAdminFree(void *admin);
+void corto_declaredAdminFree(void *admin);
 
 #ifdef CORTO_VM
 void corto_call_vm(corto_function f, corto_void* result, void* args);
@@ -30,7 +31,7 @@ struct corto_exitHandler {
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "2"
-#define VERSION_PATCH "14"
+#define VERSION_PATCH "15"
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
@@ -53,6 +54,7 @@ static corto_ll corto_exitHandlers = NULL;
 
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
+corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 corto_threadKey CORTO_KEY_WAIT_ADMIN;
 corto_threadKey CORTO_KEY_ATTR;
 corto_threadKey CORTO_KEY_FLOW;
@@ -611,6 +613,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_policies);\
     SSO_OP_OBJ_CORE(op, mount_subscriptions);\
     SSO_OP_OBJ_CORE(op, mount_events);\
+    SSO_OP_OBJ_CORE(op, mount_passThrough);\
+    SSO_OP_OBJ_CORE(op, mount_contentTypeHandle);\
     SSO_OP_OBJ_CORE(op, mount_thread);\
     SSO_OP_OBJ_CORE(op, mount_quit);\
     SSO_OP_OBJ_CORE(op, mount_init_);\
@@ -705,6 +709,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_parent);\
     SSO_OP_OBJ_CORE(op, result_type);\
     SSO_OP_OBJ_CORE(op, result_value);\
+    SSO_OP_OBJ_CORE(op, result_crawl);\
     SSO_OP_OBJ_CORE(op, result_history);\
     SSO_OP_OBJ_CORE(op, result_augments);\
     SSO_OP_OBJ_CORE(op, result_mount);\
@@ -892,6 +897,7 @@ int corto_start(void) {
 
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
+    corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
     corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_FLOW, NULL);
@@ -940,7 +946,7 @@ int corto_start(void) {
     SSO_OP_OBJECT(corto_initObject);
     SSO_OP_OBJECT_2ND(corto_initObject);
 
-    /* Patch sequences- these cannot be set statically since sequences are
+    /* Patch sequences- these aren't set statically since sequences are
      * allocated on the heap */
     corto_patchSequences();
 
@@ -1016,7 +1022,7 @@ static void corto_exit(void) {
 
 int corto_stop(void) {
 
-    CORTO_OPERATIONAL = 2; /* Initializing */
+    CORTO_OPERATIONAL = 2; /* Shutting down */
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the

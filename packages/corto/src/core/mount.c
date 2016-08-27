@@ -99,14 +99,14 @@ corto_int16 _corto_mount_construct(
             this);
     }
 
-    if (observable && mask) {
-        /* Attach mount to the observable if mask != ON_SELF */
-        if (mask != CORTO_ON_SELF) {
-            if (corto_mount_attach(this, observable, mask)) {
-                goto error;
-            }
-        }
+    /* If mount doesn't implement onRequest, it is a passthrough mount meaning
+     * it uses the object store. */
+    corto_method m = corto_interface_resolveMethod(corto_typeof(this), "onRequest");
+    if (corto_parentof(m) == corto_mount_o) {
+        this->passThrough = TRUE;
+    }
 
+    if (observable && mask) {
         if (corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, dispatcher)) {
             goto error;
         }
@@ -115,6 +115,13 @@ corto_int16 _corto_mount_construct(
         }
         if (corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, dispatcher)) {
             goto error;
+        }
+
+        /* Attach mount to the observable if mask != ON_SELF */
+        if (mask != CORTO_ON_SELF) {
+            if (corto_mount_attach(this, observable, mask)) {
+                goto error;
+            }
         }
     }
 
@@ -537,7 +544,8 @@ corto_void _corto_mount_return(
         r->name,
         r->parent,
         r->type,
-        r->value
+        r->value,
+        r->crawl
     );
 
 /* $end */
@@ -548,8 +556,16 @@ corto_int16 _corto_mount_setContentType(
     corto_string type)
 {
 /* $begin(corto/core/mount/setContentType) */
+
     corto_setstr(&this->contentType, type);
+    this->contentTypeHandle = (corto_word)corto_loadContentType(type);
+    if (!this->contentTypeHandle) {
+        goto error;
+    }
+
     return 0;
+error:
+    return -1;
 /* $end */
 }
 

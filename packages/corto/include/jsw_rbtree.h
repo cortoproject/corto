@@ -33,7 +33,7 @@ extern "C" {
 #endif
 
 #ifndef HEIGHT_LIMIT
-#define HEIGHT_LIMIT 64 /* Tallest allowable tree */
+#define HEIGHT_LIMIT 24 /* 16M nodes in a single tree */
 #endif
 
 /* Opaque types */

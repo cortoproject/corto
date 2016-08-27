@@ -2736,7 +2736,7 @@ corto_int16 _corto_requestDeinit(corto_request* value) {
     return result;
 }
 
-corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
+corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_bool crawl) {
     corto_result* _this;
     _this = corto_result(corto_declare(corto_result_o));
     if (!_this) {
@@ -2747,6 +2747,7 @@ corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_stri
     corto_setstr(&((corto_result*)_this)->parent, parent);
     corto_setstr(&((corto_result*)_this)->type, type);
     ((corto_result*)_this)->value = value;
+    ((corto_result*)_this)->crawl = crawl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -2754,7 +2755,7 @@ corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_stri
     return _this;
 }
 
-corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
+corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_bool crawl) {
     corto_result* _this;
     _this = corto_result(corto_declareChild(_parent, _name, corto_result_o));
     if (!_this) {
@@ -2765,6 +2766,7 @@ corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name,
     corto_setstr(&((corto_result*)_this)->parent, parent);
     corto_setstr(&((corto_result*)_this)->type, type);
     ((corto_result*)_this)->value = value;
+    ((corto_result*)_this)->crawl = crawl;
     if (corto_define(_this)) {
         corto_release(_this);
         _this = NULL;
@@ -2772,7 +2774,7 @@ corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _name,
     return _this;
 }
 
-corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
+corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_bool crawl) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setstr(&((corto_result*)_this)->id, id);
@@ -2780,6 +2782,7 @@ corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_stri
         corto_setstr(&((corto_result*)_this)->parent, parent);
         corto_setstr(&((corto_result*)_this)->type, type);
         ((corto_result*)_this)->value = value;
+        ((corto_result*)_this)->crawl = crawl;
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -2805,23 +2808,25 @@ corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _name
     return _this;
 }
 
-corto_int16 _corto_resultDefine(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
+corto_int16 _corto_resultDefine(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_bool crawl) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_result*)_this)->id, id);
     corto_setstr(&((corto_result*)_this)->name, name);
     corto_setstr(&((corto_result*)_this)->parent, parent);
     corto_setstr(&((corto_result*)_this)->type, type);
     ((corto_result*)_this)->value = value;
+    ((corto_result*)_this)->crawl = crawl;
     return corto_define(_this);
 }
 
-corto_result* _corto_resultAssign(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value) {
+corto_result* _corto_resultAssign(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, corto_word value, corto_bool crawl) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_result*)_this)->id, id);
     corto_setstr(&((corto_result*)_this)->name, name);
     corto_setstr(&((corto_result*)_this)->parent, parent);
     corto_setstr(&((corto_result*)_this)->type, type);
     ((corto_result*)_this)->value = value;
+    ((corto_result*)_this)->crawl = crawl;
     return _this;
 }
 

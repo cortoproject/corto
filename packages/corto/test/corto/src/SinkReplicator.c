@@ -22,7 +22,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         ".",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -31,7 +32,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         ".",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -40,7 +42,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         ".",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     // Second tier
@@ -50,7 +53,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -59,7 +63,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -68,7 +73,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     // Third tier
@@ -78,7 +84,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -87,7 +94,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -96,7 +104,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     // Fourth tier
@@ -106,7 +115,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a/k",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -115,7 +125,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a/k",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_resultAssign(
@@ -124,7 +135,8 @@ corto_int16 _test_SinkReplicator_construct(
         NULL,
         "x/a/k",
         type,
-        (corto_word)this->value
+        (corto_word)this->value,
+        TRUE
     );
 
     corto_mount(this)->kind = CORTO_SINK;
@@ -161,7 +173,8 @@ corto_resultIter _test_SinkReplicator_onRequest(
                     e.id,
                     ".",
                     e.type,
-                    0
+                    0,
+                    e.crawl
                 );
             }
         }

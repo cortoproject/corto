@@ -1073,6 +1073,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, value, lang_word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_result, crawl, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, history, lang_wordseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, mount, lang_object, CORTO_HIDDEN);
@@ -1138,6 +1139,8 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_MEMBER_O(core_mount, policies, core_mountPolicy, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, subscriptions, core_mountSubscriptionList, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, events, lang_objectlist, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, passThrough, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_mount, thread, lang_word, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
     CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_init);

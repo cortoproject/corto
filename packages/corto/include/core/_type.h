@@ -161,6 +161,8 @@ CORTO_CLASS_DEF(corto_mount) {
     corto_mountPolicy policies;
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
+    corto_bool passThrough;
+    corto_word contentTypeHandle;
     corto_word thread;
     corto_bool quit;
 };
@@ -300,6 +302,7 @@ struct corto_result {
     corto_string parent;
     corto_string type;
     corto_word value;
+    corto_bool crawl;
     corto_wordseq history;
     corto_augmentseq augments;
     corto_object mount;
