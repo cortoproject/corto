@@ -355,13 +355,13 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
          * an error. */
         corto_int16 ret = corto_chdir(project);
 
-        if (!ret && corto_fileTest(".corto")) {
+        if (!ret && corto_fileTest("rakefile")) {
             corto_id noPath;
             cortotool_stripPath(noPath, corto_cwd());
             corto_asprintf(&appName, "./%s", noPath);
             sprintf(appName, "./%s", noPath);
 
-            /* Only build when in a corto project */
+            /* Only build when in a rake project */
             if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
                 return -1;
             }
