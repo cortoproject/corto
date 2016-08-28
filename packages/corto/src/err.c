@@ -121,7 +121,6 @@ char* corto_backtraceString(void) {
 #define CORTO_MAX_LOG (1024)
 
 corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
-
     if (kind >= CORTO_LOG_LEVEL) {
         char buff[CORTO_MAX_LOG + 1];
         size_t n = 0;
@@ -153,6 +152,8 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
         } else if (kind == CORTO_OK) {
             fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)n, " ");
         } else if (kind == CORTO_TRACE) {
+            fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
+        } else if (kind == CORTO_DEBUG) {
             fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
         } else {
             fprintf(f, "%s%*s\n", msg, (int)n, " ");
@@ -221,7 +222,7 @@ void corto_seterrv(char *fmt, va_list args) {
         } else if (CORTO_OPERATIONAL){
             corto_error("error raised while shutting down: %s", err);
         } else {
-            corto_error("debug: %s", err);
+            corto_error("%s", err);
         }
         corto_backtrace(stderr);
     }
@@ -229,8 +230,7 @@ void corto_seterrv(char *fmt, va_list args) {
     corto_dealloc(err);
 }
 
-#ifndef NDEBUG
-corto_err corto_debug(char* fmt, ...) {
+corto_err _corto_debug(char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -241,7 +241,7 @@ corto_err corto_debug(char* fmt, ...) {
     return result;
 }
 
-corto_err corto_trace(char* fmt, ...) {
+corto_err _corto_trace(char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -252,7 +252,7 @@ corto_err corto_trace(char* fmt, ...) {
     return result;
 }
 
-corto_err corto_info(char* fmt, ...) {
+corto_err _corto_info(char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -263,7 +263,7 @@ corto_err corto_info(char* fmt, ...) {
     return result;
 }
 
-corto_err corto_ok(char* fmt, ...) {
+corto_err _corto_ok(char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -273,8 +273,6 @@ corto_err corto_ok(char* fmt, ...) {
 
     return result;
 }
-
-#endif
 
 corto_err corto_warning(char* fmt, ...) {
     va_list arglist;

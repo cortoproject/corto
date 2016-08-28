@@ -39,7 +39,7 @@ void corto_llInsert(corto_ll list, void* data);
 void corto_llAppend(corto_ll list, void* data);
 
 /* Remove object */
-void corto_llRemove(corto_ll list, void* o);
+void* corto_llRemove(corto_ll list, void* o);
 
 /* Replace object */
 void corto_llReplace(corto_ll list, void* o, void* by);

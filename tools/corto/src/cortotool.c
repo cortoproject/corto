@@ -249,7 +249,7 @@ int main(int argc, char* argv[]) {
                         if (corto_lasterr()) {
                             corto_error("corto: %s: %s", argv[i], corto_lasterr());
                         } else {
-                            corto_error("corto: %s: input error", argv[i]);
+                            corto_error("corto: %s: unknown command", argv[i]);
                         }
                     }
                     goto error;

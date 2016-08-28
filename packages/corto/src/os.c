@@ -435,3 +435,13 @@ int corto_beingTraced(void) {
     return 0;
 #endif
 }
+
+char* corto_hostname(void) {
+    corto_id buff;
+    gethostname(buff, sizeof(buff));
+    return corto_setThreadString(buff);
+}
+
+corto_pid _corto_pid(void) {
+    return getpid();
+}

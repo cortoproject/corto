@@ -20,7 +20,7 @@ corto_void _corto_dispatcher_post(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "post(event e)");
     }
-    corto_assert(_methodId, "virtual 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -46,7 +46,7 @@ corto_void _corto_event_handle(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -72,7 +72,7 @@ corto_void _corto_invokeEvent_handle(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -99,7 +99,7 @@ corto_void _corto_loader_onDeclare(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
     }
-    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -127,7 +127,7 @@ corto_resultIter _corto_loader_onRequest(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(core/request request)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -159,7 +159,7 @@ corto_object _corto_loader_onResume(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object o)");
     }
-    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -188,7 +188,7 @@ corto_void _corto_mount_onDeclare(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
     }
-    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -215,7 +215,7 @@ corto_void _corto_mount_onDelete(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onDelete(object observable)");
     }
-    corto_assert(_methodId, "virtual 'onDelete(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onDelete(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -244,7 +244,7 @@ corto_void _corto_mount_onInvoke(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,word argptrs)");
     }
-    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,word argptrs)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,word argptrs)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -270,7 +270,7 @@ corto_void _corto_mount_onPoll(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onPoll()");
     }
-    corto_assert(_methodId, "virtual 'onPoll()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onPoll()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -298,7 +298,7 @@ corto_resultIter _corto_mount_onRequest(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(core/request request)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -330,7 +330,7 @@ corto_object _corto_mount_onResume(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object o)");
     }
-    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -362,7 +362,7 @@ corto_word _corto_mount_onSubscribe(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(string parent,string name,core/eventMask mask)");
     }
-    corto_assert(_methodId, "virtual 'onSubscribe(string parent,string name,core/eventMask mask)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onSubscribe(string parent,string name,core/eventMask mask)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -394,7 +394,7 @@ corto_void _corto_mount_onUnsubscribe(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)");
     }
-    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -421,7 +421,7 @@ corto_void _corto_mount_onUpdate(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onUpdate(object observable)");
     }
-    corto_assert(_methodId, "virtual 'onUpdate(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'onUpdate(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -447,7 +447,7 @@ corto_void _corto_observableEvent_handle(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr()?": ":"", corto_lasterr());
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);

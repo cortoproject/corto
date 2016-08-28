@@ -73,6 +73,13 @@ int corto_proccheck(corto_pid pid, int8_t *rc);
 /* Check whether process is being debugged */
 int corto_beingTraced(void);
 
+/* Get hostname of current machine */
+char* corto_hostname(void);
+
+/* Get PID of current process */
+#define corto_pid() _corto_pid()
+corto_pid _corto_pid(void);
+
 #ifdef __cplusplus
 }
 #endif

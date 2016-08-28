@@ -204,7 +204,6 @@ static corto_dl corto_loadValidLibrary(corto_string fileName) {
     corto_dl result = NULL;
     corto_string ___ (*build)(void);
 
-    corto_trace("corto: load '%s'", fileName);
     if (!(result = corto_dlOpen(fileName))) {
         corto_error("%s", corto_dlError());
         goto error;
@@ -245,6 +244,8 @@ static corto_bool corto_checkLibrary(corto_string fileName) {
 static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     corto_dl dl = NULL;
     int (*proc)(int argc, char* argv[]);
+
+    corto_trace("corto: loader: '%s'", fileName);
 
     if (!(dl = corto_loadValidLibrary(fileName))) {
         goto error;

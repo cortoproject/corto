@@ -16,7 +16,8 @@ char* corto_fileLoad(const char* filename) {
     /* Open file for reading */
     file = fopen(filename, "r");
     if (!file) {
-        return 0;
+        corto_seterr("%s", strerror(errno));
+        goto error;
     }
 
     /* Determine file size */

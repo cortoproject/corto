@@ -136,6 +136,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <JsonReplicator.h>
 #include <Line.h>
 #include <ListReplicator.h>
+#include <Loader.h>
 #include <MethodForwardTest.h>
 #include <MethodResolver.h>
 #include <MethodTester.h>

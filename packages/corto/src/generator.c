@@ -1231,7 +1231,6 @@ corto_object g_fileScopeGet(g_file file) {
 int g_fileWrite(g_file file, char* fmt, ...) {
     va_list args;
     corto_char *buffer = NULL;
-    corto_uint32 len;
 
     va_start(args, fmt);
     corto_vasprintf(&buffer, fmt, args);

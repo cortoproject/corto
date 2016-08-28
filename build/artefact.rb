@@ -276,7 +276,7 @@ task :test do
     file = ".corto/libtest.so"
   end
 
-  if file != "" then
+  if file != "" and ENV["buildonly"] != "true" then
     begin
       cmd "corto #{file} #{ENV['testcase']}"
     rescue

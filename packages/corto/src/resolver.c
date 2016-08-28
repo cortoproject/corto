@@ -1,6 +1,8 @@
 
 #include "corto/corto.h"
 
+corto_bool corto_declaredAdminCheck(corto_object o);
+
 /* Resolve anonymous object */
 static corto_char* corto_resolveAnonymous(corto_object scope, corto_object o, corto_string str, corto_object* out) {
     corto_object result;
@@ -219,7 +221,6 @@ repeat:
                 _scope_start = scope = _scope;
             }
             goto repeat;
-            break;
         case 1:
             if (!cortoCoreSearched) {
                 _scope_start = scope = corto_core_o;
@@ -244,6 +245,15 @@ repeat:
     /* If the current object is not obtained by a lookup, it is not yet keeped. */
     if (!lookup && o) {
         corto_claim(o);
+    }
+
+    /* If object is not defined and not declared by this thread, don't return */
+    if (o && !corto_checkState(o, CORTO_DEFINED) && !corto_declaredAdminCheck(o)) {
+        corto_debug(
+            "corto: resolved undefined object '%s' is declared by another thread (%d)",
+            corto_fullpath(NULL, o), corto_declaredAdminCheck(o));
+        corto_release(o);
+        o = NULL;
     }
 
     return o;
