@@ -7,7 +7,7 @@
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testcaseArg = NULL;
     corto_int8 ret, sig, err = 0;
-    corto_ll verbose, project, testcase;
+    corto_ll verbose, project, testcase, buildonly;
 
     CORTO_UNUSED(argc);
 
@@ -16,6 +16,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore 'test' */
         {"--verbose", &verbose, NULL},
+        {"--build", &buildonly, NULL},
         {"$?*", &project, NULL},
         {"$+*", &testcase, NULL},
         {NULL}
@@ -35,7 +36,13 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     corto_int32 i = 0;
     do {
-        corto_pid pid = corto_procrun("rake", (char*[]){"rake", "test", verbose ? "verbose=true" : "verbose=false", testcaseArg, NULL});
+        corto_pid pid = corto_procrun("rake", (char*[]){
+          "rake",
+          "test",
+          verbose ? "verbose=true" : "verbose=false",
+          buildonly ? "buildonly=true" : "buildonly=false",
+          testcaseArg,
+          NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {
             if (sig > 0) {
                 corto_error("Aww, tests failed.");
