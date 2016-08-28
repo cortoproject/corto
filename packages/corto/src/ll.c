@@ -8,16 +8,14 @@
 
 #include "corto/corto.h"
 
-/* List convenience macros (to be replaced with generic collection interface) */
 #define get(list, index) corto_llGet(list, index)
 #define walk(list, cb, udata) corto_llWalk(list, cb, udata)
 
-/* Iterator convenience macros (to be replaced with generic collection interface) */
-#define next(iter) corto_iterNext(&iter)
-#define remove(iter) corto_iterRemove(&iter)
-#define hasNext(iter) corto_iterHasNext(&iter)
-#define insert(iter, data) corto_iterInsert(&iter, data)
-#define set(iter) corto_iterSet(&iter)
+#define next(iter) corto_llIterNext(&iter)
+#define remove(iter) corto_llIterRemove(&iter)
+#define hasNext(iter) corto_llIterHasNext(&iter)
+#define insert(iter, data) corto_llIterInsert(&iter, data)
+#define set(iter) corto_llIterSet(&iter)
 
 typedef struct corto_llNode_s {
     void* data;
@@ -233,16 +231,16 @@ void* corto_llTakeFirst(corto_ll list) {
 }
 
 /* Remove object */
-void corto_llRemove(corto_ll list, void* o) {
+void* corto_llRemove(corto_ll list, void* o) {
     corto_llNode node, prev;
-    corto_bool found = FALSE;
+    void *result = NULL;
 
     prev = 0;
     node = list->first;
 
-    while(node) {
+    while(node && !result) {
         if (node->data == o) {
-            found = TRUE;
+            result = o;
             if (prev) {
                 prev->next = node->next;
                 if (!prev->next) {
@@ -262,9 +260,7 @@ void corto_llRemove(corto_ll list, void* o) {
     }
     list->size--;
 
-    if (!found) {
-        corto_error("ll::remove: list does not contain %p", o);
-    }
+    return result;
 }
 
 /* Replace object */
@@ -352,14 +348,9 @@ corto_iter _corto_llIter(corto_ll list, void *udata) {
     corto_iterData(result)->cur = 0;
     corto_iterData(result)->next = list->first;
     corto_iterData(result)->list = list;
-    result.moveFirst = corto_llIterMoveFirst;
-    result.move = corto_llIterMove;
     result.hasNext = corto_llIterHasNext;
     result.next = corto_llIterNext;
     result.nextPtr = corto_llIterNextPtr;
-    result.remove = corto_llIterRemove;
-    result.insert = corto_llIterInsert;
-    result.set = corto_llIterSet;
     result.release = NULL;
 
     return result;
@@ -391,7 +382,7 @@ void* corto_llIterMove(corto_iter* iter, unsigned int index) {
     if (corto_iterData(*iter)->list->size <= index) {
         corto_critical("iterMove exceeds list-bound (%d >= %d).", index, (corto_iterData(*iter)->list)->size);
     }
-    corto_iterMoveFirst(iter);
+    corto_llIterMoveFirst(iter);
     while(index) {
         result = corto_iterNext(iter);
         index--;

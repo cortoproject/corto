@@ -12,29 +12,6 @@
 typedef void (*corto_list_action)(corto_ll list, void *value, void *userData);
 static void corto_list_do(corto_any object, corto_any element, corto_bool insert, corto_list_action action, void *userData);
 
-/* In place insertion of list to a list */
-typedef struct corto_list_insertWalk_t {
-    corto_iter iter;
-    corto_any *dest;
-}corto_list_insertWalk_t;
-
-void corto_list_insertListAction(corto_ll list, void *value, void *userData) {
-    corto_list_insertWalk_t *data = userData;
-    CORTO_UNUSED(list);
-    corto_iterInsert(&data->iter, value);
-    corto_iterNext(&data->iter);
-}
-
-int corto_list_insertWalk(void* o, void* userData) {
-    corto_list_insertWalk_t *data = userData;
-    corto_any src;
-    src.value = o;
-    src.type = corto_collection(data->dest->type)->elementType;
-    src.owner = FALSE;
-    corto_list_do(*data->dest, src, TRUE, corto_list_insertListAction, data);
-    return 1;
-}
-
 /* Append list to list */
 int corto_list_appendWalk(void* o, void* userData) {
     corto_any *dest = userData;
@@ -59,11 +36,7 @@ static void corto_list_do(corto_any object, corto_any element, corto_bool insert
             corto_llWalk(*(corto_ll*)element.value, corto_list_appendWalk, &object);
             doCopy = FALSE;
         } else {
-            corto_list_insertWalk_t walkData;
-            walkData.iter = corto_llIter(list);
-            walkData.dest = &object;
-            corto_llWalk(*(corto_ll*)element.value, corto_list_insertWalk, &walkData);
-            doCopy = FALSE;
+            /* TODO */
         }
     } else if (corto_collection_requiresAlloc(corto_collection(object.type)->elementType)) {
         corto_uint32 size = corto_type_sizeof(corto_collection(object.type)->elementType);

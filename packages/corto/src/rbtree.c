@@ -150,14 +150,8 @@ corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata) {
 
     result.udata = udata;
     jsw_rbtfirst(result.udata, (jsw_rbtree_t*)tree);
-    result.moveFirst = NULL;
-    result.move = NULL;
     result.hasNext = corto_rbtreeIterHasNext;
     result.next = corto_rbtreeIterNext;
-    result.nextPtr = NULL;
-    result.remove = NULL;
-    result.insert = NULL;
-    result.set = NULL;
     result.release = NULL;
 
     return result;

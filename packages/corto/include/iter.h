@@ -21,25 +21,15 @@ typedef struct corto_iter corto_iter;
 struct corto_iter {
     int (*hasNext)(corto_iter*);
     void *udata;
-    void (*moveFirst)(corto_iter*);
-    void* (*move)(corto_iter*, unsigned int);
     void* (*next)(corto_iter*);
     void* (*nextPtr)(corto_iter*);
-    void* (*remove)(corto_iter*);
-    void (*insert)(corto_iter*, void*);
-    void (*set)(corto_iter*, void*);
     void (*release)(corto_iter*);
 };
 
 /* Generic iterator implementation */
-void corto_iterMoveFirst(corto_iter* iter);
-void* corto_iterMove(corto_iter* iter, unsigned int index);
 int corto_iterHasNext(corto_iter* iter);
 void* corto_iterNext(corto_iter* iter);
 void* corto_iterNextPtr(corto_iter* iter);
-void* corto_iterRemove(corto_iter* iter);
-void corto_iterInsert(corto_iter* iter, void* o);
-void corto_iterSet(corto_iter* iter, void* o);
 void corto_iterRelease(corto_iter* iter);
 
 #ifdef __cplusplus
