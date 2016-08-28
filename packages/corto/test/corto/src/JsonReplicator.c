@@ -42,7 +42,8 @@ corto_resultIter _test_JsonReplicator_onRequest(
         NULL,
         ".",
         "/test/Point",
-        (corto_word)corto_strdup("{\"x\":10,\"y\":20}")
+        (corto_word)corto_strdup("{\"x\":10,\"y\":20}"),
+        FALSE
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(data),
@@ -50,7 +51,8 @@ corto_resultIter _test_JsonReplicator_onRequest(
         NULL,
         ".",
         "/test/Point",
-        (corto_word)corto_strdup("{\"x\":30,\"y\":40}")
+        (corto_word)corto_strdup("{\"x\":30,\"y\":40}"),
+        FALSE
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(data),
@@ -58,7 +60,8 @@ corto_resultIter _test_JsonReplicator_onRequest(
         NULL,
         ".",
         "/test/Point",
-        (corto_word)corto_strdup("{\"x\":50,\"y\":60}")
+        (corto_word)corto_strdup("{\"x\":50,\"y\":60}"),
+        FALSE
     );
 
     /* Create persistent iterator */

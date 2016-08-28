@@ -24,7 +24,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         ".",
         "uint32",
-        0
+        0,
+        TRUE
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
@@ -32,7 +33,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         ".",
         "string",
-        0
+        0,
+        TRUE
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
@@ -40,7 +42,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         ".",
         "float64",
-        0
+        0,
+        TRUE
     );
 
     /* Create nested objects */
@@ -50,7 +53,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "x",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -59,7 +63,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "x",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -68,7 +73,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "x",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -77,7 +83,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -86,7 +93,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -95,7 +103,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -104,7 +113,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz/abc",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -113,7 +123,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz/abc",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -122,7 +133,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz/abc/foo",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_resultAssign(
@@ -131,7 +143,8 @@ corto_int16 _test_ListReplicator_construct(
         NULL,
         "xyz/abc/foo",
         "uint32",
-        0
+        0,
+        TRUE
     );
 
     corto_mount_setContentType(this, "text/json");
@@ -167,7 +180,8 @@ corto_resultIter _test_ListReplicator_onRequest(
                     e.id,
                     ".",
                     e.type,
-                    0
+                    0,
+                    e.crawl
                 );
             }
         }

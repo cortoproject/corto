@@ -334,14 +334,13 @@ test/Suite Select::
     void setup() method
     void teardown() method
 
-    resultList collect(string @scope, string expr, uint64 offset, uint64 limit) function
+    resultList collect(string scope, string expr, uint64 offset, uint64 limit) function
     bool hasObject(resultList items, string parent, string name, string type) function
 
     void tc_selectErrParentTree()
     void tc_selectErrParentId()
     void tc_selectErrParentAst()
     void tc_selectErrParentWc()
-    void tc_selectErrScopeScope()
 
     void tc_selectFromNull()
     void tc_selectFromRoot()
@@ -367,6 +366,7 @@ test/Suite Select::
     void tc_selectTreeWithWildcard()
     void tc_selectTreeWithWildcardFilter()
     void tc_selectTreeWithAsteriskFilter()
+    void tc_selectTreeFromScope()
 
     void tc_selectFilterAsterisk()
     void tc_selectFilterWildcard()
@@ -400,6 +400,9 @@ test/Suite Select::
     void tc_selectEmptyParentAst()
     void tc_selectEmptyQueryString()
     void tc_selectEmptyStrings()
+    void tc_selectFromRootThis()
+    void tc_selectFromRootNull()
+    void tc_selectFromRootEmpty()
 
     void tc_selectParentNoSlash()
 
@@ -454,6 +457,7 @@ test/Suite ReplicatorRequest::
     void tc_selectSingleNested()
     void tc_selectSingleTree()
     void tc_selectSingleTree2()
+    void tc_selectSingleTree3()
     void tc_selectScope()
     void tc_selectScopeNested()
     void tc_selectScopeNestedDirty()
@@ -600,7 +604,7 @@ test/Suite ReplicatorEvent::
 
 // Event test support type
 class EventTest::
-    @scope: object
+    scope: object
     lastThis: object, readonly
     lastObservable: object, readonly
 
@@ -1032,3 +1036,7 @@ test/Suite Buffer::
     void tc_appendLargeMulti()
     void tc_appendLargeOverflow()
     void tc_appendOverflow()
+
+// Test loader
+test/Suite Loader::
+    void tc_loadNonExistent()

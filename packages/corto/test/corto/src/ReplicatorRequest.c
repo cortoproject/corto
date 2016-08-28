@@ -782,7 +782,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleTree(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "//a").iter( &iter );
+    corto_int16 ret = corto_select("/a", "//a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -813,7 +813,7 @@ corto_void _test_ReplicatorRequest_tc_selectSingleTree2(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "//foo").iter( &iter );
+    corto_int16 ret = corto_select("/a", "//foo").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -822,6 +822,29 @@ corto_void _test_ReplicatorRequest_tc_selectSingleTree2(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectSingleTree3(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectSingleTree3) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/", "//hello").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "hello");
+    test_assertstr(result->parent, "a/xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
     test_assert(!corto_iterHasNext(&iter));
@@ -877,7 +900,7 @@ corto_void _test_ReplicatorRequest_tc_selectTree(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, ".");
-    test_assertstr(result->type, "uint32");
+    test_assertstr(result->type, "string");
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -885,7 +908,7 @@ corto_void _test_ReplicatorRequest_tc_selectTree(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
-    test_assertstr(result->type, "uint32");
+    test_assertstr(result->type, "float64");
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);
@@ -909,6 +932,22 @@ corto_void _test_ReplicatorRequest_tc_selectTree(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "hello");
+    test_assertstr(result->parent, "xyz/abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "world");
+    test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
     test_assert(corto_iterHasNext(&iter));
@@ -939,7 +978,7 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromNestedScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/xyz/abc", "//").iter( &iter );
+    corto_int16 ret = corto_select("/a/xyz/abc", "//").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -986,7 +1025,7 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/xyz", "//").iter( &iter );
+    corto_int16 ret = corto_select("/a/xyz", "//").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iterHasNext(&iter));
@@ -1017,6 +1056,22 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromScope(
     result = corto_iterNext(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
+    test_assertstr(result->id, "hello");
+    test_assertstr(result->parent, "abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "world");
+    test_assertstr(result->parent, "abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
@@ -1038,8 +1093,45 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualNestedScope(
     test_ReplicatorRequest this)
 {
 /* $begin(test/ReplicatorRequest/tc_selectTreeFromVirtualNestedScope) */
+    corto_result *result;
+    corto_iter iter;
 
-    /* << Insert implementation >> */
+    corto_int16 ret = corto_select("/a", "xyz/abc//").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "foo");
+    test_assertstr(result->parent, "xyz/abc");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "hello");
+    test_assertstr(result->parent, "xyz/abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "world");
+    test_assertstr(result->parent, "xyz/abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "bar");
+    test_assertstr(result->parent, "xyz/abc");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(!corto_iterHasNext(&iter));
 
 /* $end */
 }
@@ -1048,8 +1140,69 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualScope(
     test_ReplicatorRequest this)
 {
 /* $begin(test/ReplicatorRequest/tc_selectTreeFromVirtualScope) */
+    corto_result *result;
+    corto_iter iter;
 
-    /* << Insert implementation >> */
+    corto_int16 ret = corto_select("/a", "xyz//").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "a");
+    test_assertstr(result->parent, "xyz");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "abc");
+    test_assertstr(result->parent, "xyz");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "foo");
+    test_assertstr(result->parent, "xyz/abc");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "hello");
+    test_assertstr(result->parent, "xyz/abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "world");
+    test_assertstr(result->parent, "xyz/abc/foo");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "bar");
+    test_assertstr(result->parent, "xyz/abc");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "bc");
+    test_assertstr(result->parent, "xyz");
+    test_assertstr(result->type, "uint32");
+
+    test_assert(!corto_iterHasNext(&iter));
 
 /* $end */
 }

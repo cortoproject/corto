@@ -177,7 +177,6 @@ error:
     corto_seterr("unexpected '%s' after '%s'",
         corto_selectTokenStr(t),
         corto_selectTokenStr(tprev));
-unexpected_end_error:
     return -1;
 }
 
@@ -625,21 +624,20 @@ static corto_resultIter corto_selectRequestMount(
 
     filter[0] = '\0';
     if (frame->scopeQuery) {
-        strcpy(filter, frame->scopeQuery);
-        if (frame->filter && frame->filter[0]) {
-            strcat(filter, "/");
-        }
+        strcat(parent, "/");
+        strcat(parent, frame->scopeQuery);
     }
     if (frame->filter) {
         strcat(filter, frame->filter);
     }
 
     corto_selectParseFilter(filter, parent, expr);
-    corto_cleanpath(parent, parent);
 
     if (data->mask == CORTO_ON_TREE) {
         strcpy(expr, "*");
     }
+
+    corto_cleanpath(parent, parent);
 
     corto_debug("corto: select: RequestMount: request '%s' (%s), parent='%s', expr='%s'",
       corto_fullpath(NULL, mount),
@@ -863,6 +861,10 @@ static corto_bool corto_selectIterNext(
         }
     }
 
+    if (hasData && (data->mask == CORTO_ON_SELF)) {
+        data->mask = 0;
+    }
+
     corto_debug("corto: select: IterNext: hasData = %d, currentMount = %d", hasData, frame->currentMount);
 
     return hasData;
@@ -983,7 +985,7 @@ static void corto_selectTree(
                     noMatch = FALSE;
                     corto_setItemData(o, data->next, data);
                 }
-                crawl = corto_scopeSize(o) ? TRUE : FALSE;
+                crawl = TRUE;
                 data->recursiveQuery[0] = '\0';
             } else {
                 /* If doing a lookup on a tree, select requests all objects from
@@ -1003,6 +1005,7 @@ static void corto_selectTree(
                 corto_debug("corto: select: Tree push '%s'",
                     frame->scope ? corto_fullpath(NULL, frame->scope) : data->next->id);
 
+                corto_selectStack *prevFrame = frame;
                 frame = &data->stack[++ data->sp];
                 frame->firstMount = data->mountsLoaded;
                 frame->recursiveQueryLength = strlen(data->recursiveQuery);
@@ -1010,9 +1013,16 @@ static void corto_selectTree(
                 corto_setref(&frame->scope, o);
                 frame->currentMount = frame->firstMount;
                 if (o) {
-                    frame->iter = _corto_rbtreeIter(corto_scopeof(o), &frame->trav);
+                    corto_rbtree scope = corto_scopeof(o);
+                    if (scope) {
+                        frame->iter = _corto_rbtreeIter(scope, &frame->trav);
+                    }
                     corto_selectLoadMounts(data, frame, NULL);
                 } else {
+                    if (prevFrame->scopeQuery) {
+                        strcat(data->recursiveQuery, "/");
+                        strcat(data->recursiveQuery, prevFrame->scopeQuery);
+                    }
                     strcat(data->recursiveQuery, "/");
                     strcat(data->recursiveQuery, data->item.name);
                     frame->iter = corto_selectRequestMount(
@@ -1142,10 +1152,6 @@ static int corto_selectHasNext(corto_resultIter *iter) {
     do {
         corto_selectTree(data, frame);
     } while ((data->next == NULL) && (corto_selectNextScope(data)));
-
-    if (data->mask == CORTO_ON_SELF) {
-        data->mask = 0;
-    }
 
     return data->next != NULL;
 stop:
@@ -1573,7 +1579,7 @@ corto_selectSelector corto_select(
         memset(request, 0, sizeof(corto_selectRequest));
     }
 
-    corto_debug("corto: select: %s, %s", scope, expr);
+    corto_debug("corto: select: '%s', '%s'", scope, expr);
 
     request->scope = scope;
     request->expr = expr;

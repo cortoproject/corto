@@ -1424,7 +1424,7 @@ corto_void _test_Event_tc_updateUndefined(
     ret = corto_updateEnd(o);
     test_assert(ret == 0);
     test_assert(corto_checkState(o, CORTO_DEFINED));
-    test_assert(this->et->countUpdate == 1);
+    test_assert(this->et->countUpdate == 0);
     test_assert(this->et->countDefine == 2);
 
     corto_delete(o);

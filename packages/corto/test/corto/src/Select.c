@@ -460,6 +460,48 @@ corto_void _test_Select_tc_selectFromRoot(
 /* $end */
 }
 
+corto_void _test_Select_tc_selectFromRootEmpty(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectFromRootEmpty) */
+    corto_ll results = NULL;
+    corto_loaderCreate();
+
+    results = test_Select_collect("/", "", 0, 0);
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectFromRootNull(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectFromRootNull) */
+    corto_ll results = NULL;
+    corto_loaderCreate();
+
+    results = test_Select_collect("/", NULL, 0, 0);
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectFromRootThis(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectFromRootThis) */
+    corto_ll results = NULL;
+    corto_loaderCreate();
+
+    results = test_Select_collect("/", ".", 0, 0);
+    test_assert(results != NULL);
+    test_assert(corto_llSize(results) == 1);
+
+/* $end */
+}
+
 corto_void _test_Select_tc_selectIdentifier(
     test_Select this)
 {
