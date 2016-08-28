@@ -22,14 +22,9 @@ extern corto_threadKey CORTO_KEY_ATTR;
 /* Thread local storage key that keeps track of the objects that are prepared to wait for. */
 extern corto_threadKey CORTO_KEY_WAIT_ADMIN;
 
-typedef struct corto_waitForObject {
-    corto_object objects[CORTO_MAX_WAIT_FOR_OBJECTS];
-    corto_uint32 count;
-    corto_object triggered;
-    corto_sem semaphore;
-    corto_observer observer;
-    int triggerCount; /* Value is atomically incremented\decremented to make sure wait is only triggered once */
-} corto_waitForObject;
+/* Administration that keeps track of objects declared but not defined in
+ * current thread */
+extern corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
  * This key points to an element in a list keyed by threadId's for which notifications have taken place. Value
@@ -39,6 +34,16 @@ typedef struct corto_waitForObject {
  * notified. This key is created in corto_start. */
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
 extern corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
+
+typedef struct corto_waitForObject {
+    corto_object objects[CORTO_MAX_WAIT_FOR_OBJECTS];
+    corto_uint32 count;
+    corto_object triggered;
+    corto_sem semaphore;
+    corto_observer observer;
+    int triggerCount; /* Value is atomically incremented\decremented to make sure wait is only triggered once */
+} corto_waitForObject;
+
 
 /* Lists all the anonymous objects in use. Used by the garbage collector. */
 corto_ll corto_anonymousObjects = NULL;
@@ -77,6 +82,18 @@ void corto_observerAdminFree(void *admin) {
             observerAdmin[i].id = 0;
         }
     }
+}
+
+void corto_declaredAdminFree(void *admin) {
+    if (corto_llSize(admin)) {
+        corto_warning("corto: thread %p left undefined objects",
+          corto_threadSelf());
+        corto_iter it = corto_llIter(admin);
+        while (corto_iterHasNext(&it)) {
+            corto_warning(" - %s", corto_fullpath(NULL, corto_iterNext(&it)));
+        }
+    }
+    corto_llFree(admin);
 }
 
 static struct corto_observerAdmin* corto_observerAdminGet(void) {
@@ -162,6 +179,36 @@ corto_bool corto_observersWaitForUnused(corto__observer** observers) {
     } while(inUse);
 
     return freeArray;
+}
+
+static corto_bool corto_isBuiltin(corto_object o) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (o == root_o ||
+            o == corto_o ||
+            o == corto_lang_o ||
+            o == corto_core_o ||
+            o == corto_native_o)
+        {
+            return TRUE;
+        } else
+        {
+            corto_object p = corto_parentof(o);
+            if (p == corto_lang_o || p == corto_core_o || p == corto_native_o)
+            {
+                return TRUE;
+            } else
+            {
+                do {
+                    p = corto_parentof(p);
+                    if (p == corto_lang_o || p == corto_core_o || p == corto_native_o) {
+                        return TRUE;
+                    }
+                } while (p);
+            }
+        }
+    }
+
+    return FALSE;
 }
 
 static corto__scope* corto__objectScope(corto__object* o) {
@@ -680,6 +727,35 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     return ostate & state;
 }
 
+corto_bool corto_declaredAdminCheck(corto_object o) {
+    corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
+    if (!admin) {
+        return FALSE;
+    } else {
+        return corto_llHasObject(admin, o) != 0;
+    }
+}
+
+static void corto_declaredAdminAdd(corto_object o) {
+    corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
+    if (!admin) {
+        admin = corto_llNew();
+        corto_threadTlsSet(CORTO_KEY_DECLARED_ADMIN, admin);
+    }
+    corto_llAppend(admin, o);
+}
+
+static corto_bool corto_declaredAdminRemove(corto_object o) {
+    corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
+    if (admin) {
+        if (corto_llRemove(admin, o)) {
+            corto_unlock(o);
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 /* Adopt an object */
 static corto_object corto_adopt(corto_object parent, corto_object child) {
     corto__object *_parent, *_child;
@@ -703,6 +779,10 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
         c_scope = corto__objectScope(_child);
         if (c_scope) {
 
+            /* Lock object before locking parent-scope, this ensures that
+             * locking order isn't violated when defining the object. */
+            corto_lock(child);
+
             /* Insert child in parent-scope */
             if (corto_rwmutexWrite(&p_scope->align.scopeLock))
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
@@ -712,7 +792,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
             }
 
             corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->id, child);
-            if (existing) {
+            if (existing && (existing != child)) {
                 if (corto_typeof(existing) != corto_typeof(child)) {
                     corto_seterr("'%s' is already declared with a different type", c_scope->id);
                     goto err_existing;
@@ -740,6 +820,11 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                         corto_stateStr(childState));
                     goto err_invalid_parent;
                 }
+
+                /* Add the object to the declared admin, which ensures that this
+                 * thread will be able to resolve / redeclare the object, but
+                 * other threads will only see the object after it is defined. */
+                corto_declaredAdminAdd(child);
             }
 
             /* Parent must not be deleted before all childs are gone. */
@@ -975,6 +1060,10 @@ error:
 /* Declare object */
 corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
     corto_object o = NULL;
+    corto_bool retry = FALSE;
+
+    corto_debug("corto: declareChild: %s, %s, %s",
+        corto_fullpath(NULL, parent), id, corto_fullpath(NULL, type));
 
     if (!parent) {
         parent = root_o;
@@ -986,83 +1075,118 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
     }
 
     /* Create new object */
-    corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_SCOPED);
-    o = corto_declare(type);
-    corto_setAttr(oldAttr);
+    do {
+        corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_SCOPED);
+        o = corto_declare(type);
+        corto_setAttr(oldAttr);
 
-    if (o) {
-        corto_object o_ret = NULL;
-        corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+        if (o) {
+            corto_object o_ret = NULL;
+            corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
-        /* Initialize object parameters. */
-        if ((o_ret = corto__initScope(o, id, parent))) {
+            /* Initialize object parameters. */
+            if ((o_ret = corto__initScope(o, id, parent))) {
 
-            if (o_ret == o) {
-                /* Observable administration needs to be initialized after the
-                 * scope administration because it needs to setup the correct
-                 * chain of parents to notify on an event. */
-                if (corto_checkAttr(o, CORTO_ATTR_OBSERVABLE)) {
-                    corto__initObservable(o);
-                }
+                if (o_ret == o) {
+                    /* Observable administration needs to be initialized after the
+                     * scope administration because it needs to setup the correct
+                     * chain of parents to notify on an event. */
+                    if (corto_checkAttr(o, CORTO_ATTR_OBSERVABLE)) {
+                        corto__initObservable(o);
+                    }
 
-                /* Initially, an object is valid and declared */
-                _o->align.attrs.state |= CORTO_VALID;
-            } else {
-                corto_release(type);
-                corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
-                o = o_ret;
+                    /* Initially, an object is valid and declared */
+                    _o->align.attrs.state |= CORTO_VALID;
 
-                /* Redeclaring an object results in a claim so that the object
-                 * can't be deallocated until it is explicitly deleted by the
-                 * code that redeclared it. */
-                corto_claim(o);
+                } else {
+                    corto_release(type);
+                    corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
+                    o = o_ret;
 
-                /* The object already exists. Check if the existing object is
-                 * owned by the same owner as the one registered */
-                corto_object owner = corto_ownerof(o);
-                if (owner && corto_instanceof(corto_mount_o, owner)) {
-                    if (owner != corto_getOwner()) {
-                        if (corto_getOwner() || corto_mount(owner)->kind != CORTO_SINK) {
-                            corto_release(o);
-                            corto_seterr(
-                              "owner '%s' of existing object '%s' does not match owner '%s'",
-                              corto_fullpath(NULL, owner),
-                              corto_fullpath(NULL, o),
-                              corto_fullpath(NULL, corto_getOwner()));
-                            goto owner_error;
+                    /* Redeclaring an object results in a claim so that the object
+                     * can't be deallocated until it is explicitly deleted by the
+                     * code that redeclared it. */
+                    corto_claim(o);
+
+                    /* The object already exists. Check if the existing object is
+                     * owned by the same owner as the one registered */
+                    corto_object owner = corto_ownerof(o);
+                    if (owner && corto_instanceof(corto_mount_o, owner)) {
+                        if (owner != corto_getOwner()) {
+                            if (corto_getOwner() || corto_mount(owner)->kind != CORTO_SINK) {
+                                corto_release(o);
+                                corto_seterr(
+                                  "owner '%s' of existing object '%s' does not match owner '%s'",
+                                  corto_fullpath(NULL, owner),
+                                  corto_fullpath(NULL, o),
+                                  corto_fullpath(NULL, corto_getOwner()));
+                                goto owner_error;
+                            }
                         }
                     }
+
+                    /* If the object just has been declared and not by this thread,
+                     * block until the object becomes either defined or destructed */
+                    if (!corto_checkState(o, CORTO_DEFINED) && !corto_checkState(o, CORTO_DESTRUCTED)) {
+                        if (!corto_declaredAdminCheck(o)) {
+                            corto_debug(
+                              "corto: declareChild: %s declared in other thread, waiting",
+                              id);
+
+                            corto_readBegin(o);
+                            corto_bool destructed = corto_checkState(o, CORTO_DESTRUCTED);
+                            corto_readEnd(o);
+
+                            corto_debug(
+                              "corto: declareChild: %s defined in other thread (destructed = %d)",
+                              id, destructed);
+
+                            /* If the object has been deleted after unlocking,
+                             * this means that corto_delete was called instead
+                             * of corto_define. Since a postcondition of
+                             * corto_declareChild is that it should return a
+                             * VALID object (at least), it cannot return the
+                             * DESTRUCTED object. Therefore, the function will
+                             * retry declaring a new object. */
+                            if (destructed) {
+                                corto_release(o);
+                                retry = TRUE;
+                            }
+                        } else {
+                            /* This thread forward declared the object. */
+                        }
+                    }
+                    goto ok;
                 }
-                goto ok;
-            }
-        } else {
-            corto__deinitScope(o);
-            if (corto_countof(o) != 1) {
-                corto_seterr(
-                  "object '%s/%s' is referenced after initializer failed. details:\n    %s",
-                  corto_fullpath(NULL, parent),
-                  id,
-                  corto_lasterr());
             } else {
-                corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
-                corto_seterr("init for '%s' of '%s' failed: %s",
-                    id,
-                    corto_fullpath(NULL, type),
-                    corto_lasterr());
+                corto__deinitScope(o);
+                if (corto_countof(o) != 1) {
+                    corto_seterr(
+                      "object '%s/%s' is referenced after initializer failed. details:\n    %s",
+                      corto_fullpath(NULL, parent),
+                      id,
+                      corto_lasterr());
+                } else {
+                    corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
+                    corto_seterr("init for '%s' of '%s' failed: %s",
+                        id,
+                        corto_fullpath(NULL, type),
+                        corto_lasterr());
+                }
+                corto_release(type);
+                o = NULL;
+                goto error;
             }
-            corto_release(type);
-            o = NULL;
-            goto error;
-        }
 
-        /* Notify parent of new object */
-        corto_notify(corto__objectObservable(_o), o, CORTO_ON_DECLARE);
+            /* Notify parent of new object */
+            corto_notify(corto__objectObservable(_o), o, CORTO_ON_DECLARE);
 
-        /* void objects are instantly defined because they have no value. */
-        if (type->kind == CORTO_VOID) {
-            corto_define(o);
+            /* void objects are instantly defined because they have no value. */
+            if (type->kind == CORTO_VOID) {
+                corto_define(o);
+            }
         }
-    }
+    } while (retry);
 
 ok:
     return o;
@@ -1084,7 +1208,10 @@ corto_object _corto_create(corto_type type) {
 
 corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type) {
     corto_object result = corto_declareChild(parent, id, type);
-    if (result && corto_checkState(result, CORTO_VALID)) {
+    if (result &&
+        corto_checkState(result, CORTO_VALID) &&
+        !corto_checkState(result, CORTO_DEFINED))
+    {
         corto_define(result);
     }
 
@@ -1238,6 +1365,11 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
             _o->align.attrs.state |= CORTO_VALID;
         }
 
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            corto_declaredAdminRemove(o);
+            corto_debug("corto: define: %s", corto_fullpath(NULL, o));
+        }
+
         /* Notify observers of defined object */
         corto_notify(corto__objectObservable(_o), o, mask);
     } else {
@@ -1252,45 +1384,24 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
 corto_int16 corto_define(corto_object o) {
     corto_int16 result = 0;
 
-    /* Only define valid, undefined objects */
-    if (corto_checkState(o, CORTO_DECLARED)) {
-        if (!corto_checkState(o, CORTO_DEFINED)) {
-            corto_bool resumed = corto_resumeDeclared(o);
-            result = corto_defineDeclared(o, resumed ? CORTO_ON_RESUME : CORTO_ON_DEFINE);
-            if (CORTO_TRACE_OBJECT) corto_memtrace("define", o, NULL);
+    /* Only define undefined objects */
+    if (!corto_checkState(o, CORTO_DEFINED)) {
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && !corto_isBuiltin(o)) {
+            if (!corto_declaredAdminCheck(o)) {
+                corto_seterr("corto: cannot define object '%s' because it was not declared in same thread",
+                  corto_fullpath(NULL, o));
+                goto error;
+            }
         }
+
+        corto_bool resumed = corto_resumeDeclared(o);
+        result = corto_defineDeclared(o, resumed ? CORTO_ON_RESUME : CORTO_ON_DEFINE);
+        if (CORTO_TRACE_OBJECT) corto_memtrace("define", o, NULL);
     }
 
     return result;
-}
-
-static corto_bool corto_isBuiltin(corto_object o) {
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        if (o == root_o ||
-            o == corto_o ||
-            o == corto_lang_o ||
-            o == corto_core_o)
-        {
-            return TRUE;
-        } else
-        {
-            corto_object p = corto_parentof(o);
-            if (p == corto_lang_o || p == corto_core_o)
-            {
-                return TRUE;
-            } else
-            {
-                do {
-                    p = corto_parentof(p);
-                    if (p == corto_lang_o || p == corto_core_o) {
-                        return TRUE;
-                    }
-                } while (p);
-            }
-        }
-    }
-
-    return FALSE;
+error:
+    return -1;
 }
 
 corto_bool corto_destruct(corto_object o, corto_bool delete) {
@@ -1338,6 +1449,18 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             if (owner) {
                 corto_release(owner);
             }
+        } else {
+            /* If object wasn't defined, remove it from the declared admin */
+            if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && !corto_declaredAdminRemove(o)) {
+                /* Throw a warning only if deleting the object. If this is not a
+                 * delete, then the object was released, which may be done by
+                 * anyone. */
+                if (delete) {
+                    corto_warning(
+                      "corto: undefined object '%s' is deleted by different thread",
+                      corto_fullpath(NULL, o));
+                }
+            }
         }
 
         /* Deinit observable */
@@ -1362,7 +1485,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
 
     /* Although after the destruct-operation it is ensured that this object no
      * longer participates in any cycles, it cannot be assumed that all objects
-     * using this are free'd. For example, another object that has multiple
+     * using this are freed. For example, another object that has multiple
      * reference cycles might still be referencing this object, but can itself
      * not yet be freed because of the other cycles, which cannot be solved by
      * the destruction of this object. Therefore when the reference count of
@@ -1591,17 +1714,145 @@ corto_int8 corto_attrof(corto_object o) {
     return attr;
 }
 
+static corto_ll contentTypes = NULL;
+
+static corto_string corto_contentTypeToStr(corto_object o) {
+    return corto_str(o, 0);
+}
+
+static corto_int16 corto_contentTypeFromStr(corto_object o, corto_string str) {
+    return corto_fromStr(&o, str);
+}
+
+static corto_contentType corto_findContentType(
+    corto_string contentType)
+{
+    corto_contentType result = NULL;
+    if (contentTypes) {
+        corto_iter it = corto_llIter(contentTypes);
+        while (corto_iterHasNext(&it)) {
+            corto_contentType ct = corto_iterNext(&it);
+            if (!strcmp(ct->name, contentType)) {
+                result = ct;
+                break;
+            }
+        }
+    } else {
+        contentTypes = corto_llNew();
+    }
+
+    if (!result && !strcmp(contentType, "corto")) {
+        result = corto_alloc(sizeof(struct corto_contentType));
+        result->name = corto_strdup("corto");
+        result->toCorto =
+            (corto_int16 ___ (*)(corto_object, corto_word))corto_contentTypeFromStr;
+
+        result->fromCorto =
+            (corto_word ___ (*)(corto_object))corto_contentTypeToStr;
+
+        result->release = (void ___ (*)(corto_word))corto_dealloc;
+    }
+
+    return result;
+}
+
+corto_contentType corto_loadContentType(
+    corto_string contentType)
+{
+    corto_contentType result = NULL;
+
+    /* Built-in Corto string serializer */
+    char *packagePtr = strchr(contentType, '/');
+    if (!packagePtr) {
+        corto_seterr("invalid content type %s (expected '/')", contentType);
+        goto error;
+    }
+
+    packagePtr ++;
+
+    /* Find content type in admin */
+    corto_mutexLock(&corto_adminLock);
+    result = corto_findContentType(packagePtr);
+    corto_mutexUnlock(&corto_adminLock);
+
+    /* Load contentType outside of lock */
+    if (!result) {
+        corto_id packageId;
+        sprintf(packageId, "corto/fmt/%s", packagePtr);
+
+        result = corto_alloc(sizeof(struct corto_contentType));
+        result->name = corto_strdup(packagePtr);
+
+        /* Load package associated with content type */
+        corto_seterr(NULL);
+        if (corto_load(packageId, 0, NULL)) {
+            if (corto_lasterr()) {
+                corto_seterr("unresolved package '%s' for contentType '%s': %s",
+                    packageId, contentType, corto_lasterr());
+            } else {
+                corto_seterr("unresolved package '%s' for contentType '%s'",
+                    packageId, contentType);
+            }
+            goto error;
+        }
+
+        /* Load serialization routines */
+        corto_id id; sprintf(id, "%s_fromCorto", packagePtr);
+        result->fromCorto =
+            (corto_word ___ (*)(corto_object))
+              corto_loaderResolveProc(id);
+        if (!result->fromCorto) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        sprintf(id, "%s_toCorto", packagePtr);
+        result->toCorto =
+            (corto_int16 ___ (*)(corto_object, corto_word))
+              corto_loaderResolveProc(id);
+        if (!result->toCorto) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        sprintf(id, "%s_release", packagePtr);
+        result->release =
+            (void ___ (*)(corto_word))
+              corto_loaderResolveProc(id);
+        if (!result->release) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        /* Add to admin, verify that it hasn't been already added by another
+         * thread */
+         corto_mutexLock(&corto_adminLock);
+         corto_contentType alreadyAdded = corto_findContentType(packagePtr);
+         if (!alreadyAdded) {
+            corto_llAppend(contentTypes, result);
+         } else {
+            corto_dealloc(result->name);
+            corto_dealloc(result);
+            result = alreadyAdded;
+         }
+         corto_mutexUnlock(&corto_adminLock);
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
 /* Get contentstring */
 corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o) {
     corto_contentType type;
     corto_string result = NULL;
 
-    if (corto_loadContentType(&type, contentType)) {
-        corto_seterr("contentType '%s' not found", contentType);
+    if (!(type = corto_loadContentType(contentType))) {
         goto error;
     }
 
-    corto_string c = (corto_string)type.contentFromCorto(o);
+    corto_string c = (corto_string)type->fromCorto(o);
     if (!c) {
         goto error;
     }
@@ -1623,12 +1874,11 @@ error:
 corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content) {
     corto_contentType type;
 
-    if (corto_loadContentType(&type, contentType)) {
-        corto_seterr("contentType '%s' not found", contentType);
+    if (!(type = corto_loadContentType(contentType))) {
         goto error;
     }
 
-    return type.contentToCorto(o, (corto_word)content);
+    return type->toCorto(o, (corto_word)content);
 error:
     return -1;
 }
@@ -2740,12 +2990,13 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
 
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
-            printf("%*s [notify] observable '%s' observer '%s' me '%s'\n",
-                indent * 3, "",
-                corto_fullpath(NULL, observable),
+            corto_string str = corto_eventMaskStr(mask);
+            corto_debug("corto: notify: %s.%s: %s (%s)",
+                corto_fullpath(NULL, data->_this),
                 corto_fullpath(NULL, observer),
-                corto_fullpath(NULL, data->_this));
-            indent++;
+                corto_fullpath(NULL, observable),
+                str);
+            corto_dealloc(str);
         }
 #endif
 
@@ -2907,11 +3158,10 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
 
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
-            printf("%*s [listen] observable '%s' observer '%s' me '%s'%s%s%s%s%s%s%s\n",
-                indent * 3, "",
-                corto_fullpath(NULL, observable),
-                corto_fullpath(NULL, observer),
+            corto_debug("corto: listen: '%s.%s' to '%s' (%s%s%s%s%s%s%s)",
                 corto_fullpath(NULL, this),
+                corto_fullpath(NULL, observer),
+                corto_fullpath(NULL, observable),
                 mask & CORTO_ON_SELF ? " self" : "",
                 mask & CORTO_ON_SCOPE ? " scope" : "",
                 mask & CORTO_ON_TREE ? " tree" : "",
@@ -3058,11 +3308,10 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
 
 #ifndef NDEBUG
                 if (CORTO_TRACE_NOTIFICATIONS) {
-                    printf("%*s [silence] observable '%s' observer '%s' me '%s'\n",
-                        indent * 3, "",
-                        corto_fullpath(NULL, observable),
+                    corto_debug("corto: silence: '%s.%s' for '%s'",
+                        corto_fullpath(NULL, this),
                         corto_fullpath(NULL, observer),
-                        corto_fullpath(NULL, this));
+                        corto_fullpath(NULL, observable));
                 }
 #endif
             }
@@ -3285,24 +3534,30 @@ corto_int16 corto_updateBegin(corto_object o) {
     }
 
     if (!corto_owned(o)) {
-        corto_seterr("cannot update '%s', process does not own object",
-            corto_idof(o));
+        corto_seterr("updateBegin: cannot update '%s', process does not own object",
+            corto_fullpath(NULL, o));
+        goto error;
+    }
+
+    if (!corto_checkState(o, CORTO_DEFINED) && !corto_declaredAdminCheck(o)) {
+        corto_seterr("updateBegin: cannot update '%s', object is being defined by other thread",
+            corto_fullpath(NULL, o));
         goto error;
     }
 
     _o = corto__objectObservable(CORTO_OFFSET(o, -sizeof(corto__object)));
 
-    if (_o) {
+    if (_o && corto_checkState(o, CORTO_DEFINED)) {
         _wr = corto__objectWritable(CORTO_OFFSET(o, -sizeof(corto__object)));
         if (_wr) {
             if (corto_rwmutexWrite(&_wr->align.lock)) {
-                corto_seterr("updateBegin: writelock on '%s' failed (%s)",
+                corto_seterr("updateBegin: %s",
                     corto_fullpath(NULL, o), corto_lasterr());
                 goto error;
             }
         } else {
             corto_warning(
-                "calling updateBegin for non-writable '%s' is useless",
+                "updateBegin: calling updateBegin for non-writable '%s' is useless",
                 corto_fullpath(NULL, o));
         }
     }
@@ -3334,10 +3589,12 @@ corto_int16 corto_updateEnd(corto_object observable) {
     corto__writable* _wr;
     corto__observable *_o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     corto_int16 result = 0;
+    corto_bool defined = TRUE;
 
     if (!corto_checkState(observable, CORTO_DEFINED)) {
         corto_object owner = corto_ownerof(observable);
-        corto_eventMask mask = CORTO_ON_UPDATE;
+        defined = FALSE;
+        corto_eventMask mask = 0;
         if (owner && corto_instanceof(corto_mount_o, owner) &&
             (corto_mount(owner)->kind == CORTO_SINK))
         {
@@ -3355,7 +3612,7 @@ corto_int16 corto_updateEnd(corto_object observable) {
         }
     }
 
-    if (_o) {
+    if (_o && defined) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         if (_wr) {
             if (corto_rwmutexUnlock(&_wr->align.lock)) {
