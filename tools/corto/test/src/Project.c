@@ -258,6 +258,9 @@ corto_void _test_Project_setup(
     corto_rmtree("bar");
     corto_rmtree("parent");
     corto_rmtree("child");
+
+    corto_time timeout = {10, 0};
+    test_setTimeout(&timeout);
 /* $end */
 }
 
