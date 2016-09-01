@@ -186,6 +186,33 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested2(
 /* $end */
 }
 
+corto_void _test_SelectSink_tc_selectMountInResult(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectMountInResult) */
+    corto_iter iter;
+    corto_result *result;
+    corto_int16 ret = corto_select("/mount", "x").iter( &iter );
+    test_assert(ret == 0);
+
+    corto_object mount = corto_lookup(NULL, "sinkMount");
+    test_assert(mount != NULL);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "x");
+    test_assertstr(result->parent, ".");
+    test_assertstr(result->type, "int32");
+    test_assert(result->mount == mount);
+
+    test_assert(!corto_iterHasNext(&iter));
+    corto_release(mount);
+
+/* $end */
+}
+
 corto_void _test_SelectSink_tc_selectScope(
     test_SelectSink this)
 {
@@ -244,6 +271,32 @@ corto_void _test_SelectSink_tc_selectSingle(
     test_assert(!strcmp(result->type, "int32"));
 
     test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_SelectSink_tc_selectSingleTypeFilter(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectSingleTypeFilter) */
+    corto_iter iter;
+    corto_result *result;
+
+    // Create SINK mount that is responsible for all package objects in scope
+    corto_loaderCreate();
+
+    // Select single object of the package type
+    corto_int16 ret = corto_select(NULL, "//lang*").iter( &iter );
+
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "lang"));
+    test_assert(!strcmp(result->parent, "/corto"));
+    test_assert(!strcmp(result->type, "/corto/core/package"));
 
 /* $end */
 }

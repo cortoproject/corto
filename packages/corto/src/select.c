@@ -516,47 +516,52 @@ static corto_bool corto_selectMatch(
 
     /* Check if there are SINK mounts active for the current scope */
     if (result) {
-        corto_int32 i;
         corto_id type;
         if (o) {
             corto_fullpath(type, corto_typeof(o));
         } else {
             strcpy(type, data->item.type);
         }
-        for (i = 0; i < data->mountsLoaded; i++) {
-            corto_mount r = data->mounts[i];
 
-            /* If a SINK mount doesn't return a valid iterator, which typically
-             * happens if it doesn't implement the onRequest method, select will
-             * return the contents of the object store */
-            if ((r->kind == CORTO_SINK) && !r->passThrough) {
-                if (r->type) {
-                    /* If the type matches, the object is managed by the
-                     * mount. This prevents returning duplicate results. */
-                    if (!strcmp(r->type, type)) {
+        /* Only filter (duplicate) results from the object store */
+        if (o) {
+            corto_int32 i;
+
+            for (i = 0; i < data->mountsLoaded; i++) {
+                corto_mount r = data->mounts[i];
+
+                /* If a SINK mount doesn't return a valid iterator, which typically
+                 * happens if it doesn't implement the onRequest method, select will
+                 * return the contents of the object store */
+                if ((r->kind == CORTO_SINK) && !r->passThrough) {
+                    if (r->type) {
+                        /* If the type matches, the object is managed by the
+                         * mount. This prevents returning duplicate results. */
+                        if (!strcmp(r->type, type)) {
+                            result = FALSE;
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        /* A SINK mount that has no type specified blocks
+                         * everything */
                         result = FALSE;
                         break;
-                    } else {
-                        continue;
                     }
-                } else {
-                    /* A SINK mount that has no type specified blocks
-                     * everything */
-                    result = FALSE;
-                    break;
-                }
 
-                /* Do the same for attributes */
-                if (o && r->attr) {
-                    if (corto_checkAttr(o, r->attr)) {
+                    /* Do the same for attributes */
+                    if (o && r->attr) {
+                        if (corto_checkAttr(o, r->attr)) {
+                            result = FALSE;
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } else {
                         result = FALSE;
                         break;
-                    } else {
-                        continue;
                     }
-                } else {
-                    result = FALSE;
-                    break;
                 }
             }
         }
@@ -690,7 +695,7 @@ static corto_int16 corto_selectIterMount(
 
     data->next = &data->item;
 
-    data->item.mount = data->mounts[frame->currentMount];
+    data->item.mount = data->mounts[frame->currentMount - 1];
     data->item.crawl = result->crawl;
 
     /* Copy data, so mount can safely release it */
@@ -1009,11 +1014,11 @@ static void corto_selectTree(
 
                 corto_selectStack *prevFrame = frame;
                 frame = &data->stack[++ data->sp];
-                frame->firstMount = data->mountsLoaded;
                 frame->recursiveQueryLength = strlen(data->recursiveQuery);
+                frame->firstMount = data->mountsLoaded;
+                frame->currentMount = frame->firstMount;
 
                 corto_setref(&frame->scope, o);
-                frame->currentMount = frame->firstMount;
                 if (o) {
                     corto_rbtree scope = corto_scopeof(o);
                     if (scope) {
@@ -1021,6 +1026,7 @@ static void corto_selectTree(
                     }
                     corto_selectLoadMounts(data, frame, NULL);
                 } else {
+                    frame->currentMount = prevFrame->currentMount;
                     if (prevFrame->scopeQuery) {
                         strcat(data->recursiveQuery, "/");
                         strcat(data->recursiveQuery, prevFrame->scopeQuery);

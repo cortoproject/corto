@@ -521,6 +521,9 @@ test/Suite SelectSink::
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
 
+    void tc_selectSingleTypeFilter()
+    void tc_selectMountInResult()
+
 // Resume data from SINK mount
 test/Suite ResumeSink::
     void setup() method
