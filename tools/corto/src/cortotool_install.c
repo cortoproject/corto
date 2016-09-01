@@ -49,7 +49,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
 
     /* Build libraries to global environment */
     fprintf(install, "rake clean 2> /dev/null\n");
-    fprintf(install, "rake silent=%s verbose=%s coverage=false softlinks=false\n",
+    fprintf(install, "rake silent=%s verbose=%s coverage=false softlinks=false multithread=false\n",
         verbose ? "false" : "true",
         verbose ? "true" : "false");
 

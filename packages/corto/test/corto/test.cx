@@ -403,6 +403,7 @@ test/Suite Select::
     void tc_selectFromRootThis()
     void tc_selectFromRootNull()
     void tc_selectFromRootEmpty()
+    void tc_selectFromLangParent()
 
     void tc_selectParentNoSlash()
 
@@ -416,6 +417,7 @@ test/Suite Select::
     void tc_selectLimitTree()
     void tc_selectLimitOvershootScope()
     void tc_selectLimitOvershootTree()
+    void tc_selectOffsetLimitFilter()
 
 class JsonReplicator : mount, hidden::
     alias mount: mount/mount

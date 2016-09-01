@@ -1694,14 +1694,14 @@ corto_int32 corto_countof(corto_object o) {
 }
 
 /* Get state */
-corto_int8 corto_stateof(corto_object o) {
+corto_state corto_stateof(corto_object o) {
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto_int8 state = _o->align.attrs.state;
     return state;
 }
 
-corto_int8 corto_attrof(corto_object o) {
+corto_attr corto_attrof(corto_object o) {
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
 

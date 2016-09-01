@@ -442,10 +442,10 @@ static void corto_setItemData(
 
     /* Construct to-string from parent of object */
     if (o != root_o) {
-        corto_fullpath(to, corto_parentof(o));
+        corto_path(to, NULL, corto_parentof(o), "/");
     } else {
         /* Avoid the parent string from navigating beyond the root */
-        corto_fullpath(to, o);
+        corto_path(to, NULL, o, "/");
     }
 
     /* Compute path from scope to result */
@@ -567,6 +567,10 @@ static corto_bool corto_selectMatch(
         }
     }
 
+    if (result) {
+        data->count ++;
+    }
+
     return result;
 }
 
@@ -685,7 +689,6 @@ static corto_int16 corto_selectIterMount(
         result->id, result->parent, data->recursiveQuery);
 
     data->next = &data->item;
-    data->count ++;
 
     data->item.mount = data->mounts[frame->currentMount];
     data->item.crawl = result->crawl;
@@ -978,7 +981,6 @@ static void corto_selectTree(
             data->next = &data->item;
 
             if (o) {
-                data->count ++;
                 if (corto_selectMatch(frame, o, data) &&
                    (data->count > data->offset))
                 {
