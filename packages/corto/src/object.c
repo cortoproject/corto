@@ -3491,6 +3491,38 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
     return 0;
 }
 
+/* Publish new value for object */
+corto_int16 corto_publish(
+    corto_eventMask event,
+    corto_string id,
+    corto_string type,
+    corto_string contentType,
+    void *content)
+{
+    corto_object o = corto_lookup(NULL, id);
+    corto_int16 result = 0;
+
+    if (o) {
+        switch(event) {
+        case CORTO_ON_DEFINE:
+        case CORTO_ON_UPDATE:
+            if (!(result = corto_updateBegin(o))) {
+                if ((result = corto_fromcontent(o, contentType, content))) {
+                    corto_updateCancel(o);
+                } else {
+                    corto_updateEnd(o);
+                }
+            }
+        case CORTO_ON_DELETE:
+            result = corto_delete(o);
+            break;
+        }
+        corto_release(o);
+    }
+
+    return result;
+}
+
 /* Update object */
 corto_int16 corto_update(corto_object o) {
     corto_int16 result = 0;

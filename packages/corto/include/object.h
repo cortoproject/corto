@@ -147,6 +147,14 @@ typedef struct corto_subscribeSelector {
 } corto_subscribeSelector;
 struct corto_subscribeSelector corto_subscribe(corto_string scope, corto_string expr);
 
+/* Publish update for object */
+corto_int16 corto_publish(
+    corto_eventMask event,
+    corto_string id,
+    corto_string type,
+    corto_string contentType,
+    void *content);
+
 /* Augment data */
 corto_int16 _corto_augment(corto_type t, corto_string id, corto_mount r);
 
