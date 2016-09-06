@@ -59,7 +59,7 @@ void corto_mount_notify(
         }
 
         r.id = corto_idof(o);
-        r.parent = corto_path(path, this->mount, o, "/");
+        r.parent = corto_path(path, this->mount, corto_parentof(o), "/");
         r.type = corto_fullpath(type, corto_typeof(o));
 
         corto_mount_onNotify(this, mask, &r);
