@@ -99,6 +99,9 @@ corto_bool corto_owned(corto_object o);
 corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
+/* Match corto expression */
+corto_bool corto_match(corto_string expr, corto_string str);
+
 /* Iterate over objects matching an expression */
 typedef struct corto_selectRequest {
     corto_int16 err;

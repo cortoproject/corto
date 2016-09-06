@@ -1143,6 +1143,8 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_MEMBER_O(core_mount, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_mount, thread, lang_word, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, hasNotify, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, hasResume, lang_bool, CORTO_PRIVATE);
     CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_init);
     CORTO_METHOD_O(core_mount, construct, "()", lang_int16, FALSE, corto_mount_construct);
     CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);
@@ -1161,6 +1163,7 @@ CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_METHOD_O(core_mount, onDeclare, "(object observable)", lang_void, TRUE, corto_mount_onDeclare_v);
     CORTO_METHOD_O(core_mount, onUpdate, "(object observable)", lang_void, TRUE, corto_mount_onUpdate_v);
     CORTO_METHOD_O(core_mount, onDelete, "(object observable)", lang_void, TRUE, corto_mount_onDelete_v);
+    CORTO_METHOD_O(core_mount, onNotify, "(core/eventMask event,core/result object)", lang_void, TRUE, corto_mount_onNotify_v);
     CORTO_METHOD_O(core_mount, onSubscribe, "(string parent,string name,core/eventMask mask)", lang_word, TRUE, corto_mount_onSubscribe_v);
     CORTO_METHOD_O(core_mount, onUnsubscribe, "(string parent,string name,core/eventMask mask,lang/word userData)", lang_void, TRUE, corto_mount_onUnsubscribe_v);
     CORTO_OBSERVER_O(core_mount, on_declare, corto_mount_on_declare);

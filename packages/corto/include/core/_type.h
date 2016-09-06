@@ -165,6 +165,8 @@ CORTO_CLASS_DEF(corto_mount) {
     corto_word contentTypeHandle;
     corto_word thread;
     corto_bool quit;
+    corto_bool hasNotify;
+    corto_bool hasResume;
 };
 
 /*  /corto/core/invokeEvent */
@@ -334,4 +336,3 @@ struct corto_time {
 }
 #endif
 #endif
-

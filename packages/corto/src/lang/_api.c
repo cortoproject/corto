@@ -11,10 +11,12 @@ corto_alias _corto_aliasCreate(corto_member member) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_alias)_this)->member, member);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_alias)_this)->member, member);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -25,10 +27,12 @@ corto_alias _corto_aliasCreateChild(corto_object _parent, corto_string _name, co
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_alias)_this)->member, member);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_alias)_this)->member, member);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -97,14 +101,16 @@ corto_any* _corto_anyCreate(corto_type type, void *value) {
     if (!_this) {
         return NULL;
     }
-    corto_any v;
-    v.value = value;
-    v.type = type;
-    _this->owner = TRUE;
-    corto_copyp(_this, corto_any_o, &v);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_any v;
+        v.value = value;
+        v.type = type;
+        _this->owner = TRUE;
+        corto_copyp(_this, corto_any_o, &v);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -115,14 +121,16 @@ corto_any* _corto_anyCreateChild(corto_object _parent, corto_string _name, corto
     if (!_this) {
         return NULL;
     }
-    corto_any v;
-    v.value = value;
-    v.type = type;
-    _this->owner = TRUE;
-    corto_copyp(_this, corto_any_o, &v);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_any v;
+        v.value = value;
+        v.type = type;
+        _this->owner = TRUE;
+        corto_copyp(_this, corto_any_o, &v);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -220,11 +228,13 @@ corto_array _corto_arrayCreate(corto_type elementType, corto_uint32 max) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -235,11 +245,13 @@ corto_array _corto_arrayCreateChild(corto_object _parent, corto_string _name, co
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -311,10 +323,12 @@ corto_binary _corto_binaryCreate(corto_width width) {
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -325,10 +339,12 @@ corto_binary _corto_binaryCreateChild(corto_object _parent, corto_string _name, 
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -397,9 +413,11 @@ corto_bitmask _corto_bitmaskCreate(void) {
     if (!_this) {
         return NULL;
     }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -410,9 +428,11 @@ corto_bitmask _corto_bitmaskCreateChild(corto_object _parent, corto_string _name
     if (!_this) {
         return NULL;
     }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -478,10 +498,12 @@ corto_bool* _corto_boolCreate(corto_bool value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -492,10 +514,12 @@ corto_bool* _corto_boolCreateChild(corto_object _parent, corto_string _name, cor
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -581,9 +605,11 @@ corto_boolean _corto_booleanCreate(void) {
     if (!_this) {
         return NULL;
     }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -594,9 +620,11 @@ corto_boolean _corto_booleanCreateChild(corto_object _parent, corto_string _name
     if (!_this) {
         return NULL;
     }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -662,11 +690,13 @@ corto_case _corto_caseCreate(corto_int32seq discriminator, corto_type type) {
     if (!_this) {
         return NULL;
     }
-    corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
-    corto_setref(&((corto_member)_this)->type, type);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+        corto_setref(&((corto_member)_this)->type, type);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -677,11 +707,13 @@ corto_case _corto_caseCreateChild(corto_object _parent, corto_string _name, cort
     if (!_this) {
         return NULL;
     }
-    corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
-    corto_setref(&((corto_member)_this)->type, type);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+        corto_setref(&((corto_member)_this)->type, type);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -753,10 +785,12 @@ corto_char* _corto_charCreate(corto_char value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -767,10 +801,12 @@ corto_char* _corto_charCreateChild(corto_object _parent, corto_string _name, cor
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -856,10 +892,12 @@ corto_character _corto_characterCreate(corto_width width) {
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -870,10 +908,12 @@ corto_character _corto_characterCreateChild(corto_object _parent, corto_string _
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -942,12 +982,14 @@ corto_class _corto_classCreate(corto_interface base, corto_modifier baseAccess, 
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interface)_this)->base, base);
+        ((corto_struct)_this)->baseAccess = baseAccess;
+        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -958,12 +1000,14 @@ corto_class _corto_classCreateChild(corto_object _parent, corto_string _name, co
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interface)_this)->base, base);
+        ((corto_struct)_this)->baseAccess = baseAccess;
+        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1038,11 +1082,13 @@ corto_collection _corto_collectionCreate(corto_type elementType, corto_uint32 ma
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1053,11 +1099,13 @@ corto_collection _corto_collectionCreateChild(corto_object _parent, corto_string
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1129,10 +1177,12 @@ corto_collectionKind* _corto_collectionKindCreate(corto_collectionKind value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1143,10 +1193,12 @@ corto_collectionKind* _corto_collectionKindCreateChild(corto_object _parent, cor
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1232,10 +1284,12 @@ corto_compositeKind* _corto_compositeKindCreate(corto_compositeKind value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1246,10 +1300,12 @@ corto_compositeKind* _corto_compositeKindCreateChild(corto_object _parent, corto
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1335,10 +1391,12 @@ corto_constant* _corto_constantCreate(corto_constant value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1349,10 +1407,12 @@ corto_constant* _corto_constantCreateChild(corto_object _parent, corto_string _n
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1438,10 +1498,12 @@ corto_default _corto_defaultCreate(corto_type type) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_member)_this)->type, type);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_member)_this)->type, type);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1452,10 +1514,12 @@ corto_default _corto_defaultCreateChild(corto_object _parent, corto_string _name
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_member)_this)->type, type);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_member)_this)->type, type);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1524,12 +1588,14 @@ corto_delegate _corto_delegateCreate(corto_type returnType, corto_bool returnsRe
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegate)_this)->returnType, returnType);
-    ((corto_delegate)_this)->returnsReference = returnsReference;
-    corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegate)_this)->returnType, returnType);
+        ((corto_delegate)_this)->returnsReference = returnsReference;
+        corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1540,12 +1606,14 @@ corto_delegate _corto_delegateCreateChild(corto_object _parent, corto_string _na
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegate)_this)->returnType, returnType);
-    ((corto_delegate)_this)->returnsReference = returnsReference;
-    corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegate)_this)->returnType, returnType);
+        ((corto_delegate)_this)->returnsReference = returnsReference;
+        corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1620,11 +1688,13 @@ corto_delegatedata* _corto_delegatedataCreate(corto_object instance, corto_funct
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1635,11 +1705,13 @@ corto_delegatedata* _corto_delegatedataCreateChild(corto_object _parent, corto_s
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1728,11 +1800,13 @@ corto_destructAction* _corto_destructActionCreate(corto_object instance, corto_f
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1743,11 +1817,13 @@ corto_destructAction* _corto_destructActionCreateChild(corto_object _parent, cor
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1870,9 +1946,11 @@ corto_enum _corto_enumCreate(void) {
     if (!_this) {
         return NULL;
     }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1883,9 +1961,11 @@ corto_enum _corto_enumCreateChild(corto_object _parent, corto_string _name) {
     if (!_this) {
         return NULL;
     }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1951,10 +2031,12 @@ corto_equalityKind* _corto_equalityKindCreate(corto_equalityKind value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -1965,10 +2047,12 @@ corto_equalityKind* _corto_equalityKindCreateChild(corto_object _parent, corto_s
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2054,12 +2138,14 @@ corto_float _corto_floatCreate(corto_width width, corto_float64 min, corto_float
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    ((corto_float)_this)->min = min;
-    ((corto_float)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        ((corto_float)_this)->min = min;
+        ((corto_float)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2070,12 +2156,14 @@ corto_float _corto_floatCreateChild(corto_object _parent, corto_string _name, co
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    ((corto_float)_this)->min = min;
-    ((corto_float)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        ((corto_float)_this)->min = min;
+        ((corto_float)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2150,10 +2238,12 @@ corto_float32* _corto_float32Create(corto_float32 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2164,10 +2254,12 @@ corto_float32* _corto_float32CreateChild(corto_object _parent, corto_string _nam
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2253,10 +2345,12 @@ corto_float64* _corto_float64Create(corto_float64 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2267,10 +2361,12 @@ corto_float64* _corto_float64CreateChild(corto_object _parent, corto_string _nam
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2356,13 +2452,15 @@ corto_function _corto_functionCreate(corto_type returnType, corto_bool returnsRe
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2373,13 +2471,15 @@ corto_function _corto_functionCreateChild(corto_object _parent, corto_string _na
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2457,11 +2557,13 @@ corto_initAction* _corto_initActionCreate(corto_object instance, corto_function 
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2472,11 +2574,13 @@ corto_initAction* _corto_initActionCreateChild(corto_object _parent, corto_strin
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2599,12 +2703,14 @@ corto_int _corto_intCreate(corto_width width, corto_int64 min, corto_int64 max) 
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    ((corto_int)_this)->min = min;
-    ((corto_int)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        ((corto_int)_this)->min = min;
+        ((corto_int)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2615,12 +2721,14 @@ corto_int _corto_intCreateChild(corto_object _parent, corto_string _name, corto_
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    ((corto_int)_this)->min = min;
-    ((corto_int)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        ((corto_int)_this)->min = min;
+        ((corto_int)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2695,10 +2803,12 @@ corto_int16* _corto_int16Create(corto_int16 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2709,10 +2819,12 @@ corto_int16* _corto_int16CreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2798,10 +2910,12 @@ corto_int32* _corto_int32Create(corto_int32 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2812,10 +2926,12 @@ corto_int32* _corto_int32CreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2901,14 +3017,16 @@ corto_int32seq* _corto_int32seqCreate(corto_uint32 length, corto_int32* elements
     if (!_this) {
         return NULL;
     }
-    corto_int32seqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        _this->buffer[i] = elements[i];
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_int32seqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -2919,14 +3037,16 @@ corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _n
     if (!_this) {
         return NULL;
     }
-    corto_int32seqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        _this->buffer[i] = elements[i];
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_int32seqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3024,10 +3144,12 @@ corto_int64* _corto_int64Create(corto_int64 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3038,10 +3160,12 @@ corto_int64* _corto_int64CreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3127,10 +3251,12 @@ corto_int8* _corto_int8Create(corto_int8 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3141,10 +3267,12 @@ corto_int8* _corto_int8CreateChild(corto_object _parent, corto_string _name, cor
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3230,10 +3358,12 @@ corto_interface _corto_interfaceCreate(corto_interface base) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interface)_this)->base, base);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interface)_this)->base, base);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3244,10 +3374,12 @@ corto_interface _corto_interfaceCreateChild(corto_object _parent, corto_string _
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interface)_this)->base, base);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interface)_this)->base, base);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3316,14 +3448,16 @@ corto_interfaceseq* _corto_interfaceseqCreate(corto_uint32 length, corto_interfa
     if (!_this) {
         return NULL;
     }
-    corto_interfaceseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_interfaceseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3334,14 +3468,16 @@ corto_interfaceseq* _corto_interfaceseqCreateChild(corto_object _parent, corto_s
     if (!_this) {
         return NULL;
     }
-    corto_interfaceseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_interfaceseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3439,11 +3575,13 @@ corto_interfaceVector* _corto_interfaceVectorCreate(corto_interface interface, c
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-    corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_vtable_o, &vector);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
+        corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_vtable_o, &vector);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3454,11 +3592,13 @@ corto_interfaceVector* _corto_interfaceVectorCreateChild(corto_object _parent, c
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-    corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_vtable_o, &vector);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
+        corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_vtable_o, &vector);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3547,16 +3687,18 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqCreate(corto_uint32 length, c
     if (!_this) {
         return NULL;
     }
-    corto_interfaceVectorseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_interfaceVectorseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            if (&elements[i]) {
+                corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+            }
         }
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3567,16 +3709,18 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqCreateChild(corto_object _par
     if (!_this) {
         return NULL;
     }
-    corto_interfaceVectorseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_interfaceVectorseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            if (&elements[i]) {
+                corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+            }
         }
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3680,10 +3824,12 @@ corto_iterator _corto_iteratorCreate(corto_type elementType) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_iterator)_this)->elementType, elementType);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_iterator)_this)->elementType, elementType);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3694,10 +3840,12 @@ corto_iterator _corto_iteratorCreateChild(corto_object _parent, corto_string _na
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_iterator)_this)->elementType, elementType);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_iterator)_this)->elementType, elementType);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3766,11 +3914,13 @@ corto_list _corto_listCreate(corto_type elementType, corto_uint32 max) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3781,11 +3931,13 @@ corto_list _corto_listCreateChild(corto_object _parent, corto_string _name, cort
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3857,12 +4009,14 @@ corto_map _corto_mapCreate(corto_type elementType, corto_type keyType, corto_uin
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_map)_this)->elementType, elementType);
-    corto_setref(&((corto_map)_this)->keyType, keyType);
-    ((corto_map)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_map)_this)->elementType, elementType);
+        corto_setref(&((corto_map)_this)->keyType, keyType);
+        ((corto_map)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3873,12 +4027,14 @@ corto_map _corto_mapCreateChild(corto_object _parent, corto_string _name, corto_
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_map)_this)->elementType, elementType);
-    corto_setref(&((corto_map)_this)->keyType, keyType);
-    ((corto_map)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_map)_this)->elementType, elementType);
+        corto_setref(&((corto_map)_this)->keyType, keyType);
+        ((corto_map)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3953,11 +4109,13 @@ corto_member _corto_memberCreate(corto_type type, corto_modifier modifiers) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_member)_this)->type, type);
-    ((corto_member)_this)->modifiers = modifiers;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_member)_this)->type, type);
+        ((corto_member)_this)->modifiers = modifiers;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -3968,11 +4126,13 @@ corto_member _corto_memberCreateChild(corto_object _parent, corto_string _name, 
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_member)_this)->type, type);
-    ((corto_member)_this)->modifiers = modifiers;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_member)_this)->type, type);
+        ((corto_member)_this)->modifiers = modifiers;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4044,14 +4204,16 @@ corto_memberseq* _corto_memberseqCreate(corto_uint32 length, corto_member* eleme
     if (!_this) {
         return NULL;
     }
-    corto_memberseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_memberseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4062,14 +4224,16 @@ corto_memberseq* _corto_memberseqCreateChild(corto_object _parent, corto_string 
     if (!_this) {
         return NULL;
     }
-    corto_memberseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_memberseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4167,14 +4331,16 @@ corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4185,14 +4351,16 @@ corto_metaprocedure _corto_metaprocedureCreateChild(corto_object _parent, corto_
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_metaprocedure)_this)->referenceOnly = referenceOnly;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4273,14 +4441,16 @@ corto_method _corto_methodCreate(corto_type returnType, corto_bool returnsRefere
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_method)_this)->_virtual = _virtual;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4291,14 +4461,16 @@ corto_method _corto_methodCreateChild(corto_object _parent, corto_string _name, 
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_method)_this)->_virtual = _virtual;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4379,10 +4551,12 @@ corto_modifier* _corto_modifierCreate(corto_modifier value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4393,10 +4567,12 @@ corto_modifier* _corto_modifierCreateChild(corto_object _parent, corto_string _n
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4482,11 +4658,13 @@ corto_nameAction* _corto_nameActionCreate(corto_object instance, corto_function 
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4497,11 +4675,13 @@ corto_nameAction* _corto_nameActionCreateChild(corto_object _parent, corto_strin
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_delegatedata*)_this)->instance, instance);
-    corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_delegatedata*)_this)->instance, instance);
+        corto_setref(&((corto_delegatedata*)_this)->procedure, procedure);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4624,6 +4804,8 @@ corto_object _corto_objectCreate(void) {
     if (!_this) {
         return NULL;
     }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+    }
     return _this;
 }
 
@@ -4632,6 +4814,8 @@ corto_object _corto_objectCreateChild(corto_object _parent, corto_string _name) 
     _this = corto_object(corto_declareChild(_parent, _name, corto_object_o));
     if (!_this) {
         return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
     }
     return _this;
 }
@@ -4647,14 +4831,16 @@ corto_objectlist* _corto_objectlistCreate(corto_uint32 length, corto_object* ele
     if (!_this) {
         return NULL;
     }
-    corto_uint32 i = 0;
-    corto_objectlistClear(*_this);
-    for (i = 0; i < length; i ++) {
-        corto_objectlistAppend(*_this, elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_uint32 i = 0;
+        corto_objectlistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_objectlistAppend(*_this, elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4665,14 +4851,16 @@ corto_objectlist* _corto_objectlistCreateChild(corto_object _parent, corto_strin
     if (!_this) {
         return NULL;
     }
-    corto_uint32 i = 0;
-    corto_objectlistClear(*_this);
-    for (i = 0; i < length; i ++) {
-        corto_objectlistAppend(*_this, elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_uint32 i = 0;
+        corto_objectlistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_objectlistAppend(*_this, elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4770,14 +4958,16 @@ corto_objectseq* _corto_objectseqCreate(corto_uint32 length, corto_object* eleme
     if (!_this) {
         return NULL;
     }
-    corto_objectseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_objectseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4788,14 +4978,16 @@ corto_objectseq* _corto_objectseqCreateChild(corto_object _parent, corto_string 
     if (!_this) {
         return NULL;
     }
-    corto_objectseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_objectseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4893,10 +5085,12 @@ corto_octet* _corto_octetCreate(corto_octet value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4907,10 +5101,12 @@ corto_octet* _corto_octetCreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -4996,14 +5192,16 @@ corto_octetseq* _corto_octetseqCreate(corto_uint32 length, corto_octet* elements
     if (!_this) {
         return NULL;
     }
-    corto_octetseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        _this->buffer[i] = elements[i];
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_octetseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5014,14 +5212,16 @@ corto_octetseq* _corto_octetseqCreateChild(corto_object _parent, corto_string _n
     if (!_this) {
         return NULL;
     }
-    corto_octetseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        _this->buffer[i] = elements[i];
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_octetseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5119,12 +5319,14 @@ corto_parameter* _corto_parameterCreate(corto_string name, corto_type type, cort
     if (!_this) {
         return NULL;
     }
-    corto_setstr(&((corto_parameter*)_this)->name, name);
-    corto_setref(&((corto_parameter*)_this)->type, type);
-    ((corto_parameter*)_this)->passByReference = passByReference;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setstr(&((corto_parameter*)_this)->name, name);
+        corto_setref(&((corto_parameter*)_this)->type, type);
+        ((corto_parameter*)_this)->passByReference = passByReference;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5135,12 +5337,14 @@ corto_parameter* _corto_parameterCreateChild(corto_object _parent, corto_string 
     if (!_this) {
         return NULL;
     }
-    corto_setstr(&((corto_parameter*)_this)->name, name);
-    corto_setref(&((corto_parameter*)_this)->type, type);
-    ((corto_parameter*)_this)->passByReference = passByReference;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setstr(&((corto_parameter*)_this)->name, name);
+        corto_setref(&((corto_parameter*)_this)->type, type);
+        ((corto_parameter*)_this)->passByReference = passByReference;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5232,16 +5436,18 @@ corto_parameterseq* _corto_parameterseqCreate(corto_uint32 length, corto_paramet
     if (!_this) {
         return NULL;
     }
-    corto_parameterseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_parameterseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            if (&elements[i]) {
+                corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+            }
         }
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5252,16 +5458,18 @@ corto_parameterseq* _corto_parameterseqCreateChild(corto_object _parent, corto_s
     if (!_this) {
         return NULL;
     }
-    corto_parameterseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_parameterseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            if (&elements[i]) {
+                corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+            }
         }
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5365,10 +5573,12 @@ corto_primitive _corto_primitiveCreate(corto_width width) {
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5379,10 +5589,12 @@ corto_primitive _corto_primitiveCreateChild(corto_object _parent, corto_string _
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5451,10 +5663,12 @@ corto_primitiveKind* _corto_primitiveKindCreate(corto_primitiveKind value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5465,10 +5679,12 @@ corto_primitiveKind* _corto_primitiveKindCreateChild(corto_object _parent, corto
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5554,10 +5770,12 @@ corto_procedure _corto_procedureCreate(corto_procedureKind kind_1) {
     if (!_this) {
         return NULL;
     }
-    ((corto_procedure)_this)->kind = kind_1;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_procedure)_this)->kind = kind_1;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5568,10 +5786,12 @@ corto_procedure _corto_procedureCreateChild(corto_object _parent, corto_string _
     if (!_this) {
         return NULL;
     }
-    ((corto_procedure)_this)->kind = kind_1;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_procedure)_this)->kind = kind_1;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5640,10 +5860,12 @@ corto_procedureKind* _corto_procedureKindCreate(corto_procedureKind value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5654,10 +5876,12 @@ corto_procedureKind* _corto_procedureKindCreateChild(corto_object _parent, corto
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5743,11 +5967,13 @@ corto_sequence _corto_sequenceCreate(corto_type elementType, corto_uint32 max) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5758,11 +5984,13 @@ corto_sequence _corto_sequenceCreateChild(corto_object _parent, corto_string _na
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_collection)_this)->elementType, elementType);
-    ((corto_collection)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_collection)_this)->elementType, elementType);
+        ((corto_collection)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5834,10 +6062,12 @@ corto_state* _corto_stateCreate(corto_state value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5848,10 +6078,12 @@ corto_state* _corto_stateCreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5937,10 +6169,12 @@ corto_string* _corto_stringCreate(corto_string value) {
     if (!_this) {
         return NULL;
     }
-    corto_setstr(_this, value);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setstr(_this, value);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -5951,10 +6185,12 @@ corto_string* _corto_stringCreateChild(corto_object _parent, corto_string _name,
     if (!_this) {
         return NULL;
     }
-    corto_setstr(_this, value);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setstr(_this, value);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6040,11 +6276,13 @@ corto_struct _corto_structCreate(corto_interface base, corto_modifier baseAccess
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interface)_this)->base, base);
+        ((corto_struct)_this)->baseAccess = baseAccess;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6055,11 +6293,13 @@ corto_struct _corto_structCreateChild(corto_object _parent, corto_string _name, 
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_interface)_this)->base, base);
+        ((corto_struct)_this)->baseAccess = baseAccess;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6131,11 +6371,13 @@ corto_text _corto_textCreate(corto_width charWidth, corto_uint64 length) {
     if (!_this) {
         return NULL;
     }
-    ((corto_text)_this)->charWidth = charWidth;
-    ((corto_text)_this)->length = length;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_text)_this)->charWidth = charWidth;
+        ((corto_text)_this)->length = length;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6146,11 +6388,13 @@ corto_text _corto_textCreateChild(corto_object _parent, corto_string _name, cort
     if (!_this) {
         return NULL;
     }
-    ((corto_text)_this)->charWidth = charWidth;
-    ((corto_text)_this)->length = length;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_text)_this)->charWidth = charWidth;
+        ((corto_text)_this)->length = length;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6222,11 +6466,13 @@ corto_type _corto_typeCreate(corto_typeKind kind, corto_bool reference) {
     if (!_this) {
         return NULL;
     }
-    ((corto_type)_this)->kind = kind;
-    ((corto_type)_this)->reference = reference;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_type)_this)->kind = kind;
+        ((corto_type)_this)->reference = reference;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6237,11 +6483,13 @@ corto_type _corto_typeCreateChild(corto_object _parent, corto_string _name, cort
     if (!_this) {
         return NULL;
     }
-    ((corto_type)_this)->kind = kind;
-    ((corto_type)_this)->reference = reference;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_type)_this)->kind = kind;
+        ((corto_type)_this)->reference = reference;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6313,10 +6561,12 @@ corto_typeKind* _corto_typeKindCreate(corto_typeKind value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6327,10 +6577,12 @@ corto_typeKind* _corto_typeKindCreateChild(corto_object _parent, corto_string _n
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6416,11 +6668,13 @@ corto_typespec* _corto_typespecCreate(corto_type type, corto_bool reference) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_typespec*)_this)->type, type);
-    ((corto_typespec*)_this)->reference = reference;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_typespec*)_this)->type, type);
+        ((corto_typespec*)_this)->reference = reference;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6431,11 +6685,13 @@ corto_typespec* _corto_typespecCreateChild(corto_object _parent, corto_string _n
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_typespec*)_this)->type, type);
-    ((corto_typespec*)_this)->reference = reference;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_typespec*)_this)->type, type);
+        ((corto_typespec*)_this)->reference = reference;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6524,12 +6780,14 @@ corto_uint _corto_uintCreate(corto_width width, corto_uint64 min, corto_uint64 m
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    ((corto_uint)_this)->min = min;
-    ((corto_uint)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        ((corto_uint)_this)->min = min;
+        ((corto_uint)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6540,12 +6798,14 @@ corto_uint _corto_uintCreateChild(corto_object _parent, corto_string _name, cort
     if (!_this) {
         return NULL;
     }
-    ((corto_primitive)_this)->width = width;
-    ((corto_uint)_this)->min = min;
-    ((corto_uint)_this)->max = max;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        ((corto_primitive)_this)->width = width;
+        ((corto_uint)_this)->min = min;
+        ((corto_uint)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6620,10 +6880,12 @@ corto_uint16* _corto_uint16Create(corto_uint16 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6634,10 +6896,12 @@ corto_uint16* _corto_uint16CreateChild(corto_object _parent, corto_string _name,
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6723,10 +6987,12 @@ corto_uint32* _corto_uint32Create(corto_uint32 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6737,10 +7003,12 @@ corto_uint32* _corto_uint32CreateChild(corto_object _parent, corto_string _name,
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6826,10 +7094,12 @@ corto_uint64* _corto_uint64Create(corto_uint64 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6840,10 +7110,12 @@ corto_uint64* _corto_uint64CreateChild(corto_object _parent, corto_string _name,
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6929,10 +7201,12 @@ corto_uint8* _corto_uint8Create(corto_uint8 value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -6943,10 +7217,12 @@ corto_uint8* _corto_uint8CreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7032,10 +7308,12 @@ corto_union _corto_unionCreate(corto_type discriminator) {
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_union)_this)->discriminator, discriminator);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_union)_this)->discriminator, discriminator);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7046,10 +7324,12 @@ corto_union _corto_unionCreateChild(corto_object _parent, corto_string _name, co
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_union)_this)->discriminator, discriminator);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_union)_this)->discriminator, discriminator);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7118,14 +7398,16 @@ corto_virtual _corto_virtualCreate(corto_type returnType, corto_bool returnsRefe
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_method)_this)->_virtual = _virtual;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7136,14 +7418,16 @@ corto_virtual _corto_virtualCreateChild(corto_object _parent, corto_string _name
     if (!_this) {
         return NULL;
     }
-    corto_setref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
-    ((corto_method)_this)->_virtual = _virtual;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_function)_this)->returnType, returnType);
+        ((corto_function)_this)->returnsReference = returnsReference;
+        ((corto_method)_this)->_virtual = _virtual;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7224,6 +7508,8 @@ corto_void* _corto_voidCreate(void) {
     if (!_this) {
         return NULL;
     }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+    }
     return _this;
 }
 
@@ -7232,6 +7518,8 @@ corto_void* _corto_voidCreateChild(corto_object _parent, corto_string _name) {
     _this = corto_void(corto_declareChild(_parent, _name, corto_void_o));
     if (!_this) {
         return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
     }
     return _this;
 }
@@ -7247,14 +7535,16 @@ corto_vtable* _corto_vtableCreate(corto_uint32 length, corto_function* elements)
     if (!_this) {
         return NULL;
     }
-    corto_vtableSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_vtableSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7265,14 +7555,16 @@ corto_vtable* _corto_vtableCreateChild(corto_object _parent, corto_string _name,
     if (!_this) {
         return NULL;
     }
-    corto_vtableSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        corto_setref(&_this->buffer[i], elements[i]);
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_vtableSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            corto_setref(&_this->buffer[i], elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7370,10 +7662,12 @@ corto_width* _corto_widthCreate(corto_width value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7384,10 +7678,12 @@ corto_width* _corto_widthCreateChild(corto_object _parent, corto_string _name, c
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7473,10 +7769,12 @@ corto_word* _corto_wordCreate(corto_word value) {
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7487,10 +7785,12 @@ corto_word* _corto_wordCreateChild(corto_object _parent, corto_string _name, cor
     if (!_this) {
         return NULL;
     }
-    *_this = value;
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7576,14 +7876,16 @@ corto_wordseq* _corto_wordseqCreate(corto_uint32 length, corto_word* elements) {
     if (!_this) {
         return NULL;
     }
-    corto_wordseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        _this->buffer[i] = elements[i];
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_wordseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -7594,14 +7896,16 @@ corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _nam
     if (!_this) {
         return NULL;
     }
-    corto_wordseqSize(_this, length);
-    corto_uint32 i = 0;
-    for (i = 0; i < length; i ++) {
-        _this->buffer[i] = elements[i];
-    }
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_wordseqSize(_this, length);
+        corto_uint32 i = 0;
+        for (i = 0; i < length; i ++) {
+            _this->buffer[i] = elements[i];
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }

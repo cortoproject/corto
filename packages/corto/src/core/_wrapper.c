@@ -257,6 +257,34 @@ corto_void _corto_mount_onInvoke(
     }
 }
 
+corto_void _corto_mount_onNotify(
+    corto_mount this,
+    corto_eventMask event,
+    corto_result *object)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onNotify(core/eventMask event,core/result object)");
+    }
+    corto_assert(_methodId, "virtual 'onNotify(core/eventMask event,core/result object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onNotify(core/eventMask event,core/result object)@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_eventMask, corto_result*))((corto_function)_method)->fptr)(this, event, object);
+    } else {
+        corto_call(corto_function(_method), NULL, this, event, object);
+    }
+}
+
 corto_void _corto_mount_onPoll(
     corto_mount this)
 {

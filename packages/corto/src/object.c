@@ -2929,6 +2929,10 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
     return result;
 }
 
+corto_bool corto_match(corto_string expr, corto_string str) {
+    return !fnmatch(expr, str, 0);
+}
+
 /* Copyout observers */
 static void corto_observersCopyOut(corto_ll list, corto__observer** observers) {
     corto_iter iter;

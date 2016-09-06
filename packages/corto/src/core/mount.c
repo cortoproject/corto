@@ -43,6 +43,28 @@ corto_int16 corto_mount_attach(
 error:
     return -1;
 }
+
+void corto_mount_notify(
+    corto_mount this,
+    corto_eventMask mask,
+    corto_object o)
+{
+    if (this->hasNotify) {
+        corto_result r;
+        corto_id path, type;
+        memset(&r, 0, sizeof(r));
+
+        if (this->contentTypeHandle) {
+            r.value = ((corto_contentType)this->contentTypeHandle)->fromCorto(o);
+        }
+
+        r.id = corto_idof(o);
+        r.parent = corto_path(path, this->mount, o, "/");
+        r.type = corto_fullpath(type, corto_typeof(o));
+
+        corto_mount_onNotify(this, mask, &r);
+    }
+}
 /* $end */
 
 /* $header(corto/core/mount/construct) */
@@ -105,6 +127,22 @@ corto_int16 _corto_mount_construct(
     if (corto_parentof(m) == corto_mount_o) {
         this->passThrough = TRUE;
     }
+
+    /* If mount implements onNotify, set boolean so notification functions will
+     * forward notifications to onNotify. As onNotify requires more expensive
+     * preparation, a mount should ensure to only call it when necessary. */
+     m = corto_interface_resolveMethod(corto_typeof(this), "onNotify");
+     if (corto_parentof(m) != corto_mount_o) {
+         this->hasNotify = TRUE;
+     }
+
+      /* If mount doesn't implement onResume, the mount will use onRequest to
+       * request the object and then use the returned data to automatically
+       * instantiate an object in the store. */
+      m = corto_interface_resolveMethod(corto_typeof(this), "onResume");
+      if (corto_parentof(m) != corto_mount_o) {
+          this->hasResume = TRUE;
+      }
 
     if (observable && mask) {
         if (corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, dispatcher)) {
@@ -210,10 +248,12 @@ corto_void _corto_mount_on_declare(
             if (!strcmp(this->type, srcType)) {
                 this->sent.declares ++;
                 corto_mount_onDeclare(this, observable);
+                corto_mount_notify(this, CORTO_ON_DECLARE, observable);
             }
         } else {
             this->sent.declares ++;
             corto_mount_onDeclare(this, observable);
+            corto_mount_notify(this, CORTO_ON_DECLARE, observable);
         }
     }
 
@@ -232,10 +272,12 @@ corto_void _corto_mount_on_delete(
             if (!strcmp(this->type, srcType)) {
                 this->sent.deletes ++;
                 corto_mount_onDelete(this, observable);
+                corto_mount_notify(this, CORTO_ON_DELETE, observable);
             }
         } else {
             this->sent.deletes ++;
             corto_mount_onDelete(this, observable);
+            corto_mount_notify(this, CORTO_ON_DELETE, observable);
         }
     }
 
@@ -254,10 +296,12 @@ corto_void _corto_mount_on_update(
             if (!strcmp(this->type, srcType)) {
                 this->sent.updates ++;
                 corto_mount_onUpdate(this, observable);
+                corto_mount_notify(this, CORTO_ON_UPDATE, observable);
             }
         } else {
             this->sent.updates ++;
             corto_mount_onUpdate(this, observable);
+            corto_mount_notify(this, CORTO_ON_UPDATE, observable);
         }
     }
 
@@ -302,6 +346,20 @@ corto_void _corto_mount_onInvoke_v(
     CORTO_UNUSED(instance);
     CORTO_UNUSED(proc);
     CORTO_UNUSED(argptrs);
+
+/* $end */
+}
+
+corto_void _corto_mount_onNotify_v(
+    corto_mount this,
+    corto_eventMask event,
+    corto_result *object)
+{
+/* $begin(corto/core/mount/onNotify) */
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(event);
+    CORTO_UNUSED(object);
 
 /* $end */
 }
@@ -512,8 +570,65 @@ corto_object _corto_mount_resume(
     corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
     corto_object prevOwner = corto_setOwner(this);
 
+    corto_object result = NULL;
+
     /* Resume object */
-    corto_object result = corto_mount_onResume(this, parent, name, o);
+    if (this->hasResume) {
+        result = corto_mount_onResume(this, parent, name, o);
+    } else {
+        corto_id type;
+        corto_request r;
+        corto_bool newObject = FALSE;
+
+        // Prepare request
+        memset(&r, 0, sizeof(r));
+        r.expr = name;
+        r.parent = parent;
+        if (o) {
+            corto_fullpath(type, corto_typeof(o));
+        } else {
+            type[0] = '\0';
+        }
+        r.type = type;
+        r.content = TRUE;
+
+        // Request object from mount
+        corto_resultIter it = corto_mount_request(this, &r);
+
+        if (corto_iterHasNext(&it)) {
+            corto_result *result = corto_iterNext(&it);
+
+            if (!o) {
+                corto_object parent_o =
+                  corto_resolve(corto_mount(this)->mount, result->parent);
+                if (parent_o) {
+                    corto_object type_o = corto_resolve(NULL, result->type);
+                    if (type_o) {
+                        o = corto_declareChild(parent_o, name, type_o);
+                        if (!o) {
+                            corto_seterr("failed to create object %s/%s: %s",
+                              parent, name, corto_lasterr());
+                        }
+                        newObject = TRUE;
+                        corto_release(type_o);
+                    }
+                    corto_release(parent_o);
+                }
+            }
+
+            if (o) {
+                if ((corto_contentType)this->contentTypeHandle && result->value) {
+                    ((corto_contentType)this->contentTypeHandle)->toCorto(
+                        o, result->value);
+                }
+                if (newObject) {
+                    corto_define(o);
+                }
+                result = o;
+            }
+        }
+        corto_assert(!corto_iterHasNext(&it), "mount should not return more than one object");
+    }
 
     /* Restore owner & attributes */
     corto_setAttr(prevAttr);

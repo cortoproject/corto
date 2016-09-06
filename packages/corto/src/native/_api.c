@@ -11,10 +11,12 @@ corto_native_type _corto_native_typeCreate(corto_string name) {
     if (!_this) {
         return NULL;
     }
-    corto_setstr(&((corto_native_type)_this)->name, name);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setstr(&((corto_native_type)_this)->name, name);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
@@ -25,10 +27,12 @@ corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_stri
     if (!_this) {
         return NULL;
     }
-    corto_setstr(&((corto_native_type)_this)->name, name);
-    if (corto_define(_this)) {
-        corto_release(_this);
-        _this = NULL;
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setstr(&((corto_native_type)_this)->name, name);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }

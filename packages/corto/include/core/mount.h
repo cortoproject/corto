@@ -81,6 +81,17 @@ CORTO_EXPORT corto_void _corto_mount_onInvoke_v(
     corto_function proc,
     corto_word argptrs);
 #define corto_mount_onInvoke_v(_this, instance, proc, argptrs) _corto_mount_onInvoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
+CORTO_EXPORT corto_void _corto_mount_onNotify(
+    corto_mount _this,
+    corto_eventMask event,
+    corto_result *object);
+#define corto_mount_onNotify(_this, event, object) _corto_mount_onNotify(corto_mount(_this), event, object)
+
+CORTO_EXPORT corto_void _corto_mount_onNotify_v(
+    corto_mount _this,
+    corto_eventMask event,
+    corto_result *object);
+#define corto_mount_onNotify_v(_this, event, object) _corto_mount_onNotify_v(corto_mount(_this), event, object)
 CORTO_EXPORT corto_void _corto_mount_onPoll(
     corto_mount _this);
 #define corto_mount_onPoll(_this) _corto_mount_onPoll(corto_mount(_this))
