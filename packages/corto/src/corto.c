@@ -143,6 +143,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, mount);\
     SSO_OP_CLASS(op, loader);\
     SSO_OP_CLASS(op, native_type);\
+    SSO_OP_CLASS(op, secure_key);\
+    SSO_OP_CLASS(op, secure_lock);\
 
 /* Procedures */
 #define SSO_OP_PROCEDURETYPE(op)\
@@ -184,6 +186,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, operatorKind);\
     SSO_OP_VALUE(op, mountKind);\
     SSO_OP_VALUE(op, frameKind);\
+    SSO_OP_VALUE(op, secure_accessKind);\
+    SSO_OP_VALUE(op, secure_actionKind);\
     SSO_OP_VALUE(op, modifier);\
     SSO_OP_VALUE(op, eventMask);\
     SSO_OP_VALUE(op, state);\
@@ -228,6 +232,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 #define SSO_OP_OBJ(op, obj) op(SSO_OBJECT(lang_##obj))
 #define SSO_OP_OBJ_CORE(op, obj) op(SSO_OBJECT(core_##obj))
 #define SSO_OP_OBJ_NATIVE(op, obj) op(SSO_OBJECT(native_##obj))
+#define SSO_OP_OBJ_SECURE(op, obj) op(SSO_OBJECT(secure_##obj))
 
 /* 1st degree objects (members, methods and constants) */
 #define SSO_OP_OBJECT(op)\
@@ -350,6 +355,15 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, frameKind_FRAME_DURATION);\
     SSO_OP_OBJ_CORE(op, frameKind_FRAME_SAMPLE);\
     SSO_OP_OBJ_CORE(op, frameKind_FRAME_DEPTH);\
+    /* accessKind */\
+    SSO_OP_OBJ_SECURE(op, accessKind_SECURE_ACCESS_GRANTED);\
+    SSO_OP_OBJ_SECURE(op, accessKind_SECURE_ACCESS_DENIED);\
+    SSO_OP_OBJ_SECURE(op, accessKind_SECURE_ACCESS_UNDEFINED);\
+    /* actionKind */\
+    SSO_OP_OBJ_SECURE(op, actionKind_SECURE_ACTION_CREATE);\
+    SSO_OP_OBJ_SECURE(op, actionKind_SECURE_ACTION_READ);\
+    SSO_OP_OBJ_SECURE(op, actionKind_SECURE_ACTION_UPDATE);\
+    SSO_OP_OBJ_SECURE(op, actionKind_SECURE_ACTION_DELETE);\
     /* operatorKind */\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN);\
     SSO_OP_OBJ_CORE(op, operatorKind_ASSIGN_ADD);\
@@ -741,6 +755,18 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* native/type */\
     SSO_OP_OBJ_NATIVE(op, type_name);\
     SSO_OP_OBJ_NATIVE(op, type_init_);\
+    /* secure/key */\
+    SSO_OP_OBJ_SECURE(op, key_construct_);\
+    SSO_OP_OBJ_SECURE(op, key_destruct_);\
+    SSO_OP_OBJ_SECURE(op, key_authenticate_);\
+    /* secure/lock */\
+    SSO_OP_OBJ_SECURE(op, lock_mount);\
+    SSO_OP_OBJ_SECURE(op, lock_expr);\
+    SSO_OP_OBJ_SECURE(op, lock_priority);\
+    SSO_OP_OBJ_SECURE(op, lock_construct_);\
+    SSO_OP_OBJ_SECURE(op, lock_destruct_);\
+    SSO_OP_OBJ_SECURE(op, lock_authorize_);\
+
 
 /* 2nd degree objects (function parameters) */
 #define SSO_OP_OBJECT_2ND(op) \
@@ -936,6 +962,7 @@ int corto_start(void) {
     corto_initObject(corto_lang_o);
     corto_initObject(corto_core_o);
     corto_initObject(corto_native_o);
+    corto_initObject(corto_secure_o);
 
     /* Define builtin scopes */
     corto_defineObject(root_o);
@@ -943,6 +970,7 @@ int corto_start(void) {
     corto_defineObject(corto_lang_o);
     corto_defineObject(corto_core_o);
     corto_defineObject(corto_native_o);
+    corto_defineObject(corto_secure_o);
 
     /* Init objects */
     SSO_OP_TYPE(corto_initType);

@@ -406,7 +406,6 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
         if ((sig = corto_procwait(pid, &result)) || result) {
             if (sig > 0) {
                 corto_error("corto: process crashed (%d)", sig);
-                printf("   debug with: %s/.corto/app\n", corto_cwd());
             } else {
                 corto_error("corto: process returned with error %d", result);
             }

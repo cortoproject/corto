@@ -115,7 +115,28 @@ corto_int16 cortotool_core(void) {
     });
     if (corto_procwait(pid, &ret) || ret) {
         corto_error("failed to generate code for corto/native (%d)", ret);
-        printf("   command: corto pp --prefix corto --name corto --scope corto/native --attr c=src/native --attr h=include/native --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
+        printf("   command: corto pp --prefix corto_native --name corto --scope corto/native --attr c=src/native --attr h=include/native --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
+        goto error;
+    }
+
+    pid = corto_procrun("corto", (char*[]){
+      "corto",
+      "pp",
+      "--prefix", "corto_secure",
+      "--name", "corto",
+      "--scope", "corto/secure",
+      "--attr", "c=src/secure",
+      "--attr", "h=include/secure",
+      "--attr", "bootstrap=true",
+      "--attr", "stubs=false",
+      "-g", "c/interface",
+      "-g", "c/api",
+      "-g", "c/type",
+      NULL
+    });
+    if (corto_procwait(pid, &ret) || ret) {
+        corto_error("failed to generate code for corto/native (%d)", ret);
+        printf("   command: corto pp --prefix corto_secure --name corto --scope corto/secure --attr c=src/secure --attr h=include/secure --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
         goto error;
     }
 
