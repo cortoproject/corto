@@ -299,4 +299,43 @@ error:
     return -1;
 }
 
+corto_int16 corto_value_unaryOperator(
+    corto_operatorKind _operator,
+    corto_value *value,
+    corto_value *result)
+{
+    corto_uint64 v;
+    corto_type t = corto_value_getType(value);
+    if (corto_unaryOperator(t, _operator, corto_value_getPtr(value), &v)) {
+        goto error;
+    }
+    *result = corto_value_value(t, (void*)&v);
+
+    return 0;
+error:
+    return -1;
+}
+
+corto_int16 corto_value_binaryOperator(corto_operatorKind _operator, corto_value *operand1, corto_value *operand2, corto_value *result)
+{
+    corto_uint64 v;
+    corto_type t1 = corto_value_getType(operand1);
+    corto_type t2 = corto_value_getType(operand2);
+
+    if (corto_binaryOperator(
+        t1,
+        _operator,
+        corto_value_getPtr(operand1),
+        corto_value_getPtr(operand2),
+        &v))
+    {
+        goto error;
+    }
+    *result = corto_value_value(t1, (void*)&v);
+
+    return 0;
+error:
+    return -1;
+}
+
 #endif

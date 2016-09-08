@@ -48,6 +48,7 @@ const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 
 /* Single lock to protect infrequent actions on global corto data */
 corto_mutex_s corto_adminLock;
+corto_thread corto_mainThread;
 
 /* Actions to be run at shutdown */
 static corto_ll corto_exitHandlers = NULL;
@@ -877,6 +878,7 @@ static void corto_patchSequences(void) {
 }
 
 int corto_start(void) {
+    corto_mainThread = corto_threadSelf();
 
     CORTO_OPERATIONAL = 1; /* Initializing */
 

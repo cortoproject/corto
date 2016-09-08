@@ -10,6 +10,7 @@
 
 #include "core/_type.h"
 #include "lang/_type.h"
+#include "secure/_type.h"
 #include "corto/ll.h"
 #include "corto/value.h"
 #include "corto/async.h"
@@ -42,6 +43,12 @@ corto_int16 corto_suspend(corto_object o);
 corto_int32 corto_claim(corto_object o);
 corto_int32 corto_release(corto_object o);
 void corto_invalidate(corto_object o);
+
+/* Security */
+corto_string corto_login(corto_string username, corto_string password);
+corto_string corto_authenticate(corto_string key);
+corto_bool corto_authorized(corto_object object, corto_secure_actionKind access);
+corto_bool corto_authorizedId(corto_string id, corto_secure_actionKind access);
 
 /* Object extensions (ols stands for Object Local Storage) */
 corto_uint8 corto_olsKey(void(*destructor)(void*));

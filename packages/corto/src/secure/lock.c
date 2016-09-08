@@ -15,8 +15,11 @@ corto_secure_accessKind _corto_secure_lock_authorize_v(
 {
 /* $begin(corto/secure/lock/authorize) */
 
-    /* << Insert implementation >> */
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(object);
+    CORTO_UNUSED(action);
 
+    return CORTO_SECURE_ACCESS_DENIED;
 /* $end */
 }
 
@@ -25,7 +28,8 @@ corto_int16 _corto_secure_lock_construct(
 {
 /* $begin(corto/secure/lock/construct) */
 
-    /* << Insert implementation >> */
+    CORTO_UNUSED(this);
+    return 0;
 
 /* $end */
 }
@@ -35,7 +39,7 @@ corto_void _corto_secure_lock_destruct(
 {
 /* $begin(corto/secure/lock/destruct) */
 
-    /* << Insert implementation >> */
+    CORTO_UNUSED(this);
 
 /* $end */
 }
