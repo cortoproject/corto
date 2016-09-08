@@ -1,0 +1,6 @@
+
+TARGET = 'tc_appDefObject'
+
+PP_SCOPES = ["Point"]
+
+require "#{ENV['CORTO_BUILD']}/application"

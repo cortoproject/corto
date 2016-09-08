@@ -4,14 +4,6 @@
 test::Suite Project::
     void setup() method
     void teardown() method
-    void tc_app()
-    void tc_appNoTest()
-    void tc_appDependency()
-    void tc_appNestedDependency()
-    void tc_appNoCortoDependency()
-    void tc_appNoCortoNestedDependency()
-    void tc_appCortoDependencyNoCorto()
-    void tc_appCortoNestedDependencyNoCorto()
     void tc_packageNoCorto()
     void tc_packageNoCortoNested()
     void tc_packageNoCortoDependency()
@@ -35,3 +27,29 @@ test::Suite Project::
     void tc_packageNestedDependencyFullyScopedColons()
     void tc_packagePublicHeaderRemoval()
     void tc_publishNotag()
+
+test::Suite Application::
+    void setup() method
+    void teardown() method
+    void tc_app()
+    void tc_appNoTest()
+    void tc_appDependency()
+    void tc_appNestedDependency()
+    void tc_appNoCortoDependency()
+    void tc_appNoCortoNestedDependency()
+    void tc_appCortoDependencyNoCorto()
+    void tc_appCortoNestedDependencyNoCorto()
+    void tc_appNested()
+    void tc_appDef()
+
+test::Suite Builds::
+    void setup() method
+    void tc_runFromParent()
+    void tc_runFromProject()
+    void tc_runDirect()
+    void tc_appDef()
+    void tc_appDefObject()
+    void tc_appNested()
+    void tc_appNestedDef()
+    void tc_appLocalDef()
+    void tc_appLocalDefObject()

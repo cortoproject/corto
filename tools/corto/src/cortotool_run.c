@@ -390,6 +390,10 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                 goto error;
             }
         }
+    } else {
+        corto_id projectName;
+        cortotool_stripPath(projectName, corto_cwd());
+        corto_asprintf(&appName, "./%s", projectName);
     }
 
     if (monitor) {
@@ -397,17 +401,24 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
             goto error;
         }
     } else {
-        corto_pid pid = corto_procrun(appName, &argv[1]);
+        corto_pid pid;
+        if (argc > 1) {
+            pid = corto_procrun(appName, &argv[1]);
+        } else {
+            pid = corto_procrun(appName, (char*[]){appName, NULL});
+        }
         if (!pid) {
-            corto_error("failed to start proces");
+            corto_error("failed to start process '%s'", appName);
             goto error;
         }
         corto_int8 result = 0, sig = 0;
         if ((sig = corto_procwait(pid, &result)) || result) {
             if (sig > 0) {
                 corto_error("corto: process crashed (%d)", sig);
+                goto error;
             } else {
                 corto_error("corto: process returned with error %d", result);
+                goto error;
             }
         }
     }

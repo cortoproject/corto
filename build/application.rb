@@ -11,7 +11,6 @@ NAME = TARGET
 INCLUDE ||= []
 PACKAGE = TARGET
 INSTALL = "bin/cortobin"
-
 INCLUDE << "include"
 
 task :symlink do

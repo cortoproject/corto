@@ -158,6 +158,12 @@ typedef struct corto_ll_s* corto_ll;
  * object at most. */
 #define CORTO_MAX_AUGMENTS (16)
 
+/* Maximum length of a command (to run a process) */
+#define CORTO_MAX_CMD (1024)
+
+/* Maximum number of arguments for command */
+#define CORTO_MAX_CMD_ARGS (64)
+
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG

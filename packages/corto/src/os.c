@@ -277,11 +277,15 @@ void corto_closedir(corto_ll dir) {
 corto_pid corto_procrun(const char* exec, char *argv[]) {
     pid_t pid = fork();
 
-    if (pid == 0) {
 
+    if (pid == 0) {
+        
         /* Child process */
         if (execvp(exec, argv)) {
-            corto_error("core: failed to start process '%s'", exec);
+            corto_error("corto: failed to start process '%s'\n  cwd='%s'\n  err='%s'",
+              exec,
+              corto_cwd(),
+              strerror(errno));
             abort();
         }
     } else if (pid > 0) {
@@ -367,6 +371,40 @@ int corto_procwait(corto_pid pid, int8_t *rc) {
     }
 
     return result;
+}
+
+/* Simple blocking function to create and wait for a process */
+int corto_proccmd(corto_string cmd, int8_t *rc) {
+    int pid;
+    char *args[CORTO_MAX_CMD_ARGS];
+    char buffer[CORTO_MAX_CMD];
+    strcpy(buffer, cmd);
+
+    corto_debug("corto: cmd: %s", cmd);
+
+    /* Split up commands */
+    char ch, *ptr;
+    corto_uint8 argCount = 0;
+    corto_bool newArg = FALSE;
+    args[argCount] = buffer;
+    for (ptr = buffer; (ch = *ptr); ptr++) {
+        if (isspace(ch)) {
+            *ptr = '\0';
+            newArg = TRUE;
+        } else if (newArg) {
+            args[++argCount] = ptr;
+            newArg = FALSE;
+        }
+    }
+    args[argCount + 1] = NULL;
+
+    if (!(pid = corto_procrun(args[0], args))) {
+        goto error;
+    }
+
+    return corto_procwait(pid, rc);
+error:
+    return -1;
 }
 
 int corto_proccheck(corto_pid pid, int8_t *rc) {

@@ -1062,9 +1062,6 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
     corto_object o = NULL;
     corto_bool retry = FALSE;
 
-    corto_debug("corto: declareChild: %s, %s, %s",
-        corto_fullpath(NULL, parent), id, corto_fullpath(NULL, type));
-
     if (!parent) {
         parent = root_o;
     }
@@ -1367,7 +1364,6 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
 
         if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
             corto_declaredAdminRemove(o);
-            corto_debug("corto: define: %s", corto_fullpath(NULL, o));
         }
 
         /* Notify observers of defined object */

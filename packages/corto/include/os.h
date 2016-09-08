@@ -70,6 +70,9 @@ int corto_procwait(corto_pid pid, int8_t *rc);
 /* Check state of process */
 int corto_proccheck(corto_pid pid, int8_t *rc);
 
+/* Simple blocking function to create and wait for a process */
+int corto_proccmd(corto_string cmd, int8_t *rc);
+
 /* Check whether process is being debugged */
 int corto_beingTraced(void);
 

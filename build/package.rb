@@ -41,7 +41,11 @@ else
 end
 
 # Define a convenience macro in the package that points to the installed ETC directory
-DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}\"'"
+if not LOCAL then
+  DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}\"'"
+else
+  DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"" + Dir.getwd + "/etc\"'"
+end
 
 # Rule for creating packages.txt
 file ".corto/packages.txt" do

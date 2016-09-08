@@ -1,14 +1,17 @@
-/* test.h
+/* tc_appLocalDef.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef TC_APPLOCALDEF_H
+#define TC_APPLOCALDEF_H
 
 #include <corto/corto.h>
 #include <_interface.h>
-#include <corto/test/test.h>
+/* $header() */
+/* You can put your own definitions here! */
+/* $end */
+
 
 #include <_type.h>
 #include <_api.h>
@@ -18,9 +21,7 @@
 extern "C" {
 #endif
 
-#include <Application.h>
-#include <Builds.h>
-#include <Project.h>
+#include <Point.h>
 
 #ifdef __cplusplus
 }

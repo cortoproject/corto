@@ -759,11 +759,12 @@ corto_void _test_Select_tc_selectObjectPrefixTrailingScope(
 
     results = test_Select_collect(NULL, "/corto/", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 4);
+    test_assertint(corto_llSize(results), 5);
 
     test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "core", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "native", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "/corto", "secure", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "test", "/corto/core/package"));
 
 /* $end */
@@ -791,11 +792,12 @@ corto_void _test_Select_tc_selectObjectTrailingScope(
 
     results = test_Select_collect(NULL, "corto/", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 4);
+    test_assertint(corto_llSize(results), 5);
 
     test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "core", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "native", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "/corto", "secure", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "test", "/corto/core/package"));
 
 /* $end */
