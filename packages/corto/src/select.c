@@ -502,6 +502,19 @@ static corto_bool corto_selectMatch(
     corto_bool result = TRUE;
     char *id = o ? corto_idof(o) : data->item.id;
 
+    if (o) {
+        if (!corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+            goto access_error;
+        }
+    } else {
+        corto_id id;
+        sprintf(id, "%s/%s", data->item.parent, data->item.id);
+        corto_cleanpath(id, id);
+        if (!corto_authorizedId(id, CORTO_SECURE_ACTION_READ)) {
+            goto access_error;
+        }
+    }
+
     /* Filter name */
     if (frame->filter) {
         corto_id filterLc, nameLc;
@@ -577,6 +590,8 @@ static corto_bool corto_selectMatch(
     }
 
     return result;
+access_error:
+    return FALSE;
 }
 
 static void corto_selectParseFilter(

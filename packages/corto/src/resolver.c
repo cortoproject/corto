@@ -256,6 +256,11 @@ repeat:
         o = NULL;
     }
 
+    if (!corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto error;
+    }
+
     return o;
 error:
     return NULL;

@@ -1335,7 +1335,7 @@ CORTO_CLASS_NOBASE_O(secure, lock, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, N
     CORTO_MEMBER_O(secure_lock, priority, lang_int16, CORTO_GLOBAL);
     CORTO_METHOD_O(secure_lock, construct, "()", lang_int16, FALSE, corto_observableEvent_handle_v);
     CORTO_METHOD_O(secure_lock, destruct, "()", lang_void, FALSE, corto_observableEvent_handle_v);
-    CORTO_METHOD_O(secure_lock, authorize, "(object object,secure/actionKind action)", secure_accessKind, TRUE, corto_observableEvent_handle_v);
+    CORTO_METHOD_O(secure_lock, authorize, "(string object,secure/actionKind action)", secure_accessKind, TRUE, corto_observableEvent_handle_v);
 
 #ifdef __cplusplus
 }

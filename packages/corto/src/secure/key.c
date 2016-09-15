@@ -10,7 +10,6 @@
 
 /* $header() */
 static corto_secure_key corto_currentKey;
-static corto_int8 CORTO_OLS_SECURE_LOCK;
 static corto_string corto_keyToken;
 static corto_ll corto_secure_locks[CORTO_MAX_SCOPE_DEPTH];
 static corto_thread corto_secure_mainThread;
@@ -46,10 +45,10 @@ error:
     return key;
 }
 
-static corto_int16 corto_secure_getObjectDepth(corto_object o) {
+static corto_int16 corto_secure_getObjectDepth(corto_id id) {
     corto_int16 result = 0;
-    corto_object p = o;
-    while ((p = corto_parentof(o))) {
+    char *ptr = id;
+    while ((ptr = strchr(ptr + 1, '/'))) {
         result ++;
     }
     return result;
@@ -68,11 +67,7 @@ static corto_bool corto_secure_matchLock(char *lockId, char *id) {
 
 corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
     if (corto_secure_mainThread == corto_threadSelf()) {
-        char *ptr = lock->mount;
-        corto_int16 depth = 0;
-        while ((ptr = strchr(ptr + 1, '/'))) {
-            depth ++;
-        }
+        corto_int16 depth = corto_secure_getObjectDepth(lock->mount);
         if (depth >= CORTO_MAX_SCOPE_DEPTH) {
             corto_seterr("invalid identifier for mount-member of lock");
             goto error;
@@ -93,15 +88,18 @@ error:
 
 corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
 {
+    corto_id objectId;
+    corto_fullpath(objectId, object);
+    return corto_authorizedId(objectId, access);
+}
+
+corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind access) {
     corto_secure_accessKind allowed = CORTO_SECURE_ACCESS_UNDEFINED;
 
     if (corto_currentKey) {
-        corto_int32 depth = corto_secure_getObjectDepth(object);
-        corto_object p = object;
+        corto_int32 depth = corto_secure_getObjectDepth(objectId);
         corto_uint16 currentDepth = 0;
         corto_int16 priority = 0;
-        corto_id objectId;
-        corto_fullpath(objectId, object);
 
         do {
             corto_ll locks = corto_secure_locks[depth];
@@ -121,7 +119,7 @@ corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
                          * locks, unless priority is higher */
                         if ((currentDepth == depth) || (lock->priority > priority)) {
                             corto_secure_accessKind result =
-                              corto_secure_lock_authorize(lock, object, access);
+                              corto_secure_lock_authorize(lock, objectId, access);
 
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
@@ -140,15 +138,10 @@ corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
                     }
                 }
             }
-
-            p = corto_parentof(p);
         } while (--depth);
     }
-
     return allowed != CORTO_SECURE_ACCESS_DENIED;
 }
-
-corto_bool corto_authorizedId(corto_string id, corto_secure_actionKind access);
 /* $end */
 
 corto_string _corto_secure_key_authenticate_v(
@@ -182,7 +175,6 @@ corto_int16 _corto_secure_key_construct(
     }
 
     corto_currentKey = this;
-    CORTO_OLS_SECURE_LOCK = corto_olsKey((void(*)(void*))corto_release);
 
     return 0;
 error:

@@ -18,13 +18,13 @@ extern "C" {
 
 CORTO_EXPORT corto_secure_accessKind _corto_secure_lock_authorize(
     corto_secure_lock _this,
-    corto_object object,
+    corto_string object,
     corto_secure_actionKind action);
 #define corto_secure_lock_authorize(_this, object, action) _corto_secure_lock_authorize(corto_secure_lock(_this), object, action)
 
 CORTO_EXPORT corto_secure_accessKind _corto_secure_lock_authorize_v(
     corto_secure_lock _this,
-    corto_object object,
+    corto_string object,
     corto_secure_actionKind action);
 #define corto_secure_lock_authorize_v(_this, object, action) _corto_secure_lock_authorize_v(corto_secure_lock(_this), object, action)
 

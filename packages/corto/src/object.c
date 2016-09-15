@@ -12,7 +12,7 @@
 extern corto_mutex_s corto_adminLock;
 
 static corto_object corto_adopt(corto_object parent, corto_object child);
-static corto_int32 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
+static corto_int16 corto_notify(corto__observable *_o, corto_object observable, corto_uint32 mask);
 static void corto_olsDestroy(corto__scope *scope);
 
 extern corto_int8 CORTO_OLS_REPLICATOR;
@@ -1071,6 +1071,11 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
         goto error;
     }
 
+    if (!corto_authorized(parent, CORTO_SECURE_ACTION_CREATE)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto access_error;
+    }
+
     /* Create new object */
     do {
         corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_SCOPED);
@@ -1191,6 +1196,7 @@ error:
     if (o) {
         corto_delete(o);
     }
+access_error:
 owner_error:
     return NULL;
 }
@@ -1638,6 +1644,11 @@ corto_int16 corto_suspend(corto_object o) {
 corto_int16 corto_delete(corto_object o) {
     if (!o) {
         corto_critical("NULL passed to corto_delete");
+    }
+
+    if (!corto_authorized(o, CORTO_SECURE_ACTION_DELETE)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto error;
     }
 
     if (!corto_owned(o)) {
@@ -2887,7 +2898,13 @@ corto_object corto_lookupLowercase(corto_object o, corto_string id) {
         }
     }
 
+    if (!corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto access_error;
+    }
+
     return o;
+access_error:
 error:
     return NULL;
 }
@@ -3436,12 +3453,23 @@ corto_object corto_getOwner() {
     return result;
 }
 
-static corto_int32 corto_notify(corto__observable* _o, corto_object observable, corto_uint32 mask) {
+static corto_int16 corto_notify(corto__observable* _o, corto_object observable, corto_uint32 mask) {
     corto_object *parent;
     corto_object this = NULL;
     corto_object owner = NULL;
     corto__observer **observers;
     int depth = 0;
+
+    /* Notify fails if process isn't authorized to update observable */
+    if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto error;
+    }
+
+    /* Don't notify observers if process isn't authorized to read object */
+    if (!corto_authorized(observable, CORTO_SECURE_ACTION_READ)) {
+        goto access_error;
+    }
 
     /* If a mount is notifying, update statistics */
     if ((owner = corto_getOwner())) {
@@ -3488,7 +3516,10 @@ static corto_int32 corto_notify(corto__observable* _o, corto_object observable, 
         }
     }
 
+access_error:
     return 0;
+error:
+    return -1;
 }
 
 /* Publish new value for object */
@@ -3501,6 +3532,8 @@ corto_int16 corto_publish(
 {
     corto_object o = corto_lookup(NULL, id);
     corto_int16 result = 0;
+
+    CORTO_UNUSED(type);
 
     if (o) {
         switch(event) {
@@ -3533,6 +3566,12 @@ corto_int16 corto_update(corto_object o) {
         goto error;
     }
 
+    /* Update fails if process isn't authorized to update observable */
+    if (!corto_authorized(o, CORTO_SECURE_ACTION_UPDATE)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto error;
+    }
+
     if (!corto_checkState(o, CORTO_DEFINED)) {
         mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
     }
@@ -3560,6 +3599,12 @@ error:
 corto_int16 corto_updateBegin(corto_object o) {
     corto__observable *_o;
     corto__writable* _wr;
+
+    /* Update fails if process isn't authorized to update observable */
+    if (!corto_authorized(o, CORTO_SECURE_ACTION_UPDATE)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto error;
+    }
 
     if (!corto_checkState(o, CORTO_DEFINED)) {
         corto_resumeDeclared(o);
@@ -3602,6 +3647,12 @@ error:
 corto_int16 corto_updateTry(corto_object observable) {
     corto__writable* _wr;
 
+    /* Notify fails if process isn't authorized to update observable */
+    if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
+        corto_seterr("access denied: %s", corto_lasterr());
+        goto error;
+    }
+
     _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     if (_wr) {
         if (corto_rwmutexTryWrite(&_wr->align.lock) == CORTO_LOCK_BUSY) {
@@ -3613,6 +3664,8 @@ corto_int16 corto_updateTry(corto_object observable) {
     }
 
     return 0;
+error:
+    return -1;
 busy:
     return CORTO_LOCK_BUSY;
 }
