@@ -46,6 +46,7 @@ CORTO_CLASS_DEF(corto_serializer) {
     corto_operatorKind accessKind; /* OR, XOR, NOT */
     corto_aliasActionKind aliasAction;
     corto_optionalActionKind optionalAction;
+    corto_bool visitAllCases; /* If TRUE, serializer will visit all union cases */
     corto_serializerTraceKind traceKind;
     corto_serializerConstruct construct;
     corto_serializerDestruct destruct;

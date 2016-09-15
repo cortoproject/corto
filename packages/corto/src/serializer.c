@@ -69,6 +69,7 @@ void corto_serializerInit(corto_serializer this) {
     this->accessKind = CORTO_XOR;
     this->aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
     this->optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    this->visitAllCases = FALSE;
 }
 
 /* Start serializing */
@@ -278,7 +279,7 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     }
 
     /* Process members */
-    if (corto_typeof(t) == corto_type(corto_union_o)) {
+    if (!this->visitAllCases && (corto_typeof(t) == corto_type(corto_union_o))) {
         corto_int32 discriminator = *(corto_int32*)v;
         corto_member member = corto_union_findCase(t, discriminator);
         if (member) {
