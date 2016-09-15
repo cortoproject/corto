@@ -160,6 +160,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <StringDeserializer.h>
 #include <StringReplicator.h>
 #include <StringSerializer.h>
+#include <ValueCast.h>
+#include <ValueExpr.h>
 #include <VoidParent.h>
 
 #ifdef __cplusplus

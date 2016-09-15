@@ -525,20 +525,53 @@ void corto_convertInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-corto_int16 _corto_convert(corto_primitive fromType, void *from, corto_primitive toType, void *to) {
+corto_int16 _corto_convert(corto_type fromType, void *from, corto_type toType, void *to) {
     corto_conversion c;
 
-    /* Get conversion */
-    c = _conversions[fromType->convertId][toType->convertId];
-    if (c) {
-        if (c(fromType, from, toType, to)) {
-            /* Conversion failed */
+    if (fromType->reference) {
+        if (toType->reference) {
+            if (corto_type_castable(toType, fromType)) {
+                *(corto_object*)to = *(corto_object*)from;
+            } else {
+                corto_seterr("reference types '%s' and '%s' are not castable",
+                  corto_fullpath(NULL, fromType),
+                  corto_fullpath(NULL, toType));
+                goto error;
+            }
+        } else if (toType->kind == CORTO_PRIMITIVE) {
+            if (corto_primitive(toType)->kind == CORTO_BOOLEAN) {
+                *(corto_bool*)to = *(corto_object*)from ? TRUE : FALSE;
+            } else if (corto_primitive(toType)->kind == CORTO_TEXT) {
+                corto_id id;
+                corto_setstr((corto_string*)to,
+                  corto_fullpath(id, *(corto_object*)from));
+            } else {
+                corto_seterr(
+                  "cannot cast reference type '%s' to primitive type '%s'",
+                  corto_fullpath(NULL, fromType),
+                  corto_fullpath(NULL, toType));
+                goto error;
+            }
+        } else {
+            corto_seterr(
+              "cannot cast reference type '%s' to type '%s'",
+              corto_fullpath(NULL, fromType),
+              corto_fullpath(NULL, toType));
             goto error;
         }
-    } else {
-        corto_seterr("no conversion possible from primitive type '%s' to '%s'.",
-            corto_fullpath(NULL, fromType), corto_fullpath(NULL, toType));
-        goto error;
+    } else if (fromType->kind == CORTO_PRIMITIVE) {
+        /* Get conversion */
+        c = _conversions[corto_primitive(fromType)->convertId][corto_primitive(toType)->convertId];
+        if (c) {
+            if (c(corto_primitive(fromType), from, corto_primitive(toType), to)) {
+                /* Conversion failed */
+                goto error;
+            }
+        } else {
+            corto_seterr("no conversion possible from primitive type '%s' to '%s'.",
+                corto_fullpath(NULL, fromType), corto_fullpath(NULL, toType));
+            goto error;
+        }
     }
 
     return 0;

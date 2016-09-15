@@ -53,6 +53,10 @@ static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) 
     *(corto_string*)result = corto_alloc(len + 1);
     sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
 }
+static void CORTO_NAME_BINARYOP(string,assign)(void* op1, void* op2, void* result) {
+    corto_setstr((corto_string*)result, *(corto_string*)op2);
+    corto_setstr((corto_string*)op1, *(corto_string*)op2);
+}
 
 
 #define CORTO_INTEGER_UNARY_OPS(type) \
@@ -131,6 +135,7 @@ CORTO_NUMERIC_BINARY_OP(bool, ==, cond_eq)
 CORTO_NUMERIC_BINARY_OP(bool, !=, cond_neq)
 CORTO_NUMERIC_BINARY_OP(bool, ||, cond_or)
 CORTO_NUMERIC_BINARY_OP(bool, &&, cond_and)
+CORTO_NUMERIC_BINARY_OP(bool, =, assign)
 
 /* Integer operator implementations */
 CORTO_INTEGER_OPS(octet)
@@ -230,8 +235,8 @@ CORTO_FLOAT_BINARY_OPS_INIT(typeKind, typeWidth, type)
 #define CORTO_STRING_OPS_INIT()\
 CORTO_STRING_OP_INIT(CORTO_COND_EQ, cond_eq)\
 CORTO_STRING_OP_INIT(CORTO_COND_NEQ, cond_neq)\
+CORTO_STRING_OP_INIT(CORTO_ASSIGN, assign)\
 CORTO_STRING_OP_INIT(CORTO_ADD, add)
-
 
 void corto_operatorInit(void) {
     CORTO_UNARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_NOT, bool, cond_not);
@@ -239,6 +244,7 @@ void corto_operatorInit(void) {
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_NEQ, bool, cond_neq);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_OR, bool, cond_or);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_AND, bool, cond_and);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_ASSIGN, bool, assign);
 
     CORTO_INTEGER_OPS_INIT(CORTO_BINARY, CORTO_WIDTH_8, octet);
     CORTO_INTEGER_OPS_INIT(CORTO_BINARY, CORTO_WIDTH_WORD, word);
@@ -293,45 +299,6 @@ corto_int16 corto_binaryOperator(corto_type type, corto_operatorKind operator, v
             goto error;
         }
     }
-
-    return 0;
-error:
-    return -1;
-}
-
-corto_int16 corto_value_unaryOperator(
-    corto_operatorKind _operator,
-    corto_value *value,
-    corto_value *result)
-{
-    corto_uint64 v;
-    corto_type t = corto_value_getType(value);
-    if (corto_unaryOperator(t, _operator, corto_value_getPtr(value), &v)) {
-        goto error;
-    }
-    *result = corto_value_value(t, (void*)&v);
-
-    return 0;
-error:
-    return -1;
-}
-
-corto_int16 corto_value_binaryOperator(corto_operatorKind _operator, corto_value *operand1, corto_value *operand2, corto_value *result)
-{
-    corto_uint64 v;
-    corto_type t1 = corto_value_getType(operand1);
-    corto_type t2 = corto_value_getType(operand2);
-
-    if (corto_binaryOperator(
-        t1,
-        _operator,
-        corto_value_getPtr(operand1),
-        corto_value_getPtr(operand2),
-        &v))
-    {
-        goto error;
-    }
-    *result = corto_value_value(t1, (void*)&v);
 
     return 0;
 error:

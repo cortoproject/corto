@@ -738,7 +738,7 @@ class Cat : Animal::
 void ol_inherit(Animal a)
 void ol_inherit(Dog a)
 
-// Functio overloading test suite
+// Function overloading test suite
 test/Suite Overload::
     void tc_ambiguous()
     void tc_ambiguousWildcard()
@@ -1045,3 +1045,63 @@ test/Suite Buffer::
 // Test loader
 test/Suite Loader::
     void tc_loadNonExistent()
+
+// Test value casting
+test/Suite ValueCast::
+    void tc_castBoolBinary()
+    void tc_castBoolInt()
+    void tc_castBoolUint()
+    void tc_castBoolString()
+    void tc_castBinaryBool()
+    void tc_castBinaryChar()
+    void tc_castBinaryInt()
+    void tc_castBinaryUint()
+    void tc_castBinaryFloat()
+    void tc_castBinaryString()
+    void tc_castIntBinary()
+    void tc_castIntBool()
+    void tc_castIntChar()
+    void tc_castIntUint()
+    void tc_castIntFloat()
+    void tc_castIntString()
+    void tc_castFloatBool()
+    void tc_castFloatInt()
+    void tc_castFloatUint()
+    void tc_castFloatString()
+    void tc_castEnumInt()
+    void tc_castEnumUint()
+    void tc_castEnumString()
+    void tc_castBitmaskInt()
+    void tc_castBitmaskUint()
+    void tc_castBitmaskString()
+    void tc_castStringBool()
+    void tc_castStringBinary()
+    void tc_castStringInt()
+    void tc_castStringUint()
+    void tc_castStringFloat()
+    void tc_castStringEnum()
+
+// Test value expressions
+test/Suite ValueExpr::
+    void tc_add()
+    void tc_sub()
+    void tc_mul()
+    void tc_div()
+    void tc_mod()
+    void tc_and()
+    void tc_or()
+    void tc_condAnd()
+    void tc_condOr()
+    void tc_condNot()
+    void tc_exprAddIntFlt()
+    void tc_exprAddFltInt()
+    void tc_exprAddIntStr()
+    void tc_exprAddStrInt()
+    void tc_exprAddStrStr()
+    void tc_exprAssignIntInt()
+    void tc_exprAssignIntFlt()
+    void tc_exprAssignFltInt()
+    void tc_exprAssignIntStr()
+    void tc_exprAssignStrInt()
+    void tc_exprAssignStrStr()
+    void tc_exprAssignBoolRef()

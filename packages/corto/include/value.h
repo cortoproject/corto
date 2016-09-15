@@ -115,6 +115,12 @@ corto_value corto_value_constant(corto_object o, corto_constant* c, void* v);
 corto_value _corto_value_element(corto_object o, corto_type t, corto_uint32 index, void* v);
 corto_value corto_value_mapElement(corto_object o, corto_type t, corto_type keyType, corto_void *key, void* v);
 corto_value corto_value_literal(corto_literalKind kind, void* value);
+corto_value corto_value_literalBoolean(corto_bool value);
+corto_value corto_value_literalCharacter(corto_char value);
+corto_value corto_value_literalUnsignedInteger(corto_uint64 value);
+corto_value corto_value_literalInteger(corto_uint64 value);
+corto_value corto_value_literalFloatingPoint(corto_float64 value);
+corto_value corto_value_literalString(corto_string value);
 
 /* Type safe macro's */
 #define corto_value_object(o, t) _corto_value_object(o, corto_type(t))
@@ -128,6 +134,22 @@ void corto_valueSetValue(corto_value* val, corto_void* v);
 char* corto_strving(corto_value* val, char* buffer, unsigned int length);
 char* corto_valueExpr(corto_value* val, char* buffer, unsigned int length);
 
+/* Expressions */
+corto_int16 corto_binaryExpr_getType(
+    corto_type leftType,
+    corto_bool t1ByRef,
+    corto_type rightType,
+    corto_bool t2ByRef,
+    corto_operatorKind _operator,
+    corto_type *operandType,
+    corto_type *resultType);
+
+corto_int16 corto_value_unaryOperator(corto_operatorKind _operator, corto_value *value, corto_value *result);
+corto_int16 corto_value_binaryOperator(corto_operatorKind _operator, corto_value *operand1, corto_value *operand2, corto_value *result);
+
+#define corto_value_cast(in, dstType, out) _corto_value_cast(in, corto_type(dstType), out)
+corto_int16 _corto_value_cast(corto_value *in, corto_type dstType, corto_value *out);
+void corto_value_free(corto_value *v);
 
 #ifdef __cplusplus
 }
