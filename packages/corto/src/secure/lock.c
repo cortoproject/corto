@@ -8,6 +8,10 @@
 
 #include <corto/secure/secure.h>
 
+/* $header() */
+corto_int16 corto_secure_registerLock(corto_secure_lock lock);
+/* $end */
+
 corto_secure_accessKind _corto_secure_lock_authorize_v(
     corto_secure_lock this,
     corto_object object,
@@ -28,9 +32,13 @@ corto_int16 _corto_secure_lock_construct(
 {
 /* $begin(corto/secure/lock/construct) */
 
-    CORTO_UNUSED(this);
-    return 0;
+    if (corto_secure_registerLock(this)) {
+        goto error;
+    }
 
+    return 0;
+error:
+    return -1;
 /* $end */
 }
 

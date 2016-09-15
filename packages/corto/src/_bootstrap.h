@@ -339,6 +339,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 /* constant object */
 #define CORTO_CONSTANT_O(parent, name) sso_constant parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_constant), CORTO_##name}
 
+/* constant object in secure scope */
+#define CORTO_SECURE_CONSTANT_O(parent, name) sso_constant parent##_SECURE_##name##__o = {CORTO_SSO_PO_V(parent, #name, lang_constant), CORTO_SECURE_##name}
+
 /* struct object */
 #define CORTO_STRUCT_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType) sso_struct parent##_##name##__o = \
     {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_NOBASE_V(parent, name, CORTO_STRUCT, FALSE, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE)}
@@ -715,15 +718,15 @@ CORTO_ENUM_O(core, frameKind);
     CORTO_CONSTANT_O(core_frameKind, FRAME_DEPTH);
 
 CORTO_ENUM_O(secure, accessKind);
-    CORTO_CONSTANT_O(secure_accessKind, SECURE_ACCESS_GRANTED);
-    CORTO_CONSTANT_O(secure_accessKind, SECURE_ACCESS_DENIED);
-    CORTO_CONSTANT_O(secure_accessKind, SECURE_ACCESS_UNDEFINED);
+    CORTO_SECURE_CONSTANT_O(secure_accessKind, ACCESS_GRANTED);
+    CORTO_SECURE_CONSTANT_O(secure_accessKind, ACCESS_DENIED);
+    CORTO_SECURE_CONSTANT_O(secure_accessKind, ACCESS_UNDEFINED);
 
 CORTO_ENUM_O(secure, actionKind);
-    CORTO_CONSTANT_O(secure_actionKind, SECURE_ACTION_CREATE);
-    CORTO_CONSTANT_O(secure_actionKind, SECURE_ACTION_READ);
-    CORTO_CONSTANT_O(secure_actionKind, SECURE_ACTION_UPDATE);
-    CORTO_CONSTANT_O(secure_actionKind, SECURE_ACTION_DELETE);
+    CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_CREATE);
+    CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_READ);
+    CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_UPDATE);
+    CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_DELETE);
 
 CORTO_BITMASK_O(lang, state);
     CORTO_CONSTANT_O(lang_state, VALID);
@@ -1327,7 +1330,7 @@ CORTO_CLASS_NOBASE_O(secure, key, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
 /* /corto/secure/lock */
 CORTO_FW_CD(secure, lock);
 CORTO_CLASS_NOBASE_O(secure, lock, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
-    CORTO_MEMBER_O(secure_lock, mount, lang_object, CORTO_GLOBAL);
+    CORTO_MEMBER_O(secure_lock, mount, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(secure_lock, expr, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(secure_lock, priority, lang_int16, CORTO_GLOBAL);
     CORTO_METHOD_O(secure_lock, construct, "()", lang_int16, FALSE, corto_observableEvent_handle_v);

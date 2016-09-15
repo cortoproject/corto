@@ -45,7 +45,7 @@ CORTO_CLASS_DEF(corto_secure_key) {
 CORTO_CLASS(corto_secure_lock);
 
 CORTO_CLASS_DEF(corto_secure_lock) {
-    corto_object mount;
+    corto_string mount;
     corto_string expr;
     corto_int16 priority;
 };

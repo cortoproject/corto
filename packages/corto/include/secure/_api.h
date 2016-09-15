@@ -114,13 +114,13 @@ CORTO_EXPORT corto_equalityKind _corto_secure_keyCompare(corto_secure_key dst, c
 #define corto_secure_keyCompare(dst, src) _corto_secure_keyCompare(corto_secure_key(dst), corto_secure_key(src))
 
 /* /corto/secure/lock */
-CORTO_EXPORT corto_secure_lock _corto_secure_lockCreate(corto_object mount, corto_string expr, corto_int16 priority);
+CORTO_EXPORT corto_secure_lock _corto_secure_lockCreate(corto_string mount, corto_string expr, corto_int16 priority);
 #define corto_secure_lockCreate(mount, expr, priority) _corto_secure_lockCreate(mount, expr, priority)
 #define corto_secure_lockCreate_auto(_name, mount, expr, priority) corto_secure_lock _name = corto_secure_lockCreate(mount, expr, priority); (void)_name
-CORTO_EXPORT corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, corto_string _name, corto_object mount, corto_string expr, corto_int16 priority);
+CORTO_EXPORT corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, corto_string _name, corto_string mount, corto_string expr, corto_int16 priority);
 #define corto_secure_lockCreateChild(_parent, _name, mount, expr, priority) _corto_secure_lockCreateChild(_parent, _name, mount, expr, priority)
 #define corto_secure_lockCreateChild_auto(_parent, _name, mount, expr, priority) corto_secure_lock _name = corto_secure_lockCreateChild(_parent, #_name, mount, expr, priority); (void)_name
-CORTO_EXPORT corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_object mount, corto_string expr, corto_int16 priority);
+CORTO_EXPORT corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_string mount, corto_string expr, corto_int16 priority);
 #define corto_secure_lockUpdate(_this, mount, expr, priority) _corto_secure_lockUpdate(corto_secure_lock(_this), mount, expr, priority)
 
 CORTO_EXPORT corto_secure_lock _corto_secure_lockDeclare(void);
@@ -129,9 +129,9 @@ CORTO_EXPORT corto_secure_lock _corto_secure_lockDeclare(void);
 CORTO_EXPORT corto_secure_lock _corto_secure_lockDeclareChild(corto_object _parent, corto_string _name);
 #define corto_secure_lockDeclareChild(_parent, _name) _corto_secure_lockDeclareChild(_parent, _name)
 #define corto_secure_lockDeclareChild_auto(_parent, _name) corto_secure_lock _name = corto_secure_lockDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_secure_lockDefine(corto_secure_lock _this, corto_object mount, corto_string expr, corto_int16 priority);
+CORTO_EXPORT corto_int16 _corto_secure_lockDefine(corto_secure_lock _this, corto_string mount, corto_string expr, corto_int16 priority);
 #define corto_secure_lockDefine(_this, mount, expr, priority) _corto_secure_lockDefine(corto_secure_lock(_this), mount, expr, priority)
-CORTO_EXPORT corto_secure_lock _corto_secure_lockAssign(corto_secure_lock _this, corto_object mount, corto_string expr, corto_int16 priority);
+CORTO_EXPORT corto_secure_lock _corto_secure_lockAssign(corto_secure_lock _this, corto_string mount, corto_string expr, corto_int16 priority);
 #define corto_secure_lock__optional_NotSet NULL
 #define corto_secure_lock__optional_Set(mount, expr, priority) corto_secure_lockAssign((corto_secure_lock*)corto_calloc(sizeof(corto_secure_lock)), mount, expr, priority)
 #define corto_secure_lock__optional_SetCond(cond, mount, expr, priority) cond ? corto_secure_lockAssign((corto_secure_lock*)corto_calloc(sizeof(corto_secure_lock)), mount, expr, priority) : NULL
