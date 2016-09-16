@@ -839,5 +839,10 @@ void cortotool_createHelp(void) {
     printf("   --local        Create a project that won't be installed in the Corto repository\n");
     printf("   --nocorto      Create a package that doens't use any Corto functionality\n");
     printf("   --notest       Do not create a test skeleton\n");
+    printf("   --nodef        Do not generate a definition file\n");
+    printf("   --nobuild      Do not build the project after creating it\n");
+    printf("   --nocoverage   Disable coverage analysis for project\n");
+    printf("   --silent       Suppress output from stdout\n");
+    printf("   --mute         Suppress output from stdout and stderr\n");
     printf("\n");
 }

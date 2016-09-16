@@ -62,7 +62,7 @@ error:
 /* Build a project */
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll silent, mute, coverage, optimize, dirs, release, debug, verbose, singlethread;
+    corto_ll silent, mute, coverage, dirs, release, debug, verbose, singlethread;
 
     CORTO_UNUSED(argc);
 
@@ -74,7 +74,6 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--mute", &mute, NULL},
         {"--verbose", &verbose, NULL},
         {"--nocoverage", &coverage, NULL},
-        {"--optimize", &optimize, NULL},
         {"--release", &release, NULL},
         {"--debug", &debug, NULL},
         {"--singlethread", &singlethread, NULL},
@@ -89,7 +88,6 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
       {
           "rake",
           coverage ? "coverage=false" : "coverage=true",
-          optimize ? "optimize=true" : "optimize=false",
           release ? "target=release" : "target=debug",
           verbose ? "verbose=true" : "verbose=false",
           singlethread ? "multithread=false" : "multithread=true",
@@ -123,7 +121,6 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"--mute", NULL, NULL},
         {"--verbose", &verbose, NULL},
         {"--nocoverage", NULL, NULL}, /* Ignore coverage */
-        {"--optimize", NULL, NULL}, /* Ignore optimize */
         {"--release", NULL, NULL}, /* Ignore release */
         {"--debug", NULL, NULL}, /* Ignore debug */
         {"--singlethread", NULL, NULL}, /* Ignore singlethread */
@@ -216,6 +213,9 @@ void cortotool_buildHelp(void) {
     printf("Options:\n");
     printf("   --debug         Create a debug build [default]\n");
     printf("   --release       Create a release build\n");
+    printf("   --singlethread  Disable multithreaded builds\n");
+    printf("   --optimize      Enable optimizations\n");
+    printf("   --verbose       Verbose output. Sets CORTO_VERBOSITY to 'TRACE'\n");
     printf("   --silent        No writing to stdout\n");
     printf("   --mute          No writing to stdout and stderr\n");
     printf("\n");
@@ -230,8 +230,8 @@ void cortotool_rebuildHelp(void) {
     printf("Options:\n");
     printf("   --debug         Create a debug build [default]\n");
     printf("   --release       Create a release build\n");
-    printf("   --silent        No writing to stdout\n");
-    printf("   --mute          No writing to stdout and stderr\n");
+    printf("   --silent        Suppress output from stdout\n");
+    printf("   --mute          Suppress output from stdout and stderr\n");
     printf("\n");
 }
 

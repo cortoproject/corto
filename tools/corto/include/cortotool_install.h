@@ -22,6 +22,7 @@ void cortotool_uninstallHelp(void);
 void cortotool_tarHelp(void);
 void cortotool_untarHelp(void);
 void cortotool_updateHelp(void);
+void cortotool_locateHelp(void);
 
 #ifdef __cplusplus
 }

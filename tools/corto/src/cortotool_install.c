@@ -652,3 +652,17 @@ void cortotool_untarHelp(void) {
     printf("Note: installation requires root priviledges.\n");
     printf("\n");
 }
+
+void cortotool_locateHelp(void) {
+    printf("Usage: corto locate <package>\n");
+    printf("\n");
+    printf("Returns the location of a package when it is installed. Returns -1 if the\n");
+    printf("package is not installed, and 0 if the package is installed.\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("   --lib        Return the path including library name\n");
+    printf("   --path       Return only the path (no library name)\n");
+    printf("   --env        Return only the environment (local or global package repository)\n");
+    printf("   --silent     Do not print anything, just return if the package is installed\n");
+    printf("\n");
+}

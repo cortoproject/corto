@@ -10,15 +10,6 @@
 #include "cortotool_shell.h"
 #include "cortotool_test.h"
 
-void cortotool_locateHelp(void) {
-    printf("Usage: corto locate <package>\n");
-    printf("\n");
-    printf("Find out where a package is located. This can be useful if you're\n");
-    printf("unsure whether you're using a package from the local or global\n");
-    printf("environment.\n");
-    printf("\n");
-}
-
 static void cortotool_printUsage(corto_bool expert) {
     printf("Usage: corto [-d] <command> [args]\n");
     printf("       corto [-d] [files] [loader]\n");

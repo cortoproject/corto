@@ -75,6 +75,12 @@ void cortotool_testHelp(void) {
     printf("       corto test <project>\n");
     printf("       corto test <project> <testcase>\n");
     printf("\n");
+    printf("Options:\n");
+    printf("   --build        Just build tests, do not run test.\n");
+    printf("   --rebuild      Just rebuild tests, do not run tests. Same as combining --build and --clean\n");
+    printf("   --clean        Just clean tests, do not run tests.\n");
+    printf("   --verbose      Verbose output. Sets CORTO_VERBOSITY to 'TRACE'\n");
+    printf("\n");
     printf("Test your Corto project. Returns -1 if tests fails.\n");
     printf("\n");
 }
