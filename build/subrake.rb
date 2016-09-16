@@ -24,7 +24,6 @@ task :collect do
     end
 end
 
-
 task :clean do
     COMPONENTS.each do |e|
         verbose(VERBOSE)
@@ -49,21 +48,27 @@ task :test do
     verbose(VERBOSE)
     error = 0
     COMPONENTS.each do |e|
-        if File.exists? "#{e}" then
-          begin
-            sh "rake test -f #{e}/rakefile"
-          rescue
-            error = 1
-          end
-        end
-    end
-    if File.exists? "test" then
+      if File.exists? "#{e}" then
         begin
-          sh "rake -f test/rakefile silent=true"
-          sh "rake test -f test/rakefile"
+          sh "rake test -f #{e}/rakefile"
         rescue
           error = 1
         end
+      end
+    end
+    if File.exists? "test" then
+      buildCmd = ""
+      if ENV['clean'] == "true" then
+        buildCmd = "clean"
+      elsif ENV['rebuild'] == "true" then
+        buildCmd = "clean default"
+      end
+      begin
+        sh "rake #{buildCmd} -f test/rakefile silent=true"
+        sh "rake test -f test/rakefile"
+      rescue
+        error = 1
+      end
     end
     if error != 0 then
       abort

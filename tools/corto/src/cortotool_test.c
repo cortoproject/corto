@@ -7,7 +7,7 @@
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testcaseArg = NULL;
     corto_int8 ret, sig, err = 0;
-    corto_ll verbose, project, testcase, buildonly;
+    corto_ll verbose, project, testcase, build, rebuild, clean;
 
     CORTO_UNUSED(argc);
 
@@ -16,7 +16,9 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore 'test' */
         {"--verbose", &verbose, NULL},
-        {"--build", &buildonly, NULL},
+        {"--build", &build, NULL},
+        {"--rebuild", &rebuild, NULL},
+        {"--clean", &clean, NULL},
         {"$?*", &project, NULL},
         {"$+*", &testcase, NULL},
         {NULL}
@@ -40,11 +42,13 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
           "rake",
           "test",
           verbose ? "verbose=true" : "verbose=false",
-          buildonly ? "buildonly=true" : "buildonly=false",
+          build ? "build=true" : "build=false",
+          rebuild ? "rebuild=true" : "rebuild=false",
+          clean ? "clean=true" : "clean=false",
           testcaseArg,
           NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {
-            if (sig > 0) {
+            if ((sig > 0) && !(build || rebuild || clean)) {
                 corto_error("Aww, tests failed.");
             }
             err = 1;
@@ -52,7 +56,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
         if (err) {
             goto error;
-        } else {
+        } else if (!(build || rebuild || clean)) {
             printf("%sYay, all green :-)%s\n", GREEN, NORMAL);
         }
 

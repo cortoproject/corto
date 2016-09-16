@@ -264,7 +264,13 @@ task :test do
   file = ""
   if File.exists? "test/rakefile" then
     begin
-      cmd "rake -f test/rakefile silent=true"
+      buildCmd = ""
+      if ENV['clean'] == "true" then
+        buildCmd = "clean"
+      elsif ENV['rebuild'] == "true" then
+        buildCmd = "clean default"
+      end
+      cmd "rake #{buildCmd} -f test/rakefile silent=true"
     rescue
       STDERR.puts "\033[1;31mcorto:\033[0;49m failed to build test"
       abort
@@ -277,7 +283,10 @@ task :test do
     file = ".corto/libtest.so"
   end
 
-  if file != "" and ENV["buildonly"] != "true" then
+  if file != "" and ENV["build"] != "true" and
+                    ENV["rebuild"] != "true" and
+                    ENV["clean"] != "true"
+  then
     begin
       cmd "corto #{file} #{ENV['testcase']}"
     rescue
