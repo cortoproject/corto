@@ -40,7 +40,6 @@ corto_string _corto_secure_key_authenticate(
 corto_secure_accessKind _corto_secure_lock_authorize(
     corto_secure_lock this,
     corto_string token,
-    corto_string object,
     corto_secure_actionKind action)
 {
     static corto_uint32 _methodId;
@@ -52,18 +51,18 @@ corto_secure_accessKind _corto_secure_lock_authorize(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "authorize(string token,string object,secure/actionKind action)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "authorize(string token,secure/actionKind action)");
     }
-    corto_assert(_methodId, "virtual 'authorize(string token,string object,secure/actionKind action)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'authorize(string token,secure/actionKind action)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::authorize(string token,string object,secure/actionKind action)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::authorize(string token,secure/actionKind action)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_secure_accessKind ___ (*)(corto_object, corto_string, corto_string, corto_secure_actionKind))((corto_function)_method)->fptr)(this, token, object, action);
+        _result = ((corto_secure_accessKind ___ (*)(corto_object, corto_string, corto_secure_actionKind))((corto_function)_method)->fptr)(this, token, action);
     } else {
-        corto_call(corto_function(_method), &_result, this, token, object, action);
+        corto_call(corto_function(_method), &_result, this, token, action);
     }
     
     return _result;

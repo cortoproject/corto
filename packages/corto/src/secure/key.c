@@ -58,7 +58,7 @@ static corto_int16 corto_secure_getObjectDepth(corto_id id) {
     return result;
 }
 
-static corto_bool corto_secure_matchLock(char *lockId, char *id) {
+static char* corto_secure_matchLock(char *lockId, char *id) {
     char *lPtr = lockId, *idPtr = id;
     char lCh, idCh;
 
@@ -67,7 +67,14 @@ static corto_bool corto_secure_matchLock(char *lockId, char *id) {
         idPtr++;
     }
 
-    return *lPtr == '\0';
+    if (*lPtr == '\0') {
+        if (*idPtr == '/') {
+            idPtr ++;
+        }
+        return idPtr;
+    } else {
+        return NULL;
+    }
 }
 
 corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
@@ -111,7 +118,12 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                 corto_iter it = corto_llIter(locks);
                 while (corto_iterHasNext(&it)) {
                     corto_secure_lock lock = corto_iterNext(&it);
-                    if (!corto_secure_matchLock(lock->mount, objectId)) {
+                    char *expr;
+                    if (!(expr = corto_secure_matchLock(lock->mount, objectId))) {
+                        continue;
+                    }
+
+                    if (lock->expr && *expr && !corto_match(lock->expr, expr)) {
                         continue;
                     }
 
@@ -132,21 +144,20 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                             if (!corto_secure_token) {
                                 result = CORTO_SECURE_ACCESS_DENIED;
                             } else {
-                                result = corto_secure_lock_authorize(lock, corto_secure_token, objectId, access);
+                                result = corto_secure_lock_authorize(lock, corto_secure_token, access);
                             }
 
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
                              * a higher priority than what was set */
-                            if ((allowed == CORTO_SECURE_ACCESS_UNDEFINED) ||
-                               ((allowed == CORTO_SECURE_ACCESS_GRANTED) &&
-                                (result != CORTO_SECURE_ACCESS_UNDEFINED)) ||
-                               ((allowed == CORTO_SECURE_ACCESS_DENIED) &&
-                                (lock->priority > priority)))
-                            {
-                                  allowed = result;
-                                  priority = lock->priority;
-                                  currentDepth = depth;
+                            if (result != CORTO_SECURE_ACCESS_UNDEFINED) {
+                                if ((allowed != CORTO_SECURE_ACCESS_DENIED) ||
+                                    (lock->priority > priority))
+                                {
+                                      allowed = result;
+                                      priority = lock->priority;
+                                      currentDepth = depth;
+                                }
                             }
                         }
                     }

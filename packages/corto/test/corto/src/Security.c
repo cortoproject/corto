@@ -507,8 +507,24 @@ corto_void _test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantLowerDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -517,8 +533,25 @@ corto_void _test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantLowerDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b != NULL);
+    corto_release(b);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -527,8 +560,25 @@ corto_void _test_Security_tc_lockDenyGrantLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantLowerDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b != NULL);
+    corto_release(b);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -537,8 +587,24 @@ corto_void _test_Security_tc_lockDenyGrantSameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantSameDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -547,18 +613,51 @@ corto_void _test_Security_tc_lockDenyGrantSameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantSameDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b != NULL);
+    corto_release(b);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantSameDepthSamePrioDenyGrant(
+corto_void _test_Security_tc_lockDenyGrantSameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantSameDepthSamePrioDenyGrant) */
+/* $begin(test/Security/tc_lockDenyGrantSameDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -567,8 +666,24 @@ corto_void _test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedLowerDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -577,8 +692,24 @@ corto_void _test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedLowerDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -587,8 +718,24 @@ corto_void _test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedLowerDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -597,8 +744,24 @@ corto_void _test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedSameDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -607,18 +770,50 @@ corto_void _test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedSameDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedSameDepthSamePrioDenyGrant(
+corto_void _test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedSameDepthSamePrioDenyGrant) */
+/* $begin(test/Security/tc_lockDenyUndefinedSameDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -627,8 +822,25 @@ corto_void _test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenyLowerDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b != NULL);
+    corto_release(b);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -637,8 +849,24 @@ corto_void _test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenyLowerDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -647,8 +875,24 @@ corto_void _test_Security_tc_lockGrantDenyLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenyLowerDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -657,8 +901,25 @@ corto_void _test_Security_tc_lockGrantDenySameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenySameDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b != NULL);
+    corto_release(b);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -667,18 +928,83 @@ corto_void _test_Security_tc_lockGrantDenySameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenySameDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenySameDepthSamePrioDenyGrant(
+corto_void _test_Security_tc_lockGrantDenySameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenySameDepthSamePrioDenyGrant) */
+/* $begin(test/Security/tc_lockGrantDenySameDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
+
+/* $end */
+}
+
+corto_void _test_Security_tc_lockSwitchUser(
+    test_Security this)
+{
+/* $begin(test/Security/tc_lockSwitchUser) */
+    test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule r1 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleListInsert(l->rules, &r1);
+    test_AccessRule r2 = {"token_user02", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(l->rules, &r2);
+
+    corto_string token1 = corto_login("Ford Prefect", "42");
+    test_assert(token1 != NULL);
+    corto_string prev = corto_authenticate(token1);
+    test_assert(prev == NULL);
+
+    corto_int32 *b = corto_resolve(root_o, "/a/b");
+    test_assert(b != NULL);
+    corto_release(b);
+
+    corto_string token2 = corto_login("Marvin", "android");
+    test_assert(token2 != NULL);
+    prev = corto_authenticate(token2);
+    test_assert(prev == token1);
+
+    b = corto_resolve(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token2);
 
 /* $end */
 }
@@ -687,8 +1013,24 @@ corto_void _test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenyLowerDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -697,8 +1039,24 @@ corto_void _test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenyLowerDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -707,8 +1065,24 @@ corto_void _test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenyLowerDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a", "b", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -717,8 +1091,24 @@ corto_void _test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenySameDepthHigherPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
@@ -727,18 +1117,50 @@ corto_void _test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenySameDepthLowerPrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenySameDepthSamePrioDenyGrant(
+corto_void _test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenySameDepthSamePrioDenyGrant) */
+/* $begin(test/Security/tc_lockUndefinedDenySameDepthSamePrio) */
+    corto_string token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    corto_string prev = corto_authenticate(token);
+    test_assert(prev == NULL);
 
-    /* << Insert implementation >> */
+    test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule uR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleListInsert(upper->rules, &uR);
+
+    test_TestLock lower = test_TestLockCreate("/a/b", ".", 0, NULL);
+    test_AccessRule lR = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_UNDEFINED};
+    test_AccessRuleListInsert(lower->rules, &lR);
+
+    corto_int32 *b = corto_lookup(root_o, "/a/b");
+    test_assert(b == NULL);
+
+    prev = corto_authenticate(prev);
+    test_assert(prev == token);
 
 /* $end */
 }

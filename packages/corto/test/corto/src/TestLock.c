@@ -11,7 +11,6 @@
 corto_secure_accessKind _test_TestLock_authorize(
     test_TestLock this,
     corto_string token,
-    corto_string object,
     corto_secure_actionKind action)
 {
 /* $begin(test/TestLock/authorize) */

@@ -1042,8 +1042,8 @@ CORTO_EXPORT void corto_augmentseqClear(corto_augmentseq *seq);
 /* /corto/core/mountSubscriptionList */
 #define corto_mountSubscriptionListForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
-    corto_mountSubscription *elem;\
-    while(corto_iterHasNext(&elem##_iter) ? elem = (corto_mountSubscription*)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
+    corto_mountSubscription elem;\
+    while(corto_iterHasNext(&elem##_iter) ? elem = *(corto_mountSubscription*)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
 
 CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list);
 CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsert(corto_mountSubscriptionList list, corto_mountSubscription* element);
@@ -1069,8 +1069,8 @@ CORTO_EXPORT void corto_observerseqClear(corto_observerseq *seq);
 /* /corto/core/resultList */
 #define corto_resultListForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
-    corto_result *elem;\
-    while(corto_iterHasNext(&elem##_iter) ? elem = (corto_result*)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
+    corto_result elem;\
+    while(corto_iterHasNext(&elem##_iter) ? elem = *(corto_result*)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
 
 CORTO_EXPORT corto_result* corto_resultListInsertAlloc(corto_resultList list);
 CORTO_EXPORT corto_result* corto_resultListInsert(corto_resultList list, corto_result* element);

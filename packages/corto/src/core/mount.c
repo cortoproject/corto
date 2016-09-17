@@ -695,7 +695,9 @@ corto_void _corto_mount_subscribe(
     corto_mountSubscription *newSubscription = NULL;
 
     corto_lock(this);
-    corto_mountSubscriptionListForeach(this->subscriptions, s) {
+    corto_iter it = corto_llIter(this->subscriptions);
+    while (corto_iterHasNext(&it)) {
+        corto_mountSubscription *s = corto_iterNext(&it);
         if (!strcmp(s->parent, parent) &&
             !strcmp(s->expr, name) &&
             s->mask == mask)
@@ -737,7 +739,9 @@ corto_void _corto_mount_unsubscribe(
     corto_mountSubscription *found = NULL;
 
     corto_lock(this);
-    corto_mountSubscriptionListForeach(this->subscriptions, s) {
+    corto_iter it = corto_llIter(this->subscriptions);
+    while (corto_iterHasNext(&it)) {
+        corto_mountSubscription *s = corto_iterNext(&it);
         if (!strcmp(s->parent, parent) &&
             !strcmp(s->expr, name) &&
             s->mask == mask)

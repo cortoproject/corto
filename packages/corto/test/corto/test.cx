@@ -1057,7 +1057,7 @@ struct AccessRule::
 
 class TestLock: secure/lock::
     rules: list{AccessRule}
-    secure/accessKind authorize(string token, string object, secure/actionKind action)
+    secure/accessKind authorize(string token, secure/actionKind action)
 
 // Test security
 test/Suite Security::
@@ -1080,30 +1080,31 @@ test/Suite Security::
     void tc_authorizeDeniedUpdate()
     void tc_authorizeDeniedUpdateVoid()
     void tc_authorizeDeniedDelete()
-    void tc_lockDenyGrantSameDepthSamePrioDenyGrant()
+    void tc_lockDenyGrantSameDepthSamePrio()
     void tc_lockDenyGrantSameDepthLowerPrio()
     void tc_lockDenyGrantSameDepthHigherPrio()
     void tc_lockDenyGrantLowerDepthSamePrio()
     void tc_lockDenyGrantLowerDepthHigherPrio()
     void tc_lockDenyGrantLowerDepthLowerPrio()
-    void tc_lockGrantDenySameDepthSamePrioDenyGrant()
+    void tc_lockGrantDenySameDepthSamePrio()
     void tc_lockGrantDenySameDepthLowerPrio()
     void tc_lockGrantDenySameDepthHigherPrio()
     void tc_lockGrantDenyLowerDepthSamePrio()
     void tc_lockGrantDenyLowerDepthHigherPrio()
     void tc_lockGrantDenyLowerDepthLowerPrio()
-    void tc_lockUndefinedDenySameDepthSamePrioDenyGrant()
+    void tc_lockUndefinedDenySameDepthSamePrio()
     void tc_lockUndefinedDenySameDepthLowerPrio()
     void tc_lockUndefinedDenySameDepthHigherPrio()
     void tc_lockUndefinedDenyLowerDepthSamePrio()
     void tc_lockUndefinedDenyLowerDepthHigherPrio()
     void tc_lockUndefinedDenyLowerDepthLowerPrio()
-    void tc_lockDenyUndefinedSameDepthSamePrioDenyGrant()
+    void tc_lockDenyUndefinedSameDepthSamePrio()
     void tc_lockDenyUndefinedSameDepthLowerPrio()
     void tc_lockDenyUndefinedSameDepthHigherPrio()
     void tc_lockDenyUndefinedLowerDepthSamePrio()
     void tc_lockDenyUndefinedLowerDepthHigherPrio()
     void tc_lockDenyUndefinedLowerDepthLowerPrio()
+    void tc_lockSwitchUser()
 
 // Test value casting
 test/Suite ValueCast::

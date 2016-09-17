@@ -1325,7 +1325,7 @@ CORTO_FW_CD(secure, key);
 CORTO_CLASS_NOBASE_O(secure, key, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_METHOD_O(secure_key, construct, "()", lang_int16, FALSE, corto_secure_key_construct);
     CORTO_METHOD_O(secure_key, destruct, "()", lang_void, FALSE, corto_secure_key_destruct);
-    CORTO_METHOD_O(secure_key, authenticate, "(string user,string password)", lang_string, TRUE, corto_secure_key_authenticate);
+    CORTO_METHOD_O(secure_key, authenticate, "(string user,string password)", lang_string, TRUE, corto_secure_key_authenticate_v);
 
 /* /corto/secure/lock */
 CORTO_FW_CD(secure, lock);
@@ -1335,7 +1335,7 @@ CORTO_CLASS_NOBASE_O(secure, lock, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, N
     CORTO_MEMBER_O(secure_lock, priority, lang_int16, CORTO_GLOBAL);
     CORTO_METHOD_O(secure_lock, construct, "()", lang_int16, FALSE, corto_secure_lock_construct);
     CORTO_METHOD_O(secure_lock, destruct, "()", lang_void, FALSE, corto_secure_lock_destruct);
-    CORTO_METHOD_O(secure_lock, authorize, "(string token,string object,secure/actionKind action)", secure_accessKind, TRUE, corto_secure_lock_authorize);
+    CORTO_METHOD_O(secure_lock, authorize, "(string token,secure/actionKind action)", secure_accessKind, TRUE, corto_secure_lock_authorize_v);
 
 #ifdef __cplusplus
 }
