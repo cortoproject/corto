@@ -266,9 +266,9 @@ task :test do
     begin
       buildCmd = ""
       if ENV['clean'] == "true" then
-        buildCmd = "clean"
+        buildCmd = "clobber"
       elsif ENV['rebuild'] == "true" then
-        buildCmd = "clean default"
+        buildCmd = "clobber default"
       end
       cmd "rake #{buildCmd} -f test/rakefile silent=true"
     rescue

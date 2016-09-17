@@ -1046,6 +1046,65 @@ test/Suite Buffer::
 test/Suite Loader::
     void tc_loadNonExistent()
 
+// Key and lock for security tests
+class TestKey: secure/key::
+    string authenticate(string user, string password)
+
+struct AccessRule::
+    user: string
+    action: secure/actionKind
+    access: secure/accessKind
+
+class TestLock: secure/lock::
+    rules: list{AccessRule}
+    secure/accessKind authorize(string token, string object, secure/actionKind action)
+
+// Test security
+test/Suite Security::
+    void setup() method
+    void tc_authenticate()
+    void tc_authenticateFail()
+    void tc_authorizeCreate()
+    void tc_authorizeSelect()
+    void tc_authorizeLookup()
+    void tc_authorizeResolve()
+    void tc_authorizeUpdate()
+    void tc_authorizeUpdateVoid()
+    void tc_authorizeDelete()
+    void tc_authorizeDeniedCreate()
+    void tc_authorizeDeniedSelect()
+    void tc_authorizeDeniedLookup()
+    void tc_authorizeDeniedResolve()
+    void tc_authorizeDeniedScopeClaim()
+    void tc_authorizeDeniedScopeWalk()
+    void tc_authorizeDeniedUpdate()
+    void tc_authorizeDeniedUpdateVoid()
+    void tc_authorizeDeniedDelete()
+    void tc_lockDenyGrantSameDepthSamePrioDenyGrant()
+    void tc_lockDenyGrantSameDepthLowerPrio()
+    void tc_lockDenyGrantSameDepthHigherPrio()
+    void tc_lockDenyGrantLowerDepthSamePrio()
+    void tc_lockDenyGrantLowerDepthHigherPrio()
+    void tc_lockDenyGrantLowerDepthLowerPrio()
+    void tc_lockGrantDenySameDepthSamePrioDenyGrant()
+    void tc_lockGrantDenySameDepthLowerPrio()
+    void tc_lockGrantDenySameDepthHigherPrio()
+    void tc_lockGrantDenyLowerDepthSamePrio()
+    void tc_lockGrantDenyLowerDepthHigherPrio()
+    void tc_lockGrantDenyLowerDepthLowerPrio()
+    void tc_lockUndefinedDenySameDepthSamePrioDenyGrant()
+    void tc_lockUndefinedDenySameDepthLowerPrio()
+    void tc_lockUndefinedDenySameDepthHigherPrio()
+    void tc_lockUndefinedDenyLowerDepthSamePrio()
+    void tc_lockUndefinedDenyLowerDepthHigherPrio()
+    void tc_lockUndefinedDenyLowerDepthLowerPrio()
+    void tc_lockDenyUndefinedSameDepthSamePrioDenyGrant()
+    void tc_lockDenyUndefinedSameDepthLowerPrio()
+    void tc_lockDenyUndefinedSameDepthHigherPrio()
+    void tc_lockDenyUndefinedLowerDepthSamePrio()
+    void tc_lockDenyUndefinedLowerDepthHigherPrio()
+    void tc_lockDenyUndefinedLowerDepthLowerPrio()
+
 // Test value casting
 test/Suite ValueCast::
     void tc_castBoolBinary()

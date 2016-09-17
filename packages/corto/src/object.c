@@ -1071,9 +1071,15 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
         goto error;
     }
 
-    if (!corto_authorized(parent, CORTO_SECURE_ACTION_CREATE)) {
-        corto_seterr("access denied: %s", corto_lasterr());
-        goto access_error;
+    /* Save cycles by not building a path when security is not enabled */
+    if (corto_secured()) {
+        corto_id fullId;
+        corto_fullpath(fullId, parent);
+        strcat(fullId, "/");
+        strcat(fullId, id);
+        if (!corto_authorizedId(fullId, CORTO_SECURE_ACTION_CREATE)) {
+            goto access_error;
+        }
     }
 
     /* Create new object */
@@ -1225,7 +1231,6 @@ corto_object _corto_createChild(corto_object parent, corto_string id, corto_type
 corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_function delegate = NULL;
     corto_int16 result = 0;
-
 
     if (t->kind == CORTO_COMPOSITE) {
         if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
@@ -1647,7 +1652,6 @@ corto_int16 corto_delete(corto_object o) {
     }
 
     if (!corto_authorized(o, CORTO_SECURE_ACTION_DELETE)) {
-        corto_seterr("access denied: %s", corto_lasterr());
         goto error;
     }
 
@@ -2343,6 +2347,20 @@ err_not_scoped:
     return 0;
 }
 
+/* Secure object walk */
+typedef struct corto_scopeWalkSecured_t {
+    corto_scopeWalkAction action;
+    void *userData;
+} corto_scopeWalkSecured_t;
+int corto_scopeWalkSecured(corto_object o, void *userData) {
+    corto_scopeWalkSecured_t *data = userData;
+    int result = 1;
+    if (corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+        result = data->action(o, data->userData);
+    }
+    return result;
+}
+
 /* Walk objects in scope */
 corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* userData) {
     corto_int16 result;
@@ -2357,7 +2375,15 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* 
     if (scope) {
         if (scope->scope) {
             corto_rwmutexRead(&scope->align.scopeLock);
-            result = corto_rbtreeWalk(scope->scope, (corto_walkAction)action, userData);
+            if (!corto_secured()) {
+                result = corto_rbtreeWalk(scope->scope, (corto_walkAction)action, userData);
+            } else {
+                corto_scopeWalkSecured_t walkData = {action, userData};
+                result = corto_rbtreeWalk(
+                    scope->scope,
+                    (corto_walkAction)corto_scopeWalkSecured,
+                    &walkData);
+            }
             corto_rwmutexUnlock(&scope->align.scopeLock);
         }
     }
@@ -2841,6 +2867,11 @@ corto_object corto_lookupLowercase(corto_object o, corto_string id) {
             prev = o;
         }
 
+        if (!elements[i][0]) {
+            o = root_o;
+            continue;
+        }
+
         if (scope) {
             corto_rwmutexRead(&scope->align.scopeLock);
             if ((tree = scope->scope)) {
@@ -2898,13 +2929,13 @@ corto_object corto_lookupLowercase(corto_object o, corto_string id) {
         }
     }
 
-    if (!corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
-        corto_seterr("access denied: %s", corto_lasterr());
+    if (o && !corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
         goto access_error;
     }
 
     return o;
 access_error:
+    corto_release(o);
 error:
     return NULL;
 }
@@ -3462,7 +3493,6 @@ static corto_int16 corto_notify(corto__observable* _o, corto_object observable, 
 
     /* Notify fails if process isn't authorized to update observable */
     if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
-        corto_seterr("access denied: %s", corto_lasterr());
         goto error;
     }
 
@@ -3568,7 +3598,6 @@ corto_int16 corto_update(corto_object o) {
 
     /* Update fails if process isn't authorized to update observable */
     if (!corto_authorized(o, CORTO_SECURE_ACTION_UPDATE)) {
-        corto_seterr("access denied: %s", corto_lasterr());
         goto error;
     }
 
@@ -3602,7 +3631,6 @@ corto_int16 corto_updateBegin(corto_object o) {
 
     /* Update fails if process isn't authorized to update observable */
     if (!corto_authorized(o, CORTO_SECURE_ACTION_UPDATE)) {
-        corto_seterr("access denied: %s", corto_lasterr());
         goto error;
     }
 
@@ -3649,7 +3677,6 @@ corto_int16 corto_updateTry(corto_object observable) {
 
     /* Notify fails if process isn't authorized to update observable */
     if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
-        corto_seterr("access denied: %s", corto_lasterr());
         goto error;
     }
 

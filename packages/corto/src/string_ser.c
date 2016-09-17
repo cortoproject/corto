@@ -372,6 +372,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
 
     if (data->anonymousObjects) {
         corto_llFree(data->anonymousObjects);
+        data->anonymousObjects = NULL;
     }
 
     return 0;

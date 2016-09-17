@@ -49,6 +49,7 @@ corto_string corto_login(corto_string username, corto_string password);
 corto_string corto_authenticate(corto_string key);
 corto_bool corto_authorized(corto_object object, corto_secure_actionKind access);
 corto_bool corto_authorizedId(corto_string id, corto_secure_actionKind access);
+corto_bool corto_secured(void);
 
 /* Object extensions (ols stands for Object Local Storage) */
 corto_uint8 corto_olsKey(void(*destructor)(void*));

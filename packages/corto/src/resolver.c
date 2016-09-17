@@ -247,6 +247,10 @@ repeat:
         corto_claim(o);
     }
 
+    if (o && !corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+        goto access_error;
+    }
+
     /* If object is not defined and not declared by this thread, don't return */
     if (o && !corto_checkState(o, CORTO_DEFINED) && !corto_declaredAdminCheck(o)) {
         corto_debug(
@@ -256,12 +260,9 @@ repeat:
         o = NULL;
     }
 
-    if (!corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
-        corto_seterr("access denied: %s", corto_lasterr());
-        goto error;
-    }
-
     return o;
+access_error:
+    corto_release(o);
 error:
     return NULL;
 }

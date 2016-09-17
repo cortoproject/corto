@@ -109,6 +109,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
     corto_int32 a,
     corto_string b);
 #define test_ol_wildcard_int32_string(a, b) _test_ol_wildcard_int32_string(a, b)
+#include <AccessRule.h>
 #include <Animal.h>
 #include <AnonymousTest.h>
 #include <Args.h>
@@ -151,6 +152,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <ReplicatorRequest.h>
 #include <Resolver.h>
 #include <ResumeSink.h>
+#include <Security.h>
 #include <Select.h>
 #include <SelectContentType.h>
 #include <SelectSink.h>
@@ -160,6 +162,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <StringDeserializer.h>
 #include <StringReplicator.h>
 #include <StringSerializer.h>
+#include <TestKey.h>
+#include <TestLock.h>
 #include <ValueCast.h>
 #include <ValueExpr.h>
 #include <VoidParent.h>

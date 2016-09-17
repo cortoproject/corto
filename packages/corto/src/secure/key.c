@@ -9,8 +9,8 @@
 #include <corto/secure/secure.h>
 
 /* $header() */
-static corto_secure_key corto_currentKey;
-static corto_string corto_keyToken;
+static corto_secure_key corto_secure_keyInstance;
+static corto_string corto_secure_token;
 static corto_ll corto_secure_locks[CORTO_MAX_SCOPE_DEPTH];
 static corto_thread corto_secure_mainThread;
 
@@ -20,9 +20,13 @@ void corto_secure_init(void) {
     corto_secure_mainThread = corto_threadSelf();
 }
 
+corto_bool corto_secured(void) {
+    return corto_secure_keyInstance != NULL;
+}
+
 corto_string corto_login(corto_string username, corto_string password) {
-    if (corto_currentKey) {
-        return corto_secure_key_authenticate(corto_currentKey, username, password);
+    if (corto_secure_keyInstance) {
+        return corto_secure_key_authenticate(corto_secure_keyInstance, username, password);
     } else {
         return NULL;
     }
@@ -33,8 +37,8 @@ corto_string corto_authenticate(corto_string key) {
         goto error;
     }
 
-    corto_string prev = corto_keyToken;
-    corto_keyToken = key;
+    corto_string prev = corto_secure_token;
+    corto_secure_token = key;
 
     if (corto_mutexUnlock(&corto_adminLock)) {
         goto error;
@@ -56,8 +60,9 @@ static corto_int16 corto_secure_getObjectDepth(corto_id id) {
 
 static corto_bool corto_secure_matchLock(char *lockId, char *id) {
     char *lPtr = lockId, *idPtr = id;
+    char lCh, idCh;
 
-    while (*lPtr == *idPtr) {
+    while ((lCh = *lPtr) && (idCh = *idPtr) && (lCh == idCh)) {
         lPtr++;
         idPtr++;
     }
@@ -96,11 +101,10 @@ corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
 corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind access) {
     corto_secure_accessKind allowed = CORTO_SECURE_ACCESS_UNDEFINED;
 
-    if (corto_currentKey) {
+    if (corto_secure_keyInstance) {
         corto_int32 depth = corto_secure_getObjectDepth(objectId);
         corto_uint16 currentDepth = 0;
         corto_int16 priority = 0;
-
         do {
             corto_ll locks = corto_secure_locks[depth];
             if (locks) {
@@ -117,9 +121,19 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
 
                         /* More specific locks take precedence over less specific
                          * locks, unless priority is higher */
-                        if ((currentDepth == depth) || (lock->priority > priority)) {
-                            corto_secure_accessKind result =
-                              corto_secure_lock_authorize(lock, objectId, access);
+                        if ((allowed == CORTO_SECURE_ACCESS_UNDEFINED) ||
+                            (currentDepth == depth) ||
+                            (lock->priority > priority))
+                        {
+                            corto_secure_accessKind result;
+
+                            /* If no token is set and a lock matches the object,
+                             * deny access */
+                            if (!corto_secure_token) {
+                                result = CORTO_SECURE_ACCESS_DENIED;
+                            } else {
+                                result = corto_secure_lock_authorize(lock, corto_secure_token, objectId, access);
+                            }
 
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
@@ -138,7 +152,7 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                     }
                 }
             }
-        } while (--depth);
+        } while (--depth >= 0);
     }
     return allowed != CORTO_SECURE_ACCESS_DENIED;
 }
@@ -163,7 +177,7 @@ corto_int16 _corto_secure_key_construct(
     corto_secure_key this)
 {
 /* $begin(corto/secure/key/construct) */
-    if (corto_currentKey != NULL) {
+    if (corto_secure_keyInstance != NULL) {
         corto_seterr("secure: a secure/key instance is already active");
         goto error;
     }
@@ -174,7 +188,7 @@ corto_int16 _corto_secure_key_construct(
         goto error;
     }
 
-    corto_currentKey = this;
+    corto_secure_keyInstance = this;
 
     return 0;
 error:
@@ -189,7 +203,7 @@ corto_void _corto_secure_key_destruct(
     CORTO_UNUSED(this);
 
     corto_trace("secure: delete key");
-    corto_currentKey = NULL;
+    corto_secure_keyInstance = NULL;
 
 /* $end */
 }
