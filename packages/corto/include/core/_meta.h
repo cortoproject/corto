@@ -28,15 +28,16 @@ CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, subscriber);
+CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, mount);
+CORTO_META_OBJECT(struct, mountStats);
+CORTO_META_OBJECT(struct, mountPolicy);
+CORTO_META_OBJECT(struct, mountSubscription);
 CORTO_META_OBJECT(class, loader);
 CORTO_META_OBJECT(struct, augmentData);
 CORTO_META_OBJECT(struct, result);
 CORTO_META_OBJECT(struct, request);
 CORTO_META_OBJECT(struct, frame);
-CORTO_META_OBJECT(struct, mountStats);
-CORTO_META_OBJECT(struct, mountPolicy);
-CORTO_META_OBJECT(struct, mountSubscription);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(enum, equalityKind);
@@ -58,6 +59,7 @@ CORTO_META_OBJECT(delegate, requestAction);
 
 CORTO_META_OBJECT(procedure, remote);
 CORTO_META_OBJECT(procedure, observer);
+CORTO_META_OBJECT(procedure, route);
 CORTO_META_OBJECT(struct, time);
 CORTO_META_OBJECT(struct, position);
 

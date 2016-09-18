@@ -2483,6 +2483,13 @@ corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep) {
     }
     if (*ptr) {
         do {
+            /* Never parse more elements than maximum scope depth */
+            if (count == CORTO_MAX_SCOPE_DEPTH) {
+                corto_seterr(
+                    "number of elements in path exceeds MAX_SCOPE_DEPTH (%d)",
+                    CORTO_MAX_SCOPE_DEPTH);
+                goto error;
+            }
             if (*ptr == *sep) {
                 *ptr = '\0';
                 ptr++;
@@ -2492,6 +2499,8 @@ corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep) {
     }
 
     return count;
+error:
+    return -1;
 }
 
 static corto_object* corto_scopeStack(

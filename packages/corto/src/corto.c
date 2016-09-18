@@ -142,6 +142,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
     SSO_OP_CLASS(op, subscriber);\
+    SSO_OP_CLASS(op, router);\
     SSO_OP_CLASS(op, mount);\
     SSO_OP_CLASS(op, loader);\
     SSO_OP_CLASS(op, native_type);\
@@ -155,7 +156,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, virtual);\
     SSO_OP_CLASS(op, remote);\
     SSO_OP_CLASS(op, observer);\
-    SSO_OP_CLASS(op, metaprocedure);
+    SSO_OP_CLASS(op, metaprocedure);\
+    SSO_OP_CLASS(op, route);
 
 /* ::corto::lang objects */
 #define SSO_OP_TYPE(op)\
@@ -202,6 +204,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, parameterseq);\
     SSO_OP_CORE_VALUE(op, observerseq);\
     SSO_OP_VALUE(op, octetseq);\
+    SSO_OP_VALUE(op, stringseq);\
     SSO_OP_CORE_VALUE(op, augmentseq);\
     SSO_OP_VALUE(op, vtable);\
     SSO_OP_VALUE(op, interfaceVectorseq);\
@@ -280,6 +283,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* metaprocedure */\
     SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
     SSO_OP_OBJ(op, metaprocedure_construct_);\
+    /* route */\
+    SSO_OP_OBJ_CORE(op, route_pattern);\
+    SSO_OP_OBJ_CORE(op, route_elements);\
+    SSO_OP_OBJ_CORE(op, route_init_);\
+    SSO_OP_OBJ_CORE(op, route_construct_);\
     /* dispatcher */\
     SSO_OP_OBJ_CORE(op, dispatcher_post);\
     /* event */\
@@ -615,6 +623,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, subscriber_observer);\
     SSO_OP_OBJ_CORE(op, subscriber_construct_);\
     SSO_OP_OBJ_CORE(op, subscriber_destruct_);\
+    /* router */\
+    SSO_OP_OBJ_CORE(op, router_construct_);\
+    SSO_OP_OBJ_CORE(op, router_destruct_);\
+    SSO_OP_OBJ_CORE(op, router_match);\
+    SSO_OP_OBJ_CORE(op, router_returnType);\
+    SSO_OP_OBJ_CORE(op, router_maxArgs);\
     /* mount */\
     SSO_OP_OBJ_CORE(op, mount_mount);\
     SSO_OP_OBJ_CORE(op, mount_mask);\
@@ -728,7 +742,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_parent);\
     SSO_OP_OBJ_CORE(op, result_type);\
     SSO_OP_OBJ_CORE(op, result_value);\
-    SSO_OP_OBJ_CORE(op, result_crawl);\
+    SSO_OP_OBJ_CORE(op, result_leaf);\
     SSO_OP_OBJ_CORE(op, result_history);\
     SSO_OP_OBJ_CORE(op, result_augments);\
     SSO_OP_OBJ_CORE(op, result_mount);\

@@ -23,7 +23,7 @@ corto_secure_accessKind _corto_secure_lock_authorize_v(
     CORTO_UNUSED(token);
     CORTO_UNUSED(action);
 
-    return CORTO_SECURE_ACCESS_DENIED;
+    return CORTO_SECURE_ACCESS_UNDEFINED;
 /* $end */
 }
 

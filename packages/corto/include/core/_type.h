@@ -41,6 +41,8 @@ extern "C" {
 #define corto_result(o) ((corto_result*)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter*)corto_assertType((corto_type)corto_resultIter_o, o))
 #define corto_resultList(o) ((corto_resultList*)corto_assertType((corto_type)corto_resultList_o, o))
+#define corto_route(o) ((corto_route)corto_assertType((corto_type)corto_route_o, o))
+#define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
 #define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
@@ -304,7 +306,7 @@ struct corto_result {
     corto_string parent;
     corto_string type;
     corto_word value;
-    corto_bool crawl;
+    corto_bool leaf;
     corto_wordseq history;
     corto_augmentseq augments;
     corto_object mount;
@@ -313,6 +315,24 @@ struct corto_result {
 CORTO_ITERATOR(corto_resultIter);
 
 CORTO_LIST(corto_resultList);
+
+/*  /corto/core/route */
+CORTO_CLASS(corto_route);
+
+CORTO_CLASS_DEF(corto_route) {
+    CORTO_EXTEND(corto_method);
+    corto_string pattern;
+    corto_stringseq elements;
+};
+
+/*  /corto/core/router */
+CORTO_CLASS(corto_router);
+
+CORTO_CLASS_DEF(corto_router) {
+    CORTO_EXTEND(corto_class);
+    corto_type returnType;
+    corto_uint16 maxArgs;
+};
 
 /*  /corto/core/subscriber */
 CORTO_CLASS(corto_subscriber);

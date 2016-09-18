@@ -34,6 +34,8 @@ extern "C" {
 #include <corto/core/remote.h>
 #include <corto/core/request.h>
 #include <corto/core/result.h>
+#include <corto/core/route.h>
+#include <corto/core/router.h>
 #include <corto/core/subscriber.h>
 #include <corto/core/time.h>
 

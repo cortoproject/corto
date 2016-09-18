@@ -394,11 +394,20 @@ corto_resultIter _corto_mount_onRequest_v(
 {
 /* $begin(corto/core/mount/onRequest) */
     corto_resultIter result;
-
     CORTO_UNUSED(this);
     CORTO_UNUSED(request);
-
     memset(&result, 0, sizeof(corto_iter));
+
+    if (corto_instanceof(corto_router_o, corto_typeof(this))) {
+        corto_id routerRequest;
+        corto_any routerResult = {corto_type(corto_resultIter_o), &result};
+        sprintf(routerRequest, "%s/%s", request->parent, request->expr);
+        corto_cleanpath(routerRequest, routerRequest);
+        if (corto_router_match(this, routerRequest, routerResult)) {
+            corto_error("%s", corto_lasterr());
+        }
+    }
+
     return result;
 /* $end */
 }
@@ -660,7 +669,7 @@ corto_void _corto_mount_return(
         r->parent,
         r->type,
         r->value,
-        r->crawl
+        r->leaf
     );
 
 /* $end */

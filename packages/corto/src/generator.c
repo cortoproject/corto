@@ -445,7 +445,7 @@ typedef struct g_serializeImports_t {
     corto_bool nested;
 }g_serializeImports_t;
 
-corto_int16 g_crawlDependencies(
+corto_int16 g_leafDependencies(
     corto_generator g,
     corto_object parent)
 {
@@ -499,7 +499,7 @@ corto_int16 g_importsEvalReference(
                 corto_llInsert(g->imports, parent);
 
                 /* Recursively obtain imports */
-                g_crawlDependencies(g, parent);
+                g_leafDependencies(g, parent);
             }
         }
     }

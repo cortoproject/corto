@@ -491,7 +491,7 @@ static void corto_setItemData(
     }
 
     item->mount = NULL;
-    item->crawl = corto_scopeSize(o) != 0;
+    item->leaf = corto_scopeSize(o) == 0;
 }
 
 static corto_bool corto_selectMatch(
@@ -711,7 +711,7 @@ static corto_int16 corto_selectIterMount(
     data->next = &data->item;
 
     data->item.mount = data->mounts[frame->currentMount - 1];
-    data->item.crawl = result->crawl;
+    data->item.leaf = result->leaf;
 
     /* Copy data, so mount can safely release it */
     if (result->id) {
@@ -982,7 +982,7 @@ static void corto_selectTree(
     corto_object o = NULL;
 
     do {
-        corto_bool crawl = FALSE, hasData = FALSE;
+        corto_bool leaf = TRUE, hasData = FALSE;
 
         /* Unwind stack for depleted iterators */
         while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) && data->sp) {
@@ -1007,7 +1007,7 @@ static void corto_selectTree(
                     noMatch = FALSE;
                     corto_setItemData(o, data->next, data);
                 }
-                crawl = TRUE;
+                leaf = FALSE;
                 data->recursiveQuery[0] = '\0';
             } else {
                 /* If doing a lookup on a tree, select requests all objects from
@@ -1019,11 +1019,11 @@ static void corto_selectTree(
                 } else {
                     noMatch = !corto_selectMatch(frame, NULL, data);
                 }
-                crawl = data->next->crawl;
+                leaf = data->next->leaf;
             }
 
             /* Prepare next frame if object has scope */
-            if (crawl && (data->mask == CORTO_ON_TREE)) {
+            if (!leaf && (data->mask == CORTO_ON_TREE)) {
                 corto_debug("corto: select: Tree push '%s'",
                     frame->scope ? corto_fullpath(NULL, frame->scope) : data->next->id);
 
@@ -1374,7 +1374,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->item.name = data->name;
     data->item.type = data->type;
     data->item.id = data->id;
-    data->item.crawl = 0;
+    data->item.leaf = TRUE;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_loadContentType(data->contentType))) {

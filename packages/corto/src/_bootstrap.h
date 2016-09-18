@@ -461,6 +461,7 @@ CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
 CORTO_FWDECL_CORE(class, subscriber);
 CORTO_FWDECL_CORE(class, mount);
+CORTO_FWDECL_CORE(class, router);
 CORTO_FWDECL_SECURE(class, key);
 CORTO_FWDECL_SECURE(class, lock);
 
@@ -513,6 +514,7 @@ CORTO_FWDECL(procedure, metaprocedure);
 CORTO_FWDECL(procedure, method);
 CORTO_FWDECL_CORE(procedure, remote);
 CORTO_FWDECL_CORE(procedure, observer);
+CORTO_FWDECL_CORE(procedure, route);
 CORTO_FWDECL(procedure, virtual);
 
 CORTO_FWDECL(enum, collectionKind);
@@ -536,13 +538,14 @@ CORTO_FWDECL(bitmask, state);
 
 CORTO_FWDECL(sequence, interfaceseq);
 CORTO_FWDECL(sequence, interfaceVectorseq);
+CORTO_FWDECL(sequence, int32seq);
 CORTO_FWDECL(sequence, memberseq);
 CORTO_FWDECL(sequence, objectseq);
 CORTO_FWDECL_CORE(sequence, observerseq);
 CORTO_FWDECL(sequence, octetseq);
 CORTO_FWDECL(sequence, parameterseq);
+CORTO_FWDECL(sequence, stringseq);
 CORTO_FWDECL(sequence, vtable);
-CORTO_FWDECL(sequence, int32seq);
 CORTO_FWDECL(sequence, wordseq);
 CORTO_FWDECL_CORE(sequence, augmentseq);
 
@@ -768,12 +771,13 @@ CORTO_BITMASK_O(lang, modifier);
 CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);
 CORTO_SEQUENCE_O(lang, interfaceseq, lang_interface, 0);
 CORTO_SEQUENCE_O(lang, interfaceVectorseq, lang_interfaceVector, 0);
+CORTO_SEQUENCE_O(lang, int32seq, lang_int32, 0);
 CORTO_SEQUENCE_O(lang, memberseq, lang_member, 0);
 CORTO_SEQUENCE_O(core, observerseq, core_observer, 0);
 CORTO_SEQUENCE_O(lang, objectseq, lang_object, 0);
 CORTO_SEQUENCE_O(lang, octetseq, lang_octet, 0);
 CORTO_SEQUENCE_O(lang, parameterseq, lang_parameter, 0);
-CORTO_SEQUENCE_O(lang, int32seq, lang_int32, 0);
+CORTO_SEQUENCE_O(lang, stringseq, lang_string, 0);
 CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
 CORTO_SEQUENCE_O(lang, vtable, lang_function, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
@@ -1150,7 +1154,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, value, lang_word, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_result, crawl, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_result, leaf, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, history, lang_wordseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, mount, lang_object, CORTO_HIDDEN);
@@ -1199,6 +1203,15 @@ CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NU
     CORTO_MEMBER_O(core_mountSubscription, mask, core_eventMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mountSubscription, count, lang_uint32, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mountSubscription, userData, lang_word, CORTO_GLOBAL);
+
+/* /corto/core/router */
+CORTO_FW_CD(core, router);
+CORTO_CLASS_O(core, router, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_METHOD_O(core_router, construct, "()", lang_int16, FALSE, corto_router_construct);
+    CORTO_METHOD_O(core_router, destruct, "()", lang_void, FALSE, corto_router_destruct);
+    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any result)", lang_int16, corto_router_match);
+    CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);
@@ -1298,6 +1311,14 @@ CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | C
     CORTO_METHOD_O(core_observer, silence, "(object me)", lang_int16, FALSE, corto_observer_silence);
     CORTO_METHOD_O(core_observer, setDispatcher, "(core/dispatcher dispatcher)", lang_void, FALSE, corto_observer_setDispatcher);
     CORTO_FUNCTION_O(core_observer, destruct, "(observer object)", lang_void, corto_observer_destruct);
+
+/* /corto/core/route */
+CORTO_FW_IC(core, route);
+CORTO_PROCEDURE_O(core, route, CORTO_METHOD, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(core_router), CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+    CORTO_MEMBER_O(core_route, pattern, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_route, elements, lang_stringseq, CORTO_READONLY);
+    CORTO_METHOD_O(core_route, init, "()", lang_int16, FALSE, corto_route_init);
+    CORTO_METHOD_O(core_route, construct, "()", lang_int16, FALSE, corto_route_construct);
 
 /* /corto/core/time */
 CORTO_STRUCT_O(core, time, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

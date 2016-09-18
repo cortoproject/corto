@@ -298,7 +298,7 @@ error:
 }
 
 /* Check if parameters of procedures match */
-static corto_bool corto_interface_checkProcedureParameters(corto_function o1, corto_function o2) {
+static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, corto_function o2) {
     corto_bool result;
 
     result = TRUE;
@@ -337,6 +337,7 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
                             corto_seterr("bootstrap failure: types of parameters '%s' and '%s' are not compatible.",
                                 o1->parameters.buffer[i].name,
                                 o2->parameters.buffer[i].name);
+                            result = FALSE;
                         }
                     }
                 } else if (!corto_type_castable(p1, p2)) { /* This virtual function can only be called after the bootstrap is complete. */
@@ -344,6 +345,7 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
                         corto_idof(o2->parameters.buffer[i].type),
                         corto_fullpath(NULL, o2),
                         corto_fullpath(NULL, o1));
+                    result = FALSE;
                 }
             }
 
@@ -357,6 +359,7 @@ static corto_bool corto_interface_checkProcedureParameters(corto_function o1, co
                         o1->parameters.buffer[i].name,
                         corto_fullpath(NULL, o1),
                         corto_fullpath(NULL, o2));
+                    result = FALSE;
                 }
             }
         }
