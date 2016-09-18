@@ -66,6 +66,7 @@ nomatch:
 corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,
+    corto_any param,
     corto_any result)
 {
 /* $begin(corto/core/router/match) */
@@ -103,6 +104,10 @@ corto_int16 _corto_router_match(
     corto_int32 i, arg = 1;
     void **args = alloca((1 + router->maxArgs) * sizeof(void*));
     args[0] = instance;
+    if (router->paramType) {
+        args[1] = &param.value;
+        arg = 2;
+    }
     for (i = 0; i < elementCount; i++) {
         char *pattern = match->elements.buffer[i];
         if (pattern[0] == '$') {

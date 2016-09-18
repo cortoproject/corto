@@ -28,8 +28,9 @@ CORTO_EXPORT corto_void _corto_router_destruct(
 CORTO_EXPORT corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,
+    corto_any param,
     corto_any result);
-#define corto_router_match(instance, request, result) _corto_router_match(instance, request, result)
+#define corto_router_match(instance, request, param, result) _corto_router_match(instance, request, param, result)
 
 #ifdef __cplusplus
 }

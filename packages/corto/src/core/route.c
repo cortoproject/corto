@@ -16,6 +16,7 @@ corto_int16 _corto_route_construct(
     strcpy(pattern, this->pattern);
     char *ptr = pattern;
     corto_int32 count = 0, elementCount = 0;
+    corto_router router = corto_parentof(this);
     char *elements[CORTO_MAX_SCOPE_DEPTH];
 
     if (*ptr == '/') {
@@ -28,6 +29,17 @@ corto_int16 _corto_route_construct(
     }
 
     corto_stringseqAssign(&this->elements, elementCount, elements);
+
+    if (router->paramType) {
+        corto_function(this)->parameters.buffer = corto_realloc(
+          corto_function(this)->parameters.buffer, sizeof(corto_parameter)
+        );
+        corto_parameter *p = &corto_function(this)->parameters.buffer[0];
+        memset(p, 0, sizeof(corto_parameter));
+        corto_setref(&p->type, router->paramType);
+        corto_setstr(&p->name, "param");
+        count = 1;
+    }
 
     corto_stringseqForeach(this->elements, element) {
         if (element[0] == '$') {

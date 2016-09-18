@@ -330,6 +330,7 @@ CORTO_CLASS(corto_router);
 
 CORTO_CLASS_DEF(corto_router) {
     CORTO_EXTEND(corto_class);
+    corto_type paramType;
     corto_type returnType;
     corto_uint16 maxArgs;
 };

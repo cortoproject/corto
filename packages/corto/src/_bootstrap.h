@@ -1209,7 +1209,8 @@ CORTO_FW_CD(core, router);
 CORTO_CLASS_O(core, router, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_METHOD_O(core_router, construct, "()", lang_int16, FALSE, corto_router_construct);
     CORTO_METHOD_O(core_router, destruct, "()", lang_void, FALSE, corto_router_destruct);
-    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any result)", lang_int16, corto_router_match);
+    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
+    CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
 

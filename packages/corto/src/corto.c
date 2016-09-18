@@ -627,6 +627,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, router_construct_);\
     SSO_OP_OBJ_CORE(op, router_destruct_);\
     SSO_OP_OBJ_CORE(op, router_match);\
+    SSO_OP_OBJ_CORE(op, router_paramType);\
     SSO_OP_OBJ_CORE(op, router_returnType);\
     SSO_OP_OBJ_CORE(op, router_maxArgs);\
     /* mount */\
