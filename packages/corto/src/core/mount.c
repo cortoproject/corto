@@ -398,7 +398,7 @@ corto_resultIter _corto_mount_onRequest_v(
     CORTO_UNUSED(request);
     memset(&result, 0, sizeof(corto_iter));
 
-    if (corto_instanceof(corto_router_o, corto_typeof(this))) {
+    if (corto_instanceof(corto_routerimpl_o, corto_typeof(this))) {
         corto_id routerRequest;
         corto_any routerResult = {corto_type(corto_resultIter_o), &result};
         corto_any routerParam = {corto_type(corto_request_o), request};

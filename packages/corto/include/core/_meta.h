@@ -29,6 +29,7 @@ CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, subscriber);
 CORTO_META_OBJECT(class, router);
+CORTO_META_OBJECT(class, routerimpl);
 CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(struct, mountStats);
 CORTO_META_OBJECT(struct, mountPolicy);

@@ -16,7 +16,8 @@ corto_int16 _corto_route_construct(
     strcpy(pattern, this->pattern);
     char *ptr = pattern;
     corto_int32 count = 0, elementCount = 0;
-    corto_router router = corto_parentof(this);
+    corto_routerimpl router = corto_routerimpl(corto_parentof(this));
+    corto_router routerBase = corto_router(corto_typeof(router));
     char *elements[CORTO_MAX_SCOPE_DEPTH];
 
     if (*ptr == '/') {
@@ -30,14 +31,21 @@ corto_int16 _corto_route_construct(
 
     corto_stringseqAssign(&this->elements, elementCount, elements);
 
-    if (router->paramType) {
+    if (routerBase->paramType) {
         corto_function(this)->parameters.buffer = corto_realloc(
           corto_function(this)->parameters.buffer, sizeof(corto_parameter)
         );
         corto_parameter *p = &corto_function(this)->parameters.buffer[0];
         memset(p, 0, sizeof(corto_parameter));
-        corto_setref(&p->type, router->paramType);
-        corto_setstr(&p->name, "param");
+        corto_setref(&p->type, routerBase->paramType);
+        if (routerBase->paramName) {
+            corto_setstr(&p->name, routerBase->paramName);
+        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_SCOPED)) {
+            corto_setstr(&p->name, corto_idof(routerBase->paramType));
+            p->name[0] = tolower(p->name[0]);
+        } else {
+            corto_setstr(&p->name, "_param");
+        }
         count = 1;
     }
 
@@ -55,6 +63,7 @@ corto_int16 _corto_route_construct(
         }
     }
 
+    corto_setref(&corto_function(this)->returnType, routerBase->returnType);
     corto_function(this)->parameters.length = count;
 
     return corto_method_construct(this);
@@ -67,12 +76,10 @@ corto_int16 _corto_route_init(
     corto_route this)
 {
 /* $begin(corto/core/route/init) */
-    if (!corto_instanceof(corto_router_o, corto_parentof(this))) {
+    if (!corto_instanceof(corto_routerimpl_o, corto_parentof(this))) {
         corto_seterr("parent of route should inherit from router");
         goto error;
     }
-    corto_router r = corto_parentof(this);
-    corto_setref(&corto_function(this)->returnType, r->returnType);
 
     return corto_method_init(this);
 error:

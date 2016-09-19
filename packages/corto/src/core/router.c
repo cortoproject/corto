@@ -8,30 +8,13 @@
 
 #include <corto/core/core.h>
 
-/* $header(corto/core/router/construct) */
-int corto_router_countArgs(corto_object o, void *userData) {
-    if (corto_instanceof(corto_route_o, o)) {
-        if (corto_router(userData)->maxArgs < corto_function(o)->parameters.length) {
-            corto_router(userData)->maxArgs = corto_function(o)->parameters.length;
-        }
-    }
-    return 1;
-}
-/* $end */
+
 corto_int16 _corto_router_construct(
     corto_router this)
 {
 /* $begin(corto/core/router/construct) */
-    corto_scopeWalk(this, corto_router_countArgs, this);
+    corto_interface(this)->base = corto_interface(corto_routerimpl_o);
     return corto_class_construct(this);
-/* $end */
-}
-
-corto_void _corto_router_destruct(
-    corto_router this)
-{
-/* $begin(corto/core/router/destruct) */
-    CORTO_UNUSED(this);
 /* $end */
 }
 
@@ -70,7 +53,8 @@ corto_int16 _corto_router_match(
     corto_any result)
 {
 /* $begin(corto/core/router/match) */
-    corto_router router = corto_router(corto_typeof(instance));
+    corto_routerimpl router = corto_routerimpl(corto_typeof(instance));
+    corto_router routerBase = corto_router(corto_typeof(router));
     corto_route match = NULL;
     corto_int32 maxMatched = -1;
     corto_id requestBuffer;
@@ -104,7 +88,7 @@ corto_int16 _corto_router_match(
     corto_int32 i, arg = 1;
     void **args = alloca((1 + router->maxArgs) * sizeof(void*));
     args[0] = instance;
-    if (router->paramType) {
+    if (routerBase->paramType) {
         args[1] = &param.value;
         arg = 2;
     }

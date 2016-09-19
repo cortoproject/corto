@@ -43,6 +43,7 @@ extern "C" {
 #define corto_resultList(o) ((corto_resultList*)corto_assertType((corto_type)corto_resultList_o, o))
 #define corto_route(o) ((corto_route)corto_assertType((corto_type)corto_route_o, o))
 #define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
+#define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
 #define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
@@ -330,8 +331,16 @@ CORTO_CLASS(corto_router);
 
 CORTO_CLASS_DEF(corto_router) {
     CORTO_EXTEND(corto_class);
-    corto_type paramType;
     corto_type returnType;
+    corto_type paramType;
+    corto_string paramName;
+};
+
+/*  /corto/core/routerimpl */
+CORTO_CLASS(corto_routerimpl);
+
+CORTO_CLASS_DEF(corto_routerimpl) {
+    CORTO_EXTEND(corto_class);
     corto_uint16 maxArgs;
 };
 

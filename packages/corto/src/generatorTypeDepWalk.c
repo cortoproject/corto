@@ -385,20 +385,19 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
         return 1;
     }
 
+    /* Check if the object has an anonymous type */
+    if (!corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+        if (corto_genTypeParse(corto_typeof(o), TRUE, NULL, data)) {
+            goto error;
+        }
+    }
+
     /* If object is procedure, parse dependencies, but do not declare\define. */
     if (corto_instanceof(corto_procedure_o, corto_typeof(o))) {
         corto_genTypeProcedureDependencies(corto_function(o), data);
-    } else if (!corto_instanceof(corto_type_o, o)) {
-        /* If an object is found that is not a type or procedure, check if the
-         * object has an anonymous type */
-        if (!corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
-            if (corto_genTypeParse(corto_typeof(o), TRUE, NULL, data)) {
-                goto error;
-            }
-        }
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
-    if (!corto_checkState(o, CORTO_DEFINED)) {
+    if (corto_instanceof(corto_type_o, o) && !corto_checkState(o, CORTO_DEFINED)) {
         corto_seterr("%s has undefined objects (%s).",
             corto_fullpath(NULL, g_getCurrent(data->g)),
             corto_fullpath(NULL, o));

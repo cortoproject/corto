@@ -21,10 +21,6 @@ CORTO_EXPORT corto_int16 _corto_router_construct(
     corto_router _this);
 #define corto_router_construct(_this) _corto_router_construct(corto_router(_this))
 
-CORTO_EXPORT corto_void _corto_router_destruct(
-    corto_router _this);
-#define corto_router_destruct(_this) _corto_router_destruct(corto_router(_this))
-
 CORTO_EXPORT corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,

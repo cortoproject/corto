@@ -462,6 +462,7 @@ CORTO_FWDECL(class, procedure);
 CORTO_FWDECL_CORE(class, subscriber);
 CORTO_FWDECL_CORE(class, mount);
 CORTO_FWDECL_CORE(class, router);
+CORTO_FWDECL_CORE(class, routerimpl);
 CORTO_FWDECL_SECURE(class, key);
 CORTO_FWDECL_SECURE(class, lock);
 
@@ -1206,13 +1207,19 @@ CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NU
 
 /* /corto/core/router */
 CORTO_FW_CD(core, router);
-CORTO_CLASS_O(core, router, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_METHOD_O(core_router, construct, "()", lang_int16, FALSE, corto_router_construct);
-    CORTO_METHOD_O(core_router, destruct, "()", lang_void, FALSE, corto_router_destruct);
-    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
-    CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_router, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, paramName, lang_string, CORTO_GLOBAL);
+    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
+
+/* /corto/core/routerimpl */
+CORTO_FW_CD(core, routerimpl);
+CORTO_CLASS_O(core, routerimpl, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_METHOD_O(core_routerimpl, construct, "()", lang_int16, FALSE, corto_routerimpl_construct);
+    CORTO_METHOD_O(core_routerimpl, destruct, "()", lang_void, FALSE, corto_routerimpl_destruct);
+    CORTO_MEMBER_O(core_routerimpl, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);
@@ -1315,7 +1322,7 @@ CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | C
 
 /* /corto/core/route */
 CORTO_FW_IC(core, route);
-CORTO_PROCEDURE_O(core, route, CORTO_METHOD, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(core_router), CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+CORTO_PROCEDURE_O(core, route, CORTO_METHOD, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(core_routerimpl), CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
     CORTO_MEMBER_O(core_route, pattern, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_route, elements, lang_stringseq, CORTO_READONLY);
     CORTO_METHOD_O(core_route, init, "()", lang_int16, FALSE, corto_route_init);

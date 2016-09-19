@@ -143,6 +143,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, package);\
     SSO_OP_CLASS(op, subscriber);\
     SSO_OP_CLASS(op, router);\
+    SSO_OP_CLASS(op, routerimpl);\
     SSO_OP_CLASS(op, mount);\
     SSO_OP_CLASS(op, loader);\
     SSO_OP_CLASS(op, native_type);\
@@ -625,11 +626,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, subscriber_destruct_);\
     /* router */\
     SSO_OP_OBJ_CORE(op, router_construct_);\
-    SSO_OP_OBJ_CORE(op, router_destruct_);\
     SSO_OP_OBJ_CORE(op, router_match);\
-    SSO_OP_OBJ_CORE(op, router_paramType);\
     SSO_OP_OBJ_CORE(op, router_returnType);\
-    SSO_OP_OBJ_CORE(op, router_maxArgs);\
+    SSO_OP_OBJ_CORE(op, router_paramType);\
+    SSO_OP_OBJ_CORE(op, router_paramName);\
+    /* routerimpl */\
+    SSO_OP_OBJ_CORE(op, routerimpl_construct_);\
+    SSO_OP_OBJ_CORE(op, routerimpl_destruct_);\
+    SSO_OP_OBJ_CORE(op, routerimpl_maxArgs);\
     /* mount */\
     SSO_OP_OBJ_CORE(op, mount_mount);\
     SSO_OP_OBJ_CORE(op, mount_mask);\
