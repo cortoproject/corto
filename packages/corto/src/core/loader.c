@@ -17,6 +17,7 @@ corto_int16 _corto_loader_construct(
     corto_mount(this)->attr = 0;
     corto_mount(this)->kind = CORTO_SINK;
     corto_setstr(&corto_mount(this)->type, "/corto/core/package");
+    corto_setstr(&corto_mount(this)->contentType, "text/json");
     return corto_mount_construct(this);
 /* $end */
 }
@@ -72,7 +73,7 @@ corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
 void corto_loader_addDir(
     corto_ll list,
     corto_string path,
-    corto_string expr)
+    corto_request *r)
 {
     corto_ll dirs = corto_opendir(path);
 
@@ -83,15 +84,73 @@ void corto_loader_addDir(
         while (corto_iterHasNext(&iter)) {
             corto_string f = corto_iterNext(&iter);
 
-            if (!fnmatch(expr, f, 0) && !corto_loader_checkIfAdded(list, f)) {
+            if (!fnmatch(r->expr, f, 0) && !corto_loader_checkIfAdded(list, f)) {
                 struct stat attr;
-
-                /* Build full path to file from current directory */
+                corto_string content = NULL;
+                corto_id package;
+                sprintf(package, "%s/%s", r->parent, f);
+                corto_cleanpath(package, package);
                 corto_id fpath; sprintf(fpath, "%s/%s", path, f);
+                corto_string version = NULL;
+                corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
+
+                /* Built-in packages use corto version */
+                if (!strcmp(package, "corto") ||
+                    !strcmp(package, "corto/lang") ||
+                    !strcmp(package, "corto/core") ||
+                    !strcmp(package, "corto/native") ||
+                    !strcmp(package, "corto/secure"))
+                {
+                    version = corto_strdup(CORTO_VERSION);
+                    if (!env) {
+                        env = corto_locate("corto", CORTO_LOCATION_ENV);
+                    }
+                } else {
+                    corto_id versionFile; sprintf(versionFile, "%s/version.txt", fpath);
+                    version = corto_fileLoad(versionFile);
+                    if (version) {
+                        char *newline = strchr(version, '\n');
+                        if (newline) {
+                            *newline = '\0';
+                        }
+                    } else if (env) {
+                        version = corto_strdup("0.0.0");
+                    } else {
+                        version = corto_strdup("");
+                    }
+                }
+
+                if (!env) {
+                    env = corto_strdup("");
+                }
+
+                if (r->content) {
+                    if (strcmp(r->parent, ".")) {
+                        corto_asprintf(
+                            &content,
+                            "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"version\":\"%s\",\"env\":\"%s\"}",
+                            r->parent,
+                            f,
+                            version,
+                            env
+                        );
+                    } else {
+                        corto_asprintf(
+                            &content,
+                            "{\"url\":\"http://www.corto.io/doc/%s\",\"version\":\"%s\",\"env\":\"%s\"}",
+                            f,
+                            version,
+                            env
+                        );
+                    }
+                }
+
+                corto_dealloc(version);
+                corto_dealloc(env);
 
                 /* Stat file to determine whether it's a directory */
                 if (stat(fpath, &attr) < 0) {
-                    corto_error("failed to stat '%s' (%s)\n",
+                    corto_seterr("failed to stat '%s' (%s)\n",
                         fpath,
                         strerror(errno));
                 }
@@ -103,7 +162,7 @@ void corto_loader_addDir(
                         NULL,
                         ".", /* Parent */
                         "/corto/core/package",
-                        0,
+                        (corto_word)content,
                         FALSE
                     );
                 }
@@ -135,8 +194,8 @@ corto_resultIter _corto_loader_onRequest_v(
       request->parent);
     corto_cleanpath(globalPath, globalPath);
 
-    corto_loader_addDir(data, localPath, request->expr);
-    corto_loader_addDir(data, globalPath, request->expr);
+    corto_loader_addDir(data, localPath, request);
+    corto_loader_addDir(data, globalPath, request);
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */

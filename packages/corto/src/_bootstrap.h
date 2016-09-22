@@ -619,6 +619,8 @@ CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 /* Package type */
 CORTO_CLASS_NOBASE_O(core, package, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(core_package, url, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, version, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, env, lang_string, CORTO_GLOBAL);
 
 /* Enumerations */
 CORTO_ENUM_O(lang, width);

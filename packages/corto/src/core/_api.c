@@ -2357,7 +2357,7 @@ corto_int16 _corto_operatorKindDeinit(corto_operatorKind* value) {
     return result;
 }
 
-corto_package _corto_packageCreate(corto_string url) {
+corto_package _corto_packageCreate(corto_string url, corto_string version, corto_string env) {
     corto_package _this;
     _this = corto_package(corto_declare(corto_package_o));
     if (!_this) {
@@ -2365,6 +2365,8 @@ corto_package _corto_packageCreate(corto_string url) {
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setstr(&((corto_package)_this)->url, url);
+        corto_setstr(&((corto_package)_this)->version, version);
+        corto_setstr(&((corto_package)_this)->env, env);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -2373,7 +2375,7 @@ corto_package _corto_packageCreate(corto_string url) {
     return _this;
 }
 
-corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name, corto_string url) {
+corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name, corto_string url, corto_string version, corto_string env) {
     corto_package _this;
     _this = corto_package(corto_declareChild(_parent, _name, corto_package_o));
     if (!_this) {
@@ -2381,6 +2383,8 @@ corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setstr(&((corto_package)_this)->url, url);
+        corto_setstr(&((corto_package)_this)->version, version);
+        corto_setstr(&((corto_package)_this)->env, env);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -2389,10 +2393,12 @@ corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name
     return _this;
 }
 
-corto_int16 _corto_packageUpdate(corto_package _this, corto_string url) {
+corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_string version, corto_string env) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setstr(&((corto_package)_this)->url, url);
+        corto_setstr(&((corto_package)_this)->version, version);
+        corto_setstr(&((corto_package)_this)->env, env);
         corto_updateEnd(_this);
     } else {
         return -1;
@@ -2418,15 +2424,19 @@ corto_package _corto_packageDeclareChild(corto_object _parent, corto_string _nam
     return _this;
 }
 
-corto_int16 _corto_packageDefine(corto_package _this, corto_string url) {
+corto_int16 _corto_packageDefine(corto_package _this, corto_string url, corto_string version, corto_string env) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_package)_this)->url, url);
+    corto_setstr(&((corto_package)_this)->version, version);
+    corto_setstr(&((corto_package)_this)->env, env);
     return corto_define(_this);
 }
 
-corto_package _corto_packageAssign(corto_package _this, corto_string url) {
+corto_package _corto_packageAssign(corto_package _this, corto_string url, corto_string version, corto_string env) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_package)_this)->url, url);
+    corto_setstr(&((corto_package)_this)->version, version);
+    corto_setstr(&((corto_package)_this)->env, env);
     return _this;
 }
 
@@ -3297,16 +3307,13 @@ corto_equalityKind _corto_routeCompare(corto_route dst, corto_route src) {
     return corto_compare(dst, src);
 }
 
-corto_router _corto_routerCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName) {
+corto_router _corto_routerCreate(corto_type returnType, corto_type paramType, corto_string paramName) {
     corto_router _this;
     _this = corto_router(corto_declare(corto_router_o));
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_setref(&((corto_interface)_this)->base, base);
-        ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_router)_this)->returnType, returnType);
         corto_setref(&((corto_router)_this)->paramType, paramType);
         corto_setstr(&((corto_router)_this)->paramName, paramName);
@@ -3318,16 +3325,13 @@ corto_router _corto_routerCreate(corto_interface base, corto_modifier baseAccess
     return _this;
 }
 
-corto_router _corto_routerCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName) {
+corto_router _corto_routerCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_type paramType, corto_string paramName) {
     corto_router _this;
     _this = corto_router(corto_declareChild(_parent, _name, corto_router_o));
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_setref(&((corto_interface)_this)->base, base);
-        ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_router)_this)->returnType, returnType);
         corto_setref(&((corto_router)_this)->paramType, paramType);
         corto_setstr(&((corto_router)_this)->paramName, paramName);
@@ -3339,12 +3343,9 @@ corto_router _corto_routerCreateChild(corto_object _parent, corto_string _name, 
     return _this;
 }
 
-corto_int16 _corto_routerUpdate(corto_router _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName) {
+corto_int16 _corto_routerUpdate(corto_router _this, corto_type returnType, corto_type paramType, corto_string paramName) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
-        corto_setref(&((corto_interface)_this)->base, base);
-        ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_router)_this)->returnType, returnType);
         corto_setref(&((corto_router)_this)->paramType, paramType);
         corto_setstr(&((corto_router)_this)->paramName, paramName);
@@ -3373,22 +3374,16 @@ corto_router _corto_routerDeclareChild(corto_object _parent, corto_string _name)
     return _this;
 }
 
-corto_int16 _corto_routerDefine(corto_router _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName) {
+corto_int16 _corto_routerDefine(corto_router _this, corto_type returnType, corto_type paramType, corto_string paramName) {
     CORTO_UNUSED(_this);
-    corto_setref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_router)_this)->returnType, returnType);
     corto_setref(&((corto_router)_this)->paramType, paramType);
     corto_setstr(&((corto_router)_this)->paramName, paramName);
     return corto_define(_this);
 }
 
-corto_router _corto_routerAssign(corto_router _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName) {
+corto_router _corto_routerAssign(corto_router _this, corto_type returnType, corto_type paramType, corto_string paramName) {
     CORTO_UNUSED(_this);
-    corto_setref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_router)_this)->returnType, returnType);
     corto_setref(&((corto_router)_this)->paramType, paramType);
     corto_setstr(&((corto_router)_this)->paramName, paramName);

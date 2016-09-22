@@ -764,6 +764,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, request_param);\
     /* package */\
     SSO_OP_OBJ_CORE(op, package_url);\
+    SSO_OP_OBJ_CORE(op, package_version);\
+    SSO_OP_OBJ_CORE(op, package_env);\
     /* time */\
     SSO_OP_OBJ_CORE(op, time_sec);\
     SSO_OP_OBJ_CORE(op, time_nanosec);\

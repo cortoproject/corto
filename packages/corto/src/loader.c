@@ -205,7 +205,7 @@ static corto_dl corto_loadValidLibrary(corto_string fileName) {
     corto_string ___ (*build)(void);
 
     if (!(result = corto_dlOpen(fileName))) {
-        corto_error("%s", corto_dlError());
+        corto_seterr("%s", corto_dlError());
         goto error;
     }
 
