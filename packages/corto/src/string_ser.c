@@ -360,7 +360,8 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
             }
 
             if (!data->buffer.buf) {
-                data->buffer.buf = result;
+                corto_buffer_appendstr(&data->buffer, result);
+                corto_dealloc(result);
             } else { /* Application  manages memory of buffer */
                 strcpy(data->buffer.buf, result);
                 corto_dealloc(result);
@@ -368,11 +369,6 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
             data->buffer.elementCount = 1;
             corto_dealloc(str);
         }
-    }
-
-    if (data->anonymousObjects) {
-        corto_llFree(data->anonymousObjects);
-        data->anonymousObjects = NULL;
     }
 
     return 0;
@@ -393,10 +389,10 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
 
 corto_int16 corto_ser_destruct(corto_serializer s, void* userData) {
     CORTO_UNUSED(s);
-
     corto_string_ser_t* data = userData;
     if (data->anonymousObjects) {
         corto_llFree(data->anonymousObjects);
+        data->anonymousObjects = NULL;
     }
     return 0;
 }

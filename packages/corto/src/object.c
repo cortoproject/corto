@@ -4699,8 +4699,9 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
 
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
     corto_serialize(&s, object, &serData);
-
-    return corto_buffer_str(&serData.buffer);
+    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_serializeDestruct(&s, &serData);
+    return result;
 }
 
 corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
@@ -4715,8 +4716,9 @@ corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
 
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
     corto_serializeValue(&s, v, &serData);
-
-    return corto_buffer_str(&serData.buffer);
+    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_serializeDestruct(&s, &serData);
+    return result;
 }
 
 corto_string _corto_strp(void *p, corto_type type, corto_uint32 maxLength) {

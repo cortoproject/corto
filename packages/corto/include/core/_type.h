@@ -266,6 +266,8 @@ CORTO_CLASS(corto_package);
 
 CORTO_CLASS_DEF(corto_package) {
     corto_string url;
+    corto_string version;
+    corto_string env;
 };
 
 /*  /corto/core/position */

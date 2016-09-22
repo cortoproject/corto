@@ -8,6 +8,27 @@
 
 #include <test.h>
 
+corto_void _test_StringSerializer_tc_serAnonymous(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serAnonymous) */
+    corto_object anonymous = corto_int32Create(10);
+    corto_objectList objList = corto_llNew();
+    corto_llAppend(objList, anonymous);
+    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_assert(o != NULL);
+
+    corto_string str = corto_str(o, 0);
+    test_assert(str != NULL);
+    test_assertstr(str, "{{<1>int32{10}}}");
+
+    corto_delete(o);
+    corto_dealloc(str);
+    corto_llFree(objList);
+
+/* $end */
+}
+
 corto_void _test_StringSerializer_tc_serArray(
     test_StringSerializer this)
 {
@@ -356,6 +377,28 @@ corto_void _test_StringSerializer_tc_serListComplex(
 /* $end */
 }
 
+corto_void _test_StringSerializer_tc_serSameAnonymous(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serSameAnonymous) */
+    corto_object anonymous = corto_int32Create(10);
+    corto_objectList objList = corto_llNew();
+    corto_llAppend(objList, anonymous);
+    corto_llAppend(objList, anonymous);
+    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_assert(o != NULL);
+
+    corto_string str = corto_str(o, 0);
+    test_assert(str != NULL);
+    test_assertstr(str, "{{<1>int32{10},<1>}}");
+
+    corto_delete(o);
+    corto_dealloc(str);
+    corto_llFree(objList);
+
+/* $end */
+}
+
 corto_void _test_StringSerializer_tc_serSequence(
     test_StringSerializer this)
 {
@@ -456,6 +499,29 @@ corto_void _test_StringSerializer_tc_serStringWhitespace(
     test_assert(!strcmp(result, "\"  Hello World   \""));
 
     corto_dealloc(result);
+
+/* $end */
+}
+
+corto_void _test_StringSerializer_tc_serTwoAnonymous(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serTwoAnonymous) */
+    corto_object anonymous1 = corto_int32Create(10);
+    corto_object anonymous2 = corto_int32Create(20);
+    corto_objectList objList = corto_llNew();
+    corto_llAppend(objList, anonymous1);
+    corto_llAppend(objList, anonymous2);
+    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_assert(o != NULL);
+
+    corto_string str = corto_str(o, 0);
+    test_assert(str != NULL);
+    test_assertstr(str, "{{<1>int32{10},<2>int32{20}}}");
+
+    corto_delete(o);
+    corto_dealloc(str);
+    corto_llFree(objList);
 
 /* $end */
 }

@@ -884,6 +884,10 @@ test/Suite StringSerializer::
     void tc_serList()
     void tc_serListComplex()
 
+    void tc_serAnonymous()
+    void tc_serTwoAnonymous()
+    void tc_serSameAnonymous()
+
 
 class AnonymousTest::
     objects: list{object}

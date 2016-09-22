@@ -135,7 +135,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
         }
 
         if (elementType->reference) {
-            *(corto_object*)e1 = *(corto_object*)e2;
+            corto_setref((corto_object*)e1, *(corto_object*)e2);
         } else {
             v1.type = v2.type = elementType;
             v1.value = e1;

@@ -725,14 +725,14 @@ CORTO_EXPORT corto_int16 _corto_operatorKindDeinit(corto_operatorKind* value);
 #define corto_operatorKindDeinit(value) _corto_operatorKindDeinit(value)
 
 /* /corto/core/package */
-CORTO_EXPORT corto_package _corto_packageCreate(corto_string url);
-#define corto_packageCreate(url) _corto_packageCreate(url)
-#define corto_packageCreate_auto(_name, url) corto_package _name = corto_packageCreate(url); (void)_name
-CORTO_EXPORT corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name, corto_string url);
-#define corto_packageCreateChild(_parent, _name, url) _corto_packageCreateChild(_parent, _name, url)
-#define corto_packageCreateChild_auto(_parent, _name, url) corto_package _name = corto_packageCreateChild(_parent, #_name, url); (void)_name
-CORTO_EXPORT corto_int16 _corto_packageUpdate(corto_package _this, corto_string url);
-#define corto_packageUpdate(_this, url) _corto_packageUpdate(corto_package(_this), url)
+CORTO_EXPORT corto_package _corto_packageCreate(corto_string url, corto_string version, corto_string env);
+#define corto_packageCreate(url, version, env) _corto_packageCreate(url, version, env)
+#define corto_packageCreate_auto(_name, url, version, env) corto_package _name = corto_packageCreate(url, version, env); (void)_name
+CORTO_EXPORT corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name, corto_string url, corto_string version, corto_string env);
+#define corto_packageCreateChild(_parent, _name, url, version, env) _corto_packageCreateChild(_parent, _name, url, version, env)
+#define corto_packageCreateChild_auto(_parent, _name, url, version, env) corto_package _name = corto_packageCreateChild(_parent, #_name, url, version, env); (void)_name
+CORTO_EXPORT corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_string version, corto_string env);
+#define corto_packageUpdate(_this, url, version, env) _corto_packageUpdate(corto_package(_this), url, version, env)
 
 CORTO_EXPORT corto_package _corto_packageDeclare(void);
 #define corto_packageDeclare() _corto_packageDeclare()
@@ -740,15 +740,15 @@ CORTO_EXPORT corto_package _corto_packageDeclare(void);
 CORTO_EXPORT corto_package _corto_packageDeclareChild(corto_object _parent, corto_string _name);
 #define corto_packageDeclareChild(_parent, _name) _corto_packageDeclareChild(_parent, _name)
 #define corto_packageDeclareChild_auto(_parent, _name) corto_package _name = corto_packageDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_packageDefine(corto_package _this, corto_string url);
-#define corto_packageDefine(_this, url) _corto_packageDefine(corto_package(_this), url)
-CORTO_EXPORT corto_package _corto_packageAssign(corto_package _this, corto_string url);
+CORTO_EXPORT corto_int16 _corto_packageDefine(corto_package _this, corto_string url, corto_string version, corto_string env);
+#define corto_packageDefine(_this, url, version, env) _corto_packageDefine(corto_package(_this), url, version, env)
+CORTO_EXPORT corto_package _corto_packageAssign(corto_package _this, corto_string url, corto_string version, corto_string env);
 #define corto_package__optional_NotSet NULL
-#define corto_package__optional_Set(url) corto_packageAssign((corto_package*)corto_calloc(sizeof(corto_package)), url)
-#define corto_package__optional_SetCond(cond, url) cond ? corto_packageAssign((corto_package*)corto_calloc(sizeof(corto_package)), url) : NULL
+#define corto_package__optional_Set(url, version, env) corto_packageAssign((corto_package*)corto_calloc(sizeof(corto_package)), url, version, env)
+#define corto_package__optional_SetCond(cond, url, version, env) cond ? corto_packageAssign((corto_package*)corto_calloc(sizeof(corto_package)), url, version, env) : NULL
 #define corto_packageUnset(_this) _this ? corto_deinitp(_this, corto_package_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_packageAssign(_this, url) _corto_packageAssign(corto_package(_this), url)
-#define corto_packageSet(_this, url) _this = _this ? _this : (corto_package*)corto_calloc(sizeof(corto_package)); _corto_packageAssign(corto_package(_this), url)
+#define corto_packageAssign(_this, url, version, env) _corto_packageAssign(corto_package(_this), url, version, env)
+#define corto_packageSet(_this, url, version, env) _this = _this ? _this : (corto_package*)corto_calloc(sizeof(corto_package)); _corto_packageAssign(corto_package(_this), url, version, env)
 CORTO_EXPORT corto_string _corto_packageStr(corto_package value);
 #define corto_packageStr(value) _corto_packageStr(corto_package(value))
 CORTO_EXPORT corto_package corto_packageFromStr(corto_package value, corto_string str);
@@ -993,14 +993,14 @@ CORTO_EXPORT corto_equalityKind _corto_routeCompare(corto_route dst, corto_route
 #define corto_routeCompare(dst, src) _corto_routeCompare(corto_route(dst), corto_route(src))
 
 /* /corto/core/router */
-CORTO_EXPORT corto_router _corto_routerCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName);
-#define corto_routerCreate(base, baseAccess, implements, returnType, paramType, paramName) _corto_routerCreate(corto_interface(base), baseAccess, implements, corto_type(returnType), corto_type(paramType), paramName)
-#define corto_routerCreate_auto(_name, base, baseAccess, implements, returnType, paramType, paramName) corto_router _name = corto_routerCreate(base, baseAccess, implements, returnType, paramType, paramName); (void)_name
-CORTO_EXPORT corto_router _corto_routerCreateChild(corto_object _parent, corto_string _name, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName);
-#define corto_routerCreateChild(_parent, _name, base, baseAccess, implements, returnType, paramType, paramName) _corto_routerCreateChild(_parent, _name, corto_interface(base), baseAccess, implements, corto_type(returnType), corto_type(paramType), paramName)
-#define corto_routerCreateChild_auto(_parent, _name, base, baseAccess, implements, returnType, paramType, paramName) corto_router _name = corto_routerCreateChild(_parent, #_name, base, baseAccess, implements, returnType, paramType, paramName); (void)_name
-CORTO_EXPORT corto_int16 _corto_routerUpdate(corto_router _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName);
-#define corto_routerUpdate(_this, base, baseAccess, implements, returnType, paramType, paramName) _corto_routerUpdate(corto_router(_this), corto_interface(base), baseAccess, implements, corto_type(returnType), corto_type(paramType), paramName)
+CORTO_EXPORT corto_router _corto_routerCreate(corto_type returnType, corto_type paramType, corto_string paramName);
+#define corto_routerCreate(returnType, paramType, paramName) _corto_routerCreate(corto_type(returnType), corto_type(paramType), paramName)
+#define corto_routerCreate_auto(_name, returnType, paramType, paramName) corto_router _name = corto_routerCreate(returnType, paramType, paramName); (void)_name
+CORTO_EXPORT corto_router _corto_routerCreateChild(corto_object _parent, corto_string _name, corto_type returnType, corto_type paramType, corto_string paramName);
+#define corto_routerCreateChild(_parent, _name, returnType, paramType, paramName) _corto_routerCreateChild(_parent, _name, corto_type(returnType), corto_type(paramType), paramName)
+#define corto_routerCreateChild_auto(_parent, _name, returnType, paramType, paramName) corto_router _name = corto_routerCreateChild(_parent, #_name, returnType, paramType, paramName); (void)_name
+CORTO_EXPORT corto_int16 _corto_routerUpdate(corto_router _this, corto_type returnType, corto_type paramType, corto_string paramName);
+#define corto_routerUpdate(_this, returnType, paramType, paramName) _corto_routerUpdate(corto_router(_this), corto_type(returnType), corto_type(paramType), paramName)
 
 CORTO_EXPORT corto_router _corto_routerDeclare(void);
 #define corto_routerDeclare() _corto_routerDeclare()
@@ -1008,15 +1008,15 @@ CORTO_EXPORT corto_router _corto_routerDeclare(void);
 CORTO_EXPORT corto_router _corto_routerDeclareChild(corto_object _parent, corto_string _name);
 #define corto_routerDeclareChild(_parent, _name) _corto_routerDeclareChild(_parent, _name)
 #define corto_routerDeclareChild_auto(_parent, _name) corto_router _name = corto_routerDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_routerDefine(corto_router _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName);
-#define corto_routerDefine(_this, base, baseAccess, implements, returnType, paramType, paramName) _corto_routerDefine(corto_router(_this), corto_interface(base), baseAccess, implements, corto_type(returnType), corto_type(paramType), paramName)
-CORTO_EXPORT corto_router _corto_routerAssign(corto_router _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type returnType, corto_type paramType, corto_string paramName);
+CORTO_EXPORT corto_int16 _corto_routerDefine(corto_router _this, corto_type returnType, corto_type paramType, corto_string paramName);
+#define corto_routerDefine(_this, returnType, paramType, paramName) _corto_routerDefine(corto_router(_this), corto_type(returnType), corto_type(paramType), paramName)
+CORTO_EXPORT corto_router _corto_routerAssign(corto_router _this, corto_type returnType, corto_type paramType, corto_string paramName);
 #define corto_router__optional_NotSet NULL
-#define corto_router__optional_Set(base, baseAccess, implements, returnType, paramType, paramName) corto_routerAssign((corto_router*)corto_calloc(sizeof(corto_router)), base, baseAccess, implements, returnType, paramType, paramName)
-#define corto_router__optional_SetCond(cond, base, baseAccess, implements, returnType, paramType, paramName) cond ? corto_routerAssign((corto_router*)corto_calloc(sizeof(corto_router)), base, baseAccess, implements, returnType, paramType, paramName) : NULL
+#define corto_router__optional_Set(returnType, paramType, paramName) corto_routerAssign((corto_router*)corto_calloc(sizeof(corto_router)), returnType, paramType, paramName)
+#define corto_router__optional_SetCond(cond, returnType, paramType, paramName) cond ? corto_routerAssign((corto_router*)corto_calloc(sizeof(corto_router)), returnType, paramType, paramName) : NULL
 #define corto_routerUnset(_this) _this ? corto_deinitp(_this, corto_router_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_routerAssign(_this, base, baseAccess, implements, returnType, paramType, paramName) _corto_routerAssign(corto_router(_this), corto_interface(base), baseAccess, implements, corto_type(returnType), corto_type(paramType), paramName)
-#define corto_routerSet(_this, base, baseAccess, implements, returnType, paramType, paramName) _this = _this ? _this : (corto_router*)corto_calloc(sizeof(corto_router)); _corto_routerAssign(corto_router(_this), corto_interface(base), baseAccess, implements, corto_type(returnType), corto_type(paramType), paramName)
+#define corto_routerAssign(_this, returnType, paramType, paramName) _corto_routerAssign(corto_router(_this), corto_type(returnType), corto_type(paramType), paramName)
+#define corto_routerSet(_this, returnType, paramType, paramName) _this = _this ? _this : (corto_router*)corto_calloc(sizeof(corto_router)); _corto_routerAssign(corto_router(_this), corto_type(returnType), corto_type(paramType), paramName)
 CORTO_EXPORT corto_string _corto_routerStr(corto_router value);
 #define corto_routerStr(value) _corto_routerStr(corto_router(value))
 CORTO_EXPORT corto_router corto_routerFromStr(corto_router value, corto_string str);

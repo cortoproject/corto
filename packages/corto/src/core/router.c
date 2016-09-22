@@ -8,7 +8,6 @@
 
 #include <corto/core/core.h>
 
-
 corto_int16 _corto_router_construct(
     corto_router this)
 {
