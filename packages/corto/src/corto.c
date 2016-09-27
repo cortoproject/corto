@@ -948,6 +948,16 @@ int corto_start(void) {
         }
     }
 
+    corto_string traceObject = corto_getenv("CORTO_TRACE_OBJECT");
+    if (traceObject) {
+        CORTO_TRACE_OBJECT = traceObject;
+    }
+
+    corto_string enableBacktrace = corto_getenv("CORTO_BACKTRACE_ENABLED");
+    if (enableBacktrace) {
+        CORTO_BACKTRACE_ENABLED = !strcmp(enableBacktrace, "true");
+    }
+
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);

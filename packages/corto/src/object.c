@@ -3590,6 +3590,8 @@ corto_int16 corto_publish(
             break;
         }
         corto_release(o);
+    } else {
+        result = -1;
     }
 
     return result;
