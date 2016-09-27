@@ -2,6 +2,9 @@ require 'rake/clean'
 
 CWD = Dir.pwd
 
+ENV["LD_LIBRARY_PATH"] = "#{ENV['HOME']}/.corto/lib:#{ENV["LD_LIBRARY_PATH"]}"
+ENV["DYLD_LIBRARY_PATH"] = "#{ENV['HOME']}/.corto/lib:#{ENV["DYLD_LIBRARY_PATH"]}"
+
 def cmd(command)
   if DRYRUN == true
     verbose(false)
@@ -98,7 +101,7 @@ INCLUDE ||= []
 LIB ||= []
 LIBPATH ||= []
 LINK ||= []
-CFLAGS ||= []
+CFLAGS ||= ["-pedantic", "-Wstrict-prototypes"]
 CXXFLAGS ||= []
 LFLAGS ||= []
 USE_PACKAGE ||= []

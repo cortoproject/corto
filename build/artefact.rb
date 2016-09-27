@@ -35,7 +35,7 @@ INCLUDE <<
   "/usr/local/include/corto/#{CORTO_VERSION}"
 
 # Default CFLAGS
-CFLAGS << "-std=c99" << "-Wstrict-prototypes" << "-pedantic" << "-fPIC" << "-D_XOPEN_SOURCE=600"
+CFLAGS << "-std=c99" << "-fPIC" << "-D_XOPEN_SOURCE=600"
 CFLAGS.unshift("-Wall")
 
 # Default CXXFLAGS
