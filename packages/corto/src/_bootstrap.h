@@ -1222,6 +1222,7 @@ CORTO_CLASS_O(core, routerimpl, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED |
     CORTO_METHOD_O(core_routerimpl, construct, "()", lang_int16, FALSE, corto_routerimpl_construct);
     CORTO_METHOD_O(core_routerimpl, destruct, "()", lang_void, FALSE, corto_routerimpl_destruct);
     CORTO_MEMBER_O(core_routerimpl, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_METHOD_O(core_routerimpl, matchRoute, "(core/route route,stringseq pattern,any param)", lang_int32, TRUE, corto_router_match);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);

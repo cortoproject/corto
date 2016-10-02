@@ -487,3 +487,35 @@ corto_void _corto_observableEvent_handle(
         corto_call(corto_function(_method), NULL, this);
     }
 }
+
+corto_int32 _corto_routerimpl_matchRoute(
+    corto_routerimpl this,
+    corto_route route,
+    corto_stringseq pattern,
+    corto_any param)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_int32 _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "matchRoute(core/route route,stringseq pattern,any param)");
+    }
+    corto_assert(_methodId, "virtual 'matchRoute(core/route route,stringseq pattern,any param)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::matchRoute(core/route route,stringseq pattern,any param)@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_int32 ___ (*)(corto_object, corto_route, corto_stringseq, corto_any))((corto_function)_method)->fptr)(this, route, pattern, param);
+    } else {
+        corto_call(corto_function(_method), &_result, this, route, pattern, param);
+    }
+    
+    return _result;
+}

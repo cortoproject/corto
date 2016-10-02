@@ -24,6 +24,19 @@ CORTO_EXPORT corto_int16 _corto_routerimpl_construct(
 CORTO_EXPORT corto_void _corto_routerimpl_destruct(
     corto_routerimpl _this);
 #define corto_routerimpl_destruct(_this) _corto_routerimpl_destruct(corto_routerimpl(_this))
+CORTO_EXPORT corto_int32 _corto_routerimpl_matchRoute(
+    corto_routerimpl _this,
+    corto_route route,
+    corto_stringseq pattern,
+    corto_any param);
+#define corto_routerimpl_matchRoute(_this, route, pattern, param) _corto_routerimpl_matchRoute(corto_routerimpl(_this), corto_route(route), pattern, param)
+
+CORTO_EXPORT corto_int32 _corto_routerimpl_matchRoute_v(
+    corto_routerimpl _this,
+    corto_route route,
+    corto_stringseq pattern,
+    corto_any param);
+#define corto_routerimpl_matchRoute_v(_this, route, pattern, param) _corto_routerimpl_matchRoute_v(corto_routerimpl(_this), corto_route(route), pattern, param)
 
 #ifdef __cplusplus
 }

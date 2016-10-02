@@ -36,3 +36,36 @@ corto_void _corto_routerimpl_destruct(
 
 /* $end */
 }
+
+corto_int32 _corto_routerimpl_matchRoute_v(
+    corto_routerimpl this,
+    corto_route route,
+    corto_stringseq pattern,
+    corto_any param)
+{
+/* $begin(corto/core/routerimpl/matchRoute) */
+    corto_int32 result = -1;
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(param);
+
+    if (route->elements.length == pattern.length) {
+        result = 0;
+        corto_int32 i;
+        for (i = 0; i < pattern.length; i++) {
+            char *expr = route->elements.buffer[i];
+            if (expr[0] != '$') {
+                if (strcmp(expr, pattern.buffer[i])) {
+                    goto nomatch;
+                } else {
+                    result ++;
+                }
+            }
+        }
+    }
+
+    return result;
+nomatch:
+    return -1;
+/* $end */
+}

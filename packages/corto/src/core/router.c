@@ -12,39 +12,13 @@ corto_int16 _corto_router_construct(
     corto_router this)
 {
 /* $begin(corto/core/router/construct) */
-    corto_interface(this)->base = corto_interface(corto_routerimpl_o);
+    corto_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
+    corto_setref(&corto_type(this)->defaultProcedureType, corto_method_o);
+
     return corto_class_construct(this);
 /* $end */
 }
 
-/* $header(corto/core/router/match) */
-corto_int32 corto_router_matchRoute(
-    corto_route r,
-    char* elements[],
-    corto_int32 elementCount)
-{
-    corto_int32 result = -1;
-
-    if (r->elements.length == elementCount) {
-        result = 0;
-        corto_int32 i;
-        for (i = 0; i < elementCount; i++) {
-            char *pattern = r->elements.buffer[i];
-            if (pattern[0] != '$') {
-                if (strcmp(pattern, elements[i])) {
-                    goto nomatch;
-                } else {
-                    result ++;
-                }
-            }
-        }
-    }
-
-    return result;
-nomatch:
-    return -1;
-}
-/* $end */
 corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,
@@ -70,8 +44,9 @@ corto_int16 _corto_router_match(
     /* Walk routes */
     corto_vtableForeach(corto_interface(router)->methods, o) {
         if (corto_instanceof(corto_route_o, o)) {
-            corto_int32 matched = corto_router_matchRoute(
-                corto_route(o), requestElements, elementCount);
+            corto_stringseq pattern = {.length = elementCount, .buffer = requestElements};
+            corto_int32 matched = corto_routerimpl_matchRoute(
+                routerBase, corto_route(o), pattern, param);
             if (matched > maxMatched) {
                 match = corto_route(o);
             }

@@ -3585,6 +3585,7 @@ corto_int16 corto_publish(
                     corto_updateEnd(o);
                 }
             }
+            break;
         case CORTO_ON_DELETE:
             result = corto_delete(o);
             break;
