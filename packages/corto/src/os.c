@@ -235,8 +235,13 @@ static int corto_rmtreeCallback(
     CORTO_UNUSED(sb);
     CORTO_UNUSED(typeflag);
     CORTO_UNUSED(ftwbuf);
-    remove(path);
+    if (remove(path)) {
+        corto_seterr(strerror(errno));
+        goto error;
+    }
     return 0;
+error:
+    return -1;
 }
 
 /* Recursively remove a directory */
@@ -279,7 +284,7 @@ corto_pid corto_procrun(const char* exec, char *argv[]) {
 
 
     if (pid == 0) {
-        
+
         /* Child process */
         if (execvp(exec, argv)) {
             corto_error("corto: failed to start process '%s'\n  cwd='%s'\n  err='%s'",

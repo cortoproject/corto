@@ -246,23 +246,80 @@ error:
     return -1;
 }
 
+corto_bool cortotool_isDirEmpty(corto_string dir) {
+    corto_bool empty = FALSE;
+    corto_ll files = corto_opendir(dir);
+    if (files && !corto_llSize(files)) {
+        empty = TRUE;
+    }
+    corto_closedir(files);
+    return empty;
+}
+
 /* Return -1 when failed to remove file, 1 when uninstaller can't be found */
-int cortotool_uninstaller(corto_string dir) {
+int cortotool_uninstaller(corto_string env, corto_string dir) {
     corto_bool err = 0;
 
     corto_string uninstall;
     corto_asprintf(&uninstall, "%s/uninstall.txt", dir);
     if (corto_fileTest(uninstall)) {
         corto_id name;
-        /* Remove files of package */
+        /* Read files to remove from uninstaller */
         corto_file f = corto_fileRead(uninstall);
+
+        /* Keep track of directories in which files are uninstalled. If empty
+         * after uninstalling, also remove directory */
+        corto_ll directories = corto_llNew();
         char *dependency;
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
             if (corto_rm(dependency)) {
-                corto_error("failed to remove %s: %s", dependency, corto_lasterr());
+                corto_error("corto: cannot remove %s: %s", dependency, corto_lasterr());
                 err = -1;
+            } else {
+                corto_trace("corto: removed '%s'", dependency);
+                corto_string dir = corto_strdup(dependency);
+                char *sep = strrchr(dir, '/');
+                if (sep && (sep != dir)) {
+                    *sep = '\0';
+                }
+                if (!corto_llFind(directories, (corto_compareAction)strcmp, dir)) {
+                    corto_llAppend(directories, dir);
+                } else {
+                    corto_dealloc(dir);
+                }
             }
         }
+
+        /* Loop directories, recursively remove empty ones */
+        corto_iter it = corto_llIter(directories);
+        corto_bool empty;
+        corto_string root = corto_envparse(
+            "%s/include/corto/%s.%s",
+            env,
+            CORTO_VERSION_MAJOR,
+            CORTO_VERSION_MINOR);
+        corto_uint32 minLen = strlen(root);
+        corto_dealloc(root);
+        do {
+            empty = FALSE;
+            while (corto_iterHasNext(&it)) {
+                corto_string dir = corto_iterNext(&it);
+                if ((strlen(dir) > minLen) && cortotool_isDirEmpty(dir)) {
+                    corto_rm(dir);
+                    char *sep = strrchr(dir, '/');
+                    if (sep && (sep != dir)) {
+                        *sep = '\0';
+                    }
+                    if (!corto_llFind(directories, (corto_compareAction)strcmp, dir)) {
+                        corto_llAppend(directories, dir);
+                    } else {
+                        corto_dealloc(dir);
+                    }
+                    empty = TRUE;
+                }
+            }
+        } while(empty);
+
         corto_fileClose(f);
     } else {
         err = 1;
@@ -272,8 +329,9 @@ int cortotool_uninstaller(corto_string dir) {
     return err;
 }
 
-corto_bool cortotool_forceCleanup(corto_string env, corto_string package) {
-    corto_bool result = FALSE;
+corto_int32 cortotool_forceCleanup(corto_string env, corto_string package, corto_bool dryRun) {
+    corto_bool result = 0;
+    corto_string includeErr = NULL, etcErr = NULL, binErr = NULL, libErr = NULL;
 
     corto_string d = corto_envparse(
         "%s/include/corto/%s.%s/%s",
@@ -282,8 +340,15 @@ corto_bool cortotool_forceCleanup(corto_string env, corto_string package) {
         CORTO_VERSION_MINOR,
         package);
     if (corto_fileTest(d)) {
-        corto_rm(d);
-        result = TRUE;
+        if (!dryRun) {
+            if (corto_rm(d)) {
+                corto_asprintf(&includeErr, "\n  %s: %s", d, corto_lasterr());
+                result--;
+            } else {
+                corto_trace("corto: removed '%s'", d);
+            }
+        }
+        if (result >= 0) result++;
     }
     corto_dealloc(d);
 
@@ -294,8 +359,15 @@ corto_bool cortotool_forceCleanup(corto_string env, corto_string package) {
         CORTO_VERSION_MINOR,
         package);
     if (corto_fileTest(d)) {
-        corto_rm(d);
-        result = TRUE;
+        if (!dryRun) {
+            if (corto_rm(d)) {
+                corto_asprintf(&etcErr, "\n  %s: %s", d, corto_lasterr());
+                result --;
+            } else {
+                corto_trace("corto: removed '%s'", d);
+            }
+        }
+        if (result >= 0) result++;
     }
     corto_dealloc(d);
 
@@ -306,73 +378,127 @@ corto_bool cortotool_forceCleanup(corto_string env, corto_string package) {
         CORTO_VERSION_MINOR,
         package);
     if (corto_fileTest(d)) {
-        corto_rm(d);
-        result = TRUE;
+        if (!dryRun) {
+            if (corto_rm(d)) {
+                corto_asprintf(&binErr, "\n  %s: %s", d, corto_lasterr());
+                result --;
+            } else {
+                corto_trace("corto: removed '%s'", d);
+            }
+        }
+        if (result >= 0) result++;
     }
     corto_dealloc(d);
+
+    d = corto_envparse(
+        "%s/lib/corto/%s.%s/%s",
+        env,
+        CORTO_VERSION_MAJOR,
+        CORTO_VERSION_MINOR,
+        package);
+    if (corto_fileTest(d)) {
+        if (!dryRun) {
+            if (corto_rm(d)) {
+                corto_asprintf(&libErr, "\n  %s: %s", d, corto_lasterr());
+                result --;
+            } else {
+                corto_trace("corto: removed '%s'", d);
+            }
+        }
+        if (result >= 0) result++;
+    }
+    corto_dealloc(d);
+
+    if (result < 0) {
+        corto_seterr(
+            "%s%s%s%s",
+            libErr ? libErr : "",
+            binErr ? binErr : "",
+            includeErr ? includeErr : "",
+            etcErr ? etcErr : "");
+        if (libErr) corto_dealloc(libErr);
+        if (binErr) corto_dealloc(binErr);
+        if (includeErr) corto_dealloc(includeErr);
+        if (etcErr) corto_dealloc(etcErr);
+    }
+
+    /* Returns 0 if nothing found, 4 if all deleted, 0-2 if partially deleted
+     * and an increasing negative number for each error found. */
 
     return result;
 }
 
+corto_int32 cortotool_uninstallFromEnv(corto_string env, corto_string package)
+{
+    corto_int16 err = 0;
+    corto_int32 r = 0;
+
+    corto_string dir = corto_envparse(
+        "%s/lib/corto/%s.%s/%s",
+        env,
+        CORTO_VERSION_MAJOR,
+        CORTO_VERSION_MINOR,
+        package);
+
+    if ((err = cortotool_uninstaller(env, dir)) == 1) {
+        /* If uninstaller isn't found, manually remove directories */
+        r = cortotool_forceCleanup(env, package, TRUE);
+        if (r != 0) {
+            corto_warning(
+                "corto: WARNING: no uninstaller found for package '%s' in '%s'",
+                package, env);
+
+            corto_warning(
+                "  There are however still directories found in '%s' for '%s'.\n"
+                "  This is likely the result of uninstalling '%s' but not all\n"
+                "  of its child packages. If you proceed, you will recursively\n"
+                "  delete all child packages of '%s'.\n",
+                env, package, package, package);
+
+            printf("Proceed (Y/n)? ");
+            char ch = getchar();
+            getchar(); // Get rid of newline
+            if ((ch != 'y') && (ch != 'Y')) {
+                goto dontdelete;
+            }
+        }
+
+        r = cortotool_forceCleanup(env, package, FALSE);
+        if (r == 0) {
+            /* Nothing to delete */
+        } else if (r < 0) {
+            corto_error("corto: not all files could be removed:%s", corto_lasterr());
+        } else if (r < 4) {
+            corto_warning(
+                "corto: partial installation removed for '%s' in '%s'",
+                package, env);
+        }
+    } else if (err == -1) {
+        r = -4; /* If uninstaller failed to remove files, report failure */
+    } else {
+        r = 4; /* If uninstaller was successfull, report success */
+    }
+
+    corto_dealloc(dir);
+
+    return r;
+dontdelete:
+    return 0;
+}
+
 corto_int16 cortotool_uninstall(int argc, char *argv[]) {
-    corto_bool err = FALSE, found = FALSE;
 
     if (argc > 1) {
-        corto_string dir;
+        corto_int32 local = cortotool_uninstallFromEnv("$CORTO_TARGET", argv[1]);
+        corto_int32 global = cortotool_uninstallFromEnv("/usr/local", argv[1]);
 
-        /* Look in local environment */
-        dir = corto_envparse(
-            "$CORTO_TARGET/lib/corto/%s.%s/%s",
-            CORTO_VERSION_MAJOR,
-            CORTO_VERSION_MINOR,
-            argv[1]);
-
-        if (corto_fileTest(dir)) {
-            if ((err = cortotool_uninstaller(dir)) == 1) {
-                /* If uninstaller isn't found, manually remove directories */
-                corto_warning(
-                    "corto: warning: no uninstaller file found for '%s', recursively cleaning package.",
-                    argv[1]);
-                cortotool_forceCleanup("$CORTO_TARGET", argv[1]);
-            }
-            corto_rm(dir);
-            found = TRUE;
-        /* Ensure that there aren't any other directories left besides lib */
-        } else {
-            if (cortotool_forceCleanup("$CORTO_TARGET", argv[1])) {
-                corto_info(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
-            }
-        }
-        corto_dealloc(dir);
-
-        /* Look in global environment */
-        dir = corto_envparse(
-            "/usr/local/lib/corto/%s.%s/%s",
-            CORTO_VERSION_MAJOR,
-            CORTO_VERSION_MINOR,
-            argv[1]);
-        if (corto_fileTest(dir)) {
-            if ((err = cortotool_uninstaller(dir)) == 1) {
-                /* If uninstaller isn't found, manually remove directories */
-                corto_warning(
-                    "corto: warning: no uninstaller file found for '%s', recursively cleaning packagec.",
-                    argv[1]);
-                cortotool_forceCleanup("/usr/local", argv[1]);
-            }
-            corto_rm(dir);
-            found = TRUE;
-        } else {
-            if (cortotool_forceCleanup("$CORTO_TARGET", argv[1])) {
-                corto_info(CORTO_PROMPT "partial installation of package '%s' uninstalled", argv[1]);
-            }
-        }
-        corto_dealloc(dir);
-
-        if (found) {
-            corto_info(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
-        } else if (!found) {
+        if ((local == 0) && (global == 0)) {
             corto_error("corto: package '%s' not found", argv[1]);
             goto error;
+        } else if ((local >= 0) && (global >= 0)) {
+            corto_info(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
+        } else {
+          corto_error("corto: failed to uninstall '%s'", argv[1]);
         }
     } else {
         if (cortotool_uninstallAll()) {
@@ -455,6 +581,9 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             } else if (!strcmp(argv[i], "--silent")) {
                 silent = TRUE;
             }
+            if (!strcmp(argv[i], "--verbose")) {
+                corto_verbosity(CORTO_TRACE);
+            }
         }
     }
 
@@ -481,7 +610,14 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             if (!silent) printf(CORTO_PROMPT "'%s' => '%s'\n", argv[1], location);
         }
     } else {
-        if (!silent) printf(CORTO_PROMPT "package '%s' not found\n", argv[1]);
+        if (!silent) {
+            printf(CORTO_PROMPT "package '%s' not found", argv[1]);
+            if (corto_lasterr()) {
+                printf("%s\n", corto_lasterr());
+            } else {
+                printf("\n");
+            }
+        }
         goto error;
     }
 
@@ -664,5 +800,6 @@ void cortotool_locateHelp(void) {
     printf("   --path       Return only the path (no library name)\n");
     printf("   --env        Return only the environment (local or global package repository)\n");
     printf("   --silent     Do not print anything, just return if the package is installed\n");
+    printf("   --verbose    Verbose logging\n");
     printf("\n");
 }

@@ -190,7 +190,7 @@ def build_target()
   begin
     cmd cc_command
   rescue
-    STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
+    STDERR.puts "\033[1;31mcorto:\033[0;49mcorto: command failed: #{cc_command}"
     abort
   end
 
@@ -409,7 +409,7 @@ def build_source(source, target, echo)
   begin
     cmd cc_command
   rescue
-    STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
+    STDERR.puts "\033[1;31mcorto:\033[0;49mcorto: command failed: #{cc_command}"
     abort
   end
 end

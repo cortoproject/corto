@@ -184,7 +184,18 @@ corto_int16 cortotool_ppParse(
         /* Resolve object */
         corto_object o = corto_resolve(NULL, id);
         if (!o) {
-            corto_error("corto: unresolved scope '%s'.", id);
+            if (includes && corto_llSize(includes)) {
+                if (corto_llSize(includes) == 1) {
+                    corto_error("corto: '%s' does not define object '%s'",
+                      corto_llGet(includes, 0),
+                      id);
+                } else {
+                    corto_error("corto: object '%s' is not in loaded definitions",
+                      id);
+                }
+            } else {
+                corto_error("corto: unresolved object '%s' (did you forget to load the definitions?)", id);
+            }
             goto error;
         }
         corto_release(o);
@@ -303,10 +314,14 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Generate for all scopes */
             if (scopes) {
-                cortotool_ppParse(g, scopes, TRUE, TRUE);
+                if (cortotool_ppParse(g, scopes, TRUE, TRUE)) {
+                    goto error;
+                }
             }
             if (objects) {
-                cortotool_ppParse(g, objects, TRUE, FALSE);
+                if (cortotool_ppParse(g, objects, TRUE, FALSE)) {
+                    goto error;
+                }
             }
 
             /* Set attributes */

@@ -191,10 +191,7 @@ corto_err corto_tracev(char* fmt, va_list args) {
 }
 
 corto_err corto_warningv(char* fmt, va_list args) {
-    if (CORTO_DEBUG_ENABLED) {
-        return corto_logv(CORTO_WARNING, 0, fmt, args, stderr);
-    }
-    return 0;
+    return corto_logv(CORTO_WARNING, 0, fmt, args, stderr);
 }
 
 corto_err corto_errorv(char* fmt, va_list args) {

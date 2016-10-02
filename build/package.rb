@@ -77,7 +77,7 @@ if not defined? NOCORTO then
       "include/_type.h" <<
       "include/_interface.h"
 
-    file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
+    file "include/_type.h" => [GENFILE, "rakefile", ".corto/packages.txt"] do
       verbose(VERBOSE)
       preload = PP_PRELOAD.join(" ")
       cmd "mkdir -p .corto"
@@ -105,7 +105,7 @@ if not defined? NOCORTO then
       begin
         cmd command
       rescue
-        STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+        STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
         if File.exists? "include/_type.h" then
           cmd "rm include/_type.h"
         end
@@ -138,7 +138,7 @@ if not defined? NOCORTO then
       begin
         cmd command
       rescue
-        STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+        STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
         if File.exists? "include/#{NAME}.h" then
           cmd "rm include/#{NAME}.h"
         end
@@ -164,7 +164,7 @@ task :doc do
         begin
           cmd command
         rescue
-          STDERR.puts "\033[1;31mcommand failed: #{command}\033[0;49m"
+          STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
           abort
         end
       end
@@ -272,7 +272,7 @@ def installFile(source, target)
     begin
       cmd "ln -fs #{source} #{target}"
     rescue
-      STDERR.puts "\033[1;31mwarning: failed to create link #{target}#{File.basename(source)}, retrying\033[0;49m"
+      STDERR.puts "\033[0;33mwarning: failed to create link #{target}#{File.basename(source)}, retrying\033[0;49m"
       if File.exists?(target) then
         cmd "rm -rf #{target}#{File.basename(source)}"
       end
@@ -283,7 +283,7 @@ def installFile(source, target)
     begin
       cmd "cp -r #{source} #{target}"
     rescue
-      STDERR.puts "\033[1;31mwarning: failed to copy file #{source}, retrying\033[0;49m"
+      STDERR.puts "\033[0;33mwarning: failed to copy file #{source}, retrying\033[0;49m"
       if File.exists?(target) then
         cmd "rm -rf #{target}"
       end
@@ -382,7 +382,7 @@ task :install do
       if DRYRUN != true then
         if File.exists? "#{libpath}/source.txt" then
           if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
-            STDERR.puts "\033[1;31mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m"
+            STDERR.puts "\033[0;33mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m"
           end
         end
         cmd "mv source.txt #{libpath}/source.txt"

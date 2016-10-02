@@ -486,7 +486,6 @@ corto_int16 g_importsEvalReference(
 {
     if (!g_mustParse(g, o)) {
         corto_object parent = o;
-
         while(!corto_instanceof(corto_type(corto_package_o), parent)) {
             parent = corto_parentof(parent);
         }
@@ -544,6 +543,9 @@ corto_int16 g_serializeImportsObject(corto_serializer s, corto_value *v, void* u
 
     corto_object o = corto_value_getObject(v);
     g_importsEvalReference(data->g, corto_typeof(o));
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        g_importsEvalReference(data->g, corto_parentof(o));
+    }
     corto_serializeValue(s, v, userData);
 
     return 0;
@@ -575,7 +577,6 @@ int g_importWalk(corto_object o, void* userData) {
     walkData.nested = FALSE;
     s = g_serializeImportsSerializer();
     corto_serialize(&s, o, &walkData);
-    g_importsEvalReference(g, corto_typeof(o));
 
     return 1;
 }
