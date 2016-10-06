@@ -179,7 +179,7 @@ task :buildscript do
   if not LOCAL then
     INCLUDE_PUBLIC ||= [] + INCLUDE
     if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
-      dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+      dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
       cmd "mkdir -p #{dir}"
       File.open("#{dir}/build.rb", "w") do |file|
         if INCLUDE_PUBLIC.length != 0 then
@@ -224,7 +224,7 @@ end
 
 task :uninstaller do
   if not LOCAL then
-    dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR}"
     cmd "mkdir -p #{dir}"
     File.open("#{dir}/uninstall.txt", "w") do |file|
       UNINSTALL.each do |f|
@@ -237,7 +237,7 @@ end
 task :uninstall do
   verbose(VERBOSE)
   if not LOCAL then
-    dir = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{PACKAGEDIR}"
+    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR}"
     if File.exists?("#{dir}/uninstall.txt") then
       File.open("#{dir}/uninstall.txt") do |file|
         file.each_line do |l|
@@ -334,12 +334,14 @@ task :install do
   verbose(VERBOSE)
 
   if not LOCAL then
-    libpath = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+    libpath = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
     if not File.exists? libpath then
       cmd "mkdir -p #{libpath}"
     end
 
-    installDir("include")
+    if not PP_ATTR.include?("app=true") then
+      installDir("include")
+    end
     installDir("etc")
     installDir("lib")
 
@@ -360,7 +362,7 @@ task :install do
           cmd "cp -r #{platformStr}/etc/. #{install}/etc"
         end
 
-        # Add installed files to FILES variable
+        # Add installed files to UNINSTALL variable
         Dir.glob("#{platformStr}/lib/**/*").each do |file|
           UNINSTALL << file.pathmap("#{CORTO_TARGET}/%{^#{platformStr}/,}p")
         end
@@ -400,12 +402,12 @@ end
 # Collect files in preparation for creating a tar
 task :collect do
   verbose(VERBOSE)
-  buildScript = "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}/build.rb"
+  buildScript = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}/build.rb"
   if not File.exists?(buildScript) then
     STDERR.puts "\033[1;31m build.rb not found ]\033[0;49m"
     abort
   end
-  libPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{CORTO_VERSION}/#{TARGETPATH}"
+  libPath = "#{ENV['HOME']}/.corto/pack/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
   cmd "mkdir -p #{libPath}"
   cmd "cp -r #{buildScript} #{libPath}"
   if File.exists?("include") then

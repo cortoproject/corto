@@ -259,6 +259,7 @@ corto_bool cortotool_isDirEmpty(corto_string dir) {
 /* Return -1 when failed to remove file, 1 when uninstaller can't be found */
 int cortotool_uninstaller(corto_string env, corto_string dir) {
     corto_bool err = 0;
+    corto_uint32 filesTotal = 0, filesMissing = 0;
 
     corto_string uninstall;
     corto_asprintf(&uninstall, "%s/uninstall.txt", dir);
@@ -272,6 +273,12 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
         corto_ll directories = corto_llNew();
         char *dependency;
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
+            filesTotal ++;
+            if (!corto_fileTest(dependency)) {
+                corto_error("corto: cannot remove %s: file does not exist");
+                filesMissing ++;
+                continue;
+            }
             if (corto_rm(dependency)) {
                 corto_error("corto: cannot remove %s: %s", dependency, corto_lasterr());
                 err = -1;
@@ -487,24 +494,43 @@ dontdelete:
 }
 
 corto_int16 cortotool_uninstall(int argc, char *argv[]) {
+    corto_ll packages, verbose;
 
-    if (argc > 1) {
-        corto_int32 local = cortotool_uninstallFromEnv("$CORTO_TARGET", argv[1]);
-        corto_int32 global = cortotool_uninstallFromEnv("/usr/local", argv[1]);
+    CORTO_UNUSED(argc);
 
-        if ((local == 0) && (global == 0)) {
-            corto_error("corto: package '%s' not found", argv[1]);
-            goto error;
-        } else if ((local >= 0) && (global >= 0)) {
-            corto_info(CORTO_PROMPT "package '%s' uninstalled", argv[1]);
-        } else {
-          corto_error("corto: failed to uninstall '%s'", argv[1]);
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore 'uninstall' */
+        {"--verbose", &verbose, NULL},
+        {"*", &packages, NULL},
+        {NULL}
+      }
+    );
+
+    if (corto_llSize(packages)) {
+        corto_iter it = corto_llIter(packages);
+        while (corto_iterHasNext(&it)) {
+            corto_string package = corto_iterNext(&it);
+            corto_int32 local = cortotool_uninstallFromEnv("$CORTO_TARGET", package);
+            corto_int32 global = cortotool_uninstallFromEnv("/usr/local", package);
+
+            if ((local == 0) && (global == 0)) {
+                corto_error("corto: package '%s' not found", package);
+                continue;
+            } else if ((local >= 0) && (global >= 0)) {
+                corto_info(CORTO_PROMPT "package '%s' uninstalled", package);
+            } else {
+              corto_error("corto: failed to uninstall '%s'", package);
+            }
         }
     } else {
         if (cortotool_uninstallAll()) {
             goto error;
         }
     }
+
+    corto_argclean(data);
 
     return 0;
 error:

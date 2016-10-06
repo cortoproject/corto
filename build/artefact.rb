@@ -169,7 +169,7 @@ def build_target()
 
   use_link =
     USE_LIBRARY.map do |i|
-      "#{ENV['CORTO_HOME']}/lib/corto/#{CORTO_VERSION}/libraries/lib" + i + ".so"
+      "#{ENV['CORTO_HOME']}/#{INSTALL}/#{CORTO_VERSION}/libraries/lib" + i + ".so"
     end.join(" ")
 
   # Check if there were any new files created during code generation
