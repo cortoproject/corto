@@ -8,13 +8,24 @@
 
 #include <corto/core/core.h>
 
+/* $header() */
+static corto_routerimpl corto_router_findRouterImpl(corto_route this) {
+    corto_interface base = corto_interface(this);
+    do {
+        if (corto_instanceof(corto_routerimpl_o, base)) {
+            break;
+        }
+    } while ((base = base->base));
+    return corto_routerimpl(base);
+}
+/* $end */
+
 corto_int16 _corto_router_construct(
     corto_router this)
 {
 /* $begin(corto/core/router/construct) */
     corto_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     corto_setref(&corto_type(this)->defaultProcedureType, corto_method_o);
-
     return corto_class_construct(this);
 /* $end */
 }
@@ -26,7 +37,7 @@ corto_int16 _corto_router_match(
     corto_any result)
 {
 /* $begin(corto/core/router/match) */
-    corto_routerimpl router = corto_routerimpl(corto_typeof(instance));
+    corto_routerimpl router = corto_router_findRouterImpl(instance);
     corto_router routerBase = corto_router(corto_typeof(router));
     corto_route match = NULL;
     corto_int32 maxMatched = -1;
@@ -35,18 +46,18 @@ corto_int16 _corto_router_match(
     corto_int32 elementCount;
 
     /* Parse request once */
-    strcpy(requestBuffer, request);
+    strcpy(requestBuffer, request[0] == '/' ? request + 1 : request);
     if ((elementCount = corto_pathToArray(requestBuffer, requestElements, "/")) == -1) {
         corto_seterr("%s: invalid request: %s", request, corto_lasterr());
         goto error;
     }
 
     /* Walk routes */
-    corto_vtableForeach(corto_interface(router)->methods, o) {
+    corto_vtableForeach(corto_interface(instance)->methods, o) {
         if (corto_instanceof(corto_route_o, o)) {
             corto_stringseq pattern = {.length = elementCount, .buffer = requestElements};
             corto_int32 matched = corto_routerimpl_matchRoute(
-                routerBase, corto_route(o), pattern, param);
+                router, corto_route(o), pattern, param);
             if (matched > maxMatched) {
                 match = corto_route(o);
             }

@@ -8,6 +8,18 @@
 
 #include <corto/core/core.h>
 
+/* $header() */
+static corto_routerimpl corto_route_findRouterImpl(corto_route this) {
+    corto_interface base = corto_interface(corto_parentof(this));
+    do {
+        if (corto_instanceof(corto_routerimpl_o, base)) {
+            break;
+        }
+    } while ((base = base->base));
+    return corto_routerimpl(base);
+}
+/* $end */
+
 corto_int16 _corto_route_construct(
     corto_route this)
 {
@@ -16,7 +28,7 @@ corto_int16 _corto_route_construct(
     strcpy(pattern, this->pattern);
     char *ptr = pattern;
     corto_int32 count = 0, elementCount = 0;
-    corto_routerimpl router = corto_routerimpl(corto_parentof(this));
+    corto_routerimpl router = corto_route_findRouterImpl(this);
     corto_router routerBase = corto_router(corto_typeof(router));
     char *elements[CORTO_MAX_SCOPE_DEPTH];
 
@@ -76,8 +88,8 @@ corto_int16 _corto_route_init(
     corto_route this)
 {
 /* $begin(corto/core/route/init) */
-    if (!corto_instanceof(corto_routerimpl_o, corto_parentof(this))) {
-        corto_seterr("parent of route should inherit from router");
+    if (!corto_route_findRouterImpl(this)) {
+        corto_seterr("parent of route should inherit from routerimpl");
         goto error;
     }
 

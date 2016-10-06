@@ -1209,7 +1209,7 @@ CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NU
 
 /* /corto/core/router */
 CORTO_FW_CD(core, router);
-CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_CD);
     CORTO_METHOD_O(core_router, construct, "()", lang_int16, FALSE, corto_router_construct);
     CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
