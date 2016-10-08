@@ -94,7 +94,7 @@ void corto_listenAdminRemove(
         }
         if (!corto_llSize(admin)) {
             corto_llFree(admin);
-            corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, admin);
+            corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
     }
 }

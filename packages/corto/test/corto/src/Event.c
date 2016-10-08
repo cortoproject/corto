@@ -1439,6 +1439,36 @@ corto_void _test_Event_tc_postponeListenForUndefined(
 /* $end */
 }
 
+corto_void _test_Event_tc_postponeListenSilence(
+    test_Event this)
+{
+/* $begin(test/Event/tc_postponeListenSilence) */
+    corto_int32 *observable = corto_int32CreateChild(root_o, "observable", 0);
+    corto_int32 *instance = corto_int32Declare();
+
+    corto_observer observer = corto_observerCreate(
+      0, NULL, test_Event_tc_postponeListenForUndefinedCallback);
+
+    corto_int16 ret = corto_listen(instance, observer, CORTO_ON_UPDATE, observable, NULL);
+    test_assert(ret == 0);
+
+    ret = corto_silence(instance, observer, CORTO_ON_UPDATE, observable);
+    test_assert(ret == 0);
+
+    ret = corto_int32Update(observable, 10);
+    test_assert(ret == 0);
+    test_assertint(*instance, 0);
+
+    ret = corto_define(instance);
+    test_assert(ret == 0);
+
+    ret = corto_int32Update(observable, 20);
+    test_assert(ret == 0);
+    test_assertint(*instance, 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_updateUndefined(
     test_Event this)
 {
