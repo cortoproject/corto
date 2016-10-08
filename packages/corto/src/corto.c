@@ -57,7 +57,7 @@ static corto_ll corto_exitHandlers = NULL;
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 corto_threadKey CORTO_KEY_DECLARED_ADMIN;
-corto_threadKey CORTO_KEY_WAIT_ADMIN;
+corto_threadKey CORTO_KEY_LISTEN_ADMIN;
 corto_threadKey CORTO_KEY_ATTR;
 corto_threadKey CORTO_KEY_FLOW;
 corto_threadKey CORTO_KEY_THREAD_STRING;
@@ -962,7 +962,7 @@ int corto_start(void) {
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_WAIT_ADMIN, NULL);
+    corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_threadTlsKey(&CORTO_KEY_FLOW, NULL);
     void corto_threadStringDealloc(void *data);

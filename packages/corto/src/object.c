@@ -17,10 +17,9 @@ static void corto_olsDestroy(corto__scope *scope);
 
 extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_int8 CORTO_OLS_AUGMENT;
-extern corto_threadKey CORTO_KEY_ATTR;
 
-/* Thread local storage key that keeps track of the objects that are prepared to wait for. */
-extern corto_threadKey CORTO_KEY_WAIT_ADMIN;
+/* Administration that keeps track of current object attributes */
+extern corto_threadKey CORTO_KEY_ATTR;
 
 /* Administration that keeps track of objects declared but not defined in
  * current thread */
@@ -35,18 +34,103 @@ extern corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
 extern corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 
-typedef struct corto_waitForObject {
-    corto_object objects[CORTO_MAX_WAIT_FOR_OBJECTS];
-    corto_uint32 count;
-    corto_object triggered;
-    corto_sem semaphore;
-    corto_observer observer;
-    int triggerCount; /* Value is atomically incremented\decremented to make sure wait is only triggered once */
-} corto_waitForObject;
-
+/* Administration that keeps track of listen operations for undefined instances.
+ * These operations are temporarily stored in this admin and are evaluated &
+ * removed from the admin when the object is defined */
+extern corto_threadKey CORTO_KEY_LISTEN_ADMIN;
 
 /* Lists all the anonymous objects in use. Used by the garbage collector. */
 corto_ll corto_anonymousObjects = NULL;
+
+typedef struct corto_listenAdmin {
+    corto_object instance;
+    corto_observer observer;
+    corto_eventMask mask;
+    corto_object observable;
+    corto_dispatcher dispatcher;
+} corto_listenAdmin;
+
+void corto_listenAdminAdd(
+    corto_object instance,
+    corto_observer observer,
+    corto_eventMask mask,
+    corto_object observable,
+    corto_dispatcher dispatcher)
+{
+    corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
+    if (!admin) {
+        admin = corto_llNew();
+        corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, admin);
+    }
+
+    corto_listenAdmin *elem = corto_alloc(sizeof(corto_listenAdmin));
+    elem->instance = instance;
+    elem->observer = observer;
+    elem->mask = mask;
+    elem->observable = observable;
+    elem->dispatcher = dispatcher;
+    corto_llAppend(admin, elem);
+}
+
+void corto_listenAdminRemove(
+    corto_object instance,
+    corto_observer observer,
+    corto_eventMask mask,
+    corto_object observable)
+{
+    corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
+    if (admin) {
+        corto_iter it = corto_llIter(admin);
+        while (corto_iterHasNext(&it)) {
+            corto_listenAdmin *elem = corto_iterNext(&it);
+            if ((elem->instance == instance) &&
+                (elem->observer == observer) &&
+                (elem->mask == mask) &&
+                (elem->observable == observable))
+            {
+                corto_dealloc(elem);
+                corto_llRemove(admin, elem);
+            }
+        }
+        if (!corto_llSize(admin)) {
+            corto_llFree(admin);
+            corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, admin);
+        }
+    }
+}
+
+void corto_listenAdminDefine(
+    corto_object instance)
+{
+    corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
+    if (admin) {
+        corto_iter it = corto_llIter(admin);
+        while (corto_iterHasNext(&it)) {
+            corto_listenAdmin *elem = corto_iterNext(&it);
+            if (elem->instance == instance) {
+                if (corto_listen(
+                    elem->instance,
+                    elem->observer,
+                    elem->mask,
+                    elem->observable,
+                    elem->dispatcher))
+                {
+                    /* This should never happen as the input parameters have
+                     * been checked when corto_listen was first called */
+                    corto_critical(
+                      "corto: delayed listen for previously undefined instance '%s' failed",
+                      corto_fullpath(NULL, instance));
+                }
+                corto_dealloc(elem);
+                corto_llRemove(admin, elem);
+            }
+        }
+        if (!corto_llSize(admin)) {
+            corto_llFree(admin);
+            corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, NULL);
+        }
+    }
+}
 
 typedef struct corto_observerElement {
     corto__observer ** observers;
@@ -1458,6 +1542,9 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
         if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
             corto_declaredAdminRemove(o);
         }
+
+        /* Do postponed listen calls for instance */
+        corto_listenAdminDefine(o);
 
         /* Notify observers of defined object */
         corto_notify(corto__objectObservable(_o), o, mask);
@@ -3385,6 +3472,18 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
         goto error;
     }
 
+    /* If instance has not yet been defined, postpone listen */
+    if (this && !corto_checkState(this, CORTO_DEFINED)) {
+        corto_listenAdminAdd(
+            this,
+            observer,
+            mask,
+            observable,
+            dispatcher
+        );
+        goto postponed;
+    }
+
     _o = corto__objectObservable(
         CORTO_OFFSET(observable, -sizeof(corto__object)));
 
@@ -3493,6 +3592,7 @@ corto_int16 corto_listen(corto_object this, corto_observer observer, corto_event
         corto_observersArrayFree(oldChildArray);
     }
 
+postponed:
     return 0;
 error:
     return -1;
@@ -3524,6 +3624,17 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
     /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
     if (!((mask & CORTO_ON_VALUE) || (mask & CORTO_ON_METAVALUE))) {
         mask |= CORTO_ON_VALUE;
+    }
+
+    /* If instance has not yet been defined, postpone listen */
+    if (this && !corto_checkState(this, CORTO_DEFINED)) {
+        corto_listenAdminRemove(
+            this,
+            observer,
+            mask,
+            observable
+        );
+        goto postponed;
     }
 
     if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
@@ -3593,6 +3704,7 @@ corto_int16 corto_silence(corto_object this, corto_observer observer, corto_even
         TODO: corto_dealloc(observerData);
     }*/
 
+postponed:
     return 0;
 error:
     return -1;
