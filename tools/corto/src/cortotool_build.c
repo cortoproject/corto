@@ -109,7 +109,7 @@ error:
 
 corto_int16 cortotool_clean(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll dirs, verbose;
+    corto_ll dirs, verbose, silent, mute;
 
     CORTO_UNUSED(argc);
 
@@ -117,8 +117,8 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
       argv,
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore first argument */
-        {"--silent", NULL, NULL},
-        {"--mute", NULL, NULL},
+        {"--silent", &silent, NULL},
+        {"--mute", &mute, NULL},
         {"--verbose", &verbose, NULL},
         {"--nocoverage", NULL, NULL}, /* Ignore coverage */
         {"--release", NULL, NULL}, /* Ignore release */
@@ -137,7 +137,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         "clobber",
         verbose ? "verbose=true" : "verbose=false",
         NULL
-      }, verbose ? FALSE : TRUE, verbose ? FALSE : TRUE);
+      }, silent != NULL, mute != NULL);
 
     corto_argclean(data);
     if (ret) {

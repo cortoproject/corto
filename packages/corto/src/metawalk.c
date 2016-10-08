@@ -21,7 +21,9 @@ corto_int16 corto_metaWalk(corto_serializer s, corto_type type, void* userData) 
     memset(o, 0, sizeof(corto__object) + type->size);
     o->type = corto_type(type);
     o->refcount = 1;
-
+#ifndef NDEBUG
+    o->magic = CORTO_MAGIC;
+#endif
     s->visitAllCases = TRUE;
     result = corto_serialize(s, CORTO_OFFSET(o, sizeof(corto__object)), userData);
     corto_dealloc(o);

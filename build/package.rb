@@ -18,6 +18,10 @@ PP_ATTR ||= []
 if not defined? PP_OBJECTS then
   PP_SCOPES ||= [PACKAGE]
 else
+  if not PP_ATTR.include?("app=true") then
+    STDERR.puts "\033[1;31mcorto: cannot use PP_OBJECTS for packages\033[0;49m"
+    abort();
+  end
   PP_SCOPES ||= []
 end
 PP_OBJECTS ||= []

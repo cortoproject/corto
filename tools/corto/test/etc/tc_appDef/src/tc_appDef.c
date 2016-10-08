@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <tc_appDef/tc_appDef.h>
+#include <tc_appDef.h>
 
 int tc_appDefMain(int argc, char* argv[]) {
 /* $begin(main) */

@@ -258,6 +258,13 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
 #define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_mount(r))
 
+/* Throws an assertion when invalid object in debugging */
+#ifndef NDEBUG
+void corto_assertObject(corto_object o);
+#else
+#define corto_assertObject(o)
+#endif
+
 #ifdef __cplusplus
 }
 #endif

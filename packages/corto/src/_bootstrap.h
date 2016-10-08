@@ -215,13 +215,18 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FWDECL_SECURE(type, name) CORTO_FWDECL_SSO(type, secure_##name); corto_##type corto_secure_##name##_o = &secure_##name##__o.v
 
 /* SSO */
+#ifndef NDEBUG
+#define CORTO_ADD_MAGIC ,CORTO_MAGIC
+#else
+#define CORTO_ADD_MAGIC
+#endif
 #define CORTO_ATTR_SSOO {{1, 0, 1, 0, CORTO_VALID | CORTO_DECLARED}}
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
-#define CORTO_ROOT_V() {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&core_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO, 2, (corto_type)&core_package__o.v}}, {uri}
-#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
-#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO, 2, (corto_type)&type##__o.v}}
+#define CORTO_ROOT_V() {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}, {uri}
+#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
+#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO  CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
 /* SSO identifier */
 #define CORTO_ID(name) name##__o

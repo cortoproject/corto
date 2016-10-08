@@ -40,6 +40,10 @@
 #include <mach/mach.h>
 #endif
 
+#ifndef NDEBUG
+#define CORTO_MAGIC (0x6B6F7274)
+#endif
+
 #include <corto/iter.h>
 
 #ifdef __cplusplus

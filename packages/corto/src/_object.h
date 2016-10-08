@@ -44,6 +44,11 @@ typedef struct corto__object {
         corto__attr attrs;
         corto_uint64 dummy;
     } align; /* Anonymous union would've been nice, but not supported in C99 */
+    #ifndef NDEBUG
+        /* Magic number to check in debugging whether value is an object. This value
+         * should not be used in application logic. */
+        corto_uint32 magic;
+    #endif
     corto_int32 refcount;
     corto_type type;
 }corto__object;

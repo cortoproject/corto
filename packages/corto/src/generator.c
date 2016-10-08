@@ -1186,7 +1186,7 @@ int g_checkParseWalk(void* o, void* userData) {
         corto_object ptr = userData;
 
         /* Walk object-scope */
-        while((ptr = corto_parentof(ptr)) && ptr != _o->o);
+        while((ptr = corto_parentof(ptr)) && (ptr != _o->o));
         if (ptr) {
             result = 0;
         }
