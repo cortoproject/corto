@@ -1404,6 +1404,41 @@ corto_void _test_Event_tc_onUpdateTreeNotObservable(
 /* $end */
 }
 
+/* $header(test/Event/tc_postponeListenForUndefined) */
+void test_Event_tc_postponeListenForUndefinedCallback(
+    corto_object this,
+    corto_object observable)
+{
+    *corto_int32(this) = *corto_int32(observable);
+}
+/* $end */
+corto_void _test_Event_tc_postponeListenForUndefined(
+    test_Event this)
+{
+/* $begin(test/Event/tc_postponeListenForUndefined) */
+    corto_int32 *observable = corto_int32CreateChild(root_o, "observable", 0);
+    corto_int32 *instance = corto_int32Declare();
+
+    corto_observer observer = corto_observerCreate(
+      0, NULL, test_Event_tc_postponeListenForUndefinedCallback);
+
+    corto_int16 ret = corto_listen(instance, observer, CORTO_ON_UPDATE, observable, NULL);
+    test_assert(ret == 0);
+
+    ret = corto_int32Update(observable, 10);
+    test_assert(ret == 0);
+    test_assertint(*instance, 0);
+
+    ret = corto_define(instance);
+    test_assert(ret == 0);
+
+    ret = corto_int32Update(observable, 20);
+    test_assert(ret == 0);
+    test_assertint(*instance, 20);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_updateUndefined(
     test_Event this)
 {

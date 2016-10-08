@@ -696,6 +696,8 @@ test/Suite Event::
     void tc_observeNullWithListenMultiObservable()
     void tc_observeNullWithListenMultiBoth()
 
+    void tc_postponeListenForUndefined()
+
 // Function overloading support types
 void ol_null(object a)
 void ol_null(string a)
