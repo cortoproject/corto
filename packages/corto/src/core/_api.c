@@ -643,7 +643,7 @@ corto_int16 _corto_eventMaskDeinit(corto_eventMask* value) {
     return result;
 }
 
-corto_frame* _corto_frameCreate(corto_frameKind kind, corto_uint64 value) {
+corto_frame* _corto_frameCreate(corto_frameKind kind, corto_int64 value) {
     corto_frame* _this;
     _this = corto_frame(corto_declare(corto_frame_o));
     if (!_this) {
@@ -660,7 +660,7 @@ corto_frame* _corto_frameCreate(corto_frameKind kind, corto_uint64 value) {
     return _this;
 }
 
-corto_frame* _corto_frameCreateChild(corto_object _parent, corto_string _name, corto_frameKind kind, corto_uint64 value) {
+corto_frame* _corto_frameCreateChild(corto_object _parent, corto_string _name, corto_frameKind kind, corto_int64 value) {
     corto_frame* _this;
     _this = corto_frame(corto_declareChild(_parent, _name, corto_frame_o));
     if (!_this) {
@@ -677,7 +677,7 @@ corto_frame* _corto_frameCreateChild(corto_object _parent, corto_string _name, c
     return _this;
 }
 
-corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind kind, corto_uint64 value) {
+corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind kind, corto_int64 value) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         ((corto_frame*)_this)->kind = kind;
@@ -707,14 +707,14 @@ corto_frame* _corto_frameDeclareChild(corto_object _parent, corto_string _name) 
     return _this;
 }
 
-corto_int16 _corto_frameDefine(corto_frame* _this, corto_frameKind kind, corto_uint64 value) {
+corto_int16 _corto_frameDefine(corto_frame* _this, corto_frameKind kind, corto_int64 value) {
     CORTO_UNUSED(_this);
     ((corto_frame*)_this)->kind = kind;
     ((corto_frame*)_this)->value = value;
     return corto_define(_this);
 }
 
-corto_frame* _corto_frameAssign(corto_frame* _this, corto_frameKind kind, corto_uint64 value) {
+corto_frame* _corto_frameAssign(corto_frame* _this, corto_frameKind kind, corto_int64 value) {
     CORTO_UNUSED(_this);
     ((corto_frame*)_this)->kind = kind;
     ((corto_frame*)_this)->value = value;

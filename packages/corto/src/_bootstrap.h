@@ -1349,7 +1349,8 @@ CORTO_STRUCT_O(core, position, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL)
 /* /corto/core/frame */
 CORTO_STRUCT_O(core, frame, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_frame, kind, core_frameKind, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_frame, value, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_frame, value, lang_int64, CORTO_GLOBAL);
+    CORTO_METHOD_O(core_frame, getTime, "()", core_time, FALSE, corto_frame_getTime);
 
 /* /corto/native/type */
 CORTO_FW_I(native, type);

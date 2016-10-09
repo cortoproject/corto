@@ -107,7 +107,7 @@ typedef struct corto_frame corto_frame;
 
 struct corto_frame {
     corto_frameKind kind;
-    corto_uint64 value;
+    corto_int64 value;
 };
 
 /* /corto/core/mountKind */

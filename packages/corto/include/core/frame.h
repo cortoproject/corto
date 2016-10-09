@@ -17,6 +17,10 @@ extern "C" {
 #endif
 
 
+CORTO_EXPORT corto_time _corto_frame_getTime(
+    corto_frame* _this);
+#define corto_frame_getTime(_this) _corto_frame_getTime(_this)
+
 #ifdef __cplusplus
 }
 #endif

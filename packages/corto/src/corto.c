@@ -776,6 +776,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* frame */\
     SSO_OP_OBJ_CORE(op, frame_kind);\
     SSO_OP_OBJ_CORE(op, frame_value);\
+    SSO_OP_OBJ_CORE(op, frame_getTime_);\
     /* native/type */\
     SSO_OP_OBJ_NATIVE(op, type_name);\
     SSO_OP_OBJ_NATIVE(op, type_init_);\
