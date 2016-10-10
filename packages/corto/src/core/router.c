@@ -37,7 +37,8 @@ corto_int16 _corto_router_match(
     corto_any result)
 {
 /* $begin(corto/core/router/match) */
-    corto_routerimpl router = corto_router_findRouterImpl(instance);
+    corto_object instanceType = corto_typeof(instance);
+    corto_routerimpl router = corto_router_findRouterImpl(instanceType);
     corto_router routerBase = corto_router(corto_typeof(router));
     corto_route match = NULL;
     corto_int32 maxMatched = -1;
@@ -53,7 +54,7 @@ corto_int16 _corto_router_match(
     }
 
     /* Walk routes */
-    corto_vtableForeach(corto_interface(instance)->methods, o) {
+    corto_vtableForeach(corto_interface(instanceType)->methods, o) {
         if (corto_instanceof(corto_route_o, o)) {
             corto_stringseq pattern = {.length = elementCount, .buffer = requestElements};
             corto_int32 matched = corto_routerimpl_matchRoute(
@@ -72,7 +73,7 @@ corto_int16 _corto_router_match(
     /* Parse router arguments */
     corto_int32 i, arg = 1;
     void **args = alloca((1 + router->maxArgs) * sizeof(void*));
-    args[0] = instance;
+    args[0] = &instance;
     if (routerBase->paramType) {
         args[1] = &param.value;
         arg = 2;
