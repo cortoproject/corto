@@ -366,7 +366,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
                 strcpy(data->buffer.buf, result);
                 corto_dealloc(result);
             }
-            data->buffer.elementCount = 1;
+
             corto_dealloc(str);
         }
     }
