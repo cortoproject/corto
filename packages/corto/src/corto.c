@@ -141,7 +141,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, delegate);\
     SSO_OP_CLASS(op, package);\
-    SSO_OP_CLASS(op, subscriber);\
     SSO_OP_CLASS(op, router);\
     SSO_OP_CLASS(op, routerimpl);\
     SSO_OP_CLASS(op, mount);\
@@ -156,6 +155,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, method);\
     SSO_OP_CLASS(op, virtual);\
     SSO_OP_CLASS(op, remote);\
+    SSO_OP_CLASS(op, subscriber);\
     SSO_OP_CLASS(op, observer);\
     SSO_OP_CLASS(op, metaprocedure);\
     SSO_OP_CLASS(op, route);
@@ -618,10 +618,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mountSubscription_count);\
     SSO_OP_OBJ_CORE(op, mountSubscription_userData);\
     /* subscriber */\
+    SSO_OP_OBJ_CORE(op, subscriber_mask);\
     SSO_OP_OBJ_CORE(op, subscriber_parent);\
     SSO_OP_OBJ_CORE(op, subscriber_expr);\
-    SSO_OP_OBJ_CORE(op, subscriber_mask);\
-    SSO_OP_OBJ_CORE(op, subscriber_observer);\
+    SSO_OP_OBJ_CORE(op, subscriber_instance);\
     SSO_OP_OBJ_CORE(op, subscriber_construct_);\
     SSO_OP_OBJ_CORE(op, subscriber_destruct_);\
     /* router */\

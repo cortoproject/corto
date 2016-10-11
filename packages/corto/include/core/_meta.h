@@ -27,7 +27,6 @@ CORTO_META_OBJECT(class, observableEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
-CORTO_META_OBJECT(class, subscriber);
 CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
 CORTO_META_OBJECT(class, mount);
@@ -59,6 +58,7 @@ CORTO_META_OBJECT(delegate, invokeAction);
 CORTO_META_OBJECT(delegate, requestAction);
 
 CORTO_META_OBJECT(procedure, remote);
+CORTO_META_OBJECT(procedure, subscriber);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, route);
 CORTO_META_OBJECT(struct, time);

@@ -138,6 +138,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Line.h>
 #include <ListReplicator.h>
 #include <Loader.h>
+#include <Matcher.h>
 #include <MethodForwardTest.h>
 #include <MethodResolver.h>
 #include <MethodTester.h>
@@ -162,6 +163,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <StringDeserializer.h>
 #include <StringReplicator.h>
 #include <StringSerializer.h>
+#include <SubscriberEvent.h>
+#include <SubscriberTest.h>
 #include <TestKey.h>
 #include <TestLock.h>
 #include <ValueCast.h>

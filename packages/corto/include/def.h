@@ -168,6 +168,9 @@ typedef struct corto_ll_s* corto_ll;
 /* Maximum number of arguments for command */
 #define CORTO_MAX_CMD_ARGS (64)
 
+/* Maximum number of operations in an id expression */
+#define CORTO_MATCHER_MAX_OP (32)
+
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG

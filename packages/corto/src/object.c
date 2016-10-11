@@ -7,6 +7,7 @@
 
 #include "corto/corto.h"
 #include "_object.h"
+#include "_matcher.h"
 #include "lang/_class.h"
 
 extern corto_mutex_s corto_adminLock;
@@ -1715,6 +1716,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
 
         if (CORTO_TRACE_OBJECT) corto_memtrace("deallocate", o, NULL);
 
+        _o->magic = 0;
         corto_dealloc(corto__objectStartAddr(_o));
 
         result = FALSE;
@@ -3233,7 +3235,15 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
 }
 
 corto_bool corto_match(corto_string expr, corto_string str) {
-    return !fnmatch(expr, str, 0);
+    struct corto_matcher_s matcher;
+    if (corto_matcherParseIntern(&matcher, expr, TRUE, TRUE)) {
+        goto error;
+    }
+    corto_bool result = corto_matcherRun(&matcher, str);
+    corto_dealloc(matcher.tokens);
+    return result;
+error:
+    return FALSE;
 }
 
 /* Copyout observers */
@@ -3793,6 +3803,8 @@ corto_object corto_getOwner() {
     return result;
 }
 
+corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o);
+
 static corto_int16 corto_notify(corto__observable* _o, corto_object observable, corto_uint32 mask) {
     corto_assertObject(observable);
 
@@ -3855,6 +3867,10 @@ static corto_int16 corto_notify(corto__observable* _o, corto_object observable, 
             }
             depth++;
         }
+    }
+
+    if (corto_notifySubscribers(mask, observable)) {
+        goto error;
     }
 
 access_error:

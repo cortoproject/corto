@@ -350,10 +350,11 @@ CORTO_CLASS_DEF(corto_routerimpl) {
 CORTO_CLASS(corto_subscriber);
 
 CORTO_CLASS_DEF(corto_subscriber) {
+    CORTO_EXTEND(corto_function);
+    corto_eventMask mask;
     corto_string parent;
     corto_string expr;
-    corto_eventMask mask;
-    corto_observer observer;
+    corto_object instance;
 };
 
 /*  /corto/core/time */

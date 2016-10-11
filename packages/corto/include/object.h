@@ -108,7 +108,11 @@ corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
 /* Match corto expression */
+typedef struct corto_matcher_s* corto_matcher;
 corto_bool corto_match(corto_string expr, corto_string str);
+corto_matcher corto_matcherCompile(corto_string expr, corto_bool allowScopes, corto_bool allowSeparators);
+corto_bool corto_matcherRun(corto_matcher program, corto_string str);
+void corto_matcherFree(corto_matcher matcher);
 
 /* Iterate over objects matching an expression */
 typedef struct corto_selectRequest {
@@ -143,18 +147,20 @@ struct corto_selectSelector corto_select(corto_string scope, corto_string expr);
 /* Subscribe for objects matching an expression */
 typedef struct corto_subscribeRequest {
     corto_int16 err;
+    corto_object instance;
+    corto_eventMask mask;
     corto_string scope;
     corto_string expr;
     corto_string type;
-    corto_eventMask mask;
     corto_string contentType;
-    void (*callback)(corto_subscriber, corto_eventMask mask, corto_result*);
+    void (*callback)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber);
 } corto_subscribeRequest;
 typedef struct corto_subscribeSelector {
-    struct corto_subscribeSelector (*contentType)(corto_string contentType);
+    struct corto_subscribeSelector (*instance)(corto_object instance);
     struct corto_subscribeSelector (*mask)(corto_eventMask mask);
+    struct corto_subscribeSelector (*contentType)(corto_string contentType);
     struct corto_subscribeSelector (*type)(corto_string type);
-    corto_subscriber ___ (*callback)(void (*r)(corto_subscriber, corto_eventMask mask, corto_result*));
+    corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber));
 } corto_subscribeSelector;
 struct corto_subscribeSelector corto_subscribe(corto_string scope, corto_string expr);
 

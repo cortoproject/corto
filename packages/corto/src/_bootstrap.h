@@ -464,7 +464,6 @@ CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
-CORTO_FWDECL_CORE(class, subscriber);
 CORTO_FWDECL_CORE(class, mount);
 CORTO_FWDECL_CORE(class, router);
 CORTO_FWDECL_CORE(class, routerimpl);
@@ -520,6 +519,7 @@ CORTO_FWDECL(procedure, metaprocedure);
 CORTO_FWDECL(procedure, method);
 CORTO_FWDECL_CORE(procedure, remote);
 CORTO_FWDECL_CORE(procedure, observer);
+CORTO_FWDECL_CORE(procedure, subscriber);
 CORTO_FWDECL_CORE(procedure, route);
 CORTO_FWDECL(procedure, virtual);
 
@@ -1184,16 +1184,6 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 CORTO_INTERFACE_O(core, dispatcher);
     CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
 
-/* /corto/core/subscriber */
-CORTO_FW_CD(core, subscriber);
-CORTO_CLASS_NOBASE_O(core, subscriber, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
-    CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_subscriber, mask, core_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_subscriber, observer, core_observer, CORTO_PRIVATE|CORTO_LOCAL);
-    CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, FALSE, corto_subscriber_construct);
-    CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, FALSE, corto_subscriber_destruct);
-
 /* /corto/core/mountStats */
 CORTO_STRUCT_O(core, mountStats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_mountStats, declares, lang_uint64, CORTO_GLOBAL);
@@ -1327,6 +1317,16 @@ CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | C
     CORTO_METHOD_O(core_observer, silence, "(object me)", lang_int16, FALSE, corto_observer_silence);
     CORTO_METHOD_O(core_observer, setDispatcher, "(core/dispatcher dispatcher)", lang_void, FALSE, corto_observer_setDispatcher);
     CORTO_FUNCTION_O(core_observer, destruct, "(observer object)", lang_void, corto_observer_destruct);
+
+/* /corto/core/subscriber */
+CORTO_FW_CD(core, subscriber);
+CORTO_PROCEDURE_O(core, subscriber, CORTO_FUNCTION, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_CD);
+    CORTO_MEMBER_O(core_subscriber, mask, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriber, instance, lang_object, CORTO_GLOBAL);
+    CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, FALSE, corto_subscriber_construct);
+    CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, FALSE, corto_subscriber_destruct);
 
 /* /corto/core/route */
 CORTO_FW_IC(core, route);

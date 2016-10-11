@@ -218,16 +218,16 @@ static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *buil
 
     /* Validate version */
     if (build && strcmp(build(), corto_getBuild())) {
-        corto_trace("corto: loaded '%s' for corto build %s", fileName, corto_getBuild());
+        corto_trace("corto: found '%s' for incompatible corto build %s", fileName, corto_getBuild());
         /* Library is linked with different Corto version */
         if (build_out) {
             *build_out = corto_strdup(build());
         }
         goto error;
     } else if (build) {
-        corto_trace("corto: loaded '%s' for incompatible corto build %s", fileName, build());
+        corto_debug("corto: found '%s' for compatible corto build %s", fileName, build());
     } else {
-        corto_trace("corto: loaded '%s' which doesn't link with corto", fileName, corto_getBuild());
+        corto_trace("corto: found '%s' which doesn't link with corto", fileName, corto_getBuild());
     }
 
     /* If no build function is available, the library is not linked with
@@ -258,7 +258,7 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     corto_dl dl = NULL;
     int (*proc)(int argc, char* argv[]);
 
-    corto_trace("corto: loader: '%s'", fileName);
+    corto_debug("corto: loader: find '%s'", fileName);
 
     if (!(dl = corto_loadValidLibrary(fileName, &build))) {
         if (build) {
@@ -296,6 +296,8 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     }
     corto_llInsert(libraries, dl);
     corto_mutexUnlock (&corto_adminLock);
+
+    corto_debug("corto: library '%s' loaded", fileName);
 
     return 0;
 error:
@@ -406,6 +408,10 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     }
     corto_mutexUnlock(&corto_adminLock);
 
+    if (!result) {
+        corto_ok("corto: package '%s' loaded", str);
+    }
+
     return result;
 error:
     return -1;
@@ -454,7 +460,7 @@ static corto_string corto_locateLibraryIntern(
         goto error;
     }
     if (corto_fileTest(targetPath)) {
-        corto_trace("corto: found '%s' while looking for '%s'", targetPath, lib);
+        corto_debug("corto: found '%s' while looking for '%s'", targetPath, lib);
         if (corto_checkLibrary(targetPath, &targetBuild)) {
             t = corto_getModified(targetPath);
             result = targetPath;
@@ -469,7 +475,7 @@ static corto_string corto_locateLibraryIntern(
             }
         }
     } else {
-        corto_trace("corto: '%s' not found while looking for '%s'", targetPath, lib);
+        corto_debug("corto: '%s' not found while looking for '%s'", targetPath, lib);
     }
 
     /* Look for packages in CORTO_HOME */
@@ -480,7 +486,7 @@ static corto_string corto_locateLibraryIntern(
             goto error;
         }
         if (corto_fileTest(homePath)) {
-            corto_trace("corto: found '%s' while looking for '%s'", homePath, lib);
+            corto_debug("corto: found '%s' while looking for '%s'", homePath, lib);
             time_t myT = corto_getModified(homePath);
             if ((myT > t) || !result) {
                 if (corto_checkLibrary(homePath, &homeBuild)) {
@@ -497,10 +503,10 @@ static corto_string corto_locateLibraryIntern(
                     }
                 }
             } else if (!result) {
-                corto_trace("corto: discarding '%s' because '%s' is newer", homePath, result);
+                corto_debug("corto: discarding '%s' because '%s' is newer", homePath, result);
             }
         } else {
-            corto_trace("corto: '%s' not found while looking for '%s'", homePath, lib);
+            corto_debug("corto: '%s' not found while looking for '%s'", homePath, lib);
         }
     }
 
@@ -513,7 +519,7 @@ static corto_string corto_locateLibraryIntern(
             goto error;
         }
         if (corto_fileTest(usrPath)) {
-            corto_trace("corto: found '%s' while looking for '%s'", usrPath, lib);
+            corto_debug("corto: found '%s' while looking for '%s'", usrPath, lib);
             time_t myT = corto_getModified(usrPath);
             if ((myT >= t) || !result) {
                 if (corto_checkLibrary(usrPath, &usrBuild)) {
@@ -530,10 +536,10 @@ static corto_string corto_locateLibraryIntern(
                     }
                 }
             } else if (!result) {
-                corto_trace("corto: discarding '%s' because '%s' is newer", usrPath, result);
+                corto_debug("corto: discarding '%s' because '%s' is newer", usrPath, result);
             }
         } else {
-            corto_trace("corto: '%s' not found while looking for '%s'", usrPath, lib);
+            corto_debug("corto: '%s' not found while looking for '%s'", usrPath, lib);
         }
     }
 
