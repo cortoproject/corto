@@ -16,9 +16,11 @@ static corto_uint32 corto_subscribers_count = 0;
 
 static corto_int16 corto_subscriber_getObjectDepth(corto_id id) {
     corto_int16 result = 0;
-    char *ptr = id;
-    while ((ptr = strchr(ptr + 1, '/'))) {
-        result ++;
+    if (id) {
+        char *ptr = id;
+        while ((ptr = strchr(ptr + 1, '/'))) {
+            result ++;
+        }
     }
     return result;
 }
