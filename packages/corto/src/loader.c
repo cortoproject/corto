@@ -203,6 +203,7 @@ static corto_string corto_packageToFile(corto_string package) {
 static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *build_out) {
     corto_dl result = NULL;
     corto_string ___ (*build)(void);
+    corto_string ___ (*library)(void);
 
     if (build_out) {
         *build_out = NULL;
@@ -215,19 +216,24 @@ static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *buil
 
     /* Lookup build function */
     build = (corto_string ___ (*)(void))corto_dlProc(result, "corto_getBuild");
+    library = (corto_string ___ (*)(void))corto_dlProc(result, "corto_getLibrary");
 
     /* Validate version */
     if (build && strcmp(build(), corto_getBuild())) {
-        corto_trace("corto: found '%s' for incompatible corto build %s", fileName, corto_getBuild());
+        corto_seterr(
+          "corto: library '%s' links with conflicting corto library\n  build:   '%s'\n  library: '%s'\n",
+          fileName, build(), library());
         /* Library is linked with different Corto version */
         if (build_out) {
             *build_out = corto_strdup(build());
         }
         goto error;
     } else if (build) {
-        corto_debug("corto: found '%s' for compatible corto build %s", fileName, build());
+        corto_debug(
+          "corto: '%s' links with correct corto library\n  build:   '%s'\n  library: '%s'\n",
+          fileName, build(), library());
     } else {
-        corto_trace("corto: found '%s' which doesn't link with corto", fileName, corto_getBuild());
+        corto_trace("corto: found '%s' which doesn't link with corto", fileName);
     }
 
     /* If no build function is available, the library is not linked with

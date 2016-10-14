@@ -25,6 +25,10 @@ CORTO_EXPORT corto_void _corto_subscriber_destruct(
     corto_subscriber _this);
 #define corto_subscriber_destruct(_this) _corto_subscriber_destruct(corto_subscriber(_this))
 
+CORTO_EXPORT corto_int16 _corto_subscriber_init(
+    corto_subscriber _this);
+#define corto_subscriber_init(_this) _corto_subscriber_init(corto_subscriber(_this))
+
 #ifdef __cplusplus
 }
 #endif

@@ -125,11 +125,11 @@ corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
 static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 {
     return corto_subscriberCreate(
-      r->instance,
       r->mask,
       r->scope,
       r->expr,
-      r->callback
+      r->callback,
+      r->instance
     );
 }
 
@@ -199,14 +199,14 @@ corto_int16 _corto_subscriber_construct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/construct) */
-    /*corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
+    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
 
     if (!corto_subscribers[depth]) {
         corto_subscribers[depth] = corto_llNew();
     }
 
     corto_llAppend(corto_subscribers[depth], this);
-    corto_subscribers_count ++;*/
+    corto_subscribers_count ++;
 
     return 0;
 /* $end */
@@ -216,7 +216,7 @@ corto_void _corto_subscriber_destruct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/destruct) */
-    /*corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
+    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
     corto_assert(corto_subscribers[depth] != NULL, "deleting subscriber but no subscriber list");
 
     corto_llRemove(corto_subscribers[depth], this);
@@ -225,7 +225,43 @@ corto_void _corto_subscriber_destruct(
         corto_subscribers[depth] = NULL;
     }
 
-    corto_subscribers_count --;*/
+    corto_subscribers_count --;
 
+/* $end */
+}
+
+corto_int16 _corto_subscriber_init(
+    corto_subscriber this)
+{
+/* $begin(corto/core/subscriber/init) */
+    corto_parameter *p;
+    corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 4);
+    corto_function(this)->parameters.length = 4;
+
+    /* Parameter observable */
+    p = &corto_function(this)->parameters.buffer[0];
+    p->name = corto_strdup("instance");
+    p->passByReference = TRUE;
+    corto_setref(&p->type, corto_type(corto_object_o));
+
+    /* Parameter observable */
+    p = &corto_function(this)->parameters.buffer[1];
+    p->name = corto_strdup("event");
+    p->passByReference = TRUE;
+    corto_setref(&p->type, corto_type(corto_eventMask_o));
+
+    /* Parameter observable */
+    p = &corto_function(this)->parameters.buffer[2];
+    p->name = corto_strdup("object");
+    p->passByReference = TRUE;
+    corto_setref(&p->type, corto_type(corto_result_o));
+
+    /* Parameter observable */
+    p = &corto_function(this)->parameters.buffer[3];
+    p->name = corto_strdup("subscriber");
+    p->passByReference = TRUE;
+    corto_setref(&p->type, corto_type(corto_subscriber_o));
+
+    return corto_function_init(this);
 /* $end */
 }

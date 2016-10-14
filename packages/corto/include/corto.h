@@ -62,6 +62,7 @@ extern "C" {
 int corto_start(void);
 int corto_stop(void);
 corto_string corto_getBuild(void);
+corto_string corto_getLibrary(void);
 corto_bool corto_isbuiltin(corto_object o);
 void corto_onunload(void(*handler)(void*), void* userData);
 void corto_onexit(void(*handler)(void*), void* userData);
@@ -89,4 +90,3 @@ extern "C" {
 }
 #endif
 #endif
-

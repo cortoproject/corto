@@ -34,3 +34,11 @@ packages/corto/lib/everywhere/fmt/xml/source.txt
 packages/corto/lib/everywhere/fmt/xml/uninstall.txt
 
 packages/corto/lib/everywhere/secure/build.rb
+
+packages/corto/lib/everywhere/fmt/influx/build.rb
+
+packages/corto/lib/everywhere/fmt/json/build.rb
+
+packages/corto/lib/everywhere/fmt/xml/build.rb
+
+.corto/_load.c

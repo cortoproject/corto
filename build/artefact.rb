@@ -23,6 +23,8 @@ GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
 USE_PACKAGE_LOADED ||=[]
 
+DEFINE << "CORTO_OBJECT_NAME='\"#{TARGETDIR}/#{ARTEFACT}\"'"
+
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
   LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
