@@ -205,6 +205,7 @@ extern int8_t CORTO_DEBUG_ENABLED;
 #define CORTO_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
 #define CORTO_SEQUENCE_EMPTY(name) (name){0, NULL}
 #define CORTO_LIST(type) typedef corto_ll type
+#define CORTO_MAP(type) typedef corto_rbtree type
 
 #ifdef __cplusplus
 }
