@@ -3803,8 +3803,6 @@ corto_object corto_getOwner() {
     return result;
 }
 
-corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o);
-
 static corto_int16 corto_notify(corto__observable* _o, corto_object observable, corto_uint32 mask) {
     corto_assertObject(observable);
 
@@ -3910,6 +3908,12 @@ corto_int16 corto_publish(
         }
         corto_release(o);
     } else {
+        result = -1;
+    }
+
+    if (corto_notifySubscribersId(
+      event, id, type, contentType, (corto_word)content))
+    {
         result = -1;
     }
 

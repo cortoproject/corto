@@ -168,6 +168,15 @@ void* corto_olsFind(corto__scope *scope, corto_int8 key);
 /* Get scope tree */
 corto_rbtree corto_scopeof(corto_object o);
 
+/* Notify subscribers */
+corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o);
+corto_int16 corto_notifySubscribersId(
+    corto_eventMask mask,
+    corto_string path,
+    corto_string type,
+    corto_string contentType,
+    corto_word value);
+
 #ifdef __cplusplus
 }
 #endif

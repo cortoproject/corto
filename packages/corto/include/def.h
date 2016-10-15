@@ -171,6 +171,9 @@ typedef struct corto_ll_s* corto_ll;
 /* Maximum number of operations in an id expression */
 #define CORTO_MATCHER_MAX_OP (32)
 
+/* Maximum number of content types in a process */
+#define CORTO_MAX_CONTENTTYPE (32)
+
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG

@@ -9,6 +9,7 @@
 #include <corto/core/core.h>
 
 /* $header() */
+#include "_object.h"
 extern corto_threadKey CORTO_KEY_FLOW;
 
 static corto_ll corto_subscribers[CORTO_MAX_SCOPE_DEPTH];
@@ -51,32 +52,104 @@ corto_int16 corto_notifySubscribersId(
     corto_string contentType,
     corto_word value)
 {
+    corto_object intermediate = NULL;
+    corto_contentType contentTypeHandle = NULL;
+
+    struct {
+        corto_contentType ct;
+        corto_word value;
+    } contentTypes[CORTO_MAX_CONTENTTYPE];
+    corto_int32 contentTypesCount = 0;
+
+    if (!contentType) {
+        intermediate = (corto_object)value;
+    }
+
     char *id = strrchr(path, '/');
     char *parent = NULL;
+    char *sep = NULL;
     if (id) {
-        *id = '\0';
+        if (id != path) {
+            *id = '\0';
+            sep = id;
+            parent = path;
+        } else {
+            parent = "/";
+        }
         id ++;
-        parent = path;
     } else {
         id = path;
         parent = "/corto/lang";
     }
-    corto_int16 depth = corto_subscriber_getObjectDepth(path);
+    corto_int16 depth = corto_subscriber_getObjectDepth(parent);
 
-    while (depth) {
+    do {
         corto_ll subscribers = corto_subscribers[depth];
         if (subscribers) {
             corto_iter it = corto_llIter(subscribers);
             while (corto_iterHasNext(&it)) {
                 corto_subscriber s = corto_iterNext(&it);
-                if (!(s->mask & mask) == mask) {
+                corto_word content = 0;
+
+                if ((s->mask & mask) != mask) {
                     continue;
                 }
-                if (!corto_subscriber_match(s->parent, parent)) {
-                    continue;
+
+                if (!strcmp(s->expr, ".")) {
+                    if (sep) *sep = '/';
+                    if (!corto_subscriber_match(s->parent, path)) {
+                        continue;
+                    }
+                    if (sep) *sep = '\0';
+                } else {
+                    if (!corto_subscriber_match(s->parent, parent)) {
+                        continue;
+                    }
+                    if (!corto_match(s->expr, id)) {
+                        continue;
+                    }
                 }
-                if (!corto_match(s->expr, id)) {
-                    continue;
+
+                /* If subscriber requests content, convert to subscriber contentType */
+                if (s->contentTypeHandle && value && type) {
+                    /* Check if contentType has already been loaded */
+                    corto_int32 i; for (i = 0; i < contentTypesCount; i++) {
+                        if ((corto_word)contentTypes[i].ct == s->contentTypeHandle) {
+                            content = contentTypes[i].value;
+                            break;
+                        }
+                    }
+                    /* contentType hasn't been loaded */
+                    if (i == contentTypesCount) {
+                        contentTypes[i].ct = (corto_contentType)s->contentTypeHandle;
+
+                        /* Has target contentType been loaded? */
+                        if (contentType && !contentTypeHandle) {
+                            /* Load contentType */
+                            contentTypeHandle = corto_loadContentType(contentType);
+                            if (!contentTypeHandle) {
+                                goto error;
+                            }
+
+                            /* Resolve type of object */
+                            corto_type t = corto_resolve(NULL, type);
+                            if (!t) {
+                                corto_seterr("failed to resolve type '%s'", type);
+                                goto error;
+                            }
+
+                            /* Create intermediate object */
+                            if (!(intermediate = corto_create(t))) {
+                                goto error;
+                            }
+                            corto_release(t);
+                            if (contentTypeHandle->toCorto(intermediate, value)) {
+                                goto error;
+                            }
+                        }
+                        contentTypes[i].value = contentTypes[i].ct->fromCorto(intermediate);
+                        content = contentTypes[i].value;
+                    }
                 }
 
                 corto_result r = {
@@ -84,7 +157,7 @@ corto_int16 corto_notifySubscribersId(
                   NULL,
                   parent,
                   type,
-                  value,
+                  content,
                   FALSE
                 };
 
@@ -102,10 +175,21 @@ corto_int16 corto_notifySubscribersId(
                 }
             }
         }
-        depth --;
+    } while (depth-- >= 0);
+
+    /* Free up resources */
+    corto_int32 i; for (i = 0; i < contentTypesCount; i++) {
+        contentTypes[i].ct->release(contentTypes[i].value);
+    }
+
+    /* Free intermediate format */
+    if (intermediate && contentType) {
+        corto_release(intermediate);
     }
 
     return 0;
+error:
+    return -1;
 }
 
 corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
@@ -130,8 +214,9 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
       r->mask,
       r->scope,
       r->expr,
-      r->callback,
-      r->instance
+      r->instance,
+      r->contentType,
+      r->callback
     );
 }
 
@@ -147,13 +232,14 @@ static corto_subscribeSelector corto_subscribeContentType(
     return corto_subscribeSelectorGet();
 }
 
-static corto_subscribeSelector corto_subscribeMask(corto_eventMask mask)
+static corto_subscribeSelector corto_subscribeInstance(
+    corto_object instance)
 {
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLOW);
     if (request) {
-        request->mask = mask;
+        request->instance = instance;
     }
-    return corto_subscribeSelectorGet();;
+    return corto_subscribeSelectorGet();
 }
 
 static corto_subscriber corto_subscribeCallback(
@@ -174,12 +260,13 @@ static corto_subscribeSelector corto_subscribeSelectorGet(void)
 {
     corto_subscribeSelector result;
     result.contentType = corto_subscribeContentType;
-    result.mask = corto_subscribeMask;
     result.callback = corto_subscribeCallback;
+    result.instance = corto_subscribeInstance;
     return result;
 }
 
 corto_subscribeSelector corto_subscribe(
+    corto_eventMask mask,
     corto_string scope,
     corto_string expr)
 {
@@ -190,6 +277,8 @@ corto_subscribeSelector corto_subscribe(
     } else {
         memset(request, 0, sizeof(corto_subscribeRequest));
     }
+
+    request->mask = mask;
     request->scope = scope;
     request->expr = expr;
     return corto_subscribeSelectorGet();
@@ -210,7 +299,16 @@ corto_int16 _corto_subscriber_construct(
     corto_llAppend(corto_subscribers[depth], this);
     corto_subscribers_count ++;
 
+    if (this->contentType) {
+        this->contentTypeHandle = (corto_word)corto_loadContentType(this->contentType);
+        if (!this->contentTypeHandle) {
+            goto error;
+        }
+    }
+
     return 0;
+error:
+    return -1;
 /* $end */
 }
 

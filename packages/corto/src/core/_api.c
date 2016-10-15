@@ -3507,7 +3507,7 @@ corto_equalityKind _corto_routerimplCompare(corto_routerimpl dst, corto_routerim
     return corto_compare(dst, src);
 }
 
-corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, void(*_impl)(void)) {
+corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, corto_string contentType, void(*_impl)(void)) {
     corto_subscriber _this;
     _this = corto_subscriber(corto_declare(corto_subscriber_o));
     if (!_this) {
@@ -3518,6 +3518,7 @@ corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string pare
         corto_setstr(&((corto_subscriber)_this)->parent, parent);
         corto_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_setref(&((corto_subscriber)_this)->instance, instance);
+        corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -3528,7 +3529,7 @@ corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string pare
     return _this;
 }
 
-corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, void(*_impl)(void)) {
+corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, corto_string contentType, void(*_impl)(void)) {
     corto_subscriber _this;
     _this = corto_subscriber(corto_declareChild(_parent, _name, corto_subscriber_o));
     if (!_this) {
@@ -3539,6 +3540,7 @@ corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string
         corto_setstr(&((corto_subscriber)_this)->parent, parent);
         corto_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_setref(&((corto_subscriber)_this)->instance, instance);
+        corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -3549,13 +3551,14 @@ corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string
     return _this;
 }
 
-corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, void(*_impl)(void)) {
+corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, corto_string contentType, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         ((corto_subscriber)_this)->mask = mask;
         corto_setstr(&((corto_subscriber)_this)->parent, parent);
         corto_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_setref(&((corto_subscriber)_this)->instance, instance);
+        corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
@@ -3583,23 +3586,25 @@ corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_strin
     return _this;
 }
 
-corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, void(*_impl)(void)) {
+corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, corto_string contentType, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     ((corto_subscriber)_this)->mask = mask;
     corto_setstr(&((corto_subscriber)_this)->parent, parent);
     corto_setstr(&((corto_subscriber)_this)->expr, expr);
     corto_setref(&((corto_subscriber)_this)->instance, instance);
+    corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, void(*_impl)(void)) {
+corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_object instance, corto_string contentType, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     ((corto_subscriber)_this)->mask = mask;
     corto_setstr(&((corto_subscriber)_this)->parent, parent);
     corto_setstr(&((corto_subscriber)_this)->expr, expr);
     corto_setref(&((corto_subscriber)_this)->instance, instance);
+    corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return _this;

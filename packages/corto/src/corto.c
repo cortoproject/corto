@@ -622,6 +622,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, subscriber_parent);\
     SSO_OP_OBJ_CORE(op, subscriber_expr);\
     SSO_OP_OBJ_CORE(op, subscriber_instance);\
+    SSO_OP_OBJ_CORE(op, subscriber_contentType);\
+    SSO_OP_OBJ_CORE(op, subscriber_contentTypeHandle);\
     SSO_OP_OBJ_CORE(op, subscriber_init_);\
     SSO_OP_OBJ_CORE(op, subscriber_construct_);\
     SSO_OP_OBJ_CORE(op, subscriber_destruct_);\

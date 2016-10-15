@@ -157,12 +157,11 @@ typedef struct corto_subscribeRequest {
 } corto_subscribeRequest;
 typedef struct corto_subscribeSelector {
     struct corto_subscribeSelector (*instance)(corto_object instance);
-    struct corto_subscribeSelector (*mask)(corto_eventMask mask);
     struct corto_subscribeSelector (*contentType)(corto_string contentType);
     struct corto_subscribeSelector (*type)(corto_string type);
     corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber));
 } corto_subscribeSelector;
-struct corto_subscribeSelector corto_subscribe(corto_string scope, corto_string expr);
+struct corto_subscribeSelector corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr);
 
 /* Publish update for object */
 corto_int16 corto_publish(
