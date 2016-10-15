@@ -26,25 +26,6 @@ static corto_int16 corto_subscriber_getObjectDepth(corto_id id) {
     return result;
 }
 
-static char* corto_subscriber_match(char *lockId, char *id) {
-    char *lPtr = lockId, *idPtr = id;
-    char lCh, idCh;
-
-    while ((lCh = *lPtr) && (idCh = *idPtr) && (lCh == idCh)) {
-        lPtr++;
-        idPtr++;
-    }
-
-    if (*lPtr == '\0') {
-        if (*idPtr == '/') {
-            idPtr ++;
-        }
-        return idPtr;
-    } else {
-        return NULL;
-    }
-}
-
 corto_int16 corto_notifySubscribersId(
     corto_eventMask mask,
     corto_string path,
@@ -65,12 +46,10 @@ corto_int16 corto_notifySubscribersId(
         intermediate = (corto_object)value;
     }
 
-    char *id = strrchr(path, '/');
+    char *sep = NULL, *id = strrchr(path, '/');
     char *parent = NULL;
-    char *sep = NULL;
     if (id) {
         if (id != path) {
-            *id = '\0';
             sep = id;
             parent = path;
         } else {
@@ -81,7 +60,8 @@ corto_int16 corto_notifySubscribersId(
         id = path;
         parent = "/corto/lang";
     }
-    corto_int16 depth = corto_subscriber_getObjectDepth(parent);
+
+    corto_int16 depth = corto_subscriber_getObjectDepth(path);
 
     do {
         corto_ll subscribers = corto_subscribers[depth];
@@ -96,16 +76,15 @@ corto_int16 corto_notifySubscribersId(
                 }
 
                 if (!strcmp(s->expr, ".")) {
-                    if (sep) *sep = '/';
-                    if (!corto_subscriber_match(s->parent, path)) {
+                    if (strcmp(s->parent, path)) {
+                        corto_debug("subscriber: parent '%s' does not match '%s'",
+                          s->parent, path);
                         continue;
                     }
-                    if (sep) *sep = '\0';
                 } else {
-                    if (!corto_subscriber_match(s->parent, parent)) {
-                        continue;
-                    }
-                    if (!corto_match(s->expr, id)) {
+                    if (!corto_matchProgram_run((corto_matchProgram)s->matchProgram, path)) {
+                        corto_debug("subscriber: expression '%s' does not match '%s'",
+                          s->expr, path);
                         continue;
                     }
                 }
@@ -152,10 +131,18 @@ corto_int16 corto_notifySubscribersId(
                     }
                 }
 
+                corto_string relativeParent;
+                if (s->parent) {
+                    relativeParent = &parent[strlen(s->parent)];
+                } else {
+                    relativeParent = parent;
+                }
+                if (sep) *sep = '\0';
+                if (!relativeParent[0]) relativeParent = ".";
                 corto_result r = {
                   id,
                   NULL,
-                  parent,
+                  relativeParent,
                   type,
                   content,
                   FALSE
@@ -173,6 +160,7 @@ corto_int16 corto_notifySubscribersId(
                     args[3] = &s;
                     corto_callb(corto_function(s), NULL, args);
                 }
+                if (sep) *sep = '/';
             }
         }
     } while (depth-- >= 0);
@@ -290,6 +278,26 @@ corto_int16 _corto_subscriber_construct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/construct) */
+    if (this->contentType) {
+        this->contentTypeHandle = (corto_word)corto_loadContentType(this->contentType);
+        if (!this->contentTypeHandle) {
+            goto error;
+        }
+    }
+
+    /* Compile expression */
+    char *expr = this->expr;
+    char *parent = this->parent;
+    if (expr[0] == '/') expr++;
+    if (!parent || !strcmp(parent, "/")) parent = "";
+    corto_id buff;
+    sprintf(buff, "%s/%s", parent, expr);
+
+    this->matchProgram = (corto_word)corto_matchProgram_compile(buff, TRUE, TRUE);
+    if (!this->matchProgram) {
+        goto error;
+    }
+
     corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
 
     if (!corto_subscribers[depth]) {
@@ -299,12 +307,6 @@ corto_int16 _corto_subscriber_construct(
     corto_llAppend(corto_subscribers[depth], this);
     corto_subscribers_count ++;
 
-    if (this->contentType) {
-        this->contentTypeHandle = (corto_word)corto_loadContentType(this->contentType);
-        if (!this->contentTypeHandle) {
-            goto error;
-        }
-    }
 
     return 0;
 error:
@@ -324,6 +326,8 @@ corto_void _corto_subscriber_destruct(
         corto_llFree(corto_subscribers[depth]);
         corto_subscribers[depth] = NULL;
     }
+
+    corto_matchProgram_free((corto_matchProgram)this->matchProgram);
 
     corto_subscribers_count --;
 

@@ -108,11 +108,11 @@ corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
 
 /* Match corto expression */
-typedef struct corto_matcher_s* corto_matcher;
+typedef struct corto_matchProgram_s* corto_matchProgram;
 corto_bool corto_match(corto_string expr, corto_string str);
-corto_matcher corto_matcherCompile(corto_string expr, corto_bool allowScopes, corto_bool allowSeparators);
-corto_bool corto_matcherRun(corto_matcher program, corto_string str);
-void corto_matcherFree(corto_matcher matcher);
+corto_matchProgram corto_matchProgram_compile(corto_string expr, corto_bool allowScopes, corto_bool allowSeparators);
+corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str);
+void corto_matchProgram_free(corto_matchProgram matcher);
 
 /* Iterate over objects matching an expression */
 typedef struct corto_selectRequest {

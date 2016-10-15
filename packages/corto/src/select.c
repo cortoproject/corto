@@ -41,7 +41,7 @@ typedef struct corto_selectData {
     corto_scopeSegment scopes[CORTO_MAX_SCOPE_DEPTH]; /* Scopes to walk (parsed scope) */
     corto_uint32 currentScope;               /* Scope currently being walked */
 
-    struct corto_matcher_s program;   /* Parsed program */
+    struct corto_matchProgram_s program;   /* Parsed program */
 
     corto_selectStack stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     corto_uint8 sp;
@@ -1195,7 +1195,7 @@ static corto_resultIter corto_selectPrepareIterator (
     result.next = corto_selectNext;
     result.release = corto_selectRelease;
 
-    if (corto_matcherParseIntern(&data->program, data->expr, TRUE, FALSE)) {
+    if (corto_matchProgramParseIntern(&data->program, data->expr, TRUE, FALSE)) {
         corto_seterr("select '%s' failed: %s", expr, corto_lasterr());
         goto error;
     }

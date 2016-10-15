@@ -357,6 +357,7 @@ CORTO_CLASS_DEF(corto_subscriber) {
     corto_object instance;
     corto_string contentType;
     corto_word contentTypeHandle;
+    corto_word matchProgram;
 };
 
 /*  /corto/core/time */

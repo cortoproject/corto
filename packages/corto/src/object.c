@@ -3235,11 +3235,11 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
 }
 
 corto_bool corto_match(corto_string expr, corto_string str) {
-    struct corto_matcher_s matcher;
-    if (corto_matcherParseIntern(&matcher, expr, TRUE, TRUE)) {
+    struct corto_matchProgram_s matcher;
+    if (corto_matchProgramParseIntern(&matcher, expr, TRUE, TRUE)) {
         goto error;
     }
-    corto_bool result = corto_matcherRun(&matcher, str);
+    corto_bool result = corto_matchProgram_run(&matcher, str);
     corto_dealloc(matcher.tokens);
     return result;
 error:
@@ -3908,13 +3908,12 @@ corto_int16 corto_publish(
         }
         corto_release(o);
     } else {
-        result = -1;
-    }
-
-    if (corto_notifySubscribersId(
-      event, id, type, contentType, (corto_word)content))
-    {
-        result = -1;
+        corto_id buffer; strcpy(buffer, id);
+        if (corto_notifySubscribersId(
+          event, buffer, type, contentType, (corto_word)content))
+        {
+            result = -1;
+        }
     }
 
     return result;
