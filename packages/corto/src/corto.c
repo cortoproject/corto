@@ -50,6 +50,7 @@ const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 
 /* Single lock to protect infrequent actions on global corto data */
 corto_mutex_s corto_adminLock;
+corto_rwmutex_s corto_subscriberLock;
 
 /* Actions to be run at shutdown */
 static corto_ll corto_exitHandlers = NULL;
@@ -622,13 +623,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, subscriber_mask);\
     SSO_OP_OBJ_CORE(op, subscriber_parent);\
     SSO_OP_OBJ_CORE(op, subscriber_expr);\
-    SSO_OP_OBJ_CORE(op, subscriber_instance);\
     SSO_OP_OBJ_CORE(op, subscriber_contentType);\
     SSO_OP_OBJ_CORE(op, subscriber_contentTypeHandle);\
     SSO_OP_OBJ_CORE(op, subscriber_matchProgram);\
     SSO_OP_OBJ_CORE(op, subscriber_init_);\
     SSO_OP_OBJ_CORE(op, subscriber_construct_);\
     SSO_OP_OBJ_CORE(op, subscriber_destruct_);\
+    SSO_OP_OBJ_CORE(op, subscriber_subscribe_);\
+    SSO_OP_OBJ_CORE(op, subscriber_unsubscribe_);\
     /* router */\
     SSO_OP_OBJ_CORE(op, router_construct_);\
     SSO_OP_OBJ_CORE(op, router_match);\
@@ -997,6 +999,7 @@ int corto_start(void) {
 
     /* Init admin-lock */
     corto_mutexNew(&corto_adminLock);
+    corto_rwmutexNew(&corto_subscriberLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::construct. */

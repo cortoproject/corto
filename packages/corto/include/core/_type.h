@@ -364,7 +364,6 @@ CORTO_CLASS_DEF(corto_subscriber) {
     corto_eventMask mask;
     corto_string parent;
     corto_string expr;
-    corto_object instance;
     corto_string contentType;
     corto_word contentTypeHandle;
     corto_word matchProgram;

@@ -162,6 +162,7 @@ typedef struct corto_subscribeSelector {
     corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber));
 } corto_subscribeSelector;
 struct corto_subscribeSelector corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr);
+corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
 
 /* Publish update for object */
 corto_int16 corto_publish(

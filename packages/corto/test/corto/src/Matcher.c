@@ -452,6 +452,16 @@ corto_void _test_Matcher_tc_scopeFilterFail(
 /* $end */
 }
 
+corto_void _test_Matcher_tc_scopeFilterImplicit(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_scopeFilterImplicit) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_Matcher_tc_scopeFilterMulti(
     test_Matcher this)
 {
@@ -691,6 +701,26 @@ corto_void _test_Matcher_tc_separatorNotFilterFail(
 /* $begin(test/Matcher/tc_separatorNotFilterFail) */
     corto_bool result = corto_match("^a*,*y", "ax");
     test_assertint(result, FALSE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeFilter(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeFilter) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeFilterImplicit(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeFilterImplicit) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }

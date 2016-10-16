@@ -1336,13 +1336,14 @@ CORTO_PROCEDURE_O(core, subscriber, CORTO_FUNCTION, lang_function, CORTO_LOCAL |
     CORTO_MEMBER_O(core_subscriber, mask, core_eventMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_subscriber, instance, lang_object, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, contentType, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_subscriber, matchProgram, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_subscriber, init, "()", lang_int16, FALSE, corto_subscriber_init);
     CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, FALSE, corto_subscriber_construct);
     CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, FALSE, corto_subscriber_destruct);
+    CORTO_METHOD_O(core_subscriber, subscribe, "(object instance)", lang_int16, FALSE, corto_subscriber_subscribe);
+    CORTO_METHOD_O(core_subscriber, unsubscribe, "(object instance)", lang_int16, FALSE, corto_subscriber_unsubscribe);
 
 /* /corto/core/route */
 CORTO_FW_IC(core, route);

@@ -248,13 +248,21 @@ corto_int16 corto_matchProgramParseIntern(
         if (!data->ops[op].start) {
             data->ops[op].start = start;
         }
-        if (++op == (CORTO_MATCHER_MAX_OP - 1)) {
+        if (++op == (CORTO_MATCHER_MAX_OP - 2)) {
             corto_seterr("expression contains too many tokens");
             goto error;
         }
     }
 
     if (op) {
+        /* If expression ends with scope or tree, append '*' */
+        if ((data->ops[op - 1].token == CORTO_MATCHER_TOKEN_SCOPE) ||
+            (data->ops[op - 1].token == CORTO_MATCHER_TOKEN_TREE))
+        {
+            data->ops[op].token = CORTO_MATCHER_TOKEN_FILTER;
+            data->ops[op].start = "*";
+            op ++;
+        }
         data->size = op;
         data->ops[op].token = CORTO_MATCHER_TOKEN_NONE; /* Close with NONE */
         if (corto_matchProgramValidate(data)) {

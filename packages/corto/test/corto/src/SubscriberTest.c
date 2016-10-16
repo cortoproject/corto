@@ -12,9 +12,21 @@ corto_int16 _test_SubscriberTest_construct(
     test_SubscriberTest this)
 {
 /* $begin(test/SubscriberTest/construct) */
+    corto_int16 ret = 0;
 
-    /* << Insert implementation >> */
+    ret = corto_subscriber_subscribe(test_SubscriberTest_onDeclare_o, this);
+    test_assert(ret == 0);
 
+    ret = corto_subscriber_subscribe(test_SubscriberTest_onDeclareSelf_o, this);
+    test_assert(ret == 0);
+
+    ret = corto_subscriber_subscribe(test_SubscriberTest_onDeclareScope_o, this);
+    test_assert(ret == 0);
+
+    ret = corto_subscriber_subscribe(test_SubscriberTest_onDeclareTree_o, this);
+    test_assert(ret == 0);
+
+    return 0;
 /* $end */
 }
 
@@ -22,13 +34,28 @@ corto_void _test_SubscriberTest_destruct(
     test_SubscriberTest this)
 {
 /* $begin(test/SubscriberTest/destruct) */
+    corto_int16 ret = 0;
 
-    /* << Insert implementation >> */
+    ret = corto_subscriber_unsubscribe(test_SubscriberTest_onDeclare_o, this);
+    test_assert(ret == 0);
+
+    ret = corto_subscriber_unsubscribe(test_SubscriberTest_onDeclareSelf_o, this);
+    test_assert(ret == 0);
+
+    ret = corto_subscriber_unsubscribe(test_SubscriberTest_onDeclareScope_o, this);
+    test_assert(ret == 0);
+
+    ret = corto_subscriber_unsubscribe(test_SubscriberTest_onDeclareTree_o, this);
+    test_assert(ret == 0);
 
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclare(void)
+void _test_SubscriberTest_onDeclare(
+    test_SubscriberTest instance,
+    corto_eventMask *event,
+    corto_result *object,
+    corto_subscriber subscriber)
 {
 /* $begin(test/SubscriberTest/onDeclare) */
 
@@ -37,7 +64,11 @@ void _test_SubscriberTest_onDeclare(void)
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclareScope(void)
+void _test_SubscriberTest_onDeclareScope(
+    test_SubscriberTest instance,
+    corto_eventMask *event,
+    corto_result *object,
+    corto_subscriber subscriber)
 {
 /* $begin(test/SubscriberTest/onDeclareScope) */
 
@@ -46,7 +77,11 @@ void _test_SubscriberTest_onDeclareScope(void)
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclareSelf(void)
+void _test_SubscriberTest_onDeclareSelf(
+    test_SubscriberTest instance,
+    corto_eventMask *event,
+    corto_result *object,
+    corto_subscriber subscriber)
 {
 /* $begin(test/SubscriberTest/onDeclareSelf) */
 
@@ -55,7 +90,11 @@ void _test_SubscriberTest_onDeclareSelf(void)
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclareTree(void)
+void _test_SubscriberTest_onDeclareTree(
+    test_SubscriberTest instance,
+    corto_eventMask *event,
+    corto_result *object,
+    corto_subscriber subscriber)
 {
 /* $begin(test/SubscriberTest/onDeclareTree) */
 

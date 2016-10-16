@@ -29,6 +29,16 @@ CORTO_EXPORT corto_int16 _corto_subscriber_init(
     corto_subscriber _this);
 #define corto_subscriber_init(_this) _corto_subscriber_init(corto_subscriber(_this))
 
+CORTO_EXPORT corto_int16 _corto_subscriber_subscribe(
+    corto_subscriber _this,
+    corto_object instance);
+#define corto_subscriber_subscribe(_this, instance) _corto_subscriber_subscribe(corto_subscriber(_this), instance)
+
+CORTO_EXPORT corto_int16 _corto_subscriber_unsubscribe(
+    corto_subscriber _this,
+    corto_object instance);
+#define corto_subscriber_unsubscribe(_this, instance) _corto_subscriber_unsubscribe(corto_subscriber(_this), instance)
+
 #ifdef __cplusplus
 }
 #endif

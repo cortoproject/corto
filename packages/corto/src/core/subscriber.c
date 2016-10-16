@@ -11,9 +11,20 @@
 /* $header() */
 #include "_object.h"
 extern corto_threadKey CORTO_KEY_FLOW;
+extern corto_rwmutex_s corto_subscriberLock;
 
-static corto_ll corto_subscribers[CORTO_MAX_SCOPE_DEPTH];
-static corto_uint32 corto_subscribers_count = 0;
+typedef struct corto_subscription {
+    corto_subscriber s;
+    corto_object instance;
+} corto_subscription;
+
+CORTO_SEQUENCE(corto_subscriptionSeq, corto_subscription,);
+
+static corto_subscriptionSeq corto_subscribers[CORTO_MAX_SCOPE_DEPTH];
+
+/* Optimization- if number is zero don't bother taking a lock and walking
+ * the subscribers */
+static corto_uint32 corto_subscribers_count;
 
 static corto_int16 corto_subscriber_getObjectDepth(corto_id id) {
     corto_int16 result = 0;
@@ -63,13 +74,18 @@ corto_int16 corto_notifySubscribersId(
 
     corto_int16 depth = corto_subscriber_getObjectDepth(path);
 
+    corto_rwmutexRead(&corto_subscriberLock);
     do {
-        corto_ll subscribers = corto_subscribers[depth];
+        corto_subscriptionSeq *subscribers = &corto_subscribers[depth];
         if (subscribers) {
-            corto_iter it = corto_llIter(subscribers);
-            while (corto_iterHasNext(&it)) {
-                corto_subscriber s = corto_iterNext(&it);
+            corto_uint32 it;
+            for (it = 0; it < subscribers->length; it ++) {
+                corto_subscriber s = subscribers->buffer[it].s;
                 corto_word content = 0;
+
+                if (!s->expr) {
+                    continue;
+                }
 
                 if ((s->mask & mask) != mask) {
                     continue;
@@ -150,11 +166,11 @@ corto_int16 corto_notifySubscribersId(
 
                 if (corto_function(s)->kind == CORTO_PROCEDURE_CDECL) {
                     ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
-                      corto_function(s)->fptr)(s->instance, mask, &r, s);
+                      corto_function(s)->fptr)(subscribers->buffer[it].instance, mask, &r, s);
                 } else {
                     corto_result *rArg = &r;
                     void *args[4];
-                    args[0] = &s->instance;
+                    args[0] = &subscribers->buffer[it].instance;
                     args[1] = &mask;
                     args[2] = &rArg;
                     args[3] = &s;
@@ -164,6 +180,7 @@ corto_int16 corto_notifySubscribersId(
             }
         }
     } while (depth-- >= 0);
+    corto_rwmutexUnlock(&corto_subscriberLock);
 
     /* Free up resources */
     corto_int32 i; for (i = 0; i < contentTypesCount; i++) {
@@ -198,14 +215,24 @@ corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
 
 static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 {
-    return corto_subscriberCreate(
+    corto_subscriber s = corto_subscriberCreate(
       r->mask,
       r->scope,
       r->expr,
-      r->instance,
       r->contentType,
       r->callback
     );
+
+    if (corto_subscriber_subscribe(s, r->instance)) {
+        goto error;
+    }
+
+    return s;
+error:
+    if (s) {
+        corto_delete(s);
+    }
+    return NULL;
 }
 
 static corto_subscribeSelector corto_subscribeSelectorGet(void);
@@ -272,6 +299,10 @@ corto_subscribeSelector corto_subscribe(
     return corto_subscribeSelectorGet();
 }
 
+corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance) {
+    return corto_subscriber_unsubscribe(subscriber, instance);
+}
+
 /* $end */
 
 corto_int16 _corto_subscriber_construct(
@@ -298,16 +329,6 @@ corto_int16 _corto_subscriber_construct(
         goto error;
     }
 
-    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
-
-    if (!corto_subscribers[depth]) {
-        corto_subscribers[depth] = corto_llNew();
-    }
-
-    corto_llAppend(corto_subscribers[depth], this);
-    corto_subscribers_count ++;
-
-
     return 0;
 error:
     return -1;
@@ -318,18 +339,8 @@ corto_void _corto_subscriber_destruct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/destruct) */
-    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
-    corto_assert(corto_subscribers[depth] != NULL, "deleting subscriber but no subscriber list");
-
-    corto_llRemove(corto_subscribers[depth], this);
-    if (!corto_subscribers[depth]) {
-        corto_llFree(corto_subscribers[depth]);
-        corto_subscribers[depth] = NULL;
-    }
 
     corto_matchProgram_free((corto_matchProgram)this->matchProgram);
-
-    corto_subscribers_count --;
 
 /* $end */
 }
@@ -346,7 +357,14 @@ corto_int16 _corto_subscriber_init(
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("instance");
     p->passByReference = TRUE;
-    corto_setref(&p->type, corto_type(corto_object_o));
+
+    if (corto_checkAttr(this, CORTO_ATTR_SCOPED) &&
+        corto_instanceof(corto_interface_o, corto_parentof(this)))
+    {
+        corto_setref(&p->type, corto_type(corto_parentof(this)));
+    } else {
+        corto_setref(&p->type, corto_type(corto_object_o));
+    }
 
     /* Parameter observable */
     p = &corto_function(this)->parameters.buffer[1];
@@ -367,5 +385,79 @@ corto_int16 _corto_subscriber_init(
     corto_setref(&p->type, corto_type(corto_subscriber_o));
 
     return corto_function_init(this);
+/* $end */
+}
+
+corto_int16 _corto_subscriber_subscribe(
+    corto_subscriber this,
+    corto_object instance)
+{
+/* $begin(corto/core/subscriber/subscribe) */
+    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
+
+    if (corto_rwmutexWrite(&corto_subscriberLock)) {
+        goto error;
+    }
+
+    corto_uint32 length = corto_subscribers[depth].length + 1;
+    corto_subscribers[depth].buffer =
+      corto_realloc(corto_subscribers[depth].buffer, length * sizeof(corto_subscription));
+
+    corto_subscribers[depth].buffer[length - 1].s = this;
+    corto_subscribers[depth].buffer[length - 1].instance = instance;
+    corto_subscribers[depth].length ++;
+    corto_subscribers_count ++;
+
+    if (corto_rwmutexUnlock(&corto_subscriberLock)) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+/* $end */
+}
+
+corto_int16 _corto_subscriber_unsubscribe(
+    corto_subscriber this,
+    corto_object instance)
+{
+/* $begin(corto/core/subscriber/unsubscribe) */
+    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
+
+    if (corto_rwmutexWrite(&corto_subscriberLock)) {
+        goto error;
+    }
+
+    corto_subscriptionSeq *seq = &corto_subscribers[depth];
+
+    /* Find subscriber */
+    corto_uint32 i;
+    for (i = 0; i < seq->length; i++) {
+        if ((seq->buffer[i].s == this) && (seq->buffer[i].instance == instance)) {
+            if (i == (seq->length - 1)) {
+                seq->buffer[i].s = NULL;
+                seq->buffer[i].instance = NULL;
+            } else {
+                seq->buffer[i].s = seq->buffer[seq->length - 1].s;
+                seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;
+                break;
+            }
+        }
+    }
+    if (i == seq->length) {
+        corto_seterr("unsubscribe failed, could not find subscriber for instance");
+        goto error;
+    } else {
+        seq->length --;
+    }
+
+    if (corto_rwmutexUnlock(&corto_subscriberLock)) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 /* $end */
 }
