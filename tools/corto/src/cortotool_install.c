@@ -64,6 +64,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
 
     fprintf(install, "rake clean 2> /dev/null\n");
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+    fprintf(install, "sudo ldconfig\n");
     fclose(install);
 
     return 0;
@@ -109,6 +110,7 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
     fprintf(install, "rm -rf $INSTALL_TMPDIR/install.tar.gz\n");
     fprintf(install, "sudo cp -a \"$INSTALL_TMPDIR/.\" /usr/local\n");
     fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
+    fprintf(install, "sudo ldconfig\n");
     fprintf(install, "trap - EXIT\n");
     fprintf(install, "}\n");
     fprintf(install, "install\n");
