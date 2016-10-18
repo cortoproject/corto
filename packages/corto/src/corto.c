@@ -211,6 +211,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, interfaceVectorseq);\
     SSO_OP_VALUE(op, interfaceVector);\
     SSO_OP_VALUE(op, objectlist);\
+    SSO_OP_VALUE(op, stringlist);\
     SSO_OP_VALUE(op, resultList);\
     SSO_OP_CORE_VALUE(op, mountSubscriptionList);\
     SSO_OP_VALUE(op, typespec);\
@@ -770,7 +771,17 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* package */\
     SSO_OP_OBJ_CORE(op, package_url);\
     SSO_OP_OBJ_CORE(op, package_version);\
+    SSO_OP_OBJ_CORE(op, package_author);\
+    SSO_OP_OBJ_CORE(op, package_description);\
     SSO_OP_OBJ_CORE(op, package_env);\
+    SSO_OP_OBJ_CORE(op, package_dependencies);\
+    SSO_OP_OBJ_CORE(op, package_prefix);\
+    SSO_OP_OBJ_CORE(op, package_cortoVersion);\
+    SSO_OP_OBJ_CORE(op, package_local);\
+    SSO_OP_OBJ_CORE(op, package_lib);\
+    SSO_OP_OBJ_CORE(op, package_libpath);\
+    SSO_OP_OBJ_CORE(op, package_include);\
+    SSO_OP_OBJ_CORE(op, package_link);\
     /* time */\
     SSO_OP_OBJ_CORE(op, time_sec);\
     SSO_OP_OBJ_CORE(op, time_nanosec);\
