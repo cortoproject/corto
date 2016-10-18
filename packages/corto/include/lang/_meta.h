@@ -113,6 +113,7 @@ CORTO_META_OBJECT(sequence, int32seq);
 CORTO_META_OBJECT(sequence, wordseq);
 CORTO_META_OBJECT(list, resultList);
 CORTO_META_OBJECT(list, objectlist);
+CORTO_META_OBJECT(list, stringlist);
 
 CORTO_META_OBJECT(delegate, initAction);
 CORTO_META_OBJECT(delegate, nameAction);
