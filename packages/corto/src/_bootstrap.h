@@ -557,6 +557,7 @@ CORTO_FWDECL_CORE(sequence, augmentseq);
 
 CORTO_FWDECL_CORE(list, resultList);
 CORTO_FWDECL(list, objectlist);
+CORTO_FWDECL(list, stringlist);
 CORTO_FWDECL_CORE(list, mountSubscriptionList);
 
 CORTO_FWDECL(delegate, destructAction);
@@ -625,7 +626,17 @@ CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 CORTO_CLASS_NOBASE_O(core, package, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_MEMBER_O(core_package, url, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_package, version, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, author, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, description, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_package, env, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, dependencies, lang_stringlist, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, prefix, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, cortoVersion, lang_stringlist, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, local, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, lib, lang_stringlist, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, libpath, lang_stringlist, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, include, lang_stringlist, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_package, link, lang_stringlist, CORTO_GLOBAL);
 
 /* Enumerations */
 CORTO_ENUM_O(lang, width);
@@ -788,6 +799,7 @@ CORTO_SEQUENCE_O(lang, parameterseq, lang_parameter, 0);
 CORTO_SEQUENCE_O(lang, stringseq, lang_string, 0);
 CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
 CORTO_SEQUENCE_O(lang, vtable, lang_function, 0);
+CORTO_LIST_O(lang, stringlist, lang_string, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(core, resultList, core_result, 0);
 CORTO_LIST_O(core, mountSubscriptionList, core_mountSubscription, 0);

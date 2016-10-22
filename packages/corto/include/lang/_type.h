@@ -81,6 +81,7 @@ extern "C" {
 #define corto_procedureKind(o) ((corto_procedureKind*)corto_assertType((corto_type)corto_procedureKind_o, o))
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
+#define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
 #define corto_stringseq(o) ((corto_stringseq*)corto_assertType((corto_type)corto_stringseq_o, o))
 #define corto_uint64(o) ((corto_uint64*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
@@ -539,6 +540,8 @@ CORTO_CLASS(corto_sequence);
 CORTO_CLASS_DEF(corto_sequence) {
     CORTO_EXTEND(corto_collection);
 };
+
+CORTO_LIST(corto_stringlist);
 
 CORTO_SEQUENCE(corto_stringseq, corto_string,);
 

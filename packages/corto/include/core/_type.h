@@ -267,7 +267,17 @@ CORTO_CLASS(corto_package);
 CORTO_CLASS_DEF(corto_package) {
     corto_string url;
     corto_string version;
+    corto_string author;
+    corto_string description;
     corto_string env;
+    corto_stringlist dependencies;
+    corto_string prefix;
+    corto_stringlist cortoVersion;
+    corto_bool local;
+    corto_stringlist lib;
+    corto_stringlist libpath;
+    corto_stringlist include;
+    corto_stringlist link;
 };
 
 /*  /corto/core/position */

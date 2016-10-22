@@ -6270,6 +6270,133 @@ corto_int16 _corto_stringDeinit(corto_string* value) {
     return result;
 }
 
+corto_stringlist* _corto_stringlistCreate(corto_uint32 length, corto_string* elements) {
+    corto_stringlist* _this;
+    _this = corto_stringlist(corto_declare(corto_stringlist_o));
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_uint32 i = 0;
+        corto_stringlistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_stringlistAppend(*_this, elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_stringlist* _corto_stringlistCreateChild(corto_object _parent, corto_string _name, corto_uint32 length, corto_string* elements) {
+    corto_stringlist* _this;
+    _this = corto_stringlist(corto_declareChild(_parent, _name, corto_stringlist_o));
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_uint32 i = 0;
+        corto_stringlistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_stringlistAppend(*_this, elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_stringlistUpdate(corto_stringlist* _this, corto_uint32 length, corto_string* elements) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_uint32 i = 0;
+        corto_stringlistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_stringlistAppend(*_this, elements[i]);
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_stringlist* _corto_stringlistDeclare(void) {
+    corto_stringlist* _this;
+    _this = corto_stringlist(corto_declare(corto_stringlist_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_stringlist* _corto_stringlistDeclareChild(corto_object _parent, corto_string _name) {
+    corto_stringlist* _this;
+    _this = corto_stringlist(corto_declareChild(_parent, _name, corto_stringlist_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_stringlistDefine(corto_stringlist* _this, corto_uint32 length, corto_string* elements) {
+    CORTO_UNUSED(_this);
+    corto_uint32 i = 0;
+    corto_stringlistClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_stringlistAppend(*_this, elements[i]);
+    }
+    return corto_define(_this);
+}
+
+corto_stringlist* _corto_stringlistAssign(corto_stringlist* _this, corto_uint32 length, corto_string* elements) {
+    CORTO_UNUSED(_this);
+    corto_uint32 i = 0;
+    corto_stringlistClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_stringlistAppend(*_this, elements[i]);
+    }
+    return _this;
+}
+
+corto_string _corto_stringlistStr(corto_stringlist value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_stringlist_o), &value);
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_stringlist* corto_stringlistFromStr(corto_stringlist* value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_stringlist_o), str);
+    return value;
+}
+
+corto_equalityKind corto_stringlistCompare(corto_stringlist dst, corto_stringlist src) {
+    return corto_comparep(&dst, corto_stringlist_o, &src);
+}
+
+corto_int16 _corto_stringlistInit(corto_stringlist* value) {
+    corto_int16 result;
+    memset(value, 0, corto_type(corto_stringlist_o)->size);
+    corto_value v;
+    v = corto_value_value(corto_type(corto_stringlist_o), value);
+    result = corto_initv(&v);
+    return result;
+}
+
+corto_int16 _corto_stringlistDeinit(corto_stringlist* value) {
+    corto_int16 result;
+    corto_value v;
+    v = corto_value_value(corto_type(corto_stringlist_o), value);
+    result = corto_deinitv(&v);
+    return result;
+}
+
 corto_stringseq* _corto_stringseqCreate(corto_uint32 length, corto_string* elements) {
     corto_stringseq* _this;
     _this = corto_stringseq(corto_declare(corto_stringseq_o));
@@ -8452,6 +8579,39 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
 
 void corto_parameterseqClear(corto_parameterseq *seq) {
     corto_parameterseqSize(seq, 0);
+}
+
+void corto_stringlistInsert(corto_stringlist list, corto_string element) {
+    corto_llInsert(list, (void*)corto_strdup(element));
+}
+
+void corto_stringlistAppend(corto_stringlist list, corto_string element) {
+    corto_llAppend(list, (void*)corto_strdup(element));
+}
+
+corto_string corto_stringlistTakeFirst(corto_stringlist list) {
+    return (corto_string)(corto_word)corto_llTakeFirst(list);
+}
+
+corto_string corto_stringlistLast(corto_stringlist list) {
+    return (corto_string)(corto_word)corto_llLast(list);
+}
+
+corto_string corto_stringlistGet(corto_stringlist list, corto_uint32 index) {
+    return (corto_string)(corto_word)corto_llGet(list, index);
+}
+
+corto_uint32 corto_stringlistSize(corto_stringlist list) {
+    return corto_llSize(list);
+}
+
+void corto_stringlistClear(corto_stringlist list) {
+    corto_iter iter = corto_llIter(list);
+    while(corto_iterHasNext(&iter)) {
+        void *ptr = corto_iterNext(&iter);
+        corto_deinitp(ptr, corto_string_o);
+    }
+    corto_llClear(list);
 }
 
 corto_string* corto_stringseqAppend(corto_stringseq *seq, corto_string element) {

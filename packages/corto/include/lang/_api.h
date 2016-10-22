@@ -1967,6 +1967,41 @@ CORTO_EXPORT corto_int16 _corto_stringInit(corto_string* value);
 CORTO_EXPORT corto_int16 _corto_stringDeinit(corto_string* value);
 #define corto_stringDeinit(value) _corto_stringDeinit(value)
 
+/* stringlist */
+CORTO_EXPORT corto_stringlist* _corto_stringlistCreate(corto_uint32 length, corto_string* elements);
+#define corto_stringlistCreate(length, elements) _corto_stringlistCreate(length, elements)
+#define corto_stringlistCreate_auto(_name, length, elements) corto_stringlist* _name = corto_stringlistCreate(length, elements); (void)_name
+CORTO_EXPORT corto_stringlist* _corto_stringlistCreateChild(corto_object _parent, corto_string _name, corto_uint32 length, corto_string* elements);
+#define corto_stringlistCreateChild(_parent, _name, length, elements) _corto_stringlistCreateChild(_parent, _name, length, elements)
+#define corto_stringlistCreateChild_auto(_parent, _name, length, elements) corto_stringlist* _name = corto_stringlistCreateChild(_parent, #_name, length, elements); (void)_name
+CORTO_EXPORT corto_int16 _corto_stringlistUpdate(corto_stringlist* _this, corto_uint32 length, corto_string* elements);
+#define corto_stringlistUpdate(_this, length, elements) _corto_stringlistUpdate(_this, length, elements)
+
+CORTO_EXPORT corto_stringlist* _corto_stringlistDeclare(void);
+#define corto_stringlistDeclare() _corto_stringlistDeclare()
+#define corto_stringlistDeclare_auto(_name) corto_stringlist* _name = corto_stringlistDeclare(); (void)_name
+CORTO_EXPORT corto_stringlist* _corto_stringlistDeclareChild(corto_object _parent, corto_string _name);
+#define corto_stringlistDeclareChild(_parent, _name) _corto_stringlistDeclareChild(_parent, _name)
+#define corto_stringlistDeclareChild_auto(_parent, _name) corto_stringlist* _name = corto_stringlistDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_stringlistDefine(corto_stringlist* _this, corto_uint32 length, corto_string* elements);
+#define corto_stringlistDefine(_this, length, elements) _corto_stringlistDefine(_this, length, elements)
+CORTO_EXPORT corto_stringlist* _corto_stringlistAssign(corto_stringlist* _this, corto_uint32 length, corto_string* elements);
+#define corto_stringlist__optional_NotSet NULL
+#define corto_stringlist__optional_Set(length, elements) corto_stringlistAssign((corto_stringlist*)corto_calloc(sizeof(corto_stringlist)), length, elements)
+#define corto_stringlist__optional_SetCond(cond, length, elements) cond ? corto_stringlistAssign((corto_stringlist*)corto_calloc(sizeof(corto_stringlist)), length, elements) : NULL
+#define corto_stringlistUnset(_this) _this ? corto_deinitp(_this, corto_stringlist_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_stringlistAssign(_this, length, elements) _corto_stringlistAssign(_this, length, elements)
+#define corto_stringlistSet(_this, length, elements) _this = _this ? _this : (corto_stringlist*)corto_calloc(sizeof(corto_stringlist)); _corto_stringlistAssign(_this, length, elements)
+CORTO_EXPORT corto_string _corto_stringlistStr(corto_stringlist value);
+#define corto_stringlistStr(value) _corto_stringlistStr(value)
+CORTO_EXPORT corto_stringlist* corto_stringlistFromStr(corto_stringlist* value, corto_string str);
+CORTO_EXPORT corto_equalityKind corto_stringlistCompare(corto_stringlist dst, corto_stringlist src);
+
+CORTO_EXPORT corto_int16 _corto_stringlistInit(corto_stringlist* value);
+#define corto_stringlistInit(value) _corto_stringlistInit(value)
+CORTO_EXPORT corto_int16 _corto_stringlistDeinit(corto_stringlist* value);
+#define corto_stringlistDeinit(value) _corto_stringlistDeinit(value)
+
 /* stringseq */
 CORTO_EXPORT corto_stringseq* _corto_stringseqCreate(corto_uint32 length, corto_string* elements);
 #define corto_stringseqCreate(length, elements) _corto_stringseqCreate(length, elements)
@@ -2640,6 +2675,20 @@ CORTO_EXPORT corto_parameter* corto_parameterseqAppend(corto_parameterseq *seq, 
 CORTO_EXPORT corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *seq);
 CORTO_EXPORT void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_parameterseqClear(corto_parameterseq *seq);
+
+/* stringlist */
+#define corto_stringlistForeach(list, elem) \
+    corto_iter elem##_iter = corto_llIter(list);\
+    corto_string elem;\
+    while(corto_iterHasNext(&elem##_iter) ? elem = (corto_string)(corto_word)corto_iterNext(&elem##_iter), TRUE : FALSE)
+
+CORTO_EXPORT void corto_stringlistInsert(corto_stringlist list, corto_string element);
+CORTO_EXPORT void corto_stringlistAppend(corto_stringlist list, corto_string element);
+CORTO_EXPORT corto_string corto_stringlistTakeFirst(corto_stringlist list);
+CORTO_EXPORT corto_string corto_stringlistLast(corto_stringlist list);
+CORTO_EXPORT corto_string corto_stringlistGet(corto_stringlist list, corto_uint32 index);
+CORTO_EXPORT corto_uint32 corto_stringlistSize(corto_stringlist list);
+CORTO_EXPORT void corto_stringlistClear(corto_stringlist list);
 
 /* stringseq */
 #define corto_stringseqForeach(seq, elem) \
