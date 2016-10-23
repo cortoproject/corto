@@ -26,6 +26,13 @@ static corto_subscriptionSeq corto_subscribers[CORTO_MAX_SCOPE_DEPTH];
  * the subscribers */
 static corto_uint32 corto_subscribers_count;
 
+/* Function to determine relative path from two path strings  */
+char* corto_pathstr(
+    corto_string buffer,
+    corto_string from,
+    corto_string to,
+    char *sep);
+
 static corto_int16 corto_subscriber_getObjectDepth(corto_id id) {
     corto_int16 result = 0;
     if (id) {
@@ -82,6 +89,7 @@ corto_int16 corto_notifySubscribersId(
             for (it = 0; it < subscribers->length; it ++) {
                 corto_subscriber s = subscribers->buffer[it].s;
                 corto_word content = 0;
+                corto_id relativeParent;
 
                 if (!s->expr) {
                     continue;
@@ -91,18 +99,14 @@ corto_int16 corto_notifySubscribersId(
                     continue;
                 }
 
-                if (!strcmp(s->expr, ".")) {
-                    if (strcmp(s->parent, path)) {
-                        corto_debug("subscriber: parent '%s' does not match '%s'",
-                          s->parent, path);
-                        continue;
-                    }
-                } else {
-                    if (!corto_matchProgram_run((corto_matchProgram)s->matchProgram, path)) {
-                        corto_debug("subscriber: expression '%s' does not match '%s'",
-                          s->expr, path);
-                        continue;
-                    }
+                char *expr = corto_matchParent(s->parent, path);
+                if (!expr) {
+                    continue;
+                }
+                if (!corto_matchProgram_run((corto_matchProgram)s->matchProgram, expr)) {
+                    corto_debug("subscriber: expression '%s' does not match '%s' (parent = '%s', path = '%s')",
+                      s->expr, expr, s->parent, path);
+                    continue;
                 }
 
                 /* If subscriber requests content, convert to subscriber contentType */
@@ -114,6 +118,7 @@ corto_int16 corto_notifySubscribersId(
                             break;
                         }
                     }
+                    
                     /* contentType hasn't been loaded */
                     if (i == contentTypesCount) {
                         contentTypes[i].ct = (corto_contentType)s->contentTypeHandle;
@@ -147,14 +152,12 @@ corto_int16 corto_notifySubscribersId(
                     }
                 }
 
-                corto_string relativeParent;
-                if (s->parent) {
-                    relativeParent = &parent[strlen(s->parent)];
-                } else {
-                    relativeParent = parent;
-                }
                 if (sep) *sep = '\0';
-                if (!relativeParent[0]) relativeParent = ".";
+                corto_id fromElem, toElem;
+                strcpy(fromElem, s->parent);
+                strcpy(toElem, parent);
+                corto_pathstr(relativeParent, fromElem, toElem, "/");
+
                 corto_result r = {
                   id,
                   NULL,
@@ -316,15 +319,7 @@ corto_int16 _corto_subscriber_construct(
         }
     }
 
-    /* Compile expression */
-    char *expr = this->expr;
-    char *parent = this->parent;
-    if (expr[0] == '/') expr++;
-    if (!parent || !strcmp(parent, "/")) parent = "";
-    corto_id buff;
-    sprintf(buff, "%s/%s", parent, expr);
-
-    this->matchProgram = (corto_word)corto_matchProgram_compile(buff, TRUE, TRUE);
+    this->matchProgram = (corto_word)corto_matchProgram_compile(this->expr, TRUE, TRUE);
     if (!this->matchProgram) {
         goto error;
     }
@@ -351,35 +346,22 @@ corto_int16 _corto_subscriber_init(
 /* $begin(corto/core/subscriber/init) */
     corto_parameter *p;
     corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 4);
-    corto_function(this)->parameters.length = 4;
+    corto_function(this)->parameters.length = 3;
 
     /* Parameter observable */
     p = &corto_function(this)->parameters.buffer[0];
-    p->name = corto_strdup("instance");
-    p->passByReference = TRUE;
-
-    if (corto_checkAttr(this, CORTO_ATTR_SCOPED) &&
-        corto_instanceof(corto_interface_o, corto_parentof(this)))
-    {
-        corto_setref(&p->type, corto_type(corto_parentof(this)));
-    } else {
-        corto_setref(&p->type, corto_type(corto_object_o));
-    }
-
-    /* Parameter observable */
-    p = &corto_function(this)->parameters.buffer[1];
     p->name = corto_strdup("event");
-    p->passByReference = TRUE;
+    p->passByReference = FALSE;
     corto_setref(&p->type, corto_type(corto_eventMask_o));
 
     /* Parameter observable */
-    p = &corto_function(this)->parameters.buffer[2];
+    p = &corto_function(this)->parameters.buffer[1];
     p->name = corto_strdup("object");
     p->passByReference = TRUE;
     corto_setref(&p->type, corto_type(corto_result_o));
 
     /* Parameter observable */
-    p = &corto_function(this)->parameters.buffer[3];
+    p = &corto_function(this)->parameters.buffer[2];
     p->name = corto_strdup("subscriber");
     p->passByReference = TRUE;
     corto_setref(&p->type, corto_type(corto_subscriber_o));
@@ -394,6 +376,16 @@ corto_int16 _corto_subscriber_subscribe(
 {
 /* $begin(corto/core/subscriber/subscribe) */
     corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
+    corto_iter it;
+    corto_bool align = FALSE;
+
+    if ((this->mask == CORTO_ON_DECLARE) || (this->mask == CORTO_ON_DEFINE)) {
+        align = TRUE;
+        corto_int16 ret = corto_select(this->parent, this->expr).iter(&it);
+        if (ret) {
+          goto error;
+        }
+    }
 
     if (corto_rwmutexWrite(&corto_subscriberLock)) {
         goto error;
@@ -410,6 +402,23 @@ corto_int16 _corto_subscriber_subscribe(
 
     if (corto_rwmutexUnlock(&corto_subscriberLock)) {
         goto error;
+    }
+
+    if (align) {
+        while (corto_iterHasNext(&it)) {
+            corto_result *r = corto_iterNext(&it);
+            if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
+                ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
+                  corto_function(this)->fptr)(instance, this->mask, r, this);
+            } else {
+                void *args[4];
+                args[0] = &instance;
+                args[1] = &this->mask;
+                args[2] = &r;
+                args[3] = &this;
+                corto_callb(this, NULL, args);
+            }
+        }
     }
 
     return 0;
@@ -438,6 +447,7 @@ corto_int16 _corto_subscriber_unsubscribe(
             if (i == (seq->length - 1)) {
                 seq->buffer[i].s = NULL;
                 seq->buffer[i].instance = NULL;
+                break;
             } else {
                 seq->buffer[i].s = seq->buffer[seq->length - 1].s;
                 seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;

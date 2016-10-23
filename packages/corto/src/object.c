@@ -3041,6 +3041,9 @@ corto_bool corto_owned(corto_object o) {
             } else {
                 result = FALSE;
             }
+        } else {
+            /* Owner is set, but not a mount. Object is owned by local process */
+            result = TRUE;
         }
     }
 
@@ -3865,10 +3868,11 @@ static corto_int16 corto_notify(corto__observable* _o, corto_object observable, 
             }
             depth++;
         }
-    }
 
-    if (corto_notifySubscribers(mask, observable)) {
-        goto error;
+        /* Only notify observers for scoped objects */
+        if (corto_notifySubscribers(mask, observable)) {
+            goto error;
+        }
     }
 
 access_error:

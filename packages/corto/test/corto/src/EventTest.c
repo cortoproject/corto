@@ -33,6 +33,11 @@ corto_int16 _test_EventTest_construct(
     corto_listen(this, test_EventTest_onDeleteScope_o, 0, this->scope, NULL);
     corto_listen(this, test_EventTest_onDeleteTree_o, 0, this->scope, NULL);
 
+    corto_listen(this, test_EventTest_onUpdateDefine_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onUpdateDefineSelf_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onUpdateDefineScope_o, 0, this->scope, NULL);
+    corto_listen(this, test_EventTest_onUpdateDefineTree_o, 0, this->scope, NULL);
+
     return 0;
 /* $end */
 }
@@ -61,6 +66,11 @@ corto_void _test_EventTest_destruct(
     corto_silence(this, test_EventTest_onDeleteSelf_o, 0, this->scope);
     corto_silence(this, test_EventTest_onDeleteScope_o, 0, this->scope);
     corto_silence(this, test_EventTest_onDeleteTree_o, 0, this->scope);
+
+    corto_silence(this, test_EventTest_onUpdateDefine_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onUpdateDefineSelf_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onUpdateDefineScope_o, 0, this->scope);
+    corto_silence(this, test_EventTest_onUpdateDefineTree_o, 0, this->scope);
 
 /* $end */
 }
@@ -205,6 +215,50 @@ corto_void _test_EventTest_onUpdate(
    corto_setref(&this->lastThis, this);
    corto_setref(&this->lastObservable, observable);
    this->countUpdate++;
+/* $end */
+}
+
+corto_void _test_EventTest_onUpdateDefine(
+    test_EventTest this,
+    corto_object observable)
+{
+/* $begin(test/EventTest/onUpdateDefine) */
+   corto_setref(&this->lastThis, this);
+   corto_setref(&this->lastObservable, observable);
+   this->countUpdateDefine++;
+/* $end */
+}
+
+corto_void _test_EventTest_onUpdateDefineScope(
+    test_EventTest this,
+    corto_object observable)
+{
+/* $begin(test/EventTest/onUpdateDefineScope) */
+   corto_setref(&this->lastThis, this);
+   corto_setref(&this->lastObservable, observable);
+   this->countUpdateDefineScope++;
+/* $end */
+}
+
+corto_void _test_EventTest_onUpdateDefineSelf(
+    test_EventTest this,
+    corto_object observable)
+{
+/* $begin(test/EventTest/onUpdateDefineSelf) */
+   corto_setref(&this->lastThis, this);
+   corto_setref(&this->lastObservable, observable);
+   this->countUpdateDefineSelf++;
+/* $end */
+}
+
+corto_void _test_EventTest_onUpdateDefineTree(
+    test_EventTest this,
+    corto_object observable)
+{
+/* $begin(test/EventTest/onUpdateDefineTree) */
+   corto_setref(&this->lastThis, this);
+   corto_setref(&this->lastObservable, observable);
+   this->countUpdateDefineTree++;
 /* $end */
 }
 

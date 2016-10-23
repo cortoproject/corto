@@ -135,12 +135,12 @@ void corto_callDeinit(corto_function f) {
     CORTO_CALL
 
 /* Call with variable argument list */
-void corto_callv(corto_function f, corto_void* result, va_list args) {
+void _corto_callv(corto_function f, corto_void* result, va_list args) {
     CORTO_CALLV
 }
 
 /* Call with variable arguments */
-void corto_call(corto_function f, corto_void* result, ...) {
+void _corto_call(corto_function f, corto_void* result, ...) {
     va_list args;
 
     va_start(args, result);
@@ -149,6 +149,6 @@ void corto_call(corto_function f, corto_void* result, ...) {
 }
 
 /* Call with buffer */
-void corto_callb(corto_function f, corto_void* result, void** argptrs) {
+void _corto_callb(corto_function f, corto_void* result, void** argptrs) {
     CORTO_CALL
 }

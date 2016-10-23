@@ -114,6 +114,11 @@ corto_matchProgram corto_matchProgram_compile(corto_string expr, corto_bool allo
 corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str);
 void corto_matchProgram_free(corto_matchProgram matcher);
 
+/* To be used with corto_match. Matches initial (parent) part of expression and
+ * returns a pointer to the expression to be matched by corto_match, or NULL if
+ * the parent doesn't match. */
+char* corto_matchParent(char *parent, char *expr);
+
 /* Iterate over objects matching an expression */
 typedef struct corto_selectRequest {
     corto_int16 err;

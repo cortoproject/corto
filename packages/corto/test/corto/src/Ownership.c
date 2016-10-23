@@ -309,6 +309,306 @@ corto_void _test_Ownership_tc_invokeOwned(
 /* $end */
 }
 
+corto_void _test_Ownership_tc_ownedMountMount(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedMountMount) */
+    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+    test_FooReplicator r2 = test_FooReplicatorCreateChild(root_o, "r2", root_o);
+
+    corto_object old = corto_setOwner(r1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == r1);
+
+    corto_setOwner(r2);
+    test_assert(corto_owned(o) == FALSE);
+    corto_setOwner(r1);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(r1);
+    test_assert(result == 0);
+
+    result = corto_delete(r2);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedMountMountSame(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedMountMountSame) */
+    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+
+    corto_object old = corto_setOwner(r1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == r1);
+
+    test_assert(corto_owned(o) == TRUE);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(r1);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedMountObj(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedMountObj) */
+    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+
+    corto_voidCreateChild_auto(NULL, obj);
+
+    corto_object old = corto_setOwner(r1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == r1);
+
+    corto_setOwner(obj);
+    test_assert(corto_owned(o) == FALSE);
+    corto_setOwner(r1);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(r1);
+    test_assert(result == 0);
+
+    result = corto_delete(obj);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedMountSelf(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedMountSelf) */
+    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+
+    corto_object old = corto_setOwner(r1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == r1);
+
+    corto_setOwner(NULL);
+    test_assert(corto_owned(o) == FALSE);
+    corto_setOwner(r1);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(r1);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedObjMount(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedObjMount) */
+    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+
+    corto_voidCreateChild_auto(NULL, obj);
+
+    corto_object old = corto_setOwner(obj);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == obj);
+
+    corto_setOwner(r1);
+    test_assert(corto_owned(o) == FALSE);
+    corto_setOwner(obj);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(r1);
+    test_assert(result == 0);
+
+    result = corto_delete(obj);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedObjObj(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedObjObj) */
+    corto_voidCreateChild_auto(NULL, obj1);
+    corto_voidCreateChild_auto(NULL, obj2);
+
+    corto_object old = corto_setOwner(obj1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == obj1);
+
+    corto_setOwner(obj2);
+    test_assert(corto_owned(o) == TRUE);
+    corto_setOwner(obj1);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(obj1);
+    test_assert(result == 0);
+
+    result = corto_delete(obj2);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedObjObjSame(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedObjObjSame) */
+    corto_voidCreateChild_auto(NULL, obj1);
+
+    corto_object old = corto_setOwner(obj1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == obj1);
+
+    test_assert(corto_owned(o) == TRUE);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(obj1);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedObjSelf(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedObjSelf) */
+    corto_voidCreateChild_auto(NULL, obj1);
+
+    corto_object old = corto_setOwner(obj1);
+    test_assert(old == NULL);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == obj1);
+
+    old = corto_setOwner(NULL);
+    test_assert(corto_owned(o) == TRUE);
+    corto_setOwner(obj1);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(obj1);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedSelfMount(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedSelfMount) */
+    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == NULL);
+
+    corto_setOwner(r1);
+    test_assert(corto_owned(o) == FALSE);
+    corto_setOwner(NULL);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    result = corto_delete(r1);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedSelfObj(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedSelfObj) */
+    corto_voidCreateChild_auto(NULL, obj1);
+
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == NULL);
+
+    corto_setOwner(obj1);
+    test_assert(corto_owned(o) == TRUE);
+    corto_setOwner(NULL);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+    result = corto_delete(obj1);
+    test_assert(result == 0);
+
+/* $end */
+}
+
+corto_void _test_Ownership_tc_ownedSelfSelf(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_ownedSelfSelf) */
+    corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == NULL);
+
+    test_assert(corto_owned(o) == TRUE);
+
+    corto_int16 result = corto_delete(o);
+    test_assertint(result, 0);
+
+/* $end */
+}
+
 corto_void _test_Ownership_tc_releaseNotOwned(
     test_Ownership this)
 {

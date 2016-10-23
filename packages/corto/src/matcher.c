@@ -283,7 +283,10 @@ corto_matchProgram corto_matchProgram_compile(
 {
     corto_matchProgram result = corto_alloc(sizeof(struct corto_matchProgram_s));
     corto_debug("match: compile expression '%s'", expr);
-    if (corto_matchProgramParseIntern(result, expr, allowScopes, allowSeparators)) {
+    if (corto_matchProgramParseIntern(result, expr, allowScopes, allowSeparators) || !result->size) {
+        if (!result->size) {
+            corto_seterr("expression '%s' resulted in empty program", expr);
+        }
         corto_dealloc(result->tokens);
         corto_dealloc(result);
         result = NULL;
@@ -313,7 +316,12 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
             break;
         case CORTO_MATCHER_TOKEN_IDENTIFIER:
         case CORTO_MATCHER_TOKEN_FILTER:
-            result = !fnmatch(cur->start, (*elements)[0], 0);
+            if ((*elements)[0][0] != '.') {
+                result = !fnmatch(cur->start, (*elements)[0], 0);
+            } else {
+                result = FALSE;
+                done = TRUE;
+            }
             break;
         case CORTO_MATCHER_TOKEN_AND:
             right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_IDENTIFIER);
@@ -380,11 +388,19 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
     char **elem = elements;
     corto_id id;
     strcpy(id, str);
+
     corto_uint8 elementCount = corto_pathToArray(id, elements, "/");
     if (elementCount == -1) {
         goto error;
     }
     elements[elementCount] = NULL;
+
+    /* Ignore leading scope tokens ('/') in expression and string */
+    if (op->token == CORTO_MATCHER_TOKEN_SCOPE) {
+        op ++;
+    }
+    if (!elements[0][0]) elem++;
+
     corto_bool result = corto_matchProgram_runExpr(&op, &elem, CORTO_MATCHER_TOKEN_SEPARATOR);
     if (result) {
         if (elem != &elements[elementCount - 1]) {
@@ -395,6 +411,27 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
     return result;
 error:
     return FALSE;
+}
+
+char* corto_matchParent(char *parent, char *expr) {
+    char *parentPtr = parent, *exprPtr = expr;
+    char parentCh, exprCh;
+
+    while ((parentCh = *parentPtr) && (exprCh = *exprPtr) && (parentCh == exprCh)) {
+        parentPtr++;
+        exprPtr++;
+    }
+
+    if (*parentPtr == '\0') {
+        if (*exprPtr == '/') {
+            exprPtr ++;
+        } else if (*exprPtr == '\0') {
+            exprPtr = ".";
+        }
+        return exprPtr;
+    } else {
+        return NULL;
+    }
 }
 
 void corto_matchProgram_free(corto_matchProgram matcher) {

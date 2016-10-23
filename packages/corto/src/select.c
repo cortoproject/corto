@@ -33,9 +33,14 @@ typedef struct corto_scopeSegment {
 
 typedef struct corto_selectData {
     corto_string scope;                      /* Scope passed to select */
-    corto_string expr;                       /* Full expression */
+    corto_string expr;                       /* Current expression */
+    corto_string exprStart;                  /* Points to start of full expr */
     corto_string contentType;
     corto_string param;
+
+    /* Which expression is being evaluated (when expression contains ,) */
+    corto_uint32 exprCount;
+    corto_uint32 exprCurrent;
 
     corto_string fullscope;                  /* Scope + scope part of expression */
     corto_scopeSegment scopes[CORTO_MAX_SCOPE_DEPTH]; /* Scopes to walk (parsed scope) */
@@ -194,7 +199,7 @@ static void corto_loadAugments(
 
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 
-static char* corto_pathstr(
+char* corto_pathstr(
     corto_string buffer,
     corto_string from,
     corto_string to,
@@ -944,52 +949,6 @@ static void corto_selectFilterMounts(corto_selectData *data) {
     }
 }
 
-static corto_bool corto_selectNextScope(corto_selectData *data) {
-    if (data->scopes[data->currentScope + 1].scope) {
-        corto_selectStack *frame = &data->stack[0];
-        corto_selectFilterMounts(data);
-        corto_selectReset(data);
-        corto_selectPrepareFrame(data, frame, ++data->currentScope);
-        corto_debug("corto: select: NextScope: '%s, %s', currentMount=%d, firstMount=%d",
-            corto_fullpath(NULL, data->scopes[data->currentScope].scope),
-            data->scopes[data->currentScope].scopeQuery,
-            frame->currentMount,
-            frame->firstMount);
-        return TRUE;
-    }
-    return FALSE;
-}
-
-static int corto_selectHasNext(corto_resultIter *iter) {
-    corto_selectData *data = iter->udata;
-    corto_selectStack *frame = &data->stack[data->sp];
-
-    CORTO_UNUSED(iter);
-
-    corto_debug("corto: select: HasNext (%s, %s)", data->scope, data->expr);
-
-    if (data->limit) {
-         if ((data->count > data->offset) &&
-             (data->limit <= (data->count - data->offset)))
-         {
-              /* Limit is reached */
-              goto stop;
-         }
-    }
-
-    if (!data->mask) {
-        goto stop;
-    }
-
-    do {
-        corto_selectTree(data, frame);
-    } while ((data->next == NULL) && (corto_selectNextScope(data)));
-
-    return data->next != NULL;
-stop:
-    return 0;
-}
-
 static void* corto_selectNext(corto_resultIter *iter) {
     corto_selectData *data = iter->udata;
 
@@ -1007,7 +966,7 @@ static void corto_selectRelease(corto_iter *iter) {
 
     CORTO_UNUSED(iter);
 
-    if (data->expr) corto_dealloc(data->expr);
+    if (data->exprStart) corto_dealloc(data->exprStart);
     if (data->program.tokens) corto_dealloc(data->program.tokens);
     if (data->scope) corto_dealloc(data->scope);
     if (data->fullscope) corto_dealloc(data->fullscope);
@@ -1143,6 +1102,80 @@ error:
     return -1;
 }
 
+static corto_bool corto_selectNextScope(corto_selectData *data) {
+    if (data->scopes[data->currentScope + 1].scope) {
+        corto_selectStack *frame = &data->stack[0];
+        corto_selectFilterMounts(data);
+        corto_selectReset(data);
+        corto_selectPrepareFrame(data, frame, ++data->currentScope);
+        corto_debug("corto: select: NextScope: '%s, %s', currentMount=%d, firstMount=%d",
+            corto_fullpath(NULL, data->scopes[data->currentScope].scope),
+            data->scopes[data->currentScope].scopeQuery,
+            frame->currentMount,
+            frame->firstMount);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static corto_bool corto_selectNextExpr(corto_selectData *data) {
+    corto_bool result = FALSE;
+
+    if (data->exprCurrent < data->exprCount) {
+        data->expr = &data->expr[strlen(data->expr) + 1];
+        data->exprCurrent ++;
+        result = TRUE;
+
+        corto_selectReset(data);
+        data->currentScope = 0;
+
+        if (data->program.tokens) corto_dealloc(data->program.tokens);
+        if (corto_matchProgramParseIntern(&data->program, data->expr, TRUE, FALSE)) {
+            corto_error("select '%s' failed: %s", data->expr, corto_lasterr());
+            goto error;
+        }
+
+        if (corto_selectRun(data)) {
+            corto_error("select '%s' failed: %s", data->expr, corto_lasterr());
+            goto error;
+        }
+    }
+
+    return result;
+error:
+    return FALSE;
+}
+
+static int corto_selectHasNext(corto_resultIter *iter) {
+    corto_selectData *data = iter->udata;
+    corto_selectStack *frame = &data->stack[data->sp];
+
+    CORTO_UNUSED(iter);
+
+    if (data->limit) {
+         if ((data->count > data->offset) &&
+             (data->limit <= (data->count - data->offset)))
+         {
+              /* Limit is reached */
+              goto stop;
+         }
+    }
+
+    if (!data->mask) {
+        if (!corto_selectNextExpr(data)) {
+            goto stop;
+        }
+    }
+
+    do {
+        corto_selectTree(data, frame);
+    } while ((data->next == NULL) && (corto_selectNextScope(data)));
+
+    return data->next != NULL;
+stop:
+    return 0;
+}
+
 static corto_resultIter corto_selectPrepareIterator (
     struct corto_selectRequest *r)
 {
@@ -1169,6 +1202,7 @@ static corto_resultIter corto_selectPrepareIterator (
     } else {
         data->expr = corto_strdup(".");
     }
+    data->exprStart = data->expr;
 
     data->contentType = r->contentType;
     data->mountsLoaded = -1;
@@ -1194,6 +1228,16 @@ static corto_resultIter corto_selectPrepareIterator (
     result.hasNext = corto_selectHasNext;
     result.next = corto_selectNext;
     result.release = corto_selectRelease;
+
+    /* Split expression on ,. Expressions with multiple segments should be
+     * evaluated sequentially. */
+    char *ptr = data->expr;
+    while ((ptr = strchr(ptr, ','))) {
+        *ptr = '\0';
+        ptr++;
+        data->exprCount ++;
+    }
+    data->exprCurrent = 0;
 
     if (corto_matchProgramParseIntern(&data->program, data->expr, TRUE, FALSE)) {
         corto_seterr("select '%s' failed: %s", expr, corto_lasterr());

@@ -58,25 +58,6 @@ static corto_int16 corto_secure_getObjectDepth(corto_id id) {
     return result;
 }
 
-static char* corto_secure_matchLock(char *lockId, char *id) {
-    char *lPtr = lockId, *idPtr = id;
-    char lCh, idCh;
-
-    while ((lCh = *lPtr) && (idCh = *idPtr) && (lCh == idCh)) {
-        lPtr++;
-        idPtr++;
-    }
-
-    if (*lPtr == '\0') {
-        if (*idPtr == '/') {
-            idPtr ++;
-        }
-        return idPtr;
-    } else {
-        return NULL;
-    }
-}
-
 corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
     if (corto_secure_mainThread == corto_threadSelf()) {
         corto_int16 depth = corto_secure_getObjectDepth(lock->mount);
@@ -119,7 +100,7 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                 while (corto_iterHasNext(&it)) {
                     corto_secure_lock lock = corto_iterNext(&it);
                     char *expr;
-                    if (!(expr = corto_secure_matchLock(lock->mount, objectId))) {
+                    if (!(expr = corto_matchParent(lock->mount, objectId))) {
                         continue;
                     }
 

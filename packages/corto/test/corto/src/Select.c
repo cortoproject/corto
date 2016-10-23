@@ -1346,6 +1346,23 @@ corto_void _test_Select_tc_selectScopeWithWildcardFilter(
 /* $end */
 }
 
+corto_void _test_Select_tc_selectSeparator(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectSeparator) */
+    corto_ll results = NULL;
+
+    results = test_Select_collect(NULL, "a/abc,a/abd", 0, 0);
+    test_assert(results != NULL);
+    test_assertint(corto_llSize(results), 2);
+
+    test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+
+
+/* $end */
+}
+
 corto_void _test_Select_tc_selectThis(
     test_Select this)
 {

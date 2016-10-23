@@ -452,16 +452,6 @@ corto_void _test_Matcher_tc_scopeFilterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterImplicit(
-    test_Matcher this)
-{
-/* $begin(test/Matcher/tc_scopeFilterImplicit) */
-
-    /* << Insert implementation >> */
-
-/* $end */
-}
-
 corto_void _test_Matcher_tc_scopeFilterMulti(
     test_Matcher this)
 {
@@ -470,6 +460,9 @@ corto_void _test_Matcher_tc_scopeFilterMulti(
     test_assertint(result, TRUE);
 
     result = corto_match("/*x/b", "/bx/b");
+    test_assertint(result, TRUE);
+
+    result = corto_match("/*x/c", "bx/c");
     test_assertint(result, TRUE);
 
 /* $end */
@@ -579,6 +572,38 @@ corto_void _test_Matcher_tc_scopeIdSingleMultiFail(
 {
 /* $begin(test/Matcher/tc_scopeIdSingleMultiFail) */
     corto_bool result = corto_match("/a/b", "/a");
+    test_assertint(result, FALSE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_scopeImplicit(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_scopeImplicit) */
+    corto_bool result = corto_match("/", "/a");
+    test_assertint(result, TRUE);
+
+    result = corto_match("/", "a");
+    test_assertint(result, TRUE);
+
+    result = corto_match("/", "/b");
+    test_assertint(result, TRUE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_scopeImplicitFail(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_scopeImplicitFail) */
+    corto_bool result = corto_match("/", "/a/b");
+    test_assertint(result, FALSE);
+
+    result = corto_match("/", "a/b");
+    test_assertint(result, FALSE);
+
+    result = corto_match("/", ".");
     test_assertint(result, FALSE);
 
 /* $end */
@@ -709,18 +734,24 @@ corto_void _test_Matcher_tc_treeFilter(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeFilter) */
+    corto_bool result = corto_match("//a*", "/ab");
+    test_assertint(result, TRUE);
 
-    /* << Insert implementation >> */
+    result = corto_match("//a*", "/a/ab");
+    test_assertint(result, TRUE);
 
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeFilterImplicit(
+corto_void _test_Matcher_tc_treeFilterFail(
     test_Matcher this)
 {
-/* $begin(test/Matcher/tc_treeFilterImplicit) */
+/* $begin(test/Matcher/tc_treeFilterFail) */
+    corto_bool result = corto_match("//a*", "/bb");
+    test_assertint(result, FALSE);
 
-    /* << Insert implementation >> */
+    result = corto_match("//a*", "/a/bb");
+    test_assertint(result, FALSE);
 
 /* $end */
 }
@@ -740,6 +771,32 @@ corto_void _test_Matcher_tc_treeIdFail(
 {
 /* $begin(test/Matcher/tc_treeIdFail) */
     corto_bool result = corto_match("//b", "/a");
+    test_assertint(result, FALSE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeImplicit(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeImplicit) */
+    corto_bool result = corto_match("//", "/a");
+    test_assertint(result, TRUE);
+
+    result = corto_match("//", "/b");
+    test_assertint(result, TRUE);
+
+    result = corto_match("//", "/a/b");
+    test_assertint(result, TRUE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeImplicitFail(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeImplicitFail) */
+    corto_bool result = corto_match("//", ".");
     test_assertint(result, FALSE);
 
 /* $end */
