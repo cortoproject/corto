@@ -624,14 +624,14 @@ CORTO_EXPORT corto_equalityKind _corto_observableEventCompare(corto_observableEv
 #define corto_observableEventCompare(dst, src) _corto_observableEventCompare(corto_observableEvent(dst), corto_observableEvent(src))
 
 /* /corto/core/observer */
-CORTO_EXPORT corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, void(*_impl)(void));
-#define corto_observerCreate(mask, observable, _impl) _corto_observerCreate(mask, observable, (void(*)(void))_impl)
-#define corto_observerCreate_auto(_name, mask, observable, _impl) corto_observer _name = corto_observerCreate(mask, observable, _impl); (void)_name
-CORTO_EXPORT corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, void(*_impl)(void));
-#define corto_observerCreateChild(_parent, _name, mask, observable, _impl) _corto_observerCreateChild(_parent, _name, mask, observable, (void(*)(void))_impl)
-#define corto_observerCreateChild_auto(_parent, _name, mask, observable, _impl) corto_observer _name = corto_observerCreateChild(_parent, #_name, mask, observable, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void));
-#define corto_observerUpdate(_this, mask, observable, _impl) _corto_observerUpdate(corto_observer(_this), mask, observable, (void(*)(void))_impl)
+CORTO_EXPORT corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_observerCreate(mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerCreate(mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+#define corto_observerCreate_auto(_name, mask, observable, instance, dispatcher, type, enabled, _impl) corto_observer _name = corto_observerCreate(mask, observable, instance, dispatcher, type, enabled, _impl); (void)_name
+CORTO_EXPORT corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_observerCreateChild(_parent, _name, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerCreateChild(_parent, _name, mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+#define corto_observerCreateChild_auto(_parent, _name, mask, observable, instance, dispatcher, type, enabled, _impl) corto_observer _name = corto_observerCreateChild(_parent, #_name, mask, observable, instance, dispatcher, type, enabled, _impl); (void)_name
+CORTO_EXPORT corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_observerUpdate(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerUpdate(corto_observer(_this), mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_observer _corto_observerDeclare(void);
 #define corto_observerDeclare() _corto_observerDeclare()
@@ -639,15 +639,15 @@ CORTO_EXPORT corto_observer _corto_observerDeclare(void);
 CORTO_EXPORT corto_observer _corto_observerDeclareChild(corto_object _parent, corto_string _name);
 #define corto_observerDeclareChild(_parent, _name) _corto_observerDeclareChild(_parent, _name)
 #define corto_observerDeclareChild_auto(_parent, _name) corto_observer _name = corto_observerDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void));
-#define corto_observerDefine(_this, mask, observable, _impl) _corto_observerDefine(corto_observer(_this), mask, observable, (void(*)(void))_impl)
-CORTO_EXPORT corto_observer _corto_observerAssign(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_observerDefine(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerDefine(corto_observer(_this), mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+CORTO_EXPORT corto_observer _corto_observerAssign(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
 #define corto_observer__optional_NotSet NULL
-#define corto_observer__optional_Set(mask, observable, _impl) corto_observerAssign((corto_observer*)corto_calloc(sizeof(corto_observer)), mask, observable, _impl)
-#define corto_observer__optional_SetCond(cond, mask, observable, _impl) cond ? corto_observerAssign((corto_observer*)corto_calloc(sizeof(corto_observer)), mask, observable, _impl) : NULL
+#define corto_observer__optional_Set(mask, observable, instance, dispatcher, type, enabled, _impl) corto_observerAssign((corto_observer*)corto_calloc(sizeof(corto_observer)), mask, observable, instance, dispatcher, type, enabled, _impl)
+#define corto_observer__optional_SetCond(cond, mask, observable, instance, dispatcher, type, enabled, _impl) cond ? corto_observerAssign((corto_observer*)corto_calloc(sizeof(corto_observer)), mask, observable, instance, dispatcher, type, enabled, _impl) : NULL
 #define corto_observerUnset(_this) _this ? corto_deinitp(_this, corto_observer_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_observerAssign(_this, mask, observable, _impl) _corto_observerAssign(corto_observer(_this), mask, observable, (void(*)(void))_impl)
-#define corto_observerSet(_this, mask, observable, _impl) _this = _this ? _this : (corto_observer*)corto_calloc(sizeof(corto_observer)); _corto_observerAssign(corto_observer(_this), mask, observable, (void(*)(void))_impl)
+#define corto_observerAssign(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerAssign(corto_observer(_this), mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+#define corto_observerSet(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _this = _this ? _this : (corto_observer*)corto_calloc(sizeof(corto_observer)); _corto_observerAssign(corto_observer(_this), mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_observerStr(corto_observer value);
 #define corto_observerStr(value) _corto_observerStr(corto_observer(value))
 CORTO_EXPORT corto_observer corto_observerFromStr(corto_observer value, corto_string str);
@@ -1055,14 +1055,14 @@ CORTO_EXPORT corto_equalityKind _corto_routerimplCompare(corto_routerimpl dst, c
 #define corto_routerimplCompare(dst, src) _corto_routerimplCompare(corto_routerimpl(dst), corto_routerimpl(src))
 
 /* /corto/core/subscriber */
-CORTO_EXPORT corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void));
-#define corto_subscriberCreate(mask, parent, expr, contentType, _impl) _corto_subscriberCreate(mask, parent, expr, contentType, (void(*)(void))_impl)
-#define corto_subscriberCreate_auto(_name, mask, parent, expr, contentType, _impl) corto_subscriber _name = corto_subscriberCreate(mask, parent, expr, contentType, _impl); (void)_name
-CORTO_EXPORT corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void));
-#define corto_subscriberCreateChild(_parent, _name, mask, parent, expr, contentType, _impl) _corto_subscriberCreateChild(_parent, _name, mask, parent, expr, contentType, (void(*)(void))_impl)
-#define corto_subscriberCreateChild_auto(_parent, _name, mask, parent, expr, contentType, _impl) corto_subscriber _name = corto_subscriberCreateChild(_parent, #_name, mask, parent, expr, contentType, _impl); (void)_name
-CORTO_EXPORT corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void));
-#define corto_subscriberUpdate(_this, mask, parent, expr, contentType, _impl) _corto_subscriberUpdate(corto_subscriber(_this), mask, parent, expr, contentType, (void(*)(void))_impl)
+CORTO_EXPORT corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_subscriberCreate(mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _corto_subscriberCreate(mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+#define corto_subscriberCreate_auto(_name, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) corto_subscriber _name = corto_subscriberCreate(mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl); (void)_name
+CORTO_EXPORT corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_subscriberCreateChild(_parent, _name, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _corto_subscriberCreateChild(_parent, _name, mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+#define corto_subscriberCreateChild_auto(_parent, _name, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) corto_subscriber _name = corto_subscriberCreateChild(_parent, #_name, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl); (void)_name
+CORTO_EXPORT corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_subscriberUpdate(_this, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _corto_subscriberUpdate(corto_subscriber(_this), mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
 
 CORTO_EXPORT corto_subscriber _corto_subscriberDeclare(void);
 #define corto_subscriberDeclare() _corto_subscriberDeclare()
@@ -1070,15 +1070,15 @@ CORTO_EXPORT corto_subscriber _corto_subscriberDeclare(void);
 CORTO_EXPORT corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_string _name);
 #define corto_subscriberDeclareChild(_parent, _name) _corto_subscriberDeclareChild(_parent, _name)
 #define corto_subscriberDeclareChild_auto(_parent, _name) corto_subscriber _name = corto_subscriberDeclareChild(_parent, #_name); (void)_name
-CORTO_EXPORT corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void));
-#define corto_subscriberDefine(_this, mask, parent, expr, contentType, _impl) _corto_subscriberDefine(corto_subscriber(_this), mask, parent, expr, contentType, (void(*)(void))_impl)
-CORTO_EXPORT corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
+#define corto_subscriberDefine(_this, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _corto_subscriberDefine(corto_subscriber(_this), mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+CORTO_EXPORT corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
 #define corto_subscriber__optional_NotSet NULL
-#define corto_subscriber__optional_Set(mask, parent, expr, contentType, _impl) corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), mask, parent, expr, contentType, _impl)
-#define corto_subscriber__optional_SetCond(cond, mask, parent, expr, contentType, _impl) cond ? corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), mask, parent, expr, contentType, _impl) : NULL
+#define corto_subscriber__optional_Set(mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl)
+#define corto_subscriber__optional_SetCond(cond, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) cond ? corto_subscriberAssign((corto_subscriber*)corto_calloc(sizeof(corto_subscriber)), mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) : NULL
 #define corto_subscriberUnset(_this) _this ? corto_deinitp(_this, corto_subscriber_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_subscriberAssign(_this, mask, parent, expr, contentType, _impl) _corto_subscriberAssign(corto_subscriber(_this), mask, parent, expr, contentType, (void(*)(void))_impl)
-#define corto_subscriberSet(_this, mask, parent, expr, contentType, _impl) _this = _this ? _this : (corto_subscriber*)corto_calloc(sizeof(corto_subscriber)); _corto_subscriberAssign(corto_subscriber(_this), mask, parent, expr, contentType, (void(*)(void))_impl)
+#define corto_subscriberAssign(_this, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _corto_subscriberAssign(corto_subscriber(_this), mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+#define corto_subscriberSet(_this, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _this = _this ? _this : (corto_subscriber*)corto_calloc(sizeof(corto_subscriber)); _corto_subscriberAssign(corto_subscriber(_this), mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
 CORTO_EXPORT corto_string _corto_subscriberStr(corto_subscriber value);
 #define corto_subscriberStr(value) _corto_subscriberStr(corto_subscriber(value))
 CORTO_EXPORT corto_subscriber corto_subscriberFromStr(corto_subscriber value, corto_string str);

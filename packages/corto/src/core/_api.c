@@ -2018,7 +2018,7 @@ corto_equalityKind _corto_observableEventCompare(corto_observableEvent dst, cort
     return corto_compare(dst, src);
 }
 
-corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
+corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     corto_observer _this;
     _this = corto_observer(corto_declare(corto_observer_o));
     if (!_this) {
@@ -2027,6 +2027,10 @@ corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observab
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         ((corto_observer)_this)->mask = mask;
         corto_setref(&((corto_observer)_this)->observable, observable);
+        corto_setref(&((corto_observer)_this)->instance, instance);
+        corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+        corto_setstr(&((corto_observer)_this)->type, type);
+        ((corto_observer)_this)->enabled = enabled;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -2037,7 +2041,7 @@ corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observab
     return _this;
 }
 
-corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
+corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     corto_observer _this;
     _this = corto_observer(corto_declareChild(_parent, _name, corto_observer_o));
     if (!_this) {
@@ -2046,6 +2050,10 @@ corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _na
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         ((corto_observer)_this)->mask = mask;
         corto_setref(&((corto_observer)_this)->observable, observable);
+        corto_setref(&((corto_observer)_this)->instance, instance);
+        corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+        corto_setstr(&((corto_observer)_this)->type, type);
+        ((corto_observer)_this)->enabled = enabled;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -2056,11 +2064,15 @@ corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _na
     return _this;
 }
 
-corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
+corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         ((corto_observer)_this)->mask = mask;
         corto_setref(&((corto_observer)_this)->observable, observable);
+        corto_setref(&((corto_observer)_this)->instance, instance);
+        corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+        corto_setstr(&((corto_observer)_this)->type, type);
+        ((corto_observer)_this)->enabled = enabled;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
@@ -2088,19 +2100,27 @@ corto_observer _corto_observerDeclareChild(corto_object _parent, corto_string _n
     return _this;
 }
 
-corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
+corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     ((corto_observer)_this)->mask = mask;
     corto_setref(&((corto_observer)_this)->observable, observable);
+    corto_setref(&((corto_observer)_this)->instance, instance);
+    corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+    corto_setstr(&((corto_observer)_this)->type, type);
+    ((corto_observer)_this)->enabled = enabled;
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-corto_observer _corto_observerAssign(corto_observer _this, corto_eventMask mask, corto_object observable, void(*_impl)(void)) {
+corto_observer _corto_observerAssign(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     ((corto_observer)_this)->mask = mask;
     corto_setref(&((corto_observer)_this)->observable, observable);
+    corto_setref(&((corto_observer)_this)->instance, instance);
+    corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+    corto_setstr(&((corto_observer)_this)->type, type);
+    ((corto_observer)_this)->enabled = enabled;
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return _this;
@@ -3617,17 +3637,21 @@ corto_equalityKind _corto_routerimplCompare(corto_routerimpl dst, corto_routerim
     return corto_compare(dst, src);
 }
 
-corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void)) {
+corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     corto_subscriber _this;
     _this = corto_subscriber(corto_declare(corto_subscriber_o));
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        ((corto_subscriber)_this)->mask = mask;
+        ((corto_observer)_this)->mask = mask;
         corto_setstr(&((corto_subscriber)_this)->parent, parent);
         corto_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
+        corto_setref(&((corto_observer)_this)->instance, instance);
+        corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+        corto_setstr(&((corto_observer)_this)->type, type);
+        ((corto_observer)_this)->enabled = enabled;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -3638,17 +3662,21 @@ corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string pare
     return _this;
 }
 
-corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void)) {
+corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _name, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     corto_subscriber _this;
     _this = corto_subscriber(corto_declareChild(_parent, _name, corto_subscriber_o));
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        ((corto_subscriber)_this)->mask = mask;
+        ((corto_observer)_this)->mask = mask;
         corto_setstr(&((corto_subscriber)_this)->parent, parent);
         corto_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
+        corto_setref(&((corto_observer)_this)->instance, instance);
+        corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+        corto_setstr(&((corto_observer)_this)->type, type);
+        ((corto_observer)_this)->enabled = enabled;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -3659,13 +3687,17 @@ corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string
     return _this;
 }
 
-corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void)) {
+corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
-        ((corto_subscriber)_this)->mask = mask;
+        ((corto_observer)_this)->mask = mask;
         corto_setstr(&((corto_subscriber)_this)->parent, parent);
         corto_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
+        corto_setref(&((corto_observer)_this)->instance, instance);
+        corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+        corto_setstr(&((corto_observer)_this)->type, type);
+        ((corto_observer)_this)->enabled = enabled;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         corto_updateEnd(_this);
@@ -3693,23 +3725,31 @@ corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_strin
     return _this;
 }
 
-corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void)) {
+corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
-    ((corto_subscriber)_this)->mask = mask;
+    ((corto_observer)_this)->mask = mask;
     corto_setstr(&((corto_subscriber)_this)->parent, parent);
     corto_setstr(&((corto_subscriber)_this)->expr, expr);
     corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
+    corto_setref(&((corto_observer)_this)->instance, instance);
+    corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+    corto_setstr(&((corto_observer)_this)->type, type);
+    ((corto_observer)_this)->enabled = enabled;
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return corto_define(_this);
 }
 
-corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, void(*_impl)(void)) {
+corto_subscriber _corto_subscriberAssign(corto_subscriber _this, corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
-    ((corto_subscriber)_this)->mask = mask;
+    ((corto_observer)_this)->mask = mask;
     corto_setstr(&((corto_subscriber)_this)->parent, parent);
     corto_setstr(&((corto_subscriber)_this)->expr, expr);
     corto_setstr(&((corto_subscriber)_this)->contentType, contentType);
+    corto_setref(&((corto_observer)_this)->instance, instance);
+    corto_setref(&((corto_observer)_this)->dispatcher, dispatcher);
+    corto_setstr(&((corto_observer)_this)->type, type);
+    ((corto_observer)_this)->enabled = enabled;
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return _this;

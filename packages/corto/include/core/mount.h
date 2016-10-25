@@ -38,18 +38,24 @@ CORTO_EXPORT corto_void _corto_mount_invoke(
 
 CORTO_EXPORT corto_void _corto_mount_on_declare(
     corto_mount _this,
-    corto_object observable);
-#define corto_mount_on_declare(_this, observable) _corto_mount_on_declare(corto_mount(_this), observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer);
+#define corto_mount_on_declare(_this, event, object, observer) _corto_mount_on_declare(corto_mount(_this), event, object, corto_observer(observer))
 
 CORTO_EXPORT corto_void _corto_mount_on_delete(
     corto_mount _this,
-    corto_object observable);
-#define corto_mount_on_delete(_this, observable) _corto_mount_on_delete(corto_mount(_this), observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer);
+#define corto_mount_on_delete(_this, event, object, observer) _corto_mount_on_delete(corto_mount(_this), event, object, corto_observer(observer))
 
 CORTO_EXPORT corto_void _corto_mount_on_update(
     corto_mount _this,
-    corto_object observable);
-#define corto_mount_on_update(_this, observable) _corto_mount_on_update(corto_mount(_this), observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer);
+#define corto_mount_on_update(_this, event, object, observer) _corto_mount_on_update(corto_mount(_this), event, object, corto_observer(observer))
 CORTO_EXPORT corto_void _corto_mount_onDeclare(
     corto_mount _this,
     corto_object observable);

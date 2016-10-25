@@ -633,12 +633,12 @@ test/Suite ResumeSink::
     void tc_resolveNested1NotExist()
     void tc_resolveNested2NotExist()
 
-    observer onDeclare{}
-    observer onDefine{}
-    observer onUpdate{}
-    observer onDelete{}
-    observer onResume{}
-    observer onSuspend{}
+    observer onDeclare: on_declare | on_tree
+    observer onDefine: on_define | on_tree
+    observer onUpdate: on_update | on_tree
+    observer onDelete: on_delete | on_tree
+    observer onResume: on_resume | on_tree
+    observer onSuspend: on_suspend | on_tree
 
     declared, defined, updated, deleted, resumed, suspended: int8
 
@@ -797,11 +797,6 @@ test/Suite Event::
 
     void tc_updateVoidErr()
     void tc_updateUndefined()
-    void tc_observeNull()
-    void tc_observeNullWithListen()
-    void tc_observeNullWithListenMultiMask()
-    void tc_observeNullWithListenMultiObservable()
-    void tc_observeNullWithListenMultiBoth()
 
     void tc_postponeListenForUndefined()
     void tc_postponeListenSilence()

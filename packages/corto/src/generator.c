@@ -1036,6 +1036,9 @@ corto_int16 g_loadExisting(corto_generator g, corto_string name, corto_string op
             }
         }
         corto_dealloc(code);
+    } else {
+        /* Catch error */
+        corto_lasterr();
     }
 
     return 0;

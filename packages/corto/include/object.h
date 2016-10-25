@@ -11,7 +11,6 @@
 #include "core/_type.h"
 #include "lang/_type.h"
 #include "secure/_type.h"
-#include "corto/ll.h"
 #include "corto/value.h"
 #include "corto/async.h"
 #include "corto/time.h"
@@ -21,28 +20,41 @@ extern "C" {
 #endif
 
 typedef char corto_id[CORTO_MAX_PATH_LENGTH];
-
 typedef int (*corto_scopeWalkAction)(corto_object o, void* userData);
 typedef corto_equalityKind ___ (*corto_equalsAction)(corto_type _this, const void* o1, const void* o2);
 
-/* Event-kinds */
-#define CORTO_EVENT_NONE       (0)
-#define CORTO_EVENT_OBSERVABLE (1)
-
 /* Object lifecycle */
-corto_attr corto_setAttr(corto_attr attr);
-corto_attr corto_getAttr(void);
 corto_object _corto_create(corto_type type);
 corto_object _corto_createChild(corto_object parent, corto_string name, corto_type type);
 corto_object _corto_declare(corto_type type);
 corto_object _corto_declareChild(corto_object parent, corto_string name, corto_type type);
 corto_int16 corto_define(corto_object o);
 corto_int16 corto_delete(corto_object o);
-corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
-corto_int16 corto_suspend(corto_object o);
+
+/* Object notifications */
+corto_int16 corto_update(corto_object observable);
+corto_int16 corto_updateBegin(corto_object observable);
+corto_int16 corto_updateTry(corto_object observable);
+corto_int16 corto_updateEnd(corto_object observable);
+corto_int16 corto_updateCancel(corto_object observable);
+void corto_invalidate(corto_object o);
+/* Publish event without reference to an object */
+corto_int16 corto_publish(
+    corto_eventMask event,
+    corto_string id,
+    corto_string type,
+    corto_string contentType,
+    void *content);
+
+/* Memory management */
 corto_int32 corto_claim(corto_object o);
 corto_int32 corto_release(corto_object o);
-void corto_invalidate(corto_object o);
+void corto_setref(void* ptr, corto_object value);
+void corto_setstr(corto_string* ptr, corto_string value);
+
+/* Set/get object attributes for current thread */
+corto_attr corto_setAttr(corto_attr attr);
+corto_attr corto_getAttr(void);
 
 /* Security */
 corto_string corto_login(corto_string username, corto_string password);
@@ -51,17 +63,7 @@ corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
 corto_bool corto_authorizedId(corto_string id, corto_secure_actionKind access);
 corto_bool corto_secured(void);
 
-/* Object extensions (ols stands for Object Local Storage) */
-corto_uint8 corto_olsKey(void(*destructor)(void*));
-void* corto_olsSet(corto_object o, corto_int8 key, void *data);
-void* corto_olsGet(corto_object o, corto_int8 key);
-
-/* If multiple threads access OLS simultaneously, this API provides safe
- * access to a key. A LockGet must always be followed by an UnlockSet. */
-void* corto_olsLockGet(corto_object o, corto_int8 key);
-void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
-
-/* Generic object data */
+/* Object metadata */
 corto_type corto_typeof(corto_object o);
 corto_int32 corto_countof(corto_object o);
 corto_state corto_stateof(corto_object o);
@@ -71,18 +73,7 @@ corto_bool corto_checkAttr(corto_object o, corto_int8 attr);
 corto_bool _corto_instanceof(corto_type type, corto_object o);
 corto_bool _corto_instanceofType(corto_type type, corto_type valueType);
 
-corto_object _corto_assertType(corto_type type, corto_object o);
-#ifndef NDEBUG
-#define corto_assertType(type, o) _corto_assertType(type, o)
-#else
-#define corto_assertType(type, o) (o)
-#endif
-
-/* Object content */
-corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
-corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content);
-
-/* Scoped data */
+/* Object metadata for scoped objects */
 corto_string corto_idof(corto_object o);
 corto_string corto_nameof(corto_id str, corto_object o);
 corto_object corto_parentof(corto_object o);
@@ -91,7 +82,14 @@ corto_objectseq corto_scopeClaim(corto_object o);
 void corto_scopeRelease(corto_objectseq scope);
 corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
 
-/* Obtain object path */
+/* Ownership */
+corto_object corto_ownerof(corto_object o);
+corto_bool corto_owned(corto_object o);
+/* Set/get owner for thread */
+corto_object corto_setOwner(corto_object owner);
+corto_object corto_getOwner(void);
+
+/* Object path */
 corto_string corto_fullpath(corto_id str, corto_object o);
 corto_string corto_fullname(corto_id str, corto_object o);
 corto_string corto_path(corto_id str, corto_object from, corto_object o, const char* sep);
@@ -99,13 +97,50 @@ corto_string corto_pathname(corto_id str, corto_object from, corto_object o, con
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 corto_string corto_cleanpath(corto_id buffer, char* path);
 
-/* Persistent data */
-corto_object corto_ownerof(corto_object o);
-corto_bool corto_owned(corto_object o);
-
 /* Find objects by name */
 corto_object corto_lookup(corto_object scope, corto_string name);
 corto_object corto_resolve(corto_object scope, corto_string expr);
+
+/* Iterate over objects matching an expression */
+typedef struct corto_selectFluent {
+    struct corto_selectFluent (*contentType)(corto_string contentType);
+    struct corto_selectFluent (*limit)(corto_uint64 offset, corto_uint64 limit);
+    struct corto_selectFluent (*augment)(corto_string filter);
+    struct corto_selectFluent (*type)(corto_string filter);
+    struct corto_selectFluent (*fromNow)(void);
+    struct corto_selectFluent (*fromTime)(corto_time t);
+    struct corto_selectFluent (*fromSample)(corto_uint64 sample);
+    struct corto_selectFluent (*toNow)(void);
+    struct corto_selectFluent (*toTime)(corto_time t);
+    struct corto_selectFluent (*toSample)(corto_uint64 sample);
+    struct corto_selectFluent (*forDuration)(corto_time t);
+    struct corto_selectFluent (*forDepth)(corto_int64 depth);
+    corto_int16 ___ (*iter)(corto_resultIter *ret);
+} corto_selectFluent;
+struct corto_selectFluent corto_select(corto_string scope, corto_string expr);
+
+/* Observe objects for an observable matching an eventmask */
+typedef struct corto_observeFluent {
+    struct corto_observeFluent (*disabled)(void);
+    struct corto_observeFluent (*dispatcher)(corto_dispatcher dispatcher);
+    struct corto_observeFluent (*instance)(corto_object instance);
+    struct corto_observeFluent (*type)(corto_string type);
+    corto_observer ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_object, corto_observer));
+} corto_observeFluent;
+struct corto_observeFluent corto_observe(corto_eventMask event, corto_object observable);
+corto_int16 corto_unobserve(corto_observer observer);
+
+/* Subscribe for notifications matching an expression and eventmask */
+typedef struct corto_subscribeFluent {
+    struct corto_subscribeFluent (*disabled)(void);
+    struct corto_subscribeFluent (*dispatcher)(corto_dispatcher dispatcher);
+    struct corto_subscribeFluent (*instance)(corto_object instance);
+    struct corto_subscribeFluent (*contentType)(corto_string contentType);
+    struct corto_subscribeFluent (*type)(corto_string type);
+    corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_result*, corto_subscriber));
+} corto_subscribeFluent;
+struct corto_subscribeFluent corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr);
+corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
 
 /* Match corto expression */
 typedef struct corto_matchProgram_s* corto_matchProgram;
@@ -113,84 +148,23 @@ corto_bool corto_match(corto_string expr, corto_string str);
 corto_matchProgram corto_matchProgram_compile(corto_string expr, corto_bool allowScopes, corto_bool allowSeparators);
 corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str);
 void corto_matchProgram_free(corto_matchProgram matcher);
-
-/* To be used with corto_match. Matches initial (parent) part of expression and
- * returns a pointer to the expression to be matched by corto_match, or NULL if
- * the parent doesn't match. */
+/* Match parent of expression. Returns NULL if no match, or ptr to remainder (for corto_match) */
 char* corto_matchParent(char *parent, char *expr);
 
-/* Iterate over objects matching an expression */
-typedef struct corto_selectRequest {
-    corto_int16 err;
-    corto_string scope;
-    corto_string expr;
-    corto_string type;
-    corto_uint64 offset;
-    corto_uint64 limit;
-    corto_string augment;
-    corto_string contentType;
-    corto_frame from;
-    corto_frame to;
-} corto_selectRequest;
-typedef struct corto_selectSelector {
-    struct corto_selectSelector (*contentType)(corto_string contentType);
-    struct corto_selectSelector (*limit)(corto_uint64 offset, corto_uint64 limit);
-    struct corto_selectSelector (*augment)(corto_string filter);
-    struct corto_selectSelector (*type)(corto_string filter);
-    struct corto_selectSelector (*fromNow)(void);
-    struct corto_selectSelector (*fromTime)(corto_time t);
-    struct corto_selectSelector (*fromSample)(corto_uint64 sample);
-    struct corto_selectSelector (*toNow)(void);
-    struct corto_selectSelector (*toTime)(corto_time t);
-    struct corto_selectSelector (*toSample)(corto_uint64 sample);
-    struct corto_selectSelector (*forDuration)(corto_time t);
-    struct corto_selectSelector (*forDepth)(corto_int64 depth);
-    corto_int16 ___ (*iter)(corto_resultIter *ret);
-} corto_selectSelector;
-struct corto_selectSelector corto_select(corto_string scope, corto_string expr);
+/* Serialize object to contentType */
+corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
+corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content, ...);
 
-/* Subscribe for objects matching an expression */
-typedef struct corto_subscribeRequest {
-    corto_int16 err;
-    corto_object instance;
-    corto_eventMask mask;
-    corto_string scope;
-    corto_string expr;
-    corto_string type;
-    corto_string contentType;
-    void (*callback)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber);
-} corto_subscribeRequest;
-typedef struct corto_subscribeSelector {
-    struct corto_subscribeSelector (*instance)(corto_object instance);
-    struct corto_subscribeSelector (*contentType)(corto_string contentType);
-    struct corto_subscribeSelector (*type)(corto_string type);
-    corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber));
-} corto_subscribeSelector;
-struct corto_subscribeSelector corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr);
-corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
+/* Object extensions (Object Local Storage) */
+corto_uint8 corto_olsKey(void(*destructor)(void*));
+void* corto_olsSet(corto_object o, corto_int8 key, void *data);
+void* corto_olsGet(corto_object o, corto_int8 key);
+/* Thread-safe way to modify OLS data */
+void* corto_olsLockGet(corto_object o, corto_int8 key);
+void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
 
-/* Publish update for object */
-corto_int16 corto_publish(
-    corto_eventMask event,
-    corto_string id,
-    corto_string type,
-    corto_string contentType,
-    void *content);
-
-/* Augment data */
+/* Augment data (unstable API) */
 corto_int16 _corto_augment(corto_type t, corto_string id, corto_mount r);
-
-/* Notifications */
-corto_object corto_setOwner(corto_object owner);
-corto_object corto_getOwner(void);
-corto_int16 corto_listen(corto_object _this, corto_observer observer, corto_eventMask mask, corto_object observable, corto_dispatcher dispatcher);
-corto_int16 corto_silence(corto_object _this, corto_observer observer, corto_eventMask mask, corto_object observable);
-corto_bool corto_listening(corto_object observable, corto_observer, corto_object _this);
-corto_int16 corto_update(corto_object observable);
-corto_int16 corto_updateBegin(corto_object observable);
-corto_int16 corto_updateTry(corto_object observable);
-corto_int16 corto_updateEnd(corto_object observable);
-corto_int16 corto_updateCancel(corto_object observable);
 
 /* Read locking */
 corto_int16 corto_readBegin(corto_object object);
@@ -200,22 +174,8 @@ corto_int16 corto_readEnd(corto_object object);
 corto_int16 corto_lock(corto_object object);
 corto_int16 corto_unlock(corto_object object);
 
-/* Waiting */
-corto_int16 corto_waitfor(corto_object observable);
-corto_object corto_wait(corto_int32 timeout_sec, corto_int32 timeout_nanosec);
-
-/* REPL functionality */
+/* REPL functionality (unstable API) */
 corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value);
-
-/* Obtain documentation objects */
-char* corto_manId(corto_object o, corto_id buffer);
-corto_object corto_man(corto_object o);
-
-/* Set reference field */
-void corto_setref(void* ptr, corto_object value);
-
-/* Set string field */
-void corto_setstr(corto_string* ptr, corto_string value);
 
 /* Serialize to string */
 corto_string corto_str(corto_object object, corto_uint32 maxLength);
@@ -268,13 +228,6 @@ corto_int16 corto_deinita(corto_any a);
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
 #define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
 #define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_mount(r))
-
-/* Throws an assertion when invalid object in debugging */
-#ifndef NDEBUG
-void corto_assertObject(corto_object o);
-#else
-#define corto_assertObject(o)
-#endif
 
 #ifdef __cplusplus
 }

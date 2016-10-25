@@ -10,8 +10,22 @@
 
 /* $header() */
 #include "_object.h"
-extern corto_threadKey CORTO_KEY_FLOW;
+extern corto_threadKey CORTO_KEY_FLUENT;
 extern corto_rwmutex_s corto_subscriberLock;
+
+/* Fluent request */
+typedef struct corto_subscribeRequest {
+    corto_int16 err;
+    corto_object instance;
+    corto_eventMask mask;
+    corto_string scope;
+    corto_string expr;
+    corto_string type;
+    corto_string contentType;
+    corto_dispatcher dispatcher;
+    corto_bool enabled;
+    void (*callback)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber);
+} corto_subscribeRequest;
 
 typedef struct corto_subscription {
     corto_subscriber s;
@@ -95,7 +109,7 @@ corto_int16 corto_notifySubscribersId(
                     continue;
                 }
 
-                if ((s->mask & mask) != mask) {
+                if ((corto_observer(s)->mask & mask) != mask) {
                     continue;
                 }
 
@@ -118,7 +132,7 @@ corto_int16 corto_notifySubscribersId(
                             break;
                         }
                     }
-                    
+
                     /* contentType hasn't been loaded */
                     if (i == contentTypesCount) {
                         contentTypes[i].ct = (corto_contentType)s->contentTypeHandle;
@@ -223,6 +237,10 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
       r->scope,
       r->expr,
       r->contentType,
+      r->instance,
+      r->dispatcher,
+      r->type,
+      r->enabled,
       r->callback
     );
 
@@ -238,26 +256,44 @@ error:
     return NULL;
 }
 
-static corto_subscribeSelector corto_subscribeSelectorGet(void);
+static corto_subscribeFluent corto_subscribeFluentGet(void);
 
-static corto_subscribeSelector corto_subscribeContentType(
+static corto_subscribeFluent corto_subscribeContentType(
     corto_string contentType)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLOW);
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->contentType = contentType;
     }
-    return corto_subscribeSelectorGet();
+    return corto_subscribeFluentGet();
 }
 
-static corto_subscribeSelector corto_subscribeInstance(
+static corto_subscribeFluent corto_subscribeInstance(
     corto_object instance)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLOW);
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
-    return corto_subscribeSelectorGet();
+    return corto_subscribeFluentGet();
+}
+
+static corto_subscribeFluent corto_subscribeDisabled(void)
+{
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->enabled = FALSE;
+    }
+    return corto_subscribeFluentGet();
+}
+
+static corto_subscribeFluent corto_subscribeDispatcher(corto_dispatcher dispatcher)
+{
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->dispatcher = dispatcher;
+    }
+    return corto_subscribeFluentGet();
 }
 
 static corto_subscriber corto_subscribeCallback(
@@ -265,7 +301,7 @@ static corto_subscriber corto_subscribeCallback(
 {
     corto_subscriber result = NULL;
 
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLOW);
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->callback = callback;
         result = corto_subscribeSubscribe(request);
@@ -274,24 +310,26 @@ static corto_subscriber corto_subscribeCallback(
     return result;
 }
 
-static corto_subscribeSelector corto_subscribeSelectorGet(void)
+static corto_subscribeFluent corto_subscribeFluentGet(void)
 {
-    corto_subscribeSelector result;
+    corto_subscribeFluent result;
     result.contentType = corto_subscribeContentType;
     result.callback = corto_subscribeCallback;
     result.instance = corto_subscribeInstance;
+    result.disabled = corto_subscribeDisabled;
+    result.dispatcher = corto_subscribeDispatcher;
     return result;
 }
 
-corto_subscribeSelector corto_subscribe(
+corto_subscribeFluent corto_subscribe(
     corto_eventMask mask,
     corto_string scope,
     corto_string expr)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLOW);
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_subscribeRequest));
-        corto_threadTlsSet(CORTO_KEY_FLOW, request);
+        corto_threadTlsSet(CORTO_KEY_FLUENT, request);
     } else {
         memset(request, 0, sizeof(corto_subscribeRequest));
     }
@@ -299,7 +337,8 @@ corto_subscribeSelector corto_subscribe(
     request->mask = mask;
     request->scope = scope;
     request->expr = expr;
-    return corto_subscribeSelectorGet();
+    request->enabled = TRUE;
+    return corto_subscribeFluentGet();
 }
 
 corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance) {
@@ -348,23 +387,23 @@ corto_int16 _corto_subscriber_init(
     corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 4);
     corto_function(this)->parameters.length = 3;
 
-    /* Parameter observable */
+    /* Parameter event */
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("event");
     p->passByReference = FALSE;
-    corto_setref(&p->type, corto_type(corto_eventMask_o));
+    corto_setref(&p->type, corto_eventMask_o);
 
-    /* Parameter observable */
+    /* Parameter object */
     p = &corto_function(this)->parameters.buffer[1];
     p->name = corto_strdup("object");
     p->passByReference = TRUE;
-    corto_setref(&p->type, corto_type(corto_result_o));
+   corto_setref(&p->type, corto_result_o);
 
-    /* Parameter observable */
+    /* Parameter subscriber */
     p = &corto_function(this)->parameters.buffer[2];
     p->name = corto_strdup("subscriber");
     p->passByReference = TRUE;
-    corto_setref(&p->type, corto_type(corto_subscriber_o));
+    corto_setref(&p->type, corto_subscriber_o);
 
     return corto_function_init(this);
 /* $end */
@@ -378,8 +417,9 @@ corto_int16 _corto_subscriber_subscribe(
     corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
     corto_iter it;
     corto_bool align = FALSE;
+    corto_eventMask mask = corto_observer(this)->mask;
 
-    if ((this->mask == CORTO_ON_DECLARE) || (this->mask == CORTO_ON_DEFINE)) {
+    if ((mask == CORTO_ON_DECLARE) || (mask == CORTO_ON_DEFINE)) {
         align = TRUE;
         corto_int16 ret = corto_select(this->parent, this->expr).iter(&it);
         if (ret) {
@@ -409,11 +449,11 @@ corto_int16 _corto_subscriber_subscribe(
             corto_result *r = corto_iterNext(&it);
             if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
                 ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
-                  corto_function(this)->fptr)(instance, this->mask, r, this);
+                  corto_function(this)->fptr)(instance, mask, r, this);
             } else {
                 void *args[4];
                 args[0] = &instance;
-                args[1] = &this->mask;
+                args[1] = &mask;
                 args[2] = &r;
                 args[3] = &this;
                 corto_callb(this, NULL, args);

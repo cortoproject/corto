@@ -10,7 +10,9 @@
 
 corto_void _test_ResumeSink_onDeclare(
     test_ResumeSink this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/ResumeSink/onDeclare) */
 
@@ -21,7 +23,9 @@ corto_void _test_ResumeSink_onDeclare(
 
 corto_void _test_ResumeSink_onDefine(
     test_ResumeSink this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/ResumeSink/onDefine) */
 
@@ -32,7 +36,9 @@ corto_void _test_ResumeSink_onDefine(
 
 corto_void _test_ResumeSink_onDelete(
     test_ResumeSink this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/ResumeSink/onDelete) */
 
@@ -43,7 +49,9 @@ corto_void _test_ResumeSink_onDelete(
 
 corto_void _test_ResumeSink_onResume(
     test_ResumeSink this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/ResumeSink/onResume) */
 
@@ -54,7 +62,9 @@ corto_void _test_ResumeSink_onResume(
 
 corto_void _test_ResumeSink_onSuspend(
     test_ResumeSink this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/ResumeSink/onSuspend) */
 
@@ -65,7 +75,9 @@ corto_void _test_ResumeSink_onSuspend(
 
 corto_void _test_ResumeSink_onUpdate(
     test_ResumeSink this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/ResumeSink/onUpdate) */
 
@@ -85,12 +97,12 @@ corto_void _test_ResumeSink_setup(
     CORTO_DEBUG_ENABLED = 1;
 
     /* Setup observers */
-    corto_listen(this, test_ResumeSink_onDeclare_o, CORTO_ON_DECLARE | CORTO_ON_TREE, mount, NULL);
-    corto_listen(this, test_ResumeSink_onDefine_o, CORTO_ON_DEFINE | CORTO_ON_TREE, mount, NULL);
-    corto_listen(this, test_ResumeSink_onDelete_o, CORTO_ON_DELETE | CORTO_ON_TREE, mount, NULL);
-    corto_listen(this, test_ResumeSink_onUpdate_o, CORTO_ON_UPDATE | CORTO_ON_TREE, mount, NULL);
-    corto_listen(this, test_ResumeSink_onResume_o, CORTO_ON_RESUME | CORTO_ON_TREE, mount, NULL);
-    corto_listen(this, test_ResumeSink_onSuspend_o, CORTO_ON_SUSPEND | CORTO_ON_TREE, mount, NULL);
+    corto_observer_observe(test_ResumeSink_onDeclare_o, this, mount);
+    corto_observer_observe(test_ResumeSink_onDefine_o, this, mount);
+    corto_observer_observe(test_ResumeSink_onDelete_o, this, mount);
+    corto_observer_observe(test_ResumeSink_onUpdate_o, this, mount);
+    corto_observer_observe(test_ResumeSink_onResume_o, this, mount);
+    corto_observer_observe(test_ResumeSink_onSuspend_o, this, mount);
 
 /* $end */
 }
@@ -880,10 +892,12 @@ corto_void _test_ResumeSink_teardown(
 {
 /* $begin(test/ResumeSink/teardown) */
     corto_object mount = corto_resolve(NULL, "mount");
-    corto_silence(this, test_ResumeSink_onDeclare_o, CORTO_ON_DECLARE | CORTO_ON_TREE, mount);
-    corto_silence(this, test_ResumeSink_onDelete_o, CORTO_ON_DELETE | CORTO_ON_TREE, mount);
-    corto_silence(this, test_ResumeSink_onUpdate_o, CORTO_ON_UPDATE | CORTO_ON_TREE, mount);
+    corto_observer_unobserve(test_ResumeSink_onDeclare_o, this, mount);
+    corto_observer_unobserve(test_ResumeSink_onDefine_o, this, mount);
+    corto_observer_unobserve(test_ResumeSink_onDelete_o, this, mount);
+    corto_observer_unobserve(test_ResumeSink_onUpdate_o, this, mount);
+    corto_observer_unobserve(test_ResumeSink_onResume_o, this, mount);
+    corto_observer_unobserve(test_ResumeSink_onSuspend_o, this, mount);
     corto_release(mount);
-
 /* $end */
 }

@@ -22,8 +22,8 @@ CORTO_EXPORT corto_int16 _corto_function_construct(
 #define corto_function_construct(_this) _corto_function_construct(corto_function(_this))
 
 CORTO_EXPORT corto_void _corto_function_destruct(
-    corto_function object);
-#define corto_function_destruct(object) _corto_function_destruct(corto_function(object))
+    corto_function _this);
+#define corto_function_destruct(_this) _corto_function_destruct(corto_function(_this))
 
 CORTO_EXPORT corto_int16 _corto_function_init(
     corto_function _this);

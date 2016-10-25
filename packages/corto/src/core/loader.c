@@ -118,6 +118,9 @@ void corto_loader_addDir(
                     } else {
                         version = corto_strdup("");
                     }
+
+                    /* Catch error thrown if version file doesn't exist */
+                    corto_lasterr();
                 }
 
                 if (!env) {
@@ -171,6 +174,9 @@ void corto_loader_addDir(
 
         /* Free up resources of opendir */
         corto_closedir(dirs);
+    } else {
+        /* Catch error */
+        corto_lasterr();
     }
 }
 /* $end */
@@ -224,6 +230,9 @@ corto_object _corto_loader_onResume_v(
         corto_cleanpath(path, path);
         if (!corto_load(path, 0, NULL)) {
             o = corto_lookup(NULL, path);
+        } else {
+            /* Catch error */
+            corto_lasterr();
         }
     } else {
         o = NULL;

@@ -98,7 +98,6 @@ corto_int16 _corto_mount_construct(
         corto_setref(&this->mount, this);
     }
 
-    corto_object observable = this->mount;
     corto_eventMask mask = this->mask;
 
     /* Parse policies */
@@ -144,20 +143,28 @@ corto_int16 _corto_mount_construct(
           this->hasResume = TRUE;
       }
 
-    if (observable && mask) {
-        if (corto_listen(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | mask, observable, dispatcher)) {
+    if (this->mount && mask) {
+        corto_setref(&corto_mount_on_declare_o->dispatcher, dispatcher);
+        corto_mount_on_declare_o->mask = CORTO_ON_DECLARE | mask;
+        if (corto_observer_observe(corto_mount_on_declare_o, this, this->mount)) {
             goto error;
         }
-        if (corto_listen(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask, observable, dispatcher)) {
+
+        corto_setref(&corto_mount_on_update_o->dispatcher, dispatcher);
+        corto_mount_on_update_o->mask = CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask;
+        if (corto_observer_observe(corto_mount_on_update_o, this, this->mount)) {
             goto error;
         }
-        if (corto_listen(this, corto_mount_on_delete_o, CORTO_ON_DELETE | mask, observable, dispatcher)) {
+
+        corto_setref(&corto_mount_on_delete_o->dispatcher, dispatcher);
+        corto_mount_on_delete_o->mask = CORTO_ON_DELETE | mask;
+        if (corto_observer_observe(corto_mount_on_delete_o, this, this->mount)) {
             goto error;
         }
 
         /* Attach mount to the observable if mask != ON_SELF */
         if (mask != CORTO_ON_SELF) {
-            if (corto_mount_attach(this, observable, mask)) {
+            if (corto_mount_attach(this, this->mount, mask)) {
                 goto error;
             }
         }
@@ -195,9 +202,9 @@ corto_void _corto_mount_destruct(
     }
 
     if (this->mount && this->mask) {
-        corto_silence(this, corto_mount_on_declare_o, CORTO_ON_DECLARE | this->mask, this->mount);
-        corto_silence(this, corto_mount_on_update_o, CORTO_ON_DEFINE | CORTO_ON_UPDATE | this->mask, this->mount);
-        corto_silence(this, corto_mount_on_delete_o, CORTO_ON_DELETE | this->mask, this->mount);
+        corto_observer_unobserve(corto_mount_on_declare_o, this, this->mount);
+        corto_observer_unobserve(corto_mount_on_update_o, this, this->mount);
+        corto_observer_unobserve(corto_mount_on_delete_o, this, this->mount);
     }
 
 /* $end */
@@ -238,22 +245,26 @@ corto_void _corto_mount_invoke(
 
 corto_void _corto_mount_on_declare(
     corto_mount this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(corto/core/mount/on_declare) */
+    CORTO_UNUSED(event);
+    CORTO_UNUSED(observer);
 
-    if ((observable != root_o) && corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
+    if ((object != root_o) && corto_checkAttr(object, CORTO_ATTR_PERSISTENT)) {
         if (this->type) {
-            corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+            corto_id srcType; corto_fullpath(srcType, corto_typeof(object));
             if (!strcmp(this->type, srcType)) {
                 this->sent.declares ++;
-                corto_mount_onDeclare(this, observable);
-                corto_mount_notify(this, CORTO_ON_DECLARE, observable);
+                corto_mount_onDeclare(this, object);
+                corto_mount_notify(this, CORTO_ON_DECLARE, object);
             }
         } else {
             this->sent.declares ++;
-            corto_mount_onDeclare(this, observable);
-            corto_mount_notify(this, CORTO_ON_DECLARE, observable);
+            corto_mount_onDeclare(this, object);
+            corto_mount_notify(this, CORTO_ON_DECLARE, object);
         }
     }
 
@@ -262,22 +273,26 @@ corto_void _corto_mount_on_declare(
 
 corto_void _corto_mount_on_delete(
     corto_mount this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(corto/core/mount/on_delete) */
+    CORTO_UNUSED(event);
+    CORTO_UNUSED(observer);
 
-    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
+    if (corto_checkAttr(object, CORTO_ATTR_PERSISTENT)) {
         if (this->type) {
-            corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+            corto_id srcType; corto_fullpath(srcType, corto_typeof(object));
             if (!strcmp(this->type, srcType)) {
                 this->sent.deletes ++;
-                corto_mount_onDelete(this, observable);
-                corto_mount_notify(this, CORTO_ON_DELETE, observable);
+                corto_mount_onDelete(this, object);
+                corto_mount_notify(this, CORTO_ON_DELETE, object);
             }
         } else {
             this->sent.deletes ++;
-            corto_mount_onDelete(this, observable);
-            corto_mount_notify(this, CORTO_ON_DELETE, observable);
+            corto_mount_onDelete(this, object);
+            corto_mount_notify(this, CORTO_ON_DELETE, object);
         }
     }
 
@@ -286,22 +301,26 @@ corto_void _corto_mount_on_delete(
 
 corto_void _corto_mount_on_update(
     corto_mount this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(corto/core/mount/on_update) */
+    CORTO_UNUSED(event);
+    CORTO_UNUSED(observer);
 
-    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
+    if (corto_checkAttr(object, CORTO_ATTR_PERSISTENT)) {
         if (this->type) {
-            corto_id srcType; corto_fullpath(srcType, corto_typeof(observable));
+            corto_id srcType; corto_fullpath(srcType, corto_typeof(object));
             if (!strcmp(this->type, srcType)) {
                 this->sent.updates ++;
-                corto_mount_onUpdate(this, observable);
-                corto_mount_notify(this, CORTO_ON_UPDATE, observable);
+                corto_mount_onUpdate(this, object);
+                corto_mount_notify(this, CORTO_ON_UPDATE, object);
             }
         } else {
             this->sent.updates ++;
-            corto_mount_onUpdate(this, observable);
-            corto_mount_notify(this, CORTO_ON_UPDATE, observable);
+            corto_mount_onUpdate(this, object);
+            corto_mount_notify(this, CORTO_ON_UPDATE, object);
         }
     }
 

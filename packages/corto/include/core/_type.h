@@ -204,9 +204,12 @@ CORTO_CLASS_DEF(corto_observer) {
     CORTO_EXTEND(corto_function);
     corto_eventMask mask;
     corto_object observable;
-    corto_object me;
+    corto_object instance;
     corto_dispatcher dispatcher;
-    corto_uint32 _template;
+    corto_string type;
+    corto_bool enabled;
+    corto_uint32 active;
+    corto_type typeReference;
 };
 
 /*  /corto/core/observableEvent */
@@ -360,8 +363,7 @@ CORTO_CLASS_DEF(corto_routerimpl) {
 CORTO_CLASS(corto_subscriber);
 
 CORTO_CLASS_DEF(corto_subscriber) {
-    CORTO_EXTEND(corto_function);
-    corto_eventMask mask;
+    CORTO_EXTEND(corto_observer);
     corto_string parent;
     corto_string expr;
     corto_string contentType;

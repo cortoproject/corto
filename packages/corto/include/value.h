@@ -22,7 +22,7 @@ typedef enum corto_valueKind {
     CORTO_MEMBER = 4,
     CORTO_ELEMENT = 5,
     CORTO_MAP_ELEMENT = 6,
-    CORTO_CONSTANT = 7/* must be last */
+    CORTO_CONSTANT = 7 /* must be last */
 }corto_valueKind;
 
 typedef enum corto_literalKind {

@@ -283,12 +283,13 @@ corto_void _test_SelectSink_tc_selectSingleTypeFilter(
     corto_result *result;
 
     // Create SINK mount that is responsible for all package objects in scope
-    corto_loaderCreate();
+    corto_loader l = corto_loaderCreate();
+    test_assert(l != NULL);
 
     // Select single object of the package type
     corto_int16 ret = corto_select(NULL, "//lang*").iter( &iter );
-
     test_assert(ret == 0);
+    test_assertstr(corto_lasterr(), NULL);
 
     test_assert(corto_iterHasNext(&iter));
     result = corto_iterNext(&iter);

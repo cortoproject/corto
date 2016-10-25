@@ -769,9 +769,11 @@ corto_void _test_ObjectMgmt_tc_declareChildParentStateErr(
 
     corto_object p = corto_declareChild(o, "p", test_DefinedParent_o);
     test_assert(p == NULL);
+    test_assertstr(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED");
 
     corto_object q = test_DefinedParentDeclareChild(o, "q");
     test_assert(q == NULL);
+    test_assertstr(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED");
 
     corto_delete(o);
 
@@ -1667,17 +1669,17 @@ corto_void _test_ObjectMgmt_tc_redeclareWithDifferentType(
     corto_object a = corto_float64DeclareChild(NULL, "a");
     test_assert(a == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'a' of 'float64' failed: 'a' is already declared with a different type"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'a' of 'float64' failed: 'a' is already declared with type 'float32'"));
 
     corto_object b = corto_float64DeclareChild(NULL, "b");
     test_assert(b == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'b' of 'float64' failed: 'b' is already declared with a different type"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'b' of 'float64' failed: 'b' is already declared with type 'float32'"));
 
     corto_object c = corto_float64DeclareChild(NULL, "c");
     test_assert(c == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'c' of 'float64' failed: 'c' is already declared with a different type"));
+    test_assert(!strcmp(corto_lasterr(), "init for 'c' of 'float64' failed: 'c' is already declared with type 'float32'"));
 
 /* $end */
 }

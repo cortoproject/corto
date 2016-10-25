@@ -1087,8 +1087,8 @@ CORTO_CLASS_O(lang, map, lang_collection, CORTO_LOCAL, NULL, CORTO_DECLARED | CO
     CORTO_METHOD_O(lang_map, construct, "()", lang_int16, FALSE, corto_map_construct);
 
 /* /corto/lang/function */
-CORTO_FW_IC(lang, function);
-CORTO_PROCEDURE_NOBASE_O(lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+CORTO_FW_ICD(lang, function);
+CORTO_PROCEDURE_NOBASE_O(lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
     CORTO_REFERENCE_O(lang_function, returnType, lang_type, CORTO_GLOBAL, CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(lang_function, returnsReference, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_function, overloaded, lang_bool, CORTO_LOCAL | CORTO_READONLY);
@@ -1102,7 +1102,7 @@ CORTO_PROCEDURE_NOBASE_O(lang, function, CORTO_FUNCTION, NULL, CORTO_DECLARED | 
     CORTO_MEMBER_O(lang_function, nextParameterId, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(lang_function, init, "()", lang_int16, FALSE, corto_function_init);
     CORTO_METHOD_O(lang_function, construct, "()", lang_int16, FALSE, corto_function_construct);
-    CORTO_FUNCTION_O(lang_function, destruct, "(function object)", lang_void, corto_function_destruct);
+    CORTO_METHOD_O(lang_function, destruct, "()", lang_void, FALSE, corto_function_destruct);
     CORTO_FUNCTION_O(lang_function, stringToParameterSeq, "(string name,object scope)", lang_parameterseq, corto_function_stringToParameterSeq);
     CORTO_METHOD_O(lang_function, parseParamString, "(string params)", lang_int16, FALSE, corto_function_parseParamString);
 
@@ -1316,27 +1316,34 @@ CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, NULL, CORTO_DECLARE
 CORTO_PROCEDURE_O(core, remote, CORTO_METHOD, lang_method, CORTO_GLOBAL, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, CORTO_NODELEGATE);
 
 /* /corto/core/observer */
-CORTO_FW_IC(core, observer);
-CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+CORTO_FW_ICD(core, observer);
+CORTO_PROCEDURE_O(core, observer, CORTO_OBSERVER, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
     CORTO_MEMBER_O(core_observer, mask, core_eventMask, CORTO_GLOBAL);
     CORTO_REFERENCE_O(core_observer, observable, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
-    CORTO_REFERENCE_O(core_observer, me, lang_object, CORTO_GLOBAL|CORTO_HIDDEN, CORTO_DEFINED | CORTO_DECLARED, FALSE);
-    CORTO_REFERENCE_O(core_observer, dispatcher, core_dispatcher, CORTO_GLOBAL|CORTO_HIDDEN, CORTO_DEFINED | CORTO_DECLARED, FALSE);
-    CORTO_MEMBER_O(core_observer, template, lang_uint32, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_REFERENCE_O(core_observer, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
+    CORTO_REFERENCE_O(core_observer, dispatcher, core_dispatcher, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
+    CORTO_MEMBER_O(core_observer, type, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_observer, enabled, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_observer, active, lang_uint32, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_observer, typeReference, lang_type, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_METHOD_O(core_observer, init, "()", lang_int16, FALSE, corto_observer_init);
     CORTO_METHOD_O(core_observer, construct, "()", lang_int16, FALSE, corto_observer_construct);
-    CORTO_METHOD_O(core_observer, listen, "(object observable,object me)", lang_int16, FALSE, corto_observer_listen);
-    CORTO_METHOD_O(core_observer, silence, "(object me)", lang_int16, FALSE, corto_observer_silence);
-    CORTO_METHOD_O(core_observer, setDispatcher, "(core/dispatcher dispatcher)", lang_void, FALSE, corto_observer_setDispatcher);
-    CORTO_FUNCTION_O(core_observer, destruct, "(observer object)", lang_void, corto_observer_destruct);
+    CORTO_METHOD_O(core_observer, destruct, "()", lang_void, FALSE, corto_observer_destruct);
+    CORTO_METHOD_O(core_observer, observe, "(object instance,object observable)", lang_int16, FALSE, corto_observer_observe);
+    CORTO_METHOD_O(core_observer, unobserve, "(object instance,object observable)", lang_int16, FALSE, corto_observer_unobserve);
+    CORTO_METHOD_O(core_observer, observing, "(object instance,object observable)", lang_bool, FALSE, corto_observer_observing);
 
 /* /corto/core/subscriber */
 CORTO_FW_ICD(core, subscriber);
-CORTO_PROCEDURE_O(core, subscriber, CORTO_OBSERVER, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
-    CORTO_MEMBER_O(core_subscriber, mask, core_eventMask, CORTO_GLOBAL);
+CORTO_PROCEDURE_O(core, subscriber, CORTO_OBSERVER, core_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
+    CORTO_ALIAS_O(core_subscriber, mask, core_observer_mask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, contentType, lang_string, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_subscriber, instance, core_observer_instance, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_subscriber, dispatcher, core_observer_dispatcher, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_subscriber, type, core_observer_type, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_subscriber, enabled, core_observer_enabled, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_subscriber, matchProgram, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_subscriber, init, "()", lang_int16, FALSE, corto_subscriber_init);

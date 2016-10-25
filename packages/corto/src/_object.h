@@ -85,8 +85,6 @@ typedef void (*corto__notifyCallback)(corto__observer* data, corto_object _this,
 struct corto__observer {
     corto_object _this;
     corto_observer observer;
-    corto_eventMask mask;
-    corto_object dispatcher;
     corto_int32 count;
 };
 
@@ -168,7 +166,6 @@ void* corto_olsFind(corto__scope *scope, corto_int8 key);
 /* Get scope tree */
 corto_rbtree corto_scopeof(corto_object o);
 
-/* Notify subscribers */
 corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o);
 corto_int16 corto_notifySubscribersId(
     corto_eventMask mask,
@@ -176,6 +173,15 @@ corto_int16 corto_notifySubscribersId(
     corto_string type,
     corto_string contentType,
     corto_word value);
+
+corto__observable* corto__objectObservable(corto__object* o);
+void corto_notifyObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
+void corto_notifyParentObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
+void corto_observerDelayedAdminDefine(corto_object instance);
+
+corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
+corto_int16 corto_suspend(corto_object o);
+
 
 #ifdef __cplusplus
 }

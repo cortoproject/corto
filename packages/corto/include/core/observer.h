@@ -22,28 +22,30 @@ CORTO_EXPORT corto_int16 _corto_observer_construct(
 #define corto_observer_construct(_this) _corto_observer_construct(corto_observer(_this))
 
 CORTO_EXPORT corto_void _corto_observer_destruct(
-    corto_observer object);
-#define corto_observer_destruct(object) _corto_observer_destruct(corto_observer(object))
+    corto_observer _this);
+#define corto_observer_destruct(_this) _corto_observer_destruct(corto_observer(_this))
 
 CORTO_EXPORT corto_int16 _corto_observer_init(
     corto_observer _this);
 #define corto_observer_init(_this) _corto_observer_init(corto_observer(_this))
 
-CORTO_EXPORT corto_int16 _corto_observer_listen(
+CORTO_EXPORT corto_int16 _corto_observer_observe(
     corto_observer _this,
-    corto_object observable,
-    corto_object me);
-#define corto_observer_listen(_this, observable, me) _corto_observer_listen(corto_observer(_this), observable, me)
+    corto_object instance,
+    corto_object observable);
+#define corto_observer_observe(_this, instance, observable) _corto_observer_observe(corto_observer(_this), instance, observable)
 
-CORTO_EXPORT corto_void _corto_observer_setDispatcher(
+CORTO_EXPORT corto_bool _corto_observer_observing(
     corto_observer _this,
-    corto_dispatcher dispatcher);
-#define corto_observer_setDispatcher(_this, dispatcher) _corto_observer_setDispatcher(corto_observer(_this), corto_dispatcher(dispatcher))
+    corto_object instance,
+    corto_object observable);
+#define corto_observer_observing(_this, instance, observable) _corto_observer_observing(corto_observer(_this), instance, observable)
 
-CORTO_EXPORT corto_int16 _corto_observer_silence(
+CORTO_EXPORT corto_int16 _corto_observer_unobserve(
     corto_observer _this,
-    corto_object me);
-#define corto_observer_silence(_this, me) _corto_observer_silence(corto_observer(_this), me)
+    corto_object instance,
+    corto_object observable);
+#define corto_observer_unobserve(_this, instance, observable) _corto_observer_unobserve(corto_observer(_this), instance, observable)
 
 #ifdef __cplusplus
 }

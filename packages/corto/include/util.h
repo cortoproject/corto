@@ -47,6 +47,25 @@ corto_string corto_setThreadString(corto_string string);
 /* Check whether object is a builtin package */
 corto_bool corto_isBuiltinPackage(corto_object o);
 
+/* Used in type checking macro */
+corto_object _corto_assertType(corto_type type, corto_object o);
+#ifndef NDEBUG
+#define corto_assertType(type, o) _corto_assertType(type, o)
+#else
+#define corto_assertType(type, o) (o)
+#endif
+
+/* Throws an assertion when invalid object in debugging */
+#ifndef NDEBUG
+void corto_assertObject(corto_object o);
+#else
+#define corto_assertObject(o)
+#endif
+
+/* Obtain documentation objects */
+char* corto_manId(corto_object o, corto_id buffer);
+corto_object corto_man(corto_object o);
+
 #ifdef __cplusplus
 }
 #endif

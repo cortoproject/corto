@@ -28,6 +28,8 @@ static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
 
 typedef struct corto_errThreadData {
     corto_string lastError;
+    corto_string backtrace;
+    corto_bool viewed;
 } corto_errThreadData;
 
 #define DEPTH 60
@@ -48,8 +50,7 @@ static corto_errThreadData* corto_getThreadData(void){
     }
     result = corto_threadTlsGet(corto_errKey);
     if (!result) {
-        result = corto_alloc(sizeof(corto_errThreadData));
-        memset(result, 0, sizeof(corto_errThreadData));
+        result = corto_calloc(sizeof(corto_errThreadData));
         corto_threadTlsSet(corto_errKey, result);
     }
     return result;
@@ -57,13 +58,21 @@ static corto_errThreadData* corto_getThreadData(void){
 
 static char* corto_getLasterror(void) {
     corto_errThreadData *data = corto_getThreadData();
+    data->viewed = TRUE;
     return data->lastError;
 }
 
 static void corto_setLasterror(char* err) {
     corto_errThreadData *data = corto_getThreadData();
+    if (!data->viewed && data->lastError) {
+        corto_error("corto: uncatched error (use corto_lasterr): %s%s%s",
+          data->lastError, data->backtrace?"\n":"", data->backtrace);
+    }
     if (data->lastError) corto_dealloc(data->lastError);
+    if (data->backtrace) corto_dealloc(data->backtrace);
     data->lastError = err ? corto_strdup(err) : NULL;
+    data->backtrace = corto_backtraceString();
+    data->viewed = FALSE;
 }
 
 void corto_printBacktrace(FILE* f, int nEntries, char** symbols) {

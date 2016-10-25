@@ -1,5 +1,6 @@
 
 #include "corto/corto.h"
+#include "_object.h"
 
 corto_bool corto_declaredAdminCheck(corto_object o);
 
@@ -165,7 +166,7 @@ repeat:
                         if (corto_instanceof(corto_function_o, o)) {
                             if (corto_function(o)->overloaded == TRUE) {
                                 corto_release(o);
-                                corto_seterr("ambiguous reference to '%s'", str);
+                                corto_seterr("ambiguous reference '%s'", str);
                                 goto error;
                             }
                         }
@@ -176,7 +177,13 @@ repeat:
                     }
                 } else {
                     /* If argumentlist is provided, look for closest match */
-                    o = corto_lookupFunction(o, bufferLc, NULL);
+                    corto_int32 diff;
+                    o = corto_lookupFunction(o, bufferLc, NULL, &diff);
+                    if (!diff) {
+                        if (o) corto_release(o);
+                        corto_seterr("ambiguous reference '%s'", str);
+                        goto error;
+                    }
                     if (lookup) {
                         corto_release(lookup);
                     }

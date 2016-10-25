@@ -727,7 +727,6 @@ corto_int16 corto_valueExpr_getTypeForBinary(
     corto_type *resultType)
 {
     corto_type castType = NULL;
-    corto_bool referenceMismatch = FALSE;
     corto_bool equal = FALSE;
 
     corto_assert(operandType != NULL, "NULL provided for out-parameter operandType");
@@ -829,7 +828,6 @@ corto_int16 corto_valueExpr_getTypeForBinary(
     } else if ((rightType->reference || (t2ByRef)) && !leftType->reference) {
         if (corto_type_castable(leftType, corto_object_o)) {
             castType = leftType;
-            referenceMismatch = TRUE;
         }
     }
 

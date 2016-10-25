@@ -16,7 +16,7 @@ char* corto_fileLoad(const char* filename) {
     /* Open file for reading */
     file = fopen(filename, "r");
     if (!file) {
-        corto_seterr("%s", strerror(errno));
+        corto_seterr("%s (%s)", strerror(errno), filename);
         goto error;
     }
 

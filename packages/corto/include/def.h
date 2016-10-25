@@ -186,8 +186,13 @@ typedef struct corto_ll_s* corto_ll;
 #define CORTO_VM_BOUNDSCHECK
 extern int8_t CORTO_DEBUG_ENABLED;
 
+/* Procedure kinds */
 #define CORTO_PROCEDURE_STUB (0)
 #define CORTO_PROCEDURE_CDECL (1)
+
+/* Event kinds */
+#define CORTO_EVENT_NONE       (0)
+#define CORTO_EVENT_OBSERVABLE (1)
 
 /* C language binding type definition macro's */
 #define CORTO_ANY(__type) typedef struct __type {corto_type type; void *value; uint8_t owner;} __type

@@ -16,7 +16,7 @@ corto_void _test_Overload_tc_ambiguous(
     corto_object o = corto_resolve(test_o, "ol_null");
     test_assert(o == NULL);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "ambiguous reference to 'ol_null'"));
+    test_assert(!strcmp(corto_lasterr(), "ambiguous reference 'ol_null'"));
 
 /* $end */
 }

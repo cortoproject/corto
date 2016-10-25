@@ -33,7 +33,7 @@ struct corto_exitHandler {
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "2"
-#define VERSION_PATCH "15"
+#define VERSION_PATCH "16"
 #define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
@@ -59,8 +59,9 @@ static corto_ll corto_exitHandlers = NULL;
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 corto_threadKey CORTO_KEY_LISTEN_ADMIN;
+corto_threadKey CORTO_KEY_OWNER;
 corto_threadKey CORTO_KEY_ATTR;
-corto_threadKey CORTO_KEY_FLOW;
+corto_threadKey CORTO_KEY_FLUENT;
 corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_threadKey CORTO_KEY_MOUNT_RESULT;
 
@@ -156,8 +157,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, method);\
     SSO_OP_CLASS(op, virtual);\
     SSO_OP_CLASS(op, remote);\
-    SSO_OP_CLASS(op, subscriber);\
     SSO_OP_CLASS(op, observer);\
+    SSO_OP_CLASS(op, subscriber);\
     SSO_OP_CLASS(op, metaprocedure);\
     SSO_OP_CLASS(op, route);
 
@@ -262,7 +263,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, function_nextParameterId);\
     SSO_OP_OBJ(op, function_init_);\
     SSO_OP_OBJ(op, function_construct_);\
-    SSO_OP_OBJ(op, function_destruct);\
+    SSO_OP_OBJ(op, function_destruct_);\
     SSO_OP_OBJ(op, function_stringToParameterSeq);\
     SSO_OP_OBJ(op, function_parseParamString_);\
     /* method */\
@@ -274,15 +275,18 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* observer */\
     SSO_OP_OBJ_CORE(op, observer_mask);\
     SSO_OP_OBJ_CORE(op, observer_observable);\
-    SSO_OP_OBJ_CORE(op, observer_me);\
+    SSO_OP_OBJ_CORE(op, observer_instance);\
     SSO_OP_OBJ_CORE(op, observer_dispatcher);\
-    SSO_OP_OBJ_CORE(op, observer_template);\
+    SSO_OP_OBJ_CORE(op, observer_type);\
+    SSO_OP_OBJ_CORE(op, observer_enabled);\
+    SSO_OP_OBJ_CORE(op, observer_active);\
+    SSO_OP_OBJ_CORE(op, observer_typeReference);\
     SSO_OP_OBJ_CORE(op, observer_init_);\
     SSO_OP_OBJ_CORE(op, observer_construct_);\
-    SSO_OP_OBJ_CORE(op, observer_destruct);\
-    SSO_OP_OBJ_CORE(op, observer_listen_);\
-    SSO_OP_OBJ_CORE(op, observer_silence_);\
-    SSO_OP_OBJ_CORE(op, observer_setDispatcher_);\
+    SSO_OP_OBJ_CORE(op, observer_destruct_);\
+    SSO_OP_OBJ_CORE(op, observer_observe_);\
+    SSO_OP_OBJ_CORE(op, observer_unobserve_);\
+    SSO_OP_OBJ_CORE(op, observer_observing_);\
     /* metaprocedure */\
     SSO_OP_OBJ(op, metaprocedure_referenceOnly);\
     SSO_OP_OBJ(op, metaprocedure_construct_);\
@@ -624,6 +628,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, subscriber_parent);\
     SSO_OP_OBJ_CORE(op, subscriber_expr);\
     SSO_OP_OBJ_CORE(op, subscriber_contentType);\
+    SSO_OP_OBJ_CORE(op, subscriber_instance);\
+    SSO_OP_OBJ_CORE(op, subscriber_dispatcher);\
+    SSO_OP_OBJ_CORE(op, subscriber_type);\
+    SSO_OP_OBJ_CORE(op, subscriber_enabled);\
     SSO_OP_OBJ_CORE(op, subscriber_contentTypeHandle);\
     SSO_OP_OBJ_CORE(op, subscriber_matchProgram);\
     SSO_OP_OBJ_CORE(op, subscriber_init_);\
@@ -981,8 +989,9 @@ int corto_start(void) {
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
     corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
     corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
+    corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
     corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
-    corto_threadTlsKey(&CORTO_KEY_FLOW, NULL);
+    corto_threadTlsKey(&CORTO_KEY_FLUENT, NULL);
     void corto_threadStringDealloc(void *data);
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);

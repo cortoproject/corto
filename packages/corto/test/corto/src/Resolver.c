@@ -41,7 +41,7 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
     r = corto_resolve(NULL, id);
 
     /* Set errormessage to ease debugging */
-    corto_seterr("failed to resolve %s", id);
+    if (!r) corto_seterr("failed to resolve %s", id);
     test_assert(r != NULL);
     test_assert(r == o);
     corto_release(r);

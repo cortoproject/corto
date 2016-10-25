@@ -46,8 +46,8 @@ corto_string corto_signatureClose(corto_string sig);
 corto_int16 corto_signature(corto_object o, corto_id buffer);
 
 /* Find a function that matches a signature */
-corto_object corto_lookupFunction(corto_object scope, corto_string requested, corto_int32 *d);
-corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, corto_string requested, corto_int32* d);
+corto_object corto_lookupFunction(corto_object scope, corto_string requested, corto_int32 *d, corto_int32 *diff);
+corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, corto_string requested, corto_int32* d, corto_int32 *diff);
 
 #ifdef __cplusplus
 }

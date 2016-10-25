@@ -79,23 +79,23 @@ error:
 }
 
 corto_void _corto_function_destruct(
-    corto_function object)
+    corto_function this)
 {
 /* $begin(corto/lang/function/destruct) */
     corto_uint32 i;
 
-    corto_callDeinit(object);
+    corto_callDeinit(this);
 
     /* Deinitialize parameters */
-    for(i=0; i<object->parameters.length; i++) {
-        corto_dealloc(object->parameters.buffer[i].name);
-        object->parameters.buffer[i].name = NULL;
-        corto_release(object->parameters.buffer[i].type);
-        object->parameters.buffer[i].type = NULL;
+    for(i=0; i<this->parameters.length; i++) {
+        corto_dealloc(this->parameters.buffer[i].name);
+        this->parameters.buffer[i].name = NULL;
+        corto_release(this->parameters.buffer[i].type);
+        this->parameters.buffer[i].type = NULL;
     }
 
-    corto_dealloc(object->parameters.buffer);
-    object->parameters.buffer = NULL;
+    corto_dealloc(this->parameters.buffer);
+    this->parameters.buffer = NULL;
 /* $end */
 }
 

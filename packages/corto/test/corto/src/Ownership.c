@@ -10,11 +10,13 @@
 
 corto_void _test_Ownership_onDelete(
     test_Ownership this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_object object,
+    corto_observer observer)
 {
 /* $begin(test/Ownership/onDelete) */
     CORTO_UNUSED(this);
-    this->observable = (corto_word)observable;
+    this->observable = (corto_word)object;
 /* $end */
 }
 
@@ -625,12 +627,8 @@ corto_void _test_Ownership_tc_releaseNotOwned(
     test_assert(o != NULL);
     test_assert(corto_ownerof(o) == r);
 
-    corto_listen(
-        this,
-        test_Ownership_onDelete_o,
-        CORTO_ON_DELETE,
-        o,
-        NULL);
+    corto_int16 ret = corto_observer_observe(test_Ownership_onDelete_o, this, o);
+    test_assert(ret == 0);
 
     corto_int16 count = corto_release(o);
     test_assert(count == 0);
@@ -652,12 +650,8 @@ corto_void _test_Ownership_tc_releaseOwned(
     test_assert(o != NULL);
     test_assert(corto_ownerof(o) == NULL);
 
-    corto_listen(
-        this,
-        test_Ownership_onDelete_o,
-        CORTO_ON_DELETE,
-        o,
-        NULL);
+    corto_int16 ret = corto_observer_observe(test_Ownership_onDelete_o, this, o);
+    test_assert(ret == 0);
 
     corto_int16 count = corto_release(o);
 

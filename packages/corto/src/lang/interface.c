@@ -61,7 +61,7 @@ corto_function* corto_vtableLookup(corto_vtable* vtable, corto_string member, co
     s.buffer = (corto_object *)vtable->buffer;
     s.length = vtable->length;
 
-    result = (corto_function*)corto_lookupFunctionFromSequence(s, member, d_out);
+    result = (corto_function*)corto_lookupFunctionFromSequence(s, member, d_out, NULL);
 
     return result;
 }

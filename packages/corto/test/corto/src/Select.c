@@ -15,7 +15,7 @@ corto_resultList _test_Select_collect(
     corto_uint64 limit)
 {
 /* $begin(test/Select/collect) */
-    corto_selectSelector r = corto_select(scope, expr);
+    corto_selectFluent r = corto_select(scope, expr);
 
     if (offset || limit) {
         r.limit(offset, limit);
@@ -66,6 +66,8 @@ corto_bool _test_Select_hasObject(
         } else {
             corto_seterr("parent does not match (%s vs %s)", item->parent, parent);
         }
+        /* This prevents the API from complaining about unhandled errors */
+        corto_lasterr();
     }
 
     return FALSE;
