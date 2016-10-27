@@ -190,7 +190,7 @@ corto_void _test_ObjectMgmt_tc_createChildInvalidType(
 
     corto_object o = corto_create(t);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "type is not valid/defined"));
+    test_assert(!strcmp(corto_lasterr(), "type '/invalid' is not valid/defined"));
 
 /* $end */
 }
@@ -507,7 +507,7 @@ corto_void _test_ObjectMgmt_tc_createInvalidType(
     test_assert(!corto_checkState(t, CORTO_VALID));
 
     corto_object o = corto_create(t);
-    test_assert(!strcmp(corto_lasterr(), "type is not valid/defined"));
+    test_assert(!strcmp(corto_lasterr(), "type '/invalid' is not valid/defined"));
     test_assert(o == NULL);
 
 /* $end */

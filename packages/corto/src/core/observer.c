@@ -866,6 +866,9 @@ corto_int16 _corto_observer_observe(
         corto_observersArrayFree(oldChildArray);
     }
 
+    /* Ensure that observer isn't deleted before instance unsubscribes */
+    corto_claim(this);
+
 postponed:
     return 0;
 error:
@@ -1035,6 +1038,9 @@ corto_int16 _corto_observer_unobserve(
     /*if (observerData) {
         TODO: corto_dealloc(observerData);
     }*/
+
+    /* Release observer after unsubscribe */
+    corto_release(this);
 
 postponed:
     return 0;

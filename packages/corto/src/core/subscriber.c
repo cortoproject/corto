@@ -244,16 +244,7 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
       r->callback
     );
 
-    if (corto_subscriber_subscribe(s, r->instance)) {
-        goto error;
-    }
-
     return s;
-error:
-    if (s) {
-        corto_delete(s);
-    }
-    return NULL;
 }
 
 static corto_subscribeFluent corto_subscribeFluentGet(void);
@@ -345,6 +336,58 @@ corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance
     return corto_subscriber_unsubscribe(subscriber, instance);
 }
 
+static corto_int16 corto_subscriber_unsubscribeIntern(corto_subscriber this, corto_object instance, corto_bool removeAll) {
+    corto_int32 count = 0;
+    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
+
+    if (corto_rwmutexWrite(&corto_subscriberLock)) {
+        goto error;
+    }
+
+    corto_subscriptionSeq *seq = &corto_subscribers[depth];
+
+    /* Find subscriber */
+    corto_uint32 i;
+    for (i = 0; i < seq->length; i++) {
+        if ((seq->buffer[i].s == this) && (removeAll || (seq->buffer[i].instance == instance))) {
+            if (i == (seq->length - 1)) {
+                seq->buffer[i].s = NULL;
+                seq->buffer[i].instance = NULL;
+            } else {
+                seq->buffer[i].s = seq->buffer[seq->length - 1].s;
+                seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;
+            }
+            seq->length --;
+            count ++;
+            if (!removeAll) {
+                break;
+            }
+        }
+    }
+    if (!count && !removeAll) {
+        corto_seterr(
+          "unsubscribe failed, could not find subscriber for instance '%s' <%p>",
+          corto_fullpath(NULL, instance), instance);
+        goto error;
+    }
+
+    if (corto_rwmutexUnlock(&corto_subscriberLock)) {
+        goto error;
+    }
+
+    if (!removeAll) {
+        /* Ensure that observer isn't deleted before instance unsubscribes */
+        corto_release(this);
+    }
+
+    return 0;
+error:
+    if (corto_rwmutexUnlock(&corto_subscriberLock)) {
+        goto error;
+    }
+    return -1;
+}
+
 /* $end */
 
 corto_int16 _corto_subscriber_construct(
@@ -363,6 +406,12 @@ corto_int16 _corto_subscriber_construct(
         goto error;
     }
 
+    if (corto_observer(this)->enabled) {
+        if (corto_subscriber_subscribe(this, corto_observer(this)->instance)) {
+            goto error;
+        }
+    }
+
     return 0;
 error:
     return -1;
@@ -373,8 +422,10 @@ corto_void _corto_subscriber_destruct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/destruct) */
-
     corto_matchProgram_free((corto_matchProgram)this->matchProgram);
+
+    /* Unsubscribe all subscriptions of this subscriber */
+    corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
 
 /* $end */
 }
@@ -461,6 +512,11 @@ corto_int16 _corto_subscriber_subscribe(
         }
     }
 
+    corto_observer(this)->enabled = TRUE;
+
+    /* Ensure that subscriber isn't deleted before instance unsubscribes */
+    corto_claim(this);
+
     return 0;
 error:
     return -1;
@@ -472,42 +528,6 @@ corto_int16 _corto_subscriber_unsubscribe(
     corto_object instance)
 {
 /* $begin(corto/core/subscriber/unsubscribe) */
-    corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
-
-    if (corto_rwmutexWrite(&corto_subscriberLock)) {
-        goto error;
-    }
-
-    corto_subscriptionSeq *seq = &corto_subscribers[depth];
-
-    /* Find subscriber */
-    corto_uint32 i;
-    for (i = 0; i < seq->length; i++) {
-        if ((seq->buffer[i].s == this) && (seq->buffer[i].instance == instance)) {
-            if (i == (seq->length - 1)) {
-                seq->buffer[i].s = NULL;
-                seq->buffer[i].instance = NULL;
-                break;
-            } else {
-                seq->buffer[i].s = seq->buffer[seq->length - 1].s;
-                seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;
-                break;
-            }
-        }
-    }
-    if (i == seq->length) {
-        corto_seterr("unsubscribe failed, could not find subscriber for instance");
-        goto error;
-    } else {
-        seq->length --;
-    }
-
-    if (corto_rwmutexUnlock(&corto_subscriberLock)) {
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
+    return corto_subscriber_unsubscribeIntern(this, instance, FALSE);
 /* $end */
 }

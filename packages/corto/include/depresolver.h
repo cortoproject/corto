@@ -15,7 +15,7 @@ corto_depresolver corto_depresolverCreate(corto_depresolver_action onDeclare, co
 
 void corto_depresolver_insert(corto_depresolver _this, void *item);
 
-void corto_depresolver_depend(corto_depresolver _this, void *dependent, corto_uint8 kind, void *dependency, corto_uint8 dependencyKind);
+void corto_depresolver_depend(corto_depresolver _this, void *dependent, corto_state kind, void *dependency, corto_state dependencyKind);
 
 int corto_depresolver_walk(corto_depresolver _this);
 
@@ -24,4 +24,3 @@ int corto_depresolver_walk(corto_depresolver _this);
 #endif
 
 #endif
-

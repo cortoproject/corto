@@ -71,7 +71,9 @@ static void corto_setLasterror(char* err) {
     if (data->lastError) corto_dealloc(data->lastError);
     if (data->backtrace) corto_dealloc(data->backtrace);
     data->lastError = err ? corto_strdup(err) : NULL;
-    data->backtrace = corto_backtraceString();
+    if (corto_verbosityGet() == CORTO_DEBUG) {
+        data->backtrace = corto_backtraceString();
+    }
     data->viewed = FALSE;
 }
 

@@ -258,6 +258,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     if (core) {
+        corto_trace("corto: pp: regenerate core");
         return cortotool_core();
     }
 
@@ -265,12 +266,15 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
         cortotool_language(corto_llGet(languages, 0));
     }
 
+    corto_trace("corto: pp: start generator from '%s'", corto_cwd());
+
     /* Load includes */
     if (includes) {
         iter = corto_llIter(includes);
         while (corto_iterHasNext(&iter)) {
             include = corto_iterNext(&iter);
 
+            corto_trace("corto: pp: loading '%s'", include);
             if (corto_load(include, 0, NULL)) {
                 corto_error("corto: %s: %s", include, corto_lasterr());
                 goto error;
@@ -308,7 +312,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Load interface */
             if (gen_load(g, lib)) {
-                corto_error("corto: cannot load generator '%s'.", lib);
+                corto_error("corto: pp: cannot load generator '%s'.", lib);
                 goto error;
             }
 
@@ -343,6 +347,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             }
 
             /* Start generator */
+            corto_trace("corto: pp: run generator '%s'", lib);
             if (gen_start(g)) {
                 corto_error("corto: %s: %s", lib, corto_lasterr());
                 gen_free(g);

@@ -389,7 +389,7 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
     corto_id id;
     strcpy(id, str);
 
-    corto_uint8 elementCount = corto_pathToArray(id, elements, "/");
+    corto_int8 elementCount = corto_pathToArray(id, elements, "/");
     if (elementCount == -1) {
         goto error;
     }
@@ -416,6 +416,9 @@ error:
 char* corto_matchParent(char *parent, char *expr) {
     char *parentPtr = parent, *exprPtr = expr;
     char parentCh, exprCh;
+
+    if (*parentPtr == '/') parentPtr++;
+    if (*exprPtr == '/') exprPtr++;
 
     while ((parentCh = *parentPtr) && (exprCh = *exprPtr) && (parentCh == exprCh)) {
         parentPtr++;

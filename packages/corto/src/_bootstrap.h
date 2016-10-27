@@ -785,6 +785,7 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, CONST);
     CORTO_CONSTANT_O(lang_modifier, HIDDEN);
     CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
+    CORTO_CONSTANT_O(lang_modifier, REQUEST);
 
 /* Collections */
 CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);

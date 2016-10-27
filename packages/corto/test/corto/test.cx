@@ -862,6 +862,11 @@ test/Suite SubscriberEvent::
     prevAttr: attr
     st: SubscriberTest
 
+test/Suite Subscribe::
+    subscriber noInitialSep: ON_UPDATE, "testScope", "*"
+    triggered: uint8
+    void tc_noInitialSep()
+
 // Function overloading support types
 void ol_null(object a)
 void ol_null(string a)

@@ -208,6 +208,7 @@ CORTO_BITMASK(corto_modifier);
     #define CORTO_CONST (0x8)
     #define CORTO_HIDDEN (0x10)
     #define CORTO_OPTIONAL (0x20)
+    #define CORTO_REQUEST (0x40)
 
 /*  member */
 CORTO_CLASS(corto_member);
@@ -598,4 +599,3 @@ CORTO_SEQUENCE(corto_wordseq, corto_word,);
 }
 #endif
 #endif
-

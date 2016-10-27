@@ -51,9 +51,6 @@ int corto_rm(const char *name);
 /* Recursively remove a directory */
 int corto_rmtree(const char *name);
 
-/* Test whether a file exists */
-int corto_fileTest(const char* filefmt, ...);
-
 /* Run a process, return PID (-1 if failed) */
 corto_pid corto_procrun(const char* exec, char *argv[]);
 

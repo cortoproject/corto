@@ -447,6 +447,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, modifier_CONST);\
     SSO_OP_OBJ(op, modifier_HIDDEN);\
     SSO_OP_OBJ(op, modifier_OPTIONAL);\
+    SSO_OP_OBJ(op, modifier_REQUEST);\
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\

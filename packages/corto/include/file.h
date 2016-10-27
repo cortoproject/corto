@@ -27,6 +27,7 @@ corto_file corto_fileRead(const char* file);
 FILE* corto_fileGet(corto_file file);
 void corto_fileClose(corto_file);
 char* corto_fileSearch(const char* file, corto_ll locations);
+int corto_fileTest(const char* filefmt, ...);
 
 unsigned int corto_fileSize(corto_file);
 unsigned int corto_fileTell(corto_file);

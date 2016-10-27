@@ -1,7 +1,0 @@
-
-void ol_any(bool a)
-void ol_any(char a)
-void ol_any(int32 a)
-void ol_any(float32 a)
-void ol_any(string a)
-void ol_any(object a)

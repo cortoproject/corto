@@ -415,7 +415,7 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     corto_mutexUnlock(&corto_adminLock);
 
     if (!result) {
-        corto_ok("corto: package '%s' loaded", str);
+        corto_ok("corto: '%s' loaded", str);
     }
 
     return result;

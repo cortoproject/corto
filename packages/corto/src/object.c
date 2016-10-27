@@ -863,15 +863,15 @@ corto_object _corto_declare(corto_type type) {
         goto error;
     }
 
-    /* Type must be valid and defined */
-    if (!corto_checkState(type, CORTO_VALID | CORTO_DEFINED)) {
-        corto_seterr("type is not valid/defined");
+    if (!corto_instanceof(corto_type_o, type)) {
+        corto_seterr("object '%s' is not a type",
+          corto_fullpath(NULL, type));
         goto error;
     }
 
-    if (!corto_instanceof(corto_type_o, type)) {
-        corto_seterr("the object passed to the type parameter (%s) is not a type",
-          corto_fullpath(NULL, type));
+    /* Type must be valid and defined */
+    if (!corto_checkState(type, CORTO_VALID | CORTO_DEFINED)) {
+        corto_seterr("type '%s' is not valid/defined", corto_fullpath(NULL, type));
         goto error;
     }
 

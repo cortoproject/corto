@@ -163,6 +163,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <StringDeserializer.h>
 #include <StringReplicator.h>
 #include <StringSerializer.h>
+#include <Subscribe.h>
 #include <SubscriberEvent.h>
 #include <SubscriberTest.h>
 #include <TestKey.h>
