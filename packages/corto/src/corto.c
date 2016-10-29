@@ -142,6 +142,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, class);\
     SSO_OP_CLASS(op, procedure);\
     SSO_OP_CLASS(op, delegate);\
+    SSO_OP_CLASS(op, target);\
     SSO_OP_CLASS(op, package);\
     SSO_OP_CLASS(op, router);\
     SSO_OP_CLASS(op, routerimpl);\
@@ -713,6 +714,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, delegate_castable_);\
     SSO_OP_OBJ(op, delegate_instanceof_);\
     SSO_OP_OBJ(op, delegate_construct);\
+    /* target */\
+    SSO_OP_OBJ(op, target_type);\
+    SSO_OP_OBJ(op, target_construct_);\
     /* array */\
     SSO_OP_OBJ(op, array_elementType);\
     SSO_OP_OBJ(op, array_init_);\

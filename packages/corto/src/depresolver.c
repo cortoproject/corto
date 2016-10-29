@@ -347,7 +347,7 @@ corto_depresolver corto_depresolverCreate(corto_depresolver_action onDeclare, co
  *   @param dependency The dependency object.
  *   @param dependencyKind The dependency object must reach at least this state before the dependency can be resolved.
  */
-void corto_depresolver_depend(corto_depresolver this, void* o, corto_uint8 kind, void* d, corto_uint8 dependencyKind) {
+void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind, void* d, corto_state dependencyKind) {
     g_dependency dep;
     g_item dependent, dependency;
 

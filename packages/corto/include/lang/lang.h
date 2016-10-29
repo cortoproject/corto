@@ -49,6 +49,7 @@ extern "C" {
 #include <corto/lang/procedure.h>
 #include <corto/lang/sequence.h>
 #include <corto/lang/struct.h>
+#include <corto/lang/target.h>
 #include <corto/lang/text.h>
 #include <corto/lang/type.h>
 #include <corto/lang/typespec.h>

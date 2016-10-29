@@ -26,8 +26,10 @@ typedef corto_equalityKind ___ (*corto_equalsAction)(corto_type _this, const voi
 /* Object lifecycle */
 corto_object _corto_create(corto_type type);
 corto_object _corto_createChild(corto_object parent, corto_string name, corto_type type);
+corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type);
 corto_object _corto_declare(corto_type type);
 corto_object _corto_declareChild(corto_object parent, corto_string name, corto_type type);
+corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type);
 corto_int16 corto_define(corto_object o);
 corto_int16 corto_delete(corto_object o);
 
@@ -216,8 +218,10 @@ corto_int16 corto_deinita(corto_any a);
 /* Macro's that automate casting of parameters */
 #define corto_create(type) _corto_create(corto_type(type))
 #define corto_createChild(parent, name, type) _corto_createChild(parent, name, corto_type(type))
+#define corto_createOrphan(parent, name, type) _corto_createOrphan(parent, name, corto_type(type))
 #define corto_declare(type) _corto_declare(corto_type(type))
 #define corto_declareChild(parent, name, type) _corto_declareChild(parent, name, corto_type(type))
+#define corto_declareOrphan(parent, name, type) _corto_declareOrphan(parent, name, corto_type(type))
 #define corto_strp(p, type, maxLength) _corto_strp(p, corto_type(type), maxLength)
 #define corto_fromStrp(out, type, string) _corto_fromStrp(out, corto_type(type), string)
 #define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)

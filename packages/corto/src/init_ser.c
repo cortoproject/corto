@@ -42,6 +42,31 @@ error:
     return -1;
 }
 
+corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userData) {
+    corto_type t;
+
+    t = corto_value_getType(v);
+
+    /* If type is instanceof target, initialize member to a new target object */
+    if (corto_typeof(t) == corto_type(corto_target_o)) {
+        corto_object p = corto_value_getObject(v);
+        void* ptr = corto_value_getPtr(v);
+        corto_member m = v->is.member.t;
+
+        /* Create object that is not added to the scope of its parent */
+        /*corto_object o = corto_createOrphan(p, corto_nameof(m), t);
+        if (!o) {
+            goto error;
+        }
+
+        *(corto_object*)ptr = targetInstance;*/
+    }
+
+    return corto_serializeValue(s, v, userData);
+error:
+    return -1;
+}
+
 
 struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
     struct corto_serializer_s s;
@@ -53,5 +78,7 @@ struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKi
     s.traceKind = trace;
     s.program[CORTO_COLLECTION] = corto_ser_initCollection;
     s.program[CORTO_ANY] = NULL;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_initMember;
+
     return s;
 }

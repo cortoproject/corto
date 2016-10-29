@@ -444,6 +444,7 @@ CORTO_FWDECL(class, bitmask);
 CORTO_FWDECL(class, boolean);
 CORTO_FWDECL(class, class);
 CORTO_FWDECL(class, delegate);
+CORTO_FWDECL(class, target);
 CORTO_FWDECL_CORE(class, event);
 CORTO_FWDECL(class, character);
 CORTO_FWDECL(class, collection);
@@ -785,7 +786,7 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, CONST);
     CORTO_CONSTANT_O(lang_modifier, HIDDEN);
     CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
-    CORTO_CONSTANT_O(lang_modifier, REQUEST);
+    CORTO_CONSTANT_O(lang_modifier, OBSERVABLE);
 
 /* Collections */
 CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);
@@ -1043,6 +1044,12 @@ CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, NULL, CORTO_DECLARED 
     CORTO_METHOD_O(lang_delegate, castable, "(type type)", lang_bool, TRUE, corto_delegate_compatible_v);
     CORTO_METHOD_O(lang_delegate, instanceof, "(object object)", lang_bool, FALSE, corto_delegate_instanceof);
     CORTO_FUNCTION_O(lang_delegate, construct, "(function object)", lang_int16, corto_delegate_construct);
+
+/* /corto/lang/target */
+CORTO_FW_C(lang, target);
+CORTO_CLASS_O(lang, target, lang_struct, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
+    CORTO_METHOD_O(lang_target, construct, "()", lang_int16, FALSE, corto_target_construct);
+    CORTO_MEMBER_O(lang_target, type, lang_type, CORTO_GLOBAL);
 
 /* /corto/lang/procedure */
 CORTO_FW_I(lang, procedure);

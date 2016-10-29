@@ -6619,6 +6619,96 @@ corto_equalityKind _corto_structCompare(corto_struct dst, corto_struct src) {
     return corto_compare(dst, src);
 }
 
+corto_target _corto_targetCreate(corto_type type) {
+    corto_target _this;
+    _this = corto_target(corto_declare(corto_target_o));
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_target)_this)->type, type);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_target _corto_targetCreateChild(corto_object _parent, corto_string _name, corto_type type) {
+    corto_target _this;
+    _this = corto_target(corto_declareChild(_parent, _name, corto_target_o));
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        corto_setref(&((corto_target)_this)->type, type);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_targetUpdate(corto_target _this, corto_type type) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        corto_setref(&((corto_target)_this)->type, type);
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_target _corto_targetDeclare(void) {
+    corto_target _this;
+    _this = corto_target(corto_declare(corto_target_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_target _corto_targetDeclareChild(corto_object _parent, corto_string _name) {
+    corto_target _this;
+    _this = corto_target(corto_declareChild(_parent, _name, corto_target_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_targetDefine(corto_target _this, corto_type type) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_target)_this)->type, type);
+    return corto_define(_this);
+}
+
+corto_target _corto_targetAssign(corto_target _this, corto_type type) {
+    CORTO_UNUSED(_this);
+    corto_setref(&((corto_target)_this)->type, type);
+    return _this;
+}
+
+corto_string _corto_targetStr(corto_target value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_object(value, corto_type(corto_target_o));
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_target corto_targetFromStr(corto_target value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_target_o), str);
+    return value;
+}
+
+corto_equalityKind _corto_targetCompare(corto_target dst, corto_target src) {
+    return corto_compare(dst, src);
+}
+
 corto_text _corto_textCreate(corto_width charWidth, corto_uint64 length) {
     corto_text _this;
     _this = corto_text(corto_declare(corto_text_o));

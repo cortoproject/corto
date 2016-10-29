@@ -41,6 +41,7 @@ CORTO_META_OBJECT(class, struct);
 CORTO_META_OBJECT(class, union);
 CORTO_META_OBJECT(class, class);
 CORTO_META_OBJECT(class, delegate);
+CORTO_META_OBJECT(class, target);
 CORTO_META_OBJECT(class, procedure);
 CORTO_META_OBJECT(class, array);
 CORTO_META_OBJECT(class, sequence);

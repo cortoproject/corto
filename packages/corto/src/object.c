@@ -164,7 +164,12 @@ static void* corto__objectStartAddr(corto__object* o) {
 }
 
 /* Initialze scope-part of object */
-static corto_object corto__initScope(corto_object o, corto_string id, corto_object parent) {
+static corto_object corto__initScope(
+    corto_object o,
+    corto_string id,
+    corto_object parent,
+    corto_bool orphan)
+{
     corto__object* _o;
     corto__scope* scope;
     corto_object result = NULL;
@@ -184,10 +189,14 @@ static corto_object corto__initScope(corto_object o, corto_string id, corto_obje
     corto_rwmutexNew(&scope->align.scopeLock);
 
     /* Add object to the scope of the parent-object */
-    if (!(result = corto_adopt(parent, o))) {
-        /* Reset parent so deinitScope won't release it */
-        scope->parent = NULL;
-        goto error;
+    if (!orphan && corto_checkAttr(parent, CORTO_ATTR_SCOPED)) {
+        if (!(result = corto_adopt(parent, o))) {
+            /* Reset parent so deinitScope won't release it */
+            scope->parent = NULL;
+            goto error;
+        }
+    } else {
+        result = o;
     }
 
     if (result != o) {
@@ -991,7 +1000,12 @@ error:
 }
 
 /* Declare object */
-corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
+static corto_object corto_declareChildIntern(
+    corto_object parent,
+    corto_string id,
+    corto_type type,
+    corto_bool orphan)
+{
     corto_object o = NULL;
     corto_bool retry = FALSE;
 
@@ -1034,7 +1048,7 @@ corto_object _corto_declareChild(corto_object parent, corto_string id, corto_typ
             corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
             /* Initialize object parameters. */
-            if ((o_ret = corto__initScope(o, id, parent))) {
+            if ((o_ret = corto__initScope(o, id, parent, orphan))) {
 
                 if (o_ret == o) {
                     /* Observable administration needs to be initialized after the
@@ -1148,6 +1162,14 @@ owner_error:
     return NULL;
 }
 
+corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
+    return corto_declareChildIntern(parent, id, type, FALSE);
+}
+
+corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type) {
+    return corto_declareChildIntern(parent, id, type, TRUE);
+}
+
 corto_object _corto_create(corto_type type) {
     corto_assertObject(type);
     corto_object result = corto_declare(type);
@@ -1160,7 +1182,21 @@ corto_object _corto_create(corto_type type) {
 corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type) {
     corto_assertObject(parent);
     corto_assertObject(type);
-    corto_object result = corto_declareChild(parent, id, type);
+    corto_object result = corto_declareChildIntern(parent, id, type, FALSE);
+    if (result &&
+        corto_checkState(result, CORTO_VALID) &&
+        !corto_checkState(result, CORTO_DEFINED))
+    {
+        corto_define(result);
+    }
+
+    return result;
+}
+
+corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type) {
+    corto_assertObject(parent);
+    corto_assertObject(type);
+    corto_object result = corto_declareChildIntern(parent, id, type, TRUE);
     if (result &&
         corto_checkState(result, CORTO_VALID) &&
         !corto_checkState(result, CORTO_DEFINED))

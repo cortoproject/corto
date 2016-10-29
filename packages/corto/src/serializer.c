@@ -144,7 +144,7 @@ corto_bool corto_serializeMatchAccess(corto_operatorKind accessKind, corto_modif
         result = !(sa & a);
         break;
     default:
-        corto_error("unsupported operator %s for serializer accessKind.", corto_idof(corto_enum_constant(corto_operatorKind_o, accessKind)));
+        corto_error("corto: unsupported operator %s for serializer accessKind.", corto_idof(corto_enum_constant(corto_operatorKind_o, accessKind)));
         result = FALSE;
         break;
     }

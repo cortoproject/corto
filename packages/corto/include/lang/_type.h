@@ -83,6 +83,7 @@ extern "C" {
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
 #define corto_stringseq(o) ((corto_stringseq*)corto_assertType((corto_type)corto_stringseq_o, o))
+#define corto_target(o) ((corto_target)corto_assertType((corto_type)corto_target_o, o))
 #define corto_uint64(o) ((corto_uint64*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
 #define corto_typespec(o) ((corto_typespec*)corto_assertType((corto_type)corto_typespec_o, o))
@@ -208,7 +209,7 @@ CORTO_BITMASK(corto_modifier);
     #define CORTO_CONST (0x8)
     #define CORTO_HIDDEN (0x10)
     #define CORTO_OPTIONAL (0x20)
-    #define CORTO_REQUEST (0x40)
+    #define CORTO_OBSERVABLE (0x40)
 
 /*  member */
 CORTO_CLASS(corto_member);
@@ -545,6 +546,14 @@ CORTO_CLASS_DEF(corto_sequence) {
 CORTO_LIST(corto_stringlist);
 
 CORTO_SEQUENCE(corto_stringseq, corto_string,);
+
+/*  target */
+CORTO_CLASS(corto_target);
+
+CORTO_CLASS_DEF(corto_target) {
+    CORTO_EXTEND(corto_struct);
+    corto_type type;
+};
 
 /* uint64 */
 typedef uint64_t corto_uint64;

@@ -2068,6 +2068,37 @@ CORTO_EXPORT corto_struct corto_structFromStr(corto_struct value, corto_string s
 CORTO_EXPORT corto_equalityKind _corto_structCompare(corto_struct dst, corto_struct src);
 #define corto_structCompare(dst, src) _corto_structCompare(corto_struct(dst), corto_struct(src))
 
+/* target */
+CORTO_EXPORT corto_target _corto_targetCreate(corto_type type);
+#define corto_targetCreate(type) _corto_targetCreate(corto_type(type))
+#define corto_targetCreate_auto(_name, type) corto_target _name = corto_targetCreate(type); (void)_name
+CORTO_EXPORT corto_target _corto_targetCreateChild(corto_object _parent, corto_string _name, corto_type type);
+#define corto_targetCreateChild(_parent, _name, type) _corto_targetCreateChild(_parent, _name, corto_type(type))
+#define corto_targetCreateChild_auto(_parent, _name, type) corto_target _name = corto_targetCreateChild(_parent, #_name, type); (void)_name
+CORTO_EXPORT corto_int16 _corto_targetUpdate(corto_target _this, corto_type type);
+#define corto_targetUpdate(_this, type) _corto_targetUpdate(corto_target(_this), corto_type(type))
+
+CORTO_EXPORT corto_target _corto_targetDeclare(void);
+#define corto_targetDeclare() _corto_targetDeclare()
+#define corto_targetDeclare_auto(_name) corto_target _name = corto_targetDeclare(); (void)_name
+CORTO_EXPORT corto_target _corto_targetDeclareChild(corto_object _parent, corto_string _name);
+#define corto_targetDeclareChild(_parent, _name) _corto_targetDeclareChild(_parent, _name)
+#define corto_targetDeclareChild_auto(_parent, _name) corto_target _name = corto_targetDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_targetDefine(corto_target _this, corto_type type);
+#define corto_targetDefine(_this, type) _corto_targetDefine(corto_target(_this), corto_type(type))
+CORTO_EXPORT corto_target _corto_targetAssign(corto_target _this, corto_type type);
+#define corto_target__optional_NotSet NULL
+#define corto_target__optional_Set(type) corto_targetAssign((corto_target*)corto_calloc(sizeof(corto_target)), type)
+#define corto_target__optional_SetCond(cond, type) cond ? corto_targetAssign((corto_target*)corto_calloc(sizeof(corto_target)), type) : NULL
+#define corto_targetUnset(_this) _this ? corto_deinitp(_this, corto_target_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_targetAssign(_this, type) _corto_targetAssign(corto_target(_this), corto_type(type))
+#define corto_targetSet(_this, type) _this = _this ? _this : (corto_target*)corto_calloc(sizeof(corto_target)); _corto_targetAssign(corto_target(_this), corto_type(type))
+CORTO_EXPORT corto_string _corto_targetStr(corto_target value);
+#define corto_targetStr(value) _corto_targetStr(corto_target(value))
+CORTO_EXPORT corto_target corto_targetFromStr(corto_target value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_targetCompare(corto_target dst, corto_target src);
+#define corto_targetCompare(dst, src) _corto_targetCompare(corto_target(dst), corto_target(src))
+
 /* text */
 CORTO_EXPORT corto_text _corto_textCreate(corto_width charWidth, corto_uint64 length);
 #define corto_textCreate(charWidth, length) _corto_textCreate(charWidth, length)
