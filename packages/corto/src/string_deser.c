@@ -135,20 +135,20 @@ static corto_int16 corto_string_deserBuildIndexDummy(corto_serializer s, corto_v
 }
 
 /* Serializer that builds indices from type */
-static struct corto_serializer_s corto_string_deserBuildIndex_s;
-corto_serializer corto_string_deserBuildIndex(void) {
-    corto_serializerInit(&corto_string_deserBuildIndex_s);
+struct corto_serializer_s corto_string_deserBuildIndex(void) {
+    struct corto_serializer_s result;
+    corto_serializerInit(&result);
     /* Add an indexInfo object for each primitive. */
-    corto_string_deserBuildIndex_s.program[CORTO_VOID] = corto_string_deserBuildIndexDummy;
-    corto_string_deserBuildIndex_s.program[CORTO_PRIMITIVE] = corto_string_deserBuildIndexDummy;
-    corto_string_deserBuildIndex_s.program[CORTO_COLLECTION] = corto_string_deserBuildIndexDummy;
-    corto_string_deserBuildIndex_s.metaprogram[CORTO_OBJECT] = corto_string_deserBuildIndexComposite;
-    corto_string_deserBuildIndex_s.metaprogram[CORTO_BASE] = corto_string_deserBuildIndexComposite;
-    corto_string_deserBuildIndex_s.metaprogram[CORTO_MEMBER] = corto_string_deserBuildIndexPrimitive;
-    corto_string_deserBuildIndex_s.access = CORTO_LOCAL;
-    corto_string_deserBuildIndex_s.accessKind = CORTO_NOT;
-    corto_string_deserBuildIndex_s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
-    return &corto_string_deserBuildIndex_s;
+    result.program[CORTO_VOID] = corto_string_deserBuildIndexDummy;
+    result.program[CORTO_PRIMITIVE] = corto_string_deserBuildIndexDummy;
+    result.program[CORTO_COLLECTION] = corto_string_deserBuildIndexDummy;
+    result.metaprogram[CORTO_OBJECT] = corto_string_deserBuildIndexComposite;
+    result.metaprogram[CORTO_BASE] = corto_string_deserBuildIndexComposite;
+    result.metaprogram[CORTO_MEMBER] = corto_string_deserBuildIndexPrimitive;
+    result.access = CORTO_LOCAL;
+    result.accessKind = CORTO_NOT;
+    result.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
+    return result;
 }
 
 static corto_string corto_string_deserParse(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data);
@@ -284,7 +284,8 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
             caseInfo->m = m;
             corto_string_deserIndexInsert(&privateData, caseInfo);
         } else {
-            if (corto_metaWalk(corto_string_deserBuildIndex(), info->type, &privateData)) {
+            struct corto_serializer_s s = corto_string_deserBuildIndex();
+            if (corto_metaWalk(&s, info->type, &privateData)) {
                 goto error;
             }
         }
@@ -435,6 +436,7 @@ static corto_int16 corto_string_deserParseValue(
         if (corto_string_deserParseAnonymousId(value, &index)) {
             if (index <= corto_llSize(data->anonymousObjects)) {
                 o = corto_llGet(data->anonymousObjects, index - 1);
+                corto_claim(o);
             } else {
                 corto_seterr("undefined anonymous identifier '%s'", value);
                 goto error;
@@ -610,10 +612,13 @@ static corto_string corto_string_parseAnonymous(
         corto_seterr("%s: %s", str, corto_lasterr());
         goto error;
     }
+
     corto_setref(offset, o);
+    corto_release(o);
 
     return ptr;
 error:
+    corto_release(o);
     return NULL;
 }
 
