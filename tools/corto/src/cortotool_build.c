@@ -82,6 +82,13 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
       }
     );
 
+    corto_trace("corto: build %s: %s %s %s",
+        corto_cwd(),
+        coverage ? "coverage=false" : "coverage=true",
+        release ? "target=release" : "target=debug",
+        singlethread ? "multithread=false" : "multithread=true"
+    );
+
     ret = cortotool_runcmd(
       dirs,
       (char*[])

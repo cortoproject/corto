@@ -331,6 +331,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     corto_ll monitor, dir;
     CORTO_UNUSED(argc);
     corto_string appName = NULL;
+    corto_bool runLocal = TRUE;
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -378,6 +379,11 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                 corto_error("corto: application '%s' not found", project);
                 goto error;
             }
+
+            corto_trace("corto: run: found installed application '%s'", project);
+            runLocal = FALSE;
+        } else {
+            corto_trace("corto: run: found project directory '%s'", project);
         }
     } else {
         corto_id projectName;
@@ -385,7 +391,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
         corto_asprintf(&appName, "./%s", projectName);
     }
 
-    if (corto_fileTest("rakefile")) {
+    if (runLocal && corto_fileTest("rakefile")) {
         corto_id noPath;
         cortotool_stripPath(noPath, corto_cwd());
         corto_asprintf(&appName, "./%s", noPath);
@@ -398,11 +404,13 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     }
 
     if (monitor) {
+        corto_trace("corto: run: start monitor");
         if (cortotool_monitor(argv)) {
             goto error;
         }
     } else {
         corto_pid pid;
+        corto_trace("corto: run: starting process '%s'", argv[1]);
         if (argc > 1) {
             pid = corto_procrun(appName, &argv[1]);
         } else {
