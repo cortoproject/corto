@@ -93,6 +93,7 @@ void corto_loader_addDir(
                 corto_id fpath; sprintf(fpath, "%s/%s", path, f);
                 corto_string version = NULL;
                 corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
+                if (!env) corto_lasterr(); /* Catch error */
 
                 /* Built-in packages use corto version */
                 if (!strcmp(package, "corto") ||
@@ -104,10 +105,13 @@ void corto_loader_addDir(
                     version = corto_strdup(CORTO_VERSION);
                     if (!env) {
                         env = corto_locate("corto", CORTO_LOCATION_ENV);
+                        if (!env) corto_lasterr(); /* Catch error */
                     }
                 } else {
                     corto_id versionFile; sprintf(versionFile, "%s/version.txt", fpath);
                     version = corto_fileLoad(versionFile);
+                    if (!version) corto_lasterr(); /* Catch error */
+
                     if (version) {
                         char *newline = strchr(version, '\n');
                         if (newline) {
@@ -118,9 +122,6 @@ void corto_loader_addDir(
                     } else {
                         version = corto_strdup("");
                     }
-
-                    /* Catch error thrown if version file doesn't exist */
-                    corto_lasterr();
                 }
 
                 if (!env) {
