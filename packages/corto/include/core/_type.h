@@ -21,6 +21,8 @@ extern "C" {
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
 #define corto_frameKind(o) ((corto_frameKind*)corto_assertType((corto_type)corto_frameKind_o, o))
 #define corto_frame(o) ((corto_frame*)corto_assertType((corto_type)corto_frame_o, o))
+#define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
+#define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
 #define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
 #define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
@@ -30,7 +32,6 @@ extern "C" {
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
-#define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_observerseq(o) ((corto_observerseq*)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
@@ -44,7 +45,7 @@ extern "C" {
 #define corto_route(o) ((corto_route)corto_assertType((corto_type)corto_route_o, o))
 #define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
-#define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
+#define corto_subscriberEvent(o) ((corto_subscriberEvent)corto_assertType((corto_type)corto_subscriberEvent_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
@@ -110,6 +111,33 @@ struct corto_frame {
     corto_int64 value;
 };
 
+/*  /corto/core/observer */
+CORTO_CLASS(corto_observer);
+
+CORTO_CLASS_DEF(corto_observer) {
+    CORTO_EXTEND(corto_function);
+    corto_eventMask mask;
+    corto_object observable;
+    corto_object instance;
+    corto_dispatcher dispatcher;
+    corto_string type;
+    corto_bool enabled;
+    corto_uint32 active;
+    corto_type typeReference;
+};
+
+/*  /corto/core/subscriber */
+CORTO_CLASS(corto_subscriber);
+
+CORTO_CLASS_DEF(corto_subscriber) {
+    CORTO_EXTEND(corto_observer);
+    corto_string parent;
+    corto_string expr;
+    corto_string contentType;
+    corto_word contentTypeHandle;
+    corto_word matchProgram;
+};
+
 /* /corto/core/mountKind */
 typedef enum corto_mountKind {
     CORTO_SOURCE = 0,
@@ -151,13 +179,12 @@ CORTO_LIST(corto_mountSubscriptionList);
 CORTO_CLASS(corto_mount);
 
 CORTO_CLASS_DEF(corto_mount) {
+    CORTO_EXTEND(corto_subscriber);
+    corto_mountKind kind;
+    corto_string policy;
     corto_object mount;
     corto_eventMask mask;
-    corto_string type;
     corto_attr attr;
-    corto_mountKind kind;
-    corto_string contentType;
-    corto_string policy;
     corto_mountStats sent;
     corto_mountStats received;
     corto_mountStats sentDiscarded;
@@ -165,7 +192,6 @@ CORTO_CLASS_DEF(corto_mount) {
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
     corto_bool passThrough;
-    corto_word contentTypeHandle;
     corto_word thread;
     corto_bool quit;
     corto_bool hasNotify;
@@ -197,27 +223,12 @@ struct corto_notifyAction {
     corto_delegatedata _parent;
 };
 
-/*  /corto/core/observer */
-CORTO_CLASS(corto_observer);
-
-CORTO_CLASS_DEF(corto_observer) {
-    CORTO_EXTEND(corto_function);
-    corto_eventMask mask;
-    corto_object observable;
-    corto_object instance;
-    corto_dispatcher dispatcher;
-    corto_string type;
-    corto_bool enabled;
-    corto_uint32 active;
-    corto_type typeReference;
-};
-
 /*  /corto/core/observableEvent */
 CORTO_CLASS(corto_observableEvent);
 
 CORTO_CLASS_DEF(corto_observableEvent) {
     CORTO_EXTEND(corto_event);
-    corto_observer observer;
+    corto_function observer;
     corto_object me;
     corto_object source;
     corto_object observable;
@@ -310,7 +321,6 @@ struct corto_request {
     corto_bool content;
     corto_frame from;
     corto_frame to;
-    corto_string param;
 };
 
 /*  /corto/core/result */
@@ -323,6 +333,7 @@ struct corto_result {
     corto_string type;
     corto_word value;
     corto_bool leaf;
+    corto_object object;
     corto_wordseq history;
     corto_augmentseq augments;
     corto_object mount;
@@ -359,16 +370,13 @@ CORTO_CLASS_DEF(corto_routerimpl) {
     corto_uint16 maxArgs;
 };
 
-/*  /corto/core/subscriber */
-CORTO_CLASS(corto_subscriber);
+/*  /corto/core/subscriberEvent */
+CORTO_CLASS(corto_subscriberEvent);
 
-CORTO_CLASS_DEF(corto_subscriber) {
-    CORTO_EXTEND(corto_observer);
-    corto_string parent;
-    corto_string expr;
-    corto_string contentType;
+CORTO_CLASS_DEF(corto_subscriberEvent) {
+    CORTO_EXTEND(corto_observableEvent);
+    corto_result result;
     corto_word contentTypeHandle;
-    corto_word matchProgram;
 };
 
 /*  /corto/core/time */

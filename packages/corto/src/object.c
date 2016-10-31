@@ -1386,9 +1386,9 @@ corto_int16 corto_define(corto_object o) {
     corto_assertObject(o);
 
     /* Only define undefined objects */
-    if (!corto_checkState(o, CORTO_DEFINED)) {
+    if (!corto_checkState(o, CORTO_DEFINED) || !corto_checkState(o, CORTO_VALID)) {
         if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && !corto_isBuiltin(o)) {
-            if (!corto_declaredAdminCheck(o)) {
+            if (!corto_declaredAdminCheck(o) && corto_checkState(o, CORTO_VALID)) {
                 corto_seterr("corto: cannot define object '%s' because it was not declared in same thread",
                   corto_fullpath(NULL, o));
                 goto error;
@@ -1686,13 +1686,13 @@ error:
 }
 
 /* Invalidate object by removing valid flag */
-void corto_invalidate(corto_object o) {
+corto_int16 corto_invalidate(corto_object o) {
     corto_assertObject(o);
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     _o->align.attrs.state &= ~CORTO_VALID;
     /* Notify observers */
-    corto_notify(corto__objectObservable(CORTO_OFFSET(o,-sizeof(corto__object))), o, CORTO_ON_INVALIDATE);
+    return corto_notify(corto__objectObservable(CORTO_OFFSET(o,-sizeof(corto__object))), o, CORTO_ON_INVALIDATE);
 }
 
 /* Get type */
@@ -1832,6 +1832,15 @@ corto_contentType corto_loadContentType(
             (corto_int16 ___ (*)(corto_object, corto_word))
               corto_loaderResolveProc(id);
         if (!result->toCorto) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        sprintf(id, "%s_copy", packagePtr);
+        result->copy =
+            (corto_word ___ (*)(corto_word))
+              corto_loaderResolveProc(id);
+        if (!result->copy) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }

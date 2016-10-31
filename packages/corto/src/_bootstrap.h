@@ -200,6 +200,7 @@ CORTO_STATIC_SCOPED_REFOBJECT(map);
 CORTO_STATIC_SCOPED_REFOBJECT(function);
 CORTO_STATIC_SCOPED_REFOBJECT(method);
 CORTO_STATIC_SCOPED_REFOBJECT(observer);
+CORTO_STATIC_SCOPED_REFOBJECT(subscriber);
 CORTO_STATIC_SCOPED_REFOBJECT(metaprocedure);
 CORTO_STATIC_SCOPED_REFOBJECT(member);
 CORTO_STATIC_SCOPED_REFOBJECT(alias);
@@ -406,10 +407,15 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_IMETHOD_O(parent, name, args, returnType, virtual) \
         sso_method parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, 0, NULL, 0,{0,NULL},0}, virtual}}
 
-/* interface method object */
+/* observer object */
 #define CORTO_OBSERVER_O(parent, name, impl) \
         void __##impl(void *f, void *r, void *a); \
         sso_observer parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, core_observer), {{(corto_type)&lang_void##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, 0}}
+
+/* subscriber object */
+#define CORTO_SUBSCRIBER_O(parent, name, impl) \
+        void __##impl(void *f, void *r, void *a); \
+        sso_subscriber parent##_##name##__o = {CORTO_SSO_PO_V(parent, #name, core_subscriber), {{{(corto_type)&lang_void##__o.v, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, NULL, 0,{0,NULL},0}, 0}}}
 
 /* metaprocedure object */
 #define CORTO_METAPROCEDURE_O(parent, name, args, returnType, referenceOnly, impl) \
@@ -461,6 +467,7 @@ CORTO_FWDECL(class, case);
 CORTO_FWDECL(class, default);
 CORTO_FWDECL_CORE(class, notifyEvent);
 CORTO_FWDECL_CORE(class, observableEvent);
+CORTO_FWDECL_CORE(class, subscriberEvent);
 CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL(class, primitive);
@@ -568,9 +575,7 @@ CORTO_FWDECL_CORE(delegate, notifyAction);
 CORTO_FWDECL_CORE(delegate, requestAction);
 CORTO_FWDECL_CORE(delegate, invokeAction);
 
-CORTO_FWDECL_CORE(observer, mount_on_declare);
-CORTO_FWDECL_CORE(observer, mount_on_update);
-CORTO_FWDECL_CORE(observer, mount_on_delete);
+CORTO_FWDECL_CORE(subscriber, mount_on_notify);
 
 CORTO_FWDECL_CORE(iterator, resultIter);
 
@@ -1183,6 +1188,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, value, lang_word, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, leaf, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_result, object, lang_object, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, history, lang_wordseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, mount, lang_object, CORTO_HIDDEN);
@@ -1198,93 +1204,10 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_request, content, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, from, core_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_request, to, core_frame, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_request, param, lang_string, CORTO_GLOBAL);
 
 /* /corto/lang/dispatcher */
 CORTO_INTERFACE_O(core, dispatcher);
     CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
-
-/* /corto/core/mountStats */
-CORTO_STRUCT_O(core, mountStats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_MEMBER_O(core_mountStats, declares, lang_uint64, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountStats, updates, lang_uint64, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountStats, deletes, lang_uint64, CORTO_GLOBAL);
-
-/* /corto/core/mountPolicy */
-CORTO_STRUCT_O(core, mountPolicy, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_MEMBER_O(core_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
-
-/* /corto/core/mountSubscription */
-CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_MEMBER_O(core_mountSubscription, parent, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountSubscription, expr, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountSubscription, mask, core_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountSubscription, count, lang_uint32, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountSubscription, userData, lang_word, CORTO_GLOBAL);
-
-/* /corto/core/router */
-CORTO_FW_CD(core, router);
-CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_CD);
-    CORTO_METHOD_O(core_router, construct, "()", lang_int16, FALSE, corto_router_construct);
-    CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_router, paramName, lang_string, CORTO_GLOBAL);
-    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
-
-/* /corto/core/routerimpl */
-CORTO_FW_CD(core, routerimpl);
-CORTO_CLASS_O(core, routerimpl, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
-    CORTO_METHOD_O(core_routerimpl, construct, "()", lang_int16, FALSE, corto_routerimpl_construct);
-    CORTO_METHOD_O(core_routerimpl, destruct, "()", lang_void, FALSE, corto_routerimpl_destruct);
-    CORTO_MEMBER_O(core_routerimpl, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_METHOD_O(core_routerimpl, matchRoute, "(core/route route,stringseq pattern,any param)", lang_int32, TRUE, corto_router_match);
-
-/* /corto/core/mount */
-CORTO_FW_ICD(core, mount);
-CORTO_CLASS_NOBASE_O(core, mount, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
-    CORTO_MEMBER_O(core_mount, mount, lang_object, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, mask, core_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, type, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, attr, core_attr, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, kind, core_mountKind, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, contentType, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, policy, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, sent, core_mountStats, CORTO_READONLY);
-    CORTO_MEMBER_O(core_mount, received, core_mountStats, CORTO_READONLY);
-    CORTO_MEMBER_O(core_mount, sentDiscarded, core_mountStats, CORTO_READONLY);
-    CORTO_MEMBER_O(core_mount, policies, core_mountPolicy, CORTO_READONLY);
-    CORTO_MEMBER_O(core_mount, subscriptions, core_mountSubscriptionList, CORTO_READONLY);
-    CORTO_MEMBER_O(core_mount, events, lang_objectlist, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, passThrough, lang_bool, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
-    CORTO_MEMBER_O(core_mount, thread, lang_word, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, hasNotify, lang_bool, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, hasResume, lang_bool, CORTO_PRIVATE);
-    CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_init);
-    CORTO_METHOD_O(core_mount, construct, "()", lang_int16, FALSE, corto_mount_construct);
-    CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);
-    CORTO_METHOD_O(core_mount, post, "(event e)", lang_void, FALSE, corto_mount_post);
-    CORTO_METHOD_O(core_mount, onPoll, "()", lang_void, TRUE, corto_mount_onPoll_v);
-    CORTO_METHOD_O(core_mount, setContentType, "(string type)", lang_int16, FALSE, corto_mount_setContentType);
-    CORTO_METHOD_O(core_mount, return, "(core/result r)", lang_void, FALSE, corto_mount_return);
-    CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, FALSE, corto_mount_invoke);
-    CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, FALSE, corto_mount_request);
-    CORTO_METHOD_O(core_mount, resume, "(string parent,string name,object o)", lang_object, FALSE, corto_mount_resume);
-    CORTO_METHOD_O(core_mount, subscribe, "(string parent,string name,core/eventMask mask)", lang_void, FALSE, corto_mount_subscribe);
-    CORTO_METHOD_O(core_mount, unsubscribe, "(string parent,string name,core/eventMask mask)", lang_void, FALSE, corto_mount_unsubscribe);
-    CORTO_METHOD_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, TRUE, corto_mount_onInvoke_v);
-    CORTO_METHOD_O(core_mount, onRequest, "(core/request request)", core_resultIter, TRUE, corto_mount_onRequest_v);
-    CORTO_METHOD_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_mount_onResume_v);
-    CORTO_METHOD_O(core_mount, onDeclare, "(object observable)", lang_void, TRUE, corto_mount_onDeclare_v);
-    CORTO_METHOD_O(core_mount, onUpdate, "(object observable)", lang_void, TRUE, corto_mount_onUpdate_v);
-    CORTO_METHOD_O(core_mount, onDelete, "(object observable)", lang_void, TRUE, corto_mount_onDelete_v);
-    CORTO_METHOD_O(core_mount, onNotify, "(core/eventMask event,core/result object)", lang_void, TRUE, corto_mount_onNotify_v);
-    CORTO_METHOD_O(core_mount, onSubscribe, "(string parent,string name,core/eventMask mask)", lang_word, TRUE, corto_mount_onSubscribe_v);
-    CORTO_METHOD_O(core_mount, onUnsubscribe, "(string parent,string name,core/eventMask mask,lang/word userData)", lang_void, TRUE, corto_mount_onUnsubscribe_v);
-    CORTO_OBSERVER_O(core_mount, on_declare, corto_mount_on_declare);
-    CORTO_OBSERVER_O(core_mount, on_update, corto_mount_on_update);
-    CORTO_OBSERVER_O(core_mount, on_delete, corto_mount_on_delete);
 
 /* /corto/core/loader */
 CORTO_FW_CD(core, loader);
@@ -1304,13 +1227,22 @@ CORTO_CLASS_NOBASE_O(core, event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
 
 /* /corto/lang/observableEvent */
 CORTO_CLASS_O(core, observableEvent, core_event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_REFERENCE_O(core_observableEvent, observer, core_observer, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
+    CORTO_REFERENCE_O(core_observableEvent, observer, lang_function, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_observableEvent, me, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_observableEvent, source, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_REFERENCE_O(core_observableEvent, observable, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, FALSE);
     CORTO_MEMBER_O(core_observableEvent, mask, core_eventMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_observableEvent, thread, lang_word, CORTO_GLOBAL);
     CORTO_METHOD_O(core_observableEvent, handle, "()", lang_void, TRUE, corto_observableEvent_handle_v);
+
+/* /corto/lang/subscriberEvent */
+CORTO_FW_CD(core, subscriberEvent);
+CORTO_CLASS_O(core, subscriberEvent, core_observableEvent, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(core_subscriberEvent, result, core_result, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriberEvent, contentTypeHandle, lang_word, CORTO_GLOBAL);
+    CORTO_METHOD_O(core_subscriberEvent, handle, "()", lang_void, TRUE, corto_subscriberEvent_handle_v);
+    CORTO_METHOD_O(core_subscriberEvent, construct, "()", lang_int16, FALSE, corto_subscriberEvent_construct);
+    CORTO_METHOD_O(core_subscriberEvent, destruct, "()", lang_void, FALSE, corto_subscriberEvent_destruct);
 
 /* /corto/lang/invokeEvent */
 CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
@@ -1359,6 +1291,87 @@ CORTO_PROCEDURE_O(core, subscriber, CORTO_OBSERVER, core_observer, CORTO_HIDDEN,
     CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, FALSE, corto_subscriber_destruct);
     CORTO_METHOD_O(core_subscriber, subscribe, "(object instance)", lang_int16, FALSE, corto_subscriber_subscribe);
     CORTO_METHOD_O(core_subscriber, unsubscribe, "(object instance)", lang_int16, FALSE, corto_subscriber_unsubscribe);
+
+/* /corto/core/mountStats */
+CORTO_STRUCT_O(core, mountStats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_mountStats, declares, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountStats, updates, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountStats, deletes, lang_uint64, CORTO_GLOBAL);
+
+/* /corto/core/mountPolicy */
+CORTO_STRUCT_O(core, mountPolicy, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
+
+/* /corto/core/mountSubscription */
+CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_mountSubscription, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, mask, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, count, lang_uint32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, userData, lang_word, CORTO_GLOBAL);
+
+/* /corto/core/router */
+CORTO_FW_CD(core, router);
+CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_CD);
+    CORTO_METHOD_O(core_router, construct, "()", lang_int16, FALSE, corto_router_construct);
+    CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, paramName, lang_string, CORTO_GLOBAL);
+    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
+
+/* /corto/core/routerimpl */
+CORTO_FW_CD(core, routerimpl);
+CORTO_CLASS_O(core, routerimpl, lang_class, CORTO_GLOBAL, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_METHOD_O(core_routerimpl, construct, "()", lang_int16, FALSE, corto_routerimpl_construct);
+    CORTO_METHOD_O(core_routerimpl, destruct, "()", lang_void, FALSE, corto_routerimpl_destruct);
+    CORTO_MEMBER_O(core_routerimpl, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_METHOD_O(core_routerimpl, matchRoute, "(core/route route,stringseq pattern,any param)", lang_int32, TRUE, corto_router_match);
+
+/* /corto/core/mount */
+CORTO_FW_ICD(core, mount);
+CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
+    CORTO_MEMBER_O(core_mount, kind, core_mountKind, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_mount, parent, core_subscriber_parent, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_mount, expr, core_subscriber_expr, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_mount, type, core_subscriber_type, CORTO_GLOBAL);
+    CORTO_ALIAS_O(core_mount, contentType, core_subscriber_contentType, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, policy, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, mount, lang_object, CORTO_HIDDEN);
+    CORTO_MEMBER_O(core_mount, mask, core_eventMask, CORTO_HIDDEN);
+    CORTO_MEMBER_O(core_mount, attr, core_attr, CORTO_HIDDEN);
+    CORTO_MEMBER_O(core_mount, sent, core_mountStats, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, received, core_mountStats, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, sentDiscarded, core_mountStats, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, policies, core_mountPolicy, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, subscriptions, core_mountSubscriptionList, CORTO_READONLY);
+    CORTO_MEMBER_O(core_mount, events, lang_objectlist, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, passThrough, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, thread, lang_word, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, hasNotify, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, hasResume, lang_bool, CORTO_PRIVATE);
+    CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_init);
+    CORTO_METHOD_O(core_mount, construct, "()", lang_int16, FALSE, corto_mount_construct);
+    CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);
+    CORTO_METHOD_O(core_mount, post, "(event e)", lang_void, FALSE, corto_mount_post);
+    CORTO_METHOD_O(core_mount, onPoll, "()", lang_void, TRUE, corto_mount_onPoll_v);
+    CORTO_METHOD_O(core_mount, setContentType, "(string type)", lang_int16, FALSE, corto_mount_setContentType);
+    CORTO_METHOD_O(core_mount, return, "(core/result r)", lang_void, FALSE, corto_mount_return);
+    CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, FALSE, corto_mount_invoke);
+    CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, FALSE, corto_mount_request);
+    CORTO_METHOD_O(core_mount, resume, "(string parent,string name,object o)", lang_object, FALSE, corto_mount_resume);
+    CORTO_METHOD_O(core_mount, subscribe, "(string parent,string name,core/eventMask mask)", lang_void, FALSE, corto_mount_subscribe);
+    CORTO_METHOD_O(core_mount, unsubscribe, "(string parent,string name,core/eventMask mask)", lang_void, FALSE, corto_mount_unsubscribe);
+    CORTO_METHOD_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, TRUE, corto_mount_onInvoke_v);
+    CORTO_METHOD_O(core_mount, onRequest, "(core/request request)", core_resultIter, TRUE, corto_mount_onRequest_v);
+    CORTO_METHOD_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_mount_onResume_v);
+    CORTO_METHOD_O(core_mount, onDeclare, "(object observable)", lang_void, TRUE, corto_mount_onDeclare_v);
+    CORTO_METHOD_O(core_mount, onUpdate, "(object observable)", lang_void, TRUE, corto_mount_onUpdate_v);
+    CORTO_METHOD_O(core_mount, onDelete, "(object observable)", lang_void, TRUE, corto_mount_onDelete_v);
+    CORTO_METHOD_O(core_mount, onNotify, "(core/eventMask event,core/result object)", lang_void, TRUE, corto_mount_onNotify_v);
+    CORTO_METHOD_O(core_mount, onSubscribe, "(string parent,string name,core/eventMask mask)", lang_word, TRUE, corto_mount_onSubscribe_v);
+    CORTO_METHOD_O(core_mount, onUnsubscribe, "(string parent,string name,core/eventMask mask,lang/word userData)", lang_void, TRUE, corto_mount_onUnsubscribe_v);
+
 
 /* /corto/core/route */
 CORTO_FW_IC(core, route);

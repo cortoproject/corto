@@ -39,7 +39,7 @@ corto_int16 corto_updateBegin(corto_object observable);
 corto_int16 corto_updateTry(corto_object observable);
 corto_int16 corto_updateEnd(corto_object observable);
 corto_int16 corto_updateCancel(corto_object observable);
-void corto_invalidate(corto_object o);
+corto_int16 corto_invalidate(corto_object o);
 /* Publish event without reference to an object */
 corto_int16 corto_publish(
     corto_eventMask event,

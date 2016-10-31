@@ -999,6 +999,9 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
 
     /* Start loader mount */
     corto_loader p = corto_loaderCreate();
+    if (!p) {
+        corto_error("corto: failed to create package mount: %s", corto_lasterr());
+    }
 
     /* Parse arguments */
     for(i=1; i<argc; i++) {
@@ -1015,7 +1018,9 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     cxsh_shell();
 
     /* Delete loader mount */
-    corto_delete(p);
+    if (p) {
+        corto_delete(p);
+    }
 
     return 0;
 }

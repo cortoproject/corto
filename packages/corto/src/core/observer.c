@@ -310,7 +310,10 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
-    if ((mask & observerMask) && (!depth || (observerMask & CORTO_ON_TREE))) {
+    if ((mask & observerMask) &&
+        (!observer->typeReference || (observer->typeReference == corto_typeof(observable))) &&
+        (!depth || (observerMask & CORTO_ON_TREE)))
+    {
         corto_dispatcher dispatcher = observer->dispatcher;
 
 #ifndef NDEBUG
@@ -527,7 +530,9 @@ static corto_observer corto_observeCallback(
     corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->callback = callback;
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         result = corto_observeObserve(request);
+        corto_dealloc(request);
     }
 
     return result;

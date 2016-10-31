@@ -50,7 +50,6 @@ typedef struct corto_selectData {
     corto_string expr;                       /* Current expression */
     corto_string exprStart;                  /* Points to start of full expr */
     corto_string contentType;
-    corto_string param;
 
     /* Which expression is being evaluated (when expression contains ,) */
     corto_uint32 exprCount;
@@ -109,7 +108,7 @@ static corto_word corto_selectConvert(
     corto_word result = 0;
 
     corto_contentType srcType = (corto_contentType)
-      data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeHandle;
+      corto_subscriber(data->mounts[data->stack[data->sp].currentMount - 1])->contentTypeHandle;
 
     /* If source serializer is loaded, a conversion is
      * needed */
@@ -177,7 +176,7 @@ static void corto_loadAugments(
                     if (data->contentType) {
                         corto_iter augmentIt;
                         corto_request r = {
-                            parent, expr, data->type, 0, 1, data->contentType == NULL, {0,0}, {0,0}, NULL
+                            parent, expr, data->type, 0, 1, data->contentType == NULL, {0,0}, {0,0}
                         };
 
                         augmentIt = corto_mount_request(
@@ -352,7 +351,7 @@ static corto_bool corto_selectMatch(
         corto_strlower(filterLc);
         corto_strlower(nameLc);
 
-        result = !fnmatch(filterLc, nameLc, 0);
+        result = corto_match(filterLc, nameLc);
     }
 
     /* Check if there are SINK mounts active for the current scope */
@@ -370,15 +369,16 @@ static corto_bool corto_selectMatch(
 
             for (i = 0; i < data->mountsLoaded; i++) {
                 corto_mount r = data->mounts[i];
+                corto_string rType = corto_observer(r)->type;
 
                 /* If a SINK mount doesn't return a valid iterator, which typically
                  * happens if it doesn't implement the onRequest method, select will
                  * return the contents of the object store */
                 if ((r->kind == CORTO_SINK) && !r->passThrough) {
-                    if (r->type) {
+                    if (rType) {
                         /* If the type matches, the object is managed by the
                          * mount. This prevents returning duplicate results. */
-                        if (!strcmp(r->type, type)) {
+                        if (!strcmp(rType, type)) {
                             result = FALSE;
                             break;
                         } else {
@@ -409,7 +409,7 @@ static corto_bool corto_selectMatch(
 
         /* Filter type */
         if (result && data->typeFilter) {
-            result = !fnmatch(data->typeFilter, type, 0);
+            result = corto_match(data->typeFilter, type);
         }
     }
 
@@ -505,8 +505,7 @@ static corto_resultIter corto_selectRequestMount(
       (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
       data->contentType ? TRUE : FALSE,
       data->from,
-      data->to,
-      data->param};
+      data->to};
 
     return corto_mount_request(mount, &r);
 }
@@ -767,8 +766,9 @@ static void corto_selectLoadMounts(
 
                 /* If type is requested, test whether it is compatible with
                  * the type of the mount */
-                if (data->typeFilter && odata->mount->type) {
-                    if (fnmatch(data->typeFilter, odata->mount->type, 0)) {
+                corto_string rType = corto_observer(odata->mount)->type;
+                if (data->typeFilter && rType) {
+                    if (!corto_match(data->typeFilter, rType)) {
                         continue;
                     }
                 }
@@ -1323,10 +1323,12 @@ static corto_int16 corto_selectorIter(corto_resultIter *ret)
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
         }
+        corto_dealloc(request);
     }
 
     return 0;

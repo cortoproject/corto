@@ -48,7 +48,6 @@
 
 #ifdef __cplusplus
 #include <utility>
-
 extern "C" {
 #endif
 
@@ -217,11 +216,6 @@ extern int8_t CORTO_DEBUG_ENABLED;
 
 #ifdef __cplusplus
 }
-#define CORTO_OBSERVER(name)\
-    void name (corto_object _this, corto_object observable)
-#else
-#define CORTO_OBSERVER(name)\
-    void name (corto_object this, corto_object observable)
 #endif
 
 #endif /* CORTO_DEF_H */

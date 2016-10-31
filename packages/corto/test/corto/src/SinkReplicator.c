@@ -13,7 +13,7 @@ corto_int16 _test_SinkReplicator_construct(
 {
 /* $begin(test/SinkReplicator/construct) */
     corto_string type =
-      corto_mount(this)->type ? corto_mount(this)->type : "int32";
+      corto_observer(this)->type ? corto_observer(this)->type : "int32";
 
     // First tier
     corto_resultAssign(

@@ -26,7 +26,7 @@ corto_void _corto_observableEvent_handle_v(
               corto_eventMask,
               corto_object,
               corto_observer))f->fptr
-            )(this->me, this->mask, this->observable, this->observer);
+            )(this->me, this->mask, this->observable, corto_observer(this->observer));
         } else {
             corto_call(f, NULL, this->me, this->mask, this->observable, this->observer);
         }

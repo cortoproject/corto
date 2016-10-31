@@ -129,10 +129,6 @@ CORTO_META_OBJECT(procedure, virtual);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, metaprocedure);
 
-CORTO_META_OBJECT(observer, mount_on_declare);
-CORTO_META_OBJECT(observer, mount_on_update);
-CORTO_META_OBJECT(observer, mount_on_delete);
-
 CORTO_META_OBJECT(iterator, resultIter);
 
 #ifdef __cplusplus

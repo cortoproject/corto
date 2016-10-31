@@ -43,28 +43,6 @@ corto_int16 corto_mount_attach(
 error:
     return -1;
 }
-
-void corto_mount_notify(
-    corto_mount this,
-    corto_eventMask mask,
-    corto_object o)
-{
-    if (this->hasNotify) {
-        corto_result r;
-        corto_id path, type;
-        memset(&r, 0, sizeof(r));
-
-        if (this->contentTypeHandle) {
-            r.value = ((corto_contentType)this->contentTypeHandle)->fromCorto(o);
-        }
-
-        r.id = corto_idof(o);
-        r.parent = corto_path(path, this->mount, corto_parentof(o), "/");
-        r.type = corto_fullpath(type, corto_typeof(o));
-
-        corto_mount_onNotify(this, mask, &r);
-    }
-}
 /* $end */
 
 /* $header(corto/core/mount/construct) */
@@ -86,12 +64,72 @@ void* corto_mount_thread(void* arg) {
 
     return NULL;
 }
+
+void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r, corto_subscriber s) {
+    CORTO_UNUSED(s);
+
+    corto_mount_onNotify(this, mask, r);
+
+    switch(mask) {
+    case CORTO_ON_DECLARE: this->sent.declares ++; break;
+    case CORTO_ON_DEFINE: this->sent.updates ++; break;
+    case CORTO_ON_UPDATE: this->sent.updates ++; break;
+    case CORTO_ON_DELETE: this->sent.deletes ++; break;
+    default: break;
+    }
+
+    /* These calls are just for backwards compatibility */
+    if (r->object && (!this->attr || corto_checkAttr(r->object, this->attr))) {
+        switch(mask) {
+        case CORTO_ON_DECLARE:
+            corto_mount_onDeclare(this, r->object);
+            break;
+        case CORTO_ON_DEFINE:
+        case CORTO_ON_UPDATE:
+            corto_mount_onUpdate(this, r->object);
+            break;
+        case CORTO_ON_DELETE:
+            corto_mount_onDelete(this, r->object);
+            break;
+        }
+    }
+}
+
 /* $end */
 corto_int16 _corto_mount_construct(
     corto_mount this)
 {
 /* $begin(corto/core/mount/construct) */
     corto_object dispatcher = NULL;
+
+    if (this->mount) {
+        /*corto_warning(
+          "corto: %s: using mount/mount is deprecated, please use 'parent' and 'expr'",
+          corto_fullpath(NULL, corto_typeof(this)));*/
+        corto_setstr(&corto_subscriber(this)->parent, corto_fullpath(NULL, this->mount));
+    }
+
+    /* If parent is set, resolve it and assign mount */
+    if (corto_subscriber(this)->parent) {
+        corto_object o = corto_resolve(NULL, corto_subscriber(this)->parent);
+        if (!o) {
+            corto_seterr(
+                "parent '%s' not found (future corto versions will allow this)",
+                corto_subscriber(this)->parent);
+            goto error;
+        }
+        corto_setref(&this->mount, o);
+        corto_release(o);
+
+        /* Set the expression according to the mask */
+        if (this->mask & CORTO_ON_TREE) {
+            corto_setstr(&corto_subscriber(this)->expr, "//");
+        } else if (this->mask & CORTO_ON_SCOPE) {
+            corto_setstr(&corto_subscriber(this)->expr, "/");
+        } else {
+            corto_setstr(&corto_subscriber(this)->expr, ".");
+        }
+    }
 
     /* If mount isn't set, and object is scoped, mount data on itself */
     if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
@@ -127,42 +165,33 @@ corto_int16 _corto_mount_construct(
         this->passThrough = TRUE;
     }
 
-    /* If mount implements onNotify, set boolean so notification functions will
-     * forward notifications to onNotify. As onNotify requires more expensive
-     * preparation, a mount should ensure to only call it when necessary. */
-     m = corto_interface_resolveMethod(corto_typeof(this), "onNotify");
-     if (corto_parentof(m) != corto_mount_o) {
-         this->hasNotify = TRUE;
-     }
+    /* If mount doesn't implement onResume, the mount will use onRequest to
+     * request the object and then use the returned data to automatically
+     * instantiate an object in the store. */
+    m = corto_interface_resolveMethod(corto_typeof(this), "onResume");
+    if (corto_parentof(m) != corto_mount_o) {
+        this->hasResume = TRUE;
+    }
 
-      /* If mount doesn't implement onResume, the mount will use onRequest to
-       * request the object and then use the returned data to automatically
-       * instantiate an object in the store. */
-      m = corto_interface_resolveMethod(corto_typeof(this), "onResume");
-      if (corto_parentof(m) != corto_mount_o) {
-          this->hasResume = TRUE;
-      }
+    /* Set the callback function */
+    corto_function(this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(this)->fptr = (corto_word)corto_mount_notify;
+    corto_setref(&corto_observer(this)->instance, this);
+    corto_setref(&corto_observer(this)->dispatcher, dispatcher);
+
+    if (corto_subscriber(this)->parent) {
+        corto_observer(this)->enabled = TRUE;
+    }
+    
+    corto_observer(this)->mask =
+      CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
+    if (!corto_subscriber(this)->expr) {
+        corto_setstr(&corto_subscriber(this)->expr, "//");
+    }
 
     if (this->mount && mask) {
-        corto_setref(&corto_mount_on_declare_o->dispatcher, dispatcher);
-        corto_mount_on_declare_o->mask = CORTO_ON_DECLARE | mask;
-        if (corto_observer_observe(corto_mount_on_declare_o, this, this->mount)) {
-            goto error;
-        }
-
-        corto_setref(&corto_mount_on_update_o->dispatcher, dispatcher);
-        corto_mount_on_update_o->mask = CORTO_ON_DEFINE | CORTO_ON_UPDATE | mask;
-        if (corto_observer_observe(corto_mount_on_update_o, this, this->mount)) {
-            goto error;
-        }
-
-        corto_setref(&corto_mount_on_delete_o->dispatcher, dispatcher);
-        corto_mount_on_delete_o->mask = CORTO_ON_DELETE | mask;
-        if (corto_observer_observe(corto_mount_on_delete_o, this, this->mount)) {
-            goto error;
-        }
-
-        /* Attach mount to the observable if mask != ON_SELF */
+        /* Attach mount to the observable if mask != ON_SELF. No longer necessary
+         * once integration with subscribers is completed. */
         if (mask != CORTO_ON_SELF) {
             if (corto_mount_attach(this, this->mount, mask)) {
                 goto error;
@@ -170,7 +199,7 @@ corto_int16 _corto_mount_construct(
         }
     }
 
-    return 0;
+    return corto_subscriber_construct(this);
 error:
     return -1;
 /* $end */
@@ -201,11 +230,11 @@ corto_void _corto_mount_destruct(
         corto_threadJoin((corto_thread)this->thread, NULL);
     }
 
-    if (this->mount && this->mask) {
+    /*if (this->mount && this->mask) {
         corto_observer_unobserve(corto_mount_on_declare_o, this, this->mount);
         corto_observer_unobserve(corto_mount_on_update_o, this, this->mount);
         corto_observer_unobserve(corto_mount_on_delete_o, this, this->mount);
-    }
+    }*/
 
 /* $end */
 }
@@ -238,90 +267,6 @@ corto_void _corto_mount_invoke(
         corto_object prevowner = corto_setOwner(corto_ownerof(instance));
         corto_callb(proc, NULL, (void**)argptrs);
         corto_setOwner(prevowner);
-    }
-
-/* $end */
-}
-
-corto_void _corto_mount_on_declare(
-    corto_mount this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
-{
-/* $begin(corto/core/mount/on_declare) */
-    CORTO_UNUSED(event);
-    CORTO_UNUSED(observer);
-
-    if ((object != root_o) && corto_checkAttr(object, CORTO_ATTR_PERSISTENT)) {
-        if (this->type) {
-            corto_id srcType; corto_fullpath(srcType, corto_typeof(object));
-            if (!strcmp(this->type, srcType)) {
-                this->sent.declares ++;
-                corto_mount_onDeclare(this, object);
-                corto_mount_notify(this, CORTO_ON_DECLARE, object);
-            }
-        } else {
-            this->sent.declares ++;
-            corto_mount_onDeclare(this, object);
-            corto_mount_notify(this, CORTO_ON_DECLARE, object);
-        }
-    }
-
-/* $end */
-}
-
-corto_void _corto_mount_on_delete(
-    corto_mount this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
-{
-/* $begin(corto/core/mount/on_delete) */
-    CORTO_UNUSED(event);
-    CORTO_UNUSED(observer);
-
-    if (corto_checkAttr(object, CORTO_ATTR_PERSISTENT)) {
-        if (this->type) {
-            corto_id srcType; corto_fullpath(srcType, corto_typeof(object));
-            if (!strcmp(this->type, srcType)) {
-                this->sent.deletes ++;
-                corto_mount_onDelete(this, object);
-                corto_mount_notify(this, CORTO_ON_DELETE, object);
-            }
-        } else {
-            this->sent.deletes ++;
-            corto_mount_onDelete(this, object);
-            corto_mount_notify(this, CORTO_ON_DELETE, object);
-        }
-    }
-
-/* $end */
-}
-
-corto_void _corto_mount_on_update(
-    corto_mount this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
-{
-/* $begin(corto/core/mount/on_update) */
-    CORTO_UNUSED(event);
-    CORTO_UNUSED(observer);
-
-    if (corto_checkAttr(object, CORTO_ATTR_PERSISTENT)) {
-        if (this->type) {
-            corto_id srcType; corto_fullpath(srcType, corto_typeof(object));
-            if (!strcmp(this->type, srcType)) {
-                this->sent.updates ++;
-                corto_mount_onUpdate(this, object);
-                corto_mount_notify(this, CORTO_ON_UPDATE, object);
-            }
-        } else {
-            this->sent.updates ++;
-            corto_mount_onUpdate(this, object);
-            corto_mount_notify(this, CORTO_ON_UPDATE, object);
-        }
     }
 
 /* $end */
@@ -495,15 +440,15 @@ corto_void _corto_mount_onUpdate_v(
 }
 
 /* $header(corto/core/mount/post) */
-static corto_observableEvent corto_mount_findEvent(corto_mount this, corto_observableEvent e) {
+static corto_subscriberEvent corto_mount_findEvent(corto_mount this, corto_subscriberEvent e) {
     corto_iter iter = corto_llIter(this->events);
-    corto_observableEvent e2;
+    corto_subscriberEvent e2;
     while ((corto_iterHasNext(&iter))) {
         e2 = corto_iterNext(&iter);
-        if ((e2->me == e->me) &&
-          (e2->observable == e->observable) &&
-          (e2->source == e->source) &&
-          (e2->observer == e->observer)) {
+        if (!strcmp(e2->result.id, e->result.id) &&
+            !strcmp(e2->result.parent, e->result.parent) &&
+            (corto_observableEvent(e2)->observer == corto_observableEvent(e)->observer))
+        {
             return e2;
         }
     }
@@ -524,18 +469,18 @@ corto_void _corto_mount_post(
      * at the specified rate. */
     if (this->policies.sampleRate) {
         corto_uint32 size = 0;
-        corto_observableEvent e2;
+        corto_subscriberEvent e2;
 
         /* Append new event to queue */
         corto_lock(this);
 
         /* Check if there is already another event in the queue for the same object.
          * if so, replace event with latest update. */
-        if ((e2 = corto_mount_findEvent(this, corto_observableEvent(e)))) {
+        if ((e2 = corto_mount_findEvent(this, corto_subscriberEvent(e)))) {
             corto_llReplace(this->events, e2, e);
-            if (e2->mask & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
-            if (e2->mask & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
-            if (e2->mask & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
+            if (corto_observableEvent(e2)->mask & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
+            if (corto_observableEvent(e2)->mask & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
+            if (corto_observableEvent(e2)->mask & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
             corto_release(e2);
         } else {
             corto_llAppend(this->events, e);
@@ -646,8 +591,8 @@ corto_object _corto_mount_resume(
             }
 
             if (o) {
-                if ((corto_contentType)this->contentTypeHandle && result->value) {
-                    ((corto_contentType)this->contentTypeHandle)->toCorto(
+                if ((corto_contentType)corto_subscriber(this)->contentTypeHandle && result->value) {
+                    ((corto_contentType)corto_subscriber(this)->contentTypeHandle)->toCorto(
                         o, result->value);
                 }
                 if (newObject) {
@@ -701,9 +646,9 @@ corto_int16 _corto_mount_setContentType(
 {
 /* $begin(corto/core/mount/setContentType) */
 
-    corto_setstr(&this->contentType, type);
-    this->contentTypeHandle = (corto_word)corto_loadContentType(type);
-    if (!this->contentTypeHandle) {
+    corto_setstr(&corto_subscriber(this)->contentType, type);
+    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_loadContentType(type);
+    if (!corto_subscriber(this)->contentTypeHandle) {
         goto error;
     }
 

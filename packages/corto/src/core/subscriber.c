@@ -67,6 +67,7 @@ corto_int16 corto_notifySubscribersId(
 {
     corto_object intermediate = NULL;
     corto_contentType contentTypeHandle = NULL;
+    corto_object owner = corto_getOwner();
 
     struct {
         corto_contentType ct;
@@ -104,12 +105,21 @@ corto_int16 corto_notifySubscribersId(
                 corto_subscriber s = subscribers->buffer[it].s;
                 corto_word content = 0;
                 corto_id relativeParent;
+                corto_object instance = subscribers->buffer[it].instance;
 
                 if (!s->expr) {
                     continue;
                 }
 
+                if (instance && (instance == owner)) {
+                    continue;
+                }
+
                 if ((corto_observer(s)->mask & mask) != mask) {
+                    continue;
+                }
+
+                if (corto_observer(s)->type && strcmp(corto_observer(s)->type, type)) {
                     continue;
                 }
 
@@ -178,20 +188,41 @@ corto_int16 corto_notifySubscribersId(
                   relativeParent,
                   type,
                   content,
-                  FALSE
+                  FALSE,
+                  intermediate
                 };
 
-                if (corto_function(s)->kind == CORTO_PROCEDURE_CDECL) {
-                    ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
-                      corto_function(s)->fptr)(subscribers->buffer[it].instance, mask, &r, s);
+                corto_dispatcher dispatcher = corto_observer(s)->dispatcher;
+                if (!dispatcher) {
+                    if (corto_function(s)->kind == CORTO_PROCEDURE_CDECL) {
+                        ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
+                          corto_function(s)->fptr)(instance, mask, &r, s);
+                    } else {
+                        corto_result *rArg = &r;
+                        void *args[4];
+                        args[0] = &instance;
+                        args[1] = &mask;
+                        args[2] = &rArg;
+                        args[3] = &s;
+                        corto_callb(corto_function(s), NULL, args);
+                    }
                 } else {
-                    corto_result *rArg = &r;
-                    void *args[4];
-                    args[0] = &subscribers->buffer[it].instance;
-                    args[1] = &mask;
-                    args[2] = &rArg;
-                    args[3] = &s;
-                    corto_callb(corto_function(s), NULL, args);
+                    corto_attr oldAttr = corto_setAttr(0);
+                    corto_subscriberEvent event = corto_declare(corto_type(corto_subscriberEvent_o));
+                    corto_setAttr(oldAttr);
+                    corto_observableEvent oEvent = corto_observableEvent(event);
+                    corto_setref(&oEvent->observer, s);
+                    corto_setref(&oEvent->me, instance);
+                    corto_setref(&oEvent->observable, NULL);
+                    corto_setref(&oEvent->source, NULL);
+                    oEvent->mask = mask;
+                    corto_copyp(&event->result, corto_result_o, &r);
+                    if (r.value) {
+                        event->result.value =
+                          ((corto_contentType)s->contentTypeHandle)->copy(r.value);
+                    }
+                    event->contentTypeHandle = s->contentTypeHandle;
+                    corto_dispatcher_post(dispatcher, corto_event(event));
                 }
                 if (sep) *sep = '/';
             }
@@ -259,6 +290,16 @@ static corto_subscribeFluent corto_subscribeContentType(
     return corto_subscribeFluentGet();
 }
 
+static corto_subscribeFluent corto_subscribeType(
+    corto_string type)
+{
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->type = type;
+    }
+    return corto_subscribeFluentGet();
+}
+
 static corto_subscribeFluent corto_subscribeInstance(
     corto_object instance)
 {
@@ -295,7 +336,9 @@ static corto_subscriber corto_subscribeCallback(
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->callback = callback;
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         result = corto_subscribeSubscribe(request);
+        corto_dealloc(request);
     }
 
     return result;
@@ -308,6 +351,7 @@ static corto_subscribeFluent corto_subscribeFluentGet(void)
     result.callback = corto_subscribeCallback;
     result.instance = corto_subscribeInstance;
     result.disabled = corto_subscribeDisabled;
+    result.type = corto_subscribeType;
     result.dispatcher = corto_subscribeDispatcher;
     return result;
 }
@@ -470,6 +514,11 @@ corto_int16 _corto_subscriber_subscribe(
     corto_bool align = FALSE;
     corto_eventMask mask = corto_observer(this)->mask;
 
+    corto_debug("corto: subscriber '%s': subscribe for %s, %s",
+      corto_fullpath(NULL, this),
+      this->parent,
+      this->expr);
+
     if ((mask == CORTO_ON_DECLARE) || (mask == CORTO_ON_DEFINE)) {
         align = TRUE;
         corto_int16 ret = corto_select(this->parent, this->expr).iter(&it);
@@ -528,6 +577,10 @@ corto_int16 _corto_subscriber_unsubscribe(
     corto_object instance)
 {
 /* $begin(corto/core/subscriber/unsubscribe) */
+    corto_debug("corto: subscriber '%s': unsubscribe for %s, %s",
+      corto_fullpath(NULL, this),
+      this->parent,
+      this->expr);
     return corto_subscriber_unsubscribeIntern(this, instance, FALSE);
 /* $end */
 }

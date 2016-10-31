@@ -121,6 +121,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, union);\
     SSO_OP_CLASS(op, event);\
     SSO_OP_CLASS(op, observableEvent);\
+    SSO_OP_CLASS(op, subscriberEvent);\
     SSO_OP_CLASS(op, invokeEvent);\
     SSO_OP_CLASS(op, binary);\
     SSO_OP_CLASS(op, boolean);\
@@ -311,6 +312,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, observableEvent_mask);\
     SSO_OP_OBJ_CORE(op, observableEvent_thread);\
     SSO_OP_OBJ_CORE(op, observableEvent_handle_);\
+    /* subscriberEvent */\
+    SSO_OP_OBJ_CORE(op, subscriberEvent_result);\
+    SSO_OP_OBJ_CORE(op, subscriberEvent_contentTypeHandle);\
+    SSO_OP_OBJ_CORE(op, subscriberEvent_handle_);\
+    SSO_OP_OBJ_CORE(op, subscriberEvent_construct_);\
+    SSO_OP_OBJ_CORE(op, subscriberEvent_destruct_);\
     /* invokeEvent */\
     SSO_OP_OBJ_CORE(op, invokeEvent_mount);\
     SSO_OP_OBJ_CORE(op, invokeEvent_instance);\
@@ -653,13 +660,15 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, routerimpl_maxArgs);\
     SSO_OP_OBJ_CORE(op, routerimpl_matchRoute_);\
     /* mount */\
-    SSO_OP_OBJ_CORE(op, mount_mount);\
-    SSO_OP_OBJ_CORE(op, mount_mask);\
-    SSO_OP_OBJ_CORE(op, mount_type);\
-    SSO_OP_OBJ_CORE(op, mount_attr);\
     SSO_OP_OBJ_CORE(op, mount_kind);\
+    SSO_OP_OBJ_CORE(op, mount_parent);\
+    SSO_OP_OBJ_CORE(op, mount_expr);\
+    SSO_OP_OBJ_CORE(op, mount_type);\
     SSO_OP_OBJ_CORE(op, mount_contentType);\
     SSO_OP_OBJ_CORE(op, mount_policy);\
+    SSO_OP_OBJ_CORE(op, mount_mount);\
+    SSO_OP_OBJ_CORE(op, mount_mask);\
+    SSO_OP_OBJ_CORE(op, mount_attr);\
     SSO_OP_OBJ_CORE(op, mount_sent);\
     SSO_OP_OBJ_CORE(op, mount_received);\
     SSO_OP_OBJ_CORE(op, mount_sentDiscarded);\
@@ -667,7 +676,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_subscriptions);\
     SSO_OP_OBJ_CORE(op, mount_events);\
     SSO_OP_OBJ_CORE(op, mount_passThrough);\
-    SSO_OP_OBJ_CORE(op, mount_contentTypeHandle);\
     SSO_OP_OBJ_CORE(op, mount_thread);\
     SSO_OP_OBJ_CORE(op, mount_quit);\
     SSO_OP_OBJ_CORE(op, mount_hasNotify);\
@@ -693,9 +701,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_onResume_);\
     SSO_OP_OBJ_CORE(op, mount_onSubscribe_);\
     SSO_OP_OBJ_CORE(op, mount_onUnsubscribe_);\
-    SSO_OP_OBJ_CORE(op, mount_on_declare);\
-    SSO_OP_OBJ_CORE(op, mount_on_update);\
-    SSO_OP_OBJ_CORE(op, mount_on_delete);\
     /* loader */\
     SSO_OP_OBJ_CORE(op, loader_construct_);\
     SSO_OP_OBJ_CORE(op, loader_destruct_);\
@@ -769,6 +774,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_type);\
     SSO_OP_OBJ_CORE(op, result_value);\
     SSO_OP_OBJ_CORE(op, result_leaf);\
+    SSO_OP_OBJ_CORE(op, result_object);\
     SSO_OP_OBJ_CORE(op, result_history);\
     SSO_OP_OBJ_CORE(op, result_augments);\
     SSO_OP_OBJ_CORE(op, result_mount);\
@@ -782,7 +788,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, request_content);\
     SSO_OP_OBJ_CORE(op, request_from);\
     SSO_OP_OBJ_CORE(op, request_to);\
-    SSO_OP_OBJ_CORE(op, request_param);\
     /* package */\
     SSO_OP_OBJ_CORE(op, package_url);\
     SSO_OP_OBJ_CORE(op, package_version);\

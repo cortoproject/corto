@@ -519,3 +519,29 @@ corto_int32 _corto_routerimpl_matchRoute(
     
     return _result;
 }
+
+corto_void _corto_subscriberEvent_handle(
+    corto_subscriberEvent this)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
+    }
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::handle()@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), NULL, this);
+    }
+}

@@ -944,6 +944,12 @@ error:
     return -1;
 }
 
+corto_value corto_value_init(void) {
+    corto_value v;
+    memset(&v, 0, sizeof(corto_value));
+    return v;
+}
+
 void corto_value_free(corto_value *v) {
     corto_type t = NULL;
     switch(v->kind) {
@@ -964,4 +970,5 @@ void corto_value_free(corto_value *v) {
             }
         }
     }
+    *v = corto_value_init();
 }

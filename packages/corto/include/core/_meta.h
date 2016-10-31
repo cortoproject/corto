@@ -24,6 +24,7 @@ extern corto_package corto_core_o;
 /* Forward declarations of classes */
 CORTO_META_OBJECT(class, event);
 CORTO_META_OBJECT(class, observableEvent);
+CORTO_META_OBJECT(class, subscriberEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
@@ -63,6 +64,8 @@ CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, route);
 CORTO_META_OBJECT(struct, time);
 CORTO_META_OBJECT(struct, position);
+
+CORTO_META_OBJECT(subscriber, mount_on_notify);
 
 #ifdef __cplusplus
 }

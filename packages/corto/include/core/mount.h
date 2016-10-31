@@ -35,27 +35,6 @@ CORTO_EXPORT corto_void _corto_mount_invoke(
     corto_function proc,
     corto_word argptrs);
 #define corto_mount_invoke(_this, instance, proc, argptrs) _corto_mount_invoke(corto_mount(_this), instance, corto_function(proc), argptrs)
-
-CORTO_EXPORT corto_void _corto_mount_on_declare(
-    corto_mount _this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer);
-#define corto_mount_on_declare(_this, event, object, observer) _corto_mount_on_declare(corto_mount(_this), event, object, corto_observer(observer))
-
-CORTO_EXPORT corto_void _corto_mount_on_delete(
-    corto_mount _this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer);
-#define corto_mount_on_delete(_this, event, object, observer) _corto_mount_on_delete(corto_mount(_this), event, object, corto_observer(observer))
-
-CORTO_EXPORT corto_void _corto_mount_on_update(
-    corto_mount _this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer);
-#define corto_mount_on_update(_this, event, object, observer) _corto_mount_on_update(corto_mount(_this), event, object, corto_observer(observer))
 CORTO_EXPORT corto_void _corto_mount_onDeclare(
     corto_mount _this,
     corto_object observable);

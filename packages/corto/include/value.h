@@ -101,6 +101,7 @@ struct corto_value {
 
 typedef corto_value corto_valueStack[64];
 
+/* Getters */
 corto_type corto_value_getType(corto_value* val);
 corto_void* corto_value_getPtr(corto_value* val);
 corto_object corto_value_getObject(corto_value* val);
@@ -149,6 +150,8 @@ corto_int16 corto_value_binaryOperator(corto_operatorKind _operator, corto_value
 
 #define corto_value_cast(in, dstType, out) _corto_value_cast(in, corto_type(dstType), out)
 corto_int16 _corto_value_cast(corto_value *in, corto_type dstType, corto_value *out);
+
+corto_value corto_value_init(void);
 void corto_value_free(corto_value *v);
 
 #ifdef __cplusplus
