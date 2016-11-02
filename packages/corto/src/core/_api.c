@@ -2372,7 +2372,7 @@ corto_int16 _corto_operatorKindDeinit(corto_operatorKind* value) {
     return result;
 }
 
-corto_package _corto_packageCreate(corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
+corto_package _corto_packageCreate(corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_bool nocorto, corto_stringlist cflags, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
     corto_package _this;
     _this = corto_package(corto_declare(corto_package_o));
     if (!_this) {
@@ -2384,6 +2384,10 @@ corto_package _corto_packageCreate(corto_string url, corto_string version, corto
         corto_setstr(&((corto_package)_this)->author, author);
         corto_setstr(&((corto_package)_this)->description, description);
         corto_setstr(&((corto_package)_this)->env, env);
+        ((corto_package)_this)->nocorto = nocorto;
+        if (cflags) {
+            corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+        }
         if (dependencies) {
             corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
         }
@@ -2412,7 +2416,7 @@ corto_package _corto_packageCreate(corto_string url, corto_string version, corto
     return _this;
 }
 
-corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
+corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_bool nocorto, corto_stringlist cflags, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
     corto_package _this;
     _this = corto_package(corto_declareChild(_parent, _name, corto_package_o));
     if (!_this) {
@@ -2424,6 +2428,10 @@ corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name
         corto_setstr(&((corto_package)_this)->author, author);
         corto_setstr(&((corto_package)_this)->description, description);
         corto_setstr(&((corto_package)_this)->env, env);
+        ((corto_package)_this)->nocorto = nocorto;
+        if (cflags) {
+            corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+        }
         if (dependencies) {
             corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
         }
@@ -2452,7 +2460,7 @@ corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name
     return _this;
 }
 
-corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
+corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_bool nocorto, corto_stringlist cflags, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         corto_setstr(&((corto_package)_this)->url, url);
@@ -2460,6 +2468,10 @@ corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_st
         corto_setstr(&((corto_package)_this)->author, author);
         corto_setstr(&((corto_package)_this)->description, description);
         corto_setstr(&((corto_package)_this)->env, env);
+        ((corto_package)_this)->nocorto = nocorto;
+        if (cflags) {
+            corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+        }
         if (dependencies) {
             corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
         }
@@ -2505,13 +2517,17 @@ corto_package _corto_packageDeclareChild(corto_object _parent, corto_string _nam
     return _this;
 }
 
-corto_int16 _corto_packageDefine(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
+corto_int16 _corto_packageDefine(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_bool nocorto, corto_stringlist cflags, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_package)_this)->url, url);
     corto_setstr(&((corto_package)_this)->version, version);
     corto_setstr(&((corto_package)_this)->author, author);
     corto_setstr(&((corto_package)_this)->description, description);
     corto_setstr(&((corto_package)_this)->env, env);
+    ((corto_package)_this)->nocorto = nocorto;
+    if (cflags) {
+        corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+    }
     if (dependencies) {
         corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
     }
@@ -2535,13 +2551,17 @@ corto_int16 _corto_packageDefine(corto_package _this, corto_string url, corto_st
     return corto_define(_this);
 }
 
-corto_package _corto_packageAssign(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
+corto_package _corto_packageAssign(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_bool nocorto, corto_stringlist cflags, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
     CORTO_UNUSED(_this);
     corto_setstr(&((corto_package)_this)->url, url);
     corto_setstr(&((corto_package)_this)->version, version);
     corto_setstr(&((corto_package)_this)->author, author);
     corto_setstr(&((corto_package)_this)->description, description);
     corto_setstr(&((corto_package)_this)->env, env);
+    ((corto_package)_this)->nocorto = nocorto;
+    if (cflags) {
+        corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+    }
     if (dependencies) {
         corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
     }
