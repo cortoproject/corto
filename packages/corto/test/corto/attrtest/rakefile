@@ -1,0 +1,4 @@
+
+PACKAGE = 'attrtest'
+
+require "#{ENV['CORTO_BUILD']}/package"

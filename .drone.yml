@@ -1,0 +1,12 @@
+# Build configuration for https://www.tea-ci.org
+
+build:
+  image: teaci/msys32
+  shell: mingw32
+  pull: true
+  commands:
+    - source ./configure
+    - pacman -S --noprogressbar --noconfirm ruby
+    - gem install rake
+    - rake
+    - corto test

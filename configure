@@ -1,6 +1,11 @@
-export CORTEX_HOME=`pwd`
-export LD_LIBRARY_PATH=$CORTEX_HOME/bin:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$CORTEX_HOME/generator/bin:$LD_LIBRARY_PATH
-export PATH=$CORTEX_HOME/bin:$PATH
-export PATH=$CORTEX_HOME/scripts:$PATH
+DIR=`echo $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )`
+export CORTO_HOME=$HOME/.corto
+export CORTO_TARGET=$HOME/.corto
+export PATH=$CORTO_TARGET/bin:$PATH
+export CORTO_VERSION=0.2
+export CORTO_BUILD=$HOME/.corto/lib/corto/$CORTO_VERSION/build
+export LD_LIBRARY_PATH=$CORTO_HOME/lib:$LD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$CORTO_HOME/lib:$DYLD_LIBRARY_PATH
 
+mkdir -p $HOME/.corto/lib/corto/$CORTO_VERSION
+cp -r $DIR/build $HOME/.corto/lib/corto/$CORTO_VERSION

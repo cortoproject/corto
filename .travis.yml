@@ -1,19 +1,50 @@
 language: c
 
+sudo: false
+
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "lrQtWGv7FRGEqOn/wdv0I4LePuWaCyJ4tSiLkYKh0RqQJ4oe5jsPN30lRskXMzeOBVK3HZefsnYE8+SDRezQCqaxFkjdHJv1fIqpl0D9+YYHAYXE12DUlXivgG/ujzGg2t33V05am+/oSWp3RCdJQYA1GhKP5tAU4535yS8roZI="
+   - secure: "3Njik+f5HM4VM6wdu09NWR1cEFvNViTyK7+k1BFcO9v0i+ILJmuIkkhjyE79ou8+rKZzGjP9bNk8VcB8P/6dLg60IO7we6t+D8ibe4uS/zHRoxHmc88Uz3Khs7yUlDeUfCo6XgHwSCLJ1QHhR7XjkP7IVdQZwH4KKycl7GuYgZ0="
+
+before_install:
+      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 addons:
   coverity_scan:
     project:
-      name: "Seldomberry/Cortex"
+      name: "cortoproject/corto"
       description: "Build submitted via Travis CI"
     notification_email: sander.mertens8@gmail.com
     build_command_prepend: "source configure"
-    build_command:   "make"
+    build_command:   "rake"
     branch_pattern: coverity_scan
 
-script: source configure && make
+install:
+  - cd ..
+  - mkdir projects
+  - mv corto projects/corto
+  - cd projects
+  - git clone https://github.com/cortoproject/c-binding.git
+  - git clone https://github.com/cortoproject/xml.git
+  - git clone https://github.com/cortoproject/corto-language.git
+  - git clone https://github.com/cortoproject/io.git
+  - git clone https://github.com/cortoproject/cortodoc.git
+  - git clone https://github.com/cortoproject/test.git
+  - git clone https://github.com/cortoproject/json.git
+  - git clone https://github.com/cortoproject/t.git
+  - git clone https://github.com/cortoproject/examples.git
+  - |+
+    echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json t)
+    require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
+  - source corto/configure
+
+script:
+  - source corto/configure
+  - rake
+  - rake test
+  # Test examples
+  - cd examples
+  - ./run.sh
+  - cd ..

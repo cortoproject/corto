@@ -1,0 +1,4 @@
+
+TARGET = 'fooparent/tc_appNested'
+
+require "#{ENV['CORTO_BUILD']}/application"

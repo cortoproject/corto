@@ -1,0 +1,4 @@
+#package /tc_appLocalDef
+
+struct Point::
+  x, y: int32

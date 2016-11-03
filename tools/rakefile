@@ -1,0 +1,6 @@
+
+COMPONENTS = %w(
+    corto
+)
+
+require "#{ENV['CORTO_BUILD']}/forward"
