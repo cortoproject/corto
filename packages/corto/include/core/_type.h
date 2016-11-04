@@ -275,6 +275,8 @@ struct corto_package_s {
     corto_string author;
     corto_string description;
     corto_string env;
+    corto_bool nocorto;
+    corto_stringlist cflags;
     corto_stringlist dependencies;
     corto_string prefix;
     corto_stringlist cortoVersion;

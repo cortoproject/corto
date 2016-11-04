@@ -796,6 +796,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, package_author);\
     SSO_OP_OBJ_CORE(op, package_description);\
     SSO_OP_OBJ_CORE(op, package_env);\
+    SSO_OP_OBJ_CORE(op, package_nocorto);\
+    SSO_OP_OBJ_CORE(op, package_cflags);\
     SSO_OP_OBJ_CORE(op, package_dependencies);\
     SSO_OP_OBJ_CORE(op, package_prefix);\
     SSO_OP_OBJ_CORE(op, package_cortoVersion);\
