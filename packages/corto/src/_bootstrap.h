@@ -1409,12 +1409,16 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, hasNotify, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, hasResume, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, contentTypeOut, lang_string, CORTO_READONLY|CORTO_LOCAL);
+    CORTO_MEMBER_O(core_mount, contentTypeOutHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_mount, init, "()", lang_int16, FALSE, corto_mount_init);
     CORTO_METHOD_O(core_mount, construct, "()", lang_int16, FALSE, corto_mount_construct);
     CORTO_METHOD_O(core_mount, destruct, "()", lang_void, FALSE, corto_mount_destruct);
     CORTO_METHOD_O(core_mount, post, "(event e)", lang_void, FALSE, corto_mount_post);
     CORTO_METHOD_O(core_mount, onPoll, "()", lang_void, TRUE, corto_mount_onPoll_v);
     CORTO_METHOD_O(core_mount, setContentType, "(string type)", lang_int16, FALSE, corto_mount_setContentType);
+    CORTO_METHOD_O(core_mount, setContentTypeIn, "(string type)", lang_int16, FALSE, corto_mount_setContentTypeIn);
+    CORTO_METHOD_O(core_mount, setContentTypeOut, "(string type)", lang_int16, FALSE, corto_mount_setContentTypeOut);
     CORTO_METHOD_O(core_mount, return, "(core/result r)", lang_void, FALSE, corto_mount_return);
     CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, FALSE, corto_mount_invoke);
     CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, FALSE, corto_mount_request);

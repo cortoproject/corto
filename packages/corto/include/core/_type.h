@@ -187,6 +187,8 @@ struct corto_mount_s {
     corto_bool quit;
     corto_bool hasNotify;
     corto_bool hasResume;
+    corto_string contentTypeOut;
+    corto_word contentTypeOutHandle;
 };
 
 /*  /corto/core/invokeEvent */

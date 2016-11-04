@@ -2483,9 +2483,9 @@ corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_st
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->author, author);
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->description, description);
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->env, env);
-            ((corto_package)_this)->nocorto = nocorto;
+            ((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->nocorto = nocorto;
             if (cflags) {
-                corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+                corto_copyp(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->cflags, corto_stringlist_o, &cflags);
             }
             if (dependencies) {
                 corto_copyp(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->dependencies, corto_stringlist_o, &dependencies);
@@ -4355,3 +4355,4 @@ void corto_resultListClear(corto_resultList list) {
     }
     corto_llClear(list);
 }
+

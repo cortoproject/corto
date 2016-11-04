@@ -1179,3 +1179,4 @@ CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 }
 #endif
 #endif
+

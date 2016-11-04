@@ -171,6 +171,16 @@ CORTO_EXPORT corto_int16 _corto_mount_setContentType(
     corto_string type);
 #define corto_mount_setContentType(_this, type) _corto_mount_setContentType(corto_mount(_this), type)
 
+CORTO_EXPORT corto_int16 _corto_mount_setContentTypeIn(
+    corto_mount _this,
+    corto_string type);
+#define corto_mount_setContentTypeIn(_this, type) _corto_mount_setContentTypeIn(corto_mount(_this), type)
+
+CORTO_EXPORT corto_int16 _corto_mount_setContentTypeOut(
+    corto_mount _this,
+    corto_string type);
+#define corto_mount_setContentTypeOut(_this, type) _corto_mount_setContentTypeOut(corto_mount(_this), type)
+
 CORTO_EXPORT corto_void _corto_mount_subscribe(
     corto_mount _this,
     corto_string parent,

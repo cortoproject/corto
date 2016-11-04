@@ -109,7 +109,7 @@ static corto_word corto_selectConvert(
     corto_word result = 0;
 
     corto_contentType srcType = (corto_contentType)
-      corto_subscriber(data->mounts[data->stack[data->sp].currentMount - 1])->contentTypeHandle;
+      data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeOutHandle;
 
     /* If source serializer is loaded, a conversion is
      * needed */
@@ -372,8 +372,7 @@ static corto_bool corto_selectMatch(
                 corto_mount r = data->mounts[i];
                 corto_string rType = corto_observer(r)->type;
 
-                /* If a SINK mount doesn't return a valid iterator, which typically
-                 * happens if it doesn't implement the onRequest method, select will
+                /* If a SINK mount doesn't implement the onRequest method, select will
                  * return the contents of the object store */
                 if ((r->kind == CORTO_SINK) && !r->passThrough) {
                     if (rType) {
