@@ -712,13 +712,8 @@ CORTO_EXPORT corto_package _corto_packageAssign(corto_package _this, corto_strin
 #define corto_package__optional_Set(url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) corto_packageAssign((corto_package*)corto_calloc(sizeof(corto_package)), url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
 #define corto_package__optional_SetCond(cond, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) cond ? corto_packageAssign((corto_package*)corto_calloc(sizeof(corto_package)), url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) : NULL
 #define corto_packageUnset(_this) _this ? corto_deinitp(_this, corto_package_o) : 0; corto_dealloc(_this); _this = NULL;
-<<<<<<< HEAD
-#define corto_packageAssign(_this, url, version, author, description, env, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) _corto_packageAssign(_this, url, version, author, description, env, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
-#define corto_packageSet(_this, url, version, author, description, env, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) _this = _this ? _this : (corto_package*)corto_calloc(sizeof(corto_package)); _corto_packageAssign(_this, url, version, author, description, env, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
-=======
-#define corto_packageAssign(_this, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) _corto_packageAssign(corto_package(_this), url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
-#define corto_packageSet(_this, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) _this = _this ? _this : (corto_package*)corto_calloc(sizeof(corto_package)); _corto_packageAssign(corto_package(_this), url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
->>>>>>> origin/master
+#define corto_packageAssign(_this, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) _corto_packageAssign(_this, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
+#define corto_packageSet(_this, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link) _this = _this ? _this : (corto_package*)corto_calloc(sizeof(corto_package)); _corto_packageAssign(_this, url, version, author, description, env, nocorto, cflags, dependencies, prefix, cortoVersion, local, lib, libpath, include, link)
 CORTO_EXPORT corto_string _corto_packageStr(corto_package value);
 #define corto_packageStr(value) _corto_packageStr(corto_package(value))
 CORTO_EXPORT corto_package corto_packageFromStr(corto_package value, corto_string str);
@@ -1184,4 +1179,3 @@ CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 }
 #endif
 #endif
-

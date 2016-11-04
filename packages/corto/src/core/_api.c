@@ -2477,13 +2477,16 @@ corto_package _corto_packageCreateChild(corto_object _parent, corto_string _name
 corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_string version, corto_string author, corto_string description, corto_string env, corto_bool nocorto, corto_stringlist cflags, corto_stringlist dependencies, corto_string prefix, corto_stringlist cortoVersion, corto_bool local, corto_stringlist lib, corto_stringlist libpath, corto_stringlist include, corto_stringlist link) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
-<<<<<<< HEAD
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->url, url);
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->version, version);
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->author, author);
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->description, description);
             corto_setstr(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->env, env);
+            ((corto_package)_this)->nocorto = nocorto;
+            if (cflags) {
+                corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+            }
             if (dependencies) {
                 corto_copyp(&((corto_package)((corto_package)CORTO_OFFSET(_this, ((corto_type)corto_package_o)->size)))->dependencies, corto_stringlist_o, &dependencies);
             }
@@ -2510,6 +2513,10 @@ corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_st
             corto_setstr(&((corto_package)_this)->author, author);
             corto_setstr(&((corto_package)_this)->description, description);
             corto_setstr(&((corto_package)_this)->env, env);
+            ((corto_package)_this)->nocorto = nocorto;
+            if (cflags) {
+                corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
+            }
             if (dependencies) {
                 corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
             }
@@ -2530,36 +2537,6 @@ corto_int16 _corto_packageUpdate(corto_package _this, corto_string url, corto_st
             if (link) {
                 corto_copyp(&((corto_package)_this)->link, corto_stringlist_o, &link);
             }
-=======
-        corto_setstr(&((corto_package)_this)->url, url);
-        corto_setstr(&((corto_package)_this)->version, version);
-        corto_setstr(&((corto_package)_this)->author, author);
-        corto_setstr(&((corto_package)_this)->description, description);
-        corto_setstr(&((corto_package)_this)->env, env);
-        ((corto_package)_this)->nocorto = nocorto;
-        if (cflags) {
-            corto_copyp(&((corto_package)_this)->cflags, corto_stringlist_o, &cflags);
-        }
-        if (dependencies) {
-            corto_copyp(&((corto_package)_this)->dependencies, corto_stringlist_o, &dependencies);
-        }
-        corto_setstr(&((corto_package)_this)->prefix, prefix);
-        if (cortoVersion) {
-            corto_copyp(&((corto_package)_this)->cortoVersion, corto_stringlist_o, &cortoVersion);
-        }
-        ((corto_package)_this)->local = local;
-        if (lib) {
-            corto_copyp(&((corto_package)_this)->lib, corto_stringlist_o, &lib);
-        }
-        if (libpath) {
-            corto_copyp(&((corto_package)_this)->libpath, corto_stringlist_o, &libpath);
-        }
-        if (include) {
-            corto_copyp(&((corto_package)_this)->include, corto_stringlist_o, &include);
-        }
-        if (link) {
-            corto_copyp(&((corto_package)_this)->link, corto_stringlist_o, &link);
->>>>>>> origin/master
         }
         corto_updateEnd(_this);
     } else {
@@ -4378,4 +4355,3 @@ void corto_resultListClear(corto_resultList list) {
     }
     corto_llClear(list);
 }
-
