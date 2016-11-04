@@ -2877,9 +2877,9 @@ corto_object corto_ownerof(corto_object o) {
     corto__persistent* persistent;
     corto_object result = NULL;
 
-    if (!corto_checkAttr(o, CORTO_DECLARED) && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (!corto_checkState(o, CORTO_DECLARED) && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         o = corto_parentof(o);
-        while (o && !corto_checkAttr(o, CORTO_DECLARED)) {
+        while (o && !corto_checkState(o, CORTO_DECLARED)) {
             o = corto_parentof(o);
         }
     }

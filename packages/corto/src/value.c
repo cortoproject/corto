@@ -106,6 +106,41 @@ corto_void* corto_value_getPtr(corto_value* val) {
     return result;
 }
 
+corto_int16 corto_value_setPtr(corto_value *val, void *ptr) {
+    switch(val->kind) {
+    case CORTO_OBJECT:
+        val->is.object.o = ptr;
+        break;
+    case CORTO_BASE:
+        val->is.base.v = ptr;
+        break;
+    case CORTO_VALUE:
+        val->is.value.v = ptr;
+        break;
+    case CORTO_MEMBER:
+        val->is.member.v = ptr;
+        break;
+    case CORTO_CONSTANT:
+        val->is.constant.v = ptr;
+        break;
+    case CORTO_ELEMENT:
+        val->is.element.v = ptr;
+        break;
+    case CORTO_MAP_ELEMENT:
+        val->is.mapElement.v = ptr;
+        break;
+    case CORTO_LITERAL:
+        corto_seterr("cannot set pointer for literal");
+        goto error;
+    default:
+        corto_critical("corto_value_setPtr: invalid corto_valueKind(%d).", val->kind);
+        break;
+    }
+    return 0;
+error:
+    return -1;
+}
+
 corto_object corto_value_getObject(corto_value* val) {
     corto_object result;
 

@@ -53,6 +53,7 @@ corto_void _test_Ownership_tc_checkOwnerReplicator(
 
     corto_object o = corto_voidCreateChild(NULL, "o");
     test_assert(o != NULL);
+    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_ownerof(o) == r);
 
     corto_int16 result = corto_delete(o);

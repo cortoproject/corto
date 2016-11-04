@@ -78,6 +78,7 @@ typedef struct corto_selectData {
     corto_uint64 offset;
     corto_uint64 limit;
     corto_uint64 count;
+    corto_uint64 skip;
 
     /* History */
     corto_frame from;
@@ -411,10 +412,6 @@ static corto_bool corto_selectMatch(
         if (result && data->typeFilter) {
             result = corto_match(data->typeFilter, type);
         }
-    }
-
-    if (result) {
-        data->count ++;
     }
 
     return result;
@@ -817,10 +814,12 @@ static void corto_selectTree(
 
             if (o) {
                 if (corto_selectMatch(frame, o, data) &&
-                   (data->count > data->offset))
+                   (data->skip >= data->offset))
                 {
                     noMatch = FALSE;
                     corto_setItemData(o, data->next, data);
+                } else {
+                    data->skip ++;
                 }
                 leaf = FALSE;
                 data->recursiveQuery[0] = '\0';
@@ -954,6 +953,7 @@ static void* corto_selectNext(corto_resultIter *iter) {
 
     if (data->next) {
         corto_debug("corto: select: Next (%s, %s)", data->next->id, data->next->parent);
+        data->count ++;
     }
 
     return data->next;
@@ -1146,8 +1146,7 @@ static int corto_selectHasNext(corto_resultIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->limit) {
-         if ((data->count > data->offset) &&
-             (data->limit <= (data->count - data->offset)))
+         if (data->limit <= data->count)
          {
               /* Limit is reached */
               goto stop;

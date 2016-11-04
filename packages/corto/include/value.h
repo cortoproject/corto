@@ -102,20 +102,21 @@ struct corto_value {
 typedef corto_value corto_valueStack[64];
 
 /* Getters */
-corto_type corto_value_getType(corto_value* val);
-corto_void* corto_value_getPtr(corto_value* val);
-corto_object corto_value_getObject(corto_value* val);
-corto_uint32 corto_value_getIndex(corto_value* val);
+corto_type corto_value_getType(corto_value *val);
+corto_void* corto_value_getPtr(corto_value *val);
+corto_int16 corto_value_setPtr(corto_value *val, void *ptr);
+corto_object corto_value_getObject(corto_value *val);
+corto_uint32 corto_value_getIndex(corto_value *val);
 
 /* Initializers */
 corto_value _corto_value_object(corto_object o, corto_type t);
 corto_value _corto_value_base(void *v, corto_type t);
-corto_value _corto_value_value(corto_type t, void* v);
-corto_value corto_value_member(corto_object o, corto_member t, void* v);
-corto_value corto_value_constant(corto_object o, corto_constant* c, void* v);
-corto_value _corto_value_element(corto_object o, corto_type t, corto_uint32 index, void* v);
-corto_value corto_value_mapElement(corto_object o, corto_type t, corto_type keyType, corto_void *key, void* v);
-corto_value corto_value_literal(corto_literalKind kind, void* value);
+corto_value _corto_value_value(corto_type t, void *v);
+corto_value corto_value_member(corto_object o, corto_member t, void *v);
+corto_value corto_value_constant(corto_object o, corto_constant *c, void *v);
+corto_value _corto_value_element(corto_object o, corto_type t, corto_uint32 index, void *v);
+corto_value corto_value_mapElement(corto_object o, corto_type t, corto_type keyType, corto_void *key, void *v);
+corto_value corto_value_literal(corto_literalKind kind, void *value);
 corto_value corto_value_literalBoolean(corto_bool value);
 corto_value corto_value_literalCharacter(corto_char value);
 corto_value corto_value_literalUnsignedInteger(corto_uint64 value);
@@ -131,9 +132,9 @@ corto_value corto_value_literalString(corto_string value);
 #define corto_value_mapElement(o, t, kt, k, v) _corto_value_mapElement(o, corto_type(t), corto_type(kt), k, v)
 
 /* Helpers */
-void corto_valueSetValue(corto_value* val, corto_void* v);
-char* corto_strving(corto_value* val, char* buffer, unsigned int length);
-char* corto_valueExpr(corto_value* val, char* buffer, unsigned int length);
+void corto_valueSetValue(corto_value *val, corto_void *v);
+char* corto_strving(corto_value *val, char *buffer, unsigned int length);
+char* corto_valueExpr(corto_value *val, char *buffer, unsigned int length);
 
 /* Expressions */
 corto_int16 corto_binaryExpr_getType(

@@ -860,6 +860,29 @@ corto_void _test_Select_tc_selectObjectTree(
 /* $end */
 }
 
+corto_void _test_Select_tc_selectOffsetLargerThanLimit(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectOffsetLargerThanLimit) */
+    corto_ll results = NULL;
+
+    results = test_Select_collect(NULL, "a/*", 4, 2);
+    test_assert(results != NULL);
+
+    test_assertint(corto_llSize(results), 2);
+
+    test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
+    test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
+    test_assert(!test_Select_hasObject(results, "/a", "Abab", "void"));
+    test_assert(!test_Select_hasObject(results, "/a", "abc", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
+    test_assert(test_Select_hasObject(results, "/a", "abdc", "void"));
+    test_assert(!test_Select_hasObject(results, "/a", "b", "void"));
+    test_assert(!test_Select_hasObject(results, "/a", "c", "void"));
+
+/* $end */
+}
+
 corto_void _test_Select_tc_selectOffsetLimit(
     test_Select this)
 {
@@ -1188,16 +1211,6 @@ corto_void _test_Select_tc_selectParentNoSlash(
     test_assertint(corto_llSize(results), 1);
 
     test_assert(test_Select_hasObject(results, ".", "lang", "/corto/core/package"));
-
-/* $end */
-}
-
-corto_void _test_Select_tc_selectParentWithLoader(
-    test_Select this)
-{
-/* $begin(test/Select/tc_selectParentWithLoader) */
-
-    /* << Insert implementation >> */
 
 /* $end */
 }

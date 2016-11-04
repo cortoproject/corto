@@ -503,14 +503,13 @@ test/Suite Select::
     void tc_selectOffsetLimitOvershootScope()
     void tc_selectOffsetLimitOvershootTree()
     void tc_selectOffsetLimit()
-    void tc_selectOffsetLimit()
+    void tc_selectOffsetLargerThanLimit()
     void tc_selectLimitScope()
     void tc_selectLimitTree()
     void tc_selectLimitOvershootScope()
     void tc_selectLimitOvershootTree()
     void tc_selectOffsetLimitFilter()
 
-    void tc_selectParentWithLoader()
     void tc_selectSeparator()
 
 class JsonReplicator : mount, hidden::
