@@ -13,7 +13,6 @@ extern "C" {
 #endif
 
 /* Casting macro's */
-#define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
 #define corto_augmentData(o) ((corto_augmentData*)corto_assertType((corto_type)corto_augmentData_o, o))
 #define corto_augmentseq(o) ((corto_augmentseq*)corto_assertType((corto_type)corto_augmentseq_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
@@ -49,14 +48,6 @@ extern "C" {
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
-/* /corto/core/attr */
-CORTO_BITMASK(corto_attr);
-    #define CORTO_ATTR_SCOPED (0x1)
-    #define CORTO_ATTR_WRITABLE (0x2)
-    #define CORTO_ATTR_OBSERVABLE (0x4)
-    #define CORTO_ATTR_PERSISTENT (0x8)
-    #define CORTO_ATTR_DEFAULT (0x10)
-
 /*  /corto/core/augmentData */
 typedef struct corto_augmentData corto_augmentData;
 
@@ -72,9 +63,9 @@ CORTO_INTERFACE(corto_dispatcher);
 
 
 /*  /corto/core/event */
-CORTO_CLASS(corto_event);
+typedef struct corto_event_s *corto_event;
 
-CORTO_CLASS_DEF(corto_event) {
+struct corto_event_s {
     corto_uint16 kind;
     corto_bool handled;
 };
@@ -112,10 +103,10 @@ struct corto_frame {
 };
 
 /*  /corto/core/observer */
-CORTO_CLASS(corto_observer);
+typedef struct corto_observer_s *corto_observer;
 
-CORTO_CLASS_DEF(corto_observer) {
-    CORTO_EXTEND(corto_function);
+struct corto_observer_s {
+    struct corto_function_s _parent;
     corto_eventMask mask;
     corto_object observable;
     corto_object instance;
@@ -127,10 +118,10 @@ CORTO_CLASS_DEF(corto_observer) {
 };
 
 /*  /corto/core/subscriber */
-CORTO_CLASS(corto_subscriber);
+typedef struct corto_subscriber_s *corto_subscriber;
 
-CORTO_CLASS_DEF(corto_subscriber) {
-    CORTO_EXTEND(corto_observer);
+struct corto_subscriber_s {
+    struct corto_observer_s _parent;
     corto_string parent;
     corto_string expr;
     corto_string contentType;
@@ -176,10 +167,10 @@ struct corto_mountSubscription {
 CORTO_LIST(corto_mountSubscriptionList);
 
 /*  /corto/core/mount */
-CORTO_CLASS(corto_mount);
+typedef struct corto_mount_s *corto_mount;
 
-CORTO_CLASS_DEF(corto_mount) {
-    CORTO_EXTEND(corto_subscriber);
+struct corto_mount_s {
+    struct corto_subscriber_s _parent;
     corto_mountKind kind;
     corto_string policy;
     corto_object mount;
@@ -199,10 +190,10 @@ CORTO_CLASS_DEF(corto_mount) {
 };
 
 /*  /corto/core/invokeEvent */
-CORTO_CLASS(corto_invokeEvent);
+typedef struct corto_invokeEvent_s *corto_invokeEvent;
 
-CORTO_CLASS_DEF(corto_invokeEvent) {
-    CORTO_EXTEND(corto_event);
+struct corto_invokeEvent_s {
+    struct corto_event_s _parent;
     corto_mount mount;
     corto_object instance;
     corto_function function;
@@ -210,10 +201,10 @@ CORTO_CLASS_DEF(corto_invokeEvent) {
 };
 
 /*  /corto/core/loader */
-CORTO_CLASS(corto_loader);
+typedef struct corto_loader_s *corto_loader;
 
-CORTO_CLASS_DEF(corto_loader) {
-    CORTO_EXTEND(corto_mount);
+struct corto_loader_s {
+    struct corto_mount_s _parent;
 };
 
 /*  /corto/core/notifyAction */
@@ -224,10 +215,10 @@ struct corto_notifyAction {
 };
 
 /*  /corto/core/observableEvent */
-CORTO_CLASS(corto_observableEvent);
+typedef struct corto_observableEvent_s *corto_observableEvent;
 
-CORTO_CLASS_DEF(corto_observableEvent) {
-    CORTO_EXTEND(corto_event);
+struct corto_observableEvent_s {
+    struct corto_event_s _parent;
     corto_function observer;
     corto_object me;
     corto_object source;
@@ -276,9 +267,9 @@ typedef enum corto_operatorKind {
 } corto_operatorKind;
 
 /*  /corto/core/package */
-CORTO_CLASS(corto_package);
+typedef struct corto_package_s *corto_package;
 
-CORTO_CLASS_DEF(corto_package) {
+struct corto_package_s {
     corto_string url;
     corto_string version;
     corto_string author;
@@ -303,10 +294,10 @@ struct corto_position {
 };
 
 /*  /corto/core/remote */
-CORTO_CLASS(corto_remote);
+typedef struct corto_remote_s *corto_remote;
 
-CORTO_CLASS_DEF(corto_remote) {
-    CORTO_EXTEND(corto_method);
+struct corto_remote_s {
+    struct corto_method_s _parent;
 };
 
 /*  /corto/core/request */
@@ -344,37 +335,37 @@ CORTO_ITERATOR(corto_resultIter);
 CORTO_LIST(corto_resultList);
 
 /*  /corto/core/route */
-CORTO_CLASS(corto_route);
+typedef struct corto_route_s *corto_route;
 
-CORTO_CLASS_DEF(corto_route) {
-    CORTO_EXTEND(corto_method);
+struct corto_route_s {
+    struct corto_method_s _parent;
     corto_string pattern;
     corto_stringseq elements;
 };
 
 /*  /corto/core/router */
-CORTO_CLASS(corto_router);
+typedef struct corto_router_s *corto_router;
 
-CORTO_CLASS_DEF(corto_router) {
-    CORTO_EXTEND(corto_class);
+struct corto_router_s {
+    struct corto_class_s _parent;
     corto_type returnType;
     corto_type paramType;
     corto_string paramName;
 };
 
 /*  /corto/core/routerimpl */
-CORTO_CLASS(corto_routerimpl);
+typedef struct corto_routerimpl_s *corto_routerimpl;
 
-CORTO_CLASS_DEF(corto_routerimpl) {
-    CORTO_EXTEND(corto_class);
+struct corto_routerimpl_s {
+    struct corto_class_s _parent;
     corto_uint16 maxArgs;
 };
 
 /*  /corto/core/subscriberEvent */
-CORTO_CLASS(corto_subscriberEvent);
+typedef struct corto_subscriberEvent_s *corto_subscriberEvent;
 
-CORTO_CLASS_DEF(corto_subscriberEvent) {
-    CORTO_EXTEND(corto_observableEvent);
+struct corto_subscriberEvent_s {
+    struct corto_observableEvent_s _parent;
     corto_result result;
     corto_word contentTypeHandle;
 };

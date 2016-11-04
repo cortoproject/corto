@@ -635,14 +635,6 @@ static corto_bool corto_selectIterNext(
 {
     corto_bool hasData = FALSE;
 
-    corto_debug("corto: select: IterNext: scope=%s, filter=%s, scopeQuery=%s, currentMount=%d, firstMount=%d, mountsLoaded=%d",
-        corto_fullpath(NULL, frame->scope),
-        frame->filter,
-        frame->scopeQuery,
-        frame->currentMount,
-        frame->firstMount,
-        data->mountsLoaded);
-
     /* Select data from scope */
     if (frame->scope) {
 
@@ -714,8 +706,6 @@ static corto_bool corto_selectIterNext(
     if (hasData && (data->mask == CORTO_ON_SELF)) {
         data->mask = 0;
     }
-
-    corto_debug("corto: select: IterNext: hasData = %d, currentMount = %d", hasData, frame->currentMount);
 
     return hasData;
 }
@@ -802,9 +792,6 @@ static void corto_selectTree(
     corto_string lastKey = data->item.name;
     corto_bool noMatch = TRUE;
 
-    corto_debug("corto: select: Tree %d='%s': filter = %s, scopeQuery = %s",
-      data->sp, corto_fullpath(NULL, frame->scope), frame->filter, frame->scopeQuery);
-
     data->next = NULL;
 
     corto_object o = NULL;
@@ -852,9 +839,6 @@ static void corto_selectTree(
 
             /* Prepare next frame if object has scope */
             if (!leaf && (data->mask == CORTO_ON_TREE)) {
-                corto_debug("corto: select: Tree push '%s'",
-                    frame->scope ? corto_fullpath(NULL, frame->scope) : data->next->id);
-
                 corto_selectStack *prevFrame = frame;
                 frame = &data->stack[++ data->sp];
                 frame->recursiveQueryLength = strlen(data->recursiveQuery);
@@ -1122,11 +1106,6 @@ static corto_bool corto_selectNextScope(corto_selectData *data) {
         corto_selectFilterMounts(data);
         corto_selectReset(data);
         corto_selectPrepareFrame(data, frame, ++data->currentScope);
-        corto_debug("corto: select: NextScope: '%s, %s', currentMount=%d, firstMount=%d",
-            corto_fullpath(NULL, data->scopes[data->currentScope].scope),
-            data->scopes[data->currentScope].scopeQuery,
-            frame->currentMount,
-            frame->firstMount);
         return TRUE;
     }
     return FALSE;

@@ -1192,6 +1192,16 @@ corto_void _test_Select_tc_selectParentNoSlash(
 /* $end */
 }
 
+corto_void _test_Select_tc_selectParentWithLoader(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectParentWithLoader) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_Select_tc_selectScope(
     test_Select this)
 {

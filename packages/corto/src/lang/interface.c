@@ -136,6 +136,8 @@ corto_uint16 corto__interface_calculateAlignment(corto_interface this) {
         member = this->members.buffer[i];
         if (member->modifiers & CORTO_OPTIONAL) {
             memberAlignment = CORTO_ALIGNMENT(void*);
+        } else if (member->modifiers & CORTO_OBSERVABLE) {
+            memberAlignment = CORTO_ALIGNMENT(void*);
         } else {
             memberAlignment = corto_type_alignmentof(member->type);
         }
@@ -171,6 +173,8 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
 
         if (!corto_instanceof(corto_alias_o, m)) {
             if (m->modifiers & CORTO_OPTIONAL) {
+                memberSize = sizeof(void*);
+            } else if (m->modifiers & CORTO_OBSERVABLE) {
                 memberSize = sizeof(void*);
             } else {
                 memberSize = corto_type_sizeof(memberType);

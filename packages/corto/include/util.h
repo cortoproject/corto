@@ -44,8 +44,11 @@ corto_string corto_nameFromFullname(corto_id buffer);
 /* Set intern TLS string */
 corto_string corto_setThreadString(corto_string string);
 
-/* Check whether object is a builtin package */
+/* Check if object is a builtin package */
 corto_bool corto_isBuiltinPackage(corto_object o);
+
+/* Check if object is a builtin object */
+corto_bool corto_isBuiltin(corto_object o);
 
 /* Used in type checking macro */
 corto_object _corto_assertType(corto_type type, corto_object o);

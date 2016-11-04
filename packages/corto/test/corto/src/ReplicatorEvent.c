@@ -511,7 +511,7 @@ corto_void _test_ReplicatorEvent_tc_rateLimitOneObject(
 {
 /* $begin(test/ReplicatorEvent/tc_rateLimitOneObject) */
     corto_int16 ret;
-    corto_time timeout = {30, 0};
+    corto_time timeout = {60, 0};
     test_setTimeout(&timeout);
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -556,7 +556,7 @@ corto_void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
 {
 /* $begin(test/ReplicatorEvent/tc_rateLimitThreeObjects) */
     corto_int16 ret;
-    corto_time timeout = {30, 0};
+    corto_time timeout = {60, 0};
     test_setTimeout(&timeout);
 
     corto_voidCreateChild_auto(root_o, parent);

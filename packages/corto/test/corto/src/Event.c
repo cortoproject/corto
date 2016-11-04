@@ -69,6 +69,36 @@ corto_void _test_Event_tc_onDeclare(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDeclareOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeclareOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeclare == 1);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeclare == 1);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclare == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclare == 1);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclare == 1);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclare == 1);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDeclareScope(
     test_Event this)
 {
@@ -152,6 +182,36 @@ corto_void _test_Event_tc_onDeclareScopeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDeclareScopeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeclareScopeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeclareScope == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeclareScope == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareScope == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareScope == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareScope == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareScope == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDeclareSelf(
     test_Event this)
 {
@@ -184,6 +244,36 @@ corto_void _test_Event_tc_onDeclareSelf(
     corto_delete(o);
     corto_delete(p);
 
+    test_assert(this->et->countDeclareSelf == 1);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDeclareSelfOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeclareSelfOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeclareSelf == 1);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeclareSelf == 1);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareSelf == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareSelf == 1);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareSelf == 1);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
     test_assert(this->et->countDeclareSelf == 1);
 
 /* $end */
@@ -279,6 +369,36 @@ corto_void _test_Event_tc_onDeclareTreeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDeclareTreeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeclareTreeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeclareTree == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeclareTree == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareTree == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareTree == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareTree == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeclareTree == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDefine(
     test_Event this)
 {
@@ -316,6 +436,36 @@ corto_void _test_Event_tc_onDefine(
     corto_delete(p);
 
     test_assert(this->et->countDefine == 4);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDefineOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDefineOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDefine == 1);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDefine == 1);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefine == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefine == 1);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefine == 1);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefine == 1);
 
 /* $end */
 }
@@ -406,6 +556,36 @@ corto_void _test_Event_tc_onDefineScopeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDefineScopeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDefineScopeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDefineScope == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDefineScope == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineScope == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineScope == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineScope == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineScope == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDefineSelf(
     test_Event this)
 {
@@ -437,6 +617,36 @@ corto_void _test_Event_tc_onDefineSelf(
     corto_delete(o);
     corto_delete(p);
 
+    test_assert(this->et->countDefineSelf == 1);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDefineSelfOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDefineSelfOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDefineSelf == 1);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDefineSelf == 1);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineSelf == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineSelf == 1);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineSelf == 1);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
     test_assert(this->et->countDefineSelf == 1);
 
 /* $end */
@@ -532,6 +742,36 @@ corto_void _test_Event_tc_onDefineTreeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDefineTreeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDefineTreeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDefineTree == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDefineTree == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineTree == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineTree == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineTree == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDefineTree == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDelete(
     test_Event this)
 {
@@ -565,6 +805,36 @@ corto_void _test_Event_tc_onDelete(
 
     corto_delete(p);
     test_assert(this->et->countDelete == 3);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDeleteOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeleteOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDelete == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDelete == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDelete == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDelete == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDelete == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDelete == 0);
 
 /* $end */
 }
@@ -649,6 +919,36 @@ corto_void _test_Event_tc_onDeleteScopeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onDeleteScopeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeleteScopeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeleteScope == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeleteScope == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteScope == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteScope == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteScope == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteScope == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onDeleteSelf(
     test_Event this)
 {
@@ -681,6 +981,36 @@ corto_void _test_Event_tc_onDeleteSelf(
     test_assert(this->et->countDeleteSelf == 0);
 
     corto_delete(p);
+    test_assert(this->et->countDeleteSelf == 0);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDeleteSelfOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeleteSelfOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeleteSelf == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeleteSelf == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteSelf == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteSelf == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteSelf == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
     test_assert(this->et->countDeleteSelf == 0);
 
 /* $end */
@@ -762,6 +1092,36 @@ corto_void _test_Event_tc_onDeleteTreeNotObservable(
     test_assert(this->et->countDeleteTree == 3);
 
     corto_setAttr(prevAttr);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onDeleteTreeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onDeleteTreeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countDeleteTree == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countDeleteTree == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteTree == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteTree == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteTree == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countDeleteTree == 0);
 
 /* $end */
 }
@@ -910,6 +1270,38 @@ corto_void _test_Event_tc_onUpdateDefine(
 /* $end */
 }
 
+corto_void _test_Event_tc_onUpdateDefineOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateDefineOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateDefine == 1);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateDefine == 1);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefine == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefine == 1);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefine == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == testScope);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefine == 2);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onUpdateDefineScope(
     test_Event this)
 {
@@ -1052,6 +1444,36 @@ corto_void _test_Event_tc_onUpdateDefineScopeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onUpdateDefineScopeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateDefineScopeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateDefineScope == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateDefineScope == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineScope == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineScope == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineScope == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineScope == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onUpdateDefineSelf(
     test_Event this)
 {
@@ -1113,6 +1535,38 @@ corto_void _test_Event_tc_onUpdateDefineSelf(
     corto_delete(o);
     corto_delete(p);
 
+    test_assert(this->et->countUpdateDefineSelf == 2);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onUpdateDefineSelfOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateDefineSelfOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateDefineSelf == 1);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateDefineSelf == 1);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineSelf == 1);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineSelf == 1);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineSelf == 2);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == testScope);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
 /* $end */
@@ -1264,6 +1718,68 @@ corto_void _test_Event_tc_onUpdateDefineTreeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onUpdateDefineTreeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateDefineTreeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateDefineTree == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateDefineTree == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineTree == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineTree == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineTree == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateDefineTree == 0);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onUpdateOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdate == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdate == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 1);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == testScope);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdate == 1);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onUpdateScope(
     test_Event this)
 {
@@ -1406,6 +1922,36 @@ corto_void _test_Event_tc_onUpdateScopeNotObservable(
 /* $end */
 }
 
+corto_void _test_Event_tc_onUpdateScopeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateScopeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateScope == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateScope == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateScope == 0);
+
+/* $end */
+}
+
 corto_void _test_Event_tc_onUpdateSelf(
     test_Event this)
 {
@@ -1467,6 +2013,38 @@ corto_void _test_Event_tc_onUpdateSelf(
     corto_delete(o);
     corto_delete(p);
 
+    test_assert(this->et->countUpdateSelf == 1);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onUpdateSelfOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateSelfOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateSelf == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateSelf == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateSelf == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateSelf == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateSelf == 1);
+    test_assert(this->et->lastThis == this->et);
+    test_assert(this->et->lastObservable == testScope);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
 /* $end */
@@ -1614,6 +2192,36 @@ corto_void _test_Event_tc_onUpdateTreeNotObservable(
     test_assert(this->et->countUpdateTree == 3);
 
     corto_setAttr(prevAttr);
+
+/* $end */
+}
+
+corto_void _test_Event_tc_onUpdateTreeOrphan(
+    test_Event this)
+{
+/* $begin(test/Event/tc_onUpdateTreeOrphan) */
+    corto_int16 ret;
+
+    test_assert(this->et->countUpdateTree == 0);
+
+    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(this->et->countUpdateTree == 0);
+
+    ret = corto_define(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 0);
+
+    ret = corto_updateBegin(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 0);
+    ret = corto_updateEnd(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 0);
+
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+    test_assert(this->et->countUpdateTree == 0);
 
 /* $end */
 }

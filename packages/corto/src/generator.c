@@ -486,11 +486,11 @@ corto_int16 g_importsEvalReference(
 {
     if (!g_mustParse(g, o)) {
         corto_object parent = o;
-        while(!corto_instanceof(corto_type(corto_package_o), parent)) {
+        while(parent && !corto_instanceof(corto_type(corto_package_o), parent)) {
             parent = corto_parentof(parent);
         }
 
-        if ((parent != root_o) && !corto_isBuiltinPackage(parent)) {
+        if (parent && (parent != root_o) && !corto_isBuiltinPackage(parent)) {
             if (!g->imports) {
                 g->imports = corto_llNew();
             }
@@ -1202,7 +1202,7 @@ corto_bool g_mustParse(corto_generator g, corto_object o) {
     corto_bool result;
 
     result = TRUE;
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
         if (corto_llWalk(g->objects, g_checkParseWalk, o)) {
             result = FALSE;
         }

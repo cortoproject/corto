@@ -79,6 +79,7 @@ corto_bool _corto_instanceofType(corto_type type, corto_type valueType);
 corto_string corto_idof(corto_object o);
 corto_string corto_nameof(corto_id str, corto_object o);
 corto_object corto_parentof(corto_object o);
+corto_bool corto_childof(corto_object p, corto_object o);
 corto_uint32 corto_scopeSize(corto_object o);
 corto_objectseq corto_scopeClaim(corto_object o);
 void corto_scopeRelease(corto_objectseq scope);

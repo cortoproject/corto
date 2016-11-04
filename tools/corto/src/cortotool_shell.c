@@ -255,6 +255,11 @@ static void cxsh_cd(char* arg) {
     } else {
         corto_id result;
         corto_int32 count = 0;
+        strcpy(result, arg);
+
+        if (result[strlen(result) - 1] == '/') {
+            result[strlen(result) - 1] = '\0';
+        }
 
         corto_seterr(NULL);
 
@@ -668,6 +673,7 @@ corto_type cxsh_exprType(corto_string expr) {
         }
         corto_call(parseLine, &result, expr, scope_o);
         corto_release(scope_o);
+        corto_lasterr();
     }
 
     return result;
@@ -753,7 +759,11 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             if (corto_select(scope, expr).iter(&iter)) goto error;
             corto_resultIterForeach(iter, item) {
                 corto_id scopedItem;
-                sprintf(scopedItem, "%s/%s", item.parent, item.id);
+                if (strcmp(item.parent, ".")) {
+                    sprintf(scopedItem, "%s/%s", item.parent, item.id);
+                } else {
+                    strcpy(scopedItem, item.id);
+                }
                 if (appendSlash) {
                     strcat(scopedItem, "/");
                 }

@@ -68,7 +68,7 @@ test/Suite Attributes::
 
 // Object management testcases
 test/Suite ObjectMgmt::
-    prevAttr: core::attr, local|private
+    prevAttr: lang/attr, local|private
 
     void setup() method
     void teardown() method
@@ -84,6 +84,9 @@ test/Suite ObjectMgmt::
     void tc_declareInitFail()
     void tc_declareNullType()
     void tc_declareInvalidType()
+
+    void tc_declareOrphan()
+    void tc_declareScoped()
 
     void tc_createVoid()
     void tc_createInt()
@@ -507,6 +510,7 @@ test/Suite Select::
     void tc_selectLimitOvershootTree()
     void tc_selectOffsetLimitFilter()
 
+    void tc_selectParentWithLoader()
     void tc_selectSeparator()
 
 class JsonReplicator : mount, hidden::
@@ -758,7 +762,7 @@ test/Suite Event::
     void teardown() method
 
     et: EventTest
-    prevAttr: attr
+    prevAttr: lang/attr
 
     void tc_onDeclare()
     void tc_onDeclareSelf()
@@ -766,6 +770,10 @@ test/Suite Event::
     void tc_onDeclareTree()
     void tc_onDeclareScopeNotObservable()
     void tc_onDeclareTreeNotObservable()
+    void tc_onDeclareOrphan()
+    void tc_onDeclareSelfOrphan()
+    void tc_onDeclareScopeOrphan()
+    void tc_onDeclareTreeOrphan()
 
     void tc_onDefine()
     void tc_onDefineSelf()
@@ -773,6 +781,10 @@ test/Suite Event::
     void tc_onDefineTree()
     void tc_onDefineScopeNotObservable()
     void tc_onDefineTreeNotObservable()
+    void tc_onDefineOrphan()
+    void tc_onDefineSelfOrphan()
+    void tc_onDefineScopeOrphan()
+    void tc_onDefineTreeOrphan()
 
     void tc_onUpdate()
     void tc_onUpdateSelf()
@@ -780,6 +792,10 @@ test/Suite Event::
     void tc_onUpdateTree()
     void tc_onUpdateScopeNotObservable()
     void tc_onUpdateTreeNotObservable()
+    void tc_onUpdateOrphan()
+    void tc_onUpdateSelfOrphan()
+    void tc_onUpdateScopeOrphan()
+    void tc_onUpdateTreeOrphan()
 
     void tc_onDelete()
     void tc_onDeleteSelf()
@@ -787,6 +803,10 @@ test/Suite Event::
     void tc_onDeleteTree()
     void tc_onDeleteScopeNotObservable()
     void tc_onDeleteTreeNotObservable()
+    void tc_onDeleteOrphan()
+    void tc_onDeleteSelfOrphan()
+    void tc_onDeleteScopeOrphan()
+    void tc_onDeleteTreeOrphan()
 
     void tc_onUpdateDefine()
     void tc_onUpdateDefineSelf()
@@ -794,6 +814,10 @@ test/Suite Event::
     void tc_onUpdateDefineTree()
     void tc_onUpdateDefineScopeNotObservable()
     void tc_onUpdateDefineTreeNotObservable()
+    void tc_onUpdateDefineOrphan()
+    void tc_onUpdateDefineSelfOrphan()
+    void tc_onUpdateDefineScopeOrphan()
+    void tc_onUpdateDefineTreeOrphan()
 
     void tc_updateVoidErr()
     void tc_updateUndefined()
@@ -859,7 +883,7 @@ test/Suite SubscriberEvent::
     void tc_onUpdateScope()
     void tc_onUpdateTree()
 
-    prevAttr: attr
+    prevAttr: lang/attr
     st: SubscriberTest
 
 test/Suite Subscribe::

@@ -35,11 +35,16 @@ typedef struct corto_errThreadData {
 #define DEPTH 60
 
 static void corto_lasterrorFree(void* tls) {
-    if (tls) {
-        if (((corto_errThreadData*)tls)->lastError) {
-            corto_dealloc(((corto_errThreadData*)tls)->lastError);
+    corto_errThreadData* data = tls;
+    if (data) {
+        if (!data->viewed && data->lastError) {
+            corto_error("corto: uncatched error (use corto_lasterr): %s%s%s",
+              data->lastError, data->backtrace?"\n":"", data->backtrace);
         }
-        corto_dealloc(tls);
+        if (data->lastError) {
+            corto_dealloc(data->lastError);
+        }
+        corto_dealloc(data);
     }
 }
 

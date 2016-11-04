@@ -1043,6 +1043,78 @@ corto_void _test_ObjectMgmt_tc_declareNullType(
 /* $end */
 }
 
+corto_void _test_ObjectMgmt_tc_declareOrphan(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_declareOrphan) */
+    corto_int16 ret;
+
+    /* Create orphaned object */
+    corto_object i = corto_declareOrphan(root_o, "i", corto_int32_o);
+    test_assert(i != NULL);
+    test_assert(corto_checkAttr(i, CORTO_ATTR_SCOPED));
+    test_assertstr(corto_idof(i), "i");
+    test_assert(corto_parentof(i) == root_o);
+    test_assert(corto_childof(root_o, i));
+    test_assert(!corto_isBuiltin(i));
+    ret = corto_define(i);
+    test_assert(ret == 0);
+
+    /* Object should not be resolvable */
+    test_assert(!corto_lookup(root_o, "i"));
+
+    ret = corto_delete(i);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_declareScoped(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_declareScoped) */
+    corto_int16 ret;
+
+    /* Create scoped anonymous object (structs are always scoped) */
+    corto_struct s = corto_declare(corto_struct_o);
+    test_assert(s != NULL);
+    test_assert(corto_checkAttr(s, CORTO_ATTR_SCOPED));
+    test_assert(corto_idof(s) == NULL);
+    test_assert(corto_parentof(s) == NULL);
+
+    /* Create members in scope of anonymous object */
+    corto_member x = corto_declareChild(s, "x", corto_member_o);
+    test_assert(x != NULL);
+    corto_setref(&x->type, corto_int32_o);
+    ret = corto_define(x);
+    test_assert(ret == 0);
+
+    corto_member y = corto_declareChild(s, "y", corto_member_o);
+    test_assert(y != NULL);
+    corto_setref(&y->type, corto_int32_o);
+    ret = corto_define(y);
+    test_assert(ret == 0);
+
+    /* Define struct */
+    ret = corto_define(s);
+    test_assert(ret == 0);
+
+    /* Test type */
+    corto_object p = corto_create(s);
+    test_assert(p != NULL);
+    *(corto_int32*)CORTO_OFFSET(p, x->offset) = 10;
+    *(corto_int32*)CORTO_OFFSET(p, y->offset) = 20;
+    test_assertstr("{10,20}", corto_contentof(NULL, "text/corto", p));
+
+    ret = corto_delete(s);
+    test_assert(ret == 0);
+
+    ret = corto_delete(s);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
 corto_void _test_ObjectMgmt_tc_declareVoid(
     test_ObjectMgmt this)
 {

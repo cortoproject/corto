@@ -73,7 +73,8 @@ corto_int8 CORTO_OLS_AUGMENT;
 int8_t CORTO_DEBUG_ENABLED = 0;
 
 /* When set, the core traces memory management information for this object */
-corto_string CORTO_TRACE_OBJECT = NULL;
+corto_object CORTO_TRACE_OBJECT = NULL;
+corto_string CORTO_TRACE_ID = NULL;
 
 /* When set, the core traces notifications */
 int8_t CORTO_TRACE_NOTIFICATIONS = 0;
@@ -429,11 +430,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(op, state_DEFINED);\
     SSO_OP_OBJ(op, state_DESTRUCTED);\
     /* attr */\
-    SSO_OP_OBJ_CORE(op, attr_ATTR_SCOPED);\
-    SSO_OP_OBJ_CORE(op, attr_ATTR_WRITABLE);\
-    SSO_OP_OBJ_CORE(op, attr_ATTR_OBSERVABLE);\
-    SSO_OP_OBJ_CORE(op, attr_ATTR_PERSISTENT);\
-    SSO_OP_OBJ_CORE(op, attr_ATTR_DEFAULT);\
+    SSO_OP_OBJ(op, attr_ATTR_SCOPED);\
+    SSO_OP_OBJ(op, attr_ATTR_WRITABLE);\
+    SSO_OP_OBJ(op, attr_ATTR_OBSERVABLE);\
+    SSO_OP_OBJ(op, attr_ATTR_PERSISTENT);\
+    SSO_OP_OBJ(op, attr_ATTR_DEFAULT);\
     /* eventKind */\
     SSO_OP_OBJ_CORE(op, eventMask_ON_DECLARE);\
     SSO_OP_OBJ_CORE(op, eventMask_ON_DEFINE);\
@@ -459,6 +460,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* type */\
     SSO_OP_OBJ(op, type_kind);\
     SSO_OP_OBJ(op, type_reference);\
+    SSO_OP_OBJ(op, type_attr);\
     SSO_OP_OBJ(op, type_hasResources);\
     SSO_OP_OBJ(op, type_templateId);\
     SSO_OP_OBJ(op, type_size);\

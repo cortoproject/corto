@@ -17,10 +17,10 @@ extern "C" {
 
 /* Type definitions */
 /*  /corto/native/type */
-CORTO_CLASS(corto_native_type);
+typedef struct corto_native_type_s *corto_native_type;
 
-CORTO_CLASS_DEF(corto_native_type) {
-    CORTO_EXTEND(corto_binary);
+struct corto_native_type_s {
+    struct corto_binary_s _parent;
     corto_string name;
 };
 
