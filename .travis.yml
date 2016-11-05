@@ -20,7 +20,7 @@ addons:
     build_command:
      - cd corto 
      - rake
-     - cd .."
+     - cd ..
     branch_pattern: coverity_scan
 
 install:
