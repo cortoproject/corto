@@ -17,7 +17,10 @@ addons:
       name: "cortoproject/corto"
       description: "Build submitted via Travis CI"
     notification_email: sander.mertens8@gmail.com
-    build_command:   "cd corto; rake; cd .."
+    build_command:
+     - cd corto 
+     - rake
+     - cd ..
     branch_pattern: coverity_scan
 
 install:
