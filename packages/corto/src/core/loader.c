@@ -12,13 +12,19 @@ corto_int16 _corto_loader_construct(
     corto_loader this)
 {
 /* $begin(corto/core/loader/construct) */
-    corto_setref(&corto_mount(this)->mount, root_o);
-    corto_mount(this)->mask = CORTO_ON_TREE;
-    corto_mount(this)->attr = 0;
-    corto_mount(this)->kind = CORTO_SINK;
-    corto_setstr(&corto_observer(this)->type, "/corto/core/package");
-    corto_setstr(&corto_subscriber(this)->contentType, "text/corto");
-    return corto_mount_construct(this);
+    static corto_int32 constructOnce;
+
+    if (corto_ainc(&constructOnce) == 1) {
+        corto_setref(&corto_mount(this)->mount, root_o);
+        corto_mount(this)->mask = CORTO_ON_TREE;
+        corto_mount(this)->attr = 0;
+        corto_mount(this)->kind = CORTO_SINK;
+        corto_setstr(&corto_observer(this)->type, "/corto/core/package");
+        corto_setstr(&corto_subscriber(this)->contentType, "text/corto");
+        return corto_mount_construct(this);
+    } else {
+        return 0;
+    }
 /* $end */
 }
 
@@ -132,7 +138,7 @@ void corto_loader_addDir(
                     if (strcmp(r->parent, ".")) {
                         corto_asprintf(
                             &content,
-                            "{url=\"http://www.corto.io/doc/%s/%s\",version=\"%s\",env=\"%s\"}",
+                            "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"version\":\"%s\",\"env\":\"%s\"}",
                             r->parent,
                             f,
                             version,
@@ -141,7 +147,7 @@ void corto_loader_addDir(
                     } else {
                         corto_asprintf(
                             &content,
-                            "{url=\"http://www.corto.io/doc/%s\",version=\"%s\",env=\"%s\"}",
+                            "{\"url\":\"http://www.corto.io/doc/%s\",\"version\":\"%s\",\"env\":\"%s\"}",
                             f,
                             version,
                             env

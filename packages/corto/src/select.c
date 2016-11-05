@@ -78,6 +78,7 @@ typedef struct corto_selectData {
     corto_uint64 offset;
     corto_uint64 limit;
     corto_uint64 count;
+    corto_uint64 skip;
 
     /* History */
     corto_frame from;
@@ -108,7 +109,7 @@ static corto_word corto_selectConvert(
     corto_word result = 0;
 
     corto_contentType srcType = (corto_contentType)
-      corto_subscriber(data->mounts[data->stack[data->sp].currentMount - 1])->contentTypeHandle;
+      data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeOutHandle;
 
     /* If source serializer is loaded, a conversion is
      * needed */
@@ -371,8 +372,7 @@ static corto_bool corto_selectMatch(
                 corto_mount r = data->mounts[i];
                 corto_string rType = corto_observer(r)->type;
 
-                /* If a SINK mount doesn't return a valid iterator, which typically
-                 * happens if it doesn't implement the onRequest method, select will
+                /* If a SINK mount doesn't implement the onRequest method, select will
                  * return the contents of the object store */
                 if ((r->kind == CORTO_SINK) && !r->passThrough) {
                     if (rType) {
@@ -411,10 +411,6 @@ static corto_bool corto_selectMatch(
         if (result && data->typeFilter) {
             result = corto_match(data->typeFilter, type);
         }
-    }
-
-    if (result) {
-        data->count ++;
     }
 
     return result;
@@ -635,14 +631,6 @@ static corto_bool corto_selectIterNext(
 {
     corto_bool hasData = FALSE;
 
-    corto_debug("corto: select: IterNext: scope=%s, filter=%s, scopeQuery=%s, currentMount=%d, firstMount=%d, mountsLoaded=%d",
-        corto_fullpath(NULL, frame->scope),
-        frame->filter,
-        frame->scopeQuery,
-        frame->currentMount,
-        frame->firstMount,
-        data->mountsLoaded);
-
     /* Select data from scope */
     if (frame->scope) {
 
@@ -714,8 +702,6 @@ static corto_bool corto_selectIterNext(
     if (hasData && (data->mask == CORTO_ON_SELF)) {
         data->mask = 0;
     }
-
-    corto_debug("corto: select: IterNext: hasData = %d, currentMount = %d", hasData, frame->currentMount);
 
     return hasData;
 }
@@ -802,9 +788,6 @@ static void corto_selectTree(
     corto_string lastKey = data->item.name;
     corto_bool noMatch = TRUE;
 
-    corto_debug("corto: select: Tree %d='%s': filter = %s, scopeQuery = %s",
-      data->sp, corto_fullpath(NULL, frame->scope), frame->filter, frame->scopeQuery);
-
     data->next = NULL;
 
     corto_object o = NULL;
@@ -830,10 +813,12 @@ static void corto_selectTree(
 
             if (o) {
                 if (corto_selectMatch(frame, o, data) &&
-                   (data->count > data->offset))
+                   (data->skip >= data->offset))
                 {
                     noMatch = FALSE;
                     corto_setItemData(o, data->next, data);
+                } else {
+                    data->skip ++;
                 }
                 leaf = FALSE;
                 data->recursiveQuery[0] = '\0';
@@ -852,9 +837,6 @@ static void corto_selectTree(
 
             /* Prepare next frame if object has scope */
             if (!leaf && (data->mask == CORTO_ON_TREE)) {
-                corto_debug("corto: select: Tree push '%s'",
-                    frame->scope ? corto_fullpath(NULL, frame->scope) : data->next->id);
-
                 corto_selectStack *prevFrame = frame;
                 frame = &data->stack[++ data->sp];
                 frame->recursiveQueryLength = strlen(data->recursiveQuery);
@@ -970,6 +952,7 @@ static void* corto_selectNext(corto_resultIter *iter) {
 
     if (data->next) {
         corto_debug("corto: select: Next (%s, %s)", data->next->id, data->next->parent);
+        data->count ++;
     }
 
     return data->next;
@@ -1122,11 +1105,6 @@ static corto_bool corto_selectNextScope(corto_selectData *data) {
         corto_selectFilterMounts(data);
         corto_selectReset(data);
         corto_selectPrepareFrame(data, frame, ++data->currentScope);
-        corto_debug("corto: select: NextScope: '%s, %s', currentMount=%d, firstMount=%d",
-            corto_fullpath(NULL, data->scopes[data->currentScope].scope),
-            data->scopes[data->currentScope].scopeQuery,
-            frame->currentMount,
-            frame->firstMount);
         return TRUE;
     }
     return FALSE;
@@ -1167,8 +1145,7 @@ static int corto_selectHasNext(corto_resultIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->limit) {
-         if ((data->count > data->offset) &&
-             (data->limit <= (data->count - data->offset)))
+         if (data->limit <= data->count)
          {
               /* Limit is reached */
               goto stop;

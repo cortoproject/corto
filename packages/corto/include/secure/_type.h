@@ -35,16 +35,16 @@ typedef enum corto_secure_actionKind {
 } corto_secure_actionKind;
 
 /*  /corto/secure/key */
-CORTO_CLASS(corto_secure_key);
+typedef struct corto_secure_key_s *corto_secure_key;
 
-CORTO_CLASS_DEF(corto_secure_key) {
+struct corto_secure_key_s {
     corto_int8 __dummy;
 };
 
 /*  /corto/secure/lock */
-CORTO_CLASS(corto_secure_lock);
+typedef struct corto_secure_lock_s *corto_secure_lock;
 
-CORTO_CLASS_DEF(corto_secure_lock) {
+struct corto_secure_lock_s {
     corto_string mount;
     corto_string expr;
     corto_int16 priority;

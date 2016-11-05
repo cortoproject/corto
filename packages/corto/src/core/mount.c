@@ -102,6 +102,11 @@ corto_int16 _corto_mount_construct(
 /* $begin(corto/core/mount/construct) */
     corto_object dispatcher = NULL;
 
+    /* If mount isn't set, and object is scoped, mount data on itself */
+    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED) && !corto_subscriber(this)->parent) {
+        corto_setref(&this->mount, this);
+    }
+
     if (this->mount) {
         /*corto_warning(
           "corto: %s: using mount/mount is deprecated, please use 'parent' and 'expr'",
@@ -129,11 +134,6 @@ corto_int16 _corto_mount_construct(
         } else {
             corto_setstr(&corto_subscriber(this)->expr, ".");
         }
-    }
-
-    /* If mount isn't set, and object is scoped, mount data on itself */
-    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        corto_setref(&this->mount, this);
     }
 
     corto_eventMask mask = this->mask;
@@ -182,7 +182,7 @@ corto_int16 _corto_mount_construct(
     if (corto_subscriber(this)->parent) {
         corto_observer(this)->enabled = TRUE;
     }
-    
+
     corto_observer(this)->mask =
       CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
     if (!corto_subscriber(this)->expr) {
@@ -278,10 +278,6 @@ corto_void _corto_mount_onDeclare_v(
 {
 /* $begin(corto/core/mount/onDeclare) */
     CORTO_UNUSED(observable);
-
-    /* If mount doesn't implement onDeclare, nothing has been sent */
-    this->sent.declares --;
-
 /* $end */
 }
 
@@ -291,10 +287,6 @@ corto_void _corto_mount_onDelete_v(
 {
 /* $begin(corto/core/mount/onDelete) */
     CORTO_UNUSED(observable);
-
-    /* If mount doesn't implement onDelete, nothing has been sent */
-    this->sent.deletes --;
-
 /* $end */
 }
 
@@ -432,10 +424,6 @@ corto_void _corto_mount_onUpdate_v(
 {
 /* $begin(corto/core/mount/onUpdate) */
     CORTO_UNUSED(observable);
-
-    /* If mount doesn't implement onUpdate, nothing has been sent */
-    this->sent.updates --;
-
 /* $end */
 }
 
@@ -646,9 +634,47 @@ corto_int16 _corto_mount_setContentType(
 {
 /* $begin(corto/core/mount/setContentType) */
 
+    if (corto_mount_setContentTypeIn(this, type)) {
+        goto error;
+    }
+
+    if (corto_mount_setContentTypeOut(this, type)) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+/* $end */
+}
+
+corto_int16 _corto_mount_setContentTypeIn(
+    corto_mount this,
+    corto_string type)
+{
+/* $begin(corto/core/mount/setContentTypeIn) */
+
     corto_setstr(&corto_subscriber(this)->contentType, type);
     corto_subscriber(this)->contentTypeHandle = (corto_word)corto_loadContentType(type);
     if (!corto_subscriber(this)->contentTypeHandle) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+/* $end */
+}
+
+corto_int16 _corto_mount_setContentTypeOut(
+    corto_mount this,
+    corto_string type)
+{
+/* $begin(corto/core/mount/setContentTypeOut) */
+
+    corto_setstr(&this->contentTypeOut, type);
+    this->contentTypeOutHandle = (corto_word)corto_loadContentType(type);
+    if (!this->contentTypeOutHandle) {
         goto error;
     }
 

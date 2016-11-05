@@ -43,23 +43,25 @@ error:
 }
 
 corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userData) {
-    corto_type t;
-
-    t = corto_value_getType(v);
+    corto_member m = v->is.member.t;
 
     /* If type is instanceof target, initialize member to a new target object */
-    if (corto_typeof(t) == corto_type(corto_target_o)) {
+    if (m->modifiers & CORTO_OBSERVABLE) {
+        corto_type t = corto_value_getType(v);
         corto_object p = corto_value_getObject(v);
         void* ptr = corto_value_getPtr(v);
-        corto_member m = v->is.member.t;
 
-        /* Create object that is not added to the scope of its parent */
-        /*corto_object o = corto_createOrphan(p, corto_nameof(m), t);
+
+        /* Create observable that is not added to the scope of its parent */
+        corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);
+        corto_object o = corto_createOrphan(p, corto_idof(m), t);
+        corto_setAttr(prev);
+
         if (!o) {
             goto error;
         }
 
-        *(corto_object*)ptr = targetInstance;*/
+        *(corto_object*)ptr = o;
     }
 
     return corto_serializeValue(s, v, userData);

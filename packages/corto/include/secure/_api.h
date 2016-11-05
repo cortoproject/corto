@@ -20,7 +20,7 @@ CORTO_EXPORT corto_secure_accessKind* _corto_secure_accessKindCreateChild(corto_
 #define corto_secure_accessKindCreateChild(_parent, _name, value) _corto_secure_accessKindCreateChild(_parent, _name, value)
 #define corto_secure_accessKindCreateChild_auto(_parent, _name, value) corto_secure_accessKind* _name = corto_secure_accessKindCreateChild(_parent, #_name, value); (void)_name
 CORTO_EXPORT corto_int16 _corto_secure_accessKindUpdate(corto_secure_accessKind* _this, corto_secure_accessKind value);
-#define corto_secure_accessKindUpdate(_this, value) _corto_secure_accessKindUpdate(_this, value)
+#define corto_secure_accessKindUpdate(_this, value) _corto_secure_accessKindUpdate(corto_secure_accessKind(_this), value)
 
 CORTO_EXPORT corto_secure_accessKind* _corto_secure_accessKindDeclare(void);
 #define corto_secure_accessKindDeclare() _corto_secure_accessKindDeclare()
@@ -29,7 +29,7 @@ CORTO_EXPORT corto_secure_accessKind* _corto_secure_accessKindDeclareChild(corto
 #define corto_secure_accessKindDeclareChild(_parent, _name) _corto_secure_accessKindDeclareChild(_parent, _name)
 #define corto_secure_accessKindDeclareChild_auto(_parent, _name) corto_secure_accessKind* _name = corto_secure_accessKindDeclareChild(_parent, #_name); (void)_name
 CORTO_EXPORT corto_int16 _corto_secure_accessKindDefine(corto_secure_accessKind* _this, corto_secure_accessKind value);
-#define corto_secure_accessKindDefine(_this, value) _corto_secure_accessKindDefine(_this, value)
+#define corto_secure_accessKindDefine(_this, value) _corto_secure_accessKindDefine(corto_secure_accessKind(_this), value)
 CORTO_EXPORT corto_secure_accessKind* _corto_secure_accessKindAssign(corto_secure_accessKind* _this, corto_secure_accessKind value);
 #define corto_secure_accessKind__optional_NotSet NULL
 #define corto_secure_accessKind__optional_Set(value) corto_secure_accessKindAssign((corto_secure_accessKind*)corto_calloc(sizeof(corto_secure_accessKind)), value)
@@ -55,7 +55,7 @@ CORTO_EXPORT corto_secure_actionKind* _corto_secure_actionKindCreateChild(corto_
 #define corto_secure_actionKindCreateChild(_parent, _name, value) _corto_secure_actionKindCreateChild(_parent, _name, value)
 #define corto_secure_actionKindCreateChild_auto(_parent, _name, value) corto_secure_actionKind* _name = corto_secure_actionKindCreateChild(_parent, #_name, value); (void)_name
 CORTO_EXPORT corto_int16 _corto_secure_actionKindUpdate(corto_secure_actionKind* _this, corto_secure_actionKind value);
-#define corto_secure_actionKindUpdate(_this, value) _corto_secure_actionKindUpdate(_this, value)
+#define corto_secure_actionKindUpdate(_this, value) _corto_secure_actionKindUpdate(corto_secure_actionKind(_this), value)
 
 CORTO_EXPORT corto_secure_actionKind* _corto_secure_actionKindDeclare(void);
 #define corto_secure_actionKindDeclare() _corto_secure_actionKindDeclare()
@@ -64,7 +64,7 @@ CORTO_EXPORT corto_secure_actionKind* _corto_secure_actionKindDeclareChild(corto
 #define corto_secure_actionKindDeclareChild(_parent, _name) _corto_secure_actionKindDeclareChild(_parent, _name)
 #define corto_secure_actionKindDeclareChild_auto(_parent, _name) corto_secure_actionKind* _name = corto_secure_actionKindDeclareChild(_parent, #_name); (void)_name
 CORTO_EXPORT corto_int16 _corto_secure_actionKindDefine(corto_secure_actionKind* _this, corto_secure_actionKind value);
-#define corto_secure_actionKindDefine(_this, value) _corto_secure_actionKindDefine(_this, value)
+#define corto_secure_actionKindDefine(_this, value) _corto_secure_actionKindDefine(corto_secure_actionKind(_this), value)
 CORTO_EXPORT corto_secure_actionKind* _corto_secure_actionKindAssign(corto_secure_actionKind* _this, corto_secure_actionKind value);
 #define corto_secure_actionKind__optional_NotSet NULL
 #define corto_secure_actionKind__optional_Set(value) corto_secure_actionKindAssign((corto_secure_actionKind*)corto_calloc(sizeof(corto_secure_actionKind)), value)
@@ -105,8 +105,8 @@ CORTO_EXPORT corto_secure_key _corto_secure_keyAssign(corto_secure_key _this);
 #define corto_secure_key__optional_Set() corto_secure_keyAssign((corto_secure_key*)corto_calloc(sizeof(corto_secure_key)))
 #define corto_secure_key__optional_SetCond(cond) cond ? corto_secure_keyAssign((corto_secure_key*)corto_calloc(sizeof(corto_secure_key))) : NULL
 #define corto_secure_keyUnset(_this) _this ? corto_deinitp(_this, corto_secure_key_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_secure_keyAssign(_this) _corto_secure_keyAssign(corto_secure_key(_this))
-#define corto_secure_keySet(_this) _this = _this ? _this : (corto_secure_key*)corto_calloc(sizeof(corto_secure_key)); _corto_secure_keyAssign(corto_secure_key(_this))
+#define corto_secure_keyAssign(_this) _corto_secure_keyAssign(_this)
+#define corto_secure_keySet(_this) _this = _this ? _this : (corto_secure_key*)corto_calloc(sizeof(corto_secure_key)); _corto_secure_keyAssign(_this)
 CORTO_EXPORT corto_string _corto_secure_keyStr(corto_secure_key value);
 #define corto_secure_keyStr(value) _corto_secure_keyStr(corto_secure_key(value))
 CORTO_EXPORT corto_secure_key corto_secure_keyFromStr(corto_secure_key value, corto_string str);
@@ -136,8 +136,8 @@ CORTO_EXPORT corto_secure_lock _corto_secure_lockAssign(corto_secure_lock _this,
 #define corto_secure_lock__optional_Set(mount, expr, priority) corto_secure_lockAssign((corto_secure_lock*)corto_calloc(sizeof(corto_secure_lock)), mount, expr, priority)
 #define corto_secure_lock__optional_SetCond(cond, mount, expr, priority) cond ? corto_secure_lockAssign((corto_secure_lock*)corto_calloc(sizeof(corto_secure_lock)), mount, expr, priority) : NULL
 #define corto_secure_lockUnset(_this) _this ? corto_deinitp(_this, corto_secure_lock_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_secure_lockAssign(_this, mount, expr, priority) _corto_secure_lockAssign(corto_secure_lock(_this), mount, expr, priority)
-#define corto_secure_lockSet(_this, mount, expr, priority) _this = _this ? _this : (corto_secure_lock*)corto_calloc(sizeof(corto_secure_lock)); _corto_secure_lockAssign(corto_secure_lock(_this), mount, expr, priority)
+#define corto_secure_lockAssign(_this, mount, expr, priority) _corto_secure_lockAssign(_this, mount, expr, priority)
+#define corto_secure_lockSet(_this, mount, expr, priority) _this = _this ? _this : (corto_secure_lock*)corto_calloc(sizeof(corto_secure_lock)); _corto_secure_lockAssign(_this, mount, expr, priority)
 CORTO_EXPORT corto_string _corto_secure_lockStr(corto_secure_lock value);
 #define corto_secure_lockStr(value) _corto_secure_lockStr(corto_secure_lock(value))
 CORTO_EXPORT corto_secure_lock corto_secure_lockFromStr(corto_secure_lock value, corto_string str);

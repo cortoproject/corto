@@ -13,18 +13,7 @@ corto_int16 _corto_target_construct(
 {
 /* $begin(corto/lang/target/construct) */
 
-    corto_member target = corto_declareChild(this, "target", this->type);
-    if (!target) {
-        goto error;
-    }
-    if (!corto_checkState(target, CORTO_DEFINED)) {
-        corto_setref(&target->type, this->type);
-        if (corto_define(target)) {
-            goto error;
-        }
-    }
-
-    corto_member actual = corto_declareChild(this, "actual", this->type);
+    corto_member actual = corto_declareChild(this, "actual", corto_member_o);
     if (!actual) {
         goto error;
     }
@@ -35,9 +24,20 @@ corto_int16 _corto_target_construct(
         }
     }
 
+    corto_member target = corto_declareChild(this, "target", corto_member_o);
+    if (!target) {
+        goto error;
+    }
+    if (!corto_checkState(target, CORTO_DEFINED)) {
+        corto_setref(&target->type, this->type);
+        if (corto_define(target)) {
+            goto error;
+        }
+    }
+
     corto_type(this)->reference = TRUE;
 
-    return 0;
+    return corto_struct_construct(this);
 error:
     return -1;
 /* $end */

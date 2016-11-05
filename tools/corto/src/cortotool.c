@@ -11,8 +11,8 @@
 #include "cortotool_test.h"
 
 static void cortotool_printUsage(corto_bool expert) {
-    printf("Usage: corto [-d] <command> [args]\n");
-    printf("       corto [-d] [files] [loader]\n");
+    printf("Usage: corto [-d] [--keep-alive] <command> [args]\n");
+    printf("       corto [-d] [--keep-alive] [files] [loader]\n");
     printf("       corto [--version] [-v] [--help] [-h] [--expert]\n");
     printf("\n");
     printf("Without arguments, 'corto' starts the corto shell.\n");
@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
     int i;
     corto_bool mute = FALSE;
     corto_bool startShell = FALSE;
+    corto_bool keepAlive = FALSE;
 
     /* Parse debugging options before starting the core */
     for(i = 1; i < argc; i++) {
@@ -116,6 +117,10 @@ int main(int argc, char* argv[]) {
                         cortotool_printUsage(TRUE);
                     } else if (!strcmp(argv[i] + 2, "mute")) {
                         mute = TRUE;
+                    } else if (!strcmp(argv[i], "--keep-alive")) {
+                        keepAlive = TRUE;
+                    } else if (!strcmp(argv[i], "--autoload")) {
+                        corto_loaderCreate();
                     } else if (!strcmp(argv[i] + 2, "trace-events")) {
                         /* Already handled */
                     } else if (!strcmp(argv[i] + 2, "trace-memory")) {
@@ -254,6 +259,13 @@ int main(int argc, char* argv[]) {
     if (startShell) {
         if (cortotool_shell(argc-i, &argv[i])) {
             goto error;
+        }
+    }
+
+    if (keepAlive) {
+        printf("corto: keeping process alive\n");
+        while (TRUE) {
+            corto_sleep(1, 0);
         }
     }
 

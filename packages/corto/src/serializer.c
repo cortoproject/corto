@@ -19,6 +19,7 @@ corto_int16 corto_serializeValue(corto_serializer this, corto_value* info, void*
     corto_type t;
     corto_int16 result;
     corto_serializerCallback cb;
+    corto_bool isObservable = (info->kind == CORTO_MEMBER) && (info->is.member.t->modifiers & CORTO_OBSERVABLE);
 
     t = corto_value_getType(info);
 
@@ -39,12 +40,16 @@ corto_int16 corto_serializeValue(corto_serializer this, corto_value* info, void*
 
     /* If the serializer has a special handler for reference types, use it in case the
      * type is a reference type. */
-    if (t->reference && (info->kind != CORTO_OBJECT) && (info->kind != CORTO_BASE)) {
+    if (t->reference && (info->kind != CORTO_OBJECT) && (info->kind != CORTO_BASE) && !isObservable)
+    {
         cb = this->reference;
     } else
     /* ..otherwise use the program-handler */
     if (!cb) {
         cb = this->program[t->kind];
+    }
+    if (isObservable) {
+        corto_value_setPtr(info, *(void**)corto_value_getPtr(info));
     }
 
     result = 0;

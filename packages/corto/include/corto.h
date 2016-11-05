@@ -72,7 +72,8 @@ extern int8_t CORTO_DEBUG_ENABLED;
 extern int8_t CORTO_TRACING_ENABLED;
 extern int8_t CORTO_WARNING_ENABLED;
 
-extern corto_string CORTO_TRACE_OBJECT;
+extern corto_string CORTO_TRACE_ID;
+extern corto_object CORTO_TRACE_OBJECT;
 extern int8_t CORTO_TRACE_NOTIFICATIONS;
 extern int8_t CORTO_BACKTRACE_ENABLED;
 extern int32_t CORTO_MEMTRACE_BREAKPOINT;
