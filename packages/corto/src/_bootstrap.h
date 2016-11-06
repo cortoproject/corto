@@ -165,8 +165,8 @@ typedef struct corto_SSO {
 
 /* Static Scoped Observable Object */
 typedef struct corto_SSOO {
-    corto__observable v;
     corto__scope s;
+    corto__observable v;
     corto__object o;
 }corto_SSOO;
 
@@ -224,10 +224,10 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ATTR_SSOO {{1, 0, 1, 0, CORTO_VALID | CORTO_DECLARED}}
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
-#define CORTO_ROOT_V() {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}, {uri}
+#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}, {uri}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
-#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO  CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
+#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
 /* SSO identifier */
 #define CORTO_ID(name) name##__o
@@ -526,6 +526,7 @@ CORTO_FWDECL_CORE(class, observableEvent);
 CORTO_FWDECL_CORE(class, subscriberEvent);
 CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, loader);
+CORTO_FWDECL_CORE(class, stager);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
 CORTO_FWDECL_CORE(class, mount);
@@ -1276,6 +1277,25 @@ CORTO_CLASS_O(core, loader, core_mount, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_METHOD_O(core_loader, onRequest, "(core/request request)", core_resultIter, TRUE, corto_loader_onRequest_v);
     CORTO_METHOD_O(core_loader, onDeclare, "(object observable)", lang_void, TRUE, corto_loader_onDeclare_v);
     CORTO_METHOD_O(core_loader, onResume, "(string parent,string name,object o)", lang_object, TRUE, corto_loader_onResume_v);
+
+/* /corto/core/stageItem */
+CORTO_STRUCT_O(core, stageItem, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_stageItem, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, type, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, offset, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, limit, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, content, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, from, core_frame, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_stageItem, to, core_frame, CORTO_GLOBAL);
+
+/* /corto/core/stager */
+CORTO_FW_CD(core, stager);
+CORTO_CLASS_NOBASE_O(core, stager, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(core_stager, resolver, lang_word, CORTO_PRIVATE|CORTO_LOCAL);
+    CORTO_METHOD_O(core_stager, construct, "()", lang_int16, FALSE, corto_loader_construct);
+    CORTO_METHOD_O(core_stager, destruct, "()", lang_void, FALSE, corto_loader_destruct);
+    CORTO_METHOD_O(core_stager, add, "(string id,string type,string contentType,word content,uint64 childcount)", lang_int16, FALSE, corto_subscriberEvent_handle_v);
 
 /* /corto/lang/event */
 CORTO_CLASS_NOBASE_O(core, event, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);

@@ -818,7 +818,7 @@ test/Suite Event::
     void tc_onUpdateDefineScopeOrphan()
     void tc_onUpdateDefineTreeOrphan()
 
-    void tc_updateVoidErr()
+    void tc_updateVoid()
     void tc_updateUndefined()
 
     void tc_postponeListenForUndefined()

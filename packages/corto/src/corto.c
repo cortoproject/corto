@@ -149,6 +149,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(op, router);\
     SSO_OP_CLASS(op, routerimpl);\
     SSO_OP_CLASS(op, mount);\
+    SSO_OP_CLASS(op, stager);\
     SSO_OP_CLASS(op, loader);\
     SSO_OP_CLASS(op, native_type);\
     SSO_OP_CLASS(op, secure_key);\
@@ -713,6 +714,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, loader_onResume_);\
     SSO_OP_OBJ_CORE(op, loader_onRequest_);\
     SSO_OP_OBJ_CORE(op, loader_onDeclare_);\
+    /* stager */\
+    SSO_OP_OBJ_CORE(op, stager_resolver);\
+    SSO_OP_OBJ_CORE(op, stager_add_);\
+    SSO_OP_OBJ_CORE(op, stager_construct_);\
+    SSO_OP_OBJ_CORE(op, stager_destruct_);\
     /* delegatedata */\
     SSO_OP_OBJ(op, delegatedata_instance);\
     SSO_OP_OBJ(op, delegatedata_procedure);\
@@ -859,7 +865,6 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o);
 /* Initialization of objects */
 static void corto_initObject(corto_object o) {
     corto_createObject(o);
-
     corto_delegateInit(corto_typeof(o), o);
 }
 

@@ -240,26 +240,25 @@ static struct corto_observerAdmin* corto_observerAdminGet(void) {
 
 /* Push observer-array to thread administration. Rather than passing the array pass the
  * address of the array so that setting the administration can be done atomic. */
-corto__observer** corto_observersPush(corto__observer**  *observers, corto_object *this) {
+static corto__observer** corto_observersPush(
+    corto_observerAdmin *admin,
+    corto__observer**  *observers)
+{
     corto__observer** result;
-    corto_observerAdmin *admin = corto_observerAdminGet();
 
     result = admin->stack[admin->sp].observers = *observers;
-    admin->stack[admin->sp++].free = FALSE;
-
-    if (this) {
-        *this = admin->from;
+    if (result) {
+        admin->stack[admin->sp++].free = FALSE;
     }
 
     return result;
 }
 
-corto_bool corto_observersPop(void) {
-    corto_observerAdmin *admin = corto_threadTlsGet(CORTO_KEY_OBSERVER_ADMIN); /* Admin must always exist when popping */
+static corto_bool corto_observersPop(corto_observerAdmin *admin) {
     return admin->stack[--admin->sp].free;
 }
 
-corto_bool corto_observersWaitForUnused(corto__observer** observers) {
+static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
     corto_thread self = corto_threadSelf();
     corto_uint32 i, j;
     corto_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
@@ -304,9 +303,41 @@ corto_bool corto_observersWaitForUnused(corto__observer** observers) {
 
 /* Notify one observer */
 static void corto_notifyObserver(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
-    corto_assertObject(observable);
-    corto_assertObject(source);
+    corto_observer observer = data->observer;
+    corto_eventMask observerMask = observer->mask;
 
+    if ((mask & observerMask) &&
+        (!observer->typeReference || (observer->typeReference == corto_typeof(observable))) &&
+        (!depth || (observerMask & CORTO_ON_TREE)))
+    {
+        corto_object this = data->_this;
+        if (!this || (this != source)) {
+            corto_call(observer, NULL, this, mask, observable, observer);
+        }
+    }
+}
+
+static void corto_notifyObserverCdecl(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+    corto_observer observer = data->observer;
+    corto_eventMask observerMask = observer->mask;
+
+    if ((mask & observerMask) &&
+        (!observer->typeReference || (observer->typeReference == corto_typeof(observable))) &&
+        (!depth || (observerMask & CORTO_ON_TREE)))
+    {
+        corto_object this = data->_this;
+        if (!this || (this != source)) {
+            ((void(*)(
+              corto_object,
+              corto_eventMask,
+              corto_object,
+              corto_observer))((corto_function)observer)->fptr
+            )(this, mask, observable, observer);
+        }
+    }
+}
+
+static void corto_notifyObserverDispatch(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -316,81 +347,141 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
     {
         corto_dispatcher dispatcher = observer->dispatcher;
 
+        if (!data->_this || (data->_this != source)) {
+            corto_attr oldAttr = corto_setAttr(0);
+            corto_observableEvent event = corto_declare(corto_type(corto_observableEvent_o));
+            corto_setAttr(oldAttr);
+
+            corto_setref(&event->observer, observer);
+            corto_setref(&event->me, data->_this);
+            corto_setref(&event->observable, observable);
+            corto_setref(&event->source, source);
+            event->mask = mask;
+
+            /* Set thread handle so the dispatcher can figure out whether a
+             * readlock is needed */
+            event->thread = corto_threadSelf();
+            corto_dispatcher_post(dispatcher, corto_event(event));
+        }
+    }
+}
+
+static void corto_notifyObserversIntern(corto__observer** observers, corto_object observable, corto_uint32 mask, int depth) {
+    corto__observer* data;
+
+    corto_object prev = corto_setOwner(NULL);
+    while((data = *observers)) {
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
             corto_string str = corto_eventMaskStr(mask);
             corto_debug("corto: notify:  %s %s: %s (%s)",
                 corto_fullpath(NULL, data->_this),
-                corto_fullpath(NULL, observer),
+                corto_fullpath(NULL, data->observer),
                 corto_fullpath(NULL, observable),
                 str);
             corto_dealloc(str);
         }
 #endif
+        switch(data->notifyKind) {
+        case 0: corto_notifyObserver(data, observable, prev, mask, depth); break;
+        case 1: corto_notifyObserverCdecl(data, observable, prev, mask, depth); break;
+        case 2: corto_notifyObserverDispatch(data, observable, prev, mask, depth); break;
+        }
+        observers++;
+    }
+    corto_setOwner(prev);
+}
 
-        if (!dispatcher) {
-            corto_object this = data->_this;
-            corto_object prevOwner = corto_setOwner(NULL);
-            if (!this || (this != prevOwner)) {
-                corto_function f = corto_function(observer);
-                if (f->kind == CORTO_PROCEDURE_CDECL) {
-                    ((void(*)(
-                      corto_object,
-                      corto_eventMask,
-                      corto_object,
-                      corto_observer))f->fptr
-                    )(this, mask, observable, observer);
-                } else {
-                    corto_call(f, NULL, this, mask, observable, observer);
+corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
+    corto_assertObject(observable);
+    corto_object *parent;
+
+    corto_bool declared = corto_checkState(observable, CORTO_DECLARED);
+    int depth = 0;
+    corto__object *__o = CORTO_OFFSET(observable, -sizeof(corto__object));
+    corto__observable *_o = NULL;
+    if (__o->align.attrs.observable) {
+        _o = CORTO_OFFSET(__o, -sizeof(corto__observable));
+    }
+    corto_observerAdmin *admin = corto_observerAdminGet();
+
+    corto_object owner = NULL;
+    if ((owner = corto_getOwner())) {
+        if (corto_instanceof(corto_mount_o, owner)) {
+            corto_mount m = owner;
+            if (mask & CORTO_ON_DECLARE) {
+                m->received.declares ++;
+            }
+            if (mask & (CORTO_ON_UPDATE | CORTO_ON_DEFINE)) {
+                m->received.updates ++;
+            }
+            if (mask & CORTO_ON_DELETE) {
+                m->received.deletes ++;
+            }
+        }
+    }
+
+    /* Notify direct observers */
+    if (_o) {
+        /* Notify observers of observable */
+        corto__observer** observers = corto_observersPush(admin, &_o->onSelfArray);
+        if (observers) {
+            corto_notifyObserversIntern(observers, observable, mask, depth);
+            if (corto_observersPop(admin)) {
+                corto_observersArrayFree(observers);
+            }
+        }
+    }
+
+    /* Bubble event up in hierarchy */
+    parent = observable;
+    while((parent = corto_parentof(parent))) {
+        corto__observable *_parent =
+          corto__objectObservable(CORTO_OFFSET(parent, -sizeof(corto__object)));
+
+        if (_parent) {
+            if (declared) {
+                corto__observer** observers = corto_observersPush(admin, &_parent->onChildArray);
+                if (observers) {
+                    corto_notifyObserversIntern(observers, observable, mask, depth);
+                    if (corto_observersPop(admin)) {
+                        corto_observersArrayFree(observers);
+                    }
+                }
+            } else {
+                corto__observer** observers = corto_observersPush(admin, &_parent->onSelfArray);
+                if (observers) {
+                    corto_notifyObserversIntern(observers, parent, mask, depth);
+                    if (corto_observersPop(admin)) {
+                        corto_observersArrayFree(observers);
+                    }
                 }
             }
-            corto_setOwner(prevOwner);
-        } else {
-            if (!data->_this || (data->_this != source)) {
-                corto_attr oldAttr = corto_setAttr(0);
-                corto_observableEvent event = corto_declare(corto_type(corto_observableEvent_o));
-                corto_setAttr(oldAttr);
-
-                corto_setref(&event->observer, observer);
-                corto_setref(&event->me, data->_this);
-                corto_setref(&event->observable, observable);
-                corto_setref(&event->source, source);
-                event->mask = mask;
-
-                /* Set thread handle so the dispatcher can figure out whether a
-                 * readlock is needed */
-                event->thread = corto_threadSelf();
-
-                corto_dispatcher_post(dispatcher, corto_event(event));
-            }
         }
-    }
-}
-
-static void corto_notifyObserversIntern(corto__observer** observers, corto_object observable, corto_object instance, corto_uint32 mask, int depth) {
-    corto__observer* data;
-    corto_uint32 i = 0;
-
-    if (observers) {
-        while((data = *observers)) {
-            i++;
-            corto_notifyObserver(data, observable, instance, mask, depth);
-            observers++;
+        if (declared) {
+            depth++;
         }
+        declared = corto_checkState(parent, CORTO_DECLARED);
     }
 
-    if (corto_observersPop()) {
-        corto_observersArrayFree(observers);
+    if (corto_notifySubscribers(mask, observable)) {
+        goto error;
     }
+
+    return 0;
+error:
+    return -1;
 }
 
-void corto_notifyObservers(corto__observable* _o, corto_object observable, corto_object instance, corto_uint32 mask, int depth) {
-    corto__observer** observers = corto_observersPush(&_o->onSelfArray, &instance);
-    corto_notifyObserversIntern(observers, observable, instance, mask, depth);
-}
-void corto_notifyParentObservers(corto__observable* _o, corto_object observable, corto_object instance, corto_uint32 mask, int depth) {
-    corto__observer** observers = corto_observersPush(&_o->onChildArray, &instance);
-    corto_notifyObserversIntern(observers, observable, instance, mask, depth);
+corto_int16 corto_notifySecured(corto_object observable, corto_uint32 mask) {
+    if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
+        return -1;
+    }
+
+    if (!corto_authorized(observable, CORTO_SECURE_ACTION_READ)) {
+        return 0;
+    }
+    return corto_notify(observable, mask);
 }
 
 /* If an observer is subscribed to NEW events align it with existing objects so that
@@ -789,6 +880,13 @@ corto_int16 _corto_observer_observe(
     _observerData->observer = this;
     _observerData->_this = instance;
     _observerData->count = 0;
+    if (this->dispatcher) {
+        _observerData->notifyKind = 2;
+    } if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
+        _observerData->notifyKind = 1;
+    } else {
+        _observerData->notifyKind = 0;
+    }
 
     /* If observer must trigger on updates of me, add it to onSelf list */
     if (mask & CORTO_ON_SELF) {

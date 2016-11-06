@@ -39,7 +39,6 @@ static corto_object corto_resolveAddress(corto_string str) {
 
 /* Use private function to do a lookup with a string that is guaranteed lowercase */
 #include "ctype.h"
-corto_object corto_lookupLowercase(corto_object o, corto_string name);
 
 /* Resolve fully scoped name */
 corto_object corto_resolve(corto_object _scope, corto_string str) {
@@ -145,7 +144,7 @@ repeat:
                 if (!overload) {
                     corto_object prev = o, prevLookup = lookup;
 
-                    o = corto_lookupLowercase(o, bufferLc);
+                    o = corto_lookup(o, bufferLc);
 
                     if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
                         o = corto_resume(prev, buffer, NULL);

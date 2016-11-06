@@ -371,7 +371,7 @@ corto_void _test_ReplicatorEvent_tc_nonPersistent(
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
-    corto_attr prev = corto_setAttr(0);
+    corto_attr prev = corto_setAttr(CORTO_ATTR_WRITABLE);
     corto_float32DeclareChild_auto(parent, b);
     corto_setAttr(prev);
     test_assert(a != NULL);

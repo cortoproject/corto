@@ -1019,6 +1019,37 @@ CORTO_EXPORT corto_routerimpl corto_routerimplFromStr(corto_routerimpl value, co
 CORTO_EXPORT corto_equalityKind _corto_routerimplCompare(corto_routerimpl dst, corto_routerimpl src);
 #define corto_routerimplCompare(dst, src) _corto_routerimplCompare(corto_routerimpl(dst), corto_routerimpl(src))
 
+/* /corto/core/stager */
+CORTO_EXPORT corto_stager _corto_stagerCreate(void);
+#define corto_stagerCreate() _corto_stagerCreate()
+#define corto_stagerCreate_auto(_name) corto_stager _name = corto_stagerCreate(); (void)_name
+CORTO_EXPORT corto_stager _corto_stagerCreateChild(corto_object _parent, corto_string _name);
+#define corto_stagerCreateChild(_parent, _name) _corto_stagerCreateChild(_parent, _name)
+#define corto_stagerCreateChild_auto(_parent, _name) corto_stager _name = corto_stagerCreateChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_stagerUpdate(corto_stager _this);
+#define corto_stagerUpdate(_this) _corto_stagerUpdate(corto_stager(_this))
+
+CORTO_EXPORT corto_stager _corto_stagerDeclare(void);
+#define corto_stagerDeclare() _corto_stagerDeclare()
+#define corto_stagerDeclare_auto(_name) corto_stager _name = corto_stagerDeclare(); (void)_name
+CORTO_EXPORT corto_stager _corto_stagerDeclareChild(corto_object _parent, corto_string _name);
+#define corto_stagerDeclareChild(_parent, _name) _corto_stagerDeclareChild(_parent, _name)
+#define corto_stagerDeclareChild_auto(_parent, _name) corto_stager _name = corto_stagerDeclareChild(_parent, #_name); (void)_name
+CORTO_EXPORT corto_int16 _corto_stagerDefine(corto_stager _this);
+#define corto_stagerDefine(_this) _corto_stagerDefine(corto_stager(_this))
+CORTO_EXPORT corto_stager _corto_stagerAssign(corto_stager _this);
+#define corto_stager__optional_NotSet NULL
+#define corto_stager__optional_Set() corto_stagerAssign((corto_stager*)corto_calloc(sizeof(corto_stager)))
+#define corto_stager__optional_SetCond(cond) cond ? corto_stagerAssign((corto_stager*)corto_calloc(sizeof(corto_stager))) : NULL
+#define corto_stagerUnset(_this) _this ? corto_deinitp(_this, corto_stager_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_stagerAssign(_this) _corto_stagerAssign(_this)
+#define corto_stagerSet(_this) _this = _this ? _this : (corto_stager*)corto_calloc(sizeof(corto_stager)); _corto_stagerAssign(_this)
+CORTO_EXPORT corto_string _corto_stagerStr(corto_stager value);
+#define corto_stagerStr(value) _corto_stagerStr(corto_stager(value))
+CORTO_EXPORT corto_stager corto_stagerFromStr(corto_stager value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_stagerCompare(corto_stager dst, corto_stager src);
+#define corto_stagerCompare(dst, src) _corto_stagerCompare(corto_stager(dst), corto_stager(src))
+
 /* /corto/core/subscriber */
 CORTO_EXPORT corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void));
 #define corto_subscriberCreate(mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _corto_subscriberCreate(mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)

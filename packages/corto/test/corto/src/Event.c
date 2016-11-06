@@ -142,7 +142,7 @@ corto_void _test_Event_tc_onDeclareScopeNotObservable(
 {
 /* $begin(test/Event/tc_onDeclareScopeNotObservable) */
     corto_int16 ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countDeclareScope == 0);
 
@@ -326,7 +326,7 @@ corto_void _test_Event_tc_onDeclareTreeNotObservable(
 {
 /* $begin(test/Event/tc_onDeclareTreeNotObservable) */
     corto_int16 ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countDeclareTree == 0);
 
@@ -515,7 +515,7 @@ corto_void _test_Event_tc_onDefineScopeNotObservable(
 {
 /* $begin(test/Event/tc_onDefineScopeNotObservable) */
     corto_int16 ret;
-    corto_attr attr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr attr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countDefineScope == 0);
 
@@ -699,7 +699,7 @@ corto_void _test_Event_tc_onDefineTreeNotObservable(
 {
 /* $begin(test/Event/tc_onDefineTreeNotObservable) */
     corto_int16 ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countDefineTree == 0);
 
@@ -881,7 +881,7 @@ corto_void _test_Event_tc_onDeleteScopeNotObservable(
 {
 /* $begin(test/Event/tc_onDeleteScopeNotObservable) */
     corto_int16 ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countDeleteScope == 0);
 
@@ -1058,7 +1058,7 @@ corto_void _test_Event_tc_onDeleteTreeNotObservable(
 {
 /* $begin(test/Event/tc_onDeleteTreeNotObservable) */
     corto_int16 ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countDeleteTree == 0);
 
@@ -1375,7 +1375,7 @@ corto_void _test_Event_tc_onUpdateDefineScopeNotObservable(
 {
 /* $begin(test/Event/tc_onUpdateDefineScopeNotObservable) */
     int ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countUpdateDefineScope == 0);
 
@@ -1647,7 +1647,7 @@ corto_void _test_Event_tc_onUpdateDefineTreeNotObservable(
 {
 /* $begin(test/Event/tc_onUpdateDefineTreeNotObservable) */
     int ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countUpdateDefineTree == 0);
 
@@ -1853,7 +1853,7 @@ corto_void _test_Event_tc_onUpdateScopeNotObservable(
 {
 /* $begin(test/Event/tc_onUpdateScopeNotObservable) */
     int ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countUpdateScope == 0);
 
@@ -2125,7 +2125,7 @@ corto_void _test_Event_tc_onUpdateTreeNotObservable(
 {
 /* $begin(test/Event/tc_onUpdateTreeNotObservable) */
     int ret;
-    corto_attr prevAttr = corto_setAttr(0); /* Create non-observable objects */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_WRITABLE); /* Create non-observable objects */
 
     test_assert(this->et->countUpdateTree == 0);
 
@@ -2326,18 +2326,17 @@ corto_void _test_Event_tc_updateUndefined(
 /* $end */
 }
 
-corto_void _test_Event_tc_updateVoidErr(
+corto_void _test_Event_tc_updateVoid(
     test_Event this)
 {
-/* $begin(test/Event/tc_updateVoidErr) */
+/* $begin(test/Event/tc_updateVoid) */
 
     corto_object o = corto_int32CreateChild(NULL, "o", 10);
     test_assert(o != NULL);
 
     corto_int16 ret = corto_update(o);
-    test_assert(ret == -1);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "use updateBegin/updateEnd for non-void objects"));
+    test_assert(ret == 0);
+    test_assert(corto_lasterr() == NULL);
 
 /* $end */
 }

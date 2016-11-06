@@ -44,6 +44,7 @@ extern "C" {
 #define corto_route(o) ((corto_route)corto_assertType((corto_type)corto_route_o, o))
 #define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
+#define corto_stager(o) ((corto_stager)corto_assertType((corto_type)corto_stager_o, o))
 #define corto_subscriberEvent(o) ((corto_subscriberEvent)corto_assertType((corto_type)corto_subscriberEvent_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
@@ -363,6 +364,13 @@ typedef struct corto_routerimpl_s *corto_routerimpl;
 struct corto_routerimpl_s {
     struct corto_class_s _parent;
     corto_uint16 maxArgs;
+};
+
+/*  /corto/core/stager */
+typedef struct corto_stager_s *corto_stager;
+
+struct corto_stager_s {
+    corto_word resolver;
 };
 
 /*  /corto/core/subscriberEvent */

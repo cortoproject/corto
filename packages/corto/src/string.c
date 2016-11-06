@@ -24,6 +24,35 @@ int stricmp(const char *str1, const char *str2) {
     return tolower(*ptr1) - tolower(*ptr2);
 }
 
+/* Case insensitive string compare, stop at / instead of \0. Returns next
+ * element, NULL when no match or "\0" when reached the end */
+char* corto_elemcmp(char *path, char *elem) {
+    char *pathptr, *elemptr;
+    char pathch, elemch;
+    pathptr = path;
+    elemptr = elem;
+
+    while((pathch = *pathptr) && (elemch = *elemptr)) {
+        if (pathch == '/') {
+           if (!elemch) break;
+           else return NULL;
+        }
+        if (pathch == elemch) {
+            pathptr++; elemptr++;
+            continue;
+        }
+        if (pathch < 97) pathch = tolower(pathch);
+        if (elemch < 97) elemch = tolower(elemch);
+        if (pathch != elemch) {
+            return NULL;
+        }
+        pathptr++;
+        elemptr++;
+    }
+
+    return pathptr;
+}
+
 char *strappend(char *src, char *fmt, ...) {
     char buff[1024];
     va_list args;

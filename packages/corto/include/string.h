@@ -11,6 +11,10 @@ extern "C" {
 /* Case insensitive string compare */
 int stricmp(const char *str1, const char *str2);
 
+/* Case insensitive string compare, stop at / instead of \0. Returns next
+ * element, NULL when no match or "\0" when reached the end */
+char* corto_elemcmp(char *path, char *elem);
+
 /* Convert characters in string to uppercase */
 char* corto_strupper(char *str);
 

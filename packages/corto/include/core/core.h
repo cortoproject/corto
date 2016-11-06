@@ -37,6 +37,7 @@ extern "C" {
 #include <corto/core/route.h>
 #include <corto/core/router.h>
 #include <corto/core/routerimpl.h>
+#include <corto/core/stager.h>
 #include <corto/core/subscriber.h>
 #include <corto/core/subscriberEvent.h>
 #include <corto/core/time.h>

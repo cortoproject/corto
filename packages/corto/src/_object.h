@@ -86,6 +86,7 @@ typedef void (*corto__notifyCallback)(corto__observer* data, corto_object _this,
 struct corto__observer {
     corto_object _this;
     corto_observer observer;
+    char notifyKind;
     corto_int32 count;
 };
 
@@ -176,6 +177,8 @@ corto_int16 corto_notifySubscribersId(
     corto_word value);
 
 corto__observable* corto__objectObservable(corto__object* o);
+corto_int16 corto_notify(corto_object observable, corto_uint32 mask);
+corto_int16 corto_notifySecured(corto_object observable, corto_uint32 mask);
 void corto_notifyObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
 void corto_notifyParentObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
 void corto_observerDelayedAdminDefine(corto_object instance);

@@ -277,6 +277,7 @@ corto_void _corto_mount_onDeclare_v(
     corto_object observable)
 {
 /* $begin(corto/core/mount/onDeclare) */
+    CORTO_UNUSED(this);
     CORTO_UNUSED(observable);
 /* $end */
 }
@@ -286,6 +287,7 @@ corto_void _corto_mount_onDelete_v(
     corto_object observable)
 {
 /* $begin(corto/core/mount/onDelete) */
+    CORTO_UNUSED(this);
     CORTO_UNUSED(observable);
 /* $end */
 }
@@ -423,6 +425,7 @@ corto_void _corto_mount_onUpdate_v(
     corto_object observable)
 {
 /* $begin(corto/core/mount/onUpdate) */
+    CORTO_UNUSED(this);
     CORTO_UNUSED(observable);
 /* $end */
 }

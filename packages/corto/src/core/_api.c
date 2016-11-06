@@ -3759,6 +3759,94 @@ corto_equalityKind _corto_routerimplCompare(corto_routerimpl dst, corto_routerim
     return corto_compare(dst, src);
 }
 
+corto_stager _corto_stagerCreate(void) {
+    corto_stager _this;
+    _this = corto_stager(corto_declare(corto_stager_o));
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_stager _corto_stagerCreateChild(corto_object _parent, corto_string _name) {
+    corto_stager _this;
+    _this = corto_stager(corto_declareChild(_parent, _name, corto_stager_o));
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_stagerUpdate(corto_stager _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_stager _corto_stagerDeclare(void) {
+    corto_stager _this;
+    _this = corto_stager(corto_declare(corto_stager_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_stager _corto_stagerDeclareChild(corto_object _parent, corto_string _name) {
+    corto_stager _this;
+    _this = corto_stager(corto_declareChild(_parent, _name, corto_stager_o));
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_stagerDefine(corto_stager _this) {
+    CORTO_UNUSED(_this);
+    return corto_define(_this);
+}
+
+corto_stager _corto_stagerAssign(corto_stager _this) {
+    CORTO_UNUSED(_this);
+    return _this;
+}
+
+corto_string _corto_stagerStr(corto_stager value) {
+    corto_string result;
+    corto_value v;
+    v = corto_value_object(value, corto_type(corto_stager_o));
+    result = corto_strv(&v, 0);
+    return result;
+}
+
+corto_stager corto_stagerFromStr(corto_stager value, corto_string str) {
+    corto_fromStrp(&value, corto_type(corto_stager_o), str);
+    return value;
+}
+
+corto_equalityKind _corto_stagerCompare(corto_stager dst, corto_stager src) {
+    return corto_compare(dst, src);
+}
+
 corto_subscriber _corto_subscriberCreate(corto_eventMask mask, corto_string parent, corto_string expr, corto_string contentType, corto_object instance, corto_dispatcher dispatcher, corto_string type, corto_bool enabled, void(*_impl)(void)) {
     corto_subscriber _this;
     _this = corto_subscriber(corto_declare(corto_subscriber_o));

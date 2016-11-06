@@ -64,7 +64,9 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
 
     fprintf(install, "rake clean 2> /dev/null\n");
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+#ifdef CORTO_OS_LINUX
     fprintf(install, "sudo ldconfig\n");
+#endif
     fclose(install);
 
     return 0;
