@@ -41,6 +41,7 @@ install:
     echo 'COMPONENTS = %w(corto c-binding xml corto-language io cortodoc test json t)
     require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
   - source corto/configure
+  - function hashes() { for g in `find . -name .git` ; do d=$(basename $(dirname $g)); h=$(git --git-dir $g rev-parse HEAD) ; echo -e "$d\t$h"; done } ; hashes | column -t | sort
 
 script:
   - source corto/configure
