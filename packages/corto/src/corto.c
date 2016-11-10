@@ -1141,6 +1141,11 @@ int corto_stop(void) {
 
     CORTO_OPERATIONAL = 2; /* Shutting down */
 
+    if (corto_getOwner()) {
+        corto_error("owner has not been reset to NULL before shutting down");
+        abort();
+    }
+
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the
      * removal of all non-static objects. */

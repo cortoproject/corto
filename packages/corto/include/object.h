@@ -25,10 +25,10 @@ typedef corto_equalityKind ___ (*corto_equalsAction)(corto_type _this, const voi
 
 /* Object lifecycle */
 corto_object _corto_create(corto_type type);
-corto_object _corto_createChild(corto_object parent, corto_string name, corto_type type);
+corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type);
 corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type);
 corto_object _corto_declare(corto_type type);
-corto_object _corto_declareChild(corto_object parent, corto_string name, corto_type type);
+corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type);
 corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type);
 corto_int16 corto_define(corto_object o);
 corto_int16 corto_delete(corto_object o);
@@ -101,8 +101,8 @@ corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 corto_string corto_cleanpath(corto_id buffer, char* path);
 
 /* Find objects by name */
-corto_object corto_lookup(corto_object scope, corto_string name);
-corto_object corto_resolve(corto_object scope, corto_string expr);
+corto_object corto_lookup(corto_object scope, corto_string id);
+corto_object corto_resolve(corto_object scope, corto_string id);
 
 /* Iterate over objects matching an expression */
 typedef struct corto_selectFluent {

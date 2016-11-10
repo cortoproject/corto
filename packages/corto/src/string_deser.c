@@ -178,34 +178,48 @@ void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
     corto_int32 size = corto_type_sizeof(t->elementType);
     void *result = NULL;
 
-    switch(t->kind) {
-    case CORTO_SEQUENCE: {
-        corto_objectseq *seq = ptr; /* Use random built-in sequence type */
-        seq->buffer = corto_realloc(seq->buffer, (data->current + 1) * size);
-        seq->length = data->current + 1;
-        ptr = seq->buffer;
-        memset(CORTO_OFFSET(ptr, size * data->current), 0, size);
-    }
-    case CORTO_ARRAY:
-        result = CORTO_OFFSET(ptr, size * data->current);
-        break;
-    case CORTO_LIST: {
-        corto_ll list = *(corto_ll*)ptr;
-        if (corto_collection_requiresAlloc(t->elementType)) {
-            result = corto_calloc(size);
-            corto_llAppend(list, result);
-        } else {
-            corto_llAppend(list, NULL);
-            result = corto_llGetPtr(list, corto_llSize(list) - 1);
+    if (!data->skip) {
+        switch(t->kind) {
+        case CORTO_SEQUENCE: {
+            corto_objectseq *seq = ptr; /* Use random built-in sequence type */
+            seq->buffer = corto_realloc(seq->buffer, (data->current + 1) * size);
+            seq->length = data->current + 1;
+            ptr = seq->buffer;
+            memset(CORTO_OFFSET(ptr, size * data->current), 0, size);
         }
-        break;
-    default:
-        break;
-    }
+        case CORTO_ARRAY:
+            result = CORTO_OFFSET(ptr, size * data->current);
+            break;
+        case CORTO_LIST: {
+            corto_ll list = *(corto_ll*)ptr;
+            if (corto_collection_requiresAlloc(t->elementType)) {
+                result = corto_calloc(size);
+                corto_llAppend(list, result);
+            } else {
+                corto_llAppend(list, NULL);
+                result = corto_llGetPtr(list, corto_llSize(list) - 1);
+            }
+            break;
+        default:
+            break;
+        }
+        }
     }
 
     return result;
 }
+
+corto_bool corto_string_deserMustSkip(corto_member m, void *ptr) {
+    if (corto_instanceof(corto_target_o, corto_parentof(m))) {
+        corto_bool owned = corto_owned(ptr);
+        corto_bool isActual = !strcmp("actual", corto_idof(m));
+        if ((owned && !isActual) || (!owned && isActual)) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 /* Parse scope */
 static corto_string corto_string_deserParseScope(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data) {
     corto_string_deser_t privateData;
@@ -226,10 +240,15 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
     privateData.type = data->type;
     privateData.allocValue = NULL;
     privateData.allocUdata = NULL;
+    privateData.skip = FALSE;
 
     /* Offset the scope-members with the current offset */
     if (info && info->m) {
+        privateData.skip = corto_string_deserMustSkip(info->m, ptr);
         ptr = CORTO_OFFSET(ptr, info->m->offset);
+        if (info->m->modifiers & CORTO_OBSERVABLE) {
+            ptr = *(void**)ptr;
+        }
     }
     privateData.ptr = ptr;
 
@@ -308,20 +327,22 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         privateData.allocValue = corto_string_deserAllocElem;
         privateData.allocUdata = info->type;
 
-        switch(corto_collection(info->type)->kind) {
-        case CORTO_ARRAY:
-        case CORTO_SEQUENCE:
-            break;
-        case CORTO_LIST:
-            if (!*(corto_ll*)ptr) {
-                *(corto_ll*)ptr = corto_llNew();
-            } else {
-                corto_llClear(*(corto_ll*)ptr);
+        if (!data->skip) {
+            switch(corto_collection(info->type)->kind) {
+            case CORTO_ARRAY:
+            case CORTO_SEQUENCE:
+                break;
+            case CORTO_LIST:
+                if (!*(corto_ll*)ptr) {
+                    *(corto_ll*)ptr = corto_llNew();
+                } else {
+                    corto_llClear(*(corto_ll*)ptr);
+                }
+                privateData.ptr = ptr;
+                break;
+            default:
+                break;
             }
-            privateData.ptr = ptr;
-            break;
-        default:
-            break;
         }
     } else if (info->type->kind == CORTO_ANY) {
           struct corto_string_deserIndexInfo *anyNode;
@@ -367,6 +388,9 @@ void *corto_string_getDestinationPtr(
 
     if (info->m) {
         result = CORTO_OFFSET(result, info->m->offset);
+        if (info->m->modifiers & CORTO_OBSERVABLE) {
+            result = *(void**)result;
+        }
     }
 
     return result;
@@ -409,6 +433,7 @@ static corto_int16 corto_string_deserParseValue(
     struct corto_string_deserIndexInfo* info,
     corto_string_deser_t* data)
 {
+    corto_bool skip = data->skip;
     void *offset = corto_string_getDestinationPtr(info, data);
     if (!offset) {
         corto_seterr("%s: %s", value, corto_lasterr());
@@ -425,6 +450,10 @@ static corto_int16 corto_string_deserParseValue(
     if (info->parsed) {
         corto_seterr("member '%s' is already parsed", corto_idof(info->m));
         goto error;
+    }
+
+    if (info->m && !skip) {
+        skip = corto_string_deserMustSkip(info->m, data->ptr);
     }
 
     /* Only parse references and primitives */
@@ -446,7 +475,7 @@ static corto_int16 corto_string_deserParseValue(
         }
 
         if (o || !strcmp(value, "null")) {
-            corto_setref(offset, o);
+            if (!skip) corto_setref(offset, o);
             if (o) corto_release(o);
         } else {
             corto_seterr("unresolved reference to '%s' for member '%s'", value,
@@ -456,7 +485,7 @@ static corto_int16 corto_string_deserParseValue(
     } else
 
     /* Convert string to primitive value */
-    if (info->type->kind == CORTO_PRIMITIVE) {
+    if (!skip && (info->type->kind == CORTO_PRIMITIVE)) {
 
         if (corto_primitive(info->type)->kind != CORTO_TEXT) {
             if (corto_convert(corto_primitive(corto_string_o), &value, corto_primitive(info->type), offset)) {
@@ -613,7 +642,7 @@ static corto_string corto_string_parseAnonymous(
         goto error;
     }
 
-    corto_setref(offset, o);
+    if (!data->skip) corto_setref(offset, o);
     corto_release(o);
 
     return ptr;
@@ -723,7 +752,7 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
             *(++bptr) = '\0';
             nonWs = bptr;
             break;
-        case '}': /* Scope close and end of value*/
+        case '}': /* Scope close and end of value */
             if (buffer != bptr) {
                 *nonWs = '\0';
                 if (memberInfo && (data->type->kind != CORTO_PRIMITIVE)) {
@@ -875,6 +904,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     data->anonymousObjects = NULL;
     data->allocValue = NULL;
     data->allocUdata = NULL;
+    data->skip = FALSE;
 
     if (!data->type) {
         corto_seterr("no type provided for '%s'", str);
