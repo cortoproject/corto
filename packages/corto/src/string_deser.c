@@ -611,6 +611,7 @@ static corto_string corto_string_parseAnonymous(
         privateData.allocValue = NULL;
         privateData.allocUdata = NULL;
         privateData.scope = data->scope;
+        privateData.skip = FALSE;
 
         if (corto_type(type)->kind == CORTO_PRIMITIVE) {
             ptr ++;
