@@ -510,6 +510,7 @@ test/Suite Select::
     void tc_selectLimitOvershootTree()
     void tc_selectOffsetLimitFilter()
 
+    void tc_selectParentWithSink()
     void tc_selectSeparator()
 
 class JsonReplicator : mount, hidden::

@@ -364,8 +364,9 @@ static corto_bool corto_selectMatch(
             strcpy(type, data->item.type);
         }
 
-        /* Only filter (duplicate) results from the object store */
-        if (o) {
+        /* Only filter (duplicate) results from the object store. The root object
+         * cannot be masked by a mount. */
+        if (o && (o != root_o)) {
             corto_int32 i;
 
             for (i = 0; i < data->mountsLoaded; i++) {

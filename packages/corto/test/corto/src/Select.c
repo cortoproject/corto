@@ -1215,6 +1215,30 @@ corto_void _test_Select_tc_selectParentNoSlash(
 /* $end */
 }
 
+corto_void _test_Select_tc_selectParentWithSink(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectParentWithSink) */
+    corto_loader l = corto_loaderCreate();
+    test_assert(l != NULL);
+
+    corto_iter it;
+    corto_int16 ret = corto_select("/corto", "..").iter(&it);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&it));
+    corto_result *r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "");
+    test_assertstr(r->parent, "..");
+    test_assert(!corto_iterHasNext(&it));
+
+    ret = corto_delete(l);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
 corto_void _test_Select_tc_selectScope(
     test_Select this)
 {

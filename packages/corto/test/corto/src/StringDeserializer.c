@@ -254,7 +254,7 @@ corto_void _test_StringDeserializer_tc_deserAnonymousSimple(
     test_assert(corto_llSize(t->objects) == 1);
     corto_object e1 = corto_llGet(t->objects, 0);
     test_assert(corto_instanceof(corto_int32_o, e1));
-    test_assert(*(corto_int32*)e1 == 10);
+    test_assertint(*(corto_int32*)e1, 10);
     corto_release(o);
 
 /* $end */
