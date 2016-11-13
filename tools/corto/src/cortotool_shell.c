@@ -662,8 +662,10 @@ struct corto_serializer_s cxsh_memberSer(void) {
 
 /* Obtain type of expression */
 corto_type cxsh_exprType(corto_string expr) {
+    CORTO_UNUSED(expr);
+    
     corto_type result = NULL;
-    corto_function parseLine =
+    /*corto_function parseLine =
         corto_resolve(NULL, "/corto/ast/Parser/parseType");
 
     if (parseLine) {
@@ -674,7 +676,7 @@ corto_type cxsh_exprType(corto_string expr) {
         corto_call(parseLine, &result, expr, scope_o);
         corto_release(scope_o);
         corto_lasterr();
-    }
+    }*/
 
     return result;
 }

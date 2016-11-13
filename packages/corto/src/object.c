@@ -3353,36 +3353,14 @@ error:
 corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value) {
     corto_assertObject(scope);
 
-    corto_int16 result = -1;
-    static corto_function parseLine = NULL;
-    static corto_bool searchedForParser = FALSE;
-
-    /* Clear any errors set by previous code  */
-    corto_seterr(NULL);
-
-    corto_object o = NULL;
-    if (!strchr(expr, ' ')) {
-        corto_resolve(scope, expr);
-    }
+    corto_object o = corto_resolve(scope, expr);
     if (o) {
         *value = corto_value_object(o, NULL);
-        result = 0;
-    } else {
-        if (!corto_lasterr()) {
-            if (!parseLine && !searchedForParser) {
-                parseLine = corto_resolve(NULL, "::corto::ast::Parser::parseLine");
-                searchedForParser = TRUE;
-            }
-
-            if (parseLine) {
-                corto_call(parseLine, &result, expr, scope, value);
-            } else {
-                corto_seterr(NULL);
-            }
-        }
     }
 
-    return result;
+    /* eventually this function will use the parser to evaluate expressions */
+
+    return o == NULL;
 }
 
 static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffer) {
