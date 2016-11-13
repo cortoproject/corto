@@ -1,5 +1,5 @@
 /*
- * corto_generatorTypeDepWalk.c
+ * g_generatorTypeDepWalk.c
  *
  *  Created on: Dec 27, 2012
  *      Author: sander
@@ -10,7 +10,7 @@
 #ifdef CORTO_GENERATOR
 
 typedef struct corto_genTypeWalk_t {
-    corto_generator g;
+    g_generator g;
     corto_ll parsed; /* List of parsed types */
     corto_ll declared; /* List of declared objects */
     g_walkAction onDeclare;
@@ -515,7 +515,7 @@ static int corto_genTypeWalk(corto_object o, void* userData) {
 }
 
 /* Generator main */
-int corto_genTypeDepWalk(corto_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData) {
+int corto_genTypeDepWalk(g_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData) {
     corto_genTypeWalk_t walkData;
     struct corto_genTypeDeclaration* decl;
 

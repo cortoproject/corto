@@ -10,7 +10,7 @@
 #include "_object.h" /* To mimic an object on stack */
 
 /* Do metawalk on type */
-corto_int16 corto_metaWalk(corto_serializer s, corto_type type, void* userData) {
+corto_int16 _corto_metaWalk(corto_serializer s, corto_type type, void* userData) {
     corto__object* o;
     corto_int16 result;
 

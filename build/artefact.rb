@@ -48,10 +48,12 @@ if LANGUAGE == "c" then
   COMPILER = CC
 elsif LANGUAGE == "c4cpp" then
   COMPILER = CXX
+elsif LANGUAGE == "cpp" then
+  COMPILER = CXX
 elsif LANGUAGE == "c++" then
   COMPILER = CXX
 else
-    abort "\033[1;31m[ language #{LANGUAGE} unsupported ]\033[0;49m"
+  abort "\033[1;31m[ language #{LANGUAGE} unsupported ]\033[0;49m"
 end
 
 # Set NDEBUG macro in release builds to disable tracing & checking
@@ -260,42 +262,53 @@ task :default => [:prebuild, :binary, :postbuild]
 # For make junkies
 task :all => :default
 
-# Run test for project
+
+
+# Build and run tests for project
 task :test do
   verbose(VERBOSE)
-  file = ""
+  TEST = true
+
+  # Build test
   if File.exists? "test/rakefile" then
     begin
-      buildCmd = ""
+      buildCmd = "none"
       if ENV['clean'] == "true" then
         buildCmd = "clobber"
       elsif ENV['rebuild'] == "true" then
         buildCmd = "clobber default"
+      elsif ENV['build'] == "true" then
+        buildCmd = ""
       end
-      cmd "rake #{buildCmd} -f test/rakefile silent=true"
+      if buildCmd != "none" then
+        cmd "rake #{buildCmd} -f test/rakefile silent=true"
+      end
     rescue
       STDERR.puts "\033[1;31mcorto:\033[0;49m failed to build test"
       abort
     end
-    if File.exists? "test/.corto/libtest.so" then
-      Dir.chdir("test")
-      file = ".corto/libtest.so"
-    end
-  elsif File.exists? ".corto/libtest.so" then
-    file = ".corto/libtest.so"
-  end
-
-  if file != "" and ENV["build"] != "true" and
-                    ENV["rebuild"] != "true" and
-                    ENV["clean"] != "true"
-  then
-    begin
-      cmd "corto #{file} #{ENV['testcase']}"
-    rescue
-      abort
+    if ENV["build"] != "true" and ENV["rebuild"] != "true" and ENV["clean"] != "true" then
+      begin
+        cmd "rake runtest -f #{Dir.pwd}/test/rakefile testcase=#{ENV['testcase']}"
+      rescue
+        abort
+      end
     end
   end
 end
+
+# Current project is a test project, run test
+task :runtest do
+  verbose(VERBOSE)
+  TEST = true
+  cmd "rake silent=true"
+  begin
+    cmd "corto #{TARGETDIR}/#{ARTEFACT} #{ENV['testcase']}"
+  rescue
+    abort
+  end
+end
+
 
 # Keep track of overal coverage statistics for project
 covered = 0

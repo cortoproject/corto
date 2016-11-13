@@ -8,7 +8,11 @@ LINK_PUBLIC ||= ["."] + LINK
 GENERATED_SOURCES ||= []
 TARGET ||= PACKAGE_FWSLASH.split("/").last
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
-PREFIX ||= TARGET
+if LANGUAGE != "cpp" and LANGUAGE != "c++" then
+  PREFIX ||= TARGET
+else
+  PREFIX = "."
+end
 NAME ||= PACKAGE_FWSLASH.split("/").last
 ARTEFACT ||= "lib#{TARGET}.so"
 INSTALL ||= "lib/corto"
@@ -27,7 +31,12 @@ end
 PP_OBJECTS ||= []
 
 # Include corto package only when not building the core
-if TARGET != "corto" and not defined? NOCORTO then USE_PACKAGE << "corto" end
+if TARGET != "corto" and not defined? NOCORTO then
+  USE_PACKAGE << "corto"
+  if LANGUAGE == "cpp" or LANGUAGE == "c++" then
+    USE_PACKAGE << "corto/cpp"
+  end
+end
 
 # Set working directory to where the rakefile is
 CHDIR_SET = true
@@ -69,17 +78,29 @@ if not defined? NOCORTO then
     CFLAGS << "-fvisibility=hidden"
 
     GENFILE = DEFFILES[0]
-    GENERATED_SOURCES <<
-      ".corto/_api.#{EXT}" <<
-      ".corto/_wrapper.#{EXT}" <<
-      ".corto/_meta.#{EXT}" <<
-      ".corto/_load.#{EXT}"
 
-    GENERATED_HEADERS ||= [] <<
-      "include/_api.h" <<
-      "include/_meta.h" <<
-      "include/_type.h" <<
-      "include/_interface.h"
+    if LANGUAGE == "c" or LANGUAGE == "c4cpp" then
+      GENERATED_SOURCES <<
+        ".corto/_api.#{EXT}" <<
+        ".corto/_wrapper.#{EXT}" <<
+        ".corto/_meta.#{EXT}" <<
+        ".corto/_load.#{EXT}"
+
+      GENERATED_HEADERS ||= [] <<
+        "include/_api.h" <<
+        "include/_meta.h" <<
+        "include/_type.h" <<
+        "include/_interface.h"
+    else
+      GENERATED_SOURCES <<
+        ".corto/_api.#{EXT}" <<
+        ".corto/_meta.#{EXT}" <<
+        ".corto/_load.#{EXT}"
+
+      GENERATED_HEADERS ||= [] <<
+        "include/_meta.h" <<
+        "include/_type.h"
+    end
 
     file "include/_type.h" => [GENFILE, "rakefile", ".corto/packages.txt"] do
       verbose(VERBOSE)
@@ -100,11 +121,15 @@ if not defined? NOCORTO then
         end
       end
 
+      if defined? PREFIX then
+        prefixStr = "--prefix #{PREFIX}"
+      end
+
       command = "corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
                 "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
                 "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
                 "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
-                "--prefix #{PREFIX} #{localStr} #{docStr} --lang #{LANGUAGE}"
+                "#{prefixStr} #{localStr} #{docStr} --lang #{LANGUAGE}"
 
       begin
         cmd command
@@ -133,11 +158,14 @@ if not defined? NOCORTO then
       end
       if LANGUAGE == "c4cpp" then
         langStr = "--attr c4cpp=true"
+      elsif LANGUAGE == "cpp" or LANGUAGE == "c++" then
+        langStr = "--attr c4cpp=true --attr lang=cpp"
       end
 
       command =
         "corto pp #{preload} #{localStr} --name #{PACKAGE} " +
-        "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} -g c/project #{langStr}"
+        "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")}" +
+        " -g c/project #{langStr}"
 
       begin
         cmd command
@@ -329,7 +357,9 @@ def installDir(dir)
 
       # Write package prefix to include path
       cmd "rm -f #{dstPath}/.prefix"
-      cmd "echo \"#{PREFIX}\" >> #{dstPath}/.prefix"
+      if defined? PREFIX then
+        cmd "echo \"#{PREFIX}\" >> #{dstPath}/.prefix"
+      end
     end
   end
 end

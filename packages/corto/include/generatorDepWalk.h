@@ -1,5 +1,5 @@
 /*
- * corto_generatorDepWalk.h
+ * g_generatorDepWalk.h
  *
  *  Created on: Sep 25, 2012
  *      Author: sander
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-int corto_genDepWalk(corto_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData);
+int corto_genDepWalk(g_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData);
 
 #ifdef __cplusplus
 }

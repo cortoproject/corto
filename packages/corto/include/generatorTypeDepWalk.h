@@ -1,5 +1,5 @@
 /*
- * corto_generatorDepWalk.h
+ * g_generatorDepWalk.h
  *
  *  Created on: Sep 25, 2012
  *      Author: sander
@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-int corto_genTypeDepWalk(corto_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData);
+int corto_genTypeDepWalk(g_generator g, g_walkAction onDeclare, g_walkAction onDefine, void* userData);
 
 #ifdef __cplusplus
 }

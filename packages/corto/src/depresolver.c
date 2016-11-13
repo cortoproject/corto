@@ -1,6 +1,6 @@
 
 /*
- * corto_generatorDepWalk.c
+ * g_generatorDepWalk.c
  *
  *  Created on: Sep 25, 2012
  *      Author: sander

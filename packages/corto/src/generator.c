@@ -1,5 +1,5 @@
 /*
- * corto_generator.c
+ * g_generator.c
  *
  *  Created on: Sep 17, 2012
  *      Author: sander
@@ -10,10 +10,10 @@
 #ifdef CORTO_GENERATOR
 
 /* Generator functions */
-corto_generator gen_new(corto_string name, corto_string language) {
-    corto_generator result;
+g_generator gen_new(corto_string name, corto_string language) {
+    g_generator result;
 
-    result = corto_alloc(sizeof(struct corto_generator_s));
+    result = corto_alloc(sizeof(struct g_generator_s));
 
     /* List of output directories is initially empty */
     result->attributes = NULL;
@@ -58,7 +58,7 @@ corto_generator gen_new(corto_string name, corto_string language) {
 }
 
 /* Control how id's are generated */
-g_idKind g_setIdKind(corto_generator g, g_idKind kind) {
+g_idKind g_setIdKind(g_generator g, g_idKind kind) {
     g_idKind prev;
     prev = g->idKind;
     g->idKind = kind;
@@ -66,7 +66,7 @@ g_idKind g_setIdKind(corto_generator g, g_idKind kind) {
 }
 
 /* Get name, or if no name is provided, return name of current parse-object */
-corto_string g_getName(corto_generator g) {
+corto_string g_getName(g_generator g) {
     corto_string result;
 
     result = NULL;
@@ -80,7 +80,7 @@ corto_string g_getName(corto_generator g) {
 }
 
 /* Get name from generator name (strip path) */
-char* g_getProjectName(corto_generator g) {
+char* g_getProjectName(g_generator g) {
     char *package = g_getName(g);
     char *ptr = &package[strlen(package) - 1];
     while ((ptr != package)) {
@@ -98,7 +98,7 @@ char* g_getProjectName(corto_generator g) {
 }
 
 /* Get current object */
-corto_object g_getCurrent(corto_generator g) {
+corto_object g_getCurrent(g_generator g) {
     corto_object result;
 
     result = NULL;
@@ -111,7 +111,7 @@ corto_object g_getCurrent(corto_generator g) {
 }
 
 /* Add to-parse object */
-void gen_parse(corto_generator g, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix) {
+void gen_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix) {
     g_object* o = NULL;
     corto_iter objectIter;
 
@@ -172,7 +172,7 @@ static int g_genAttributeFind(void *value, void *userData) {
 }
 
 /* Set attribute */
-void gen_setAttribute(corto_generator g, corto_string key, corto_string value) {
+void gen_setAttribute(g_generator g, corto_string key, corto_string value) {
     g_attribute* attr = NULL;
 
     if (!g->attributes) {
@@ -196,7 +196,7 @@ void gen_setAttribute(corto_generator g, corto_string key, corto_string value) {
 }
 
 /* Get attribute */
-corto_string gen_getAttribute(corto_generator g, corto_string key) {
+corto_string gen_getAttribute(g_generator g, corto_string key) {
     corto_string result = NULL;
 
     if(g->attributes) {
@@ -214,7 +214,7 @@ corto_string gen_getAttribute(corto_generator g, corto_string key) {
 }
 
 /* Load generator actions from library */
-corto_int16 gen_load(corto_generator g, corto_string library) {
+corto_int16 gen_load(g_generator g, corto_string library) {
 
     /* Load library from generator path */
     corto_string package = NULL;
@@ -322,7 +322,7 @@ static int g_freeAttribute(void* _o, void* udata) {
 }
 
 /* Free generator */
-void gen_free(corto_generator g) {
+void gen_free(g_generator g) {
     if (g->library) {
         corto_dlClose(g->library);
         g->library = NULL;
@@ -359,7 +359,7 @@ void gen_free(corto_generator g) {
     corto_dealloc(g);
 }
 
-corto_int16 g_loadPrefixes(corto_generator g, corto_ll list) {
+corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
     corto_iter iter = corto_llIter(list);
 
     while (corto_iterHasNext(&iter)) {
@@ -395,7 +395,7 @@ error:
 }
 
 /* Start generator */
-corto_int16 gen_start(corto_generator g) {
+corto_int16 gen_start(g_generator g) {
     /* Find dependent packages, configure associated API prefixes */
 
     /* Resolve imports based on metadata. */
@@ -430,7 +430,7 @@ corto_int16 gen_start(corto_generator g) {
 
     corto_int16 ret = g->start_action(g);
     if (ret && !corto_lasterr())  {
-        corto_seterr("generator failed");
+        corto_seterr("generator failed: %s", corto_lasterr());
     }
     return ret;
 error:
@@ -439,14 +439,14 @@ error:
 
 /* ==== Generator utility functions */
 typedef struct g_serializeImports_t {
-    corto_generator g;
+    g_generator g;
     corto_object stack[1024]; /* Maximum serializer-depth */
     corto_uint32 count;
     corto_bool nested;
 }g_serializeImports_t;
 
 corto_int16 g_leafDependencies(
-    corto_generator g,
+    g_generator g,
     corto_object parent)
 {
     corto_string packageDir = corto_locate(
@@ -481,7 +481,7 @@ corto_int16 g_leafDependencies(
 }
 
 corto_int16 g_importsEvalReference(
-    corto_generator g,
+    g_generator g,
     corto_object o)
 {
     if (!g_mustParse(g, o)) {
@@ -509,7 +509,7 @@ corto_int16 g_importsEvalReference(
 corto_int16 g_serializeImportsReference(corto_serializer s, corto_value *v, void* userData) {
     corto_object o;
     g_serializeImports_t *data = userData;
-    corto_generator g = data->g;
+    g_generator g = data->g;
 
     o = *(corto_object*)corto_value_getPtr(v);
     if (o) {
@@ -568,7 +568,7 @@ struct g_walkObjects_t {
 
 /* Resolve imports */
 int g_importWalk(corto_object o, void* userData) {
-    corto_generator g = userData;
+    g_generator g = userData;
     g_serializeImports_t walkData;
     struct corto_serializer_s s;
 
@@ -581,7 +581,7 @@ int g_importWalk(corto_object o, void* userData) {
     return 1;
 }
 
-corto_int16 g_resolveImports(corto_generator generator) {
+corto_int16 g_resolveImports(g_generator generator) {
     g_walkRecursive(generator, g_importWalk, generator);
     return 0;
 }
@@ -602,7 +602,7 @@ stop:
 }
 
 /* Walk objects, choose between recursive scopewalk or only top-level objects */
-static int g_walk_ext(corto_generator g, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
+static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
     corto_iter iter;
 
     if (g->objects) {
@@ -646,24 +646,24 @@ stop:
 }
 
 /* Walk objects */
-int g_walk(corto_generator g, g_walkAction action, void* userData) {
+int g_walk(g_generator g, g_walkAction action, void* userData) {
     return g_walk_ext(g, action, userData, TRUE, FALSE);
 }
 
 /* Walk objects, never walk scopes, even if object is required to. */
-int g_walkNoScope(corto_generator g, g_walkAction action, void* userData) {
+int g_walkNoScope(g_generator g, g_walkAction action, void* userData) {
     return g_walk_ext(g, action, userData, FALSE, FALSE);
 }
 
 /* Walk objects recursively */
-int g_walkRecursive(corto_generator g, g_walkAction action, void* userData) {
+int g_walkRecursive(g_generator g, g_walkAction action, void* userData) {
     return g_walk_ext(g, action, userData, TRUE, TRUE);
 }
 
 /* Find prefix for a given object. Search parse-object in generator
  * which is closest to the object passed to this function. */
 static g_object* g_findObjectIntern(
-    corto_generator g,
+    g_generator g,
     corto_object o,
     corto_object* match,
     corto_bool inclusive)
@@ -706,7 +706,7 @@ static g_object* g_findObjectIntern(
 }
 
 g_object* g_findObject(
-    corto_generator g,
+    g_generator g,
     corto_object o,
     corto_object* match)
 {
@@ -714,7 +714,7 @@ g_object* g_findObject(
 }
 
 g_object* g_findObjectInclusive(
-    corto_generator g,
+    g_generator g,
     corto_object o,
     corto_object* match)
 {
@@ -722,7 +722,7 @@ g_object* g_findObjectInclusive(
 }
 
 /* Obtain prefix */
-corto_string g_getPrefix(corto_generator g, corto_object o) {
+corto_string g_getPrefix(g_generator g, corto_object o) {
     g_object* prefix;
 
     /* Lookup prefix */
@@ -732,7 +732,7 @@ corto_string g_getPrefix(corto_generator g, corto_object o) {
 }
 
 /* Object transformations */
-static corto_char* g_oidTransform(corto_generator g, corto_object o, corto_id _id, g_idKind kind) {
+static corto_char* g_oidTransform(g_generator g, corto_object o, corto_id _id, g_idKind kind) {
     CORTO_UNUSED(g);
 
     /* If the object is a function with an argumentlist, cut the argumentlist
@@ -814,7 +814,7 @@ error:
 }
 
 /* Translate object-id */
-corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKind kind) {
+corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind) {
     g_object* prefix;
     corto_object match;
     corto_id _id;
@@ -829,25 +829,28 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
 
     /* If prefix is found, replace the scope up until the found object with the prefix */
     if (prefix && prefix->prefix) {
-        corto_uint32 count;
-        corto_object scopes[CORTO_MAX_SCOPE_DEPTH];
+        if (strcmp(prefix->prefix, ".")) {
+            corto_uint32 count;
+            corto_object scopes[CORTO_MAX_SCOPE_DEPTH];
 
-        /* Obtain list of scopes from matched to object */
-        count = 0;
-        scopes[count] = o;
-        while(scopes[count] != match) {
-            scopes[count+1] = corto_parentof(scopes[count]);
-            count++;
+            /* Obtain list of scopes from matched to object */
+            count = 0;
+            scopes[count] = o;
+            while(scopes[count] != match) {
+                scopes[count+1] = corto_parentof(scopes[count]);
+                count++;
+            }
+
+            /* Paste in prefix */
+            strcpy(_id, prefix->prefix);
+            while(count) {
+                count--;
+                strcat(_id, "/");
+                strcat(_id, corto_idof(scopes[count]));
+            }
+        } else {
+            corto_path(_id, g_getCurrent(g), o, "/");
         }
-
-        /* Paste in prefix */
-        strcpy(_id, prefix->prefix);
-        while(count) {
-            count--;
-            strcat(_id, "/");
-            strcat(_id, corto_idof(scopes[count]));
-        }
-
     /* If no prefix is found for object, just use the scoped identifier */
     } else {
         corto_fullpath(_id, o);
@@ -865,12 +868,12 @@ corto_string g_fullOidExt(corto_generator g, corto_object o, corto_id id, g_idKi
 }
 
 /* Translate an object to a language-specific identifier with idKind provided. */
-corto_string g_fullOid(corto_generator g, corto_object o, corto_id id) {
+corto_string g_fullOid(g_generator g, corto_object o, corto_id id) {
     return g_fullOidExt(g, o, id, g->idKind);
 }
 
 /* Translate an id to language representation */
-corto_string g_id(corto_generator g, corto_string str, corto_id id) {
+corto_string g_id(g_generator g, corto_string str, corto_id id) {
     corto_string result;
 
     if (g->id_action) {
@@ -883,7 +886,7 @@ corto_string g_id(corto_generator g, corto_string str, corto_id id) {
 }
 
 /* Translate a class id to language representation */
-corto_string g_oid(corto_generator g, corto_object o, corto_id id) {
+corto_string g_oid(g_generator g, corto_object o, corto_id id) {
     corto_string result;
     corto_id cid;
     g_object* prefix;
@@ -921,7 +924,7 @@ corto_string g_oid(corto_generator g, corto_object o, corto_id id) {
 /* ==== Generator file-utility class */
 
 /* Convert a filename to a filepath, depending on it's extension. */
-static corto_string g_filePath(corto_generator g, corto_string filename, corto_char* buffer) {
+static corto_string g_filePath(g_generator g, corto_string filename, corto_char* buffer) {
     corto_string result;
     corto_id path;
 
@@ -964,7 +967,7 @@ error:
 }
 
 /* Find existing parts in the code that must not be overwritten. */
-corto_int16 g_loadExisting(corto_generator g, corto_string name, corto_string option, corto_ll *list) {
+corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option, corto_ll *list) {
     corto_string code = NULL, ptr = NULL;
     CORTO_UNUSED(g);
 
@@ -1068,7 +1071,7 @@ void g_fileClose(g_file file) {
     corto_dealloc(file);
 }
 
-static g_file g_fileOpenIntern(corto_generator g, corto_string name) {
+static g_file g_fileOpenIntern(g_generator g, corto_string name) {
     g_file result;
     char ext[255];
 
@@ -1113,15 +1116,25 @@ error:
 }
 
 /* Open file */
-g_file g_fileOpen(corto_generator g, corto_string name) {
+g_file g_fileOpen(g_generator g, corto_string name, ...) {
     corto_char filepath[512];
-    return g_fileOpenIntern(g, g_filePath(g, name, filepath));
+    corto_char namebuffer[512];
+    va_list args;
+    va_start(args, name);
+    vsprintf(namebuffer, name, args);
+    va_end(args);
+    return g_fileOpenIntern(g, g_filePath(g, namebuffer, filepath));
 }
 
 /* Open hidden file for writing. */
-g_file g_hiddenFileOpen(corto_generator g, corto_string name) {
+g_file g_hiddenFileOpen(g_generator g, corto_string name, ...) {
     corto_char filepath[512];
-    sprintf(filepath, ".corto/%s", name);
+    corto_char namebuffer[512];
+    va_list args;
+    va_start(args, name);
+    vsprintf(namebuffer, name, args);
+    va_end(args);
+    sprintf(filepath, ".corto/%s", namebuffer);
     return g_fileOpenIntern(g, filepath);
 }
 
@@ -1198,7 +1211,7 @@ int g_checkParseWalk(void* o, void* userData) {
     return result;
 }
 
-corto_bool g_mustParse(corto_generator g, corto_object o) {
+corto_bool g_mustParse(g_generator g, corto_object o) {
     corto_bool result;
 
     result = TRUE;
@@ -1263,7 +1276,7 @@ error:
 }
 
 /* Get generator */
-corto_generator g_fileGetGenerator(g_file file) {
+g_generator g_fileGetGenerator(g_file file) {
     return file->generator;
 }
 
@@ -1328,7 +1341,7 @@ static corto_int16 corto_genMemberCache_member(corto_serializer s, corto_value *
     return 0;
 }
 
-corto_char* corto_genMemberName(corto_generator g, corto_ll cache, corto_member m, corto_char *result) {
+corto_char* corto_genMemberName(g_generator g, corto_ll cache, corto_member m, corto_char *result) {
     corto_uint32 count;
     corto_id temp;
 

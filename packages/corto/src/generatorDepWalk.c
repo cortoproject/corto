@@ -1,5 +1,5 @@
 /*
- * corto_generatorDepWalk.c
+ * g_generatorDepWalk.c
  *
  *  Created on: Sep 25, 2012
  *      Author: sander
@@ -14,7 +14,7 @@ int corto_genDepBuildAction(corto_object o, void* userData);
 /* Walk objects in correct dependency order. */
 typedef struct g_itemWalk_t *g_itemWalk_t;
 struct g_itemWalk_t {
-    corto_generator g;
+    g_generator g;
     void *userData;
     corto_depresolver resolver;
     corto_bool bootstrap;
@@ -223,7 +223,7 @@ static int corto_genDefineAction(corto_object o, void* userData) {
     return 1;
 }
 
-int corto_genDepWalk(corto_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData) {
+int corto_genDepWalk(g_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData) {
     struct g_itemWalk_t walkData;
     corto_depresolver resolver = corto_depresolverCreate(corto_genDeclareAction, corto_genDefineAction, &walkData);
 

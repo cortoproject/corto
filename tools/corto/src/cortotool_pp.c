@@ -33,13 +33,22 @@ corto_int16 cortotool_language(char *language) {
         corto_llAppend(attributes, "cpp=src");
         corto_llAppend(attributes, "h=include");
         corto_llAppend(attributes, "c4cpp=true");
-    } else if (!strcmp(language, "cpp")) {
-        corto_llAppend(generators, "cpp_class");
-        corto_llAppend(generators, "c_type");
-        corto_llAppend(generators, "c_meta");
+    } else if (!strcmp(language, "cpp") || (!strcmp(language, "c++"))) {
+        if (!prefixes) {
+            prefixes = corto_llNew();
+        }
+        corto_llAppend(prefixes, "");
+        corto_llAppend(generators, "c/type");
+        corto_llAppend(generators, "c/load");
+        corto_llAppend(generators, "c/project");
+        corto_llAppend(generators, "cpp/class");
+        corto_llAppend(generators, "cpp/fluent");
         corto_llAppend(attributes, "c=src");
         corto_llAppend(attributes, "h=include");
-
+        corto_llAppend(attributes, "cpp=src");
+        corto_llAppend(attributes, "hpp=include");
+        corto_llAppend(attributes, "c4cpp=true");
+        corto_llAppend(attributes, "lang=cpp");
     } else {
         corto_error("corto: unknown language '%s'", language);
         goto error;
@@ -164,7 +173,7 @@ error:
 }
 
 corto_int16 cortotool_ppParse(
-    corto_generator g,
+    g_generator g,
     corto_ll list,
     corto_bool parseSelf,
     corto_bool parseScope)
@@ -210,7 +219,7 @@ error:
 }
 
 corto_int16 cortotool_pp(int argc, char *argv[]) {
-    corto_generator g;
+    g_generator g;
     corto_string lib, include;
     corto_iter iter;
     corto_string attr;
