@@ -7,10 +7,10 @@
 #define CORTO_SECURE_KEY_H
 
 #include <corto/corto.h>
-#include <corto/_interface.h>
+#include <corto/_project.h>
 #include <corto/secure/_type.h>
 #include <corto/secure/_api.h>
-#include <corto/secure/_meta.h>
+#include <corto/secure/_load.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -47,7 +47,9 @@
 #include <corto/iter.h>
 
 #ifdef __cplusplus
+#ifndef CORTO_CPP_H
 #include <utility>
+#endif
 extern "C" {
 #endif
 

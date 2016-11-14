@@ -83,22 +83,22 @@ if not defined? NOCORTO then
       GENERATED_SOURCES <<
         ".corto/_api.#{EXT}" <<
         ".corto/_wrapper.#{EXT}" <<
-        ".corto/_meta.#{EXT}" <<
+        ".corto/_project.#{EXT}" <<
         ".corto/_load.#{EXT}"
 
       GENERATED_HEADERS ||= [] <<
         "include/_api.h" <<
-        "include/_meta.h" <<
+        "include/_load.h" <<
         "include/_type.h" <<
-        "include/_interface.h"
+        "include/_project.h"
     else
       GENERATED_SOURCES <<
         ".corto/_api.#{EXT}" <<
-        ".corto/_meta.#{EXT}" <<
+        ".corto/_project.#{EXT}" <<
         ".corto/_load.#{EXT}"
 
       GENERATED_HEADERS ||= [] <<
-        "include/_meta.h" <<
+        "include/_load.h" <<
         "include/_type.h"
     end
 
@@ -144,9 +144,9 @@ if not defined? NOCORTO then
     task :prebuild => ["include/_type.h"]
   else
     GENERATED_SOURCES <<
-        ".corto/_load.#{EXT}"
+        ".corto/_project.#{EXT}"
 
-    file ".corto/_load.#{EXT}" => [".corto/packages.txt"] do
+    file ".corto/_project.#{EXT}" => [".corto/packages.txt"] do
       verbose(VERBOSE)
       preload = PP_PRELOAD.join(" ")
       cmd "mkdir -p .corto"
@@ -177,7 +177,7 @@ if not defined? NOCORTO then
         abort()
       end
     end
-    task :prebuild => [".corto/_load.#{EXT}"]
+    task :prebuild => [".corto/_project.#{EXT}"]
   end
 end
 

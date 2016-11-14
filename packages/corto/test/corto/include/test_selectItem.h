@@ -7,7 +7,7 @@
 #define TEST_SELECTITEM_H
 
 #include "corto.h"
-#include "test__interface.h"
+#include "test__project.h"
 
 #ifdef __cplusplus
 extern "C" {

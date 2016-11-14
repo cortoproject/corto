@@ -1621,8 +1621,8 @@ corto_void _test_Project_tc_packageNodef(
     test_assert(corto_fileTest("Project/test/include/test.h"));
     test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_interface.h"));
-    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_project.h"));
+    test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
@@ -1699,8 +1699,8 @@ corto_void _test_Project_tc_packageNodefC4cpp(
     test_assert(corto_fileTest("Project/test/include/test.h"));
     test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_interface.h"));
-    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_project.h"));
+    test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
@@ -1776,8 +1776,8 @@ corto_void _test_Project_tc_packageNodefLocal(
     test_assert(corto_fileTest("Project/test/include/test.h"));
     test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_interface.h"));
-    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_project.h"));
+    test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
@@ -1855,8 +1855,8 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
     test_assert(corto_fileTest("Project/test/include/test.h"));
     test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_interface.h"));
-    test_assert(corto_fileTest("Project/test/include/_meta.h"));
+    test_assert(corto_fileTest("Project/test/include/_project.h"));
+    test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));

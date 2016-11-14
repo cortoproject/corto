@@ -4,7 +4,7 @@
  */
 
 #include <corto/core/core.h>
-#include <corto/core/_meta.h>
+#include <corto/core/_load.h>
 
 corto_void _corto_dispatcher_post(
     corto_dispatcher this,

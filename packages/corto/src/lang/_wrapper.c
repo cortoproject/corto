@@ -4,7 +4,7 @@
  */
 
 #include <corto/lang/lang.h>
-#include <corto/lang/_meta.h>
+#include <corto/lang/_load.h>
 
 corto_bool _corto_collection_castable(
     corto_collection this,

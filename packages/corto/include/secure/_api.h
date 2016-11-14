@@ -8,7 +8,7 @@
 #define CORTO_SECURE__API_H
 
 #include <corto/corto.h>
-#include <corto/_interface.h>
+#include <corto/_project.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -7,10 +7,10 @@
 #define CORTO_LANG_DESTRUCTACTION_H
 
 #include <corto/corto.h>
-#include <corto/_interface.h>
+#include <corto/_project.h>
 #include <corto/lang/_type.h>
 #include <corto/lang/_api.h>
-#include <corto/lang/_meta.h>
+#include <corto/lang/_load.h>
 
 #ifdef __cplusplus
 extern "C" {

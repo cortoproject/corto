@@ -9,8 +9,8 @@
 #include "corto/corto.h"
 #include "corto/core/_type.h"
 #include "corto/core/_api.h"
-#include "corto/core/_meta.h"
-#include "corto/_interface.h"
+#include "corto/core/_load.h"
+#include "corto/_project.h"
 
 #ifdef __cplusplus
 extern "C" {

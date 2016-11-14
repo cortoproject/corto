@@ -1,5 +1,5 @@
 /*
- * corto__interface.h
+ * corto__project.h
  *
  *  Created on: Aug 9, 2012
  *      Author: sander

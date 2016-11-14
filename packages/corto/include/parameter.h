@@ -7,7 +7,7 @@
 #define CORTO_LANG_PARAMETER_H
 
 #include "corto.h"
-#include "corto__interface.h"
+#include "corto__project.h"
 
 #ifdef __cplusplus
 extern "C" {

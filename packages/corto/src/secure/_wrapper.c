@@ -4,7 +4,7 @@
  */
 
 #include <corto/secure/secure.h>
-#include <corto/secure/_meta.h>
+#include <corto/secure/_load.h>
 
 corto_string _corto_secure_key_authenticate(
     corto_secure_key this,

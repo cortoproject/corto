@@ -1,4 +1,4 @@
-/* _interface.h
+/* _project.h
  *
  * This file contains generated code. Do not modify!
  */

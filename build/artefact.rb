@@ -103,12 +103,14 @@ CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
 CLOBBER.include(TARGETDIR + "/" + ARTEFACT.ext(".a"))
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
+CLOBBER.include(".corto/_meta.*")
+CLOBBER.include("include/_load.h")
+CLOBBER.include("include/_interface.h")
 
 # If packages.txt is empty, clobber it
 if USE_PACKAGE_LOADED.length == 0 then
   CLOBBER.include(".corto/packages.txt")
 end
-
 
 # --- BUILD RULES
 
@@ -344,7 +346,7 @@ end
 rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
     build_source(task.source, task.name, false)
 end
-rule '_meta.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
+rule '_project.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
     build_source(task.source, task.name, false)
 end
 rule '_wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|

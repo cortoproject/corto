@@ -7,7 +7,7 @@
 #define TC_APPLOCALDEFOBJECT_H
 
 #include <corto/corto.h>
-#include <./_interface.h>
+#include <./_project.h>
 /* $header() */
 /* You can put your own definitions here! */
 /* $end */
@@ -15,7 +15,7 @@
 
 #include <./_type.h>
 #include <./_api.h>
-#include <./_meta.h>
+#include <./_load.h>
 
 #ifdef __cplusplus
 extern "C" {
