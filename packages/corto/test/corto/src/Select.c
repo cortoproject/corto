@@ -276,11 +276,11 @@ corto_void _test_Select_tc_selectEmptyParentAst(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 5);
 
-    test_assert(test_Select_hasObject(results, "/", "corto", "/corto/core/package"));
-    test_assert(test_Select_hasObject(results, "/", "a", "void"));
-    test_assert(test_Select_hasObject(results, "/", "karto", "void"));
-    test_assert(test_Select_hasObject(results, "/", "korto", "void"));
-    test_assert(test_Select_hasObject(results, "/", "test", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "a", "void"));
+    test_assert(test_Select_hasObject(results, "", "karto", "void"));
+    test_assert(test_Select_hasObject(results, "", "korto", "void"));
+    test_assert(test_Select_hasObject(results, "", "test", "/corto/core/package"));
 
 /* $end */
 }
@@ -295,7 +295,7 @@ corto_void _test_Select_tc_selectEmptyParentString(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 1);
 
-    test_assert(test_Select_hasObject(results, "/", "corto", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
 /* $end */
 }
 
@@ -323,7 +323,7 @@ corto_void _test_Select_tc_selectEmptyStrings(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 1);
 
-    test_assert(test_Select_hasObject(results, "/", "", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "", "/corto/core/package"));
 /* $end */
 }
 
@@ -393,9 +393,9 @@ corto_void _test_Select_tc_selectFilterAsterisk(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 3);
 
-    test_assert(test_Select_hasObject(results, "/", "corto", "/corto/core/package"));
-    test_assert(test_Select_hasObject(results, "/", "karto", "void"));
-    test_assert(test_Select_hasObject(results, "/", "korto", "void"));
+    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "karto", "void"));
+    test_assert(test_Select_hasObject(results, "", "korto", "void"));
 
 /* $end */
 }
@@ -410,8 +410,8 @@ corto_void _test_Select_tc_selectFilterWildcard(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 2);
 
-    test_assert(test_Select_hasObject(results, "/", "corto", "/corto/core/package"));
-    test_assert(test_Select_hasObject(results, "/", "korto", "void"));
+    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "korto", "void"));
 
 /* $end */
 }
@@ -535,7 +535,7 @@ corto_void _test_Select_tc_selectIdentifier(
 
     item = corto_llGet(results, 0);
     test_assert(item != NULL);
-    test_assert(!strcmp(item->parent, "/"));
+    test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, "a"));
     test_assert(!strcmp(item->type, "void"));
 
@@ -706,7 +706,7 @@ corto_void _test_Select_tc_selectObject(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 1);
 
-    test_assert(test_Select_hasObject(results, "/", "corto", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
 
 /* $end */
 }
@@ -749,7 +749,7 @@ corto_void _test_Select_tc_selectObjectPrefixScope(
     test_assert(results != NULL);
     test_assertint(corto_llSize(results), 1);
 
-    test_assert(test_Select_hasObject(results, "/", "corto", "/corto/core/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
 /* $end */
 }
 
@@ -1294,7 +1294,7 @@ corto_void _test_Select_tc_selectScopedParent(
 
     item = corto_llGet(results, 0);
     test_assert(item != NULL);
-    test_assert(!strcmp(item->parent, "/"));
+    test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, ""));
     test_assert(!strcmp(item->type, "/corto/core/package"));
 
@@ -1314,7 +1314,7 @@ corto_void _test_Select_tc_selectScopedThis(
 
     item = corto_llGet(results, 0);
     test_assert(item != NULL);
-    test_assert(!strcmp(item->parent, "/"));
+    test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, "a"));
     test_assert(!strcmp(item->type, "void"));
 

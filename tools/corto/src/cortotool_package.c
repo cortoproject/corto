@@ -220,30 +220,43 @@ error:
 corto_int16 cortotool_list(int argc, char* argv[]) {
     if (argc > 1) {
         corto_chdir(argv[1]);
-    }
-
-    corto_ll packages = corto_loadGetPackages();
-
-    if (packages && corto_llSize(packages)) {
-        corto_iter iter = corto_llIter(packages);
-        while (corto_iterHasNext(&iter)) {
-            corto_string str = corto_iterNext(&iter);
-            corto_string package = corto_locate(str, CORTO_LOCATION_LIB);
-            if (package) {
-                printf("  %s%s%s  =>  %s\n", CORTO_CYAN, str, CORTO_NORMAL, package);
-            } else {
-              printf("  %s%s%s  =>  %smissing%s\n", CORTO_CYAN, str, CORTO_NORMAL, CORTO_RED, CORTO_NORMAL);
+        corto_ll packages = corto_loadGetPackages();
+        if (packages && corto_llSize(packages)) {
+            corto_iter iter = corto_llIter(packages);
+            while (corto_iterHasNext(&iter)) {
+                corto_string str = corto_iterNext(&iter);
+                corto_string package = corto_locate(str, CORTO_LOCATION_LIB);
+                if (package) {
+                    printf("  %s%s%s  =>  %s\n", CORTO_CYAN, str, CORTO_NORMAL, package);
+                } else {
+                  printf("  %s%s%s  =>  %smissing%s\n", CORTO_CYAN, str, CORTO_NORMAL, CORTO_RED, CORTO_NORMAL);
+                }
             }
+        } else {
+            printf(CORTO_PROMPT "no packages to list\n");
+        }
+
+        if (packages) {
+            corto_loadFreePackages(packages);
         }
     } else {
-        printf(CORTO_PROMPT "no packages to list\n");
+        corto_loader loader = corto_create(corto_loader_o);
+        corto_iter it;
+        if (corto_select(NULL, "//").type("/corto/core/package").iter(&it)) {
+            goto error;
+        }
+        while (corto_iterHasNext(&it)) {
+            corto_result *r = corto_iterNext(&it);
+            printf("%s/%s\n", r->parent, r->id);
+        }
+        corto_delete(loader);
     }
 
-    if (packages) {
-        corto_loadFreePackages(packages);
-    }
 
     return 0;
+error:
+    corto_error("corto: %s", corto_lasterr());
+    return -1;
 }
 
 void cortotool_addHelp(void) {

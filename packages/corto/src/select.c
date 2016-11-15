@@ -251,7 +251,9 @@ char* corto_pathstr(
         /* Navigate from common ancestor to target */
         while (common < toCount) {
             if (!toArray[common][0] || (buffer[0] && strcmp(buffer, "/"))) {
-                strcat(buffer, "/");
+                if (common || (toCount != 1)) {
+                    strcat(buffer, "/");
+                }
             }
             strcat(buffer, toArray[common]);
             common ++;
