@@ -159,7 +159,6 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
       }
     );
 
-    cortotool_generateRakefile();
 
 
     corto_trace("corto: build %s: %s %s %s",
@@ -278,6 +277,9 @@ error:
 }
 
 corto_int16 cortotool_rebuild(int argc, char *argv[]) {
+
+    cortotool_generateRakefile();
+
     if (cortotool_clean(argc, argv)) {
         goto error;
     }
