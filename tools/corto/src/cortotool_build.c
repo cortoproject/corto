@@ -2,7 +2,7 @@
 #include "cortotool_build.h"
 
 /* Run a command for multiple projects */
-corto_int16 cortotool_runcmd(
+static corto_int16 cortotool_runcmd(
   corto_ll dirs, char *argv[], corto_bool silent, corto_bool mute)
 {
     corto_iter iter;
@@ -59,6 +59,83 @@ error:
     return -1;
 }
 
+static corto_int16 cortotool_printCortoListAsRubyArray(corto_file f, const char* rubyName, corto_ll list)
+{
+    fprintf((FILE*)f, "%s = [\n", rubyName);
+    {
+        corto_stringlistForeach(list, elem) {
+            fprintf((FILE*)f, "    \"%s\",\n", elem);
+        }
+    }
+    fprintf((FILE*)f, "]\n");
+    return 0;
+}
+
+static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
+{
+    corto_file rakefile = corto_fileOpen("rakefile");
+    fprintf((FILE*)rakefile, "PACKAGE = '%s'\n", corto_path(NULL, root_o, package, "/"));
+
+    if (corto_llSize(package->lib)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "LIB", package->lib);
+    }
+    if (corto_llSize(package->libpath)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "LIBPATH", package->libpath);
+    }
+    if (corto_llSize(package->include)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "INCLUDE", package->include);
+    }
+    if (corto_llSize(package->link)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "LINK", package->link);
+    }
+    if (corto_llSize(package->dependencies)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "USE_PACKAGE", package->dependencies);
+    }
+    if (corto_llSize(package->cflags)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
+    }
+
+    fprintf((FILE*)rakefile, "require \"#{ENV['CORTO_BUILD']}/package\"\n");
+    corto_fileClose(rakefile);
+    return 0;
+}
+
+static corto_int16 cortotool_generateRakefile(void)
+{
+    if (!corto_fileTest("package.json")) {
+        corto_warning("cortotool: package.json is not found; consider upgrading to the new build system.");
+        goto warning;
+    }
+
+    char* fileContent = corto_fileLoad("package.json");
+    if (!fileContent) {
+        goto errorFileLoad;
+    }
+
+    corto_package package = corto_package(corto_createFromContent("text/json", fileContent));
+    if (!package) {
+        goto errorCreateFromContent;
+    }
+
+    if (cortotool_writeRakefileFromPackage(package)) {
+        goto errorWriteRakefile;
+    }
+
+    corto_delete(package);
+    corto_dealloc(fileContent);
+
+
+    return 0;
+errorWriteRakefile:
+    corto_delete(package);
+errorCreateFromContent:
+    corto_dealloc(fileContent);
+errorFileLoad:
+    return -1;
+warning:
+    return 0;
+}
+
 /* Build a project */
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
@@ -81,6 +158,8 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {NULL}
       }
     );
+
+
 
     corto_trace("corto: build %s: %s %s %s",
         corto_cwd(),
@@ -198,6 +277,9 @@ error:
 }
 
 corto_int16 cortotool_rebuild(int argc, char *argv[]) {
+
+    cortotool_generateRakefile();
+
     if (cortotool_clean(argc, argv)) {
         goto error;
     }
