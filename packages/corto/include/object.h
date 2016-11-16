@@ -157,6 +157,7 @@ char* corto_matchParent(char *parent, char *expr);
 /* Serialize object to contentType */
 corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
 corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content, ...);
+corto_object corto_createFromContent(corto_string contentType, corto_string content);
 
 /* Object extensions (Object Local Storage) */
 corto_uint8 corto_olsKey(void(*destructor)(void*));

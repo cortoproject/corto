@@ -1869,7 +1869,8 @@ corto_contentType corto_loadContentType(
         }
 
         /* Load serialization routines */
-        corto_id id; sprintf(id, "%s_fromCorto", packagePtr);
+        corto_id id;
+        sprintf(id, "%s_fromCorto", packagePtr);
         result->fromCorto =
             (corto_word ___ (*)(corto_object))
               corto_loaderResolveProc(id);
@@ -1883,6 +1884,15 @@ corto_contentType corto_loadContentType(
             (corto_int16 ___ (*)(corto_object, corto_word))
               corto_loaderResolveProc(id);
         if (!result->toCorto) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        sprintf(id, "%s_toObject", packagePtr);
+        result->toObject =
+          (corto_int16 ___ (*)(corto_object*, corto_word))
+            corto_loaderResolveProc(id);
+        if (!result->toObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
@@ -1976,6 +1986,23 @@ corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_st
     return result;
 error:
     return -1;
+}
+
+corto_object corto_createFromContent(corto_string contentType, corto_string content)
+{
+    corto_contentType type = corto_loadContentType(contentType);
+    if (!type) {
+        goto errorLoadContentType;
+    }
+    corto_object result = NULL;
+    if (type->toObject(&result, (corto_word)content)) {
+        goto errorToObject;
+    }
+
+    return result;
+errorToObject:
+errorLoadContentType:
+    return NULL;
 }
 
 
