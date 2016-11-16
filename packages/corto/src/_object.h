@@ -22,7 +22,7 @@ struct corto_contentType {
     corto_string name;
     corto_word ___ (*fromCorto)(corto_object o);
     corto_int16 ___ (*toCorto)(corto_object o, corto_word content);
-    corto_object ___ (*toObject)(corto_object* o, corto_word content);
+    corto_int16 ___ (*toObject)(corto_object* o, corto_word content);
     corto_word ___ (*copy)(corto_word content);
     void (*release)(corto_word content);
 };

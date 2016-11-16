@@ -1890,7 +1890,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_toObject", packagePtr);
         result->toObject =
-          (corto_object ___ (*)(corto_object*, corto_word))
+          (corto_int16 ___ (*)(corto_object*, corto_word))
             corto_loaderResolveProc(id);
         if (!result->toObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
