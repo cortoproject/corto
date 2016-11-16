@@ -103,7 +103,6 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
 static corto_int16 cortotool_generateRakefile(void)
 {
     if (!corto_fileTest("package.json")) {
-        corto_warning("cortotool: package.json is not found; consider upgrading to the new build system.");
         goto warning;
     }
 
