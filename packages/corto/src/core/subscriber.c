@@ -66,6 +66,7 @@ corto_int16 corto_notifySubscribersId(
     corto_word value)
 {
     corto_object intermediate = NULL;
+    corto_value intermediateValue = corto_value_init();
     corto_contentType contentTypeHandle = NULL;
     corto_object owner = corto_getOwner();
 
@@ -77,6 +78,7 @@ corto_int16 corto_notifySubscribersId(
 
     if (!contentType) {
         intermediate = (corto_object)value;
+        intermediateValue = corto_value_object(intermediate, NULL);
     }
 
     char *sep = NULL, *id = strrchr(path, '/');
@@ -167,11 +169,12 @@ corto_int16 corto_notifySubscribersId(
                                 goto error;
                             }
                             corto_release(t);
-                            if (contentTypeHandle->toCorto(intermediate, value)) {
+                            intermediateValue = corto_value_object(intermediate, NULL);
+                            if (contentTypeHandle->toValue(&intermediateValue, value)) {
                                 goto error;
                             }
                         }
-                        contentTypes[i].value = contentTypes[i].ct->fromCorto(intermediate);
+                        contentTypes[i].value = contentTypes[i].ct->fromValue(&intermediateValue);
                         content = contentTypes[i].value;
                     }
                 }

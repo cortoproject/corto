@@ -582,9 +582,10 @@ corto_object _corto_mount_resume(
             }
 
             if (o) {
+                corto_value v = corto_value_object(o, NULL);
                 if ((corto_contentType)corto_subscriber(this)->contentTypeHandle && result->value) {
-                    ((corto_contentType)corto_subscriber(this)->contentTypeHandle)->toCorto(
-                        o, result->value);
+                    ((corto_contentType)corto_subscriber(this)->contentTypeHandle)->toValue(
+                        &v, result->value);
                 }
                 if (newObject) {
                     corto_define(o);

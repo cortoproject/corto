@@ -10,7 +10,7 @@
 #ifdef CORTO_GENERATOR
 
 /* Generator functions */
-g_generator gen_new(corto_string name, corto_string language) {
+g_generator g_new(corto_string name, corto_string language) {
     g_generator result;
 
     result = corto_alloc(sizeof(struct g_generator_s));
@@ -111,7 +111,7 @@ corto_object g_getCurrent(g_generator g) {
 }
 
 /* Add to-parse object */
-void gen_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix) {
+void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix) {
     g_object* o = NULL;
     corto_iter objectIter;
 
@@ -172,7 +172,7 @@ static int g_genAttributeFind(void *value, void *userData) {
 }
 
 /* Set attribute */
-void gen_setAttribute(g_generator g, corto_string key, corto_string value) {
+void g_setAttribute(g_generator g, corto_string key, corto_string value) {
     g_attribute* attr = NULL;
 
     if (!g->attributes) {
@@ -187,16 +187,15 @@ void gen_setAttribute(g_generator g, corto_string key, corto_string value) {
     if(!attr) {
         attr = corto_alloc(sizeof(g_attribute));
         attr->key = corto_strdup(key);
+        corto_llAppend(g->attributes, attr);
     }else {
         corto_dealloc(attr->value);
     }
     attr->value = corto_strdup(value);
-
-    corto_llAppend(g->attributes, attr);
 }
 
 /* Get attribute */
-corto_string gen_getAttribute(g_generator g, corto_string key) {
+corto_string g_getAttribute(g_generator g, corto_string key) {
     corto_string result = NULL;
 
     if(g->attributes) {
@@ -214,7 +213,7 @@ corto_string gen_getAttribute(g_generator g, corto_string key) {
 }
 
 /* Load generator actions from library */
-corto_int16 gen_load(g_generator g, corto_string library) {
+corto_int16 g_load(g_generator g, corto_string library) {
 
     /* Load library from generator path */
     corto_string package = NULL;
@@ -322,7 +321,7 @@ static int g_freeAttribute(void* _o, void* udata) {
 }
 
 /* Free generator */
-void gen_free(g_generator g) {
+void g_free(g_generator g) {
     if (g->library) {
         corto_dlClose(g->library);
         g->library = NULL;
@@ -381,7 +380,7 @@ corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
             prefix[strlen(prefix) - 1] = '\0';
         }
         if (prefix) {
-            gen_parse(g, p, FALSE, FALSE, prefix);
+            g_parse(g, p, FALSE, FALSE, prefix);
         }
 
         corto_dealloc(prefix);
@@ -395,7 +394,7 @@ error:
 }
 
 /* Start generator */
-corto_int16 gen_start(g_generator g) {
+corto_int16 g_start(g_generator g) {
     /* Find dependent packages, configure associated API prefixes */
 
     /* Resolve imports based on metadata. */
@@ -944,7 +943,7 @@ static corto_string g_filePath(g_generator g, corto_string filename, corto_char*
 
         /* Check whether there is an attribute with the file extension - determines where to put the file */
         if(fext) {
-            ext = gen_getAttribute(g, fext);
+            ext = g_getAttribute(g, fext);
         }
 
         /* Append filename to location. */

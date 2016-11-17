@@ -122,7 +122,8 @@ static corto_word corto_selectConvert(
             corto_object o = corto_create(t);
 
             /* Convert from source format to object */
-            if (srcType->toCorto(o, value)) {
+            corto_value v = corto_value_object(o, NULL);
+            if (srcType->toValue(&v, value)) {
                 corto_seterr("failed to convert value to '%s' (%s)",
                     type,
                     corto_lasterr());
@@ -130,7 +131,7 @@ static corto_word corto_selectConvert(
             }
 
             /* Convert from object to destination format */
-            if (!(result = data->dstSer->fromCorto(o))) {
+            if (!(result = data->dstSer->fromValue(&v))) {
                 corto_seterr("failed to convert value to '%s' (%s)",
                     data->contentType,
                     corto_lasterr());
@@ -317,7 +318,8 @@ static void corto_setItemData(
         if (item->value) {
             data->dstSer->release(item->value);
         }
-        item->value = data->dstSer->fromCorto(o);
+        corto_value v = corto_value_object(o, NULL);
+        item->value = data->dstSer->fromValue(&v);
     }
 
     item->mount = NULL;

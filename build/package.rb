@@ -159,7 +159,7 @@ if not defined? NOCORTO then
       if LANGUAGE == "c4cpp" then
         langStr = "--attr c4cpp=true"
       elsif LANGUAGE == "cpp" or LANGUAGE == "c++" then
-        langStr = "--attr c4cpp=true --attr lang=cpp"
+        langStr = "--attr c4cpp=true --attr lang=cpp --attr hpp=include --attr cpp=src"
       end
 
       command =

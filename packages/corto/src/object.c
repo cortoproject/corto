@@ -1786,14 +1786,12 @@ corto_attr corto_attrof(corto_object o) {
 
 static corto_ll contentTypes = NULL;
 
-static corto_string corto_contentTypeToStr(corto_object o) {
-    corto_assertObject(o);
-    return corto_str(o, 0);
+static corto_string corto_contentTypeToStr(corto_value *v) {
+    return corto_strv(v, 0);
 }
 
-static corto_int16 corto_contentTypeFromStr(corto_object o, corto_string str) {
-    corto_assertObject(o);
-    return corto_fromStr(&o, str);
+static corto_int16 corto_contentTypeFromStr(corto_value *v, corto_string str) {
+    return corto_fromStrv(v, str);
 }
 
 static corto_contentType corto_findContentType(
@@ -1816,13 +1814,16 @@ static corto_contentType corto_findContentType(
     if (!result && !strcmp(contentType, "corto")) {
         result = corto_alloc(sizeof(struct corto_contentType));
         result->name = corto_strdup("corto");
-        result->toCorto =
-            (corto_int16 ___ (*)(corto_object, corto_word))corto_contentTypeFromStr;
 
-        result->fromCorto =
-            (corto_word ___ (*)(corto_object))corto_contentTypeToStr;
+        result->toValue =
+            (corto_int16 ___ (*)(corto_value*, corto_word))corto_contentTypeFromStr;
+
+        result->fromValue =
+            (corto_word ___ (*)(corto_value*))corto_contentTypeToStr;
 
         result->release = (void ___ (*)(corto_word))corto_dealloc;
+
+        result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
     }
 
     return result;
@@ -1870,20 +1871,29 @@ corto_contentType corto_loadContentType(
 
         /* Load serialization routines */
         corto_id id;
-        sprintf(id, "%s_fromCorto", packagePtr);
-        result->fromCorto =
-            (corto_word ___ (*)(corto_object))
+        sprintf(id, "%s_fromValue", packagePtr);
+        result->fromValue =
+            (corto_word ___ (*)(corto_value*))
               corto_loaderResolveProc(id);
-        if (!result->fromCorto) {
+        if (!result->fromValue) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
-        sprintf(id, "%s_toCorto", packagePtr);
-        result->toCorto =
-            (corto_int16 ___ (*)(corto_object, corto_word))
+        sprintf(id, "%s_toValue", packagePtr);
+        result->toValue =
+            (corto_int16 ___ (*)(corto_value*, corto_word))
               corto_loaderResolveProc(id);
-        if (!result->toCorto) {
+        if (!result->toValue) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        sprintf(id, "%s_fromObject", packagePtr);
+        result->toObject =
+          (corto_int16 ___ (*)(corto_object*, corto_word))
+            corto_loaderResolveProc(id);
+        if (!result->toObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
@@ -1945,7 +1955,8 @@ corto_string corto_contentof(corto_id str, corto_string contentType, corto_objec
         goto error;
     }
 
-    corto_string c = (corto_string)type->fromCorto(o);
+    corto_value v = corto_value_object(o, NULL);
+    corto_string c = (corto_string)type->fromValue(&v);
     if (!c) {
         goto error;
     }
@@ -1980,7 +1991,8 @@ corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_st
         goto error;
     }
 
-    result = type->toCorto(o, (corto_word)content);
+    corto_value v = corto_value_object(o, NULL);
+    result = type->toValue(&v, (corto_word)content);
     corto_dealloc(content);
 
     return result;

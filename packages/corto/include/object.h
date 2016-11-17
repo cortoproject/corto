@@ -100,7 +100,7 @@ corto_string corto_pathname(corto_id str, corto_object from, corto_object o, con
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 corto_string corto_cleanpath(corto_id buffer, char* path);
 
-/* Find objects by name */
+/* Find objects by id */
 corto_object corto_lookup(corto_object scope, corto_string id);
 corto_object corto_resolve(corto_object scope, corto_string id);
 

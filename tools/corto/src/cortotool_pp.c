@@ -210,7 +210,7 @@ corto_int16 cortotool_ppParse(
         corto_release(o);
 
         /* Parse object as scope, with provided prefix */
-        gen_parse(g, o, parseSelf, parseScope, prefix);
+        g_parse(g, o, parseSelf, parseScope, prefix);
     }
 
     return 0;
@@ -317,10 +317,10 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
         while ((lib = corto_llTakeFirst(generators))) {
 
             /* Create generator for each provided generator library */
-            g = gen_new(name, NULL);
+            g = g_new(name, NULL);
 
             /* Load interface */
-            if (gen_load(g, lib)) {
+            if (g_load(g, lib)) {
                 corto_error("corto: pp: cannot load generator '%s'.", lib);
                 goto error;
             }
@@ -348,7 +348,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                     ptr = strchr(attr, '=');
                     if (ptr) {
                         *ptr = '\0';
-                        gen_setAttribute(g, attr, ptr+1);
+                        g_setAttribute(g, attr, ptr+1);
                     }
                     *ptr = '=';
                     corto_dealloc(attr);
@@ -357,15 +357,15 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Start generator */
             corto_trace("corto: pp: run generator '%s'", lib);
-            if (gen_start(g)) {
+            if (g_start(g)) {
                 corto_error("corto: %s: %s", lib, corto_lasterr());
-                gen_free(g);
+                g_free(g);
 
                 goto error;
             }
 
             /* Free generator */
-            gen_free(g);
+            g_free(g);
             g = NULL;
         }
     }

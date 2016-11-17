@@ -20,10 +20,19 @@ corto_object corto_resumePersistent(corto_object o);
 typedef struct corto_contentType *corto_contentType;
 struct corto_contentType {
     corto_string name;
-    corto_word ___ (*fromCorto)(corto_object o);
-    corto_int16 ___ (*toCorto)(corto_object o, corto_word content);
+    
+    /* Translate values to and from a contentType value */
+    corto_word ___ (*fromValue)(corto_value *v);
+    corto_int16 ___ (*toValue)(corto_value *v, corto_word content);
+
+    /* Translate objects to and from self-contained contentType values */
+    corto_word ___ (*fromObject)(corto_object *o);
     corto_int16 ___ (*toObject)(corto_object* o, corto_word content);
+
+    /* Duplicate a contentType value */
     corto_word ___ (*copy)(corto_word content);
+
+    /* Free a contentType value */
     void (*release)(corto_word content);
 };
 

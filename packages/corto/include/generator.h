@@ -80,7 +80,7 @@ CORTO_CLASS_DEF(g_file) {
 };
 
 /* Create generator object. */
-g_generator gen_new(corto_string name, corto_string language);
+g_generator g_new(corto_string name, corto_string language);
 
 /* Control how id's are generated */
 g_idKind g_setIdKind(g_generator g, g_idKind kind);
@@ -98,22 +98,22 @@ corto_object g_getCurrent(g_generator g);
 corto_string g_getLanguage(g_generator g);
 
 /* Instruct the generator to generate for an object. */
-void gen_parse(g_generator generator, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix);
+void g_parse(g_generator generator, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix);
 
 /* Set attribute of generator */
-void gen_setAttribute(g_generator g, corto_string key, corto_string value);
+void g_setAttribute(g_generator g, corto_string key, corto_string value);
 
 /* Get attribute from generator */
-corto_string gen_getAttribute(g_generator g, corto_string key);
+corto_string g_getAttribute(g_generator g, corto_string key);
 
 /* Load a generator library. */
-corto_int16 gen_load(g_generator generator, corto_string library);
+corto_int16 g_load(g_generator generator, corto_string library);
 
 /* Free generator. */
-void gen_free(g_generator generator);
+void g_free(g_generator generator);
 
 /* Start generating. */
-corto_int16 gen_start(g_generator generator);
+corto_int16 g_start(g_generator generator);
 
 /* === Generator utility functions */
 
