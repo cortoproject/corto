@@ -7,6 +7,7 @@
  */
 
 #include "corto/corto.h"
+#include "_object.h"
 
 corto_type corto_value_getType(corto_value* val) {
     corto_type result;
@@ -489,14 +490,14 @@ void corto_valueSetValue(corto_value* val, corto_void* v) {
     case CORTO_MAP_ELEMENT:
         val->is.mapElement.v = v;
         break;
+    case CORTO_VALUE:
+        val->is.value.v = v; // ??
+        break;
     default:
         corto_assert(0, "corto_valueSetValue: invalid valueKind %d.", val->kind);
         break;
     }
 }
-
-
-#include "corto/corto.h"
 
 static corto_type corto_valueExpr_getType(corto_type src, corto_type target, corto_bool targetIsRef) {
     corto_type result = src;
@@ -1006,4 +1007,38 @@ void corto_value_free(corto_value *v) {
         }
     }
     *v = corto_value_init();
+}
+
+corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content) {
+    corto_contentType ct = corto_loadContentType(contentType);
+    if (!ct) {
+        corto_seterr("unknown contentType '%s'", contentType);
+        goto error;
+    }
+
+    if (ct->toValue(v, (corto_word)content)) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+corto_string corto_value_contentof(corto_value *v, corto_string contentType) {
+    corto_contentType ct = corto_loadContentType(contentType);
+    corto_string result;
+
+    if (!ct) {
+        corto_seterr("unknown contentType '%s'", contentType);
+        goto error;
+    }
+
+    if (!(result = (corto_string)ct->fromValue(v))) {
+        goto error;
+    }
+
+    return result;
+error:
+    return NULL;
 }

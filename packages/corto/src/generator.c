@@ -970,6 +970,10 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
     corto_string code = NULL, ptr = NULL;
     CORTO_UNUSED(g);
 
+    if (!corto_fileTest(name)) {
+        goto ok;
+    }
+
     code = corto_fileLoad(name);
     if (code) {
         ptr = code;
@@ -1043,6 +1047,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
         corto_lasterr();
     }
 
+ok:
     return 0;
 error:
     if (code) {

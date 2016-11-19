@@ -178,7 +178,8 @@ CORTO_DECL_TRANSFORM(enum, string) {
 CORTO_DECL_TRANSFORM(string, enum) {
     corto_constant* o;
     CORTO_UNUSED(fromType);
-    o = corto_resolve(toType, *(corto_string*)from);
+
+    o = corto_lookup(toType, *(corto_string*)from);
     if (!o) {
         corto_seterr(
             "constant identifier '%s' is not valid for enumeration '%s'",

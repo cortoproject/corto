@@ -688,7 +688,7 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
                 bptr = buffer;
                 nonWs = bptr;
                 if (!memberInfo) {
-                    corto_seterr("member '%s' not found", buffer);
+                    corto_seterr("member '%s' not found in type '%s'", buffer, corto_fullpath(NULL, data->type));
                     goto error;
                 }
                 break;

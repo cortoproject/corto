@@ -8,8 +8,6 @@
 #ifndef CORTO_VALUE_H_
 #define CORTO_VALUE_H_
 
-#include "corto/lang/_type.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -151,6 +149,9 @@ corto_int16 corto_value_binaryOperator(corto_operatorKind _operator, corto_value
 
 #define corto_value_cast(in, dstType, out) _corto_value_cast(in, corto_type(dstType), out)
 corto_int16 _corto_value_cast(corto_value *in, corto_type dstType, corto_value *out);
+
+corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content);
+corto_string corto_value_contentof(corto_value *v, corto_string contentType);
 
 corto_value corto_value_init(void);
 void corto_value_free(corto_value *v);

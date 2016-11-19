@@ -564,6 +564,15 @@ corto_object _corto_mount_resume(
             corto_result *result = corto_iterNext(&it);
 
             if (!o) {
+                if (result->parent[0] == '/') {
+                    corto_error(
+                      "mount %s:%s returned fully qualified parent '%s', expected a path relative to mount",
+                      corto_fullpath(NULL, this),
+                      corto_fullpath(NULL, corto_typeof(this)),
+                      result->parent
+                    );
+                    goto error;
+                }
                 corto_object parent_o =
                   corto_resolve(corto_mount(this)->mount, result->parent);
                 if (parent_o) {
@@ -601,6 +610,8 @@ corto_object _corto_mount_resume(
     corto_setOwner(prevOwner);
 
     return result;
+error:
+    return NULL;
 /* $end */
 }
 

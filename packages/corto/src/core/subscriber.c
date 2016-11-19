@@ -245,6 +245,10 @@ corto_int16 corto_notifySubscribersId(
 
     return 0;
 error:
+    if (intermediate && contentType) {
+        corto_release(intermediate);
+    }
+    
     return -1;
 }
 
