@@ -1427,7 +1427,7 @@ corto_void _test_StringDeserializer_tc_errUnresolvedMember(
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "member 'a' not found"));
+    test_assert(!strcmp(err, "member 'a' not found in type '/test/Point'"));
 
 /* $end */
 }
