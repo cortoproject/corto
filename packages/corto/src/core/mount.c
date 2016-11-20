@@ -561,22 +561,22 @@ corto_object _corto_mount_resume(
         corto_resultIter it = corto_mount_request(this, &r);
 
         if (corto_iterHasNext(&it)) {
-            corto_result *result = corto_iterNext(&it);
+            corto_result *iterResult = corto_iterNext(&it);
 
             if (!o) {
-                if (result->parent[0] == '/') {
+                if (iterResult->parent[0] == '/') {
                     corto_error(
                       "mount %s:%s returned fully qualified parent '%s', expected a path relative to mount",
                       corto_fullpath(NULL, this),
                       corto_fullpath(NULL, corto_typeof(this)),
-                      result->parent
+                      iterResult->parent
                     );
                     goto error;
                 }
                 corto_object parent_o =
                   corto_resolve(corto_mount(this)->mount, parent);
                 if (parent_o) {
-                    corto_object type_o = corto_resolve(NULL, result->type);
+                    corto_object type_o = corto_resolve(NULL, iterResult->type);
                     if (type_o) {
                         o = corto_declareChild(parent_o, name, type_o);
                         if (!o) {
@@ -592,9 +592,9 @@ corto_object _corto_mount_resume(
 
             if (o) {
                 corto_value v = corto_value_object(o, NULL);
-                if ((corto_contentType)corto_subscriber(this)->contentTypeHandle && result->value) {
+                if ((corto_contentType)corto_subscriber(this)->contentTypeHandle && iterResult->value) {
                     ((corto_contentType)corto_subscriber(this)->contentTypeHandle)->toValue(
-                        &v, result->value);
+                        &v, iterResult->value);
                 }
                 if (newObject) {
                     corto_define(o);
