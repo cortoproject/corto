@@ -74,7 +74,6 @@ static corto_bool corto_buffer_appendIntern(
         return result;
     }
 
-
     corto_buffer_init(b);
 
     corto_int32 spaceLeftInElement = corto_buffer_spaceLeftInCurrentElement(b);

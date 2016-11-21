@@ -74,6 +74,38 @@ corto_void _test_Resolver_tc_resolveAnonymous(
 
     corto_object o = corto_resolve(NULL, "string{\"Hello World\"}");
     test_assert(o != NULL);
+
+    corto_type t = corto_typeof(o);
+    test_assert(t->kind == CORTO_PRIMITIVE);
+    test_assert(corto_primitive(t)->kind == CORTO_TEXT);
+
+    corto_string s = *(corto_string*)o;
+    test_assertstr(s, "Hello World");
+
+    corto_release(o);
+
+/* $end */
+}
+
+corto_void _test_Resolver_tc_resolveAnonymousAnonymousType(
+    test_Resolver this)
+{
+/* $begin(test/Resolver/tc_resolveAnonymousAnonymousType) */
+
+    corto_object o = corto_resolve(NULL, "list{int32}{1, 2, 3}");
+    test_assert(o != NULL);
+
+    corto_type t = corto_typeof(o);
+    test_assert(t->kind == CORTO_COLLECTION);
+    test_assert(corto_collection(t)->kind == CORTO_LIST);
+    test_assert(corto_collection(t)->elementType == corto_type(corto_int32_o));
+
+    corto_ll l = *(corto_ll*)o;
+    test_assert(corto_llSize(l) == 3);
+    test_assertint((corto_int32)(corto_word)corto_llGet(l, 0), 1);
+    test_assertint((corto_int32)(corto_word)corto_llGet(l, 1), 2);
+    test_assertint((corto_int32)(corto_word)corto_llGet(l, 2), 3);
+
     corto_release(o);
 
 /* $end */

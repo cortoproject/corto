@@ -363,7 +363,7 @@ corto_void _test_StringDeserializer_tc_deserBoolInvalid(
     test_assert(o != NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "'bar' is not a valid boolean value"));
+    test_assert(!strcmp(err, "failed to deserialize 'bool{bar}': 'bar' is not a valid boolean value"));
     corto_delete(o);
 
 /* $end */
@@ -1362,7 +1362,7 @@ corto_void _test_StringDeserializer_tc_errExcessElements(
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "excess elements in string"));
+    test_assert(!strcmp(err, "failed to deserialize 'test/Point{10, 20, 30}': excess elements in string"));
 
 /* $end */
 }
@@ -1427,7 +1427,7 @@ corto_void _test_StringDeserializer_tc_errUnresolvedMember(
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "member 'a' not found in type '/test/Point'"));
+    test_assert(!strcmp(err, "failed to deserialize 'test/Point{a = 10}': member 'a' not found in type '/test/Point'"));
 
 /* $end */
 }

@@ -8,6 +8,8 @@ corto_bool corto_declaredAdminCheck(corto_object o);
 static corto_char* corto_resolveAnonymous(corto_object scope, corto_object o, corto_string str, corto_object* out) {
     corto_object result;
     corto_string_deser_t data;
+    char *ptr = str;
+
 
     result = corto_declare(o);
     data.out = result;
@@ -15,15 +17,15 @@ static corto_char* corto_resolveAnonymous(corto_object scope, corto_object o, co
     data.type = o;
 
     if (corto_type(o)->kind == CORTO_PRIMITIVE) {
-        str += 1;
+        ptr += 1;
     }
 
-    str = corto_string_deser(str, &data);
+    ptr = corto_string_deser(ptr, &data);
     *out = result;
 
     corto_define(result);
 
-    return str;
+    return ptr;
 }
 
 /* Resolve address-identifier */
@@ -196,12 +198,16 @@ repeat:
             /* Expect scope or serializable string */
             if (ch) {
                 if (ch == '{') {
-                    corto_object prev = o;
-                    ptr = lookup = corto_resolveAnonymous(_scope, o, (char*)ptr, &o);
-                    if (!ptr) {
-                        o = NULL;
-                    }
-                    corto_release(prev);
+                    do {
+                        corto_object prev = o;
+                        ptr = lookup = corto_resolveAnonymous(_scope, o, (char*)ptr, &o);
+                        if (!ptr) {
+                            o = NULL;
+                        }
+                        corto_release(prev);
+                    } while (ptr && (ch = *ptr) && (ch == '{'));
+
+
                     break;
                 } else if (*(corto_uint16*)ptr == CORTO_SCOPE_HEX) {
                     ptr += 2;

@@ -2561,7 +2561,23 @@ corto_string corto_fullpath_intern(corto_id buffer, corto_object o, corto_bool u
     if (!o) {
         buffer[0] = '\0';
     } else if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        sprintf(buffer, "<%p>", o);
+        struct corto_serializer_s stringSer;
+        corto_string_ser_t data;
+
+        /* Serialize object string */
+        stringSer = corto_string_ser(CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+
+        *buffer = '\0';
+        data.compactNotation = TRUE;
+        data.buffer = CORTO_BUFFER_INIT;
+        data.buffer.buf = buffer;
+        data.buffer.max = sizeof(corto_id) - 1;
+        data.prefixType = TRUE;
+        data.enableColors = FALSE;
+        if (corto_serialize(&stringSer, o, &data)) {
+            goto error;
+        }
+
     } else if (corto_parentof(o) == corto_lang_o) {
         if (useName) {
             corto_nameof(buffer, o);
@@ -2614,6 +2630,8 @@ corto_string corto_fullpath_intern(corto_id buffer, corto_object o, corto_bool u
     }
 
     return buffer;
+error:
+    return NULL;
 }
 
 corto_string corto_fullpath(corto_id buffer, corto_object o) {

@@ -155,7 +155,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     /* Obtain fully scoped name */
     corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        if (corto_checkAttr(object, CORTO_ATTR_SCOPED) || (corto_value_getObject(v) == object)) {
+        if (corto_checkAttr(object, CORTO_ATTR_SCOPED)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_idof(object));
                 str = id;
@@ -185,7 +185,9 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 walkData.enableColors = data->enableColors;
 
                 corto_llAppend(data->anonymousObjects, object);
-                corto_buffer_append(&data->buffer, "<%d>", corto_llSize(data->anonymousObjects));
+                if (!corto_buffer_append(&data->buffer, "<%d>", corto_llSize(data->anonymousObjects))) {
+                    goto finished;
+                }
 
                 v = corto_value_object(object, NULL);
                 if (corto_ser_object(s, &v, &walkData)) {
@@ -252,7 +254,9 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
                   corto_fullpath(NULL, t));
                   goto finished;
             }
-            corto_buffer_appendstr(&privateData.buffer, d);
+            if (!corto_buffer_appendstr(&privateData.buffer, d)) {
+                goto finished;
+            }
             corto_dealloc(d);
             privateData.itemCount = 1;
         }
@@ -275,7 +279,9 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     data->itemCount = privateData.itemCount;
 
     corto_string str = corto_buffer_str(&privateData.buffer);
-    corto_buffer_append(&data->buffer, str);
+    if (!corto_buffer_append(&data->buffer, str)) {
+        goto finished;
+    }
     corto_dealloc(str);
 
     return result;
@@ -334,26 +340,47 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
     corto_serializeValue(s, v, userData);
 
     if (data->prefixType) {
-        corto_id id;
+        corto_id buffer;
+        char *typeId = buffer;
         corto_object o;
         corto_string result = NULL;
         corto_string str = corto_buffer_str(&data->buffer);
 
         if (str) {
             o = corto_value_getObject(v);
-            corto_fullpath(id, corto_typeof(o));
+            if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+                corto_fullpath(typeId, corto_typeof(o));
+            } else {
+                struct corto_serializer_s typeSer;
+                corto_string_ser_t data;
+
+                /* Serialize type to string */
+                typeSer = corto_string_ser(CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+                data.compactNotation = TRUE;
+                data.buffer = CORTO_BUFFER_INIT;
+                data.buffer.buf = NULL;
+                data.buffer.max = 0;
+                data.prefixType = TRUE;
+                data.enableColors = FALSE;
+                if (corto_serialize(&typeSer, corto_typeof(o), &data)) {
+                    goto error;
+                }
+
+                typeId = corto_buffer_str(&data.buffer);
+                corto_serializeDestruct(&typeSer, &data);
+            }
 
             if (corto_typeof(o)->kind != CORTO_PRIMITIVE) {
                 if (str) {
-                    result = corto_alloc(strlen(str) + strlen(id) + 1);
-                    sprintf(result, "%s%s", id, str);
+                    result = corto_alloc(strlen(str) + strlen(typeId) + 1);
+                    sprintf(result, "%s%s", typeId, str);
                 } else {
-                    result = corto_strdup(id);
+                    result = corto_strdup(typeId);
                 }
             } else {
                 if (str) {
-                    result = corto_alloc(strlen(str) + strlen(id) + 2 + 1);
-                    sprintf(result, "%s{%s}", id, str);
+                    result = corto_alloc(strlen(str) + strlen(typeId) + 2 + 1);
+                    sprintf(result, "%s{%s}", typeId, str);
                 } else {
                     corto_critical("failed to serialize value to string");
                 }
@@ -363,15 +390,21 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
                 corto_buffer_appendstr(&data->buffer, result);
                 corto_dealloc(result);
             } else { /* Application  manages memory of buffer */
-                strcpy(data->buffer.buf, result);
+                strncpy(data->buffer.buf, result, data->buffer.max - 1);
+                data->buffer.buf[data->buffer.max] = '\0';
                 corto_dealloc(result);
             }
 
             corto_dealloc(str);
+            if (typeId != buffer) {
+                corto_dealloc(typeId);
+            }
         }
     }
 
     return 0;
+error:
+    return -1;
 }
 
 static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void* userData) {
@@ -404,6 +437,7 @@ struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operator
 
     s.access = access;
     s.accessKind = accessKind;
+    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
     s.traceKind = trace;
     s.construct = corto_ser_construct;
     s.destruct = corto_ser_destruct;

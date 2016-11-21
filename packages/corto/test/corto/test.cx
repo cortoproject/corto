@@ -328,6 +328,7 @@ test/Suite Resolver::
     void tc_resolveString()
     void tc_resolveIo()
     void tc_resolveAnonymous()
+    void tc_resolveAnonymousAnonymousType()
     void tc_resolveEmptyString()
 
     void tc_resolveParenthesesNoFunction()

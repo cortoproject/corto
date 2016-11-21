@@ -81,9 +81,13 @@ error:
 
 corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
 {
-    corto_id objectId;
-    corto_fullpath(objectId, object);
-    return corto_authorizedId(objectId, access);
+    if (corto_checkAttr(object, CORTO_ATTR_SCOPED)) {
+        corto_id objectId;
+        corto_fullpath(objectId, object);
+        return corto_authorizedId(objectId, access);
+    } else {
+        return TRUE;
+    }
 }
 
 corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind access) {

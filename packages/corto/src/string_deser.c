@@ -145,7 +145,7 @@ struct corto_serializer_s corto_string_deserBuildIndex(void) {
     result.metaprogram[CORTO_OBJECT] = corto_string_deserBuildIndexComposite;
     result.metaprogram[CORTO_BASE] = corto_string_deserBuildIndexComposite;
     result.metaprogram[CORTO_MEMBER] = corto_string_deserBuildIndexPrimitive;
-    result.access = CORTO_LOCAL;
+    result.access = CORTO_LOCAL|CORTO_PRIVATE|CORTO_READONLY;
     result.accessKind = CORTO_NOT;
     result.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
     return result;
@@ -653,7 +653,11 @@ error:
 }
 
 /* Parse string */
-static corto_string corto_string_deserParse(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data) {
+static corto_string corto_string_deserParse(
+    corto_string str,
+    struct corto_string_deserIndexInfo* info,
+    corto_string_deser_t* data)
+{
     corto_char ch;
     corto_char *ptr, *bptr, *nonWs;
     corto_char buffer[CORTO_STRING_DESER_TOKEN_MAX]; /* TODO: dangerous in a recursive function */
@@ -673,8 +677,8 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
         memberInfo = corto_string_deserIndexNext(data);
     }
 
-    /* If ptr == NULL, an error has occurred. If proceed == FALSE, this function has finished processing the
-     * current value. */
+    /* If ptr == NULL, an error has occurred. If proceed == FALSE, this function
+     * has finished processing the current value. */
     while(ptr && (ch = *ptr) && proceed) {
         switch(ch) {
         case '=': /* Explicit member assignment */
@@ -715,6 +719,21 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
             }
             break;
 
+        case '}': /* Scope close and end of value */
+            if (buffer != bptr) {
+                *nonWs = '\0';
+                if (memberInfo && (data->type->kind != CORTO_PRIMITIVE)) {
+                    if (corto_string_deserParseValue(buffer, memberInfo, data)) {
+                        goto error;
+                    }
+                    bptr = buffer;
+                    nonWs = bptr;
+                }
+            }
+            proceed = FALSE;
+            ptr--;
+            break;
+
         case '(':
             /* If a value is being parsed, the '(' is part of an argument list.
              * Parse up until the matching ')' */
@@ -752,20 +771,6 @@ static corto_string corto_string_deserParse(corto_string str, struct corto_strin
             }
             *(++bptr) = '\0';
             nonWs = bptr;
-            break;
-        case '}': /* Scope close and end of value */
-            if (buffer != bptr) {
-                *nonWs = '\0';
-                if (memberInfo && (data->type->kind != CORTO_PRIMITIVE)) {
-                    if (corto_string_deserParseValue(buffer, memberInfo, data)) {
-                        goto error;
-                    }
-                    bptr = buffer;
-                    nonWs = bptr;
-                }
-            }
-            proceed = FALSE;
-            ptr--;
             break;
 
         case '\n':
@@ -838,7 +843,7 @@ error:
 corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     corto_char *ptr;
     corto_bool createdNew = FALSE;
-
+    
     {
         corto_id buffer;
         corto_char *bptr, ch;
@@ -856,7 +861,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
         *bptr = '\0';
 
         /* If no type is found, reset ptr */
-        if ((ch != '{')) {
+        if ((ch != '{') || (ptr == str)) {
             ptr = str;
         } else {
             corto_object type;
@@ -912,9 +917,20 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
         goto error;
     }
 
-    if (!(ptr = corto_string_deserParse(ptr, NULL, data))) {
+    if (data->type->kind == CORTO_PRIMITIVE) {
+        ptr = corto_string_deserParse(ptr, NULL, data);
+    } else {
+        ptr = corto_string_deserParseScope(ptr, NULL, data);
+        if (ptr) {
+            ptr ++;
+        }
+    }
+
+    if (!ptr) {
         if (!corto_lasterr()) {
             corto_seterr("failed to deserialize '%s'", str);
+        } else {
+            corto_seterr("failed to deserialize '%s': %s", str, corto_lasterr());
         }
         goto error;
     }
@@ -923,7 +939,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
         corto_llFree(data->anonymousObjects);
     }
 
-    return str;
+    return ptr;
 error:
     if (data->out) {
         if (createdNew) {
