@@ -286,6 +286,10 @@ test/Suite Fullname::
     void tc_null()
     void tc_nullBuffer()
     void tc_fromLang()
+    void tc_anonymousPrimitive()
+    void tc_anonymousComposite()
+    void tc_anonymousCollection()
+    void tc_anonymousAnonymous()
 
 // Generate names relative to an object
 test/Suite RelativeName::
