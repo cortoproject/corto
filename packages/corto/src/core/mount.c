@@ -574,7 +574,7 @@ corto_object _corto_mount_resume(
                     goto error;
                 }
                 corto_object parent_o =
-                  corto_resolve(corto_mount(this)->mount, result->parent);
+                  corto_resolve(corto_mount(this)->mount, parent);
                 if (parent_o) {
                     corto_object type_o = corto_resolve(NULL, result->type);
                     if (type_o) {
