@@ -1434,6 +1434,11 @@ corto_int16 corto_define(corto_object o) {
 
     corto_assertObject(o);
 
+    if (!o) {
+        corto_seterr("corto: NULL passed to corto_define");
+        goto error;
+    }
+
     /* Only define undefined objects */
     if (!corto_checkState(o, CORTO_DEFINED) || !corto_checkState(o, CORTO_VALID)) {
         if (corto_childof(root_o, o) && !corto_isBuiltin(o)) {

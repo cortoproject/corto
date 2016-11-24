@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * ResumeSink.c
+ * AutoResumeSink.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,91 +8,91 @@
 
 #include <test.h>
 
-corto_void _test_ResumeSink_onDeclare(
-    test_ResumeSink this,
+corto_void _test_AutoResumeSink_onDeclare(
+    test_AutoResumeSink this,
     corto_eventMask event,
     corto_object object,
     corto_observer observer)
 {
-/* $begin(test/ResumeSink/onDeclare) */
+/* $begin(test/AutoResumeSink/onDeclare) */
 
     this->declared ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onDefine(
-    test_ResumeSink this,
+corto_void _test_AutoResumeSink_onDefine(
+    test_AutoResumeSink this,
     corto_eventMask event,
     corto_object object,
     corto_observer observer)
 {
-/* $begin(test/ResumeSink/onDefine) */
+/* $begin(test/AutoResumeSink/onDefine) */
 
     this->defined ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onDelete(
-    test_ResumeSink this,
+corto_void _test_AutoResumeSink_onDelete(
+    test_AutoResumeSink this,
     corto_eventMask event,
     corto_object object,
     corto_observer observer)
 {
-/* $begin(test/ResumeSink/onDelete) */
+/* $begin(test/AutoResumeSink/onDelete) */
 
     this->deleted ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onResume(
-    test_ResumeSink this,
+corto_void _test_AutoResumeSink_onResume(
+    test_AutoResumeSink this,
     corto_eventMask event,
     corto_object object,
     corto_observer observer)
 {
-/* $begin(test/ResumeSink/onResume) */
+/* $begin(test/AutoResumeSink/onResume) */
 
     this->resumed ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onSuspend(
-    test_ResumeSink this,
+corto_void _test_AutoResumeSink_onSuspend(
+    test_AutoResumeSink this,
     corto_eventMask event,
     corto_object object,
     corto_observer observer)
 {
-/* $begin(test/ResumeSink/onSuspend) */
+/* $begin(test/AutoResumeSink/onSuspend) */
 
       this->suspended ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onUpdate(
-    test_ResumeSink this,
+corto_void _test_AutoResumeSink_onUpdate(
+    test_AutoResumeSink this,
     corto_eventMask event,
     corto_object object,
     corto_observer observer)
 {
-/* $begin(test/ResumeSink/onUpdate) */
+/* $begin(test/AutoResumeSink/onUpdate) */
 
     this->updated ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_setup(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_setup(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/setup) */
+/* $begin(test/AutoResumeSink/setup) */
     /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
-    test_SinkReplicatorCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
+    test_AutoResumeSinkReplicatorCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
 
     CORTO_DEBUG_ENABLED = 1;
 
@@ -107,10 +107,10 @@ corto_void _test_ResumeSink_setup(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_define(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_define(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_define) */
+/* $begin(test/AutoResumeSink/tc_define) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -130,6 +130,7 @@ corto_void _test_ResumeSink_tc_define(
     test_assert(o != NULL);
     test_assert(corto_parentof(o) == mount);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
+
     test_assert(corto_ownerof(o) == sinkMount);
     test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
@@ -169,10 +170,10 @@ corto_void _test_ResumeSink_tc_define(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_defineNested1(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_defineNested1(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested1) */
+/* $begin(test/AutoResumeSink/tc_defineNested1) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -239,10 +240,10 @@ corto_void _test_ResumeSink_tc_defineNested1(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_defineNested2(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_defineNested2(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested2) */
+/* $begin(test/AutoResumeSink/tc_defineNested2) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -309,10 +310,10 @@ corto_void _test_ResumeSink_tc_defineNested2(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolve(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolve(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolve) */
+/* $begin(test/AutoResumeSink/tc_resolve) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -329,7 +330,7 @@ corto_void _test_ResumeSink_tc_resolve(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
@@ -361,10 +362,10 @@ corto_void _test_ResumeSink_tc_resolve(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveFromMount(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveFromMount(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveFromMount) */
+/* $begin(test/AutoResumeSink/tc_resolveFromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -417,10 +418,10 @@ corto_void _test_ResumeSink_tc_resolveFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested1(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1) */
+/* $begin(test/AutoResumeSink/tc_resolveNested1) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -469,10 +470,10 @@ corto_void _test_ResumeSink_tc_resolveNested1(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1FromMount(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested1FromMount(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1FromMount) */
+/* $begin(test/AutoResumeSink/tc_resolveNested1FromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -525,10 +526,10 @@ corto_void _test_ResumeSink_tc_resolveNested1FromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested1FromObjectFromMount(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1FromObjectFromMount) */
+/* $begin(test/AutoResumeSink/tc_resolveNested1FromObjectFromMount) */
 
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
@@ -594,10 +595,10 @@ corto_void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1NotExist(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested1NotExist(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1NotExist) */
+/* $begin(test/AutoResumeSink/tc_resolveNested1NotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -628,10 +629,10 @@ corto_void _test_ResumeSink_tc_resolveNested1NotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested2(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2) */
+/* $begin(test/AutoResumeSink/tc_resolveNested2) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -680,10 +681,10 @@ corto_void _test_ResumeSink_tc_resolveNested2(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2FromMount(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested2FromMount(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2FromMount) */
+/* $begin(test/AutoResumeSink/tc_resolveNested2FromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -736,10 +737,10 @@ corto_void _test_ResumeSink_tc_resolveNested2FromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested2FromObjectFromMount(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2FromObjectFromMount) */
+/* $begin(test/AutoResumeSink/tc_resolveNested2FromObjectFromMount) */
 
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
@@ -819,10 +820,10 @@ corto_void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2NotExist(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNested2NotExist(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2NotExist) */
+/* $begin(test/AutoResumeSink/tc_resolveNested2NotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -853,10 +854,10 @@ corto_void _test_ResumeSink_tc_resolveNested2NotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNotExist(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_tc_resolveNotExist(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNotExist) */
+/* $begin(test/AutoResumeSink/tc_resolveNotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -887,10 +888,10 @@ corto_void _test_ResumeSink_tc_resolveNotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_teardown(
-    test_ResumeSink this)
+corto_void _test_AutoResumeSink_teardown(
+    test_AutoResumeSink this)
 {
-/* $begin(test/ResumeSink/teardown) */
+/* $begin(test/AutoResumeSink/teardown) */
     corto_object mount = corto_resolve(NULL, "mount");
     corto_observer_unobserve(test_ResumeSink_onDeclare_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onDefine_o, this, mount);

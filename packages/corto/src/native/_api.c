@@ -21,9 +21,9 @@ corto_native_type _corto_native_typeCreate(corto_string name) {
     return _this;
 }
 
-corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_string _name, corto_string name) {
+corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_string _id, corto_string name) {
     corto_native_type _this;
-    _this = corto_native_type(corto_declareChild(_parent, _name, corto_native_type_o));
+    _this = corto_native_type(corto_declareChild(_parent, _id, corto_native_type_o));
     if (!_this) {
         return NULL;
     }
@@ -61,9 +61,9 @@ corto_native_type _corto_native_typeDeclare(void) {
     return _this;
 }
 
-corto_native_type _corto_native_typeDeclareChild(corto_object _parent, corto_string _name) {
+corto_native_type _corto_native_typeDeclareChild(corto_object _parent, corto_string _id) {
     corto_native_type _this;
-    _this = corto_native_type(corto_declareChild(_parent, _name, corto_native_type_o));
+    _this = corto_native_type(corto_declareChild(_parent, _id, corto_native_type_o));
     if (!_this) {
         return NULL;
     }

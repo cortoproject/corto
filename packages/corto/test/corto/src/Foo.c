@@ -14,10 +14,10 @@ corto_int16 _test_Foo_construct(
 /* $begin(test/Foo/construct) */
 
 	if (!this->fail) {
-	    this->x += 10;
-	    this->y += 20;
+	    this->x *= 2;
+	    this->y *= 2;
 	} else {
-		goto error;
+		  goto error;
 	}
 
 	(*test_constructCalled_o)++;

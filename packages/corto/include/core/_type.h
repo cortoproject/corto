@@ -31,6 +31,7 @@ extern "C" {
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
+#define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_observerseq(o) ((corto_observerseq*)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
@@ -217,6 +218,8 @@ struct corto_notifyAction {
     corto_delegatedata _parent;
 };
 
+CORTO_ITERATOR(corto_objectIter);
+
 /*  /corto/core/observableEvent */
 typedef struct corto_observableEvent_s *corto_observableEvent;
 
@@ -332,7 +335,7 @@ struct corto_result {
     corto_object object;
     corto_wordseq history;
     corto_augmentseq augments;
-    corto_object mount;
+    corto_object owner;
 };
 
 CORTO_ITERATOR(corto_resultIter);

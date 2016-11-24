@@ -205,7 +205,7 @@ corto_void _test_SelectSink_tc_selectMountInResult(
     test_assertstr(result->id, "x");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
-    test_assert(result->mount == mount);
+    test_assert(result->owner == mount);
 
     test_assert(!corto_iterHasNext(&iter));
     corto_release(mount);

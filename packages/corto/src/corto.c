@@ -236,6 +236,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(op, destructAction);\
     SSO_OP_VALUE(op, notifyAction);\
     SSO_OP_VALUE(op, resultIter);\
+    SSO_OP_VALUE(op, objectIter);\
     SSO_OP_VALUE(op, time);\
     SSO_OP_VALUE(op, position);\
     SSO_OP_PROCEDURETYPE(op);\
@@ -789,7 +790,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_object);\
     SSO_OP_OBJ_CORE(op, result_history);\
     SSO_OP_OBJ_CORE(op, result_augments);\
-    SSO_OP_OBJ_CORE(op, result_mount);\
+    SSO_OP_OBJ_CORE(op, result_owner);\
     SSO_OP_OBJ_CORE(op, result_getText_);\
     /* request */\
     SSO_OP_OBJ_CORE(op, request_parent);\

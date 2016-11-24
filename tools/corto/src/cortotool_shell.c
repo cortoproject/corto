@@ -468,7 +468,7 @@ static int cxsh_show(char* object) {
 
         if (o) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
-                s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
+                s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE;
                 s.accessKind = CORTO_NOT;
                 s.aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
                 s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
@@ -653,7 +653,7 @@ struct corto_serializer_s cxsh_memberSer(void) {
 
     corto_serializerInit(&s);
 
-    s.access = CORTO_PRIVATE | CORTO_HIDDEN;
+    s.access = CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
     s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
     s.metaprogram[CORTO_MEMBER] = cxsh_ser_member;
@@ -663,7 +663,7 @@ struct corto_serializer_s cxsh_memberSer(void) {
 /* Obtain type of expression */
 corto_type cxsh_exprType(corto_string expr) {
     CORTO_UNUSED(expr);
-    
+
     corto_type result = NULL;
     /*corto_function parseLine =
         corto_resolve(NULL, "/corto/ast/Parser/parseType");

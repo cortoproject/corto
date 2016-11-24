@@ -91,6 +91,9 @@ typedef struct corto_selectData {
     /* Query for recursive queries on mounts */
     corto_id recursiveQuery;
 
+    /* Does select need to resume objects */
+    corto_bool resume;
+
     /* Pre allocated for selectItem */
     corto_id id;
     corto_id name;
@@ -291,7 +294,8 @@ static void corto_setItemData(
         item->name[0] = '\0';
     }
 
-    item->mount = corto_ownerof(o);
+    item->owner = corto_ownerof(o);
+    corto_setref(&item->object, o);
 
     if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
@@ -322,7 +326,6 @@ static void corto_setItemData(
         item->value = data->dstSer->fromValue(&v);
     }
 
-    item->mount = NULL;
     item->leaf = corto_scopeSize(o) == 0;
 }
 
@@ -515,7 +518,8 @@ static corto_int16 corto_selectIterMount(
     corto_selectData *data,
     corto_selectStack *frame)
 {
-    corto_id parent, expr;
+    corto_id parent, expr, rpath;
+    corto_mount mount = NULL;
 
     /* Parse filter into parent and expression */
     if (frame->scopeQuery) {
@@ -538,7 +542,8 @@ static corto_int16 corto_selectIterMount(
 
     data->next = &data->item;
 
-    data->item.mount = data->mounts[frame->currentMount - 1];
+    mount = data->mounts[frame->currentMount - 1];
+    data->item.owner = mount;
     data->item.leaf = result->leaf;
 
     /* Copy data, so mount can safely release it */
@@ -559,13 +564,13 @@ static corto_int16 corto_selectIterMount(
     }
 
     if (result->parent) {
-        corto_id path, rpath;
+        corto_id path;
 
         strcpy(path, data->scope ? data->scope : "");
         if (frame->scope) {
             corto_fullpath(rpath, frame->scope);
         } else {
-            corto_fullpath(rpath, data->mounts[frame->currentMount - 1]->mount);
+            corto_fullpath(rpath, mount->mount);
         }
         strcat(rpath, "/");
         strcat(rpath, parent);
@@ -611,6 +616,63 @@ static corto_int16 corto_selectIterMount(
                   data, result->type, result->history.buffer[i]);
             }
         }
+    }
+
+    if (data->resume) {
+        corto_type type = NULL;
+
+        if (corto_observer(mount)->typeReference) {
+            corto_setref(&type, corto_observer(mount)->typeReference);
+        } else {
+            if (!(type = corto_resolve(NULL, result->type))) {
+                corto_warning("select: could not resume '%s/%s' from '%s': type '%s not found",
+                  result->parent,
+                  result->id,
+                  corto_fullpath(NULL, mount),
+                  result->type);
+            }
+        }
+
+        corto_object parent = corto_resolve(NULL, rpath);
+        if (!parent) {
+            corto_warning("select: could not resume '%s/%s' from '%s': parent not found",
+              result->parent,
+              result->id,
+              corto_fullpath(NULL, mount));
+        }
+
+        corto_object prev = corto_setOwner(mount);
+        corto_object ref = corto_declareChild(parent, result->id, type);
+        corto_release(type);
+        corto_release(parent);
+
+        if (!ref) {
+            corto_warning("select: could not resume '%s/%s' from '%s': failed to create object",
+              result->parent,
+              result->id,
+              corto_fullpath(NULL, mount));
+        }
+
+        if (result->value) {
+            if (mount->contentTypeOutHandle) {
+                corto_contentType handle = (corto_contentType)mount->contentTypeOutHandle;
+                corto_value v = corto_value_object(ref, type);
+                handle->toValue(&v, result->value);
+            } else {
+                corto_warning("select: mount '%s' sets result.value but has no contentType",
+                  corto_fullpath(NULL, mount));
+            }
+        }
+
+        if (corto_define(ref)) {
+            corto_warning("select: failed to define '%s/%s' from mount '%s'",
+              result->parent, result->id,
+              corto_fullpath(NULL, mount));
+        }
+
+        corto_setOwner(prev);
+        corto_setref(&result->object, ref);
+        corto_release(ref);
     }
 
     /* If augmentFilter is provided, load augments */
@@ -883,6 +945,10 @@ static void corto_selectReset(corto_selectData *data) {
         data->dstSer->release(data->item.value);
     }
 
+    if (data->item.object) {
+        corto_setref(&data->item.object, NULL);
+    }
+
     if (data->item.history.length) {
         corto_int32 i;
         for (i = 0; i < data->item.history.length; i ++) {
@@ -961,6 +1027,19 @@ static void* corto_selectNext(corto_resultIter *iter) {
     }
 
     return data->next;
+}
+
+static void* corto_selectNextObjects(corto_objectIter *iter) {
+    corto_selectData *data = iter->udata;
+
+    CORTO_UNUSED(iter);
+
+    if (data->next) {
+        corto_debug("corto: select: NextObject (%s, %s)", data->next->id, data->next->parent);
+        data->count ++;
+    }
+
+    return data->next->object;
 }
 
 static void corto_selectRelease(corto_iter *iter) {
@@ -1318,6 +1397,63 @@ error:
     return -1;
 }
 
+static corto_int16 corto_selectorIterObjects(corto_objectIter *ret)
+{
+    corto_assert(ret != NULL, "no iterator provided to .iter()");
+
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+
+    if (request) {
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        *ret = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
+        }
+        corto_dealloc(request);
+
+        /* When requesting objects, the from-scope is meaningless. Setting the
+         * scope to NULL makes it easier to resolve the parent while iterating.
+         */
+        corto_selectData *data = ret->udata;
+        data->resume = TRUE;
+
+        /* Override iterator callbacks for object iterator */
+        ret->next = corto_selectNextObjects;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static corto_int64 corto_selectorCount()
+{
+    corto_resultIter it;
+    corto_uint64 count = 0;
+
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+
+    if (request) {
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        it = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
+        }
+        corto_dealloc(request);
+
+        while (corto_iterHasNext(&it)) {
+            corto_iterNext(&it);
+            count ++;
+        }
+    }
+
+    return count;
+error:
+    return -1;
+}
+
 static corto_selectFluent corto_selectorFromNow(void)
 {
     corto_selectRequest *request =
@@ -1437,6 +1573,8 @@ static corto_selectFluent corto_selectFluentGet(void)
     result.forDuration = corto_selectorForDuration;
     result.forDepth = corto_selectorForDepth;
     result.iter = corto_selectorIter;
+    result.iterObjects = corto_selectorIterObjects;
+    result.count = corto_selectorCount;
     return result;
 }
 

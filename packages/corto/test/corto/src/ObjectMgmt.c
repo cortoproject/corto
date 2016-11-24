@@ -42,8 +42,8 @@ corto_void _test_ObjectMgmt_tc_createChildFoo(
     corto_release(p);
 
     /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 
@@ -81,8 +81,8 @@ corto_void _test_ObjectMgmt_tc_createChildFooAttr0(
     corto_release(p);
 
     /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 
@@ -392,8 +392,8 @@ corto_void _test_ObjectMgmt_tc_createFoo(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 
@@ -422,8 +422,8 @@ corto_void _test_ObjectMgmt_tc_createFooAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 
@@ -1176,14 +1176,14 @@ corto_void _test_ObjectMgmt_tc_defineFoo(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     /* Test if initializer is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     /* Test if constructor is executed only once */
     test_assert(!corto_define(o));
 
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 
@@ -1215,14 +1215,14 @@ corto_void _test_ObjectMgmt_tc_defineFooAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     /* Test if constructor is correctly executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     /* Test if constructor is executed only once */
     test_assert(!corto_define(o));
 
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 
@@ -1277,8 +1277,8 @@ corto_void _test_ObjectMgmt_tc_defineFooFail(
     test_assert(corto_checkState(o, CORTO_DEFINED));
 
     /* Test if constructor is executed */
-    test_assert(o->x == 11);
-    test_assert(o->y == 22);
+    test_assert(o->x == 2);
+    test_assert(o->y == 4);
 
     corto_delete(o);
 

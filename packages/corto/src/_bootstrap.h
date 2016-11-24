@@ -635,6 +635,7 @@ CORTO_FWDECL_CORE(delegate, invokeAction);
 CORTO_FWDECL_CORE(subscriber, mount_on_notify);
 
 CORTO_FWDECL_CORE(iterator, resultIter);
+CORTO_FWDECL_CORE(iterator, objectIter);
 
 CORTO_FWDECL_CORE(struct, time);
 CORTO_FWDECL_CORE(struct, position);
@@ -880,6 +881,7 @@ CORTO_DELEGATE_O(core, requestAction, core_resultIter);
 
 /* Iterator types */
 CORTO_ITERATOR_O(core, resultIter, core_result);
+CORTO_ITERATOR_O(core, objectIter, lang_object);
 
 /* /corto/lang/type */
 CORTO_FW_ICD(lang, type);
@@ -1251,7 +1253,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, object, lang_object, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, history, lang_wordseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
-    CORTO_MEMBER_O(core_result, mount, lang_object, CORTO_HIDDEN);
+    CORTO_MEMBER_O(core_result, owner, lang_object, CORTO_HIDDEN);
     CORTO_METHOD_O(core_result, getText, "()", lang_string, FALSE, corto_result_getText);
 
 /* /corto/core/request */

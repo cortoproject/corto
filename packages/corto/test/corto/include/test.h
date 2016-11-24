@@ -120,6 +120,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <AttrCheck.h>
 #include <AttrConstructorTest.h>
 #include <Attributes.h>
+#include <AutoResumeSink.h>
+#include <AutoResumeSinkReplicator.h>
 #include <Bar.h>
 #include <Buffer.h>
 #include <Cat.h>

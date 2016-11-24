@@ -592,7 +592,7 @@ corto_object _corto_mount_resume(
 
             if (o) {
                 corto_value v = corto_value_object(o, NULL);
-                if ((corto_contentType)corto_subscriber(this)->contentTypeHandle && iterResult->value) {
+                if (corto_subscriber(this)->contentTypeHandle && iterResult->value) {
                     ((corto_contentType)corto_subscriber(this)->contentTypeHandle)->toValue(
                         &v, iterResult->value);
                 }

@@ -130,6 +130,7 @@ CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, metaprocedure);
 
 CORTO_META_OBJECT(iterator, resultIter);
+CORTO_META_OBJECT(iterator, objectIter);
 
 #ifdef __cplusplus
 }

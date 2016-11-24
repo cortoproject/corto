@@ -601,6 +601,14 @@ class SinkReplicator : core/mount, hidden::
     resultIter onRequest(core/request request)
     object onResume(string parent, string name, object o)
 
+class AutoResumeSinkReplicator : core/mount, hidden::
+    alias mount: mount/mount
+    alias type: mount/type
+    value: string
+    items: resultList, private
+    int16 construct()
+    resultIter onRequest(core/request request)
+
 // Request data from a SINK mount
 test/Suite SelectSink::
     void setup() method
@@ -625,6 +633,34 @@ test/Suite SelectSink::
 
 // Resume data from SINK mount
 test/Suite ResumeSink::
+    void setup() method
+    void teardown() method
+    void tc_resolve()
+    void tc_resolveNested1()
+    void tc_resolveNested2()
+    void tc_resolveFromMount()
+    void tc_resolveNested1FromMount()
+    void tc_resolveNested2FromMount()
+    void tc_resolveNested1FromObjectFromMount()
+    void tc_resolveNested2FromObjectFromMount()
+    void tc_define()
+    void tc_defineNested1()
+    void tc_defineNested2()
+    void tc_resolveNotExist()
+    void tc_resolveNested1NotExist()
+    void tc_resolveNested2NotExist()
+
+    observer onDeclare: on_declare | on_tree
+    observer onDefine: on_define | on_tree
+    observer onUpdate: on_update | on_tree
+    observer onDelete: on_delete | on_tree
+    observer onResume: on_resume | on_tree
+    observer onSuspend: on_suspend | on_tree
+
+    declared, defined, updated, deleted, resumed, suspended: int8
+
+// Resume data from SINK mount without resume function
+test/Suite AutoResumeSink::
     void setup() method
     void teardown() method
     void tc_resolve()

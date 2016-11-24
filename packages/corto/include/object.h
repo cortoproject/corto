@@ -119,6 +119,8 @@ typedef struct corto_selectFluent {
     struct corto_selectFluent (*forDuration)(corto_time t);
     struct corto_selectFluent (*forDepth)(corto_int64 depth);
     corto_int16 ___ (*iter)(corto_resultIter *ret);
+    corto_int16 ___ (*iterObjects)(corto_objectIter *ret);
+    corto_int64 ___ (*count)(void);
 } corto_selectFluent;
 struct corto_selectFluent corto_select(corto_string scope, corto_string expr);
 

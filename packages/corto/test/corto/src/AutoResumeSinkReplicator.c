@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * SinkReplicator.c
+ * AutoResumeSinkReplicator.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,12 +8,14 @@
 
 #include <test.h>
 
-corto_int16 _test_SinkReplicator_construct(
-    test_SinkReplicator this)
+corto_int16 _test_AutoResumeSinkReplicator_construct(
+    test_AutoResumeSinkReplicator this)
 {
-/* $begin(test/SinkReplicator/construct) */
+/* $begin(test/AutoResumeSinkReplicator/construct) */
     corto_string type =
       corto_observer(this)->type ? corto_observer(this)->type : "int32";
+
+    corto_mount_setContentType(this, "text/corto");
 
     // First tier
     corto_resultAssign(
@@ -146,7 +148,7 @@ corto_int16 _test_SinkReplicator_construct(
 /* $end */
 }
 
-/* $header(test/SinkReplicator/onRequest) */
+/* $header(test/AutoResumeSinkReplicator/onRequest) */
 /* Custom release function */
 static void test_SinkReplicator_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
@@ -155,11 +157,11 @@ static void test_SinkReplicator_iterRelease(corto_iter *iter) {
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_SinkReplicator_onRequest(
-    test_SinkReplicator this,
+corto_resultIter _test_AutoResumeSinkReplicator_onRequest(
+    test_AutoResumeSinkReplicator this,
     corto_request *request)
 {
-/* $begin(test/SinkReplicator/onRequest) */
+/* $begin(test/AutoResumeSinkReplicator/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();
 
@@ -173,7 +175,7 @@ corto_resultIter _test_SinkReplicator_onRequest(
                     e.id,
                     ".",
                     e.type,
-                    0,
+                    e.value,
                     e.leaf
                 );
             }
@@ -188,77 +190,5 @@ corto_resultIter _test_SinkReplicator_onRequest(
 
     /* Return persistent iterator to request */
     return result;
-/* $end */
-}
-
-corto_object _test_SinkReplicator_onResume(
-    test_SinkReplicator this,
-    corto_string parent,
-    corto_string name,
-    corto_object o)
-{
-/* $begin(test/SinkReplicator/onResume) */
-    corto_iter iter = corto_llIter(this->items);
-    corto_object result = NULL;
-
-    /* Find object. Do proper error handling, so testcases are easy to debug */
-    corto_resultIterForeach(iter, e) {
-        if (!strcmp(parent, e.parent)) {
-            if (!strcmp(name, e.id)) {
-                corto_type t = corto_resolve(NULL, e.type);
-                if (!t) {
-                    corto_seterr("cannot resume object, unknown type '%s'",
-                      e.type);
-                    goto error;
-                }
-
-                if (o && (t != corto_typeof(o))) {
-                    corto_seterr("type '%s' does not match type of object '%s'",
-                      e.type, corto_fullpath(NULL, corto_typeof(o)));
-                }
-
-                corto_object p = corto_resolve(
-                    corto_mount(this)->mount,
-                    e.parent
-                );
-                if (!p) {
-                    corto_seterr("cannot find parent '%s'", e.parent);
-                    goto error;
-                }
-
-                if (o && (p != corto_parentof(o))) {
-                    corto_seterr("parent '%s' does not match parent of object '%s'",
-                      e.type, corto_fullpath(NULL, corto_parentof(o)));
-                    goto error;
-                }
-
-                if (o) {
-                    result = o;
-                } else {
-                    result = corto_declareChild(p, e.id, t);
-                    if (!result) {
-                        corto_seterr("cannot create object '%s': %s",
-                            e.id, corto_lasterr());
-                        goto error;
-                    }
-                }
-
-                if (e.value) {
-                    corto_fromStr(&result, (corto_string)e.value);
-                }
-
-                if (!o) {
-                    corto_define(result);
-                }
-
-                corto_release(t);
-                corto_release(p);
-            }
-        }
-    }
-
-    return result;
-error:
-    return NULL;
 /* $end */
 }
