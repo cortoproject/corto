@@ -504,10 +504,7 @@ static corto_int16 corto_string_deserParseValue(
                 deserialized = NULL;
             }
 
-            if (*(corto_string*)offset) {
-                corto_dealloc(*(corto_string*)offset);
-            }
-            *(corto_string*)offset = deserialized;
+            corto_setstr(offset, deserialized);
         }
     }
 
@@ -524,7 +521,44 @@ error:
 /* Parse character literal */
 static corto_string corto_string_deserParseCharacter(corto_string ptr, corto_char *bptr) {
 
-    *bptr = *ptr;
+    if (*ptr == '\\') {
+        ptr ++;
+        switch(*ptr) {
+        case 'a':
+            *bptr = '\a';
+            break;
+        case 'b':
+            *bptr = '\b';
+            break;
+        case 'f':
+            *bptr = '\f';
+            break;
+        case 'n':
+            *bptr = '\n';
+            break;
+        case 'r':
+            *bptr = '\r';
+            break;
+        case 't':
+            *bptr = '\t';
+            break;
+        case 'v':
+            *bptr = '\v';
+            break;
+        case '\\':
+            *bptr = '\\';
+            break;
+        case '\"':
+            *bptr = '\"';
+            break;
+        case '\'':
+            *bptr = '\'';
+            break;
+        }
+    } else {
+        *bptr = *ptr;
+    }
+
     ptr++;
 
     return ptr;
@@ -843,7 +877,7 @@ error:
 corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     corto_char *ptr;
     corto_bool createdNew = FALSE;
-    
+
     {
         corto_id buffer;
         corto_char *bptr, ch;
