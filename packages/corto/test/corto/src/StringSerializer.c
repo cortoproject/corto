@@ -487,7 +487,7 @@ corto_void _test_StringSerializer_tc_serStringEscape(
 
     result = corto_strp(&v, corto_string_o, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "\"Hello World\n\""));
+    test_assertstr(result, "\"Hello World\\n\"");
 
     corto_dealloc(result);
 

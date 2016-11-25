@@ -545,6 +545,9 @@ static corto_string corto_string_deserParseCharacter(corto_string ptr, corto_cha
         case 'v':
             *bptr = '\v';
             break;
+        case '0':
+            *bptr = '\0';
+            break;
         case '\\':
             *bptr = '\\';
             break;

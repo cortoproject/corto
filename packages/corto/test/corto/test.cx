@@ -34,6 +34,14 @@ struct CompositeWithString::
     c: string
     d: int32
 
+target TargetActual: int32
+
+struct TargetActualMember::
+    m: TargetActual
+
+struct ReferenceMember::
+    m: object
+
 array PrimitiveArray: int32, 4
 array StringArray: string, 4
 array CompositeArray: Point, 4
@@ -1186,11 +1194,15 @@ test/Suite StringDeserializer::
     void tc_deserStringQuotes()
     void tc_deserStringQuotesWhitespaces()
     void tc_deserStringEscape()
+    void tc_deserStringEscapeQuotes()
     void tc_deserStringWhitespace()
     void tc_deserStringWhitespaceTrailing()
     void tc_deserStringWhitespaceTrailingNoType()
     void tc_deserStringMember()
     void tc_deserStringMemberNoQuotes()
+
+    void tc_deserStringMemberEscape()
+    void tc_deserStringMemberEscapeNoQuotes()
 
     void tc_deserComposite()
     void tc_deserCompositeNoType()
