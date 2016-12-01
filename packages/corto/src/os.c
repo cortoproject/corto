@@ -11,26 +11,6 @@ static void printError(int e, const char *msg) {
     corto_seterr("%s: %s", msg, strerror(e));
 }
 
-int corto_fileTest(const char* filefmt, ...) {
-    FILE* exists = NULL;
-    va_list arglist;
-
-    va_start(arglist, filefmt);
-    char *file = corto_venvparse(filefmt, arglist);
-    va_end(arglist);
-
-    if (file) {
-        exists = fopen(file, "rb");
-        if (exists) {
-            fclose(exists);
-        }
-    }
-
-    corto_dealloc(file);
-
-    return (exists != 0);
-}
-
 int corto_touch(const char *file) {
     FILE* touch = NULL;
 

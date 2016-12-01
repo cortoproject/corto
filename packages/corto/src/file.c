@@ -127,6 +127,26 @@ char* corto_fileSearch(const char* file, corto_ll locations) {
     return walkData.result;
 }
 
+int corto_fileTest(const char* filefmt, ...) {
+    FILE* exists = NULL;
+    va_list arglist;
+
+    va_start(arglist, filefmt);
+    char *file = corto_venvparse(filefmt, arglist);
+    va_end(arglist);
+
+    if (file) {
+        exists = fopen(file, "rb");
+        if (exists) {
+            fclose(exists);
+        }
+    }
+
+    corto_dealloc(file);
+
+    return (exists != 0);
+}
+
 /* Get file size */
 unsigned int corto_fileSize(corto_file file) {
     unsigned int size;
