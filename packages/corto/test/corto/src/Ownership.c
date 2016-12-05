@@ -694,6 +694,42 @@ corto_void _test_Ownership_tc_updateNotOwned(
 /* $end */
 }
 
+corto_void _test_Ownership_tc_updateNotOwnedTarget(
+    test_Ownership this)
+{
+/* $begin(test/Ownership/tc_updateNotOwnedTarget) */
+    corto_mount r = corto_create(corto_mount_o);
+
+    corto_object old = corto_setOwner(r);
+    test_assert(old == NULL);
+
+    corto_object o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+    test_assert(o != NULL);
+    test_assert(corto_ownerof(o) == r);
+
+    old = corto_setOwner(NULL);
+    test_assert(old == r);
+
+    /* Update doesn't fail because type contains target member */
+    corto_int16 result = corto_updateBegin(o);
+    test_assert(result == 0);
+
+    result = corto_updateEnd(o);
+    test_assert(result == 0);
+
+    corto_setOwner(r);
+
+    result = corto_delete(o);
+    test_assert(result == 0);
+
+    corto_setOwner(NULL);
+
+    result = corto_delete(r);
+    test_assert(result == 0);
+
+/* $end */
+}
+
 corto_void _test_Ownership_tc_updateOwned(
     test_Ownership this)
 {

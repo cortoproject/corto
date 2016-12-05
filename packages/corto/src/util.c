@@ -134,6 +134,7 @@ void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
     return result;
 }
 
+#ifdef CORTO_BENCHMARK
 struct corto_benchmark {
     corto_string name;
     corto_time start;
@@ -144,27 +145,26 @@ static struct corto_benchmark corto_benchmarks[CORTO_MAX_BENCHMARK];
 static int corto_benchmark_count;
 
 int corto_benchmark_init(corto_string name) {
-    //int id = corto_ainc(&corto_benchmark_count);
-    //corto_benchmarks[id].name = name;
-    //corto_benchmarks[id].total = 0;
-    //return id;
-    return 0;
+    int id = corto_ainc(&corto_benchmark_count);
+    corto_benchmarks[id].name = name;
+    corto_benchmarks[id].total = 0;
+    return id;
 }
 
 void corto_benchmark_stop(int id) {
-    //corto_time stop;
-    //corto_timeGet(&stop);
-    //corto_benchmarks[id].total += corto_timeToDouble(corto_timeSub(stop, corto_benchmarks[id].start));
-    //corto_benchmarks[id].count ++;
+    corto_time stop;
+    corto_timeGet(&stop);
+    corto_benchmarks[id].total += corto_timeToDouble(corto_timeSub(stop, corto_benchmarks[id].start));
+    corto_benchmarks[id].count ++;
 }
 
 void corto_benchmark_start(int id) {
-    //corto_timeGet(&corto_benchmarks[id].start);
+    corto_timeGet(&corto_benchmarks[id].start);
 }
 
 double corto_benchmark_fini(int id) {
-    //double result = corto_benchmarks[id].total;
-    //fprintf(stderr, "%24s: %fs (called %d times)\n", corto_benchmarks[id].name, result, corto_benchmarks[id].count);
-    //return result;
-    return 0;
+    double result = corto_benchmarks[id].total;
+    fprintf(stderr, "%24s: %fs (called %d times)\n", corto_benchmarks[id].name, result, corto_benchmarks[id].count);
+    return result;
 }
+#endif

@@ -272,6 +272,7 @@ test/Suite Ownership::
     void tc_declareNotOwned()
     void tc_createNotOwned()
     void tc_updateNotOwned()
+    void tc_updateNotOwnedTarget()
     void tc_deleteNotOwned()
     void tc_releaseNotOwned()
 

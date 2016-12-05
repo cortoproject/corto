@@ -72,12 +72,18 @@ corto_object corto_man(corto_object o);
 /* Obtain pointer and type for deserializing member */
 void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
 
-/* Benchmark */
+/* Benchmarking */
+#ifdef CORTO_BENCHMARK
 int corto_benchmark_init(corto_string name);
 void corto_benchmark_stop(int id);
 void corto_benchmark_start(int id);
 double corto_benchmark_fini(int id);
-
+#else
+#define corto_benchmark_init(name) (0)
+#define corto_benchmark_stop(id) ((void)id)
+#define corto_benchmark_start(id) ((void)id)
+#define corto_benchmark_fini(id) ((void)0)
+#endif
 
 #ifdef __cplusplus
 }

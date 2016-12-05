@@ -3298,6 +3298,7 @@ error:
 
 corto_int16 corto_updateBegin(corto_object o) {
     corto_assertObject(o);
+    corto_type type = corto_typeof(o);
 
     /* Update fails if process isn't authorized to update observable */
     if (corto_secured() && !corto_authorized(o, CORTO_SECURE_ACTION_UPDATE)) {
@@ -3308,7 +3309,7 @@ corto_int16 corto_updateBegin(corto_object o) {
         corto_resumeDeclared(o);
     }
 
-    if (!corto_owned(o) && (corto_typeof(corto_typeof(o)) != (corto_type)corto_target_o)) {
+    if (!type->hasTarget && (corto_typeof(corto_typeof(o)) != (corto_type)corto_target_o) && !corto_owned(o)) {
         corto_seterr("updateBegin: cannot update '%s', process does not own object",
             corto_fullpath(NULL, o));
         goto error;

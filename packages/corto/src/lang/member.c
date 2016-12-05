@@ -30,6 +30,8 @@ corto_int16 _corto_member_construct(
         goto error;
     }
 
+    ((corto_type)corto_parentof(this))->hasTarget |= this->type->hasTarget;
+
     if (corto_typeof(this->type) == (corto_type)corto_target_o) {
         this->modifiers |= CORTO_OBSERVABLE;
     }

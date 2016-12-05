@@ -198,6 +198,7 @@ struct corto_type_s {
     corto_bool reference;
     corto_attr attr;
     corto_bool hasResources;
+    corto_bool hasTarget;
     corto_uint32 templateId;
     corto_uint32 size;
     corto_uint16 alignment;
