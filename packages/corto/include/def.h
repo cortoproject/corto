@@ -175,6 +175,9 @@ typedef struct corto_ll_s* corto_ll;
 /* Maximum number of content types in a process */
 #define CORTO_MAX_CONTENTTYPE (32)
 
+/* Maximum number of simultaneous benchmarks */
+#define CORTO_MAX_BENCHMARK (64)
+
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG

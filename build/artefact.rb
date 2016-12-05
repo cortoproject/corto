@@ -173,11 +173,6 @@ def build_target()
   libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
   lflags = "#{LFLAGS.join(" ")}"
 
-  use_link =
-    USE_LIBRARY.map do |i|
-      "#{ENV['CORTO_HOME']}/#{INSTALL}/#{CORTO_VERSION}/libraries/lib" + i + ".so"
-    end.join(" ")
-
   # Check if there were any new files created during code generation
   Rake::FileList["src/*.{c,cpp}"].each do |file|
     obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
@@ -192,7 +187,7 @@ def build_target()
     linkShared = "--shared"
   end
 
-  cc_command = "#{COMPILER} #{objects} #{use_link} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
+  cc_command = "#{COMPILER} #{objects} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
   begin
     cmd cc_command
   rescue

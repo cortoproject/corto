@@ -13,7 +13,29 @@ corto_void _test_StringDeserializer_setup(
 {
 /* $begin(test/StringDeserializer/setup) */
 
-    /* << Insert implementation >> */
+    corto_setAttr(CORTO_ATTR_PERSISTENT);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousCycle(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserAnonymousCycle) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+        "test/ReferenceMember{m="
+            "<0>"
+        "}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_ReferenceMember_o, o));
+    test_ReferenceMember *t = test_ReferenceMember(o);
+    test_assert(t != NULL);
+    test_assert(t->m != NULL);
+    test_assert(t->m == t);
+    corto_release(o);
 
 /* $end */
 }
@@ -255,6 +277,49 @@ corto_void _test_StringDeserializer_tc_deserAnonymousSimple(
     corto_object e1 = corto_llGet(t->objects, 0);
     test_assert(corto_instanceof(corto_int32_o, e1));
     test_assertint(*(corto_int32*)e1, 10);
+    corto_release(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousTwice(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserAnonymousTwice) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+        "test/ReferenceMember{m="
+            "int32{10}"
+        "}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_ReferenceMember_o, o));
+    test_ReferenceMember *t = test_ReferenceMember(o);
+    test_assert(t != NULL);
+    test_assert(t->m != NULL);
+    test_assert(corto_typeof(t->m) == corto_type(corto_int32_o));
+    test_assertint(*(corto_int32*)t->m, 10);
+
+    /* Temporarily store anonymous object, check if object is still the same
+     * when deserialized a second time */
+    corto_object tmp_o = o;
+    corto_object tmp_m = t->m;
+
+    corto_fromStr(&o,
+        "test/ReferenceMember{m="
+            "int32{20}"
+        "}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(o == tmp_o);
+    t = test_ReferenceMember(o);
+    test_assert(t != NULL);
+    test_assert(t->m != NULL);
+    test_assert(t->m == tmp_m);
+    test_assertint(*(corto_int32*)t->m, 20);
+
     corto_release(o);
 
 /* $end */
@@ -1287,6 +1352,380 @@ corto_void _test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
     test_assert(!strcmp(*(corto_string*)o, "Hello World"));
     corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetAnonymousNotOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetAnonymousNotOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_setOwner(owner);
+    test_ReferenceMember *o = corto_createChild(NULL, "o", test_ReferenceMember_o);
+    test_assert(o != NULL);
+
+    /* Deserializer can't assign anonymous object because member 'm' won't be
+     * owned by thread */
+    o->m = corto_create(test_TargetActual_o);
+
+    corto_setOwner(NULL);
+    corto_int16 ret = corto_fromStr(&o, "{m=<1>/test/TargetActual{target=10, actual=20},n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 0);
+    test_assert(o->m != NULL);
+    test_assert(corto_typeof(o->m) == (corto_type)test_TargetActual_o);
+    test_TargetActual m = o->m;
+
+    /* Deserializer should not touch anonymous object because member 'm' is not
+     * owned by the thread */
+    test_assertint(m->target, 0);
+    test_assertint(m->actual, 0);
+
+
+    corto_setOwner(owner);
+    corto_delete(o);
+    corto_setOwner(NULL);
+
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetAnonymousOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetAnonymousOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_setOwner(owner);
+    test_ReferenceMember *o = corto_createChild(NULL, "o", test_ReferenceMember_o);
+    test_assert(o != NULL);
+
+    corto_int16 ret = corto_fromStr(&o, "{m=<1>/test/TargetActual{target=10, actual=20}, n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 10);
+    test_assert(corto_typeof(o->m) == (corto_type)test_TargetActual_o);
+    test_TargetActual m = o->m;
+    test_assertint(m->target, 0);
+    test_assertint(m->actual, 20);
+
+    corto_delete(o);
+    corto_setOwner(NULL);
+
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetMemberNotOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetMemberNotOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_setOwner(owner);
+    test_TargetActualMember *o = corto_createChild(NULL, "o", test_TargetActualMember_o);
+
+    corto_setOwner(NULL);
+    corto_int16 ret = corto_fromStr(&o, "{m={target=10, actual=20}, n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActualMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 0);
+    test_assertint(o->m->actual, 0);
+    test_assertint(o->m->target, 10);
+
+    corto_setOwner(owner);
+    corto_delete(o);
+    corto_setOwner(NULL);
+
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetMemberOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetMemberOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_setOwner(owner);
+    test_TargetActualMember *o = corto_createChild(NULL, "o", test_TargetActualMember_o);
+
+    corto_int16 ret = corto_fromStr(&o, "{m={target=10, actual=20}, n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActualMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 10);
+    test_assert(o->m->target == 0);
+    test_assert(o->m->actual == 20);
+
+    corto_setOwner(owner);
+    corto_delete(o);
+    corto_setOwner(NULL);
+
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetNotOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetNotOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_setOwner(owner);
+    test_TargetActual o = corto_createChild(NULL, "o", test_TargetActual_o);
+
+    corto_setOwner(NULL);
+    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assert(o->target == 10);
+    test_assert(o->actual == 0);
+
+    corto_setOwner(owner);
+    corto_delete(o);
+    corto_setOwner(NULL);
+
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetNotOwnedMount(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetNotOwnedMount) */
+    test_TargetActual o = corto_create(test_TargetActual_o);
+    corto_object owner = corto_create(corto_mount_o);
+
+    corto_setOwner(owner);
+    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
+    test_assert(corto_ownerof(o) == NULL);
+    test_assert(o->target == 10);
+    test_assert(o->actual == 0);
+    corto_setOwner(NULL);
+
+    corto_delete(o);
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetNotOwnedObj(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetNotOwnedObj) */
+    test_TargetActual o = corto_create(test_TargetActual_o);
+    corto_object owner = corto_create(corto_void_o);
+
+    corto_setOwner(owner);
+    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
+    test_assert(corto_ownerof(o) == NULL);
+    test_assert(o->target == 0);
+    test_assert(o->actual == 20);
+    corto_setOwner(NULL);
+
+    corto_delete(o);
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetOwned) */
+    test_TargetActual o = NULL;
+    corto_int16 ret = corto_fromStr(&o, "test/TargetActual{target=10, actual=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
+    test_assert(o->target == 0);
+    test_assert(o->actual == 20);
+    corto_delete(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetOwnedMount(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetOwnedMount) */
+    corto_object owner = corto_create(corto_mount_o);
+
+    corto_setOwner(owner);
+    test_TargetActual o = corto_createChild(NULL, "o", test_TargetActual_o);
+
+    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assert(o->target == 0);
+    test_assert(o->actual == 20);
+    corto_setOwner(NULL);
+
+    corto_delete(o);
+    corto_delete(owner);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetOwnedObj(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetOwnedObj) */
+    corto_object owner = corto_create(corto_void_o);
+
+    corto_setOwner(owner);
+    test_TargetActual o = corto_createChild(NULL, "o", test_TargetActual_o);
+    corto_int16 ret = corto_fromStr(&o, "test/TargetActual{target=10, actual=20}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assert(o->target == 0);
+    test_assert(o->actual == 20);
+    test_assert(corto_delete(o) == 0);
+
+    corto_setOwner(NULL);
+    test_assert(corto_delete(owner) == 0);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetRefAnonymousMemberNotOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetRefAnonymousMemberNotOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+
+    corto_setOwner(owner);
+    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+
+    corto_setOwner(NULL);
+    corto_int16 ret = corto_fromStr(&o, "{m={target=int32{10}, actual=int32{20}}, 10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 0);
+    test_assert(o->m->target != NULL);
+    test_assert(corto_typeof(o->m->target) == corto_type(corto_int32_o));
+    test_assertint(*(corto_int32*)o->m->target, 10);
+    test_assert(o->m->actual == NULL);
+
+    corto_setOwner(owner);
+    test_assert(corto_delete(o) == 0);
+
+    corto_setOwner(NULL);
+    test_assert(corto_delete(owner) == 0);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetRefAnonymousMemberOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetRefAnonymousMemberOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+
+    corto_setOwner(owner);
+    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+
+    corto_int16 ret = corto_fromStr(&o, "{m={target=int32{10}, actual=int32{20}}, n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 10);
+    test_assert(o->m->actual != NULL);
+    test_assert(corto_typeof(o->m->actual) == corto_type(corto_int32_o));
+    test_assertint(*(corto_int32*)o->m->actual, 20);
+    test_assert(o->m->target == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    corto_setOwner(NULL);
+    test_assert(corto_delete(owner) == 0);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetRefMemberNotOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetRefMemberNotOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_object a = corto_createChild(NULL, "a", corto_int32_o);
+    corto_object b = corto_createChild(NULL, "b", corto_int32_o);
+
+    corto_setOwner(owner);
+    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+
+    corto_setOwner(NULL);
+    corto_int16 ret = corto_fromStr(&o, "{m={target=/a, actual=/b}, n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 0);
+    test_assert(o->m->target == a);
+    test_assert(o->m->actual == NULL);
+
+    corto_setOwner(owner);
+    test_assert(corto_delete(o) == 0);
+
+    corto_setOwner(NULL);
+    test_assert(corto_delete(owner) == 0);
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(b) == 0);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserTargetRefMemberOwned(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserTargetRefMemberOwned) */
+    corto_object owner = corto_create(corto_mount_o);
+    corto_object a = corto_createChild(NULL, "a", corto_int32_o);
+    corto_object b = corto_createChild(NULL, "b", corto_int32_o);
+
+    corto_setOwner(owner);
+    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+
+    corto_int16 ret = corto_fromStr(&o, "{m={target=/a, actual=/b}, n=10}");
+    test_assert(o != NULL);
+    test_assert(ret == 0);
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
+    test_assert(corto_ownerof(o) == owner);
+    test_assertint(o->n, 10);
+    test_assert(o->m->target == NULL);
+    test_assert(o->m->actual == b);
+    test_assert(corto_delete(o) == 0);
+
+    corto_setOwner(NULL);
+    test_assert(corto_delete(owner) == 0);
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(b) == 0);
 
 /* $end */
 }

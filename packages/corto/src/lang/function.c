@@ -113,35 +113,31 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
     data = userData;
 
     if (o != data->f) {
-        if ((corto_class_instanceof(corto_procedure_o, corto_typeof(o)))) {
-            if (corto_overload(o, corto_idof(data->f), &d)) {
+        char *id = corto_idof(data->f);
+        if (corto_overload(o, id, &d)) {
+            data->error = TRUE;
+            goto finish;
+        }
+
+        /* Check if function matches */
+        if (!d) {
+            if (strcmp(id, corto_idof(o))) {
+                corto_seterr(
+                  "function '%s' conflicts with existing declaration '%s'",
+                  id, corto_idof(o));
                 data->error = TRUE;
                 goto finish;
             }
+        } else {
+            corto_id id;
 
-            /* Check if function matches */
-            if (!d) {
-                corto_id id, id2;
-                corto_fullpath(id, data->f);
-                corto_fullpath(id2, o);
-                if (strcmp(id, id2)) {
-                    corto_seterr(
-                      "function '%s' conflicts with existing declaration '%s'",
-                      id, id2);
-                    data->error = TRUE;
-                    goto finish;
-                }
-            } else {
-                corto_id id;
+            /* Get name of function */
+            corto_signatureName(corto_idof(o), id);
 
-                /* Get name of function */
-                corto_signatureName(corto_idof(o), id);
-
-                /* Set overloading flags if a function with same name is found. */
-                if (!strcmp(data->name, id)) {
-                    corto_function(o)->overloaded = TRUE;
-                    data->f->overloaded = TRUE;
-                }
+            /* Set overloading flags if a function with same name is found. */
+            if (!strcmp(data->name, id)) {
+                corto_function(o)->overloaded = TRUE;
+                data->f->overloaded = TRUE;
             }
         }
     }
@@ -155,12 +151,15 @@ corto_int16 _corto_function_init(
     corto_function this)
 {
 /* $begin(corto/lang/function/init) */
+    extern int CORTO_BENCHMARK_FUNCTION_INIT;
+    corto_benchmark_start(CORTO_BENCHMARK_FUNCTION_INIT);
+
     corto_functionLookup_t walkData;
     corto_objectseq scope;
     corto_uint32 i;
 
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        scope = corto_scopeClaim(corto_parentof(this));
+        scope = corto_scopeClaimWithFilter(corto_parentof(this), NULL, corto_idof(this));
 
         walkData.f = this;
         walkData.error = FALSE;
@@ -183,10 +182,11 @@ corto_int16 _corto_function_init(
         }
     }
 
-
+    corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return 0;
 error:
     this->parameters.length = 0;
+    corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return -1;
 /* $end */
 }
@@ -239,11 +239,10 @@ corto_parameterseq _corto_function_stringToParameterSeq(
 
             /* Allocate size for parameters */
             result.length = count;
-            result.buffer = corto_alloc(sizeof(corto_parameter) * count);
-            memset(result.buffer, 0, sizeof(corto_parameter) * count);
+            result.buffer = corto_calloc(sizeof(corto_parameter) * count);
 
             /* Parse arguments */
-            for(i=0; i<count; i++) {
+            for(i = 0; i < count; i++) {
                 if (corto_signatureParamType(name, i, id, &flags)) {
                     corto_seterr(
                         "error occurred while parsing type of parameter '%d' for signature '%s'",

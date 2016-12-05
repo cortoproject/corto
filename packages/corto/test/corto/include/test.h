@@ -154,6 +154,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Ownership.h>
 #include <Point.h>
 #include <Point3D.h>
+#include <ReferenceMember.h>
+#include <ReferenceTargetMember.h>
 #include <RelativeName.h>
 #include <ReplicatorEvent.h>
 #include <ReplicatorRequest.h>
@@ -172,6 +174,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <Subscribe.h>
 #include <SubscriberEvent.h>
 #include <SubscriberTest.h>
+#include <TargetActual.h>
+#include <TargetActualMember.h>
 #include <TestKey.h>
 #include <TestLock.h>
 #include <ValueCast.h>

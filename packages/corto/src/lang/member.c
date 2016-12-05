@@ -69,6 +69,7 @@ corto_int16 _corto_member_init(
             goto error;
         }
     }
+
     return 0;
 error:
     return -1;

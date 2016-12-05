@@ -179,9 +179,24 @@ corto_void _test_StringSerializer_tc_serCompositeNested(
 
     result = corto_strp(&v, test_Line_o, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{{10,20},{30,40}}"));
+    test_assertstr(result, "{{10,20},{30,40}}");
 
     corto_dealloc(result);
+
+/* $end */
+}
+
+corto_void _test_StringSerializer_tc_serCycle(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serCycle) */
+    corto_string result;
+    test_ReferenceMember *o = corto_create(test_ReferenceMember_o);
+    test_assert(o != NULL);
+
+    corto_setref(&o->m, o);
+    result = corto_str(o, 0);
+    test_assertstr(result, "{<0>,0}");
 
 /* $end */
 }

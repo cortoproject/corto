@@ -142,7 +142,7 @@ corto_int16 _test_AutoResumeSinkReplicator_construct(
     );
 
     corto_mount(this)->kind = CORTO_SINK;
-    corto_mount(this)->mask = CORTO_ON_TREE;
+    corto_observer(this)->mask = CORTO_ON_TREE;
 
     return corto_mount_construct(this);
 /* $end */

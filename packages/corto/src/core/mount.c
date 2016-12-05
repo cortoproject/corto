@@ -114,6 +114,8 @@ corto_int16 _corto_mount_construct(
         corto_setstr(&corto_subscriber(this)->parent, corto_fullpath(NULL, this->mount));
     }
 
+    corto_eventMask mask = corto_observer(this)->mask;
+
     /* If parent is set, resolve it and assign mount */
     if (corto_subscriber(this)->parent) {
         corto_object o = corto_resolve(NULL, corto_subscriber(this)->parent);
@@ -127,16 +129,14 @@ corto_int16 _corto_mount_construct(
         corto_release(o);
 
         /* Set the expression according to the mask */
-        if (this->mask & CORTO_ON_TREE) {
+        if (mask & CORTO_ON_TREE) {
             corto_setstr(&corto_subscriber(this)->expr, "//");
-        } else if (this->mask & CORTO_ON_SCOPE) {
+        } else if (mask & CORTO_ON_SCOPE) {
             corto_setstr(&corto_subscriber(this)->expr, "/");
         } else {
             corto_setstr(&corto_subscriber(this)->expr, ".");
         }
     }
-
-    corto_eventMask mask = this->mask;
 
     /* Parse policies */
     if (this->policy) {
@@ -183,7 +183,7 @@ corto_int16 _corto_mount_construct(
         corto_observer(this)->enabled = TRUE;
     }
 
-    corto_observer(this)->mask =
+    corto_observer(this)->mask |=
       CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
     if (!corto_subscriber(this)->expr) {
         corto_setstr(&corto_subscriber(this)->expr, "//");
@@ -230,12 +230,6 @@ corto_void _corto_mount_destruct(
         corto_threadJoin((corto_thread)this->thread, NULL);
     }
 
-    /*if (this->mount && this->mask) {
-        corto_observer_unobserve(corto_mount_on_declare_o, this, this->mount);
-        corto_observer_unobserve(corto_mount_on_update_o, this, this->mount);
-        corto_observer_unobserve(corto_mount_on_delete_o, this, this->mount);
-    }*/
-
 /* $end */
 }
 
@@ -245,7 +239,7 @@ corto_int16 _corto_mount_init(
 /* $begin(corto/core/mount/init) */
 
     this->kind = CORTO_SOURCE;
-    this->mask = CORTO_ON_SCOPE;
+    corto_observer(this)->mask = CORTO_ON_SCOPE;
     this->attr = CORTO_ATTR_PERSISTENT;
 
     return 0;

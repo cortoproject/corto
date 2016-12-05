@@ -85,6 +85,16 @@ int8_t CORTO_BACKTRACE_ENABLED = 0;
 /* When set, the core will break at the specified id */
 int32_t CORTO_MEMTRACE_BREAKPOINT;
 
+/* Benchmark tags */
+int CORTO_BENCHMARK_DECLARE;
+int CORTO_BENCHMARK_DECLARECHILD;
+int CORTO_BENCHMARK_INIT;
+int CORTO_BENCHMARK_FUNCTION_INIT;
+int CORTO_BENCHMARK_METHOD_INIT;
+int CORTO_BENCHMARK_DEFINE;
+int CORTO_BENCHMARK_DELETE;
+int CORTO_BENCHMARK_RESOLVE;
+
 /*
  * Indicator for whether corto is operational
  * 0 = running
@@ -671,7 +681,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, mount_contentType);\
     SSO_OP_OBJ_CORE(op, mount_policy);\
     SSO_OP_OBJ_CORE(op, mount_mount);\
-    SSO_OP_OBJ_CORE(op, mount_mask);\
     SSO_OP_OBJ_CORE(op, mount_attr);\
     SSO_OP_OBJ_CORE(op, mount_sent);\
     SSO_OP_OBJ_CORE(op, mount_received);\
@@ -951,6 +960,15 @@ static void corto_patchSequences(void) {
 }
 
 int corto_start(void) {
+    CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");
+    CORTO_BENCHMARK_DECLARECHILD = corto_benchmark_init("corto_declareChild");
+    CORTO_BENCHMARK_INIT = corto_benchmark_init("corto_init");
+    CORTO_BENCHMARK_FUNCTION_INIT = corto_benchmark_init("corto_function_init");
+    CORTO_BENCHMARK_METHOD_INIT = corto_benchmark_init("corto_method_init");
+    CORTO_BENCHMARK_DEFINE = corto_benchmark_init("corto_define");
+    CORTO_BENCHMARK_DELETE = corto_benchmark_init("corto_delete");
+    CORTO_BENCHMARK_RESOLVE = corto_benchmark_init("corto_resolve");
+
     corto_secure_init();
 
     CORTO_OPERATIONAL = 1; /* Initializing */
@@ -1186,6 +1204,15 @@ int corto_stop(void) {
     /*pthread_exit(NULL);*/
 
     CORTO_OPERATIONAL = 3; /* Shut down */
+
+    corto_benchmark_fini(CORTO_BENCHMARK_DECLARE);
+    corto_benchmark_fini(CORTO_BENCHMARK_DECLARECHILD);
+    corto_benchmark_fini(CORTO_BENCHMARK_INIT);
+    corto_benchmark_fini(CORTO_BENCHMARK_FUNCTION_INIT);
+    corto_benchmark_fini(CORTO_BENCHMARK_METHOD_INIT);
+    corto_benchmark_fini(CORTO_BENCHMARK_DEFINE);
+    corto_benchmark_fini(CORTO_BENCHMARK_DELETE);
+    corto_benchmark_fini(CORTO_BENCHMARK_RESOLVE);
 
     return 0;
 error:

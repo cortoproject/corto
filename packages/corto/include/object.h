@@ -82,6 +82,7 @@ corto_object corto_parentof(corto_object o);
 corto_bool corto_childof(corto_object p, corto_object o);
 corto_uint32 corto_scopeSize(corto_object o);
 corto_objectseq corto_scopeClaim(corto_object o);
+corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, corto_string id);
 void corto_scopeRelease(corto_objectseq scope);
 corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
 

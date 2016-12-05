@@ -175,7 +175,10 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 data->anonymousObjects = corto_llNew();
             }
 
-            if ((index = corto_llHasObject(data->anonymousObjects, object))) {
+            if (object == corto_value_getObject(v)) {
+                sprintf(id, "<0>");
+                str = id;
+            }else if ((index = corto_llHasObject(data->anonymousObjects, object))) {
                 sprintf(id, "<%d>", index);
                 str = id;
             } else {

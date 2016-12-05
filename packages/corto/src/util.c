@@ -99,3 +99,72 @@ corto_bool corto_isBuiltinPackage(corto_object o) {
            (o == corto_native_o) ||
            (o == corto_secure_o);
 }
+
+void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
+    void *result;
+
+    if (!ptr) {
+        return NULL;
+    }
+
+    result = CORTO_OFFSET(ptr, m->offset);
+
+    /* If member is of target type, it represents either a target or actual
+     * value. Actual members can only be set if the object is owned by thread
+     * that deserializes the value. Target members can only be set if the thread
+     * does not own the object. */
+    if (corto_typeof(corto_parentof(m)) == (corto_type)corto_target_o) {
+        corto_bool owned = corto_owned(ptr);
+        corto_bool isActual = !strcmp("actual", corto_idof(m));
+        if ((owned && !isActual) || (!owned && isActual)) {
+            result = NULL;
+        }
+    } else if (o && !corto_owned(o)) {
+        /* If type is composite, continue serializing as structure may contain
+         * members of target types */
+        if (m->type->kind != CORTO_COMPOSITE) {
+            result = NULL;
+        }
+    }
+
+    if (result && (m->modifiers & CORTO_OBSERVABLE)) {
+        result = *(void**)result;
+    }
+
+    return result;
+}
+
+struct corto_benchmark {
+    corto_string name;
+    corto_time start;
+    double total;
+    int count;
+};
+static struct corto_benchmark corto_benchmarks[CORTO_MAX_BENCHMARK];
+static int corto_benchmark_count;
+
+int corto_benchmark_init(corto_string name) {
+    //int id = corto_ainc(&corto_benchmark_count);
+    //corto_benchmarks[id].name = name;
+    //corto_benchmarks[id].total = 0;
+    //return id;
+    return 0;
+}
+
+void corto_benchmark_stop(int id) {
+    //corto_time stop;
+    //corto_timeGet(&stop);
+    //corto_benchmarks[id].total += corto_timeToDouble(corto_timeSub(stop, corto_benchmarks[id].start));
+    //corto_benchmarks[id].count ++;
+}
+
+void corto_benchmark_start(int id) {
+    //corto_timeGet(&corto_benchmarks[id].start);
+}
+
+double corto_benchmark_fini(int id) {
+    //double result = corto_benchmarks[id].total;
+    //fprintf(stderr, "%24s: %fs (called %d times)\n", corto_benchmarks[id].name, result, corto_benchmarks[id].count);
+    //return result;
+    return 0;
+}

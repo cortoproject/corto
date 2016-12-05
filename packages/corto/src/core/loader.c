@@ -16,7 +16,7 @@ corto_int16 _corto_loader_construct(
 
     if (corto_ainc(&constructOnce) == 1) {
         corto_setref(&corto_mount(this)->mount, root_o);
-        corto_mount(this)->mask = CORTO_ON_TREE;
+        corto_observer(this)->mask = CORTO_ON_TREE;
         corto_mount(this)->attr = 0;
         corto_mount(this)->kind = CORTO_SINK;
         corto_setstr(&corto_observer(this)->type, "/corto/core/package");

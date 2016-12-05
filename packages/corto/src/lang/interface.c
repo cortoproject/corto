@@ -434,11 +434,23 @@ corto_int16 _corto_interface_bindMethod(
     corto_method method)
 {
 /* $begin(corto/lang/interface/bindMethod) */
-    corto_method* virtual;
-    corto_int32 d;
+    corto_method* virtual = NULL;
+    corto_int32 d = 0;
 
     /* Check if a method with the same name is already in the vtable */
-    virtual = (corto_method *)corto_vtableLookup(&corto_interface(this)->methods, corto_idof(method), &d);
+    if (this->base &&
+       (((corto_typeof(method) == (corto_type)corto_virtual_o)) || (corto_typeof(method) == (corto_type)corto_method_o))) {
+        virtual = (corto_method *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
+    } else {
+        corto_int32 i;
+        for (i = 0; i < this->methods.length; i++) {
+            if (this->methods.buffer[i] == (corto_function)method) {
+                virtual = (corto_method*)&this->methods.buffer[i];
+                d = 0;
+                break;
+            }
+        }
+    }
 
     /* vtableLookup failed (probably due to a failed overloading request) */
     if (!virtual && (d == -1)) {

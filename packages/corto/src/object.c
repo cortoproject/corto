@@ -28,6 +28,13 @@ extern corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 /* Ownership is set per thread */
 extern corto_threadKey CORTO_KEY_OWNER;
 
+/* Benchmark tags */
+extern int CORTO_BENCHMARK_DECLARE;
+extern int CORTO_BENCHMARK_DECLARECHILD;
+extern int CORTO_BENCHMARK_INIT;
+extern int CORTO_BENCHMARK_DEFINE;
+extern int CORTO_BENCHMARK_DELETE;
+
 /* Lists all the anonymous objects in use. Used by the garbage collector. */
 corto_ll corto_anonymousObjects = NULL;
 
@@ -214,9 +221,11 @@ static corto_object corto__initScope(
         scope->id = NULL;
     }
 
+
     /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
     corto_rwmutexNew(&scope->align.scopeLock);
+
 
     /* Add object to the scope of the parent-object */
     if (!orphan && corto_checkAttr(parent, CORTO_ATTR_SCOPED)) {
@@ -237,7 +246,6 @@ static corto_object corto__initScope(
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
     } else {
-
         /* Call framework initializer. */
         if (corto_init(o)) {
             corto_string err = corto_lasterr();
@@ -772,7 +780,6 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
     }
 
     return child;
-
 err_invalid_parent:
     c_scope->parent = NULL;
     corto_rbtreeRemove(p_scope->scope, c_scope->id);
@@ -874,6 +881,8 @@ void corto_assertObject(corto_object o) {
 
 /* Create new object with attributes */
 corto_object _corto_declare(corto_type type) {
+    corto_benchmark_start(CORTO_BENCHMARK_DECLARE);
+
     corto_uint32 size, headerSize;
     corto__object* o = NULL;
     void *mem = NULL;
@@ -1015,6 +1024,7 @@ corto_object _corto_declare(corto_type type) {
         }
     }
 
+    corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
     return CORTO_OFFSET(o, sizeof(corto__object));
 error_init: {
     corto_string err = corto_lasterr();
@@ -1029,6 +1039,8 @@ error_init: {
 }
 error:
     if (mem) corto_dealloc(mem);
+
+    corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
     return NULL;
 }
 
@@ -1039,6 +1051,7 @@ static corto_object corto_declareChildIntern(
     corto_type type,
     corto_bool orphan)
 {
+    corto_benchmark_start(CORTO_BENCHMARK_DECLARECHILD);
     corto_object o = NULL;
     corto_bool retry = FALSE;
 
@@ -1184,6 +1197,7 @@ static corto_object corto_declareChildIntern(
     } while (retry);
 
 ok:
+    corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
     return o;
 error:
     if (o) {
@@ -1191,6 +1205,7 @@ error:
     }
 access_error:
 owner_error:
+    corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
     return NULL;
 }
 
@@ -1301,7 +1316,7 @@ corto_object corto_resume(
                 /* Either the mount registered for the direct parent of the
                  * provided object, or the mount must have ON_TREE set */
                 if ((p == parent) ||
-                  (rData->mount->mask & CORTO_ON_TREE)) {
+                  (((corto_observer)rData->mount)->mask & CORTO_ON_TREE)) {
                     corto_object requested;
 
                     /* If mount implements resume, this will load the
@@ -1430,6 +1445,8 @@ corto_bool corto_childof(corto_object p, corto_object o) {
 
 /* Define object */
 corto_int16 corto_define(corto_object o) {
+    corto_benchmark_start(CORTO_BENCHMARK_DEFINE);
+
     corto_int16 result = 0;
 
     corto_assertObject(o);
@@ -1454,12 +1471,16 @@ corto_int16 corto_define(corto_object o) {
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("define", o, NULL);
     }
 
+    corto_benchmark_stop(CORTO_BENCHMARK_DEFINE);
     return result;
 error:
+    corto_benchmark_stop(CORTO_BENCHMARK_DEFINE);
     return -1;
 }
 
 corto_bool corto_destruct(corto_object o, corto_bool delete) {
+    corto_benchmark_start(CORTO_BENCHMARK_DELETE);
+
     corto__object* _o;
     corto_bool result = TRUE;
     corto_object owner = corto_ownerof(o);
@@ -1602,6 +1623,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         result = FALSE;
     }
 
+    corto_benchmark_stop(CORTO_BENCHMARK_DELETE);
     return result;
 }
 
@@ -2131,6 +2153,11 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
 
     corto_type t = corto_typeof(o);
 
+    /* If types are equal, quickly jump out of function */
+    if (type == t) {
+        return TRUE;
+    }
+
     /* A bit of gibberish to ensure that a constant of an enumeration or bitmask
      * will evaluate TRUE when used with the enum/bitmask type.  */
     if (t == (corto_type)corto_constant_o) {
@@ -2139,6 +2166,7 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
         }
         t = corto_parentof(o);
     }
+
     return corto_instanceofType(type, t);
 }
 
@@ -3782,10 +3810,11 @@ corto_type corto_overloadParamType(corto_object object, corto_int32 i, corto_boo
 
     corto_id buffer;
     corto_int32 flags = 0;
-    corto_id signature;
+    corto_id signatureBuffer;
+    char *signature;
     corto_type result;
 
-    if (corto_signature(object, signature)) {
+    if (!(signature = corto_signature(object, signatureBuffer))) {
         corto_seterr("invalid signature %s", signature);
         goto error;
     }
@@ -3949,33 +3978,44 @@ static void corto_signatureFromDelegate(corto_object o, corto_id buffer) {
 }
 
 /* Obtain signature from object */
-corto_int16 corto_signature(corto_object object, corto_id buffer) {
-    corto_assertObject(object);
-
+char* corto_signature(corto_object object, corto_id buffer) {
     corto_type t = corto_typeof(object);
 
-    if (t->kind != CORTO_COMPOSITE) {
-        goto error;
-    }
-
-    switch(corto_interface(t)->kind) {
+    switch(((corto_interface)t)->kind) {
     case CORTO_DELEGATE:
         corto_signatureFromDelegate(object, buffer);
         break;
     case CORTO_PROCEDURE:
-        strcpy(buffer, corto_idof(object));
-        break;
+        return corto_idof(object);
     default:
         goto error;
     }
 
-    return 0;
+    return buffer;
 error:
     corto_seterr(
       "can't get signature from '%s' of non-procedure type '%s'",
       corto_fullpath(NULL, object),
       corto_fullpath(NULL, t));    abort();
-    return -1;
+    return NULL;
+}
+
+static corto_bool corto_signatureCompareName(char *offered, char *requested) {
+    /* Validate if names of request and offered match */
+    char *o_ptr = offered, o_ch, *r_ptr = requested, r_ch;
+    while ((o_ch = *o_ptr) && (r_ch = *r_ptr) &&
+           (o_ch != '(') && (r_ch != '('))
+    {
+        o_ch = tolower(o_ch);
+        r_ch = tolower(r_ch);
+        if (o_ch != r_ch) break;
+        o_ptr ++;
+        r_ptr ++;
+    }
+    if (o_ch != r_ch) {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 /* Check if argumentlist-expr matches function.
@@ -3990,10 +4030,10 @@ error:
 corto_int16 corto_overload(corto_object object, corto_string requested, corto_int32* distance) {
     corto_assertObject(object);
 
-    corto_id r_name, o_name;
     corto_int32 r_parameterCount, o_parameterCount;
     corto_int32 i = 0, d = 0;
-    corto_id offered;
+    corto_id offeredBuffer;
+    char *offered;
 
     /* Validate if function object is valid */
     if (!corto_checkState(object, CORTO_VALID)) {
@@ -4005,25 +4045,11 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
     }
 
     /* Obtain offered singature */
-    if (corto_signature(object, offered)) {
-        printf("invalid signature\n");
+    if (!(offered = corto_signature(object, offeredBuffer))) {
         goto error;
     }
 
-    /* Obtain name of offered object */
-    if (corto_signatureName(offered, o_name)) {
-        printf("invalid signature name #1\n");
-        goto error;
-    }
-
-    /* Obtain name of requested object */
-    if (corto_signatureName(requested, r_name)) {
-        printf("invalid signature name\n");
-        goto error;
-    }
-
-    /* Validate if names of request and offered match */
-    if (stricmp(o_name, r_name)) {
+    if (!corto_signatureCompareName(offered, requested)) {
         goto nomatch;
     }
 
@@ -4099,27 +4125,46 @@ error:
     return -1;
 }
 
+typedef struct corto_scopeWalk_t {
+    corto_objectseq *seq;
+    corto_type type;
+    corto_string id;
+} corto_scopeWalk_t;
+
 static int corto_scopeCollectWalk(corto_object o, void* userData) {
     corto_assertObject(o);
+    corto_scopeWalk_t *data = userData;
+    corto_objectseq *seq = data->seq;
 
-    corto_objectseq *seq = userData;
-    if (!seq->buffer) {
-        /* Get scopesize within scope lock */
-        corto_uint32 scopeSize = corto_scopeSize(corto_parentof(o));
-        seq->buffer = corto_alloc(sizeof(corto_object) * scopeSize);
-        /* Increment length with each object */
+    if (!data->type || (corto_typeof(o) == data->type)) {
+        if (!data->id || (corto_signatureCompareName(data->id, corto_idof(o)))) {
+            if (!seq->buffer) {
+                /* Get scopesize within scope lock */
+                corto_uint32 scopeSize = corto_scopeSize(corto_parentof(o));
+                seq->buffer = corto_alloc(sizeof(corto_object) * scopeSize);
+                /* Increment length with each object */
+            }
+            corto_claim(o);
+            seq->buffer[seq->length++] = o;
+        }
     }
-    corto_claim(o);
-    seq->buffer[seq->length++] = o;
+
     return 1;
 }
 
-corto_objectseq corto_scopeClaim(corto_object scope) {
+corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, corto_string id) {
     corto_assertObject(scope);
-
     corto_objectseq result = {0, NULL};
-    corto_scopeWalk(scope, corto_scopeCollectWalk, &result);
+    corto_scopeWalk_t walkData;
+    walkData.seq = &result;
+    walkData.type = type;
+    walkData.id = id;
+    corto_scopeWalk(scope, corto_scopeCollectWalk, &walkData);
     return result;
+}
+
+corto_objectseq corto_scopeClaim(corto_object scope) {
+    return corto_scopeClaimWithFilter(scope, NULL, NULL);
 }
 
 void corto_scopeRelease(corto_objectseq seq) {
@@ -4149,15 +4194,17 @@ int corto_lookupFunctionWalk(corto_object *ptr, void* userData) {
     /* If current object is a function, match it */
     if ((corto_typeof(o)->kind == CORTO_COMPOSITE) &&
         ((corto_interface(corto_typeof(o))->kind == CORTO_PROCEDURE) ||
-        (corto_interface(corto_typeof(o))->kind == CORTO_DELEGATE))) {
-
+        (corto_interface(corto_typeof(o))->kind == CORTO_DELEGATE)))
+    {
         if (strchr(data->request, '(')) {
             if (corto_overload(o, data->request, &d)) {
                 data->error = TRUE;
                 goto found;
             }
         } else {
-            corto_id sigName; corto_signatureName(corto_idof(o), sigName);
+            corto_id sigName;
+            corto_signatureName(corto_idof(o), sigName);
+
             if (!strcmp(sigName, data->request)) {
                 if (!corto_function(o)->overloaded) {
                     data->d = 0;
@@ -4424,6 +4471,7 @@ corto_int16 corto_fromStr(void *o, corto_string string) {
     serData.out = *(void**)o;
     serData.scope = NULL;
     serData.type = *(void**)o ? corto_typeof(*(void**)o) : NULL;
+    serData.isObject = TRUE;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4445,6 +4493,7 @@ corto_int16 corto_fromStrv(corto_value *v, corto_string string) {
     serData.out = corto_value_getPtr(v);
     serData.scope = NULL;
     serData.type = corto_value_getType(v);
+    serData.isObject = v->kind == CORTO_OBJECT;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4468,6 +4517,7 @@ corto_int16 _corto_fromStrp(void* out, corto_type type, corto_string string) {
     serData.out = *(void**)out;
     serData.scope = NULL;
     serData.type = type;
+    serData.isObject = FALSE;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4489,6 +4539,7 @@ corto_int16 corto_fromStra(corto_any *a, corto_string string) {
     serData.out = a->value;
     serData.scope = NULL;
     serData.type = a->type;
+    serData.isObject = FALSE;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4559,6 +4610,8 @@ corto_equalityKind corto_comparea(corto_any a1, corto_any a2) {
 }
 
 corto_int16 corto_init(corto_object o) {
+    corto_benchmark_start(CORTO_BENCHMARK_INIT);
+    corto_int16 result;
     corto_assertObject(o);
     corto_typeKind kind = corto_typeof(o)->kind;
 
@@ -4574,8 +4627,11 @@ corto_int16 corto_init(corto_object o) {
         default:
             break;
     }
-    return corto_delegateInit(corto_typeof(o), o);
+    result = corto_delegateInit(corto_typeof(o), o);
+    corto_benchmark_stop(CORTO_BENCHMARK_INIT);
+    return result;
 error:
+    corto_benchmark_stop(CORTO_BENCHMARK_INIT);
     return -1;
 }
 

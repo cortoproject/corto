@@ -1000,7 +1000,7 @@ static void corto_selectPrepareFrame(
 static void corto_selectFilterMounts(corto_selectData *data) {
     corto_int32 i = 0;
     for (i = 0; i < data->mountsLoaded; i ++) {
-        if (!(data->mounts[i]->mask & CORTO_ON_TREE)) {
+        if (!(((corto_observer)data->mounts[i])->mask & CORTO_ON_TREE)) {
             if (i == (data->mountsLoaded - 1)) {
                 data->mounts[i] = NULL;
             } else {

@@ -28,7 +28,11 @@ corto_int16 _corto_method_init(
     corto_method this)
 {
 /* $begin(corto/lang/method/init) */
+    extern int CORTO_BENCHMARK_METHOD_INIT;
+    corto_benchmark_start(CORTO_BENCHMARK_METHOD_INIT);
+
     corto_object parent;
+    corto_int16 result;
 
     /* Locate parent class object */
     parent = corto_parentof(this);
@@ -40,8 +44,11 @@ corto_int16 _corto_method_init(
         }
     }
 
-    return corto_function_init(corto_function(this));
+    result = corto_function_init(corto_function(this));
+    corto_benchmark_stop(CORTO_BENCHMARK_METHOD_INIT);
+    return result;
 error:
+    corto_benchmark_stop(CORTO_BENCHMARK_METHOD_INIT);
     return -1;
 /* $end */
 }

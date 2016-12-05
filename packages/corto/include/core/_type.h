@@ -176,7 +176,6 @@ struct corto_mount_s {
     corto_mountKind kind;
     corto_string policy;
     corto_object mount;
-    corto_eventMask mask;
     corto_attr attr;
     corto_mountStats sent;
     corto_mountStats received;
@@ -397,3 +396,4 @@ struct corto_time {
 }
 #endif
 #endif
+

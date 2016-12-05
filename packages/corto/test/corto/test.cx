@@ -38,9 +38,15 @@ target TargetActual: int32
 
 struct TargetActualMember::
     m: TargetActual
+    n: int32
 
 struct ReferenceMember::
     m: object
+    n: int32
+
+struct ReferenceTargetMember::
+    m: target{object}
+    n: int32
 
 array PrimitiveArray: int32, 4
 array StringArray: string, 4
@@ -550,7 +556,7 @@ test/Suite SelectContentType::
 
 class ListReplicator : mount, hidden::
     alias mount : mount/mount
-    alias mask : mount/mask
+    alias mask : observer/mask
     alias kind : mount/kind
     items: resultList, private
     int16 construct()
@@ -724,7 +730,7 @@ test/Suite SelectSinkNoOnRequest::
 
 class EventReplicator: mount, hidden::
   alias mount: mount/mount
-  alias mask: mount/mask
+  alias mask: observer/mask
   alias type: mount/type
   alias policy: mount/policy
 
@@ -1132,6 +1138,7 @@ test/Suite StringSerializer::
     void tc_serTwoAnonymous()
     void tc_serSameAnonymous()
     void tc_serLongAnonymous()
+    void tc_serCycle()
 
 
 class AnonymousTest::
@@ -1235,6 +1242,23 @@ test/Suite StringDeserializer::
     void tc_deserAnonymousMultiple()
     void tc_deserAnonymousReuse()
     void tc_deserAnonymousReuseNested()
+    void tc_deserAnonymousCycle()
+    void tc_deserAnonymousTwice()
+
+    void tc_deserTargetOwned()
+    void tc_deserTargetOwnedObj()
+    void tc_deserTargetOwnedMount()
+    void tc_deserTargetNotOwned()
+    void tc_deserTargetNotOwnedObj()
+    void tc_deserTargetNotOwnedMount()
+    void tc_deserTargetMemberOwned()
+    void tc_deserTargetMemberNotOwned()
+    void tc_deserTargetRefMemberOwned()
+    void tc_deserTargetRefMemberNotOwned()
+    void tc_deserTargetAnonymousOwned()
+    void tc_deserTargetAnonymousNotOwned()
+    void tc_deserTargetRefAnonymousMemberOwned()
+    void tc_deserTargetRefAnonymousMemberNotOwned()
 
 // Test environment variable parsing functions
 test/Suite Env::
