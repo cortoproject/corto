@@ -142,7 +142,11 @@ end
 def relative_path(from, to)
   from = Pathname.new from
   to = Pathname.new to
-  to.relative_path_from from
+  begin
+    to.relative_path_from from
+  rescue
+    to
+  end
 end
 
 def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
