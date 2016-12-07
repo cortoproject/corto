@@ -1,4 +1,5 @@
 require "#{ENV['CORTO_BUILD']}/common"
+require 'rake/clean'
 
 PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
@@ -8,13 +9,10 @@ LINK_PUBLIC ||= ["."] + LINK
 GENERATED_SOURCES ||= []
 TARGET ||= PACKAGE_FWSLASH.split("/").last
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
-if LANGUAGE != "cpp" and LANGUAGE != "c++" then
-  PREFIX ||= TARGET
-else
-  PREFIX = "."
-end
 NAME ||= PACKAGE_FWSLASH.split("/").last
-ARTEFACT ||= "lib#{TARGET}.so"
+ARTEFACT ||= TARGET
+ARTEFACT_PREFIX ||= "lib"
+ARTEFACT_EXT ||= "so"
 INSTALL ||= "lib/corto"
 
 # Preprocessor variables
@@ -29,6 +27,12 @@ else
   PP_SCOPES ||= []
 end
 PP_OBJECTS ||= []
+
+if LANGUAGE != "cpp" and LANGUAGE != "c++" then
+  PREFIX ||= TARGET
+else
+  PREFIX = "."
+end
 
 # Include corto package only when not building the core
 if TARGET != "corto" and not defined? NOCORTO then

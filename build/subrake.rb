@@ -7,13 +7,7 @@ task :all => :default
 task :default do
     COMPONENTS.each do |e|
         verbose(VERBOSE)
-        if ENV['silent'] != "true" then
-            sh "echo '#{C_BOLD}[ >> entering #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
-        end
         sh "rake -f #{e}/rakefile"
-        if ENV['silent'] != "true" then
-            sh "echo '#{C_BOLD}[ << leaving #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
-        end
     end
 end
 
@@ -25,23 +19,23 @@ task :collect do
 end
 
 task :clean do
-    COMPONENTS.each do |e|
-        verbose(VERBOSE)
-        sh "rake clean -f #{e}/rakefile"
-        if File.exists? "#{e}/test/rakefile" then
-            sh "rake clean -f #{Dir.pwd}/#{e}/test/rakefile"
-        end
-    end
+  COMPONENTS.each do |e|
+      verbose(VERBOSE)
+      sh "rake clean -f #{e}/rakefile"
+      if File.exists? "#{e}/test/rakefile" then
+          sh "rake clean -f #{Dir.pwd}/#{e}/test/rakefile"
+      end
+  end
 end
 
 task :clobber do
-    COMPONENTS.each do |e|
-        verbose(VERBOSE)
-        sh "rake clobber -f #{e}/rakefile"
-        if File.exists? "#{e}/test/rakefile" then
-            sh "rake clobber -f #{Dir.pwd}/#{e}/test/rakefile"
-        end
-    end
+  COMPONENTS.each do |e|
+      verbose(VERBOSE)
+      sh "rake clobber -f #{e}/rakefile"
+      if File.exists? "#{e}/test/rakefile" then
+          sh "rake clobber -f #{Dir.pwd}/#{e}/test/rakefile"
+      end
+  end
 end
 
 task :test do

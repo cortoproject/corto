@@ -1,5 +1,7 @@
 require "#{ENV['CORTO_BUILD']}/common"
 require "#{ENV['CORTO_BUILD']}/libmapping"
+require 'rake/clean'
+require 'pathname'
 
 CHDIR_SET ||= false
 
@@ -12,9 +14,6 @@ if not ENV['CORTO_BUILD'] then
 end
 if not defined? ARTEFACT then
   raise "artefact: ARTEFACT not specified\n"
-end
-if not ENV['target'] then
-  ENV['target'] = "debug"
 end
 
 # Private variables
@@ -58,13 +57,13 @@ end
 
 # Set NDEBUG macro in release builds to disable tracing & checking
 # Also enable optimizations
-if ENV['target'] == "release" then
+if CONFIG == "release" then
   CFLAGS << "-DNDEBUG" << "-O3"
   CXXFLAGS << "-DNDEBUG" << "-O3"
 end
 
 # Enable debug info, coverage and disable optimizations in debug
-if ENV['target'] == "debug" then
+if CONFIG == "debug" then
   CFLAGS << "-g" << "-O0"
   CXXFLAGS << "-g" << "-O0"
   if COVERAGE == true then
@@ -140,9 +139,55 @@ task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
   UNINSTALL << TARGETDIR
 end
 
+def relative_path(from, to)
+  from = Pathname.new from
+  to = Pathname.new to
+  to.relative_path_from from
+end
+
+def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
+  if directory != "." then
+    directory = directory + "/"
+  end
+  if ext != "" then
+    ext = "." + ext
+  end
+  if not hardcodedPaths then
+    env = ENV['CORTO_TARGET'] + "/lib/corto/" + ENV['CORTO_VERSION']
+    artefact = ""
+    if directory[0..env.length - 1] == env
+      artefact = "lib"
+      package = relative_path(env, directory)
+      basename = package.to_s.gsub("/", "_")
+    else
+      env = ENV['CORTO_TARGET'] + "/bin/cortobin/" + ENV['CORTO_VERSION']
+      if directory[0..env.length - 1] == env
+        artefact = "bin"
+        package = relative_path(env, directory)
+        basename = package.to_s.gsub("/", "_")
+      end
+    end
+    if link then
+      directory = "-l"
+      prefix = ""
+      ext = ""
+    else
+      directory = ENV['CORTO_TARGET'] + "/etc/corto/" + ENV['CORTO_VERSION'] + "/redis/" + artefact + "/"
+      sh "mkdir -p #{directory}"
+    end
+  end
+  directory + prefix + basename + ext
+end
+
+def get_artefact_name(hardcodedPaths)
+  result = get_library_name(hardcodedPaths, FALSE, TARGETDIR, ARTEFACT, ARTEFACT_PREFIX, ARTEFACT_EXT)
+end
+
 # Build artefact
-def build_target()
+def build_target(hardcodedPaths)
   verbose(VERBOSE)
+
+  artefact = get_artefact_name(hardcodedPaths)
 
   if not File.exists? TARGETDIR then
     cmd "mkdir -p #{TARGETDIR}"
@@ -153,13 +198,9 @@ def build_target()
   # bit of magic to ensure that the executable can find the shared object.
   linked = LINK.map do |l|
     l = corto_replace(l)
-    prefix = ""
-    if File.dirname(l) != "." then
-      prefix = File.dirname(l) + "/"
-    end
-    lib = prefix + "lib" + File.basename(l) + ".so"
+    lib = get_library_name(hardcodedPaths, TRUE, File.dirname(l), File.basename(l), "lib", "so")
     if (not File.exists? lib) and (CORTO_OS == "Darwin") then
-      lib = prefix + "lib" + File.basename(l) + ".dylib"
+      lib = get_library_name(hardcodedPaths, TRUE, File.dirname(l), File.basename(l), "lib", "dylib")
       if (not File.exists? lib) then
         abort "\033[1;31mcorto:\033[0;49m #{l} not found"
       end
@@ -167,11 +208,16 @@ def build_target()
     lib
   end
 
-  OBJECTS.concat(linked)
-  objects  = "#{OBJECTS.to_a.uniq.join(' ')}"
+  objects = OBJECTS.clone
+  objects.concat(linked)
+  objects  = "#{objects.to_a.uniq.join(' ')}"
   libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
   libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
   lflags = "#{LFLAGS.join(" ")}"
+
+  if not hardcodedPaths then
+    libpath = libpath + " -L#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis/lib"
+  end
 
   # Check if there were any new files created during code generation
   Rake::FileList["src/*.{c,cpp}"].each do |file|
@@ -183,15 +229,15 @@ def build_target()
   end
 
   linkShared = ""
-  if File.extname(ARTEFACT) == ".so" then
+  if ARTEFACT_EXT == "so" then
     linkShared = "--shared"
   end
 
-  cc_command = "#{COMPILER} #{objects} #{libpath} #{libmapping} #{lflags} #{linkShared} -o #{TARGETDIR}/#{ARTEFACT}"
+  cc_command = "#{COMPILER} #{lflags} #{libpath} #{linkShared} #{objects} #{libmapping} -o #{artefact}"
   begin
     cmd cc_command
   rescue
-    STDERR.puts "\033[1;31mcorto:\033[0;49mcorto: command failed: #{cc_command}"
+    STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
     abort
   end
 
@@ -203,41 +249,74 @@ def build_target()
       # path.
       libname = `otool -L #{lib}`.split("\n")[1].split[0]
       if libname != lib then
-        cmd "install_name_tool -change #{libname} #{lib} #{TARGETDIR}/#{ARTEFACT}"
+        cmd "install_name_tool -change #{libname} #{lib} #{artefact}"
       end
     end
   end
 
   # If target is release, strip binary
-  if ENV['target'] == "release" then
-    cmd "strip -Sx #{TARGETDIR}/#{ARTEFACT}"
+  if CONFIG == "release" then
+    cmd "strip -Sx #{artefact}"
   end
+end
 
+def build()
+  verbose(VERBOSE)
+  if not LOCAL then
+    build_target(false)
+    if ENV['silent'] != "true" then
+      msg "  rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+    end
+  end
+  build_target(true)
   if ENV['silent'] != "true" then
-    print "#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}\n"
+    artefact = "???"
+    if ARTEFACT_EXT == "so" then
+      artefact = "pkg"
+    else
+      artefact = "app"
+    end
+    msg "  #{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(TRUE))}"
+    print "\n"
   end
 end
 
 if MULTITHREAD == true then
   multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
-    build_target()
+    build()
   end
 else
   task "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
-    build_target()
+    build()
   end
 end
 
-# These tasks allow projects to define actions that should happen before and
-# after the build.
+# :prebuild and :postbuild allow projects to define actions that should happen
+# before and after the build.
+
 task :prebuild do
   verbose(VERBOSE)
+
+  verbose(VERBOSE)
+  if ENV['silent'] != "true" then
+      pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
+      if pkg == "." then
+        msg "build"
+      else
+        msg "build #{C_BOLD}#{pkg}"
+      end
+  end
+
   # Load dependency build instructions before anything else
   USE_PACKAGE.each do |p|
     location = `corto locate #{p} --path`.strip
     if not $?.to_i == 0 then
       STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
       abort
+    else
+      if ENV['silent'] != "true" then
+          msg "  use #{C_NORMAL}#{location}"
+      end
     end
     buildscript = location + "/build.rb"
     if File.exists? buildscript then
@@ -256,9 +335,20 @@ task :postbuild
 # The default rule that kicks of the build process
 task :default => [:prebuild, :binary, :postbuild]
 
+task :clean do
+  verbose(VERBOSE)
+  if ENV['silent'] != "true" then
+    pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
+    if pkg == "." then
+      msg "clean"
+    else
+      msg "clean #{C_BOLD}#{pkg}"
+    end
+  end
+end
+
 # For make junkies
 task :all => :default
-
 
 
 # Build and run tests for project
@@ -300,7 +390,7 @@ task :runtest do
   TEST = true
   cmd "rake silent=true"
   begin
-    cmd "corto #{TARGETDIR}/#{ARTEFACT} #{ENV['testcase']}"
+    cmd "corto #{get_artefact_name(TRUE)} #{ENV['testcase']}"
   rescue
     abort
   end
@@ -328,11 +418,11 @@ task :gcov => SOURCES.ext(".gcov") do
   if (total != 0) then
     pct = covered / total
     if (pct < 0.7) then
-      print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_FAIL} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+      print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_FAIL} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
     elsif (pct >= 0.8) then
-      print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_OK} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+      print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_OK} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
     else
-      print ("#{C_BOLD}[ #{C_NORMAL}#{C_TARGET}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+      print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
     end
   end
 end
@@ -392,15 +482,15 @@ end
 
 # --- UTILITIES
 
-# Utility for building a sourcefile
+# Utility function for building a sourcefile
 def build_source(source, target, echo)
   verbose(VERBOSE)
   flags = ""
   cc = ""
 
   if LANGUAGE == "c" then
-      flags = CFLAGS
-      cc = CC
+    flags = CFLAGS
+    cc = CC
   else
     flags = CXXFLAGS
     cc = CXX
@@ -413,7 +503,7 @@ def build_source(source, target, echo)
 
   if echo
     if ENV['silent'] != "true" and DRYRUN != true then
-      print "#{source}\n"
+      msg "  src #{C_NORMAL}#{source}"
     end
   end
 

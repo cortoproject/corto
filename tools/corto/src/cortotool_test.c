@@ -45,6 +45,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
           build ? "build=true" : "build=false",
           rebuild ? "rebuild=true" : "rebuild=false",
           clean ? "clean=true" : "clean=false",
+          "silent=true",
           testcaseArg,
           NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {

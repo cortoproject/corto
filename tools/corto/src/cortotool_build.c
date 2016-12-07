@@ -139,6 +139,7 @@ warning:
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
     corto_ll silent, mute, coverage, dirs, release, debug, verbose, singlethread;
+    corto_bool rebuild = !strcmp(argv[0], "rebuild");
 
     CORTO_UNUSED(argc);
 
@@ -158,27 +159,42 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
       }
     );
 
-
-
     corto_trace("corto: build %s: %s %s %s",
         corto_cwd(),
         coverage ? "coverage=false" : "coverage=true",
-        release ? "target=release" : "target=debug",
+        release ? "config=release" : "config=debug",
         singlethread ? "multithread=false" : "multithread=true"
     );
 
-    ret = cortotool_runcmd(
-      dirs,
-      (char*[])
-      {
-          "rake",
-          coverage ? "coverage=false" : "coverage=true",
-          release ? "target=release" : "target=debug",
-          verbose ? "verbose=true" : "verbose=false",
-          singlethread ? "multithread=false" : "multithread=true",
-          "softlinks=true",
-          NULL
-      }, silent != NULL, mute != NULL);
+    if (rebuild) {
+      ret = cortotool_runcmd(
+        dirs,
+        (char*[])
+        {
+            "rake",
+            "clobber",
+            "default",
+            coverage ? "coverage=false" : "coverage=true",
+            release ? "config=release" : "config=debug",
+            verbose ? "verbose=true" : "verbose=false",
+            singlethread ? "multithread=false" : "multithread=true",
+            "softlinks=true",
+            NULL
+        }, silent != NULL, mute != NULL);
+    } else {
+        ret = cortotool_runcmd(
+          dirs,
+          (char*[])
+          {
+              "rake",
+              coverage ? "coverage=false" : "coverage=true",
+              release ? "config=release" : "config=debug",
+              verbose ? "verbose=true" : "verbose=false",
+              singlethread ? "multithread=false" : "multithread=true",
+              "softlinks=true",
+              NULL
+          }, silent != NULL, mute != NULL);
+    }
 
     corto_argclean(data);
 
@@ -278,10 +294,6 @@ error:
 corto_int16 cortotool_rebuild(int argc, char *argv[]) {
 
     cortotool_generateRakefile();
-
-    if (cortotool_clean(argc, argv)) {
-        goto error;
-    }
 
     if (cortotool_build(argc, argv)) {
         goto error;

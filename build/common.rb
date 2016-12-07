@@ -1,9 +1,9 @@
-require 'rake/clean'
 
 CWD = Dir.pwd
 
-ENV["LD_LIBRARY_PATH"] = "#{ENV['HOME']}/.corto/lib:#{ENV["LD_LIBRARY_PATH"]}"
-ENV["DYLD_LIBRARY_PATH"] = "#{ENV['HOME']}/.corto/lib:#{ENV["DYLD_LIBRARY_PATH"]}"
+def msg(text)
+  print "#{C_BOLD}[ #{C_DEFAULT}#{text}#{C_BOLD} ]#{C_NORMAL}\n"
+end
 
 def cmd(command)
   if DRYRUN == true
@@ -34,8 +34,10 @@ if not defined? VERBOSE then
   if ENV['verbose'] == "true" then
     VERBOSE ||= true
     ENV['CORTO_VERBOSITY'] = "TRACE"
-  else
+  elsif not ENV['CORTO_VERBOSITY'] or ENV['CORTO_VERBOSITY'] == "" then
     VERBOSE ||= false
+  else
+    VERBOSE ||= true
   end
 end
 
@@ -80,18 +82,19 @@ if not defined? DRYRUN then
   end
 end
 
-# Set colors
-if ENV['target'] == "release" then
-  C_BOLD = "\033[1;36m"
-  C_NAME = "\033[1;49m"
-  C_NORMAL = "\033[0;49m"
-  C_TARGET = "\033[1;49m"
-else
-  C_BOLD = "\033[1;49m"
-  C_NAME = "\033[1;35m"
-  C_NORMAL = "\033[0;49m"
-  C_TARGET = "\033[1;34m"
+# Set config
+if not defined? CONFIG then
+  if not ENV['config'] or ENV['config'] == "" then
+    CONFIG = "debug"
+  else
+    CONFIG = ENV['config']
+  end
 end
+
+# Set colors
+C_DEFAULT = "\033[1;36m"
+C_BOLD = "\033[0;49m\033[1;49m"
+C_NORMAL = "\033[0;49m"
 C_FAIL = "\033[1;31m"
 C_OK = "\033[1;32m"
 C_WARNING = "\033[1;33m"
@@ -140,6 +143,33 @@ EXT = if LANGUAGE == "c" then
 else
   "cpp"
 end
+
+# Set root path
+CORTO_BUILDROOT ||= if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].empty?
+
+  # First time rake is called
+  if ENV['silent'] != "true" then
+    print "#{C_BOLD}corto buildsystem v#{CORTO_VERSION}#{C_NORMAL}\n"
+    print "\n"
+    print "Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
+    print "The #{C_DEFAULT}#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis#{C_NORMAL} directory contains\n"
+    print "binaries that can be embedded in other (non-corto) projects.\n"
+    print "\n"
+    msg "config #{C_BOLD}#{CONFIG}"
+    msg "start from #{C_BOLD}#{Dir.pwd}"
+  end
+
+  ENV['CORTO_BUILDROOT'] = Dir.pwd
+  Dir.pwd
+else
+  ENV['CORTO_BUILDROOT']
+end
+
+include_ld_path =  "#{ENV['CORTO_TARGET']}/lib"
+include_ld_path += ":#{ENV['CORTO_TARGET']}/etc/corto/#{CORTO_VERSION}/redis/lib"
+include_ld_path += ":/usr/local/etc/corto/#{CORTO_VERSION}/redis/lib"
+ENV["LD_LIBRARY_PATH"] = "#{include_ld_path}:#{ENV["LD_LIBRARY_PATH"]}"
+ENV["DYLD_LIBRARY_PATH"] = "#{include_ld_path}:#{ENV["LD_LIBRARY_PATH"]}"
 
 # Utility that replaces buildsystem tokens with actual values
 def corto_replace(str)

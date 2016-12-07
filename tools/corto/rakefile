@@ -9,6 +9,9 @@ end
 
 TARGETDIR = "#{ENV['CORTO_TARGET']}/bin"
 ARTEFACT = "#{TARGET}"
+ARTEFACT_PREFIX = ""
+ARTEFACT_EXT = ""
+
 INCLUDE << "include"
 
 # Bootstrap: Explicitly add corto library. The buildsystem invokes the corto

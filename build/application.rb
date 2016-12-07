@@ -12,6 +12,8 @@ INCLUDE ||= []
 PACKAGE = TARGET
 INSTALL = "bin/cortobin"
 INCLUDE << "include"
+ARTEFACT_PREFIX = ""
+ARTEFACT_EXT = ""
 
 task :symlink do
   cmd "ln -fs #{TARGETDIR}/#{ARTEFACT} ./#{ARTEFACT}"
