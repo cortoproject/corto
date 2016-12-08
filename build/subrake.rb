@@ -19,12 +19,15 @@ task :collect do
 end
 
 task :clean do
-  COMPONENTS.each do |e|
-      verbose(VERBOSE)
-      sh "rake clean -f #{e}/rakefile"
-      if File.exists? "#{e}/test/rakefile" then
-          sh "rake clean -f #{Dir.pwd}/#{e}/test/rakefile"
-      end
+  # Prevent cleaning twice
+  if not ARGV.include? "clobber" then
+    COMPONENTS.each do |e|
+        verbose(VERBOSE)
+        sh "rake clean -f #{e}/rakefile"
+    end
+    if File.exists? "test/rakefile" then
+        sh "rake clean -f test/rakefile"
+    end
   end
 end
 
@@ -32,9 +35,9 @@ task :clobber do
   COMPONENTS.each do |e|
       verbose(VERBOSE)
       sh "rake clobber -f #{e}/rakefile"
-      if File.exists? "#{e}/test/rakefile" then
-          sh "rake clobber -f #{Dir.pwd}/#{e}/test/rakefile"
-      end
+  end
+  if File.exists? "test/rakefile" then
+      sh "rake clobber -f test/rakefile"
   end
 end
 

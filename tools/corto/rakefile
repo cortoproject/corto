@@ -20,3 +20,4 @@ INCLUDE << "include"
 LINK << "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/corto"
 
 require "#{ENV['CORTO_BUILD']}/artefact"
+require "#{ENV['CORTO_BUILD']}/subrake"

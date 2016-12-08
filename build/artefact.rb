@@ -97,9 +97,9 @@ CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
 CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
-CLOBBER.include("./#{ARTEFACT}")
-CLOBBER.include(TARGETDIR + "/" + ARTEFACT)
-CLOBBER.include(TARGETDIR + "/" + ARTEFACT.ext(".a"))
+CLOBBER.include("./#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
+CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
+CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.a")
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
 CLOBBER.include(".corto/_meta.*")
@@ -341,6 +341,7 @@ task :default => [:prebuild, :binary, :postbuild]
 
 task :clean do
   verbose(VERBOSE)
+
   if ENV['silent'] != "true" then
     pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
     if pkg == "." then
@@ -349,11 +350,11 @@ task :clean do
       msg "clean #{C_BOLD}#{pkg}"
     end
   end
+
 end
 
 # For make junkies
 task :all => :default
-
 
 # Build and run tests for project
 task :test do
