@@ -100,13 +100,16 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     return 0;
 }
 
-static corto_int16 cortotool_generateRakefile(void)
+/*
+ * Generates a rakefile if package.json exists.
+ */
+static corto_int16 cortotool_tryGenerateRakefile(void)
 {
-    if (!corto_fileTest("package.json")) {
+    if (!corto_fileTest("project.json")) {
         goto warning;
     }
 
-    char* fileContent = corto_fileLoad("package.json");
+    char* fileContent = corto_fileLoad("project.json");
     if (!fileContent) {
         goto errorFileLoad;
     }
@@ -142,6 +145,10 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_bool rebuild = !strcmp(argv[0], "rebuild");
 
     CORTO_UNUSED(argc);
+
+    if (cortotool_tryGenerateRakefile()) {
+        goto error;
+    }
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -212,6 +219,10 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
     corto_int8 ret = 0;
     corto_ll dirs, verbose, silent, mute;
 
+    if (cortotool_tryGenerateRakefile()) {
+        goto error;
+    }
+
     CORTO_UNUSED(argc);
 
     corto_argdata *data = corto_argparse(
@@ -244,6 +255,11 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
     if (ret) {
         goto error;
     }
+
+    if (cortotool_tryDeleteRakefile()) {
+        goto error;
+    }
+
 
     return 0;
 error:
@@ -291,9 +307,26 @@ error:
     return -1;
 }
 
-corto_int16 cortotool_rebuild(int argc, char *argv[]) {
+/*
+ * Deletes a rakefile if package.json exists
+ */
+static corto_int16 cortotool_tryDeleteRakefile()
+{
+    if (corto_fileTest("project.json")) {
+        goto end;
+    }
+    if (remove("project.json")) {
+        corto_seterr("corto: could not remove project.json");
+        goto error;
+    }
 
-    cortotool_generateRakefile();
+end:
+    return 0;
+error:
+    return -1;
+}
+
+corto_int16 cortotool_rebuild(int argc, char *argv[]) {
 
     if (cortotool_build(argc, argv)) {
         goto error;
