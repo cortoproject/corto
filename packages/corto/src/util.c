@@ -115,7 +115,7 @@ void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
      * does not own the object. */
     if (corto_typeof(corto_parentof(m)) == (corto_type)corto_target_o) {
         corto_bool owned = corto_owned(ptr);
-        corto_bool isActual = !strcmp("actual", corto_idof(m));
+        corto_bool isActual = strcmp("target", corto_idof(m));
         if ((owned && !isActual) || (!owned && isActual)) {
             result = NULL;
         }

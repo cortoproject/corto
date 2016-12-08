@@ -35,6 +35,17 @@ corto_int16 _corto_target_construct(
         }
     }
 
+    corto_member objective = corto_declareChild(this, "objective", corto_member_o);
+    if (!target) {
+        goto error;
+    }
+    if (!corto_checkState(objective, CORTO_DEFINED)) {
+        corto_setref(&objective->type, this->type);
+        if (corto_define(objective)) {
+            goto error;
+        }
+    }
+
     corto_type(this)->reference = TRUE;
     corto_type(this)->hasTarget = TRUE;
     corto_type(this)->attr = CORTO_ATTR_OBSERVABLE | CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE;
