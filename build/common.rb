@@ -6,15 +6,7 @@ def msg(text)
 end
 
 def cmd(command)
-  if DRYRUN == true
-    verbose(false)
-    sh "#{command} 2>/dev/null"
-    command = "#{command}".gsub(CWD, ".")
-    command = "#{command}".gsub(ENV['HOME'], "$HOME")
-    print("#{command}\n".gsub(ENV['HOME'], "$HOME"))
-  else
-    sh "#{command}"
-  end
+  sh command
 end
 
 # Set Corto version variable
@@ -151,12 +143,20 @@ CORTO_BUILDROOT ||= if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].emp
   if ENV['silent'] != "true" then
     print "#{C_BOLD}corto buildsystem v#{CORTO_VERSION}#{C_NORMAL}\n"
     print "\n"
-    print "Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
-    print "The #{C_DEFAULT}#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis#{C_NORMAL} directory contains\n"
-    print "binaries that can be embedded in other (non-corto) projects.\n"
-    print "\n"
-    msg "config #{C_BOLD}#{CONFIG}"
+    if ENV['binaries'] != "false" then
+      print "  Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
+      print "  The #{C_DEFAULT}#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis#{C_NORMAL} directory contains\n"
+      print "  binaries that can be embedded in other (non-corto) projects.\n"
+      print "\n"
+    end
+
+    tool = `which corto`
+    if $?.exitstatus == 0 then
+      print "  #{`corto --version`}"
+      print "  tool:    #{tool}\n"
+    end
     msg "start from #{C_BOLD}#{Dir.pwd}"
+    msg "config #{C_BOLD}#{CONFIG}"
   end
 
   ENV['CORTO_BUILDROOT'] = Dir.pwd

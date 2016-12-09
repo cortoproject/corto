@@ -20,7 +20,7 @@ corto_object corto_resumePersistent(corto_object o);
 typedef struct corto_contentType *corto_contentType;
 struct corto_contentType {
     corto_string name;
-    
+
     /* Translate values to and from a contentType value */
     corto_word ___ (*fromValue)(corto_value *v);
     corto_int16 ___ (*toValue)(corto_value *v, corto_word content);
@@ -158,9 +158,6 @@ int corto__adoptSSO(corto_object sso);
 
 /* Orphan object */
 void corto__orphan(corto_object o);
-
-/* Call destructor of object (if class) */
-void corto__destructor(corto_object o);
 
 /* Set state on object */
 void corto__setState(corto_object o, corto_uint8 state);

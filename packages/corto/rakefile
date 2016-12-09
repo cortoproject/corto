@@ -15,4 +15,14 @@ task :collect do
     sh "cp -r #{ENV['CORTO_BUILD']}/* #{buildPath}/"
 end
 
+task :prebuild do
+  # Always rebuild corto.c to ensure it contains the right information about the
+  # corto library it was linked with.
+  sh "rm -f .corto/obj/#{CORTO_PLATFORM}/corto.o"
+
+  # When rebuilding corto, remove corto tool to avoid library conflicts when old
+  # tool is built against a library in a different location.
+  sh "rm -f #{CORTO_TARGET}/bin/corto"
+end
+
 require "#{ENV['CORTO_BUILD']}/package"

@@ -104,11 +104,11 @@ int main(int argc, char* argv[]) {
                     i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
-                        printf("corto version %s (%s)\n  build:   '%s'\n  library: '%s'\n\n",
+                        printf("corto version %s (%s)\n  library: %s (%s)\n",
                             CORTO_VERSION,
                             CORTO_PLATFORM_STRING,
-                            corto_getBuild(),
-                            corto_getLibrary());
+                            corto_getLibrary(),
+                            corto_getBuild());
                     } else if (!strcmp(argv[i] + 2, "minor")) {
                         printf("%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
                     } else if (!strcmp(argv[i] + 2, "help")) {

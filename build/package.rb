@@ -6,6 +6,9 @@ PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 LIB_PUBLIC ||= [] + LIB
 LIBPATH_PUBLIC ||= [] + LIBPATH
 LINK_PUBLIC ||= ["."] + LINK
+# keep track of the original LINK array as the buildsystem will append LINK with
+# dependencies
+LINK_NO_DEPS = LINK
 GENERATED_SOURCES ||= []
 TARGET ||= PACKAGE_FWSLASH.split("/").last
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
@@ -135,6 +138,9 @@ if not defined? NOCORTO then
                 "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
                 "#{prefixStr} #{localStr} #{docStr} --lang #{LANGUAGE}"
 
+      if ENV['silent'] != "true" then
+        msg "preprocess #{C_NORMAL}#{GENFILE}"
+      end
       begin
         cmd command
       rescue
@@ -145,7 +151,7 @@ if not defined? NOCORTO then
         abort()
       end
     end
-    task :prebuild => ["include/_type.h"]
+    task :default => ["include/_type.h"]
   else
     GENERATED_SOURCES <<
         ".corto/_project.#{EXT}"
@@ -171,6 +177,9 @@ if not defined? NOCORTO then
         "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")}" +
         " -g c/project #{langStr}"
 
+      if ENV['silent'] != "true" then
+        msg "preprocess"
+      end
       begin
         cmd command
       rescue

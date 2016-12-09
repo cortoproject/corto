@@ -4,4 +4,11 @@ COMPONENTS = %w(
     tools
 )
 
+task :default do
+  if ENV['CORTO_BUILD'] != "#{ENV['CORTO_TARGET']}/lib/corto/#{ENV['CORTO_VERSION']}/build" then
+    sh "mkdir -p /usr/local/lib/corto/#{ENV['CORTO_VERSION']}\n", version
+    sh "cp -r ./build /usr/local/lib/corto/%s\n", version
+  end
+end
+
 require "#{ENV['CORTO_BUILD']}/forward"

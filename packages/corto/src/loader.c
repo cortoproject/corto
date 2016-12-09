@@ -221,8 +221,10 @@ static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *buil
     /* Validate version */
     if (build && strcmp(build(), corto_getBuild())) {
         corto_seterr(
-          "corto: library '%s' links with conflicting corto library\n  build:   '%s'\n  library: '%s'\n",
-          fileName, build(), library());
+          "corto: library '%s' links with conflicting corto library\n"
+          "  library:  '%s' (%s)\n"
+          "  conflict: '%s' (%s)\n",
+          fileName, library(), build(), corto_getLibrary(), corto_getBuild());
         /* Library is linked with different Corto version */
         if (build_out) {
             *build_out = corto_strdup(build());

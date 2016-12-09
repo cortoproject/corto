@@ -97,8 +97,13 @@ CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
 CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
-CLOBBER.include("./#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
-CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
+if ARTEFACT_EXT and not ARTEFACT_EXT == "" then
+  CLOBBER.include("./#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
+  CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
+else
+  CLOBBER.include("./#{ARTEFACT_PREFIX}#{ARTEFACT}")
+  CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}")
+end
 CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.a")
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
@@ -203,7 +208,7 @@ def build_target(hardcodedPaths)
   linked = LINK.map do |l|
     l = corto_replace(l)
     lib = get_library_name(hardcodedPaths, TRUE, File.dirname(l), File.basename(l), "lib", "so")
-    if (not File.exists? lib) and (CORTO_OS == "Darwin") then
+    if hardcodedPaths and (not File.exists? lib) and (CORTO_OS == "Darwin") then
       lib = get_library_name(hardcodedPaths, TRUE, File.dirname(l), File.basename(l), "lib", "dylib")
       if (not File.exists? lib) then
         abort "\033[1;31mcorto:\033[0;49m #{l} not found"
@@ -215,7 +220,15 @@ def build_target(hardcodedPaths)
   objects = OBJECTS.clone
   objects.concat(linked)
   objects  = "#{objects.to_a.uniq.join(' ')}"
-  libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
+
+  libpath = LIBPATH.clone
+  if not hardcodedPaths and defined? LINK_NO_DEPS then
+    LINK_NO_DEPS.each do |f|
+      libpath << File.dirname(corto_replace(f))
+    end
+  end
+
+  libpath = "#{libpath.map {|i| "-L" + corto_replace(i)}.join(" ")} "
   libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
   lflags = "#{LFLAGS.join(" ")}"
 
@@ -223,21 +236,12 @@ def build_target(hardcodedPaths)
     libpath = libpath + " -L#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis/lib"
   end
 
-  # Check if there were any new files created during code generation
-  Rake::FileList["src/*.{c,cpp}"].each do |file|
-    obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
-    if not OBJECTS.include? obj
-      build_source(file, obj, true)
-      objects += " " + obj
-    end
-  end
-
   linkShared = ""
   if ARTEFACT_EXT == "so" then
     linkShared = "--shared"
   end
 
-  cc_command = "#{COMPILER} #{lflags} #{libpath} #{linkShared} #{objects} #{libmapping} -o #{artefact}"
+  cc_command = "#{COMPILER} #{lflags} #{libpath} #{objects} #{libmapping} #{linkShared} -o #{artefact}"
   begin
     cmd cc_command
   rescue
@@ -266,21 +270,37 @@ end
 
 def build()
   verbose(VERBOSE)
-  if not LOCAL then
-    build_target(false)
-    if ENV['silent'] != "true" then
-      msg "  rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+
+  # Check if there were any new files created during code generation
+  Rake::FileList["src/*.{c,cpp}"].each do |file|
+    obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
+    if not OBJECTS.include? obj
+      build_source(file, obj, true)
+      OBJECTS << obj
     end
   end
-  build_target(true)
-  if ENV['silent'] != "true" then
-    artefact = "???"
-    if ARTEFACT_EXT == "so" then
-      artefact = "pkg"
-    else
-      artefact = "app"
+
+  if not ENV['binaries'] == "false" then
+    if not LOCAL then
+      if not ENV['redis'] == "false" then
+        build_target(false)
+        if ENV['silent'] != "true" then
+          msg "  rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+        end
+      end
     end
-    msg "  #{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(TRUE))}"
+    build_target(true)
+    if ENV['silent'] != "true" then
+      artefact = "???"
+      if ARTEFACT_EXT == "so" then
+        artefact = "pkg"
+      else
+        artefact = "app"
+      end
+      msg "  #{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(TRUE))}"
+    end
+  end
+  if ENV['silent'] != "true" then
     print "\n"
   end
 end
@@ -307,7 +327,7 @@ task :prebuild do
       if pkg == "." then
         msg "build"
       else
-        msg "build #{C_BOLD}#{pkg}"
+        msg "build #{C_NORMAL}#{pkg}"
       end
   end
 
@@ -316,6 +336,7 @@ task :prebuild do
     location = `corto locate #{p} --path`.strip
     if not $?.to_i == 0 then
       STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+      sh "corto locate #{p} --verbose --error_only"
       abort
     else
       if ENV['silent'] != "true" then
@@ -347,7 +368,7 @@ task :clean do
     if pkg == "." then
       msg "clean"
     else
-      msg "clean #{C_BOLD}#{pkg}"
+      msg "clean #{C_NORMAL}#{pkg}"
     end
   end
 

@@ -37,6 +37,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
         fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
         fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", version);
         fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+
         buildingCorto = TRUE;
     }
 
@@ -45,12 +46,19 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
     fprintf(install, "export CORTO_HOME=/usr/local\n");
     fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
     fprintf(install, "export CORTO_VERSION=%s\n", version);
-    fprintf(install, "export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\n");
+
+    /* Use current PATH in case sudo has different env */
+    char *PATH = getenv("PATH");
+    fprintf(install, "export PATH=%s\n", PATH);
+
+    /* Don't do the same for LD_LIBRARY_PATH. Because installed projects should
+     * work for all users, local changes to LD_LIBRARY_PATH should not be
+     * required when building binaries for the global environment. */
+    fprintf(install, "export LD_LIBARRY_PATH=\n");
+
 
     /* Build libraries to global environment */
-    fprintf(install, "rake clean 2> /dev/null\n");
-    fprintf(install, "rake silent=%s verbose=%s coverage=false softlinks=false multithread=false\n",
-        verbose ? "false" : "true",
+    fprintf(install, "rake default verbose=%s coverage=false softlinks=false multithread=false redis=false\n",
         verbose ? "true" : "false");
 
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
@@ -60,9 +68,13 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
         fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", version);
         fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", version);
         fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
+
+        /* Create link to installed corto tool from local environment so that
+         * existing shells that cached the location of the corto executable
+         * still work. */
+        fprintf(install, "ln -s /usr/local/bin/corto %s/bin/corto\n", getenv("CORTO_TARGET"));
     }
 
-    fprintf(install, "rake clean 2> /dev/null\n");
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 #ifdef CORTO_OS_LINUX
     fprintf(install, "sudo ldconfig\n");
@@ -130,6 +142,8 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     corto_bool installRemote = FALSE;
     corto_bool installLocal = FALSE;
     corto_ll verbose = NULL, dirs = NULL;
+    corto_int32 sig = 0;
+    corto_int8 rc = 0;
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -159,9 +173,41 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     }
 
     if (installLocal) {
+        printf (CORTO_PROMPT "installing project from source\n");
+    }
+
+    cortotool_promptPassword();
+
+    /* Generate install.sh file for either local or remote install */
+    if (installLocal) {
+        /* Generate object files outside of sudo so that permissions of files in
+         * projects won't be set to root. */
+        printf (CORTO_PROMPT "STEP 1: compile sources\n");
+        corto_pid pid = corto_procrun("rake",
+            (char*[]) {
+              "rake",
+              verbose ? "verbose=true" : "verbose=false",
+              "coverage=false",
+              "multithread=false",
+              "binaries=false",
+              NULL
+        });
+
+        if ((sig = corto_procwait(pid, &rc)) || rc) {
+            if (sig == -1) {
+                corto_error("corto: failed to install (rake returned %d)", rc);
+                goto error;
+            } else {
+                corto_error("corto: failed to install (rake raised signal %d)", sig);
+                goto error;
+            }
+        }
+
         if (cortotool_installFromSource(verbose ? TRUE : FALSE)) {
             goto error;
         }
+
+        printf (CORTO_PROMPT "STEP 2: generate binaries\n");
     } else if (installRemote){
         if (cortotool_installFromRemote(argv[1])) {
             goto error;
@@ -171,29 +217,30 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         goto error;
     }
 
-    cortotool_promptPassword();
-
     corto_pid pid = corto_procrun(
         "sudo",
         (char*[]){"sudo", "sh", "install.sh", NULL});
 
     corto_char progress[] = {'|', '/', '-', '\\'};
-    corto_int32 procresult, i = 0;
-    corto_int8 rc = 0;
-    if (!installRemote) {
-        printf(CORTO_PROMPT "installing...  ");
-    } else {
+    corto_int32 i = 0;
+    if (installRemote) {
         printf(CORTO_PROMPT "installing %s...  ", argv[1]);
     }
-    while(!(procresult = corto_proccheck(pid, &rc))) {
+    while(!(sig = corto_proccheck(pid, &rc))) {
         i++;
-        printf("\b%c", progress[i % 4]);
-        fflush(stdout);
+        if (installRemote) {
+            printf("\b%c", progress[i % 4]);
+            fflush(stdout);
+        }
         corto_sleep(0, 200000000);
     }
 
-    if ((procresult != -1) || rc) {
-        printf("\bfailed!\n");
+    if ((sig != -1) || rc) {
+        if (sig == -1) {
+            printf("\bfailed! (installer returned %d)\n", rc);
+        } else {
+            printf("\bfailed! (installer raised signal %d)\n", sig);
+        }
         goto error;
     } else {
         corto_rm("install.sh");
@@ -512,7 +559,7 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
       }
     );
 
-    if (corto_llSize(packages)) {
+    if (packages && corto_llSize(packages)) {
         corto_iter it = corto_llIter(packages);
         while (corto_iterHasNext(&it)) {
             corto_string package = corto_iterNext(&it);
@@ -593,6 +640,7 @@ void cortotool_toLibPath(char *location) {
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
     corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE;
+    corto_bool error_only = FALSE;
 
     if (argc <= 1) {
         printf(CORTO_PROMPT "please provide a package name\n");
@@ -610,6 +658,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 env = TRUE;
             } else if (!strcmp(argv[i], "--silent")) {
                 silent = TRUE;
+            } else if (!strcmp(argv[i], "--error_only")) {
+                error_only = TRUE;
             }
             if (!strcmp(argv[i], "--verbose")) {
                 corto_verbosity(CORTO_TRACE);
@@ -635,13 +685,15 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
 
         if (lib || path || env) {
-            if (!silent) printf("%s\n", location);
+            if (!silent && !error_only) printf("%s\n", location);
         } else {
-            if (!silent) printf(CORTO_PROMPT "'%s' => '%s'\n", argv[1], location);
+            if (!silent && !error_only) printf(CORTO_PROMPT "'%s' => '%s'\n", argv[1], location);
         }
     } else {
         if (!silent) {
-            printf(CORTO_PROMPT "package '%s' not found", argv[1]);
+            if (!error_only) {
+                printf(CORTO_PROMPT "package '%s' not found", argv[1]);
+            }
             if (corto_lasterr()) {
                 printf("%s\n", corto_lasterr());
             } else {

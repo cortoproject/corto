@@ -489,34 +489,8 @@ int corto__adoptSSO(corto_object sso) {
     return !corto_adopt(parent, sso);
 }
 
-/* Find the right constructor to call */
-void corto_delegateDestruct(corto_type t, corto_object o) {
-    corto_function delegate = NULL;
-
-    corto_assertObject(t);
-    corto_assertObject(o);
-
-    if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
-            corto_interface i = corto_interface(t);
-            do {
-                delegate = corto_class(i)->destruct._parent.procedure;
-                i = i->base;
-            } while(i && !delegate);
-        }
-    }
-
-    if (delegate) {
-        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
-            ((void(*)(corto_object))delegate->fptr)(o);
-        } else {
-            corto_call(delegate, NULL, o);
-        }
-    }
-}
-
 /* Destruct object */
-void corto__destructor(corto_object o) {
+static void corto__destructor(corto_object o) {
     corto_type t;
     corto__object* _o;
 
@@ -527,9 +501,26 @@ void corto__destructor(corto_object o) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
         if (corto_class_instanceof(corto_class_o, t)) {
             /* Call destructor */
-            corto_delegateDestruct(corto_typeof(o), o);
-        }
+            corto_function delegate = NULL;
 
+            if (t->kind == CORTO_COMPOSITE) {
+                if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
+                    corto_interface i = corto_interface(t);
+                    do {
+                        delegate = corto_class(i)->destruct._parent.procedure;
+                        i = i->base;
+                    } while(i && !delegate);
+                }
+            }
+
+            if (delegate) {
+                if (delegate->kind == CORTO_PROCEDURE_CDECL) {
+                    ((void(*)(corto_object))delegate->fptr)(o);
+                } else {
+                    corto_call(delegate, NULL, o);
+                }
+            }
+        }
         _o->align.attrs.state &= ~CORTO_DEFINED;
     } else {
         corto_critical("%s/destruct: object '%s' is not defined",
