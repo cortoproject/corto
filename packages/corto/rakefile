@@ -25,4 +25,16 @@ task :prebuild do
   sh "rm -f #{CORTO_TARGET}/bin/corto"
 end
 
+task :postbuild do
+  if ENV['binaries'] != "false" then
+     # Create link to installed corto tool from local environment so that
+     # existing shells that cached the location of the corto executable
+     # still work.
+    if ENV['CORTO_INSTALLFROM'] then
+      sh "rm -f #{ENV['CORTO_INSTALLFROM']}/bin/corto\n"
+      sh "ln -s #{ENV['CORTO_TARGET']}/bin/corto #{ENV['CORTO_INSTALLFROM']}/bin/corto\n"
+    end
+  end
+end
+
 require "#{ENV['CORTO_BUILD']}/package"

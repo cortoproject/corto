@@ -47,6 +47,13 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
     fprintf(install, "export CORTO_BUILD=/usr/local/lib/corto/%s/build\n", version);
     fprintf(install, "export CORTO_VERSION=%s\n", version);
 
+    /* This will help the buildsystem create a link to a new corto executable
+     * in the current TARGET, if corto is rebuilt. While not strictly necessary,
+     * the link ensures that the shell-cached location to corto still points
+     * to a valid destination. Without this the user would have to start a new
+     * shell after installing. */
+    fprintf(install, "export CORTO_INSTALLFROM=%s\n", getenv("CORTO_TARGET"));
+
     /* Use current PATH in case sudo has different env */
     char *PATH = getenv("PATH");
     fprintf(install, "export PATH=%s\n", PATH);
@@ -68,11 +75,6 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
         fprintf(install, "mv -f /usr/local/bin/corto /usr/local/bin/corto.%s\n", version);
         fprintf(install, "ln -s /usr/local/bin/corto.%s /usr/local/bin/corto\n", version);
         fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-
-        /* Create link to installed corto tool from local environment so that
-         * existing shells that cached the location of the corto executable
-         * still work. */
-        fprintf(install, "ln -s /usr/local/bin/corto %s/bin/corto\n", getenv("CORTO_TARGET"));
     }
 
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");

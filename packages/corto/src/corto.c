@@ -990,6 +990,11 @@ int corto_start(void) {
         corto_setenv("CORTO_TARGET", "~/.corto");
     }
 
+    /* CORTO_VERSION points to the current major-minor version */
+    if (!corto_getenv("CORTO_VERSION")) {
+        corto_setenv("CORTO_VERSION", VERSION_MAJOR "." VERSION_MINOR);
+    }
+
     corto_string verbosity = corto_getenv("CORTO_VERBOSITY");
     if (verbosity) {
         if (!strcmp(verbosity, "DEBUG")) {

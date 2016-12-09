@@ -2,7 +2,7 @@
 CWD = Dir.pwd
 
 def msg(text)
-  print "#{C_BOLD}[ #{C_DEFAULT}#{text}#{C_BOLD} ]#{C_NORMAL}\n"
+  print "[ #{C_DEFAULT}#{text}#{C_NORMAL} ]\n"
 end
 
 def cmd(command)
@@ -145,8 +145,10 @@ CORTO_BUILDROOT ||= if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].emp
     print "\n"
     if ENV['binaries'] != "false" then
       print "  Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
-      print "  The #{C_DEFAULT}#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis#{C_NORMAL} directory contains\n"
-      print "  binaries that can be embedded in other (non-corto) projects.\n"
+      if ENV['redis'] != "false" then
+        print "  The #{C_DEFAULT}#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis#{C_NORMAL} directory contains\n"
+        print "  binaries that can be embedded in other (non-corto) projects.\n"
+      end
       print "\n"
     end
 

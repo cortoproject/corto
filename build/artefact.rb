@@ -161,6 +161,7 @@ def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
   if ext != "" then
     ext = "." + ext
   end
+
   if not hardcodedPaths then
     env = ENV['CORTO_TARGET'] + "/lib/corto/" + ENV['CORTO_VERSION']
     artefact = ""
@@ -335,14 +336,24 @@ task :prebuild do
   USE_PACKAGE.each do |p|
     location = `corto locate #{p} --path`.strip
     if not $?.to_i == 0 then
-      STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
-      sh "corto locate #{p} --verbose --error_only"
-      abort
+      if ENV['binaries'] == "true" then
+        STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+        sh "corto locate #{p} --verbose --error_only"
+        abort
+      else
+        # If not building binaries, all we need is a build.rb
+        location = "#{ENV['CORTO_TARGET']}/lib/corto/#{CORTO_VERSION}/#{p}"
+        if not File.exists? location then
+          STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+          abort
+        end
+      end
     else
       if ENV['silent'] != "true" then
           msg "  use #{C_NORMAL}#{location}"
       end
     end
+
     buildscript = location + "/build.rb"
     if File.exists? buildscript then
         require "#{buildscript}"
