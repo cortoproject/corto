@@ -111,6 +111,13 @@ CLOBBER.include(".corto/_meta.*")
 CLOBBER.include("include/_load.h")
 CLOBBER.include("include/_interface.h")
 
+if File.exists? "project.json"
+  CLOBBER.include("rakefile")
+  CLOBBER.include("Rakefile")
+  CLOBBER.include("rakefile.rb")
+  CLOBBER.include("Rakefile.rb")
+end
+
 # If packages.txt is empty, clobber it
 if USE_PACKAGE_LOADED.length == 0 then
   CLOBBER.include(".corto/packages.txt")
