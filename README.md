@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto)
 [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at https://gitter.im/cortolang/corto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortoproject/corto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Our Mission
+# Background
 Integrating different products and technologies is often a major part of product development and it slows down innovation. Sometimes it is a bump in the road, and sometimes it is a 4000ft mountain that must be climbed. There are companies that make lots of money from selling products that solve the integration problem.
 
 We believe time and money are better spent on innovation, not integration. We think that the only way to significantly bring down the cost of innovation is by large-scale collaboration. We believe that the only way to kickstart this innovation is through an independent, open source, liberally licensed framework with a structured approach to 1) sharing projects and 2) sharing data between projects.
