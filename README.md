@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto)
-[![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at 
+[![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
 
 # Background
 Integrating different products and technologies is often a major part of product development where it slows down innovation. Sometimes it is a bump in the road, and sometimes it is a 4000ft mountain that must be climbed. There are companies that make lots of money from selling products that solve the integration problem.
