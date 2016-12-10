@@ -8,6 +8,7 @@
 extern "C" {
 #endif
 
+corto_int16 cortotool_rakefile(int argc, char *argv[]);
 corto_int16 cortotool_build(int argc, char *argv[]);
 corto_int16 cortotool_rebuild(int argc, char *argv[]);
 corto_int16 cortotool_clean(int argc, char *argv[]);

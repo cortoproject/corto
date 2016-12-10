@@ -7,6 +7,11 @@ task :all => :default
 task :default do
     COMPONENTS.each do |e|
         verbose(VERBOSE)
+        if File.exists? "#{e}/project.json"
+          Dir.chdir(e) do
+            sh "corto rakefile"
+          end
+        end
         sh "rake -f #{e}/rakefile"
     end
 end

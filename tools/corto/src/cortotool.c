@@ -168,6 +168,11 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
+            } else if (!strcmp(argv[i], "rakefile")) {
+                if (cortotool_rakefile(argc-1, &argv[i])) {
+                    goto error;
+                }
+                break;
             } else if (!strcmp(argv[i], "build")) {
                 if (cortotool_build(argc-i, &argv[i])) {
                     goto error;
