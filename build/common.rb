@@ -141,8 +141,10 @@ CORTO_BUILDROOT ||= if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].emp
 
   # First time rake is called
   if ENV['silent'] != "true" then
-    print "#{C_BOLD}corto buildsystem v#{CORTO_VERSION}#{C_NORMAL}\n"
-    print "\n"
+    if ENV['show_header'] != "false" then
+      print "#{C_BOLD}corto buildsystem v#{CORTO_VERSION}#{C_NORMAL}\n"
+      print "\n"
+    end
     if ENV['binaries'] != "false" then
       print "  Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
       if ENV['redis'] != "false" then

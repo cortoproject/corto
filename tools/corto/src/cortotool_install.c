@@ -65,7 +65,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
 
 
     /* Build libraries to global environment */
-    fprintf(install, "rake default verbose=%s coverage=false softlinks=false multithread=false redis=false\n",
+    fprintf(install, "rake default verbose=%s coverage=false softlinks=false multithread=false redis=false show_header=false\n",
         verbose ? "true" : "false");
 
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
@@ -157,97 +157,118 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
       }
     );
 
+    corto_iter it;
     if (dirs && corto_llSize(dirs)) {
-        corto_string dir = corto_llGet(dirs, 0);
-        if (strchr(dir, '/') || corto_chdir(dir)) {
-            installRemote = TRUE;
-        } else {
-            if (!cortotool_validProject()) {
-                installRemote = TRUE;
-            } else {
-                installLocal = TRUE;
-            }
-        }
+        it = corto_llIter(dirs);
+        corto_assert(corto_iterHasNext(&it), "non-empty list returns empty iterator");
     } else {
         if (cortotool_validProject()) {
             installLocal = TRUE;
         }
     }
 
-    if (installLocal) {
-        printf (CORTO_PROMPT "installing project from source\n");
-    }
+    /* After installing, return back to current working directory */
+    char *cwd = corto_cwd();
 
-    cortotool_promptPassword();
-
-    /* Generate install.sh file for either local or remote install */
-    if (installLocal) {
-        /* Generate object files outside of sudo so that permissions of files in
-         * projects won't be set to root. */
-        printf (CORTO_PROMPT "STEP 1: compile sources\n");
-        corto_pid pid = corto_procrun("rake",
-            (char*[]) {
-              "rake",
-              verbose ? "verbose=true" : "verbose=false",
-              "coverage=false",
-              "multithread=false",
-              "binaries=false",
-              NULL
-        });
-
-        if ((sig = corto_procwait(pid, &rc)) || rc) {
-            if (sig == -1) {
-                corto_error("corto: failed to install (rake returned %d)", rc);
-                goto error;
+    do {
+        corto_string dir = NULL;
+        if (dirs && corto_llSize(dirs)) {
+            dir = corto_iterNext(&it);
+            if (corto_chdir(dir)) {
+                installRemote = TRUE;
             } else {
-                corto_error("corto: failed to install (rake raised signal %d)", sig);
-                goto error;
+                if (!cortotool_validProject()) {
+                    installRemote = TRUE;
+                } else {
+                    installLocal = TRUE;
+                }
             }
         }
 
-        if (cortotool_installFromSource(verbose ? TRUE : FALSE)) {
-            goto error;
+        if (installLocal && dir) {
+            printf (CORTO_PROMPT "install %s\n", dir);
         }
 
-        printf (CORTO_PROMPT "STEP 2: generate binaries\n");
-    } else if (installRemote){
-        if (cortotool_installFromRemote(argv[1])) {
-            goto error;
-        }
-    } else {
-        corto_error("corto: nothing to install");
-        goto error;
-    }
+        cortotool_promptPassword();
 
-    corto_pid pid = corto_procrun(
-        "sudo",
-        (char*[]){"sudo", "sh", "install.sh", NULL});
+        /* Generate install.sh file for either local or remote install */
+        if (installLocal) {
+            /* Generate object files outside of sudo so that permissions of files in
+             * projects won't be set to root. */
+            printf (CORTO_PROMPT "step 1: compile sources\n\n");
+            corto_pid pid = corto_procrun("rake",
+                (char*[]) {
+                  "rake",
+                  verbose ? "verbose=true" : "verbose=false",
+                  "coverage=false",
+                  "multithread=false",
+                  "redis=false",
+                  "show_header=false",
+                  NULL
+            });
 
-    corto_char progress[] = {'|', '/', '-', '\\'};
-    corto_int32 i = 0;
-    if (installRemote) {
-        printf(CORTO_PROMPT "installing %s...  ", argv[1]);
-    }
-    while(!(sig = corto_proccheck(pid, &rc))) {
-        i++;
-        if (installRemote) {
-            printf("\b%c", progress[i % 4]);
-            fflush(stdout);
-        }
-        corto_sleep(0, 200000000);
-    }
+            if ((sig = corto_procwait(pid, &rc)) || rc) {
+                if (sig == -1) {
+                    corto_error("corto: failed to install (rake returned %d)", rc);
+                    goto error;
+                } else {
+                    corto_error("corto: failed to install (rake raised signal %d)", sig);
+                    goto error;
+                }
+            }
 
-    if ((sig != -1) || rc) {
-        if (sig == -1) {
-            printf("\bfailed! (installer returned %d)\n", rc);
+            if (cortotool_installFromSource(verbose ? TRUE : FALSE)) {
+                goto error;
+            }
+
+            printf (CORTO_PROMPT "step 2: generate binaries\n\n");
+        } else if (installRemote){
+            if (cortotool_installFromRemote(argv[1])) {
+                goto error;
+            }
         } else {
-            printf("\bfailed! (installer raised signal %d)\n", sig);
+            corto_error("corto: nothing to install");
+            goto error;
         }
-        goto error;
-    } else {
-        corto_rm("install.sh");
-        printf("\bdone!\n");
-    }
+
+        corto_pid pid = corto_procrun(
+            "sudo",
+            (char*[]){"sudo", "sh", "install.sh", NULL});
+
+        corto_char progress[] = {'|', '/', '-', '\\'};
+        corto_int32 i = 0;
+        if (installRemote) {
+            printf(CORTO_PROMPT "installing %s...  ", argv[1]);
+        }
+        while(!(sig = corto_proccheck(pid, &rc))) {
+            i++;
+            if (installRemote) {
+                printf("\b%c", progress[i % 4]);
+                fflush(stdout);
+            }
+            corto_sleep(0, 200000000);
+        }
+
+        if ((sig != -1) || rc) {
+            if (sig == -1) {
+                printf("\bfailed! (installer returned %d)\n", rc);
+            } else {
+                printf("\bfailed! (installer raised signal %d)\n", sig);
+            }
+            goto error;
+        } else {
+            corto_rm("install.sh");
+
+            if (installLocal) {
+                printf(CORTO_PROMPT "done\n");
+            } else {
+                printf("\bdone!\n");
+            }
+        }
+        if (dirs) {
+            corto_chdir(cwd);
+        }
+    } while (dirs && corto_iterHasNext(&it));
 
     corto_argclean(data);
 
@@ -257,7 +278,9 @@ error:
 }
 
 corto_int16 cortotool_uninstallAll(void) {
-    printf("This will completely remove corto from your system. Proceed? [Y/n] ");
+    printf("This will completely remove corto from your system, including all\n"
+           "installed packages and applications. Proceed? [Y/n] ");
+
     char ch = getc(stdin);
 
     if (ch == 'Y') {

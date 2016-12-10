@@ -279,7 +279,7 @@ task :uninstaller do
   end
 end
 
-task :uninstall do
+task :uninstall_files do
   verbose(VERBOSE)
   if not LOCAL then
     dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR}"
@@ -377,7 +377,7 @@ def installDir(dir)
   end
 end
 
-task :install do
+task :install_files do
   verbose(VERBOSE)
 
   if not LOCAL then
@@ -471,7 +471,7 @@ task :collect do
 end
 
 # Prebuild tasks
-task :prebuild => [:uninstall, :install]
+task :prebuild => [:uninstall_files, :install_files]
 
 # Postbuild tasks
 task :postbuild => [:doc, :buildscript, :uninstaller]
