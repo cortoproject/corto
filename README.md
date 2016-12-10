@@ -44,7 +44,7 @@ The following packages are useful when you want to do corto application developm
  * corto-language
  * test
 
-These packages are only required during development, and you do not need them when you are distributing your application. The `c-binding` API contains code generators that take as input a datamodel, which can be specified in either `xml` or the native corto description language (`corto-language`). The `test` package contains a testframework for testing corto projects.
+These packages are only required during development, and you do not need them when you are distributing your application. The `c-binding` API contains code generators that take as input a datamodel, which can be specified in either `xml` or the native corto definition language (`corto-language`). The `test` package contains a testframework for testing corto projects.
 
 The following libraries are required for these packages:
  * libxml2-dev
