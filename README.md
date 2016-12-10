@@ -2,6 +2,7 @@
 [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at https://gitter.im/cortolang/corto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortoproject/corto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Corto is a small library that provides:
+
 1. a connector framework for connecting any kind of data (realtime or at rest)
 2. a simple application-facing CRUD (Create, Read, Update, Delete) API to interact with this data
 
