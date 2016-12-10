@@ -63,7 +63,7 @@ corto build c-binding xml corto-language test
 The `corto build` tool is a front-end for the rake-based buildsystem. The buildsystem automates many tasks like code generation, dependencies between packages and installation of binaries.
 
 ## Creating a project
-Before you try out these examples, make sure to have both corto and the development packages installed. To create a new project, use the following command:
+To create a new project, use the following command:
 ```
 corto create MyApp
 ```
