@@ -77,7 +77,7 @@ Creating a package is similar to creating an application. To create a new packag
 ```
 corto create package mypackage
 ```
-Notice that the package has been created with a `mypackage.cx` file. This file will contain the datamodel for the package in the native corto language. Here's an example datamodel:
+Notice that the package has been created with a `mypackage.cx` file. This file will contain the datamodel for the package in the native corto language. Here is an example datamodel:
 ```
 #package /mypackage
 
