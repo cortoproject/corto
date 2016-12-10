@@ -4,7 +4,7 @@
 # Background
 Integrating different products and technologies is often a major part of product development where it slows down innovation. Sometimes it is a bump in the road, and sometimes it is a 4000ft mountain that must be climbed. There are companies that make lots of money from selling products that solve the integration problem.
 
-We believe time and money are better spent on innovation, not integration, and that the only way to reduce the cost of integration is large-scale collaboration. We also believe that to kickstart this innovation we need an independent, open source, liberally licensed framework that offers a structured approach to 1) sharing projects and 2) sharing data between projects.
+We believe time and money are better spent on innovation, not integration, and that the only way to reduce the cost of integration is large-scale collaboration. To kickstart this collaboration we need an independent, open source, liberally licensed framework that offers a structured approach to 1) sharing projects and 2) sharing data between projects.
 
 That is why, for the past 5 years, we have been working on Corto.
 
