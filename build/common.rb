@@ -173,7 +173,6 @@ include_ld_path =  "#{ENV['CORTO_TARGET']}/lib"
 include_ld_path += ":#{ENV['CORTO_TARGET']}/etc/corto/#{CORTO_VERSION}/redis/lib"
 include_ld_path += ":/usr/local/etc/corto/#{CORTO_VERSION}/redis/lib"
 ENV["LD_LIBRARY_PATH"] = "#{include_ld_path}:#{ENV["LD_LIBRARY_PATH"]}"
-ENV["DYLD_LIBRARY_PATH"] = "#{include_ld_path}:#{ENV["LD_LIBRARY_PATH"]}"
 
 # Utility that replaces buildsystem tokens with actual values
 def corto_replace(str)

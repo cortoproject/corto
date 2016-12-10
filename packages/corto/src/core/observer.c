@@ -729,11 +729,13 @@ corto_void _corto_observer_destruct(
     corto_function_destruct(this);
 
     if (this->enabled && this->observable) {
-        corto_observer_unobserve(this, this->instance, this->observable);
+        if (corto_observer_unobserve(this, this->instance, this->observable)) {
+            corto_error("corto: unobserve failed: %s", corto_lasterr());
+        }
     }
 
     if (this->active) {
-        corto_error("observer '%s' deleted with %d active subscription(s)",
+        corto_error("corto: observer '%s' deleted with %d active subscription(s)",
           corto_fullpath(NULL, this), this->active);
     }
 
@@ -890,7 +892,9 @@ corto_int16 _corto_observer_observe(
 
     /* If observer must trigger on updates of me, add it to onSelf list */
     if (mask & CORTO_ON_SELF) {
-        corto_rwmutexWrite(&_o->align.selfLock);
+        if (corto_rwmutexWrite(&_o->align.selfLock)) {
+            goto error;
+        }
         if (!corto_observerFind(_o->onSelf, this, instance)) {
             if (!_o->onSelf) {
                 _o->onSelf = corto_llNew();
@@ -903,12 +907,16 @@ corto_int16 _corto_observer_observe(
             oldSelfArray = _o->onSelfArray;
             _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
         }
-        corto_rwmutexUnlock(&_o->align.selfLock);
+        if (corto_rwmutexUnlock(&_o->align.selfLock)) {
+            goto error;
+        }
     }
 
     /* If observer must trigger on updates of childs, add it to onChilds list */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-        corto_rwmutexWrite(&_o->childLock);
+        if (corto_rwmutexWrite(&_o->childLock)) {
+            goto error;
+        }
         if (!corto_observerFind(_o->onChild, this, instance)) {
             if (!_o->onChild) {
                 _o->onChild = corto_llNew();
@@ -922,7 +930,9 @@ corto_int16 _corto_observer_observe(
             oldChildArray = _o->onChildArray;
             _o->onChildArray = corto_observersArrayNew(_o->onChild);
         }
-        corto_rwmutexUnlock(&_o->childLock);
+        if (corto_rwmutexUnlock(&_o->childLock)) {
+            goto error;
+        }
     }
 
     if (!added) {
@@ -1056,13 +1066,19 @@ corto_int16 _corto_observer_unobserve(
         mask |= CORTO_ON_VALUE;
     }
 
-    /* If instance has not yet been defined, postpone listen */
+    /* If instance has not yet been defined, undo delayed listen */
     if (instance && !corto_checkState(instance, CORTO_DEFINED)) {
         corto_observerDelayedAdminRemove(
             instance,
             this
         );
-        goto postponed;
+        goto ignore;
+    }
+
+    /* Observers don't necessarily take a refcount on their observables, and if
+     * the observable has already been destructed, it has already been silenced. */
+    if (corto_checkState(observable, CORTO_DESTRUCTED)) {
+        goto ignore;
     }
 
     if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
@@ -1071,7 +1087,9 @@ corto_int16 _corto_observer_unobserve(
 
         /* If observer triggered on updates of me, remove from onSelf list */
         if (mask & CORTO_ON_SELF) {
-            corto_rwmutexWrite(&_o->align.selfLock);
+            if (corto_rwmutexWrite(&_o->align.selfLock)) {
+                goto error;
+            }
             observerData = corto_observerFind(_o->onSelf, this, instance);
             if (observerData) {
                 corto_llRemove(_o->onSelf, observerData);
@@ -1091,13 +1109,17 @@ corto_int16 _corto_observer_unobserve(
                 }
     #endif
             }
-            corto_rwmutexUnlock(&_o->align.selfLock);
+            if (corto_rwmutexUnlock(&_o->align.selfLock)) {
+                goto error;
+            }
         }
 
         /* If observer triggered on updates of childs, remove from onChilds list */
         if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
             if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
-                corto_rwmutexWrite(&_o->childLock);
+                if (corto_rwmutexWrite(&_o->childLock)) {
+                    goto error;
+                }
                 observerData = corto_observerFind(_o->onChild, this, instance);
                 if (observerData) {
                     corto_llRemove(_o->onChild, observerData);
@@ -1108,7 +1130,9 @@ corto_int16 _corto_observer_unobserve(
                     oldChildArray = _o->onChildArray;
                     _o->onChildArray = corto_observersArrayNew(_o->onChild);
                 }
-                corto_rwmutexUnlock(&_o->childLock);
+                if (corto_rwmutexUnlock(&_o->childLock)) {
+                    goto error;
+                }
             } else {
                 corto_seterr(
                     "observer subscribed on childs of non-scoped object");
@@ -1145,7 +1169,7 @@ corto_int16 _corto_observer_unobserve(
     /* Release observer after unsubscribe */
     corto_release(this);
 
-postponed:
+ignore:
     return 0;
 error:
     return -1;

@@ -225,7 +225,6 @@ corto_int16 g_load(g_generator g, corto_string library) {
     }
 
     g->library = corto_dlOpen(lib);
-    corto_dealloc(lib);
     if (!g->library) {
         corto_error("%s", corto_dlError());
         goto error;
@@ -234,13 +233,15 @@ corto_int16 g_load(g_generator g, corto_string library) {
     /* Load actions */
     g->start_action = (g_startAction)corto_dlProc(g->library, "corto_genMain");
     if (!g->start_action) {
-        corto_error("g_Load: unresolved symbol 'corto_genMain'");
+        corto_error("g_load: %s: unresolved SYMBOL 'corto_genMain'", lib);
+        corto_dealloc(lib);
         goto error;
     }
     g->id_action = (g_idAction)corto_dlProc(g->library, "corto_genId");
 
     /* Function is allowed to be absent. */
 
+    corto_dealloc(lib);
     corto_dealloc(package);
     return 0;
 error:

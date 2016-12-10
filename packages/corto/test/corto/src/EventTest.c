@@ -12,31 +12,52 @@ corto_int16 _test_EventTest_construct(
     test_EventTest this)
 {
 /* $begin(test/EventTest/construct) */
+    corto_int16 ret;
 
-    corto_observer_observe(test_EventTest_onDeclare_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDeclareSelf_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDeclareScope_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDeclareTree_o, this, this->scope);
+    ret = corto_observer_observe(test_EventTest_onDeclare_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDeclareSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDeclareScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDeclareTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_observe(test_EventTest_onDefine_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDefineSelf_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDefineScope_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDefineTree_o, this, this->scope);
+    ret = corto_observer_observe(test_EventTest_onDefine_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDefineSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDefineScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDefineTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_observe(test_EventTest_onUpdate_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onUpdateSelf_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onUpdateScope_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onUpdateTree_o, this, this->scope);
+    ret = corto_observer_observe(test_EventTest_onUpdate_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onUpdateSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onUpdateScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onUpdateTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_observe(test_EventTest_onDelete_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDeleteSelf_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDeleteScope_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onDeleteTree_o, this, this->scope);
+    ret = corto_observer_observe(test_EventTest_onDelete_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDeleteSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDeleteScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onDeleteTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_observe(test_EventTest_onUpdateDefine_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onUpdateDefineSelf_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onUpdateDefineScope_o, this, this->scope);
-    corto_observer_observe(test_EventTest_onUpdateDefineTree_o, this, this->scope);
+    ret = corto_observer_observe(test_EventTest_onUpdateDefine_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onUpdateDefineSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onUpdateDefineScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_observe(test_EventTest_onUpdateDefineTree_o, this, this->scope);
+    test_assert(ret == 0);
 
     return 0;
 /* $end */
@@ -46,31 +67,52 @@ corto_void _test_EventTest_destruct(
     test_EventTest this)
 {
 /* $begin(test/EventTest/destruct) */
+    corto_int16 ret;
 
-    corto_observer_unobserve(test_EventTest_onDeclare_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDeclareSelf_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDeclareScope_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDeclareTree_o, this, this->scope);
+    ret = corto_observer_unobserve(test_EventTest_onDeclare_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDeclareSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDeclareScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDeclareTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_unobserve(test_EventTest_onDefine_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDefineSelf_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDefineScope_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDefineTree_o, this, this->scope);
+    ret = corto_observer_unobserve(test_EventTest_onDefine_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDefineSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDefineScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDefineTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_unobserve(test_EventTest_onUpdate_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onUpdateSelf_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onUpdateScope_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onUpdateTree_o, this, this->scope);
+    ret = corto_observer_unobserve(test_EventTest_onUpdate_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_unobserve(test_EventTest_onDelete_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDeleteSelf_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDeleteScope_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onDeleteTree_o, this, this->scope);
+    ret = corto_observer_unobserve(test_EventTest_onDelete_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDeleteSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDeleteScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onDeleteTree_o, this, this->scope);
+    test_assert(ret == 0);
 
-    corto_observer_unobserve(test_EventTest_onUpdateDefine_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onUpdateDefineSelf_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onUpdateDefineScope_o, this, this->scope);
-    corto_observer_unobserve(test_EventTest_onUpdateDefineTree_o, this, this->scope);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateDefine_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateDefineSelf_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateDefineScope_o, this, this->scope);
+    test_assert(ret == 0);
+    ret = corto_observer_unobserve(test_EventTest_onUpdateDefineTree_o, this, this->scope);
+    test_assert(ret == 0);
 
 /* $end */
 }
