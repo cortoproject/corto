@@ -38,7 +38,7 @@ rake
 This will build the core API and corto tool. The core API is typically used for writing connectors and generic tools. All other APIs are built on top of the core API.
 
 ## Building development add-ons
-The following packages are useful when you want to do corto application development (all in the cortoproject organization):
+The following packages are useful when you want to do corto application development (all packages are in the cortoproject organization):
  * c-binding
  * xml
  * corto-language
