@@ -1,14 +1,21 @@
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto)
 [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at https://gitter.im/cortolang/corto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortoproject/corto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Corto is a small library that provides:
+# Our Mission
+Integrating different products and technologies is often a major part of product development and it slows down innovation. Sometimes it is a bump in the road, and sometimes it is a 4000ft mountain that must be climbed. There are companies that make lots of money from selling products that solve the integration problem.
 
-1. a connector framework for connecting any kind of data (realtime or at rest)
-2. a simple application-facing CRUD (Create, Read, Update, Delete) API to interact with this data
+We believe time and money are better spent on innovation, not integration. We think that the only way to significantly bring down the cost of innovation is by large-scale collaboration. We believe that the only way to kickstart this innovation is through an independent, open source, liberally licensed framework with a structured approach to 1) sharing projects and 2) sharing data between projects.
+
+That is why, for the past 5 years, we have been working on Corto.
+
+# What is Corto
+Corto (corto /‘korto/ adjective, Spanish. 1 short in length or duration) is a library that provides:
+
+1. a connector framework for connecting any kind of data (realtime or at rest) and
+2. a simple application-facing API to interact with this data and
+3. a package management framework for sharing corto applications and packages
 
 The small footprint of Corto makes it a handy building block in IoT systems where you can run it on small devices. The library is optimized to be very fast (~30 **nanoseconds** event latency) and to enable working with large datasets in resource-constrained environments. Corto never loads more data in memory than the application needs.
-
-We took a holistic approach to usability with Corto. That means that besides user-friendly APIs, we have tools that help you build, test, document and deploy corto projects. Basically we made our devtools available for the community, so that when you begin a new project you can get right to it.
 
 People have used Corto to forward data from one technologies to another (for example, MQTT to InfluxDB), as an application API in industrial automation systems, and even as a low-footprint web backend.
 
