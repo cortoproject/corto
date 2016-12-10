@@ -8,9 +8,9 @@ Corto is a small library that provides:
 
 The small footprint of Corto makes it a handy building block in IoT systems where you can run it on small devices. The library is optimized to be very fast (~30 **nanoseconds** event latency) and to enable working with large datasets in resource-constrained environments. Corto never loads more data in memory than the application needs.
 
-We took a holistic approach to usability with Corto. That means we have tools that help you build, test, document and deploy corto projects. Basically we made our devtools available for the community, so that when you begin a new project you can get right to it!
+We took a holistic approach to usability with Corto. That means we have tools that help you build, test, document and deploy corto projects. Basically we made our devtools available for the community, so that when you begin a new project you can get right to it.
 
-People have used Corto to forward data from one technologies to another (for example, MQTT to InfluxDB), as an application API in industrial automation systems, and even as a low-footprint web backend!
+People have used Corto to forward data from one technologies to another (for example, MQTT to InfluxDB), as an application API in industrial automation systems, and even as a low-footprint web backend.
 
 This repository contains the core library of corto and the corto tool. The corto tool is like your swiss army knife when using Corto. It helps you create, build, debug, test and install corto projects, and a whole lot more.
 
