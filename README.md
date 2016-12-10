@@ -35,7 +35,7 @@ source configure
 rake
 ```
 
-This will build the core API and corto tool. The core API is typically used for writing connectors and generic tools. All other corto APIs are built on top of the core API.
+This will build the core API and corto tool. The core API is typically used for writing connectors and generic tools. All other APIs are built on top of the core API.
 
 ## Building development add-ons
 The following packages are useful when you want to do corto application development (all in the cortoproject organization):
