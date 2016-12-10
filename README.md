@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto)
-[![Build Status](https://tea-ci.org/api/badges/cortoproject/corto/status.svg)](https://tea-ci.org/cortoproject/corto)
 [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807) [![Join the chat at https://gitter.im/cortolang/corto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cortoproject/corto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Corto is a tested, proven architecture for normalizing data from different technologies into one view regardless of location, format or datamodel. This repository contains the core library of corto and the corto tool, which makes it easy to build, run and test corto projects.
