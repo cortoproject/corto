@@ -270,7 +270,7 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
 
     if (!(dl = corto_loadValidLibrary(fileName, &build))) {
         if (build) {
-            corto_seterr("%s: uses a different corto build (%s)", build);
+            corto_seterr("%s: uses a different corto build (%s)", fileName, build);
         }
         goto error;
     }

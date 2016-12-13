@@ -512,7 +512,12 @@ corto_void _test_ReplicatorEvent_tc_rateLimitOneObject(
 /* $begin(test/ReplicatorEvent/tc_rateLimitOneObject) */
     corto_int16 ret;
     corto_time timeout = {60, 0};
+    int cycles = 50000;
+
     test_setTimeout(&timeout);
+    if (test_runslow()) {
+        cycles = 100;
+    }
 
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
@@ -527,7 +532,7 @@ corto_void _test_ReplicatorEvent_tc_rateLimitOneObject(
     /* Send 100K updates */
     corto_time start, stop;
     corto_timeGet(&start);
-    corto_int32 i; for (i = 0; i < 500000; i ++) {
+    corto_int32 i; for (i = 0; i < cycles; i ++) {
         ret = corto_int32Update(a, 20);
         test_assert(ret == 0);
     }
@@ -557,7 +562,12 @@ corto_void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
 /* $begin(test/ReplicatorEvent/tc_rateLimitThreeObjects) */
     corto_int16 ret;
     corto_time timeout = {60, 0};
+    int cycles = 50000;
     test_setTimeout(&timeout);
+
+    if (test_runslow()) {
+        cycles = 100;
+    }
 
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
@@ -578,7 +588,7 @@ corto_void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
     /* Send 100K updates */
     corto_time start, stop;
     corto_timeGet(&start);
-    corto_int32 i; for (i = 0; i < 500000; i ++) {
+    corto_int32 i; for (i = 0; i < cycles; i ++) {
         ret = corto_int32Update(a, 20);
         ret = corto_int32Update(b, 20);
         ret = corto_int32Update(c, 20);

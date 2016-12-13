@@ -282,6 +282,8 @@ corto_matchProgram corto_matchProgram_compile(
     corto_bool allowSeparators)
 {
     corto_matchProgram result = corto_alloc(sizeof(struct corto_matchProgram_s));
+    result->tokens = NULL;
+
     corto_debug("match: compile expression '%s'", expr);
     if (corto_matchProgramParseIntern(result, expr, allowScopes, allowSeparators) || !result->size) {
         if (!result->size) {
@@ -440,6 +442,10 @@ char* corto_matchParent(char *parent, char *expr) {
 }
 
 void corto_matchProgram_free(corto_matchProgram matcher) {
-    corto_dealloc(matcher->tokens);
-    corto_dealloc(matcher);
+    if (matcher) {
+        if (matcher->tokens) {
+            corto_dealloc(matcher->tokens);
+        }
+        corto_dealloc(matcher);
+    }
 }

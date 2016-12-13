@@ -248,7 +248,7 @@ error:
     if (intermediate && contentType) {
         corto_release(intermediate);
     }
-    
+
     return -1;
 }
 

@@ -152,10 +152,6 @@ repeat:
 
                     o = corto_lookup(o, bufferLc);
 
-                    if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
-                        o = corto_resume(prev, buffer, NULL);
-                    }
-
                     /* Release lookup after(!) potentially resuming an object. In
                      * case of a nested resume, a parent will have been
                      * resumed first. Releasing the parent before resuming the

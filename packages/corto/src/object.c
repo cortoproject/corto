@@ -719,6 +719,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
 
             corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->id, child);
             if (existing && (existing != child)) {
+                corto_unlock(child);
                 if (corto_typeof(existing) != corto_typeof(child)) {
                     corto_seterr("'%s' is already declared with type '%s'",
                       c_scope->id,
@@ -3079,9 +3080,14 @@ corto_int32 corto_release(corto_object o) {
     return corto_release_ext(NULL, o, NULL);
 }
 
-corto_object corto_lookup(corto_object o, corto_string id) {
-    corto_assertObject(o);
-
+static corto_object corto_lookup_intern(
+    corto_object parent,
+    corto_string id,
+    corto_bool resume)
+{
+    corto_assertObject(parent);
+    
+    corto_object o = parent;
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rbtree tree;
@@ -3166,6 +3172,15 @@ corto_object corto_lookup(corto_object o, corto_string id) {
         }
     } while ((ptr = strchr(ptr + 1, '/')));
 
+    if (resume) {
+        if (!prev) {
+            prev = parent;
+        }
+        if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
+            o = corto_resume(prev, id, NULL);
+        }
+    }
+
     if (o && corto_secured() && !corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
         goto access_error;
     }
@@ -3175,6 +3190,16 @@ access_error:
     corto_release(o);
 error:
     return NULL;
+}
+
+corto_object corto_lookup(corto_object scope, corto_string id)
+{
+    return corto_lookup_intern(scope, id, TRUE);
+}
+
+corto_object corto_find(corto_object scope, corto_string id, corto_findKind mode)
+{
+    return corto_lookup_intern(scope, id, mode & CORTO_FIND_RESUME);
 }
 
 corto_bool corto_match(corto_string expr, corto_string str) {
@@ -3208,7 +3233,7 @@ corto_int16 corto_publish(
     corto_string contentType,
     void *content)
 {
-    corto_object o = corto_lookup(NULL, id);
+    corto_object o = corto_find(NULL, id, CORTO_FIND_DEFAULT);
     corto_int16 result = 0;
 
     CORTO_UNUSED(type);

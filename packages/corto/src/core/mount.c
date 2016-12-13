@@ -230,6 +230,8 @@ corto_void _corto_mount_destruct(
         corto_threadJoin((corto_thread)this->thread, NULL);
     }
 
+    corto_subscriber_destruct(this);
+
 /* $end */
 }
 
@@ -242,7 +244,7 @@ corto_int16 _corto_mount_init(
     corto_observer(this)->mask = CORTO_ON_SCOPE;
     this->attr = CORTO_ATTR_PERSISTENT;
 
-    return 0;
+    return corto_subscriber_init(this);
 /* $end */
 }
 

@@ -1099,9 +1099,10 @@ static corto_int16 corto_selectSplitScope(corto_selectData *data) {
 
             /* Don't use resolve here since that might load objects in the
              * object store, which is exactly what select must avoid */
-            data->scopes[current].scope = corto_lookup(
+            data->scopes[current].scope = corto_find(
                 data->scopes[current - 1].scope,
-                expr);
+                expr,
+                CORTO_FIND_DEFAULT);
             if (!data->scopes[current].scope) {
                 /* If a scope cannot be found in the object store, select
                  * will attempt to request it from mounts */

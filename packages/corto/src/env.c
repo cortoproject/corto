@@ -29,8 +29,8 @@ char* corto_getenv(const char *varname) {
 static char* corto_growBuffer(char **buffer, char *ptr, int *size, int length) {
     int pos = ptr - *buffer;
 
-    if ((pos + length) < *size) {
-        *size = (length < 256) ? 256 : length;
+    if ((pos + length) >= *size) {
+        *size = ((pos + length) < 256) ? 256 : pos + length + 1;
         *buffer = corto_realloc(*buffer, *size);
         ptr = &(*buffer)[pos];
     }

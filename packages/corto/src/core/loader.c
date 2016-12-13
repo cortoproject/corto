@@ -236,7 +236,7 @@ corto_object _corto_loader_onResume_v(
         sprintf(path, "%s/%s", parent, name);
         corto_cleanpath(path, path);
         if (!corto_load(path, 0, NULL)) {
-            o = corto_lookup(NULL, path);
+            o = corto_find(NULL, path, CORTO_FIND_DEFAULT);
         } else {
             /* Catch error */
             corto_lasterr();

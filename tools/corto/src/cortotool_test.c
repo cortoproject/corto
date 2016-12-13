@@ -7,7 +7,7 @@
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string testcaseArg = NULL;
     corto_int8 ret, sig, err = 0;
-    corto_ll verbose, project, testcase, build, rebuild, clean;
+    corto_ll verbose, project, testcase, build, rebuild, clean, tool;
 
     CORTO_UNUSED(argc);
 
@@ -19,6 +19,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         {"--build", &build, NULL},
         {"--rebuild", &rebuild, NULL},
         {"--clean", &clean, NULL},
+        {"--tool", NULL, &tool},
         {"$?*", &project, NULL},
         {"$+*", &testcase, NULL},
         {NULL}
@@ -30,6 +31,12 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
             corto_error("corto: can't change to directory '%s'", corto_llGet(project, 1));
             goto error;
         }
+    }
+
+    if (tool) {
+        char *toolstr = corto_llGet(tool, 0);
+        setenv("CORTO_TEST_TOOL", toolstr, TRUE);
+        setenv("CI", "TRUE", TRUE);
     }
 
     if (testcase) {

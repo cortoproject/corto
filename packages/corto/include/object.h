@@ -101,9 +101,21 @@ corto_string corto_pathname(corto_id str, corto_object from, corto_object o, con
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 corto_string corto_cleanpath(corto_id buffer, char* path);
 
-/* Find objects by id */
+/* Lookup objects by id in scope */
 corto_object corto_lookup(corto_object scope, corto_string id);
+
+/* Lookup objects by id according to rules for an input language */
 corto_object corto_resolve(corto_object scope, corto_string id);
+
+/* Lookup objects by id according to custom settings */
+typedef enum corto_findKind {
+    CORTO_FIND_DEFAULT = 0,
+    CORTO_FIND_RESUME = 1,
+    /* Will be extended with more options */
+} corto_findKind;
+
+/* Unstable API */
+corto_object corto_find(corto_object scope, corto_string id, corto_findKind mode);
 
 /* Iterate over objects matching an expression */
 typedef struct corto_selectFluent {

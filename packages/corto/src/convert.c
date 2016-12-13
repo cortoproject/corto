@@ -179,7 +179,7 @@ CORTO_DECL_TRANSFORM(string, enum) {
     corto_constant* o;
     CORTO_UNUSED(fromType);
 
-    o = corto_lookup(toType, *(corto_string*)from);
+    o = corto_find(toType, *(corto_string*)from, CORTO_FIND_DEFAULT);
     if (!o) {
         corto_seterr(
             "constant identifier '%s' is not valid for enumeration '%s'",
@@ -290,7 +290,7 @@ CORTO_DECL_TRANSFORM(string, bitmask) {
             case '|':
             case '\0':
                 *bptr = '\0';
-                constant = corto_lookup(toType, buffer);
+                constant = corto_find(toType, buffer, CORTO_FIND_DEFAULT);
                 if (!constant) {
                     corto_seterr(
                         "constant identifier '%s' is not valid for bitmask '%s'.",
