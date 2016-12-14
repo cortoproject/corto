@@ -535,6 +535,7 @@ corto_object _corto_mount_resume(
 
     /* Resume object */
     if (this->hasResume) {
+        corto_debug("corto: mount: onResume parent=%s, expr=%s (mount = %s)", parent, name, corto_fullpath(NULL, this));
         result = corto_mount_onResume(this, parent, name, o);
     } else {
         corto_id type;
@@ -554,6 +555,7 @@ corto_object _corto_mount_resume(
         r.content = TRUE;
 
         // Request object from mount
+        corto_debug("corto: mount: auto-resume parent=%s, expr=%s (mount = %s)", parent, name, corto_fullpath(NULL, this));
         corto_resultIter it = corto_mount_request(this, &r);
 
         if (corto_iterHasNext(&it)) {
@@ -570,7 +572,7 @@ corto_object _corto_mount_resume(
                     goto error;
                 }
                 corto_object parent_o =
-                  corto_resolve(corto_mount(this)->mount, parent);
+                  corto_lookup(corto_mount(this)->mount, parent);
                 if (parent_o) {
                     corto_object type_o = corto_resolve(NULL, iterResult->type);
                     if (type_o) {

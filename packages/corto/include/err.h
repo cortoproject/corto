@@ -28,10 +28,10 @@ typedef enum corto_err {
 
 #ifndef NDEBUG
 #define corto_assert(condition, ...) if (!(condition)){_corto_assert(condition, "(" #condition ") " __VA_ARGS__);}
-#define corto_debug(...) _corto_debug(__VA_ARGS__)
-#define corto_trace(...) _corto_trace(__VA_ARGS__)
-#define corto_info(...) _corto_info(__VA_ARGS__)
-#define corto_ok(...) _corto_ok(__VA_ARGS__)
+#define corto_debug(...) if(corto_verbosityGet() <= CORTO_DEBUG) { _corto_debug(__VA_ARGS__);}
+#define corto_trace(...) if(corto_verbosityGet() <= CORTO_TRACE) { _corto_trace(__VA_ARGS__);}
+#define corto_info(...) if(corto_verbosityGet() <= CORTO_INFO) { _corto_info(__VA_ARGS__);}
+#define corto_ok(...) if(corto_verbosityGet() <= CORTO_OK) { _corto_ok(__VA_ARGS__);}
 #else
 #define corto_assert(condition, ...) (void)(condition)
 #define corto_debug(...)

@@ -1274,68 +1274,121 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     return result;
 }
 
+corto_object corto_resume_fromMount(
+    corto_mount m,
+    char *parentId,
+    char* expr,
+    corto_object o)
+{
+    corto_object result = NULL;
+
+    /* If mount implements resume, this will load the
+     * persistent copy in memory */
+    if ((result = corto_mount_resume(
+        m,
+        parentId,
+        expr,
+        o)))
+    {
+        /* Assign owner */
+        corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
+        corto__persistent *_p = corto__objectPersistent(_o);
+        corto_assert(_p != NULL, "cannot resume object that is not persistent");
+        corto_setref(&_p->owner, m);
+    }
+
+    return result;
+}
+
+/* Precondition: 'expr' contains the expression starting from the object that
+ * could not be found in the object store. */
 corto_object corto_resume(
     corto_object parent,
     corto_string expr,
     corto_object o)
 {
-    corto_assertObject(parent);
-    corto_assertObject(o);
-
     if (o == root_o) {
         return o;
     }
 
+    if (!expr) {
+        return NULL;
+    }
+
     corto_object result = NULL;
     corto_object p = parent;
+    corto_id exprBuff;
+    char *exprPtr = exprBuff;
+    corto_mount lastMount = NULL;
 
-    while (!result && p) {
-        corto_ll mountList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
-        if (mountList) {
-            corto_iter iter = corto_llIter(mountList);
-            corto_id parentId;
+    /* If expression contains / cut expression up without modifying original
+     * parameter value */
+    strcpy(exprBuff, expr);
 
-            /* Parent must be relative to mount point of mount */
+    char *nextSep = NULL;
+    do {
+        corto_id parentId;
+        corto_object prev = result;
+
+        nextSep = strchr(exprPtr, '/');
+        if (nextSep) {
+            *nextSep = '\0';
+        }
+
+        result = NULL;
+
+        /* If expression consists of multiple elements, and one element has been
+         * found in a mount, it is likely that the next elements are going to be
+         * found in the same mount, so start searching there. */
+        if (lastMount) {
             corto_path(
                 parentId,
                 p,
                 parent,
                 "/");
+            result = corto_resume_fromMount(lastMount, parentId, exprPtr, o);
+        }
 
-            while (corto_iterHasNext(&iter)) {
-                corto_mount_olsData_t *rData = corto_iterNext(&iter);
+        while (!result && p) {
+            corto_ll mountList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
+            if (mountList) {
+                corto_iter iter = corto_llIter(mountList);
 
-                /* Either the mount registered for the direct parent of the
-                 * provided object, or the mount must have ON_TREE set */
-                if ((p == parent) ||
-                  (((corto_observer)rData->mount)->mask & CORTO_ON_TREE)) {
-                    corto_object requested;
+                /* Parent must be relative to mount point of mount */
+                corto_path(
+                    parentId,
+                    p,
+                    parent,
+                    "/");
 
-                    /* If mount implements resume, this will load the
-                     * persistent copy in memory */
-                    if ((requested = corto_mount_resume(
-                        rData->mount,
-                        parentId,
-                        expr,
-                        o)))
-                    {
-                        /* The first mount that has the object
-                         * takes precedence */
-                        result = requested;
+                while (corto_iterHasNext(&iter)) {
+                    corto_mount_olsData_t *rData = corto_iterNext(&iter);
 
-                        /* Assign owner */
-                        corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
-                        corto__persistent *_p = corto__objectPersistent(_o);
-                        corto_assert(p != NULL, "cannot resume object that is not persistent");
-                        corto_setref(&_p->owner, rData->mount);
+                    /* Either the mount registered for the direct parent of the
+                     * provided object, or the mount must have ON_TREE set */
+                    if ((p == parent) ||
+                      (((corto_observer)rData->mount)->mask & CORTO_ON_TREE)) {
 
-                        break;
+                        result = corto_resume_fromMount(rData->mount, parentId, exprPtr, o);
+                        if (result) {
+                            lastMount = rData->mount;
+                            break;
+                        }
                     }
                 }
             }
+            if (!result) {
+                p = corto_parentof(p);
+            }
         }
-        p = corto_parentof(p);
-    }
+
+        if (prev) {
+            corto_release(prev);
+        }
+
+        parent = result;
+        exprPtr = nextSep + 1;
+    } while (parent && nextSep);
 
     return result;
 }
@@ -3086,7 +3139,7 @@ static corto_object corto_lookup_intern(
     corto_bool resume)
 {
     corto_assertObject(parent);
-    
+
     corto_object o = parent;
     corto__object *_o, *_result;
     corto__scope* scope;
@@ -3096,6 +3149,11 @@ static corto_object corto_lookup_intern(
 
     if (!o) {
         o = root_o;
+    }
+
+    if ((id[0] == '.') && !id[1]) {
+        corto_claim(parent);
+        return parent;
     }
 
     int i = 0;
@@ -3124,7 +3182,8 @@ static corto_object corto_lookup_intern(
                     corto_compareLookup)))
                 {
                     o = NULL;
-                } else {
+                } else
+                {
                     /* If an object was returned with a ( in its id but
                      * the request didn't have one, check scope again for an object
                      * that matches the request exactly */
@@ -3177,7 +3236,7 @@ static corto_object corto_lookup_intern(
             prev = parent;
         }
         if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
-            o = corto_resume(prev, id, NULL);
+            o = corto_resume(prev, ptr, NULL);
         }
     }
 

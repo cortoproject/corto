@@ -148,7 +148,7 @@ repeat:
                 corto_setref(&lookup, o);
             } else {
                 if (!overload) {
-                    corto_object prev = o, prevLookup = lookup;
+                    corto_object prevLookup = lookup;
 
                     o = corto_lookup(o, bufferLc);
 

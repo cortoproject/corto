@@ -217,7 +217,7 @@ corto_object _test_SinkReplicator_onResume(
                       e.type, corto_fullpath(NULL, corto_typeof(o)));
                 }
 
-                corto_object p = corto_resolve(
+                corto_object p = corto_lookup(
                     corto_mount(this)->mount,
                     e.parent
                 );
