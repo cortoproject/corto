@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto)
-[![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
+Linux/OSX: [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) Windows: [![Build status](https://ci.appveyor.com/api/projects/status/549itmv72ut0ia51?svg=true)](https://ci.appveyor.com/project/SanderMertens/corto) [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
+
+
 
 # Background
 Integrating different products and technologies is often an expensive part of product development, and can slow down innovation. Sometimes it is a bump in the road, and sometimes it is a 4000ft mountain that must be climbed. There are companies that make lots of money from selling products that solve the integration problem.
