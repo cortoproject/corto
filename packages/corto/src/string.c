@@ -161,8 +161,8 @@ char *chresc(char *out, char in, char delimiter) {
         break;
     default:
         if (in == delimiter) {
-            *bptr = '\\';
-            *(++bptr) = delimiter;
+            *bptr++ = '\\';
+            *bptr = delimiter;
         } else {
             *bptr = in;
         }

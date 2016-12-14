@@ -75,6 +75,13 @@ struct DefinedParent: parentState = defined ::
 struct DeclaredParent: parentState = declared::
     foo: int32
 
+ReferenceMember anonymousString{
+    CompositeWithString{10, "Hello", "World", 20}
+}
+ReferenceMember anonymousStringEsc{
+    CompositeWithString{10, "\"Hello\"", "\"World\"", 20}
+}
+
 test/Suite Attributes::
     void tc_testDefaultSet()
     void tc_isDefaultPersistent()
@@ -1151,6 +1158,9 @@ test/Suite StringSerializer::
     void tc_serSameAnonymous()
     void tc_serLongAnonymous()
     void tc_serCycle()
+    void tc_serAnonymousComplex()
+    void tc_serAnonymousComplexString()
+    void tc_serAnonymousComplexStringEsc()
 
 
 class AnonymousTest::
@@ -1256,6 +1266,9 @@ test/Suite StringDeserializer::
     void tc_deserAnonymousReuseNested()
     void tc_deserAnonymousCycle()
     void tc_deserAnonymousTwice()
+    void tc_deserAnonymousComplex()
+    void tc_deserAnonymousComplexString()
+    void tc_deserAnonymousComplexStringEsc()
 
     void tc_deserTargetOwned()
     void tc_deserTargetOwnedObj()

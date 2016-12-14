@@ -18,6 +18,82 @@ corto_void _test_StringDeserializer_setup(
 /* $end */
 }
 
+corto_void _test_StringDeserializer_tc_deserAnonymousComplex(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserAnonymousComplex) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+        "test/ReferenceMember{m="
+            "<0>"
+        "}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_ReferenceMember_o, o));
+    test_ReferenceMember *t = test_ReferenceMember(o);
+    test_assert(t != NULL);
+    test_assert(t->m != NULL);
+    test_assert(t->m == t);
+    corto_release(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousComplexString(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserAnonymousComplexString) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+        "test/CompositeWithString{"
+            "a=10,"
+            "b=\"Hello\","
+            "c=\"World\","
+            "d=20"
+        "}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_CompositeWithString_o, o));
+    test_CompositeWithString *t = test_CompositeWithString(o);
+    test_assert(t != NULL);
+    test_assertint(t->a, 10);
+    test_assertstr(t->b, "Hello");
+    test_assertstr(t->c, "World");
+    test_assertint(t->d, 20);
+    corto_release(o);
+
+/* $end */
+}
+
+corto_void _test_StringDeserializer_tc_deserAnonymousComplexStringEsc(
+    test_StringDeserializer this)
+{
+/* $begin(test/StringDeserializer/tc_deserAnonymousComplexStringEsc) */
+    corto_object o = NULL;
+    corto_int16 ret = corto_fromStr(&o,
+        "test/CompositeWithString{"
+            "a=10,"
+            "b=\"\\\"Hello\\\"\","
+            "c=\"\\\"World\\\"\","
+            "d=20"
+        "}");
+
+    test_assert(ret == 0);
+    test_assert(o != NULL);
+    test_assert(corto_instanceof(test_CompositeWithString_o, o));
+    test_CompositeWithString *t = test_CompositeWithString(o);
+    test_assert(t != NULL);
+    test_assertint(t->a, 10);
+    test_assertstr(t->b, "\"Hello\"");
+    test_assertstr(t->c, "\"World\"");
+    test_assertint(t->d, 20);
+    corto_release(o);
+
+/* $end */
+}
+
 corto_void _test_StringDeserializer_tc_deserAnonymousCycle(
     test_StringDeserializer this)
 {

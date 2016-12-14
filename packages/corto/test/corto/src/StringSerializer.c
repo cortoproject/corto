@@ -29,6 +29,82 @@ corto_void _test_StringSerializer_tc_serAnonymous(
 /* $end */
 }
 
+corto_void _test_StringSerializer_tc_serAnonymousComplex(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serAnonymousComplex) */
+    test_Point *anonymous = corto_create(test_Point_o);
+    corto_objectList objList = corto_llNew();
+    corto_llAppend(objList, anonymous);
+    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_assert(o != NULL);
+
+    anonymous->x = 10;
+    anonymous->y = 20;
+
+    corto_string str = corto_str(o, 0);
+    test_assert(str != NULL);
+    test_assertstr(str, "{{<1>/test/Point{10,20}}}");
+
+    corto_delete(o);
+    corto_dealloc(str);
+    corto_llFree(objList);
+
+/* $end */
+}
+
+corto_void _test_StringSerializer_tc_serAnonymousComplexString(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serAnonymousComplexString) */
+    test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
+    corto_objectList objList = corto_llNew();
+    corto_llAppend(objList, anonymous);
+    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_assert(o != NULL);
+
+    anonymous->a = 10;
+    anonymous->b = "Hello";
+    anonymous->c = "World";
+    anonymous->d = 20;
+
+    corto_string str = corto_str(o, 0);
+    test_assert(str != NULL);
+    test_assertstr(str, "{{<1>/test/CompositeWithString{10,\"Hello\",\"World\",20}}}");
+
+    corto_delete(o);
+    corto_dealloc(str);
+    corto_llFree(objList);
+
+/* $end */
+}
+
+corto_void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
+    test_StringSerializer this)
+{
+/* $begin(test/StringSerializer/tc_serAnonymousComplexStringEsc) */
+    test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
+    corto_objectList objList = corto_llNew();
+    corto_llAppend(objList, anonymous);
+    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_assert(o != NULL);
+
+    anonymous->a = 10;
+    anonymous->b = "\"Hello\"";
+    anonymous->c = "\"World\"";
+    anonymous->d = 20;
+
+    corto_string str = corto_str(o, 0);
+    test_assert(str != NULL);
+    test_assertstr(str, "{{<1>/test/CompositeWithString{10,\"\\\"Hello\\\"\",\"\\\"World\\\"\",20}}}");
+
+    corto_delete(o);
+    corto_dealloc(str);
+    corto_llFree(objList);
+
+/* $end */
+}
+
 corto_void _test_StringSerializer_tc_serArray(
     test_StringSerializer this)
 {
