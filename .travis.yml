@@ -9,7 +9,7 @@ env:
    - secure: "3Njik+f5HM4VM6wdu09NWR1cEFvNViTyK7+k1BFcO9v0i+ILJmuIkkhjyE79ou8+rKZzGjP9bNk8VcB8P/6dLg60IO7we6t+D8ibe4uS/zHRoxHmc88Uz3Khs7yUlDeUfCo6XgHwSCLJ1QHhR7XjkP7IVdQZwH4KKycl7GuYgZ0="
 
 before_install:
-      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-; fi
 
 os:
   - linux
