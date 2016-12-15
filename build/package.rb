@@ -317,7 +317,7 @@ def installFile(source, target)
     begin
       cmd "ln -fs #{source} #{target}"
     rescue
-      STDERR.puts "\033[0;33mwarning: failed to create link #{target}#{File.basename(source)}, retrying\033[0;49m"
+      STDERR.puts "#{C_WARNING}warning: failed to create link #{target}#{File.basename(source)}, retrying#{C_NORMAL}"
       if File.exists?(target) then
         cmd "rm -rf #{target}#{File.basename(source)}"
       end
@@ -328,7 +328,7 @@ def installFile(source, target)
     begin
       cmd "cp -r #{source} #{target}"
     rescue
-      STDERR.puts "\033[0;33mwarning: failed to copy file #{source}, retrying\033[0;49m"
+      STDERR.puts "#{C_WARNING}warning: failed to copy file #{source}, retrying#{C_NORMAL}"
       if File.exists?(target) then
         cmd "rm -rf #{target}"
       end

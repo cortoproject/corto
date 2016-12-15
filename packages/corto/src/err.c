@@ -39,7 +39,7 @@ static void corto_lasterrorFree(void* tls) {
     if (data) {
         if (!data->viewed && data->lastError) {
             corto_error("corto: uncatched error (use corto_lasterr): %s%s%s",
-              data->lastError, data->backtrace?"\n":"", data->backtrace);
+              data->lastError, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
         }
         if (data->lastError) {
             corto_dealloc(data->lastError);

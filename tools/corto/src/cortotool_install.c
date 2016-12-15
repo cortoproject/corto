@@ -664,7 +664,7 @@ void cortotool_toLibPath(char *location) {
 
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
-    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE;
+    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE, lib_redis = FALSE;
     corto_bool error_only = FALSE;
 
     if (argc <= 1) {
@@ -679,6 +679,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 lib = TRUE;
             } else if (!strcmp(argv[i], "--path")) {
                 path = TRUE;
+            } else if (!strcmp(argv[i], "--lib-redis")) {
+                lib_redis = TRUE;
             } else if (!strcmp(argv[i], "--env")) {
                 env = TRUE;
             } else if (!strcmp(argv[i], "--silent")) {
@@ -692,12 +694,29 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
     }
 
-    location = corto_locate(argv[1], CORTO_LOCATION_LIB);
+    if (!lib_redis) {
+        location = corto_locate(argv[1], CORTO_LOCATION_LIB);
+    } else {
+        corto_id package;
+        strcpy(package, argv[1][0] == '/' ? argv[1] + 1 : argv[1]);
+        char *ptr = package, ch;
+        while ((ch = *ptr)) {
+            if (ch == '/') {
+                *ptr = '_';
+            }
+            ptr++;
+        }
+        location = corto_envparse("$CORTO_TARGET/etc/corto/$CORTO_VERSION/redis/lib/lib%s.so", package);
+        if (!corto_fileTest(location)) {
+            corto_trace("corto: library '%s' not found", location);
+            corto_dealloc(location);
+            location = NULL;
+        }
+    }
 
     if (location) {
         if (env) {
             char *ptr = location;
-
             while (*ptr) {
                 if (!memcmp(ptr, "/lib", 4)) {
                     *ptr = '\0';
@@ -709,7 +728,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             cortotool_toLibPath(location);
         }
 
-        if (lib || path || env) {
+        if (lib || lib_redis || path || env) {
             if (!silent && !error_only) printf("%s\n", location);
         } else {
             if (!silent && !error_only) printf(CORTO_PROMPT "'%s' => '%s'\n", argv[1], location);
@@ -717,7 +736,11 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
     } else {
         if (!silent) {
             if (!error_only) {
-                printf(CORTO_PROMPT "package '%s' not found", argv[1]);
+                if (lib_redis) {
+                    printf(CORTO_PROMPT "redistributable library for package '%s' not found", argv[1]);
+                } else {
+                    printf(CORTO_PROMPT "package '%s' not found", argv[1]);
+                }
             }
             if (corto_lasterr()) {
                 printf("%s\n", corto_lasterr());
@@ -727,6 +750,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
         goto error;
     }
+
+    corto_dealloc(location);
 
     return 0;
 error:
@@ -904,6 +929,7 @@ void cortotool_locateHelp(void) {
     printf("\n");
     printf("Options:\n");
     printf("   --lib        Return the path including library name\n");
+    printf("   --lib-redis  Returns the path to a redistributable library\n");
     printf("   --path       Return only the path (no library name)\n");
     printf("   --env        Return only the environment (local or global package repository)\n");
     printf("   --silent     Do not print anything, just return if the package is installed\n");

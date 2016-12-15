@@ -22,6 +22,10 @@ GENERATED_SOURCES ||= []
 GENERATED_HEADERS ||= []
 USE_PACKAGE_LOADED ||=[]
 
+# Variable that indicates whether dependencies for redistributable librares are
+# resolved
+$redis_dependencies_resolved = true
+
 DEFINE << "CORTO_OBJECT_NAME='\"#{TARGETDIR}/#{ARTEFACT}\"'"
 
 # Add lib path for builds that don't install to global environment
@@ -291,9 +295,13 @@ def build()
   if not ENV['binaries'] == "false" then
     if not LOCAL then
       if not ENV['redis'] == "false" then
-        build_target(false)
-        if ENV['silent'] != "true" then
-          msg "  rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+        if $redis_dependencies_resolved then
+          build_target(false)
+          if ENV['silent'] != "true" then
+            msg "  rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+          end
+        else
+          msg "  rds #{C_WARNING}missing dependencies, skipping"
         end
       end
     end
@@ -356,8 +364,16 @@ task :prebuild do
         end
       end
     else
+      redis_msg = ""
+      if ENV['redis'] != "false" then
+        redis = `corto locate #{p} --lib-redis`.strip
+        if not $?.to_i == 0 then
+          redis_msg = "#{C_WARNING} (no redis)#{C_NORMAL}"
+          $redis_dependencies_resolved = false
+        end
+      end
       if ENV['silent'] != "true" then
-          msg "  use #{C_NORMAL}#{location}"
+        msg "  use #{C_NORMAL}#{location}#{redis_msg}"
       end
     end
 
