@@ -349,6 +349,8 @@ def installDir(dir)
         cmd "mkdir -p #{dstPath}"
       end
 
+      msg "copy #{C_NORMAL}#{dir} to #{dstPath}"
+
       # Keep track of installed include files
       installFiles.each do |f|
         file = Dir.getwd + "/" + f
@@ -397,15 +399,19 @@ task :install_files do
       if File.exists? platformStr then
         install = "#{CORTO_TARGET}"
         if File.exists? "#{platformStr}/lib" then
+          msg "copy #{C_NORMAL}#{platformStr}/lib to #{install}/lib"
           cmd "cp -r #{platformStr}/lib/. #{install}/lib"
         end
         if File.exists? "#{platformStr}/bin" then
+          msg "copy #{C_NORMAL}#{platformStr}/bin to #{install}/bin"
           cmd "cp -r #{platformStr}/bin/. #{install}/bin"
         end
         if File.exists? "#{platformStr}/include" then
+          msg "copy #{C_NORMAL}#{platformStr}/include to #{install}/include"
           cmd "cp -r #{platformStr}/include/. #{install}/include"
         end
         if File.exists? "#{platformStr}/etc" then
+          msg "copy #{C_NORMAL}#{platformStr}/etc to #{install}/etc"
           cmd "cp -r #{platformStr}/etc/. #{install}/etc"
         end
 
