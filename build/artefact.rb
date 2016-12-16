@@ -85,7 +85,7 @@ end
 SOURCES = Rake::FileList["src/**/*.{c,cpp}"] - ALWAYS_REBUILD
 OBJECTS = SOURCES.ext(".o")
               .pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
-            Rake::FileList[GENERATED_SOURCES]
+          Rake::FileList[GENERATED_SOURCES]
               .ext(".o")
               .pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
 
@@ -368,7 +368,7 @@ end
 # :prebuild and :postbuild allow projects to define actions that should happen
 # before and after the build.
 
-task :prebuild do
+task :prebuild => GENERATED_SOURCES do
   verbose(VERBOSE)
 
   verbose(VERBOSE)
@@ -442,7 +442,6 @@ task :clean do
       msg "clean #{C_NORMAL}#{pkg}"
     end
   end
-
 end
 
 # For make junkies
