@@ -26,7 +26,11 @@ USE_PACKAGE_LOADED ||=[]
 # resolved
 $redis_dependencies_resolved = true
 
-DEFINE << "CORTO_OBJECT_NAME='\"#{TARGETDIR}/#{ARTEFACT}\"'"
+if ARTEFACT_EXT and ARTEFACT_EXT != "" then
+  ARTEFACT_NAME = "#{TARGETDIR}/#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}"
+else
+  ARTEFACT_NAME = "#{TARGETDIR}/#{ARTEFACT_PREFIX}#{ARTEFACT}"
+end
 
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
@@ -78,7 +82,7 @@ if CONFIG == "debug" then
 end
 
 # Crawl src directory to get list of source files
-SOURCES = Rake::FileList["src/**/*.{c,cpp}"]
+SOURCES = Rake::FileList["src/**/*.{c,cpp}"] - ALWAYS_REBUILD
 OBJECTS = SOURCES.ext(".o")
               .pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
             Rake::FileList[GENERATED_SOURCES]
@@ -165,6 +169,20 @@ def relative_path(from, to)
   end
 end
 
+def package_from_path(directory, repo)
+  package = nil
+  env = ENV['CORTO_TARGET'] + repo + ENV['CORTO_VERSION']
+  if directory[0..env.length - 1] == env then
+    package = relative_path(env, directory)
+  else
+    env = "/usr/local" + repo + ENV['CORTO_VERSION']
+    if directory[0..env.length - 1] == env then
+      package = relative_path(env, directory)
+    end
+  end
+  return package
+end
+
 def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
   if directory != "." then
     directory = directory + "/"
@@ -174,19 +192,18 @@ def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
   end
 
   if not hardcodedPaths then
-    env = ENV['CORTO_TARGET'] + "/lib/corto/" + ENV['CORTO_VERSION']
     artefact = ""
-    if directory[0..env.length - 1] == env
-      artefact = "lib"
-      package = relative_path(env, directory)
-      basename = package.to_s.gsub("/", "_")
-    else
-      env = ENV['CORTO_TARGET'] + "/bin/cortobin/" + ENV['CORTO_VERSION']
-      if directory[0..env.length - 1] == env
+    package = package_from_path(directory, "/lib/corto/")
+    if not package then
+      package = package_from_path(directory, "/bin/cortobin/")
+      if package then
         artefact = "bin"
-        package = relative_path(env, directory)
-        basename = package.to_s.gsub("/", "_")
       end
+    else
+      artefact = "lib"
+    end
+    if package then
+      basename = package.to_s.gsub("/", "_")
     end
     if link then
       directory = "-l"
@@ -230,6 +247,22 @@ def build_target(hardcodedPaths)
   end
 
   objects = OBJECTS.clone
+
+  # Build ALWAYS_REBUILD
+  ALWAYS_REBUILD.each do |file|
+    obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
+    if hardcodedPaths then
+      build_source(file, obj, true, "-DCORTO_OBJECT_NAME='\"#{artefact}\"'")
+    else
+      if ARTEFACT_EXT and ARTEFACT_EXT != "" then
+        build_source(file, obj, true, "-DCORTO_REDIS -DCORTO_OBJECT_NAME='\"#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}\"'")
+      else
+        build_source(file, obj, true, "-DCORTO_REDIS -DCORTO_OBJECT_NAME='\"#{ARTEFACT_PREFIX}#{ARTEFACT}\"'")
+      end
+    end
+    objects << obj
+  end
+
   objects.concat(linked)
   objects  = "#{objects.to_a.uniq.join(' ')}"
 
@@ -284,10 +317,11 @@ def build()
   verbose(VERBOSE)
 
   # Check if there were any new files created during code generation
-  Rake::FileList["src/*.{c,cpp}"].each do |file|
+  files = Rake::FileList["src/*.{c,cpp}"] - ALWAYS_REBUILD
+  files.each do |file|
     obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
     if not OBJECTS.include? obj
-      build_source(file, obj, true)
+      build_source(file, obj, true, "")
       OBJECTS << obj
     end
   end
@@ -365,9 +399,12 @@ task :prebuild do
       end
     else
       redis_msg = ""
+
+      # Check if redistributable library can be found for dependency
       if ENV['redis'] != "false" then
         redis = `corto locate #{p} --lib-redis`.strip
         if not $?.to_i == 0 then
+          # Disable redistributable build when there are unresolved dependencies
           redis_msg = "#{C_WARNING} (no redis)#{C_NORMAL}"
           $redis_dependencies_resolved = false
         end
@@ -448,7 +485,7 @@ end
 task :runtest do
   verbose(VERBOSE)
   TEST = true
-  cmd "rake silent=true"
+  cmd "rake"
   begin
     cmd "corto #{get_artefact_name(TRUE)} #{ENV['testcase']}"
   rescue
@@ -489,16 +526,16 @@ end
 
 # Rules for generated files
 rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false)
+    build_source(task.source, task.name, false, "")
 end
 rule '_project.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false)
+    build_source(task.source, task.name, false, "")
 end
 rule '_wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false)
+    build_source(task.source, task.name, false, "")
 end
 rule '_load.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false)
+    build_source(task.source, task.name, false, "")
 end
 
 # Generic rule for translating source files into object files
@@ -520,7 +557,7 @@ rule '.o' => ->(t) {
     cmd "rm -f #{task.name.ext(".gcda")}"
     cmd "rm -f #{task.name.ext(".gcno")}"
   end
-  build_source(task.source, task.name, true)
+  build_source(task.source, task.name, true, "")
 end
 
 # Rule for creating a gcov file
@@ -543,7 +580,7 @@ end
 # --- UTILITIES
 
 # Utility function for building a sourcefile
-def build_source(source, target, echo)
+def build_source(source, target, echo, custom)
   verbose(VERBOSE)
   flags = ""
   cc = ""
@@ -567,7 +604,7 @@ def build_source(source, target, echo)
     end
   end
 
-  cc_command = "#{COMPILER} -c #{flags.join(" ")} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + corto_replace(i)}.join(" ")} #{source} -o #{target}"
+  cc_command = "#{COMPILER} -c #{flags.join(" ")} #{custom} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + corto_replace(i)}.join(" ")} #{source} -o #{target}"
   begin
     cmd cc_command
   rescue

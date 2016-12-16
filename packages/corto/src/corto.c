@@ -974,6 +974,8 @@ int corto_start(void) {
 
     CORTO_OPERATIONAL = 1; /* Initializing */
 
+/* Only set environment variables if library is installed as corto package */
+#ifndef CORTO_REDIS
     /* CORTO_BUILD is where the buildsystem is located */
     if (!corto_getenv("CORTO_BUILD")) {
         corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s.%s/build",
@@ -994,6 +996,7 @@ int corto_start(void) {
     if (!corto_getenv("CORTO_VERSION")) {
         corto_setenv("CORTO_VERSION", VERSION_MAJOR "." VERSION_MINOR);
     }
+#endif
 
     corto_string verbosity = corto_getenv("CORTO_VERBOSITY");
     if (verbosity) {

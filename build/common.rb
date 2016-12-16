@@ -105,6 +105,7 @@ USE_LIBRARY ||= []
 DEFINE ||= []
 PP_PRELOAD ||= []
 LANGUAGE ||= "c"
+ALWAYS_REBUILD ||= []
 
 # Variable that tracks files created by the buildsystem for uninstaller
 UNINSTALL ||= []

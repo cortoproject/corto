@@ -7,6 +7,10 @@ CFLAGS ||= ["-Wunused-parameter"]
 # Bootstrap: can't build corto packages without corto
 NOCORTO = true
 
+# Rebuild corto.c and loader.c for every artefact so that they are aware of
+# whether the library is redistributable
+ALWAYS_REBUILD = ["src/corto.c", "src/loader.c"]
+
 # When building a tar for the core, also include the build system
 task :collect do
     verbose(false)
@@ -16,10 +20,6 @@ task :collect do
 end
 
 task :prebuild do
-  # Always rebuild corto.c to ensure it contains the right information about the
-  # corto library it was linked with.
-  sh "rm -f .corto/obj/#{CORTO_PLATFORM}/corto.o"
-
   # When rebuilding corto, remove corto tool to avoid library conflicts when old
   # tool is built against a library in a different location.
   sh "rm -f #{CORTO_TARGET}/bin/corto"

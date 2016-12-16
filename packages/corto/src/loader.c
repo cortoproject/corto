@@ -185,18 +185,23 @@ static corto_string corto_replaceColons(corto_id buffer, corto_string package) {
 
 /* Convert package identifier to filename */
 static corto_string corto_packageToFile(corto_string package) {
-    corto_string fileName, path;
+    corto_string path;
+#ifdef CORTO_REDIS
+    corto_asprintf(&path, "lib%s.so", package[0] == '/' ? package + 1 : package);
+    char ch, *ptr;
+    for (ptr = path; (ch = *ptr); ptr++) {
+        if (ch == '/') *ptr = '_';
+    }
+#else
+    corto_string fileName;
     int fileNameLength;
-
     path = malloc(strlen(package) * 2 + strlen("/lib.so") + 1);
-
     fileName = corto_replaceColons(path, package);
-
     fileNameLength = strlen(fileName);
     memcpy(fileName + fileNameLength, "/lib", 4);
     memcpy(fileName + fileNameLength + 4, fileName, fileNameLength);
     memcpy(fileName + fileNameLength * 2 + 4, ".so\0", 4);
-
+#endif
     return path;
 }
 
@@ -437,6 +442,7 @@ int corto_loadTry(corto_string str, int argc, char* argv[]) {
     return corto_loadIntern(str, argc, argv, TRUE);
 }
 
+#ifndef CORTO_REDIS
 static time_t corto_getModified(corto_string file) {
     struct stat attr;
 
@@ -604,19 +610,64 @@ static corto_string corto_locateLibraryIntern(
 error:
     return NULL;
 }
+#endif
+
+corto_string corto_locateGetName(corto_string package, corto_loaderLocationKind kind) {
+    corto_string result = corto_strdup(package);
+    corto_string name;
+
+    if (package[0] == '/') {
+        name = corto_replaceColons(result, package + 1);
+    } else if (package[0] == ':') {
+        name = corto_replaceColons(result, package + 2);
+    } else {
+        name = corto_replaceColons(result, package);
+    }
+
+    if (kind == CORTO_LOCATION_NAME) {
+        name = corto_strdup(name);
+        corto_dealloc(result);
+        result = name;
+    }
+
+    return result;
+}
 
 corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     corto_string relativePath = corto_packageToFile(package);
     corto_string result = NULL;
-    corto_string base = NULL;
 
     if (!relativePath) {
         goto error;
     }
 
+#ifdef CORTO_REDIS
+    if (!corto_checkLibrary(relativePath, NULL)) {
+        goto error;
+    }
+
+    result = relativePath;
+    switch(kind) {
+    case CORTO_LOCATION_ENV:
+    case CORTO_LOCATION_LIBPATH:
+    case CORTO_LOCATION_INCLUDE:
+        corto_dealloc(result);
+        result = corto_strdup("");
+        break;
+    case CORTO_LOCATION_LIB:
+        /* Result is already pointing to the lib */
+        break;
+    case CORTO_LOCATION_NAME:
+    case CORTO_LOCATION_FULLNAME: {
+        corto_dealloc(result);
+        result = corto_locateGetName(package, kind);
+        break;
+    }
+    }
+#else
+    corto_string base = NULL;
     result = corto_locateLibraryIntern(relativePath, &base);
     corto_dealloc(relativePath);
-
     if (result) {
         switch(kind) {
         case CORTO_LOCATION_ENV:
@@ -645,29 +696,14 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
         }
         case CORTO_LOCATION_NAME:
         case CORTO_LOCATION_FULLNAME: {
-            corto_string name;
             corto_dealloc(result);
-            result = corto_strdup(package);
-
-            if (package[0] == '/') {
-                name = corto_replaceColons(result, package + 1);
-            } else if (package[0] == ':') {
-                name = corto_replaceColons(result, package + 2);
-            } else {
-                name = corto_replaceColons(result, package);
-            }
-
-            if (kind == CORTO_LOCATION_NAME) {
-                name = corto_strdup(name);
-                corto_dealloc(result);
-                result = name;
-            }
-
+            result = corto_locateGetName(package, kind);
             break;
         }
         }
         corto_dealloc(base);
     }
+#endif
 
 
     return result;
