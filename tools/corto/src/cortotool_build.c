@@ -100,43 +100,101 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     return 0;
 }
 
+corto_int16 cortotool_loadRakefile(void) {
+
+    if (!corto_fileTest("project.json")) {
+        if (!corto_fileTest("rakefile")) {
+            corto_seterr("no project.json or rakefile provided");
+            goto error_fileTest;
+        } else {
+            goto skip;
+        }
+    }
+
+    char* fileContent = corto_fileLoad("project.json");
+    if (!fileContent) {
+        goto error_fileLoad;
+    }
+
+    corto_package package = corto_package(corto_createFromContent("text/json", fileContent));
+    if (!package) {
+        goto error_createFromContent;
+    }
+
+    if (cortotool_writeRakefileFromPackage(package)) {
+        goto error_createRakefile;
+    }
+
+    corto_delete(package);
+    corto_dealloc(fileContent);
+
+skip:
+    return 0;
+
+error_createRakefile:
+    corto_delete(package);
+error_createFromContent:
+    corto_dealloc(fileContent);
+error_fileLoad:
+error_fileTest:
+    return -1;
+}
+
 /*
  * Generates a rakefile if package.json exists.
  */
 corto_int16 cortotool_rakefile(int argc, char* argv[])
 {
+    corto_string dir = NULL;
+    corto_ll dirs = NULL;
+    corto_iter it;
+
     CORTO_UNUSED(argc);
-    CORTO_UNUSED(argv);
 
-    if (!corto_fileTest("project.json")) {
-        goto done;
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        {"$0", NULL, NULL}, /* Ignore first argument */
+        {"*", &dirs, NULL},
+        {NULL}
+      }
+    );
+
+    if (!data) {
+        goto error_argparse;
     }
 
-    char* fileContent = corto_fileLoad("project.json");
-    if (!fileContent) {
-        goto errorFileLoad;
+    if (dirs) {
+        it = corto_llIter(dirs);
+        if (corto_iterHasNext(&it)) {
+            dir = corto_iterNext(&it);
+        }
     }
 
-    corto_package package = corto_package(corto_createFromContent("text/json", fileContent));
-    if (!package) {
-        goto errorCreateFromContent;
-    }
+    do {
+        if (dir) {
+            if (corto_chdir(dir)) {
+                corto_seterr("can't generate rakefile for '%s': %s", dir, corto_lasterr());
+                goto error_chdir;
+            }
+        }
 
-    if (cortotool_writeRakefileFromPackage(package)) {
-        goto errorWriteRakefile;
-    }
+        if (cortotool_loadRakefile()) {
+            if (dir) {
+                corto_seterr("%s: %s", dir, corto_lasterr());
+            }
+            goto error_loadRakefile;
+        }
 
-    corto_delete(package);
-    corto_dealloc(fileContent);
+    } while (dirs && corto_iterHasNext(&it) && (dir = corto_iterNext(&it)));
 
-done:
+    corto_argclean(data);
+
     return 0;
-
-errorWriteRakefile:
-    corto_delete(package);
-errorCreateFromContent:
-    corto_dealloc(fileContent);
-errorFileLoad:
+error_loadRakefile:
+error_chdir:
+    corto_argclean(data);
+error_argparse:
     corto_error("corto: %s", corto_lasterr());
     return -1;
 }
@@ -224,6 +282,10 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
 
     CORTO_UNUSED(argc);
 
+    if (cortotool_rakefile(argc, argv)) {
+        goto error;
+    }
+
     corto_argdata *data = corto_argparse(
       argv,
       (corto_argdata[]){
@@ -302,10 +364,6 @@ error:
 }
 
 corto_int16 cortotool_rebuild(int argc, char *argv[]) {
-
-    if (cortotool_clean(argc, argv)) {
-        goto error;
-    }
 
     if (cortotool_build(argc, argv)) {
         goto error;

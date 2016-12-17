@@ -706,7 +706,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             }
             ptr++;
         }
-        location = corto_envparse("$CORTO_TARGET/etc/corto/$CORTO_VERSION/redis/lib/lib%s.so", package);
+        location = corto_envparse("$CORTO_TARGET/redis/corto/$CORTO_VERSION/lib/lib%s.so", package);
         if (!corto_fileTest(location)) {
             corto_trace("corto: library '%s' not found", location);
             corto_dealloc(location);

@@ -1,49 +1,51 @@
 require "#{ENV['CORTO_BUILD']}/common"
 
-COMPONENTS = [] if not defined? COMPONENTS
+COMPONENTS ||= []
+COMPONENTS_DONE ||= []
+
+def forward(dir, task)
+  if not COMPONENTS_DONE.include? dir then
+    if File.exists? "#{dir}/project.json" then sh "corto rakefile #{dir}" end
+    if File.exists? "#{dir}/rakefile" then
+      sh "rake #{task} -f #{dir}/rakefile"
+      COMPONENTS_DONE << dir
+    end
+  end
+end
 
 task :all => :default
 
 task :default do
-    COMPONENTS.each do |e|
-        verbose(VERBOSE)
-        if File.exists? "#{e}/project.json"
-          Dir.chdir(e) do
-            sh "corto rakefile"
-          end
-        end
-        sh "rake -f #{e}/rakefile"
-    end
+  verbose(VERBOSE)
+  COMPONENTS.each do |e|
+    forward(e, "")
+  end
 end
 
 task :collect do
-    COMPONENTS.each do |e|
-        verbose(false)
-        sh "rake collect -f #{Dir.pwd}/#{e}/rakefile"
-    end
+  verbose(VERBOSE)
+  COMPONENTS.each do |e|
+    forward(e, "collect")
+  end
 end
 
 task :clean do
   # Prevent cleaning twice
   if not ARGV.include? "clobber" then
-    COMPONENTS.each do |e|
-        verbose(VERBOSE)
-        sh "rake clean -f #{e}/rakefile"
+    verbose(VERBOSE)
+    COMPONENTS.reverse_each do |e|
+      forward(e, "clean")
     end
-    if File.exists? "test/rakefile" then
-        sh "rake clean -f test/rakefile"
-    end
+    forward("test", "clean")
   end
 end
 
 task :clobber do
-  COMPONENTS.each do |e|
-      verbose(VERBOSE)
-      sh "rake clobber -f #{e}/rakefile"
+  verbose(VERBOSE)
+  COMPONENTS.reverse_each do |e|
+    forward(e, "clobber")
   end
-  if File.exists? "test/rakefile" then
-      sh "rake clobber -f test/rakefile"
-  end
+  forward("test", "clobber")
 end
 
 task :test do
@@ -51,9 +53,9 @@ task :test do
     verbose(VERBOSE)
     error = 0
     COMPONENTS.each do |e|
-      if File.exists? "#{e}" then
+      if File.exists? e then
         begin
-          sh "rake test -f #{Dir.pwd}/#{e}/rakefile"
+          forward("#{Dir.pwd}/#{e}", "test")
         rescue
           error = 1
         end
@@ -61,7 +63,7 @@ task :test do
     end
     if File.exists? "test" then
       begin
-        sh "rake runtest -f #{Dir.pwd}/test/rakefile"
+        forward("#{Dir.pwd}/test", "runtest")
       rescue
         error = 1
       end
@@ -77,9 +79,9 @@ task :runtest do
     verbose(VERBOSE)
     error = 0
     COMPONENTS.each do |e|
-      if File.exists? "#{e}" then
+      if File.exists? e then
         begin
-          sh "rake runtest -f #{Dir.pwd}/#{e}/rakefile"
+          forward("#{Dir.pwd}/#{e}", "runtest")
         rescue
           error = 1
         end

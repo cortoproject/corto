@@ -121,9 +121,6 @@ CLOBBER.include("include/_interface.h")
 
 if File.exists? "project.json"
   CLOBBER.include("rakefile")
-  CLOBBER.include("Rakefile")
-  CLOBBER.include("rakefile.rb")
-  CLOBBER.include("Rakefile.rb")
 end
 
 # If packages.txt is empty, clobber it
@@ -155,7 +152,7 @@ file ".corto/packages.txt" do
   cmd "touch .corto/packages.txt"
 end
 
-task :binary => "#{TARGETDIR}/#{ARTEFACT}" do
+task :binary => ARTEFACT_NAME do
   UNINSTALL << TARGETDIR
 end
 
@@ -210,7 +207,7 @@ def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
       prefix = ""
       ext = ""
     else
-      directory = ENV['CORTO_TARGET'] + "/etc/corto/" + ENV['CORTO_VERSION'] + "/redis/" + artefact + "/"
+      directory = ENV['CORTO_TARGET'] + "/redis/corto/" + ENV['CORTO_VERSION'] + "/" + artefact + "/"
       sh "mkdir -p #{directory}"
     end
   end
@@ -278,7 +275,7 @@ def build_target(hardcodedPaths)
   lflags = "#{LFLAGS.join(" ")}"
 
   if not hardcodedPaths then
-    libpath = libpath + " -L#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/redis/lib"
+    libpath = libpath + " -L#{CORTO_TARGET}/redis/corto/#{CORTO_VERSION}/lib"
   end
 
   linkShared = ""
@@ -356,11 +353,11 @@ def build()
 end
 
 if MULTITHREAD == true then
-  multitask "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+  multitask ARTEFACT_NAME => OBJECTS do
     build()
   end
 else
-  task "#{TARGETDIR}/#{ARTEFACT}" => OBJECTS do
+  task ARTEFACT_NAME => OBJECTS do
     build()
   end
 end
@@ -448,7 +445,7 @@ end
 task :all => :default
 
 # Build and run tests for project
-task :test do
+task :test => ARTEFACT_NAME do
   verbose(VERBOSE)
   TEST = true
 

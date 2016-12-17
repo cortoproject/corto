@@ -109,7 +109,7 @@ if not defined? NOCORTO then
         "include/_type.h"
     end
 
-    file "include/_type.h" => [GENFILE, "rakefile", ".corto/packages.txt"] do
+    file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
       verbose(VERBOSE)
       preload = PP_PRELOAD.join(" ")
       cmd "mkdir -p .corto"

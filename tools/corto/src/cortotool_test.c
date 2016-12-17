@@ -11,6 +11,10 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     CORTO_UNUSED(argc);
 
+    if (cortotool_rakefile(argc, argv)) {
+        goto error;
+    }
+
     corto_argdata *data = corto_argparse(
       argv,
       (corto_argdata[]){
