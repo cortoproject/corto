@@ -186,6 +186,9 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
             goto error_loadRakefile;
         }
 
+        if (dir) {
+            corto_chdir("..");
+        }
     } while (dirs && corto_iterHasNext(&it) && (dir = corto_iterNext(&it)));
 
     corto_argclean(data);
