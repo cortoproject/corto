@@ -5,7 +5,6 @@ export PATH=$CORTO_TARGET/bin:$PATH
 export CORTO_VERSION=0.2
 export CORTO_BUILD=$HOME/.corto/lib/corto/$CORTO_VERSION/build
 export LD_LIBRARY_PATH=$CORTO_HOME/lib:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=$CORTO_HOME/lib:$DYLD_LIBRARY_PATH
 
 mkdir -p $HOME/.corto/lib/corto/$CORTO_VERSION
 cp -r $DIR/build $HOME/.corto/lib/corto/$CORTO_VERSION

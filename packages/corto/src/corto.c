@@ -802,6 +802,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ_CORE(op, result_augments);\
     SSO_OP_OBJ_CORE(op, result_owner);\
     SSO_OP_OBJ_CORE(op, result_getText_);\
+    SSO_OP_OBJ_CORE(op, result_fromcontent_);\
+    SSO_OP_OBJ_CORE(op, result_contentof_);\
     /* request */\
     SSO_OP_OBJ_CORE(op, request_parent);\
     SSO_OP_OBJ_CORE(op, request_expr);\

@@ -26,6 +26,10 @@ struct corto_contentType {
     corto_int16 ___ (*toValue)(corto_value *v, corto_word content);
 
     /* Translate objects to and from self-contained contentType values */
+    corto_word ___ (*fromResult)(corto_result *o);
+    corto_int16 ___ (*toResult)(corto_result* o, corto_word content);
+
+    /* Translate objects to and from self-contained contentType values */
     corto_word ___ (*fromObject)(corto_object *o);
     corto_int16 ___ (*toObject)(corto_object* o, corto_word content);
 

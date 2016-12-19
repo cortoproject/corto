@@ -5,7 +5,13 @@ COMPONENTS_DONE ||= []
 
 def forward(dir, task)
   if not COMPONENTS_DONE.include? dir then
-    if File.exists? "#{dir}/project.json" then sh "corto rakefile #{dir}" end
+    if File.exists? "#{dir}/project.json" then
+      begin
+        sh "corto rakefile #{dir}"
+      rescue
+        STDERR.puts "#{C_WARNING}warning: failed to generate rakefile for '#{dir}'#{C_NORMAL}"
+      end
+    end
     if File.exists? "#{dir}/rakefile" then
       sh "rake #{task} -f #{dir}/rakefile"
       COMPONENTS_DONE << dir
@@ -18,8 +24,9 @@ task :all => :default
 task :default do
   verbose(VERBOSE)
   COMPONENTS.each do |e|
-    forward(e, "")
+    forward(e, "default")
   end
+  COMPONENTS_DONE.clear
 end
 
 task :collect do
@@ -27,6 +34,7 @@ task :collect do
   COMPONENTS.each do |e|
     forward(e, "collect")
   end
+  COMPONENTS_DONE.clear
 end
 
 task :clean do
@@ -46,6 +54,7 @@ task :clobber do
     forward(e, "clobber")
   end
   forward("test", "clobber")
+  COMPONENTS_DONE.clear
 end
 
 task :test do
@@ -53,7 +62,7 @@ task :test do
     verbose(VERBOSE)
     error = 0
     COMPONENTS.each do |e|
-      if File.exists? e then
+      if File.exists? "#{e}" then
         begin
           forward("#{Dir.pwd}/#{e}", "test")
         rescue
@@ -72,6 +81,7 @@ task :test do
       abort
     end
   end
+  COMPONENTS_DONE.clear
 end
 
 task :runtest do
@@ -91,6 +101,7 @@ task :runtest do
       abort
     end
   end
+  COMPONENTS_DONE.clear
 end
 
 task :gcov do
@@ -104,4 +115,5 @@ task :gcov do
             sh "echo '#{C_BOLD}[ << leaving #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
         end
     end
+    COMPONENTS_DONE.clear
 end

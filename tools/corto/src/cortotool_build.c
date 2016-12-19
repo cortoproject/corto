@@ -155,6 +155,7 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
       argv,
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore first argument */
+        {"--*", NULL, NULL}, /* Ignore options */
         {"*", &dirs, NULL},
         {NULL}
       }

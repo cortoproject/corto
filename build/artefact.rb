@@ -445,7 +445,7 @@ end
 task :all => :default
 
 # Build and run tests for project
-task :test => ARTEFACT_NAME do
+task :test do
   verbose(VERBOSE)
   TEST = true
 

@@ -1961,6 +1961,26 @@ corto_contentType corto_loadContentType(
             goto error;
         }
 
+
+        sprintf(id, "%s_fromResult", packagePtr);
+        result->fromResult =
+          (corto_word ___ (*)(corto_result*))
+            corto_loaderResolveProc(id);
+        if (!result->fromResult) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+        sprintf(id, "%s_toResult", packagePtr);
+        result->toResult =
+          (corto_int16 ___ (*)(corto_result*, corto_word))
+            corto_loaderResolveProc(id);
+        if (!result->toResult) {
+            corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
+            goto error;
+        }
+
+
         sprintf(id, "%s_fromObject", packagePtr);
         result->toObject =
           (corto_int16 ___ (*)(corto_object*, corto_word))

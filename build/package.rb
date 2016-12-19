@@ -443,11 +443,17 @@ task :install_files do
         cmd "mv source.txt #{libpath}/source.txt"
       end
     end
-    if not LOCAL and File.exists? ".corto/packages.txt" then
-      cmd "cp .corto/packages.txt #{libpath}"
-    end
-    if not LOCAL and File.exists? ".corto/version.txt" then
-      cmd "cp .corto/version.txt #{libpath}"
+    if not LOCAL then
+      if File.exists? "project.json" then
+        cmd "cp project.json #{libpath}"
+      else
+        if File.exists? ".corto/packages.txt" then
+          cmd "cp .corto/packages.txt #{libpath}"
+        end
+        if File.exists? ".corto/version.txt" then
+          cmd "cp .corto/version.txt #{libpath}"
+        end
+      end
     end
   end
 end

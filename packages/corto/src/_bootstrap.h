@@ -1262,6 +1262,8 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, owner, lang_object, CORTO_HIDDEN);
     CORTO_METHOD_O(core_result, getText, "()", lang_string, corto_result_getText);
+    CORTO_METHOD_O(core_result, fromcontent, "(string contentType,string content)", lang_int16, corto_result_fromcontent);
+    CORTO_METHOD_O(core_result, contentof, "(string contentType)", lang_string, corto_result_contentof);
 
 /* /corto/core/request */
 CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
