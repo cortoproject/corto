@@ -5,9 +5,9 @@
 #define NORMAL  "\033[0;49m"
 
 corto_int16 cortotool_test(int argc, char *argv[]) {
-    corto_string testcaseArg = NULL;
+    corto_string projectArg = NULL;
     corto_int8 ret, sig, err = 0;
-    corto_ll verbose, project, testcase, build, rebuild, clean, tool;
+    corto_ll verbose, project, build, rebuild, clean, tool;
 
     CORTO_UNUSED(argc);
 
@@ -24,17 +24,13 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         {"--rebuild", &rebuild, NULL},
         {"--clean", &clean, NULL},
         {"--tool", NULL, &tool},
-        {"$?*", &project, NULL},
-        {"$+*", &testcase, NULL},
+        {"*", &project, NULL},
         {NULL}
       }
     );
 
     if (project) {
-        if (corto_chdir(corto_llGet(project, 1))) {
-            corto_error("corto: can't change to directory '%s'", corto_llGet(project, 1));
-            goto error;
-        }
+        projectArg = corto_llGet(project, 0);
     }
 
     if (tool) {
@@ -43,12 +39,15 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         setenv("CI", "TRUE", TRUE);
     }
 
-    if (testcase) {
-        testcaseArg = corto_llGet(testcase, 0);
-    }
-
     corto_int32 i = 0;
     do {
+        if (projectArg) {
+            if (corto_chdir(projectArg)) {
+                corto_error("corto: can't change to directory '%s'", projectArg);
+                goto error;
+            }
+        }
+
         corto_pid pid = corto_procrun("rake", (char*[]){
           "rake",
           "test",
@@ -57,7 +56,6 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
           rebuild ? "rebuild=true" : "rebuild=false",
           clean ? "clean=true" : "clean=false",
           "silent=true",
-          testcaseArg,
           NULL});
         if ((sig = corto_procwait(pid, &ret) || ret)) {
             if ((sig > 0) && !(build || rebuild || clean)) {
@@ -73,7 +71,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         }
 
         i ++;
-    } while (testcase && (testcaseArg = corto_llGet(testcase, i)));
+    } while (project && (projectArg = corto_llGet(project, i)));
 
     corto_argclean(data);
 
