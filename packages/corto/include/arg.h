@@ -19,10 +19,11 @@ typedef struct corto_argdata {
     corto_ll *match;
     corto_ll *args;
     corto_int8 count;
+    corto_ll gc;
 } corto_argdata;
 
-corto_argdata* corto_argparse(char *argv[], corto_argdata *data);
-void corto_argclean(corto_argdata *data);
+CORTO_EXPORT corto_argdata* corto_argparse(char *argv[], corto_argdata *data);
+CORTO_EXPORT void corto_argclean(corto_argdata *data);
 
 #ifdef __cplusplus
 }

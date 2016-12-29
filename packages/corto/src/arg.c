@@ -15,6 +15,7 @@ static void corto_arginit(corto_argdata *data) {
         }
         p++;
     }
+    data->gc = NULL;
 }
 
 corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
@@ -96,8 +97,10 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                         }
                     }
                 } else {
-                    if (!fnmatch(pattern->pattern, arg, 0)) {
-                        match = TRUE;
+                    if ((arg[0] != '-') || (pattern->pattern[0] == '-')) {
+                        if (!fnmatch(pattern->pattern, arg, 0)) {
+                            match = TRUE;
+                        }
                     }
                 }
             }
@@ -123,7 +126,21 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                         *(pattern->args) = corto_llNew();
                     }
                     a++;
-                    corto_llAppend(*(pattern->args), argv[a]);
+                    char *arg = argv[a], *ptr = arg, *prev;
+                    do {
+                        prev = ptr;
+                        ptr = strchr(ptr + 1, ',');
+                        if (ptr) {
+                            int len = ptr - prev;
+                            prev = strdup(prev);
+                            if (!pattern->gc) {
+                                pattern->gc = corto_llNew();
+                            }
+                            corto_llAppend(pattern->gc, prev);
+                            prev[len] = '\0';
+                        }
+                        corto_llAppend(*(pattern->args), prev);
+                    } while (ptr && ++ptr);
                 } else {
                     corto_seterr("missing argument for option %s", arg);
                     goto error;
@@ -176,6 +193,14 @@ void corto_argclean(corto_argdata *data) {
                 corto_llFree(*pattern->args);
                 deleted[count ++] = *pattern->args;
             }
+        }
+        if (data[p].gc) {
+          corto_iter it = corto_llIter(data[p].gc);
+          while (corto_iterHasNext(&it)) {
+            corto_string s = corto_iterNext(&it);
+            corto_dealloc(s);
+          }
+          corto_llFree(data[p].gc);
         }
         p++;
     }
