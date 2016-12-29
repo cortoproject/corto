@@ -20,7 +20,7 @@ corto_int16 _corto_loader_construct(
         corto_mount(this)->attr = 0;
         corto_mount(this)->kind = CORTO_SINK;
         corto_setstr(&corto_observer(this)->type, "/corto/core/package");
-        corto_setstr(&corto_subscriber(this)->contentType, "text/corto");
+        corto_setstr(&corto_subscriber(this)->contentType, "text/json");
         return corto_mount_construct(this);
     } else {
         return 0;
@@ -58,7 +58,12 @@ void corto_loader_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
 
     /* Delete data from request */
-    corto_resultListClear(data->list);
+    corto_iter it = corto_llIter(data->list);
+    while (corto_iterHasNext(&it)) {
+        corto_result *r = corto_iterNext(&it);
+        corto_deinitp(r, corto_result_o);
+        corto_dealloc(r);
+    }
     corto_llFree(data->list);
 
     /* Call iter release function that was overridden by this function */
@@ -90,13 +95,15 @@ void corto_loader_addDir(
         while (corto_iterHasNext(&iter)) {
             corto_string f = corto_iterNext(&iter);
 
-            if (!fnmatch(r->expr, f, 0) && !corto_loader_checkIfAdded(list, f)) {
+            if (!corto_loader_checkIfAdded(list, f) && corto_match(r->expr, f)) {
                 struct stat attr;
                 corto_string content = NULL;
                 corto_id package;
                 sprintf(package, "%s/%s", r->parent, f);
                 corto_cleanpath(package, package);
-                corto_id fpath; sprintf(fpath, "%s/%s", path, f);
+
+                corto_id fpath;
+                sprintf(fpath, "%s/%s", path, f);
                 corto_string version = NULL;
                 corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
                 if (!env) corto_lasterr(); /* Catch error */
@@ -114,7 +121,8 @@ void corto_loader_addDir(
                         if (!env) corto_lasterr(); /* Catch error */
                     }
                 } else {
-                    corto_id versionFile; sprintf(versionFile, "%s/version.txt", fpath);
+                    corto_id versionFile;
+                    sprintf(versionFile, "%s/version.txt", fpath);
                     version = corto_fileLoad(versionFile);
                     if (!version) corto_lasterr(); /* Catch error */
 
@@ -130,6 +138,8 @@ void corto_loader_addDir(
                     }
                 }
 
+                /* If no event was found by corto_locate, this is not a loadable
+                 * package, but a directory that contains packages. */
                 if (!env) {
                     env = corto_strdup("");
                 }
@@ -166,15 +176,12 @@ void corto_loader_addDir(
                 }
 
                 if (S_ISDIR(attr.st_mode)) {
-                    corto_resultAssign(
-                        corto_resultListAppendAlloc(list),
-                        f, /* Name */
-                        NULL,
-                        ".", /* Parent */
-                        "/corto/core/package",
-                        (corto_word)content,
-                        FALSE
-                    );
+                    corto_result *r = corto_calloc(sizeof(corto_result));
+                    r->id = corto_strdup(f);
+                    r->parent = corto_strdup(".");
+                    r->type = corto_strdup("/corto/core/package");
+                    r->value = (corto_word)content;
+                    corto_llAppend(list, r);
                 }
             }
         }
@@ -219,32 +226,5 @@ corto_resultIter _corto_loader_onRequest_v(
     corto_dealloc(globalPath);
 
     return result;
-/* $end */
-}
-
-corto_object _corto_loader_onResume_v(
-    corto_loader this,
-    corto_string parent,
-    corto_string name,
-    corto_object o)
-{
-/* $begin(corto/core/loader/onResume) */
-    CORTO_UNUSED(this);
-
-    if (!o) {
-        corto_id path;
-        sprintf(path, "%s/%s", parent, name);
-        corto_cleanpath(path, path);
-        if (!corto_load(path, 0, NULL)) {
-            o = corto_find(NULL, path, CORTO_FIND_DEFAULT);
-        } else {
-            /* Catch error */
-            corto_lasterr();
-        }
-    } else {
-        o = NULL;
-    }
-
-    return o;
 /* $end */
 }

@@ -15,9 +15,9 @@
 extern "C" {
 #endif
 
-#define CORTO_META_NATIVE_OBJECT(type, name) extern corto_##type corto_native_##name##_o
+#define CORTO_META_NATIVE_OBJECT(type, name) CORTO_EXPORT extern corto_##type corto_native_##name##_o
 
-extern corto_package corto_native_o;
+CORTO_EXPORT extern corto_package corto_native_o;
 
 /* Forward declarations of classes */
 CORTO_META_NATIVE_OBJECT(class, type);

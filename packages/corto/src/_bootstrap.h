@@ -224,8 +224,8 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ATTR_SSOO {{1, 0, 1, 0, CORTO_VALID | CORTO_DECLARED}}
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, CORTO_VALID | CORTO_DECLARED}}
-#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},CORTO_RWMUTEX_INITIALIZER,NULL,NULL,FALSE,FALSE},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}, {uri}
+#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}, {uri}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 #define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
@@ -549,7 +549,6 @@ CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
 CORTO_FWDECL_NATIVE(class, type);
 
-CORTO_FWDECL(struct, typespec);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
@@ -693,22 +692,24 @@ CORTO_TYPE_O(lang, void, CORTO_VOID, FALSE);
 CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 
 /* Package type */
-CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(core_package, url, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, version, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, author, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, description, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, env, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, nocorto, lang_bool, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, cflags, lang_stringlist, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, dependencies, lang_stringlist, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, prefix, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, cortoVersion, lang_stringlist, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, local, lang_bool, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, lib, lang_stringlist, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, libpath, lang_stringlist, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, include, lang_stringlist, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_package, link, lang_stringlist, CORTO_GLOBAL);
+CORTO_FW_C(core, package);
+CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_C);
+    CORTO_MEMBER_O(core_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, env, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, nocorto, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, cflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, prefix, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, cortoVersion, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, local, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, lib, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, libpath, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, include, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, link, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_METHOD_O(core_package, construct, "()", lang_int16, corto_package_construct);
 
 /* Enumerations */
 CORTO_ENUM_O(lang, width);
@@ -915,28 +916,6 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_METHOD_O(lang_type, init, "()", lang_int16, corto_type_init);
     CORTO_METHOD_O(lang_type, construct, "()", lang_int16, corto_type_construct);
     CORTO_METHOD_O(lang_type, destruct, "()", lang_void, corto_type_destruct);
-    CORTO_METAPROCEDURE_O(lang_type, parent, "()", lang_object, TRUE, corto_type_parent);
-    CORTO_METAPROCEDURE_O(lang_type, name, "()", lang_string, TRUE, corto_type_name);
-    CORTO_METAPROCEDURE_O(lang_type, fullpath, "()", lang_string, TRUE, corto_type_fullpath);
-    CORTO_METAPROCEDURE_O(lang_type, path, "(object from)", lang_string, TRUE, corto_type_path);
-    CORTO_METAPROCEDURE_O(lang_type, declare, "(string name,type type)", lang_object, TRUE, corto_type_declare);
-    CORTO_METAPROCEDURE_O(lang_type, define, "()", lang_int16, TRUE, corto_type_define);
-    CORTO_METAPROCEDURE_O(lang_type, delete, "()", lang_void, TRUE, corto_type_delete);
-    CORTO_METAPROCEDURE_O(lang_type, invalidate, "()", lang_void, TRUE, corto_type_invalidate);
-    CORTO_METAPROCEDURE_O(lang_type, resolve, "(string name)", lang_object, TRUE, corto_type_resolve);
-    CORTO_METAPROCEDURE_O(lang_type, lookup, "(string name)", lang_object, TRUE, corto_type_lookup);
-    CORTO_METAPROCEDURE_O(lang_type, checkAttr, "(attr attributes)", lang_bool, TRUE, corto_type_checkAttr);
-    CORTO_METAPROCEDURE_O(lang_type, checkState, "(state state)", lang_bool, TRUE, corto_type_checkState);
-    CORTO_METAPROCEDURE_O(lang_type, type, "()", lang_type, FALSE, corto_type_type);
-    CORTO_METAPROCEDURE_O(lang_type, instanceof, "(type type)", lang_bool, TRUE, corto_type_instanceof);
-    CORTO_METAPROCEDURE_O(lang_type, compare, "(any value)", lang_equalityKind, FALSE, corto_type_compare);
-    CORTO_METAPROCEDURE_O(lang_type, copy, "(any value)", lang_int16, FALSE, corto_type_copy);
-    CORTO_METAPROCEDURE_O(lang_type, str, "()", lang_string, FALSE, corto_type_str);
-
-/* /corto/lang/typespec */
-CORTO_STRUCT_O(lang, typespec, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_MEMBER_O(lang_typespec, type, lang_type, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_typespec, reference, lang_bool, CORTO_GLOBAL);
 
 /* /corto/lang/primitive */
 CORTO_FW_IC(lang, primitive);
@@ -984,7 +963,6 @@ CORTO_CLASS_O(lang, collection, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_A
     CORTO_VIRTUAL_O(lang_collection, compatible, "(type type)", lang_bool, corto_collection_compatible_v);
     CORTO_FUNCTION_O(lang_collection, requiresAlloc, "(type elementType)", lang_bool, corto_collection_requiresAlloc);
     CORTO_METHOD_O(lang_collection, init, "()", lang_int16, corto_collection_init);
-    CORTO_METAPROCEDURE_O(lang_collection, size, "()", lang_uint32, FALSE, corto_collection_size);
 
 /* /corto/lang/iterator */
 CORTO_FW_I(lang, iterator);
@@ -1144,19 +1122,12 @@ CORTO_FW_IC(lang, sequence);
 CORTO_CLASS_O(lang, sequence, lang_collection, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_METHOD_O(lang_sequence, init, "()", lang_int16, corto_sequence_init);
     CORTO_METHOD_O(lang_sequence, construct, "()", lang_int16, corto_sequence_construct);
-    CORTO_METAPROCEDURE_O(lang_sequence, size, "(uint32 size)", lang_void, FALSE, corto_sequence_size);
 
 /* /corto/lang/list */
 CORTO_FW_IC(lang, list);
 CORTO_CLASS_O(lang, list, lang_collection, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_METHOD_O(lang_list, init, "()", lang_int16, corto_list_init);
     CORTO_METHOD_O(lang_list, construct, "()", lang_int16, corto_list_construct);
-    CORTO_METAPROCEDURE_O(lang_list, insert, "(any element)", lang_void, FALSE, corto_list_insert_any);
-    CORTO_METAPROCEDURE_O(lang_list, append, "(any element)", lang_void, FALSE, corto_list_append_any);
-    CORTO_METAPROCEDURE_NAME_O(lang_list, insert_, insert, "()", lang_any, FALSE, corto_list_insert_);
-    CORTO_METAPROCEDURE_NAME_O(lang_list, append_, append, "()", lang_any, FALSE, corto_list_append_);
-    CORTO_METAPROCEDURE_O(lang_list, reverse, "()", lang_void, FALSE, corto_list_reverse);
-    CORTO_METAPROCEDURE_O(lang_list, clear, "()", lang_void, FALSE, corto_list_clear);
 
 /* /corto/lang/map */
 CORTO_FW_IC(lang, map);
@@ -1202,7 +1173,7 @@ CORTO_PROCEDURE_O(lang, virtual, CORTO_METHOD, lang_method, CORTO_GLOBAL, CORTO_
 
 /* /corto/lang/metaprocedure */
 CORTO_FW_C(lang, metaprocedure);
-CORTO_PROCEDURE_O(lang, metaprocedure, CORTO_METAPROCEDURE, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_C);
+CORTO_PROCEDURE_O(lang, metaprocedure, CORTO_METAPROCEDURE, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED|CORTO_DEFINED, CORTO_C);
     CORTO_METHOD_O(lang_metaprocedure, construct, "()", lang_int16, corto_metaprocedure_construct);
     CORTO_MEMBER_O(lang_metaprocedure, referenceOnly, lang_bool, CORTO_GLOBAL);
 
@@ -1282,12 +1253,11 @@ CORTO_INTERFACE_O(core, dispatcher);
 
 /* /corto/core/loader */
 CORTO_FW_CD(core, loader);
-CORTO_CLASS_O(core, loader, core_mount, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+CORTO_CLASS_O(core, loader, core_mount, CORTO_PRIVATE|CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
     CORTO_METHOD_O(core_loader, construct, "()", lang_int16, corto_loader_construct);
     CORTO_METHOD_O(core_loader, destruct, "()", lang_void, corto_loader_destruct);
-    CORTO_VIRTUAL_O(core_loader, onRequest, "(core/request request)", core_resultIter, corto_loader_onRequest_v);
+    CORTO_VIRTUAL_O(core_loader, onRequest, "(/corto/core/request request)", core_resultIter, corto_loader_onRequest_v);
     CORTO_VIRTUAL_O(core_loader, onDeclare, "(object observable)", lang_void, corto_loader_onDeclare_v);
-    CORTO_VIRTUAL_O(core_loader, onResume, "(string parent,string name,object o)", lang_object, corto_loader_onResume_v);
 
 /* /corto/core/stageItem */
 CORTO_STRUCT_O(core, stageItem, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
@@ -1456,7 +1426,7 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_METHOD_O(core_mount, subscribe, "(string parent,string name,core/eventMask mask)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(core_mount, unsubscribe, "(string parent,string name,core/eventMask mask)", lang_void, corto_mount_unsubscribe);
     CORTO_VIRTUAL_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_onInvoke_v);
-    CORTO_VIRTUAL_O(core_mount, onRequest, "(core/request request)", core_resultIter, corto_mount_onRequest_v);
+    CORTO_VIRTUAL_O(core_mount, onRequest, "(/corto/core/request request)", core_resultIter, corto_mount_onRequest_v);
     CORTO_VIRTUAL_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, corto_mount_onResume_v);
     CORTO_VIRTUAL_O(core_mount, onDeclare, "(object observable)", lang_void, corto_mount_onDeclare_v);
     CORTO_VIRTUAL_O(core_mount, onUpdate, "(object observable)", lang_void, corto_mount_onUpdate_v);

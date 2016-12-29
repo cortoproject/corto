@@ -243,6 +243,23 @@ def build_target(hardcodedPaths)
     lib
   end
 
+  # If not using hardcoded paths, copy libraries that project specified in LINK
+  # to redistributable directory
+  if not hardcodedPaths and defined? LINK_NO_DEPS then
+    LINK_NO_DEPS.each do |l|
+      l = corto_replace(l)
+      so = File.dirname(l) + "/lib" + File.basename(l) + ".so"
+      if File.exists? so then
+        sh "cp #{so} #{ENV['CORTO_TARGET']}/redis/corto/#{ENV['CORTO_VERSION']}/lib"
+      else
+        so = File.dirname(l) + "/lib" + File.basename(l) + ".dylib"
+        if File.exists? so then
+          sh "cp #{so} #{ENV['CORTO_TARGET']}/redis/corto/#{ENV['CORTO_VERSION']}/"
+        end
+      end
+    end
+  end
+
   objects = OBJECTS.clone
 
   # Build ALWAYS_REBUILD
@@ -263,14 +280,7 @@ def build_target(hardcodedPaths)
   objects.concat(linked)
   objects  = "#{objects.to_a.uniq.join(' ')}"
 
-  libpath = LIBPATH.clone
-  if not hardcodedPaths and defined? LINK_NO_DEPS then
-    LINK_NO_DEPS.each do |f|
-      libpath << File.dirname(corto_replace(f))
-    end
-  end
-
-  libpath = "#{libpath.map {|i| "-L" + corto_replace(i)}.join(" ")} "
+  libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
   libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
   lflags = "#{LFLAGS.join(" ")}"
 

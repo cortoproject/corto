@@ -9,8 +9,6 @@
 #include <corto/corto.h>
 #include <corto/_project.h>
 #include <corto/lang/_type.h>
-#include <corto/lang/_api.h>
-#include <corto/lang/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,9 +40,6 @@ CORTO_EXPORT corto_int16 _corto_collection_init(
 CORTO_EXPORT corto_bool _corto_collection_requiresAlloc(
     corto_type elementType);
 #define corto_collection_requiresAlloc(elementType) _corto_collection_requiresAlloc(corto_type(elementType))
-
-CORTO_EXPORT corto_uint32 _corto_collection_size(corto_any _this);
-#define corto_collection_size(_this) _corto_collection_size(_this)
 
 #ifdef __cplusplus
 }

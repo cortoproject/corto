@@ -6,10 +6,10 @@
 extern "C" {
 #endif
 
-corto_int16 corto_setenv(const char *varname, const char *value, ...);
-char* corto_getenv(const char *varname);
-char* corto_envparse(const char* str, ...);
-char* corto_venvparse(const char* str, va_list args);
+CORTO_EXPORT corto_int16 corto_setenv(const char *varname, const char *value, ...);
+CORTO_EXPORT char* corto_getenv(const char *varname);
+CORTO_EXPORT char* corto_envparse(const char* str, ...);
+CORTO_EXPORT char* corto_venvparse(const char* str, va_list args);
 
 #ifdef __cplusplus
 }

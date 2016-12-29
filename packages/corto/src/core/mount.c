@@ -491,8 +491,7 @@ corto_void _corto_mount_post(
 /* $header(corto/core/mount/request) */
 void corto_mount_requestRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
-    corto_resultListClear(data->list);
-    corto_llFree(data->list);
+    corto_deinitp(&data->list, corto_resultList_o);
     corto_llIterRelease(iter);
 }
 /* $end */
@@ -627,16 +626,14 @@ corto_void _corto_mount_return(
         corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, result);
     }
 
-    /* Create and initialize new result element */
-    corto_resultAssign(
-        corto_resultListAppendAlloc(result),
-        r->id,
-        r->name,
-        r->parent,
-        r->type,
-        r->value,
-        r->leaf
-    );
+    corto_result *elem = corto_calloc(sizeof(corto_result));
+    elem->id = corto_strdup(r->id);
+    elem->id = corto_strdup(r->name);
+    elem->parent = corto_strdup(r->parent);
+    elem->type = corto_strdup(r->type);
+    elem->value = (corto_word)r->value;
+    elem->leaf = r->leaf;
+    corto_llAppend(result, elem);
 
 /* $end */
 }
@@ -721,16 +718,13 @@ corto_void _corto_mount_subscribe(
         }
     }
     if (!found) {
-        newSubscription = corto_mountSubscriptionListAppendAlloc(
-            this->subscriptions);
-
-        corto_mountSubscriptionAssign(
-            newSubscription,
-            parent,
-            name,
-            mask,
-            1,
-            0);
+        newSubscription = corto_calloc(sizeof(corto_mountSubscription));
+        newSubscription->mask = mask;
+        newSubscription->parent = corto_strdup(parent);
+        newSubscription->expr = corto_strdup(name);
+        newSubscription->count = 1;
+        newSubscription->userData = 0;
+        corto_llAppend(this->subscriptions, newSubscription);
     }
     corto_unlock(this);
 

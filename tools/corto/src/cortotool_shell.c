@@ -9,6 +9,8 @@
 #include "cortotool_shellengine.h"
 #include "ctype.h"
 #include "fnmatch.h"
+#include "corto/lang/c/c.h"
+#include "corto/core/c/c.h"
 
 #define CXSH_CMD_MAX (1024)
 

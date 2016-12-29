@@ -83,7 +83,6 @@ error:
 void cortotool_testHelp(void) {
     printf("Usage: corto test\n");
     printf("       corto test <project>\n");
-    printf("       corto test <project> <testcase>\n");
     printf("\n");
     printf("Options:\n");
     printf("   --build        Just build tests, do not run test.\n");

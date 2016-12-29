@@ -15,8 +15,8 @@ extern "C" {
 #endif
 
 void corto_operatorInit(void);
-corto_int16 corto_unaryOperator(corto_type type, corto_operatorKind _operator, void* operand, void* result);
-corto_int16 corto_binaryOperator(corto_type type, corto_operatorKind _operator, void *operand1, void *operand2, void *result);
+CORTO_EXPORT corto_int16 corto_unaryOperator(corto_type type, corto_operatorKind _operator, void* operand, void* result);
+CORTO_EXPORT corto_int16 corto_binaryOperator(corto_type type, corto_operatorKind _operator, void *operand1, void *operand2, void *result);
 
 #ifdef __cplusplus
 }

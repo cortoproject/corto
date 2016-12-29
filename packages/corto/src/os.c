@@ -188,6 +188,16 @@ int corto_isDirectory(const char *path) {
     return S_ISDIR(buff.st_mode);
 }
 
+int corto_rename(const char *oldName, const char *newName) {
+    if (rename(oldName, newName)) {
+        corto_seterr(strerror(errno));
+        goto error;
+    }
+    return 0;
+error:
+    return -1;
+}
+
 /* Remove a file. Returns 0 if OK, -1 if failed */
 int corto_rm(const char *name) {
     int result = 0;

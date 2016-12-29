@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "corto/corto.h"
+#include "corto/g/g.h"
 
 #ifdef CORTO_GENERATOR
 

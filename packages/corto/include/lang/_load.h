@@ -15,11 +15,11 @@
 extern "C" {
 #endif
 
-#define CORTO_META_OBJECT(type, name) extern corto_##type corto_##name##_o
+#define CORTO_META_OBJECT(type, name) CORTO_EXPORT extern corto_##type corto_##name##_o
 
-extern corto_package root_o;
-extern corto_package corto_o;
-extern corto_package corto_lang_o;
+CORTO_EXPORT extern corto_package root_o;
+CORTO_EXPORT extern corto_package corto_o;
+CORTO_EXPORT extern corto_package corto_lang_o;
 
 /* Forward declarations of classes */
 CORTO_META_OBJECT(class, typedef);

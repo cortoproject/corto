@@ -1,5 +1,6 @@
 
 #include "corto/corto.h"
+#include "_object.h"
 
 #define CORTO_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? CORTO_GT : *(type*)v1 < *(type*)v2 ? CORTO_LT : CORTO_EQ
 
@@ -138,7 +139,6 @@ static corto_equalityKind corto_collection_compareArrayWithList(corto_collection
     corto_iter iter;
     void *e1, *e2;
     corto_type elementType = t->elementType;
-    corto_any v1, v2;
 
     iter = corto_llIter(list);
     while(corto_iterHasNext(&iter)) {
@@ -148,10 +148,7 @@ static corto_equalityKind corto_collection_compareArrayWithList(corto_collection
             e1 = corto_iterNextPtr(&iter);
         }
         e2 = CORTO_OFFSET(array, elementSize * i);
-        v1.type = v2.type = elementType;
-        v1.value = e2;
-        v2.value = e1;
-        result = corto_type_compare(v1, v2);
+        result = corto_comparep(e2, elementType, e1);
         if (result != CORTO_EQ) {
             break;
         }
@@ -166,7 +163,6 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
     corto_iter iter1, iter2;
     void *e1, *e2;
     corto_type elementType = t->elementType;
-    corto_any v1, v2;
 
     iter1 = corto_llIter(list1);
     iter2 = corto_llIter(list2);
@@ -178,10 +174,7 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
             e1 = corto_iterNextPtr(&iter1);
             e2 = corto_iterNextPtr(&iter2);
         }
-        v1.type = v2.type = elementType;
-        v1.value = e1;
-        v2.value = e2;
-        result = corto_type_compare(v1, v2);
+        result = corto_comparep(e1, elementType, e2);
         if (result != CORTO_EQ) {
             break;
         }

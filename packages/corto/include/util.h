@@ -36,22 +36,22 @@ extern "C" {
 #define CORTO_SCOPE_HEX ((corto_uint16)(0x3A3A)) /* '::' */
 
 /* In place replacelemt of '::' with '/' */
-corto_string corto_pathFromFullname(corto_id buffer);
+CORTO_EXPORT corto_string corto_pathFromFullname(corto_id buffer);
 
 /* Strip parent identifiers from fullname */
-corto_string corto_nameFromFullname(corto_id buffer);
+CORTO_EXPORT corto_string corto_nameFromFullname(corto_id buffer);
 
 /* Set intern TLS string */
-corto_string corto_setThreadString(corto_string string);
+CORTO_EXPORT corto_string corto_setThreadString(corto_string string);
 
 /* Check if object is a builtin package */
-corto_bool corto_isBuiltinPackage(corto_object o);
+CORTO_EXPORT corto_bool corto_isBuiltinPackage(corto_object o);
 
 /* Check if object is a builtin object */
-corto_bool corto_isBuiltin(corto_object o);
+CORTO_EXPORT corto_bool corto_isBuiltin(corto_object o);
 
 /* Used in type checking macro */
-corto_object _corto_assertType(corto_type type, corto_object o);
+CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
 #ifndef NDEBUG
 #define corto_assertType(type, o) _corto_assertType(type, o)
 #else
@@ -60,24 +60,24 @@ corto_object _corto_assertType(corto_type type, corto_object o);
 
 /* Throws an assertion when invalid object in debugging */
 #ifndef NDEBUG
-void corto_assertObject(corto_object o);
+CORTO_EXPORT void corto_assertObject(corto_object o);
 #else
 #define corto_assertObject(o)
 #endif
 
 /* Obtain documentation objects */
-char* corto_manId(corto_object o, corto_id buffer);
-corto_object corto_man(corto_object o);
+CORTO_EXPORT char* corto_manId(corto_object o, corto_id buffer);
+CORTO_EXPORT corto_object corto_man(corto_object o);
 
 /* Obtain pointer and type for deserializing member */
-void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
+CORTO_EXPORT void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
 
 /* Benchmarking */
 #ifdef CORTO_BENCHMARK
-int corto_benchmark_init(corto_string name);
-void corto_benchmark_stop(int id);
-void corto_benchmark_start(int id);
-double corto_benchmark_fini(int id);
+CORTO_EXPORT int corto_benchmark_init(corto_string name);
+CORTO_EXPORT void corto_benchmark_stop(int id);
+CORTO_EXPORT void corto_benchmark_start(int id);
+CORTO_EXPORT double corto_benchmark_fini(int id);
 #else
 #define corto_benchmark_init(name) (0)
 #define corto_benchmark_stop(id) ((void)id)

@@ -135,6 +135,25 @@ void corto_clear(corto_collection this, corto_void* collection) {
    }
    }
 }
+
+corto_uint32 corto_collection_size(corto_any this) {
+    corto_uint32 result = 0;
+    switch(corto_collection(this.type)->kind) {
+    case CORTO_ARRAY:
+        result = corto_collection(this.type)->max;
+        break;
+    case CORTO_SEQUENCE:
+        result = ((corto_objectseq*)this.value)->length;
+        break;
+    case CORTO_LIST:
+        result = corto_llSize(*(corto_ll*)this.value);
+        break;
+    case CORTO_MAP:
+        result = corto_rbtreeSize(*(corto_rbtree*)this.value);
+        break;
+    }
+    return result;
+}
 /* $end */
 
 corto_bool _corto_collection_castable_v(
@@ -245,30 +264,6 @@ corto_bool _corto_collection_requiresAlloc(
             /* If type is composite and not a reference an alloc is required. */
             break;
         }
-    }
-
-    return result;
-/* $end */
-}
-
-corto_uint32 _corto_collection_size(corto_any this)
-{
-/* $begin(corto/lang/collection/size) */
-    corto_uint32 result = 0;
-
-    switch(corto_collection(this.type)->kind) {
-    case CORTO_ARRAY:
-        result = corto_collection(this.type)->max;
-        break;
-    case CORTO_SEQUENCE:
-        result = ((corto_objectseq*)this.value)->length;
-        break;
-    case CORTO_LIST:
-        result = corto_llSize(*(corto_ll*)this.value);
-        break;
-    case CORTO_MAP:
-        result = corto_rbtreeSize(*(corto_rbtree*)this.value);
-        break;
     }
 
     return result;

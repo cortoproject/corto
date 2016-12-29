@@ -1,5 +1,7 @@
 
 #include "cortotool_build.h"
+#include "corto/lang/c/c.h"
+
 
 /* Run a command for multiple projects */
 static corto_int16 cortotool_runcmd(
@@ -125,7 +127,7 @@ corto_int16 cortotool_loadRakefile(void) {
         goto error_createRakefile;
     }
 
-    corto_delete(package);
+    corto_release(package);
     corto_dealloc(fileContent);
 
 skip:
@@ -150,6 +152,10 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
     corto_iter it;
 
     CORTO_UNUSED(argc);
+
+    /* Create the package loader so that if a project.json file contains a
+     * nested package, the parent is automatically loaded. */
+    corto_create(corto_loader_o);
 
     corto_argdata *data = corto_argparse(
       argv,

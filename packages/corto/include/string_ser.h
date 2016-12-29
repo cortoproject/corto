@@ -28,7 +28,7 @@ typedef struct corto_string_ser_t {
     corto_ll anonymousObjects;
 } corto_string_ser_t;
 
-struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
+CORTO_EXPORT struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
 
 #ifdef __cplusplus
 }

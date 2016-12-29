@@ -55,13 +55,13 @@ CORTO_CLASS_DEF(corto_serializer) {
     corto_serializerCallback reference;
 };
 
-corto_int16 corto_serialize(corto_serializer _this, corto_object o, void* userData);
-void corto_serializerInit(corto_serializer _this);
-corto_int16 corto_serializeDestruct(corto_serializer _this, void* userData);
-corto_int16 corto_serializeAny(corto_serializer _this, corto_value* info, void* userData);
-corto_int16 corto_serializeMembers(corto_serializer _this, corto_value* info, void* userData);
-corto_int16 corto_serializeElements(corto_serializer _this, corto_value* info, void* userData);
-corto_int16 corto_serializeValue(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT corto_int16 corto_serialize(corto_serializer _this, corto_object o, void* userData);
+CORTO_EXPORT void corto_serializerInit(corto_serializer _this);
+CORTO_EXPORT corto_int16 corto_serializeDestruct(corto_serializer _this, void* userData);
+CORTO_EXPORT corto_int16 corto_serializeAny(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT corto_int16 corto_serializeMembers(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT corto_int16 corto_serializeElements(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT corto_int16 corto_serializeValue(corto_serializer _this, corto_value* info, void* userData);
 
 #ifdef __cplusplus
 }

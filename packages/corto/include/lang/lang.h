@@ -9,9 +9,8 @@
 #include <corto/corto.h>
 #include <corto/_project.h>
 #include <corto/lang/_type.h>
-#include <corto/lang/_api.h>
-#include <corto/lang/_load.h>
 
+#include <corto/lang/_load.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,7 +51,6 @@ extern "C" {
 #include <corto/lang/target.h>
 #include <corto/lang/text.h>
 #include <corto/lang/type.h>
-#include <corto/lang/typespec.h>
 #include <corto/lang/uint.h>
 #include <corto/lang/union.h>
 #include <corto/lang/virtual.h>
@@ -61,4 +59,3 @@ extern "C" {
 }
 #endif
 #endif
-

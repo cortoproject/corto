@@ -9,8 +9,6 @@
 #include <corto/corto.h>
 #include <corto/_project.h>
 #include <corto/native/_type.h>
-#include <corto/native/_api.h>
-#include <corto/native/_load.h>
 
 #ifdef __cplusplus
 extern "C" {

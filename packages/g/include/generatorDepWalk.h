@@ -8,14 +8,11 @@
 #ifndef CORTO_GENERATORDEPWALK_H_
 #define CORTO_GENERATORDEPWALK_H_
 
-#include "corto/generator.h"
-#include "corto/depresolver.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int corto_genDepWalk(g_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData);
+CORTO_EXPORT int corto_genDepWalk(g_generator g, corto_depresolver_action onDeclare, corto_depresolver_action onDefine, void* userData);
 
 #ifdef __cplusplus
 }

@@ -16,29 +16,29 @@
 extern "C" {
 #endif
 
-corto_rbtree corto_rbtreeNew(corto_type keyType);
-corto_rbtree corto_rbtreeNew_w_func(corto_equalsAction compare);
-void corto_rbtreeFree(corto_rbtree tree);
+CORTO_EXPORT corto_rbtree corto_rbtreeNew(corto_type keyType);
+CORTO_EXPORT corto_rbtree corto_rbtreeNew_w_func(corto_equalsAction compare);
+CORTO_EXPORT void corto_rbtreeFree(corto_rbtree tree);
 
-void* corto_rbtreeGet(corto_rbtree tree, void* key);
-void* corto_rbtreeGetPtr(corto_rbtree tree, void* key);
-void corto_rbtreeSet(corto_rbtree tree, const void* key, void* value);
-void* corto_rbtreeFindOrSet(corto_rbtree tree, const void* key, void* value);
-void corto_rbtreeRemove(corto_rbtree tree, void* key);
-corto_bool corto_rbtreeHasKey(corto_rbtree tree, const void* key, void** value);
-corto_bool corto_rbtreeHasKey_w_cmp(corto_rbtree tree, const void* key, void** value, corto_equalsAction cmp);
-void* corto_rbtreeMin(corto_rbtree tree, void** key_out);
-void* corto_rbtreeMax(corto_rbtree tree, void** key_out);
-void* corto_rbtreeNext(corto_rbtree tree, void* key, void** key_out);
-void* corto_rbtreePrev(corto_rbtree tree, void* key, void** key_out);
-corto_uint32 corto_rbtreeSize(corto_rbtree tree);
-int corto_rbtreeWalk(corto_rbtree tree, corto_walkAction callback, void* userData);
-int corto_rbtreeWalkPtr(corto_rbtree tree, corto_walkAction callback, void* userData);
+CORTO_EXPORT void* corto_rbtreeGet(corto_rbtree tree, void* key);
+CORTO_EXPORT void* corto_rbtreeGetPtr(corto_rbtree tree, void* key);
+CORTO_EXPORT void corto_rbtreeSet(corto_rbtree tree, const void* key, void* value);
+CORTO_EXPORT void* corto_rbtreeFindOrSet(corto_rbtree tree, const void* key, void* value);
+CORTO_EXPORT void corto_rbtreeRemove(corto_rbtree tree, void* key);
+CORTO_EXPORT corto_bool corto_rbtreeHasKey(corto_rbtree tree, const void* key, void** value);
+CORTO_EXPORT corto_bool corto_rbtreeHasKey_w_cmp(corto_rbtree tree, const void* key, void** value, corto_equalsAction cmp);
+CORTO_EXPORT void* corto_rbtreeMin(corto_rbtree tree, void** key_out);
+CORTO_EXPORT void* corto_rbtreeMax(corto_rbtree tree, void** key_out);
+CORTO_EXPORT void* corto_rbtreeNext(corto_rbtree tree, void* key, void** key_out);
+CORTO_EXPORT void* corto_rbtreePrev(corto_rbtree tree, void* key, void** key_out);
+CORTO_EXPORT corto_uint32 corto_rbtreeSize(corto_rbtree tree);
+CORTO_EXPORT int corto_rbtreeWalk(corto_rbtree tree, corto_walkAction callback, void* userData);
+CORTO_EXPORT int corto_rbtreeWalkPtr(corto_rbtree tree, corto_walkAction callback, void* userData);
 
 #define corto_rbtreeIter(tree) _corto_rbtreeIter(tree, alloca(sizeof(struct jsw_rbtrav)));
-corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata);
-corto_type corto_rbtreeKeyType(corto_rbtree tree);
-corto_bool corto_rbtreeIterChanged(corto_iter *iter);
+CORTO_EXPORT corto_iter _corto_rbtreeIter(corto_rbtree tree, void *udata);
+CORTO_EXPORT corto_type corto_rbtreeKeyType(corto_rbtree tree);
+CORTO_EXPORT corto_bool corto_rbtreeIterChanged(corto_iter *iter);
 
 #ifdef __cplusplus
 }

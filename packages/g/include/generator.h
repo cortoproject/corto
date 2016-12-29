@@ -80,130 +80,133 @@ CORTO_CLASS_DEF(g_file) {
 };
 
 /* Create generator object. */
-g_generator g_new(corto_string name, corto_string language);
+CORTO_EXPORT g_generator g_new(corto_string name, corto_string language);
 
 /* Control how id's are generated */
-g_idKind g_setIdKind(g_generator g, g_idKind kind);
+CORTO_EXPORT g_idKind g_setIdKind(g_generator g, g_idKind kind);
 
 /* Obtain generator name. */
-corto_string g_getName(g_generator g);
+CORTO_EXPORT corto_string g_getName(g_generator g);
 
 /* Obtain project name */
-corto_string g_getProjectName(g_generator g);
+CORTO_EXPORT corto_string g_getProjectName(g_generator g);
 
 /* Obtain generator object that is currently parsed. */
-corto_object g_getCurrent(g_generator g);
+CORTO_EXPORT corto_object g_getCurrent(g_generator g);
 
 /* Get generator language. */
-corto_string g_getLanguage(g_generator g);
+CORTO_EXPORT corto_string g_getLanguage(g_generator g);
 
 /* Instruct the generator to generate for an object. */
-void g_parse(g_generator generator, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix);
+CORTO_EXPORT void g_parse(g_generator generator, corto_object object, corto_bool parseSelf, corto_bool parseScope, corto_string prefix);
 
 /* Set attribute of generator */
-void g_setAttribute(g_generator g, corto_string key, corto_string value);
+CORTO_EXPORT void g_setAttribute(g_generator g, corto_string key, corto_string value);
 
 /* Get attribute from generator */
-corto_string g_getAttribute(g_generator g, corto_string key);
+CORTO_EXPORT corto_string g_getAttribute(g_generator g, corto_string key);
 
 /* Load a generator library. */
-corto_int16 g_load(g_generator generator, corto_string library);
+CORTO_EXPORT corto_int16 g_load(g_generator generator, corto_string library);
 
 /* Free generator. */
-void g_free(g_generator generator);
+CORTO_EXPORT void g_free(g_generator generator);
 
 /* Start generating. */
-corto_int16 g_start(g_generator generator);
+CORTO_EXPORT corto_int16 g_start(g_generator generator);
 
 /* === Generator utility functions */
 
+/* Add import */
+CORTO_EXPORT corto_int16 g_import(g_generator generator, corto_object package);
+
 /* Resolve imports */
-corto_int16 g_resolveImports(g_generator generator);
+CORTO_EXPORT corto_int16 g_resolveImports(g_generator generator);
 
 /* Walk generator objects. Parse scopes of generator objects when configured. */
-int g_walk(g_generator generator, g_walkAction o, void* userData);
+CORTO_EXPORT int g_walk(g_generator generator, g_walkAction o, void* userData);
 
 /* Walk generator objects, do not parse scopes even if configured. */
-int g_walkNoScope(g_generator g, g_walkAction action, void* userData);
+CORTO_EXPORT int g_walkNoScope(g_generator g, g_walkAction action, void* userData);
 
 /* Recursively walk objects, will walk all objects under the scope of generator objects. */
-int g_walkRecursive(g_generator generator, g_walkAction o, void* userData);
+CORTO_EXPORT int g_walkRecursive(g_generator generator, g_walkAction o, void* userData);
 
 /* Find generator object for object */
-g_object* g_findObject(g_generator g, corto_object o, corto_object* match);
-g_object* g_findObjectInclusive(g_generator g, corto_object o, corto_object* match);
+CORTO_EXPORT g_object* g_findObject(g_generator g, corto_object o, corto_object* match);
+CORTO_EXPORT g_object* g_findObjectInclusive(g_generator g, corto_object o, corto_object* match);
 
 /* Lookup prefix for object. */
-corto_string g_getPrefix(g_generator g, corto_object o);
+CORTO_EXPORT corto_string g_getPrefix(g_generator g, corto_object o);
 
 /* Translate an object to a language-specific identifier. */
-corto_string g_fullOid(g_generator g, corto_object o, corto_id id);
+CORTO_EXPORT corto_string g_fullOid(g_generator g, corto_object o, corto_id id);
 
 /* Translate an object to a language-specific identifier with idKind provided. */
-corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind);
+CORTO_EXPORT corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind);
 
 /* Translate an class-identifier to a language-specific identifier. */
-corto_string g_oid(g_generator g, corto_object o, corto_id id);
+CORTO_EXPORT corto_string g_oid(g_generator g, corto_object o, corto_id id);
 
 /* Translate an identifier to a language-specific identifier. */
-corto_string g_id(g_generator g, corto_string str, corto_id id);
+CORTO_EXPORT corto_string g_id(g_generator g, corto_string str, corto_id id);
 
 /* A check on whether an object must be parsed or not. */
-corto_bool g_mustParse(g_generator g, corto_object o);
+CORTO_EXPORT corto_bool g_mustParse(g_generator g, corto_object o);
 
 
 /* === Generator file-utility class */
 
 /* Open a file for writing. */
-g_file g_fileOpen(g_generator generator, corto_string name, ...);
+CORTO_EXPORT g_file g_fileOpen(g_generator generator, corto_string name, ...);
 
 /* Open hidden file for writing. */
-g_file g_hiddenFileOpen(g_generator generator, corto_string name, ...);
+CORTO_EXPORT g_file g_hiddenFileOpen(g_generator generator, corto_string name, ...);
 
 /* Close a file. */
-void g_fileClose(g_file file);
+CORTO_EXPORT void g_fileClose(g_file file);
 
 /* Return contents of a file. */
-corto_string g_fileRead(g_generator generator, corto_string name);
+CORTO_EXPORT corto_string g_fileRead(g_generator generator, corto_string name);
 
 /* Lookup an open file. */
-void g_fileGet(g_generator generator, corto_string name);
+CORTO_EXPORT void g_fileGet(g_generator generator, corto_string name);
 
 /* Lookup an existing code-snippet */
-corto_string g_fileLookupSnippet(g_file file, corto_string snippetId);
+CORTO_EXPORT corto_string g_fileLookupSnippet(g_file file, corto_string snippetId);
 
 /* Lookup an existing code-header */
-corto_string g_fileLookupHeader(g_file file, corto_string snippetId);
+CORTO_EXPORT corto_string g_fileLookupHeader(g_file file, corto_string snippetId);
 
 /* Increase indentation. */
-void g_fileIndent(g_file file);
+CORTO_EXPORT void g_fileIndent(g_file file);
 
 /* Decrease indentation. */
-void g_fileDedent(g_file file);
+CORTO_EXPORT void g_fileDedent(g_file file);
 
 /* Set scope of file */
-void g_fileScopeSet(g_file file, corto_object o);
+CORTO_EXPORT void g_fileScopeSet(g_file file, corto_object o);
 
 /* Get scope of file */
-corto_object g_fileScopeGet(g_file file);
+CORTO_EXPORT corto_object g_fileScopeGet(g_file file);
 
 /* Write to a file. */
-int g_fileWrite(g_file file, char* fmt, ...);
+CORTO_EXPORT int g_fileWrite(g_file file, char* fmt, ...);
 
 /* Get generator */
-g_generator g_fileGetGenerator(g_file file);
+CORTO_EXPORT g_generator g_fileGetGenerator(g_file file);
 
 
 /* == Generator unique name-generator for members utility */
 
 /* Get name of member */
-corto_char* corto_genMemberName(g_generator g, corto_ll cache, corto_member m, corto_char *result);
+CORTO_EXPORT corto_char* corto_genMemberName(g_generator g, corto_ll cache, corto_member m, corto_char *result);
 
 /* Build cache to determine whether membernames occur more than once (due to inheritance) */
-corto_ll corto_genMemberCacheBuild(corto_interface o);
+CORTO_EXPORT corto_ll corto_genMemberCacheBuild(corto_interface o);
 
 /* Clean cache */
-void corto_genMemberCacheClean(corto_ll cache);
+CORTO_EXPORT void corto_genMemberCacheClean(corto_ll cache);
 
 
 #ifdef __cplusplus

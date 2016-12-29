@@ -27,10 +27,10 @@ struct corto_iter {
 };
 
 /* Generic iterator implementation */
-int corto_iterHasNext(corto_iter* iter);
-void* corto_iterNext(corto_iter* iter);
-void* corto_iterNextPtr(corto_iter* iter);
-void corto_iterRelease(corto_iter* iter);
+CORTO_EXPORT int corto_iterHasNext(corto_iter* iter);
+CORTO_EXPORT void* corto_iterNext(corto_iter* iter);
+CORTO_EXPORT void* corto_iterNextPtr(corto_iter* iter);
+CORTO_EXPORT void corto_iterRelease(corto_iter* iter);
 
 #ifdef __cplusplus
 }

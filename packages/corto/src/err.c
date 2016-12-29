@@ -70,8 +70,8 @@ static char* corto_getLasterror(void) {
 static void corto_setLasterror(char* err) {
     corto_errThreadData *data = corto_getThreadData();
     if (!data->viewed && data->lastError) {
-        corto_error("corto: uncatched error (use corto_lasterr): %s%s%s",
-          data->lastError, data->backtrace?"\n":"", data->backtrace);
+        fprintf(stderr, "%scorto: uncatched error (use corto_lasterr): %s%s%s%s\n",
+          RED, data->lastError, NORMAL, data->backtrace?"\n":"", data->backtrace);
     }
     if (data->lastError) corto_dealloc(data->lastError);
     if (data->backtrace) corto_dealloc(data->backtrace);
@@ -180,6 +180,8 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
         }
     }
 
+    corto_seterr(NULL);
+
     return kind;
 }
 
@@ -235,7 +237,7 @@ void corto_seterrv(char *fmt, va_list args) {
         } else if (CORTO_OPERATIONAL){
             corto_error("error raised while shutting down: %s", err);
         } else {
-            corto_error("%s", err);
+            fprintf(stderr, "%s%s%s\n", RED, err, NORMAL);
         }
         corto_backtrace(stderr);
     }

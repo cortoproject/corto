@@ -125,50 +125,18 @@ corto_resultIter _corto_loader_onRequest(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(core/request request)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(/corto/core/request request)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onRequest(/corto/core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(/corto/core/request request)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_resultIter ___ (*)(corto_object, corto_request*))((corto_function)_method)->fptr)(this, request);
     } else {
         corto_call(corto_function(_method), &_result, this, request);
-    }
-    
-    return _result;
-}
-
-corto_object _corto_loader_onResume(
-    corto_loader this,
-    corto_string parent,
-    corto_string name,
-    corto_object o)
-{
-    static corto_uint32 _methodId;
-    corto_method _method;
-    corto_object _result;
-    corto_interface _abstract;
-
-    _abstract = corto_interface(corto_typeof(this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object o)");
-    }
-    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
-
-    /* Lookup method-object. */
-    _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
-
-    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(this, parent, name, o);
-    } else {
-        corto_call(corto_function(_method), &_result, this, parent, name, o);
     }
     
     return _result;
@@ -324,13 +292,13 @@ corto_resultIter _corto_mount_onRequest(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(core/request request)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(/corto/core/request request)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onRequest(/corto/core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(core/request request)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onRequest(/corto/core/request request)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_resultIter ___ (*)(corto_object, corto_request*))((corto_function)_method)->fptr)(this, request);

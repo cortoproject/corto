@@ -84,7 +84,9 @@ corto_member _corto_union_findCase(
 
         /* Otherwise loop discriminators to see if there's a match */
         } else {
-            corto_int32seqForeach(c->discriminator, caseDiscriminator) {
+            corto_int32 j = 0;
+            for (j = 0; j < c->discriminator.length; j ++) {
+                corto_int32 caseDiscriminator = c->discriminator.buffer[j];
                 if (discriminator == caseDiscriminator) {
                     member = corto_member(c);
                     found = TRUE;

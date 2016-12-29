@@ -9,8 +9,6 @@
 #include <corto/corto.h>
 #include <corto/_project.h>
 #include <corto/core/_type.h>
-#include <corto/core/_api.h>
-#include <corto/core/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,19 +40,6 @@ CORTO_EXPORT corto_resultIter _corto_loader_onRequest_v(
     corto_loader _this,
     corto_request *request);
 #define corto_loader_onRequest_v(_this, request) _corto_loader_onRequest_v(corto_loader(_this), request)
-CORTO_EXPORT corto_object _corto_loader_onResume(
-    corto_loader _this,
-    corto_string parent,
-    corto_string name,
-    corto_object o);
-#define corto_loader_onResume(_this, parent, name, o) _corto_loader_onResume(corto_loader(_this), parent, name, o)
-
-CORTO_EXPORT corto_object _corto_loader_onResume_v(
-    corto_loader _this,
-    corto_string parent,
-    corto_string name,
-    corto_object o);
-#define corto_loader_onResume_v(_this, parent, name, o) _corto_loader_onResume_v(corto_loader(_this), parent, name, o)
 
 #ifdef __cplusplus
 }

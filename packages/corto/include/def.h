@@ -42,6 +42,7 @@
 
 #ifndef NDEBUG
 #define CORTO_MAGIC (0x6B6F7274)
+#define CORTO_MAGIC_DESTRUCT (0x74726F6B)
 #endif
 
 #include <corto/iter.h>
@@ -82,11 +83,11 @@ extern "C" {
 
 #define CORTO_NULL_STRING ("null")
 
-extern const char* CORTO_VERSION;
-extern const char* CORTO_VERSION_MAJOR;
-extern const char* CORTO_VERSION_MINOR;
-extern const char* CORTO_VERSION_PATCH;
-extern const char* CORTO_VERSION_SUFFIX;
+CORTO_EXPORT extern const char* CORTO_VERSION;
+CORTO_EXPORT extern const char* CORTO_VERSION_MAJOR;
+CORTO_EXPORT extern const char* CORTO_VERSION_MINOR;
+CORTO_EXPORT extern const char* CORTO_VERSION_PATCH;
+CORTO_EXPORT extern const char* CORTO_VERSION_SUFFIX;
 
 typedef int (*corto_compareAction)(void* o1, void* o2);
 typedef int (*corto_walkAction)(void* o, void* userData);

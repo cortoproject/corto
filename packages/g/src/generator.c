@@ -5,7 +5,7 @@
  *      Author: sander
  */
 
-#include "corto/corto.h"
+#include "corto/g/g.h"
 
 #ifdef CORTO_GENERATOR
 
@@ -480,11 +480,25 @@ corto_int16 g_leafDependencies(
     return 0;
 }
 
+corto_int16 g_import(g_generator g, corto_object package) {
+    if (!g->imports) {
+        g->imports = corto_llNew();
+    }
+    if (!corto_llHasObject(g->imports, package)) {
+        corto_llInsert(g->imports, package);
+
+        /* Recursively obtain imports */
+        g_leafDependencies(g, package);
+    }
+
+    return 0;
+}
+
 corto_int16 g_importsEvalReference(
     g_generator g,
     corto_object o)
 {
-    if (!g_mustParse(g, o)) {
+    if (!g_mustParse(g, o) && (o != g_getCurrent(g))) {
         corto_object parent = o;
         while(parent && !corto_instanceof(corto_type(corto_package_o), parent)) {
             parent = corto_parentof(parent);
@@ -972,7 +986,18 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
     CORTO_UNUSED(g);
 
     if (!corto_fileTest(name)) {
-        goto ok;
+
+        /* Check if there is a .old file that can be restored */
+        corto_id oldName;
+        sprintf(oldName, "%s.old", name);
+        if (corto_fileTest(oldName)) {
+            if (corto_rename(oldName, name)) {
+                corto_warning("could not rename '%s' to '%s': %s", oldName, name, corto_lasterr());
+                goto ok;
+            }
+        } else {
+            goto ok;
+        }
     }
 
     code = corto_fileLoad(name);
@@ -1117,6 +1142,7 @@ static g_file g_fileOpenIntern(g_generator g, corto_string name) {
     return result;
 error:
     corto_seterr("failed to open file '%s'", name);
+    abort();
     return NULL;
 }
 

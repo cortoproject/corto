@@ -28,9 +28,6 @@
 #include "corto/err.h"
 #include "corto/file.h"
 #include "corto/os.h"
-#include "corto/generator.h"
-#include "corto/generatorDepWalk.h"
-#include "corto/generatorTypeDepWalk.h"
 #include "corto/init_ser.h"
 #include "corto/loader.h"
 #include "corto/iter.h"
@@ -53,30 +50,29 @@
 #include "corto/time.h"
 #include "corto/util.h"
 #include "corto/value.h"
-#include "cxstr.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int corto_start(void);
-int corto_stop(void);
-corto_string corto_getBuild(void);
-corto_string corto_getLibrary(void);
-corto_bool corto_isbuiltin(corto_object o);
-void corto_onunload(void(*handler)(void*), void* userData);
-void corto_onexit(void(*handler)(void*), void* userData);
+CORTO_EXPORT int corto_start(void);
+CORTO_EXPORT int corto_stop(void);
+CORTO_EXPORT corto_string corto_getBuild(void);
+CORTO_EXPORT corto_string corto_getLibrary(void);
+CORTO_EXPORT corto_bool corto_isbuiltin(corto_object o);
+CORTO_EXPORT void corto_onunload(void(*handler)(void*), void* userData);
+CORTO_EXPORT void corto_onexit(void(*handler)(void*), void* userData);
 
-extern int8_t CORTO_OPERATIONAL;
-extern int8_t CORTO_DEBUG_ENABLED;
-extern int8_t CORTO_TRACING_ENABLED;
-extern int8_t CORTO_WARNING_ENABLED;
+CORTO_EXPORT extern int8_t CORTO_OPERATIONAL;
+CORTO_EXPORT extern int8_t CORTO_DEBUG_ENABLED;
+CORTO_EXPORT extern int8_t CORTO_TRACING_ENABLED;
+CORTO_EXPORT extern int8_t CORTO_WARNING_ENABLED;
 
-extern corto_string CORTO_TRACE_ID;
-extern corto_object CORTO_TRACE_OBJECT;
-extern int8_t CORTO_TRACE_NOTIFICATIONS;
-extern int8_t CORTO_BACKTRACE_ENABLED;
-extern int32_t CORTO_MEMTRACE_BREAKPOINT;
+CORTO_EXPORT extern corto_string CORTO_TRACE_ID;
+CORTO_EXPORT extern corto_object CORTO_TRACE_OBJECT;
+CORTO_EXPORT extern int8_t CORTO_TRACE_NOTIFICATIONS;
+CORTO_EXPORT extern int8_t CORTO_BACKTRACE_ENABLED;
+CORTO_EXPORT extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 
 #ifdef __cplusplus
 }

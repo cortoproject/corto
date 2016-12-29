@@ -270,17 +270,22 @@ corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
 
 static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 {
-    corto_subscriber s = corto_subscriberCreate(
-      r->mask,
-      r->scope,
-      r->expr,
-      r->contentType,
-      r->instance,
-      r->dispatcher,
-      r->type,
-      r->enabled,
-      r->callback
-    );
+    corto_subscriber s = corto_declare(corto_subscriber_o);
+    ((corto_observer)s)->mask = r->mask;
+    corto_setstr(&s->parent, r->scope);
+    corto_setstr(&s->expr, r->expr);
+    corto_setstr(&s->contentType, r->contentType);
+    corto_setref(&((corto_observer)s)->instance, r->instance);
+    corto_setref(&((corto_observer)s)->dispatcher, r->dispatcher);
+    corto_setstr(&((corto_observer)s)->type, r->type);
+    ((corto_observer)s)->enabled = r->enabled;
+    ((corto_function)s)->fptr = (corto_word)r->callback;
+    ((corto_function)s)->kind = CORTO_PROCEDURE_CDECL;
+
+    if (corto_define(s)) {
+        corto_delete(s);
+        s = NULL;
+    }
 
     return s;
 }

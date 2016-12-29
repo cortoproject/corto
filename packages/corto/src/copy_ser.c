@@ -84,7 +84,6 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
     corto_iter iter;
     void *e1, *e2;
     corto_type elementType = t->elementType;
-    corto_any v1, v2;
 
     iter = corto_llIter(list);
     while(corto_iterHasNext(&iter)) {
@@ -94,19 +93,16 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
             e2 = corto_iterNextPtr(&iter);
         }
         e1 = CORTO_OFFSET(array, elementSize * i);
-        v1.type = v2.type = elementType;
-        if (!reverse) {
-            v1.value = e1;
-            v2.value = e2;
-        } else {
-            v1.value = e2;
-            v2.value = e1;
+        if (reverse) {
+            void *tmp = e1;
+            e1 = e2;
+            e2 = tmp;
         }
 
         if (elementType->reference) {
-            corto_setref(v1.value, *(corto_object*)v2.value);
+            corto_setref(e1, *(corto_object*)e2);
         } else {
-            result = corto_type_copy(v1, v2);
+            result = corto_copyp(e1, elementType, e2);
         }
 
         i++;
@@ -121,7 +117,6 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
     corto_iter iter1, iter2;
     void *e1, *e2;
     corto_type elementType = t->elementType;
-    corto_any v1, v2;
 
     iter1 = corto_llIter(list1);
     iter2 = corto_llIter(list2);
@@ -137,10 +132,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
         if (elementType->reference) {
             corto_setref((corto_object*)e1, *(corto_object*)e2);
         } else {
-            v1.type = v2.type = elementType;
-            v1.value = e1;
-            v2.value = e2;
-            result = corto_type_copy(v1, v2);
+            result = corto_copyp(e1, elementType, e2);
         }
     }
 

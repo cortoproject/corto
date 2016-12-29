@@ -14,9 +14,9 @@
 extern "C" {
 #endif
 
-corto_int16 _corto_metaWalk(corto_serializer s, corto_type type, void* userData);
-corto_int16 corto_serializeConstants(corto_serializer s, corto_value *v, void* userData);
-corto_int16 corto_serializeCases(corto_serializer s, corto_value *v, void *userData);
+CORTO_EXPORT corto_int16 _corto_metaWalk(corto_serializer s, corto_type type, void* userData);
+CORTO_EXPORT corto_int16 corto_serializeConstants(corto_serializer s, corto_value *v, void* userData);
+CORTO_EXPORT corto_int16 corto_serializeCases(corto_serializer s, corto_value *v, void *userData);
 
 #define corto_metaWalk(s, t, d) _corto_metaWalk(s, corto_type(t), d)
 

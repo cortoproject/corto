@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/corto.h>
+#include <corto/core/c/c.h>
 corto_augmentData* _corto_augmentDataCreate(corto_string id, corto_word data) {
     corto_augmentData* _this;
     _this = corto_augmentData(corto_declare(corto_augmentData_o));
@@ -1861,7 +1861,7 @@ corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object o
 
 corto_int16 corto_notifyActionInitC(corto_notifyAction *d, corto_void ___ (*callback)(corto_object)) {
     d->_parent.instance = NULL;
-    d->_parent.procedure = corto_functionDeclare();
+    d->_parent.procedure = corto_declare(corto_function_o);
     d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "(object observable)");
     d->_parent.procedure->fptr = (corto_word)callback;
@@ -1872,7 +1872,7 @@ corto_int16 corto_notifyActionInitC(corto_notifyAction *d, corto_void ___ (*call
 corto_int16 corto_notifyActionInitCInstance(corto_notifyAction *d, corto_object instance, corto_void ___ (*callback)(corto_object, corto_object)) {
     d->_parent.instance = instance;
     corto_claim(instance);
-    d->_parent.procedure = corto_functionDeclare();
+    d->_parent.procedure = corto_declare(corto_function_o);
     d->_parent.procedure->kind = CORTO_PROCEDURE_CDECL;
     corto_function_parseParamString(d->_parent.procedure, "(object instance, object observable)");
     d->_parent.procedure->fptr = (corto_word)callback;
@@ -4548,4 +4548,3 @@ void corto_resultListClear(corto_resultList list) {
     }
     corto_llClear(list);
 }
-

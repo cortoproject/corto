@@ -2,13 +2,14 @@ PACKAGE = 'corto'
 
 LIB = ['rt', 'dl', 'm', 'ffi']
 LIB_PUBLIC = [] # projects don't need to link with rt, dl and m
-CFLAGS ||= ["-Wunused-parameter"]
+CFLAGS ||= ["-Wunused-parameter", "-fvisibility=hidden"]
 
 # Bootstrap: can't build corto packages without corto
 NOCORTO = true
 
-# Rebuild corto.c and loader.c for every artefact so that they are aware of
-# whether the library is redistributable
+# Rebuild corto.c and loader.c for every artefact to ensure not to link in a
+# cached version of an .o file that contains outdated information about the
+# binary that is being built.
 ALWAYS_REBUILD = ["src/corto.c", "src/loader.c"]
 
 # When building a tar for the core, also include the build system

@@ -93,7 +93,8 @@ void corto_threadStringDealloc(void *tdata) {
 
 /* Check whether object is a builtin package */
 corto_bool corto_isBuiltinPackage(corto_object o) {
-    return (o == corto_o) ||
+    return (o == root_o) ||
+           (o == corto_o) ||
            (o == corto_lang_o) ||
            (o == corto_core_o) ||
            (o == corto_native_o) ||

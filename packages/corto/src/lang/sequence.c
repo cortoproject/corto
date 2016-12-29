@@ -51,22 +51,3 @@ corto_int16 _corto_sequence_init(
     return corto_collection_init(corto_collection(this));
 /* $end */
 }
-
-corto_void _corto_sequence_size(corto_any this,
-    corto_uint32 size)
-{
-/* $begin(corto/lang/sequence/size) */
-    corto_uint32 oldSize, elementSize;
-
-    oldSize = ((corto_objectseq*)this.value)->length;
-    elementSize = corto_type_sizeof(corto_collection(this.type)->elementType);
-
-    ((corto_objectseq*)this.value)->buffer = corto_realloc(((corto_objectseq*)this.value)->buffer, size * elementSize);
-    if (size > oldSize) {
-        memset(CORTO_OFFSET(((corto_objectseq*)this.value)->buffer, oldSize * elementSize), 0, elementSize * (size - oldSize));
-    } else {
-        memset(((corto_objectseq*)this.value)->buffer, 0, elementSize * size);
-    }
-    ((corto_objectseq*)this.value)->length = size;
-/* $end */
-}

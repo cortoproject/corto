@@ -17,19 +17,19 @@ extern "C" {
 typedef struct corto_dl_s* corto_dl;
 
 /* Link dynamic library */
-corto_dl corto_dlOpen(const char* file);
+CORTO_EXPORT corto_dl corto_dlOpen(const char* file);
 
 /* Close dynamic library */
-void corto_dlClose(corto_dl dl);
+CORTO_EXPORT void corto_dlClose(corto_dl dl);
 
 /* Lookup symbol in dynamic library */
-void* corto_dlSym(corto_dl dl, const char* sym);
+CORTO_EXPORT void* corto_dlSym(corto_dl dl, const char* sym);
 
 /* Lookup procedure in dynamic library */
-void*(*corto_dlProc(corto_dl dl, const char* proc))(void);
+CORTO_EXPORT void*(*corto_dlProc(corto_dl dl, const char* proc))(void);
 
 /* Return error code */
-const char* corto_dlError(void);
+CORTO_EXPORT const char* corto_dlError(void);
 
 #ifdef __cplusplus
 }

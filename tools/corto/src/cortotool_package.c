@@ -1,6 +1,7 @@
 
 #include "cortotool_package.h"
 #include "cortotool_build.h"
+#include "corto/core/c/c.h"
 
 #define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
 
@@ -28,6 +29,7 @@ static corto_string cortotool_lookupPackage(corto_string str) {
         } else {
             package = corto_fullpath(NULL, p);
         }
+        corto_release(p);
     }
 
     return package;

@@ -1,8 +1,10 @@
 
 #include "cortotool_pp.h"
+#include "corto/g/g.h"
+#include "corto/core/c/c.h"
 
 static corto_ll silent, mute, attributes, names, prefixes, generators, scopes;
-static corto_ll objects, languages, includes;
+static corto_ll objects, languages, includes, imports;
 static corto_string prefix = NULL;
 static corto_string name = NULL;
 
@@ -76,7 +78,6 @@ corto_int16 cortotool_core(void) {
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
       "-g", "c/interface",
-      "-g", "c/api",
       "-g", "c/type",
       NULL
     });
@@ -97,7 +98,6 @@ corto_int16 cortotool_core(void) {
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
       "-g", "c/interface",
-      "-g", "c/api",
       "-g", "c/type",
       NULL
     });
@@ -118,7 +118,6 @@ corto_int16 cortotool_core(void) {
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
       "-g", "c/interface",
-      "-g", "c/api",
       "-g", "c/type",
       NULL
     });
@@ -139,7 +138,6 @@ corto_int16 cortotool_core(void) {
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
       "-g", "c/interface",
-      "-g", "c/api",
       "-g", "c/type",
       NULL
     });
@@ -178,10 +176,10 @@ corto_int16 cortotool_ppParse(
     corto_bool parseSelf,
     corto_bool parseScope)
 {
-    corto_iter iter = corto_llIter(list);
-    while (corto_iterHasNext(&iter)) {
+    corto_iter it = corto_llIter(list);
+    while (corto_iterHasNext(&it)) {
         corto_id id;
-        char *objId = corto_iterNext(&iter);
+        char *objId = corto_iterNext(&it);
 
         /* Ensure the scope is fully qualified */
         if ((objId[0] != '/') && (objId[0] != ':')) {
@@ -218,10 +216,90 @@ error:
     return -1;
 }
 
+void cortotool_splitId(corto_string path, char **parent, char **id) {
+    *id = strrchr(path, '/');
+    *parent = NULL;
+    if (*id) {
+        if (*id != path) {
+            *parent = path;
+        } else {
+            *parent = "/";
+        }
+        *id[0] = '\0';
+        (*id) ++;
+    } else {
+        *id = path;
+        *parent = "/";
+    }
+}
+
+/* Recursively create package without using loader mount */
+corto_package cortotool_createPackage(corto_string id) {
+    corto_id buffer;
+    strcpy(buffer, id);
+    char *parent, *child;
+    corto_package parentPackage, result;
+
+    cortotool_splitId(buffer, &parent, &child);
+
+    parentPackage = corto_find(NULL, parent, CORTO_FIND_DEFAULT);
+    if (!parentPackage) {
+        parentPackage = cortotool_createPackage(parent);
+        if (!parentPackage) {
+            goto error;
+        }
+    }
+
+    result = corto_declareChild(parentPackage, child, corto_package_o);
+    if (result && !corto_checkState(result, CORTO_DEFINED)) {
+        if (corto_define(result)) {
+            goto error;
+        }
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
+/* Load imports */
+corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
+    corto_iter it = corto_llIter(imports);
+
+    while (corto_iterHasNext(&it)) {
+        corto_string import = corto_iterNext(&it);
+        if (strcmp(import, "corto") && strcmp(import, "/corto")) {
+            char *str = NULL;
+            /* Import package without relying on core/loader */
+
+            if (!(str = corto_locate(import, CORTO_LOCATION_LIB))) {
+                corto_error("corto: %s: %s", import, corto_lasterr());
+                goto error;
+            }
+
+            corto_dealloc(str);
+
+            corto_object package = cortotool_createPackage(import);
+            if (!package) {
+                corto_error("corto: %s: %s", import, corto_lasterr());
+                goto error;
+            }
+
+            if (g_import(g, package)) {
+                goto error;
+            }
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 corto_int16 cortotool_pp(int argc, char *argv[]) {
     g_generator g;
     corto_string lib, include;
-    corto_iter iter;
+    corto_iter it;
     corto_string attr;
     corto_ll core;
 
@@ -242,6 +320,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
         {"--prefix", NULL, &prefixes},
         {"--scope", NULL, &scopes},
         {"--object", NULL, &objects},
+        {"--import", NULL, &imports},
         {"-p", NULL, &prefixes},
         {"-s", NULL, &scopes},
         {"$+--generator", NULL, &generators},
@@ -279,9 +358,9 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     /* Load includes */
     if (includes) {
-        iter = corto_llIter(includes);
-        while (corto_iterHasNext(&iter)) {
-            include = corto_iterNext(&iter);
+        it = corto_llIter(includes);
+        while (corto_iterHasNext(&it)) {
+            include = corto_iterNext(&it);
 
             corto_trace("corto: pp: loading '%s'", include);
             if (corto_load(include, 0, NULL)) {
@@ -337,13 +416,20 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                 }
             }
 
+            /* Load imports */
+            if (imports) {
+                if (cortotool_ppParseImports(g, imports)) {
+                    goto error;
+                }
+            }
+
             /* Set attributes */
             if (attributes) {
-                iter = corto_llIter(attributes);
-                while (corto_iterHasNext(&iter)) {
+                it = corto_llIter(attributes);
+                while (corto_iterHasNext(&it)) {
                     corto_string ptr;
 
-                    attr = corto_strdup(corto_iterNext(&iter));
+                    attr = corto_strdup(corto_iterNext(&it));
 
                     ptr = strchr(attr, '=');
                     if (ptr) {

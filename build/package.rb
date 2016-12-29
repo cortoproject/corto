@@ -8,7 +8,7 @@ LIBPATH_PUBLIC ||= [] + LIBPATH
 LINK_PUBLIC ||= ["."] + LINK
 # keep track of the original LINK array as the buildsystem will append LINK with
 # dependencies
-LINK_NO_DEPS = LINK
+LINK_NO_DEPS = LINK.clone
 GENERATED_SOURCES ||= []
 TARGET ||= PACKAGE_FWSLASH.split("/").last
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
@@ -42,6 +42,8 @@ if TARGET != "corto" and not defined? NOCORTO then
   USE_PACKAGE << "corto"
   if LANGUAGE == "cpp" or LANGUAGE == "c++" then
     USE_PACKAGE << "corto/cpp"
+  elsif LANGUAGE == "c" or LANGUAGE == "c4cpp" then
+    USE_PACKAGE << "corto/lang/c" << "corto/core/c"
   end
 end
 
@@ -135,6 +137,7 @@ if not defined? NOCORTO then
       command = "corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
                 "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
                 "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
+                "--import #{USE_PACKAGE.join(",")} " +
                 "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
                 "#{prefixStr} #{localStr} #{docStr} --lang #{LANGUAGE}"
 

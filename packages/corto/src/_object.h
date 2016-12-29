@@ -116,22 +116,12 @@ struct corto__observable {
         corto_int64 dummy;
     } align;
 
-    struct corto_rwmutex_s childLock;
-
     /* Lockless access to observers (zero-terminated)
      *  Element -1 contains a counter which indicates by how many
      *  notify-functions it is being used. When this counter reaches zero, the array
      *  can be deleted. */
     corto__observer **onSelfArray;
     corto__observer **onChildArray;
-
-    /* If this value is set to TRUE, updating the observable requires locking the object if it's a writable. This
-     * value will only be set to TRUE when there are observers that subscribe on the object's value. */
-    corto_bool lockRequired;
-
-    /* Optimization: childs only need to look at this value to know if they need to lock instead of walking the
-     * hierarchy checking for ON_CHILDS observables. */
-    corto_bool childLockRequired;
 };
 
 typedef struct corto__persistent corto__persistent;
@@ -197,6 +187,7 @@ void corto_observerDelayedAdminDefine(corto_object instance);
 corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
 corto_int16 corto_suspend(corto_object o);
 
+corto_uint32 corto_collection_size(corto_any _this);
 
 #ifdef __cplusplus
 }

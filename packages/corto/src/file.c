@@ -29,7 +29,7 @@ char* corto_fileLoad(const char* filename) {
     rewind(file);
 
     /* Load contents in memory */
-    content = malloc (size * sizeof(char) + 1);
+    content = malloc (size + 1);
     if (fread(content, 1, size, file) != (unsigned int)size) {
         corto_dealloc(content);
         content = NULL;

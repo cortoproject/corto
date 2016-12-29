@@ -22,63 +22,66 @@ typedef enum corto_procsignal {
 } corto_procsignal;
 
 /* Create a directory. Returns zero if OK, -1 if failed */
-int corto_mkdir(const char *name);
+CORTO_EXPORT int corto_mkdir(const char *name);
 
 /* Read the contents of a directory */
-corto_ll corto_opendir(const char *name);
+CORTO_EXPORT corto_ll corto_opendir(const char *name);
 
 /* Release directory contents */
-void corto_closedir(corto_ll dir);
+CORTO_EXPORT void corto_closedir(corto_ll dir);
 
 /* Creates a file. Returns zero if OK, -1 if failed */
-int corto_touch(const char *name);
+CORTO_EXPORT int corto_touch(const char *name);
 
 /* Get working directory. Returns NULL of failed, an internal buffer otherwise */
-char* corto_cwd(void);
+CORTO_EXPORT char* corto_cwd(void);
 
 /* Change working directory. Returns zero if OK, -1 if failed */
-int corto_chdir(const char *name);
+CORTO_EXPORT int corto_chdir(const char *name);
 
 /* Copy a file. Returns zero if OK, -1 if failed */
-int corto_cp(const char *source, const char *destination);
+CORTO_EXPORT int corto_cp(const char *source, const char *destination);
 
 /* Test if name is a directory */
-int corto_isDirectory(const char *name);
+CORTO_EXPORT int corto_isDirectory(const char *name);
+
+/* Rename a file or directory. Returns 0 if OK, -1 if failed */
+CORTO_EXPORT int corto_rename(const char *oldName, const char *newName);
 
 /* Remove a file or directory. Returns 0 if OK, -1 if failed */
-int corto_rm(const char *name);
+CORTO_EXPORT int corto_rm(const char *name);
 
 /* Recursively remove a directory */
-int corto_rmtree(const char *name);
+CORTO_EXPORT int corto_rmtree(const char *name);
 
 /* Run a process, return PID (-1 if failed) */
-corto_pid corto_procrun(const char* exec, char *argv[]);
+CORTO_EXPORT corto_pid corto_procrun(const char* exec, char *argv[]);
 
 /* Same as corto_procrun, but override stdin, stdout and stderr of child */
-corto_pid corto_procrunRedirect(
+CORTO_EXPORT corto_pid corto_procrunRedirect(
     const char* exec, char *argv[], FILE *in, FILE *out, FILE *err);
 
 /* Send signal to process */
-int corto_prockill(corto_pid pid, corto_procsignal sig);
+CORTO_EXPORT int corto_prockill(corto_pid pid, corto_procsignal sig);
 
 /* Wait for process */
-int corto_procwait(corto_pid pid, int8_t *rc);
+CORTO_EXPORT int corto_procwait(corto_pid pid, int8_t *rc);
 
 /* Check state of process */
-int corto_proccheck(corto_pid pid, int8_t *rc);
+CORTO_EXPORT int corto_proccheck(corto_pid pid, int8_t *rc);
 
 /* Simple blocking function to create and wait for a process */
-int corto_proccmd(corto_string cmd, int8_t *rc);
+CORTO_EXPORT int corto_proccmd(corto_string cmd, int8_t *rc);
 
 /* Check whether process is being debugged */
-int corto_beingTraced(void);
+CORTO_EXPORT int corto_beingTraced(void);
 
 /* Get hostname of current machine */
-char* corto_hostname(void);
+CORTO_EXPORT char* corto_hostname(void);
 
 /* Get PID of current process */
 #define corto_pid() _corto_pid()
-corto_pid _corto_pid(void);
+CORTO_EXPORT corto_pid _corto_pid(void);
 
 #ifdef __cplusplus
 }

@@ -2231,41 +2231,6 @@ CORTO_EXPORT corto_int16 _corto_typeKindInit(corto_typeKind* value);
 CORTO_EXPORT corto_int16 _corto_typeKindDeinit(corto_typeKind* value);
 #define corto_typeKindDeinit(value) _corto_typeKindDeinit(value)
 
-/* typespec */
-CORTO_EXPORT corto_typespec* _corto_typespecCreate(corto_type type, corto_bool reference);
-#define corto_typespecCreate(type, reference) _corto_typespecCreate(corto_type(type), reference)
-#define corto_typespecCreate_auto(_id, type, reference) corto_typespec* _id = corto_typespecCreate(type, reference); (void)_id
-CORTO_EXPORT corto_typespec* _corto_typespecCreateChild(corto_object _parent, corto_string _id, corto_type type, corto_bool reference);
-#define corto_typespecCreateChild(_parent, _id, type, reference) _corto_typespecCreateChild(_parent, _id, corto_type(type), reference)
-#define corto_typespecCreateChild_auto(_parent, _id, type, reference) corto_typespec* _id = corto_typespecCreateChild(_parent, #_id, type, reference); (void)_id
-CORTO_EXPORT corto_int16 _corto_typespecUpdate(corto_typespec* _this, corto_type type, corto_bool reference);
-#define corto_typespecUpdate(_this, type, reference) _corto_typespecUpdate(corto_typespec(_this), corto_type(type), reference)
-
-CORTO_EXPORT corto_typespec* _corto_typespecDeclare(void);
-#define corto_typespecDeclare() _corto_typespecDeclare()
-#define corto_typespecDeclare_auto(_id) corto_typespec* _id = corto_typespecDeclare(); (void)_id
-CORTO_EXPORT corto_typespec* _corto_typespecDeclareChild(corto_object _parent, corto_string _id);
-#define corto_typespecDeclareChild(_parent, _id) _corto_typespecDeclareChild(_parent, _id)
-#define corto_typespecDeclareChild_auto(_parent, _id) corto_typespec* _id = corto_typespecDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_typespecDefine(corto_typespec* _this, corto_type type, corto_bool reference);
-#define corto_typespecDefine(_this, type, reference) _corto_typespecDefine(corto_typespec(_this), corto_type(type), reference)
-CORTO_EXPORT corto_typespec* _corto_typespecAssign(corto_typespec* _this, corto_type type, corto_bool reference);
-#define corto_typespec__optional_NotSet NULL
-#define corto_typespec__optional_Set(type, reference) corto_typespecAssign((corto_typespec*)corto_calloc(sizeof(corto_typespec)), type, reference)
-#define corto_typespec__optional_SetCond(cond, type, reference) cond ? corto_typespecAssign((corto_typespec*)corto_calloc(sizeof(corto_typespec)), type, reference) : NULL
-#define corto_typespecUnset(_this) _this ? corto_deinitp(_this, corto_typespec_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_typespecAssign(_this, type, reference) _corto_typespecAssign(_this, corto_type(type), reference)
-#define corto_typespecSet(_this, type, reference) _this = _this ? _this : (corto_typespec*)corto_calloc(sizeof(corto_typespec)); _corto_typespecAssign(_this, corto_type(type), reference)
-CORTO_EXPORT corto_string _corto_typespecStr(corto_typespec* value);
-#define corto_typespecStr(value) _corto_typespecStr(value)
-CORTO_EXPORT corto_typespec* corto_typespecFromStr(corto_typespec* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_typespecCompare(corto_typespec* dst, corto_typespec* src);
-
-CORTO_EXPORT corto_int16 _corto_typespecInit(corto_typespec* value);
-#define corto_typespecInit(value) _corto_typespecInit(value)
-CORTO_EXPORT corto_int16 _corto_typespecDeinit(corto_typespec* value);
-#define corto_typespecDeinit(value) _corto_typespecDeinit(value)
-
 /* uint */
 CORTO_EXPORT corto_uint _corto_uintCreate(corto_width width, corto_uint64 min, corto_uint64 max);
 #define corto_uintCreate(width, min, max) _corto_uintCreate(width, min, max)
@@ -2793,4 +2758,3 @@ CORTO_EXPORT void corto_wordseqClear(corto_wordseq *seq);
 }
 #endif
 #endif
-

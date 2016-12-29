@@ -346,10 +346,6 @@ static void corto__initObservable(corto_object o) {
 
     corto_rwmutexNew(&observable->align.selfLock);
 
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        corto_rwmutexNew(&observable->childLock);
-    }
-
     observable->onSelf = NULL;
     observable->onChild = NULL;
     observable->onSelfArray = NULL;
@@ -392,9 +388,6 @@ static void corto__deinitObservable(corto_object o) {
     }
 
     corto_rwmutexFree(&observable->align.selfLock);
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        corto_rwmutexFree(&observable->childLock);
-    }
 }
 
 /* Initialize static scoped object */
@@ -743,10 +736,15 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 /* Check if parentState matches scopeState of child type */
                 if (childType->parentState && !corto__checkStateXOR(parent, childType->parentState)) {
                     corto_uint32 childState = childType->parentState;
+                    corto_uint32 parentState = _parent->align.attrs.state;
+                    char *parentStateStr = corto_strp(&parentState, corto_state_o, 0);
+                    char *childStateStr = corto_strp(&childState, corto_state_o, 0);
                     corto_seterr("parent '%s' is %s, must be %s",
                         corto_fullpath(NULL, parent),
-                        corto_stateStr(_parent->align.attrs.state),
-                        corto_stateStr(childState));
+                        parentStateStr,
+                        childStateStr);
+                    corto_dealloc(parentStateStr);
+                    corto_dealloc(childStateStr);
                     goto err_invalid_parent;
                 }
 
@@ -866,7 +864,13 @@ corto_attr corto_getAttr(void) {
 void corto_assertObject(corto_object o) {
     if (o) {
         corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
-        corto_assert(_o->magic == CORTO_MAGIC, "<%p> is not an object", o);
+        if (_o->magic != CORTO_MAGIC) {
+            if (_o->magic == CORTO_MAGIC_DESTRUCT) {
+                corto_critical("address <%p> points to an object that is already deleted", o);
+            } else {
+                corto_critical("address <%p> does not point to an object", o);
+            }
+        }
     }
 }
 #endif
@@ -1661,7 +1665,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("deallocate", o, NULL);
 
 #ifndef NDEBUG
-        _o->magic = 0;
+        _o->magic = CORTO_MAGIC_DESTRUCT;
 #endif
         corto_dealloc(corto__objectStartAddr(_o));
 
@@ -2094,18 +2098,17 @@ error:
 
 corto_object corto_createFromContent(corto_string contentType, corto_string content)
 {
+    corto_object result = NULL;
     corto_contentType type = corto_loadContentType(contentType);
     if (!type) {
-        goto errorLoadContentType;
+        goto error;
     }
-    corto_object result = NULL;
     if (type->toObject(&result, (corto_word)content)) {
-        goto errorToObject;
+        goto error;
     }
 
     return result;
-errorToObject:
-errorLoadContentType:
+error:
     return NULL;
 }
 
@@ -3171,6 +3174,10 @@ static corto_object corto_lookup_intern(
         o = root_o;
     }
 
+    if (id[0] == '/') {
+        o = root_o;
+    }
+
     if ((id[0] == '.') && !id[1]) {
         corto_claim(parent);
         return parent;
@@ -3926,7 +3933,7 @@ corto_type corto_overloadParamType(corto_object object, corto_int32 i, corto_boo
         if (reference) *reference = FALSE;
     }
 
-    result = corto_resolve(object, buffer);
+    result = corto_resolve(corto_parentof(object), buffer);
     if (!result) {
         corto_seterr(
           "unresolved type '%s' in signature '%s'", buffer, signature);
@@ -4668,23 +4675,15 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
 }
 
 corto_equalityKind corto_comparev(corto_value *value1, corto_value *value2) {
-    corto_void *v1, *v2;
-    corto_any a1, a2;
-    corto_type t1, t2;
+    corto_compare_ser_t data;
+    struct corto_serializer_s s;
 
-    v1 = corto_value_getPtr(value1);
-    v2 = corto_value_getPtr(value2);
-    t1 = corto_value_getType(value1);
-    t2 = corto_value_getType(value2);
+    data.value = *value2;
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
 
-    a1.value = v1;
-    a1.type = t1;
-    a1.owner = FALSE;
-    a2.value = v2;
-    a2.type = t2;
-    a2.owner = FALSE;
+    corto_serializeValue(&s, value1, &data);
 
-    return corto_type_compare(a1, a2);
+    return data.result;
 }
 
 corto_equalityKind _corto_comparep(void *p1, corto_type type, void *p2) {

@@ -1,0 +1,9 @@
+
+COMPONENTS = %w(
+    core
+    lang
+    native
+    secure
+)
+
+require "#{ENV['CORTO_BUILD']}/forward"

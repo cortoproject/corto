@@ -41,36 +41,36 @@ typedef enum corto_err {
 #endif
 
 /* Set verbosity */
-void corto_verbosity(corto_err level);
-corto_err corto_verbosityGet(void);
+CORTO_EXPORT void corto_verbosity(corto_err level);
+CORTO_EXPORT corto_err corto_verbosityGet(void);
 
 /* Log errors to console */
-void _corto_assert(unsigned int condition, char* fmt, ...);
-corto_err _corto_debug(char* fmt, ...);
-corto_err _corto_trace(char* fmt, ...);
-corto_err _corto_info(char* fmt, ...);
-corto_err _corto_ok(char* fmt, ...);
-corto_err corto_warning(char* fmt, ...);
-corto_err corto_error(char* fmt, ...);
-void corto_critical(char* fmt, ...);
+CORTO_EXPORT void _corto_assert(unsigned int condition, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_debug(char* fmt, ...);
+CORTO_EXPORT corto_err _corto_trace(char* fmt, ...);
+CORTO_EXPORT corto_err _corto_info(char* fmt, ...);
+CORTO_EXPORT corto_err _corto_ok(char* fmt, ...);
+CORTO_EXPORT corto_err corto_warning(char* fmt, ...);
+CORTO_EXPORT corto_err corto_error(char* fmt, ...);
+CORTO_EXPORT void corto_critical(char* fmt, ...);
 
-void _corto_assertv(unsigned int condition, char* fmt, va_list args);
-corto_err corto_debugv(char* fmt, va_list args);
-corto_err corto_tracev(char* fmt, va_list args);
-corto_err corto_infov(char* fmt, va_list args);
-corto_err corto_okv(char* fmt, va_list args);
-corto_err corto_warningv(char* fmt, va_list args);
-corto_err corto_errorv(char* fmt, va_list args);
-void corto_seterrv(char *fmt, va_list args);
-void corto_criticalv(char* fmt, va_list args);
+CORTO_EXPORT void _corto_assertv(unsigned int condition, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_debugv(char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_tracev(char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_infov(char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_okv(char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_warningv(char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_errorv(char* fmt, va_list args);
+CORTO_EXPORT void corto_seterrv(char *fmt, va_list args);
+CORTO_EXPORT void corto_criticalv(char* fmt, va_list args);
 
 /* Set & get last error */
-char* corto_lasterr(void);
-void corto_seterr(char *fmt, ...);
+CORTO_EXPORT char* corto_lasterr(void);
+CORTO_EXPORT void corto_seterr(char *fmt, ...);
 
-void corto_printBacktrace(FILE* f, int nEntries, char** symbols);
-void corto_backtrace(FILE* f);
-char* corto_backtraceString(void);
+CORTO_EXPORT void corto_printBacktrace(FILE* f, int nEntries, char** symbols);
+CORTO_EXPORT void corto_backtrace(FILE* f);
+CORTO_EXPORT char* corto_backtraceString(void);
 
 #ifdef __cplusplus
 }

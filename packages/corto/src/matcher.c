@@ -230,7 +230,9 @@ corto_int16 corto_matchProgramParseIntern(
             data->ops[op].token = CORTO_MATCHER_TOKEN_IDENTIFIER;
             while((ch = *ptr++) &&
                   (isalnum(ch) || (ch == '_') || (ch == '*') || (ch == '?') ||
-                    (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}'))) {
+                    (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}') ||
+                    (ch == ' ') || (ch == '$')))
+            {
                 if ((ch == '*') || (ch == '?')) {
                     data->ops[op].token = CORTO_MATCHER_TOKEN_FILTER;
                 }
@@ -238,7 +240,7 @@ corto_int16 corto_matchProgramParseIntern(
 
             ptr--; /* Go back one character to adjust for lookahead of one */
             if (!(ptr - start)) {
-                corto_seterr("invalid character '%c'", ch);
+                corto_seterr("invalid character '%c' (expr = '%s')", ch, expr);
                 goto error;
             }
             ptr--;

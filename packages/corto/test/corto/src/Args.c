@@ -54,6 +54,7 @@ corto_void _test_Args_tc_matchAll(
       argv,
       (corto_argdata[]){
         {"*", &args, NULL},
+        {"-*", &args, NULL},
         {NULL}
       }
     );

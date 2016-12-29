@@ -299,6 +299,7 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
             goto error;
         }
     } else {
+        corto_assertObject(t);
         for(i = 0; i < t->members.length; i  ++) {
             m = t->members.buffer[i];
             if (corto_serializeMember(this, m, o, v, cb, info, userData)) {

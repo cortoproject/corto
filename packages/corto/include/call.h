@@ -23,14 +23,14 @@ typedef corto_int16 ___ (*corto_callInit_f)(corto_function f);
 typedef void (*corto_callDeinit_f)(corto_function f);
 
 /* Call API */
-void _corto_call(corto_function f, corto_void* result, ...);
-void _corto_callv(corto_function f, corto_void* result, va_list args);
-void _corto_callb(corto_function f, corto_void* result, void** argptrs);
+CORTO_EXPORT void _corto_call(corto_function f, corto_void* result, ...);
+CORTO_EXPORT void _corto_callv(corto_function f, corto_void* result, va_list args);
+CORTO_EXPORT void _corto_callb(corto_function f, corto_void* result, void** argptrs);
 
 /* Register binding */
-int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit);
-corto_int16 corto_callInit(corto_function f);
-void corto_callDeinit(corto_function f);
+CORTO_EXPORT int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit);
+CORTO_EXPORT corto_int16 corto_callInit(corto_function f);
+CORTO_EXPORT void corto_callDeinit(corto_function f);
 
 #define corto_call(f, ...) _corto_call(corto_function(f), __VA_ARGS__)
 #define corto_callv(f, result, args) _corto_callv(corto_function(f), result, args)

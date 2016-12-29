@@ -10,6 +10,8 @@
 #include "cortotool_shell.h"
 #include "cortotool_test.h"
 
+#include "corto/core/c/c.h"
+
 static void cortotool_printUsage(corto_bool expert) {
     printf("Usage: corto [-d] [--keep-alive] <command> [args]\n");
     printf("       corto [-d] [--keep-alive] [files] [loader]\n");

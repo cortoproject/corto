@@ -373,7 +373,7 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
     while((data = *observers)) {
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_string str = corto_eventMaskStr(mask);
+            corto_string str = corto_strp(&mask, corto_eventMask_o, 0);
             corto_debug("corto: notify:  %s %s: %s (%s)",
                 corto_fullpath(NULL, data->_this),
                 corto_fullpath(NULL, data->observer),
@@ -552,8 +552,9 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     }
 
     scope = corto_scopeClaim(observable);
-    corto_objectseqForeach(scope, o) {
-        corto_observerAlignScope(o, &walkData);
+    corto_int32 i;
+    for (i = 0; i < scope.length; i++) {
+        corto_observerAlignScope(scope.buffer[i], &walkData);
     }
     corto_scopeRelease(scope);
 }
@@ -563,15 +564,23 @@ static corto_observeFluent corto_observeFluentGet(void);
 
 static corto_observer corto_observeObserve(corto_observeRequest *r)
 {
-    return corto_observerCreate(
-      r->mask,
-      r->observable,
-      r->instance,
-      r->dispatcher,
-      r->type,
-      r->enabled,
-      r->callback
-    );
+    corto_observer result = corto_declare(corto_observer_o);
+
+    result->mask = r->mask;
+    corto_setref(&result->observable, r->observable);
+    corto_setref(&result->instance, r->instance);
+    corto_setref(&result->dispatcher, r->dispatcher);
+    corto_setstr(&result->type, r->type);
+    result->enabled = r->enabled;
+    ((corto_function)result)->fptr = (corto_word)r->callback;
+    ((corto_function)result)->kind = CORTO_PROCEDURE_CDECL;
+
+    if (corto_define(result)) {
+        corto_delete(result);
+        result = NULL;
+    }
+
+    return result;
 }
 
 static corto_observeFluent corto_observeInstance(
@@ -855,6 +864,21 @@ corto_int16 _corto_observer_observe(
             this,
             observable
         );
+  #ifndef NDEBUG
+        if (CORTO_TRACE_NOTIFICATIONS) {
+            corto_debug("corto: postpone observe (instance not defined): %s %s %s (%s%s%s%s%s%s%s)",
+                corto_fullpath(NULL, instance),
+                corto_fullpath(NULL, this),
+                corto_fullpath(NULL, observable),
+                mask & CORTO_ON_SELF ? " self" : "",
+                mask & CORTO_ON_SCOPE ? " scope" : "",
+                mask & CORTO_ON_TREE ? " tree" : "",
+                mask & CORTO_ON_DECLARE ? " declare" : "",
+                mask & CORTO_ON_DEFINE ? " define" : "",
+                mask & CORTO_ON_UPDATE ? " update" : "",
+                mask & CORTO_ON_DELETE ? " delete" : "");
+          }
+#endif
         goto postponed;
     }
 
@@ -914,7 +938,7 @@ corto_int16 _corto_observer_observe(
 
     /* If observer must trigger on updates of childs, add it to onChilds list */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-        if (corto_rwmutexWrite(&_o->childLock)) {
+        if (corto_rwmutexWrite(&_o->align.selfLock)) {
             goto error;
         }
         if (!corto_observerFind(_o->onChild, this, instance)) {
@@ -930,7 +954,7 @@ corto_int16 _corto_observer_observe(
             oldChildArray = _o->onChildArray;
             _o->onChildArray = corto_observersArrayNew(_o->onChild);
         }
-        if (corto_rwmutexUnlock(&_o->childLock)) {
+        if (corto_rwmutexUnlock(&_o->align.selfLock)) {
             goto error;
         }
     }
@@ -1017,12 +1041,12 @@ corto_bool _corto_observer_observing(
             if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
                 if (this->mask & CORTO_ON_SCOPE) {
                     if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
-                        corto_rwmutexWrite(&_o->childLock);
+                        corto_rwmutexWrite(&_o->align.selfLock);
                         observerData = corto_observerFind(_o->onChild, this, instance);
                         if (observerData) {
                             result = TRUE;
                         }
-                        corto_rwmutexUnlock(&_o->childLock);
+                        corto_rwmutexUnlock(&_o->align.selfLock);
                     }
                 }
             } else {
@@ -1117,7 +1141,7 @@ corto_int16 _corto_observer_unobserve(
         /* If observer triggered on updates of childs, remove from onChilds list */
         if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
             if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
-                if (corto_rwmutexWrite(&_o->childLock)) {
+                if (corto_rwmutexWrite(&_o->align.selfLock)) {
                     goto error;
                 }
                 observerData = corto_observerFind(_o->onChild, this, instance);
@@ -1130,7 +1154,7 @@ corto_int16 _corto_observer_unobserve(
                     oldChildArray = _o->onChildArray;
                     _o->onChildArray = corto_observersArrayNew(_o->onChild);
                 }
-                if (corto_rwmutexUnlock(&_o->childLock)) {
+                if (corto_rwmutexUnlock(&_o->align.selfLock)) {
                     goto error;
                 }
             } else {

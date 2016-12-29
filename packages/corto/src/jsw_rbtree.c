@@ -121,13 +121,7 @@ void *jsw_rbnodedata(jsw_rbnode_t *node) {
 
 /* Marshall between intern comparefunction and corto::type::equals */
 static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v1, const void* v2) {
-    corto_any any1, any2;
-    corto_type keyType = corto_map(t)->keyType;
-    any1.type = keyType;
-    any1.value = (void*)v1;
-    any2.type = keyType;
-    any2.value = (void*)v2;
-    return corto_type_compare(any1, any2);
+    return corto_comparep((void*)v1, (corto_map(t))->keyType, (void*)v2);
 }
 
 /**

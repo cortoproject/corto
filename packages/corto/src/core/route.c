@@ -41,7 +41,12 @@ corto_int16 _corto_route_construct(
         goto error;
     }
 
-    corto_stringseqAssign(&this->elements, elementCount, elements);
+    this->elements.buffer = corto_alloc(elementCount * sizeof(corto_string));
+    this->elements.length = elementCount;
+    corto_int32 i;
+    for (i = 0; i < elementCount; i ++) {
+        this->elements.buffer[i] = corto_strdup(elements[i]);
+    }
 
     if (routerBase->paramType) {
         corto_function(this)->parameters.buffer = corto_realloc(
@@ -61,7 +66,8 @@ corto_int16 _corto_route_construct(
         count = 1;
     }
 
-    corto_stringseqForeach(this->elements, element) {
+    for (i = 0; i < this->elements.length; i++) {
+        corto_string element = this->elements.buffer[i];
         if (element[0] == '$') {
             corto_function(this)->parameters.buffer = corto_realloc(
               corto_function(this)->parameters.buffer,
