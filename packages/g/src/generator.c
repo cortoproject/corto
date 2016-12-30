@@ -151,7 +151,7 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
         }
         corto_llAppend(g->objects, o);
 
-        if (!g->current) {
+        if ((parseSelf || parseScope) && !g->current) {
             g->current = o;
         }
     } else {
@@ -432,6 +432,7 @@ corto_int16 g_start(g_generator g) {
     if (ret && !corto_lasterr())  {
         corto_seterr("generator failed: %s", corto_lasterr());
     }
+
     return ret;
 error:
     return -1;

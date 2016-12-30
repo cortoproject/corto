@@ -12,6 +12,8 @@
 /* You can put your own definitions here! */
 /* $end */
 
+#include <corto/core/c/c.h>
+#include <corto/lang/c/c.h>
 
 #include <_type.h>
 

@@ -268,12 +268,17 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
 
     while (corto_iterHasNext(&it)) {
         corto_string import = corto_iterNext(&it);
+
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
             char *str = NULL;
             /* Import package without relying on core/loader */
 
             if (!(str = corto_locate(import, CORTO_LOCATION_LIB))) {
-                corto_error("corto: %s: %s", import, corto_lasterr());
+                if (corto_lasterr()) {
+                    corto_error("corto: %s: %s", import, corto_lasterr());
+                } else {
+                    corto_error("corto: %s: package not found", import);
+                }
                 goto error;
             }
 

@@ -119,6 +119,10 @@ CLOBBER.include(".corto/_meta.*")
 CLOBBER.include("include/_load.h")
 CLOBBER.include("include/_interface.h")
 
+if TARGET != "corto" then
+  CLOBBER.include("include/_project.h")
+end
+
 if File.exists? "project.json"
   CLOBBER.include("rakefile")
 end

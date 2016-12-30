@@ -177,7 +177,8 @@ if not defined? NOCORTO then
 
       command =
         "corto pp #{preload} #{localStr} --name #{PACKAGE} " +
-        "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")}" +
+        "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
+        "--import #{USE_PACKAGE.join(",")} " +
         " -g c/project #{langStr}"
 
       if ENV['silent'] != "true" then
