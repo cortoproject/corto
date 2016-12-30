@@ -280,6 +280,8 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
                     corto_error("corto: %s: package not found", import);
                 }
                 goto error;
+            } else {
+                corto_lasterr(); /* catch errors */
             }
 
             corto_dealloc(str);
@@ -363,6 +365,14 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     /* Load includes */
     if (includes) {
+        /* Set owner to a SINK mount so the package loader won't attempt to
+         * automatically load existing packages that are defined a definition file */
+        corto_mount owner = corto_declare(corto_mount_o);
+        owner->kind = CORTO_SINK;
+        corto_define(owner);
+        corto_object prev = corto_setOwner(owner);
+
+
         it = corto_llIter(includes);
         while (corto_iterHasNext(&it)) {
             include = corto_iterNext(&it);
@@ -394,6 +404,9 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             }
             corto_llAppend(attributes, str);
         }
+
+        corto_setOwner(prev);
+        corto_release(owner);
     }
 
     /* Load library */

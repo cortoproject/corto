@@ -1,9 +1,14 @@
 
+#include "cortotool_build.h"
 #include "cortotool_install.h"
 
 #define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
 
 static corto_bool cortotool_validProject(void) {
+    if (corto_fileTest("project.json")) {
+        cortotool_rakefile(1, (char*[]){"rakefile"});
+    }
+
     if (!corto_fileTest("rakefile")) {
         corto_error("corto: need a valid project directory to install (no rakefile found)!");
         goto error;
@@ -742,8 +747,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                     printf(CORTO_PROMPT "package '%s' not found", argv[1]);
                 }
             }
-            if (corto_lasterr()) {
-                printf("%s\n", corto_lasterr());
+            if (corto_lastinfo()) {
+                printf("%s\n", corto_lastinfo());
             } else {
                 printf("\n");
             }

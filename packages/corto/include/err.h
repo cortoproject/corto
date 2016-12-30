@@ -68,6 +68,11 @@ CORTO_EXPORT void corto_criticalv(char* fmt, va_list args);
 CORTO_EXPORT char* corto_lasterr(void);
 CORTO_EXPORT void corto_seterr(char *fmt, ...);
 
+/* Set & get last info, useful for when a function wants to communicate info that
+ * does not represent an error */
+CORTO_EXPORT char* corto_lastinfo(void);
+CORTO_EXPORT void corto_setinfo(char *fmt, ...);
+
 CORTO_EXPORT void corto_printBacktrace(FILE* f, int nEntries, char** symbols);
 CORTO_EXPORT void corto_backtrace(FILE* f);
 CORTO_EXPORT char* corto_backtraceString(void);

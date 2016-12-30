@@ -27,6 +27,7 @@ static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
 #define MAX_ERRORS (20)
 
 typedef struct corto_errThreadData {
+    corto_string lastInfo;
     corto_string lastError;
     corto_string backtrace;
     corto_bool viewed;
@@ -43,6 +44,9 @@ static void corto_lasterrorFree(void* tls) {
         }
         if (data->lastError) {
             corto_dealloc(data->lastError);
+        }
+        if (data->lastInfo) {
+            corto_dealloc(data->lastInfo);
         }
         corto_dealloc(data);
     }
@@ -61,17 +65,23 @@ static corto_errThreadData* corto_getThreadData(void){
     return result;
 }
 
-static char* corto_getLasterror(void) {
+static char* corto_getLastError(void) {
     corto_errThreadData *data = corto_getThreadData();
     data->viewed = TRUE;
     return data->lastError;
 }
 
-static void corto_setLasterror(char* err) {
+static char* corto_getLastInfo(void) {
+    corto_errThreadData *data = corto_getThreadData();
+    data->viewed = TRUE;
+    return data->lastInfo;
+}
+
+static void corto_setLastError(char* err) {
     corto_errThreadData *data = corto_getThreadData();
     if (!data->viewed && data->lastError) {
         fprintf(stderr, "%scorto: uncatched error (use corto_lasterr): %s%s%s%s\n",
-          RED, data->lastError, NORMAL, data->backtrace?"\n":"", data->backtrace);
+          RED, data->lastError, NORMAL, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
     }
     if (data->lastError) corto_dealloc(data->lastError);
     if (data->backtrace) corto_dealloc(data->backtrace);
@@ -80,6 +90,12 @@ static void corto_setLasterror(char* err) {
         data->backtrace = corto_backtraceString();
     }
     data->viewed = FALSE;
+}
+
+static void corto_setLastMessage(char* err) {
+    corto_errThreadData *data = corto_getThreadData();
+    if (data->lastInfo) corto_dealloc(data->lastInfo);
+    data->lastInfo = err ? corto_strdup(err) : NULL;
 }
 
 void corto_printBacktrace(FILE* f, int nEntries, char** symbols) {
@@ -229,7 +245,7 @@ void corto_seterrv(char *fmt, va_list args) {
     if (fmt) {
         corto_vasprintf(&err, fmt, args);
     }
-    corto_setLasterror(err);
+    corto_setLastError(err);
 
     if (fmt && (CORTO_DEBUG_ENABLED || CORTO_OPERATIONAL)) {
         if (CORTO_OPERATIONAL == 1) {
@@ -242,6 +258,15 @@ void corto_seterrv(char *fmt, va_list args) {
         corto_backtrace(stderr);
     }
 
+    corto_dealloc(err);
+}
+
+void corto_setmsgv(char *fmt, va_list args) {
+    char *err = NULL;
+    if (fmt) {
+        corto_vasprintf(&err, fmt, args);
+    }
+    corto_setLastMessage(err);
     corto_dealloc(err);
 }
 
@@ -328,7 +353,11 @@ void _corto_assert(unsigned int condition, char* fmt, ...) {
 }
 
 char* corto_lasterr(void) {
-    return corto_getLasterror();
+    return corto_getLastError();
+}
+
+char* corto_lastinfo(void) {
+    return corto_getLastInfo();
 }
 
 void corto_seterr(char *fmt, ...) {
@@ -336,6 +365,14 @@ void corto_seterr(char *fmt, ...) {
 
     va_start(arglist, fmt);
     corto_seterrv(fmt, arglist);
+    va_end(arglist);
+}
+
+void corto_setinfo(char *fmt, ...) {
+    va_list arglist;
+
+    va_start(arglist, fmt);
+    corto_setmsgv(fmt, arglist);
     va_end(arglist);
 }
 

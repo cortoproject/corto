@@ -225,7 +225,7 @@ static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *buil
 
     /* Validate version */
     if (build && strcmp(build(), corto_getBuild())) {
-        corto_seterr(
+        corto_setinfo(
           "corto: library '%s' links with conflicting corto library\n"
           "  library:  '%s' (%s)\n"
           "  conflict: '%s' (%s)\n",
@@ -488,8 +488,8 @@ static corto_string corto_locateLibraryIntern(
                     CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
             }
         } else {
-            if (corto_lasterr() != NULL) {
-                targetErr = corto_strdup(corto_lasterr());
+            if (corto_lastinfo() != NULL) {
+                targetErr = corto_strdup(corto_lastinfo());
                 corto_seterr(NULL);
             }
         }
@@ -516,8 +516,8 @@ static corto_string corto_locateLibraryIntern(
                             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
                     }
                 } else {
-                    if (corto_lasterr() != NULL) {
-                        homeErr = corto_strdup(corto_lasterr());
+                    if (corto_lastinfo() != NULL) {
+                        homeErr = corto_strdup(corto_lastinfo());
                         corto_seterr(NULL);
                     }
                 }
@@ -549,8 +549,8 @@ static corto_string corto_locateLibraryIntern(
                             CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
                     }
                 } else {
-                    if (corto_lasterr() != NULL) {
-                        usrErr = corto_strdup(corto_lasterr());
+                    if (corto_lastinfo() != NULL) {
+                        usrErr = corto_strdup(corto_lastinfo());
                         corto_seterr(NULL);
                     }
                 }
@@ -608,7 +608,10 @@ static corto_string corto_locateLibraryIntern(
     if (homePath && (homePath != result)) corto_dealloc(homePath);
     if (usrPath && (usrPath != result)) corto_dealloc(usrPath);
 
-    corto_seterr(details);
+    if (!result) {
+        corto_seterr(details);
+    }
+    corto_setinfo(details);
     corto_dealloc(details);
 
     return result;

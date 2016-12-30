@@ -14,6 +14,7 @@ extern corto_mutex_s corto_adminLock;
 
 static corto_object corto_adopt(corto_object parent, corto_object child);
 static void corto_olsDestroy(corto__scope *scope);
+static corto_bool corto_ownerMatch(corto_object owner, corto_object current);
 
 extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_int8 CORTO_OLS_AUGMENT;
@@ -1440,7 +1441,7 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
     corto_assertObject(o);
 
     /* Don't invoke constructor if object is not locally owned */
-    if (corto_owned(o)) {
+    if (corto_ownerMatch(corto_ownerof(o), NULL)) {
         /* If object is instance of a class, call the constructor */
         if (corto_class_instanceof(corto_class_o, t)) {
             /* Call constructor - will potentially override observer params */
@@ -3060,6 +3061,39 @@ corto_object corto_ownerof(corto_object o) {
     return result;
 }
 
+static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
+    corto_bool result;
+
+    if (owner == current) {
+        result = TRUE;
+    } else if (owner && corto_instanceof(corto_mount_o, owner)) {
+        if (!current) {
+            if (corto_mount(owner)->kind != CORTO_SINK) {
+                result = FALSE;
+            } else {
+                result = TRUE;
+            }
+        } else {
+            result = FALSE;
+        }
+    } else if (current && corto_instanceof(corto_mount_o, current)) {
+        if (!owner) {
+            if (corto_mount(current)->kind != CORTO_SINK) {
+                result = FALSE;
+            } else {
+                result = TRUE;
+            }
+        } else {
+            result = FALSE;
+        }
+    } else {
+        /* Owner is set, but not a mount. Object is owned by local process */
+        result = TRUE;
+    }
+
+    return result;
+}
+
 corto_bool corto_owned(corto_object o) {
     corto_assertObject(o);
 
@@ -3071,32 +3105,7 @@ corto_bool corto_owned(corto_object o) {
         /* If object is not DEFINED it is not owned yet, and it's fair game */
         result = TRUE;
     } else {
-        if (owner == current) {
-            result = TRUE;
-        } else if (owner && corto_instanceof(corto_mount_o, owner)) {
-            if (!current) {
-                if (corto_mount(owner)->kind != CORTO_SINK) {
-                    result = FALSE;
-                } else {
-                    result = TRUE;
-                }
-            } else {
-                result = FALSE;
-            }
-        } else if (current && corto_instanceof(corto_mount_o, current)) {
-            if (!owner) {
-                if (corto_mount(current)->kind != CORTO_SINK) {
-                    result = FALSE;
-                } else {
-                    result = TRUE;
-                }
-            } else {
-                result = FALSE;
-            }
-        } else {
-            /* Owner is set, but not a mount. Object is owned by local process */
-            result = TRUE;
-        }
+        result = corto_ownerMatch(owner, current);
     }
 
     return result;
