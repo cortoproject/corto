@@ -2,6 +2,6 @@ PACKAGE = 'corto/core/c'
 
 NOCORTO = true
 CFLAGS = ["-Wunused-parameter"]
-LINK = ["$CORTO_TARGET/lib/corto/$CORTO_VERSION/corto/corto"]
+LINK = ["#{ENV['CORTO_TARGET']}/lib/corto/#{ENV['CORTO_VERSION']}/corto/corto"]
 
 require "#{ENV['CORTO_BUILD']}/package"

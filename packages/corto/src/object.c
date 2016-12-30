@@ -4105,7 +4105,7 @@ error:
 
 static corto_bool corto_signatureCompareName(char *offered, char *requested) {
     /* Validate if names of request and offered match */
-    char *o_ptr = offered, o_ch, *r_ptr = requested, r_ch;
+    char *o_ptr = offered, o_ch, *r_ptr = requested, r_ch = *r_ptr;
     while ((o_ch = *o_ptr) && (r_ch = *r_ptr) &&
            (o_ch != '(') && (r_ch != '('))
     {
