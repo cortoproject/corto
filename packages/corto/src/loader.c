@@ -342,7 +342,7 @@ int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *dat
 }
 
 /* Load a package */
-static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try) {
+int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, corto_bool ignoreRecursive) {
     corto_char ext[16];
     struct corto_fileHandler* h;
     int result = -1;
@@ -352,16 +352,21 @@ static int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool
     lib = corto_fileAdminFind(str);
     if (lib) {
         if (lib->loading == corto_threadSelf()) {
-            corto_error("illegal recursive load of file '%s' from:", lib->name);
-            corto_iter iter = corto_llIter(fileAdmin);
-            while (corto_iterHasNext(&iter)) {
-                struct corto_fileAdmin *lib = corto_iterNext(&iter);
-                if (lib->loading) {
-                    fprintf(stderr, "   %s\n", lib->name);
+            if (!ignoreRecursive) {
+                corto_error("illegal recursive load of file '%s' from:", lib->name);
+                corto_iter iter = corto_llIter(fileAdmin);
+                while (corto_iterHasNext(&iter)) {
+                    struct corto_fileAdmin *lib = corto_iterNext(&iter);
+                    if (lib->loading) {
+                        fprintf(stderr, "   %s\n", lib->name);
+                    }
                 }
+                corto_backtrace(stderr);
+                abort();
+            } else {
+                corto_mutexUnlock(&corto_adminLock);
+                goto loaded;
             }
-            corto_backtrace(stderr);
-            abort();
         } else {
             result = lib->result;
             corto_mutexUnlock(&corto_adminLock);
@@ -434,12 +439,12 @@ loaded:
 
 /* Load a package */
 int corto_load(corto_string str, int argc, char* argv[]) {
-    return corto_loadIntern(str, argc, argv, FALSE);
+    return corto_loadIntern(str, argc, argv, FALSE, FALSE);
 }
 
 /* Try loading a package */
 int corto_loadTry(corto_string str, int argc, char* argv[]) {
-    return corto_loadIntern(str, argc, argv, TRUE);
+    return corto_loadIntern(str, argc, argv, TRUE, FALSE);
 }
 
 #ifndef CORTO_REDIS

@@ -8,6 +8,10 @@
 
 #include <corto/core/core.h>
 
+/* $header() */
+#include "_object.h"
+/* $end */
+
 corto_int16 _corto_package_construct(
     corto_package this)
 {
@@ -17,7 +21,7 @@ corto_int16 _corto_package_construct(
             corto_id id;
             corto_fullpath(id, this);
 
-            if (corto_load(id, 0, NULL)) {
+            if (corto_loadIntern(id, 0, NULL, FALSE, TRUE)) {
                 corto_lasterr(); /* Ignore error */
             }
         }
