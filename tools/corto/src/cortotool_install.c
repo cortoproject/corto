@@ -41,8 +41,10 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
         fprintf(install, "mkdir -p /usr/local/lib/corto/%s\n", version);
         fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
         fprintf(install, "cp -r ./build /usr/local/lib/corto/%s\n", version);
+        fprintf(install, "rm -f /usr/local/bin/corto.%s\n", version);
+        fprintf(install, "rm -f /usr/local/bin/corto\n");
+        fprintf(install, "rm -rf /usr/local/lib/corto/%s/corto\n", version);
         fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
-
         buildingCorto = TRUE;
     }
 
@@ -67,7 +69,6 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
      * work for all users, local changes to LD_LIBRARY_PATH should not be
      * required when building binaries for the global environment. */
     fprintf(install, "export LD_LIBARRY_PATH=\n");
-
 
     /* Build libraries to global environment */
     fprintf(install, "rake default verbose=%s coverage=false softlinks=false multithread=false redis=false show_header=false\n",

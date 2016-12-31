@@ -250,12 +250,26 @@ corto_package cortotool_createPackage(corto_string id) {
         }
     }
 
-    result = corto_declareChild(parentPackage, child, corto_package_o);
-    if (result && !corto_checkState(result, CORTO_DEFINED)) {
-        if (corto_define(result)) {
+    if (corto_load(id, 0, NULL)) {
+        goto error;
+    }
+
+    result = corto_find(NULL, id, CORTO_FIND_DEFAULT);
+    if (!result) {
+        /* If package can be loaded, but there is no package object, the package
+         * doesn't define its own object. Create a stub package object. */
+        result = corto_declareChild(parentPackage, child, corto_package_o);
+        if (!result) {
             goto error;
         }
+        if (!corto_checkState(result, CORTO_DEFINED)) {
+            if (corto_define(result)) {
+                goto error;
+            }
+        }
     }
+
+    corto_release(parentPackage);
 
     return result;
 error:
@@ -263,7 +277,7 @@ error:
 }
 
 /* Load imports */
-corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
+corto_int16 cortotool_ppLoadImports(corto_ll imports) {
     corto_iter it = corto_llIter(imports);
 
     while (corto_iterHasNext(&it)) {
@@ -272,6 +286,8 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
             char *str = NULL;
             /* Import package without relying on core/loader */
+
+            corto_trace("corto: import %s", import);
 
             if (!(str = corto_locate(import, CORTO_LOCATION_LIB))) {
                 if (corto_lasterr()) {
@@ -291,10 +307,34 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
                 corto_error("corto: %s: %s", import, corto_lasterr());
                 goto error;
             }
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+/* Add imports to parser */
+corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
+    corto_iter it = corto_llIter(imports);
+
+    while (corto_iterHasNext(&it)) {
+        corto_string import = corto_iterNext(&it);
+
+        if (strcmp(import, "corto") && strcmp(import, "/corto")) {
+
+            corto_object package = corto_lookup(NULL, import);
+            if (!package) {
+                corto_error("corto: %s: package not found", import);
+                goto error;
+            }
 
             if (g_import(g, package)) {
                 goto error;
             }
+
+            corto_release(package);
         }
     }
 
@@ -362,6 +402,10 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     corto_trace("corto: pp: start generator from '%s'", corto_cwd());
+
+    if (cortotool_ppLoadImports(imports)) {
+        goto error;
+    }
 
     /* Load includes */
     if (includes) {
