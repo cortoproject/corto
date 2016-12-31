@@ -233,88 +233,6 @@ void cortotool_splitId(corto_string path, char **parent, char **id) {
     }
 }
 
-/* Recursively create package without using loader mount */
-corto_package cortotool_createPackage(corto_string id) {
-    corto_id buffer;
-    strcpy(buffer, id);
-    char *parent, *child;
-    corto_package parentPackage, result;
-
-    cortotool_splitId(buffer, &parent, &child);
-
-    parentPackage = corto_find(NULL, parent, CORTO_FIND_DEFAULT);
-    if (!parentPackage) {
-        parentPackage = cortotool_createPackage(parent);
-        if (!parentPackage) {
-            goto error;
-        }
-    }
-
-    if (corto_load(id, 0, NULL)) {
-        goto error;
-    }
-
-    result = corto_find(NULL, id, CORTO_FIND_DEFAULT);
-    if (!result) {
-        /* If package can be loaded, but there is no package object, the package
-         * doesn't define its own object. Create a stub package object. */
-        result = corto_declareChild(parentPackage, child, corto_package_o);
-        if (!result) {
-            goto error;
-        }
-        if (!corto_checkState(result, CORTO_DEFINED)) {
-            if (corto_define(result)) {
-                goto error;
-            }
-        }
-    }
-
-    corto_release(parentPackage);
-
-    return result;
-error:
-    return NULL;
-}
-
-/* Load imports */
-corto_int16 cortotool_ppLoadImports(corto_ll imports) {
-    corto_iter it = corto_llIter(imports);
-
-    while (corto_iterHasNext(&it)) {
-        corto_string import = corto_iterNext(&it);
-
-        if (strcmp(import, "corto") && strcmp(import, "/corto")) {
-            char *str = NULL;
-            /* Import package without relying on core/loader */
-
-            corto_trace("corto: import %s", import);
-
-            if (!(str = corto_locate(import, CORTO_LOCATION_LIB))) {
-                if (corto_lasterr()) {
-                    corto_error("corto: %s: %s", import, corto_lasterr());
-                } else {
-                    corto_error("corto: %s: package not found", import);
-                }
-                goto error;
-            } else {
-                corto_lasterr(); /* catch errors */
-            }
-
-            corto_dealloc(str);
-
-            corto_object package = cortotool_createPackage(import);
-            if (!package) {
-                corto_error("corto: %s: %s", import, corto_lasterr());
-                goto error;
-            }
-        }
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
 /* Add imports to parser */
 corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
     corto_iter it = corto_llIter(imports);
@@ -402,10 +320,6 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     corto_trace("corto: pp: start generator from '%s'", corto_cwd());
-
-    if (cortotool_ppLoadImports(imports)) {
-        goto error;
-    }
 
     /* Load includes */
     if (includes) {

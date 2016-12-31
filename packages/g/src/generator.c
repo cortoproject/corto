@@ -321,6 +321,14 @@ static int g_freeAttribute(void* _o, void* udata) {
     return 1;
 }
 
+static int g_freeImport(void* _o, void* udata) {
+    CORTO_UNUSED(udata);
+
+    corto_release(_o);
+
+    return 1;
+}
+
 /* Free generator */
 void g_free(g_generator g) {
     if (g->library) {
@@ -347,7 +355,9 @@ void g_free(g_generator g) {
     }
 
     if (g->imports) {
+        corto_llWalk(g->imports, g_freeImport, NULL);
         corto_llFree(g->imports);
+        g->imports = NULL;
     }
 
     if (g->name) {
@@ -487,6 +497,7 @@ corto_int16 g_import(g_generator g, corto_object package) {
     }
     if (!corto_llHasObject(g->imports, package)) {
         corto_llInsert(g->imports, package);
+        corto_claim(package);
 
         /* Recursively obtain imports */
         g_leafDependencies(g, package);

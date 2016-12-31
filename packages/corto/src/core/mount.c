@@ -554,7 +554,7 @@ corto_object _corto_mount_resume(
         r.content = TRUE;
 
         // Request object from mount
-        corto_debug("corto: mount: auto-resume parent=%s, expr=%s (mount = %s)", parent, name, corto_fullpath(NULL, this));
+        corto_debug("corto: mount: look for '%s/%s' (auto-resume, mount = '%s')", parent, name, corto_fullpath(NULL, this));
         corto_resultIter it = corto_mount_request(this, &r);
 
         if (corto_iterHasNext(&it)) {
@@ -605,6 +605,10 @@ corto_object _corto_mount_resume(
     /* Restore owner & attributes */
     corto_setAttr(prevAttr);
     corto_setOwner(prevOwner);
+
+    if (result) {
+        corto_trace("corto: mount: resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
+    }
 
     return result;
 error:

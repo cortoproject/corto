@@ -3183,6 +3183,10 @@ static corto_object corto_lookup_intern(
         o = root_o;
     }
 
+    if (!parent) {
+        parent = root_o;
+    }
+
     if (id[0] == '/') {
         o = root_o;
     }
@@ -3271,7 +3275,7 @@ static corto_object corto_lookup_intern(
         if (!prev) {
             prev = parent;
         }
-        if (!o && (prev != corto_lang_o) && (prev != corto_core_o)) {
+        if (!o) {
             o = corto_resume(prev, ptr, NULL);
         }
     }

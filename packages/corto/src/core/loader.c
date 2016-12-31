@@ -88,6 +88,8 @@ void corto_loader_addDir(
 {
     corto_ll dirs = corto_opendir(path);
 
+    corto_debug("corto: loader: look for '%s/%s' in '%s'", r->parent, r->expr, path);
+
     /* Walk files, add files to result */
     if (dirs) {
         corto_iter iter = corto_llIter(dirs);
@@ -102,11 +104,13 @@ void corto_loader_addDir(
                 sprintf(package, "%s/%s", r->parent, f);
                 corto_cleanpath(package, package);
 
+
                 corto_id fpath;
                 sprintf(fpath, "%s/%s", path, f);
                 corto_string version = NULL;
                 corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
-                if (!env) corto_lasterr(); /* Catch error */
+
+                corto_debug("corto: loader: evaluate '%s'\n- path: %s\n- env: %s", f, fpath, env);
 
                 /* Built-in packages use corto version */
                 if (!strcmp(package, "corto") ||
@@ -123,8 +127,9 @@ void corto_loader_addDir(
                 } else {
                     corto_id versionFile;
                     sprintf(versionFile, "%s/version.txt", fpath);
-                    version = corto_fileLoad(versionFile);
-                    if (!version) corto_lasterr(); /* Catch error */
+                    if (corto_fileTest(versionFile)) {
+                        version = corto_fileLoad(versionFile);
+                    }
 
                     if (version) {
                         char *newline = strchr(version, '\n');
@@ -182,6 +187,8 @@ void corto_loader_addDir(
                     r->type = corto_strdup("/corto/core/package");
                     r->value = (corto_word)content;
                     corto_llAppend(list, r);
+                } else {
+                    corto_debug("corto: loader: discard '%s' because it is not a directory", f);
                 }
             }
         }
