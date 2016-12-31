@@ -212,7 +212,7 @@ corto_resultIter _corto_loader_onRequest_v(
     CORTO_UNUSED(this);
 
     corto_string localPath, globalPath;
-    localPath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
+    localPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       request->parent);
     corto_cleanpath(localPath, localPath);
