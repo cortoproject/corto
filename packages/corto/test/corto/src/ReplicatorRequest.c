@@ -971,6 +971,83 @@ corto_void _test_ReplicatorRequest_tc_selectTree(
 /* $end */
 }
 
+corto_void _test_ReplicatorRequest_tc_selectTreeEmptyNestedScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTreeEmptyNestedScope) */
+    corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
+    test_assert(b_o != NULL);
+
+    corto_object mount_o = corto_createChild(b_o, "mount", corto_void_o);
+    test_assert(mount_o != NULL);
+
+    corto_object child_o = corto_createChild(b_o, "mount2", corto_void_o);
+    test_assert(child_o != NULL);
+
+    /* Empty mount that sets userdata of iterator - this touches a sensitive
+     * part of corto_select that could accidentally interpret iterator userdata
+     * the wrong way, which would result in a crash. */
+    test_MountWIterData m = test_MountWIterDataCreate(mount_o);
+    test_assert(m != NULL);
+
+    corto_iter it;
+    corto_int16 ret = corto_select("/b", "//").iter(&it);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&it));
+    corto_result *r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "mount");
+    test_assert(corto_iterHasNext(&it));
+    r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "mount2");
+    test_assert(!corto_iterHasNext(&it));
+
+    ret = corto_delete(m);
+    test_assert(ret == 0);
+
+    ret = corto_delete(b_o);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
+corto_void _test_ReplicatorRequest_tc_selectTreeEmptyScope(
+    test_ReplicatorRequest this)
+{
+/* $begin(test/ReplicatorRequest/tc_selectTreeEmptyScope) */
+    corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
+    test_assert(b_o != NULL);
+
+    corto_object mount_o = corto_createChild(b_o, "mount", corto_void_o);
+    test_assert(mount_o != NULL);
+
+    /* Empty mount that sets userdata of iterator - this touches a sensitive
+     * part of corto_select that could accidentally interpret iterator userdata
+     * the wrong way, which would result in a crash. */
+    test_MountWIterData m = test_MountWIterDataCreate(mount_o);
+    test_assert(m != NULL);
+
+    corto_iter it;
+    corto_int16 ret = corto_select("/b", "//").iter(&it);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&it));
+    corto_result *r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "mount");
+    test_assert(!corto_iterHasNext(&it));
+
+    ret = corto_delete(m);
+    test_assert(ret == 0);
+
+    ret = corto_delete(b_o);
+    test_assert(ret == 0);
+
+/* $end */
+}
+
 corto_void _test_ReplicatorRequest_tc_selectTreeFromNestedScope(
     test_ReplicatorRequest this)
 {

@@ -472,7 +472,7 @@ static int cxsh_show(char* object) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE;
                 s.accessKind = CORTO_NOT;
-                s.aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
+                s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
                 s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
                 corto_metaWalk(&s, o, &sdata);
                 corto_string str = corto_buffer_str(&sdata.buffer);

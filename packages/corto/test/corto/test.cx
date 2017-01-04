@@ -570,6 +570,10 @@ class ListReplicator : mount, hidden::
     int16 construct()
     resultIter onRequest(core/request request)
 
+class MountWIterData: mount, hidden::
+    alias mount: mount/mount
+    resultIter onRequest(core/request request)
+
 // Test corto_select requesting data from mounts
 test/Suite ReplicatorRequest::
     void setup() method
@@ -613,6 +617,8 @@ test/Suite ReplicatorRequest::
     void tc_selectTreeFromNestedScope()
     void tc_selectTreeFromVirtualScope()
     void tc_selectTreeFromVirtualNestedScope()
+    void tc_selectTreeEmptyScope()
+    void tc_selectTreeEmptyNestedScope()
 
 class SinkReplicator : core/mount, hidden::
     alias mount: mount/mount

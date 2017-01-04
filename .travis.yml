@@ -22,7 +22,7 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: sander.mertens8@gmail.com
     build_command:
-     - cd corto 
+     - cd corto
      - rake
      - cd ..
     branch_pattern: coverity_scan
@@ -40,9 +40,11 @@ install:
   - git clone https://github.com/cortoproject/test.git
   - git clone https://github.com/cortoproject/json.git
   - git clone https://github.com/cortoproject/t.git
+  - git clone https://github.com/cortoproject/web.git
+  - git clone https://github.com/cortoproject/admin.git
   - git clone https://github.com/cortoproject/examples.git
   - |+
-    echo 'COMPONENTS = %w(corto c-binding json xml corto-language io cortodoc test t)
+    echo 'COMPONENTS = %w(corto c-binding json xml corto-language io cortodoc test t web admin)
     require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
   - source corto/configure
   - function hashes() { for g in `find . -name .git` ; do d=$(basename $(dirname $g)); h=$(git --git-dir $g rev-parse HEAD) ; echo -e "$d\t$h"; done } ; hashes | column -t | sort

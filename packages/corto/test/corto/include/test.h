@@ -151,6 +151,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <MethodResolver.h>
 #include <MethodTester.h>
 #include <MethodTesterInherit.h>
+#include <MountWIterData.h>
 #include <ObjectMgmt.h>
 #include <Overload.h>
 #include <Ownership.h>
