@@ -716,7 +716,7 @@ static corto_bool corto_selectIterNext(
                  * iterator and move to value that was last iterated over + 1.
                  * This prevents to either having to lock the scope / store all
                  * results in a temporary list. */
-                if (corto_rbtreeIterChanged(&frame->iter)) {
+                if (corto_scopeof(frame->scope) && corto_rbtreeIterChanged(&frame->iter)) {
                     frame->iter = _corto_rbtreeIter(corto_scopeof(frame->scope), &frame->trav);
                     while (corto_iterHasNext(&frame->iter)) {
                         corto_object o = corto_iterNext(&frame->iter);
@@ -913,14 +913,10 @@ static void corto_selectTree(
                 corto_setref(&frame->scope, o);
                 if (o) {
                     corto_rbtree scope = corto_scopeof(o);
-                    corto_selectLoadMounts(data, frame, NULL);
                     if (scope) {
                         frame->iter = _corto_rbtreeIter(scope, &frame->trav);
-                    } else {
-                        /* Set frame to NULL, otherwise iterNext will try to use
-                         * the frame iterator to get objects from a(n empty) scope */
-                        corto_setref(&frame->scope, NULL);
                     }
+                    corto_selectLoadMounts(data, frame, NULL);
                 } else {
                     frame->currentMount = prevFrame->currentMount;
                     if (prevFrame->scopeQuery) {

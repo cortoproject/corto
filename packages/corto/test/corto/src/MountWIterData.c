@@ -29,6 +29,7 @@ corto_resultIter _test_MountWIterData_onRequest(
     result.udata = corto_calloc(sizeof(char));
     result.hasNext = iterHasNext;
     result.next = iterNext;
+    result.release = NULL;
 
     return result;
 /* $end */
