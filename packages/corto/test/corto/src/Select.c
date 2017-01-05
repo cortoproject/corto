@@ -270,17 +270,45 @@ corto_void _test_Select_tc_selectEmptyParentAst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyParentAst) */
-    corto_ll results = NULL;
+    corto_iter it;
+    corto_result *r;
+    corto_int16 ret = corto_select("", "*").iter(&it);
+    test_assert(ret == 0);
 
-    results = test_Select_collect("", "*", 0, 0);
-    test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 5);
+    test_assert(corto_iterHasNext(&it));
+    r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
 
-    test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
-    test_assert(test_Select_hasObject(results, "", "a", "void"));
-    test_assert(test_Select_hasObject(results, "", "karto", "void"));
-    test_assert(test_Select_hasObject(results, "", "korto", "void"));
-    test_assert(test_Select_hasObject(results, "", "test", "/corto/core/package"));
+    test_assert(corto_iterHasNext(&it));
+    r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "corto");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "/corto/core/package");
+
+    test_assert(corto_iterHasNext(&it));
+    r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "karto");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iterHasNext(&it));
+    r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "korto");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iterHasNext(&it));
+    r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "test");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "/corto/core/package");
 
 /* $end */
 }

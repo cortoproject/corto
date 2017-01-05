@@ -183,6 +183,7 @@ corto_int16 corto_notifySubscribersId(
                 corto_id fromElem, toElem;
                 strcpy(fromElem, s->parent);
                 strcpy(toElem, parent);
+
                 corto_pathstr(relativeParent, fromElem, toElem, "/");
 
                 corto_result r = {
@@ -273,6 +274,16 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
     corto_subscriber s = corto_declare(corto_subscriber_o);
     ((corto_observer)s)->mask = r->mask;
     corto_setstr(&s->parent, r->scope);
+
+    if (r->scope && *r->scope) {
+        if (*r->scope != '/') {
+            corto_asprintf(&s->parent, "/%s", r->scope);
+        } else {
+            s->parent = corto_strdup(r->scope);
+        } } else {
+        s->parent = NULL;
+    }
+
     corto_setstr(&s->expr, r->expr);
     corto_setstr(&s->contentType, r->contentType);
     corto_setref(&((corto_observer)s)->instance, r->instance);

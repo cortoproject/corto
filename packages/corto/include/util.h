@@ -35,6 +35,8 @@ extern "C" {
 /* 16bit value for convenient matching on scope-characters */
 #define CORTO_SCOPE_HEX ((corto_uint16)(0x3A3A)) /* '::' */
 
+#define CORTO_ISNAN(x) (x != x)
+
 /* In place replacelemt of '::' with '/' */
 CORTO_EXPORT corto_string corto_pathFromFullname(corto_id buffer);
 

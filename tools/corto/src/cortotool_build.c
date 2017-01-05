@@ -237,6 +237,11 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
       }
     );
 
+    if (!data) {
+        corto_seterr("invalid arguments: %s", corto_lasterr());
+        goto error;
+    }
+
     corto_trace("corto: build %s: %s %s %s",
         corto_cwd(),
         coverage ? "coverage=false" : "coverage=true",
