@@ -3177,7 +3177,7 @@ static corto_object corto_lookup_intern(
     corto__scope* scope;
     corto_rbtree tree;
     corto_object prev = NULL;
-    char *ptr = id;
+    char ch, *ptr = id;
 
     if (!o) {
         o = root_o;
@@ -3187,6 +3187,16 @@ static corto_object corto_lookup_intern(
         parent = root_o;
     }
 
+    if (!id) {
+        corto_seterr("invalid NULL identifier passed to corto_lookup");
+        goto error;
+    }
+
+    if (!id[0]) {
+        corto_seterr("invalid empty identifier passed to corto_lookup");
+        goto error;
+    }
+
     if (id[0] == '/') {
         o = root_o;
     }
@@ -3194,6 +3204,10 @@ static corto_object corto_lookup_intern(
     if ((id[0] == '.') && !id[1]) {
         corto_claim(parent);
         return parent;
+    }
+
+    if ((id[0] == '.') && (id[1] == '/')) {
+        ptr ++;
     }
 
     int i = 0;
@@ -3269,7 +3283,9 @@ static corto_object corto_lookup_intern(
         if (!o) {
             break;
         }
-    } while ((ptr = strchr(ptr + 1, '/')));
+
+        for (; (ch = *ptr) && (ch != '/'); ptr ++);
+    } while (ch);
 
     if (resume) {
         if (!prev) {
@@ -3359,7 +3375,8 @@ corto_int16 corto_publish(
         }
         corto_release(o);
     } else {
-        corto_id buffer; strcpy(buffer, id);
+        corto_id buffer;
+        strcpy(buffer, id);
         if (corto_notifySubscribersId(
           event, buffer, type, contentType, (corto_word)content))
         {

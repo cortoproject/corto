@@ -192,3 +192,37 @@ corto_resultIter _test_AutoResumeSinkReplicator_onRequest(
     return result;
 /* $end */
 }
+
+corto_word _test_AutoResumeSinkReplicator_onSubscribe(
+    test_AutoResumeSinkReplicator this,
+    corto_string parent,
+    corto_string expr)
+{
+/* $begin(test/AutoResumeSinkReplicator/onSubscribe) */
+    corto_request r = {.parent = parent, .expr = expr};
+
+    corto_requestListAppend(
+      this->subscribes,
+      &r
+    );
+
+    return (corto_word)this;
+
+/* $end */
+}
+
+corto_void _test_AutoResumeSinkReplicator_onUnsubscribe(
+    test_AutoResumeSinkReplicator this,
+    corto_string parent,
+    corto_word ctx)
+{
+/* $begin(test/AutoResumeSinkReplicator/onUnsubscribe) */
+    corto_request r = {.parent = parent};
+
+    corto_requestListAppend(
+      this->unsubscribes,
+      &r
+    );
+
+/* $end */
+}

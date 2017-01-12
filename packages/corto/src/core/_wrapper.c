@@ -344,8 +344,7 @@ corto_object _corto_mount_onResume(
 corto_word _corto_mount_onSubscribe(
     corto_mount this,
     corto_string parent,
-    corto_string name,
-    corto_eventMask mask)
+    corto_string name)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -356,18 +355,18 @@ corto_word _corto_mount_onSubscribe(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(string parent,string name,core/eventMask mask)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(string parent,string name)");
     }
-    corto_assert(_methodId, "virtual 'onSubscribe(string parent,string name,core/eventMask mask)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onSubscribe(string parent,string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(string parent,string name,core/eventMask mask)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(string parent,string name)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_word ___ (*)(corto_object, corto_string, corto_string, corto_eventMask))((corto_function)_method)->fptr)(this, parent, name, mask);
+        _result = ((corto_word ___ (*)(corto_object, corto_string, corto_string))((corto_function)_method)->fptr)(this, parent, name);
     } else {
-        corto_call(corto_function(_method), &_result, this, parent, name, mask);
+        corto_call(corto_function(_method), &_result, this, parent, name);
     }
     
     return _result;
@@ -377,7 +376,6 @@ corto_void _corto_mount_onUnsubscribe(
     corto_mount this,
     corto_string parent,
     corto_string name,
-    corto_eventMask mask,
     corto_word userData)
 {
     static corto_uint32 _methodId;
@@ -388,18 +386,18 @@ corto_void _corto_mount_onUnsubscribe(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,string name,lang/word userData)");
     }
-    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,string name,lang/word userData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,string name,core/eventMask mask,lang/word userData)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,string name,lang/word userData)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_string, corto_string, corto_eventMask, corto_word))((corto_function)_method)->fptr)(this, parent, name, mask, userData);
+        ((void ___ (*)(corto_object, corto_string, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, name, userData);
     } else {
-        corto_call(corto_function(_method), NULL, this, parent, name, mask, userData);
+        corto_call(corto_function(_method), NULL, this, parent, name, userData);
     }
 }
 

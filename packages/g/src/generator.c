@@ -137,7 +137,7 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
 
         if (prefix) {
             if (strlen(prefix) >= sizeof(corto_id)) {
-                corto_error("prefix cannot be longer than %d characters", sizeof(corto_id));
+                corto_seterr("prefix cannot be longer than %d characters", sizeof(corto_id));
                 o->prefix = NULL;
             } else {
                 o->prefix = corto_strdup(prefix);
@@ -220,20 +220,20 @@ corto_int16 g_load(g_generator g, corto_string library) {
     corto_asprintf(&package, "corto/gen/%s", library);
     corto_string lib = corto_locate(package, CORTO_LOCATION_LIB);
     if (!lib) {
-        corto_error("generator '%s' not found", package);
+        corto_seterr("generator '%s' not found: %s", package, corto_lasterr()?corto_lasterr():"");
         goto error;
     }
 
     g->library = corto_dlOpen(lib);
     if (!g->library) {
-        corto_error("%s", corto_dlError());
+        corto_seterr("%s", corto_dlError());
         goto error;
     }
 
     /* Load actions */
     g->start_action = (g_startAction)corto_dlProc(g->library, "corto_genMain");
     if (!g->start_action) {
-        corto_error("g_load: %s: unresolved SYMBOL 'corto_genMain'", lib);
+        corto_seterr("g_load: %s: unresolved SYMBOL 'corto_genMain'", lib);
         corto_dealloc(lib);
         goto error;
     }
@@ -785,7 +785,7 @@ static corto_char* g_oidTransform(g_generator g, corto_object o, corto_id _id, g
 
             count = corto_signatureParamCount(tmp);
             if (count == -1) {
-                corto_error("invalid signature '%s'", tmp);
+                corto_seterr("invalid signature '%s'", tmp);
                 goto error;
             }
 
@@ -1032,7 +1032,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
                     *endptr = '\0';
 
                     if (strlen(ptr) >= sizeof(corto_id)) {
-                        corto_error(
+                        corto_seterr(
                             "%s: identifier of code-snippet exceeds %d characters", sizeof(corto_id));
                         goto error;
                     }
@@ -1054,7 +1054,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
                         }
 
                         if(strstr(src, "$begin")) {
-                            corto_error("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
+                            corto_seterr("%s: code-snippet '%s(%s)' contains nested $begin (did you forget an $end?)",
                                 name, option, identifier);
                             corto_dealloc(src);
                             goto error;

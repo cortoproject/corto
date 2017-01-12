@@ -346,9 +346,26 @@ test/Suite Resolver::
     void setup() method
     void teardown() method
 
+    void tc_resolveIdFromNull()
+    void tc_resolveIdFromRoot()
+    void tc_resolveIdFromScope()
+    void tc_resolveNestedFromNull()
+    void tc_resolveNestedFromRoot()
+    void tc_resolveNestedFromScope()
+    void tc_resolveNested2FromNull()
+    void tc_resolveNested2FromRoot()
+    void tc_resolveNested2FromScope()
+
     void tc_resolveNull()
     void tc_resolveRoot()
     void tc_resolveThis()
+    void tc_resolveThisBeforeExpr()
+    void tc_resolveThisInExpr()
+    void tc_resolveThisAfterExpr()
+    void tc_resolveParent()
+    void tc_resolveParentBeforeExpr()
+    void tc_resolveParentInExpr()
+    void tc_resolveParentAfterExpr()
     void tc_resolveCorto()
     void tc_resolveLang()
     void tc_resolveString()
@@ -370,6 +387,45 @@ test/Suite Resolver::
     void tc_caseInsensitive()
 
     void tc_resolveAll()
+
+// Test corto_lookup
+test/Suite Lookup::
+    void tc_lookupIdFromNull()
+    void tc_lookupIdFromRoot()
+    void tc_lookupIdFromScope()
+    void tc_lookupNestedFromNull()
+    void tc_lookupNestedFromRoot()
+    void tc_lookupNestedFromScope()
+    void tc_lookupNested2FromNull()
+    void tc_lookupNested2FromRoot()
+    void tc_lookupNested2FromScope()
+
+    void tc_lookupNull()
+    void tc_lookupRoot()
+    void tc_lookupThis()
+    void tc_lookupThisBeforeExpr()
+    void tc_lookupThisInExpr()
+    void tc_lookupThisAfterExpr()
+    void tc_lookupParent()
+    void tc_lookupParentBeforeExpr()
+    void tc_lookupParentInExpr()
+    void tc_lookupParentAfterExpr()
+    void tc_lookupEmptyString()
+
+    void tc_lookupParenthesesNoFunction()
+    void tc_lookupParenthesesNoFunctionArgs()
+    void tc_lookupParenthesesNoFunctionMatchingArgs()
+
+    void tc_lookupParenthesesNoFunctionScoped()
+    void tc_lookupParenthesesNoFunctionArgsScoped()
+    void tc_lookupParenthesesNoFunctionMatchingArgsScoped()
+
+    void tc_lookupFunctionNoArgs()
+    void tc_lookupFunctionArgs()
+    void tc_lookupCaseInsensitive()
+
+    void tc_lookupAll()
+
 
 // Test matcher
 test/Suite Matcher::
@@ -633,9 +689,13 @@ class AutoResumeSinkReplicator : core/mount, hidden::
     alias mount: mount/mount
     alias type: mount/type
     value: string
+    subscribes: list{core/request},readonly
+    unsubscribes: list{core/request},readonly
     items: resultList, private
     int16 construct()
     resultIter onRequest(core/request request)
+    word onSubscribe(string parent, string expr)
+    void onUnsubscribe(string parent, word ctx)
 
 // Request data from a SINK mount
 test/Suite SelectSink::
@@ -970,6 +1030,19 @@ test/Suite Subscribe::
     subscriber noInitialSep: ON_UPDATE, "testScope", "*"
     triggered: uint8
     void tc_noInitialSep()
+
+test/Suite MountSubscription::
+  void tc_subscribeSingle()
+  void tc_subscribeScope()
+  void tc_subscribeTree()
+  void tc_subscribeFilterScope()
+  void tc_subscribeFilterTree()
+  void tc_subscribeSingleTwice()
+  void tc_subscribeScopeTwice()
+  void tc_subscribeTreeTwice()
+  void tc_subscribeFilterScopeTwice()
+  void tc_subscribeFilterTreeTwice()
+
 
 // Function overloading support types
 void ol_null(object a)

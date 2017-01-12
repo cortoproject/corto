@@ -118,7 +118,7 @@ corto_int16 _corto_mount_construct(
 
     /* If parent is set, resolve it and assign mount */
     if (corto_subscriber(this)->parent) {
-        corto_object o = corto_resolve(NULL, corto_subscriber(this)->parent);
+        corto_object o = corto_lookup(NULL, corto_subscriber(this)->parent);
         if (!o) {
             corto_seterr(
                 "parent '%s' not found (future corto versions will allow this)",
@@ -220,7 +220,6 @@ corto_void _corto_mount_destruct(
             this,
             s->parent,
             s->expr,
-            s->mask,
             s->userData);
         corto_deinitp(s, corto_mountSubscription_o);
         corto_dealloc(s);
@@ -359,7 +358,7 @@ corto_resultIter _corto_mount_onRequest_v(
         sprintf(routerRequest, "%s/%s", request->parent, request->expr);
         corto_cleanpath(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult)) {
-            corto_error("%s", corto_lasterr());
+            corto_warning("%s", corto_lasterr());
         }
     }
 
@@ -386,14 +385,12 @@ corto_object _corto_mount_onResume_v(
 corto_word _corto_mount_onSubscribe_v(
     corto_mount this,
     corto_string parent,
-    corto_string name,
-    corto_eventMask mask)
+    corto_string name)
 {
 /* $begin(corto/core/mount/onSubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
     CORTO_UNUSED(name);
-    CORTO_UNUSED(mask);
 
     return 0;
 /* $end */
@@ -403,14 +400,12 @@ corto_void _corto_mount_onUnsubscribe_v(
     corto_mount this,
     corto_string parent,
     corto_string name,
-    corto_eventMask mask,
     corto_word userData)
 {
 /* $begin(corto/core/mount/onUnsubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
     CORTO_UNUSED(name);
-    CORTO_UNUSED(mask);
     CORTO_UNUSED(userData);
 
 /* $end */
@@ -700,9 +695,7 @@ error:
 
 corto_void _corto_mount_subscribe(
     corto_mount this,
-    corto_string parent,
-    corto_string name,
-    corto_eventMask mask)
+    corto_request *request)
 {
 /* $begin(corto/core/mount/subscribe) */
     corto_bool found = FALSE;
@@ -712,9 +705,7 @@ corto_void _corto_mount_subscribe(
     corto_iter it = corto_llIter(this->subscriptions);
     while (corto_iterHasNext(&it)) {
         corto_mountSubscription *s = corto_iterNext(&it);
-        if (!strcmp(s->parent, parent) &&
-            !strcmp(s->expr, name) &&
-            s->mask == mask)
+        if (!strcmp(s->parent, request->parent))
         {
             s->count ++;
             found = TRUE;
@@ -723,9 +714,8 @@ corto_void _corto_mount_subscribe(
     }
     if (!found) {
         newSubscription = corto_calloc(sizeof(corto_mountSubscription));
-        newSubscription->mask = mask;
-        newSubscription->parent = corto_strdup(parent);
-        newSubscription->expr = corto_strdup(name);
+        newSubscription->parent = corto_strdup(request->parent);
+        newSubscription->expr = corto_strdup(request->expr);
         newSubscription->count = 1;
         newSubscription->userData = 0;
         corto_llAppend(this->subscriptions, newSubscription);
@@ -734,7 +724,7 @@ corto_void _corto_mount_subscribe(
 
     if (newSubscription) {
         newSubscription->userData = corto_mount_onSubscribe(
-            this, parent, name, mask);
+            this, request->parent, request->expr);
     }
 
 /* $end */
@@ -742,9 +732,7 @@ corto_void _corto_mount_subscribe(
 
 corto_void _corto_mount_unsubscribe(
     corto_mount this,
-    corto_string parent,
-    corto_string name,
-    corto_eventMask mask)
+    corto_request *request)
 {
 /* $begin(corto/core/mount/unsubscribe) */
     corto_mountSubscription *found = NULL;
@@ -753,9 +741,7 @@ corto_void _corto_mount_unsubscribe(
     corto_iter it = corto_llIter(this->subscriptions);
     while (corto_iterHasNext(&it)) {
         corto_mountSubscription *s = corto_iterNext(&it);
-        if (!strcmp(s->parent, parent) &&
-            !strcmp(s->expr, name) &&
-            s->mask == mask)
+        if (!strcmp(s->parent, request->parent))
         {
             found = s;
             break;
@@ -771,7 +757,7 @@ corto_void _corto_mount_unsubscribe(
     corto_unlock(this);
 
     if (found) {
-        corto_mount_onUnsubscribe(this, parent, name, mask, found->userData);
+        corto_mount_onUnsubscribe(this, found->parent, found->expr, found->userData);
         corto_deinitp(found, corto_mountSubscription_o);
         corto_dealloc(found);
     }

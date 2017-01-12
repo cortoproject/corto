@@ -9,6 +9,8 @@ extern corto_threadKey CORTO_KEY_FLUENT;
 
 struct corto_selectData;
 
+typedef void (*corto_mountAction)(corto_mount _this, corto_request *r);
+
 /* Fluent request */
 typedef struct corto_selectRequest {
     corto_int16 err;
@@ -21,6 +23,8 @@ typedef struct corto_selectRequest {
     corto_string contentType;
     corto_frame from;
     corto_frame to;
+    corto_mountAction mountAction;
+    corto_bool dryRun;
 } corto_selectRequest;
 
 typedef struct corto_selectStack {
@@ -93,6 +97,12 @@ typedef struct corto_selectData {
 
     /* Does select need to resume objects */
     corto_bool resume;
+
+    /* Additional action to be performed when data is requested from mount */
+    corto_mountAction mountAction;
+
+    /* Set to TRUE when a mountAction is the only thing that needs to be done. */
+    corto_bool dryRun;
 
     /* Pre allocated for selectItem */
     corto_id id;
@@ -511,7 +521,16 @@ static corto_resultIter corto_selectRequestMount(
       data->from,
       data->to};
 
-    return corto_mount_request(mount, &r);
+    if (data->mountAction) {
+        data->mountAction(mount, &r);
+    }
+
+    /* If this is a dry run, don't request data from mount */
+    if (data->dryRun) {
+        return CORTO_ITERATOR_EMPTY;
+    } else {
+        return corto_mount_request(mount, &r);
+    }
 }
 
 static corto_int16 corto_selectIterMount(
@@ -633,7 +652,7 @@ static corto_int16 corto_selectIterMount(
             }
         }
 
-        corto_object parent = corto_resolve(NULL, rpath);
+        corto_object parent = corto_lookup(NULL, rpath);
         if (!parent) {
             corto_warning("select: could not resume '%s/%s' from '%s': parent not found",
               result->parent,
@@ -1293,6 +1312,8 @@ static corto_resultIter corto_selectPrepareIterator (
     data->item.type = data->type;
     data->item.id = data->id;
     data->item.leaf = TRUE;
+    data->mountAction = r->mountAction;
+    data->dryRun = r->dryRun;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_loadContentType(data->contentType))) {
@@ -1391,6 +1412,52 @@ static corto_int16 corto_selectorIter(corto_resultIter *ret)
             goto error;
         }
         corto_dealloc(request);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static corto_int16 corto_selectorSubscribe(corto_resultIter *ret)
+{
+    corto_assert(ret != NULL, "no iterator provided to .subscribe()");
+
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->mountAction = _corto_mount_subscribe;
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        *ret = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
+        }
+        corto_dealloc(request);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static corto_int16 corto_selectorUnsubscribe()
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->mountAction = _corto_mount_unsubscribe;
+        request->dryRun = TRUE;
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_iter it = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
+        }
+        corto_dealloc(request);
+
+        /* Walk resuts to unsubscribe all mounts */
+        while (corto_iterHasNext(&it)) {
+            corto_iterNext(&it);
+        }
     }
 
     return 0;
@@ -1574,6 +1641,8 @@ static corto_selectFluent corto_selectFluentGet(void)
     result.forDuration = corto_selectorForDuration;
     result.forDepth = corto_selectorForDepth;
     result.iter = corto_selectorIter;
+    result.subscribe = corto_selectorSubscribe;
+    result.unsubscribe = corto_selectorUnsubscribe;
     result.iterObjects = corto_selectorIterObjects;
     result.count = corto_selectorCount;
     return result;

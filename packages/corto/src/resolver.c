@@ -60,7 +60,7 @@ corto_object corto_resolve(corto_object _scope, corto_string str) {
     int step = 3;
 
     if (!str) {
-        str = "/";
+        return NULL;
     }
 
     if (!*str) {

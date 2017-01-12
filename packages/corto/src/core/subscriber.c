@@ -136,7 +136,9 @@ corto_int16 corto_notifySubscribersId(
                 }
 
                 /* If subscriber requests content, convert to subscriber contentType */
-                if (s->contentTypeHandle && value && type) {
+                if (s->contentType && contentType && !strcmp(s->contentType, contentType)) {
+                    content = value;
+                } else if (s->contentTypeHandle && value && type) {
                     /* Check if contentType has already been loaded */
                     corto_int32 i; for (i = 0; i < contentTypesCount; i++) {
                         if ((corto_word)contentTypes[i].ct == s->contentTypeHandle) {
@@ -424,6 +426,7 @@ static corto_int16 corto_subscriber_unsubscribeIntern(corto_subscriber this, cor
                 seq->buffer[i].s = seq->buffer[seq->length - 1].s;
                 seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;
             }
+
             seq->length --;
             count ++;
             if (!removeAll) {
@@ -491,6 +494,9 @@ corto_void _corto_subscriber_destruct(
 /* $begin(corto/core/subscriber/destruct) */
     corto_matchProgram_free((corto_matchProgram)this->matchProgram);
 
+    /* Notify mounts of unsubscription once */
+    corto_select(this->parent, this->expr).unsubscribe();
+
     /* Unsubscribe all subscriptions of this subscriber */
     corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
 
@@ -534,7 +540,7 @@ corto_int16 _corto_subscriber_subscribe(
 /* $begin(corto/core/subscriber/subscribe) */
     corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
     corto_iter it;
-    corto_bool align = FALSE;
+    corto_bool align = FALSE, subscribe = FALSE;
     corto_eventMask mask = corto_observer(this)->mask;
 
     corto_debug("corto: subscriber '%s': subscribe for %s, %s",
@@ -542,14 +548,27 @@ corto_int16 _corto_subscriber_subscribe(
       this->parent,
       this->expr);
 
+    /* If subscriber was not yet enabled, subscribe to mounts */
+    if (!corto_observer(this)->enabled) {
+        corto_int16 ret = corto_select(this->parent, this->expr).subscribe(&it);
+        if (ret) {
+            goto error;
+        }
+        subscribe = TRUE;
+    }
+
+    /* If subscriber subscribes for DECLARE or DEFINE events, align data */
     if ((mask == CORTO_ON_DECLARE) || (mask == CORTO_ON_DEFINE)) {
         align = TRUE;
-        corto_int16 ret = corto_select(this->parent, this->expr).iter(&it);
-        if (ret) {
-          goto error;
+        if (!subscribe) {
+            corto_int16 ret = corto_select(this->parent, this->expr).iter(&it);
+            if (ret) {
+                goto error;
+            }
         }
     }
 
+    /* Add subscriber to subscriber admin */
     if (corto_rwmutexWrite(&corto_subscriberLock)) {
         goto error;
     }
@@ -567,19 +586,25 @@ corto_int16 _corto_subscriber_subscribe(
         goto error;
     }
 
-    if (align) {
+    /* Align subscriber */
+    if (align || subscribe) {
         while (corto_iterHasNext(&it)) {
             corto_result *r = corto_iterNext(&it);
-            if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
-                ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
-                  corto_function(this)->fptr)(instance, mask, r, this);
-            } else {
-                void *args[4];
-                args[0] = &instance;
-                args[1] = &mask;
-                args[2] = &r;
-                args[3] = &this;
-                corto_callb(this, NULL, args);
+            /* Only forward results to subscriber if subscriber wants to be
+             * aligned. If not, still walk the results so mounts will receive
+             * onSubscribe callbacks */
+            if (align) {
+                if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
+                    ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
+                      corto_function(this)->fptr)(instance, mask, r, this);
+                } else {
+                    void *args[4];
+                    args[0] = &instance;
+                    args[1] = &mask;
+                    args[2] = &r;
+                    args[3] = &this;
+                    corto_callb(this, NULL, args);
+                }
             }
         }
     }
@@ -604,6 +629,7 @@ corto_int16 _corto_subscriber_unsubscribe(
       corto_fullpath(NULL, this),
       this->parent,
       this->expr);
+
     return corto_subscriber_unsubscribeIntern(this, instance, FALSE);
 /* $end */
 }

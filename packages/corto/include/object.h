@@ -134,6 +134,8 @@ typedef struct corto_selectFluent {
     corto_int16 ___ (*iter)(corto_resultIter *ret);
     corto_int16 ___ (*iterObjects)(corto_objectIter *ret);
     corto_int64 ___ (*count)(void);
+    corto_int16 ___ (*subscribe)(corto_resultIter *ret);
+    corto_int16 ___ (*unsubscribe)(void);
 } corto_selectFluent;
 CORTO_EXPORT struct corto_selectFluent corto_select(corto_string scope, corto_string expr);
 

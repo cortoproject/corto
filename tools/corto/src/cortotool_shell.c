@@ -470,7 +470,7 @@ static int cxsh_show(char* object) {
 
         if (o) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
-                s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE;
+                s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
                 s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
                 s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;

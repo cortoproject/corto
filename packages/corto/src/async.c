@@ -66,7 +66,7 @@ int corto_threadCancel(corto_thread thread) {
 
 int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*)){
     if (pthread_key_create(key, destructor)) {
-        corto_error("corto_threadTlsKey failed.");
+        corto_seterr("corto_threadTlsKey failed.");
         goto error;
     }
     return 0;
