@@ -297,7 +297,9 @@ def build_target(hardcodedPaths)
     linkShared = "--shared"
   end
 
-  cc_command = "#{COMPILER} #{lflags} #{libpath} #{objects} #{libmapping} #{linkShared} -o #{artefact}"
+  # Put lflags after objects so that linker knows about unresolved symbols
+  # before processing libraries
+  cc_command = "#{COMPILER} #{objects} #{lflags} #{libpath} #{libmapping} #{linkShared} -o #{artefact}"
   begin
     cmd cc_command
   rescue
