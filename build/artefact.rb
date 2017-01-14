@@ -281,8 +281,8 @@ def build_target(hardcodedPaths)
     objects << obj
   end
 
-  objects.concat(linked)
   objects  = "#{objects.to_a.uniq.join(' ')}"
+  linked_objects = linked.join(' ')
 
   libpath = "#{LIBPATH.map {|i| "-L" + corto_replace(i)}.join(" ")} "
   libmapping = "#{(LibMapping.mapLibs(LIB)).map {|i| "-l" + i}.join(" ")}"
@@ -299,7 +299,7 @@ def build_target(hardcodedPaths)
 
   # Put lflags after objects so that linker knows about unresolved symbols
   # before processing libraries
-  cc_command = "#{COMPILER} #{objects} #{lflags} #{libpath} #{libmapping} #{linkShared} -o #{artefact}"
+  cc_command = "#{COMPILER} #{objects} #{libpath} #{linked_objects} #{lflags} #{libmapping} #{linkShared} -o #{artefact}"
   begin
     cmd cc_command
   rescue

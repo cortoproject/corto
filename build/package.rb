@@ -353,7 +353,9 @@ def installDir(dir)
         cmd "mkdir -p #{dstPath}"
       end
 
-      msg "copy #{C_NORMAL}#{dir} to #{dstPath}"
+      if ENV['silent'] != "true" then
+        msg "copy #{C_NORMAL}#{dir} to #{dstPath}"
+      end
 
       # Keep track of installed include files
       installFiles.each do |f|
