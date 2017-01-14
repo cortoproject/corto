@@ -123,6 +123,7 @@ typedef struct corto_selectFluent {
     struct corto_selectFluent (*limit)(corto_uint64 offset, corto_uint64 limit);
     struct corto_selectFluent (*augment)(corto_string filter);
     struct corto_selectFluent (*type)(corto_string filter);
+    struct corto_selectFluent (*instance)(corto_object instance);
     struct corto_selectFluent (*fromNow)(void);
     struct corto_selectFluent (*fromTime)(corto_time t);
     struct corto_selectFluent (*fromSample)(corto_uint64 sample);

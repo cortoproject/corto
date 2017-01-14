@@ -219,6 +219,8 @@ corto_void _test_AutoResumeSinkReplicator_onUnsubscribe(
 /* $begin(test/AutoResumeSinkReplicator/onUnsubscribe) */
     corto_request r = {.parent = parent};
 
+    test_assert(ctx == (corto_word)this);
+
     corto_requestListAppend(
       this->unsubscribes,
       &r

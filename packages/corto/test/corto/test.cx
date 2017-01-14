@@ -385,7 +385,7 @@ test/Suite Resolver::
     void tc_resolveFunctionNoArgs()
     void tc_resolveFunctionArgs()
     void tc_caseInsensitive()
-
+    void tc_resolveObjectAFromScopeWithFunctionA()
     void tc_resolveAll()
 
 // Test corto_lookup
@@ -1035,13 +1035,9 @@ test/Suite MountSubscription::
   void tc_subscribeSingle()
   void tc_subscribeScope()
   void tc_subscribeTree()
-  void tc_subscribeFilterScope()
-  void tc_subscribeFilterTree()
   void tc_subscribeSingleTwice()
   void tc_subscribeScopeTwice()
   void tc_subscribeTreeTwice()
-  void tc_subscribeFilterScopeTwice()
-  void tc_subscribeFilterTreeTwice()
 
 
 // Function overloading support types

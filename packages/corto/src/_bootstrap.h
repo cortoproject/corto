@@ -1433,7 +1433,7 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_VIRTUAL_O(core_mount, onDelete, "(object observable)", lang_void, corto_mount_onDelete_v);
     CORTO_VIRTUAL_O(core_mount, onNotify, "(core/eventMask event,core/result object)", lang_void, corto_mount_onNotify_v);
     CORTO_VIRTUAL_O(core_mount, onSubscribe, "(string parent,string expr)", lang_word, corto_mount_onSubscribe_v);
-    CORTO_VIRTUAL_O(core_mount, onUnsubscribe, "(string parent,string expr,lang/word userData)", lang_void, corto_mount_onUnsubscribe_v);
+    CORTO_VIRTUAL_O(core_mount, onUnsubscribe, "(string parent,lang/word ctx)", lang_void, corto_mount_onUnsubscribe_v);
 
 /* /corto/core/route */
 CORTO_FW_IC(core, route);

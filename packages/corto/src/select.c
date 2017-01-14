@@ -25,6 +25,7 @@ typedef struct corto_selectRequest {
     corto_frame to;
     corto_mountAction mountAction;
     corto_bool dryRun;
+    corto_object instance;
 } corto_selectRequest;
 
 typedef struct corto_selectStack {
@@ -103,6 +104,9 @@ typedef struct corto_selectData {
 
     /* Set to TRUE when a mountAction is the only thing that needs to be done. */
     corto_bool dryRun;
+
+    /* Ignore data from the instance (mount) if set */
+    corto_object instance;
 
     /* Pre allocated for selectItem */
     corto_id id;
@@ -521,12 +525,12 @@ static corto_resultIter corto_selectRequestMount(
       data->from,
       data->to};
 
-    if (data->mountAction) {
+    if (data->mountAction && (mount != data->instance)) {
         data->mountAction(mount, &r);
     }
 
     /* If this is a dry run, don't request data from mount */
-    if (data->dryRun) {
+    if (data->dryRun || (mount == data->instance)) {
         return CORTO_ITERATOR_EMPTY;
     } else {
         return corto_mount_request(mount, &r);
@@ -1314,6 +1318,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->item.leaf = TRUE;
     data->mountAction = r->mountAction;
     data->dryRun = r->dryRun;
+    data->instance = r->instance;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_loadContentType(data->contentType))) {
@@ -1446,7 +1451,6 @@ static corto_int16 corto_selectorUnsubscribe()
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->mountAction = _corto_mount_unsubscribe;
-        request->dryRun = TRUE;
         corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1625,6 +1629,16 @@ static corto_selectFluent corto_selectorForDepth(corto_int64 depth)
     return corto_selectFluentGet();
 }
 
+static corto_selectFluent corto_selectorInstance(corto_object instance)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->instance = instance;
+    }
+    return corto_selectFluentGet();
+}
+
 static corto_selectFluent corto_selectFluentGet(void)
 {
     corto_selectFluent result;
@@ -1645,6 +1659,7 @@ static corto_selectFluent corto_selectFluentGet(void)
     result.unsubscribe = corto_selectorUnsubscribe;
     result.iterObjects = corto_selectorIterObjects;
     result.count = corto_selectorCount;
+    result.instance = corto_selectorInstance;
     return result;
 }
 

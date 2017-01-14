@@ -107,27 +107,25 @@ CORTO_EXPORT corto_object _corto_mount_onResume_v(
 CORTO_EXPORT corto_word _corto_mount_onSubscribe(
     corto_mount _this,
     corto_string parent,
-    corto_string name);
-#define corto_mount_onSubscribe(_this, parent, name) _corto_mount_onSubscribe(corto_mount(_this), parent, name)
+    corto_string expr);
+#define corto_mount_onSubscribe(_this, parent, expr) _corto_mount_onSubscribe(corto_mount(_this), parent, expr)
 
 CORTO_EXPORT corto_word _corto_mount_onSubscribe_v(
     corto_mount _this,
     corto_string parent,
-    corto_string name);
-#define corto_mount_onSubscribe_v(_this, parent, name) _corto_mount_onSubscribe_v(corto_mount(_this), parent, name)
+    corto_string expr);
+#define corto_mount_onSubscribe_v(_this, parent, expr) _corto_mount_onSubscribe_v(corto_mount(_this), parent, expr)
 CORTO_EXPORT corto_void _corto_mount_onUnsubscribe(
     corto_mount _this,
     corto_string parent,
-    corto_string name,
     corto_word userData);
-#define corto_mount_onUnsubscribe(_this, parent, name, userData) _corto_mount_onUnsubscribe(corto_mount(_this), parent, name, userData)
+#define corto_mount_onUnsubscribe(_this, parent, userData) _corto_mount_onUnsubscribe(corto_mount(_this), parent, userData)
 
 CORTO_EXPORT corto_void _corto_mount_onUnsubscribe_v(
     corto_mount _this,
     corto_string parent,
-    corto_string name,
     corto_word userData);
-#define corto_mount_onUnsubscribe_v(_this, parent, name, userData) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, name, userData)
+#define corto_mount_onUnsubscribe_v(_this, parent, userData) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, userData)
 CORTO_EXPORT corto_void _corto_mount_onUpdate(
     corto_mount _this,
     corto_object observable);
