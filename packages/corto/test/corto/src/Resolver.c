@@ -162,6 +162,25 @@ corto_void _test_Resolver_tc_resolveFunctionNoArgs(
 /* $end */
 }
 
+corto_void _test_Resolver_tc_resolveG(
+    test_Resolver this)
+{
+/* $begin(test/Resolver/tc_resolveG) */
+
+    /* Start loader mount */
+    corto_loader p = corto_loaderCreate();
+    corto_object o = corto_resolve(NULL, "g");
+    test_assert(o != NULL);
+    test_assert (!strcmp(corto_idof(o), "g"));
+    test_assert (corto_parentof(o) == corto_o);
+    corto_release(o);
+
+    /* Delete loader mount */
+    corto_delete(p);
+
+/* $end */
+}
+
 corto_void _test_Resolver_tc_resolveIdFromNull(
     test_Resolver this)
 {
@@ -194,25 +213,6 @@ corto_void _test_Resolver_tc_resolveIdFromScope(
     corto_object o = corto_resolve(corto_core_o, "mount");
     test_assert(o != NULL);
     test_assert(o != corto_word_o);
-
-/* $end */
-}
-
-corto_void _test_Resolver_tc_resolveIo(
-    test_Resolver this)
-{
-/* $begin(test/Resolver/tc_resolveIo) */
-
-    /* Start loader mount */
-    corto_loader p = corto_loaderCreate();
-    corto_object o = corto_resolve(NULL, "io");
-    test_assert(o != NULL);
-    test_assert (!strcmp(corto_idof(o), "io"));
-    test_assert (corto_parentof(o) == corto_o);
-    corto_release(o);
-
-    /* Delete loader mount */
-    corto_delete(p);
 
 /* $end */
 }
