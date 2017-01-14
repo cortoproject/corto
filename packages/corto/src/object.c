@@ -559,7 +559,7 @@ static corto_equalityKind corto_compareLookupIntern(const char *o1, const char *
     }
 
     if (matchArgs) {
-        if ((ch1 == '(') && !ch2) {
+        if (!ch2 && (ch1 == '(')) {
             r = 0;
             goto compare;
         }
@@ -3172,42 +3172,24 @@ static corto_object corto_lookup_intern(
 {
     corto_assertObject(parent);
 
+    if (!parent) {
+        parent = root_o;
+    }
+
     corto_object o = parent;
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rbtree tree;
     corto_object prev = NULL;
-    char ch, *ptr = id;
+    char ch, *next, *ptr = id;
 
-    if (!o) {
-        o = root_o;
-    }
-
-    if (!parent) {
-        parent = root_o;
-    }
-
-    if (!id) {
-        corto_seterr("invalid NULL identifier passed to corto_lookup");
-        goto error;
-    }
-
-    if (!id[0]) {
-        corto_seterr("invalid empty identifier passed to corto_lookup");
+    if (!id || !id[0]) {
+        corto_seterr("invalid identifier passed to corto_lookup");
         goto error;
     }
 
     if (id[0] == '/') {
         o = root_o;
-    }
-
-    if ((id[0] == '.') && !id[1]) {
-        corto_claim(parent);
-        return parent;
-    }
-
-    if ((id[0] == '.') && (id[1] == '/')) {
-        ptr ++;
     }
 
     int i = 0;
@@ -3226,23 +3208,55 @@ static corto_object corto_lookup_intern(
             break;
         }
 
-        if (scope) {
-            corto_rwmutexRead(&scope->align.scopeLock);
+        corto_bool containsArgs = FALSE;
+        for (next = ptr; (ch = *next) && (ch != '/'); next ++) {
+            if (ch == '(') {
+                containsArgs = TRUE;
+                for (next ++; (ch = *next) && (ch != ')'); next ++);
+            }
+        }
+
+        if (ptr[0] == '.') {
+            if (ptr[1] == '.') {
+                if (&ptr[2] == next) {
+                    o = corto_parentof(o);
+                } else {
+                    corto_seterr("invalid usage of '..' in '%s'", id);
+                    goto error;
+                }
+            } else if (&ptr[1] == next) {
+                /* .. do nothing */
+            } else {
+                corto_seterr("invalid usage of '.' in '%s'", id);
+                goto error;
+            }
+        } else if (scope) {
             if ((tree = scope->scope)) {
-                if ((!corto_rbtreeHasKey_w_cmp(
-                    tree,
-                    ptr,
-                    (void**)&o,
-                    corto_compareLookup)))
-                {
-                    o = NULL;
-                } else
-                {
-                    /* If an object was returned with a ( in its id but
-                     * the request didn't have one, check scope again for an object
-                     * that matches the request exactly */
-                    if (strchr(corto_idof(o), '(') && !strchr(ptr, '(')) {
+                if (containsArgs) {
+                    corto_int32 diff;
+                    o = corto_lookupFunction(o, ptr, NULL, &diff);
+                    if (!diff) { /* Ambiguous reference */
+                        if (o) corto_release(o);
+                        corto_setinfo("ambiguous reference '%s'", ptr);
+                        goto error;
+                    }
+
+                    if (o) corto_release(o);
+                } else {
+                    corto_rwmutexRead(&scope->align.scopeLock);
+                    if (!corto_rbtreeHasKey_w_cmp(
+                          tree,
+                          ptr,
+                          (void**)&o,
+                          corto_compareLookup))
+                    {
+                        o = NULL;
+                    } else if (strchr(corto_idof(o), '(')) {
                         corto_object checkNoArgs = NULL;
+
+                        /* If requesting an id without '()' and an id with '()'
+                         * is returned, look again without allowing for '()' to
+                         * give preference to an object without '()' */
                         if (corto_rbtreeHasKey_w_cmp(
                               tree,
                               ptr,
@@ -3250,41 +3264,51 @@ static corto_object corto_lookup_intern(
                               corto_compareLookupNoArgMatching))
                         {
                             o = checkNoArgs;
+                        } else if (corto_instanceof(corto_function_o, o)) {
+                            if (corto_function(o)->overloaded == TRUE) {
+                                corto_setinfo("ambiguous reference '%s'", id);
+                                corto_rwmutexUnlock(&scope->align.scopeLock);
+                                goto error;
+                            }
                         }
                     }
-
-                    /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
-                    if (corto_claim(o) == 1) {
-                         /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
-                          * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
-                          * function also needs the parent's scopelock to remove the object from the scope.
-                          *
-                          * The refcount needs to be re-set to zero, because after the scopeLock is released, other threads - other than the destruct
-                          * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
-                          * that the object is being deleted.
-                          */
-                        _result = CORTO_OFFSET(o, -sizeof(corto__object));
-                        _result->refcount = 0;
-                        o = NULL;
-                    }
+                    corto_rwmutexUnlock(&scope->align.scopeLock);
                 }
             } else {
                 o = NULL;
             }
-            corto_rwmutexUnlock(&scope->align.scopeLock);
+
         } else {
-            corto_seterr("corto_lookup: object '%s' has no scope",
+            /* Walking a non-scoped object should not be possible */
+            corto_critical("corto_lookup: object '%s' has no scope",
                 corto_fullpath(NULL, o));
             goto error;
         }
+
+        /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
+        if (o && (corto_claim(o) == 1)) {
+             /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
+              * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
+              * function also needs the parent's scopelock to remove the object from the scope.
+              *
+              * The refcount needs to be re-set to zero, because after the scopeLock is released, other threads - other than the destruct
+              * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
+              * that the object is being deleted.
+              */
+            _result = CORTO_OFFSET(o, -sizeof(corto__object));
+            _result->refcount = 0;
+            o = NULL;
+        }
+
         if (prev) {
             corto_release(prev);
         }
+
         if (!o) {
             break;
         }
 
-        for (; (ch = *ptr) && (ch != '/'); ptr ++);
+        ptr = next;
     } while (ch);
 
     if (resume) {

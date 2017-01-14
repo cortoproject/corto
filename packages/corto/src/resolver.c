@@ -54,7 +54,6 @@ corto_object corto_resolve(corto_object _scope, corto_string str) {
     corto_id buffer;
     corto_id bufferLc;
     corto_char ch;
-    corto_bool overload;
     corto_bool fullyQualified = FALSE;
     corto_bool cortoSearched = FALSE, cortoCoreSearched = FALSE;
     int step = 3;
@@ -103,7 +102,6 @@ repeat:
             break;
         }
         while (ch) {
-            overload = FALSE;
             if (scope == corto_o) {
                 cortoSearched = TRUE;
             } else if (scope == corto_core_o) {
@@ -119,7 +117,6 @@ repeat:
                 bptrLc++;
                 ptr++;
                 if (ch == '(') {
-                    overload = TRUE;
                     while ((ch = *ptr) && (ch != ')')) {
                         *bptrLc = tolower(ch);
                         *bptr = ch;
@@ -147,51 +144,24 @@ repeat:
                 }
                 corto_setref(&lookup, o);
             } else {
-                if (!overload) {
-                    corto_object prevLookup = lookup;
+                corto_object prevLookup = lookup;
 
-                    o = corto_lookup(o, bufferLc);
+                o = corto_lookup(o, bufferLc);
 
-                    /* Release lookup after(!) potentially resuming an object. In
-                     * case of a nested resume, a parent will have been
-                     * resumed first. Releasing the parent before resuming the
-                     * child will remove the parent from the store. Becuase the
-                     * child claims the parent, this won't happen after the
-                     * resume. */
-                    if (prevLookup) {
-                        corto_release(prevLookup); /* Free reference */
-                    }
+                /* Release lookup after(!) potentially resuming an object. In
+                 * case of a nested resume, a parent will have been
+                 * resumed first. Releasing the parent before resuming the
+                 * child will remove the parent from the store. Becuase the
+                 * child claims the parent, this won't happen after the
+                 * resume. */
+                if (prevLookup) {
+                    corto_release(prevLookup); /* Free reference */
+                }
 
-                    lookup = o;
-                    if (o) {
-                        if (corto_instanceof(corto_function_o, o)) {
-                            if (corto_function(o)->overloaded == TRUE) {
-                                corto_release(o);
-                                corto_seterr("ambiguous reference '%s'", str);
-                                goto error;
-                            }
-                        }
-                    }
+                lookup = o;
 
-                    if (!o) {
-                        break;
-                    }
-                } else {
-                    /* If argumentlist is provided, look for closest match */
-                    corto_int32 diff;
-                    o = corto_lookupFunction(o, bufferLc, NULL, &diff);
-                    if (!diff) {
-                        if (o) corto_release(o);
-                        corto_seterr("ambiguous reference '%s'", str);
-                        goto error;
-                    }
-                    if (lookup) {
-                        corto_release(lookup);
-                    }
-                    lookup = o;
-                    if (!o) {
-                        break;
-                    }
+                if (!o) {
+                    break;
                 }
             }
 

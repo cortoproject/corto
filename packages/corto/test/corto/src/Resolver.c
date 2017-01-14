@@ -41,6 +41,11 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
     /* Set errormessage to ease debugging */
     if (!r) corto_seterr("failed to resolve %s", id);
     test_assert(r != NULL);
+    if (r != o) {
+        corto_seterr("got %s, expected %s",
+          corto_fullpath(NULL, r),
+          corto_fullpath(NULL, o));
+    }
     test_assert(r == o);
     corto_release(r);
 
@@ -312,6 +317,18 @@ corto_void _test_Resolver_tc_resolveNull(
 
     corto_object o = corto_resolve(NULL, NULL);
     test_assert (o == NULL);
+
+/* $end */
+}
+
+corto_void _test_Resolver_tc_resolveObjectAFromScopeWithFunctionA(
+    test_Resolver this)
+{
+/* $begin(test/Resolver/tc_resolveObjectAFromScopeWithFunctionA) */
+
+    corto_object o = corto_resolve(corto_o, "/corto/lang/class/construct");
+    test_assert(o != NULL);
+    test_assertstr("/corto/lang/class/construct", corto_fullpath(NULL, o));
 
 /* $end */
 }

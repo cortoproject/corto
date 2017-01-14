@@ -15,8 +15,8 @@ corto_void _test_Overload_tc_ambiguous(
 
     corto_object o = corto_resolve(test_o, "ol_null");
     test_assert(o == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "ambiguous reference 'ol_null'"));
+    test_assert(corto_lastinfo() != NULL);
+    test_assert(!strcmp(corto_lastinfo(), "ambiguous reference 'ol_null'"));
 
 /* $end */
 }
@@ -28,8 +28,8 @@ corto_void _test_Overload_tc_ambiguousNull(
 
     corto_object o = corto_resolve(test_o, "ol_null(null)");
     test_assert(o == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "ambiguous reference 'ol_null(null)'"));
+    test_assert(corto_lastinfo() != NULL);
+    test_assert(!strcmp(corto_lastinfo(), "ambiguous reference 'ol_null(null)'"));
 
 /* $end */
 }
@@ -41,8 +41,8 @@ corto_void _test_Overload_tc_ambiguousWildcard(
 
     corto_object o = corto_resolve(test_o, "ol_null(?)");
     test_assert(o == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "ambiguous reference 'ol_null(?)'"));
+    test_assert(corto_lastinfo() != NULL);
+    test_assert(!strcmp(corto_lastinfo(), "ambiguous reference 'ol_null(?)'"));
 
 /* $end */
 }

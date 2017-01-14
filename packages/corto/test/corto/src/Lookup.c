@@ -14,7 +14,7 @@ int tc_lookupAllWalk(corto_object o, void *udata) {
     corto_id id;
     corto_object r;
 
-    corto_fullpath(id, o);
+    corto_path(id, NULL, o, "/");
     r = corto_lookup(NULL, id);
 
     /* Set errormessage to ease debugging */
