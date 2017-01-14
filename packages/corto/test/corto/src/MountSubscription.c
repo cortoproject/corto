@@ -43,6 +43,16 @@ corto_void _test_MountSubscription_tc_subscribeScope(
 /* $end */
 }
 
+corto_void _test_MountSubscription_tc_subscribeScopeAlign(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeScopeAlign) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_MountSubscription_tc_subscribeScopeTwice(
     test_MountSubscription this)
 {
@@ -89,6 +99,16 @@ corto_void _test_MountSubscription_tc_subscribeScopeTwice(
 /* $end */
 }
 
+corto_void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeScopeTwiceSameSubscriber) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_MountSubscription_tc_subscribeSingle(
     test_MountSubscription this)
 {
@@ -120,6 +140,16 @@ corto_void _test_MountSubscription_tc_subscribeSingle(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeSingleAlign(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeSingleAlign) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -166,6 +196,16 @@ corto_void _test_MountSubscription_tc_subscribeSingleTwice(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeSingleTwiceSameSubscriber) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -310,6 +350,56 @@ corto_void _test_MountSubscription_tc_subscribeTree(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeTreeAlign(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeAlign) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeTreeDefine(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDefine) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeTreeDefineNested(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDefineNested) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeTreeDelete(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDelete) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeTreeDeleteNested(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDeleteNested) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -464,6 +554,16 @@ corto_void _test_MountSubscription_tc_subscribeTreeTwice(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
+corto_void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeTwiceSameSubscriber) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }

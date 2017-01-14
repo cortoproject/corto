@@ -319,14 +319,16 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
             result = !strcmp(".", (*elements)[0]);
             break;
         case CORTO_MATCHER_TOKEN_IDENTIFIER:
-        case CORTO_MATCHER_TOKEN_FILTER:
-            if ((*elements)[0][0] != '.') {
+        case CORTO_MATCHER_TOKEN_FILTER: {
+            char *elem = (*elements)[0];
+            if (elem && (elem[0] != '.')) {
                 result = !fnmatch(cur->start, (*elements)[0], 0);
             } else {
                 result = FALSE;
                 done = TRUE;
             }
             break;
+        }
         case CORTO_MATCHER_TOKEN_AND:
             right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_IDENTIFIER);
             if (result) result = right;
@@ -354,16 +356,22 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
             char **elementPtr = *elements, **elementFound = NULL;
             corto_matchProgramOp *opPtr = *op;
             right = FALSE;
-            do {
-                *elements = elementPtr;
-                *op = opPtr;
-                right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_SCOPE);
-                if (right) {
-                    elementFound = *elements;
+            if (!elementPtr[0]) {
+                result = TRUE;
+                done = TRUE;
+                (*op)++; /* progress op for skipped value */
+            } else {
+                do {
+                    *elements = elementPtr;
+                    *op = opPtr;
+                    right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_SCOPE);
+                    if (right) {
+                        elementFound = *elements;
+                    }
+                } while ((elementFound ? right : !right) && (++elementPtr)[0]);
+                if ((result = (elementFound != NULL))) {
+                    *elements = elementFound;
                 }
-            } while ((elementFound ? right : !right) && (++elementPtr)[0]);
-            if ((result = (elementFound != NULL))) {
-                *elements = elementFound;
             }
             break;
         }
@@ -420,6 +428,10 @@ error:
 char* corto_matchParent(char *parent, char *expr) {
     char *parentPtr = parent, *exprPtr = expr;
     char parentCh, exprCh;
+
+    if (!parent) {
+        return expr;
+    }
 
     if (*parentPtr == '/') parentPtr++;
     if (*exprPtr == '/') exprPtr++;

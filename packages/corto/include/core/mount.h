@@ -118,14 +118,14 @@ CORTO_EXPORT corto_word _corto_mount_onSubscribe_v(
 CORTO_EXPORT corto_void _corto_mount_onUnsubscribe(
     corto_mount _this,
     corto_string parent,
-    corto_word userData);
-#define corto_mount_onUnsubscribe(_this, parent, userData) _corto_mount_onUnsubscribe(corto_mount(_this), parent, userData)
+    corto_word ctx);
+#define corto_mount_onUnsubscribe(_this, parent, ctx) _corto_mount_onUnsubscribe(corto_mount(_this), parent, ctx)
 
 CORTO_EXPORT corto_void _corto_mount_onUnsubscribe_v(
     corto_mount _this,
     corto_string parent,
-    corto_word userData);
-#define corto_mount_onUnsubscribe_v(_this, parent, userData) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, userData)
+    corto_word ctx);
+#define corto_mount_onUnsubscribe_v(_this, parent, ctx) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, ctx)
 CORTO_EXPORT corto_void _corto_mount_onUpdate(
     corto_mount _this,
     corto_object observable);

@@ -183,10 +183,15 @@ corto_int16 corto_notifySubscribersId(
 
                 if (sep) *sep = '\0';
                 corto_id fromElem, toElem;
-                strcpy(fromElem, s->parent);
+                char *fromElemPtr = fromElem;
+                if (s->parent) {
+                    strcpy(fromElem, s->parent);
+                } else {
+                    fromElemPtr = NULL;
+                }
                 strcpy(toElem, parent);
 
-                corto_pathstr(relativeParent, fromElem, toElem, "/");
+                corto_pathstr(relativeParent, fromElemPtr, toElem, "/");
 
                 corto_result r = {
                   id,

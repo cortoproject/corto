@@ -1038,7 +1038,16 @@ test/Suite MountSubscription::
   void tc_subscribeSingleTwice()
   void tc_subscribeScopeTwice()
   void tc_subscribeTreeTwice()
-
+  void tc_subscribeSingleTwiceSameSubscriber()
+  void tc_subscribeScopeTwiceSameSubscriber()
+  void tc_subscribeTreeTwiceSameSubscriber()
+  void tc_subscribeSingleAlign()
+  void tc_subscribeScopeAlign()
+  void tc_subscribeTreeAlign()
+  void tc_subscribeTreeDefine()
+  void tc_subscribeTreeDelete()
+  void tc_subscribeTreeDefineNested()
+  void tc_subscribeTreeDeleteNested()
 
 // Function overloading support types
 void ol_null(object a)

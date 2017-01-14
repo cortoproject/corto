@@ -31,6 +31,16 @@ corto_int16 _corto_package_construct(
                 }
             }
         }
+
+        corto_id path;
+        corto_string localPath;
+        corto_path(path, root_o, this, "/");
+        localPath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
+          CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+          path);
+        corto_cleanpath(localPath, localPath);
+        corto_mkdir(localPath);
+        corto_dealloc(localPath);
     }
 
     return 0;

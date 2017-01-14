@@ -678,7 +678,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_loader_construct_),\
     SSO_OP_OBJ(core_loader_destruct_),\
     SSO_OP_OBJ(core_loader_onRequest_),\
-    SSO_OP_OBJ(core_loader_onDeclare_),\
     /* stager */\
     SSO_OP_OBJ(core_stager_resolver),\
     SSO_OP_OBJ(core_stager_add_),\

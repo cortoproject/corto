@@ -96,6 +96,17 @@ void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r,
 }
 
 /* $end */
+
+/* $header(corto/core/mount/construct) */
+corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
+    corto_method m = corto_interface_resolveMethod(corto_typeof(this), id);
+    if (m && (corto_parentof(m) != corto_mount_o)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+/* $end */
 corto_int16 _corto_mount_construct(
     corto_mount this)
 {
@@ -160,18 +171,12 @@ corto_int16 _corto_mount_construct(
 
     /* If mount doesn't implement onRequest, it is a passthrough mount meaning
      * it uses the object store. */
-    corto_method m = corto_interface_resolveMethod(corto_typeof(this), "onRequest");
-    if (corto_parentof(m) == corto_mount_o) {
-        this->passThrough = TRUE;
-    }
+    if (!corto_mount_hasMethod(this, "onRequest")) this->passThrough = TRUE;
 
     /* If mount doesn't implement onResume, the mount will use onRequest to
      * request the object and then use the returned data to automatically
      * instantiate an object in the store. */
-    m = corto_interface_resolveMethod(corto_typeof(this), "onResume");
-    if (corto_parentof(m) != corto_mount_o) {
-        this->hasResume = TRUE;
-    }
+    if (corto_mount_hasMethod(this, "onResume")) this->hasResume = TRUE;
 
     /* Set the callback function */
     corto_function(this)->kind = CORTO_PROCEDURE_CDECL;
@@ -179,9 +184,14 @@ corto_int16 _corto_mount_construct(
     corto_setref(&corto_observer(this)->instance, this);
     corto_setref(&corto_observer(this)->dispatcher, dispatcher);
 
-    if (corto_subscriber(this)->parent) {
-        corto_observer(this)->enabled = TRUE;
-    }
+    /* Enable subscriber only when mount implements onNotify */
+    if (corto_mount_hasMethod(this, "onNotify")) corto_observer(this)->enabled = TRUE;
+
+    /* Deprecated callbacks */
+    if (corto_mount_hasMethod(this, "onDeclare")) corto_observer(this)->enabled = TRUE;
+    if (corto_mount_hasMethod(this, "onDefine")) corto_observer(this)->enabled = TRUE;
+    if (corto_mount_hasMethod(this, "onUpdate")) corto_observer(this)->enabled = TRUE;
+    if (corto_mount_hasMethod(this, "onDelete")) corto_observer(this)->enabled = TRUE;
 
     corto_observer(this)->mask |=
       CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
@@ -398,12 +408,12 @@ corto_word _corto_mount_onSubscribe_v(
 corto_void _corto_mount_onUnsubscribe_v(
     corto_mount this,
     corto_string parent,
-    corto_word userData)
+    corto_word ctx)
 {
 /* $begin(corto/core/mount/onUnsubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
-    CORTO_UNUSED(userData);
+    CORTO_UNUSED(ctx);
 
 /* $end */
 }

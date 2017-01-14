@@ -85,33 +85,6 @@ corto_void _corto_invokeEvent_handle(
     }
 }
 
-corto_void _corto_loader_onDeclare(
-    corto_loader this,
-    corto_object observable)
-{
-    static corto_uint32 _methodId;
-    corto_method _method;
-    corto_interface _abstract;
-
-    _abstract = corto_interface(corto_typeof(this));
-
-    /* Determine methodId once, then cache it for subsequent calls. */
-    if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onDeclare(object observable)");
-    }
-    corto_assert(_methodId, "virtual 'onDeclare(object observable)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
-
-    /* Lookup method-object. */
-    _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onDeclare(object observable)@%d'", corto_idof(this), _methodId);
-
-    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_object))((corto_function)_method)->fptr)(this, observable);
-    } else {
-        corto_call(corto_function(_method), NULL, this, observable);
-    }
-}
-
 corto_resultIter _corto_loader_onRequest(
     corto_loader this,
     corto_request *request)
@@ -375,7 +348,7 @@ corto_word _corto_mount_onSubscribe(
 corto_void _corto_mount_onUnsubscribe(
     corto_mount this,
     corto_string parent,
-    corto_word userData)
+    corto_word ctx)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -385,18 +358,18 @@ corto_void _corto_mount_onUnsubscribe(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,lang/word userData)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,lang/word ctx)");
     }
-    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,lang/word userData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,lang/word userData)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,lang/word ctx)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, userData);
+        ((void ___ (*)(corto_object, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, ctx);
     } else {
-        corto_call(corto_function(_method), NULL, this, parent, userData);
+        corto_call(corto_function(_method), NULL, this, parent, ctx);
     }
 }
 
