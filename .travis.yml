@@ -15,8 +15,6 @@ os:
   - linux
   - osx
 
-dist: trusty
-
 addons:
   coverity_scan:
     project:
@@ -35,18 +33,12 @@ install:
   - mv corto projects/corto
   - cd projects
   - git clone https://github.com/cortoproject/c-binding.git
+  - git clone https://github.com/cortoproject/json.git
   - git clone https://github.com/cortoproject/xml.git
   - git clone https://github.com/cortoproject/corto-language.git
-  - git clone https://github.com/cortoproject/io.git
-  - git clone https://github.com/cortoproject/cortodoc.git
   - git clone https://github.com/cortoproject/test.git
-  - git clone https://github.com/cortoproject/json.git
-  - git clone https://github.com/cortoproject/t.git
-  - git clone https://github.com/cortoproject/web.git
-  - git clone https://github.com/cortoproject/admin.git
-  - git clone https://github.com/cortoproject/examples.git
   - |+
-    echo 'COMPONENTS = %w(corto c-binding json xml corto-language io cortodoc test t web admin)
+    echo 'COMPONENTS = %w(corto c-binding json xml corto-language test)
     require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
   - source corto/configure
   - function hashes() { for g in `find . -name .git` ; do d=$(basename $(dirname $g)); h=$(git --git-dir $g rev-parse HEAD) ; echo -e "$d\t$h"; done } ; hashes | column -t | sort
@@ -55,7 +47,3 @@ script:
   - source corto/configure
   - rake
   - rake test
-  # Test examples
-  - cd examples
-  - ./run.sh
-  - cd ..
