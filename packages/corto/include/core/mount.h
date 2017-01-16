@@ -33,24 +33,6 @@ CORTO_EXPORT corto_void _corto_mount_invoke(
     corto_function proc,
     corto_word argptrs);
 #define corto_mount_invoke(_this, instance, proc, argptrs) _corto_mount_invoke(corto_mount(_this), instance, corto_function(proc), argptrs)
-CORTO_EXPORT corto_void _corto_mount_onDeclare(
-    corto_mount _this,
-    corto_object observable);
-#define corto_mount_onDeclare(_this, observable) _corto_mount_onDeclare(corto_mount(_this), observable)
-
-CORTO_EXPORT corto_void _corto_mount_onDeclare_v(
-    corto_mount _this,
-    corto_object observable);
-#define corto_mount_onDeclare_v(_this, observable) _corto_mount_onDeclare_v(corto_mount(_this), observable)
-CORTO_EXPORT corto_void _corto_mount_onDelete(
-    corto_mount _this,
-    corto_object observable);
-#define corto_mount_onDelete(_this, observable) _corto_mount_onDelete(corto_mount(_this), observable)
-
-CORTO_EXPORT corto_void _corto_mount_onDelete_v(
-    corto_mount _this,
-    corto_object observable);
-#define corto_mount_onDelete_v(_this, observable) _corto_mount_onDelete_v(corto_mount(_this), observable)
 CORTO_EXPORT corto_void _corto_mount_onInvoke(
     corto_mount _this,
     corto_object instance,
@@ -126,15 +108,6 @@ CORTO_EXPORT corto_void _corto_mount_onUnsubscribe_v(
     corto_string parent,
     corto_word ctx);
 #define corto_mount_onUnsubscribe_v(_this, parent, ctx) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, ctx)
-CORTO_EXPORT corto_void _corto_mount_onUpdate(
-    corto_mount _this,
-    corto_object observable);
-#define corto_mount_onUpdate(_this, observable) _corto_mount_onUpdate(corto_mount(_this), observable)
-
-CORTO_EXPORT corto_void _corto_mount_onUpdate_v(
-    corto_mount _this,
-    corto_object observable);
-#define corto_mount_onUpdate_v(_this, observable) _corto_mount_onUpdate_v(corto_mount(_this), observable)
 
 CORTO_EXPORT corto_void _corto_mount_post(
     corto_mount _this,

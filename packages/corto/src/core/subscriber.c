@@ -47,6 +47,37 @@ char* corto_pathstr(
     corto_string to,
     char *sep);
 
+int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData) {
+    int result = 1;
+
+    if (corto_subscribers_count) {
+        if (corto_rwmutexRead(&corto_subscriberLock)) {
+            goto error;
+        }
+
+        int i, s;
+        for (i = 0; i < CORTO_MAX_SCOPE_DEPTH; i++) {
+            for (s = 0; s < corto_subscribers[i].length; s++) {
+                corto_subscription *sub = &corto_subscribers[i].buffer[s];
+                if (!(result = action(sub->s, sub->instance, userData))) {
+                    break;
+                }
+            }
+            if (!result) {
+                break;
+            }
+        }
+
+        if (corto_rwmutexUnlock(&corto_subscriberLock)) {
+            goto error;
+        }
+    }
+
+    return result;
+error:
+    return -1;
+}
+
 static corto_int16 corto_subscriber_getObjectDepth(corto_id id) {
     corto_int16 result = 0;
     if (id) {
@@ -433,6 +464,11 @@ static corto_int16 corto_subscriber_unsubscribeIntern(corto_subscriber this, cor
             } else {
                 seq->buffer[i].s = seq->buffer[seq->length - 1].s;
                 seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;
+
+                /* If removing all, make sure not to skip elements */
+                if (removeAll && (i == (seq->length - 2))) {
+                    i --;
+                }
             }
 
             corto_select(this->parent, this->expr).instance(this).unsubscribe();

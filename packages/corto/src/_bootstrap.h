@@ -1427,9 +1427,6 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_VIRTUAL_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_onInvoke_v);
     CORTO_VIRTUAL_O(core_mount, onRequest, "(/corto/core/request request)", core_resultIter, corto_mount_onRequest_v);
     CORTO_VIRTUAL_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, corto_mount_onResume_v);
-    CORTO_VIRTUAL_O(core_mount, onDeclare, "(object observable)", lang_void, corto_mount_onDeclare_v);
-    CORTO_VIRTUAL_O(core_mount, onUpdate, "(object observable)", lang_void, corto_mount_onUpdate_v);
-    CORTO_VIRTUAL_O(core_mount, onDelete, "(object observable)", lang_void, corto_mount_onDelete_v);
     CORTO_VIRTUAL_O(core_mount, onNotify, "(core/eventMask event,core/result object)", lang_void, corto_mount_onNotify_v);
     CORTO_VIRTUAL_O(core_mount, onSubscribe, "(string parent,string expr)", lang_word, corto_mount_onSubscribe_v);
     CORTO_VIRTUAL_O(core_mount, onUnsubscribe, "(string parent,lang/word ctx)", lang_void, corto_mount_onUnsubscribe_v);

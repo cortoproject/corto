@@ -823,9 +823,7 @@ class EventReplicator: mount, hidden::
   updateCount: int32, readonly
   deleteCount: int32, readonly
 
-  void onDeclare(object observable)
-  void onUpdate(object observable)
-  void onDelete(object observable)
+  void onNotify(core/eventMask event, core/result object)
 
 // Test events received by replicator
 test/Suite ReplicatorEvent::

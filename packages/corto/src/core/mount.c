@@ -68,7 +68,9 @@ void* corto_mount_thread(void* arg) {
 void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r, corto_subscriber s) {
     CORTO_UNUSED(s);
 
-    corto_mount_onNotify(this, mask, r);
+    if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
+        corto_mount_onNotify(this, mask, r);
+    }
 
     switch(mask) {
     case CORTO_ON_DECLARE: this->sent.declares ++; break;
@@ -77,27 +79,41 @@ void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r,
     case CORTO_ON_DELETE: this->sent.deletes ++; break;
     default: break;
     }
-
-    /* These calls are just for backwards compatibility */
-    if (r->object && (!this->attr || corto_checkAttr(r->object, this->attr))) {
-        switch(mask) {
-        case CORTO_ON_DECLARE:
-            corto_mount_onDeclare(this, r->object);
-            break;
-        case CORTO_ON_DEFINE:
-        case CORTO_ON_UPDATE:
-            corto_mount_onUpdate(this, r->object);
-            break;
-        case CORTO_ON_DELETE:
-            corto_mount_onDelete(this, r->object);
-            break;
-        }
-    }
 }
 
-/* $end */
+int corto_mount_alignSubscriptionsAction(
+  corto_subscriber s,
+  corto_object instance,
+  void *userData)
+{
+    corto_mount this = userData;
+    corto_iter it;
 
-/* $header(corto/core/mount/construct) */
+    CORTO_UNUSED(instance);
+
+    corto_select(s->parent, s->expr)
+      .mount(this)
+      .subscribe(&it);
+
+    /* Visit all objects to find all subscriptions */
+    while (corto_iterHasNext(&it)) {
+        corto_iterNext(&it);
+    }
+
+    return 1;
+}
+
+corto_int16 corto_mount_alignSubscriptions(corto_mount this) {
+
+    if (!corto_subscriptionWalk(corto_mount_alignSubscriptionsAction, this)) {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
     corto_method m = corto_interface_resolveMethod(corto_typeof(this), id);
     if (m && (corto_parentof(m) != corto_mount_o)) {
@@ -106,6 +122,7 @@ corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
         return FALSE;
     }
 }
+
 /* $end */
 corto_int16 _corto_mount_construct(
     corto_mount this)
@@ -185,13 +202,9 @@ corto_int16 _corto_mount_construct(
     corto_setref(&corto_observer(this)->dispatcher, dispatcher);
 
     /* Enable subscriber only when mount implements onNotify */
-    if (corto_mount_hasMethod(this, "onNotify")) corto_observer(this)->enabled = TRUE;
-
-    /* Deprecated callbacks */
-    if (corto_mount_hasMethod(this, "onDeclare")) corto_observer(this)->enabled = TRUE;
-    if (corto_mount_hasMethod(this, "onDefine")) corto_observer(this)->enabled = TRUE;
-    if (corto_mount_hasMethod(this, "onUpdate")) corto_observer(this)->enabled = TRUE;
-    if (corto_mount_hasMethod(this, "onDelete")) corto_observer(this)->enabled = TRUE;
+    if (corto_mount_hasMethod(this, "onNotify")) {
+        corto_observer(this)->enabled = TRUE;
+    }
 
     corto_observer(this)->mask |=
       CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
@@ -208,6 +221,15 @@ corto_int16 _corto_mount_construct(
             }
         }
     }
+
+    /* If mount is interested in subscriptions, align from existing subscribers */
+    if (corto_mount_hasMethod(this, "onSubscribe") ||
+        corto_mount_hasMethod(this, "onUnsubscribe"))
+     {
+        if (corto_mount_alignSubscriptions(this)) {
+            goto error;
+        }
+     }
 
     return corto_subscriber_construct(this);
 error:
@@ -273,26 +295,6 @@ corto_void _corto_mount_invoke(
         corto_setOwner(prevowner);
     }
 
-/* $end */
-}
-
-corto_void _corto_mount_onDeclare_v(
-    corto_mount this,
-    corto_object observable)
-{
-/* $begin(corto/core/mount/onDeclare) */
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(observable);
-/* $end */
-}
-
-corto_void _corto_mount_onDelete_v(
-    corto_mount this,
-    corto_object observable)
-{
-/* $begin(corto/core/mount/onDelete) */
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(observable);
 /* $end */
 }
 
@@ -415,16 +417,6 @@ corto_void _corto_mount_onUnsubscribe_v(
     CORTO_UNUSED(parent);
     CORTO_UNUSED(ctx);
 
-/* $end */
-}
-
-corto_void _corto_mount_onUpdate_v(
-    corto_mount this,
-    corto_object observable)
-{
-/* $begin(corto/core/mount/onUpdate) */
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(observable);
 /* $end */
 }
 

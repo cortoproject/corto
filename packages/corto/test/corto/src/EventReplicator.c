@@ -8,35 +8,19 @@
 
 #include <test.h>
 
-corto_void _test_EventReplicator_onDeclare(
+corto_void _test_EventReplicator_onNotify(
     test_EventReplicator this,
-    corto_object observable)
+    corto_eventMask event,
+    corto_result *object)
 {
-/* $begin(test/EventReplicator/onDeclare) */
+/* $begin(test/EventReplicator/onNotify) */
 
-    this->declareCount ++;
-
-/* $end */
-}
-
-corto_void _test_EventReplicator_onDelete(
-    test_EventReplicator this,
-    corto_object observable)
-{
-/* $begin(test/EventReplicator/onDelete) */
-
-    this->deleteCount ++;
-
-/* $end */
-}
-
-corto_void _test_EventReplicator_onUpdate(
-    test_EventReplicator this,
-    corto_object observable)
-{
-/* $begin(test/EventReplicator/onUpdate) */
-
-    this->updateCount ++;
+    switch(event) {
+        case CORTO_ON_DECLARE: this->declareCount ++; break;
+        case CORTO_ON_DEFINE: this->updateCount ++; break;
+        case CORTO_ON_UPDATE: this->updateCount ++; break;
+        case CORTO_ON_DELETE: this->deleteCount ++; break;
+    }
 
 /* $end */
 }

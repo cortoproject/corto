@@ -26,6 +26,7 @@ typedef struct corto_selectRequest {
     corto_mountAction mountAction;
     corto_bool dryRun;
     corto_object instance;
+    corto_mount mount;
 } corto_selectRequest;
 
 typedef struct corto_selectStack {
@@ -107,6 +108,9 @@ typedef struct corto_selectData {
 
     /* Ignore data from the instance (mount) if set */
     corto_object instance;
+
+    /* Ignore all other mounts if set */
+    corto_mount mount;
 
     /* Pre allocated for selectItem */
     corto_id id;
@@ -525,12 +529,12 @@ static corto_resultIter corto_selectRequestMount(
       data->from,
       data->to};
 
-    if (data->mountAction && (mount != data->instance)) {
+    if (data->mountAction) {
         data->mountAction(mount, &r);
     }
 
     /* If this is a dry run, don't request data from mount */
-    if (data->dryRun || (mount == data->instance)) {
+    if (data->dryRun) {
         return CORTO_ITERATOR_EMPTY;
     } else {
         return corto_mount_request(mount, &r);
@@ -814,7 +818,7 @@ static void corto_selectLoadMounts(
     frame->currentMount = data->mountsLoaded;
     frame->firstMount = data->mountsLoaded;
 
-    /* 2: Lock scope and get replicators */
+    /* 2: Lock scope and get mounts */
     if (!scope) {
         scope = corto__scopeClaim(frame->scope);
         releaseScope = TRUE;
@@ -829,6 +833,16 @@ static void corto_selectLoadMounts(
 
             while (corto_iterHasNext(&iter)) {
                 corto_mount_olsData_t *odata = corto_iterNext(&iter);
+
+                /* If only querying data from one mount, ignore all others */
+                if (data->mount && (odata->mount != data->mount)) {
+                    continue;
+                }
+
+                /* If a mount is querying data for itself, ignore self */
+                if (data->instance && (odata->mount == data->instance)) {
+                    continue;
+                }
 
                 /* If historical data is requested, only request from
                  * historians and vice versa. */
@@ -1319,6 +1333,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->mountAction = r->mountAction;
     data->dryRun = r->dryRun;
     data->instance = r->instance;
+    data->mount = r->mount;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_loadContentType(data->contentType))) {
@@ -1639,6 +1654,16 @@ static corto_selectFluent corto_selectorInstance(corto_object instance)
     return corto_selectFluentGet();
 }
 
+static corto_selectFluent corto_selectorMount(corto_mount mount)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->mount = mount;
+    }
+    return corto_selectFluentGet();
+}
+
 static corto_selectFluent corto_selectFluentGet(void)
 {
     corto_selectFluent result;
@@ -1660,6 +1685,7 @@ static corto_selectFluent corto_selectFluentGet(void)
     result.iterObjects = corto_selectorIterObjects;
     result.count = corto_selectorCount;
     result.instance = corto_selectorInstance;
+    result.mount = corto_selectorMount;
     return result;
 }
 

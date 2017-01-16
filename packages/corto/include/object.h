@@ -124,6 +124,7 @@ typedef struct corto_selectFluent {
     struct corto_selectFluent (*augment)(corto_string filter);
     struct corto_selectFluent (*type)(corto_string filter);
     struct corto_selectFluent (*instance)(corto_object instance);
+    struct corto_selectFluent (*mount)(corto_mount mount);
     struct corto_selectFluent (*fromNow)(void);
     struct corto_selectFluent (*fromTime)(corto_time t);
     struct corto_selectFluent (*fromSample)(corto_uint64 sample);
@@ -133,10 +134,10 @@ typedef struct corto_selectFluent {
     struct corto_selectFluent (*forDuration)(corto_time t);
     struct corto_selectFluent (*forDepth)(corto_int64 depth);
     corto_int16 ___ (*iter)(corto_resultIter *ret);
-    corto_int16 ___ (*iterObjects)(corto_objectIter *ret);
+    corto_int16 ___ (*iterObjects)(corto_objectIter *ret); /* Unstable API */
     corto_int64 ___ (*count)(void);
-    corto_int16 ___ (*subscribe)(corto_resultIter *ret);
-    corto_int16 ___ (*unsubscribe)(void);
+    corto_int16 ___ (*subscribe)(corto_resultIter *ret); /* Unstable API */
+    corto_int16 ___ (*unsubscribe)(void); /* Unstable API */
 } corto_selectFluent;
 CORTO_EXPORT struct corto_selectFluent corto_select(corto_string scope, corto_string expr);
 
