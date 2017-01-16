@@ -33,7 +33,6 @@ extern "C" {
 #define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
-#define corto_observerseq(o) ((corto_observerseq*)corto_assertType((corto_type)corto_observerseq_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
@@ -232,8 +231,6 @@ struct corto_observableEvent_s {
     corto_word thread;
 };
 
-CORTO_SEQUENCE(corto_observerseq, corto_observer,);
-
 /* /corto/core/operatorKind */
 typedef enum corto_operatorKind {
     CORTO_ASSIGN = 0,
@@ -396,4 +393,3 @@ struct corto_time {
 }
 #endif
 #endif
-

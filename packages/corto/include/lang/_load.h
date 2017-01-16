@@ -102,14 +102,10 @@ CORTO_META_OBJECT(bitmask, attr);
 
 CORTO_META_OBJECT(sequence, objectseq);
 CORTO_META_OBJECT(sequence, abstractseq);
-CORTO_META_OBJECT(sequence, memberseq);
 CORTO_META_OBJECT(sequence, parameterseq);
 CORTO_META_OBJECT(sequence, interfaceVectorseq);
 CORTO_META_OBJECT(sequence, interfaceseq);
-CORTO_META_OBJECT(sequence, observerseq);
 CORTO_META_OBJECT(sequence, stringseq);
-CORTO_META_OBJECT(sequence, vtable);
-CORTO_META_OBJECT(sequence, octetseq);
 CORTO_META_OBJECT(sequence, int32seq);
 CORTO_META_OBJECT(sequence, wordseq);
 CORTO_META_OBJECT(list, resultList);

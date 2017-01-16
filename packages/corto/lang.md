@@ -550,11 +550,6 @@ Sequence of object elements.
 ## octet
 Scalar 8 bit binary type.
 
-
-## octetseq
-Sequence of octet elements
-
-
 ## parameter
 Describes a function parameter.
 

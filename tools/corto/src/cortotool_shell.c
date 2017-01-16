@@ -748,7 +748,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     corto_metaWalk(&ser, t, &walkData);
 
                     /* Add methods to auto complete */
-                    corto_vtableForeach(corto_interface(t)->methods, m) {
+                    corto_objectseqForeach(corto_interface(t)->methods, m) {
                         corto_id method, sigName;
                         corto_signatureName(corto_idof(m), sigName);
                         if (!fnmatch(filter, sigName, 0)) {
@@ -1012,7 +1012,7 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     cxsh_color(NORMAL);
 
     /* Start loader mount */
-    corto_loader p = corto_loaderCreate();
+    corto_loader p = corto_create(corto_loader_o);
     if (!p) {
         corto_error("corto: failed to create package mount: %s", corto_lasterr());
     }

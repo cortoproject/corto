@@ -2,8 +2,8 @@
 COMPONENTS = %w(
     packages/corto
     packages/g
-    packages/c
     tools
+    packages/c
 )
 
 task :default do

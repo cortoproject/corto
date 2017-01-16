@@ -271,7 +271,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     CORTO_UNUSED(argc);
 
     /* Start loader mount */
-    corto_loader p = corto_loaderCreate();
+    corto_loader p = corto_create(corto_loader_o);
 
     corto_argdata *data = corto_argparse(
       argv,

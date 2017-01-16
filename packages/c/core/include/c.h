@@ -517,46 +517,6 @@ CORTO_EXPORT corto_int16 _corto_mountSubscriptionListInit(corto_mountSubscriptio
 CORTO_EXPORT corto_int16 _corto_mountSubscriptionListDeinit(corto_mountSubscriptionList* value);
 #define corto_mountSubscriptionListDeinit(value) _corto_mountSubscriptionListDeinit(value)
 
-/* /corto/core/notifyAction */
-CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreate(corto_object instance, corto_function procedure);
-#define corto_notifyActionCreate(instance, procedure) _corto_notifyActionCreate(instance, corto_function(procedure))
-#define corto_notifyActionCreate_auto(_id, instance, procedure) corto_notifyAction* _id = corto_notifyActionCreate(instance, procedure); (void)_id
-CORTO_EXPORT corto_notifyAction* _corto_notifyActionCreateChild(corto_object _parent, corto_string _id, corto_object instance, corto_function procedure);
-#define corto_notifyActionCreateChild(_parent, _id, instance, procedure) _corto_notifyActionCreateChild(_parent, _id, instance, corto_function(procedure))
-#define corto_notifyActionCreateChild_auto(_parent, _id, instance, procedure) corto_notifyAction* _id = corto_notifyActionCreateChild(_parent, #_id, instance, procedure); (void)_id
-CORTO_EXPORT corto_int16 _corto_notifyActionUpdate(corto_notifyAction* _this, corto_object instance, corto_function procedure);
-#define corto_notifyActionUpdate(_this, instance, procedure) _corto_notifyActionUpdate(corto_notifyAction(_this), instance, corto_function(procedure))
-
-CORTO_EXPORT corto_notifyAction* _corto_notifyActionDeclare(void);
-#define corto_notifyActionDeclare() _corto_notifyActionDeclare()
-#define corto_notifyActionDeclare_auto(_id) corto_notifyAction* _id = corto_notifyActionDeclare(); (void)_id
-CORTO_EXPORT corto_notifyAction* _corto_notifyActionDeclareChild(corto_object _parent, corto_string _id);
-#define corto_notifyActionDeclareChild(_parent, _id) _corto_notifyActionDeclareChild(_parent, _id)
-#define corto_notifyActionDeclareChild_auto(_parent, _id) corto_notifyAction* _id = corto_notifyActionDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_notifyActionDefine(corto_notifyAction* _this, corto_object instance, corto_function procedure);
-#define corto_notifyActionDefine(_this, instance, procedure) _corto_notifyActionDefine(corto_notifyAction(_this), instance, corto_function(procedure))
-CORTO_EXPORT corto_notifyAction* _corto_notifyActionAssign(corto_notifyAction* _this, corto_object instance, corto_function procedure);
-#define corto_notifyAction__optional_NotSet NULL
-#define corto_notifyAction__optional_Set(instance, procedure) corto_notifyActionAssign((corto_notifyAction*)corto_calloc(sizeof(corto_notifyAction)), instance, procedure)
-#define corto_notifyAction__optional_SetCond(cond, instance, procedure) cond ? corto_notifyActionAssign((corto_notifyAction*)corto_calloc(sizeof(corto_notifyAction)), instance, procedure) : NULL
-#define corto_notifyActionUnset(_this) _this ? corto_deinitp(_this, corto_notifyAction_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_notifyActionAssign(_this, instance, procedure) _corto_notifyActionAssign(_this, instance, corto_function(procedure))
-#define corto_notifyActionSet(_this, instance, procedure) _this = _this ? _this : (corto_notifyAction*)corto_calloc(sizeof(corto_notifyAction)); _corto_notifyActionAssign(_this, instance, corto_function(procedure))
-CORTO_EXPORT corto_string _corto_notifyActionStr(corto_notifyAction* value);
-#define corto_notifyActionStr(value) _corto_notifyActionStr(value)
-CORTO_EXPORT corto_notifyAction* corto_notifyActionFromStr(corto_notifyAction* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_notifyActionCompare(corto_notifyAction* dst, corto_notifyAction* src);
-
-CORTO_EXPORT corto_int16 _corto_notifyActionInit(corto_notifyAction* value);
-#define corto_notifyActionInit(value) _corto_notifyActionInit(value)
-CORTO_EXPORT corto_int16 _corto_notifyActionDeinit(corto_notifyAction* value);
-#define corto_notifyActionDeinit(value) _corto_notifyActionDeinit(value)
-
-corto_int16 corto_notifyActionCall(corto_notifyAction *_delegate, corto_object observable);
-#define corto_notifyActionInitC_auto(d, callback) corto_notifyAction d; corto_notifyActionInitC(&d, callback)
-CORTO_EXPORT corto_int16 corto_notifyActionInitC(corto_notifyAction *d, corto_void ___ (*callback)(corto_object));
-#define corto_notifyActionInitCInstance_auto(d, instance, callback)corto_notifyAction d; corto_notifyActionInitCInstance(&d, instance, callback)
-CORTO_EXPORT corto_int16 corto_notifyActionInitCInstance(corto_notifyAction *d, corto_object instance, corto_void ___ (*callback)(corto_object, corto_object));
 /* /corto/core/objectIter */
 CORTO_EXPORT corto_objectIter* _corto_objectIterCreate(void);
 #define corto_objectIterCreate() _corto_objectIterCreate()
@@ -653,41 +613,6 @@ CORTO_EXPORT corto_string _corto_observerStr(corto_observer value);
 CORTO_EXPORT corto_observer corto_observerFromStr(corto_observer value, corto_string str);
 CORTO_EXPORT corto_equalityKind _corto_observerCompare(corto_observer dst, corto_observer src);
 #define corto_observerCompare(dst, src) _corto_observerCompare(corto_observer(dst), corto_observer(src))
-
-/* /corto/core/observerseq */
-CORTO_EXPORT corto_observerseq* _corto_observerseqCreate(corto_uint32 length, corto_observer* elements);
-#define corto_observerseqCreate(length, elements) _corto_observerseqCreate(length, elements)
-#define corto_observerseqCreate_auto(_id, length, elements) corto_observerseq* _id = corto_observerseqCreate(length, elements); (void)_id
-CORTO_EXPORT corto_observerseq* _corto_observerseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_observer* elements);
-#define corto_observerseqCreateChild(_parent, _id, length, elements) _corto_observerseqCreateChild(_parent, _id, length, elements)
-#define corto_observerseqCreateChild_auto(_parent, _id, length, elements) corto_observerseq* _id = corto_observerseqCreateChild(_parent, #_id, length, elements); (void)_id
-CORTO_EXPORT corto_int16 _corto_observerseqUpdate(corto_observerseq* _this, corto_uint32 length, corto_observer* elements);
-#define corto_observerseqUpdate(_this, length, elements) _corto_observerseqUpdate(corto_observerseq(_this), length, elements)
-
-CORTO_EXPORT corto_observerseq* _corto_observerseqDeclare(void);
-#define corto_observerseqDeclare() _corto_observerseqDeclare()
-#define corto_observerseqDeclare_auto(_id) corto_observerseq* _id = corto_observerseqDeclare(); (void)_id
-CORTO_EXPORT corto_observerseq* _corto_observerseqDeclareChild(corto_object _parent, corto_string _id);
-#define corto_observerseqDeclareChild(_parent, _id) _corto_observerseqDeclareChild(_parent, _id)
-#define corto_observerseqDeclareChild_auto(_parent, _id) corto_observerseq* _id = corto_observerseqDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_observerseqDefine(corto_observerseq* _this, corto_uint32 length, corto_observer* elements);
-#define corto_observerseqDefine(_this, length, elements) _corto_observerseqDefine(corto_observerseq(_this), length, elements)
-CORTO_EXPORT corto_observerseq* _corto_observerseqAssign(corto_observerseq* _this, corto_uint32 length, corto_observer* elements);
-#define corto_observerseq__optional_NotSet NULL
-#define corto_observerseq__optional_Set(length, elements) corto_observerseqAssign((corto_observerseq*)corto_calloc(sizeof(corto_observerseq)), length, elements)
-#define corto_observerseq__optional_SetCond(cond, length, elements) cond ? corto_observerseqAssign((corto_observerseq*)corto_calloc(sizeof(corto_observerseq)), length, elements) : NULL
-#define corto_observerseqUnset(_this) _this ? corto_deinitp(_this, corto_observerseq_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_observerseqAssign(_this, length, elements) _corto_observerseqAssign(_this, length, elements)
-#define corto_observerseqSet(_this, length, elements) _this = _this ? _this : (corto_observerseq*)corto_calloc(sizeof(corto_observerseq)); _corto_observerseqAssign(_this, length, elements)
-CORTO_EXPORT corto_string _corto_observerseqStr(corto_observerseq value);
-#define corto_observerseqStr(value) _corto_observerseqStr(value)
-CORTO_EXPORT corto_observerseq* corto_observerseqFromStr(corto_observerseq* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_observerseqCompare(corto_observerseq dst, corto_observerseq src);
-
-CORTO_EXPORT corto_int16 _corto_observerseqInit(corto_observerseq* value);
-#define corto_observerseqInit(value) _corto_observerseqInit(value)
-CORTO_EXPORT corto_int16 _corto_observerseqDeinit(corto_observerseq* value);
-#define corto_observerseqDeinit(value) _corto_observerseqDeinit(value)
 
 /* /corto/core/operatorKind */
 CORTO_EXPORT corto_operatorKind* _corto_operatorKindCreate(corto_operatorKind value);
@@ -1210,17 +1135,6 @@ CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListGet(corto_mount
 CORTO_EXPORT corto_uint32 corto_mountSubscriptionListSize(corto_mountSubscriptionList list);
 CORTO_EXPORT void corto_mountSubscriptionListClear(corto_mountSubscriptionList list);
 
-/* /corto/core/observerseq */
-#define corto_observerseqForeach(seq, elem) \
-    corto_uint32 elem##_iter;\
-    corto_observer elem;\
-    for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
-
-CORTO_EXPORT corto_observer* corto_observerseqAppend(corto_observerseq *seq, corto_observer element);
-CORTO_EXPORT corto_observer* corto_observerseqAppendAlloc(corto_observerseq *seq);
-CORTO_EXPORT void corto_observerseqSize(corto_observerseq *seq, corto_uint32 length);
-CORTO_EXPORT void corto_observerseqClear(corto_observerseq *seq);
-
 /* /corto/core/resultList */
 #define corto_resultListForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
@@ -1249,4 +1163,3 @@ CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 }
 #endif
 #endif
-

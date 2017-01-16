@@ -145,8 +145,8 @@ corto_int16 _corto_type_init(
     corto_type this)
 {
 /* $begin(corto/lang/type/init) */
-    if (!this->parentState) {
-        this->parentState = CORTO_DECLARED | CORTO_DEFINED;
+    if (!this->options.parentState) {
+        this->options.parentState = CORTO_DECLARED | CORTO_DEFINED;
     }
     if (!this->attr) {
         this->attr = CORTO_ATTR_DEFAULT;

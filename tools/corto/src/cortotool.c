@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
                     } else if (!strcmp(argv[i], "--keep-alive")) {
                         keepAlive = TRUE;
                     } else if (!strcmp(argv[i], "--autoload")) {
-                        corto_loaderCreate();
+                        corto_create(corto_loader_o);
                     } else if (!strcmp(argv[i] + 2, "trace-events")) {
                         /* Already handled */
                     } else if (!strcmp(argv[i] + 2, "trace-memory")) {

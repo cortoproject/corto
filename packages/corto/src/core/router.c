@@ -25,7 +25,7 @@ corto_int16 _corto_router_construct(
 {
 /* $begin(corto/core/router/construct) */
     corto_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
-    corto_setref(&corto_type(this)->defaultProcedureType, corto_method_o);
+    corto_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
     return corto_class_construct(this);
 /* $end */
 }

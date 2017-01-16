@@ -1184,13 +1184,13 @@ CORTO_EXPORT corto_int16 _corto_interfaceseqDeinit(corto_interfaceseq* value);
 #define corto_interfaceseqDeinit(value) _corto_interfaceseqDeinit(value)
 
 /* interfaceVector */
-CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorCreate(corto_interface interface, corto_vtable vector);
+CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorCreate(corto_interface interface, corto_objectseq vector);
 #define corto_interfaceVectorCreate(interface, vector) _corto_interfaceVectorCreate(corto_interface(interface), vector)
 #define corto_interfaceVectorCreate_auto(_id, interface, vector) corto_interfaceVector* _id = corto_interfaceVectorCreate(interface, vector); (void)_id
-CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorCreateChild(corto_object _parent, corto_string _id, corto_interface interface, corto_vtable vector);
+CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorCreateChild(corto_object _parent, corto_string _id, corto_interface interface, corto_objectseq vector);
 #define corto_interfaceVectorCreateChild(_parent, _id, interface, vector) _corto_interfaceVectorCreateChild(_parent, _id, corto_interface(interface), vector)
 #define corto_interfaceVectorCreateChild_auto(_parent, _id, interface, vector) corto_interfaceVector* _id = corto_interfaceVectorCreateChild(_parent, #_id, interface, vector); (void)_id
-CORTO_EXPORT corto_int16 _corto_interfaceVectorUpdate(corto_interfaceVector* _this, corto_interface interface, corto_vtable vector);
+CORTO_EXPORT corto_int16 _corto_interfaceVectorUpdate(corto_interfaceVector* _this, corto_interface interface, corto_objectseq vector);
 #define corto_interfaceVectorUpdate(_this, interface, vector) _corto_interfaceVectorUpdate(corto_interfaceVector(_this), corto_interface(interface), vector)
 
 CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorDeclare(void);
@@ -1199,9 +1199,9 @@ CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorDeclare(void);
 CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorDeclareChild(corto_object _parent, corto_string _id);
 #define corto_interfaceVectorDeclareChild(_parent, _id) _corto_interfaceVectorDeclareChild(_parent, _id)
 #define corto_interfaceVectorDeclareChild_auto(_parent, _id) corto_interfaceVector* _id = corto_interfaceVectorDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_interfaceVectorDefine(corto_interfaceVector* _this, corto_interface interface, corto_vtable vector);
+CORTO_EXPORT corto_int16 _corto_interfaceVectorDefine(corto_interfaceVector* _this, corto_interface interface, corto_objectseq vector);
 #define corto_interfaceVectorDefine(_this, interface, vector) _corto_interfaceVectorDefine(corto_interfaceVector(_this), corto_interface(interface), vector)
-CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorAssign(corto_interfaceVector* _this, corto_interface interface, corto_vtable vector);
+CORTO_EXPORT corto_interfaceVector* _corto_interfaceVectorAssign(corto_interfaceVector* _this, corto_interface interface, corto_objectseq vector);
 #define corto_interfaceVector__optional_NotSet NULL
 #define corto_interfaceVector__optional_Set(interface, vector) corto_interfaceVectorAssign((corto_interfaceVector*)corto_calloc(sizeof(corto_interfaceVector)), interface, vector)
 #define corto_interfaceVector__optional_SetCond(cond, interface, vector) cond ? corto_interfaceVectorAssign((corto_interfaceVector*)corto_calloc(sizeof(corto_interfaceVector)), interface, vector) : NULL
@@ -1376,41 +1376,6 @@ CORTO_EXPORT corto_string _corto_memberStr(corto_member value);
 CORTO_EXPORT corto_member corto_memberFromStr(corto_member value, corto_string str);
 CORTO_EXPORT corto_equalityKind _corto_memberCompare(corto_member dst, corto_member src);
 #define corto_memberCompare(dst, src) _corto_memberCompare(corto_member(dst), corto_member(src))
-
-/* memberseq */
-CORTO_EXPORT corto_memberseq* _corto_memberseqCreate(corto_uint32 length, corto_member* elements);
-#define corto_memberseqCreate(length, elements) _corto_memberseqCreate(length, elements)
-#define corto_memberseqCreate_auto(_id, length, elements) corto_memberseq* _id = corto_memberseqCreate(length, elements); (void)_id
-CORTO_EXPORT corto_memberseq* _corto_memberseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_member* elements);
-#define corto_memberseqCreateChild(_parent, _id, length, elements) _corto_memberseqCreateChild(_parent, _id, length, elements)
-#define corto_memberseqCreateChild_auto(_parent, _id, length, elements) corto_memberseq* _id = corto_memberseqCreateChild(_parent, #_id, length, elements); (void)_id
-CORTO_EXPORT corto_int16 _corto_memberseqUpdate(corto_memberseq* _this, corto_uint32 length, corto_member* elements);
-#define corto_memberseqUpdate(_this, length, elements) _corto_memberseqUpdate(corto_memberseq(_this), length, elements)
-
-CORTO_EXPORT corto_memberseq* _corto_memberseqDeclare(void);
-#define corto_memberseqDeclare() _corto_memberseqDeclare()
-#define corto_memberseqDeclare_auto(_id) corto_memberseq* _id = corto_memberseqDeclare(); (void)_id
-CORTO_EXPORT corto_memberseq* _corto_memberseqDeclareChild(corto_object _parent, corto_string _id);
-#define corto_memberseqDeclareChild(_parent, _id) _corto_memberseqDeclareChild(_parent, _id)
-#define corto_memberseqDeclareChild_auto(_parent, _id) corto_memberseq* _id = corto_memberseqDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_memberseqDefine(corto_memberseq* _this, corto_uint32 length, corto_member* elements);
-#define corto_memberseqDefine(_this, length, elements) _corto_memberseqDefine(corto_memberseq(_this), length, elements)
-CORTO_EXPORT corto_memberseq* _corto_memberseqAssign(corto_memberseq* _this, corto_uint32 length, corto_member* elements);
-#define corto_memberseq__optional_NotSet NULL
-#define corto_memberseq__optional_Set(length, elements) corto_memberseqAssign((corto_memberseq*)corto_calloc(sizeof(corto_memberseq)), length, elements)
-#define corto_memberseq__optional_SetCond(cond, length, elements) cond ? corto_memberseqAssign((corto_memberseq*)corto_calloc(sizeof(corto_memberseq)), length, elements) : NULL
-#define corto_memberseqUnset(_this) _this ? corto_deinitp(_this, corto_memberseq_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_memberseqAssign(_this, length, elements) _corto_memberseqAssign(_this, length, elements)
-#define corto_memberseqSet(_this, length, elements) _this = _this ? _this : (corto_memberseq*)corto_calloc(sizeof(corto_memberseq)); _corto_memberseqAssign(_this, length, elements)
-CORTO_EXPORT corto_string _corto_memberseqStr(corto_memberseq value);
-#define corto_memberseqStr(value) _corto_memberseqStr(value)
-CORTO_EXPORT corto_memberseq* corto_memberseqFromStr(corto_memberseq* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_memberseqCompare(corto_memberseq dst, corto_memberseq src);
-
-CORTO_EXPORT corto_int16 _corto_memberseqInit(corto_memberseq* value);
-#define corto_memberseqInit(value) _corto_memberseqInit(value)
-CORTO_EXPORT corto_int16 _corto_memberseqDeinit(corto_memberseq* value);
-#define corto_memberseqDeinit(value) _corto_memberseqDeinit(value)
 
 /* metaprocedure */
 CORTO_EXPORT corto_metaprocedure _corto_metaprocedureCreate(corto_type returnType, corto_bool returnsReference, corto_bool referenceOnly, void(*_impl)(void));
@@ -1663,41 +1628,6 @@ CORTO_EXPORT corto_int16 _corto_octetInit(corto_octet* value);
 #define corto_octetInit(value) _corto_octetInit(value)
 CORTO_EXPORT corto_int16 _corto_octetDeinit(corto_octet* value);
 #define corto_octetDeinit(value) _corto_octetDeinit(value)
-
-/* octetseq */
-CORTO_EXPORT corto_octetseq* _corto_octetseqCreate(corto_uint32 length, corto_octet* elements);
-#define corto_octetseqCreate(length, elements) _corto_octetseqCreate(length, elements)
-#define corto_octetseqCreate_auto(_id, length, elements) corto_octetseq* _id = corto_octetseqCreate(length, elements); (void)_id
-CORTO_EXPORT corto_octetseq* _corto_octetseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_octet* elements);
-#define corto_octetseqCreateChild(_parent, _id, length, elements) _corto_octetseqCreateChild(_parent, _id, length, elements)
-#define corto_octetseqCreateChild_auto(_parent, _id, length, elements) corto_octetseq* _id = corto_octetseqCreateChild(_parent, #_id, length, elements); (void)_id
-CORTO_EXPORT corto_int16 _corto_octetseqUpdate(corto_octetseq* _this, corto_uint32 length, corto_octet* elements);
-#define corto_octetseqUpdate(_this, length, elements) _corto_octetseqUpdate(corto_octetseq(_this), length, elements)
-
-CORTO_EXPORT corto_octetseq* _corto_octetseqDeclare(void);
-#define corto_octetseqDeclare() _corto_octetseqDeclare()
-#define corto_octetseqDeclare_auto(_id) corto_octetseq* _id = corto_octetseqDeclare(); (void)_id
-CORTO_EXPORT corto_octetseq* _corto_octetseqDeclareChild(corto_object _parent, corto_string _id);
-#define corto_octetseqDeclareChild(_parent, _id) _corto_octetseqDeclareChild(_parent, _id)
-#define corto_octetseqDeclareChild_auto(_parent, _id) corto_octetseq* _id = corto_octetseqDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_octetseqDefine(corto_octetseq* _this, corto_uint32 length, corto_octet* elements);
-#define corto_octetseqDefine(_this, length, elements) _corto_octetseqDefine(corto_octetseq(_this), length, elements)
-CORTO_EXPORT corto_octetseq* _corto_octetseqAssign(corto_octetseq* _this, corto_uint32 length, corto_octet* elements);
-#define corto_octetseq__optional_NotSet NULL
-#define corto_octetseq__optional_Set(length, elements) corto_octetseqAssign((corto_octetseq*)corto_calloc(sizeof(corto_octetseq)), length, elements)
-#define corto_octetseq__optional_SetCond(cond, length, elements) cond ? corto_octetseqAssign((corto_octetseq*)corto_calloc(sizeof(corto_octetseq)), length, elements) : NULL
-#define corto_octetseqUnset(_this) _this ? corto_deinitp(_this, corto_octetseq_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_octetseqAssign(_this, length, elements) _corto_octetseqAssign(_this, length, elements)
-#define corto_octetseqSet(_this, length, elements) _this = _this ? _this : (corto_octetseq*)corto_calloc(sizeof(corto_octetseq)); _corto_octetseqAssign(_this, length, elements)
-CORTO_EXPORT corto_string _corto_octetseqStr(corto_octetseq value);
-#define corto_octetseqStr(value) _corto_octetseqStr(value)
-CORTO_EXPORT corto_octetseq* corto_octetseqFromStr(corto_octetseq* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_octetseqCompare(corto_octetseq dst, corto_octetseq src);
-
-CORTO_EXPORT corto_int16 _corto_octetseqInit(corto_octetseq* value);
-#define corto_octetseqInit(value) _corto_octetseqInit(value)
-CORTO_EXPORT corto_int16 _corto_octetseqDeinit(corto_octetseq* value);
-#define corto_octetseqDeinit(value) _corto_octetseqDeinit(value)
 
 /* parameter */
 CORTO_EXPORT corto_parameter* _corto_parameterCreate(corto_string name, corto_type type, corto_bool passByReference);
@@ -2474,41 +2404,6 @@ CORTO_EXPORT corto_void* _corto_voidCreateChild(corto_object _parent, corto_stri
 CORTO_EXPORT corto_int16 _corto_voidUpdate(corto_void* _this);
 #define corto_voidUpdate(_this) _corto_voidUpdate(corto_void(_this))
 
-/* vtable */
-CORTO_EXPORT corto_vtable* _corto_vtableCreate(corto_uint32 length, corto_function* elements);
-#define corto_vtableCreate(length, elements) _corto_vtableCreate(length, elements)
-#define corto_vtableCreate_auto(_id, length, elements) corto_vtable* _id = corto_vtableCreate(length, elements); (void)_id
-CORTO_EXPORT corto_vtable* _corto_vtableCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_function* elements);
-#define corto_vtableCreateChild(_parent, _id, length, elements) _corto_vtableCreateChild(_parent, _id, length, elements)
-#define corto_vtableCreateChild_auto(_parent, _id, length, elements) corto_vtable* _id = corto_vtableCreateChild(_parent, #_id, length, elements); (void)_id
-CORTO_EXPORT corto_int16 _corto_vtableUpdate(corto_vtable* _this, corto_uint32 length, corto_function* elements);
-#define corto_vtableUpdate(_this, length, elements) _corto_vtableUpdate(corto_vtable(_this), length, elements)
-
-CORTO_EXPORT corto_vtable* _corto_vtableDeclare(void);
-#define corto_vtableDeclare() _corto_vtableDeclare()
-#define corto_vtableDeclare_auto(_id) corto_vtable* _id = corto_vtableDeclare(); (void)_id
-CORTO_EXPORT corto_vtable* _corto_vtableDeclareChild(corto_object _parent, corto_string _id);
-#define corto_vtableDeclareChild(_parent, _id) _corto_vtableDeclareChild(_parent, _id)
-#define corto_vtableDeclareChild_auto(_parent, _id) corto_vtable* _id = corto_vtableDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_vtableDefine(corto_vtable* _this, corto_uint32 length, corto_function* elements);
-#define corto_vtableDefine(_this, length, elements) _corto_vtableDefine(corto_vtable(_this), length, elements)
-CORTO_EXPORT corto_vtable* _corto_vtableAssign(corto_vtable* _this, corto_uint32 length, corto_function* elements);
-#define corto_vtable__optional_NotSet NULL
-#define corto_vtable__optional_Set(length, elements) corto_vtableAssign((corto_vtable*)corto_calloc(sizeof(corto_vtable)), length, elements)
-#define corto_vtable__optional_SetCond(cond, length, elements) cond ? corto_vtableAssign((corto_vtable*)corto_calloc(sizeof(corto_vtable)), length, elements) : NULL
-#define corto_vtableUnset(_this) _this ? corto_deinitp(_this, corto_vtable_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_vtableAssign(_this, length, elements) _corto_vtableAssign(_this, length, elements)
-#define corto_vtableSet(_this, length, elements) _this = _this ? _this : (corto_vtable*)corto_calloc(sizeof(corto_vtable)); _corto_vtableAssign(_this, length, elements)
-CORTO_EXPORT corto_string _corto_vtableStr(corto_vtable value);
-#define corto_vtableStr(value) _corto_vtableStr(value)
-CORTO_EXPORT corto_vtable* corto_vtableFromStr(corto_vtable* value, corto_string str);
-CORTO_EXPORT corto_equalityKind corto_vtableCompare(corto_vtable dst, corto_vtable src);
-
-CORTO_EXPORT corto_int16 _corto_vtableInit(corto_vtable* value);
-#define corto_vtableInit(value) _corto_vtableInit(value)
-CORTO_EXPORT corto_int16 _corto_vtableDeinit(corto_vtable* value);
-#define corto_vtableDeinit(value) _corto_vtableDeinit(value)
-
 /* width */
 CORTO_EXPORT corto_width* _corto_widthCreate(corto_width value);
 #define corto_widthCreate(value) _corto_widthCreate(value)
@@ -2654,11 +2549,6 @@ CORTO_EXPORT void corto_interfaceVectorseqClear(corto_interfaceVectorseq *seq);
     corto_member elem;\
     for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
 
-CORTO_EXPORT corto_member* corto_memberseqAppend(corto_memberseq *seq, corto_member element);
-CORTO_EXPORT corto_member* corto_memberseqAppendAlloc(corto_memberseq *seq);
-CORTO_EXPORT void corto_memberseqSize(corto_memberseq *seq, corto_uint32 length);
-CORTO_EXPORT void corto_memberseqClear(corto_memberseq *seq);
-
 /* objectlist */
 #define corto_objectlistForeach(list, elem) \
     corto_iter elem##_iter = corto_llIter(list);\
@@ -2684,17 +2574,6 @@ CORTO_EXPORT corto_object* corto_objectseqAppend(corto_objectseq *seq, corto_obj
 CORTO_EXPORT corto_object* corto_objectseqAppendAlloc(corto_objectseq *seq);
 CORTO_EXPORT void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_objectseqClear(corto_objectseq *seq);
-
-/* octetseq */
-#define corto_octetseqForeach(seq, elem) \
-    corto_uint32 elem##_iter;\
-    corto_octet elem;\
-    for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
-
-CORTO_EXPORT corto_octet* corto_octetseqAppend(corto_octetseq *seq, corto_octet element);
-CORTO_EXPORT corto_octet* corto_octetseqAppendAlloc(corto_octetseq *seq);
-CORTO_EXPORT void corto_octetseqSize(corto_octetseq *seq, corto_uint32 length);
-CORTO_EXPORT void corto_octetseqClear(corto_octetseq *seq);
 
 /* parameterseq */
 #define corto_parameterseqForeach(seq, elem) \
@@ -2731,17 +2610,6 @@ CORTO_EXPORT corto_string* corto_stringseqAppend(corto_stringseq *seq, corto_str
 CORTO_EXPORT corto_string* corto_stringseqAppendAlloc(corto_stringseq *seq);
 CORTO_EXPORT void corto_stringseqSize(corto_stringseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_stringseqClear(corto_stringseq *seq);
-
-/* vtable */
-#define corto_vtableForeach(seq, elem) \
-    corto_uint32 elem##_iter;\
-    corto_function elem;\
-    for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
-
-CORTO_EXPORT corto_function* corto_vtableAppend(corto_vtable *seq, corto_function element);
-CORTO_EXPORT corto_function* corto_vtableAppendAlloc(corto_vtable *seq);
-CORTO_EXPORT void corto_vtableSize(corto_vtable *seq, corto_uint32 length);
-CORTO_EXPORT void corto_vtableClear(corto_vtable *seq);
 
 /* wordseq */
 #define corto_wordseqForeach(seq, elem) \

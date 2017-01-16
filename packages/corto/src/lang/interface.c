@@ -12,9 +12,9 @@
 #include "_interface.h"
 #include "_sequence.h"
 
-static corto_vtable *corto_interface_vtableFromBase(corto_interface this) {
+static corto_objectseq *corto_interface_vtableFromBase(corto_interface this) {
     corto_interface base;
-    corto_vtable *myTable, *baseTable;
+    corto_objectseq *myTable, *baseTable;
     corto_uint32 size;
 
     myTable = NULL;
@@ -23,7 +23,7 @@ static corto_vtable *corto_interface_vtableFromBase(corto_interface this) {
     base = corto_interface(this);
     baseTable = NULL;
     while (!baseTable && (base = base->base)) {
-        baseTable = (corto_vtable*)&(corto_interface(base)->methods);
+        baseTable = (corto_objectseq*)&(corto_interface(base)->methods);
     }
 
     /* If found, copy it */
@@ -31,7 +31,7 @@ static corto_vtable *corto_interface_vtableFromBase(corto_interface this) {
         size = baseTable->length * sizeof(corto_method);
 
         /* Create own vtable. */
-        myTable = corto_alloc(sizeof(corto_vtable));
+        myTable = corto_alloc(sizeof(corto_objectseq));
         myTable->length = 0;
         myTable->buffer = NULL;
 
@@ -55,7 +55,7 @@ static corto_vtable *corto_interface_vtableFromBase(corto_interface this) {
 }
 
 /* Lookup method in table */
-corto_function* corto_vtableLookup(corto_vtable* vtable, corto_string member, corto_int32* d_out) {
+corto_function* corto_vtableLookup(corto_objectseq* vtable, corto_string member, corto_int32* d_out) {
     corto_objectseq s;
     corto_function *result;
     s.buffer = (corto_object *)vtable->buffer;
@@ -67,7 +67,7 @@ corto_function* corto_vtableLookup(corto_vtable* vtable, corto_string member, co
 }
 
 /* Insert method in vtable at first free spot (normal behavior). */
-corto_bool corto_vtableInsert(corto_vtable* vtable, corto_function method) {
+corto_bool corto_vtableInsert(corto_objectseq* vtable, corto_function method) {
     corto_uint32 i;
 
     /* Check if function is not already in vtable */
@@ -284,7 +284,7 @@ corto_int16 corto__interface_insertMembers(corto_interface this) {
     /* Create sequence with size nextMemberId */
 
     if (this->nextMemberId) {
-        if (corto_sequence_alloc(corto_collection(corto_memberseq_o), &this->members, this->nextMemberId)) {
+        if (corto_sequence_alloc(corto_collection(corto_objectseq_o), &this->members, this->nextMemberId)) {
             goto error;
         }
 
@@ -539,7 +539,7 @@ corto_int16 _corto_interface_construct(
     corto_interface this)
 {
 /* $begin(corto/lang/interface/construct) */
-    corto_vtable *superTable, ownTable;
+    corto_objectseq *superTable, ownTable;
     corto_uint32 i;
 
     superTable = NULL;
@@ -659,7 +659,7 @@ corto_method _corto_interface_resolveMethodById(
 {
 /* $begin(corto/lang/interface/resolveMethodById) */
     corto_method result;
-    corto_vtable* vtable;
+    corto_objectseq* vtable;
 
     corto_assert(id != 0, "interface::resolveMethodById: invalid methodId provided to corto_interface_resolveMethodById");
     result = NULL;

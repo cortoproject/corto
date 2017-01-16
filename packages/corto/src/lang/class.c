@@ -15,7 +15,7 @@
 static corto_bool corto_class_checkInterfaceCompatibility(
     corto_class this,
     corto_interface interface,
-    corto_vtable* vtable)
+    corto_objectseq* vtable)
 {
     corto_uint32 i;
     corto_method m_interface; /* Interface method */

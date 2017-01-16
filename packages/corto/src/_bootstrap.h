@@ -19,115 +19,6 @@
 #include "ffi.h"
 #endif
 
-/* Notes about the typesystem
- *
- * Composite objects
- *  Composite objects describe aggregations of information. There are 5 classes that make up for the
- *  interface framework. Each of these classes implements a distinct and orthogonal piece of functionality.
- *  Here follows a short description of each one:
- *
- *   - Interface
- *      This class is the base-interface type. An interface can hold methods and members. It is not possible
- *      to directly instantiate an interface. Interfaces must be implemented by classes. Interfaces can
- *      inherit from other interfaces.
- *
- *   - Struct (base = Interface)
- *      The struct class is derived from interface, and has non-reference semantics. The struct-class
- *      introduces the ability to apply a modifier (PRIVATE,LOCAL,READONLY,..) to its base.
- *
- *   - Class (base = Struct)
- *      Classes inherit the behavior from struct but are of a reference type. They add the capability to
- *      define a constructor, destructor and template observables.
- *
- *   - Procedure (base = Struct)
- *      The procedure class describes objects that implement functionality. There are five
- *      procedure-types in the type-system, each with unique characteristics:
- *
- *      - Function
- *          The function is the most basic procedure. It has a returntype, parameterlist and an
- *          implementation that can be provided in various languages. All other procedure-types
- *          inherit from function. Functions with a returntype introduce a variable with the
- *          name of the function, which allows the implementation to assign a returnvalue for
- *          the function.
- *
- *      - Method (base = function)
- *          A method is procedure that is always defined in an interface type. A method can be invoked on
- *          an instantiated object from any type derived from interface. Methods can be virtual
- *          when they are declared in an struct parent, in which case they can be re-implemented
- *          by a subtype. Methods introduce a 'this' variable, and in case of an struct parent,
- *          which inherits from a base-class, a 'super' alias for 'this' with the type of the base-class.
- *
- *      - Delegate (base = function)
- *          Delegates provide a type-safe manner of specifying callback routines. They result in a
- *          callback-vtable on the instantiated object. This table is populated by callback objects
- *          which must have a compatible signature with the delegate definition. Delegates can only
- *          be declared in class-objects.
- *
- *      - Callback (base = function)
- *          Callbacks are used to provide implementations for delegates. Their signature must match
- *          that of the delegate object. Callbacks may be declared within the scope of any object
- *          for which it's type is a class and has delegates. A callback is always annotated with the
- *          delegate it implements.
- *
- *       - Observer (base = function)
- *          Observers are procedures that are executed whenever an event occurs in the system. They
- *          are therefore not called in a traditional fashion and as such, the argumentlist of an
- *          observer is usually hidden for the user. Observers have access to the source of the event
- *          and the observable, through resp. the 'source' variable and the 'observable' variable.
- *
- *
- */
-
-/* Bootstrap curiosities:
- *  1. The virtual callback table is usually allocated along with the memory of an object, and
- *     is placed after the object's value. This vtable is free'd along with the memory of the object.
- *     Since at creation of an object it is known how many delegates it's type has, the vtable for
- *     the worst case can be allocated at object creation.
- *     For SSO objects, the vtable must be of a static size however. Therefore all vtables of SSO's
- *     are of size 16, which is more than the maximum number of delegates for any builtin-class.
- *
- *  2. All static objects are assigned an initial refcount of 2. This prevents static objects being
- *     cleaned up using the regular path, which would result in trying to free static memory and
- *     bootstrap issues at shutdown (wouldn't be able to free class, because it's a class etc.).
- *     The database shutdown takes care of correct cleanup of builtin objects.
- *
- *  3. The 'object' type has a bootstrap issue because it's scope is an 'object'. Static objects are checked on
- *     refcounts when they are free'd, but 'object' is still referenced by it's scope and therefore
- *     would report a refcount other than expected. 'object' can't be removed after the scopes
- *     however, because that would result in a 'scope not empty' error during the removal of the scope.
- *     Therefore an exception is made in the freeSSO function, to not check object. object is checked
- *     manually in the bootstrap.
- *
- *  4. During destruction, types set their typedef.real pointer to NULL. When destructing the builtin-types,
- *     this prevents from referring to the real type, because there is no 'right' order in which objects can be
- *     destructed without this issue occurring. To counter this issue, the 'real' pointer is restored for
- *     builtin-types after destruction.
- *
- *  5. The delegate-callback mechanism is used by type initializers and class constructors\destructors, which
- *     are in turn required by the bootstrap to initialize and define types. However, initially, the corresponding
- *     delegates are not yet defined, thus no callbacks can be binded to them, causing a major pain during
- *     bootstrap - it would be necessary to first initialize and define all callbacks before anything other could
- *     happen. As a relaxation, callbacks are allowed to call their constructors (transparently, without this being
- *     visible in the object-state) during bootstrap-initialization, because all information is then already available
- *     during initialization. This localized solution keeps the bootstrap smal(ler) and easier to comprehend.
- *
- *  6. The destruct callbacks are not resolved using a regular delegate-lookup function, but instead are directly
- *     forwarded to the corto_function_destruct function. Because procedures are destructed after the destruction of
- *     all classes, the vtable of corto_procedure_o does no longer exist, so the callback lookup would crash.
- *     Because lang/function is the only object with an destruct this is a safe workaround. Consequence is that
- *     end-users won't be able to use the procedure/destruct delegate, which is acceptable.
- *
- *  7. The virtual method 'interface/bindMethod' is required to construct methods to classes and interfaces. However,
- *     there is a bootstrap issue here (who binds bindMethod) which cannot be easily solved by a hard-coded
- *     construct of bindMethod. Since virtual methods are looked-up by methodId's, and methodId's are only stable
- *     after the parent of a method is defined, bindMethod can only be looked up after both 'interface' and
- *     'class' are defined. To get defined though, these classes need to construct all their methods, hence the
- *     bootstrap. This issue is solved by calling the method/init initializer call the implementations of the
- *     virtual method 'interface/bindMethod' directly, so no methodId lookup is required.
- *     For delegate functions this is the same, but here the implementation is easier, since the delegate/init
- *     function does not need to distinct between interface's and classes. Delegates can only be defined on a class.
- */
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -274,7 +165,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* type */
 #define CORTO_TYPE_V(parent, name, kind, reference, attr, scopeType, scopeTypeKind, defaultType, defaultProcedureType, DELEGATE) \
-  {kind, reference, attr, FALSE, FALSE, 0, 0, 0, scopeType, scopeTypeKind, defaultType, defaultProcedureType, {0,NULL}, DELEGATE##_TYPE(parent##_##name)}
+  {kind, reference, attr, {scopeType, scopeTypeKind, defaultType, defaultProcedureType}, FALSE, FALSE, 0, 0, {0,NULL}, DELEGATE##_TYPE(parent##_##name)}
 
 /* primitive */
 #define CORTO_PRIMITIVE_V(parent, name, kind, width, scopeType, scopeStateKind, DELEGATE) \
@@ -552,6 +443,7 @@ CORTO_FWDECL_NATIVE(class, type);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
+CORTO_FWDECL(struct, typeOptions);
 CORTO_FWDECL_CORE(struct, augmentData);
 CORTO_FWDECL_CORE(struct, result);
 CORTO_FWDECL_CORE(struct, request);
@@ -598,7 +490,6 @@ CORTO_FWDECL(enum, compositeKind);
 CORTO_FWDECL(enum, equalityKind);
 CORTO_FWDECL(enum, primitiveKind);
 CORTO_FWDECL(enum, procedureKind);
-CORTO_FWDECL(enum, scopeStateKind);
 CORTO_FWDECL(enum, typeKind);
 CORTO_FWDECL(enum, width);
 CORTO_FWDECL_CORE(enum, frameKind);
@@ -615,13 +506,9 @@ CORTO_FWDECL(bitmask, state);
 CORTO_FWDECL(sequence, interfaceseq);
 CORTO_FWDECL(sequence, interfaceVectorseq);
 CORTO_FWDECL(sequence, int32seq);
-CORTO_FWDECL(sequence, memberseq);
 CORTO_FWDECL(sequence, objectseq);
-CORTO_FWDECL_CORE(sequence, observerseq);
-CORTO_FWDECL(sequence, octetseq);
 CORTO_FWDECL(sequence, parameterseq);
 CORTO_FWDECL(sequence, stringseq);
-CORTO_FWDECL(sequence, vtable);
 CORTO_FWDECL(sequence, wordseq);
 CORTO_FWDECL_CORE(sequence, augmentseq);
 
@@ -633,11 +520,6 @@ CORTO_FWDECL_CORE(list, mountSubscriptionList);
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, nameAction);
-CORTO_FWDECL_CORE(delegate, notifyAction);
-CORTO_FWDECL_CORE(delegate, requestAction);
-CORTO_FWDECL_CORE(delegate, invokeAction);
-
-CORTO_FWDECL_CORE(subscriber, mount_on_notify);
 
 CORTO_FWDECL_CORE(iterator, resultIter);
 CORTO_FWDECL_CORE(iterator, objectIter);
@@ -865,14 +747,10 @@ CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);
 CORTO_SEQUENCE_O(lang, interfaceseq, lang_interface, 0);
 CORTO_SEQUENCE_O(lang, interfaceVectorseq, lang_interfaceVector, 0);
 CORTO_SEQUENCE_O(lang, int32seq, lang_int32, 0);
-CORTO_SEQUENCE_O(lang, memberseq, lang_member, 0);
-CORTO_SEQUENCE_O(core, observerseq, core_observer, 0);
 CORTO_SEQUENCE_O(lang, objectseq, lang_object, 0);
-CORTO_SEQUENCE_O(lang, octetseq, lang_octet, 0);
 CORTO_SEQUENCE_O(lang, parameterseq, lang_parameter, 0);
 CORTO_SEQUENCE_O(lang, stringseq, lang_string, 0);
 CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
-CORTO_SEQUENCE_O(lang, vtable, lang_function, 0);
 CORTO_LIST_O(lang, stringlist, lang_string, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(core, resultList, core_result, 0);
@@ -882,13 +760,17 @@ CORTO_LIST_O(core, mountSubscriptionList, core_mountSubscription, 0);
 CORTO_DELEGATE_O(lang, initAction, lang_int16);
 CORTO_DELEGATE_O(lang, nameAction, lang_string);
 CORTO_DELEGATE_O(lang, destructAction, lang_void);
-CORTO_DELEGATE_O(core, notifyAction, lang_void);
-CORTO_DELEGATE_O(core, invokeAction, lang_void);
-CORTO_DELEGATE_O(core, requestAction, core_resultIter);
 
 /* Iterator types */
 CORTO_ITERATOR_O(core, resultIter, core_result);
 CORTO_ITERATOR_O(core, objectIter, lang_object);
+
+/* /corto/lang/typeOptions */
+CORTO_STRUCT_O(lang, typeOptions, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_REFERENCE_O(lang_typeOptions, parentType, lang_type, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
+    CORTO_MEMBER_O(lang_typeOptions, parentState, lang_state, CORTO_GLOBAL);
+    CORTO_REFERENCE_O(lang_typeOptions, defaultType, lang_type, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
+    CORTO_REFERENCE_O(lang_typeOptions, defaultProcedureType, lang_type, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
 
 /* /corto/lang/type */
 CORTO_FW_ICD(lang, type);
@@ -896,16 +778,12 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_MEMBER_O(lang_type, kind, lang_typeKind, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_type, reference, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_type, attr, lang_attr, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_type, options, lang_typeOptions, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_type, hasResources, lang_bool, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, hasTarget, lang_bool, CORTO_PRIVATE | CORTO_LOCAL);
-    CORTO_MEMBER_O(lang_type, templateId, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, size, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
-    CORTO_REFERENCE_O(lang_type, parentType, lang_type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
-    CORTO_MEMBER_O(lang_type, parentState, lang_state, CORTO_HIDDEN);
-    CORTO_REFERENCE_O(lang_type, defaultType, lang_type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
-    CORTO_REFERENCE_O(lang_type, defaultProcedureType, lang_type, CORTO_HIDDEN, CORTO_DEFINED, FALSE);
-    CORTO_MEMBER_O(lang_type, metaprocedures, lang_vtable, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_type, metaprocedures, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, init, lang_initAction, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, nameof, lang_nameAction, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(lang_type, sizeof, "()", lang_uint32, corto_type_sizeof);
@@ -935,13 +813,9 @@ CORTO_FW_ICD(lang, interface);
 CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_ICD);
     CORTO_MEMBER_O(lang_interface, kind, lang_compositeKind, CORTO_LOCAL|CORTO_READONLY);
     CORTO_MEMBER_O(lang_interface, nextMemberId, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_interface, members, lang_memberseq, CORTO_LOCAL | CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_interface, methods, lang_vtable, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_interface, members, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_interface, methods, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_REFERENCE_O(lang_interface, base, lang_interface, CORTO_GLOBAL, CORTO_DEFINED, FALSE);
-    CORTO_ALIAS_O(lang_interface, parentType, lang_type_parentType, CORTO_HIDDEN);
-    CORTO_ALIAS_O(lang_interface, parentState, lang_type_parentState, CORTO_HIDDEN);
-    CORTO_ALIAS_O(lang_interface, defaultType, lang_type_defaultType, CORTO_HIDDEN);
-    CORTO_ALIAS_O(lang_interface, defaultProcedureType, lang_type_defaultProcedureType, CORTO_HIDDEN);
     CORTO_METHOD_O(lang_interface, init, "()", lang_int16, corto_interface_init);
     CORTO_METHOD_O(lang_interface, construct, "()", lang_int16, corto_interface_construct);
     CORTO_METHOD_O(lang_interface, destruct, "()", lang_void, corto_interface_destruct);
@@ -1034,10 +908,6 @@ CORTO_FW_IC(lang, struct);
 CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_SCOPED, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_ALIAS_O (lang_struct, base, lang_interface_base, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_struct, baseAccess, lang_modifier, CORTO_GLOBAL);
-    CORTO_ALIAS_O (lang_struct, parentType, lang_interface_parentType, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_struct, parentState, lang_interface_parentState, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_struct, defaultType, lang_interface_defaultType, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_struct, defaultProcedureType, lang_interface_defaultProcedureType, CORTO_HIDDEN);
     CORTO_VIRTUAL_O(lang_struct, compatible, "(type type)", lang_bool, corto_struct_compatible_v);
     CORTO_VIRTUAL_O(lang_struct, castable, "(type type)", lang_bool, corto_struct_castable_v);
     CORTO_VIRTUAL_O(lang_struct, resolveMember, "(string name)", lang_member, corto_struct_resolveMember_v);
@@ -1048,10 +918,6 @@ CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|COR
 CORTO_FW_IC(lang, union);
 CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_case), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_MEMBER_O(lang_union, discriminator, lang_type, CORTO_GLOBAL);
-    CORTO_ALIAS_O (lang_union, parentType, lang_interface_parentType, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_union, parentState, lang_interface_parentState, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_union, defaultType, lang_interface_defaultType, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_union, defaultProcedureType, lang_interface_defaultProcedureType, CORTO_HIDDEN);
     CORTO_METHOD_O(lang_union, init, "()", lang_int16, corto_union_init);
     CORTO_METHOD_O(lang_union, construct, "()", lang_int16, corto_union_construct);
     CORTO_METHOD_O(lang_union, findCase, "(int32 discriminator)", lang_member, corto_union_findCase);
@@ -1059,7 +925,7 @@ CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NUL
 /* /corto/lang/interfaceVector */
 CORTO_STRUCT_O(lang, interfaceVector, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(lang_interfaceVector, interface, lang_interface, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_interfaceVector, vector, lang_vtable, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_interfaceVector, vector, lang_objectseq, CORTO_GLOBAL);
 
 /* /corto/lang/class */
 CORTO_FW_ICD(lang, class);
@@ -1067,10 +933,6 @@ CORTO_CLASS_O(lang, class, lang_struct, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_ALIAS_O (lang_class, base, lang_struct_base, CORTO_GLOBAL);
     CORTO_ALIAS_O (lang_class, baseAccess, lang_struct_baseAccess, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_class, implements, lang_interfaceseq, CORTO_GLOBAL);
-    CORTO_ALIAS_O (lang_class, parentType, lang_struct_parentType, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_class, parentState, lang_struct_parentState, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_class, defaultType, lang_struct_defaultType, CORTO_HIDDEN);
-    CORTO_ALIAS_O (lang_class, defaultProcedureType, lang_struct_defaultProcedureType, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_class, interfaceVector, lang_interfaceVectorseq, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, construct, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, destruct, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);

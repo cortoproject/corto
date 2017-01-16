@@ -724,19 +724,23 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 }
             } else {
                 /* Check if parentType matches scopeType of child type */
-                if (childType->parentType) {
+                if (childType->options.parentType) {
                     parentType = corto_typeof(parent);
-                    if ((childType->parentType != parentType) && !corto_instanceof(childType->parentType, parent)) {
+                    if ((childType->options.parentType != parentType) &&
+                       !corto_instanceof(childType->options.parentType, parent))
+                    {
                         corto_seterr("type of '%s' is not '%s'",
                                 corto_fullpath(NULL, parent),
-                                corto_fullpath(NULL, childType->parentType));
+                                corto_fullpath(NULL, childType->options.parentType));
                         goto err_invalid_parent;
                     }
                 }
 
                 /* Check if parentState matches scopeState of child type */
-                if (childType->parentState && !corto__checkStateXOR(parent, childType->parentState)) {
-                    corto_uint32 childState = childType->parentState;
+                if (childType->options.parentState &&
+                    !corto__checkStateXOR(parent, childType->options.parentState))
+                {
+                    corto_uint32 childState = childType->options.parentState;
                     corto_uint32 parentState = _parent->align.attrs.state;
                     char *parentStateStr = corto_strp(&parentState, corto_state_o, 0);
                     char *childStateStr = corto_strp(&childState, corto_state_o, 0);

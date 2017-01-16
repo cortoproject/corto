@@ -20,7 +20,7 @@ void corto_class_attachObservers(corto_class _this, corto_object object);
 void corto_class_listenObservers(corto_class _this, corto_object object);
 void corto_class_detachObservers(corto_class _this, corto_object object);
 
-corto_vtable* corto_class_getObserverVtable(corto_object o);
+corto_objectseq* corto_class_getObserverVtable(corto_object o);
 
 #ifdef __cplusplus
 }

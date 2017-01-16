@@ -25,7 +25,6 @@ extern "C" {
 #define corto_parameter(o) ((corto_parameter*)corto_assertType((corto_type)corto_parameter_o, o))
 #define corto_parameterseq(o) ((corto_parameterseq*)corto_assertType((corto_type)corto_parameterseq_o, o))
 #define corto_function(o) ((corto_function)corto_assertType((corto_type)corto_function_o, o))
-#define corto_vtable(o) ((corto_vtable*)corto_assertType((corto_type)corto_vtable_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assertType((corto_type)corto_delegatedata_o, o))
 #define corto_initAction(o) ((corto_initAction*)corto_assertType((corto_type)corto_initAction_o, o))
 #define corto_nameAction(o) ((corto_nameAction*)corto_assertType((corto_type)corto_nameAction_o, o))
@@ -52,7 +51,6 @@ extern "C" {
 #define corto_char(o) ((corto_char*)corto_assertType((corto_type)corto_char_o, o))
 #define corto_character(o) ((corto_character)corto_assertType((corto_type)corto_character_o, o))
 #define corto_compositeKind(o) ((corto_compositeKind*)corto_assertType((corto_type)corto_compositeKind_o, o))
-#define corto_memberseq(o) ((corto_memberseq*)corto_assertType((corto_type)corto_memberseq_o, o))
 #define corto_interface(o) ((corto_interface)corto_assertType((corto_type)corto_interface_o, o))
 #define corto_struct(o) ((corto_struct)corto_assertType((corto_type)corto_struct_o, o))
 #define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assertType((corto_type)corto_interfaceseq_o, o))
@@ -78,7 +76,6 @@ extern "C" {
 #define corto_method(o) ((corto_method)corto_assertType((corto_type)corto_method_o, o))
 #define corto_objectlist(o) ((corto_objectlist*)corto_assertType((corto_type)corto_objectlist_o, o))
 #define corto_octet(o) ((corto_octet*)corto_assertType((corto_type)corto_octet_o, o))
-#define corto_octetseq(o) ((corto_octetseq*)corto_assertType((corto_type)corto_octetseq_o, o))
 #define corto_procedureKind(o) ((corto_procedureKind*)corto_assertType((corto_type)corto_procedureKind_o, o))
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
@@ -168,8 +165,6 @@ struct corto_function_s {
     corto_uint32 nextParameterId;
 };
 
-CORTO_SEQUENCE(corto_vtable, corto_function,);
-
 /*  delegatedata */
 typedef struct corto_delegatedata corto_delegatedata;
 
@@ -192,20 +187,27 @@ struct corto_nameAction {
     corto_delegatedata _parent;
 };
 
-struct corto_type_s {
-    corto_typeKind kind;
-    corto_bool reference;
-    corto_attr attr;
-    corto_bool hasResources;
-    corto_bool hasTarget;
-    corto_uint32 templateId;
-    corto_uint32 size;
-    corto_uint16 alignment;
+typedef struct corto_typeOptions corto_typeOptions;
+
+struct corto_typeOptions {
     corto_type parentType;
     corto_state parentState;
     corto_type defaultType;
     corto_type defaultProcedureType;
-    corto_vtable metaprocedures;
+};
+
+CORTO_SEQUENCE(corto_objectseq, corto_object,);
+
+struct corto_type_s {
+    corto_typeKind kind;
+    corto_bool reference;
+    corto_attr attr;
+    corto_typeOptions options;
+    corto_bool hasResources;
+    corto_bool hasTarget;
+    corto_uint32 size;
+    corto_uint16 alignment;
+    corto_objectseq metaprocedures;
     corto_initAction init;
     corto_nameAction nameof;
 };
@@ -312,8 +314,6 @@ struct corto_binary_s {
     struct corto_primitive_s _parent;
 };
 
-CORTO_SEQUENCE(corto_objectseq, corto_object,);
-
 /*  enum */
 typedef struct corto_enum_s *corto_enum;
 
@@ -369,7 +369,6 @@ typedef enum corto_compositeKind {
     CORTO_PROCEDURE = 5
 } corto_compositeKind;
 
-CORTO_SEQUENCE(corto_memberseq, corto_member,);
 
 /*  interface */
 typedef struct corto_interface_s *corto_interface;
@@ -378,8 +377,8 @@ struct corto_interface_s {
     struct corto_type_s _parent;
     corto_compositeKind kind;
     corto_uint32 nextMemberId;
-    corto_memberseq members;
-    corto_vtable methods;
+    corto_objectseq members;
+    corto_objectseq methods;
     corto_interface base;
 };
 
@@ -398,7 +397,7 @@ typedef struct corto_interfaceVector corto_interfaceVector;
 
 struct corto_interfaceVector {
     corto_interface interface;
-    corto_vtable vector;
+    corto_objectseq vector;
 };
 
 CORTO_SEQUENCE(corto_interfaceVectorseq, corto_interfaceVector,);
@@ -528,8 +527,6 @@ CORTO_LIST(corto_objectlist);
 /* octet */
 typedef uint8_t corto_octet;
 
-CORTO_SEQUENCE(corto_octetseq, corto_octet,);
-
 /* procedureKind */
 typedef enum corto_procedureKind {
     CORTO_FUNCTION = 0,
@@ -610,4 +607,3 @@ CORTO_SEQUENCE(corto_wordseq, corto_word,);
 }
 #endif
 #endif
-

@@ -160,13 +160,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, wordseq),\
     SSO_OP_VALUE(lang_, objectseq),\
     SSO_OP_VALUE(lang_, interfaceseq),\
-    SSO_OP_VALUE(lang_, memberseq),\
     SSO_OP_VALUE(lang_, parameterseq),\
-    SSO_OP_VALUE(core_, observerseq),\
-    SSO_OP_VALUE(lang_, octetseq),\
     SSO_OP_VALUE(lang_, stringseq),\
     SSO_OP_VALUE(core_, augmentseq),\
-    SSO_OP_VALUE(lang_, vtable),\
     SSO_OP_VALUE(lang_, interfaceVectorseq),\
     SSO_OP_VALUE(lang_, interfaceVector),\
     SSO_OP_VALUE(lang_, objectlist),\
@@ -174,6 +170,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, resultList),\
     SSO_OP_VALUE(core_, mountSubscriptionList),\
     SSO_OP_VALUE(lang_, parameter),\
+    SSO_OP_VALUE(lang_, typeOptions),\
     SSO_OP_VALUE(core_, augmentData),\
     SSO_OP_VALUE(core_, frame),\
     SSO_OP_VALUE(core_, result),\
@@ -186,7 +183,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, initAction),\
     SSO_OP_VALUE(lang_, nameAction),\
     SSO_OP_VALUE(lang_, destructAction),\
-    SSO_OP_VALUE(core_, notifyAction),\
     SSO_OP_VALUE(core_, resultIter),\
     SSO_OP_VALUE(core_, objectIter),\
     SSO_OP_VALUE(core_, time),\
@@ -452,19 +448,20 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_modifier_HIDDEN),\
     SSO_OP_OBJ(lang_modifier_OPTIONAL),\
     SSO_OP_OBJ(lang_modifier_OBSERVABLE),\
+    /* typeOptions */\
+    SSO_OP_OBJ(lang_typeOptions_parentType),\
+    SSO_OP_OBJ(lang_typeOptions_parentState),\
+    SSO_OP_OBJ(lang_typeOptions_defaultType),\
+    SSO_OP_OBJ(lang_typeOptions_defaultProcedureType),\
     /* type */\
     SSO_OP_OBJ(lang_type_kind),\
     SSO_OP_OBJ(lang_type_reference),\
     SSO_OP_OBJ(lang_type_attr),\
+    SSO_OP_OBJ(lang_type_options),\
     SSO_OP_OBJ(lang_type_hasResources),\
     SSO_OP_OBJ(lang_type_hasTarget),\
-    SSO_OP_OBJ(lang_type_templateId),\
     SSO_OP_OBJ(lang_type_size),\
     SSO_OP_OBJ(lang_type_alignment),\
-    SSO_OP_OBJ(lang_type_parentType),\
-    SSO_OP_OBJ(lang_type_parentState),\
-    SSO_OP_OBJ(lang_type_defaultType),\
-    SSO_OP_OBJ(lang_type_defaultProcedureType),\
     SSO_OP_OBJ(lang_type_metaprocedures),\
     SSO_OP_OBJ(lang_type_init),\
     SSO_OP_OBJ(lang_type_nameof),\
@@ -492,10 +489,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_interface_members),\
     SSO_OP_OBJ(lang_interface_methods),\
     SSO_OP_OBJ(lang_interface_base),\
-    SSO_OP_OBJ(lang_interface_parentType),\
-    SSO_OP_OBJ(lang_interface_parentState),\
-    SSO_OP_OBJ(lang_interface_defaultType),\
-    SSO_OP_OBJ(lang_interface_defaultProcedureType),\
     SSO_OP_OBJ(lang_interface_init_),\
     SSO_OP_OBJ(lang_interface_construct_),\
     SSO_OP_OBJ(lang_interface_destruct_),\
@@ -552,10 +545,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* struct */\
     SSO_OP_OBJ(lang_struct_base),\
     SSO_OP_OBJ(lang_struct_baseAccess),\
-    SSO_OP_OBJ(lang_struct_parentType),\
-    SSO_OP_OBJ(lang_struct_parentState),\
-    SSO_OP_OBJ(lang_struct_defaultType),\
-    SSO_OP_OBJ(lang_struct_defaultProcedureType),\
     SSO_OP_OBJ(lang_struct_init_),\
     SSO_OP_OBJ(lang_struct_construct_),\
     SSO_OP_OBJ(lang_struct_compatible_),\
@@ -563,10 +552,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_struct_resolveMember_),\
     /* union */\
     SSO_OP_OBJ(lang_union_discriminator),\
-    SSO_OP_OBJ(lang_union_parentType),\
-    SSO_OP_OBJ(lang_union_parentState),\
-    SSO_OP_OBJ(lang_union_defaultType),\
-    SSO_OP_OBJ(lang_union_defaultProcedureType),\
     SSO_OP_OBJ(lang_union_init_),\
     SSO_OP_OBJ(lang_union_construct_),\
     SSO_OP_OBJ(lang_union_findCase_),\
@@ -580,10 +565,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_base),\
     SSO_OP_OBJ(lang_class_baseAccess),\
     SSO_OP_OBJ(lang_class_implements),\
-    SSO_OP_OBJ(lang_class_parentType),\
-    SSO_OP_OBJ(lang_class_parentState),\
-    SSO_OP_OBJ(lang_class_defaultType),\
-    SSO_OP_OBJ(lang_class_defaultProcedureType),\
     SSO_OP_OBJ(lang_class_interfaceVector),\
     SSO_OP_OBJ(lang_class_construct),\
     SSO_OP_OBJ(lang_class_destruct),\
@@ -877,14 +858,6 @@ static void corto_patchSequences(void) {
     corto_mount_o->implements.length = 1;
     corto_mount_o->implements.buffer = corto_alloc(sizeof(corto_object));
     corto_mount_o->implements.buffer[0] = corto_dispatcher_o;
-
-    /* notifyAction delegate parameters */
-    corto_notifyAction_o->parameters.length = 1;
-    corto_notifyAction_o->parameters.buffer = corto_alloc(sizeof(corto_parameter));
-    corto_notifyAction_o->parameters.buffer[0].name = "observable";
-    corto_notifyAction_o->parameters.buffer[0].type = corto_object_o;
-    corto_notifyAction_o->parameters.buffer[0].passByReference = 0;
-
 }
 
 void corto_initEnvironment(void) {

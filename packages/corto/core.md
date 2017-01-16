@@ -127,7 +127,6 @@ Sequence of observer elements.
 #### Returns
 ### contentType
 ### destruct()
-### invoke(object instance,function proc,octetseq args)
 #### instance
 #### proc
 #### args
