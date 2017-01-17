@@ -273,7 +273,7 @@ corto_int16 corto_notifySubscribersId(
                 if (sep) *sep = '/';
             }
         }
-    } while (depth-- >= 0);
+    } while (--depth >= 0);
     corto_rwmutexUnlock(&corto_subscriberLock);
 
     /* Free up resources */
@@ -299,8 +299,10 @@ error:
 corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
     corto_int16 result = 0;
 
-    if (corto_subscribers_count) {
+    if (corto_subscribers_count && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         corto_id path, type;
+        corto_fullpath(path, o);
+
         result = corto_notifySubscribersId(
           mask,
           corto_fullpath(path, o),
