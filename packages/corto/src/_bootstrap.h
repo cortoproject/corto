@@ -1270,6 +1270,7 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, hasNotify, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, hasResume, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, hasSubscribe, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, contentTypeOut, lang_string, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_mount, contentTypeOutHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_mount, init, "()", lang_int16, corto_mount_init);

@@ -16,11 +16,13 @@ extern "C" {
 #define corto_typeKind(o) ((corto_typeKind*)corto_assertType((corto_type)corto_typeKind_o, o))
 #define corto_bool(o) ((corto_bool*)corto_assertType((corto_type)corto_bool_o, o))
 #define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
+#define corto_state(o) ((corto_state*)corto_assertType((corto_type)corto_state_o, o))
+#define corto_typeOptions(o) ((corto_typeOptions*)corto_assertType((corto_type)corto_typeOptions_o, o))
 #define corto_uint32(o) ((corto_uint32*)corto_assertType((corto_type)corto_uint32_o, o))
 #define corto_uint16(o) ((corto_uint16*)corto_assertType((corto_type)corto_uint16_o, o))
-#define corto_state(o) ((corto_state*)corto_assertType((corto_type)corto_state_o, o))
-#define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
 #define corto_object(o) ((corto_object)o)
+#define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
+#define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
 #define corto_string(o) ((corto_string*)corto_assertType((corto_type)corto_string_o, o))
 #define corto_parameter(o) ((corto_parameter*)corto_assertType((corto_type)corto_parameter_o, o))
 #define corto_parameterseq(o) ((corto_parameterseq*)corto_assertType((corto_type)corto_parameterseq_o, o))
@@ -41,7 +43,6 @@ extern "C" {
 #define corto_uint8(o) ((corto_uint8*)corto_assertType((corto_type)corto_uint8_o, o))
 #define corto_primitive(o) ((corto_primitive)corto_assertType((corto_type)corto_primitive_o, o))
 #define corto_binary(o) ((corto_binary)corto_assertType((corto_type)corto_binary_o, o))
-#define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
 #define corto_enum(o) ((corto_enum)corto_assertType((corto_type)corto_enum_o, o))
 #define corto_bitmask(o) ((corto_bitmask)corto_assertType((corto_type)corto_bitmask_o, o))
 #define corto_boolean(o) ((corto_boolean)corto_assertType((corto_type)corto_boolean_o, o))
@@ -112,12 +113,6 @@ CORTO_BITMASK(corto_attr);
     #define CORTO_ATTR_PERSISTENT (0x8)
     #define CORTO_ATTR_DEFAULT (0x10)
 
-/* uint32 */
-typedef uint32_t corto_uint32;
-
-/* uint16 */
-typedef uint16_t corto_uint16;
-
 /*  type */
 typedef struct corto_type_s *corto_type;
 
@@ -128,11 +123,29 @@ CORTO_BITMASK(corto_state);
     #define CORTO_DEFINED (0x4)
     #define CORTO_DESTRUCTED (0x8)
 
-/* word */
-typedef uintptr_t corto_word;
+/*  typeOptions */
+typedef struct corto_typeOptions corto_typeOptions;
+
+struct corto_typeOptions {
+    corto_type parentType;
+    corto_state parentState;
+    corto_type defaultType;
+    corto_type defaultProcedureType;
+};
+
+/* uint32 */
+typedef uint32_t corto_uint32;
+
+/* uint16 */
+typedef uint16_t corto_uint16;
 
 /* object */
 typedef void *corto_object;
+
+CORTO_SEQUENCE(corto_objectseq, corto_object,);
+
+/* word */
+typedef uintptr_t corto_word;
 
 /* string */
 typedef char* corto_string;
@@ -186,17 +199,6 @@ typedef struct corto_nameAction corto_nameAction;
 struct corto_nameAction {
     corto_delegatedata _parent;
 };
-
-typedef struct corto_typeOptions corto_typeOptions;
-
-struct corto_typeOptions {
-    corto_type parentType;
-    corto_state parentState;
-    corto_type defaultType;
-    corto_type defaultProcedureType;
-};
-
-CORTO_SEQUENCE(corto_objectseq, corto_object,);
 
 struct corto_type_s {
     corto_typeKind kind;
@@ -368,7 +370,6 @@ typedef enum corto_compositeKind {
     CORTO_DELEGATE = 4,
     CORTO_PROCEDURE = 5
 } corto_compositeKind;
-
 
 /*  interface */
 typedef struct corto_interface_s *corto_interface;
@@ -607,3 +608,4 @@ CORTO_SEQUENCE(corto_wordseq, corto_word,);
 }
 #endif
 #endif
+

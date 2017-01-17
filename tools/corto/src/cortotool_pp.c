@@ -1,7 +1,7 @@
 
 #include "cortotool_pp.h"
 #include "corto/g/g.h"
-#include "corto/core/c/c.h"
+#include "corto/argparse/argparse.h"
 
 static corto_ll silent, mute, attributes, names, prefixes, generators, scopes;
 static corto_ll objects, languages, includes, imports;

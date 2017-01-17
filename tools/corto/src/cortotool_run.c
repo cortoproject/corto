@@ -2,6 +2,7 @@
 #include "cortotool_run.h"
 #include "cortotool_build.h"
 #include "cortotool_install.h"
+#include "corto/argparse/argparse.h"
 #include <sys/stat.h>
 #include <errno.h>
 

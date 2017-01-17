@@ -1,7 +1,6 @@
 
 #include "cortotool_build.h"
-#include "corto/lang/c/c.h"
-
+#include "corto/argparse/argparse.h"
 
 /* Run a command for multiple projects */
 static corto_int16 cortotool_runcmd(
@@ -65,7 +64,9 @@ static corto_int16 cortotool_printCortoListAsRubyArray(corto_file f, const char*
 {
     fprintf((FILE*)f, "%s = [\n", rubyName);
     {
-        corto_stringlistForeach(list, elem) {
+        corto_iter it = corto_llIter(list);
+        while (corto_iterHasNext(&it)) {
+            corto_string elem = corto_iterNext(&it);
             fprintf((FILE*)f, "    \"%s\",\n", elem);
         }
     }

@@ -1,6 +1,7 @@
 
 #include "cortotool_build.h"
 #include "cortotool_install.h"
+#include "corto/argparse/argparse.h"
 
 #define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
 

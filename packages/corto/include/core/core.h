@@ -25,7 +25,6 @@ extern "C" {
 #include <corto/core/mountPolicy.h>
 #include <corto/core/mountStats.h>
 #include <corto/core/mountSubscription.h>
-#include <corto/core/notifyAction.h>
 #include <corto/core/observableEvent.h>
 #include <corto/core/observer.h>
 #include <corto/core/package.h>

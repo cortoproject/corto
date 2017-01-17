@@ -1,4 +1,5 @@
 #include "cortotool_publish.h"
+#include "corto/argparse/argparse.h"
 
 corto_int16 cortotool_publish(int argc, char *argv[]) {
     corto_ll silent, mute, notag, dirs, majorarg, minorarg, patcharg;

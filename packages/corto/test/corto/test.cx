@@ -66,13 +66,13 @@ list CompositeList: Point
 list ObjectList: object
 list AllocList: int64
 
-struct VoidParent: parentType = void::
+struct VoidParent: options={parentType=void}::
     foo: int32
 
-struct DefinedParent: parentState = defined ::
+struct DefinedParent: options={parentState=defined} ::
     foo: int32
 
-struct DeclaredParent: parentState = declared::
+struct DeclaredParent: options={parentState=declared}::
     foo: int32
 
 ReferenceMember anonymousString{

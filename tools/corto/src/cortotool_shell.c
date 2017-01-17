@@ -9,8 +9,6 @@
 #include "cortotool_shellengine.h"
 #include "ctype.h"
 #include "fnmatch.h"
-#include "corto/lang/c/c.h"
-#include "corto/core/c/c.h"
 
 #define CXSH_CMD_MAX (1024)
 
@@ -232,8 +230,9 @@ static void cxsh_ls(char* arg) {
         goto error;
     }
 
-    corto_resultIterForeach(iter, item) {
-        cxsh_printRow(item.parent, item.id, item.name, item.type);
+    while (corto_iterHasNext(&iter)) {
+        corto_result *item = corto_iterNext(&iter);
+        cxsh_printRow(item->parent, item->id, item->name, item->type);
         i ++; /* Count objects so total can be printed */
     }
 
@@ -269,13 +268,15 @@ static void cxsh_cd(char* arg) {
         if (corto_select(scope, arg).iter(&iter)) goto error;
 
         /* Reuse request to temporarily store result, count results */
-        corto_resultIterForeach(iter, e) {
+        while (corto_iterHasNext(&iter)) {
+            corto_result *e = corto_iterNext(&iter);
+
             if (count) {
-                corto_seterr("more than one result returned by 'cd %s' (%s/%s/%s)", arg, scope, e.parent, e.id);
+                corto_seterr("more than one result returned by 'cd %s' (%s/%s/%s)", arg, scope, e->parent, e->id);
                 goto error;
             }
             /* Use fully qualified path for scope */
-            sprintf(result, "%s/%s/%s", scope, e.parent, e.id);
+            sprintf(result, "%s/%s/%s", scope, e->parent, e->id);
             count++;
         }
 
@@ -748,7 +749,9 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     corto_metaWalk(&ser, t, &walkData);
 
                     /* Add methods to auto complete */
-                    corto_objectseqForeach(corto_interface(t)->methods, m) {
+                    corto_int32 i;
+                    for (i = 0; i < corto_interface(t)->methods.length; i++) {
+                        corto_object m = corto_interface(t)->methods.buffer[i];
                         corto_id method, sigName;
                         corto_signatureName(corto_idof(m), sigName);
                         if (!fnmatch(filter, sigName, 0)) {
@@ -761,12 +764,13 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
         } else {
             corto_int32 i = 0;
             if (corto_select(scope, expr).iter(&iter)) goto error;
-            corto_resultIterForeach(iter, item) {
+            while (corto_iterHasNext(&iter)) {
+                corto_result *item = corto_iterNext(&iter);
                 corto_id scopedItem;
-                if (strcmp(item.parent, ".")) {
-                    sprintf(scopedItem, "%s/%s", item.parent, item.id);
+                if (strcmp(item->parent, ".")) {
+                    sprintf(scopedItem, "%s/%s", item->parent, item->id);
                 } else {
-                    strcpy(scopedItem, item.id);
+                    strcpy(scopedItem, item->id);
                 }
                 if (appendSlash) {
                     strcat(scopedItem, "/");
@@ -777,12 +781,13 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
 
             if (!i) {
                 if (corto_select("/corto", expr).iter(&iter)) goto error;
-                corto_resultIterForeach(iter, item) {
+                while (corto_iterHasNext(&iter)) {
+                    corto_result *item = corto_iterNext(&iter);
                     corto_id scopedItem;
-                    if (strcmp(item.parent, ".")) {
-                        sprintf(scopedItem, "corto/%s/%s", item.parent, item.id);
+                    if (strcmp(item->parent, ".")) {
+                        sprintf(scopedItem, "corto/%s/%s", item->parent, item->id);
                     } else {
-                        sprintf(scopedItem, "corto/%s", item.id);
+                        sprintf(scopedItem, "corto/%s", item->id);
                     }
                     if (appendSlash) {
                         strcat(scopedItem, "/");

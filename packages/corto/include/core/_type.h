@@ -30,7 +30,6 @@ extern "C" {
 #define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
-#define corto_notifyAction(o) ((corto_notifyAction*)corto_assertType((corto_type)corto_notifyAction_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
@@ -187,6 +186,7 @@ struct corto_mount_s {
     corto_bool quit;
     corto_bool hasNotify;
     corto_bool hasResume;
+    corto_bool hasSubscribe;
     corto_string contentTypeOut;
     corto_word contentTypeOutHandle;
 };
@@ -207,13 +207,6 @@ typedef struct corto_loader_s *corto_loader;
 
 struct corto_loader_s {
     struct corto_mount_s _parent;
-};
-
-/*  /corto/core/notifyAction */
-typedef struct corto_notifyAction corto_notifyAction;
-
-struct corto_notifyAction {
-    corto_delegatedata _parent;
 };
 
 CORTO_ITERATOR(corto_objectIter);
@@ -393,3 +386,4 @@ struct corto_time {
 }
 #endif
 #endif
+

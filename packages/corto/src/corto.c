@@ -630,6 +630,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_quit),\
     SSO_OP_OBJ(core_mount_hasNotify),\
     SSO_OP_OBJ(core_mount_hasResume),\
+    SSO_OP_OBJ(core_mount_hasSubscribe),\
     SSO_OP_OBJ(core_mount_contentTypeOut),\
     SSO_OP_OBJ(core_mount_contentTypeOutHandle),\
     SSO_OP_OBJ(core_mount_init_),\
@@ -1033,9 +1034,6 @@ int corto_start(void) {
 
     /* Always randomize seed */
     srand (time(NULL));
-
-    /* Init CRC table */
-    corto_crcInit();
 
     CORTO_OPERATIONAL = 0; /* Running */
 

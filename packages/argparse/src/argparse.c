@@ -1,5 +1,5 @@
 
-#include "corto/corto.h"
+#include "corto/argparse/argparse.h"
 
 static void corto_arginit(corto_argdata *data) {
     corto_argdata *pattern = NULL;
@@ -204,4 +204,9 @@ void corto_argclean(corto_argdata *data) {
         }
         p++;
     }
+}
+
+int cortomain(int argc, char *argv[]) {
+
+    return 0;
 }

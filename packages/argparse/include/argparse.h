@@ -1,11 +1,12 @@
 
-#ifndef CORTO_ARG_H
-#define CORTO_ARG_H
+#ifndef ARGPARSE_H
+#define ARGPARSE_H
+
+/* Add include files here */
 
 /* Command-line argument parsing utility library */
 
-#include "corto/lang/_type.h"
-#include "corto/ll.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,11 +23,11 @@ typedef struct corto_argdata {
     corto_ll gc;
 } corto_argdata;
 
-CORTO_EXPORT corto_argdata* corto_argparse(char *argv[], corto_argdata *data);
-CORTO_EXPORT void corto_argclean(corto_argdata *data);
+corto_argdata* corto_argparse(char *argv[], corto_argdata *data);
+void corto_argclean(corto_argdata *data);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* CORTO_ARG_H */
+#endif /* ARGPARSE_H */

@@ -14,14 +14,12 @@
 #include "corto/native/native.h"
 #include "corto/secure/secure.h"
 
-#include "corto/arg.h"
 #include "corto/async.h"
 #include "corto/buffer.h"
 #include "corto/call.h"
 #include "corto/compare_ser.h"
 #include "corto/convert.h"
 #include "corto/copy_ser.h"
-#include "corto/crc.h"
 #include "corto/depresolver.h"
 #include "corto/dl.h"
 #include "corto/env.h"
@@ -87,4 +85,3 @@ extern "C" {
 }
 #endif
 #endif
-

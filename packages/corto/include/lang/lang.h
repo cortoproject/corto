@@ -51,6 +51,7 @@ extern "C" {
 #include <corto/lang/target.h>
 #include <corto/lang/text.h>
 #include <corto/lang/type.h>
+#include <corto/lang/typeOptions.h>
 #include <corto/lang/uint.h>
 #include <corto/lang/union.h>
 #include <corto/lang/virtual.h>

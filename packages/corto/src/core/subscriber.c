@@ -171,7 +171,8 @@ corto_int16 corto_notifySubscribersId(
                     content = value;
                 } else if (s->contentTypeHandle && value && type) {
                     /* Check if contentType has already been loaded */
-                    corto_int32 i; for (i = 0; i < contentTypesCount; i++) {
+                    corto_int32 i;
+                    for (i = 0; i < contentTypesCount; i++) {
                         if ((corto_word)contentTypes[i].ct == s->contentTypeHandle) {
                             content = contentTypes[i].value;
                             break;
@@ -210,6 +211,7 @@ corto_int16 corto_notifySubscribersId(
                         contentTypes[i].value = contentTypes[i].ct->fromValue(&intermediateValue);
                         content = contentTypes[i].value;
                     }
+                    contentTypesCount ++;
                 }
 
                 if (sep) *sep = '\0';
@@ -275,7 +277,8 @@ corto_int16 corto_notifySubscribersId(
     corto_rwmutexUnlock(&corto_subscriberLock);
 
     /* Free up resources */
-    corto_int32 i; for (i = 0; i < contentTypesCount; i++) {
+    corto_int32 i;
+    for (i = 0; i < contentTypesCount; i++) {
         contentTypes[i].ct->release(contentTypes[i].value);
     }
 

@@ -1,5 +1,6 @@
 #include "cortotool_test.h"
 #include "cortotool_build.h"
+#include "corto/argparse/argparse.h"
 
 #define GREEN   "\033[1;32m"
 #define NORMAL  "\033[0;49m"

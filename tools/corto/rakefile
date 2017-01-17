@@ -19,7 +19,8 @@ INCLUDE << "include"
 # USE_PACKAGE << "corto"
 LINK <<
   "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/corto" <<
-  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/g/g"
-  
+  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/g/g" <<
+  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/argparse/argparse"
+
 require "#{ENV['CORTO_BUILD']}/artefact"
 require "#{ENV['CORTO_BUILD']}/subrake"
