@@ -118,7 +118,6 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <AccessRule.h>
 #include <Animal.h>
 #include <AnonymousTest.h>
-#include <Args.h>
 #include <AttrCheck.h>
 #include <AttrConstructorTest.h>
 #include <Attributes.h>
