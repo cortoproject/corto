@@ -142,6 +142,9 @@ typedef struct corto_ll_s* corto_ll;
 /* Maximum number of OLS extensions that is supported by the core */
 #define CORTO_MAX_OLS_KEY (256)
 
+/* Maximum number of TLS keys that is supported by the core */
+#define CORTO_MAX_THREAD_KEY (256)
+
 /* The maximum number of arguments that can be passed to the Corto arg parser */
 #define CORTO_ARG_MAX (256)
 

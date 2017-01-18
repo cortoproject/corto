@@ -154,6 +154,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <MountSubscription.h>
 #include <MountWIterData.h>
 #include <ObjectMgmt.h>
+#include <ObserverDispatcher.h>
+#include <Observers.h>
 #include <Overload.h>
 #include <Ownership.h>
 #include <Point.h>

@@ -66,7 +66,7 @@ corto_void _test_Overload_tc_anyColor(
 {
 /* $begin(test/Overload/tc_anyColor) */
 
-    corto_object o = corto_resolve(test_o, "ol_any(Color)");
+    corto_object o = corto_resolve(test_o, "ol_any(test/Color)");
     test_assert(o != NULL);
     test_assert(o == test_ol_any__test_Color_o);
     test_assert(!strcmp(corto_idof(o), "ol_any(/test/Color a)"));
@@ -282,7 +282,7 @@ corto_void _test_Overload_tc_inheritanceBase(
 {
 /* $begin(test/Overload/tc_inheritanceBase) */
 
-    corto_object o = corto_resolve(test_o, "ol_inherit(Animal)");
+    corto_object o = corto_resolve(test_o, "ol_inherit(test/Animal)");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
@@ -297,7 +297,7 @@ corto_void _test_Overload_tc_inheritanceMatchSub(
 {
 /* $begin(test/Overload/tc_inheritanceMatchSub) */
 
-    corto_object o = corto_resolve(test_o, "ol_inherit(GoldenRetriever)");
+    corto_object o = corto_resolve(test_o, "ol_inherit(test/GoldenRetriever)");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
@@ -312,7 +312,7 @@ corto_void _test_Overload_tc_inheritanceSub(
 {
 /* $begin(test/Overload/tc_inheritanceSub) */
 
-    corto_object o = corto_resolve(test_o, "ol_inherit(Dog)");
+    corto_object o = corto_resolve(test_o, "ol_inherit(test/Dog)");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
@@ -327,7 +327,7 @@ corto_void _test_Overload_tc_inheritSibling(
 {
 /* $begin(test/Overload/tc_inheritSibling) */
 
-    corto_object o = corto_resolve(test_o, "ol_inherit(Cat)");
+    corto_object o = corto_resolve(test_o, "ol_inherit(test/Cat)");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);
@@ -403,7 +403,7 @@ corto_void _test_Overload_tc_numColor(
 {
 /* $begin(test/Overload/tc_numColor) */
 
-    corto_object o = corto_resolve(test_o, "ol_num(Color)");
+    corto_object o = corto_resolve(test_o, "ol_num(test/Color)");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_function_o));
     test_assert(corto_function(o)->overloaded);

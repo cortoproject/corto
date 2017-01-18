@@ -56,7 +56,7 @@ corto_void _test_Application_tc_app(
 
     corto_pid pid = corto_procrun(
         "corto",
-        (char*[]){"corto", "create", "Project", "--silent", "--nocoverage", NULL});
+        (char*[]){"corto", "create", "Project", "--silent", NULL});
 
     test_assert(pid != 0);
 
@@ -89,7 +89,6 @@ corto_void _test_Application_tc_appCortoDependencyNoCorto(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -109,7 +108,6 @@ corto_void _test_Application_tc_appCortoDependencyNoCorto(
             "create",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -169,7 +167,6 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -189,7 +186,6 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -209,7 +205,6 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "create",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -262,7 +257,7 @@ corto_void _test_Application_tc_appDef(
 
     corto_pid pid = corto_procrun(
         "corto",
-        (char*[]){"corto", "create", "Project", "--silent", "--nocoverage", "--notest", NULL});
+        (char*[]){"corto", "create", "Project", "--silent", "--notest", NULL});
 
     test_assert(pid != 0);
     waitResult = corto_procwait(pid, &ret);
@@ -316,7 +311,6 @@ corto_void _test_Application_tc_appDependency(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -335,7 +329,6 @@ corto_void _test_Application_tc_appDependency(
             "create",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -388,7 +381,7 @@ corto_void _test_Application_tc_appNested(
 
     corto_pid pid = corto_procrun(
         "corto",
-        (char*[]){"corto", "create", "corto/Project", "--silent", "--nocoverage", NULL});
+        (char*[]){"corto", "create", "corto/Project", "--silent", NULL});
 
     test_assert(pid != 0);
     waitResult = corto_procwait(pid, &ret);
@@ -440,7 +433,6 @@ corto_void _test_Application_tc_appNestedDependency(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -459,7 +451,6 @@ corto_void _test_Application_tc_appNestedDependency(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -478,7 +469,6 @@ corto_void _test_Application_tc_appNestedDependency(
             "create",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -538,7 +528,6 @@ corto_void _test_Application_tc_appNoCortoDependency(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -558,7 +547,6 @@ corto_void _test_Application_tc_appNoCortoDependency(
             "create",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -619,7 +607,6 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -639,7 +626,6 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -659,7 +645,6 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "create",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -713,7 +698,7 @@ corto_void _test_Application_tc_appNoTest(
 
     corto_pid pid = corto_procrun(
         "corto",
-        (char*[]){"corto", "create", "Project", "--silent", "--nocoverage", "--notest", NULL});
+        (char*[]){"corto", "create", "Project", "--silent", "--notest", NULL});
 
     test_assert(pid != 0);
 

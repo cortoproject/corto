@@ -74,10 +74,11 @@ end
 if CONFIG == "debug" then
   CFLAGS << "-g" << "-O0"
   CXXFLAGS << "-g" << "-O0"
+
   if COVERAGE == true then
-#    CFLAGS << "-fprofile-arcs" << "-ftest-coverage"
-#    CXXFLAGS << "-fprofile-arcs" << "-ftest-coverage"
-#    LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+    CFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+    CXXFLAGS << "-fprofile-arcs" << "-ftest-coverage"
+    LFLAGS << "-fprofile-arcs" << "-ftest-coverage"
   end
 end
 
@@ -534,6 +535,7 @@ task :gcov => SOURCES.ext(".gcov") do
       print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
     end
   end
+  print "\n"
 end
 
 # Rules for generated files

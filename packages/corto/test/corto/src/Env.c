@@ -68,6 +68,7 @@ corto_void _test_Env_tc_envparseVariableNotFound(
 /* $begin(test/Env/tc_envparseVariableNotFound) */
     char* s = corto_envparse("ABC ABC $CORTO_NOT_FOUND");
     test_assert(s == NULL);
+    test_assertstr(corto_lasterr(), "environment variable 'CORTO_NOT_FOUND' doesn't exist");
 /* $end */
 }
 
@@ -145,5 +146,7 @@ corto_void _test_Env_tc_setenvVariableNotFound(
 {
 /* $begin(test/Env/tc_setenvVariableNotFound) */
     test_assert(corto_setenv("CORTO_TEST_A", "ABC ABC $CORTO_NOT_FOUND"));
+    test_assertstr(corto_lasterr(), "environment variable 'CORTO_NOT_FOUND' doesn't exist");
+
 /* $end */
 }

@@ -1656,10 +1656,13 @@ corto_void _test_StringDeserializer_tc_deserTargetOwnedMount(
     test_assert(corto_ownerof(o) == owner);
     test_assert(o->target == 0);
     test_assert(o->actual == 20);
-    corto_setOwner(NULL);
 
-    corto_delete(o);
-    corto_delete(owner);
+    ret = corto_delete(o);
+    test_assert(ret == 0);
+
+    corto_setOwner(NULL);
+    ret = corto_delete(owner);
+    test_assert(ret == 0);
 
 /* $end */
 }

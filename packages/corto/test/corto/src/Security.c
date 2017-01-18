@@ -54,6 +54,7 @@ corto_void _test_Security_tc_authorizeCreate(
 /* $begin(test/Security/tc_authorizeCreate) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
+    test_assertstr(token, "token_user01");
     corto_string prev = corto_authenticate(token);
     test_assert(prev == NULL);
 

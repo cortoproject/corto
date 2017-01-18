@@ -39,7 +39,9 @@ corto_int16 _corto_package_construct(
           CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
           path);
         corto_cleanpath(localPath, localPath);
-        corto_mkdir(localPath);
+        if (corto_mkdir(localPath)) {
+            corto_lasterr(); /* Mute uncatched error messages */
+        }
         corto_dealloc(localPath);
     }
 

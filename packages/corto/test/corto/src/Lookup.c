@@ -64,7 +64,7 @@ corto_void _test_Lookup_tc_lookupEmptyString(
 
     corto_object o = corto_lookup(NULL, "");
     test_assert (o == NULL);
-    if (o) corto_release(o);
+    test_assertstr(corto_lasterr(), "invalid identifier");
 
 /* $end */
 }
@@ -214,7 +214,8 @@ corto_void _test_Lookup_tc_lookupNull(
 /* $begin(test/Lookup/tc_lookupNull) */
 
     corto_object o = corto_lookup(NULL, NULL);
-    test_assert (o == NULL);
+    test_assert(o == NULL);
+    test_assertstr(corto_lasterr(), "invalid identifier");
 
 /* $end */
 }

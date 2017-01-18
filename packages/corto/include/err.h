@@ -67,6 +67,7 @@ CORTO_EXPORT void corto_criticalv(char* fmt, va_list args);
 /* Set & get last error */
 CORTO_EXPORT char* corto_lasterr(void);
 CORTO_EXPORT void corto_seterr(char *fmt, ...);
+CORTO_EXPORT int corto_lasterrViewed(void);
 
 /* Set & get last info, useful for when a function wants to communicate info that
  * does not represent an error */

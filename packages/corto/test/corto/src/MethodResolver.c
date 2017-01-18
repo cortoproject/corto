@@ -25,7 +25,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadBaseClass(
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadBaseClass) */
 
-    corto_method m = corto_interface_resolveMethod(test_MethodTesterInherit_o, "overload(MethodTester)");
+    corto_method m = corto_interface_resolveMethod(test_MethodTesterInherit_o, "overload(test/MethodTester)");
     test_assert(m != NULL);
     test_assert(m == corto_method(test_MethodTester_overload__test_MethodTester_o));
 
@@ -73,7 +73,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadClass(
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadClass) */
 
-    corto_method m = corto_interface_resolveMethod(test_MethodTesterInherit_o, "overload(MethodTesterInherit)");
+    corto_method m = corto_interface_resolveMethod(test_MethodTesterInherit_o, "overload(test/MethodTesterInherit)");
     test_assert(m != NULL);
     test_assert(m == corto_method(test_MethodTesterInherit_overload__test_MethodTesterInherit_o));
 
@@ -219,7 +219,7 @@ corto_void _test_MethodResolver_tc_overloadClass(
 {
 /* $begin(test/MethodResolver/tc_overloadClass) */
 
-    corto_method m = corto_interface_resolveMethod(test_MethodTester_o, "overload(MethodTester)");
+    corto_method m = corto_interface_resolveMethod(test_MethodTester_o, "overload(test/MethodTester)");
     test_assert(m != NULL);
     test_assert(m == corto_method(test_MethodTester_overload__test_MethodTester_o));
 

@@ -64,11 +64,28 @@ int corto_threadCancel(corto_thread thread) {
     return pthread_cancel((pthread_t)thread);
 }
 
+/* Keep track of registered thread keys since pthread does not call destructors
+ * for the main thread */
+typedef struct corto_threadTlsAdmin_t {
+    corto_threadKey key;
+    void (*destructor)(void*);
+} corto_threadTlsAdmin_t;
+
+static corto_threadTlsAdmin_t corto_threadTlsAdmin[CORTO_MAX_THREAD_KEY];
+static corto_int32 corto_threadTlsCount = -1;
+
 int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*)){
     if (pthread_key_create(key, destructor)) {
         corto_seterr("corto_threadTlsKey failed.");
         goto error;
     }
+
+    if (destructor) {
+        corto_int32 slot = corto_ainc(&corto_threadTlsCount);
+        corto_threadTlsAdmin[slot].key = *key;
+        corto_threadTlsAdmin[slot].destructor = destructor;
+    }
+
     return 0;
 error:
     return -1;
@@ -80,6 +97,15 @@ int corto_threadTlsSet(corto_threadKey key, void* value) {
 
 void* corto_threadTlsGet(corto_threadKey key) {
     return pthread_getspecific(key);
+}
+
+void corto_threadTlsKeysDestruct(void) {
+    corto_int32 i;
+
+    for (i = 0; i <= corto_threadTlsCount; i++) {
+        void *data = corto_threadTlsGet(corto_threadTlsAdmin[i].key);
+        corto_threadTlsAdmin[i].destructor(data);
+    }
 }
 
 int corto_mutexNew(struct corto_mutex_s *m) {

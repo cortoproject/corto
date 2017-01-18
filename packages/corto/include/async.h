@@ -32,6 +32,8 @@ CORTO_EXPORT corto_thread corto_threadSelf(void);
 CORTO_EXPORT int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*));
 CORTO_EXPORT int corto_threadTlsSet(corto_threadKey key, void* value);
 CORTO_EXPORT void* corto_threadTlsGet(corto_threadKey key);
+CORTO_EXPORT void corto_threadTlsKeysDestruct(void);
+
 
 /* Mutex */
 typedef struct corto_mutex_s* corto_mutex;

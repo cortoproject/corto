@@ -124,13 +124,7 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                         {
                             corto_secure_accessKind result;
 
-                            /* If no token is set and a lock matches the object,
-                             * deny access */
-                            if (!corto_secure_token) {
-                                result = CORTO_SECURE_ACCESS_DENIED;
-                            } else {
-                                result = corto_secure_lock_authorize(lock, corto_secure_token, access);
-                            }
+                            result = corto_secure_lock_authorize(lock, corto_secure_token, access);
 
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has

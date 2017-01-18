@@ -71,6 +71,11 @@ static char* corto_getLastError(void) {
     return data->lastError;
 }
 
+static int corto_getLastErrorViewed(void) {
+    corto_errThreadData *data = corto_getThreadData();
+    return data->lastError ? data->viewed : TRUE;
+}
+
 static char* corto_getLastInfo(void) {
     corto_errThreadData *data = corto_getThreadData();
     data->viewed = TRUE;
@@ -355,6 +360,11 @@ void _corto_assert(unsigned int condition, char* fmt, ...) {
 char* corto_lasterr(void) {
     return corto_getLastError();
 }
+
+int corto_lasterrViewed(void) {
+    return corto_getLastErrorViewed();
+}
+
 
 char* corto_lastinfo(void) {
     return corto_getLastInfo();

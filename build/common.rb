@@ -37,7 +37,7 @@ end
 if not defined? COVERAGE then
   if ENV['coverage'] == "true" then
     # An update in binutils broke code coverage
-    if CORTO_OS != "Darwin" then
+    if CORTO_OS == "Darwin" then
       COVERAGE ||= false
     else
       COVERAGE ||= true

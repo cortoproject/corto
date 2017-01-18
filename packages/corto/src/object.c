@@ -40,15 +40,9 @@ extern int CORTO_BENCHMARK_DELETE;
 corto_ll corto_anonymousObjects = NULL;
 
 void corto_declaredAdminFree(void *admin) {
-    if (corto_llSize(admin)) {
-        corto_warning("corto: thread %p left undefined objects",
-          corto_threadSelf());
-        corto_iter it = corto_llIter(admin);
-        while (corto_iterHasNext(&it)) {
-            corto_warning(" - %s", corto_fullpath(NULL, corto_iterNext(&it)));
-        }
+    if (admin) {
+        corto_llFree(admin);
     }
-    corto_llFree(admin);
 }
 
 corto_bool corto_isBuiltin(corto_object o) {
@@ -1791,15 +1785,7 @@ corto_int16 corto_delete(corto_object o) {
     }
 
     if (!corto_owned(o)) {
-        corto_object obj = corto_ownerof(o);
-        corto_object cur = corto_getOwner();
-        corto_seterr(
-          "can't delete %s: not owned by thread (thread='%s' (%s), object='%s' (%s))",
-          corto_fullpath(NULL, o),
-          corto_fullpath(NULL, cur),
-          cur ? corto_fullpath(NULL, corto_typeof(cur)) : NULL,
-          corto_fullpath(NULL, obj),
-          obj ? corto_fullpath(NULL, corto_typeof(obj)) : NULL);
+        corto_seterr("object not owned by thread");
         goto error;
     }
 
@@ -3188,7 +3174,7 @@ static corto_object corto_lookup_intern(
     char ch, *next, *ptr = id;
 
     if (!id || !id[0]) {
-        corto_seterr("invalid identifier passed to corto_lookup");
+        corto_seterr("invalid identifier");
         goto error;
     }
 
@@ -3423,8 +3409,7 @@ corto_int16 corto_update(corto_object o) {
     corto_eventMask mask = CORTO_ON_UPDATE;
 
     if (!corto_owned(o) && (corto_typeof(corto_typeof(o)) != (corto_type)corto_target_o)) {
-        corto_seterr("cannot update '%s', process does not own object",
-            corto_idof(o));
+        corto_seterr("object not owned by thread");
         goto error;
     }
 
@@ -4056,6 +4041,7 @@ static corto_uint32 corto_overloadParamCompare(
             goto match;
         } else if (!o_reference &&
             ((o_type->kind != CORTO_PRIMITIVE) || (corto_primitive(o_type)->kind != CORTO_TEXT))) {
+            fprintf(stderr, "null but not reference or text!\n");
             goto nomatch;
         } else {
             goto match;
@@ -4198,10 +4184,6 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
 
     /* Validate if function object is valid */
     if (!corto_checkState(object, CORTO_VALID)) {
-        corto_seterr(
-            "can't perform request '%s' on invalid object %s",
-            requested,
-            corto_fullpath(NULL, object));
         goto error;
     }
 
@@ -4229,46 +4211,54 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
             corto_bool o_reference = FALSE, r_reference = FALSE;
             corto_bool r_forceReference = FALSE, r_wildcard = FALSE, r_null = FALSE;
             corto_type o_type, r_type = NULL;
-            corto_id r_typeName;
-            int flags, paramDistance = 0;
+            corto_id r_typeName, o_typeName;
+            int flags, o_flags, paramDistance = 0;
 
             /* Obtain offered and requested type */
             if (!(o_type = corto_overloadParamType(object, i, &o_reference))) {
                 goto error;
             }
+
             if (corto_signatureParamType(requested, i, r_typeName, &flags)) {
                 goto error;
-            } else if (!(flags & (CORTO_PARAMETER_WILDCARD | CORTO_PARAMETER_NULL))) {
-                r_type = corto_resolve(object, r_typeName);
-                if (r_type) {
-                    r_type = corto_type(r_type);
-                } else {
-                    corto_seterr("unresolved type '%s' in signature '%s'", r_typeName, requested);
-                    goto error;
-                }
+            }
+            if (corto_signatureParamType(corto_idof(object), i, o_typeName, &o_flags)) {
+                goto error;
             }
 
-            /* Obtain flags */
-            o_reference |= o_type->reference;
-            r_reference |= (flags & CORTO_PARAMETER_REFERENCE) | (r_type ? r_type->reference : 0);
-            r_forceReference |= (flags & CORTO_PARAMETER_FORCEREFERENCE) | (r_type ? r_type->reference : 0);
-            r_wildcard = flags & CORTO_PARAMETER_WILDCARD;
-            r_null = flags & CORTO_PARAMETER_NULL;
+            if (strcmp(r_typeName, o_typeName) || (flags != o_flags)) {
+                if (!(flags & (CORTO_PARAMETER_WILDCARD | CORTO_PARAMETER_NULL))) {
+                    r_type = corto_resolve(NULL, r_typeName);
+                    if (r_type) {
+                        r_type = corto_type(r_type);
+                    } else {
+                        corto_seterr("unresolved type '%s' in signature '%s'", r_typeName, requested);
+                        goto error;
+                    }
+                }
 
-            /* Evaluate whether parameter types are compatible */
-            paramDistance += corto_overloadParamCompare(
-                o_type,
-                r_type,
-                o_reference,
-                r_reference,
-                r_forceReference,
-                r_wildcard,
-                r_null);
+                /* Obtain flags */
+                o_reference |= o_type->reference;
+                r_reference |= (flags & CORTO_PARAMETER_REFERENCE) | (r_type ? r_type->reference : 0);
+                r_forceReference |= (flags & CORTO_PARAMETER_FORCEREFERENCE) | (r_type ? r_type->reference : 0);
+                r_wildcard = flags & CORTO_PARAMETER_WILDCARD;
+                r_null = flags & CORTO_PARAMETER_NULL;
 
-            if (paramDistance == -1) {
-                goto nomatch;
-            } else {
-                d += paramDistance;
+                /* Evaluate whether parameter types are compatible */
+                paramDistance += corto_overloadParamCompare(
+                    o_type,
+                    r_type,
+                    o_reference,
+                    r_reference,
+                    r_forceReference,
+                    r_wildcard,
+                    r_null);
+
+                if (paramDistance == -1) {
+                    goto nomatch;
+                } else {
+                    d += paramDistance;
+                }
             }
         }
     }

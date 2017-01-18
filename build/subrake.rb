@@ -107,13 +107,7 @@ end
 task :gcov do
     COMPONENTS.each do |e|
         verbose(VERBOSE)
-        if ENV['silent'] != "true" then
-            sh "echo '#{C_BOLD}[ >> entering #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
-        end
         sh "rake gcov -f #{Dir.pwd}/#{e}/rakefile"
-        if ENV['silent'] != "true" then
-            sh "echo '#{C_BOLD}[ << leaving #{C_NORMAL}#{C_NAME}#{e}#{C_NORMAL}#{C_BOLD} ]#{C_NORMAL}'"
-        end
     end
     COMPONENTS_DONE.clear
 end

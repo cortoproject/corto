@@ -474,10 +474,6 @@ error:
 }
 
 corto_int16 corto_notifySecured(corto_object observable, corto_uint32 mask) {
-    if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
-        return -1;
-    }
-
     if (!corto_authorized(observable, CORTO_SECURE_ACTION_READ)) {
         return 0;
     }
@@ -682,7 +678,7 @@ corto_int16 _corto_observer_construct(
             goto error;
         }
         if (!corto_instanceof(corto_type_o, t)) {
-            corto_seterr("object '%s' is not a type", this->type);
+            corto_seterr("'%s' is not a type", this->type);
             goto error;
         }
         corto_setref(&this->typeReference, t);
@@ -772,7 +768,12 @@ corto_int16 _corto_observer_init(
         }
 
         if (corto_function(this)->parameters.length != 3) {
-            corto_seterr("observers should have exactly one parameter");
+            corto_seterr("observers must have three arguments");
+            goto error;
+        }
+
+        if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_eventMask_o)) {
+            corto_seterr("first argument must be of type core/eventMask");
             goto error;
         }
 
@@ -780,6 +781,11 @@ corto_int16 _corto_observer_init(
             !corto_function(this)->parameters.buffer[1].type->reference)
         {
             corto_seterr("observer parameter must be of a reference type");
+            goto error;
+        }
+
+        if (corto_function(this)->parameters.buffer[2].type != corto_type(corto_observer_o)) {
+            corto_seterr("third argument must be of type core/observer");
             goto error;
         }
     }
@@ -800,6 +806,17 @@ corto_int16 _corto_observer_observe(
     corto__observer* _observerData = NULL;
     corto_bool added = FALSE;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
+
+    /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
+    if (!(this->mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
+        this->mask |= CORTO_ON_SELF;
+    }
+
+    /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
+    if (!((this->mask & CORTO_ON_VALUE) || (this->mask & CORTO_ON_METAVALUE))) {
+        this->mask |= CORTO_ON_VALUE;
+    }
+
     corto_eventMask mask = this->mask;
 
     /* If no observable is provided, use observable specified on observer */
@@ -822,29 +839,15 @@ corto_int16 _corto_observer_observe(
     }
 
     if (!observable) {
-        corto_seterr(
-          "no observable provided for observer '%s'",
-          corto_fullpath(NULL, this));
+        corto_seterr("no observable provided for observer");
         goto error;
-    }
-
-    /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!(mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
-        mask |= CORTO_ON_SELF;
-    }
-
-    /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
-    if (!((mask & CORTO_ON_VALUE) || (mask & CORTO_ON_METAVALUE))) {
-        mask |= CORTO_ON_VALUE;
     }
 
     /* Test for error conditions before making changes */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
         if (!corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
             corto_seterr(
-                "cannot listen to scope of non-scoped observable '%s' (observer %s)",
-                corto_fullpath(NULL, observable),
-                corto_fullpath(NULL, this));
+                "invalid nested subscription, observable is not scoped");
             goto error;
         }
     }
@@ -908,7 +911,7 @@ corto_int16 _corto_observer_observe(
     _observerData->count = 0;
     if (this->dispatcher) {
         _observerData->notifyKind = 2;
-    } if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
+    } else if (corto_function(this)->kind == CORTO_PROCEDURE_CDECL) {
         _observerData->notifyKind = 1;
     } else {
         _observerData->notifyKind = 0;
@@ -1026,7 +1029,6 @@ corto_bool _corto_observer_observing(
     _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     observerData = NULL;
 
-    /* If observer triggered on updates of me, remove from onSelf list */
     if (_o) {
         if (this->mask & CORTO_ON_SELF) {
             corto_rwmutexWrite(&_o->align.selfLock);
@@ -1039,7 +1041,7 @@ corto_bool _corto_observer_observing(
 
         if (!result) {
             if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
-                if (this->mask & CORTO_ON_SCOPE) {
+                if ((this->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE))) {
                     if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
                         corto_rwmutexWrite(&_o->align.selfLock);
                         observerData = corto_observerFind(_o->onChild, this, instance);
@@ -1078,16 +1080,6 @@ corto_int16 _corto_observer_unobserve(
     if (!observable) {
         corto_seterr("unobserve: observable not provided");
         goto error;
-    }
-
-    /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
-    if (!(mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
-        mask |= CORTO_ON_SELF;
-    }
-
-    /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
-    if (!((mask & CORTO_ON_VALUE) || (mask & CORTO_ON_METAVALUE))) {
-        mask |= CORTO_ON_VALUE;
     }
 
     /* If instance has not yet been defined, undo delayed listen */

@@ -381,6 +381,8 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                 goto error;
             }
 
+            corto_lasterr(); /* Silence uncatched error */
+
             corto_trace("corto: run: found installed application '%s'", project);
             runLocal = FALSE;
         } else {

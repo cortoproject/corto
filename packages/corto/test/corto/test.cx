@@ -963,6 +963,41 @@ test/Suite Event::
     void tc_postponeListenForUndefined()
     void tc_postponeListenSilence()
 
+// Dispatcher class
+class ObserverDispatcher: implements={dispatcher}::
+    void post(core/event e)
+    called: bool
+
+// Observer tests
+test/Suite Observers::
+    void setup() method
+    void customSignatureObserver(eventMask event, int32& observable, core/observer observer) observer
+    void tc_customSignatureObserver()
+    void tc_customSignatureObserverWrongArgumentNumber()
+    void tc_customSignatureObserverObservableNotReference()
+    void tc_customSignatureObserverMissingObserver()
+    void tc_customSignatureObserverMissingEventMask()
+    void tc_dispatchObserver()
+    void tc_notifyReadDenied()
+    void tc_notifyUpdateDenied()
+    void tc_observeTypeFilter()
+    void tc_observeTypeFilterUnresolved()
+    void tc_observeTypeFilterNotAType()
+    void tc_observeWithMultipleInstances()
+    void tc_observerMissingObservable()
+    void tc_observeNonScopedObjectWithScopeMaskErr()
+    void tc_observing()
+    void tc_observingScope()
+    void tc_observingTree()
+    void tc_observingDisabled()
+    void tc_notObserving()
+    void tc_observingSingleInstance()
+    void tc_observingMultipleInstances()
+
+    mask: core/eventMask, private
+    observable: object, private
+    observer: core/observer, private
+    count: int32
 
 // Event test support type
 class SubscriberTest::

@@ -14,9 +14,11 @@ corto_secure_accessKind _test_TestLock_authorize(
     corto_secure_actionKind action)
 {
 /* $begin(test/TestLock/authorize) */
-    test_AccessRuleListForeach(this->rules, r) {
-        if (!strcmp(r.user, token) && (r.action == action)) {
-            return r.access;
+    if (token) {
+        test_AccessRuleListForeach(this->rules, r) {
+            if (!strcmp(r.user, token) && (r.action == action)) {
+                return r.access;
+            }
         }
     }
     return CORTO_SECURE_ACCESS_UNDEFINED;

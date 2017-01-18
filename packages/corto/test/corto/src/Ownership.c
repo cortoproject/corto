@@ -218,7 +218,7 @@ corto_void _test_Ownership_tc_deleteNotOwned(
     corto_int16 result = corto_delete(o);
     test_assert(result != 0);
     test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "can't delete /o: not owned by thread (thread='' ((null)), object='/r' (/test/FooReplicator))"));
+    test_assertstr(corto_lasterr(), "object not owned by thread");
 
     result = corto_delete(r);
     test_assert(result == 0);
@@ -680,6 +680,7 @@ corto_void _test_Ownership_tc_updateNotOwned(
 
     corto_int16 result = corto_update(o);
     test_assert(result != 0);
+    test_assertstr(corto_lasterr(), "object not owned by thread");
 
     corto_setOwner(r);
 

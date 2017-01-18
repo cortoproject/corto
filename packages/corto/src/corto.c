@@ -1085,6 +1085,10 @@ int corto_stop(void) {
     corto_drop(root_o, FALSE);
     corto_release(root_o);
 
+    /* This function calls all destructors for registered TLS keys for the main
+     * thread */
+    corto_threadTlsKeysDestruct();
+
     /* Call exithandlers */
     corto_exit();
 
@@ -1114,9 +1118,6 @@ int corto_stop(void) {
 
     /* Deinit adminLock */
     corto_mutexFree(&corto_adminLock);
-
-    /* Workaround for dlopen-leakage - with this statement the valgrind memory-logging is clean. */
-    /*pthread_exit(NULL);*/
 
     CORTO_OPERATIONAL = 3; /* Shut down */
 

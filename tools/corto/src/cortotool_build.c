@@ -229,7 +229,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
         {"--verbose", &verbose, NULL},
-        {"--nocoverage", &coverage, NULL},
+        {"--coverage", &coverage, NULL},
         {"--release", &release, NULL},
         {"--debug", &debug, NULL},
         {"--singlethread", &singlethread, NULL},
@@ -245,7 +245,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
 
     corto_trace("corto: build %s: %s %s %s",
         corto_cwd(),
-        coverage ? "coverage=false" : "coverage=true",
+        coverage ? "coverage=true" : "coverage=false",
         release ? "config=release" : "config=debug",
         singlethread ? "multithread=false" : "multithread=true"
     );
@@ -363,6 +363,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
       {
         "rake",
         "gcov",
+        "silent=true",
         verbose ? "verbose=true" : "verbose=false",
         NULL
       }, FALSE, FALSE);

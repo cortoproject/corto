@@ -61,7 +61,6 @@ corto_int16 test_Project_implement(corto_string package) {
             "rebuild",
             package,
             "--silent",
-            "--nocoverage",
              NULL
          });
 
@@ -117,7 +116,6 @@ corto_int16 test_Project_implementNoCorto(
             "rebuild",
             name,
             "--silent",
-            "--nocoverage",
              NULL
          });
 
@@ -180,7 +178,6 @@ corto_int16 test_Project_use(corto_string target, corto_string fullname, corto_s
             "rebuild",
             target,
             "--silent",
-            "--nocoverage",
              NULL
          });
 
@@ -224,7 +221,6 @@ corto_int16 test_Project_useNoCorto(
             "rebuild",
             package,
             "--silent",
-            "--nocoverage",
              NULL
          });
 
@@ -280,7 +276,6 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -301,7 +296,6 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(
             "package",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -361,7 +355,6 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -381,7 +374,6 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -402,7 +394,6 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -462,7 +453,6 @@ corto_void _test_Project_tc_packageDependency(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -482,7 +472,6 @@ corto_void _test_Project_tc_packageDependency(
             "package",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -542,7 +531,6 @@ corto_void _test_Project_tc_packageDependencyColons(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -562,7 +550,6 @@ corto_void _test_Project_tc_packageDependencyColons(
             "package",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -620,7 +607,6 @@ corto_void _test_Project_tc_packageNested(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -639,7 +625,6 @@ corto_void _test_Project_tc_packageNested(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -668,7 +653,6 @@ corto_void _test_Project_tc_packageNestedColons(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -687,7 +671,6 @@ corto_void _test_Project_tc_packageNestedColons(
             "package",
             "parent::child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -717,7 +700,6 @@ corto_void _test_Project_tc_packageNestedDependency(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -736,7 +718,6 @@ corto_void _test_Project_tc_packageNestedDependency(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -756,7 +737,6 @@ corto_void _test_Project_tc_packageNestedDependency(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -816,7 +796,6 @@ corto_void _test_Project_tc_packageNestedDependencyColons(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -835,7 +814,6 @@ corto_void _test_Project_tc_packageNestedDependencyColons(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -855,7 +833,6 @@ corto_void _test_Project_tc_packageNestedDependencyColons(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -915,7 +892,6 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -934,7 +910,6 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -954,7 +929,6 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -1014,7 +988,6 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -1033,7 +1006,6 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -1053,7 +1025,6 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -1112,7 +1083,6 @@ corto_void _test_Project_tc_packageNestedFullyScoped(
             "package",
             "/parent",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1130,7 +1100,6 @@ corto_void _test_Project_tc_packageNestedFullyScoped(
             "package",
             "/parent/child",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1158,7 +1127,6 @@ corto_void _test_Project_tc_packageNestedFullyScopedColons(
             "package",
             "::parent",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1176,7 +1144,6 @@ corto_void _test_Project_tc_packageNestedFullyScopedColons(
             "package",
             "::parent::child",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1205,7 +1172,6 @@ corto_void _test_Project_tc_packageNoCorto(
             "Project",
             "--silent",
             "--nocorto",
-            "--nocoverage",
             NULL
         });
 
@@ -1246,7 +1212,6 @@ corto_void _test_Project_tc_packageNoCorto(
             "build",
             "Project",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1286,7 +1251,6 @@ corto_void _test_Project_tc_packageNoCortoDependency(
             "--silent",
             "--notest",
             "--nocorto",
-            "--nocoverage",
             NULL
         });
 
@@ -1305,7 +1269,6 @@ corto_void _test_Project_tc_packageNoCortoDependency(
             "package",
             "bar",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -1369,7 +1332,6 @@ corto_void _test_Project_tc_packageNoCortoLocal(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--nocorto",
             "--local",
             NULL
@@ -1403,7 +1365,6 @@ corto_void _test_Project_tc_packageNoCortoNested(
             "create",
             "package",
             "corto::Project",
-            "--nocoverage",
             "--silent",
             "--nocorto",
             NULL
@@ -1446,7 +1407,6 @@ corto_void _test_Project_tc_packageNoCortoNested(
             "build",
             "Project",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1484,7 +1444,6 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "package",
             "parent",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -1504,7 +1463,6 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "package",
             "parent/child",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -1525,7 +1483,6 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "package",
             "foo",
             "--silent",
-            "--nocoverage",
             "--notest",
             "--nocorto",
             NULL
@@ -1589,7 +1546,6 @@ corto_void _test_Project_tc_packageNodef(
             "Project",
             "--nodef",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1665,7 +1621,6 @@ corto_void _test_Project_tc_packageNodefC4cpp(
             "Project",
             "--nodef",
             "--silent",
-            "--nocoverage",
             "--lang",
             "c4cpp",
             NULL
@@ -1744,7 +1699,6 @@ corto_void _test_Project_tc_packageNodefLocal(
             "--nodef",
             "--local",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1821,7 +1775,6 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
             "--nodef",
             "--local",
             "--silent",
-            "--nocoverage",
             "--lang",
             "c4cpp",
             NULL
@@ -1899,7 +1852,6 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
             "Project",
             "--nocorto",
             "--silent",
-            "--nocoverage",
             "--notest",
             NULL
         });
@@ -1948,7 +1900,6 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
             "rebuild",
             "Project",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -1975,7 +1926,6 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
             "rebuild",
             "Project",
             "--silent",
-            "--nocoverage",
             NULL
         });
 
@@ -2008,7 +1958,6 @@ corto_void _test_Project_tc_publishNotag(
             "package",
             "Project",
             "--silent",
-            "--nocoverage",
             "--local",
             "--notest",
             NULL
