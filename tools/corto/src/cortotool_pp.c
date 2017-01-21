@@ -44,7 +44,6 @@ corto_int16 cortotool_language(char *language) {
         corto_llAppend(generators, "c/load");
         corto_llAppend(generators, "c/project");
         corto_llAppend(generators, "cpp/class");
-        corto_llAppend(generators, "cpp/fluent");
         corto_llAppend(attributes, "c=src");
         corto_llAppend(attributes, "h=include");
         corto_llAppend(attributes, "cpp=src");
