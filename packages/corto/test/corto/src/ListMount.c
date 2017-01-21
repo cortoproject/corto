@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * ListReplicator.c
+ * ListMount.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -12,10 +12,10 @@
 #include "fnmatch.h"
 /* $end */
 
-corto_int16 _test_ListReplicator_construct(
-    test_ListReplicator this)
+corto_int16 _test_ListMount_construct(
+    test_ListMount this)
 {
-/* $begin(test/ListReplicator/construct) */
+/* $begin(test/ListMount/construct) */
 
     /* Create top level objects */
     corto_resultAssign(
@@ -153,27 +153,27 @@ corto_int16 _test_ListReplicator_construct(
 /* $end */
 }
 
-/* $header(test/ListReplicator/onRequest) */
+/* $header(test/ListMount/onRequest) */
 /* Custom release function */
-void test_ListReplicator_iterRelease(corto_iter *iter) {
+void test_ListMount_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
     corto_resultListClear(data->list);
     corto_llFree(data->list);
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_ListReplicator_onRequest(
-    test_ListReplicator this,
+corto_resultIter _test_ListMount_onRequest(
+    test_ListMount this,
     corto_request *request)
 {
-/* $begin(test/ListReplicator/onRequest) */
+/* $begin(test/ListMount/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
-        if (!fnmatch(request->parent, e.parent, 0)) {
-            if (!fnmatch(request->expr, e.id, 0)) {
+        if (corto_match(request->parent, e.parent)) {
+            if (corto_match(request->expr, e.id)) {
                 corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,
@@ -191,7 +191,7 @@ corto_resultIter _test_ListReplicator_onRequest(
     corto_iter result = corto_llIterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
-    result.release = test_ListReplicator_iterRelease;
+    result.release = test_ListMount_iterRelease;
 
     /* Return persistent iterator to request */
     return result;

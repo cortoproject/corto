@@ -39,7 +39,7 @@ static void corto_lasterrorFree(void* tls) {
     corto_errThreadData* data = tls;
     if (data) {
         if (!data->viewed && data->lastError) {
-            corto_error("corto: uncatched error (use corto_lasterr): %s%s%s",
+            corto_warning("corto: uncatched error (use corto_lasterr): %s%s%s",
               data->lastError, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
         }
         if (data->lastError) {
@@ -86,7 +86,7 @@ static void corto_setLastError(char* err) {
     corto_errThreadData *data = corto_getThreadData();
     if (!data->viewed && data->lastError) {
         fprintf(stderr, "%scorto: uncatched error (use corto_lasterr): %s%s%s%s\n",
-          RED, data->lastError, NORMAL, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
+          YELLOW, data->lastError, NORMAL, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
     }
     if (data->lastError) corto_dealloc(data->lastError);
     if (data->backtrace) corto_dealloc(data->backtrace);

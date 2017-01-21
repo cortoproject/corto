@@ -587,6 +587,67 @@ corto_void _test_Select_tc_selectIdentifierCaps(
 /* $end */
 }
 
+corto_void _test_Select_tc_selectInvertCase(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectInvertCase) */
+    corto_iter it;
+    corto_int16 ret = corto_select("/a", "ABC").iter(&it);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&it));
+    corto_result *r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "abc");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "void");
+
+    test_assert(!corto_iterHasNext(&it));
+
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectInvertCaseFilter(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectInvertCaseFilter) */
+    corto_iter it;
+    corto_int16 ret = corto_select("/a", "ABA?").iter(&it);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&it));
+    corto_result *r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "Abab");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "void");
+
+    test_assert(!corto_iterHasNext(&it));
+
+/* $end */
+}
+
+corto_void _test_Select_tc_selectInvertCaseScope(
+    test_Select this)
+{
+/* $begin(test/Select/tc_selectInvertCaseScope) */
+    corto_iter it;
+    corto_int16 ret = corto_select("/A", "abc").iter(&it);
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&it));
+    corto_result *r = corto_iterNext(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "abc");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "void");
+
+    test_assert(!corto_iterHasNext(&it));
+
+/* $end */
+}
+
 corto_void _test_Select_tc_selectLimitOvershootScope(
     test_Select this)
 {

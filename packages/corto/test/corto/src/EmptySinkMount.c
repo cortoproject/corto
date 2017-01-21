@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * EmptySinkReplicator.c
+ * EmptySinkMount.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,10 +8,10 @@
 
 #include <test.h>
 
-corto_int16 _test_EmptySinkReplicator_construct(
-    test_EmptySinkReplicator this)
+corto_int16 _test_EmptySinkMount_construct(
+    test_EmptySinkMount this)
 {
-/* $begin(test/EmptySinkReplicator/construct) */
+/* $begin(test/EmptySinkMount/construct) */
 
     corto_mount(this)->kind = CORTO_SINK;
     return 0;

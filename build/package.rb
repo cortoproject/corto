@@ -283,27 +283,37 @@ task :uninstaller do
   end
 end
 
-task :uninstall_files do
-  verbose(VERBOSE)
-  if not LOCAL then
-    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR}"
-    if File.exists?("#{dir}/uninstall.txt") then
-      File.open("#{dir}/uninstall.txt") do |file|
-        file.each_line do |l|
-          # That will not happen to me
-          if l.strip.length > "/usr/local\n".length then
-            file = l[0...-1]
-            if File.directory? file then
-              if not Dir.glob("#{file}/*").length then
-                cmd "rm -rf #{l[0...-1]}"
-              end
-            else
-              cmd "rm -f #{l[0...-1]}"
+def uninstallDir(dir)
+  if File.exists?("#{dir}/uninstall.txt") then
+    File.open("#{dir}/uninstall.txt") do |file|
+      file.each_line do |l|
+        # That will not happen to me
+        if l.strip.length > "/usr/local\n".length then
+          file = l[0...-1]
+          if File.directory? file then
+            if not Dir.glob("#{file}/*").length then
+              cmd "rm -rf #{l[0...-1]}"
             end
+          else
+            cmd "rm -f #{l[0...-1]}"
           end
         end
       end
     end
+  else
+    cmd "rm -rf #{dir}"
+  end
+end
+
+task :uninstall_files do
+  verbose(VERBOSE)
+  if not LOCAL then
+    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR}"
+    uninstallDir(dir)
+
+    # Also make sure that there are no packages with the same name but different case
+    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR.downcase}"
+    uninstallDir(dir)
   end
 end
 

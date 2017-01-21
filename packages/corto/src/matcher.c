@@ -146,6 +146,7 @@ corto_int16 corto_matchProgramParseIntern(
     int op = 0;
 
     data->tokens = corto_strdup(expr);
+    corto_strlower(data->tokens);
 
     ptr = data->tokens;
     for (; (ch = *ptr); data->ops[op].start = ptr, ptr++) {
@@ -400,6 +401,7 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
     char **elem = elements;
     corto_id id;
     strcpy(id, str);
+    corto_strlower(id);
 
     corto_int8 elementCount = corto_pathToArray(id, elements, "/");
     if (elementCount == -1) {
@@ -436,7 +438,10 @@ char* corto_matchParent(char *parent, char *expr) {
     if (*parentPtr == '/') parentPtr++;
     if (*exprPtr == '/') exprPtr++;
 
-    while ((parentCh = *parentPtr) && (exprCh = *exprPtr) && (parentCh == exprCh)) {
+    while ((parentCh = *parentPtr) &&
+           (exprCh = *exprPtr) &&
+           (tolower(parentCh) == tolower(exprCh)))
+    {
         parentPtr++;
         exprPtr++;
     }

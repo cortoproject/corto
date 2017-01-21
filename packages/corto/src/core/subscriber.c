@@ -107,7 +107,7 @@ corto_int16 corto_notifySubscribersId(
     } contentTypes[CORTO_MAX_CONTENTTYPE];
     corto_int32 contentTypesCount = 0;
 
-    if (!contentType) {
+    if (!contentType && value) {
         intermediate = (corto_object)value;
         intermediateValue = corto_value_object(intermediate, NULL);
     }

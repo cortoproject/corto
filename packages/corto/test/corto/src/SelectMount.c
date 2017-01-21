@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * ReplicatorRequest.c
+ * SelectMount.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,10 +8,10 @@
 
 #include <test.h>
 
-corto_void _test_ReplicatorRequest_setup(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_setup(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/setup) */
+/* $begin(test/SelectMount/setup) */
 
     /* Create dummy object */
     corto_attr old = corto_setAttr(CORTO_ATTR_OBSERVABLE);
@@ -19,15 +19,15 @@ corto_void _test_ReplicatorRequest_setup(
     corto_setAttr(old);
 
     /* Create mount */
-    this->mount = test_ListReplicatorCreate(a_o, CORTO_ON_SCOPE, CORTO_SOURCE);
+    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_SOURCE);
 
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectGrandparentFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectGrandparentFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectGrandparentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -47,10 +47,79 @@ corto_void _test_ReplicatorRequest_tc_selectGrandparentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectParentFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectInvertCase(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectParentFromScope) */
+/* $begin(test/SelectMount/tc_selectInvertCase) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/a", "XYZ").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "xyz");
+    test_assertstr(result->parent, ".");
+    test_assertstr(result->type, "float64");
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_SelectMount_tc_selectInvertCaseFilter(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectInvertCaseFilter) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/a", "XY?").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "xyz");
+    test_assertstr(result->parent, ".");
+    test_assertstr(result->type, "float64");
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_SelectMount_tc_selectInvertCaseScope(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectInvertCaseScope) */
+    corto_result *result;
+    corto_iter iter;
+
+    corto_int16 ret = corto_select("/A", "xyz").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iterHasNext(&iter));
+    result = corto_iterNext(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "xyz");
+    test_assertstr(result->parent, ".");
+    test_assertstr(result->type, "float64");
+
+    test_assert(!corto_iterHasNext(&iter));
+
+/* $end */
+}
+
+corto_void _test_SelectMount_tc_selectParentFromScope(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectParentFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -70,10 +139,10 @@ corto_void _test_ReplicatorRequest_tc_selectParentFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectParentFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectParentFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectParentFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectParentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -92,10 +161,10 @@ corto_void _test_ReplicatorRequest_tc_selectParentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScope) */
+/* $begin(test/SelectMount/tc_selectScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -131,10 +200,10 @@ corto_void _test_ReplicatorRequest_tc_selectScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeFilter(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeFilter(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeFilter) */
+/* $begin(test/SelectMount/tc_selectScopeFilter) */
     corto_result *result;
     corto_iter iter;
 
@@ -163,10 +232,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilter(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeFilterFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeFilterFromScope) */
+/* $begin(test/SelectMount/tc_selectScopeFilterFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -194,10 +263,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeFilterFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectScopeFilterFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -225,10 +294,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFilterFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeFromScope) */
+/* $begin(test/SelectMount/tc_selectScopeFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -264,10 +333,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectScopeFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -302,10 +371,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeMixed(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeMixed) */
+/* $begin(test/SelectMount/tc_selectScopeMixed) */
     corto_result *result;
     corto_iter iter;
 
@@ -373,10 +442,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeMixed(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeNested(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeNested(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeNested) */
+/* $begin(test/SelectMount/tc_selectScopeNested) */
     corto_result *result;
     corto_iter iter;
 
@@ -412,10 +481,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNested(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeNestedDirty(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirty) */
+/* $begin(test/SelectMount/tc_selectScopeNestedDirty) */
     corto_result *result;
     corto_iter iter;
 
@@ -451,10 +520,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirty(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirtyFromScope) */
+/* $begin(test/SelectMount/tc_selectScopeNestedDirtyFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -490,10 +559,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeNestedDirtyFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectScopeNestedDirtyFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -521,10 +590,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedDirtyFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeNestedFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeNestedFromScope) */
+/* $begin(test/SelectMount/tc_selectScopeNestedFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -560,10 +629,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectScopeNestedFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectScopeNestedFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -591,10 +660,10 @@ corto_void _test_ReplicatorRequest_tc_selectScopeNestedFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingle(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingle(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingle) */
+/* $begin(test/SelectMount/tc_selectSingle) */
     corto_result *result;
     corto_iter iter;
 
@@ -614,10 +683,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingle(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleFromScope) */
+/* $begin(test/SelectMount/tc_selectSingleFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -637,10 +706,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleFromScopeTree(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleFromScopeTree(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleFromScopeTree) */
+/* $begin(test/SelectMount/tc_selectSingleFromScopeTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -660,10 +729,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromScopeTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectSingleFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -683,10 +752,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleNested(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleNested(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleNested) */
+/* $begin(test/SelectMount/tc_selectSingleNested) */
     corto_result *result;
     corto_iter iter;
 
@@ -706,10 +775,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNested(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleNestedFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleNestedFromScope) */
+/* $begin(test/SelectMount/tc_selectSingleNestedFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -729,10 +798,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScopeTree(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleNestedFromScopeTree) */
+/* $begin(test/SelectMount/tc_selectSingleNestedFromScopeTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -752,10 +821,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromScopeTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleNestedFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectSingleNestedFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -775,10 +844,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleNestedFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleTree(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleTree(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleTree) */
+/* $begin(test/SelectMount/tc_selectSingleTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -806,10 +875,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleTree2(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleTree2(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleTree2) */
+/* $begin(test/SelectMount/tc_selectSingleTree2) */
     corto_result *result;
     corto_iter iter;
 
@@ -829,10 +898,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleTree2(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectSingleTree3(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectSingleTree3(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectSingleTree3) */
+/* $begin(test/SelectMount/tc_selectSingleTree3) */
     corto_result *result;
     corto_iter iter;
 
@@ -852,10 +921,10 @@ corto_void _test_ReplicatorRequest_tc_selectSingleTree3(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTree(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTree(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTree) */
+/* $begin(test/SelectMount/tc_selectTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -971,10 +1040,10 @@ corto_void _test_ReplicatorRequest_tc_selectTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTreeEmptyNestedScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTreeEmptyNestedScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTreeEmptyNestedScope) */
+/* $begin(test/SelectMount/tc_selectTreeEmptyNestedScope) */
     corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
     test_assert(b_o != NULL);
 
@@ -1013,10 +1082,10 @@ corto_void _test_ReplicatorRequest_tc_selectTreeEmptyNestedScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTreeEmptyScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTreeEmptyScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTreeEmptyScope) */
+/* $begin(test/SelectMount/tc_selectTreeEmptyScope) */
     corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
     test_assert(b_o != NULL);
 
@@ -1048,10 +1117,10 @@ corto_void _test_ReplicatorRequest_tc_selectTreeEmptyScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTreeFromNestedScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTreeFromNestedScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTreeFromNestedScope) */
+/* $begin(test/SelectMount/tc_selectTreeFromNestedScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1095,10 +1164,10 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromNestedScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTreeFromScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTreeFromScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTreeFromScope) */
+/* $begin(test/SelectMount/tc_selectTreeFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1166,10 +1235,10 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualNestedScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTreeFromVirtualNestedScope) */
+/* $begin(test/SelectMount/tc_selectTreeFromVirtualNestedScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1213,10 +1282,10 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualNestedScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectTreeFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectTreeFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectTreeFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1284,10 +1353,10 @@ corto_void _test_ReplicatorRequest_tc_selectTreeFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectVirtualGrandparentFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectVirtualGrandparentFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectVirtualGrandparentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1307,10 +1376,10 @@ corto_void _test_ReplicatorRequest_tc_selectVirtualGrandparentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_tc_selectVirtualParentFromVirtualScope(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/tc_selectVirtualParentFromVirtualScope) */
+/* $begin(test/SelectMount/tc_selectVirtualParentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1330,10 +1399,10 @@ corto_void _test_ReplicatorRequest_tc_selectVirtualParentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_ReplicatorRequest_teardown(
-    test_ReplicatorRequest this)
+corto_void _test_SelectMount_teardown(
+    test_SelectMount this)
 {
-/* $begin(test/ReplicatorRequest/teardown) */
+/* $begin(test/SelectMount/teardown) */
 
     corto_delete(this->mount);
     this->mount = NULL;

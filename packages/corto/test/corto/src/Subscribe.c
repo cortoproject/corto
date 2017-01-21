@@ -40,3 +40,198 @@ corto_void _test_Subscribe_tc_noInitialSep(
 
 /* $end */
 }
+
+/* $header(test/Subscribe/tc_subscribeInvertCase) */
+void subscribeInvertCaseOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeInvertCase(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeInvertCase) */
+    corto_object a = corto_createChild(root_o, "a", corto_void_o);
+    test_assert(a != NULL);
+
+    corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
+    test_assert(xyz != NULL);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/a", "XYZ")
+      .instance(this)
+      .callback(subscribeInvertCaseOnUpdate);
+
+    test_assert(s != NULL);
+    test_assert(corto_update(xyz) == 0);
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeInvertCaseFilter) */
+void subscribeInvertCaseFilterOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeInvertCaseFilter(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeInvertCaseFilter) */
+    corto_object a = corto_createChild(root_o, "a", corto_void_o);
+    test_assert(a != NULL);
+
+    corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
+    test_assert(xyz != NULL);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/a", "XY?")
+      .instance(this)
+      .callback(subscribeInvertCaseFilterOnUpdate);
+
+    test_assert(s != NULL);
+    test_assert(corto_update(xyz) == 0);
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
+void subscribeInvertCaseFilterFromPublishOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/a", "XY?")
+      .instance(this)
+      .callback(subscribeInvertCaseFilterFromPublishOnUpdate);
+
+    test_assert(s != NULL);
+
+    test_assert(corto_publish(CORTO_ON_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
+void subscribeInvertCaseFromPublishOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/a", "XYZ")
+      .instance(this)
+      .callback(subscribeInvertCaseFromPublishOnUpdate);
+
+    test_assert(s != NULL);
+
+    test_assert(corto_publish(CORTO_ON_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeInvertCaseParent) */
+void subscribeInvertCaseParentOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeInvertCaseParent(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeInvertCaseParent) */
+    corto_object a = corto_createChild(root_o, "a", corto_void_o);
+    test_assert(a != NULL);
+
+    corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
+    test_assert(xyz != NULL);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/A", "xyz")
+      .instance(this)
+      .callback(subscribeInvertCaseParentOnUpdate);
+
+    test_assert(s != NULL);
+    test_assert(corto_update(xyz) == 0);
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
+void subscribeInvertCaseParentFromPublishOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/A", "xyz")
+      .instance(this)
+      .callback(subscribeInvertCaseParentFromPublishOnUpdate);
+
+    test_assert(s != NULL);
+
+    test_assert(corto_publish(CORTO_ON_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}

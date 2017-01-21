@@ -57,7 +57,7 @@ corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
     corto_iter it = corto_llIter(list);
     while (corto_iterHasNext(&it)) {
         corto_result *r = corto_iterNext(&it);
-        if (!strcmp(r->id, name)) {
+        if (!stricmp(r->id, name)) {
             return TRUE;
         }
     }

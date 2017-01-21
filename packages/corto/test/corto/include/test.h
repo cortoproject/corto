@@ -122,7 +122,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <AttrConstructorTest.h>
 #include <Attributes.h>
 #include <AutoResumeSink.h>
-#include <AutoResumeSinkReplicator.h>
+#include <AutoResumeSinkMount.h>
 #include <Bar.h>
 #include <Buffer.h>
 #include <Cat.h>
@@ -132,7 +132,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <DeclaredParent.h>
 #include <DefinedParent.h>
 #include <Dog.h>
-#include <EmptySinkReplicator.h>
+#include <EmptySinkMount.h>
 #include <Env.h>
 #include <Event.h>
 #include <EventReplicator.h>
@@ -143,7 +143,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <GoldenRetriever.h>
 #include <JsonReplicator.h>
 #include <Line.h>
-#include <ListReplicator.h>
+#include <ListMount.h>
 #include <Loader.h>
 #include <Lookup.h>
 #include <Matcher.h>
@@ -164,16 +164,16 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <ReferenceTargetMember.h>
 #include <RelativeName.h>
 #include <ReplicatorEvent.h>
-#include <ReplicatorRequest.h>
 #include <Resolver.h>
 #include <ResumeSink.h>
 #include <Security.h>
 #include <Select.h>
 #include <SelectContentType.h>
+#include <SelectMount.h>
 #include <SelectSink.h>
 #include <SelectSinkNoOnRequest.h>
 #include <SelectSinkWithType.h>
-#include <SinkReplicator.h>
+#include <SinkMount.h>
 #include <StringDeserializer.h>
 #include <StringReplicator.h>
 #include <StringSerializer.h>

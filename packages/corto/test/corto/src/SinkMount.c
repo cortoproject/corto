@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * SinkReplicator.c
+ * SinkMount.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,10 +8,10 @@
 
 #include <test.h>
 
-corto_int16 _test_SinkReplicator_construct(
-    test_SinkReplicator this)
+corto_int16 _test_SinkMount_construct(
+    test_SinkMount this)
 {
-/* $begin(test/SinkReplicator/construct) */
+/* $begin(test/SinkMount/construct) */
     corto_string type =
       corto_observer(this)->type ? corto_observer(this)->type : "int32";
 
@@ -146,20 +146,20 @@ corto_int16 _test_SinkReplicator_construct(
 /* $end */
 }
 
-/* $header(test/SinkReplicator/onRequest) */
+/* $header(test/SinkMount/onRequest) */
 /* Custom release function */
-static void test_SinkReplicator_iterRelease(corto_iter *iter) {
+static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
     corto_resultListClear(data->list);
     corto_llFree(data->list);
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_SinkReplicator_onRequest(
-    test_SinkReplicator this,
+corto_resultIter _test_SinkMount_onRequest(
+    test_SinkMount this,
     corto_request *request)
 {
-/* $begin(test/SinkReplicator/onRequest) */
+/* $begin(test/SinkMount/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();
 
@@ -184,20 +184,20 @@ corto_resultIter _test_SinkReplicator_onRequest(
     corto_iter result = corto_llIterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
-    result.release = test_SinkReplicator_iterRelease;
+    result.release = test_SinkMount_iterRelease;
 
     /* Return persistent iterator to request */
     return result;
 /* $end */
 }
 
-corto_object _test_SinkReplicator_onResume(
-    test_SinkReplicator this,
+corto_object _test_SinkMount_onResume(
+    test_SinkMount this,
     corto_string parent,
     corto_string name,
     corto_object o)
 {
-/* $begin(test/SinkReplicator/onResume) */
+/* $begin(test/SinkMount/onResume) */
     corto_iter iter = corto_llIter(this->items);
     corto_object result = NULL;
 

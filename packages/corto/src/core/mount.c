@@ -569,7 +569,7 @@ corto_object _corto_mount_resume(
                 if (parent_o) {
                     corto_object type_o = corto_resolve(NULL, iterResult->type);
                     if (type_o) {
-                        o = corto_declareChild(parent_o, name, type_o);
+                        o = corto_declareChild(parent_o, iterResult->id, type_o);
                         if (!o) {
                             corto_seterr("failed to create object %s/%s: %s",
                               parent, name, corto_lasterr());
@@ -593,7 +593,19 @@ corto_object _corto_mount_resume(
                 result = o;
             }
         }
-        corto_assert(!corto_iterHasNext(&it), "mount should not return more than one object");
+
+        if (corto_iterHasNext(&it)) {
+            corto_error(
+              "corto: mount should not return more than one object (scope = '%s', id = '%s')",
+              parent,
+              name);
+
+            do {
+                corto_result *r = corto_iterNext(&it);
+                fprintf(stderr, "  excess result: %s/%s\n", r->parent, r->id);
+            } while (corto_iterHasNext(&it));
+            goto error;
+        }
     }
 
     /* Restore owner & attributes */

@@ -1,4 +1,4 @@
-/* TreeSinkReplicator.h
+/* TreeSinkMount.h
  *
  * This file contains generated code. Do not modify!
  */
@@ -17,29 +17,29 @@ extern "C" {
 #endif
 
 
-TEST_EXPORT corto_void _test_TreeSinkReplicator_setup(
-    test_TreeSinkReplicator _this);
-#define test_TreeSinkReplicator_setup(_this) _test_TreeSinkReplicator_setup(test_TreeSinkReplicator(_this))
+TEST_EXPORT corto_void _test_TreeSinkMount_setup(
+    test_TreeSinkMount _this);
+#define test_TreeSinkMount_setup(_this) _test_TreeSinkMount_setup(test_TreeSinkMount(_this))
 
-TEST_EXPORT corto_void _test_TreeSinkReplicator_tc_resolveFromMount(
-    test_TreeSinkReplicator _this);
-#define test_TreeSinkReplicator_tc_resolveFromMount(_this) _test_TreeSinkReplicator_tc_resolveFromMount(test_TreeSinkReplicator(_this))
+TEST_EXPORT corto_void _test_TreeSinkMount_tc_resolveFromMount(
+    test_TreeSinkMount _this);
+#define test_TreeSinkMount_tc_resolveFromMount(_this) _test_TreeSinkMount_tc_resolveFromMount(test_TreeSinkMount(_this))
 
-TEST_EXPORT corto_void _test_TreeSinkReplicator_tc_resolveFromNested(
-    test_TreeSinkReplicator _this);
-#define test_TreeSinkReplicator_tc_resolveFromNested(_this) _test_TreeSinkReplicator_tc_resolveFromNested(test_TreeSinkReplicator(_this))
+TEST_EXPORT corto_void _test_TreeSinkMount_tc_resolveFromNested(
+    test_TreeSinkMount _this);
+#define test_TreeSinkMount_tc_resolveFromNested(_this) _test_TreeSinkMount_tc_resolveFromNested(test_TreeSinkMount(_this))
 
-TEST_EXPORT corto_void _test_TreeSinkReplicator_tc_selectFromNestedReal(
-    test_TreeSinkReplicator _this);
-#define test_TreeSinkReplicator_tc_selectFromNestedReal(_this) _test_TreeSinkReplicator_tc_selectFromNestedReal(test_TreeSinkReplicator(_this))
+TEST_EXPORT corto_void _test_TreeSinkMount_tc_selectFromNestedReal(
+    test_TreeSinkMount _this);
+#define test_TreeSinkMount_tc_selectFromNestedReal(_this) _test_TreeSinkMount_tc_selectFromNestedReal(test_TreeSinkMount(_this))
 
-TEST_EXPORT corto_void _test_TreeSinkReplicator_tc_selectFromNestedVirtual(
-    test_TreeSinkReplicator _this);
-#define test_TreeSinkReplicator_tc_selectFromNestedVirtual(_this) _test_TreeSinkReplicator_tc_selectFromNestedVirtual(test_TreeSinkReplicator(_this))
+TEST_EXPORT corto_void _test_TreeSinkMount_tc_selectFromNestedVirtual(
+    test_TreeSinkMount _this);
+#define test_TreeSinkMount_tc_selectFromNestedVirtual(_this) _test_TreeSinkMount_tc_selectFromNestedVirtual(test_TreeSinkMount(_this))
 
-TEST_EXPORT corto_void _test_TreeSinkReplicator_teardown(
-    test_TreeSinkReplicator _this);
-#define test_TreeSinkReplicator_teardown(_this) _test_TreeSinkReplicator_teardown(test_TreeSinkReplicator(_this))
+TEST_EXPORT corto_void _test_TreeSinkMount_teardown(
+    test_TreeSinkMount _this);
+#define test_TreeSinkMount_teardown(_this) _test_TreeSinkMount_teardown(test_TreeSinkMount(_this))
 
 #ifdef __cplusplus
 }

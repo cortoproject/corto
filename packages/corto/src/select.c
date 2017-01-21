@@ -252,7 +252,7 @@ char* corto_pathstr(
     /* Find common ancestor */
     while ((common < fromCount) &&
        (common < toCount) &&
-       !strcmp(fromArray[common], toArray[common]))
+       !stricmp(fromArray[common], toArray[common]))
     {
         common ++;
     }

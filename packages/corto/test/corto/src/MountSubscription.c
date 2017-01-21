@@ -15,8 +15,8 @@ corto_void _test_MountSubscription_tc_subscribeScope(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
@@ -54,8 +54,8 @@ corto_void _test_MountSubscription_tc_subscribeScopeAlign(
       .callback(NULL);
     test_assert(s != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     test_assertint(corto_llSize(m->subscribes), 1);
@@ -86,8 +86,8 @@ corto_void _test_MountSubscription_tc_subscribeScopeTwice(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
@@ -132,8 +132,8 @@ corto_void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
@@ -179,8 +179,8 @@ corto_void _test_MountSubscription_tc_subscribeSingle(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
@@ -218,8 +218,8 @@ corto_void _test_MountSubscription_tc_subscribeSingleAlign(
       .callback(NULL);
     test_assert(s != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     test_assertint(corto_llSize(m->subscribes), 1);
@@ -250,8 +250,8 @@ corto_void _test_MountSubscription_tc_subscribeSingleTwice(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
@@ -296,8 +296,8 @@ corto_void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
@@ -343,8 +343,8 @@ corto_void _test_MountSubscription_tc_subscribeTree(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
@@ -492,8 +492,8 @@ corto_void _test_MountSubscription_tc_subscribeTreeAlign(
       .callback(NULL);
     test_assert(s != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     test_assertint(corto_llSize(m->subscribes), 13);
@@ -673,8 +673,8 @@ corto_void _test_MountSubscription_tc_subscribeTreeTwice(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
@@ -827,8 +827,8 @@ corto_void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    test_AutoResumeSinkReplicator m =
-      test_AutoResumeSinkReplicatorCreate(mountRoot, NULL, NULL);
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")

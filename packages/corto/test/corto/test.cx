@@ -596,6 +596,11 @@ test/Suite Select::
     void tc_selectParentWithSink()
     void tc_selectSeparator()
 
+    void tc_selectInvertCase()
+    void tc_selectInvertCaseFilter()
+    void tc_selectInvertCaseScope()
+
+
 class JsonReplicator : mount, hidden::
     alias mount: mount/mount
     int16 construct()
@@ -618,7 +623,7 @@ test/Suite SelectContentType::
     void tc_selectJsonFromString()
     void tc_selectJsonFromJson()
 
-class ListReplicator : mount, hidden::
+class ListMount : mount, hidden::
     alias mount : mount/mount
     alias mask : observer/mask
     alias kind : mount/kind
@@ -631,10 +636,10 @@ class MountWIterData: mount, hidden::
     resultIter onRequest(core/request request)
 
 // Test corto_select requesting data from mounts
-test/Suite ReplicatorRequest::
+test/Suite SelectMount::
     void setup() method
     void teardown() method
-    mount: ListReplicator
+    mount: ListMount
 
     void tc_selectSingle()
     void tc_selectSingleNested()
@@ -676,7 +681,11 @@ test/Suite ReplicatorRequest::
     void tc_selectTreeEmptyScope()
     void tc_selectTreeEmptyNestedScope()
 
-class SinkReplicator : core/mount, hidden::
+    void tc_selectInvertCase()
+    void tc_selectInvertCaseFilter()
+    void tc_selectInvertCaseScope()
+
+class SinkMount : core/mount, hidden::
     alias mount: mount/mount
     alias type: mount/type
     value: string
@@ -685,7 +694,7 @@ class SinkReplicator : core/mount, hidden::
     resultIter onRequest(core/request request)
     object onResume(string parent, string name, object o)
 
-class AutoResumeSinkReplicator : core/mount, hidden::
+class AutoResumeSinkMount : core/mount, hidden::
     alias mount: mount/mount
     alias type: mount/type
     value: string
@@ -800,7 +809,7 @@ test/Suite SelectSinkWithType::
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
 
-class EmptySinkReplicator : core/mount, hidden::
+class EmptySinkMount : core/mount, hidden::
     alias mount: mount/mount
     int16 construct()
 
@@ -1063,24 +1072,30 @@ test/Suite Subscribe::
     subscriber noInitialSep: ON_UPDATE, "testScope", "*"
     triggered: uint8
     void tc_noInitialSep()
+    void tc_subscribeInvertCase()
+    void tc_subscribeInvertCaseFilter()
+    void tc_subscribeInvertCaseParent()
+    void tc_subscribeInvertCaseFromPublish()
+    void tc_subscribeInvertCaseFilterFromPublish()
+    void tc_subscribeInvertCaseParentFromPublish()
 
 test/Suite MountSubscription::
-  void tc_subscribeSingle()
-  void tc_subscribeScope()
-  void tc_subscribeTree()
-  void tc_subscribeSingleTwice()
-  void tc_subscribeScopeTwice()
-  void tc_subscribeTreeTwice()
-  void tc_subscribeSingleTwiceSameSubscriber()
-  void tc_subscribeScopeTwiceSameSubscriber()
-  void tc_subscribeTreeTwiceSameSubscriber()
-  void tc_subscribeSingleAlign()
-  void tc_subscribeScopeAlign()
-  void tc_subscribeTreeAlign()
-  void tc_subscribeTreeDefine()
-  void tc_subscribeTreeDelete()
-  void tc_subscribeTreeDefineNested()
-  void tc_subscribeTreeDeleteNested()
+    void tc_subscribeSingle()
+    void tc_subscribeScope()
+    void tc_subscribeTree()
+    void tc_subscribeSingleTwice()
+    void tc_subscribeScopeTwice()
+    void tc_subscribeTreeTwice()
+    void tc_subscribeSingleTwiceSameSubscriber()
+    void tc_subscribeScopeTwiceSameSubscriber()
+    void tc_subscribeTreeTwiceSameSubscriber()
+    void tc_subscribeSingleAlign()
+    void tc_subscribeScopeAlign()
+    void tc_subscribeTreeAlign()
+    void tc_subscribeTreeDefine()
+    void tc_subscribeTreeDelete()
+    void tc_subscribeTreeDefineNested()
+    void tc_subscribeTreeDeleteNested()
 
 // Function overloading support types
 void ol_null(object a)

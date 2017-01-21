@@ -17,7 +17,7 @@ corto_void _test_SelectSinkNoOnRequest_setup(
     corto_int32CreateChild_auto(mount, x, 10);
     corto_int32CreateChild_auto(mount, y, 10);
 
-    test_EmptySinkReplicatorCreateChild_auto(root_o, sinkMount, mount);
+    test_EmptySinkMountCreateChild_auto(root_o, sinkMount, mount);
 
     /* Ensure all objects are created with persistency enabled */
     corto_setAttr(CORTO_ATTR_PERSISTENT);

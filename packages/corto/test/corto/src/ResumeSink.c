@@ -92,7 +92,7 @@ corto_void _test_ResumeSink_setup(
 /* $begin(test/ResumeSink/setup) */
     /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
-    test_SinkReplicatorCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
+    test_SinkMountCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
 
     CORTO_DEBUG_ENABLED = 1;
 

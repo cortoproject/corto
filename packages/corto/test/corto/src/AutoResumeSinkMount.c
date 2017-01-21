@@ -1,6 +1,6 @@
 /* $CORTO_GENERATED
  *
- * AutoResumeSinkReplicator.c
+ * AutoResumeSinkMount.c
  *
  * Only code written between the begin and end tags will be preserved
  * when the file is regenerated.
@@ -8,10 +8,10 @@
 
 #include <test.h>
 
-corto_int16 _test_AutoResumeSinkReplicator_construct(
-    test_AutoResumeSinkReplicator this)
+corto_int16 _test_AutoResumeSinkMount_construct(
+    test_AutoResumeSinkMount this)
 {
-/* $begin(test/AutoResumeSinkReplicator/construct) */
+/* $begin(test/AutoResumeSinkMount/construct) */
     corto_string type =
       corto_observer(this)->type ? corto_observer(this)->type : "int32";
 
@@ -148,20 +148,20 @@ corto_int16 _test_AutoResumeSinkReplicator_construct(
 /* $end */
 }
 
-/* $header(test/AutoResumeSinkReplicator/onRequest) */
+/* $header(test/AutoResumeSinkMount/onRequest) */
 /* Custom release function */
-static void test_SinkReplicator_iterRelease(corto_iter *iter) {
+static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
     corto_resultListClear(data->list);
     corto_llFree(data->list);
     corto_llIterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_AutoResumeSinkReplicator_onRequest(
-    test_AutoResumeSinkReplicator this,
+corto_resultIter _test_AutoResumeSinkMount_onRequest(
+    test_AutoResumeSinkMount this,
     corto_request *request)
 {
-/* $begin(test/AutoResumeSinkReplicator/onRequest) */
+/* $begin(test/AutoResumeSinkMount/onRequest) */
     corto_iter iter = corto_llIter(this->items);
     corto_ll data = corto_llNew();
 
@@ -186,19 +186,19 @@ corto_resultIter _test_AutoResumeSinkReplicator_onRequest(
     corto_iter result = corto_llIterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
-    result.release = test_SinkReplicator_iterRelease;
+    result.release = test_SinkMount_iterRelease;
 
     /* Return persistent iterator to request */
     return result;
 /* $end */
 }
 
-corto_word _test_AutoResumeSinkReplicator_onSubscribe(
-    test_AutoResumeSinkReplicator this,
+corto_word _test_AutoResumeSinkMount_onSubscribe(
+    test_AutoResumeSinkMount this,
     corto_string parent,
     corto_string expr)
 {
-/* $begin(test/AutoResumeSinkReplicator/onSubscribe) */
+/* $begin(test/AutoResumeSinkMount/onSubscribe) */
     corto_request r = {.parent = parent, .expr = expr};
 
     corto_requestListAppend(
@@ -211,12 +211,12 @@ corto_word _test_AutoResumeSinkReplicator_onSubscribe(
 /* $end */
 }
 
-corto_void _test_AutoResumeSinkReplicator_onUnsubscribe(
-    test_AutoResumeSinkReplicator this,
+corto_void _test_AutoResumeSinkMount_onUnsubscribe(
+    test_AutoResumeSinkMount this,
     corto_string parent,
     corto_word ctx)
 {
-/* $begin(test/AutoResumeSinkReplicator/onUnsubscribe) */
+/* $begin(test/AutoResumeSinkMount/onUnsubscribe) */
     corto_request r = {.parent = parent};
 
     test_assert(ctx == (corto_word)this);

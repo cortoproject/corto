@@ -381,7 +381,7 @@ corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
                 corto_path(NULL, root_o, p, "/"), CORTO_LOCATION_INCLUDE);
 
         if (!includePath) {
-            corto_seterr("package %s not found", corto_path(NULL, root_o, p, "/"));
+            corto_seterr("package '%s' not found", corto_path(NULL, root_o, p, "/"));
             goto error;
         }
 
