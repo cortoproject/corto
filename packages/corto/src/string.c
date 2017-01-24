@@ -284,7 +284,7 @@ char* corto_strupper(char *str) {
     char *ptr, ch;
     ptr = str;
     while ((ch = *ptr)) {
-        *ptr = toupper(ch);
+        if (ch >= 97) *ptr = toupper(ch);
         ptr++;
     }
     return str;
@@ -295,7 +295,7 @@ char* corto_strlower(char *str) {
     char *ptr, ch;
     ptr = str;
     while ((ch = *ptr)) {
-        *ptr = tolower(ch);
+        if (ch < 97) *ptr = tolower(ch);
         ptr++;
     }
     return str;
