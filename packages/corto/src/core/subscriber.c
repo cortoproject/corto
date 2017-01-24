@@ -210,8 +210,8 @@ corto_int16 corto_notifySubscribersId(
                         }
                         contentTypes[i].value = contentTypes[i].ct->fromValue(&intermediateValue);
                         content = contentTypes[i].value;
+                        contentTypesCount ++;
                     }
-                    contentTypesCount ++;
                 }
 
                 if (sep) *sep = '\0';
