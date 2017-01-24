@@ -439,9 +439,15 @@ char* corto_matchParent(char *parent, char *expr) {
     if (*exprPtr == '/') exprPtr++;
 
     while ((parentCh = *parentPtr) &&
-           (exprCh = *exprPtr) &&
-           (tolower(parentCh) == tolower(exprCh)))
+           (exprCh = *exprPtr))
     {
+        if (parentCh < 97) parentCh = tolower(parentCh);
+        if (exprCh < 97) exprCh = tolower(exprCh);
+        
+        if (parentCh != exprCh) {
+            break;
+        }
+
         parentPtr++;
         exprPtr++;
     }
