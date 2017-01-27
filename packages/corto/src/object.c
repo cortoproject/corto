@@ -3206,20 +3206,10 @@ static corto_object corto_lookup_intern(
             }
         }
 
-        if (ptr[0] == '.') {
-            if (ptr[1] == '.') {
-                if (&ptr[2] == next) {
-                    o = corto_parentof(o);
-                } else {
-                    corto_seterr("invalid usage of '..' in '%s'", id);
-                    goto error;
-                }
-            } else if (&ptr[1] == next) {
-                /* .. do nothing */
-            } else {
-                corto_seterr("invalid usage of '.' in '%s'", id);
-                goto error;
-            }
+        if ((ptr[0] == '.') && (&ptr[1] == next)) {
+            /* do nothing */
+        } else if ((ptr[0] == '.') && (ptr[1] == '.') && (&ptr[2] == next)) {
+            o = corto_parentof(o);
         } else if (scope) {
             if ((tree = scope->scope)) {
                 if (containsArgs) {

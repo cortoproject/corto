@@ -93,6 +93,24 @@ corto_void _test_Lookup_tc_lookupFunctionNoArgs(
 /* $end */
 }
 
+corto_void _test_Lookup_tc_lookupIdEndsWithDot(
+    test_Lookup this)
+{
+/* $begin(test/Lookup/tc_lookupIdEndsWithDot) */
+
+    corto_object o = corto_createChild(root_o, "dot.", corto_void_o);
+    test_assert(o != NULL);
+
+    corto_object l = corto_lookup(root_o, "dot.");
+    test_assert(l != NULL);
+    test_assert(l == o);
+
+    corto_release(o);
+    corto_release(l);
+
+/* $end */
+}
+
 corto_void _test_Lookup_tc_lookupIdFromNull(
     test_Lookup this)
 {
@@ -125,6 +143,24 @@ corto_void _test_Lookup_tc_lookupIdFromScope(
     corto_object o = corto_lookup(corto_core_o, "mount");
     test_assert(o != NULL);
     test_assert(o != corto_word_o);
+
+/* $end */
+}
+
+corto_void _test_Lookup_tc_lookupIdStartsWithDot(
+    test_Lookup this)
+{
+/* $begin(test/Lookup/tc_lookupIdStartsWithDot) */
+
+    corto_object o = corto_createChild(root_o, ".dot", corto_void_o);
+    test_assert(o != NULL);
+
+    corto_object l = corto_lookup(root_o, ".dot");
+    test_assert(l != NULL);
+    test_assert(l == o);
+
+    corto_release(o);
+    corto_release(l);
 
 /* $end */
 }
