@@ -721,9 +721,9 @@ corto_mountSubscription* corto_mount_findSubscription(
     corto_iter it = corto_llIter(this->subscriptions);
     while (corto_iterHasNext(&it)) {
         corto_mountSubscription *s = corto_iterNext(&it);
-        if (!strcmp(s->parent, request->parent)) {
+        if (!stricmp(s->parent, request->parent)) {
              result = s;
-             if (!strcmp(s->expr, request->expr)) {
+             if (!stricmp(s->expr, request->expr)) {
                 *found = TRUE;
                 break;
             }

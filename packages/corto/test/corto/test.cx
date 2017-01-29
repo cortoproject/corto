@@ -1090,6 +1090,7 @@ test/Suite MountSubscription::
     void tc_subscribeTreeTwice()
     void tc_subscribeTwoSingleSameCtx()
     void tc_subscribeTwoSingleOtherCtx()
+    void tc_subscribeSameIdDifferentCase()
     void tc_subscribeSingleTwiceSameSubscriber()
     void tc_subscribeScopeTwiceSameSubscriber()
     void tc_subscribeTreeTwiceSameSubscriber()

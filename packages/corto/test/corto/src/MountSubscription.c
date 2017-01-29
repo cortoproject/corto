@@ -8,6 +8,53 @@
 
 #include <test.h>
 
+corto_void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeSameIdDifferentCase) */
+    corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
+    test_assert(mountRoot != NULL);
+
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+    test_assert(m != NULL);
+
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+      .callback(NULL);
+    test_assert(s1 != NULL);
+    test_assertint(corto_llSize(m->subscribes), 1);
+    test_assertint(corto_llSize(m->unsubscribes), 0);
+
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "Foo")
+      .callback(NULL);
+    test_assert(s2 != NULL);
+    test_assertint(corto_llSize(m->subscribes), 1);
+    test_assertint(corto_llSize(m->unsubscribes), 0);
+
+    corto_request *r = corto_llGet(m->subscribes, 0);
+    test_assert(r != NULL);
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->expr, "foo");
+
+    test_assert(corto_delete(s1) == 0);
+    test_assertint(corto_llSize(m->subscribes), 1);
+    test_assertint(corto_llSize(m->unsubscribes), 0);
+
+    test_assert(corto_delete(s2) == 0);
+    test_assertint(corto_llSize(m->subscribes), 1);
+    test_assertint(corto_llSize(m->unsubscribes), 1);
+
+    r = corto_llGet(m->unsubscribes, 0);
+    test_assert(r != NULL);
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->expr, "foo");
+
+    test_assert(corto_delete(m) == 0);
+    test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
 corto_void _test_MountSubscription_tc_subscribeScope(
     test_MountSubscription this)
 {
