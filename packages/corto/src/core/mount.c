@@ -251,6 +251,7 @@ corto_void _corto_mount_destruct(
         corto_mount_onUnsubscribe(
             this,
             s->parent,
+            s->expr,
             s->userData);
         corto_deinitp(s, corto_mountSubscription_o);
         corto_dealloc(s);
@@ -396,12 +397,14 @@ corto_object _corto_mount_onResume_v(
 corto_word _corto_mount_onSubscribe_v(
     corto_mount this,
     corto_string parent,
-    corto_string expr)
+    corto_string expr,
+    corto_word ctx)
 {
 /* $begin(corto/core/mount/onSubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
     CORTO_UNUSED(expr);
+    CORTO_UNUSED(ctx);
 
     return 0;
 /* $end */
@@ -410,11 +413,13 @@ corto_word _corto_mount_onSubscribe_v(
 corto_void _corto_mount_onUnsubscribe_v(
     corto_mount this,
     corto_string parent,
+    corto_string expr,
     corto_word ctx)
 {
 /* $begin(corto/core/mount/onUnsubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
+    CORTO_UNUSED(expr);
     CORTO_UNUSED(ctx);
 
 /* $end */
@@ -704,38 +709,97 @@ error:
 /* $end */
 }
 
+/* $header(corto/core/mount/subscribe) */
+corto_mountSubscription* corto_mount_findSubscription(
+    corto_mount this,
+    corto_request *request,
+    corto_bool *found)
+{
+    *found = FALSE;
+    corto_mountSubscription *result = NULL;
+
+    corto_iter it = corto_llIter(this->subscriptions);
+    while (corto_iterHasNext(&it)) {
+        corto_mountSubscription *s = corto_iterNext(&it);
+        if (!strcmp(s->parent, request->parent)) {
+             result = s;
+             if (!strcmp(s->expr, request->expr)) {
+                *found = TRUE;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+/* $end */
 corto_void _corto_mount_subscribe(
     corto_mount this,
     corto_request *request)
 {
 /* $begin(corto/core/mount/subscribe) */
+    corto_word ctx = 0;
+    corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
-    corto_mountSubscription *newSubscription = NULL;
 
     corto_lock(this);
-    corto_iter it = corto_llIter(this->subscriptions);
-    while (corto_iterHasNext(&it)) {
-        corto_mountSubscription *s = corto_iterNext(&it);
-        if (!strcmp(s->parent, request->parent))
-        {
-            s->count ++;
-            found = TRUE;
-            break;
-        }
-    }
-    if (!found) {
-        newSubscription = corto_calloc(sizeof(corto_mountSubscription));
-        newSubscription->parent = corto_strdup(request->parent);
-        newSubscription->expr = corto_strdup(request->expr);
-        newSubscription->count = 1;
-        newSubscription->userData = 0;
-        corto_llAppend(this->subscriptions, newSubscription);
+    subscription = corto_mount_findSubscription(this, request, &found);
+    if (subscription) {
+        /* Ensure subscription isn't deleted outside of lock */
+        subscription->count ++;
     }
     corto_unlock(this);
 
-    if (newSubscription) {
-        newSubscription->userData = corto_mount_onSubscribe(
-            this, request->parent, request->expr);
+    /* Process callback outside of lock */
+
+    if (!found) {
+        /* If no subscription is found that both matches parent and expr, notify
+         * the mount */
+        ctx = corto_mount_onSubscribe(
+          this,
+          request->parent,
+          request->expr,
+          subscription ? subscription->userData : 0);
+    }
+
+    /* Only add subscription if connection data is not null, no existing
+     * subscription exists, and if context data differs from existing
+     * subscription */
+    if (ctx && (!subscription || (subscription->userData != ctx))) {
+        corto_lock(this);
+
+        /* If a new subscription is required, undo increase of refcount of the
+        * subscription that was found */
+        if (subscription) {
+            subscription->count --;
+        }
+
+        /* Do lookup again, as list may have changed while mount was unlocked */
+        subscription = corto_mount_findSubscription(this, request, &found);
+        if (!found) {
+            subscription = corto_calloc(sizeof(corto_mountSubscription));
+            subscription->parent = corto_strdup(request->parent);
+            subscription->expr = corto_strdup(request->expr);
+            subscription->userData = ctx;
+            corto_llAppend(this->subscriptions, subscription);
+        }
+
+        /* Increase refcount of new or existing subscription (can be new if
+         * during the unlock a new subscription was added) */
+        subscription->count ++;
+
+        corto_unlock(this);
+    } else if (!found && subscription) {
+        /* If there is no need to create a new subscription but no exact match
+         * was found, it means that onSubscribe returned the same ctx as the
+         * existing connection. In that case, the 'expr' parameter of the
+         * subscription is meaningless, so to avoid confusion set it to '*' */
+       corto_lock(this);
+       corto_setstr(&subscription->expr, "*");
+
+       /* Doesn't count as new subscription, so undo increase in refcount */
+       subscription->count --;
+       corto_unlock(this);
     }
 
 /* $end */
@@ -746,32 +810,25 @@ corto_void _corto_mount_unsubscribe(
     corto_request *request)
 {
 /* $begin(corto/core/mount/unsubscribe) */
-    corto_mountSubscription *found = NULL;
+    corto_mountSubscription *subscription = NULL;
+    corto_bool found = FALSE;
 
     corto_lock(this);
-    corto_iter it = corto_llIter(this->subscriptions);
-    while (corto_iterHasNext(&it)) {
-        corto_mountSubscription *s = corto_iterNext(&it);
-        if (!strcmp(s->parent, request->parent))
-        {
-            found = s;
-            break;
-        }
-    }
+    subscription = corto_mount_findSubscription(this, request, &found);
 
-    if (found) {
-        if (! --found->count) {
-            corto_llRemove(this->subscriptions, found);
+    if (subscription) {
+        if (! --subscription->count) {
+            corto_llRemove(this->subscriptions, subscription);
         } else {
-            found = NULL;
+            subscription = NULL;
         }
     }
     corto_unlock(this);
 
-    if (found) {
-        corto_mount_onUnsubscribe(this, found->parent, found->userData);
-        corto_deinitp(found, corto_mountSubscription_o);
-        corto_dealloc(found);
+    if (subscription) {
+        corto_mount_onUnsubscribe(this, subscription->parent, subscription->expr, subscription->userData);
+        corto_deinitp(subscription, corto_mountSubscription_o);
+        corto_dealloc(subscription);
     }
 
 /* $end */

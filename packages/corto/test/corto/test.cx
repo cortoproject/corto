@@ -705,8 +705,8 @@ class AutoResumeSinkMount : core/mount, hidden::
     items: resultList, private
     int16 construct()
     resultIter onRequest(core/request request)
-    word onSubscribe(string parent, string expr)
-    void onUnsubscribe(string parent, word ctx)
+    word onSubscribe(string parent, string expr, word ctx)
+    void onUnsubscribe(string parent, string expr, word ctx)
 
 // Request data from a SINK mount
 test/Suite SelectSink::
@@ -1088,6 +1088,8 @@ test/Suite MountSubscription::
     void tc_subscribeSingleTwice()
     void tc_subscribeScopeTwice()
     void tc_subscribeTreeTwice()
+    void tc_subscribeTwoSingleSameCtx()
+    void tc_subscribeTwoSingleOtherCtx()
     void tc_subscribeSingleTwiceSameSubscriber()
     void tc_subscribeScopeTwiceSameSubscriber()
     void tc_subscribeTreeTwiceSameSubscriber()

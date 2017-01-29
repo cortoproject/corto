@@ -89,25 +89,29 @@ CORTO_EXPORT corto_object _corto_mount_onResume_v(
 CORTO_EXPORT corto_word _corto_mount_onSubscribe(
     corto_mount _this,
     corto_string parent,
-    corto_string expr);
-#define corto_mount_onSubscribe(_this, parent, expr) _corto_mount_onSubscribe(corto_mount(_this), parent, expr)
+    corto_string expr,
+    corto_word ctx);
+#define corto_mount_onSubscribe(_this, parent, expr, ctx) _corto_mount_onSubscribe(corto_mount(_this), parent, expr, ctx)
 
 CORTO_EXPORT corto_word _corto_mount_onSubscribe_v(
     corto_mount _this,
     corto_string parent,
-    corto_string expr);
-#define corto_mount_onSubscribe_v(_this, parent, expr) _corto_mount_onSubscribe_v(corto_mount(_this), parent, expr)
+    corto_string expr,
+    corto_word ctx);
+#define corto_mount_onSubscribe_v(_this, parent, expr, ctx) _corto_mount_onSubscribe_v(corto_mount(_this), parent, expr, ctx)
 CORTO_EXPORT corto_void _corto_mount_onUnsubscribe(
     corto_mount _this,
     corto_string parent,
+    corto_string expr,
     corto_word ctx);
-#define corto_mount_onUnsubscribe(_this, parent, ctx) _corto_mount_onUnsubscribe(corto_mount(_this), parent, ctx)
+#define corto_mount_onUnsubscribe(_this, parent, expr, ctx) _corto_mount_onUnsubscribe(corto_mount(_this), parent, expr, ctx)
 
 CORTO_EXPORT corto_void _corto_mount_onUnsubscribe_v(
     corto_mount _this,
     corto_string parent,
+    corto_string expr,
     corto_word ctx);
-#define corto_mount_onUnsubscribe_v(_this, parent, ctx) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, ctx)
+#define corto_mount_onUnsubscribe_v(_this, parent, expr, ctx) _corto_mount_onUnsubscribe_v(corto_mount(_this), parent, expr, ctx)
 
 CORTO_EXPORT corto_void _corto_mount_post(
     corto_mount _this,

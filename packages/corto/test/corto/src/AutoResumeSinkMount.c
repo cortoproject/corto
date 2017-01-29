@@ -196,30 +196,42 @@ corto_resultIter _test_AutoResumeSinkMount_onRequest(
 corto_word _test_AutoResumeSinkMount_onSubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
-    corto_string expr)
+    corto_string expr,
+    corto_word ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onSubscribe) */
     corto_request r = {.parent = parent, .expr = expr};
+
+    /* Result is set to either this or 'expr' depending on the content of expr.
+     * This allows the testcase to test both cases where onSubscribe returns the
+     * same value of ctx, as well as cases where it doesn't */
+    corto_word result = (corto_word)this;
+
+    if (expr[0] != '*') {
+        result = rand();
+    }
 
     corto_requestListAppend(
       this->subscribes,
       &r
     );
 
-    return (corto_word)this;
-
+    return result;
 /* $end */
 }
 
 corto_void _test_AutoResumeSinkMount_onUnsubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
+    corto_string expr,
     corto_word ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onUnsubscribe) */
-    corto_request r = {.parent = parent};
+    corto_request r = {.parent = parent, .expr = expr};
 
-    test_assert(ctx == (corto_word)this);
+    if (expr[0] == '*') {
+        test_assert(ctx == (corto_word)this);
+    }
 
     corto_requestListAppend(
       this->unsubscribes,
