@@ -19,6 +19,7 @@ void corto_call_cdecl(corto_function f, corto_void* result, void* args);
 
 /* TLS callback to cleanup observer administration */
 void corto_observerAdminFree(void *admin);
+void corto_subscriberAdminFree(void *admin);
 void corto_declaredAdminFree(void *admin);
 
 #ifdef CORTO_VM
@@ -57,6 +58,7 @@ static corto_ll corto_exitHandlers = NULL;
 
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
+corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;
 corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 corto_threadKey CORTO_KEY_LISTEN_ADMIN;
 corto_threadKey CORTO_KEY_OWNER;
@@ -964,6 +966,7 @@ int corto_start(void) {
 
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
+    corto_threadTlsKey(&CORTO_KEY_SUBSCRIBER_ADMIN, corto_subscriberAdminFree);
     corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
     corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
