@@ -95,6 +95,15 @@ int CORTO_BENCHMARK_DEFINE;
 int CORTO_BENCHMARK_DELETE;
 int CORTO_BENCHMARK_RESOLVE;
 
+int S_B_NOTIFY;
+int S_B_INIT;
+int S_B_FINI;
+int S_B_MATCH;
+int S_B_PATHID;
+int S_B_INVOKE;
+int S_B_MATCHPARENT;
+int S_B_CONTENTTYPE;
+
 /*
  * Indicator for whether corto is operational
  * 0 = running
@@ -938,6 +947,15 @@ int corto_start(void) {
     CORTO_BENCHMARK_DELETE = corto_benchmark_init("corto_delete");
     CORTO_BENCHMARK_RESOLVE = corto_benchmark_init("corto_resolve");
 
+    S_B_NOTIFY = corto_benchmark_init("S_B_NOTIFY");
+    S_B_INIT = corto_benchmark_init("S_B_INIT");
+    S_B_FINI = corto_benchmark_init("S_B_FINI");
+    S_B_MATCH = corto_benchmark_init("S_B_MATCH");
+    S_B_PATHID = corto_benchmark_init("S_B_PATHID");
+    S_B_INVOKE = corto_benchmark_init("S_B_INVOKE");
+    S_B_MATCHPARENT = corto_benchmark_init("S_B_MATCHPARENT");
+    S_B_CONTENTTYPE = corto_benchmark_init("S_B_CONTENTTYPE");
+
     /* Initialize operating system environment */
     corto_initEnvironment();
 
@@ -1129,6 +1147,16 @@ int corto_stop(void) {
     corto_benchmark_fini(CORTO_BENCHMARK_DEFINE);
     corto_benchmark_fini(CORTO_BENCHMARK_DELETE);
     corto_benchmark_fini(CORTO_BENCHMARK_RESOLVE);
+
+    corto_benchmark_fini(S_B_NOTIFY);
+    corto_benchmark_fini(S_B_INIT);
+    corto_benchmark_fini(S_B_MATCHPARENT);
+    corto_benchmark_fini(S_B_MATCH);
+    corto_benchmark_fini(S_B_PATHID);
+    corto_benchmark_fini(S_B_CONTENTTYPE);
+    corto_benchmark_fini(S_B_INVOKE);
+    corto_benchmark_fini(S_B_FINI);
+
 
     return 0;
 error:

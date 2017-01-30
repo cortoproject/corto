@@ -135,7 +135,7 @@ void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
     return result;
 }
 
-#ifdef CORTO_BENCHMARK
+#if 0
 struct corto_benchmark {
     corto_string name;
     corto_time start;

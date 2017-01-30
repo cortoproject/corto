@@ -13,6 +13,15 @@
 extern corto_threadKey CORTO_KEY_FLUENT;
 extern corto_rwmutex_s corto_subscriberLock;
 
+extern int S_B_NOTIFY;
+extern int S_B_INIT;
+extern int S_B_FINI;
+extern int S_B_MATCH;
+extern int S_B_PATHID;
+extern int S_B_INVOKE;
+extern int S_B_MATCHPARENT;
+extern int S_B_CONTENTTYPE;
+
 /* Fluent request */
 typedef struct corto_subscribeRequest {
     corto_int16 err;
@@ -34,7 +43,14 @@ typedef struct corto_subscription {
 
 CORTO_SEQUENCE(corto_subscriptionSeq, corto_subscription,);
 
-static corto_subscriptionSeq corto_subscribers[CORTO_MAX_SCOPE_DEPTH];
+typedef struct corto_subscriptionPerParent {
+    corto_subscriptionSeq subscriptions;
+    corto_string parent;
+} corto_subscriptionPerParent;
+
+CORTO_SEQUENCE(corto_subscriptionPerParentSeq, corto_subscriptionPerParent,);
+
+static corto_subscriptionPerParentSeq corto_subscribers[CORTO_MAX_SCOPE_DEPTH];
 
 /* Optimization- if number is zero don't bother taking a lock and walking
  * the subscribers */
@@ -55,12 +71,15 @@ int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData) 
             goto error;
         }
 
-        int i, s;
+        int i, sp, s;
         for (i = 0; i < CORTO_MAX_SCOPE_DEPTH; i++) {
-            for (s = 0; s < corto_subscribers[i].length; s++) {
-                corto_subscription *sub = &corto_subscribers[i].buffer[s];
-                if (!(result = action(sub->s, sub->instance, userData))) {
-                    break;
+            for (sp = 0; sp < corto_subscribers[i].length; sp++) {
+                corto_subscriptionPerParent *subPerParent = &corto_subscribers[i].buffer[sp];
+                for (s = 0; s < subPerParent[sp].subscriptions.length; s ++) {
+                    corto_subscription *sub = &subPerParent[sp].subscriptions.buffer[s];
+                    if (!(result = action(sub->s, sub->instance, userData))) {
+                        break;
+                    }
                 }
             }
             if (!result) {
@@ -96,6 +115,13 @@ corto_int16 corto_notifySubscribersId(
     corto_string contentType,
     corto_word value)
 {
+    if (!corto_subscribers_count) {
+        return 0;
+    }
+
+    corto_benchmark_start(S_B_NOTIFY);
+
+    corto_benchmark_start(S_B_INIT);
     corto_object intermediate = NULL;
     corto_value intermediateValue = corto_value_init();
     corto_contentType contentTypeHandle = NULL;
@@ -128,17 +154,28 @@ corto_int16 corto_notifySubscribersId(
     }
 
     corto_int16 depth = corto_subscriber_getObjectDepth(path);
+    corto_benchmark_stop(S_B_INIT);
 
     corto_rwmutexRead(&corto_subscriberLock);
     do {
-        corto_subscriptionSeq *subscribers = &corto_subscribers[depth];
-        if (subscribers) {
-            corto_uint32 it;
-            for (it = 0; it < subscribers->length; it ++) {
-                corto_subscriber s = subscribers->buffer[it].s;
+        corto_uint32 sp, s;
+        corto_bool relativeParentSet = FALSE;
+        corto_id relativeParent;
+        for (sp = 0; sp < corto_subscribers[depth].length; sp ++) {
+            corto_subscriptionPerParent *subPerParent = &corto_subscribers[depth].buffer[sp];
+
+            corto_benchmark_start(S_B_MATCHPARENT);
+            char *expr = corto_matchParent(subPerParent->parent, path);
+            if (!expr) {
+                continue;
+            }
+            corto_benchmark_stop(S_B_MATCHPARENT);
+
+            for (s = 0; s < subPerParent->subscriptions.length; s ++) {
+                corto_subscription *sub = &subPerParent->subscriptions.buffer[s];
+                corto_subscriber s = sub->s;
                 corto_word content = 0;
-                corto_id relativeParent;
-                corto_object instance = subscribers->buffer[it].instance;
+                corto_object instance = sub->instance;
 
                 if (!s->expr) {
                     continue;
@@ -156,20 +193,19 @@ corto_int16 corto_notifySubscribersId(
                     continue;
                 }
 
-                char *expr = corto_matchParent(s->parent, path);
-                if (!expr) {
-                    continue;
-                }
+                corto_benchmark_start(S_B_MATCH);
                 if (!corto_matchProgram_run((corto_matchProgram)s->matchProgram, expr)) {
                     corto_debug("subscriber: expression '%s' does not match '%s' (parent = '%s', path = '%s')",
                       s->expr, expr, s->parent, path);
                     continue;
                 }
+                corto_benchmark_stop(S_B_MATCH);
 
                 /* If subscriber requests content, convert to subscriber contentType */
                 if (s->contentType && contentType && !strcmp(s->contentType, contentType)) {
                     content = value;
                 } else if (s->contentTypeHandle && value && type) {
+                    corto_benchmark_start(S_B_CONTENTTYPE);
                     /* Check if contentType has already been loaded */
                     corto_int32 i;
                     for (i = 0; i < contentTypesCount; i++) {
@@ -212,19 +248,26 @@ corto_int16 corto_notifySubscribersId(
                         content = contentTypes[i].value;
                         contentTypesCount ++;
                     }
+                    corto_benchmark_stop(S_B_CONTENTTYPE);
                 }
 
-                if (sep) *sep = '\0';
-                corto_id fromElem, toElem;
-                char *fromElemPtr = fromElem;
-                if (s->parent) {
-                    strcpy(fromElem, s->parent);
-                } else {
-                    fromElemPtr = NULL;
-                }
-                strcpy(toElem, parent);
+                /* Relative parent will be the same for each subscriber at same depth */
+                if (!relativeParentSet) {
+                    corto_benchmark_start(S_B_PATHID);
+                    if (sep) *sep = '\0';
+                    corto_id fromElem, toElem;
+                    char *fromElemPtr = fromElem;
+                    if (s->parent) {
+                        strcpy(fromElem, s->parent);
+                    } else {
+                        fromElemPtr = NULL;
+                    }
+                    strcpy(toElem, parent);
 
-                corto_pathstr(relativeParent, fromElemPtr, toElem, "/");
+                    corto_pathstr(relativeParent, fromElemPtr, toElem, "/");
+                    corto_benchmark_stop(S_B_PATHID);
+                    relativeParentSet = TRUE;
+                }
 
                 corto_result r = {
                   id,
@@ -236,6 +279,7 @@ corto_int16 corto_notifySubscribersId(
                   intermediate
                 };
 
+                corto_benchmark_start(S_B_INVOKE);
                 corto_dispatcher dispatcher = corto_observer(s)->dispatcher;
                 if (!dispatcher) {
                     corto_rwmutexUnlock(&corto_subscriberLock);
@@ -270,11 +314,15 @@ corto_int16 corto_notifySubscribersId(
                     event->contentTypeHandle = s->contentTypeHandle;
                     corto_dispatcher_post(dispatcher, corto_event(event));
                 }
+                corto_benchmark_stop(S_B_INVOKE);
+
                 if (sep) *sep = '/';
             }
         }
     } while (--depth >= 0);
     corto_rwmutexUnlock(&corto_subscriberLock);
+
+    corto_benchmark_start(S_B_FINI);
 
     /* Free up resources */
     corto_int32 i;
@@ -286,6 +334,10 @@ corto_int16 corto_notifySubscribersId(
     if (intermediate && contentType) {
         corto_release(intermediate);
     }
+
+    corto_benchmark_stop(S_B_FINI);
+
+    corto_benchmark_stop(S_B_NOTIFY);
 
     return 0;
 error:
@@ -456,32 +508,35 @@ static corto_int16 corto_subscriber_unsubscribeIntern(corto_subscriber this, cor
         goto error;
     }
 
-    /* Notify mounts of unsubscription once */
-    corto_subscriptionSeq *seq = &corto_subscribers[depth];
-
     /* Find subscriber */
-    corto_uint32 i;
-    for (i = 0; i < seq->length; i++) {
-        if ((seq->buffer[i].s == this) && (removeAll || (seq->buffer[i].instance == instance))) {
-            if (i == (seq->length - 1)) {
-                seq->buffer[i].s = NULL;
-                seq->buffer[i].instance = NULL;
-            } else {
-                seq->buffer[i].s = seq->buffer[seq->length - 1].s;
-                seq->buffer[i].instance = seq->buffer[seq->length - 1].instance;
+    corto_uint32 s, sp;
+    for (sp = 0; sp < corto_subscribers[depth].length; sp++) {
+        corto_subscriptionPerParent *subPerParent = &corto_subscribers[depth].buffer[sp];
+        corto_subscriptionSeq *seq = &subPerParent->subscriptions;
+        for (s = 0; s < seq->length; s ++) {
+            corto_subscription *sub = &seq->buffer[s];
+            if ((sub->s == this) && (removeAll || (sub->instance == instance))) {
+                if (s == (seq->length - 1)) {
+                    seq->buffer[s].s = NULL;
+                    seq->buffer[s].instance = NULL;
+                } else {
+                    seq->buffer[s].s = seq->buffer[seq->length - 1].s;
+                    seq->buffer[s].instance = seq->buffer[seq->length - 1].instance;
 
-                /* If removing all, make sure not to skip elements */
-                if (removeAll && (i == (seq->length - 2))) {
-                    i --;
+                    /* If removing all, make sure not to skip elements */
+                    if (removeAll && (s == (seq->length - 2))) {
+                        s --;
+                    }
                 }
-            }
 
-            corto_select(this->parent, this->expr).instance(this).unsubscribe();
+                corto_select(this->parent, this->expr).instance(this).unsubscribe();
 
-            seq->length --;
-            count ++;
-            if (!removeAll) {
-                break;
+                seq->length --;
+                corto_subscribers_count --;
+                count ++;
+                if (!removeAll) {
+                    break;
+                }
             }
         }
     }
@@ -614,13 +669,38 @@ corto_int16 _corto_subscriber_subscribe(
         goto error;
     }
 
-    corto_uint32 length = corto_subscribers[depth].length + 1;
-    corto_subscribers[depth].buffer =
-      corto_realloc(corto_subscribers[depth].buffer, length * sizeof(corto_subscription));
+    /* First, find an existing subscription sequence for parent of subscriber */
+    corto_uint32 sp;
+    corto_subscriptionPerParent *subPerParent = NULL;
+    for (sp = 0; sp < corto_subscribers[depth].length; sp++) {
+        subPerParent = &corto_subscribers[depth].buffer[sp];
+        if (!stricmp(this->parent, subPerParent->parent)) {
+            break;
+        } else {
+            subPerParent = NULL;
+        }
+    }
 
-    corto_subscribers[depth].buffer[length - 1].s = this;
-    corto_subscribers[depth].buffer[length - 1].instance = instance;
-    corto_subscribers[depth].length ++;
+    /* If no subscription sequence is found for parent, create one */
+    if (!subPerParent) {
+        corto_uint32 length = corto_subscribers[depth].length + 1;
+        corto_subscribers[depth].buffer =
+          corto_realloc(corto_subscribers[depth].buffer, length * sizeof(corto_subscriptionPerParent));
+        corto_subscribers[depth].buffer[length - 1].parent = corto_strdup(this->parent);
+        corto_subscribers[depth].buffer[length - 1].subscriptions.length = 0;
+        corto_subscribers[depth].buffer[length - 1].subscriptions.buffer = NULL;
+        corto_subscribers[depth].length ++;
+        subPerParent = &corto_subscribers[depth].buffer[length - 1];
+    }
+
+    corto_subscriptionSeq *seq = &subPerParent->subscriptions;
+
+    /* Add subscriber to subscription sequence */
+    corto_uint32 length = seq->length + 1;
+    seq->buffer = corto_realloc(seq->buffer, length * sizeof(corto_subscription));
+    seq->buffer[length - 1].s = this;
+    seq->buffer[length - 1].instance = instance;
+    seq->length ++;
     corto_subscribers_count ++;
 
     if (corto_rwmutexUnlock(&corto_subscriberLock)) {

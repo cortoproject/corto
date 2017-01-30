@@ -75,7 +75,7 @@ CORTO_EXPORT corto_object corto_man(corto_object o);
 CORTO_EXPORT void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
 
 /* Benchmarking */
-#ifdef CORTO_BENCHMARK
+#if 0
 CORTO_EXPORT int corto_benchmark_init(corto_string name);
 CORTO_EXPORT void corto_benchmark_stop(int id);
 CORTO_EXPORT void corto_benchmark_start(int id);

@@ -422,6 +422,7 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
             result = FALSE;
         }
     }
+    
     return result;
 error:
     return FALSE;
@@ -443,7 +444,7 @@ char* corto_matchParent(char *parent, char *expr) {
     {
         if (parentCh < 97) parentCh = tolower(parentCh);
         if (exprCh < 97) exprCh = tolower(exprCh);
-        
+
         if (parentCh != exprCh) {
             break;
         }
