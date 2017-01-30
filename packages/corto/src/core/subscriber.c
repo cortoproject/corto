@@ -206,6 +206,7 @@ corto_int16 corto_notifySubscribersId(
                     content = value;
                 } else if (s->contentTypeHandle && value && type) {
                     corto_benchmark_start(S_B_CONTENTTYPE);
+
                     /* Check if contentType has already been loaded */
                     corto_int32 i;
                     for (i = 0; i < contentTypesCount; i++) {
@@ -217,9 +218,8 @@ corto_int16 corto_notifySubscribersId(
 
                     /* contentType hasn't been loaded */
                     if (i == contentTypesCount) {
-                        contentTypes[i].ct = (corto_contentType)s->contentTypeHandle;
 
-                        /* Has target contentType been loaded? */
+                        /* Has source contentType been loaded? */
                         if (contentType && !contentTypeHandle) {
                             /* Load contentType */
                             contentTypeHandle = corto_loadContentType(contentType);
@@ -244,6 +244,8 @@ corto_int16 corto_notifySubscribersId(
                                 goto error;
                             }
                         }
+
+                        contentTypes[i].ct = (corto_contentType)s->contentTypeHandle;
                         contentTypes[i].value = contentTypes[i].ct->fromValue(&intermediateValue);
                         content = contentTypes[i].value;
                         contentTypesCount ++;

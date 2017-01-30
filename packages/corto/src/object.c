@@ -1891,6 +1891,7 @@ static corto_contentType corto_findContentType(
         result->release = (void ___ (*)(corto_word))corto_dealloc;
 
         result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
+        corto_llAppend(contentTypes, result);
     }
 
     return result;
