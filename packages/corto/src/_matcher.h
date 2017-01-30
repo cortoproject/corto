@@ -25,6 +25,7 @@ typedef struct corto_matchProgramOp {
 } corto_matchProgramOp;
 
 struct corto_matchProgram_s {
+    int kind; /* 0 = default, 1 = identifier, 2 = this, 3 = /, 4 = // */
     corto_matchProgramOp ops[CORTO_MATCHER_MAX_OP];
     corto_uint8 size;
     corto_string tokens;

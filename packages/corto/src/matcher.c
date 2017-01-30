@@ -1,4 +1,3 @@
-
 #include "_matcher.h"
 
 static char* corto_matchProgramTokenStr(corto_matchProgramToken t) {
@@ -145,6 +144,7 @@ corto_int16 corto_matchProgramParseIntern(
     char *ptr, *start, ch;
     int op = 0;
 
+    data->kind = 0;
     data->tokens = corto_strdup(expr);
     corto_strlower(data->tokens);
 
@@ -285,6 +285,7 @@ corto_matchProgram corto_matchProgram_compile(
     corto_bool allowSeparators)
 {
     corto_matchProgram result = corto_alloc(sizeof(struct corto_matchProgram_s));
+    result->kind = 0;
     result->tokens = NULL;
 
     corto_debug("match: compile expression '%s'", expr);
@@ -296,6 +297,38 @@ corto_matchProgram corto_matchProgram_compile(
         corto_dealloc(result);
         result = NULL;
     }
+
+    /* Optimize for common cases (*, simple identifier) */
+    if (result->size == 1) {
+        if (result->ops[0].token == CORTO_MATCHER_TOKEN_IDENTIFIER) {
+            result->kind = 1;
+        } else if (result->ops[0].token == CORTO_MATCHER_TOKEN_THIS) {
+            result->kind = 2;
+        } else if (result->ops[0].token == CORTO_MATCHER_TOKEN_FILTER) {
+            if (!strcmp(result->ops[0].start, "*")) {
+                result->kind = 3;
+            }
+        }
+    } else if (result->size == 2) {
+        if (result->ops[0].token == CORTO_MATCHER_TOKEN_SCOPE) {
+            if (result->ops[1].token == CORTO_MATCHER_TOKEN_FILTER) {
+                if (!strcmp(result->ops[1].start, "*")) {
+                    result->kind = 3;
+                }
+            } else if (result->ops[1].token == CORTO_MATCHER_TOKEN_IDENTIFIER) {
+                result->kind = 1;
+            } else if (result->ops[1].token == CORTO_MATCHER_TOKEN_THIS) {
+                result->kind = 2;
+            }
+        } else if (result->ops[0].token == CORTO_MATCHER_TOKEN_TREE) {
+            if (result->ops[1].token == CORTO_MATCHER_TOKEN_FILTER) {
+                if (!strcmp(result->ops[1].start, "*")) {
+                    result->kind = 4;
+                }
+            }
+        }
+    }
+
     return result;
 }
 
@@ -396,30 +429,55 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
 }
 
 corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) {
-    char *elements[CORTO_MAX_SCOPE_DEPTH + 1];
-    corto_matchProgramOp *op = program->ops;
-    char **elem = elements;
-    corto_id id;
-    strcpy(id, str);
-    corto_strlower(id);
+    corto_bool result = FALSE;
 
-    corto_int8 elementCount = corto_pathToArray(id, elements, "/");
-    if (elementCount == -1) {
-        goto error;
-    }
-    elements[elementCount] = NULL;
+    if (program->kind == 0) {
+        char *elements[CORTO_MAX_SCOPE_DEPTH + 1];
+        corto_matchProgramOp *op = program->ops;
+        char **elem = elements;
+        corto_id id;
+        strcpy(id, str);
+        corto_strlower(id);
 
-    /* Ignore leading scope tokens ('/') in expression and string */
-    if (op->token == CORTO_MATCHER_TOKEN_SCOPE) {
-        op ++;
-    }
-    if (!elements[0][0]) elem++;
+        corto_int8 elementCount = corto_pathToArray(id, elements, "/");
+        if (elementCount == -1) {
+            goto error;
+        }
+        elements[elementCount] = NULL;
 
-    corto_bool result = corto_matchProgram_runExpr(&op, &elem, CORTO_MATCHER_TOKEN_SEPARATOR);
-    if (result) {
-        if (elem != &elements[elementCount - 1]) {
-            /* Not all elements have been matched */
+        /* Ignore leading scope tokens ('/') in expression and string */
+        if (op->token == CORTO_MATCHER_TOKEN_SCOPE) {
+            op ++;
+        }
+        if (!elements[0][0]) elem++;
+
+        result = corto_matchProgram_runExpr(&op, &elem, CORTO_MATCHER_TOKEN_SEPARATOR);
+        if (result) {
+            if (elem != &elements[elementCount - 1]) {
+                /* Not all elements have been matched */
+                result = FALSE;
+            }
+        }
+    } else if (program->kind == 1) {
+        /* Match identifier */
+        result = !stricmp(program->ops[0].start, str);
+    } else if (program->kind == 2) {
+        result = !strcmp(".", str);
+    } else if (program->kind == 3) {
+        /* Match any identifier in scope */
+        char *ptr = str;
+        if (ptr[0] == '/') ptr ++;
+        if (!strcmp(ptr, ".")) {
             result = FALSE;
+        } else if (!strchr(ptr, '/')) {
+            result = TRUE;
+        } else {
+            result = FALSE;
+        }
+    } else if (program->kind == 4) {
+        /* Match any identifier in tree */
+        if (strcmp(str, ".")) {
+            result = TRUE;
         }
     }
 
