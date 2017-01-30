@@ -422,7 +422,7 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
             result = FALSE;
         }
     }
-    
+
     return result;
 error:
     return FALSE;

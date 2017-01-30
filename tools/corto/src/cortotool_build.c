@@ -258,7 +258,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
             "rake",
             "clobber",
             "default",
-            coverage ? "coverage=false" : "coverage=true",
+            coverage ? "coverage=true" : "coverage=false",
             release ? "config=release" : "config=debug",
             verbose ? "verbose=true" : "verbose=false",
             singlethread ? "multithread=false" : "multithread=true",
@@ -271,7 +271,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
           (char*[])
           {
               "rake",
-              coverage ? "coverage=false" : "coverage=true",
+              coverage ? "coverage=true" : "coverage=false",
               release ? "config=release" : "config=debug",
               verbose ? "verbose=true" : "verbose=false",
               singlethread ? "multithread=false" : "multithread=true",
@@ -309,7 +309,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         {"--silent", &silent, NULL},
         {"--mute", &mute, NULL},
         {"--verbose", &verbose, NULL},
-        {"--nocoverage", NULL, NULL}, /* Ignore coverage */
+        {"--coverage", NULL, NULL}, /* Ignore coverage */
         {"--release", NULL, NULL}, /* Ignore release */
         {"--debug", NULL, NULL}, /* Ignore debug */
         {"--singlethread", NULL, NULL}, /* Ignore singlethread */
