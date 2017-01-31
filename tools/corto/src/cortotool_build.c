@@ -4,56 +4,32 @@
 
 /* Run a command for multiple projects */
 static corto_int16 cortotool_runcmd(
-  corto_ll dirs, char *argv[], corto_bool silent, corto_bool mute)
+  char *argv[], corto_bool silent, corto_bool mute)
 {
-    corto_iter iter;
-    corto_id cwd;
+    corto_pid pid = 0;
+    corto_int32 sig = 0;
     corto_int8 ret = 0;
 
-    strcpy(cwd, corto_cwd());
-
-    if (dirs) {
-        iter = corto_llIter(dirs);
+    if (mute) {
+        pid = corto_procrunRedirect(argv[0], argv,
+          stdin, NULL, NULL);
+    } else if (silent) {
+        pid = corto_procrunRedirect(argv[0], argv,
+          stdin, NULL, stderr);
+    } else {
+        pid = corto_procrun(argv[0], argv);
     }
 
-    do {
-        corto_pid pid = 0;
-        corto_int32 sig = 0;
+    if (!pid) {
+        corto_seterr("failed to start process %s", argv[0]);
+        goto error;
+    }
 
-        if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
-
-            /* Change working directory to project */
-            if (corto_chdir(dir)) {
-                goto error;
-            }
-        }
-
-        if (mute) {
-            pid = corto_procrunRedirect(argv[0], argv,
-              stdin, NULL, NULL);
-        } else if (silent) {
-            pid = corto_procrunRedirect(argv[0], argv,
-              stdin, NULL, stderr);
-        } else {
-            pid = corto_procrun(argv[0], argv);
-        }
-
-        if (!pid) {
-            corto_seterr("failed to start process %s", argv[0]);
-            goto error;
-        }
-
-        if ((sig = corto_procwait(pid, &ret)) || ret) {
-            corto_seterr("%s failed (%s %d)", argv[0],
-                sig ? "signal" : "returncode", sig ? sig : ret);
-            goto error;
-        }
-
-        /* Reset to previous CWD if there is more than one project to build */
-        corto_chdir(cwd);
-
-    } while (dirs && corto_iterHasNext(&iter));
+    if ((sig = corto_procwait(pid, &ret)) || ret) {
+        corto_seterr("%s failed (%s %d)", argv[0],
+            sig ? "signal" : "returncode", sig ? sig : ret);
+        goto error;
+    }
 
     return 0;
 error:
@@ -180,7 +156,7 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
     }
 
     do {
-        if (dir) {
+        if (dirs) {
             if (corto_chdir(dir)) {
                 corto_seterr("can't generate rakefile for '%s': %s", dir, corto_lasterr());
                 goto error_chdir;
@@ -215,12 +191,10 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
     corto_ll silent, mute, coverage, dirs, release, debug, verbose, singlethread;
     corto_bool rebuild = !strcmp(argv[0], "rebuild");
+    corto_iter iter;
+    corto_id cwd;
 
     CORTO_UNUSED(argc);
-
-    if (cortotool_rakefile(argc, argv)) {
-        goto error;
-    }
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -243,42 +217,65 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         goto error;
     }
 
-    corto_trace("corto: build %s: %s %s %s",
-        corto_cwd(),
-        coverage ? "coverage=true" : "coverage=false",
-        release ? "config=release" : "config=debug",
-        singlethread ? "multithread=false" : "multithread=true"
-    );
+    strcpy(cwd, corto_cwd());
 
-    if (rebuild) {
-      ret = cortotool_runcmd(
-        dirs,
-        (char*[])
-        {
-            "rake",
-            "clobber",
-            "default",
+    if (dirs) {
+        iter = corto_llIter(dirs);
+    }
+
+    do {
+        if (dirs) {
+            corto_string dir = corto_iterNext(&iter);
+
+            /* Change working directory to project */
+            if (corto_chdir(dir)) {
+                goto error;
+            }
+        }
+
+        corto_trace("corto: build %s: %s %s %s",
+            corto_cwd(),
             coverage ? "coverage=true" : "coverage=false",
             release ? "config=release" : "config=debug",
-            verbose ? "verbose=true" : "verbose=false",
-            singlethread ? "multithread=false" : "multithread=true",
-            "softlinks=true",
-            NULL
-        }, silent != NULL, mute != NULL);
-    } else {
-        ret = cortotool_runcmd(
-          dirs,
-          (char*[])
-          {
-              "rake",
-              coverage ? "coverage=true" : "coverage=false",
-              release ? "config=release" : "config=debug",
-              verbose ? "verbose=true" : "verbose=false",
-              singlethread ? "multithread=false" : "multithread=true",
-              "softlinks=true",
-              NULL
-          }, silent != NULL, mute != NULL);
-    }
+            singlethread ? "multithread=false" : "multithread=true"
+        );
+
+        if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
+            goto error;
+        }
+
+        if (rebuild) {
+          ret = cortotool_runcmd(
+            (char*[])
+            {
+                "rake",
+                "clobber",
+                "default",
+                coverage ? "coverage=true" : "coverage=false",
+                release ? "config=release" : "config=debug",
+                verbose ? "verbose=true" : "verbose=false",
+                singlethread ? "multithread=false" : "multithread=true",
+                "softlinks=true",
+                NULL
+            }, silent != NULL, mute != NULL);
+        } else {
+            ret = cortotool_runcmd(
+              (char*[])
+              {
+                  "rake",
+                  coverage ? "coverage=true" : "coverage=false",
+                  release ? "config=release" : "config=debug",
+                  verbose ? "verbose=true" : "verbose=false",
+                  singlethread ? "multithread=false" : "multithread=true",
+                  "softlinks=true",
+                  NULL
+              }, silent != NULL, mute != NULL);
+        }
+
+        /* Reset to previous CWD if there is more than one project to build */
+        corto_chdir(cwd);
+
+    } while (!ret && dirs && corto_iterHasNext(&iter));
 
     corto_argclean(data);
 
@@ -295,12 +292,10 @@ error:
 corto_int16 cortotool_clean(int argc, char *argv[]) {
     corto_int8 ret = 0;
     corto_ll dirs, verbose, silent, mute;
+    corto_iter iter;
+    corto_id cwd;
 
     CORTO_UNUSED(argc);
-
-    if (cortotool_rakefile(argc, argv)) {
-        goto error;
-    }
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -318,15 +313,39 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
       }
     );
 
-    ret = cortotool_runcmd(
-      dirs,
-      (char*[])
-      {
-        "rake",
-        "clobber",
-        verbose ? "verbose=true" : "verbose=false",
-        NULL
-      }, silent != NULL, mute != NULL);
+    strcpy(cwd, corto_cwd());
+
+    if (dirs) {
+        iter = corto_llIter(dirs);
+    }
+
+    do {
+        if (dirs) {
+            corto_string dir = corto_iterNext(&iter);
+
+            /* Change working directory to project */
+            if (corto_chdir(dir)) {
+                goto error;
+            }
+        }
+
+        if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
+            goto error;
+        }
+
+        ret = cortotool_runcmd(
+          (char*[])
+          {
+            "rake",
+            "clobber",
+            verbose ? "verbose=true" : "verbose=false",
+            NULL
+          }, silent != NULL, mute != NULL);
+        
+        /* Reset to previous CWD if there is more than one project to build */
+        corto_chdir(cwd);
+
+    } while (!ret && dirs && corto_iterHasNext(&iter));
 
     corto_argclean(data);
     if (ret) {
@@ -342,6 +361,8 @@ error:
 corto_int16 cortotool_coverage(int argc, char *argv[]) {
     corto_int8 ret = 0;
     corto_ll dirs, verbose;
+    corto_iter iter;
+    corto_id cwd;
 
     CORTO_UNUSED(argc);
 
@@ -357,16 +378,31 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
       }
     );
 
-    ret = cortotool_runcmd(
-      dirs,
-      (char*[])
-      {
-        "rake",
-        "gcov",
-        "silent=true",
-        verbose ? "verbose=true" : "verbose=false",
-        NULL
-      }, FALSE, FALSE);
+    do {
+        if (dirs) {
+            corto_string dir = corto_iterNext(&iter);
+
+            /* Change working directory to project */
+            if (corto_chdir(dir)) {
+                goto error;
+            }
+        }
+
+        ret = cortotool_runcmd(
+          (char*[])
+          {
+            "rake",
+            "gcov",
+            "silent=true",
+            verbose ? "verbose=true" : "verbose=false",
+            NULL
+          }, FALSE, FALSE);
+
+        /* Reset to previous CWD if there is more than one project to build */
+        corto_chdir(cwd);
+
+    } while (!ret && dirs && corto_iterHasNext(&iter));
+
 
     corto_argclean(data);
 
