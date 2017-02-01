@@ -150,7 +150,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     CORTO_UNUSED(argv);
     corto_bool installRemote = FALSE;
     corto_bool installLocal = FALSE;
-    corto_ll verbose = NULL, dirs = NULL;
+    corto_ll verbose = NULL, debug = NULL, dirs = NULL;
     corto_int32 sig = 0;
     corto_int8 rc = 0;
 
@@ -159,6 +159,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore 'install' */
         {"--verbose", &verbose, NULL},
+        {"--debug-build", &debug, NULL},
         {"*", &dirs, NULL},
         {NULL}
       }
@@ -207,6 +208,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                 (char*[]) {
                   "rake",
                   verbose ? "verbose=true" : "verbose=false",
+                  debug ? "debug=true" : "debug=false",
                   "coverage=false",
                   "multithread=false",
                   "redis=false",

@@ -33,6 +33,18 @@ if not defined? VERBOSE then
   end
 end
 
+# Set verbosity to debug
+if not defined? DEBUG then
+  if ENV['debug'] == "true" then
+    DEBUG ||= true
+    ENV['CORTO_VERBOSITY'] = "DEBUG"
+  elsif not ENV['CORTO_VERBOSITY'] or ENV['CORTO_VERBOSITY'] == "" then
+    DEBUG ||= false
+  elsif ENV['CORTO_VERBOSITY'] == "DEBUG" then
+    DEBUG ||= true
+  end
+end
+
 # Set coverage
 if not defined? COVERAGE then
   if ENV['coverage'] == "true" then
