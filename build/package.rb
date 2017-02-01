@@ -117,11 +117,11 @@ if not defined? NOCORTO then
       cmd "mkdir -p .corto"
       cmd "touch .corto/_wrapper.#{EXT}"
 
-      localStr = ""
-      docStr = ""
+      localStr = " "
+      docStr = " "
 
       if LOCAL then
-        localStr = "--attr local=true"
+        localStr = "--attr local=true "
       else
         begin
           cmd "corto locate corto/gen/doc/doc --silent"
@@ -131,15 +131,15 @@ if not defined? NOCORTO then
       end
 
       if defined? PREFIX then
-        prefixStr = "--prefix #{PREFIX}"
+        prefixStr = "--prefix #{PREFIX} "
       end
 
-      command = "valgrind --track-origins=yes --num-callers=50 corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
+      command = "#{DEBUGCMD}corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
                 "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
                 "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
                 "--import #{USE_PACKAGE.join(",")} " +
                 "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
-                "#{prefixStr} #{localStr} #{docStr} --lang #{LANGUAGE}"
+                "#{prefixStr}#{localStr}#{docStr}--lang #{LANGUAGE}"
 
       if ENV['silent'] != "true" then
         msg "preprocess #{C_NORMAL}#{GENFILE}"
@@ -176,7 +176,7 @@ if not defined? NOCORTO then
       end
 
       command =
-        "valgrind --track-origins=yes --num-callers=50 corto pp #{preload} #{localStr} --name #{PACKAGE} " +
+        "#{DEBUGCMD}corto pp #{preload} #{localStr} --name #{PACKAGE} " +
         "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
         "--import #{USE_PACKAGE.join(",")} " +
         " -g c/project #{langStr}"

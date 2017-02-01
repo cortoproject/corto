@@ -189,7 +189,7 @@ error_argparse:
 /* Build a project */
 corto_int16 cortotool_build(int argc, char *argv[]) {
     corto_int8 ret = 0;
-    corto_ll silent, mute, coverage, dirs, release, debug, verbose, singlethread;
+    corto_ll silent, mute, coverage, dirs, release, debug, debug_build, verbose, singlethread;
     corto_bool rebuild = !strcmp(argv[0], "rebuild");
     corto_iter iter;
     corto_id cwd;
@@ -206,6 +206,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         {"--coverage", &coverage, NULL},
         {"--release", &release, NULL},
         {"--debug", &debug, NULL},
+        {"--debug-build", &debug_build, NULL},
         {"--singlethread", &singlethread, NULL},
         {"*", &dirs, NULL},
         {NULL}
@@ -237,6 +238,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
             corto_cwd(),
             coverage ? "coverage=true" : "coverage=false",
             release ? "config=release" : "config=debug",
+            debug_build ? "debug=true" : "debug=false",
             singlethread ? "multithread=false" : "multithread=true"
         );
 

@@ -33,15 +33,12 @@ if not defined? VERBOSE then
   end
 end
 
-# Set verbosity to debug
-if not defined? DEBUG then
+# Enable debugging of buildsystem (use valgrind on corto commands)
+if not defined? DEBUGCMD then
   if ENV['debug'] == "true" then
-    DEBUG ||= true
-    ENV['CORTO_VERBOSITY'] = "DEBUG"
-  elsif not ENV['CORTO_VERBOSITY'] or ENV['CORTO_VERBOSITY'] == "" then
-    DEBUG ||= false
-  elsif ENV['CORTO_VERBOSITY'] == "DEBUG" then
-    DEBUG ||= true
+    DEBUGCMD ||= "valgrind --track-origins=yes --num-callers=50 "
+  else
+    DEBUGCMD ||= ""
   end
 end
 
