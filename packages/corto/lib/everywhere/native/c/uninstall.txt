@@ -1,2 +1,0 @@
-/home/vagrant/.corto/include/corto/0.2/corto/native/c/c.h
-/home/vagrant/.corto/lib/corto/0.2/corto/native/c
