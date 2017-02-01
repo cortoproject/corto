@@ -1,6 +1,12 @@
 
+
+
 if not defined? TARGET then
-    raise "library: TARGET not specified\n"
+    if defined? PACKAGE then
+        TARGET = PACKAGE
+    else
+        raise "library: TARGET not specified\n"
+    end
 end
 
 ARTEFACT = TARGET.split("/").last
@@ -9,7 +15,11 @@ LIBPATH ||= []
 PP_ATTR = ["app=true"]
 NAME = TARGET
 INCLUDE ||= []
-PACKAGE = TARGET
+
+if not defined? PACKAGE then
+    PACKAGE = TARGET
+end
+
 INSTALL = "bin/cortobin"
 INCLUDE << "include"
 ARTEFACT_PREFIX = ""

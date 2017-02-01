@@ -12,7 +12,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
 
     CORTO_UNUSED(argc);
 
-    if (cortotool_rakefile(argc, argv)) {
+    if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
         goto error;
     }
 
@@ -29,6 +29,11 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         {NULL}
       }
     );
+
+    if (!data) {
+        corto_error("corto: test: %s", corto_lasterr());
+        goto error;
+    }
 
     if (project) {
         projectArg = corto_llGet(project, 0);

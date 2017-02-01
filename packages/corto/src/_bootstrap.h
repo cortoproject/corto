@@ -422,6 +422,7 @@ CORTO_FWDECL_CORE(class, notifyEvent);
 CORTO_FWDECL_CORE(class, observableEvent);
 CORTO_FWDECL_CORE(class, subscriberEvent);
 CORTO_FWDECL_CORE(class, package);
+CORTO_FWDECL_CORE(class, application);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL_CORE(class, stager);
 CORTO_FWDECL(class, primitive);
@@ -592,6 +593,8 @@ CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | C
     CORTO_MEMBER_O(core_package, include, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, link, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_METHOD_O(core_package, construct, "()", lang_int16, corto_package_construct);
+
+CORTO_CLASS_O(core, application, core_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
 
 /* Enumerations */
 CORTO_ENUM_O(lang, width);

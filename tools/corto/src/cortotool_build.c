@@ -73,8 +73,11 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     if (corto_llSize(package->cflags)) {
         cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
     }
+    if (package->nocorto) {
+        fprintf((FILE*)rakefile, "NOCORTO = true\n");
+    }
 
-    fprintf((FILE*)rakefile, "require \"#{ENV['CORTO_BUILD']}/package\"\n");
+    fprintf((FILE*)rakefile, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", corto_idof(corto_typeof(package)));
     corto_fileClose(rakefile);
     return 0;
 }
@@ -380,6 +383,8 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
       }
     );
 
+    strcpy(cwd, corto_cwd());
+
     do {
         if (dirs) {
             corto_string dir = corto_iterNext(&iter);
@@ -389,6 +394,11 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
                 goto error;
             }
         }
+
+        if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
+            goto error;
+        }
+
 
         ret = cortotool_runcmd(
           (char*[])

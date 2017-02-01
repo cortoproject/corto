@@ -282,6 +282,13 @@ struct corto_package_s {
     corto_stringlist link;
 };
 
+typedef struct corto_application_s *corto_application;
+
+
+struct corto_application_s {
+    struct corto_package_s _parent;
+};
+
 /*  /corto/core/position */
 typedef struct corto_position corto_position;
 
