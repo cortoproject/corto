@@ -134,7 +134,7 @@ if not defined? NOCORTO then
         prefixStr = "--prefix #{PREFIX}"
       end
 
-      command = "corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
+      command = "valgrind corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
                 "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
                 "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
                 "--import #{USE_PACKAGE.join(",")} " +
@@ -176,7 +176,7 @@ if not defined? NOCORTO then
       end
 
       command =
-        "corto pp #{preload} #{localStr} --name #{PACKAGE} " +
+        "valgrind corto pp #{preload} #{localStr} --name #{PACKAGE} " +
         "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
         "--import #{USE_PACKAGE.join(",")} " +
         " -g c/project #{langStr}"
