@@ -859,21 +859,6 @@ corto_attr corto_getAttr(void) {
     }
 }
 
-#ifndef NDEBUG
-void corto_assertObject(corto_object o) {
-    if (o) {
-        corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
-        if (_o->magic != CORTO_MAGIC) {
-            if (_o->magic == CORTO_MAGIC_DESTRUCT) {
-                corto_critical("address <%p> points to an object that is already deleted", o);
-            } else {
-                corto_critical("address <%p> does not point to an object", o);
-            }
-        }
-    }
-}
-#endif
-
 /* Create new object with attributes */
 corto_object _corto_declare(corto_type type) {
     corto_benchmark_start(CORTO_BENCHMARK_DECLARE);
@@ -1216,7 +1201,10 @@ corto_object _corto_create(corto_type type) {
     corto_assertObject(type);
     corto_object result = corto_declare(type);
     if (result && corto_checkState(result, CORTO_VALID)) {
-        corto_define(result);
+        if (corto_define(result)) {
+            corto_delete(result);
+            result = NULL;
+        }
     }
     return result;
 }
@@ -1229,7 +1217,10 @@ corto_object _corto_createChild(corto_object parent, corto_string id, corto_type
         corto_checkState(result, CORTO_VALID) &&
         !corto_checkState(result, CORTO_DEFINED))
     {
-        corto_define(result);
+        if (corto_define(result)) {
+            corto_delete(result);
+            result = NULL;
+        }
     }
 
     return result;
@@ -1243,7 +1234,10 @@ corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_typ
         corto_checkState(result, CORTO_VALID) &&
         !corto_checkState(result, CORTO_DEFINED))
     {
-        corto_define(result);
+        if (corto_define(result)) {
+            corto_delete(result);
+            result = NULL;
+        }
     }
 
     return result;

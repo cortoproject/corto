@@ -1019,7 +1019,7 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     /* Start loader mount */
     corto_loader p = corto_create(corto_loader_o);
     if (!p) {
-        corto_error("corto: failed to create package mount: %s", corto_lasterr());
+        corto_warning("corto: loader failed (packages will not be visible): %s", corto_lasterr());
     }
 
     /* Parse arguments */

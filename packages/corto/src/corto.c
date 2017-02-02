@@ -710,6 +710,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_member_type),\
     SSO_OP_OBJ(lang_member_modifiers),\
     SSO_OP_OBJ(lang_member_state),\
+    SSO_OP_OBJ(lang_member_stateCondExpr),\
     SSO_OP_OBJ(lang_member_weak),\
     SSO_OP_OBJ(lang_member_id),\
     SSO_OP_OBJ(lang_member_offset),\
@@ -1189,3 +1190,19 @@ corto_bool corto_isbuiltin(corto_object o) {
     //SSO_OP_OBJECT(CORTO_CHECKBUILTIN);
     return FALSE;
 }
+
+#ifndef NDEBUG
+void corto_assertObject(corto_object o) {
+    if (o) {
+        corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+        if (_o->magic != CORTO_MAGIC) {
+            if (_o->magic == CORTO_MAGIC_DESTRUCT) {
+                corto_critical("address <%p> points to an object that is already deleted", o);
+            } else {
+                corto_critical("address <%p> does not point to an object", o);
+            }
+        }
+    }
+}
+#endif
+

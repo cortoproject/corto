@@ -25,6 +25,7 @@ corto_int16 _corto_loader_construct(
     } else {
         return 0;
     }
+
 /* $end */
 }
 
@@ -87,13 +88,16 @@ void corto_loader_addDir(
                 sprintf(package, "%s/%s", r->parent, f);
                 corto_cleanpath(package, package);
 
-
                 corto_id fpath;
                 sprintf(fpath, "%s/%s", path, f);
                 corto_string version = NULL;
                 corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
 
                 corto_debug("corto: loader: evaluate '%s'\n- path: %s\n- env: %s", f, fpath, env);
+                if (!env) {
+                    corto_lasterr();
+                    continue;
+                }
 
                 /* Built-in packages use corto version */
                 if (!strcmp(package, "corto") ||

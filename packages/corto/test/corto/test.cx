@@ -1576,3 +1576,5 @@ test/Suite ValueExpr::
     void tc_exprAssignStrInt()
     void tc_exprAssignStrStr()
     void tc_exprAssignBoolRef()
+    void tc_member()
+    void tc_memberNested()

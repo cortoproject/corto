@@ -105,6 +105,7 @@ CORTO_EXPORT corto_void* corto_value_getPtr(corto_value *val);
 CORTO_EXPORT corto_int16 corto_value_setPtr(corto_value *val, void *ptr);
 CORTO_EXPORT corto_object corto_value_getObject(corto_value *val);
 CORTO_EXPORT corto_uint32 corto_value_getIndex(corto_value *val);
+CORTO_EXPORT corto_int16 corto_value_getMember(corto_value *val, corto_string member, corto_value *out);
 
 /* Initializers */
 CORTO_EXPORT corto_value _corto_value_object(corto_object o, corto_type t);

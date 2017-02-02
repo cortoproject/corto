@@ -227,8 +227,8 @@ static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *buil
     if (build && strcmp(build(), corto_getBuild())) {
         corto_seterr(
           "corto: library '%s' links with conflicting corto library\n"
-          "  library:  '%s' (%s)\n"
-          "  conflict: '%s' (%s)\n",
+          "  links with: '%s' (%s)\n"
+          "  current:    '%s' (%s)\n",
           fileName, library(), build(), corto_getLibrary(), corto_getBuild());
         /* Library is linked with different Corto version */
         if (build_out) {
@@ -458,9 +458,10 @@ static time_t corto_getModified(corto_string file) {
     return attr.st_mtime;
 }
 
-static corto_string corto_locateLibraryIntern(
+static corto_string corto_locatePackageIntern(
     corto_string lib,
-    corto_string *base)
+    corto_string *base,
+    corto_bool isLibrary)
 {
     corto_string targetPath = NULL, homePath = NULL, usrPath = NULL;
     corto_string result = NULL;
@@ -480,7 +481,7 @@ static corto_string corto_locateLibraryIntern(
     }
     if (corto_fileTest(targetPath)) {
         corto_debug("corto: found '%s' while looking for '%s'", targetPath, lib);
-        if (corto_checkLibrary(targetPath, &targetBuild)) {
+        if (!isLibrary || corto_checkLibrary(targetPath, &targetBuild)) {
             t = corto_getModified(targetPath);
             result = targetPath;
             if (base) {
@@ -508,7 +509,7 @@ static corto_string corto_locateLibraryIntern(
             corto_debug("corto: found '%s' while looking for '%s'", homePath, lib);
             time_t myT = corto_getModified(homePath);
             if ((myT > t) || !result) {
-                if (corto_checkLibrary(homePath, &homeBuild)) {
+                if (!isLibrary || corto_checkLibrary(homePath, &homeBuild)) {
                     t = myT;
                     result = homePath;
                     if (base) {
@@ -541,7 +542,7 @@ static corto_string corto_locateLibraryIntern(
             corto_debug("corto: found '%s' while looking for '%s'", usrPath, lib);
             time_t myT = corto_getModified(usrPath);
             if ((myT >= t) || !result) {
-                if (corto_checkLibrary(usrPath, &usrBuild)) {
+                if (!isLibrary || corto_checkLibrary(usrPath, &usrBuild)) {
                     t = myT;
                     result = usrPath;
                     if (base) {
@@ -674,7 +675,10 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     }
 #else
     corto_string base = NULL;
-    result = corto_locateLibraryIntern(relativePath, &base);
+    result = corto_locatePackageIntern(relativePath, &base, TRUE);
+    if (!result && (kind == CORTO_LOCATION_ENV)) {
+        result = corto_locatePackageIntern(package, &base, FALSE);
+    }
     corto_dealloc(relativePath);
     if (result) {
         switch(kind) {

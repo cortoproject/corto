@@ -232,6 +232,7 @@ struct corto_member_s {
     corto_type type;
     corto_modifier modifiers;
     corto_state state;
+    corto_string stateCondExpr;
     corto_bool weak;
     corto_uint32 id;
     corto_uint32 offset;

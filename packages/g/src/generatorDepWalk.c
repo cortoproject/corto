@@ -87,13 +87,52 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
 
         /* Add dependency on item */
         if (m) {
-            corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, m->state);
+            corto_state state = m->state;
+            if (m->stateCondExpr) {
+                corto_value v = corto_value_object(o, NULL);
+                corto_value out;
+
+                if (corto_value_getMember(&v, m->stateCondExpr, &out)) {
+                    corto_seterr("invalid stateCondExpr '%s' for member '%s'",
+                        m->stateCondExpr,
+                        corto_fullpath(NULL, m));
+                    goto error;
+                }
+
+                if (corto_value_getType(&out) != corto_type(corto_bool_o)) {
+                    if (corto_value_cast(&out, corto_bool_o, &out)) {
+                        corto_seterr("stateCondExpr '%s' of member '%s' is not castable to a boolean",
+                            m->stateCondExpr,
+                            corto_fullpath(NULL, m));
+                        goto error;
+                    }
+                }
+
+                corto_bool *result = corto_value_getPtr(&out);
+
+                if (!*result) {
+                    switch(state) {
+                    case CORTO_DECLARED | CORTO_DEFINED:
+                        state = CORTO_DEFINED;
+                        break;
+                    case CORTO_DECLARED:
+                        state = CORTO_DEFINED;
+                        break;
+                    case CORTO_DEFINED:
+                        state = CORTO_DECLARED;
+                        break;
+                    }
+                }
+            }
+            corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, state);
         } else {
             corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, CORTO_DEFINED);
         }
     }
 
     return 0;
+error:
+    return -1;
 }
 
 /* Dependency serializer */

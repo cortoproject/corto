@@ -13,7 +13,7 @@
 extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_threadKey CORTO_KEY_MOUNT_RESULT;
 
-/* Add mount entry to object OLS */
+/* Attach mount entry to object */
 corto_int16 corto_mount_attach(
     corto_mount this,
     corto_object o,
@@ -42,6 +42,29 @@ corto_int16 corto_mount_attach(
     return 0;
 error:
     return -1;
+}
+
+/* Detach mount entry from object */
+corto_int16 corto_mount_detach(
+    corto_mount this,
+    corto_object o)
+{
+    corto_ll mounts = corto_olsLockGet(o, CORTO_OLS_REPLICATOR);
+
+    if (mounts) {
+        corto_iter it = corto_llIter(mounts);
+        while (corto_iterHasNext(&it)) {
+            corto_mount_olsData_t *data = corto_iterNext(&it);
+            if (data->mount == this) {
+                corto_llRemove(mounts, data);
+                break;
+            }
+        }
+    }
+
+    corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, mounts);
+
+    return 0;
 }
 /* $end */
 
@@ -231,7 +254,11 @@ corto_int16 _corto_mount_construct(
         }
      }
 
-    return corto_subscriber_construct(this);
+    corto_int16 ret = corto_subscriber_construct(this);
+    if (ret) {
+        corto_mount_detach(this, this->mount);
+    }
+    return ret;
 error:
     return -1;
 /* $end */

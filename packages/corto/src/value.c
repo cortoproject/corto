@@ -178,6 +178,46 @@ corto_object corto_value_getObject(corto_value* val) {
     return result;
 }
 
+corto_int16 corto_value_getMember(corto_value *val, corto_string member, corto_value *out) {
+    corto_type t = corto_value_getType(val);
+    corto_object o = corto_value_getObject(val);
+    void *ptr = corto_value_getPtr(val);
+
+    corto_id tokens;
+    strncpy(tokens, member, sizeof(corto_id));
+
+    char *cur = tokens, *prev = tokens;
+    do {
+        if (cur && (cur = strchr(cur + 1, '.'))) *cur = '\0';
+
+        if (!corto_instanceof(corto_interface_o, t)) {
+            corto_seterr(
+                "cannot get member from a non-composite value (type is '%s')", 
+                corto_fullpath(NULL, t));
+            goto error;
+        }
+
+        corto_member m = corto_interface_resolveMember(t, prev);
+        if (!m) {
+            corto_seterr(
+                "unresolved member '%s' in type '%s'",
+                prev,
+                corto_fullpath(NULL, t));
+            goto error;
+        }
+
+        ptr = CORTO_OFFSET(ptr, m->offset);
+        t = m->type;
+
+        *out = corto_value_member(o, m, ptr);
+        prev = cur + 1;
+    } while (cur);
+
+    return 0;
+error:
+    return -1;
+}
+
 corto_function corto_valueFunction(corto_value* val) {
     corto_function result;
 

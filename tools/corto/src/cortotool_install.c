@@ -24,7 +24,7 @@ static void cortotool_promptPassword(void) {
     corto_procwait(pid, NULL);
 }
 
-static corto_int16 cortotool_installFromSource(corto_bool verbose) {
+static corto_int16 cortotool_installFromSource(corto_bool verbose, corto_bool release) {
     corto_bool buildingCorto = FALSE;
     corto_id version;
     sprintf(version, "%s.%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
@@ -72,8 +72,11 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose) {
     fprintf(install, "export LD_LIBARRY_PATH=\n");
 
     /* Build libraries to global environment */
-    fprintf(install, "rake default verbose=%s coverage=false softlinks=false multithread=false redis=false show_header=false\n",
-        verbose ? "true" : "false");
+    fprintf(
+        install, 
+        "rake default verbose=%s config=%s coverage=false softlinks=false multithread=false redis=false show_header=false\n",
+        verbose ? "true" : "false",
+        release ? "release" : "debug");
 
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 
@@ -150,7 +153,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     CORTO_UNUSED(argv);
     corto_bool installRemote = FALSE;
     corto_bool installLocal = FALSE;
-    corto_ll verbose = NULL, debug = NULL, dirs = NULL;
+    corto_ll verbose = NULL, debug = NULL, release = NULL, dirs = NULL;
     corto_int32 sig = 0;
     corto_int8 rc = 0;
 
@@ -160,10 +163,16 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         {"$0", NULL, NULL}, /* Ignore 'install' */
         {"--verbose", &verbose, NULL},
         {"--debug-build", &debug, NULL},
+        {"--release", &release, NULL},
         {"*", &dirs, NULL},
         {NULL}
       }
     );
+
+    if (!data) {
+        corto_error("corto: install: %s", corto_lasterr());
+        goto error;
+    }
 
     corto_iter it;
     if (dirs && corto_llSize(dirs)) {
@@ -204,17 +213,35 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
             /* Generate object files outside of sudo so that permissions of files in
              * projects won't be set to root. */
             printf (CORTO_PROMPT "step 1: compile sources\n\n");
-            corto_pid pid = corto_procrun("rake",
-                (char*[]) {
-                  "rake",
-                  verbose ? "verbose=true" : "verbose=false",
-                  debug ? "debug=true" : "debug=false",
-                  "coverage=false",
-                  "multithread=false",
-                  "redis=false",
-                  "show_header=false",
-                  NULL
-            });
+            corto_pid pid;
+            if (release) {
+                pid = corto_procrun("rake",
+                    (char*[]) {
+                      "rake",
+                      "clobber",
+                      "default",
+                      verbose ? "verbose=true" : "verbose=false",
+                      debug ? "debug=true" : "debug=false",
+                      "config=release",
+                      "coverage=false",
+                      "multithread=false",
+                      "redis=false",
+                      "show_header=false",
+                      NULL
+                });
+            } else {
+                pid = corto_procrun("rake",
+                    (char*[]) {
+                      "rake",
+                      verbose ? "verbose=true" : "verbose=false",
+                      debug ? "debug=true" : "debug=false",
+                      "coverage=false",
+                      "multithread=false",
+                      "redis=false",
+                      "show_header=false",
+                      NULL
+                });
+            }
 
             if ((sig = corto_procwait(pid, &rc)) || rc) {
                 if (sig == -1) {
@@ -226,7 +253,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                 }
             }
 
-            if (cortotool_installFromSource(verbose ? TRUE : FALSE)) {
+            if (cortotool_installFromSource(verbose ? TRUE : FALSE, release ? TRUE : FALSE)) {
                 goto error;
             }
 

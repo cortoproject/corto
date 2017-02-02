@@ -554,6 +554,89 @@ corto_void _test_ValueExpr_tc_exprAssignStrStr(
 /* $end */
 }
 
+corto_void _test_ValueExpr_tc_member(
+    test_ValueExpr this)
+{
+/* $begin(test/ValueExpr/tc_member) */
+    test_Point *p = corto_create(test_Point_o);
+    test_assert(p != NULL);
+
+    p->x = 10;
+    p->y = 20;
+
+    corto_value v = corto_value_object(p, NULL);
+    corto_value out;
+
+    corto_int16 ret = corto_value_getMember(&v, "x", &out);
+    test_assert(ret == 0);
+    corto_type type = corto_value_getType(&out);
+    test_assert(type == corto_type(corto_int32_o));
+    void *ptr = corto_value_getPtr(&out);
+    test_assert(ptr != NULL);
+    test_assertint(*(corto_int32*)ptr, 10);
+
+    ret = corto_value_getMember(&v, "y", &out);
+    test_assert(ret == 0);
+    type = corto_value_getType(&out);
+    test_assert(type == corto_type(corto_int32_o));
+    ptr = corto_value_getPtr(&out);
+    test_assert(ptr != NULL);
+    test_assertint(*(corto_int32*)ptr, 20);
+
+/* $end */
+}
+
+corto_void _test_ValueExpr_tc_memberNested(
+    test_ValueExpr this)
+{
+/* $begin(test/ValueExpr/tc_memberNested) */
+
+    test_Line *l = corto_create(test_Line_o);
+    test_assert(l != NULL);
+
+    l->start.x = 10;
+    l->start.y = 20;
+    l->stop.x = 30;
+    l->stop.y = 40;
+
+    corto_value v = corto_value_object(l, NULL);
+    corto_value out;
+
+    corto_int16 ret = corto_value_getMember(&v, "start.x", &out);
+    test_assert(ret == 0);
+    corto_type type = corto_value_getType(&out);
+    test_assert(type == corto_type(corto_int32_o));
+    void *ptr = corto_value_getPtr(&out);
+    test_assert(ptr != NULL);
+    test_assertint(*(corto_int32*)ptr, 10);
+
+    ret = corto_value_getMember(&v, "start.y", &out);
+    test_assert(ret == 0);
+    type = corto_value_getType(&out);
+    test_assert(type == corto_type(corto_int32_o));
+    ptr = corto_value_getPtr(&out);
+    test_assert(ptr != NULL);
+    test_assertint(*(corto_int32*)ptr, 20);
+
+    ret = corto_value_getMember(&v, "stop.x", &out);
+    test_assert(ret == 0);
+    type = corto_value_getType(&out);
+    test_assert(type == corto_type(corto_int32_o));
+    ptr = corto_value_getPtr(&out);
+    test_assert(ptr != NULL);
+    test_assertint(*(corto_int32*)ptr, 30);
+
+    ret = corto_value_getMember(&v, "stop.y", &out);
+    test_assert(ret == 0);
+    type = corto_value_getType(&out);
+    test_assert(type == corto_type(corto_int32_o));
+    ptr = corto_value_getPtr(&out);
+    test_assert(ptr != NULL);
+    test_assertint(*(corto_int32*)ptr, 40);
+
+/* $end */
+}
+
 corto_void _test_ValueExpr_tc_mod(
     test_ValueExpr this)
 {
