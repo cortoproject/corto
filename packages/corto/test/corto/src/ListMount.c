@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 /* $header() */
 #include "fnmatch.h"

@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 corto_void _test_AttrCheck_tc_constructorAttr(
     test_AttrCheck this)
@@ -47,7 +47,7 @@ corto_void _test_AttrCheck_tc_packageObjectAttr(
 {
 /* $begin(test/AttrCheck/tc_packageObjectAttr) */
 
-    test_assertint(corto_attrof(test_o), CORTO_ATTR_SCOPED|CORTO_ATTR_PERSISTENT);
+    test_assertint(corto_attrof(test_o), CORTO_ATTR_SCOPED|CORTO_ATTR_PERSISTENT|CORTO_ATTR_OBSERVABLE);
 
 /* $end */
 }

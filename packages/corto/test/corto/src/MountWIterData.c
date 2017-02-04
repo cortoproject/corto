@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 /* $header(test/MountWIterData/onRequest) */
 void *iterNext(corto_iter *iter)

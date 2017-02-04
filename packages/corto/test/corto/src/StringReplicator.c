@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 corto_int16 _test_StringReplicator_construct(
     test_StringReplicator this)

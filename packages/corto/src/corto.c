@@ -927,9 +927,9 @@ void corto_initEnvironment(void) {
         }
     }
 
-    corto_string traceObject = corto_getenv("CORTO_TRACE_OBJECT");
+    corto_string traceObject = corto_getenv("CORTO_TRACE_ID");
     if (traceObject) {
-        CORTO_TRACE_OBJECT = traceObject;
+        CORTO_TRACE_ID = traceObject;
     }
 
     corto_string enableBacktrace = corto_getenv("CORTO_BACKTRACE_ENABLED");

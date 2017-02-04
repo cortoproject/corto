@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 corto_int16 _test_EmptySinkMount_construct(
     test_EmptySinkMount this)

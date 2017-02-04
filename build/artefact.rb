@@ -40,6 +40,7 @@ end
 # Add default include paths
 INCLUDE <<
   "src" <<
+  "." <<
   "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}" <<
   "/usr/local/include/corto/#{CORTO_VERSION}"
 
@@ -598,6 +599,7 @@ def build_source(source, target, echo, custom)
   verbose(VERBOSE)
   flags = ""
   cc = ""
+  own_include = ""
 
   if LANGUAGE == "c" then
     flags = CFLAGS
@@ -618,7 +620,11 @@ def build_source(source, target, echo, custom)
     end
   end
 
-  cc_command = "#{COMPILER} -c #{flags.join(" ")} #{custom} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{INCLUDE.map {|i| "-I" + corto_replace(i)}.join(" ")} #{source} -o #{target}"
+  if defined? ADD_OWN_INCLUDE and ADD_OWN_INCLUDE == true then
+    own_include = "-Iinclude"
+  end
+
+  cc_command = "#{COMPILER} -c #{flags.join(" ")} #{custom} #{DEFINE.map {|d| "-D" + d}.join(" ")} #{own_include} #{INCLUDE.map {|i| "-I" + corto_replace(i)}.join(" ")} #{source} -o #{target}"
   begin
     cmd cc_command
   rescue

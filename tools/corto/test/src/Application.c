@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 /* $header() */
 corto_int16 test_Project_cleanEnv(corto_string name);

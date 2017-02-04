@@ -480,6 +480,7 @@ corto_int16 g_leafDependencies(
             if (o) {
                 if (!corto_llHasObject(g->importsNested, o)) {
                     corto_llAppend(g->importsNested, o);
+                    corto_claim(o);
                 } else {
                     corto_release(o);
                 }
@@ -522,6 +523,7 @@ corto_int16 g_importsEvalReference(
             }
             if (!corto_llHasObject(g->imports, parent)) {
                 corto_llInsert(g->imports, parent);
+                corto_claim(parent);
 
                 /* Recursively obtain imports */
                 g_leafDependencies(g, parent);

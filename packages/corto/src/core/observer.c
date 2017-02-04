@@ -854,8 +854,7 @@ corto_int16 _corto_observer_observe(
 
     if (!corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
         corto_seterr(
-            0,
-            "object '%s' is not an observable",
+            "'%s' is not an observable",
             corto_fullpath(NULL, observable));
         goto error;
     }

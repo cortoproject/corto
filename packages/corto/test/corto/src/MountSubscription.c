@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 corto_void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_MountSubscription this)

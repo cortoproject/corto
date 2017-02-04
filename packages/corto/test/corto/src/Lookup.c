@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 /* $header(test/Lookup/tc_lookupAll) */
 int tc_lookupAllWalk(corto_object o, void *udata) {

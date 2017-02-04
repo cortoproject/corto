@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 corto_secure_accessKind _test_TestLock_authorize(
     test_TestLock this,

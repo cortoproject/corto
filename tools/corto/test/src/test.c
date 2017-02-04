@@ -6,9 +6,9 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
-int testMain(int argc, char* argv[]) {
+int testMain(int argc, char *argv[]) {
 /* $begin(main) */
     int result = 0;
     test_Runner runner = test_RunnerCreate("cortotool", argv[0], (argc > 1) ? argv[1] : NULL);

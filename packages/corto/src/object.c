@@ -1178,6 +1178,7 @@ static corto_object corto_declareChildIntern(
 
 ok:
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
+
     return o;
 error:
     if (o) {

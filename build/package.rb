@@ -17,6 +17,7 @@ ARTEFACT ||= TARGET
 ARTEFACT_PREFIX ||= "lib"
 ARTEFACT_EXT ||= "so"
 INSTALL ||= "lib/corto"
+NOCORTO ||= false
 
 # Preprocessor variables
 PP_ATTR ||= []
@@ -38,7 +39,7 @@ else
 end
 
 # Include corto package only when not building the core
-if TARGET != "corto" and not defined? NOCORTO then
+if TARGET != "corto" and NOCORTO == false then
   USE_PACKAGE << "corto"
   if LANGUAGE == "cpp" or LANGUAGE == "c++" then
     USE_PACKAGE << "corto/cpp"
@@ -55,11 +56,14 @@ Dir.chdir(File.dirname(Rake.application.rakefile))
 if LOCAL == true then
   TARGETPATH = "./.corto"
   TARGETDIR ||= TARGETPATH
-  INCLUDE << "include"
 else
   PACKAGEDIR = PACKAGE_FWSLASH
   TARGETPATH = PACKAGEDIR
   TARGETDIR ||= "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
+end
+
+if LOCAL == true then
+  ADD_OWN_INCLUDE = true
 end
 
 # Define a convenience macro in the package that points to the installed ETC directory
@@ -77,8 +81,9 @@ file ".corto/packages.txt" do
 end
 
 # Code generation
-if not defined? NOCORTO then
+if NOCORTO == false then
   verbose(VERBOSE)
+
   DEFFILES = Rake::FileList["#{NAME}.{cx,idl,xml}"]
 
   if DEFFILES.length != 0 then
@@ -157,7 +162,7 @@ if not defined? NOCORTO then
     task :default => ["include/_type.h"]
   else
     GENERATED_SOURCES <<
-        ".corto/_project.#{EXT}"
+      ".corto/_project.#{EXT}"
 
     file ".corto/_project.#{EXT}" => [".corto/packages.txt"] do
       verbose(VERBOSE)
@@ -174,6 +179,8 @@ if not defined? NOCORTO then
       elsif LANGUAGE == "cpp" or LANGUAGE == "c++" then
         langStr = "--attr c4cpp=true --attr lang=cpp --attr hpp=include --attr cpp=src"
       end
+
+      ADD_OWN_INCLUDE ||= true
 
       command =
         "#{DEBUGCMD}corto pp #{preload} #{localStr} --name #{PACKAGE} " +
@@ -211,7 +218,7 @@ task :doc do
           command = "corto pp #{NAME}.md -g doc/html"
         end
         begin
-          cmd command
+          # cmd command
         rescue
           STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
           abort

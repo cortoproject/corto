@@ -6,9 +6,9 @@
  * when the file is regenerated.
  */
 
-#include <tc_appDef.h>
+#include <include/tc_appDef.h>
 
-int tc_appDefMain(int argc, char* argv[]) {
+int tc_appDefMain(int argc, char *argv[]) {
 /* $begin(main) */
 
     /* Insert code that must be run when component is loaded */

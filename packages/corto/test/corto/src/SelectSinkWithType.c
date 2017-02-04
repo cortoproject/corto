@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <test.h>
+#include <include/test.h>
 
 corto_void _test_SelectSinkWithType_setup(
     test_SelectSinkWithType this)
