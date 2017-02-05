@@ -356,6 +356,8 @@ struct corto_router_s {
     corto_type returnType;
     corto_type paramType;
     corto_string paramName;
+    corto_type routerDataType;
+    corto_string routerDataName;
     corto_string elementSeparator;
 };
 
@@ -365,6 +367,7 @@ typedef struct corto_routerimpl_s *corto_routerimpl;
 struct corto_routerimpl_s {
     struct corto_class_s _parent;
     corto_uint16 maxArgs;
+    corto_route matched;
 };
 
 /*  /corto/core/stager */

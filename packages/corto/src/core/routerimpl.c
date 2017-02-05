@@ -41,7 +41,8 @@ corto_int32 _corto_routerimpl_matchRoute_v(
     corto_routerimpl this,
     corto_route route,
     corto_stringseq pattern,
-    corto_any param)
+    corto_any param,
+    corto_any *routerData)
 {
 /* $begin(corto/core/routerimpl/matchRoute) */
     corto_int32 result = -1;

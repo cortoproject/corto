@@ -158,6 +158,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, collectionKind),\
     SSO_OP_VALUE(lang_, procedureKind),\
     SSO_OP_VALUE(lang_, equalityKind),\
+    SSO_OP_VALUE(lang_, inout),\
     SSO_OP_VALUE(core_, operatorKind),\
     SSO_OP_VALUE(core_, mountKind),\
     SSO_OP_VALUE(core_, frameKind),\
@@ -373,6 +374,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_equalityKind_LT),\
     SSO_OP_OBJ(lang_equalityKind_GT),\
     SSO_OP_OBJ(lang_equalityKind_NEQ),\
+    /* inout */\
+    SSO_OP_OBJ(lang_inout_IN),\
+    SSO_OP_OBJ(lang_inout_OUT),\
+    SSO_OP_OBJ(lang_inout_INOUT),\
     /* mountKind */\
     SSO_OP_OBJ(core_mountKind_SOURCE),\
     SSO_OP_OBJ(core_mountKind_SINK),\
@@ -618,11 +623,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_router_returnType),\
     SSO_OP_OBJ(core_router_paramType),\
     SSO_OP_OBJ(core_router_paramName),\
+    SSO_OP_OBJ(core_router_routerDataType),\
+    SSO_OP_OBJ(core_router_routerDataName),\
     SSO_OP_OBJ(core_router_elementSeparator),\
     /* routerimpl */\
     SSO_OP_OBJ(core_routerimpl_construct_),\
     SSO_OP_OBJ(core_routerimpl_destruct_),\
     SSO_OP_OBJ(core_routerimpl_maxArgs),\
+    SSO_OP_OBJ(core_routerimpl_matched),\
     SSO_OP_OBJ(core_routerimpl_matchRoute_),\
     /* mount */\
     SSO_OP_OBJ(core_mount_kind),\
@@ -732,6 +740,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* parameter */\
     SSO_OP_OBJ(lang_parameter_name),\
     SSO_OP_OBJ(lang_parameter_type),\
+    SSO_OP_OBJ(lang_parameter_inout),\
     SSO_OP_OBJ(lang_parameter_passByReference),\
     /* augmentData */\
     SSO_OP_OBJ(core_augmentData_id),\

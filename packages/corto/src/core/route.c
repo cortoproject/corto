@@ -25,36 +25,39 @@ corto_int16 _corto_route_construct(
 {
 /* $begin(corto/core/route/construct) */
     corto_id pattern;
-    strcpy(pattern, this->pattern);
     char *ptr = pattern;
     corto_int32 count = 0, elementCount = 0;
     corto_routerimpl router = corto_route_findRouterImpl(this);
     corto_router routerBase = corto_router(corto_typeof(router));
     char *elements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 i;
+    corto_parameterseq *params = &corto_function(this)->parameters;
 
-    if (*ptr == '/') {
-        ptr ++;
-    }
-
-    if (routerBase->elementSeparator) {
-        if ((elementCount = corto_pathToArray(ptr, elements, routerBase->elementSeparator)) == -1) {
-            corto_seterr("invalid pattern '%s': %s", this->pattern, corto_lasterr());
-            goto error;
+    if (this->pattern) {
+        strcpy(pattern, this->pattern);
+        if (*ptr == '/') {
+            ptr ++;
         }
 
-        this->elements.buffer = corto_alloc(elementCount * sizeof(corto_string));
-        this->elements.length = elementCount;
-        for (i = 0; i < elementCount; i ++) {
-            this->elements.buffer[i] = corto_strdup(elements[i]);
+        if (routerBase->elementSeparator) {
+            if ((elementCount = corto_pathToArray(ptr, elements, routerBase->elementSeparator)) == -1) {
+                corto_seterr("invalid pattern '%s': %s", this->pattern, corto_lasterr());
+                goto error;
+            }
+
+            this->elements.buffer = corto_alloc(elementCount * sizeof(corto_string));
+            this->elements.length = elementCount;
+            for (i = 0; i < elementCount; i ++) {
+                this->elements.buffer[i] = corto_strdup(elements[i]);
+            }
         }
     }
 
     if (routerBase->paramType) {
-        corto_function(this)->parameters.buffer = corto_realloc(
-          corto_function(this)->parameters.buffer, sizeof(corto_parameter)
+        params->buffer = corto_realloc(
+          params->buffer, sizeof(corto_parameter) * (count + 1)
         );
-        corto_parameter *p = &corto_function(this)->parameters.buffer[0];
+        corto_parameter *p = &params->buffer[count];
         memset(p, 0, sizeof(corto_parameter));
         corto_setref(&p->type, routerBase->paramType);
         if (routerBase->paramName) {
@@ -65,7 +68,29 @@ corto_int16 _corto_route_construct(
         } else {
             corto_setstr(&p->name, "_param");
         }
-        count = 1;
+        count ++;
+    }
+
+    if (routerBase->routerDataType) {
+        params->buffer = corto_realloc(
+          params->buffer, sizeof(corto_parameter) * (count + 1)
+        );
+        corto_parameter *p = &params->buffer[count];
+        memset(p, 0, sizeof(corto_parameter));
+        corto_setref(&p->type, routerBase->routerDataType);
+        if (routerBase->routerDataName) {
+            corto_setstr(&p->name, routerBase->routerDataName);
+        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_SCOPED)) {
+            corto_setstr(&p->name, corto_idof(routerBase->routerDataType));
+            p->name[0] = tolower(p->name[0]);
+        } else {
+            corto_setstr(&p->name, "_routerData");
+        }
+        count ++;
+    }
+
+    if (!strcmp(corto_idof(this), "_matched")) {
+        corto_setref(&router->matched, this);
     }
 
     for (i = 0; i < this->elements.length; i++) {

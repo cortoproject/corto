@@ -54,6 +54,7 @@ corto_int16 _corto_router_match(
     corto_id requestBuffer;
     char *requestElements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 elementCount;
+    corto_any routerData = {.owner = TRUE};
 
     /* Parse request once */
     if (routerBase->elementSeparator) {
@@ -74,7 +75,7 @@ corto_int16 _corto_router_match(
         if (corto_instanceof(corto_route_o, o)) {
             corto_stringseq pattern = {.length = elementCount, .buffer = requestElements};
             corto_int32 matched = corto_routerimpl_matchRoute(
-                router, corto_route(o), pattern, param);
+                router, corto_route(o), pattern, param, &routerData);
             if (matched > maxMatched) {
                 match = corto_route(o);
 
@@ -109,11 +110,20 @@ corto_int16 _corto_router_match(
     corto_int32 arg = 1;
     void **args = alloca((1 + router->maxArgs) * sizeof(void*));
     args[0] = &instance;
+
+    /* Add data passed from application */
     if (routerBase->paramType) {
-        args[1] = &param.value;
-        arg = 2;
+        args[arg] = &param.value;
+        arg ++;
     }
 
+    /* Add data passed from router */
+    if (routerBase->routerDataType) {
+        args[arg] = &routerData.value;
+        arg ++;
+    }
+
+    /* Add data from elements */
     if (routerBase->elementSeparator) {
         for (i = 0; i < elementCount; i++) {
             char *pattern = match->elements.buffer[i];
@@ -126,6 +136,14 @@ corto_int16 _corto_router_match(
 
     /* Call route */
     corto_callb(corto_function(match), result.value, args);
+
+    if (router->matched) {
+        corto_callb(corto_function(router->matched), result.value, args);
+    }
+
+    if (routerBase->routerDataType) {
+        corto_deinitp(&routerData, corto_any_o);
+    }
 
     return 0;
 error:
