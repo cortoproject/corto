@@ -612,11 +612,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_subscriber_subscribe_),\
     SSO_OP_OBJ(core_subscriber_unsubscribe_),\
     /* router */\
+    SSO_OP_OBJ(core_router_init_),\
     SSO_OP_OBJ(core_router_construct_),\
     SSO_OP_OBJ(core_router_match),\
     SSO_OP_OBJ(core_router_returnType),\
     SSO_OP_OBJ(core_router_paramType),\
     SSO_OP_OBJ(core_router_paramName),\
+    SSO_OP_OBJ(core_router_elementSeparator),\
     /* routerimpl */\
     SSO_OP_OBJ(core_routerimpl_construct_),\
     SSO_OP_OBJ(core_routerimpl_destruct_),\

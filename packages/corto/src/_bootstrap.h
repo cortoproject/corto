@@ -1236,12 +1236,14 @@ CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NU
     CORTO_MEMBER_O(core_mountSubscription, userData, lang_word, CORTO_GLOBAL);
 
 /* /corto/core/router */
-CORTO_FW_CD(core, router);
-CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_CD);
+CORTO_FW_ICD(core, router);
+CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_ICD);
+    CORTO_METHOD_O(core_router, init, "()", lang_int16, corto_router_init);
     CORTO_METHOD_O(core_router, construct, "()", lang_int16, corto_router_construct);
     CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, paramName, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, elementSeparator, lang_string, CORTO_GLOBAL);
     CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
 
 /* /corto/core/routerimpl */

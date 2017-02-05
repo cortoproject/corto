@@ -9,12 +9,13 @@
 #include <corto/corto.h>
 #include <corto/_project.h>
 #include <corto/core/_type.h>
-
 #include <corto/core/_load.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <corto/core/application.h>
 #include <corto/core/augmentData.h>
 #include <corto/core/dispatcher.h>
 #include <corto/core/event.h>

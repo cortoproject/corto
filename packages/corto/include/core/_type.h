@@ -13,6 +13,8 @@ extern "C" {
 #endif
 
 /* Casting macro's */
+#define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
+#define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
 #define corto_augmentData(o) ((corto_augmentData*)corto_assertType((corto_type)corto_augmentData_o, o))
 #define corto_augmentseq(o) ((corto_augmentseq*)corto_assertType((corto_type)corto_augmentseq_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
@@ -33,7 +35,6 @@ extern "C" {
 #define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
 #define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
-#define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
 #define corto_request(o) ((corto_request*)corto_assertType((corto_type)corto_request_o, o))
@@ -48,6 +49,34 @@ extern "C" {
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
+/*  /corto/core/package */
+typedef struct corto_package_s *corto_package;
+
+struct corto_package_s {
+    corto_string url;
+    corto_string version;
+    corto_string author;
+    corto_string description;
+    corto_string env;
+    corto_bool nocorto;
+    corto_stringlist cflags;
+    corto_stringlist dependencies;
+    corto_string prefix;
+    corto_stringlist cortoVersion;
+    corto_bool local;
+    corto_stringlist lib;
+    corto_stringlist libpath;
+    corto_stringlist include;
+    corto_stringlist link;
+};
+
+/*  /corto/core/application */
+typedef struct corto_application_s *corto_application;
+
+struct corto_application_s {
+    struct corto_package_s _parent;
+};
+
 /*  /corto/core/augmentData */
 typedef struct corto_augmentData corto_augmentData;
 
@@ -261,34 +290,6 @@ typedef enum corto_operatorKind {
     CORTO_REF = 32
 } corto_operatorKind;
 
-/*  /corto/core/package */
-typedef struct corto_package_s *corto_package;
-
-struct corto_package_s {
-    corto_string url;
-    corto_string version;
-    corto_string author;
-    corto_string description;
-    corto_string env;
-    corto_bool nocorto;
-    corto_stringlist cflags;
-    corto_stringlist dependencies;
-    corto_string prefix;
-    corto_stringlist cortoVersion;
-    corto_bool local;
-    corto_stringlist lib;
-    corto_stringlist libpath;
-    corto_stringlist include;
-    corto_stringlist link;
-};
-
-typedef struct corto_application_s *corto_application;
-
-
-struct corto_application_s {
-    struct corto_package_s _parent;
-};
-
 /*  /corto/core/position */
 typedef struct corto_position corto_position;
 
@@ -355,6 +356,7 @@ struct corto_router_s {
     corto_type returnType;
     corto_type paramType;
     corto_string paramName;
+    corto_string elementSeparator;
 };
 
 /*  /corto/core/routerimpl */

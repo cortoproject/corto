@@ -30,6 +30,15 @@ corto_int16 _corto_router_construct(
 /* $end */
 }
 
+corto_int16 _corto_router_init(
+    corto_router this)
+{
+/* $begin(corto/core/router/init) */
+    corto_setstr(&this->elementSeparator, "/");
+    return corto_class_init(this);
+/* $end */
+}
+
 corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,
@@ -47,10 +56,15 @@ corto_int16 _corto_router_match(
     corto_int32 elementCount;
 
     /* Parse request once */
-    strcpy(requestBuffer, request[0] == '/' ? request + 1 : request);
-    if ((elementCount = corto_pathToArray(requestBuffer, requestElements, "/")) == -1) {
-        corto_seterr("%s: invalid request: %s", request, corto_lasterr());
-        goto error;
+    if (routerBase->elementSeparator) {
+        strcpy(requestBuffer, request[0] == '/' ? request + 1 : request);
+        if ((elementCount = corto_pathToArray(requestBuffer, requestElements, "/")) == -1) {
+            corto_seterr("%s: invalid request: %s", request, corto_lasterr());
+            goto error;
+        }
+    } else {
+        requestElements[0] = request;
+        elementCount = 1;
     }
 
     /* Walk routes */
@@ -63,12 +77,31 @@ corto_int16 _corto_router_match(
                 router, corto_route(o), pattern, param);
             if (matched > maxMatched) {
                 match = corto_route(o);
+
+                /* If request is not split up in multiple elements, there will
+                 * be only one matching route. */
+                if (!routerBase->elementSeparator) {
+                    break;
+                }
             }
         }
     }
 
     if (!match) {
         corto_seterr("%s: resource unknown", request);
+        goto error;
+    }
+
+
+    corto_type returnType = corto_function(match)->returnType;
+    if (returnType && 
+        ((returnType->kind != CORTO_VOID) ||
+         returnType->reference) &&
+        !result.value)
+    {
+        corto_seterr("no result provided for route '%s' (expected value of type '%s')",
+            corto_fullpath(NULL, match),
+            returnType ? corto_fullpath(NULL, returnType) : "void");
         goto error;
     }
 
@@ -80,11 +113,14 @@ corto_int16 _corto_router_match(
         args[1] = &param.value;
         arg = 2;
     }
-    for (i = 0; i < elementCount; i++) {
-        char *pattern = match->elements.buffer[i];
-        if (pattern[0] == '$') {
-            args[arg] = &requestElements[i];
-            arg++;
+
+    if (routerBase->elementSeparator) {
+        for (i = 0; i < elementCount; i++) {
+            char *pattern = match->elements.buffer[i];
+            if (pattern[0] == '$') {
+                args[arg] = &requestElements[i];
+                arg++;
+            }
         }
     }
 

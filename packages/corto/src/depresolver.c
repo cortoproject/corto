@@ -399,8 +399,6 @@ void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind,
             corto_assert(0, "invalid dependency-kind.");
             break;
         }
-    } else {
-        corto_error("cannot have dependency on self");
     }
 }
 

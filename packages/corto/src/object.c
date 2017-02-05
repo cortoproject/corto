@@ -244,10 +244,7 @@ static corto_object corto__initScope(
         /* Call framework initializer. */
         if (corto_init(o)) {
             corto_string err = corto_lasterr();
-            if (err) {
-                corto_seterr(
-                  "%s/init failed: %s", corto_fullpath(NULL, corto_typeof(o)), err);
-            } else {
+            if (!err) {
                 corto_seterr(
                   "%s/init failed", corto_fullpath(NULL, corto_typeof(o)));
             }
@@ -1856,6 +1853,19 @@ static corto_int16 corto_contentTypeFromStr(corto_value *v, corto_string str) {
     return corto_fromStrv(v, str);
 }
 
+static corto_string corto_contentTypeToStrColor(corto_value *v) {
+    corto_string_ser_t sdata;
+    struct corto_serializer_s s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+    memset(&sdata, 0, sizeof(corto_string_ser_t));
+    sdata.enableColors = TRUE;
+    s.access = CORTO_PRIVATE;
+    s.accessKind = CORTO_NOT;
+    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    corto_serializeValue(&s, v, &sdata);
+    return corto_buffer_str(&sdata.buffer);
+}
+
 static corto_contentType corto_findContentType(
     corto_string contentType)
 {
@@ -1882,6 +1892,19 @@ static corto_contentType corto_findContentType(
 
         result->fromValue =
             (corto_word ___ (*)(corto_value*))corto_contentTypeToStr;
+
+        result->release = (void ___ (*)(corto_word))corto_dealloc;
+
+        result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
+        corto_llAppend(contentTypes, result);
+
+    } else if (!result && !strcmp(contentType, "corto-color")) {
+        result = corto_alloc(sizeof(struct corto_contentType));
+        result->name = corto_strdup("corto");
+
+        result->toValue = NULL;
+        result->fromValue =
+            (corto_word ___ (*)(corto_value*))corto_contentTypeToStrColor;
 
         result->release = (void ___ (*)(corto_word))corto_dealloc;
 

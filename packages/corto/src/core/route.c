@@ -31,21 +31,23 @@ corto_int16 _corto_route_construct(
     corto_routerimpl router = corto_route_findRouterImpl(this);
     corto_router routerBase = corto_router(corto_typeof(router));
     char *elements[CORTO_MAX_SCOPE_DEPTH];
+    corto_int32 i;
 
     if (*ptr == '/') {
         ptr ++;
     }
 
-    if ((elementCount = corto_pathToArray(ptr, elements, "/")) == -1) {
-        corto_seterr("invalid pattern '%s': %s", this->pattern, corto_lasterr());
-        goto error;
-    }
+    if (routerBase->elementSeparator) {
+        if ((elementCount = corto_pathToArray(ptr, elements, routerBase->elementSeparator)) == -1) {
+            corto_seterr("invalid pattern '%s': %s", this->pattern, corto_lasterr());
+            goto error;
+        }
 
-    this->elements.buffer = corto_alloc(elementCount * sizeof(corto_string));
-    this->elements.length = elementCount;
-    corto_int32 i;
-    for (i = 0; i < elementCount; i ++) {
-        this->elements.buffer[i] = corto_strdup(elements[i]);
+        this->elements.buffer = corto_alloc(elementCount * sizeof(corto_string));
+        this->elements.length = elementCount;
+        for (i = 0; i < elementCount; i ++) {
+            this->elements.buffer[i] = corto_strdup(elements[i]);
+        }
     }
 
     if (routerBase->paramType) {
