@@ -3818,6 +3818,28 @@ corto_int32 corto_signatureParamType(corto_string signature, corto_uint32 id, co
                 if (parsing) {
                     parsed = TRUE;
                 }
+            } else if (ch == ':') {
+                if (srcptr[1] != ':') {
+                    *bptr = '\0';
+                    if (!strcmp(buffer, "in")) {
+                        *flags |= CORTO_PARAMETER_IN;
+                    } else if (!strcmp(buffer, "out")) {
+                        *flags |= CORTO_PARAMETER_OUT;
+                    } else if (!strcmp(buffer, "inout")) {
+                        *flags |= CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT;
+                    } else {
+                        corto_seterr("invalid parameter modifier '%s'", buffer);
+                        goto error;
+                    }
+                    bptr = buffer;
+                } else {
+                    parsing = TRUE;
+                    *bptr = ch;
+                    bptr++;     
+                    *bptr = ch;
+                    bptr++;
+                    srcptr++;               
+                }
             } else {
                 parsing = TRUE;
                 *bptr = ch;

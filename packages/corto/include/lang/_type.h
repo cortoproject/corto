@@ -24,6 +24,7 @@ extern "C" {
 #define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
 #define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
 #define corto_string(o) ((corto_string*)corto_assertType((corto_type)corto_string_o, o))
+#define corto_inout(o) ((corto_inout*)corto_assertType((corto_type)corto_inout_o, o))
 #define corto_parameter(o) ((corto_parameter*)corto_assertType((corto_type)corto_parameter_o, o))
 #define corto_parameterseq(o) ((corto_parameterseq*)corto_assertType((corto_type)corto_parameterseq_o, o))
 #define corto_function(o) ((corto_function)corto_assertType((corto_type)corto_function_o, o))
@@ -150,12 +151,20 @@ typedef uintptr_t corto_word;
 /* string */
 typedef char* corto_string;
 
+/* inout */
+typedef enum corto_inout {
+    CORTO_IN = 0,
+    CORTO_OUT = 1,
+    CORTO_INOUT = 2
+} corto_inout;
+
 /*  parameter */
 typedef struct corto_parameter corto_parameter;
 
 struct corto_parameter {
     corto_string name;
     corto_type type;
+    corto_inout inout;
     corto_bool passByReference;
 };
 

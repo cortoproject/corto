@@ -36,7 +36,9 @@ corto_int16 _corto_function_construct(
 
         corto_uint32 i;
         for(i=0; i<this->parameters.length; i++) {
-            if (this->parameters.buffer[i].passByReference) {
+            if (this->parameters.buffer[i].passByReference ||
+                this->parameters.buffer[i].inout) 
+            {
                 this->size += sizeof(corto_word);
             } else {
                 corto_type paramType = this->parameters.buffer[i].type;
@@ -253,6 +255,16 @@ corto_parameterseq _corto_function_stringToParameterSeq(
 
                 /* Set reference */
                 result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
+
+                if ((flags & (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) == 
+                             (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) 
+                {
+                    result.buffer[i].inout = CORTO_INOUT;
+                } else if (flags & CORTO_PARAMETER_OUT) {
+                    result.buffer[i].inout = CORTO_OUT;
+                } else {
+                    /* in is default */
+                }
 
                 /* Assign type */
                 result.buffer[i].type = corto_resolve(scope, id);

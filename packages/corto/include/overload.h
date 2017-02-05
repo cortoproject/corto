@@ -19,6 +19,8 @@ extern "C" {
 #define CORTO_PARAMETER_FORCEREFERENCE     (2)
 #define CORTO_PARAMETER_WILDCARD           (4)
 #define CORTO_PARAMETER_NULL               (8)
+#define CORTO_PARAMETER_IN                 (16)
+#define CORTO_PARAMETER_OUT                (32)
 
 /* Calculate the distance between a function and a request signature */
 corto_int16 corto_overload(corto_object object, corto_string name, corto_int32* distance);

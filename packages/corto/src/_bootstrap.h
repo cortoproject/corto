@@ -649,6 +649,11 @@ CORTO_ENUM_O(lang, equalityKind);
     CORTO_CONSTANT_O(lang_equalityKind, GT);
     CORTO_CONSTANT_O(lang_equalityKind, NEQ);
 
+CORTO_ENUM_O(lang, inout);
+    CORTO_CONSTANT_O(lang_inout, IN);
+    CORTO_CONSTANT_O(lang_inout, OUT);
+    CORTO_CONSTANT_O(lang_inout, INOUT);
+
 CORTO_ENUM_O(core, operatorKind);
     CORTO_CONSTANT_O(core_operatorKind, ASSIGN);
     CORTO_CONSTANT_O(core_operatorKind, ASSIGN_ADD);
@@ -1079,6 +1084,7 @@ CORTO_CLASS_O(lang, default, lang_case, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, CORTO_
 CORTO_STRUCT_O(lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(lang_parameter, name, lang_string, CORTO_GLOBAL);
     CORTO_REFERENCE_O(lang_parameter, type, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, NULL, FALSE);
+    CORTO_MEMBER_O(lang_parameter, inout, lang_inout, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_parameter, passByReference, lang_bool, CORTO_GLOBAL);
 
 /* /corto/core/augmentData */
@@ -1243,6 +1249,8 @@ CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, paramType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, paramName, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, routerDataType, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_router, routerDataName, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, elementSeparator, lang_string, CORTO_GLOBAL);
     CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
 
@@ -1252,7 +1260,8 @@ CORTO_CLASS_O(core, routerimpl, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NU
     CORTO_METHOD_O(core_routerimpl, construct, "()", lang_int16, corto_routerimpl_construct);
     CORTO_METHOD_O(core_routerimpl, destruct, "()", lang_void, corto_routerimpl_destruct);
     CORTO_MEMBER_O(core_routerimpl, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_VIRTUAL_O(core_routerimpl, matchRoute, "(core/route route,stringseq pattern,any param)", lang_int32, corto_router_match);
+    CORTO_MEMBER_O(core_routerimpl, matched, core_route, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_VIRTUAL_O(core_routerimpl, matchRoute, "(core/route route,stringseq pattern,any param,out:any routerData)", lang_int32, corto_router_match);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);
