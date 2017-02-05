@@ -61,7 +61,7 @@ corto_void _test_Observers_tc_customSignatureObserverMissingEventMask(
     test_assert(o == NULL);
     test_assertstr(
       corto_lasterr(),
-      "init for 'myObserver(int32 event,int32& observable,core/observer observer)' of '/corto/core/observer' failed: /corto/core/observer/init failed: first argument must be of type core/eventMask"
+      "init for 'myObserver(int32 event,int32& observable,core/observer observer)' of '/corto/core/observer' failed: first argument must be of type core/eventMask"
     );
 
 /* $end */
@@ -78,7 +78,7 @@ corto_void _test_Observers_tc_customSignatureObserverMissingObserver(
     test_assert(o == NULL);
     test_assertstr(
       corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32& observable,object observer)' of '/corto/core/observer' failed: /corto/core/observer/init failed: third argument must be of type core/observer"
+      "init for 'myObserver(core/eventMask event,int32& observable,object observer)' of '/corto/core/observer' failed: third argument must be of type core/observer"
     );
 
 /* $end */
@@ -95,7 +95,7 @@ corto_void _test_Observers_tc_customSignatureObserverObservableNotReference(
     test_assert(o == NULL);
     test_assertstr(
       corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32 observable,core/observer observer)' of '/corto/core/observer' failed: /corto/core/observer/init failed: observer parameter must be of a reference type"
+      "init for 'myObserver(core/eventMask event,int32 observable,core/observer observer)' of '/corto/core/observer' failed: observer parameter must be of a reference type"
     );
 
 /* $end */
@@ -112,7 +112,7 @@ corto_void _test_Observers_tc_customSignatureObserverWrongArgumentNumber(
     test_assert(o == NULL);
     test_assertstr(
       corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32& observable)' of '/corto/core/observer' failed: /corto/core/observer/init failed: observers must have three arguments"
+      "init for 'myObserver(core/eventMask event,int32& observable)' of '/corto/core/observer' failed: observers must have three arguments"
     );
 
 /* $end */
