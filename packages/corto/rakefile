@@ -7,6 +7,10 @@ CFLAGS ||= ["-Wunused-parameter", "-fvisibility=hidden"]
 # Bootstrap: can't build corto packages without corto
 NOCORTO = true
 
+# Even though it's a NOCORTO package, don't add include as it contains headers
+# that clash with OS headers.
+ADD_OWN_INCLUDE = false
+
 # Rebuild corto.c and loader.c for every artefact to ensure not to link in a
 # cached version of an .o file that contains outdated information about the
 # binary that is being built.

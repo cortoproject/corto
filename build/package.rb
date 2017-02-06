@@ -63,7 +63,9 @@ else
 end
 
 if LOCAL == true then
-  ADD_OWN_INCLUDE = true
+  if not defined? ADD_OWN_INCLUDE then
+    ADD_OWN_INCLUDE ||= true
+  end
 end
 
 # Define a convenience macro in the package that points to the installed ETC directory
@@ -180,7 +182,9 @@ if NOCORTO == false then
         langStr = "--attr c4cpp=true --attr lang=cpp --attr hpp=include --attr cpp=src"
       end
 
-      ADD_OWN_INCLUDE ||= true
+      if not defined? ADD_OWN_INCLUDE then
+        ADD_OWN_INCLUDE ||= true
+      end
 
       command =
         "#{DEBUGCMD}corto pp #{preload} #{localStr} --name #{PACKAGE} " +
@@ -204,7 +208,9 @@ if NOCORTO == false then
     task :prebuild => [".corto/_project.#{EXT}"]
   end
 else
-  ADD_OWN_INCLUDE ||= true
+  if not defined? ADD_OWN_INCLUDE then
+    ADD_OWN_INCLUDE ||= true
+  end
 end
 
 # Document framework integration
