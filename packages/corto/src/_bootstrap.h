@@ -1252,7 +1252,7 @@ CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_MEMBER_O(core_router, routerDataType, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, routerDataName, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_router, elementSeparator, lang_string, CORTO_GLOBAL);
-    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result)", lang_int16, corto_router_match);
+    CORTO_FUNCTION_O(core_router, match, "(lang/object instance,string request,any param,any result,out:core/route matched)", lang_int16, corto_router_match);
 
 /* /corto/core/routerimpl */
 CORTO_FW_CD(core, routerimpl);

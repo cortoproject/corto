@@ -49,6 +49,7 @@ corto_int32 _corto_routerimpl_matchRoute_v(
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(param);
+    CORTO_UNUSED(routerData);
 
     if (route->elements.length == pattern.length) {
         result = 0;

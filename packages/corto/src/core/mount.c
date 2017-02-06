@@ -396,7 +396,7 @@ corto_resultIter _corto_mount_onRequest_v(
         corto_any routerParam = {corto_type(corto_request_o), request};
         sprintf(routerRequest, "%s/%s", request->parent, request->expr);
         corto_cleanpath(routerRequest, routerRequest);
-        if (corto_router_match(this, routerRequest, routerParam, routerResult)) {
+        if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
             corto_warning("%s", corto_lasterr());
         }
     }

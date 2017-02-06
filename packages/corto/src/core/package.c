@@ -21,6 +21,11 @@ void corto_package_onDefine(
 {
     corto_object owner = corto_ownerof(observable);
 
+    CORTO_UNUSED(instance);
+    CORTO_UNUSED(mask);
+    CORTO_UNUSED(observable);
+    CORTO_UNUSED(observer);
+
     /* If owner is a mount, object is being resumed */
     if (owner && corto_instanceof(corto_loader_o, owner)) {
         corto_id id;

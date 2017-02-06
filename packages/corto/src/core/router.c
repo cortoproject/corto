@@ -43,7 +43,8 @@ corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,
     corto_any param,
-    corto_any result)
+    corto_any result,
+    corto_route *matched)
 {
 /* $begin(corto/core/router/match) */
     corto_object instanceType = corto_typeof(instance);
@@ -55,6 +56,10 @@ corto_int16 _corto_router_match(
     char *requestElements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 elementCount;
     corto_any routerData = {.owner = TRUE};
+
+    if (matched) {
+        *matched = NULL;
+    }
 
     /* Parse request once */
     if (routerBase->elementSeparator) {
@@ -139,6 +144,10 @@ corto_int16 _corto_router_match(
 
     if (router->matched) {
         corto_callb(corto_function(router->matched), result.value, args);
+    }
+
+    if (matched) {
+        *matched = match;
     }
 
     if (routerBase->routerDataType) {
