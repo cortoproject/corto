@@ -203,6 +203,8 @@ if NOCORTO == false then
     end
     task :prebuild => [".corto/_project.#{EXT}"]
   end
+else
+  ADD_OWN_INCLUDE ||= true
 end
 
 # Document framework integration
