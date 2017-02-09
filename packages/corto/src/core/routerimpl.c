@@ -37,6 +37,41 @@ corto_void _corto_routerimpl_destruct(
 /* $end */
 }
 
+corto_route _corto_routerimpl_findRoute_v(
+    corto_routerimpl this,
+    corto_stringseq pattern,
+    corto_any param,
+    corto_any *routerData)
+{
+/* $begin(corto/core/routerimpl/findRoute) */
+    corto_route result = NULL;
+    corto_router routerBase = corto_router(corto_typeof(this));
+    corto_int32 maxMatched = -1;
+
+    /* Walk routes */
+    corto_int32 i;
+    for (i = 0; i < corto_interface(this)->methods.length; i++) {
+        corto_object o = corto_interface(this)->methods.buffer[i];
+        if (corto_instanceof(corto_route_o, o)) {
+            corto_int32 matched = corto_routerimpl_matchRoute(
+                this, corto_route(o), pattern, param, routerData);
+            if (matched > maxMatched) {
+                result = corto_route(o);
+
+                /* If request is not split up in multiple elements, there will
+                 * be only one matching route. */
+                if (!routerBase->elementSeparator) {
+                    break;
+                }
+            }
+        }
+    }
+
+    return result;
+
+/* $end */
+}
+
 corto_int32 _corto_routerimpl_matchRoute_v(
     corto_routerimpl this,
     corto_route route,

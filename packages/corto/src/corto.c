@@ -632,6 +632,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_routerimpl_maxArgs),\
     SSO_OP_OBJ(core_routerimpl_matched),\
     SSO_OP_OBJ(core_routerimpl_matchRoute_),\
+    SSO_OP_OBJ(core_routerimpl_findRoute_),\
     /* mount */\
     SSO_OP_OBJ(core_mount_kind),\
     SSO_OP_OBJ(core_mount_parent),\

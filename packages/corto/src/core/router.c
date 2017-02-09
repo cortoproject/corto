@@ -51,11 +51,11 @@ corto_int16 _corto_router_match(
     corto_routerimpl router = corto_router_findRouterImpl(instanceType);
     corto_router routerBase = corto_router(corto_typeof(router));
     corto_route match = NULL;
-    corto_int32 maxMatched = -1;
     corto_id requestBuffer;
     char *requestElements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 elementCount;
     corto_any routerData = {.owner = TRUE};
+    corto_int32 i;
 
     if (matched) {
         *matched = NULL;
@@ -73,27 +73,9 @@ corto_int16 _corto_router_match(
         elementCount = 1;
     }
 
-    /* Walk routes */
-    corto_int32 i;
-    for (i = 0; i < corto_interface(instanceType)->methods.length; i++) {
-        corto_object o = corto_interface(instanceType)->methods.buffer[i];
-        if (corto_instanceof(corto_route_o, o)) {
-            corto_stringseq pattern = {.length = elementCount, .buffer = requestElements};
-            corto_int32 matched = corto_routerimpl_matchRoute(
-                router, corto_route(o), pattern, param, &routerData);
-            if (matched > maxMatched) {
-                match = corto_route(o);
-
-                /* If request is not split up in multiple elements, there will
-                 * be only one matching route. */
-                if (!routerBase->elementSeparator) {
-                    break;
-                }
-            }
-        }
-    }
-
-    if (!match) {
+    
+    corto_stringseq pattern = {elementCount, requestElements};
+    if (!(match = corto_routerimpl_findRoute(router, pattern, param, &routerData))) {
         corto_seterr("%s: resource unknown", request);
         goto error;
     }
