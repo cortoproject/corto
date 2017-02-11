@@ -39,6 +39,7 @@ corto_void _corto_routerimpl_destruct(
 
 corto_route _corto_routerimpl_findRoute_v(
     corto_routerimpl this,
+    corto_object instance,
     corto_stringseq pattern,
     corto_any param,
     corto_any *routerData)
@@ -47,6 +48,8 @@ corto_route _corto_routerimpl_findRoute_v(
     corto_route result = NULL;
     corto_router routerBase = corto_router(corto_typeof(this));
     corto_int32 maxMatched = -1;
+
+    CORTO_UNUSED(instance);
 
     /* Walk routes */
     corto_int32 i;

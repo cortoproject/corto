@@ -75,7 +75,7 @@ corto_int16 _corto_router_match(
 
     
     corto_stringseq pattern = {elementCount, requestElements};
-    if (!(match = corto_routerimpl_findRoute(router, pattern, param, &routerData))) {
+    if (!(match = corto_routerimpl_findRoute(router, instance, pattern, param, &routerData))) {
         corto_seterr("%s: resource unknown", request);
         goto error;
     }

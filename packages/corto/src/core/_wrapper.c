@@ -349,6 +349,7 @@ corto_void _corto_observableEvent_handle(
 
 corto_route _corto_routerimpl_findRoute(
     corto_routerimpl this,
+    corto_object instance,
     corto_stringseq pattern,
     corto_any param,
     corto_any *routerData)
@@ -362,18 +363,18 @@ corto_route _corto_routerimpl_findRoute(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "findRoute(stringseq pattern,any param,out:any routerData)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "findRoute(object instance,stringseq pattern,any param,out:any routerData)");
     }
-    corto_assert(_methodId, "virtual 'findRoute(stringseq pattern,any param,out:any routerData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'findRoute(object instance,stringseq pattern,any param,out:any routerData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::findRoute(stringseq pattern,any param,out:any routerData)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::findRoute(object instance,stringseq pattern,any param,out:any routerData)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_route ___ (*)(corto_object, corto_stringseq, corto_any, corto_any*))((corto_function)_method)->fptr)(this, pattern, param, routerData);
+        _result = ((corto_route ___ (*)(corto_object, corto_object, corto_stringseq, corto_any, corto_any*))((corto_function)_method)->fptr)(this, instance, pattern, param, routerData);
     } else {
-        corto_call(corto_function(_method), &_result, this, pattern, param, routerData);
+        corto_call(corto_function(_method), &_result, this, instance, pattern, param, routerData);
     }
     
     return _result;

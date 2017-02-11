@@ -1262,7 +1262,7 @@ CORTO_CLASS_O(core, routerimpl, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NU
     CORTO_MEMBER_O(core_routerimpl, maxArgs, lang_uint16, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(core_routerimpl, matched, core_route, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_VIRTUAL_O(core_routerimpl, matchRoute, "(core/route route,stringseq pattern,any param,out:any routerData)", lang_int32, corto_router_match);
-    CORTO_VIRTUAL_O(core_routerimpl, findRoute, "(stringseq pattern,any param,out:any routerData)", core_route, corto_router_match);
+    CORTO_VIRTUAL_O(core_routerimpl, findRoute, "(object instance,stringseq pattern,any param,out:any routerData)", core_route, corto_router_match);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);

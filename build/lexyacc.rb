@@ -1,5 +1,5 @@
 
-GENERATED_SOURCES ||= []
+GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
 GENERATED_SOURCES << "src/y.tab.c" << "src/lex.yy.c"
 
 file "src/lex.yy.c" => ["src/#{LEX}", "src/y.tab.c"] do |task|

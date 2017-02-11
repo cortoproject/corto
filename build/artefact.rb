@@ -3,8 +3,7 @@ require "#{ENV['CORTO_BUILD']}/libmapping"
 require 'rake/clean'
 require 'pathname'
 
-CHDIR_SET ||= false
-
+CHDIR_SET = false if not defined? CHDIR_SET
 if !CHDIR_SET then
   Dir.chdir(File.dirname(Rake.application.rakefile))
 end
@@ -17,10 +16,10 @@ if not defined? ARTEFACT then
 end
 
 # Private variables
-TARGETDIR ||= ENV['CORTO_TARGET'] + "/lib"
-GENERATED_SOURCES ||= []
-GENERATED_HEADERS ||= []
-USE_PACKAGE_LOADED ||=[]
+TARGETDIR = ENV['CORTO_TARGET'] + "/lib" if not defined? TARGETDIR
+GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
+GENERATED_HEADERS = [] if not defined? GENERATED_HEADERS
+USE_PACKAGE_LOADED = [] if not defined? USE_PACKAGE_LOADED
 
 # Variable that indicates whether dependencies for redistributable librares are
 # resolved
@@ -85,11 +84,12 @@ end
 
 # Crawl src directory to get list of source files
 SOURCES = Rake::FileList["src/**/*.{c,cpp}"] - ALWAYS_REBUILD
-OBJECTS = SOURCES.ext(".o")
-              .pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
-          Rake::FileList[GENERATED_SOURCES]
-              .ext(".o")
-              .pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
+OBJECTS = SOURCES.
+          ext(".o").
+          pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
+        Rake::FileList[GENERATED_SOURCES].
+          ext(".o").
+          pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
 
 # Load packages from file
 if File.exists? ".corto/packages.txt" then
@@ -529,32 +529,28 @@ task :gcov => SOURCES.ext(".gcov") do
   if (total != 0) then
     pct = covered / total
     if (pct < 0.7) then
-      print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_FAIL} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+      print "#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_FAIL} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n"
     elsif (pct >= 0.8) then
-      print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_OK} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+      print "#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_OK} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n"
     else
-      print ("#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n")
+      print "#{C_BOLD}[ #{C_NORMAL}#{C_NORMAL}#{ARTEFACT}#{C_NORMAL}#{C_BOLD} #{"%.2f" % ((covered / total) * 100)}% #{C_NORMAL}#{C_BOLD}]#{C_NORMAL}\n"
     end
   end
   print "\n"
 end
 
-# Rules for generated files
-rule '_api.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false, "")
-end
-rule '_project.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false, "")
-end
-rule '_wrapper.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false, "")
-end
-rule '_load.o' => ->(t){t.pathmap(".corto/%f").ext(".#{EXT}")} do |task|
-    build_source(task.source, task.name, false, "")
+def g_src(obj)
+  obj.pathmap(".corto/%f").ext(".#{EXT}")
 end
 
+# Rules for generated files
+# rule (/^\.corto.*\/_[a-zA-Z]+\.o$/) do |task|
+#     print "Build #{task.name}\n"
+#     build_source(g_src(task.name), task.name, false, "")
+# end
+
 # Generic rule for translating source files into object files
-rule '.o' => ->(t) {
+rule '.o' => lambda {|t|
   file = nil
   base = File.join(File.dirname(t), File.basename(t, '.*'))
   SOURCES.each do |e|
@@ -563,8 +559,17 @@ rule '.o' => ->(t) {
       break;
     end
   end
+
+  # If file wasn't found and SOURCES with _ it is generated and is from .corto
   if file == nil then
-    file = t.pathmap("src/%f").ext(".c")
+    if File.basename(t)[0, 1] == "_" then
+      file = t.pathmap(".corto/%f").ext(".#{EXT}")
+    end
+  end
+
+  # If file wasn't found in SOURCES, it may be a generated file in src
+  if file == nil then
+    file = t.pathmap("src/%f").ext(".#{EXT}")
   end
   file
 } do |task|
@@ -576,7 +581,7 @@ rule '.o' => ->(t) {
 end
 
 # Rule for creating a gcov file
-rule '.gcov' => ->(t){t.ext(".#{EXT}")} do |task|
+rule '.gcov' => lambda{|t| t.ext(".#{EXT}")} do |task|
   if File.basename(task.name)[0] != "_" then
     gcov_dir = File.dirname(task.source.pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p"))
     begin

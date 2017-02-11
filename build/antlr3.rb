@@ -5,7 +5,7 @@ ANTLR3_ETC = "#{ENV["CORTO_TARGET"]}/etc/corto/#{ENV["CORTO_VERSION"]}/antlr3"
 ANTLR3_JAR = "#{ANTLR3_ETC}/#{ANTLR3_BINARY}"
 ENV["CLASSPATH"] = "#{ANTLR3_JAR}:#{ENV['CLASSPATH']}"
 
-GENERATED_SOURCES ||= []
+GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
 GENERATED_SOURCES << "src/#{ANTLR3}Parser.c"
 
 file "src/#{ANTLR3}Parser.c" => "src/#{ANTLR3}.g" do |task|

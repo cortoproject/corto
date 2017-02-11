@@ -1,8 +1,11 @@
 
-USE_PACKAGE ||= []
-LIBPATH ||= []
+USE_PACKAGE = []
+LIBPATH = []
+INCLUDE = []
 PP_ATTR = ["app=true"]
-INCLUDE ||= []
+INSTALL = "bin/cortobin"
+ARTEFACT_PREFIX = ""
+ARTEFACT_EXT = ""
 
 if not defined? PACKAGE then
     if defined? TARGET then
@@ -12,9 +15,6 @@ if not defined? PACKAGE then
     end
 end
 
-INSTALL = "bin/cortobin"
-ARTEFACT_PREFIX = ""
-ARTEFACT_EXT = ""
 ARTEFACT = PACKAGE.split("/").last
 
 task :symlink do

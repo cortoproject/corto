@@ -11,75 +11,70 @@ end
 
 # Set Corto version variable
 if ENV['CORTO_VERSION'] then
-  CORTO_VERSION ||= ENV['CORTO_VERSION']
+  CORTO_VERSION = ENV['CORTO_VERSION']
 else
-  CORTO_VERSION ||= `corto --minor`.strip
+  CORTO_VERSION = `corto --minor`.strip
 end
 
 # Set platform variables
-CORTO_OS ||= `uname -s`.strip
-CORTO_MACHINE ||= `uname -m`.strip
-CORTO_PLATFORM ||= CORTO_OS + "-" + CORTO_MACHINE
+CORTO_OS = `uname -s`.strip if
+CORTO_MACHINE = `uname -m`.strip
+CORTO_PLATFORM = CORTO_OS + "-" + CORTO_MACHINE
 
 # Set verbosity
 if not defined? VERBOSE then
   if ENV['verbose'] == "true" then
-    VERBOSE ||= true
+    VERBOSE = true
     ENV['CORTO_VERBOSITY'] = "TRACE"
   elsif not ENV['CORTO_VERBOSITY'] or ENV['CORTO_VERBOSITY'] == "" then
-    VERBOSE ||= false
+    VERBOSE = false
   else
-    VERBOSE ||= true
+    VERBOSE = true
   end
 end
 
 # Enable debugging of buildsystem (use valgrind on corto commands)
 if not defined? DEBUGCMD then
   if ENV['debug'] == "true" then
-    DEBUGCMD ||= "valgrind --track-origins=yes --num-callers=50 "
+    DEBUGCMD = "valgrind --track-origins=yes --num-callers=50 "
   else
-    DEBUGCMD ||= ""
+    DEBUGCMD = ""
   end
 end
 
 # Set coverage
 if not defined? COVERAGE then
   if ENV['coverage'] == "true" then
-    # An update in binutils broke code coverage
-    if CORTO_OS == "Darwin" then
-      COVERAGE ||= false
-    else
-      COVERAGE ||= true
-    end
+    COVERAGE = true
   else
-    COVERAGE ||= false
+    COVERAGE = false
   end
 end
 
 # Set softlinks
 if not defined? SOFTLINKS then
   if ENV['softlinks'] == "false" then
-    SOFTLINKS ||= false
+    SOFTLINKS = false
   else
-    SOFTLINKS ||= true
+    SOFTLINKS = true
   end
 end
 
 # Set multithreading
 if not defined? MULTITHREAD then
   if ENV['multithread'] == "false" then
-    MULTITHREAD ||= false
+    MULTITHREAD = false
   else
-    MULTITHREAD ||= true
+    MULTITHREAD = true
   end
 end
 
 # Set dryrun
 if not defined? DRYRUN then
   if ENV['dryrun'] == "true" then
-    DRYRUN ||= true
+    DRYRUN = true
   else
-    DRYRUN ||= false
+    DRYRUN = false
   end
 end
 
@@ -101,42 +96,42 @@ C_OK = "\033[1;32m"
 C_WARNING = "\033[1;33m"
 
 # Initialize public variables
-INCLUDE ||= []
-LIB ||= []
-LIBPATH ||= []
-LINK ||= []
-CFLAGS ||= ["-pedantic", "-Wstrict-prototypes"]
-CXXFLAGS ||= []
-LFLAGS ||= []
-USE_PACKAGE ||= []
-USE_COMPONENT ||= []
-USE_LIBRARY ||= []
-DEFINE ||= []
-PP_PRELOAD ||= []
-LANGUAGE ||= "c"
-ALWAYS_REBUILD ||= []
+INCLUDE = [] if not defined? INCLUDE
+LIB = [] if not defined? LIB
+LIBPATH = [] if not defined? LIBPATH
+LINK = [] if not defined? LINK
+CFLAGS = ["-pedantic", "-Wstrict-prototypes"] if not defined? CFLAGS
+CXXFLAGS = [] if not defined? CXXFLAGS
+LFLAGS = [] if not defined? LFLAGS
+LOCAL = false if not defined? LOCAL
+USE_PACKAGE = [] if not defined? USE_PACKAGE
+DEFINE = [] if not defined? DEFINE
+PP_PRELOAD = [] if not defined? PP_PRELOAD
+LANGUAGE = "c" if not defined? LANGUAGE
+ALWAYS_REBUILD = [] if not defined? ALWAYS_REBUILD
+UNINSTALL = []
 
 # Variable that tracks files created by the buildsystem for uninstaller
-UNINSTALL ||= []
 
 # Set environment variables in local constants
 CORTO_TARGET = ENV['CORTO_TARGET']
 CORTO_BUILD = ENV['CORTO_BUILD']
 CORTO_HOME = ENV['CORTO_HOME']
 
-# Initialize LOCAL
-LOCAL ||= false
-
 # Set compiler
-CC ||= if ENV['CC'].nil? or ENV['CC'].empty?
-  "cc"
-else
-  ENV['CC']
+if not defined? CC then
+  CC = if ENV['CC'].nil? or ENV['CC'].empty?
+    "cc"
+  else
+    ENV['CC']
+  end
 end
-CXX ||= if ENV['CXX'].nil? or ENV['CXX'].empty?
-  "g++"
-else
-  ENV['CXX']
+if not defined? CXX then
+  CXX = if ENV['CXX'].nil? or ENV['CXX'].empty?
+    "g++"
+  else
+    ENV['CXX']
+  end
 end
 
 # Set default extension
@@ -147,7 +142,7 @@ else
 end
 
 # Set root path
-CORTO_BUILDROOT ||= if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].empty?
+CORTO_BUILDROOT = if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].empty?
 
   # First time rake is called
   if ENV['silent'] != "true" then

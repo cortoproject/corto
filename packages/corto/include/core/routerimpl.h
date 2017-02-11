@@ -24,17 +24,19 @@ CORTO_EXPORT corto_void _corto_routerimpl_destruct(
 #define corto_routerimpl_destruct(_this) _corto_routerimpl_destruct(corto_routerimpl(_this))
 CORTO_EXPORT corto_route _corto_routerimpl_findRoute(
     corto_routerimpl _this,
+    corto_object instance,
     corto_stringseq pattern,
     corto_any param,
     corto_any *routerData);
-#define corto_routerimpl_findRoute(_this, pattern, param, routerData) _corto_routerimpl_findRoute(corto_routerimpl(_this), pattern, param, routerData)
+#define corto_routerimpl_findRoute(_this, instance, pattern, param, routerData) _corto_routerimpl_findRoute(corto_routerimpl(_this), instance, pattern, param, routerData)
 
 CORTO_EXPORT corto_route _corto_routerimpl_findRoute_v(
     corto_routerimpl _this,
+    corto_object instance,
     corto_stringseq pattern,
     corto_any param,
     corto_any *routerData);
-#define corto_routerimpl_findRoute_v(_this, pattern, param, routerData) _corto_routerimpl_findRoute_v(corto_routerimpl(_this), pattern, param, routerData)
+#define corto_routerimpl_findRoute_v(_this, instance, pattern, param, routerData) _corto_routerimpl_findRoute_v(corto_routerimpl(_this), instance, pattern, param, routerData)
 CORTO_EXPORT corto_int32 _corto_routerimpl_matchRoute(
     corto_routerimpl _this,
     corto_route route,

@@ -1,7 +1,7 @@
 require "#{ENV['CORTO_BUILD']}/common"
 
-COMPONENTS ||= []
-COMPONENTS_DONE ||= []
+COMPONENTS = [] if not defined? COMPONENTS
+COMPONENTS_DONE = []
 
 def forward(dir, task)
   if not COMPONENTS_DONE.include? dir then

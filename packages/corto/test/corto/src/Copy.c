@@ -809,8 +809,8 @@ corto_void _test_Copy_tc_sequenceToSequenceComposite(
 {
 /* $begin(test/Copy/tc_sequenceToSequenceComposite) */
     corto_int16 ret;
-    corto_parameter p1 = {"foo", corto_type(corto_int32_o), TRUE};
-    corto_parameter p2 = {"bar", corto_type(corto_float32_o), FALSE};
+    corto_parameter p1 = {"foo", corto_type(corto_int32_o), CORTO_IN, TRUE};
+    corto_parameter p2 = {"bar", corto_type(corto_float32_o), CORTO_IN, FALSE};
     corto_parameter v[] = {p1, p2};
     corto_parameterseqCreate_auto(v1, 2, v);
     corto_parameterseqCreate_auto(v2, 0, NULL);
@@ -945,8 +945,8 @@ corto_void _test_Copy_tc_sequenceToSequenceValueComposite(
 {
 /* $begin(test/Copy/tc_sequenceToSequenceValueComposite) */
     corto_int16 ret;
-    corto_parameter p1 = {"foo", corto_type(corto_int32_o), TRUE};
-    corto_parameter p2 = {"bar", corto_type(corto_float32_o), FALSE};
+    corto_parameter p1 = {"foo", corto_type(corto_int32_o), CORTO_IN, TRUE};
+    corto_parameter p2 = {"bar", corto_type(corto_float32_o), CORTO_IN, FALSE};
     corto_parameterseq v1 = {2, (corto_parameter[]){p1, p2}};
     corto_parameterseq v2 = {0, NULL};
 

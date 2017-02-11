@@ -3,37 +3,41 @@ require 'rake/clean'
 
 PACKAGE_FWSLASH = PACKAGE.gsub("::", "/")
 
-LIB_PUBLIC ||= [] + LIB
-LIBPATH_PUBLIC ||= [] + LIBPATH
-LINK_PUBLIC ||= ["."] + LINK
+# Public variables
+LIB_PUBLIC = [] + LIB if not defined? LIB_PUBLIC
+LIBPATH_PUBLIC = [] + LIBPATH if not defined? LIBPATH_PUBLIC
+LINK_PUBLIC = ["."] + LINK if not defined? LINK_PUBLIC
 # keep track of the original LINK array as the buildsystem will append LINK with
 # dependencies
-LINK_NO_DEPS = LINK.clone
-GENERATED_SOURCES ||= []
-TARGET ||= PACKAGE_FWSLASH.split("/").last
+TARGET = PACKAGE_FWSLASH.split("/").last if not defined? TARGET
+NAME = PACKAGE_FWSLASH.split("/").last if not defined? NAME
+ARTEFACT = TARGET if not defined? ARTEFACT
+ARTEFACT_PREFIX = "lib" if not defined? ARTEFACT_PREFIX
+ARTEFACT_EXT = "so" if not defined? ARTEFACT_EXT
+INSTALL = "lib/corto" if not defined? INSTALL
+NOCORTO = false if not defined? NOCORTO
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
-NAME ||= PACKAGE_FWSLASH.split("/").last
-ARTEFACT ||= TARGET
-ARTEFACT_PREFIX ||= "lib"
-ARTEFACT_EXT ||= "so"
-INSTALL ||= "lib/corto"
-NOCORTO ||= false
+
+# Private variables
+GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
+GENERATED_HEADERS = [] if not defined? GENERATED_HEADERS
+LINK_NO_DEPS = LINK.clone
 
 # Preprocessor variables
-PP_ATTR ||= []
+PP_ATTR = [] if not defined? PP_ATTR
 if not defined? PP_OBJECTS then
-  PP_SCOPES ||= [PACKAGE]
+  PP_SCOPES = [PACKAGE] if not defined? PP_SCOPES
+  PP_OBJECTS = []
 else
   if not PP_ATTR.include?("app=true") then
     STDERR.puts "\033[1;31mcorto: cannot use PP_OBJECTS for packages\033[0;49m"
     abort();
   end
-  PP_SCOPES ||= []
+  PP_SCOPES = [] if not defined? PP_SCOPES
 end
-PP_OBJECTS ||= []
 
 if LANGUAGE != "cpp" and LANGUAGE != "c++" then
-  PREFIX ||= TARGET
+  PREFIX = TARGET if not defined? PREFIX
 else
   PREFIX = "."
 end
@@ -55,16 +59,16 @@ Dir.chdir(File.dirname(Rake.application.rakefile))
 # Support for local packages (packages that are not installed to environment)
 if LOCAL == true then
   TARGETPATH = "./.corto"
-  TARGETDIR ||= TARGETPATH
+  TARGETDIR = TARGETPATH if not defined? TARGETDIR
 else
   PACKAGEDIR = PACKAGE_FWSLASH
   TARGETPATH = PACKAGEDIR
-  TARGETDIR ||= "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
+  TARGETDIR = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}" if not defined? TARGETDIR
 end
 
 if LOCAL == true then
   if not defined? ADD_OWN_INCLUDE then
-    ADD_OWN_INCLUDE ||= true
+    ADD_OWN_INCLUDE = true
   end
 end
 
@@ -102,7 +106,7 @@ if NOCORTO == false then
         ".corto/_project.#{EXT}" <<
         ".corto/_load.#{EXT}"
 
-      GENERATED_HEADERS ||= [] <<
+      GENERATED_HEADERS <<
         "include/_api.h" <<
         "include/_load.h" <<
         "include/_type.h" <<
@@ -113,7 +117,7 @@ if NOCORTO == false then
         ".corto/_project.#{EXT}" <<
         ".corto/_load.#{EXT}"
 
-      GENERATED_HEADERS ||= [] <<
+      GENERATED_HEADERS <<
         "include/_load.h" <<
         "include/_type.h"
     end
@@ -183,7 +187,7 @@ if NOCORTO == false then
       end
 
       if not defined? ADD_OWN_INCLUDE then
-        ADD_OWN_INCLUDE ||= true
+        ADD_OWN_INCLUDE = true
       end
 
       command =
@@ -209,7 +213,7 @@ if NOCORTO == false then
   end
 else
   if not defined? ADD_OWN_INCLUDE then
-    ADD_OWN_INCLUDE ||= true
+    ADD_OWN_INCLUDE = true
   end
 end
 
@@ -241,7 +245,7 @@ end
 task :buildscript do
   verbose(VERBOSE)
   if not LOCAL then
-    INCLUDE_PUBLIC ||= [] + INCLUDE
+    INCLUDE_PUBLIC = [] + INCLUDE if not defined? INCLUDE_PUBLIC
     if INCLUDE_PUBLIC.length or LIB_PUBLIC.length or LINK_PUBLIC.length then
       dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
       cmd "mkdir -p #{dir}"
