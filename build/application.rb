@@ -1,11 +1,13 @@
 
-USE_PACKAGE = []
-LIBPATH = []
-INCLUDE = []
-PP_ATTR = ["app=true"]
+USE_PACKAGE = [] if not defined? USE_PACKAGE
+LIBPATH = [] if not defined? LIBPATH
+INCLUDE = [] if not defined? INCLUDE
+PP_ATTR = [] if not defined? PP_ATTR
+
 INSTALL = "bin/cortobin"
-ARTEFACT_PREFIX = ""
-ARTEFACT_EXT = ""
+ARTEFACT_PREFIX = "" if not defined? ARTEFACT_PREFIX
+ARTEFACT_EXT = "" if not defined? ARTEFACT_EXT
+PP_ATTR << "app=true"
 
 if not defined? PACKAGE then
     if defined? TARGET then
