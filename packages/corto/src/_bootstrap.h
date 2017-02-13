@@ -775,7 +775,7 @@ CORTO_ITERATOR_O(core, objectIter, lang_object);
 
 /* /corto/lang/typeOptions */
 CORTO_STRUCT_O(lang, typeOptions, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
-    CORTO_REFERENCE_O(lang_typeOptions, parentType, lang_type, CORTO_GLOBAL, CORTO_DEFINED, NULL, FALSE);
+    CORTO_REFERENCE_O(lang_typeOptions, parentType, lang_type, CORTO_GLOBAL, CORTO_DECLARED|CORTO_DEFINED, NULL, FALSE);
     CORTO_MEMBER_O(lang_typeOptions, parentState, lang_state, CORTO_GLOBAL);
     CORTO_REFERENCE_O(lang_typeOptions, defaultType, lang_type, CORTO_GLOBAL, CORTO_DEFINED, NULL, FALSE);
     CORTO_REFERENCE_O(lang_typeOptions, defaultProcedureType, lang_type, CORTO_GLOBAL, CORTO_DEFINED, NULL, FALSE);
