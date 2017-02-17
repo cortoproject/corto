@@ -38,6 +38,7 @@ corto_int16 _corto_iterator_init(
 /* $begin(corto/lang/iterator/init) */
     corto_type(this)->kind = CORTO_ITERATOR;
     corto_type(this)->size = sizeof(corto_iter);
+    corto_type(this)->alignment = CORTO_ALIGNMENT(corto_iter);
     return corto_type_init(corto_type(this));
 /* $end */
 }

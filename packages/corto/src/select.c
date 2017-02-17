@@ -134,7 +134,7 @@ static corto_word corto_selectConvert(
 
     /* If source serializer is loaded, a conversion is
      * needed */
-    if (srcType) {
+    if (srcType && (srcType != data->dstSer)) {
         corto_object t = corto_resolve(NULL, type);
         if (!t) {
             corto_seterr("unresolved type '%s'", type);
@@ -624,25 +624,7 @@ static corto_int16 corto_selectIterMount(
           data, result->type, result->value);
 
         /* Convert history */
-        if (data->item.history.length) {
-            corto_int32 i = 0;
-            for (i = 0; i < data->item.history.length; i++) {
-                data->dstSer->release(data->item.history.buffer[i]);
-            }
-        }
-        if (data->item.history.length != result->history.length) {
-            data->item.history.buffer = corto_realloc(
-              data->item.history.buffer,
-              result->history.length * sizeof(corto_word));
-            data->item.history.length = result->history.length;
-        }
-        if (result->history.length) {
-            corto_int32 i = 0;
-            for (i = 0; i < result->history.length; i++) {
-                data->item.history.buffer[i] = corto_selectConvert(
-                  data, result->type, result->history.buffer[i]);
-            }
-        }
+        data->item.history = result->history;
     }
 
     if (data->resume) {
@@ -986,7 +968,7 @@ static void corto_selectReset(corto_selectData *data) {
         corto_setref(&data->item.object, NULL);
     }
 
-    if (data->item.history.length) {
+    /*if (data->item.history.length) {
         corto_int32 i;
         for (i = 0; i < data->item.history.length; i ++) {
             data->dstSer->release(data->item.history.buffer[i]);
@@ -994,7 +976,7 @@ static void corto_selectReset(corto_selectData *data) {
         corto_dealloc(data->item.history.buffer);
         data->item.history.length = 0;
         data->item.history.buffer = NULL;
-    }
+    }*/
 
     if (data->stack[0].scopeQuery) {
         if (data->stack[0].scopeQuery !=

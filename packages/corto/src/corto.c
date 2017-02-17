@@ -184,7 +184,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, parameter),\
     SSO_OP_VALUE(lang_, typeOptions),\
     SSO_OP_VALUE(core_, augmentData),\
+    SSO_OP_VALUE(core_, time),\
     SSO_OP_VALUE(core_, frame),\
+    SSO_OP_VALUE(core_, sample),\
+    SSO_OP_VALUE(core_, sampleIter),\
     SSO_OP_VALUE(core_, result),\
     SSO_OP_VALUE(core_, request),\
     SSO_OP_VALUE(core_, mountStats),\
@@ -197,7 +200,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, destructAction),\
     SSO_OP_VALUE(core_, resultIter),\
     SSO_OP_VALUE(core_, objectIter),\
-    SSO_OP_VALUE(core_, time),\
     SSO_OP_VALUE(core_, position),\
     SSO_OP_CLASS(lang_, function),\
     SSO_OP_CLASS(lang_, method),\
@@ -746,6 +748,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* augmentData */\
     SSO_OP_OBJ(core_augmentData_id),\
     SSO_OP_OBJ(core_augmentData_data),\
+    /* sample */\
+    SSO_OP_OBJ(core_sample_timestamp),\
+    SSO_OP_OBJ(core_sample_value),\
     /* result */\
     SSO_OP_OBJ(core_result_id),\
     SSO_OP_OBJ(core_result_name),\

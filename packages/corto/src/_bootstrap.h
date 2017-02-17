@@ -446,12 +446,13 @@ CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
 CORTO_FWDECL(struct, typeOptions);
 CORTO_FWDECL_CORE(struct, augmentData);
-CORTO_FWDECL_CORE(struct, result);
-CORTO_FWDECL_CORE(struct, request);
 CORTO_FWDECL_CORE(struct, frame);
 CORTO_FWDECL_CORE(struct, mountStats);
 CORTO_FWDECL_CORE(struct, mountPolicy);
 CORTO_FWDECL_CORE(struct, mountSubscription);
+CORTO_FWDECL_CORE(struct, result);
+CORTO_FWDECL_CORE(struct, request);
+CORTO_FWDECL_CORE(struct, sample);
 
 /* Abstract classes */
 CORTO_FWDECL_CORE(interface, dispatcher);
@@ -524,6 +525,7 @@ CORTO_FWDECL(delegate, nameAction);
 
 CORTO_FWDECL_CORE(iterator, resultIter);
 CORTO_FWDECL_CORE(iterator, objectIter);
+CORTO_FWDECL_CORE(iterator, sampleIter);
 
 CORTO_FWDECL_CORE(struct, time);
 CORTO_FWDECL_CORE(struct, position);
@@ -770,8 +772,9 @@ CORTO_DELEGATE_O(lang, nameAction, lang_string);
 CORTO_DELEGATE_O(lang, destructAction, lang_void);
 
 /* Iterator types */
-CORTO_ITERATOR_O(core, resultIter, core_result);
 CORTO_ITERATOR_O(core, objectIter, lang_object);
+CORTO_ITERATOR_O(core, resultIter, core_result);
+CORTO_ITERATOR_O(core, sampleIter, core_sample);
 
 /* /corto/lang/typeOptions */
 CORTO_STRUCT_O(lang, typeOptions, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
@@ -1092,6 +1095,11 @@ CORTO_STRUCT_O(core, augmentData, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NU
     CORTO_MEMBER_O(core_augmentData, id, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_augmentData, data, lang_word, CORTO_GLOBAL);
 
+/* /corto/core/sample */
+CORTO_STRUCT_O(core, sample, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
+    CORTO_MEMBER_O(core_sample, timestamp, core_time, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_sample, value, lang_word, CORTO_GLOBAL);
+
 /* /corto/core/result */
 CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, id, lang_string, CORTO_GLOBAL);
@@ -1101,7 +1109,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, value, lang_word, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, leaf, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, object, lang_object, CORTO_HIDDEN);
-    CORTO_MEMBER_O(core_result, history, lang_wordseq, CORTO_HIDDEN);
+    CORTO_MEMBER_O(core_result, history, core_sampleIter, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, augments, core_augmentseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, owner, lang_object, CORTO_HIDDEN);
     CORTO_METHOD_O(core_result, getText, "()", lang_string, corto_result_getText);

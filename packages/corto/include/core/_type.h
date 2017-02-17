@@ -38,6 +38,9 @@ extern "C" {
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
 #define corto_request(o) ((corto_request*)corto_assertType((corto_type)corto_request_o, o))
+#define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
+#define corto_sample(o) ((corto_sample*)corto_assertType((corto_type)corto_sample_o, o))
+#define corto_sampleIter(o) ((corto_sampleIter*)corto_assertType((corto_type)corto_sampleIter_o, o))
 #define corto_result(o) ((corto_result*)corto_assertType((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter*)corto_assertType((corto_type)corto_resultIter_o, o))
 #define corto_resultList(o) ((corto_resultList*)corto_assertType((corto_type)corto_resultList_o, o))
@@ -46,7 +49,6 @@ extern "C" {
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
 #define corto_stager(o) ((corto_stager)corto_assertType((corto_type)corto_stager_o, o))
 #define corto_subscriberEvent(o) ((corto_subscriberEvent)corto_assertType((corto_type)corto_subscriberEvent_o, o))
-#define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 
 /* Type definitions */
 /*  /corto/core/package */
@@ -319,6 +321,24 @@ struct corto_request {
     corto_frame to;
 };
 
+/*  /corto/core/time */
+typedef struct corto_time corto_time;
+
+struct corto_time {
+    corto_int32 sec;
+    corto_uint32 nanosec;
+};
+
+/*  /corto/core/sample */
+typedef struct corto_sample corto_sample;
+
+struct corto_sample {
+    corto_time timestamp;
+    corto_word value;
+};
+
+CORTO_ITERATOR(corto_sampleIter);
+
 /*  /corto/core/result */
 typedef struct corto_result corto_result;
 
@@ -330,7 +350,7 @@ struct corto_result {
     corto_word value;
     corto_bool leaf;
     corto_object object;
-    corto_wordseq history;
+    corto_sampleIter history;
     corto_augmentseq augments;
     corto_object owner;
 };
@@ -384,14 +404,6 @@ struct corto_subscriberEvent_s {
     struct corto_observableEvent_s _parent;
     corto_result result;
     corto_word contentTypeHandle;
-};
-
-/*  /corto/core/time */
-typedef struct corto_time corto_time;
-
-struct corto_time {
-    corto_int32 sec;
-    corto_uint32 nanosec;
 };
 
 #ifdef __cplusplus

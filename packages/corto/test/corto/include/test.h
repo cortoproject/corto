@@ -141,6 +141,8 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <include/FooReplicator.h>
 #include <include/Fullname.h>
 #include <include/GoldenRetriever.h>
+#include <include/HistoryMount.h>
+#include <include/HistoryMount_data.h>
 #include <include/JsonReplicator.h>
 #include <include/Line.h>
 #include <include/ListMount.h>
@@ -169,6 +171,7 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #include <include/Security.h>
 #include <include/Select.h>
 #include <include/SelectContentType.h>
+#include <include/SelectHistory.h>
 #include <include/SelectMount.h>
 #include <include/SelectSink.h>
 #include <include/SelectSinkNoOnRequest.h>

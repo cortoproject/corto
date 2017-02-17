@@ -687,6 +687,21 @@ test/Suite SelectMount::
     void tc_selectInvertCaseFilter()
     void tc_selectInvertCaseScope()
 
+class HistoryMount : core/mount, hidden::
+    alias mount: mount/mount
+    int16 construct()
+    core/resultIter onRequest(core/request request)
+
+    struct data::
+        result: core/result
+        history: list{string}
+
+    history: list{data}, private
+
+test/Suite SelectHistory::
+    void setup() method
+    void tc_selectNowToDepth()
+
 class SinkMount : core/mount, hidden::
     alias mount: mount/mount
     alias type: mount/type

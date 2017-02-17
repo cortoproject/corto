@@ -65,6 +65,7 @@ CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, route);
 CORTO_META_OBJECT(struct, time);
 CORTO_META_OBJECT(struct, position);
+CORTO_META_OBJECT(struct, sample);
 
 CORTO_META_OBJECT(subscriber, mount_on_notify);
 

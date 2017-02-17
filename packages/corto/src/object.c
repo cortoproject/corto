@@ -2236,6 +2236,11 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
         return TRUE;
     }
 
+    /* Any object is an instance of VOID references */
+    if ((type->kind == CORTO_VOID) && (type->reference)) {
+        return TRUE;
+    }
+
     /* A bit of gibberish to ensure that a constant of an enumeration or bitmask
      * will evaluate TRUE when used with the enum/bitmask type.  */
     if (t == (corto_type)corto_constant_o) {
