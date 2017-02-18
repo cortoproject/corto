@@ -272,12 +272,14 @@ corto_int16 corto_notifySubscribersId(
         corto_uint32 sp, s;
         corto_bool relativeParentSet = FALSE;
         corto_id relativeParent;
+
         for (sp = 0; sp < admin->subscribers[depth].length; sp ++) {
             corto_subscriptionPerParent *subPerParent = &admin->subscribers[depth].buffer[sp];
 
             corto_benchmark_start(S_B_MATCHPARENT);
             char *expr = corto_matchParent(subPerParent->parent, path);
             if (!expr) {
+                printf("path = %s, parent = %s\n", path, subPerParent->parent);
                 continue;
             }
             corto_benchmark_stop(S_B_MATCHPARENT);
@@ -505,6 +507,8 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
         s = NULL;
     }
 
+    corto_dealloc(r->expr);
+
     return s;
 }
 
@@ -589,8 +593,11 @@ static corto_subscribeFluent corto_subscribeFluentGet(void)
 corto_subscribeFluent corto_subscribe(
     corto_eventMask mask,
     corto_string scope,
-    corto_string expr)
+    corto_string expr,
+    ...)
 {
+    va_list arglist;
+
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_subscribeRequest));
@@ -599,9 +606,12 @@ corto_subscribeFluent corto_subscribe(
         memset(request, 0, sizeof(corto_subscribeRequest));
     }
 
+    va_start(arglist, expr);
+    corto_vasprintf(&request->expr, expr, arglist);
+    va_end (arglist);
+
     request->mask = mask;
     request->scope = scope;
-    request->expr = expr;
     request->enabled = TRUE;
     return corto_subscribeFluentGet();
 }

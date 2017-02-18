@@ -235,3 +235,59 @@ corto_void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
 
 /* $end */
 }
+
+/* $header(test/Subscribe/tc_subscribeNestedIdFromRoot) */
+void tc_subscribeNestedIdFromRootOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeNestedIdFromRoot(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeNestedIdFromRoot) */
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/", "A/XYZ")
+      .instance(this)
+      .callback(tc_subscribeNestedIdFromRootOnUpdate);
+
+    test_assert(corto_publish(CORTO_ON_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
+void tc_subscribeNestedScopeFromRootOnUpdate(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    this->triggered = TRUE;
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/", "A/*")
+      .instance(this)
+      .callback(tc_subscribeNestedScopeFromRootOnUpdate);
+
+    test_assert(corto_publish(CORTO_ON_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}

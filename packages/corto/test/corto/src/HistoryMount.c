@@ -19,10 +19,10 @@ corto_int16 _test_HistoryMount_construct(
     corto_mount_setContentType(this, "text/corto");
 
     samples = corto_llNew();
-    corto_stringListAppend(samples, "10");
-    corto_stringListAppend(samples, "20");
+    corto_stringListAppend(samples, "{10,11}");
+    corto_stringListAppend(samples, "{20,22}");
 
-    r = (corto_result){"a", NULL, ".", "int32", 0, TRUE};
+    r = (corto_result){"a", NULL, ".", "/test/Point", 0, TRUE};
     test_HistoryMount_dataAssign(
         test_HistoryMount_dataListAppendAlloc(this->history),
         &r,
@@ -30,11 +30,11 @@ corto_int16 _test_HistoryMount_construct(
     );
 
     corto_llClear(samples);
-    corto_stringListAppend(samples, "30");
-    corto_stringListAppend(samples, "40");
-    corto_stringListAppend(samples, "50");
+    corto_stringListAppend(samples, "{30,33}");
+    corto_stringListAppend(samples, "{40,44}");
+    corto_stringListAppend(samples, "{50,55}");
 
-    r = (corto_result){"b", NULL, ".", "int32", 0, TRUE};
+    r = (corto_result){"b", NULL, ".", "/test/Point", 0, TRUE};
     test_HistoryMount_dataAssign(
         test_HistoryMount_dataListAppendAlloc(this->history),
         &r,
@@ -42,12 +42,12 @@ corto_int16 _test_HistoryMount_construct(
     );
 
     corto_llClear(samples);
-    corto_stringListAppend(samples, "60");
-    corto_stringListAppend(samples, "70");
-    corto_stringListAppend(samples, "80");
-    corto_stringListAppend(samples, "90");
+    corto_stringListAppend(samples, "{60,66}");
+    corto_stringListAppend(samples, "{70,77}");
+    corto_stringListAppend(samples, "{80,88}");
+    corto_stringListAppend(samples, "{90,99}");
 
-    r = (corto_result){"c", NULL, ".", "int32", 0, TRUE};
+    r = (corto_result){"c", NULL, ".", "/test/Point", 0, TRUE};
     test_HistoryMount_dataAssign(
         test_HistoryMount_dataListAppendAlloc(this->history),
         &r,
@@ -87,17 +87,24 @@ void* next(corto_iter *it) {
     /* Populate history list, only supporting indexes, the oldest sample being
      * index 0 */
     if (ctx->from.kind == CORTO_FRAME_NOW) {
-        start = corto_llSize(data->history);
+        start = corto_llSize(data->history) - 1;
     } else if (ctx->from.kind == CORTO_FRAME_SAMPLE) {
         start = ctx->from.value;
+        if (start >= corto_llSize(data->history)) {
+            start = corto_llSize(data->history) - 1;
+        }
     }
     if (ctx->to.kind == CORTO_FRAME_SAMPLE) {
         stop = ctx->to.value;
     } else if (ctx->to.kind == CORTO_FRAME_DEPTH) {
-        stop = start - ctx->to.value;
+        stop = start - ctx->to.value + 1;
     }
 
-    for (i = start - 1; i >= stop; i--) {
+    if (stop < 0) {
+        stop = 0;
+    }
+
+    for (i = start; i >= stop; i--) {
         corto_sample *s = corto_alloc(sizeof(corto_sample));
         s->timestamp.sec = i;
         s->timestamp.nanosec = 0;

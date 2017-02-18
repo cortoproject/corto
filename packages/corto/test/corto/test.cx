@@ -701,6 +701,10 @@ class HistoryMount : core/mount, hidden::
 test/Suite SelectHistory::
     void setup() method
     void tc_selectNowToDepth()
+    void tc_selectSampleToDepth()
+    void tc_selectSampleToSample()
+    void tc_selectAll()
+    void tc_selectJson()
 
 class SinkMount : core/mount, hidden::
     alias mount: mount/mount
@@ -1095,6 +1099,8 @@ test/Suite Subscribe::
     void tc_subscribeInvertCaseFromPublish()
     void tc_subscribeInvertCaseFilterFromPublish()
     void tc_subscribeInvertCaseParentFromPublish()
+    void tc_subscribeNestedIdFromRoot()
+    void tc_subscribeNestedScopeFromRoot()
 
 test/Suite MountSubscription::
     void tc_subscribeSingle()

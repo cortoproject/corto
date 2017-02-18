@@ -375,7 +375,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Load interface */
             if (g_load(g, lib)) {
-                corto_error("corto: pp: cannot load generator '%s'.", lib);
+                corto_error("corto: pp: %s", corto_lasterr());
                 goto error;
             }
 

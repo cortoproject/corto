@@ -29,6 +29,14 @@ typedef struct corto_selectRequest {
     corto_mount mount;
 } corto_selectRequest;
 
+typedef struct corto_selectData corto_selectData;
+
+typedef struct corto_selectHistoryIter_t {
+    corto_iter iter;
+    corto_selectData *data;
+    corto_sample sample;
+} corto_selectHistoryIter_t;
+
 typedef struct corto_selectStack {
     corto_object scope; /* Object of whose scope is being iterated */
     corto_string scopeQuery; /* String remainder of scope to be iterated */
@@ -119,8 +127,14 @@ typedef struct corto_selectData {
     corto_id type;
     corto_augmentData augmentBuffer[CORTO_MAX_AUGMENTS];
     corto_result item;
+    corto_selectHistoryIter_t historyIterData;
     corto_result *next;
 } corto_selectData;
+
+static corto_contentType corto_selectSrcContentType(corto_selectData *data) {
+    return (corto_contentType)
+      data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeOutHandle;
+}
 
 static corto_word corto_selectConvert(
     corto_selectData *data,
@@ -129,8 +143,11 @@ static corto_word corto_selectConvert(
 {
     corto_word result = 0;
 
-    corto_contentType srcType = (corto_contentType)
-      data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeOutHandle;
+    if (!value) {
+        return 0;
+    }
+
+    corto_contentType srcType = corto_selectSrcContentType(data);
 
     /* If source serializer is loaded, a conversion is
      * needed */
@@ -541,6 +558,40 @@ static corto_resultIter corto_selectRequestMount(
     }
 }
 
+int corto_selectHistoryHasNext(corto_iter *it) {
+    corto_selectHistoryIter_t *ctx = it->udata;
+    return corto_iterHasNext(&ctx->iter);
+}
+
+void* corto_selectHistoryNext(corto_iter *it) {
+    corto_selectHistoryIter_t *ctx = it->udata;
+    corto_word dstValue;
+    corto_sample *s = corto_iterNext(&ctx->iter);
+    
+    dstValue = corto_selectConvert(ctx->data, ctx->data->item.type, s->value);
+
+    if (ctx->sample.value) {
+        ctx->data->dstSer->release(ctx->sample.value);
+    }
+
+    ctx->sample.value = dstValue;
+    ctx->sample.timestamp = s->timestamp;
+
+    return &ctx->sample;
+}
+
+void corto_selectHistoryRelease(corto_iter *it) {
+    corto_selectHistoryIter_t *ctx = it->udata;
+    
+    if (ctx->sample.value) {
+        ctx->data->dstSer->release(ctx->sample.value);
+    }
+
+    corto_iterRelease(&ctx->iter);
+
+    ctx->data->item.history.udata = NULL;
+}
+
 static corto_int16 corto_selectIterMount(
     corto_selectData *data,
     corto_selectStack *frame)
@@ -617,14 +668,27 @@ static corto_int16 corto_selectIterMount(
         data->item.type[0] = '\0';
     }
 
-    if (data->contentType) {
+    /* If src & dst contentTypes are different, translate */
+    corto_contentType srcType = corto_selectSrcContentType(data);
+    if (data->dstSer && (data->dstSer != srcType)) {
         /* Convert value */
         data->dstSer->release(data->item.value);
         data->item.value = corto_selectConvert(
           data, result->type, result->value);
 
-        /* Convert history */
+        /* Wrap history iterator in other iterator that converts contentType */
+        if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
+            data->item.history.hasNext = corto_selectHistoryHasNext;
+            data->item.history.next = corto_selectHistoryNext;
+            data->item.history.release = corto_selectHistoryRelease;
+            data->item.history.udata = &data->historyIterData;
+            data->historyIterData.iter = result->history;
+            data->historyIterData.data = data;
+            data->historyIterData.sample.value = 0;            
+        }
+    } else {
         data->item.history = result->history;
+        data->item.value = result->value;
     }
 
     if (data->resume) {
@@ -968,15 +1032,10 @@ static void corto_selectReset(corto_selectData *data) {
         corto_setref(&data->item.object, NULL);
     }
 
-    /*if (data->item.history.length) {
-        corto_int32 i;
-        for (i = 0; i < data->item.history.length; i ++) {
-            data->dstSer->release(data->item.history.buffer[i]);
-        }
-        corto_dealloc(data->item.history.buffer);
-        data->item.history.length = 0;
-        data->item.history.buffer = NULL;
-    }*/
+    if (data->item.history.udata) {
+        data->item.history.release(&data->item.history);
+        data->item.history.udata = 0;
+    }
 
     if (data->stack[0].scopeQuery) {
         if (data->stack[0].scopeQuery !=
@@ -1279,7 +1338,6 @@ static corto_resultIter corto_selectPrepareIterator (
     corto_resultIter result;
     memset(&result, 0, sizeof(corto_resultIter));
 
-    corto_string expr = r->expr;
     corto_string scope = r->scope;
 
     if (scope && *scope) {
@@ -1292,10 +1350,11 @@ static corto_resultIter corto_selectPrepareIterator (
         data->scope = NULL;
     }
 
-    if (expr && *expr) {
-        data->expr = corto_strdup(expr);
+    if (r->expr && *(r->expr)) {
+        data->expr = r->expr;
     } else {
         data->expr = corto_strdup(".");
+        corto_dealloc(r->expr);
     }
     data->exprStart = data->expr;
 
@@ -1339,7 +1398,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->exprCurrent = 0;
 
     if (corto_matchProgramParseIntern(&data->program, data->expr, TRUE, FALSE)) {
-        corto_seterr("select '%s' failed: %s", expr, corto_lasterr());
+        corto_seterr("select '%s' failed: %s", data->expr, corto_lasterr());
         goto error;
     }
 
@@ -1673,8 +1732,11 @@ static corto_selectFluent corto_selectFluentGet(void)
 
 corto_selectFluent corto_select(
     corto_string scope,
-    corto_string expr)
+    corto_string expr,
+    ...)
 {
+    va_list arglist;
+
     corto_selectRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_selectRequest));
@@ -1685,7 +1747,10 @@ corto_selectFluent corto_select(
 
     corto_debug("corto: select: '%s', '%s'", scope, expr);
 
+    va_start(arglist, expr);
+    corto_vasprintf(&request->expr, expr, arglist);
+    va_end(arglist);
+
     request->scope = scope;
-    request->expr = expr;
     return corto_selectFluentGet();
 }

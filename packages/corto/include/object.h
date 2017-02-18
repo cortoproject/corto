@@ -139,7 +139,7 @@ typedef struct corto_selectFluent {
     corto_int16 ___ (*subscribe)(corto_resultIter *ret); /* Unstable API */
     corto_int16 ___ (*unsubscribe)(void); /* Unstable API */
 } corto_selectFluent;
-CORTO_EXPORT struct corto_selectFluent corto_select(corto_string scope, corto_string expr);
+CORTO_EXPORT struct corto_selectFluent corto_select(corto_string scope, corto_string expr, ...);
 
 /* Observe objects for an observable matching an eventmask */
 typedef struct corto_observeFluent {
@@ -161,7 +161,7 @@ typedef struct corto_subscribeFluent {
     struct corto_subscribeFluent (*type)(corto_string type);
     corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_result*, corto_subscriber));
 } corto_subscribeFluent;
-CORTO_EXPORT struct corto_subscribeFluent corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr);
+CORTO_EXPORT struct corto_subscribeFluent corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr, ...);
 CORTO_EXPORT corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
 
 /* Match corto expression */
