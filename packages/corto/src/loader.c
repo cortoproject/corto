@@ -229,7 +229,7 @@ static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *buil
           "corto: library '%s' links with conflicting corto library\n"
           "  links with: '%s' (%s)\n"
           "  current:    '%s' (%s)\n",
-          fileName, library(), build(), corto_getLibrary(), corto_getBuild());
+          fileName, library ? library() : "???", build(), corto_getLibrary(), corto_getBuild());
         /* Library is linked with different Corto version */
         if (build_out) {
             *build_out = corto_strdup(build());

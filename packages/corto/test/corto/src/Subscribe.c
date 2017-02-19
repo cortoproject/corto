@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-void _test_Subscribe_noInitialSep(
+corto_void _test_Subscribe_noInitialSep(
     test_Subscribe this,
     corto_eventMask event,
     corto_result *object,

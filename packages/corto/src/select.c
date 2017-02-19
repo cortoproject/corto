@@ -59,7 +59,7 @@ typedef struct corto_scopeSegment {
     corto_string scopeQuery;
 } corto_scopeSegment;
 
-typedef struct corto_selectData {
+struct corto_selectData {
     corto_string scope;                      /* Scope passed to select */
     corto_string expr;                       /* Current expression */
     corto_string exprStart;                  /* Points to start of full expr */
@@ -129,7 +129,7 @@ typedef struct corto_selectData {
     corto_result item;
     corto_selectHistoryIter_t historyIterData;
     corto_result *next;
-} corto_selectData;
+};
 
 static corto_contentType corto_selectSrcContentType(corto_selectData *data) {
     return (corto_contentType)
@@ -1746,10 +1746,12 @@ corto_selectFluent corto_select(
     }
 
     corto_debug("corto: select: '%s', '%s'", scope, expr);
-
-    va_start(arglist, expr);
-    corto_vasprintf(&request->expr, expr, arglist);
-    va_end(arglist);
+    
+    if (expr) {
+        va_start(arglist, expr);
+        corto_vasprintf(&request->expr, expr, arglist);
+        va_end(arglist);
+    }
 
     request->scope = scope;
     return corto_selectFluentGet();

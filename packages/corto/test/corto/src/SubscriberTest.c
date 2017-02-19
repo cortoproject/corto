@@ -126,7 +126,7 @@ corto_void _test_SubscriberTest_destruct(
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclare(
+corto_void _test_SubscriberTest_onDeclare(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -138,7 +138,7 @@ void _test_SubscriberTest_onDeclare(
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclareScope(
+corto_void _test_SubscriberTest_onDeclareScope(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -150,7 +150,7 @@ void _test_SubscriberTest_onDeclareScope(
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclareSelf(
+corto_void _test_SubscriberTest_onDeclareSelf(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -162,7 +162,7 @@ void _test_SubscriberTest_onDeclareSelf(
 /* $end */
 }
 
-void _test_SubscriberTest_onDeclareTree(
+corto_void _test_SubscriberTest_onDeclareTree(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -174,7 +174,7 @@ void _test_SubscriberTest_onDeclareTree(
 /* $end */
 }
 
-void _test_SubscriberTest_onDefine(
+corto_void _test_SubscriberTest_onDefine(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -186,7 +186,7 @@ void _test_SubscriberTest_onDefine(
 /* $end */
 }
 
-void _test_SubscriberTest_onDefineScope(
+corto_void _test_SubscriberTest_onDefineScope(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -198,7 +198,7 @@ void _test_SubscriberTest_onDefineScope(
 /* $end */
 }
 
-void _test_SubscriberTest_onDefineSelf(
+corto_void _test_SubscriberTest_onDefineSelf(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -210,7 +210,7 @@ void _test_SubscriberTest_onDefineSelf(
 /* $end */
 }
 
-void _test_SubscriberTest_onDefineTree(
+corto_void _test_SubscriberTest_onDefineTree(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -222,7 +222,7 @@ void _test_SubscriberTest_onDefineTree(
 /* $end */
 }
 
-void _test_SubscriberTest_onUpdate(
+corto_void _test_SubscriberTest_onUpdate(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -234,7 +234,7 @@ void _test_SubscriberTest_onUpdate(
 /* $end */
 }
 
-void _test_SubscriberTest_onUpdateScope(
+corto_void _test_SubscriberTest_onUpdateScope(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -246,7 +246,7 @@ void _test_SubscriberTest_onUpdateScope(
 /* $end */
 }
 
-void _test_SubscriberTest_onUpdateSelf(
+corto_void _test_SubscriberTest_onUpdateSelf(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,
@@ -258,7 +258,7 @@ void _test_SubscriberTest_onUpdateSelf(
 /* $end */
 }
 
-void _test_SubscriberTest_onUpdateTree(
+corto_void _test_SubscriberTest_onUpdateTree(
     test_SubscriberTest this,
     corto_eventMask event,
     corto_result *object,

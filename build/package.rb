@@ -420,7 +420,11 @@ task :install_files do
   if not LOCAL then
     libpath = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}"
     if not File.exists? libpath then
-      cmd "mkdir -p #{libpath}"
+        begin
+          cmd "mkdir -p #{libpath}"
+        rescue
+          abort "\033[1;31m[ command failed: mkdir #{libpath} ]\033[0;49m"
+        end
     end
 
     if not PP_ATTR.include?("app=true") then
