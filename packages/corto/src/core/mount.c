@@ -49,20 +49,22 @@ corto_int16 corto_mount_detach(
     corto_mount this,
     corto_object o)
 {
-    corto_ll mounts = corto_olsLockGet(o, CORTO_OLS_REPLICATOR);
+    if (o) {
+        corto_ll mounts = corto_olsLockGet(o, CORTO_OLS_REPLICATOR);
 
-    if (mounts) {
-        corto_iter it = corto_llIter(mounts);
-        while (corto_iterHasNext(&it)) {
-            corto_mount_olsData_t *data = corto_iterNext(&it);
-            if (data->mount == this) {
-                corto_llRemove(mounts, data);
-                break;
+        if (mounts) {
+            corto_iter it = corto_llIter(mounts);
+            while (corto_iterHasNext(&it)) {
+                corto_mount_olsData_t *data = corto_iterNext(&it);
+                if (data->mount == this) {
+                    corto_llRemove(mounts, data);
+                    break;
+                }
             }
         }
-    }
 
-    corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, mounts);
+        corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, mounts);
+    }
 
     return 0;
 }
@@ -289,6 +291,8 @@ corto_void _corto_mount_destruct(
     }
 
     corto_subscriber_destruct(this);
+
+    corto_mount_detach(this, this->mount);
 
 /* $end */
 }
@@ -560,7 +564,7 @@ corto_object _corto_mount_resume(
 
     /* Resume object */
     if (this->hasResume) {
-        corto_debug("corto: mount: onResume parent=%s, expr=%s (mount = %s)", parent, name, corto_fullpath(NULL, this));
+        corto_debug("corto: mount: onResume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
         result = corto_mount_onResume(this, parent, name, o);
     } else {
         corto_id type;
@@ -580,7 +584,7 @@ corto_object _corto_mount_resume(
         r.content = TRUE;
 
         // Request object from mount
-        corto_debug("corto: mount: look for '%s/%s' (auto-resume, mount = '%s')", parent, name, corto_fullpath(NULL, this));
+        corto_debug("corto: mount: look for '%s/%s' (auto-resume, mount = '%s', o = %p)", parent, name, corto_fullpath(NULL, this), o);
         corto_resultIter it = corto_mount_request(this, &r);
 
         if (corto_iterHasNext(&it)) {

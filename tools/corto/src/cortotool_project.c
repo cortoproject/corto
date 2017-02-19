@@ -633,16 +633,6 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    /* If package is nested, add a dependency to parent */
-    if (strlen(parentName) && !nocorto) {
-        if (cortotool_add(
-            4,
-            (char*[]){"add", parentName, "--silent", "--nobuild", NULL}
-        )) {
-            goto error;
-        }
-    }
-
     if (!nobuild) {
         if (cortotool_build(2, (char*[]){"build", "--silent", nocoverage ? "--nocoverage" : "", NULL})) {
             goto error;

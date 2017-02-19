@@ -111,9 +111,9 @@ corto_void _test_SelectHistory_tc_selectAll(
     test_assertint(s->timestamp.sec, 0);
     test_assertint(s->timestamp.nanosec, 0);
     test_assertstr((corto_string)s->value, "{60,66}");
-    test_assert(!corto_iterHasNext(&it));
-
     test_assert(!corto_iterHasNext(&r->history));
+    
+    test_assert(!corto_iterHasNext(&it));
 
 /* $end */
 }

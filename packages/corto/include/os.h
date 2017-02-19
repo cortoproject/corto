@@ -22,7 +22,7 @@ typedef enum corto_procsignal {
 } corto_procsignal;
 
 /* Create a directory. Returns zero if OK, -1 if failed */
-CORTO_EXPORT int corto_mkdir(const char *name);
+CORTO_EXPORT int corto_mkdir(const char *name, ...);
 
 /* Read the contents of a directory */
 CORTO_EXPORT corto_ll corto_opendir(const char *name);

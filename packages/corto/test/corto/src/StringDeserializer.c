@@ -15,6 +15,8 @@ corto_void _test_StringDeserializer_setup(
 
     corto_setAttr(CORTO_ATTR_PERSISTENT);
 
+    corto_enableload(FALSE);
+
 /* $end */
 }
 

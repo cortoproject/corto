@@ -28,9 +28,11 @@ void corto_package_onDefine(
 
     /* If owner is a mount, object is being resumed */
     if (owner && corto_instanceof(corto_loader_o, owner)) {
-        corto_id id;
-        if (corto_loadIntern(corto_fullpath(id, observable), 0, NULL, FALSE, TRUE)) {
-            corto_lasterr(); /* Ignore error */
+        if (corto_loader(owner)->autoLoad) {
+            corto_id id;
+            if (corto_loadIntern(corto_fullpath(id, observable), 0, NULL, FALSE, TRUE)) {
+                corto_lasterr(); /* Ignore error */
+            }
         }
     }
 }

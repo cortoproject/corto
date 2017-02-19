@@ -240,7 +240,6 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
         corto_string import = corto_iterNext(&it);
 
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
-
             corto_object package = corto_lookup(NULL, import);
             if (!package) {
                 corto_error("corto: %s: package not found", import);
@@ -268,9 +267,6 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     corto_ll core;
 
     CORTO_UNUSED(argc);
-
-    /* Start loader mount */
-    corto_loader p = corto_create(corto_loader_o);
 
     corto_argdata *data = corto_argparse(
       argv,
@@ -320,16 +316,21 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     corto_trace("corto: pp: start generator from '%s'", corto_cwd());
 
+    /* Load imports */
+    if (imports) {
+        corto_iter it = corto_llIter(imports);
+        while (corto_iterHasNext(&it)) {
+            corto_string import = corto_iterNext(&it);
+            if (strcmp(import, "corto") && strcmp(import, "/corto")) {
+                if (corto_load(import, 0, NULL)) {
+                    goto error;
+                }
+            }
+        }
+    }
+
     /* Load includes */
     if (includes) {
-        /* Set owner to a SINK mount so the package loader won't attempt to
-         * automatically load existing packages that are defined a definition file */
-        corto_mount owner = corto_declare(corto_mount_o);
-        owner->kind = CORTO_SINK;
-        corto_define(owner);
-        corto_object prev = corto_setOwner(owner);
-
-
         it = corto_llIter(includes);
         while (corto_iterHasNext(&it)) {
             include = corto_iterNext(&it);
@@ -361,9 +362,6 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             }
             corto_llAppend(attributes, str);
         }
-
-        corto_setOwner(prev);
-        corto_release(owner);
     }
 
     /* Load library */
@@ -433,9 +431,6 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     /* Cleanup application resources */
     corto_argclean(data);
-
-    /* Delete loader mount */
-    corto_delete(p);
 
     return 0;
 error:

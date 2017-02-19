@@ -7,11 +7,6 @@
 
 static corto_string cortotool_lookupPackage(corto_string str) {
     corto_string package = NULL;
-    static corto_loader l;
-    if (!l) {
-        /* This will leak, but at least it'll leak only once */
-        l = corto_create(corto_loader_o);
-    }
 
     corto_object p = corto_resolve(NULL, str);
 

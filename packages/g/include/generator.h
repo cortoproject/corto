@@ -120,9 +120,6 @@ CORTO_EXPORT corto_int16 g_start(g_generator generator);
 /* Add import */
 CORTO_EXPORT corto_int16 g_import(g_generator generator, corto_object package);
 
-/* Resolve imports */
-CORTO_EXPORT corto_int16 g_resolveImports(g_generator generator);
-
 /* Walk generator objects. Parse scopes of generator objects when configured. */
 CORTO_EXPORT int g_walk(g_generator generator, g_walkAction o, void* userData);
 

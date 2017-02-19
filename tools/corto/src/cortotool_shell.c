@@ -1016,12 +1016,6 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     printf("corto shell - type 'help' for instructions.\n");
     cxsh_color(NORMAL);
 
-    /* Start loader mount */
-    corto_loader p = corto_create(corto_loader_o);
-    if (!p) {
-        corto_warning("corto: loader failed (packages will not be visible): %s", corto_lasterr());
-    }
-
     /* Parse arguments */
     for(i=1; i<argc; i++) {
         if (!strcmp(argv[i], "-d")) {
@@ -1035,11 +1029,6 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
     /* Set scope to root */
     strcpy(scope, "/");
     cxsh_shell();
-
-    /* Delete loader mount */
-    if (p) {
-        corto_delete(p);
-    }
 
     return 0;
 }

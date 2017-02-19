@@ -53,6 +53,9 @@ const char* CORTO_VERSION_PATCH = VERSION_PATCH;
 corto_mutex_s corto_adminLock;
 corto_rwmutex_s corto_subscriberLock;
 
+/* Package loader */
+static corto_loader corto_loaderInstance;
+
 /* Actions to be run at shutdown */
 static corto_ll corto_exitHandlers = NULL;
 
@@ -679,6 +682,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_onSubscribe_),\
     SSO_OP_OBJ(core_mount_onUnsubscribe_),\
     /* loader */\
+    SSO_OP_OBJ(core_loader_autoLoad),\
     SSO_OP_OBJ(core_loader_construct_),\
     SSO_OP_OBJ(core_loader_destruct_),\
     SSO_OP_OBJ(core_loader_onRequest_),\
@@ -1077,6 +1081,13 @@ int corto_start(void) {
 
     CORTO_OPERATIONAL = 0; /* Running */
 
+    corto_loaderInstance = corto_create(corto_loader_o);
+    
+    /* If loader couldn't be created, json package is probably not installed */
+    if (!corto_loaderInstance) {
+        corto_lasterr();
+    }
+
     return 0;
 }
 
@@ -1117,6 +1128,10 @@ int corto_stop(void) {
     if (corto_getOwner()) {
         corto_error("owner has not been reset to NULL before shutting down");
         abort();
+    }
+
+    if (corto_loaderInstance) {
+        corto_delete(corto_loaderInstance);
     }
 
     /* Drop the rootscope. This will not actually result
@@ -1206,6 +1221,31 @@ corto_bool corto_isbuiltin(corto_object o) {
     //SSO_OP_TYPE(CORTO_CHECKBUILTIN_ARG);
     //SSO_OP_OBJECT(CORTO_CHECKBUILTIN);
     return FALSE;
+}
+
+void corto_autoload(corto_bool autoload) {
+    if (corto_loaderInstance) {
+        corto_loaderInstance->autoLoad = autoload;
+    }
+}
+
+corto_bool corto_enableload(corto_bool enable) {
+    corto_bool prev = FALSE;
+    if (!enable) {
+        if (corto_loaderInstance) {
+            corto_delete(corto_loaderInstance);
+            corto_loaderInstance = NULL;
+            prev = TRUE;
+        }
+    } else {
+        if (!corto_loaderInstance) {
+            corto_loaderInstance = corto_create(corto_loader_o);
+        } else {
+            prev = TRUE;
+        }
+    }
+
+    return prev;
 }
 
 #ifndef NDEBUG

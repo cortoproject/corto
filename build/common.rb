@@ -26,7 +26,7 @@ if not defined? VERBOSE then
   if ENV['verbose'] == "true" then
     VERBOSE = true
     ENV['CORTO_VERBOSITY'] = "TRACE"
-  elsif not ENV['CORTO_VERBOSITY'] or ENV['CORTO_VERBOSITY'] == "" then
+  elsif not ENV['CORTO_VERBOSITY'] or ENV['CORTO_VERBOSITY'] == "" or ENV['CORTO_VERBOSITY'] == "OK" then
     VERBOSE = false
   else
     VERBOSE = true

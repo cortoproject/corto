@@ -1134,6 +1134,7 @@ CORTO_INTERFACE_O(core, dispatcher);
 /* /corto/core/loader */
 CORTO_FW_CD(core, loader);
 CORTO_CLASS_O(core, loader, core_mount, CORTO_PRIVATE|CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(core_loader, autoLoad, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(core_loader, construct, "()", lang_int16, corto_loader_construct);
     CORTO_METHOD_O(core_loader, destruct, "()", lang_void, corto_loader_destruct);
     CORTO_VIRTUAL_O(core_loader, onRequest, "(/corto/core/request request)", core_resultIter, corto_loader_onRequest_v);

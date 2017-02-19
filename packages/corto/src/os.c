@@ -38,9 +38,17 @@ char* corto_cwd(void) {
     return corto_setThreadString(cwd);
 }
 
-int corto_mkdir(const char *name) {
+int corto_mkdir(const char *fmt, ...) {
     int _errno = 0;
     char msg[PATH_MAX];
+    
+    va_list args;
+    va_start(args, fmt);
+    char *name = corto_venvparse(fmt, args);
+    va_end(args);
+    if (!name) {
+        goto error_name;
+    }
 
     if (mkdir(name, 0700)) {
         _errno = errno;
@@ -82,10 +90,14 @@ int corto_mkdir(const char *name) {
         }
     }
 
+    corto_dealloc(name);
+
     return 0;
 error:
     sprintf(msg, "%s", name);
     printError(errno, msg);
+    corto_dealloc(name);
+error_name:
     return -1;
 }
 

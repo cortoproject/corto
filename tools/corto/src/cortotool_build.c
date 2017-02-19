@@ -93,12 +93,24 @@ corto_int16 cortotool_loadRakefile(void) {
         }
     }
 
-    char* fileContent = corto_fileLoad("project.json");
-    if (!fileContent) {
+    char* json = corto_fileLoad("project.json");
+    if (!json) {
         goto error_fileLoad;
     }
 
-    corto_package package = corto_package(corto_createFromContent("text/json", fileContent));
+    /* Extract id from JSON. If the package is nested, and its parent does not
+     * exist, a directory must be created for the parent before the JSON can be
+     * parsed. */
+    corto_result r;
+    if (corto_result_fromcontent(&r, "text/json", json)) {
+        goto error_result_fromcontent;
+    }
+
+    if (corto_mkdir("$CORTO_TARGET/lib/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
+        goto error_mkdir;
+    }
+
+    corto_package package = corto_package(corto_createFromContent("text/json", json));
     if (!package) {
         goto error_createFromContent;
     }
@@ -108,15 +120,19 @@ corto_int16 cortotool_loadRakefile(void) {
     }
 
     corto_release(package);
-    corto_dealloc(fileContent);
+    corto_dealloc(json);
+    corto_deinitp(&r, corto_result_o);
 
 skip:
     return 0;
 
 error_createRakefile:
     corto_delete(package);
+error_mkdir:
+error_result_fromcontent:
+    corto_deinitp(&r, corto_result_o);
 error_createFromContent:
-    corto_dealloc(fileContent);
+    corto_dealloc(json);
 error_fileLoad:
 error_fileTest:
     return -1;
@@ -132,10 +148,6 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
     corto_iter it;
 
     CORTO_UNUSED(argc);
-
-    /* Create the package loader so that if a project.json file contains a
-     * nested package, the parent is automatically loaded. */
-    corto_create(corto_loader_o);
 
     corto_argdata *data = corto_argparse(
       argv,

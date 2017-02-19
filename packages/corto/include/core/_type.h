@@ -238,6 +238,7 @@ typedef struct corto_loader_s *corto_loader;
 
 struct corto_loader_s {
     struct corto_mount_s _parent;
+    corto_bool autoLoad;
 };
 
 CORTO_ITERATOR(corto_objectIter);

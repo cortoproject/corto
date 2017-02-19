@@ -21,6 +21,8 @@ corto_void _test_SelectMount_setup(
     /* Create mount */
     this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_SOURCE);
 
+    corto_enableload(FALSE);
+
 /* $end */
 }
 

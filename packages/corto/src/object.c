@@ -1276,20 +1276,23 @@ corto_object corto_resume_fromMount(
     corto_object o)
 {
     corto_object result = NULL;
+    corto_type mountType = corto_observer(m)->typeReference;
 
     /* If mount implements resume, this will load the
      * persistent copy in memory */
-    if ((result = corto_mount_resume(
-        m,
-        parentId,
-        expr,
-        o)))
-    {
-        /* Assign owner */
-        corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
-        corto__persistent *_p = corto__objectPersistent(_o);
-        corto_assert(_p != NULL, "cannot resume object that is not persistent");
-        corto_setref(&_p->owner, m);
+    if (!o || !mountType || (mountType == corto_typeof(o))) {
+        if ((result = corto_mount_resume(
+            m,
+            parentId,
+            expr,
+            o)))
+        {
+            /* Assign owner */
+            corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
+            corto__persistent *_p = corto__objectPersistent(_o);
+            corto_assert(_p != NULL, "cannot resume object that is not persistent");
+            corto_setref(&_p->owner, m);
+        }
     }
 
     return result;

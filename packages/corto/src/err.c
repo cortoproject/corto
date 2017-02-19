@@ -254,9 +254,9 @@ void corto_seterrv(char *fmt, va_list args) {
 
     if (fmt && (CORTO_DEBUG_ENABLED || CORTO_OPERATIONAL)) {
         if (CORTO_OPERATIONAL == 1) {
-            corto_error("error raised while starting up: %s", err);
+            corto_error("error raised while starting up: %s", corto_lasterr());
         } else if (CORTO_OPERATIONAL){
-            corto_error("error raised while shutting down: %s", err);
+            corto_error("error raised while shutting down: %s", corto_lasterr());
         } else {
             fprintf(stderr, "%s%s%s\n", RED, err, NORMAL);
         }

@@ -406,15 +406,6 @@ error:
 
 /* Start generator */
 corto_int16 g_start(g_generator g) {
-    /* Find dependent packages, configure associated API prefixes */
-
-    /* Resolve imports based on metadata. */
-    if (g_resolveImports(g)) {
-        if (!corto_lasterr())  {
-            corto_seterr("failed to resolve imports");
-        }
-        goto error;
-    }
 
     /* packages.txt may contain more packages than is found by looking at the
      * metadata, however no code will be generated based on those packages so
@@ -507,112 +498,10 @@ corto_int16 g_import(g_generator g, corto_object package) {
     return 0;
 }
 
-corto_int16 g_importsEvalReference(
-    g_generator g,
-    corto_object o)
-{
-    if (!g_mustParse(g, o) && (o != g_getCurrent(g))) {
-        corto_object parent = o;
-        while(parent && !corto_instanceof(corto_type(corto_package_o), parent)) {
-            parent = corto_parentof(parent);
-        }
-
-        if (parent && (parent != root_o) && !corto_isBuiltinPackage(parent)) {
-            if (!g->imports) {
-                g->imports = corto_llNew();
-            }
-            if (!corto_llHasObject(g->imports, parent)) {
-                corto_llInsert(g->imports, parent);
-                corto_claim(parent);
-
-                /* Recursively obtain imports */
-                g_leafDependencies(g, parent);
-            }
-        }
-    }
-
-    return 0;
-}
-
-corto_int16 g_serializeImportsReference(corto_serializer s, corto_value *v, void* userData) {
-    corto_object o;
-    g_serializeImports_t *data = userData;
-    g_generator g = data->g;
-
-    o = *(corto_object*)corto_value_getPtr(v);
-    if (o) {
-        /* Search unscoped object for references to other modules */
-        if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_uint32 i;
-
-            /* Make sure to not serialize an object twice, in case of a cycle */
-            for(i=0; i<data->count; i++) {
-                if (data->stack[i] == o) {
-                    break;
-                }
-            }
-
-            if (i == data->count) {
-                data->stack[data->count] = o;
-                data->count++;
-                corto_serialize(s, o, userData);
-                data->count--;
-            }
-        } else {
-            g_importsEvalReference(g, o);
-        }
-    }
-
-    return 0;
-}
-
-corto_int16 g_serializeImportsObject(corto_serializer s, corto_value *v, void* userData) {
-    g_serializeImports_t *data = userData;
-
-    corto_object o = corto_value_getObject(v);
-    g_importsEvalReference(data->g, corto_typeof(o));
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        g_importsEvalReference(data->g, corto_parentof(o));
-    }
-    corto_serializeValue(s, v, userData);
-
-    return 0;
-}
-
-struct corto_serializer_s g_serializeImportsSerializer(void) {
-    struct corto_serializer_s result;
-    corto_serializerInit(&result);
-    result.metaprogram[CORTO_OBJECT] = g_serializeImportsObject;
-    result.reference = g_serializeImportsReference;
-    result.access = CORTO_PRIVATE;
-    result.accessKind = CORTO_NOT; /* Serialize not nothing, thus everything. */
-    return result;
-}
-
 struct g_walkObjects_t {
     g_walkAction action;
     void* userData;
 };
-
-/* Resolve imports */
-int g_importWalk(corto_object o, void* userData) {
-    g_generator g = userData;
-    g_serializeImports_t walkData;
-    struct corto_serializer_s s;
-
-    walkData.count = 0;
-    walkData.g = g;
-    walkData.nested = FALSE;
-    s = g_serializeImportsSerializer();
-    corto_serialize(&s, o, &walkData);
-
-    return 1;
-}
-
-corto_int16 g_resolveImports(g_generator generator) {
-    g_walkRecursive(generator, g_importWalk, generator);
-    return 0;
-}
 
 /* Recursively walk scopes */
 int g_walkObjects(void* o, void* userData) {

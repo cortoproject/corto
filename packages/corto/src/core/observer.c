@@ -715,7 +715,7 @@ corto_int16 _corto_observer_construct(
         goto error;
     }
 
-    if (this->enabled) {
+    if (this->enabled && !corto_instanceof(corto_subscriber_o, this)) {
         if (corto_observer_observe(this, this->instance, this->observable)) {
             goto error;
         }

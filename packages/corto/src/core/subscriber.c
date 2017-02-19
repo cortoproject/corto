@@ -712,7 +712,7 @@ corto_int16 _corto_subscriber_construct(
         }
     }
 
-    return 0;
+    return corto_observer_construct(this);
 error:
     return -1;
 /* $end */
