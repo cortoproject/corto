@@ -748,7 +748,7 @@ corto_int16 _corto_subscriber_init(
     p = &corto_function(this)->parameters.buffer[1];
     p->name = corto_strdup("object");
     p->passByReference = TRUE;
-   corto_setref(&p->type, corto_result_o);
+    corto_setref(&p->type, corto_result_o);
 
     /* Parameter subscriber */
     p = &corto_function(this)->parameters.buffer[2];

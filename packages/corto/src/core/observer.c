@@ -684,28 +684,30 @@ corto_int16 _corto_observer_construct(
         corto_setref(&this->typeReference, t);
     }
 
-    if (!corto_checkAttr(this, CORTO_ATTR_SCOPED) || !strchr(corto_idof(this), '(')) {
-        corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 3);
-        corto_function(this)->parameters.length = 3;
-        corto_parameter *p;
+    if (!corto_function(this)->parameters.length) {
+        if (!corto_checkAttr(this, CORTO_ATTR_SCOPED) || !strchr(corto_idof(this), '(')) {
+            corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 3);
+            corto_function(this)->parameters.length = 3;
+            corto_parameter *p;
 
-        /* Parameter event */
-        p = &corto_function(this)->parameters.buffer[0];
-        p->name = corto_strdup("event");
-        p->passByReference = FALSE;
-        corto_setref(&p->type, corto_eventMask_o);
+            /* Parameter event */
+            p = &corto_function(this)->parameters.buffer[0];
+            p->name = corto_strdup("event");
+            p->passByReference = FALSE;
+            corto_setref(&p->type, corto_eventMask_o);
 
-        /* Parameter object */
-        p = &corto_function(this)->parameters.buffer[1];
-        p->name = corto_strdup("object");
-        p->passByReference = TRUE;
-        corto_setref(&p->type, t);
+            /* Parameter object */
+            p = &corto_function(this)->parameters.buffer[1];
+            p->name = corto_strdup("object");
+            p->passByReference = TRUE;
+            corto_setref(&p->type, t);
 
-        /* Parameter subscriber */
-        p = &corto_function(this)->parameters.buffer[2];
-        p->name = corto_strdup("observer");
-        p->passByReference = TRUE;
-        corto_setref(&p->type, corto_observer_o);
+            /* Parameter subscriber */
+            p = &corto_function(this)->parameters.buffer[2];
+            p->name = corto_strdup("observer");
+            p->passByReference = TRUE;
+            corto_setref(&p->type, corto_observer_o);
+        }
     }
 
     /* Bind function. Run this function before listening to observable, as
@@ -755,12 +757,7 @@ corto_int16 _corto_observer_init(
     corto_setref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
-    if (!corto_checkAttr(this, CORTO_ATTR_SCOPED) || !strchr(corto_idof(this), '(')) {
-        corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 3);
-        corto_function(this)->parameters.length = 3;
-
-        /* Set parameters in constructor */
-    } else {
+    if (corto_checkAttr(this, CORTO_ATTR_SCOPED) && strchr(corto_idof(this), '(')) {
         /* id of function contains a parameter list, parse in function/init */
         corto_int16 result = corto_function_init(this);
         if (result) {
