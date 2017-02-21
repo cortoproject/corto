@@ -293,7 +293,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     );
 
     if (!data) {
-        corto_error("corto: %s", corto_lasterr());
+        corto_seterr("%s", corto_lasterr());
         goto error;
     }
 
@@ -337,7 +337,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             corto_trace("corto: pp: loading '%s'", include);
             if (corto_load(include, 0, NULL)) {
-                corto_error("corto: %s: %s", include, corto_lasterr());
+                corto_seterr("%s: %s", include, corto_lasterr());
                 goto error;
             } else {
                 /* Add name to scope list if none provided */
@@ -373,7 +373,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Load interface */
             if (g_load(g, lib)) {
-                corto_error("corto: pp: %s", corto_lasterr());
+                corto_seterr("corto: pp: %s", corto_lasterr());
                 goto error;
             }
 
@@ -417,9 +417,8 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             /* Start generator */
             corto_trace("corto: pp: run generator '%s'", lib);
             if (g_start(g)) {
-                corto_error("corto: %s: %s", lib, corto_lasterr());
+                corto_seterr("%s: %s", lib, corto_lasterr());
                 g_free(g);
-
                 goto error;
             }
 
@@ -434,5 +433,6 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     return 0;
 error:
+    corto_error("corto: pp: %s", corto_lasterr());
     return -1;
 }

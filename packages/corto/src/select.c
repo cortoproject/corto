@@ -1032,7 +1032,7 @@ static void corto_selectReset(corto_selectData *data) {
         corto_setref(&data->item.object, NULL);
     }
 
-    if (data->item.history.udata) {
+    if (data->item.history.release) {
         data->item.history.release(&data->item.history);
         data->item.history.udata = 0;
     }

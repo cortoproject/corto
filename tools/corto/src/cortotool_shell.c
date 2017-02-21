@@ -389,7 +389,10 @@ static int cxsh_show(char* object) {
         return -1;
     }
 
-    if (!corto_expr(scope_o, expr, &result)) {
+    corto_object result_obj = corto_resolve(scope_o, expr);
+
+    if (result_obj) {
+        result = corto_value_object(result_obj, NULL);
         corto_object o = NULL;
         if (result.kind == CORTO_OBJECT) {
             o = corto_value_getObject(&result);

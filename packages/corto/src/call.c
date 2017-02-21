@@ -87,8 +87,8 @@ void corto_callDeinit(corto_function f) {
     void **argptrs = alloca((f->parameters.length + 1) * sizeof(void*));\
     void *ptr;\
     /* Add this */\
-    if (f->kind != CORTO_FUNCTION) {\
-        if (f->kind == CORTO_METAPROCEDURE) {\
+    if (corto_procedure(corto_typeof(f))->kind != CORTO_FUNCTION) {\
+        if (corto_procedure(corto_typeof(f))->kind == CORTO_METAPROCEDURE) {\
             argptrs[arg] = argcpy(args, corto_any);\
         } else {\
             argptrs[arg] = argcpy(args, void*);\
@@ -110,13 +110,22 @@ void corto_callDeinit(corto_function f) {
                 argptrs[arg] = argcpy(args, corto_iter);\
                 break;\
             case CORTO_PRIMITIVE:\
-                switch(corto_primitive(p->type)->width) {\
-                case CORTO_WIDTH_8: argptrs[arg] = argcpyint(args, corto_uint8); break;\
-                case CORTO_WIDTH_16: argptrs[arg] = argcpyint(args, corto_uint16); break;\
-                case CORTO_WIDTH_32: argptrs[arg] = argcpyint(args, corto_uint32); break;\
-                case CORTO_WIDTH_64: argptrs[arg] = argcpy(args, corto_uint64); break;\
-                case CORTO_WIDTH_WORD: argptrs[arg] = argcpy(args, corto_word); break;\
-                    break;\
+                if (corto_primitive(p->type)->kind != CORTO_FLOAT) {\
+                    switch(corto_primitive(p->type)->width) {\
+                    case CORTO_WIDTH_8: argptrs[arg] = argcpyint(args, corto_uint8); break;\
+                    case CORTO_WIDTH_16: argptrs[arg] = argcpyint(args, corto_uint16); break;\
+                    case CORTO_WIDTH_32: argptrs[arg] = argcpyint(args, corto_uint32); break;\
+                    case CORTO_WIDTH_64: argptrs[arg] = argcpy(args, corto_uint64); break;\
+                    case CORTO_WIDTH_WORD: argptrs[arg] = argcpy(args, corto_word); break;\
+                        break;\
+                    }\
+                } else {\
+                    switch(corto_primitive(p->type)->width) {\
+                    case CORTO_WIDTH_32: argptrs[arg] = argcpytype(args, corto_float32, corto_float64); break;\
+                    case CORTO_WIDTH_64: argptrs[arg] = argcpytype(args, corto_float32, corto_float64); break;\
+                    default:\
+                        break;\
+                    }\
                 }\
                 break;\
             case CORTO_COMPOSITE:\

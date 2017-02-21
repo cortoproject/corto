@@ -957,6 +957,11 @@ void corto_initEnvironment(void) {
     if (enableBacktrace) {
         CORTO_BACKTRACE_ENABLED = !strcmp(enableBacktrace, "true");
     }
+
+    corto_string memtraceBreakpoint = corto_getenv("CORTO_MEMTRACE_BREAKPOINT");
+    if (memtraceBreakpoint) {
+        CORTO_MEMTRACE_BREAKPOINT = atoi(memtraceBreakpoint);
+    }
 }
 
 int corto_start(void) {

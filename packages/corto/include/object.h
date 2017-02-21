@@ -197,9 +197,6 @@ CORTO_EXPORT corto_int16 corto_readEnd(corto_object object);
 CORTO_EXPORT corto_int16 corto_lock(corto_object object);
 CORTO_EXPORT corto_int16 corto_unlock(corto_object object);
 
-/* REPL functionality (unstable API) */
-CORTO_EXPORT corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value);
-
 /* Serialize to string */
 CORTO_EXPORT corto_string corto_str(corto_object object, corto_uint32 maxLength);
 CORTO_EXPORT corto_string corto_strv(corto_value* v, corto_uint32 maxLength);
