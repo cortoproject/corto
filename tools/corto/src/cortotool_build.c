@@ -102,6 +102,7 @@ corto_int16 cortotool_loadRakefile(void) {
      * exist, a directory must be created for the parent before the JSON can be
      * parsed. */
     corto_result r;
+    memset(&r, 0, sizeof(r));
     if (corto_result_fromcontent(&r, "text/json", json)) {
         goto error_result_fromcontent;
     }

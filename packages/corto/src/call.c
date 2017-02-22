@@ -122,7 +122,7 @@ void corto_callDeinit(corto_function f) {
                 } else {\
                     switch(corto_primitive(p->type)->width) {\
                     case CORTO_WIDTH_32: argptrs[arg] = argcpytype(args, corto_float32, corto_float64); break;\
-                    case CORTO_WIDTH_64: argptrs[arg] = argcpytype(args, corto_float32, corto_float64); break;\
+                    case CORTO_WIDTH_64: argptrs[arg] = argcpytype(args, corto_float64, corto_float64); break;\
                     default:\
                         break;\
                     }\

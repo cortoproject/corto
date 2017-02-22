@@ -1024,7 +1024,7 @@ static void corto_selectTree(
 
 /* Reset select data (either initially or when moving to next scope) */
 static void corto_selectReset(corto_selectData *data) {
-    if (data->item.value && data->dstSer->release) {
+    if (data->item.value && data->dstSer && data->dstSer->release) {
         data->dstSer->release(data->item.value);
     }
 

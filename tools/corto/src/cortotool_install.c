@@ -7,7 +7,7 @@
 
 static corto_bool cortotool_validProject(void) {
     if (corto_fileTest("project.json")) {
-        cortotool_rakefile(1, (char*[]){"rakefile"});
+        cortotool_rakefile(1, (char*[]){"rakefile", NULL});
     }
 
     if (!corto_fileTest("rakefile")) {
