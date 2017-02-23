@@ -279,7 +279,6 @@ corto_int16 corto_notifySubscribersId(
             corto_benchmark_start(S_B_MATCHPARENT);
             char *expr = corto_matchParent(subPerParent->parent, path);
             if (!expr) {
-                printf("path = %s, parent = %s\n", path, subPerParent->parent);
                 continue;
             }
             corto_benchmark_stop(S_B_MATCHPARENT);
