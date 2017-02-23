@@ -387,6 +387,9 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
             runLocal = FALSE;
         } else {
             corto_trace("corto: run: found project directory '%s'", project);
+            corto_id projectName;
+            cortotool_stripPath(projectName, corto_cwd());
+            corto_asprintf(&appName, "./%s", projectName);
         }
     } else {
         corto_id projectName;
