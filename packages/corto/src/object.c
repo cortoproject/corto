@@ -2093,7 +2093,7 @@ corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_st
     corto_assertObject(o);
 
     va_start(args, fmt);
-    corto_asprintf(&content, fmt, args);
+    corto_vasprintf(&content, fmt, args);
     va_end(args);
 
     if (!(type = corto_loadContentType(contentType))) {
