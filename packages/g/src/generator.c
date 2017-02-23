@@ -387,14 +387,17 @@ corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
 
         corto_asprintf(&prefixFileStr, "%s/.prefix", includePath);
         prefix = corto_fileLoad(prefixFileStr);
-        if (prefix[strlen(prefix) - 1] == '\n') {
-            prefix[strlen(prefix) - 1] = '\0';
-        }
         if (prefix) {
-            g_parse(g, p, FALSE, FALSE, prefix);
+            if (prefix[strlen(prefix) - 1] == '\n') {
+                prefix[strlen(prefix) - 1] = '\0';
+            }
+            if (prefix) {
+                g_parse(g, p, FALSE, FALSE, prefix);
+            }
+            corto_dealloc(prefix);
+        } else {
+            corto_lasterr();
         }
-
-        corto_dealloc(prefix);
         corto_dealloc(prefixFileStr);
         corto_dealloc(includePath);
     }

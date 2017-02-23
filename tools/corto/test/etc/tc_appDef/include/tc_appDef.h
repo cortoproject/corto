@@ -7,13 +7,14 @@
 #define TC_APPDEF_H
 
 #include <corto/corto.h>
+#include <corto/corto.h>
 #include <include/_project.h>
+#include <corto/core/c/c.h>
+#include <corto/lang/c/c.h>
+
 /* $header() */
 /* You can put your own definitions here! */
 /* $end */
-
-#include <corto/core/c/c.h>
-#include <corto/lang/c/c.h>
 
 #include <include/_type.h>
 #include <include/_api.h>
@@ -22,11 +23,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #include <include/Point.h>
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

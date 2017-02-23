@@ -977,11 +977,16 @@ corto_int16 corto_value_binaryOperator(
     corto_value *right,
     corto_value *result)
 {
+    corto_value dummy = corto_value_init(); 
     corto_uint64 *v = &result->is.value.storage;
     corto_type leftType = corto_value_getType(left);
     corto_type rightType = corto_value_getType(right);
     corto_value *lPtr = left, *rPtr = right;
     corto_type operType = NULL, returnType = NULL;
+
+    if (!result) {
+        v = &dummy.is.value.storage;
+    }
 
     if (corto_valueExpr_getTypeForBinary(leftType, FALSE, rightType, FALSE, _operator, &operType, &returnType)) {
         goto error;
@@ -1011,9 +1016,13 @@ corto_int16 corto_value_binaryOperator(
         goto error;
     }
 
-    result->kind = CORTO_VALUE;
-    result->is.value.t = returnType;
-    result->is.value.v = (void*)v;
+    if (result) {
+        result->kind = CORTO_VALUE;
+        result->is.value.t = returnType;
+        result->is.value.v = (void*)v;
+    }
+
+    corto_value_free(&dummy);
 
     return 0;
 error:

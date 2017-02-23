@@ -7,14 +7,15 @@
 #define TEST_H
 
 #include <corto/corto.h>
+#include <corto/corto.h>
 #include <include/_project.h>
-/* $header() */
-/* You can put your own definitions here! */
-/* $end */
-
 #include <corto/test/test.h>
 #include <corto/core/c/c.h>
 #include <corto/lang/c/c.h>
+
+/* $header() */
+/* You can put your own definitions here! */
+/* $end */
 
 #include <include/_type.h>
 #include <include/_api.h>
@@ -24,97 +25,119 @@
 extern "C" {
 #endif
 
-
-TEST_EXPORT corto_void _test_functionToResolve(
+#define test_functionToResolve(a, b) _test_functionToResolve(a, b)
+TEST_EXPORT
+corto_void _test_functionToResolve(
     corto_int32 a,
     corto_int32 b);
-#define test_functionToResolve(a, b) _test_functionToResolve(a, b)
 
-TEST_EXPORT corto_void _test_ol_any__test_Color(
-    test_Color a);
 #define test_ol_any__test_Color(a) _test_ol_any__test_Color(a)
+TEST_EXPORT
+corto_void _test_ol_any__test_Color(
+    test_Color a);
 
-TEST_EXPORT corto_void _test_ol_any_bool(
-    corto_bool a);
 #define test_ol_any_bool(a) _test_ol_any_bool(a)
+TEST_EXPORT
+corto_void _test_ol_any_bool(
+    corto_bool a);
 
-TEST_EXPORT corto_void _test_ol_any_char(
-    corto_char a);
 #define test_ol_any_char(a) _test_ol_any_char(a)
+TEST_EXPORT
+corto_void _test_ol_any_char(
+    corto_char a);
 
-TEST_EXPORT corto_void _test_ol_any_float32(
-    corto_float32 a);
 #define test_ol_any_float32(a) _test_ol_any_float32(a)
+TEST_EXPORT
+corto_void _test_ol_any_float32(
+    corto_float32 a);
 
-TEST_EXPORT corto_void _test_ol_any_int32(
-    corto_int32 a);
 #define test_ol_any_int32(a) _test_ol_any_int32(a)
+TEST_EXPORT
+corto_void _test_ol_any_int32(
+    corto_int32 a);
 
-TEST_EXPORT corto_void _test_ol_any_object(
-    corto_object a);
 #define test_ol_any_object(a) _test_ol_any_object(a)
+TEST_EXPORT
+corto_void _test_ol_any_object(
+    corto_object a);
 
-TEST_EXPORT corto_void _test_ol_any_string(
-    corto_string a);
 #define test_ol_any_string(a) _test_ol_any_string(a)
+TEST_EXPORT
+corto_void _test_ol_any_string(
+    corto_string a);
 
-TEST_EXPORT corto_void _test_ol_bool(
-    corto_bool a);
 #define test_ol_bool(a) _test_ol_bool(a)
-
-TEST_EXPORT corto_void _test_ol_inherit__test_Animal(
-    test_Animal a);
-#define test_ol_inherit__test_Animal(a) _test_ol_inherit__test_Animal(test_Animal(a))
-
-TEST_EXPORT corto_void _test_ol_inherit__test_Dog(
-    test_Dog a);
-#define test_ol_inherit__test_Dog(a) _test_ol_inherit__test_Dog(test_Dog(a))
-
-TEST_EXPORT corto_void _test_ol_int(
-    corto_int32 a);
-#define test_ol_int(a) _test_ol_int(a)
-
-TEST_EXPORT corto_void _test_ol_null_bool(
+TEST_EXPORT
+corto_void _test_ol_bool(
     corto_bool a);
+
+#define test_ol_inherit__test_Animal(a) _test_ol_inherit__test_Animal(test_Animal(a))
+TEST_EXPORT
+corto_void _test_ol_inherit__test_Animal(
+    test_Animal a);
+
+#define test_ol_inherit__test_Dog(a) _test_ol_inherit__test_Dog(test_Dog(a))
+TEST_EXPORT
+corto_void _test_ol_inherit__test_Dog(
+    test_Dog a);
+
+#define test_ol_int(a) _test_ol_int(a)
+TEST_EXPORT
+corto_void _test_ol_int(
+    corto_int32 a);
+
 #define test_ol_null_bool(a) _test_ol_null_bool(a)
+TEST_EXPORT
+corto_void _test_ol_null_bool(
+    corto_bool a);
 
-TEST_EXPORT corto_void _test_ol_null_object(
-    corto_object a);
 #define test_ol_null_object(a) _test_ol_null_object(a)
-
-TEST_EXPORT corto_void _test_ol_null_string(
-    corto_string a);
-#define test_ol_null_string(a) _test_ol_null_string(a)
-
-TEST_EXPORT corto_void _test_ol_num_float64(
-    corto_float64 a);
-#define test_ol_num_float64(a) _test_ol_num_float64(a)
-
-TEST_EXPORT corto_void _test_ol_num_int32(
-    corto_int32 a);
-#define test_ol_num_int32(a) _test_ol_num_int32(a)
-
-TEST_EXPORT corto_void _test_ol_object(
+TEST_EXPORT
+corto_void _test_ol_null_object(
     corto_object a);
-#define test_ol_object(a) _test_ol_object(a)
 
-TEST_EXPORT corto_void _test_ol_string(
+#define test_ol_null_string(a) _test_ol_null_string(a)
+TEST_EXPORT
+corto_void _test_ol_null_string(
     corto_string a);
-#define test_ol_string(a) _test_ol_string(a)
 
-TEST_EXPORT corto_void _test_ol_uint(
+#define test_ol_num_float64(a) _test_ol_num_float64(a)
+TEST_EXPORT
+corto_void _test_ol_num_float64(
+    corto_float64 a);
+
+#define test_ol_num_int32(a) _test_ol_num_int32(a)
+TEST_EXPORT
+corto_void _test_ol_num_int32(
     corto_int32 a);
-#define test_ol_uint(a) _test_ol_uint(a)
 
-TEST_EXPORT corto_void _test_ol_wildcard_float32_string(
+#define test_ol_object(a) _test_ol_object(a)
+TEST_EXPORT
+corto_void _test_ol_object(
+    corto_object a);
+
+#define test_ol_string(a) _test_ol_string(a)
+TEST_EXPORT
+corto_void _test_ol_string(
+    corto_string a);
+
+#define test_ol_uint(a) _test_ol_uint(a)
+TEST_EXPORT
+corto_void _test_ol_uint(
+    corto_int32 a);
+
+#define test_ol_wildcard_float32_string(a, b) _test_ol_wildcard_float32_string(a, b)
+TEST_EXPORT
+corto_void _test_ol_wildcard_float32_string(
     corto_float32 a,
     corto_string b);
-#define test_ol_wildcard_float32_string(a, b) _test_ol_wildcard_float32_string(a, b)
 
-TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
+#define test_ol_wildcard_int32_string(a, b) _test_ol_wildcard_int32_string(a, b)
+TEST_EXPORT
+corto_void _test_ol_wildcard_int32_string(
     corto_int32 a,
     corto_string b);
-#define test_ol_wildcard_int32_string(a, b) _test_ol_wildcard_int32_string(a, b)
+
 #include <include/AccessRule.h>
 #include <include/Animal.h>
 #include <include/AnonymousTest.h>
@@ -194,5 +217,6 @@ TEST_EXPORT corto_void _test_ol_wildcard_int32_string(
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

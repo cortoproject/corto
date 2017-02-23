@@ -323,6 +323,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             corto_string import = corto_iterNext(&it);
             if (strcmp(import, "corto") && strcmp(import, "/corto")) {
                 if (corto_load(import, 0, NULL)) {
+                    corto_seterr("import of '%s' failed: %s", import, corto_lasterr());
                     goto error;
                 }
             }

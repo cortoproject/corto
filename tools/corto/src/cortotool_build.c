@@ -70,6 +70,9 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     if (corto_llSize(package->dependencies)) {
         cortotool_printCortoListAsRubyArray(rakefile, "USE_PACKAGE", package->dependencies);
     }
+    if (corto_llSize(package->definitions)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "PP_SCOPES", package->definitions);
+    }
     if (corto_llSize(package->cflags)) {
         cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
     }

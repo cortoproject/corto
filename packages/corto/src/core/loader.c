@@ -72,8 +72,6 @@ void corto_loader_addDir(
 {
     corto_ll dirs = corto_opendir(path);
 
-    corto_debug("corto: loader: look for '%s/%s' in '%s'", r->parent, r->expr, path);
-
     /* Walk files, add files to result */
     if (dirs) {
         corto_iter iter = corto_llIter(dirs);
