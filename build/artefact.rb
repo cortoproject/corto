@@ -560,7 +560,7 @@ rule '.o' => lambda {|t|
     end
   end
 
-  # If file wasn't found and SOURCES with _ it is generated and is from .corto
+  # If file wasn't found and starts with _ it is generated and is from .corto
   if file == nil then
     if File.basename(t)[0, 1] == "_" then
       file = t.pathmap(".corto/%f").ext(".#{EXT}")
@@ -570,6 +570,9 @@ rule '.o' => lambda {|t|
   # If file wasn't found in SOURCES, it may be a generated file in src
   if file == nil then
     file = t.pathmap("src/%f").ext(".#{EXT}")
+    if not File.exists? file then
+      file = t.pathmap("src/%f").ext(".c")
+    end
   end
   file
 } do |task|
