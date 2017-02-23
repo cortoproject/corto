@@ -25,21 +25,26 @@ LINK_NO_DEPS = LINK.clone
 
 # Preprocessor variables
 PP_ATTR = [] if not defined? PP_ATTR
-if not defined? PP_OBJECTS then
+
+if not defined? PP_SCOPES then
   PP_SCOPES = [PACKAGE] if not defined? PP_SCOPES
-  PP_OBJECTS = []
-else
+end
+
+if defined? PP_OBJECTS then
   if not PP_ATTR.include?("app=true") then
     STDERR.puts "\033[1;31mcorto: cannot use PP_OBJECTS for packages\033[0;49m"
     abort();
   end
-  PP_SCOPES = [] if not defined? PP_SCOPES
+else
+  PP_OBJECTS = []
 end
 
-if LANGUAGE != "cpp" and LANGUAGE != "c++" then
-  PREFIX = TARGET if not defined? PREFIX
-else
-  PREFIX = "."
+if not defined? PREFIX then
+  if LANGUAGE == "cpp" or LANGUAGE == "c++" then
+    PREFIX = "."
+  elsif defined? PP_SCOPES then
+    PREFIX = PP_SCOPES[0].split("/").last
+  end
 end
 
 # Include corto package only when not building the core
@@ -90,7 +95,7 @@ end
 if NOCORTO == false then
   verbose(VERBOSE)
 
-  DEFFILES = Rake::FileList["#{NAME}.{cx,idl,xml}"]
+  DEFFILES = Rake::FileList["#{PP_SCOPES[0].split("/").last}.{cx,idl,xml}"]
 
   if DEFFILES.length != 0 then
     # If this is a corto package, let Corto manage which symbols should be
@@ -194,7 +199,7 @@ if NOCORTO == false then
         "#{DEBUGCMD}corto pp #{preload} #{localStr} --name #{PACKAGE} " +
         "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
         "--import #{USE_PACKAGE.join(",")} " +
-        " -g c/project #{langStr}"
+        " -g c/interface -g c/project #{langStr}"
 
       if ENV['silent'] != "true" then
         msg "preprocess"

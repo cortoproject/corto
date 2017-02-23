@@ -63,6 +63,7 @@ struct corto_package_s {
     corto_bool nocorto;
     corto_stringlist cflags;
     corto_stringlist dependencies;
+    corto_stringlist definitions;
     corto_string prefix;
     corto_stringlist cortoVersion;
     corto_bool local;

@@ -587,6 +587,7 @@ CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NU
     CORTO_MEMBER_O(core_package, nocorto, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, cflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, definitions, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, prefix, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, cortoVersion, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, local, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
