@@ -610,7 +610,11 @@ static corto_string corto_locatePackageIntern(
     if (usrPath && (usrPath != result)) corto_dealloc(usrPath);
 
     if (!result) {
-        corto_seterr(details);
+        if (details) {
+            corto_seterr(details);
+        } else {
+            corto_seterr("library '%s' not found", lib);
+        }
     }
     corto_setinfo(details);
     corto_dealloc(details);
@@ -677,6 +681,7 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     corto_string base = NULL;
     result = corto_locatePackageIntern(relativePath, &base, TRUE);
     if (!result && (kind == CORTO_LOCATION_ENV)) {
+        corto_lasterr();
         result = corto_locatePackageIntern(package, &base, FALSE);
     }
     corto_dealloc(relativePath);
@@ -717,6 +722,10 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     }
 #endif
 
+    if (corto_lasterr()) {
+        corto_setinfo(corto_lasterr());
+        corto_seterr(NULL);
+    }
 
     return result;
 error:
