@@ -95,7 +95,12 @@ end
 if NOCORTO == false then
   verbose(VERBOSE)
 
-  DEFFILES = Rake::FileList["#{PP_SCOPES[0].split("/").last}.{cx,idl,xml}"]
+  definitionFiles = Rake::FileList["#{PP_SCOPES[0].split("/").last}.{cx,idl,xml}"]
+  if definitionFiles.length == 0 then
+    definitionFiles = Rake::FileList["#{NAME}.{cx,idl,xml}"]
+  end
+  
+  DEFFILES = definitionFiles
 
   if DEFFILES.length != 0 then
     # If this is a corto package, let Corto manage which symbols should be

@@ -255,12 +255,14 @@ def build_target(hardcodedPaths)
     LINK_NO_DEPS.each do |l|
       l = corto_replace(l)
       so = File.dirname(l) + "/lib" + File.basename(l) + ".so"
-      if File.exists? so then
-        sh "cp #{so} #{ENV['CORTO_TARGET']}/redis/corto/#{ENV['CORTO_VERSION']}/lib"
+      targetDir = ENV['CORTO_TARGET'] + "/redis/corto/" + ENV['CORTO_VERSION'] + "/lib"
+      targetSo = targetDir + "/lib" + File.basename(l) + ".so"
+      if File.exists? so and not File.exists? targetSo then
+        sh "cp #{so} #{targetDir}"
       else
         so = File.dirname(l) + "/lib" + File.basename(l) + ".dylib"
         if File.exists? so then
-          sh "cp #{so} #{ENV['CORTO_TARGET']}/redis/corto/#{ENV['CORTO_VERSION']}/"
+          sh "cp #{so} #{targetDir}"
         end
       end
     end
