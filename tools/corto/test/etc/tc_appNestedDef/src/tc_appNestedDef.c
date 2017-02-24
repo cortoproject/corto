@@ -8,6 +8,10 @@
 
 #include <include/tc_appNestedDef.h>
 
+/* $header() */
+/* Enter code outside of main here. */
+/* $end */
+
 int tc_appNestedDefMain(int argc, char *argv[]) {
 /* $begin(main) */
 

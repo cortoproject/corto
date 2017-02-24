@@ -8,6 +8,10 @@
 
 #include <include/tc_appLocalDefObject.h>
 
+/* $header() */
+/* Enter code outside of main here. */
+/* $end */
+
 int tc_appLocalDefObjectMain(int argc, char *argv[]) {
 /* $begin(main) */
 

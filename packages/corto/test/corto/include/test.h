@@ -18,8 +18,13 @@
 /* $end */
 
 #include <include/_type.h>
-#include <include/_api.h>
 #include <include/_load.h>
+#include <include/_api.h>
+
+/* $body() */
+/* Enter code that requires types here */
+/* $end */
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -157,6 +162,7 @@ corto_void _test_ol_wildcard_int32_string(
 #include <include/Dog.h>
 #include <include/EmptySinkMount.h>
 #include <include/Env.h>
+#include <include/Err.h>
 #include <include/Event.h>
 #include <include/EventReplicator.h>
 #include <include/EventTest.h>

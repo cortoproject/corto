@@ -8,6 +8,10 @@
 
 #include <attrtest/attrtest.h>
 
+/* $header() */
+/* Enter code outside of main here. */
+/* $end */
+
 int attrtestMain(int argc, char *argv[]) {
 /* $begin(main) */
 

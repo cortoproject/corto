@@ -18,6 +18,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include <include/Point.h>
 
 #ifdef __cplusplus
 }

@@ -92,6 +92,9 @@ test/Suite Err::
     void tc_lastinfo()
     void tc_callback()
 
+    level: int32
+    msg: string
+
 // Object management testcases
 test/Suite ObjectMgmt::
     prevAttr: lang/attr, local|private

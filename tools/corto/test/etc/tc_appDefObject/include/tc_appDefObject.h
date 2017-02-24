@@ -11,9 +11,14 @@
 #include <corto/core/c/c.h>
 #include <corto/lang/c/c.h>
 
+/* $header() */
+/* Enter additional code here. */
+/* $end */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include <include/Point.h>
 
 #ifdef __cplusplus
 }

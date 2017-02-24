@@ -8,6 +8,10 @@
 
 #include <include/tc_app.h>
 
+/* $header() */
+/* Enter code outside of main here. */
+/* $end */
+
 int tc_appMain(int argc, char *argv[]) {
 /* $begin(main) */
 

@@ -172,7 +172,7 @@ corto_err_callback corto_err_callbackRegister(
     corto_err_callback_callback callback,
     void *ctx)
 {
-    corto_err_callback result = corto_alloc(sizeof(struct corto_err_callback));
+    struct corto_err_callback* result = corto_alloc(sizeof(struct corto_err_callback));
 
     result->min_level = min_level;
     result->max_level = max_level;
@@ -191,8 +191,9 @@ corto_err_callback corto_err_callbackRegister(
     return result;
 }
 
-void corto_err_callbackUnregister(corto_err_callback callback)
+void corto_err_callbackUnregister(corto_err_callback cb)
 {
+    struct corto_err_callback* callback = cb;
     if (callback) {
         corto_mutexLock(&corto_adminLock);
         corto_llRemove(corto_err_callbacks, callback);
@@ -213,10 +214,11 @@ corto_bool corto_err_callbacksRegistered(void) {
 }
 
 void corto_err_notifyCallkback(
-    corto_err_callback callback, 
+    corto_err_callback cb, 
     corto_err level, 
     char *msg)
 {
+    struct corto_err_callback* callback = cb;
     if (level >= callback->min_level && level <= callback->max_level) {
         callback->cb(level, NULL, msg, callback->ctx);
     }
@@ -273,7 +275,7 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
                     corto_err_callback callback = corto_iterNext(&it);
                     corto_err_notifyCallkback(
                         callback,
-                        level,
+                        kind,
                         msg);
                 }
             }

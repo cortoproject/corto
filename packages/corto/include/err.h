@@ -75,7 +75,7 @@ CORTO_EXPORT char* corto_lastinfo(void);
 CORTO_EXPORT void corto_setinfo(char *fmt, ...);
 
 /* Register callback that catches log messages */
-typedef struct corto_err_callback* corto_err_callback;
+typedef void* corto_err_callback;
 typedef void (*corto_err_callback_callback)(
     corto_err level, 
     char *category, 
