@@ -87,6 +87,11 @@ test/Suite Attributes::
     void tc_isDefaultPersistent()
     void tc_isDefaultScopedPersistent()
 
+test/Suite Err::
+    void tc_lasterr()
+    void tc_lastinfo()
+    void tc_callback()
+
 // Object management testcases
 test/Suite ObjectMgmt::
     prevAttr: lang/attr, local|private
