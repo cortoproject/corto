@@ -20,11 +20,11 @@
 #define NORMAL  "\033[0;49m"
 #define BOLD    "\033[1;49m"
 
-// static char* corto_logKind[] = {"", "debug:    ", "trace:    ", "warning:  ", "error:    ", "critical: ", "assert:  "};
 static corto_threadKey corto_errKey = 0;
+extern corto_mutex_s corto_adminLock;
 static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
 
-#define MAX_ERRORS (20)
+#define DEPTH 60
 
 typedef struct corto_errThreadData {
     corto_string lastInfo;
@@ -33,7 +33,14 @@ typedef struct corto_errThreadData {
     corto_bool viewed;
 } corto_errThreadData;
 
-#define DEPTH 60
+struct corto_err_callback {
+    corto_err min_level, max_level;
+    char *category;
+    char *auth_token;
+    void *ctx;
+    corto_err_callback_callback cb;
+};
+
 
 static void corto_lasterrorFree(void* tls) {
     corto_errThreadData* data = tls;
@@ -155,13 +162,73 @@ char* corto_backtraceString(void) {
     return result;
 }
 
+static corto_ll corto_err_callbacks;
+
+corto_err_callback corto_err_callbackRegister(
+    corto_err min_level, 
+    corto_err max_level,
+    corto_string category, 
+    corto_string auth_token,
+    corto_err_callback_callback callback,
+    void *ctx)
+{
+    corto_err_callback result = corto_alloc(sizeof(struct corto_err_callback));
+
+    result->min_level = min_level;
+    result->max_level = max_level;
+    result->category = category ? corto_strdup(category) : NULL;
+    result->auth_token = auth_token ? corto_strdup(auth_token) : NULL;
+    result->cb = callback;
+    result->ctx = ctx;
+
+    corto_mutexLock(&corto_adminLock);
+    if (!corto_err_callbacks) {
+        corto_err_callbacks = corto_llNew();
+    }
+    corto_llAppend(corto_err_callbacks, result);
+    corto_mutexUnlock(&corto_adminLock);
+
+    return result;
+}
+
+void corto_err_callbackUnregister(corto_err_callback callback)
+{
+    if (callback) {
+        corto_mutexLock(&corto_adminLock);
+        corto_llRemove(corto_err_callbacks, callback);
+        if (!corto_llSize(corto_err_callbacks)) {
+            corto_llFree(corto_err_callbacks);
+            corto_err_callbacks = NULL;
+        }
+        corto_mutexUnlock(&corto_adminLock);
+
+        if (callback->category) corto_dealloc(callback->category);
+        if (callback->auth_token) corto_dealloc(callback->auth_token);
+        corto_dealloc(callback);
+    }
+}
+
+corto_bool corto_err_callbacksRegistered(void) {
+    return corto_err_callbacks != NULL;
+}
+
+void corto_err_notifyCallkback(
+    corto_err_callback callback, 
+    corto_err level, 
+    char *msg)
+{
+    if (level >= callback->min_level && level <= callback->max_level) {
+        callback->cb(level, NULL, msg, callback->ctx);
+    }
+}
+
 #define CORTO_MAX_LOG (1024)
 
 corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
-    if (kind >= CORTO_LOG_LEVEL) {
+    if (kind >= CORTO_LOG_LEVEL || corto_err_callbacks) {
+        corto_string alloc = NULL;
         char buff[CORTO_MAX_LOG + 1];
         size_t n = 0;
-        corto_string alloc = NULL;
         corto_string msg = buff;
         va_list argcpy;
         va_copy(argcpy, arg); /* Make copy of arglist in
@@ -182,18 +249,35 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
             n = 0;
         }
 
-        if (kind == CORTO_ERROR) {
-            fprintf(f, "%s%s%s%*s\n", RED, msg, NORMAL, (int)n, " ");
-        } else if (kind == CORTO_WARNING) {
-            fprintf(f, "%s%s%s%*s\n", YELLOW, msg, NORMAL, (int)n, " ");
-        } else if (kind == CORTO_OK) {
-            fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)n, " ");
-        } else if (kind == CORTO_TRACE) {
-            fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
-        } else if (kind == CORTO_DEBUG) {
-            fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
-        } else {
-            fprintf(f, "%s%*s\n", msg, (int)n, " ");
+        if (kind >= CORTO_LOG_LEVEL) {
+            if (kind == CORTO_ERROR) {
+                fprintf(f, "%s%s%s%*s\n", RED, msg, NORMAL, (int)n, " ");
+            } else if (kind == CORTO_WARNING) {
+                fprintf(f, "%s%s%s%*s\n", YELLOW, msg, NORMAL, (int)n, " ");
+            } else if (kind == CORTO_OK) {
+                fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)n, " ");
+            } else if (kind == CORTO_TRACE) {
+                fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
+            } else if (kind == CORTO_DEBUG) {
+                fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
+            } else {
+                fprintf(f, "%s%*s\n", msg, (int)n, " ");
+            }
+        }
+
+        if (corto_err_callbacks) {
+            corto_mutexLock(&corto_adminLock);
+            if (corto_err_callbacks) {
+                corto_iter it = corto_llIter(corto_err_callbacks);
+                while (corto_iterHasNext(&it)) {
+                    corto_err_callback callback = corto_iterNext(&it);
+                    corto_err_notifyCallkback(
+                        callback,
+                        level,
+                        msg);
+                }
+            }
+            corto_mutexUnlock(&corto_adminLock);
         }
 
         if (alloc) {

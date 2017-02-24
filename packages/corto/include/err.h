@@ -28,10 +28,10 @@ typedef enum corto_err {
 
 #ifndef NDEBUG
 #define corto_assert(condition, ...) if (!(condition)){_corto_assert(condition, "(" #condition ") " __VA_ARGS__);}
-#define corto_debug(...) if(corto_verbosityGet() <= CORTO_DEBUG) { _corto_debug(__VA_ARGS__);}
-#define corto_trace(...) if(corto_verbosityGet() <= CORTO_TRACE) { _corto_trace(__VA_ARGS__);}
-#define corto_info(...) if(corto_verbosityGet() <= CORTO_INFO) { _corto_info(__VA_ARGS__);}
-#define corto_ok(...) if(corto_verbosityGet() <= CORTO_OK) { _corto_ok(__VA_ARGS__);}
+#define corto_debug(...) if(corto_err_callbacksRegistered() || corto_verbosityGet() <= CORTO_DEBUG) { _corto_debug(__VA_ARGS__);}
+#define corto_trace(...) if(corto_err_callbacksRegistered() ||corto_verbosityGet() <= CORTO_TRACE) { _corto_trace(__VA_ARGS__);}
+#define corto_info(...) if(corto_err_callbacksRegistered() ||corto_verbosityGet() <= CORTO_INFO) { _corto_info(__VA_ARGS__);}
+#define corto_ok(...) if(corto_err_callbacksRegistered() ||corto_verbosityGet() <= CORTO_OK) { _corto_ok(__VA_ARGS__);}
 #else
 #define corto_assert(condition, ...) (void)(condition)
 #define corto_debug(...)
@@ -74,6 +74,26 @@ CORTO_EXPORT int corto_lasterrViewed(void);
 CORTO_EXPORT char* corto_lastinfo(void);
 CORTO_EXPORT void corto_setinfo(char *fmt, ...);
 
+/* Register callback that catches log messages */
+typedef struct corto_err_callback* corto_err_callback;
+typedef void (*corto_err_callback_callback)(
+    corto_err level, 
+    char *category, 
+    char *msg, 
+    void *ctx);
+
+CORTO_EXPORT corto_err_callback corto_err_callbackRegister(
+    corto_err min_level, 
+    corto_err max_level,
+    corto_string category, 
+    corto_string auth_token,
+    corto_err_callback_callback callback,
+    void *context);
+
+CORTO_EXPORT void corto_err_callbackUnregister(corto_err_callback callback);
+CORTO_EXPORT corto_bool corto_err_callbacksRegistered(void);
+
+/* Get backtraces */
 CORTO_EXPORT void corto_printBacktrace(FILE* f, int nEntries, char** symbols);
 CORTO_EXPORT void corto_backtrace(FILE* f);
 CORTO_EXPORT char* corto_backtraceString(void);
