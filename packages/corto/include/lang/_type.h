@@ -33,6 +33,8 @@ extern "C" {
 #define corto_nameAction(o) ((corto_nameAction*)corto_assertType((corto_type)corto_nameAction_o, o))
 #define corto_type(o) ((corto_type)corto_assertType((corto_type)corto_type_o, o))
 #define corto_modifier(o) ((corto_modifier*)corto_assertType((corto_type)corto_modifier_o, o))
+#define corto_quantity(o) ((corto_quantity)corto_assertType((corto_type)corto_quantity_o, o))
+#define corto_unit(o) ((corto_unit)corto_assertType((corto_type)corto_unit_o, o))
 #define corto_member(o) ((corto_member)corto_assertType((corto_type)corto_member_o, o))
 #define corto_alias(o) ((corto_alias)corto_assertType((corto_type)corto_alias_o, o))
 #define corto_any(o) ((corto_any*)corto_assertType((corto_type)corto_any_o, o))
@@ -234,12 +236,29 @@ CORTO_BITMASK(corto_modifier);
     #define CORTO_OPTIONAL (0x20)
     #define CORTO_OBSERVABLE (0x40)
 
+/*  quantity */
+typedef struct corto_quantity_s *corto_quantity;
+
+struct corto_quantity_s {
+    corto_string description;
+};
+
+/*  unit */
+typedef struct corto_unit_s *corto_unit;
+
+struct corto_unit_s {
+    corto_quantity quantity;
+    corto_string symbol;
+    corto_string conversion;
+};
+
 /*  member */
 typedef struct corto_member_s *corto_member;
 
 struct corto_member_s {
     corto_type type;
     corto_modifier modifiers;
+    corto_unit unit;
     corto_state state;
     corto_string stateCondExpr;
     corto_bool weak;

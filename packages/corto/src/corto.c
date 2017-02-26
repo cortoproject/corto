@@ -244,6 +244,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, procedure),\
     SSO_OP_CLASS(lang_, delegate),\
     SSO_OP_CLASS(lang_, target),\
+    SSO_OP_CLASS(lang_, quantity),\
+    SSO_OP_CLASS(lang_, unit),\
     SSO_OP_CLASS(core_, package),\
     SSO_OP_CLASS(core_, application),\
     SSO_OP_CLASS(core_, router),\
@@ -706,6 +708,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* target */\
     SSO_OP_OBJ(lang_target_type),\
     SSO_OP_OBJ(lang_target_construct_),\
+    /* quantity */\
+    SSO_OP_OBJ(lang_quantity_description),\
+    /* unit */\
+    SSO_OP_OBJ(lang_unit_quantity),\
+    SSO_OP_OBJ(lang_unit_symbol),\
+    SSO_OP_OBJ(lang_unit_conversion),\
+    SSO_OP_OBJ(lang_unit_construct_),\
+    SSO_OP_OBJ(lang_unit_destruct_),\
     /* array */\
     SSO_OP_OBJ(lang_array_elementType),\
     SSO_OP_OBJ(lang_array_init_),\
@@ -726,6 +736,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* member */\
     SSO_OP_OBJ(lang_member_type),\
     SSO_OP_OBJ(lang_member_modifiers),\
+    SSO_OP_OBJ(lang_member_unit),\
     SSO_OP_OBJ(lang_member_state),\
     SSO_OP_OBJ(lang_member_stateCondExpr),\
     SSO_OP_OBJ(lang_member_weak),\

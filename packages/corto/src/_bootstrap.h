@@ -195,7 +195,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_SEQUENCE_EMPTY_V(subType) {0, NULL}
 
 /* member */
-#define CORTO_MEMBER_V(type, access, state, cond, weak) {(corto_type)&type##__o.v, access, state, cond, weak, 0, 0}
+#define CORTO_MEMBER_V(type, access, state, cond, weak) {(corto_type)&type##__o.v, access, NULL, state, cond, weak, 0, 0}
 
 /* object */
 #define CORTO_PACKAGE_O(name, uri) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(root, #name, uri)}
@@ -423,15 +423,17 @@ CORTO_FWDECL_CORE(class, observableEvent);
 CORTO_FWDECL_CORE(class, subscriberEvent);
 CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL_CORE(class, application);
+CORTO_FWDECL_SECURE(class, key);
 CORTO_FWDECL_CORE(class, loader);
+CORTO_FWDECL_SECURE(class, lock);
 CORTO_FWDECL_CORE(class, stager);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
 CORTO_FWDECL_CORE(class, mount);
+CORTO_FWDECL(class, quantity);
 CORTO_FWDECL_CORE(class, router);
 CORTO_FWDECL_CORE(class, routerimpl);
-CORTO_FWDECL_SECURE(class, key);
-CORTO_FWDECL_SECURE(class, lock);
+CORTO_FWDECL(class, unit);
 
 CORTO_FWDECL(class, sequence);
 CORTO_FWDECL(class, struct);
@@ -1056,6 +1058,7 @@ CORTO_FW_IC(lang, member);
 CORTO_CLASS_NOBASE_O(lang, member, CORTO_ATTR_DEFAULT, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, NULL, NULL, CORTO_IC);
     CORTO_REFERENCE_O(lang_member, type, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, "reference", FALSE);
     CORTO_MEMBER_O(lang_member, modifiers, lang_modifier, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_member, unit, lang_unit, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_member, state, lang_state, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_member, stateCondExpr, lang_string, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_member, weak, lang_bool, CORTO_HIDDEN);
@@ -1090,6 +1093,19 @@ CORTO_STRUCT_O(lang, parameter, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL
     CORTO_REFERENCE_O(lang_parameter, type, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_DEFINED, NULL, FALSE);
     CORTO_MEMBER_O(lang_parameter, inout, lang_inout, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_parameter, passByReference, lang_bool, CORTO_GLOBAL);
+
+/* /corto/lang/quantity */
+CORTO_CLASS_NOBASE_O(lang, quantity, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+    CORTO_MEMBER_O(lang_quantity, description, lang_string, CORTO_GLOBAL);
+
+/* /corto/lang/unit */
+CORTO_FW_CD(lang, unit);
+CORTO_CLASS_NOBASE_O(lang, unit, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(lang_unit, quantity, lang_quantity, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_unit, symbol, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_unit, conversion, lang_string, CORTO_GLOBAL);
+    CORTO_METHOD_O(lang_unit, construct, "()", lang_int16, corto_case_construct);
+    CORTO_METHOD_O(lang_unit, destruct, "()", lang_void, corto_case_construct);
 
 /* /corto/core/augmentData */
 CORTO_STRUCT_O(core, augmentData, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
