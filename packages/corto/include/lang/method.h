@@ -8,23 +8,27 @@
 
 #include <corto/corto.h>
 #include <corto/_project.h>
+
 #include <corto/lang/_type.h>
+#include <corto/lang/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-CORTO_EXPORT corto_int16 _corto_method_construct(
-    corto_method _this);
 #define corto_method_construct(_this) _corto_method_construct(corto_method(_this))
-
-CORTO_EXPORT corto_int16 _corto_method_init(
+CORTO_EXPORT
+corto_int16 _corto_method_construct(
     corto_method _this);
+
 #define corto_method_init(_this) _corto_method_init(corto_method(_this))
+CORTO_EXPORT
+corto_int16 _corto_method_init(
+    corto_method _this);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

@@ -8,32 +8,37 @@
 
 #include <corto/corto.h>
 #include <corto/_project.h>
+
 #include <corto/core/_type.h>
+#include <corto/core/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-CORTO_EXPORT corto_int16 _corto_stager_add(
+#define corto_stager_add(_this, id, type, contentType, content, childcount) _corto_stager_add(corto_stager(_this), id, type, contentType, content, childcount)
+CORTO_EXPORT
+corto_int16 _corto_stager_add(
     corto_stager _this,
     corto_string id,
     corto_string type,
     corto_string contentType,
     corto_word content,
     corto_uint64 childcount);
-#define corto_stager_add(_this, id, type, contentType, content, childcount) _corto_stager_add(corto_stager(_this), id, type, contentType, content, childcount)
 
-CORTO_EXPORT corto_int16 _corto_stager_construct(
-    corto_stager _this);
 #define corto_stager_construct(_this) _corto_stager_construct(corto_stager(_this))
-
-CORTO_EXPORT corto_void _corto_stager_destruct(
+CORTO_EXPORT
+corto_int16 _corto_stager_construct(
     corto_stager _this);
+
 #define corto_stager_destruct(_this) _corto_stager_destruct(corto_stager(_this))
+CORTO_EXPORT
+corto_void _corto_stager_destruct(
+    corto_stager _this);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

@@ -8,19 +8,22 @@
 
 #include <corto/corto.h>
 #include <corto/_project.h>
+
 #include <corto/core/_type.h>
+#include <corto/core/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-CORTO_EXPORT corto_time _corto_frame_getTime(
-    corto_frame* _this);
 #define corto_frame_getTime(_this) _corto_frame_getTime(_this)
+CORTO_EXPORT
+corto_time _corto_frame_getTime(
+    corto_frame* _this);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

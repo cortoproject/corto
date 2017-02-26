@@ -8,31 +8,36 @@
 
 #include <corto/corto.h>
 #include <corto/_project.h>
+
 #include <corto/core/_type.h>
+#include <corto/core/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-CORTO_EXPORT corto_int16 _corto_router_construct(
-    corto_router _this);
 #define corto_router_construct(_this) _corto_router_construct(corto_router(_this))
-
-CORTO_EXPORT corto_int16 _corto_router_init(
+CORTO_EXPORT
+corto_int16 _corto_router_construct(
     corto_router _this);
-#define corto_router_init(_this) _corto_router_init(corto_router(_this))
 
-CORTO_EXPORT corto_int16 _corto_router_match(
+#define corto_router_init(_this) _corto_router_init(corto_router(_this))
+CORTO_EXPORT
+corto_int16 _corto_router_init(
+    corto_router _this);
+
+#define corto_router_match(instance, request, param, result, matched) _corto_router_match(instance, request, param, result, matched)
+CORTO_EXPORT
+corto_int16 _corto_router_match(
     corto_object instance,
     corto_string request,
     corto_any param,
     corto_any result,
     corto_route *matched);
-#define corto_router_match(instance, request, param, result, matched) _corto_router_match(instance, request, param, result, matched)
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

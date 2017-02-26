@@ -8,13 +8,22 @@
 
 #include <corto/corto.h>
 #include <corto/_project.h>
+
+/* $header() */
+/* Enter additional code here. */
+/* $end */
+
 #include <corto/core/_type.h>
 #include <corto/core/_load.h>
+
+/* $body() */
+/* Enter code that requires types here */
+/* $end */
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 #include <corto/core/application.h>
 #include <corto/core/augmentData.h>
 #include <corto/core/dispatcher.h>
@@ -45,5 +54,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 

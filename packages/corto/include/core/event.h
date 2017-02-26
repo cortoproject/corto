@@ -8,25 +8,31 @@
 
 #include <corto/corto.h>
 #include <corto/_project.h>
+
 #include <corto/core/_type.h>
+#include <corto/core/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-CORTO_EXPORT corto_void _corto_event_handle(
-    corto_event _this);
-#define corto_event_handle(_this) _corto_event_handle(corto_event(_this))
-
-CORTO_EXPORT corto_void _corto_event_handle_v(
-    corto_event _this);
 #define corto_event_handle_v(_this) _corto_event_handle_v(corto_event(_this))
+CORTO_EXPORT
+corto_void _corto_event_handle_v(
+    corto_event _this);
 
-CORTO_EXPORT corto_int16 _corto_event_uniqueKind(void);
+#define corto_event_handle(_this) _corto_event_handle(corto_event(_this))
+CORTO_EXPORT
+corto_void _corto_event_handle(
+    corto_event _this);
+
 #define corto_event_uniqueKind() _corto_event_uniqueKind()
+CORTO_EXPORT
+corto_int16 _corto_event_uniqueKind(void);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif
 
