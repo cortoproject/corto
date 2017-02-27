@@ -159,6 +159,36 @@ corto_void _test_Builds_tc_appNestedDef(
 /* $end */
 }
 
+corto_void _test_Builds_tc_packageNoDef(
+    test_Builds this)
+{
+/* $begin(test/Builds/tc_packageNoDef) */
+    corto_int8 ret;
+    corto_int8 sig;
+
+    sig = corto_proccmd("corto rebuild tc_packageNoDef --silent", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
+    sig = corto_proccmd("corto rebuild tc_packageNoDef/noCorto --silent", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
+    sig = corto_proccmd("corto locate noCorto", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
+    sig = corto_proccmd("corto clean tc_packageNoDef/noCorto", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
+    sig = corto_proccmd("corto clean tc_packageNoDef", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
+/* $end */
+}
+
 corto_void _test_Builds_tc_runDirect(
     test_Builds this)
 {

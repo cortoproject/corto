@@ -1,0 +1,7 @@
+
+PACKAGE = 'noCorto'
+
+NOCORTO = true
+USE_PACKAGE = ["tc_packageNoDef"]
+
+require "#{ENV['CORTO_BUILD']}/package"

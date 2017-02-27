@@ -1,18 +1,18 @@
-/* attrtest.h
+/* tc_packageNoDef.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef ATTRTEST_H
-#define ATTRTEST_H
+#ifndef TC_PACKAGENODEF_H
+#define TC_PACKAGENODEF_H
 
 #include <corto/corto.h>
-#include <attrtest/_project.h>
+#include <tc_packageNoDef/_project.h>
 #include <corto/core/c/c.h>
 #include <corto/lang/c/c.h>
 
 /* $header() */
-/* You can put your own definitions here! */
+/* Enter additional code here. */
 /* $end */
 
 #ifdef __cplusplus

@@ -53,3 +53,4 @@ test::Suite Builds::
     void tc_appNestedDef()
     void tc_appLocalDef()
     void tc_appLocalDefObject()
+    void tc_packageNoDef()
