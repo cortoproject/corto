@@ -1109,6 +1109,8 @@ test/Suite Subscribe::
     void tc_subscribeInvertCaseParentFromPublish()
     void tc_subscribeNestedIdFromRoot()
     void tc_subscribeNestedScopeFromRoot()
+    void tc_subscribePartialMatchingParent()
+    void tc_subscribePartialMatchingParentObject()
 
 test/Suite MountSubscription::
     void tc_subscribeSingle()

@@ -497,6 +497,10 @@ char* corto_matchParent(char *parent, char *expr) {
     if (*parentPtr == '/') parentPtr++;
     if (*exprPtr == '/') exprPtr++;
 
+    if (!*parentPtr) {
+        return exprPtr;
+    }
+
     while ((parentCh = *parentPtr) &&
            (exprCh = *exprPtr))
     {
@@ -516,6 +520,8 @@ char* corto_matchParent(char *parent, char *expr) {
             exprPtr ++;
         } else if (*exprPtr == '\0') {
             exprPtr = ".";
+        } else {
+            exprPtr = NULL;
         }
         return exprPtr;
     } else {

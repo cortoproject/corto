@@ -291,3 +291,39 @@ corto_void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
 
 /* $end */
 }
+
+corto_void _test_Subscribe_tc_subscribePartialMatchingParent(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribePartialMatchingParent) */
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/foo", "/")
+      .instance(this)
+      .callback(tc_subscribeNestedScopeFromRootOnUpdate);
+
+    test_assert(corto_publish(CORTO_ON_UPDATE, "/foobar", "void", NULL, 0) == 0);
+
+    test_assert(this->triggered == FALSE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
+corto_void _test_Subscribe_tc_subscribePartialMatchingParentObject(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribePartialMatchingParentObject) */
+    corto_object foobar = corto_createChild(root_o, "foobar", corto_void_o);
+    test_assert(foobar != NULL);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/foo", "/")
+      .instance(this)
+      .callback(tc_subscribeNestedScopeFromRootOnUpdate);
+
+    test_assert(corto_update(foobar) == 0);
+
+    test_assert(this->triggered == FALSE);
+
+    test_assert(corto_delete(s) == 0);
+/* $end */
+}
