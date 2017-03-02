@@ -1099,13 +1099,17 @@ CORTO_CLASS_NOBASE_O(lang, quantity, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | 
     CORTO_MEMBER_O(lang_quantity, description, lang_string, CORTO_GLOBAL);
 
 /* /corto/lang/unit */
-CORTO_FW_CD(lang, unit);
-CORTO_CLASS_NOBASE_O(lang, unit, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
+CORTO_FW_ICD(lang, unit);
+CORTO_CLASS_NOBASE_O(lang, unit, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
     CORTO_MEMBER_O(lang_unit, quantity, lang_quantity, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_unit, symbol, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_unit, conversion, lang_string, CORTO_GLOBAL);
-    CORTO_METHOD_O(lang_unit, construct, "()", lang_int16, corto_case_construct);
-    CORTO_METHOD_O(lang_unit, destruct, "()", lang_void, corto_case_construct);
+    CORTO_MEMBER_O(lang_unit, type, lang_type, CORTO_HIDDEN);
+    CORTO_MEMBER_O(lang_unit, toQuantity, lang_word, CORTO_HIDDEN);
+    CORTO_MEMBER_O(lang_unit, fromQuantity, lang_word, CORTO_HIDDEN);
+    CORTO_METHOD_O(lang_unit, init, "()", lang_int16, corto_unit_init);
+    CORTO_METHOD_O(lang_unit, construct, "()", lang_int16, corto_unit_construct);
+    CORTO_METHOD_O(lang_unit, destruct, "()", lang_void, corto_unit_destruct);
 
 /* /corto/core/augmentData */
 CORTO_STRUCT_O(core, augmentData, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

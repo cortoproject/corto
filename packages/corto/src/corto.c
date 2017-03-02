@@ -714,6 +714,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_unit_quantity),\
     SSO_OP_OBJ(lang_unit_symbol),\
     SSO_OP_OBJ(lang_unit_conversion),\
+    SSO_OP_OBJ(lang_unit_type),\
+    SSO_OP_OBJ(lang_unit_toQuantity),\
+    SSO_OP_OBJ(lang_unit_fromQuantity),\
+    SSO_OP_OBJ(lang_unit_init_),\
     SSO_OP_OBJ(lang_unit_construct_),\
     SSO_OP_OBJ(lang_unit_destruct_),\
     /* array */\
@@ -1098,12 +1102,16 @@ int corto_start(void) {
 
     CORTO_OPERATIONAL = 0; /* Running */
 
+/* Only create package mount for non-redistributable version of corto, where
+ * packages are installed in a common location */
+#ifndef CORTO_REDIS
     corto_loaderInstance = corto_create(corto_loader_o);
     
     /* If loader couldn't be created, json package is probably not installed */
     if (!corto_loaderInstance) {
         corto_lasterr();
     }
+#endif
 
     return 0;
 }
@@ -1147,9 +1155,11 @@ int corto_stop(void) {
         abort();
     }
 
+#ifndef CORTO_REDIS
     if (corto_loaderInstance) {
         corto_delete(corto_loaderInstance);
     }
+#endif
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the

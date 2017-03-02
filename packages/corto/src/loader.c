@@ -205,7 +205,7 @@ static corto_string corto_packageToFile(corto_string package) {
     return path;
 }
 
-static corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *build_out) {
+corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *build_out) {
     corto_dl result = NULL;
     corto_string ___ (*build)(void);
     corto_string ___ (*library)(void);
@@ -262,23 +262,9 @@ static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_
     return result;
 }
 
-/*
- * Load a Corto library
- * Receives the absolute path to the lib<name>.so file.
- */
-static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
-    corto_string build = NULL;
-    corto_dl dl = NULL;
+/* Load from a dynamic library */
+int corto_loadFromDl(corto_dl dl, char *fileName, int argc, char *argv[]) {
     int (*proc)(int argc, char* argv[]);
-
-    corto_debug("corto: loader: find '%s'", fileName);
-
-    if (!(dl = corto_loadValidLibrary(fileName, &build))) {
-        if (build) {
-            corto_seterr("%s: uses a different corto build (%s)", fileName, build);
-        }
-        goto error;
-    }
 
     /* Lookup main function */
     proc = (int(*)(int,char*[]))corto_dlProc(dl, "cortomain");
@@ -311,6 +297,32 @@ static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
     corto_mutexUnlock (&corto_adminLock);
 
     corto_debug("corto: library '%s' loaded", fileName);
+
+    return 0;
+error:
+    return -1;
+}
+
+/*
+ * Load a Corto library
+ * Receives the absolute path to the lib<name>.so file.
+ */
+static int corto_loadLibrary(corto_string fileName, int argc, char* argv[]) {
+    corto_dl dl = NULL;
+    corto_string build = NULL;
+
+    corto_debug("corto: loader: find '%s'", fileName);
+
+    if (!(dl = corto_loadValidLibrary(fileName, &build))) {
+        if (build) {
+            corto_seterr("%s: uses a different corto build (%s)", fileName, build);
+        }
+        goto error;
+    }
+
+    if (corto_loadFromDl(dl, fileName, argc, argv)) {
+        goto error;
+    }
 
     return 0;
 error:

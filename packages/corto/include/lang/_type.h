@@ -250,6 +250,9 @@ struct corto_unit_s {
     corto_quantity quantity;
     corto_string symbol;
     corto_string conversion;
+    corto_type type;
+    corto_word toQuantity;
+    corto_word fromQuantity;
 };
 
 /*  member */

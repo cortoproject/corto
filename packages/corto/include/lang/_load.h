@@ -58,6 +58,8 @@ CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, mount);
+CORTO_META_OBJECT(class, quantity);
+CORTO_META_OBJECT(class, unit);
 CORTO_META_OBJECT(struct, typespec);
 CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);

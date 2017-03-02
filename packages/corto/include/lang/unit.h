@@ -26,6 +26,11 @@ CORTO_EXPORT
 corto_void _corto_unit_destruct(
     corto_unit _this);
 
+#define corto_unit_init(_this) _corto_unit_init(corto_unit(_this))
+CORTO_EXPORT
+corto_int16 _corto_unit_init(
+    corto_unit _this);
+
 #ifdef __cplusplus
 }
 #endif
