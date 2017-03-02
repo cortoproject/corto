@@ -47,14 +47,15 @@ corto_route _corto_routerimpl_findRoute_v(
 /* $begin(corto/core/routerimpl/findRoute) */
     corto_route result = NULL;
     corto_router routerBase = corto_router(corto_typeof(this));
+    corto_interface interfaceType = corto_interface(corto_typeof(instance));
     corto_int32 maxMatched = -1;
 
     CORTO_UNUSED(instance);
 
     /* Walk routes */
     corto_int32 i;
-    for (i = 0; i < corto_interface(this)->methods.length; i++) {
-        corto_object o = corto_interface(this)->methods.buffer[i];
+    for (i = 0; i < interfaceType->methods.length; i++) {
+        corto_object o = interfaceType->methods.buffer[i];
         if (corto_instanceof(corto_route_o, o)) {
             corto_int32 matched = corto_routerimpl_matchRoute(
                 this, corto_route(o), pattern, param, routerData);
