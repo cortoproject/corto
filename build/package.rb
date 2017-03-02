@@ -191,7 +191,7 @@ if NOCORTO == false then
         localStr = "--attr local=true"
       end
       if LANGUAGE == "c4cpp" then
-        langStr = "--attr c4cpp=true"
+        langStr = "--attr c4cpp=true --attr cpp=src --attr hpp=include"
       elsif LANGUAGE == "cpp" or LANGUAGE == "c++" then
         langStr = "--attr c4cpp=true --attr lang=cpp --attr hpp=include --attr cpp=src"
       end
