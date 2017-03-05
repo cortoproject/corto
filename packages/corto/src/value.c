@@ -978,21 +978,31 @@ corto_int16 corto_value_binaryOperator(
     corto_value *result)
 {
     corto_value dummy = corto_value_init(); 
-    corto_uint64 *v = &result->is.value.storage;
+    corto_uint64 *v = &dummy.is.value.storage;
     corto_type leftType = corto_value_getType(left);
     corto_type rightType = corto_value_getType(right);
     corto_value *lPtr = left, *rPtr = right;
     corto_type operType = NULL, returnType = NULL;
 
-    if (!result) {
-        v = &dummy.is.value.storage;
+    if (result) {
+        v = corto_value_getPtr(result);
+        if (!v) {
+            v = &result->is.value.storage;
+        }
     }
 
-    if (corto_valueExpr_getTypeForBinary(leftType, FALSE, rightType, FALSE, _operator, &operType, &returnType)) {
-        goto error;
+    if (!result || ((result->kind == CORTO_VALUE) || (result->kind == CORTO_LITERAL) || !corto_value_getPtr(result))) {
+        if (corto_valueExpr_getTypeForBinary(leftType, FALSE, rightType, FALSE, _operator, &operType, &returnType)) {
+            goto error;
+        }
+    } else {
+        corto_type resultType = corto_value_getType(result);
+        if (corto_valueExpr_getTypeForBinary(resultType, FALSE, resultType, FALSE, _operator, &operType, &returnType)) {
+            goto error;
+        }
     }
 
-    corto_value leftCast, rightCast;
+    corto_value leftCast = corto_value_init(), rightCast = corto_value_init();
     if (leftType != operType) {
         if (corto_value_cast(left, operType, &leftCast)) {
             goto error;
@@ -1016,10 +1026,11 @@ corto_int16 corto_value_binaryOperator(
         goto error;
     }
 
-    if (result) {
+    if (result && ((result->kind == CORTO_VALUE) || (result->kind == CORTO_LITERAL))) {
+        result->is.value.storage = *(corto_uint64*)v;
         result->kind = CORTO_VALUE;
         result->is.value.t = returnType;
-        result->is.value.v = (void*)v;
+        result->is.value.v = &result->is.value.storage;
     }
 
     corto_value_free(&dummy);
@@ -1032,6 +1043,7 @@ error:
 corto_value corto_value_init(void) {
     corto_value v;
     memset(&v, 0, sizeof(corto_value));
+    v.kind = CORTO_VALUE;
     return v;
 }
 

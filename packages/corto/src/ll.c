@@ -253,12 +253,12 @@ void* corto_llRemove(corto_ll list, void* o) {
                 }
             }
             free(node);
+            list->size --;
             break;
         }
         prev = node;
         node = node->next;
     }
-    list->size--;
 
     return result;
 }

@@ -821,6 +821,7 @@ static int corto_packageLoader(corto_string package) {
 
     fileName = corto_locate(package, CORTO_LOCATION_LIB);
     if (!fileName) {
+        corto_seterr(corto_lastinfo());
         return -1;
     }
 

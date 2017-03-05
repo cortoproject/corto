@@ -260,6 +260,7 @@ corto_int16 _corto_mount_construct(
     if (ret) {
         corto_mount_detach(this, this->mount);
     }
+    
     return ret;
 error:
     return -1;
