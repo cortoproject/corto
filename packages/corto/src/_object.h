@@ -202,6 +202,7 @@ typedef struct ext_corto_expr_opt {
     corto_object scope;
     corto_type returnType;
     corto_bool returnsReference;
+    corto_bool inverse;
 } ext_corto_expr_opt;
 
 ext_corto_expr* ext_corto_expr_alloc(void);

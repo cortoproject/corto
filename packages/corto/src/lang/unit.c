@@ -16,21 +16,30 @@ corto_int16 _corto_unit_construct(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/construct) */
-    ext_corto_expr *expr = NULL;
+    ext_corto_expr *exprToQuantity = NULL, *exprFromQuantity = NULL;
 
     if (this->conversion) {
         corto_id typeId;
-        expr = ext_corto_expr_alloc();
+        exprToQuantity = ext_corto_expr_alloc();
+        exprFromQuantity = ext_corto_expr_alloc();
 
         corto_fullpath(typeId, this->type);
         char *types[] = {typeId};
 
-        if (ext_corto_expr_compb(expr, NULL, this->conversion, types)) {
-            corto_dealloc(expr);
+        if (ext_corto_expr_compb(exprToQuantity, NULL, this->conversion, types)) {
+            corto_dealloc(exprToQuantity);
             goto error;
         }
 
-        this->toQuantity = (corto_word)expr;
+        ext_corto_expr_opt opt = {.inverse = TRUE};
+
+        if (ext_corto_expr_compb(exprFromQuantity, &opt, this->conversion, types)) {
+            corto_dealloc(exprFromQuantity);
+            goto error;
+        }
+
+        this->toQuantity = (corto_word)exprToQuantity;
+        this->fromQuantity = (corto_word)exprFromQuantity;
     }
 
     return 0;
