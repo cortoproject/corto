@@ -436,7 +436,6 @@ test/Suite Lookup::
 
     void tc_lookupAll()
 
-
 // Test matcher
 test/Suite Matcher::
   void tc_id()                       // a => a
@@ -512,6 +511,8 @@ test/Suite Matcher::
   void tc_treeNestedFail()           // /a/b => //a
   void tc_treeNestedScope()          // /a/b/c => //b/c
   void tc_treeNestedScopeFail()      // /a/b/d => //b/c
+
+
 
 // Test corto_select
 test/Suite Select::
@@ -645,6 +646,15 @@ class MountWIterData: mount, hidden::
     alias mount: mount/mount
     resultIter onRequest(core/request request)
 
+class MountIterCount: mount, hidden::
+    alias mount: mount/mount
+    nextCount: int32, readonly
+    hasNextCount: int32, readonly
+    releaseCount: int32, readonly
+    result: core/result, readonly
+    id: string, readonly
+    resultIter onRequest(core/request request)
+
 // Test corto_select requesting data from mounts
 test/Suite SelectMount::
     void setup() method
@@ -694,6 +704,12 @@ test/Suite SelectMount::
     void tc_selectInvertCase()
     void tc_selectInvertCaseFilter()
     void tc_selectInvertCaseScope()
+
+    void tc_selectIteratorRelease()
+    void tc_selectIteratorPartialRelease()
+    void tc_selectIteratorPartialReleaseTwoMounts()
+    void tc_selectIteratorPartialReleaseTwoMountsNested()
+
 
 class HistoryMount : core/mount, hidden::
     alias mount: mount/mount

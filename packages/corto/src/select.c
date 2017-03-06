@@ -1130,6 +1130,12 @@ static void corto_selectRelease(corto_iter *iter) {
     if (data->scope) corto_dealloc(data->scope);
     if (data->fullscope) corto_dealloc(data->fullscope);
 
+    /* Free iterators */
+    corto_int32 i;
+    for (i = 0; i <= data->sp; i ++) {
+        corto_iterRelease(&data->stack[i].iter);
+    }
+
     corto_selectReset(data);
 
     data->expr = NULL;

@@ -182,6 +182,7 @@ corto_void _test_ol_wildcard_int32_string(
 #include <include/MethodResolver.h>
 #include <include/MethodTester.h>
 #include <include/MethodTesterInherit.h>
+#include <include/MountIterCount.h>
 #include <include/MountSubscription.h>
 #include <include/MountWIterData.h>
 #include <include/ObjectMgmt.h>

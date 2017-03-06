@@ -118,6 +118,132 @@ corto_void _test_SelectMount_tc_selectInvertCaseScope(
 /* $end */
 }
 
+corto_void _test_SelectMount_tc_selectIteratorPartialRelease(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectIteratorPartialRelease) */
+    test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
+    test_assert(mount != NULL);
+
+    corto_iter it;
+    corto_int32 i = 0;
+    
+    corto_int16 ret = corto_select("/mount", "*").iter( &it );
+    test_assert(ret == 0);
+
+    for (i = 0; i < 5; i++) {
+        test_assert(corto_iterHasNext(&it));
+        test_assert(corto_iterNext(&it) != NULL);
+    }
+    corto_iterRelease(&it);
+
+    test_assertint(mount->hasNextCount, 5);
+    test_assertint(mount->nextCount, 5);
+    test_assertint(mount->releaseCount, 1);
+
+    test_assert(corto_delete(mount) == 0);
+
+/* $end */
+}
+
+corto_void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectIteratorPartialReleaseTwoMounts) */
+    corto_iter it;
+    corto_int32 i = 0;
+
+    corto_object mount = corto_createChild(root_o, "mount", corto_void_o);
+
+    test_MountIterCount mountA = test_MountIterCountCreate(mount);
+    test_assert(mountA != NULL);
+
+    test_MountIterCount mountB = test_MountIterCountCreate(mount);
+    test_assert(mountB != NULL);
+    
+    corto_int16 ret = corto_select("/mount", "*").iter( &it );
+    test_assert(ret == 0);
+
+    for (i = 0; i < 15; i++) {
+        test_assert(corto_iterHasNext(&it));
+        test_assert(corto_iterNext(&it) != NULL);
+    }
+    corto_iterRelease(&it);
+
+    test_assertint(mountA->hasNextCount + mountB->hasNextCount, 16);
+    test_assertint(mountA->nextCount + mountB->nextCount, 15);
+    test_assertint(mountA->releaseCount, 1);
+    test_assertint(mountB->releaseCount, 1);
+
+    test_assert(corto_delete(mountA) == 0);
+    test_assert(corto_delete(mountB) == 0);
+    test_assert(corto_delete(mount) == 0);
+
+/* $end */
+}
+
+corto_void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectIteratorPartialReleaseTwoMountsNested) */
+    test_MountIterCount mountA = test_MountIterCountCreateChild(root_o, "mount", NULL);
+    test_assert(mountA != NULL);
+
+    test_MountIterCount mountB = test_MountIterCountCreateChild(mountA, "mount", NULL);
+    test_assert(mountB != NULL);
+
+    corto_iter it;
+    corto_int32 i = 0;
+    
+    corto_int16 ret = corto_select("/mount", "//").iter( &it );
+    test_assert(ret == 0);
+
+    for (i = 0; i < 15; i++) {
+        test_assert(corto_iterHasNext(&it));
+        test_assert(corto_iterNext(&it) != NULL);
+    }
+    corto_iterRelease(&it);
+
+    test_assertint(mountA->releaseCount, 1);
+    test_assertint(mountB->releaseCount, 1);
+    test_assertint(mountA->hasNextCount + mountB->hasNextCount, 15);
+    test_assertint(mountA->nextCount + mountB->nextCount, 14);
+
+    /* hasNext and next are called in total 15 and 14 times, because select also
+     * finds the nested 'mount' object */
+
+    test_assert(corto_delete(mountA) == 0);
+    test_assert(corto_delete(mountB) == 0);
+
+/* $end */
+}
+
+corto_void _test_SelectMount_tc_selectIteratorRelease(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectIteratorRelease) */
+    test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
+    corto_iter it;
+    corto_int32 count = 0;
+    
+    corto_int16 ret = corto_select("/mount", "*").iter( &it );
+    test_assert(ret == 0);
+
+    while (corto_iterHasNext(&it)) {
+        corto_iterNext(&it);
+        count ++;
+    }
+
+    test_assertint(count, 10);
+    test_assertint(mount->hasNextCount, 11);
+    test_assertint(mount->nextCount, 10);
+    test_assertint(mount->releaseCount, 1);
+
+    test_assert(corto_delete(mount) == 0);
+
+/* $end */
+}
+
 corto_void _test_SelectMount_tc_selectParentFromScope(
     test_SelectMount this)
 {
