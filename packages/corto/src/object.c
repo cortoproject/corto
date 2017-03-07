@@ -486,7 +486,7 @@ corto_int16 corto_delegateInit(corto_type t, void *o) {
             corto_interface i = corto_interface(t)->base;
             while(i && !delegate) {
                 delegate = corto_type(i)->init._parent.procedure;
-                if (delegate) {
+                if (!delegate) {
                     i = i->base;
                 } else {
                     break;
