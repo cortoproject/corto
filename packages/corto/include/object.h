@@ -121,7 +121,6 @@ CORTO_EXPORT corto_object corto_find(corto_object scope, corto_string id, corto_
 typedef struct corto_selectFluent {
     struct corto_selectFluent (*contentType)(corto_string contentType);
     struct corto_selectFluent (*limit)(corto_uint64 offset, corto_uint64 limit);
-    struct corto_selectFluent (*augment)(corto_string filter);
     struct corto_selectFluent (*type)(corto_string filter);
     struct corto_selectFluent (*instance)(corto_object instance);
     struct corto_selectFluent (*mount)(corto_mount mount);
@@ -186,9 +185,6 @@ CORTO_EXPORT void* corto_olsGet(corto_object o, corto_int8 key);
 CORTO_EXPORT void* corto_olsLockGet(corto_object o, corto_int8 key);
 CORTO_EXPORT void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
 
-/* Augment data (unstable API) */
-CORTO_EXPORT corto_int16 _corto_augment(corto_type t, corto_string id, corto_mount r);
-
 /* Read locking */
 CORTO_EXPORT corto_int16 corto_readBegin(corto_object object);
 CORTO_EXPORT corto_int16 corto_readEnd(corto_object object);
@@ -233,6 +229,11 @@ CORTO_EXPORT corto_int16 corto_deinitv(corto_value *v);
 CORTO_EXPORT corto_int16 _corto_deinitp(void *v, corto_type type);
 CORTO_EXPORT corto_int16 corto_deinita(corto_any a);
 
+/* Call base initalizer / constructor / destructor */
+CORTO_EXPORT corto_int16 corto_super_init(corto_object o);
+CORTO_EXPORT corto_int16 corto_super_construct(corto_object o);
+CORTO_EXPORT void corto_super_destruct(corto_object o);
+
 /* Macro's that automate casting of parameters */
 #define corto_create(type) _corto_create(corto_type(type))
 #define corto_createChild(parent, name, type) _corto_createChild(parent, name, corto_type(type))
@@ -249,7 +250,6 @@ CORTO_EXPORT corto_int16 corto_deinita(corto_any a);
 #define corto_deinitp(p, type) _corto_deinitp(p, corto_type(type))
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
 #define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
-#define corto_augment(t, id, r) _corto_augment(corto_type(t), id, corto_mount(r))
 
 #ifdef __cplusplus
 }

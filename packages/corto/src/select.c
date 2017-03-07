@@ -19,7 +19,6 @@ typedef struct corto_selectRequest {
     corto_string type;
     corto_uint64 offset;
     corto_uint64 limit;
-    corto_string augment;
     corto_string contentType;
     corto_frame from;
     corto_frame to;
@@ -100,7 +99,6 @@ struct corto_selectData {
 
     /* Filters */
     corto_string typeFilter;
-    corto_string augmentFilter;
 
     /* Query for recursive queries on mounts */
     corto_id recursiveQuery;
@@ -125,7 +123,6 @@ struct corto_selectData {
     corto_id name;
     corto_id parent;
     corto_id type;
-    corto_augmentData augmentBuffer[CORTO_MAX_AUGMENTS];
     corto_result item;
     corto_selectHistoryIter_t historyIterData;
     corto_result *next;
@@ -186,68 +183,6 @@ static corto_word corto_selectConvert(
     return result;
 error:
     return 0;
-}
-
-static void corto_loadAugments(
-    corto_string parent,
-    corto_string expr,
-    corto_string type,
-    corto_result *item,
-    corto_selectData *data)
-{
-    corto_type t = corto_resolve(NULL, type);
-
-    if (t) {
-        corto_ll augments = corto_olsGet(t, CORTO_OLS_AUGMENT);
-        if (augments) {
-            corto_iter it = corto_llIter(augments);
-            item->augments.buffer = data->augmentBuffer;
-
-            while (corto_iterHasNext(&it)) {
-                corto_augment_olsData_t *ols = corto_iterNext(&it);
-
-                if (!fnmatch(data->augmentFilter, ols->id, 0)) {
-                    corto_augmentData *augment = &item->augments.buffer[item->augments.length];
-
-                    item->augments.length++;
-                    augment->id = ols->id;
-
-                    /* Request augmentdata if user wants content */
-                    if (data->contentType) {
-                        corto_iter augmentIt;
-                        corto_request r = {
-                            parent, expr, data->type, 0, 1, data->contentType == NULL, {0,0}, {0,0}
-                        };
-
-                        augmentIt = corto_mount_request(
-                          ols->mount,
-                          &r);
-
-                        /* Expecting a single result */
-                        if (augmentIt.hasNext(&augmentIt)) {
-                            corto_result *result = augmentIt.next(&augmentIt);
-                            if (result) {
-                                if (augment->data) {
-                                    data->dstSer->release(augment->data);
-                                }
-
-                                augment->data = corto_selectConvert(
-                                    data,
-                                    item->type,
-                                    result->value);
-                            }
-                        }
-
-                        if (augmentIt.release) {
-                            augmentIt.release(&augmentIt);
-                        }
-                    }
-                }
-            }
-        }
-
-        corto_release(t);
-    }
 }
 
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
@@ -746,16 +681,6 @@ static corto_int16 corto_selectIterMount(
         corto_setOwner(prev);
         corto_setref(&result->object, ref);
         corto_release(ref);
-    }
-
-    /* If augmentFilter is provided, load augments */
-    if (data->augmentFilter) {
-        corto_loadAugments(
-          result->parent,
-          result->id,
-          result->type,
-          &data->item,
-          data);
     }
 
     return 0;
@@ -1368,7 +1293,6 @@ static corto_resultIter corto_selectPrepareIterator (
     data->mountsLoaded = -1;
     data->offset = r->offset;
     data->limit = r->limit;
-    data->augmentFilter = r->augment;
     data->typeFilter = r->type;
     data->from = r->from;
     data->to = r->to;
@@ -1451,17 +1375,6 @@ static corto_selectFluent corto_selectorType(
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
-    }
-    return corto_selectFluentGet();
-}
-
-static corto_selectFluent corto_selectorAugment(
-    corto_string augment)
-{
-    corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
-    if (request) {
-        request->augment = augment;
     }
     return corto_selectFluentGet();
 }
@@ -1717,7 +1630,6 @@ static corto_selectFluent corto_selectFluentGet(void)
     result.contentType = corto_selectorContentType;
     result.limit = corto_selectorLimit;
     result.type = corto_selectorType;
-    result.augment = corto_selectorAugment;
     result.fromNow = corto_selectorFromNow;
     result.fromTime = corto_selectorFromTime;
     result.fromSample = corto_selectorFromSample;

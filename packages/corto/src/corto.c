@@ -69,6 +69,7 @@ corto_threadKey CORTO_KEY_ATTR;
 corto_threadKey CORTO_KEY_FLUENT;
 corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_threadKey CORTO_KEY_MOUNT_RESULT;
+corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
 
 /* OLS keys */
 corto_int8 CORTO_OLS_REPLICATOR;
@@ -1019,7 +1020,8 @@ int corto_start(void) {
     void corto_threadStringDealloc(void *data);
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
-
+    corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
+    
     /* Initialize OLS keys */
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
     CORTO_OLS_AUGMENT = corto_olsKey(NULL);
