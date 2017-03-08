@@ -25,6 +25,7 @@ typedef struct corto_string_deser_t {
     void *out;
     corto_object scope;
     corto_type type;
+    corto_objectseq members; /* Custom list of members to deserialize */
 
     /* Private */
     corto_llIter_s iterData;

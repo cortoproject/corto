@@ -249,32 +249,34 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     o = corto_value_getObject(info);
 
     /* Process inheritance */
-    if (corto_class_instanceof(corto_struct_o, t) &&
-        corto_serializeMatchAccess(this->accessKind, this->access, corto_struct(t)->baseAccess))
-    {
-        corto_value base;
+    if (!this->members.length) {
+        if (corto_class_instanceof(corto_struct_o, t) &&
+            corto_serializeMatchAccess(this->accessKind, this->access, corto_struct(t)->baseAccess))
+        {
+            corto_value base;
 
-        cb = this->metaprogram[CORTO_BASE];
+            cb = this->metaprogram[CORTO_BASE];
 
-        if (cb && corto_interface(t)->base) {
-            base.kind = CORTO_BASE;
-            base.parent = info;
-            base.is.base.v = v;
-            base.is.base.t = corto_type(corto_interface(t)->base);
-            base.is.base.o = o;
-#ifdef CORTO_SERIALIZER_TRACING
-            {
-                corto_id id;
-                printf("%*sbase(%s)\n", indent, " ", corto_fullname(base.is.base.t, id)); fflush(stdout);
+            if (cb && corto_interface(t)->base) {
+                base.kind = CORTO_BASE;
+                base.parent = info;
+                base.is.base.v = v;
+                base.is.base.t = corto_type(corto_interface(t)->base);
+                base.is.base.o = o;
+    #ifdef CORTO_SERIALIZER_TRACING
+                {
+                    corto_id id;
+                    printf("%*sbase(%s)\n", indent, " ", corto_fullname(base.is.base.t, id)); fflush(stdout);
+                }
+                indent++;
+    #endif
+                if (cb(this, &base, userData)) {
+                    goto error;
+                }
+    #ifdef CORTO_SERIALIZER_TRACING
+                indent--;
+    #endif
             }
-            indent++;
-#endif
-            if (cb(this, &base, userData)) {
-                goto error;
-            }
-#ifdef CORTO_SERIALIZER_TRACING
-            indent--;
-#endif
         }
     }
 
@@ -284,7 +286,14 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     }
 
     /* Process members */
-    if (!this->visitAllCases && (corto_typeof(t) == corto_type(corto_union_o))) {
+    if (this->members.length) {
+        for (i = 0; i < this->members.length; i++) {
+            m = this->members.buffer[i];
+            if (corto_serializeMember(this, m, o, v, cb, info, userData)) {
+                goto error;
+            }            
+        }
+    } else if (!this->visitAllCases && (corto_typeof(t) == corto_type(corto_union_o))) {
         corto_int32 discriminator = *(corto_int32*)v;
         corto_member member = corto_union_findCase(t, discriminator);
         if (member) {
@@ -299,7 +308,6 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
             goto error;
         }
     } else {
-        corto_assertObject(t);
         for(i = 0; i < t->members.length; i  ++) {
             m = t->members.buffer[i];
             if (corto_serializeMember(this, m, o, v, cb, info, userData)) {

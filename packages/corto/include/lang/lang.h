@@ -35,6 +35,7 @@ extern "C" {
 #include <corto/lang/class.h>
 #include <corto/lang/collection.h>
 #include <corto/lang/constant.h>
+#include <corto/lang/container.h>
 #include <corto/lang/default.h>
 #include <corto/lang/delegate.h>
 #include <corto/lang/delegatedata.h>
@@ -47,6 +48,7 @@ extern "C" {
 #include <corto/lang/interface.h>
 #include <corto/lang/interfaceVector.h>
 #include <corto/lang/iterator.h>
+#include <corto/lang/leaf.h>
 #include <corto/lang/list.h>
 #include <corto/lang/map.h>
 #include <corto/lang/member.h>
@@ -59,6 +61,8 @@ extern "C" {
 #include <corto/lang/quantity.h>
 #include <corto/lang/sequence.h>
 #include <corto/lang/struct.h>
+#include <corto/lang/table.h>
+#include <corto/lang/tablescope.h>
 #include <corto/lang/target.h>
 #include <corto/lang/text.h>
 #include <corto/lang/type.h>

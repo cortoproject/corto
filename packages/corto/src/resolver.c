@@ -8,16 +8,14 @@ corto_bool corto_declaredAdminCheck(corto_object o);
 
 /* Resolve anonymous object */
 static corto_char* corto_resolveAnonymous(corto_object scope, corto_object o, corto_string str, corto_object* out) {
-    corto_object result;
-    corto_string_deser_t data;
     char *ptr = str;
-
-
-    result = corto_declare(o);
-    data.out = result;
-    data.scope = scope;
-    data.type = o;
-    data.isObject = TRUE;
+    corto_object result = corto_declare(o);
+    corto_string_deser_t data = {
+        .out = result,
+        .scope = scope,
+        .type = o,
+        .isObject = TRUE
+    };
 
     if (corto_type(o)->kind == CORTO_PRIMITIVE) {
         ptr += 1;

@@ -13,7 +13,7 @@ corto_void _test_MethodForwardTest_func(
 {
 /* $begin(test/MethodForwardTest/func) */
 
-   this->invoked ++;
+    this->invoked ++;
 
 /* $end */
 }

@@ -185,6 +185,32 @@ static void* corto__objectStartAddr(corto__object* o) {
     return result;
 }
 
+static corto_int16 corto_setKeyvalues(corto_object o, corto_string id) {
+    corto_table table = corto_table(corto_typeof(o));
+    corto_id idWithBraces;
+    sprintf(idWithBraces, "{%s}", id);
+
+    corto_string_deser_t serData = {
+        .out = o,
+        .members = table->keycache,
+        .isObject = TRUE
+    };
+
+    /* Serializer returns pointer to where it stopped parsing, unless failed */
+    if (!corto_string_deser(idWithBraces, &serData)) {
+        corto_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    if (!serData.out) {
+        corto_seterr("cannot parse '%s' to keys: %s", id, corto_lasterr());
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 /* Initialze scope-part of object */
 static corto_object corto__initScope(
     corto_object o,
@@ -204,17 +230,22 @@ static corto_object corto__initScope(
     corto_assert(scope != NULL,
       "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
+    /* If object is in a table, set keyvalues of object */
+    if (id && (corto_typeof(corto_typeof(o)) == corto_type(corto_table_o))) {
+        if (corto_setKeyvalues(o, id)) {
+            goto error;
+        }
+    }
+
     if (id) {
         scope->id = corto_strdup(id);
     } else {
         scope->id = NULL;
     }
 
-
     /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
     corto_rwmutexNew(&scope->align.scopeLock);
-
 
     /* Add object to the scope of the parent-object */
     if (!orphan && corto_checkAttr(parent, CORTO_ATTR_SCOPED)) {
@@ -804,6 +835,28 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                     }
                 }
 
+                /* If parentType is a tablescope, check if child type matches
+                 * table type */
+                if (corto_instanceof(corto_tablescope_o, parent)) {
+                    corto_table tableType = corto_tablescope(parent)->table;
+                    if (corto_type(tableType) != childType) {
+                        if (!corto_instanceof(childType, corto_container_o)) {
+                            corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
+                                corto_fullpath(NULL, childType),
+                                corto_fullpath(NULL, tableType),
+                                corto_fullpath(NULL, parent));
+                            goto err_invalid_child;
+                        }
+                    }
+                }
+
+                /* If parentType is a leaf, no childs are allowed */
+                if (corto_instanceof(corto_leaf_o, corto_typeof(parent))) {
+                    corto_seterr("cannot add children to leaf node '%s'",
+                        corto_fullpath(NULL, parent));
+                    goto err_invalid_parent_leaf;
+                }
+
                 /* Check if parentState matches scopeState of child type */
                 if (childType->options.parentState &&
                     !corto__checkStateXOR(parent, childType->options.parentState))
@@ -844,6 +897,8 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
 
     return child;
 err_invalid_parent:
+err_invalid_child:
+err_invalid_parent_leaf:
     c_scope->parent = NULL;
     corto_rbtreeRemove(p_scope->scope, c_scope->id);
 err_existing:
@@ -913,7 +968,7 @@ corto_object _corto_declare(corto_type type) {
     corto_assertObject(type);
 
     if (!type) {
-        corto_seterr("parameter 'type' is null");
+        corto_seterr("type not specified");
         goto error;
     }
 
@@ -1063,6 +1118,87 @@ error:
 
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
     return NULL;
+}
+
+/* Recursively declare containers in its definition */
+static corto_int16 corto_declareContainer(corto_object parent) {
+    corto_type type = corto_typeof(parent);
+
+    if (corto_instanceof(corto_container_o, type))
+    {
+        corto_objectseq seq = corto_scopeClaim(type);
+        corto_int32 i;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
+                (corto_typeof(c) == corto_type(corto_leaf_o))) 
+            {
+                if (!corto_declareChild(parent, corto_idof(c), c)) {
+                    goto error;
+                }
+            } else if (corto_typeof(c) == corto_type(corto_table_o)) {
+                corto_tablescope ts = corto_declareChild(parent, corto_idof(c), corto_tablescope_o);
+                if (!ts) {
+                    goto error;
+                }
+                corto_setref(&ts->table, c);
+            }
+        }
+        corto_scopeRelease(seq);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+/* Recursively define containers in its definition */
+static corto_int16 corto_defineContainer(corto_object parent) {
+    corto_type type = corto_typeof(parent);
+
+    if (corto_instanceof(corto_container_o, type)) {
+        corto_objectseq seq = corto_scopeClaim(type);
+        corto_int32 i;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
+                (corto_typeof(c) == corto_type(corto_leaf_o)) ||
+                (corto_typeof(c) == corto_type(corto_table_o)))
+            {
+                corto_object o = corto_lookup(parent, corto_idof(c));
+                if (!o) {
+                    corto_seterr("could not find '%s' in container '%s'",
+                        corto_idof(c),
+                        corto_fullpath(NULL, parent));
+                    goto error;
+                }
+                if (corto_define(o)) {
+                    corto_release(o);
+                    goto error;
+                }
+                corto_release(o);
+            }
+        }
+        corto_scopeRelease(seq);
+    } else if (type == corto_type(corto_tablescope_o)) {
+        corto_objectseq seq = corto_scopeClaim(parent);
+        corto_int32 i;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if (corto_typeof(corto_typeof(c)) == corto_type(corto_table_o)) {
+                if (corto_define(c)) {
+                    corto_release(c);
+                    goto error;
+                }
+                corto_release(c);
+            }
+        }
+        corto_scopeRelease(seq);        
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* Declare object */
@@ -1216,6 +1352,12 @@ static corto_object corto_declareChildIntern(
             }
         }
     } while (retry);
+
+    if (o) {
+        if (corto_declareContainer(o)) {
+            goto error;
+        }
+    }
 
 ok:
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
@@ -1531,9 +1673,15 @@ corto_int16 corto_define(corto_object o) {
     }
 
     corto_benchmark_stop(CORTO_BENCHMARK_DEFINE);
+
+    if (corto_defineContainer(o)) {
+        goto error_container;
+    }
+
     return result;
 error:
     corto_benchmark_stop(CORTO_BENCHMARK_DEFINE);
+error_container:
     return -1;
 }
 
@@ -2179,9 +2327,9 @@ corto_object _corto_assertType(corto_type type, corto_object o) {
     corto_assertObject(type);
     corto_assertObject(o);
 
-    if (o && (o != type)) {
-        if (!corto_instanceof(type, o)) {
-            corto_error("object '%s' is not of type '%s'\n   type = %s",
+    if (o && (corto_typeof(o) != type)) {
+        if (!_corto_instanceof(type, o)) {
+            corto_error("object '%s' is not an instance of '%s'\n   type = %s",
                 corto_fullpath(NULL, o),
                 corto_fullpath(NULL, type),
                 corto_fullpath(NULL, corto_typeof(o)));
@@ -2207,7 +2355,7 @@ corto_bool _corto_instanceofType(corto_type type, corto_type t) {
                 if (((corto_interface)type)->kind == CORTO_DELEGATE) {
                     /*result = corto_delegate_instanceof(corto_delegate(type), o);*/
                 } else if (((corto_interface)type)->kind == CORTO_INTERFACE) {
-                    if (corto_interface(t)->kind == CORTO_CLASS) {
+                    if (((corto_interface)t)->kind == CORTO_CLASS) {
                         corto_interface base = (corto_interface)t;
                         while (!result && base) {
                             corto_int32 i;
@@ -2269,7 +2417,7 @@ corto_bool _corto_instanceof(corto_type type, corto_object o) {
         t = corto_parentof(o);
     }
 
-    return corto_instanceofType(type, t);
+    return _corto_instanceofType(type, t);
 }
 
 static void(*destructors[CORTO_MAX_OLS_KEY])(void*);
@@ -4672,12 +4820,12 @@ corto_string corto_stra(corto_any a, corto_uint32 maxLength) {
 }
 
 corto_int16 corto_fromStr(void *o, corto_string string) {
-    corto_string_deser_t serData;
+    corto_string_deser_t serData = {
+        .out = *(void**)o,
+        .type = *(void**)o ? corto_typeof(*(void**)o) : NULL,
+        .isObject = TRUE
+    };
 
-    serData.out = *(void**)o;
-    serData.scope = NULL;
-    serData.type = *(void**)o ? corto_typeof(*(void**)o) : NULL;
-    serData.isObject = TRUE;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4694,12 +4842,12 @@ error:
 }
 
 corto_int16 corto_fromStrv(corto_value *v, corto_string string) {
-    corto_string_deser_t serData;
+    corto_string_deser_t serData = {
+        .out = corto_value_getPtr(v),
+        .type = corto_value_getType(v),
+        .isObject = v->kind == CORTO_OBJECT
+    };
 
-    serData.out = corto_value_getPtr(v);
-    serData.scope = NULL;
-    serData.type = corto_value_getType(v);
-    serData.isObject = v->kind == CORTO_OBJECT;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4718,12 +4866,12 @@ error:
 corto_int16 _corto_fromStrp(void* out, corto_type type, corto_string string) {
     corto_assertObject(type);
 
-    corto_string_deser_t serData;
+    corto_string_deser_t serData = {
+        .out = *(void**)out,
+        .type = type,
+        .isObject = FALSE
+    };
 
-    serData.out = *(void**)out;
-    serData.scope = NULL;
-    serData.type = type;
-    serData.isObject = FALSE;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }
@@ -4740,12 +4888,12 @@ error:
 }
 
 corto_int16 corto_fromStra(corto_any *a, corto_string string) {
-    corto_string_deser_t serData;
+    corto_string_deser_t serData = {
+        .out = a->value,
+        .type = a->type,
+        .isObject = FALSE
+    };
 
-    serData.out = a->value;
-    serData.scope = NULL;
-    serData.type = a->type;
-    serData.isObject = FALSE;
     if (!corto_string_deser(string, &serData)) {
         corto_assert(!serData.out, "deserializer failed but out is set");
     }

@@ -211,7 +211,6 @@ void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
 
 /* Parse scope */
 static corto_string corto_string_deserParseScope(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data) {
-    corto_string_deser_t privateData;
     struct corto_string_deserIndexInfo rootInfo;
     corto_typeKind kind;
     void *ptr = data->ptr;
@@ -221,15 +220,14 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
     }
 
     /* Prepare privateData */
-    privateData.current = 0;
-    privateData.index = NULL;
-    privateData.out = data->out;
-    privateData.scope = data->scope;
-    privateData.anonymousObjects = data->anonymousObjects;
-    privateData.type = data->type;
-    privateData.allocValue = NULL;
-    privateData.allocUdata = NULL;
-    privateData.isObject = data->isObject;
+    corto_string_deser_t privateData = {
+        .out = data->out,
+        .scope = data->scope,
+        .anonymousObjects = data->anonymousObjects,
+        .type = data->type,
+        .isObject = data->isObject,
+        .members = {0, NULL}
+    };
 
     /* Offset the scope-members with the current offset */
     if (info && info->m) {
@@ -289,6 +287,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
             corto_string_deserIndexInsert(&privateData, caseInfo);
         } else {
             struct corto_serializer_s s = corto_string_deserBuildIndex();
+            s.members = data->members;
             if (corto_metaWalk(&s, info->type, &privateData)) {
                 goto error;
             }
@@ -584,7 +583,6 @@ static corto_string corto_string_parseAnonymous(
     corto_string_deser_t *data)
 {
     corto_object o = NULL;
-    corto_string_deser_t privateData;
     char *ptr = str;
     char *valuePtr = value;
     corto_uint32 index = 0;
@@ -642,16 +640,14 @@ static corto_string corto_string_parseAnonymous(
             }
         }
 
-        privateData.current = 0;
-        privateData.index = NULL;
-        privateData.out = data->out; // Preserve original out to determine ownership
-        privateData.ptr = o;
-        privateData.type = type;
-        privateData.anonymousObjects = data->anonymousObjects;
-        privateData.allocValue = NULL;
-        privateData.allocUdata = NULL;
-        privateData.scope = data->scope;
-        privateData.isObject = data->isObject;
+        corto_string_deser_t privateData = {
+            .out = data->out, // Preserve original out to determine ownership
+            .ptr = o,
+            .type = type,
+            .anonymousObjects = data->anonymousObjects,
+            .scope = data->scope,
+            .isObject = data->isObject
+        };
 
         if (corto_type(type)->kind == CORTO_PRIMITIVE) {
             ptr ++;
@@ -945,6 +941,18 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     data->anonymousObjects = NULL;
     data->allocValue = NULL;
     data->allocUdata = NULL;
+
+    if (data->out && data->isObject) {
+        if (!data->type) {
+            data->type = corto_typeof(data->out);
+        } else if (!corto_instanceofType(corto_typeof(data->out), data->type)) {
+            corto_seterr("object '%s' of type '%s' is not an instance of type '%s'",
+                corto_fullpath(NULL, data->out),
+                corto_fullpath(NULL, corto_typeof(data->out)),
+                corto_fullpath(NULL, data->type));
+            goto error;
+        }
+    }
 
     if (!data->type) {
         corto_seterr("no type provided for '%s'", str);

@@ -242,6 +242,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, default),\
     SSO_OP_CLASS(lang_, alias),\
     SSO_OP_CLASS(lang_, class),\
+    SSO_OP_CLASS(lang_, container),\
+    SSO_OP_CLASS(lang_, leaf),\
+    SSO_OP_CLASS(lang_, table),\
+    SSO_OP_CLASS(lang_, tablescope),\
     SSO_OP_CLASS(lang_, procedure),\
     SSO_OP_CLASS(lang_, delegate),\
     SSO_OP_CLASS(lang_, target),\
@@ -473,6 +477,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_modifier_HIDDEN),\
     SSO_OP_OBJ(lang_modifier_OPTIONAL),\
     SSO_OP_OBJ(lang_modifier_OBSERVABLE),\
+    SSO_OP_OBJ(lang_modifier_KEY),\
     /* typeOptions */\
     SSO_OP_OBJ(lang_typeOptions_parentType),\
     SSO_OP_OBJ(lang_typeOptions_parentState),\
@@ -596,6 +601,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_init_),\
     SSO_OP_OBJ(lang_class_instanceof_),\
     SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
+    /* table */\
+    SSO_OP_OBJ(lang_table_keylist),\
+    SSO_OP_OBJ(lang_table_keycache),\
+    SSO_OP_OBJ(lang_table_construct_),\
+    /* tablescope */\
+    SSO_OP_OBJ(lang_tablescope_table),\
     /* mountStats */\
     SSO_OP_OBJ(core_mountStats_declares),\
     SSO_OP_OBJ(core_mountStats_updates),\

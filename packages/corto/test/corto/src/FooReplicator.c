@@ -15,11 +15,8 @@ corto_void _test_FooReplicator_onInvoke(
     corto_word argptrs)
 {
 /* $begin(test/FooReplicator/onInvoke) */
-    CORTO_UNUSED(instance);
-    CORTO_UNUSED(proc);
-    CORTO_UNUSED(argptrs);
 
-    this->invoked ++;
+        this->invoked ++;
 
 /* $end */
 }

@@ -82,6 +82,126 @@ ReferenceMember anonymousStringEsc{
     CompositeWithString{10, "\"Hello\"", "\"World\"", 20}
 }
 
+// Support types for container testcases
+table TableSingleKey::
+    id: int32, key
+    value: string
+
+table TableMultiKey::
+    id1: int32, key
+    id2: int32, key
+    value: string
+
+table TableStringKey::
+    id: string, key
+    value: string
+
+table TableMultiStringKey::
+    id1: string, key
+    id2: string, key
+    value: string
+
+table TableMultiMixedKey::
+    id1: int32, key
+    id2: string, key
+    value: string
+
+table TableNested::
+    id: int32, key
+    value: string
+
+    table ChildTable::
+        id: int32, key
+        value: string
+
+table TableNestedContainer::
+    id: int32, key
+    value: string
+
+    container ChildContainer::
+        id: int32
+        value: string
+
+        leaf ChildLeaf::
+            id: int32
+            value: string
+
+table TableNestedLeafs::
+    id: int32, key
+    value: string
+
+    leaf ChildLeaf1::
+        id: int32
+        value: string
+
+    leaf ChildLeaf2::
+        id: int32
+        value: string
+
+container ContainerEmpty::
+    id: int32
+    value: string
+
+container ContainerNestedTable::
+    id: int32
+    value: string
+
+    table ChildTable::
+        id: int32, key
+        value: string
+
+container ContainerNestedLeaf::
+    id: int32
+    value: string
+
+    leaf ChildLeaf::
+        id: int32
+        value: string
+
+container ContainerNestedContainer::
+    id: int32
+    value: string
+
+    container ChildContainer::
+        id: int32
+        value: string
+
+        leaf ChildLeaf::
+            id: int32
+            value: string
+
+leaf LeafRoot::
+    id: int32
+    value: string
+
+container Car::
+    license_plate: string
+    speed: uint16
+
+    enum WheelLocation:: FrontLeft, FrontRight, BackLeft, BackRight
+
+    table Wheel::
+        location: WheelLocation, key
+        position: uint16
+
+        leaf Tire::
+            brand: string
+
+    leaf Engine::
+        rpm: uint16
+        temperature: uint16
+
+// Replicator for ownership testcase
+class FooReplicator : mount, hidden ::
+    alias mount: mount/mount
+    void onInvoke(object instance, function proc, word argptrs)
+    invoked: uint32, readonly
+
+// Class with method for testing ownership onInvoke
+class MethodForwardTest::
+    void func() remote
+    invoked: int32, readonly
+    
 test/Suite Attributes::
     void tc_testDefaultSet()
     void tc_isDefaultPersistent()
@@ -256,18 +376,6 @@ test/Suite Copy::
     void tc_listToExistingSequenceString()
     void tc_listToListString()
     void tc_listToExistingListString()
-
-
-// Class with method for testing ownership onInvoke
-class MethodForwardTest::
-    void func() remote
-    invoked: int32, readonly
-
-// Replicator for ownership testcase
-class FooReplicator : mount, hidden ::
-    alias mount: mount/mount
-    void onInvoke(object instance, function proc, word argptrs)
-    invoked: uint32, readonly
 
 // Test ownership scenarios
 test/Suite Ownership::
@@ -611,288 +719,6 @@ test/Suite Select::
     void tc_selectInvertCaseFilter()
     void tc_selectInvertCaseScope()
 
-
-class JsonReplicator : mount, hidden::
-    alias mount: mount/mount
-    int16 construct()
-    resultIter onRequest(core/request request)
-
-class StringReplicator : mount, hidden::
-    alias mount: mount/mount
-    int16 construct()
-    resultIter onRequest(core/request request)
-
-// Test setting content types
-test/Suite SelectContentType::
-    void setup() method
-
-    void tc_selectStringFromObjects()
-    void tc_selectStringFromString()
-    void tc_selectStringFromJson()
-
-    void tc_selectJsonFromObjects()
-    void tc_selectJsonFromString()
-    void tc_selectJsonFromJson()
-
-class ListMount : mount, hidden::
-    alias mount : mount/mount
-    alias mask : observer/mask
-    alias kind : mount/kind
-    items: resultList, private
-    int16 construct()
-    resultIter onRequest(core/request request)
-
-class MountWIterData: mount, hidden::
-    alias mount: mount/mount
-    resultIter onRequest(core/request request)
-
-class MountIterCount: mount, hidden::
-    alias mount: mount/mount
-    nextCount: int32, readonly
-    hasNextCount: int32, readonly
-    releaseCount: int32, readonly
-    result: core/result, readonly
-    id: string, readonly
-    resultIter onRequest(core/request request)
-
-// Test corto_select requesting data from mounts
-test/Suite SelectMount::
-    void setup() method
-    void teardown() method
-    mount: ListMount
-
-    void tc_selectSingle()
-    void tc_selectSingleNested()
-    void tc_selectSingleTree()
-    void tc_selectSingleTree2()
-    void tc_selectSingleTree3()
-    void tc_selectScope()
-    void tc_selectScopeNested()
-    void tc_selectScopeNestedDirty()
-    void tc_selectScopeMixed()
-    void tc_selectScopeFilter()
-
-    void tc_selectSingleFromScope()
-    void tc_selectSingleNestedFromScope()
-    void tc_selectSingleFromScopeTree()
-    void tc_selectSingleNestedFromScopeTree()
-    void tc_selectScopeFromScope()
-    void tc_selectScopeNestedFromScope()
-    void tc_selectScopeNestedDirtyFromScope()
-    void tc_selectScopeFilterFromScope()
-    void tc_selectParentFromScope()
-
-    void tc_selectSingleFromVirtualScope()
-    void tc_selectSingleNestedFromVirtualScope()
-    void tc_selectScopeFromVirtualScope()
-    void tc_selectScopeNestedFromVirtualScope()
-    void tc_selectScopeNestedDirtyFromVirtualScope()
-    void tc_selectScopeFilterFromVirtualScope()
-    void tc_selectParentFromVirtualScope()
-    void tc_selectGrandparentFromVirtualScope()
-    void tc_selectVirtualParentFromVirtualScope()
-    void tc_selectVirtualGrandparentFromVirtualScope()
-
-    void tc_selectTree()
-    void tc_selectTreeFromScope()
-    void tc_selectTreeFromNestedScope()
-    void tc_selectTreeFromVirtualScope()
-    void tc_selectTreeFromVirtualNestedScope()
-    void tc_selectTreeEmptyScope()
-    void tc_selectTreeEmptyNestedScope()
-
-    void tc_selectInvertCase()
-    void tc_selectInvertCaseFilter()
-    void tc_selectInvertCaseScope()
-
-    void tc_selectIteratorRelease()
-    void tc_selectIteratorPartialRelease()
-    void tc_selectIteratorPartialReleaseTwoMounts()
-    void tc_selectIteratorPartialReleaseTwoMountsNested()
-
-
-class HistoryMount : core/mount, hidden::
-    alias mount: mount/mount
-    int16 construct()
-    core/resultIter onRequest(core/request request)
-
-    struct data::
-        result: core/result
-        history: list{string}
-
-    history: list{data}, private
-
-test/Suite SelectHistory::
-    void setup() method
-    void tc_selectNowToDepth()
-    void tc_selectSampleToDepth()
-    void tc_selectSampleToSample()
-    void tc_selectAll()
-    void tc_selectJson()
-
-class SinkMount : core/mount, hidden::
-    alias mount: mount/mount
-    alias type: mount/type
-    value: string
-    items: resultList, private
-    int16 construct()
-    resultIter onRequest(core/request request)
-    object onResume(string parent, string name, object o)
-
-class AutoResumeSinkMount : core/mount, hidden::
-    alias mount: mount/mount
-    alias type: mount/type
-    value: string
-    subscribes: list{core/request},readonly
-    unsubscribes: list{core/request},readonly
-    items: resultList, private
-    int16 construct()
-    resultIter onRequest(core/request request)
-    word onSubscribe(string parent, string expr, word ctx)
-    void onUnsubscribe(string parent, string expr, word ctx)
-
-// Request data from a SINK mount
-test/Suite SelectSink::
-    void setup() method
-    void teardown() method
-
-    void tc_selectSingle()
-    void tc_selectSingleVirtualNested1()
-    void tc_selectSingleVirtualNested2()
-    void tc_selectVirtualSingleNested1()
-    void tc_selectVirtualSingleNested2()
-    void tc_selectScope()
-    void tc_selectVirtualScopeNested1()
-    void tc_selectVirtualScopeNested2()
-    void tc_selectVirtualScopeVirtualNested1()
-    void tc_selectVirtualScopeVirtualNested2()
-    void tc_selectMixedScope()
-    void tc_selectMixedScopeNested1()
-    void tc_selectMixedScopeNested2()
-
-    void tc_selectSingleTypeFilter()
-    void tc_selectMountInResult()
-
-// Resume data from SINK mount
-test/Suite ResumeSink::
-    void setup() method
-    void teardown() method
-    void tc_resolve()
-    void tc_resolveNested1()
-    void tc_resolveNested2()
-    void tc_resolveFromMount()
-    void tc_resolveNested1FromMount()
-    void tc_resolveNested2FromMount()
-    void tc_resolveNested1FromObjectFromMount()
-    void tc_resolveNested2FromObjectFromMount()
-    void tc_resolveNotExist()
-    void tc_resolveNested1NotExist()
-    void tc_resolveNested2NotExist()
-    void tc_lookup()
-    void tc_lookupNested1()
-    void tc_lookupNested2()
-    void tc_lookupFromMount()
-    void tc_lookupNested1FromMount()
-    void tc_lookupNested2FromMount()
-    void tc_lookupNested1FromObjectFromMount()
-    void tc_lookupNested2FromObjectFromMount()
-    void tc_lookupNotExist()
-    void tc_lookupNested1NotExist()
-    void tc_lookupNested2NotExist()
-    void tc_define()
-    void tc_defineNested1()
-    void tc_defineNested2()
-
-    observer onDeclare: on_declare | on_tree
-    observer onDefine: on_define | on_tree
-    observer onUpdate: on_update | on_tree
-    observer onDelete: on_delete | on_tree
-    observer onResume: on_resume | on_tree
-    observer onSuspend: on_suspend | on_tree
-
-    declared, defined, updated, deleted, resumed, suspended: int8
-
-// Resume data from SINK mount without resume function
-test/Suite AutoResumeSink::
-    void setup() method
-    void teardown() method
-    void tc_resolve()
-    void tc_resolveNested1()
-    void tc_resolveNested2()
-    void tc_resolveFromMount()
-    void tc_resolveNested1FromMount()
-    void tc_resolveNested2FromMount()
-    void tc_resolveNested1FromObjectFromMount()
-    void tc_resolveNested2FromObjectFromMount()
-    void tc_define()
-    void tc_defineNested1()
-    void tc_defineNested2()
-    void tc_resolveNotExist()
-    void tc_resolveNested1NotExist()
-    void tc_resolveNested2NotExist()
-
-    observer onDeclare: on_declare | on_tree
-    observer onDefine: on_define | on_tree
-    observer onUpdate: on_update | on_tree
-    observer onDelete: on_delete | on_tree
-    observer onResume: on_resume | on_tree
-    observer onSuspend: on_suspend | on_tree
-
-    declared, defined, updated, deleted, resumed, suspended: int8
-
-// Request data from a SINK mount with a type
-test/Suite SelectSinkWithType::
-    void setup() method
-    void teardown() method
-
-    void tc_selectMount()
-    void tc_selectMountFromParent()
-    void tc_selectMountFromVirtualParent()
-    void tc_selectSingleMatch()
-    void tc_selectSingleNoMatch()
-    void tc_selectMixedScope()
-    void tc_selectMixedScopeNested1()
-    void tc_selectMixedScopeNested2()
-
-class EmptySinkMount : core/mount, hidden::
-    alias mount: mount/mount
-    int16 construct()
-
-// Test pass-through behavior for SINK mounts that don't override onRequest
-test/Suite SelectSinkNoOnRequest::
-    void setup() method
-    void teardown() method
-
-    void tc_selectSingle()
-    void tc_selectScope()
-
-
-class EventReplicator: mount, hidden::
-  alias mount: mount/mount
-  alias mask: observer/mask
-  alias type: mount/type
-  alias policy: mount/policy
-
-  declareCount: int32, readonly
-  updateCount: int32, readonly
-  deleteCount: int32, readonly
-
-  void onNotify(core/eventMask event, core/result object)
-
-// Test events received by replicator
-test/Suite ReplicatorEvent::
-  void tc_event()
-  void tc_eventDefineWithUpdate()
-  void tc_eventTree()
-  void tc_eventWithTree()
-  void tc_eventTreeWithTree()
-  void tc_matchingType()
-  void tc_nonPersistent()
-  void tc_ownedByMount()
-  void tc_rateLimitOneObject()
-  void tc_rateLimitThreeObjects()
-
-
 // Event test support type
 class EventTest::
     scope: object
@@ -1127,27 +953,6 @@ test/Suite Subscribe::
     void tc_subscribeNestedScopeFromRoot()
     void tc_subscribePartialMatchingParent()
     void tc_subscribePartialMatchingParentObject()
-
-test/Suite MountSubscription::
-    void tc_subscribeSingle()
-    void tc_subscribeScope()
-    void tc_subscribeTree()
-    void tc_subscribeSingleTwice()
-    void tc_subscribeScopeTwice()
-    void tc_subscribeTreeTwice()
-    void tc_subscribeTwoSingleSameCtx()
-    void tc_subscribeTwoSingleOtherCtx()
-    void tc_subscribeSameIdDifferentCase()
-    void tc_subscribeSingleTwiceSameSubscriber()
-    void tc_subscribeScopeTwiceSameSubscriber()
-    void tc_subscribeTreeTwiceSameSubscriber()
-    void tc_subscribeSingleAlign()
-    void tc_subscribeScopeAlign()
-    void tc_subscribeTreeAlign()
-    void tc_subscribeTreeDefine()
-    void tc_subscribeTreeDelete()
-    void tc_subscribeTreeDefineNested()
-    void tc_subscribeTreeDeleteNested()
 
 // Function overloading support types
 void ol_null(object a)
@@ -1633,3 +1438,20 @@ test/Suite ValueExpr::
     void tc_exprMemPtrOut()
     void tc_exprMemMemberOut()
     void tc_exprMemMemberInOut()
+
+// Test containers, leafs and tables
+test/Suite Container::
+    void tc_tableSingleKey()
+    void tc_tableMultiKey()
+    void tc_tableStringKey()
+    void tc_tableMultiStringKey()
+    void tc_tableMultiMixedKey()
+    void tc_tableNested()
+    void tc_tableNestedContainer()
+    void tc_tableNestedLeafs()
+    void tc_containerNestedTable()
+    void tc_containerNestedLeaf()
+    void tc_containerNestedContainer()
+    void tc_containerEmpty()
+    void tc_leafRoot()
+    void tc_complexContainer()

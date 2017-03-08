@@ -150,12 +150,12 @@ corto_int16 _corto_struct_init(
         this->baseAccess = CORTO_GLOBAL;
     }
 
-    if (corto_interface_init(this)) {
+    if (_corto_interface_init((corto_interface)this)) {
         goto error;
     }
 
-    corto_interface(this)->kind = CORTO_STRUCT;
-    corto_type(this)->reference = FALSE;
+    ((corto_interface)this)->kind = CORTO_STRUCT;
+    ((corto_type)this)->reference = FALSE;
 
     return 0;
 error:

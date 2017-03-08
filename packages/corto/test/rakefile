@@ -1,6 +1,7 @@
 
 COMPONENTS = %w(
     corto
+    core
 )
 
 require "#{ENV['CORTO_BUILD']}/forward"

@@ -263,7 +263,7 @@ corto_void _test_ObjectMgmt_tc_createChildNullType(
 
     corto_object o = corto_createChild(NULL, "o", NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "parameter 'type' is null"));
+    test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
 /* $end */
 }
@@ -520,7 +520,7 @@ corto_void _test_ObjectMgmt_tc_createNullType(
 
     corto_object o = corto_create(NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "parameter 'type' is null"));
+    test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
 /* $end */
 }
@@ -753,7 +753,7 @@ corto_void _test_ObjectMgmt_tc_declareChildNullType(
 
     corto_object o = corto_declareChild(NULL, "o", NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "parameter 'type' is null"));
+    test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
 /* $end */
 }
@@ -1040,7 +1040,7 @@ corto_void _test_ObjectMgmt_tc_declareNullType(
 
     corto_object o = corto_declare(NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "parameter 'type' is null"));
+    test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
 /* $end */
 }

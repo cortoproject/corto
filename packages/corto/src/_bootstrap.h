@@ -397,11 +397,15 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* Forward declarations of classes */
 CORTO_FWDECL(class, alias);
+CORTO_FWDECL_CORE(class, application);
 CORTO_FWDECL(class, array);
 CORTO_FWDECL(class, binary);
 CORTO_FWDECL(class, bitmask);
 CORTO_FWDECL(class, boolean);
+CORTO_FWDECL(class, case);
 CORTO_FWDECL(class, class);
+CORTO_FWDECL(class, container);
+CORTO_FWDECL(class, default);
 CORTO_FWDECL(class, delegate);
 CORTO_FWDECL(class, target);
 CORTO_FWDECL_CORE(class, event);
@@ -413,26 +417,26 @@ CORTO_FWDECL(class, float);
 CORTO_FWDECL(class, interface);
 CORTO_FWDECL_CORE(class, invokeEvent);
 CORTO_FWDECL(class, iterator);
-CORTO_FWDECL(class, list);
-CORTO_FWDECL(class, map);
-CORTO_FWDECL(class, member);
-CORTO_FWDECL(class, case);
-CORTO_FWDECL(class, default);
-CORTO_FWDECL_CORE(class, notifyEvent);
-CORTO_FWDECL_CORE(class, observableEvent);
-CORTO_FWDECL_CORE(class, subscriberEvent);
-CORTO_FWDECL_CORE(class, package);
-CORTO_FWDECL_CORE(class, application);
 CORTO_FWDECL_SECURE(class, key);
+CORTO_FWDECL(class, leaf);
+CORTO_FWDECL(class, list);
 CORTO_FWDECL_CORE(class, loader);
 CORTO_FWDECL_SECURE(class, lock);
-CORTO_FWDECL_CORE(class, stager);
+CORTO_FWDECL(class, map);
+CORTO_FWDECL(class, member);
+CORTO_FWDECL_CORE(class, mount);
+CORTO_FWDECL_CORE(class, notifyEvent);
+CORTO_FWDECL_CORE(class, observableEvent);
+CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
-CORTO_FWDECL_CORE(class, mount);
 CORTO_FWDECL(class, quantity);
 CORTO_FWDECL_CORE(class, router);
 CORTO_FWDECL_CORE(class, routerimpl);
+CORTO_FWDECL_CORE(class, stager);
+CORTO_FWDECL_CORE(class, subscriberEvent);
+CORTO_FWDECL(class, table);
+CORTO_FWDECL(class, tablescope);
 CORTO_FWDECL(class, unit);
 
 CORTO_FWDECL(class, sequence);
@@ -754,6 +758,7 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, HIDDEN);
     CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
     CORTO_CONSTANT_O(lang_modifier, OBSERVABLE);
+    CORTO_CONSTANT_O(lang_modifier, KEY);
 
 /* Collections */
 CORTO_SEQUENCE_O(core, augmentseq, core_augmentData, 0);
@@ -1100,16 +1105,34 @@ CORTO_CLASS_NOBASE_O(lang, quantity, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | 
 
 /* /corto/lang/unit */
 CORTO_FW_ICD(lang, unit);
-CORTO_CLASS_NOBASE_O(lang, unit, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
+CORTO_CLASS_O(lang, unit, lang_class, CORTO_PRIVATE, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_ICD);
     CORTO_MEMBER_O(lang_unit, quantity, lang_quantity, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_unit, symbol, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_unit, conversion, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_unit, type, lang_type, CORTO_HIDDEN);
-    CORTO_MEMBER_O(lang_unit, toQuantity, lang_word, CORTO_HIDDEN);
-    CORTO_MEMBER_O(lang_unit, fromQuantity, lang_word, CORTO_HIDDEN);
+    CORTO_MEMBER_O(lang_unit, type, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_unit, toQuantity, lang_word, CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_unit, fromQuantity, lang_word, CORTO_PRIVATE);
     CORTO_METHOD_O(lang_unit, init, "()", lang_int16, corto_unit_init);
     CORTO_METHOD_O(lang_unit, construct, "()", lang_int16, corto_unit_construct);
     CORTO_METHOD_O(lang_unit, destruct, "()", lang_void, corto_unit_destruct);
+
+/* /corto/lang/container */
+CORTO_CLASS_O(lang, container, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
+    CORTO_METHOD_O(lang_container, construct, "()", lang_int16, corto_unit_construct);
+
+/* /corto/lang/leaf */
+CORTO_CLASS_O(lang, leaf, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
+
+/* /corto/lang/table */
+CORTO_FW_C(lang, table);
+CORTO_CLASS_O(lang, table, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
+    CORTO_MEMBER_O(lang_table, keylist, lang_stringseq, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_table, keycache, lang_objectseq, CORTO_PRIVATE|CORTO_LOCAL);
+    CORTO_METHOD_O(lang_table, construct, "()", lang_int16, corto_table_construct);
+
+/* /corto/lang/tablescope */
+CORTO_CLASS_NOBASE_O(lang, tablescope, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+    CORTO_MEMBER_O(lang_tablescope, table, lang_table, CORTO_GLOBAL);
 
 /* /corto/core/augmentData */
 CORTO_STRUCT_O(core, augmentData, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

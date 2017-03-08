@@ -120,7 +120,7 @@ corto_int16 _corto_class_init(
     corto_class this)
 {
 /* $begin(corto/lang/class/init) */
-    if (corto_struct_init(this)) {
+    if (_corto_struct_init((corto_struct)this)) {
         goto error;
     }
 

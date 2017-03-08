@@ -611,7 +611,7 @@ corto_int16 _corto_interface_init(
     corto_type(this)->reference = TRUE;
     corto_type(this)->kind = CORTO_COMPOSITE;
     this->kind = CORTO_INTERFACE;
-    return corto_type_init(corto_type(this));
+    return _corto_type_init((corto_type)this);
 /* $end */
 }
 
