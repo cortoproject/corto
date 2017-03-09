@@ -557,13 +557,13 @@ corto_object _corto_mount_resume(
     corto_object o)
 {
 /* $begin(corto/core/mount/resume) */
-    /* Ensure that if object is created, owner & attributes are set correctly */
-    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
-    corto_object prevOwner = corto_setOwner(this);
-
     if (this->kind != CORTO_SINK) {
         return NULL;
     }
+    
+    /* Ensure that if object is created, owner & attributes are set correctly */
+    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
+    corto_object prevOwner = corto_setOwner(this);
 
     corto_object result = NULL;
 
