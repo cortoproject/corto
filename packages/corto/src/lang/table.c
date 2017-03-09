@@ -13,6 +13,10 @@ corto_int16 _corto_table_construct(
 {
 /* $begin(corto/lang/table/construct) */
 
+    if (corto_class_construct(this)) {
+        goto error;
+    }
+
     if (this->keylist.length != 0) {
         /* If a keylist was provided, test if members have been added to the table
          * type, and ensure the KEY modifier is enabled */
@@ -49,7 +53,7 @@ corto_int16 _corto_table_construct(
         /* If no keylist was provided, walk over members and add keys to the
          * list automatically based on order of occurrence. */
         corto_int32 i;
-        corto_interface interface = corto_interface(corto_typeof(this));
+        corto_interface interface = corto_interface(this);
         for (i = 0; i < interface->members.length; i ++) {
             corto_member m = interface->members.buffer[i];
             if (m->modifiers & CORTO_KEY) {
@@ -72,7 +76,7 @@ corto_int16 _corto_table_construct(
 
     corto_setref(&corto_type(this)->options.parentType, corto_tablescope_o);
 
-    return corto_class_construct(this);
+    return 0;
 error:
     return -1;
 /* $end */

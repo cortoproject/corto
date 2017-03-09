@@ -288,6 +288,9 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         } else {
             struct corto_serializer_s s = corto_string_deserBuildIndex();
             s.members = data->members;
+            if (s.members.length) {
+                s.access = 0;
+            }
             if (corto_metaWalk(&s, info->type, &privateData)) {
                 goto error;
             }
@@ -958,7 +961,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
         corto_seterr("no type provided for '%s'", str);
         goto error;
     }
-
+    
     if (data->type->kind == CORTO_PRIMITIVE) {
         ptr = corto_string_deserParse(ptr, NULL, data);
     } else {
