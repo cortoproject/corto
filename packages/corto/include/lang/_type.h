@@ -239,7 +239,7 @@ CORTO_BITMASK(corto_modifier);
     #define CORTO_HIDDEN (0x10)
     #define CORTO_OPTIONAL (0x20)
     #define CORTO_OBSERVABLE (0x40)
-    #define CORTO_KEY (0x80)
+    #define CORTO_KEY (0x84)
 
 /* compositeKind */
 typedef enum corto_compositeKind {

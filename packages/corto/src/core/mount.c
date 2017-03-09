@@ -561,6 +561,10 @@ corto_object _corto_mount_resume(
     corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
     corto_object prevOwner = corto_setOwner(this);
 
+    if (this->kind != CORTO_SINK) {
+        return NULL;
+    }
+
     corto_object result = NULL;
 
     /* Resume object */

@@ -49,12 +49,16 @@ int main(int argc, char* argv[]) {
     corto_bool mute = FALSE;
     corto_bool startShell = FALSE;
     corto_bool keepAlive = FALSE;
+    corto_bool passArgs = FALSE;
 
     /* Parse debugging options before starting the core */
     for(i = 1; i < argc; i++) {
         if (*argv[i] == '-') {
             if (*(argv[i]+1) == 'h') {
                 cortotool_printUsage(FALSE);
+                break;
+            } else if (*(argv[i]+1) == 'l') {
+                passArgs = TRUE;
                 break;
             } else if (*(argv[i]+1) == 'd') {
                 fprintf(stderr, "corto: debugging enabled\n");
@@ -95,6 +99,8 @@ int main(int argc, char* argv[]) {
                 } else if (*(argv[i]+1) == 'v') {
                     /* Already handled */
                 } else if (*(argv[i]+1) == 'd') {
+                      /* Already handled */
+                } else if (*(argv[i]+1) == 'l') {
                       /* Already handled */
                 } else if (*(argv[i]+1) == 'p') {
                     if (corto_load(argv[i + 1], 0, NULL)) {
@@ -255,6 +261,9 @@ int main(int argc, char* argv[]) {
                         }
                     }
                     goto error;
+                }
+                if (passArgs) {
+                    break;
                 }
             }
         }

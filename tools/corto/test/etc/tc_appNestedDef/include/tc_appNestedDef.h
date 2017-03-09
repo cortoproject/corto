@@ -15,6 +15,10 @@
 /* You can put your own definitions here! */
 /* $end */
 
+/* $body() */
+/* Enter code that requires types here */
+/* $end */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

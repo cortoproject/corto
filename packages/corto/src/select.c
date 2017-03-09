@@ -124,6 +124,7 @@ struct corto_selectData {
     corto_id parent;
     corto_id type;
     corto_result item;
+    corto_bool valueAllocated;
     corto_selectHistoryIter_t historyIterData;
     corto_result *next;
 };
@@ -610,6 +611,7 @@ static corto_int16 corto_selectIterMount(
         data->dstSer->release(data->item.value);
         data->item.value = corto_selectConvert(
           data, result->type, result->value);
+        data->valueAllocated = TRUE;
 
         /* Wrap history iterator in other iterator that converts contentType */
         if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
@@ -624,6 +626,7 @@ static corto_int16 corto_selectIterMount(
     } else {
         data->item.history = result->history;
         data->item.value = result->value;
+        data->valueAllocated = FALSE;
     }
 
     if (data->resume) {
@@ -797,6 +800,10 @@ static void corto_selectLoadMounts(
 
     corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
 
+    corto_debug("corto: select: LoadMounts: found mounts in '%s' (%p)",
+       corto_fullpath(NULL, frame->scope),
+       ols);
+
     if (ols) {
         corto_ll mounts = ols->value;
         if (mounts) {
@@ -949,7 +956,7 @@ static void corto_selectTree(
 
 /* Reset select data (either initially or when moving to next scope) */
 static void corto_selectReset(corto_selectData *data) {
-    if (data->item.value && data->dstSer && data->dstSer->release) {
+    if (data->item.value && data->dstSer && data->dstSer->release && data->valueAllocated) {
         data->dstSer->release(data->item.value);
     }
 
@@ -1305,6 +1312,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->dryRun = r->dryRun;
     data->instance = r->instance;
     data->mount = r->mount;
+    data->valueAllocated = FALSE;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_loadContentType(data->contentType))) {
