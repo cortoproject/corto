@@ -38,8 +38,9 @@ corto_int16 _corto_table_construct(
 
             this->keycache.buffer = 
                 corto_realloc(this->keycache.buffer, 
-                    sizeof(corto_object) * this->keycache.length + 1);
-            corto_setref(&this->keycache.buffer[this->keycache.length], m);
+                    sizeof(corto_object) * (this->keycache.length + 1));
+            this->keycache.buffer[this->keycache.length] = m;
+            corto_claim(m);
             this->keycache.length ++;
 
             corto_release(o);
@@ -54,15 +55,16 @@ corto_int16 _corto_table_construct(
             if (m->modifiers & CORTO_KEY) {
                 this->keylist.buffer = 
                     corto_realloc(this->keylist.buffer, 
-                        sizeof(char*) * this->keylist.length + 1);
+                        sizeof(char*) * (this->keylist.length + 1));
                 this->keylist.buffer[this->keylist.length] = 
                     corto_strdup(corto_idof(m));
                 this->keylist.length ++;
 
                 this->keycache.buffer = 
                     corto_realloc(this->keycache.buffer, 
-                        sizeof(corto_object) * this->keycache.length + 1);
-                corto_setref(&this->keycache.buffer[this->keycache.length], m);
+                        sizeof(corto_object) * (this->keycache.length + 1));
+                this->keycache.buffer[this->keycache.length] = m;
+                corto_claim(m);
                 this->keycache.length ++;   
             }
         }
