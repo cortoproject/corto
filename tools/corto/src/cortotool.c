@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
             goto error;
         }
     } else {
-        for(i=1; i<argc; i++) {
+        for(i = 1; i < argc; i++) {
             if (*argv[i] == '-') {
                 if (*(argv[i]+1) == 'h') {
                     /* Already handled */
@@ -256,7 +256,6 @@ int main(int argc, char* argv[]) {
                     }
                     goto error;
                 }
-                break;
             }
         }
     }

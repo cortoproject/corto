@@ -1032,6 +1032,10 @@ static g_file g_fileOpenIntern(g_generator g, corto_string name) {
             corto_dealloc(result);
             goto error;
         }
+        if (g_loadExisting(g, name, "$body", &result->snippets)) {
+            corto_dealloc(result);
+            goto error;
+        }
     }
 
     result->file = corto_fileOpen(name);

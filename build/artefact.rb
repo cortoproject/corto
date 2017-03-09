@@ -107,6 +107,7 @@ CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
 CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
+CLOBBER.include(".corto/*.c")
 if ARTEFACT_EXT and not ARTEFACT_EXT == "" then
   CLOBBER.include("./#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
   CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}")
@@ -117,7 +118,6 @@ end
 CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.a")
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
-CLOBBER.include(".corto/_meta.*")
 CLOBBER.include("include/_load.h")
 CLOBBER.include("include/_interface.h")
 

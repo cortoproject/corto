@@ -625,7 +625,7 @@ static corto_string corto_locatePackageIntern(
         if (details) {
             corto_seterr(details);
         } else {
-            corto_seterr("library '%s' not found", lib);
+            corto_seterr("\n- library '%s' not found", lib);
         }
     }
     corto_setinfo(details);
