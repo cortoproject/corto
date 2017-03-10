@@ -549,8 +549,8 @@ static corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_assertObject(t);
 
     if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) || 
-            (corto_interface(t)->kind == CORTO_PROCEDURE)) 
+        if ((corto_interface(t)->kind == CORTO_CLASS) ||
+            (corto_interface(t)->kind == CORTO_PROCEDURE))
         {
             i = corto_interface(t);
             do {
@@ -611,7 +611,7 @@ static void corto__destructor(corto_object o) {
     t = corto_typeof(o);
     if (corto_checkState(o, CORTO_DEFINED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
-        
+
         corto_delegateDestruct(t, o);
 
         _o->align.attrs.state &= ~CORTO_DEFINED;
@@ -1131,7 +1131,7 @@ static corto_int16 corto_declareContainer(corto_object parent) {
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
             if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o))) 
+                (corto_typeof(c) == corto_type(corto_leaf_o)))
             {
                 if (!corto_declareChild(parent, corto_idof(c), c)) {
                     goto error;
@@ -1193,7 +1193,7 @@ static corto_int16 corto_defineContainer(corto_object parent) {
                 corto_release(c);
             }
         }
-        corto_scopeRelease(seq);        
+        corto_scopeRelease(seq);
     }
 
     return 0;
@@ -3278,7 +3278,8 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
 corto_bool corto_owned(corto_object o) {
     corto_assertObject(o);
 
-    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT) &&
+        !corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         return TRUE;
     }
 
@@ -4011,10 +4012,10 @@ corto_int32 corto_signatureParamType(corto_string signature, corto_uint32 id, co
                 } else {
                     parsing = TRUE;
                     *bptr = ch;
-                    bptr++;     
+                    bptr++;
                     *bptr = ch;
                     bptr++;
-                    srcptr++;               
+                    srcptr++;
                 }
             } else {
                 parsing = TRUE;
@@ -5152,5 +5153,3 @@ void corto_super_destruct(corto_object o) {
     }
 error:;
 }
-
-
