@@ -378,7 +378,7 @@ corto_void _corto_mount_onPoll_v(
     /* Handle events outside of lock */
     while ((e = corto_llTakeFirst(events))) {
         corto_event_handle(e);
-        corto_release(e);
+        corto_assert(corto_release(e) == 0);
     }
 
     corto_llFree(events);
@@ -499,7 +499,7 @@ corto_void _corto_mount_post(
             if (corto_observableEvent(e2)->mask & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
             if (corto_observableEvent(e2)->mask & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
             if (corto_observableEvent(e2)->mask & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
-            corto_release(e2);
+            corto_assert(corto_release(e2) == 0);
         } else {
             corto_llAppend(this->events, e);
         }
@@ -513,7 +513,7 @@ corto_void _corto_mount_post(
         }
     } else {
         corto_event_handle(e);
-        corto_release(e);
+        corto_assert(corto_release(e) == 0);
     }
 
 /* $end */

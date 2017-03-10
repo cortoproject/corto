@@ -410,7 +410,7 @@ corto_int16 corto_notifySubscribersId(
                     }
                 } else {
                     corto_attr oldAttr = corto_setAttr(0);
-                    corto_subscriberEvent event = corto_declare(corto_type(corto_subscriberEvent_o));
+                    corto_subscriberEvent event = corto_declare(corto_subscriberEvent_o);
                     corto_setAttr(oldAttr);
                     corto_observableEvent oEvent = corto_observableEvent(event);
                     corto_setref(&oEvent->observer, s);
@@ -424,6 +424,9 @@ corto_int16 corto_notifySubscribersId(
                           ((corto_contentType)s->contentTypeHandle)->copy(r.value);
                     }
                     event->contentTypeHandle = s->contentTypeHandle;
+                    if (corto_define(event)) {
+                        goto error;
+                    }
                     corto_dispatcher_post(dispatcher, corto_event(event));
                 }
                 corto_benchmark_stop(S_B_INVOKE);

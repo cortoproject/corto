@@ -3278,6 +3278,10 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
 corto_bool corto_owned(corto_object o) {
     corto_assertObject(o);
 
+    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+        return TRUE;
+    }
+
     corto_object owner = corto_ownerof(o);
     corto_object current = corto_getOwner();
     corto_bool result = FALSE;
