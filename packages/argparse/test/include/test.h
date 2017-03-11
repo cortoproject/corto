@@ -26,7 +26,6 @@
 /* Enter code that requires types here */
 /* $end */
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif

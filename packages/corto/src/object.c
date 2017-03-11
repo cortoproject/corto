@@ -999,6 +999,10 @@ corto_object _corto_declare(corto_type type) {
         }
     }
 
+    if ((corto_typeof(type) == corto_type(corto_target_o)) && !(attrs & CORTO_ATTR_SCOPED)) {
+        attrs |= CORTO_ATTR_PERSISTENT;
+    }
+
     /* Add any additional attributes the type may have specified */
     attrs |= type->attr;
 

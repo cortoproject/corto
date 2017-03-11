@@ -166,7 +166,7 @@ corto_void _test_Container_tc_containerNestedTable(
     test_assert(!corto_checkState(child, CORTO_DEFINED));
 
     corto_tablescope childTable = corto_tablescope(child);
-    test_assert(childTable->type == corto_table(test_ContainerNestedTable_ChildTable_o));
+    test_assert(childTable->type == corto_struct(test_ContainerNestedTable_ChildTable_o));
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
 
