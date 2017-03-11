@@ -166,7 +166,7 @@ corto_void _test_Container_tc_containerNestedTable(
     test_assert(!corto_checkState(child, CORTO_DEFINED));
 
     corto_tablescope childTable = corto_tablescope(child);
-    test_assert(childTable->table == corto_table(test_ContainerNestedTable_ChildTable_o));
+    test_assert(childTable->type == corto_table(test_ContainerNestedTable_ChildTable_o));
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
 
@@ -212,7 +212,7 @@ corto_void _test_Container_tc_tableMultiKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableMultiKey_o);
+    corto_setref(&o->type, test_TableMultiKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableMultiKey record = corto_declareChild(o, "1,2", test_TableMultiKey_o);
@@ -236,7 +236,7 @@ corto_void _test_Container_tc_tableMultiMixedKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableMultiMixedKey_o);
+    corto_setref(&o->type, test_TableMultiMixedKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableMultiMixedKey record = corto_declareChild(o, "1,Hello World", test_TableMultiMixedKey_o);
@@ -260,7 +260,7 @@ corto_void _test_Container_tc_tableMultiStringKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableMultiStringKey_o);
+    corto_setref(&o->type, test_TableMultiStringKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableMultiStringKey record = corto_declareChild(o, "Hello,World", test_TableMultiStringKey_o);
@@ -283,7 +283,7 @@ corto_void _test_Container_tc_tableNested(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableNested_o);
+    corto_setref(&o->type, test_TableNested_o);
 
     test_TableSingleKey record = corto_declareChild(o, "1", test_TableNested_o);
     test_assert(record != NULL);
@@ -315,7 +315,7 @@ corto_void _test_Container_tc_tableNestedContainer(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableNestedContainer_o);
+    corto_setref(&o->type, test_TableNestedContainer_o);
     test_assert (corto_define(o) == 0);
 
     test_TableNestedContainer record = corto_declareChild(o, "1", test_TableNestedContainer_o);
@@ -347,7 +347,7 @@ corto_void _test_Container_tc_tableNestedLeafs(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableNestedLeafs_o);
+    corto_setref(&o->type, test_TableNestedLeafs_o);
     test_assert (corto_define(o) == 0);
 
     test_TableNestedLeafs record = corto_declareChild(o, "1", test_TableNestedLeafs_o);
@@ -386,7 +386,7 @@ corto_void _test_Container_tc_tableSingleKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableSingleKey_o);
+    corto_setref(&o->type, test_TableSingleKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableSingleKey record = corto_declareChild(o, "1", test_TableSingleKey_o);
@@ -409,7 +409,7 @@ corto_void _test_Container_tc_tableStringKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->table, test_TableStringKey_o);
+    corto_setref(&o->type, test_TableStringKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableStringKey record = corto_declareChild(o, "Hello World", test_TableStringKey_o);

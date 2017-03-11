@@ -575,6 +575,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* struct */\
     SSO_OP_OBJ(lang_struct_base),\
     SSO_OP_OBJ(lang_struct_baseAccess),\
+    SSO_OP_OBJ(lang_struct_keys),\
+    SSO_OP_OBJ(lang_struct_keycache),\
     SSO_OP_OBJ(lang_struct_init_),\
     SSO_OP_OBJ(lang_struct_construct_),\
     SSO_OP_OBJ(lang_struct_compatible_),\
@@ -601,12 +603,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_init_),\
     SSO_OP_OBJ(lang_class_instanceof_),\
     SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
-    /* table */\
-    SSO_OP_OBJ(lang_table_keylist),\
-    SSO_OP_OBJ(lang_table_keycache),\
-    SSO_OP_OBJ(lang_table_construct_),\
     /* tablescope */\
-    SSO_OP_OBJ(lang_tablescope_table),\
+    SSO_OP_OBJ(lang_tablescope_type),\
+    /* table */\
+    SSO_OP_OBJ(lang_table_construct_),\
     /* mountStats */\
     SSO_OP_OBJ(core_mountStats_declares),\
     SSO_OP_OBJ(core_mountStats_updates),\

@@ -418,24 +418,34 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
     /* Lookup extension */
     corto_mutexLock(&corto_adminLock);
     h = corto_lookupExt(ext);
-    if (h) {
-        /* Load file */
-        lib = corto_fileAdminAdd(str);
+
+    if (!h) {
+        corto_id extPackage;
+        sprintf(extPackage, "corto/ext/%s", ext);
         corto_mutexUnlock(&corto_adminLock);
-        result = h->load(str, argc, argv, h->userData);
-        corto_mutexLock(&corto_adminLock);
-        lib->loading = 0;
-        lib->result = result;
-    } else {
-        if (!try) {
-            corto_seterr(
-                "unknown file extension '%s'",
-                ext);
-            corto_mutexUnlock(&corto_adminLock);
-            goto error;
+        if (corto_load(extPackage, 0, NULL)) {
+            if (!try) {
+                corto_seterr(
+                    "unable to load file '%s' with extension '%s': %s",
+                    str,
+                    ext,
+                    corto_lasterr());
+                goto error;
+            }
+            result = -1;            
         }
-        result = -1;
+        corto_mutexLock(&corto_adminLock);
+        h = corto_lookupExt(ext);
     }
+
+    /* Load file */
+    lib = corto_fileAdminAdd(str);
+    corto_mutexUnlock(&corto_adminLock);
+    result = h->load(str, argc, argv, h->userData);
+    corto_mutexLock(&corto_adminLock);
+    lib->loading = 0;
+    lib->result = result;
+
     corto_mutexUnlock(&corto_adminLock);
 
     if (!result) {

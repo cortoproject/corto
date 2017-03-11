@@ -186,13 +186,13 @@ static void* corto__objectStartAddr(corto__object* o) {
 }
 
 static corto_int16 corto_setKeyvalues(corto_object o, corto_string id) {
-    corto_table table = corto_table(corto_typeof(o));
+    corto_struct type = corto_struct(corto_typeof(o));
     corto_id idWithBraces;
     sprintf(idWithBraces, "{%s}", id);
 
     corto_string_deser_t serData = {
         .out = o,
-        .members = table->keycache,
+        .members = type->keycache,
         .isObject = TRUE
     };
 
@@ -838,7 +838,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
                 /* If parentType is a tablescope, check if child type matches
                  * table type */
                 if (corto_instanceof(corto_tablescope_o, parent)) {
-                    corto_table tableType = corto_tablescope(parent)->table;
+                    corto_struct tableType = corto_tablescope(parent)->type;
                     if (corto_type(tableType) != childType) {
                         if (!corto_instanceof(childType, corto_container_o)) {
                             corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
@@ -1141,7 +1141,7 @@ static corto_int16 corto_declareContainer(corto_object parent) {
                 if (!ts) {
                     goto error;
                 }
-                corto_setref(&ts->table, c);
+                corto_setref(&ts->type, c);
             }
         }
         corto_scopeRelease(seq);
@@ -3278,7 +3278,9 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
 corto_bool corto_owned(corto_object o) {
     corto_assertObject(o);
 
-    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+    /* If object is not persistent, and it is not declared (orphans) 
+     * the application is free to do with the object what it wants. */
+    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT) && corto_checkState(o, CORTO_DECLARED)) {
         return TRUE;
     }
 

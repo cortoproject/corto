@@ -35,6 +35,7 @@ extern "C" {
 #define corto_modifier(o) ((corto_modifier*)corto_assertType((corto_type)corto_modifier_o, o))
 #define corto_compositeKind(o) ((corto_compositeKind*)corto_assertType((corto_type)corto_compositeKind_o, o))
 #define corto_interface(o) ((corto_interface)corto_assertType((corto_type)corto_interface_o, o))
+#define corto_stringseq(o) ((corto_stringseq*)corto_assertType((corto_type)corto_stringseq_o, o))
 #define corto_struct(o) ((corto_struct)corto_assertType((corto_type)corto_struct_o, o))
 #define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assertType((corto_type)corto_interfaceseq_o, o))
 #define corto_interfaceVector(o) ((corto_interfaceVector*)corto_assertType((corto_type)corto_interfaceVector_o, o))
@@ -86,7 +87,6 @@ extern "C" {
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
-#define corto_stringseq(o) ((corto_stringseq*)corto_assertType((corto_type)corto_stringseq_o, o))
 #define corto_table(o) ((corto_table)corto_assertType((corto_type)corto_table_o, o))
 #define corto_tablescope(o) ((corto_tablescope)corto_assertType((corto_type)corto_tablescope_o, o))
 #define corto_target(o) ((corto_target)corto_assertType((corto_type)corto_target_o, o))
@@ -263,12 +263,16 @@ struct corto_interface_s {
     corto_interface base;
 };
 
+CORTO_SEQUENCE(corto_stringseq, corto_string,);
+
 /*  struct */
 typedef struct corto_struct_s *corto_struct;
 
 struct corto_struct_s {
     struct corto_interface_s _parent;
     corto_modifier baseAccess;
+    corto_stringseq keys;
+    corto_objectseq keycache;
 };
 
 CORTO_SEQUENCE(corto_interfaceseq, corto_interface,);
@@ -605,22 +609,18 @@ struct corto_sequence_s {
 
 CORTO_LIST(corto_stringlist);
 
-CORTO_SEQUENCE(corto_stringseq, corto_string,);
-
 /*  table */
 typedef struct corto_table_s *corto_table;
 
 struct corto_table_s {
     struct corto_container_s _parent;
-    corto_stringseq keylist;
-    corto_objectseq keycache;
 };
 
 /*  tablescope */
 typedef struct corto_tablescope_s *corto_tablescope;
 
 struct corto_tablescope_s {
-    corto_table table;
+    corto_struct type;
 };
 
 /*  target */

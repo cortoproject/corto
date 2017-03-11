@@ -927,6 +927,8 @@ CORTO_FW_IC(lang, struct);
 CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_SCOPED, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_ALIAS_O (lang_struct, base, lang_interface_base, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_struct, baseAccess, lang_modifier, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_struct, keys, lang_stringseq, CORTO_HIDDEN);
+    CORTO_MEMBER_O(lang_struct, keycache, lang_objectseq, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_VIRTUAL_O(lang_struct, compatible, "(type type)", lang_bool, corto_struct_compatible_v);
     CORTO_VIRTUAL_O(lang_struct, castable, "(type type)", lang_bool, corto_struct_castable_v);
     CORTO_VIRTUAL_O(lang_struct, resolveMember, "(string name)", lang_member, corto_struct_resolveMember_v);
@@ -1118,7 +1120,6 @@ CORTO_CLASS_O(lang, unit, lang_class, CORTO_PRIVATE, CORTO_ATTR_DEFAULT, NULL, C
 
 /* /corto/lang/container */
 CORTO_CLASS_O(lang, container, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
-    CORTO_METHOD_O(lang_container, construct, "()", lang_int16, corto_unit_construct);
 
 /* /corto/lang/leaf */
 CORTO_CLASS_O(lang, leaf, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
@@ -1126,13 +1127,11 @@ CORTO_CLASS_O(lang, leaf, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL
 /* /corto/lang/table */
 CORTO_FW_C(lang, table);
 CORTO_CLASS_O(lang, table, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
-    CORTO_MEMBER_O(lang_table, keylist, lang_stringseq, CORTO_GLOBAL);
-    CORTO_MEMBER_O(lang_table, keycache, lang_objectseq, CORTO_PRIVATE|CORTO_LOCAL);
     CORTO_METHOD_O(lang_table, construct, "()", lang_int16, corto_table_construct);
 
 /* /corto/lang/tablescope */
 CORTO_CLASS_NOBASE_O(lang, tablescope, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(lang_tablescope, table, lang_table, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_tablescope, type, lang_struct, CORTO_GLOBAL);
 
 /* /corto/core/augmentData */
 CORTO_STRUCT_O(core, augmentData, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

@@ -135,6 +135,63 @@ corto_int16 _corto_struct_construct(
     /* Set size of self */
     corto_type(this)->size = size;
 
+    if (this->keys.length != 0) {
+        /* If a keylist was provided, test if members have been added and ensure
+         * the KEY modifier is enabled */
+        corto_int32 i;
+        for (i = 0; i < this->keys.length; i++) {
+            corto_object o = corto_lookup(this, this->keys.buffer[i]);
+            if (!o) {
+                corto_seterr("no member with name '%s' found for table '%s'",
+                    this->keys.buffer[i],
+                    corto_fullpath(NULL, this));
+                goto error;
+            }
+
+            if (!corto_instanceof(corto_member_o, o)) {
+                corto_seterr("object '%s' in table '%s' is not a member",
+                    corto_fullpath(NULL, o),
+                    corto_fullpath(NULL, this));
+                goto error;
+            }
+
+            corto_member m = corto_member(o);
+            m->modifiers |= CORTO_KEY;
+
+            this->keycache.buffer = 
+                corto_realloc(this->keycache.buffer, 
+                    sizeof(corto_object) * (this->keycache.length + 1));
+            this->keycache.buffer[this->keycache.length] = m;
+            corto_claim(m);
+            this->keycache.length ++;
+
+            corto_release(o);
+        }
+    } else {
+        /* If no keylist was provided, walk over members and add keys to the
+         * list automatically based on order of occurrence. */
+        corto_int32 i;
+        corto_interface interface = corto_interface(this);
+        for (i = 0; i < interface->members.length; i ++) {
+            corto_member m = interface->members.buffer[i];
+            if ((m->modifiers & CORTO_KEY) == CORTO_KEY) {
+                this->keys.buffer = 
+                    corto_realloc(this->keys.buffer, 
+                        sizeof(char*) * (this->keys.length + 1));
+                this->keys.buffer[this->keys.length] = 
+                    corto_strdup(corto_idof(m));
+                this->keys.length ++;
+
+                this->keycache.buffer = 
+                    corto_realloc(this->keycache.buffer, 
+                        sizeof(corto_object) * (this->keycache.length + 1));
+                this->keycache.buffer[this->keycache.length] = m;
+                corto_claim(m);
+                this->keycache.length ++;   
+            }
+        }
+    }
+
     return corto_interface_construct(this);
 error:
     return -1;

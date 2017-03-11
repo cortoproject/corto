@@ -51,7 +51,6 @@ corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userD
         corto_object p = corto_value_getObject(v);
         void* ptr = corto_value_getPtr(v);
 
-
         /* Create observable that is not added to the scope of its parent */
         corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);
         corto_object o = corto_createOrphan(p, corto_idof(m), t);
@@ -68,7 +67,6 @@ corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userD
 error:
     return -1;
 }
-
 
 struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
     struct corto_serializer_s s;
