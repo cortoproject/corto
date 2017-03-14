@@ -50,7 +50,7 @@ int corto_mkdir(const char *fmt, ...) {
         goto error_name;
     }
 
-    if (mkdir(name, 0700)) {
+    if (mkdir(name, 0755)) {
         _errno = errno;
 
         /* If error is ENOENT an element in the prefix of the name
@@ -69,7 +69,7 @@ int corto_mkdir(const char *fmt, ...) {
             if (ch == '/') {
                 if (!corto_mkdir(prefix)) {
                     /* Retry current directory */
-                    if (!mkdir(name, 0700)) {
+                    if (!mkdir(name, 0755)) {
                         _errno = 0;
                     } else {
                         _errno = errno;
