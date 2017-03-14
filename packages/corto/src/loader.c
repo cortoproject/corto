@@ -490,6 +490,7 @@ static corto_string corto_locatePackageIntern(
     corto_string targetBuild = NULL, homeBuild = NULL, usrBuild = NULL;
     corto_string targetErr = NULL, homeErr = NULL, usrErr = NULL;
     corto_string details = NULL;
+    corto_bool fileError = FALSE;
     time_t t = 0;
 
     /* Reset error */
@@ -517,7 +518,12 @@ static corto_string corto_locatePackageIntern(
             }
         }
     } else {
-        corto_debug("corto: '%s' not found while looking for '%s'", targetPath, lib);
+        if (corto_lasterr()) {
+            targetErr = corto_strdup(corto_lasterr());
+            fileError = TRUE;
+        } else {
+            corto_debug("corto: '%s' not found while looking for '%s'", targetPath, lib);
+        }
     }
 
     /* Look for packages in CORTO_HOME */
@@ -528,9 +534,9 @@ static corto_string corto_locatePackageIntern(
             goto error;
         }
         if (corto_fileTest(homePath)) {
-            corto_debug("corto: found '%s' while looking for '%s'", homePath, lib);
             time_t myT = corto_getModified(homePath);
-            if ((myT > t) || !result) {
+            corto_debug("corto: found '%s' while looking for '%s'", homePath, lib);
+            if ((myT >= t) || !result) {
                 if (!isLibrary || corto_checkLibrary(homePath, &homeBuild)) {
                     t = myT;
                     result = homePath;
@@ -548,7 +554,12 @@ static corto_string corto_locatePackageIntern(
                 corto_debug("corto: discarding '%s' because '%s' is newer", homePath, result);
             }
         } else {
-            corto_debug("corto: '%s' not found while looking for '%s'", homePath, lib);
+            if (corto_lasterr()) {
+                homeErr = corto_strdup(corto_lasterr());
+                fileError = TRUE;
+            } else {
+                corto_debug("corto: '%s' not found while looking for '%s'", homePath, lib);
+            }
         }
     }
 
@@ -561,8 +572,8 @@ static corto_string corto_locatePackageIntern(
             goto error;
         }
         if (corto_fileTest(usrPath)) {
-            corto_debug("corto: found '%s' while looking for '%s'", usrPath, lib);
             time_t myT = corto_getModified(usrPath);
+            corto_debug("corto: found '%s' while looking for '%s'", usrPath, lib);
             if ((myT >= t) || !result) {
                 if (!isLibrary || corto_checkLibrary(usrPath, &usrBuild)) {
                     t = myT;
@@ -581,7 +592,12 @@ static corto_string corto_locatePackageIntern(
                 corto_debug("corto: discarding '%s' because '%s' is newer", usrPath, result);
             }
         } else {
-            corto_debug("corto: '%s' not found while looking for '%s'", usrPath, lib);
+            if (corto_lasterr()) {
+                usrErr = corto_strdup(corto_lasterr());
+                fileError = TRUE;
+            } else {
+                corto_debug("corto: '%s' not found while looking for '%s'", usrPath, lib);
+            }
         }
     }
 
@@ -631,13 +647,24 @@ static corto_string corto_locatePackageIntern(
     if (homePath && (homePath != result)) corto_dealloc(homePath);
     if (usrPath && (usrPath != result)) corto_dealloc(usrPath);
 
-    if (!result) {
-        if (details) {
-            corto_seterr(details);
-        } else {
-            corto_seterr("\n- library '%s' not found", lib);
+    /* If there is a problem with one of the environments, don't load package */
+    if (fileError) {
+        if (result) {
+            corto_dealloc(result);
+            result = NULL;
         }
     }
+
+    if (!result) {
+        if (details) {
+            if (fileError) {
+                corto_seterr(details);
+            }
+        } else {
+            corto_setinfo("\n- library '%s' not found", lib);
+        }
+    }
+
     corto_setinfo(details);
     corto_dealloc(details);
 
@@ -743,11 +770,6 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
         corto_dealloc(base);
     }
 #endif
-
-    if (corto_lasterr()) {
-        corto_setinfo(corto_lasterr());
-        corto_seterr(NULL);
-    }
 
     return result;
 error:

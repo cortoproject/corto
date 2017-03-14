@@ -136,9 +136,12 @@ int corto_fileTest(const char* filefmt, ...) {
     va_end(arglist);
 
     if (file) {
+        errno = 0;
         exists = fopen(file, "rb");
         if (exists) {
             fclose(exists);
+        } else if (errno != ENOENT) {
+            corto_seterr("%s: %s", file, strerror(errno));
         }
     }
 

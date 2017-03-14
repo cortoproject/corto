@@ -215,8 +215,25 @@ error:
 }
 
 corto_int16 cortotool_list(int argc, char* argv[]) {
-    if (argc > 1) {
-        corto_chdir(argv[1]);
+    corto_ll locate, project;
+
+    CORTO_UNUSED(argc);
+
+    corto_argdata *data = corto_argparse(
+      argv,
+      (corto_argdata[]){
+        /* Ignore first argument */
+        {"$0", NULL, NULL},
+        {"--locate", &locate, NULL},
+
+        /* Match at most one project directory */
+        {"$?*", &project, NULL},
+        {NULL}
+      }
+    );
+
+    if (project) {
+        corto_chdir(corto_llGet(project, 0));
         corto_ll packages = corto_loadGetPackages();
         if (packages && corto_llSize(packages)) {
             corto_iter iter = corto_llIter(packages);
@@ -239,16 +256,43 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
     } else {
         corto_loader loader = corto_create(corto_loader_o);
         corto_iter it;
+        corto_int32 count = 0, globalCount = 0;
         if (corto_select(NULL, "//").type("/corto/core/package").iter(&it)) {
             goto error;
         }
         while (corto_iterHasNext(&it)) {
             corto_result *r = corto_iterNext(&it);
-            printf("%s/%s\n", r->parent, r->id);
+            corto_id id; sprintf(id, "%s/%s", r->parent, r->id);
+            char *lib = corto_locate(id, CORTO_LOCATION_LIB);
+            if (lib) {
+                if (locate) {
+                    char *env = corto_locate(id, CORTO_LOCATION_ENV);
+                    corto_bool isGlobal = !strcmp(env, "/usr/local");
+                    count ++;
+                    if (isGlobal) globalCount ++;
+                    printf("%s%s%s  %s=>%s  %s\n", 
+                        CORTO_CYAN, id, CORTO_NORMAL, 
+                        isGlobal ? CORTO_GREEN : CORTO_MAGENTA, CORTO_NORMAL,
+                        lib);
+                } else {
+                    printf("%s\n", id);
+                }
+            } else if (corto_lasterr()) {
+                printf("%s%s%s%s\n", 
+                    CORTO_RED, id, CORTO_NORMAL, corto_lasterr());                
+            }
+            corto_dealloc(lib);
+        }
+        if (locate) {
+            printf("\nTotal: %d packages (%d %sglobal%s, %d %slocal%s)\n", 
+                count, 
+                globalCount, CORTO_GREEN, CORTO_NORMAL, 
+                count - globalCount, CORTO_MAGENTA, CORTO_NORMAL);
         }
         corto_delete(loader);
     }
 
+    corto_argclean(data);
 
     return 0;
 error:

@@ -82,19 +82,30 @@ void corto_loader_addDir(
             if (!corto_loader_checkIfAdded(list, f) && corto_match(r->expr, f)) {
                 struct stat attr;
                 corto_string content = NULL;
-                corto_id package;
-                sprintf(package, "%s/%s", r->parent, f);
-                corto_cleanpath(package, package);
 
                 corto_id fpath;
                 sprintf(fpath, "%s/%s", path, f);
-                corto_string version = NULL;
+
+                /* Stat file to determine whether it's a directory */
+                if (stat(fpath, &attr) < 0) {
+                    corto_seterr("failed to stat '%s' (%s)\n",
+                        fpath,
+                        strerror(errno));
+                }
+
+                if (!S_ISDIR(attr.st_mode)) {
+                    continue;
+                }
+
+                corto_id package;
+                sprintf(package, "%s/%s", r->parent, f);
+                corto_cleanpath(package, package);
                 corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
 
                 corto_debug("corto: loader: evaluate '%s'\n- path: %s\n- env: %s", f, fpath, env);
                 if (!env) {
                     corto_lasterr();
-                    continue;
+                    //continue;
                 }
 
                 /* Built-in packages use corto version */
@@ -104,27 +115,9 @@ void corto_loader_addDir(
                     !strcmp(package, "corto/native") ||
                     !strcmp(package, "corto/secure"))
                 {
-                    version = corto_strdup(CORTO_VERSION);
                     if (!env) {
                         env = corto_locate("corto", CORTO_LOCATION_ENV);
                         if (!env) corto_lasterr(); /* Catch error */
-                    }
-                } else {
-                    corto_id versionFile;
-                    sprintf(versionFile, "%s/version.txt", fpath);
-                    if (corto_fileTest(versionFile)) {
-                        version = corto_fileLoad(versionFile);
-                    }
-
-                    if (version) {
-                        char *newline = strchr(version, '\n');
-                        if (newline) {
-                            *newline = '\0';
-                        }
-                    } else if (env) {
-                        version = corto_strdup("0.0.0");
-                    } else {
-                        version = corto_strdup("");
                     }
                 }
 
@@ -138,10 +131,9 @@ void corto_loader_addDir(
                     if (strcmp(r->parent, ".")) {
                         corto_asprintf(
                             &content,
-                            "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"version\":\"%s\",\"env\":\"%s\"}",
+                            "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"env\":\"%s\"}",
                             r->parent,
                             f,
-                            version,
                             env
                         );
                     } else {
@@ -149,32 +141,19 @@ void corto_loader_addDir(
                             &content,
                             "{\"url\":\"http://www.corto.io/doc/%s\",\"version\":\"%s\",\"env\":\"%s\"}",
                             f,
-                            version,
                             env
                         );
                     }
                 }
 
-                corto_dealloc(version);
                 corto_dealloc(env);
 
-                /* Stat file to determine whether it's a directory */
-                if (stat(fpath, &attr) < 0) {
-                    corto_seterr("failed to stat '%s' (%s)\n",
-                        fpath,
-                        strerror(errno));
-                }
-
-                if (S_ISDIR(attr.st_mode)) {
-                    corto_result *r = corto_calloc(sizeof(corto_result));
-                    r->id = corto_strdup(f);
-                    r->parent = corto_strdup(".");
-                    r->type = corto_strdup("/corto/core/package");
-                    r->value = (corto_word)content;
-                    corto_llAppend(list, r);
-                } else {
-                    corto_debug("corto: loader: discard '%s' because it is not a directory", f);
-                }
+                corto_result *r = corto_calloc(sizeof(corto_result));
+                r->id = corto_strdup(f);
+                r->parent = corto_strdup(".");
+                r->type = corto_strdup("/corto/core/package");
+                r->value = (corto_word)content;
+                corto_llAppend(list, r);
             }
         }
 

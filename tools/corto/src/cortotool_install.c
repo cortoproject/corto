@@ -725,7 +725,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 error_only = TRUE;
             }
             if (!strcmp(argv[i], "--verbose")) {
-                corto_verbosity(CORTO_TRACE);
+                corto_verbosity(CORTO_DEBUG);
             }
         }
     }
@@ -767,7 +767,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         if (lib || lib_redis || path || env) {
             if (!silent && !error_only) printf("%s\n", location);
         } else {
-            if (!silent && !error_only) printf(CORTO_PROMPT "'%s' => '%s'\n", argv[1], location);
+            if (!silent && !error_only) printf("%s%s%s  =>  %s\n", CORTO_CYAN, argv[1], CORTO_NORMAL, location);
         }
     } else {
         if (!silent) {
@@ -775,7 +775,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 if (lib_redis) {
                     printf(CORTO_PROMPT "redistributable library for package '%s' not found", argv[1]);
                 } else {
-                    printf(CORTO_PROMPT "package '%s' not found", argv[1]);
+                    printf(CORTO_PROMPT "package '%s' not located", argv[1]);
                 }
             }
             if (corto_lastinfo()) {
