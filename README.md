@@ -51,6 +51,7 @@ This will build the core API and corto tool. The core API is typically used for 
 ## Building development add-ons
 The following packages are useful when you want to do corto application development (all packages are in the cortoproject organization):
  * c-binding
+ * json
  * xml
  * corto-language
  * test
@@ -66,12 +67,14 @@ To build the latest versions of these packages, do (on Ubuntu):
 ```
 sudo apt-get install libxml2-dev flex bison
 git clone https://github.com/cortoproject/c-binding
+git clone https://github.com/cortoproject/json
 git clone https://github.com/cortoproject/xml
 git clone https://github.com/cortoproject/corto-language
 git clone https://github.com/cortoproject/test
-corto build c-binding xml corto-language test
+corto build c-binding json
+corto build xml corto-language test
 ```
-The `corto build` tool is a front-end for the rake-based buildsystem. The buildsystem automates many tasks like code generation, dependencies between packages and installation of binaries.
+The `corto build` tool is a front-end for the rake-based buildsystem. The buildsystem automates many tasks like code generation, dependencies between packages and installation of binaries. 
 
 ## Creating a project
 To create a new project, use the following command:
