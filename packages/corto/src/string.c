@@ -29,6 +29,7 @@ int tokicmp(char ** const str1, const char *str2, char sep) {
     char ch1, ch2, *ptr1;
     ptr1 = *str1;
     ptr2 = str2;
+    int result = 0;
 
     while((ch1 = *ptr1) && (ch2 = *ptr2) && (ch1 != sep) && (ch2 != sep)) {
         if (ch1 == ch2) {
@@ -44,13 +45,16 @@ int tokicmp(char ** const str1, const char *str2, char sep) {
         ptr2++;
     }
 
-    *str1 = ptr1;
+    result = tolower(*ptr1) - tolower(*ptr2);
+    if (!*ptr2 && (*ptr1 == sep)) result = 0;
+    if (!*ptr1 && (*ptr2 == sep)) result = 0;
+    if ((*ptr1 == sep) && (*ptr2 == sep)) result = 0;
 
-    if (!*ptr2 && (*ptr1 == sep)) return 0;
-    if (!*ptr1 && (*ptr2 == sep)) return 0;
-    if ((*ptr1 == sep) && (*ptr2 == sep)) return 0;
+    if (!result) {
+        *str1 = ptr1;
+    }
 
-    return tolower(*ptr1) - tolower(*ptr2);
+    return result;
 }
 
 /* Case insensitive string compare, stop at / instead of \0. Returns next

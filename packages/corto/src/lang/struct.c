@@ -156,7 +156,9 @@ corto_int16 _corto_struct_construct(
             }
 
             corto_member m = corto_member(o);
-            m->modifiers |= CORTO_KEY;
+            if (corto_parentof(m) == this) {
+                m->modifiers |= CORTO_KEY;
+            }
 
             this->keycache.buffer = 
                 corto_realloc(this->keycache.buffer, 

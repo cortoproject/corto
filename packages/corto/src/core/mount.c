@@ -794,7 +794,6 @@ corto_void _corto_mount_subscribe(
     corto_unlock(this);
 
     /* Process callback outside of lock */
-
     if (!found && (!subscription || subscription->userData)) {
         /* If no subscription is found that both matches parent and expr, notify
          * the mount */
@@ -823,13 +822,19 @@ corto_void _corto_mount_subscribe(
             subscription = corto_calloc(sizeof(corto_mountSubscription));
             subscription->parent = corto_strdup(request->parent);
             subscription->expr = corto_strdup(request->expr);
+            subscription->count = 1;
             corto_llAppend(this->subscriptions, subscription);
+        } else if (subscription->userData) {
+            /* Increase refcount of new or existing subscription (can be new if
+             * during the unlock a new subscription was added). */
+            subscription->count ++;
+        } else {
+            /* If userData is 0, this was a temporary entry in the subscriptions
+             * list to prevent recursion. Since it will already have a count of
+             * 1, don't increase refcount again as this would leak */
         }
-        subscription->userData = ctx;
 
-        /* Increase refcount of new or existing subscription (can be new if
-         * during the unlock a new subscription was added) */
-        subscription->count ++;
+        subscription->userData = ctx;
 
         corto_unlock(this);
     } else if (ctx && !found && subscription) {
@@ -867,6 +872,7 @@ corto_void _corto_mount_unsubscribe(
         }
     }
     corto_unlock(this);
+
 
     if (subscription) {
         corto_mount_onUnsubscribe(this, subscription->parent, subscription->expr, subscription->userData);
