@@ -69,6 +69,7 @@ CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);
 CORTO_META_OBJECT(struct, parameter);
 CORTO_META_OBJECT(struct, result);
+CORTO_META_OBJECT(struct, typeOptions);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(binary, octet);
@@ -101,6 +102,7 @@ CORTO_META_OBJECT(enum, collectionKind);
 CORTO_META_OBJECT(enum, procedureKind);
 CORTO_META_OBJECT(enum, equalityKind);
 CORTO_META_OBJECT(enum, operatorKind);
+CORTO_META_OBJECT(enum, inout);
 CORTO_META_OBJECT(bitmask, eventMask);
 CORTO_META_OBJECT(bitmask, modifier);
 CORTO_META_OBJECT(bitmask, state);

@@ -624,13 +624,26 @@ corto_member _corto_interface_resolveMember_v(
     corto_member result = NULL;
 
     for (i=0; i<this->members.length; i++) {
-        if (!strcmp(corto_idof(this->members.buffer[i]), name)) {
+        if (!tokicmp(&name, corto_idof(this->members.buffer[i]), '.')) {
             result = this->members.buffer[i];
             break;
         }
     }
 
+    if (name[0] && result) {
+        if (result->type->kind == CORTO_COMPOSITE) {
+            result = corto_interface_resolveMember(result->type, name + 1);
+        } else {
+            corto_seterr("cannot resolve member '%s' on non-composite type '%s'",
+                name + 1,
+                corto_fullpath(NULL, result->type));
+            goto error;
+        }
+    }
+
     return result;
+error:
+    return NULL;
 /* $end */
 }
 

@@ -496,6 +496,7 @@ CORTO_FWDECL(procedure, virtual);
 CORTO_FWDECL(enum, collectionKind);
 CORTO_FWDECL(enum, compositeKind);
 CORTO_FWDECL(enum, equalityKind);
+CORTO_FWDECL(enum, inout);
 CORTO_FWDECL(enum, primitiveKind);
 CORTO_FWDECL(enum, procedureKind);
 CORTO_FWDECL(enum, typeKind);

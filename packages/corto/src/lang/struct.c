@@ -140,7 +140,7 @@ corto_int16 _corto_struct_construct(
          * the KEY modifier is enabled */
         corto_int32 i;
         for (i = 0; i < this->keys.length; i++) {
-            corto_object o = corto_lookup(this, this->keys.buffer[i]);
+            corto_object o = corto_interface_resolveMember(this, this->keys.buffer[i]);
             if (!o) {
                 corto_seterr("no member with name '%s' found for table '%s'",
                     this->keys.buffer[i],

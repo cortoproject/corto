@@ -27,9 +27,11 @@ typedef corto_equalityKind ___ (*corto_equalsAction)(corto_type _this, const voi
 CORTO_EXPORT corto_object _corto_create(corto_type type);
 CORTO_EXPORT corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type);
 CORTO_EXPORT corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type);
+CORTO_EXPORT corto_object _corto_findOrCreate(corto_object parent, corto_string id, corto_type type);
 CORTO_EXPORT corto_object _corto_declare(corto_type type);
 CORTO_EXPORT corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type);
 CORTO_EXPORT corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type);
+CORTO_EXPORT corto_object _corto_findOrDeclare(corto_object parent, corto_string id, corto_type type);
 CORTO_EXPORT corto_int16 corto_define(corto_object o);
 CORTO_EXPORT corto_int16 corto_delete(corto_object o);
 
@@ -59,7 +61,10 @@ CORTO_EXPORT corto_attr corto_setAttr(corto_attr attr);
 CORTO_EXPORT corto_attr corto_getAttr(void);
 
 /* Security */
+CORTO_EXPORT corto_uint16 corto_useradd(corto_string userId, corto_string password, corto_string group, corto_string home);
+CORTO_EXPORT corto_uint16 corto_userdel(corto_string userId);
 CORTO_EXPORT corto_string corto_login(corto_string username, corto_string password);
+CORTO_EXPORT void corto_logout(corto_string token);
 CORTO_EXPORT corto_string corto_authenticate(corto_string key);
 CORTO_EXPORT corto_bool corto_authorized(corto_object object, corto_secure_actionKind access);
 CORTO_EXPORT corto_bool corto_authorizedId(corto_string id, corto_secure_actionKind access);
@@ -238,9 +243,11 @@ CORTO_EXPORT void corto_super_destruct(corto_object o);
 #define corto_create(type) _corto_create(corto_type(type))
 #define corto_createChild(parent, name, type) _corto_createChild(parent, name, corto_type(type))
 #define corto_createOrphan(parent, name, type) _corto_createOrphan(parent, name, corto_type(type))
+#define corto_findOrCreate(parent, name, type) _corto_findOrCreate(parent, name, corto_type(type))
 #define corto_declare(type) _corto_declare(corto_type(type))
 #define corto_declareChild(parent, name, type) _corto_declareChild(parent, name, corto_type(type))
 #define corto_declareOrphan(parent, name, type) _corto_declareOrphan(parent, name, corto_type(type))
+#define corto_findOrDeclare(parent, name, type) _corto_findOrDeclare(parent, name, corto_type(type))
 #define corto_strp(p, type, maxLength) _corto_strp(p, corto_type(type), maxLength)
 #define corto_fromStrp(out, type, string) _corto_fromStrp(out, corto_type(type), string)
 #define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)

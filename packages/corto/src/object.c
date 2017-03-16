@@ -12,7 +12,7 @@
 
 extern corto_mutex_s corto_adminLock;
 
-static corto_object corto_adopt(corto_object parent, corto_object child);
+static corto_object corto_adopt(corto_object parent, corto_object child, corto_bool forceType);
 static void corto_olsDestroy(corto__scope *scope);
 static corto_bool corto_ownerMatch(corto_object owner, corto_object current);
 
@@ -187,23 +187,26 @@ static void* corto__objectStartAddr(corto__object* o) {
 
 static corto_int16 corto_setKeyvalues(corto_object o, corto_string id) {
     corto_struct type = corto_struct(corto_typeof(o));
-    corto_id idWithBraces;
-    sprintf(idWithBraces, "{%s}", id);
 
-    corto_string_deser_t serData = {
-        .out = o,
-        .members = type->keycache,
-        .isObject = TRUE
-    };
+    if (type->keys.length) {
+        corto_id idWithBraces;
+        sprintf(idWithBraces, "{%s}", id);
 
-    /* Serializer returns pointer to where it stopped parsing, unless failed */
-    if (!corto_string_deser(idWithBraces, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
-    }
+        corto_string_deser_t serData = {
+            .out = o,
+            .members = type->keycache,
+            .isObject = TRUE
+        };
 
-    if (!serData.out) {
-        corto_seterr("cannot parse '%s' to keys: %s", id, corto_lasterr());
-        goto error;
+        /* Serializer returns pointer to where it stopped parsing, unless failed */
+        if (!corto_string_deser(idWithBraces, &serData)) {
+            corto_assert(!serData.out, "deserializer failed but out is set");
+        }
+
+        if (!serData.out) {
+            corto_seterr("cannot parse '%s' to keys: %s", id, corto_lasterr());
+            goto error;
+        }
     }
 
     return 0;
@@ -216,7 +219,8 @@ static corto_object corto__initScope(
     corto_object o,
     corto_string id,
     corto_object parent,
-    corto_bool orphan)
+    corto_bool orphan,
+    corto_bool forceType)
 {
     corto__object* _o;
     corto__scope* scope;
@@ -231,7 +235,7 @@ static corto_object corto__initScope(
       "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
     /* If object is in a table, set keyvalues of object */
-    if (id && (corto_typeof(corto_typeof(o)) == corto_type(corto_table_o))) {
+    if (id && corto_instanceof(corto_struct_o, corto_typeof(o))) {
         if (corto_setKeyvalues(o, id)) {
             goto error;
         }
@@ -249,7 +253,7 @@ static corto_object corto__initScope(
 
     /* Add object to the scope of the parent-object */
     if (!orphan && corto_checkAttr(parent, CORTO_ATTR_SCOPED)) {
-        if (!(result = corto_adopt(parent, o))) {
+        if (!(result = corto_adopt(parent, o, forceType))) {
             /* Reset parent so deinitScope won't release it */
             scope->parent = NULL;
             goto error;
@@ -496,7 +500,7 @@ int corto__adoptSSO(corto_object sso) {
 
     corto_assert(parent != NULL, "corto__adoptSSO: static scoped object has no parent");
 
-    return !corto_adopt(parent, sso);
+    return !corto_adopt(parent, sso, TRUE);
 }
 
 /* Find the right initializer to call */
@@ -773,7 +777,7 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
 }
 
 /* Adopt an object */
-static corto_object corto_adopt(corto_object parent, corto_object child) {
+static corto_object corto_adopt(corto_object parent, corto_object child, corto_bool forceType) {
     corto__object *_parent, *_child;
     corto__scope *p_scope, *c_scope;
     corto_type parentType;
@@ -813,7 +817,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child) {
             corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->id, child);
             if (existing && (existing != child)) {
                 corto_unlock(child);
-                if (corto_typeof(existing) != corto_typeof(child)) {
+                if (!forceType || (corto_typeof(existing) != corto_typeof(child))) {
                     corto_seterr("'%s' is already declared with type '%s'",
                       c_scope->id,
                       corto_fullpath(NULL, corto_typeof(existing)));
@@ -1073,7 +1077,7 @@ corto_object _corto_declare(corto_type type) {
              * anonymous object with a scope */
             if (attrs & CORTO_ATTR_SCOPED) {
                 /* Initialze scope-part of object */
-                if (!corto__initScope(CORTO_OFFSET(o, sizeof(corto__object)), NULL, NULL, TRUE)) {
+                if (!corto__initScope(CORTO_OFFSET(o, sizeof(corto__object)), NULL, NULL, TRUE, FALSE)) {
                     goto error_init;
                 } else {
                     o->align.attrs.state |= CORTO_VALID;
@@ -1210,7 +1214,8 @@ static corto_object corto_declareChildIntern(
     corto_object parent,
     corto_string id,
     corto_type type,
-    corto_bool orphan)
+    corto_bool orphan,
+    corto_bool forceType)
 {
     corto_benchmark_start(CORTO_BENCHMARK_DECLARECHILD);
     corto_object o = NULL;
@@ -1228,7 +1233,7 @@ static corto_object corto_declareChildIntern(
         goto error;
     }
 
-    if (!id || !strlen(id)) {
+    if (!id || !id[0]) {
         corto_seterr("invalid id (cannot be null or an empty string)");
         goto error;
     }
@@ -1255,7 +1260,7 @@ static corto_object corto_declareChildIntern(
             corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
             /* Initialize object parameters. */
-            if ((o_ret = corto__initScope(o, id, parent, orphan))) {
+            if ((o_ret = corto__initScope(o, id, parent, orphan, forceType))) {
 
                 if (o_ret == o) {
                     /* Initially, an object is valid and declared */
@@ -1378,57 +1383,55 @@ owner_error:
 }
 
 corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildIntern(parent, id, type, FALSE);
+    return corto_declareChildIntern(parent, id, type, FALSE, TRUE);
 }
 
 corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildIntern(parent, id, type, TRUE);
+    return corto_declareChildIntern(parent, id, type, TRUE, TRUE);
+}
+
+corto_object _corto_findOrDeclare(corto_object parent, corto_string id, corto_type type) {
+    return corto_declareChildIntern(parent, id, type, TRUE, FALSE);
+}
+
+static corto_object corto_createIntern(corto_object result) {
+    if (result &&
+        corto_checkState(result, CORTO_VALID) &&
+        !corto_checkState(result, CORTO_DEFINED))
+    {
+        if (corto_define(result)) {
+            corto_delete(result);
+            result = NULL;
+        }
+    }
+    return result;
 }
 
 corto_object _corto_create(corto_type type) {
     corto_assertObject(type);
     corto_object result = corto_declare(type);
-    if (result && corto_checkState(result, CORTO_VALID)) {
-        if (corto_define(result)) {
-            corto_delete(result);
-            result = NULL;
-        }
-    }
-    return result;
+    return corto_createIntern(result);
 }
 
 corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type) {
     corto_assertObject(parent);
     corto_assertObject(type);
-    corto_object result = corto_declareChildIntern(parent, id, type, FALSE);
-    if (result &&
-        corto_checkState(result, CORTO_VALID) &&
-        !corto_checkState(result, CORTO_DEFINED))
-    {
-        if (corto_define(result)) {
-            corto_delete(result);
-            result = NULL;
-        }
-    }
-
-    return result;
+    corto_object result = corto_declareChildIntern(parent, id, type, FALSE, TRUE);
+    return corto_createIntern(result);
 }
 
 corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type) {
     corto_assertObject(parent);
     corto_assertObject(type);
-    corto_object result = corto_declareChildIntern(parent, id, type, TRUE);
-    if (result &&
-        corto_checkState(result, CORTO_VALID) &&
-        !corto_checkState(result, CORTO_DEFINED))
-    {
-        if (corto_define(result)) {
-            corto_delete(result);
-            result = NULL;
-        }
-    }
+    corto_object result = corto_declareChildIntern(parent, id, type, TRUE, TRUE);
+    return corto_createIntern(result);
+}
 
-    return result;
+corto_object _corto_findOrCreate(corto_object parent, corto_string id, corto_type type) {
+    corto_assertObject(parent);
+    corto_assertObject(type);
+    corto_object result = corto_declareChildIntern(parent, id, type, TRUE, FALSE);
+    return corto_createIntern(result);
 }
 
 corto_object corto_resume_fromMount(

@@ -11,6 +11,9 @@ extern "C" {
 /* Case insensitive string compare */
 CORTO_EXPORT int stricmp(const char *str1, const char *str2);
 
+/* Compare case insensitive token */
+CORTO_EXPORT int tokicmp(char ** const str_out, const char *str2, char tok);
+
 /* Case insensitive string compare, stop at / instead of \0. Returns next
  * element, NULL when no match or "\0" when reached the end */
 CORTO_EXPORT char* corto_elemcmp(char *path, char *elem);

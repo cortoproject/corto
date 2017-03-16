@@ -24,6 +24,35 @@ int stricmp(const char *str1, const char *str2) {
     return tolower(*ptr1) - tolower(*ptr2);
 }
 
+int tokicmp(char ** const str1, const char *str2, char sep) {
+    const char *ptr2;
+    char ch1, ch2, *ptr1;
+    ptr1 = *str1;
+    ptr2 = str2;
+
+    while((ch1 = *ptr1) && (ch2 = *ptr2) && (ch1 != sep) && (ch2 != sep)) {
+        if (ch1 == ch2) {
+            ptr1++; ptr2++;
+            continue;
+        }
+        if (ch1 < 97) ch1 = tolower(ch1);
+        if (ch2 < 97) ch2 = tolower(ch2);
+        if (ch1 != ch2) {
+            return ch1 - ch2;
+        }
+        ptr1++;
+        ptr2++;
+    }
+
+    *str1 = ptr1;
+
+    if (!*ptr2 && (*ptr1 == sep)) return 0;
+    if (!*ptr1 && (*ptr2 == sep)) return 0;
+    if ((*ptr1 == sep) && (*ptr2 == sep)) return 0;
+
+    return tolower(*ptr1) - tolower(*ptr2);
+}
+
 /* Case insensitive string compare, stop at / instead of \0. Returns next
  * element, NULL when no match or "\0" when reached the end */
 char* corto_elemcmp(char *path, char *elem) {

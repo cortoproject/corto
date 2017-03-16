@@ -174,7 +174,7 @@ corto_int16 _corto_mount_construct(
         corto_object o = corto_lookup(NULL, corto_subscriber(this)->parent);
         if (!o) {
             corto_seterr(
-                "parent '%s' not found (future corto versions will allow this)",
+                "'%s' not found (future versions will allow mounts on virtual scopes)",
                 corto_subscriber(this)->parent);
             goto error;
         }
@@ -783,12 +783,19 @@ corto_void _corto_mount_subscribe(
     if (subscription) {
         /* Ensure subscription isn't deleted outside of lock */
         subscription->count ++;
+    } else {
+        /* Add placeholder to list, so onSubscribe won't be called recursively */
+        corto_mountSubscription *placeHolder = corto_calloc(sizeof(corto_mountSubscription));
+        placeHolder->parent = corto_strdup(request->parent);
+        placeHolder->expr = corto_strdup(request->expr);
+        placeHolder->count = 1;
+        corto_llAppend(this->subscriptions, placeHolder);
     }
     corto_unlock(this);
 
     /* Process callback outside of lock */
 
-    if (!found) {
+    if (!found && (!subscription || subscription->userData)) {
         /* If no subscription is found that both matches parent and expr, notify
          * the mount */
         ctx = corto_mount_onSubscribe(
@@ -805,7 +812,7 @@ corto_void _corto_mount_subscribe(
         corto_lock(this);
 
         /* If a new subscription is required, undo increase of refcount of the
-        * subscription that was found */
+         * subscription that was found */
         if (subscription) {
             subscription->count --;
         }
@@ -816,16 +823,16 @@ corto_void _corto_mount_subscribe(
             subscription = corto_calloc(sizeof(corto_mountSubscription));
             subscription->parent = corto_strdup(request->parent);
             subscription->expr = corto_strdup(request->expr);
-            subscription->userData = ctx;
             corto_llAppend(this->subscriptions, subscription);
         }
+        subscription->userData = ctx;
 
         /* Increase refcount of new or existing subscription (can be new if
          * during the unlock a new subscription was added) */
         subscription->count ++;
 
         corto_unlock(this);
-    } else if (!found && subscription) {
+    } else if (ctx && !found && subscription) {
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'expr' parameter of the
