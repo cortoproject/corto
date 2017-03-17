@@ -101,7 +101,7 @@ void corto_loader_addDir(
                 corto_cleanpath(package, package);
                 corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
 
-                corto_debug("corto: loader: evaluate '%s'\n- path: %s\n- env: %s", f, fpath, env);
+                corto_debug("loader: evaluate '%s'\n- path: %s\n- env: %s", f, fpath, env);
                 if (!env) {
                     corto_lasterr();
                     //continue;

@@ -289,7 +289,7 @@ corto_pid corto_procrun(const char* exec, char *argv[]) {
 
         /* Child process */
         if (execvp(exec, argv)) {
-            corto_error("corto: failed to start process '%s'\n  cwd='%s'\n  err='%s'",
+            corto_error("failed to start process '%s'\n  cwd='%s'\n  err='%s'",
               exec,
               corto_cwd(),
               strerror(errno));
@@ -317,19 +317,19 @@ corto_pid corto_procrunRedirect(
         if (!out || !err) {
             devnull = fopen("/dev/null", "w");
             if (!devnull) {
-                corto_error("corto: failed to open /dev/null");
+                corto_error("failed to open /dev/null");
                 abort();
             }
         }
 
         if (dup2(fileno(out ? out : devnull), STDOUT_FILENO) < 0) {
-            corto_error("corto: failed to redirect stdout for '%s': %s", exec, strerror(errno));
+            corto_error("failed to redirect stdout for '%s': %s", exec, strerror(errno));
             abort();
         }
         if (out && (err != stdout)) fclose(out);
 
         if (dup2(fileno(err ? err : devnull), STDERR_FILENO) < 0) {
-            corto_error("corto: failed to redirect stderr for '%s': %s", exec, strerror(errno));
+            corto_error("failed to redirect stderr for '%s': %s", exec, strerror(errno));
             abort();
         }
 
@@ -337,14 +337,14 @@ corto_pid corto_procrunRedirect(
         if (devnull) fclose(devnull);
 
         if (dup2(fileno(in), STDIN_FILENO) < 0) {
-            corto_error("corto: failed to redirect stdin for '%s': %s", exec, strerror(errno));
+            corto_error("failed to redirect stdin for '%s': %s", exec, strerror(errno));
             abort();
         }
         if (in && (in != stdin)) fclose(in);
 
         /* Child process */
         if (execvp(exec, argv)) {
-            corto_error("corto: failed to start process '%s'", exec);
+            corto_error("failed to start process '%s'", exec);
             abort();
         }
     } else if (pid > 0) {
@@ -387,7 +387,7 @@ int corto_proccmd(corto_string cmd, int8_t *rc) {
     char buffer[CORTO_MAX_CMD];
     strcpy(buffer, cmd);
 
-    corto_debug("corto: cmd: %s", cmd);
+    corto_debug("cmd: %s", cmd);
 
     /* Split up commands */
     char ch, *ptr;

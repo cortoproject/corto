@@ -59,6 +59,9 @@ static corto_loader corto_loaderInstance;
 /* Actions to be run at shutdown */
 static corto_ll corto_exitHandlers = NULL;
 
+/* Application name */
+char *corto_appName = NULL;
+
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
 corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;
@@ -992,8 +995,10 @@ void corto_initEnvironment(void) {
     }
 }
 
-int corto_start(void) {
+int corto_start(char *appName) {
     CORTO_OPERATIONAL = 1; /* Initializing */
+
+    corto_appName = appName;
 
     /* Initialize benchmark constants */
     CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");

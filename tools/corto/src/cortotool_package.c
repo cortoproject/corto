@@ -189,7 +189,7 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
             corto_loadFreePackages(packages);
 
             if (!found) {
-                corto_error("corto: '%s' ('%s') not found in package file", arg, package);
+                corto_error("'%s' ('%s') not found in package file", arg, package);
                 goto error;
             } else {
                 build = TRUE;
@@ -296,7 +296,7 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
 
     return 0;
 error:
-    corto_error("corto: %s", corto_lasterr());
+    corto_error("%s", corto_lasterr());
     return -1;
 }
 

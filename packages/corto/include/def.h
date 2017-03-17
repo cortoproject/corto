@@ -67,12 +67,12 @@ extern "C" {
 #endif
 
 #define CORTO_BLACK   "\033[1;30m"
-#define CORTO_RED     "\033[1;31m"
+#define CORTO_RED     "\033[0;31m"
 #define CORTO_GREEN   "\033[0;32m"
 #define CORTO_YELLOW  "\033[0;33m"
-#define CORTO_BLUE    "\033[1;34m"
-#define CORTO_MAGENTA "\033[1;35m"
-#define CORTO_CYAN    "\033[1;36m"
+#define CORTO_BLUE    "\033[0;34m"
+#define CORTO_MAGENTA "\033[0;35m"
+#define CORTO_CYAN    "\033[0;36m"
 #define CORTO_WHITE   "\033[1;37m"
 #define CORTO_GREY    "\033[0;37m"
 #define CORTO_NORMAL  "\033[0;49m"
@@ -181,6 +181,9 @@ typedef struct corto_ll_s* corto_ll;
 
 /* Maximum number of simultaneous benchmarks */
 #define CORTO_MAX_BENCHMARK (64)
+
+/* Maximum number of components in logmsg, like: "comp1: comp2: comp3: msg" */
+#define CORTO_MAX_LOG_COMPONENTS (16)
 
 /* #define CORTO_SERIALIZER_TRACING */
 #define CORTO_IC_TRACING

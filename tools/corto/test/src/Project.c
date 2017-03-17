@@ -13,22 +13,22 @@ corto_int16 test_Project_cleanEnv(corto_string name) {
     char *env;
 
     env = corto_envparse(
-      "$HOME/.corto/lib/corto/%s.%s/%s",
+      "$CORTO_TARGET/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, name);
     if (!env) {
         test_fail(
-          "failed to clean $HOME/.corto/lib/corto/<version>/<project>");
+          "failed to clean $CORTO_TARGET/lib/corto/<version>/<project>");
         goto error;
     }
     corto_rmtree(env);
     corto_dealloc(env);
 
     env = corto_envparse(
-      "$HOME/.corto/include/corto/%s.%s/%s",
+      "$CORTO_TARGET/include/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, name);
     if (!env) {
         test_fail(
-          "failed to clean $HOME/.corto/include/corto/<version>/<project>");
+          "failed to clean $CORTO_TARGET/include/corto/<version>/<project>");
         goto error;
     }
     corto_rmtree(env);
@@ -1192,11 +1192,11 @@ corto_void _test_Project_tc_packageNoCorto(
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Create a source file */
@@ -1223,11 +1223,11 @@ corto_void _test_Project_tc_packageNoCorto(
 
     /* Validate that library is present */
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1387,11 +1387,11 @@ corto_void _test_Project_tc_packageNoCortoNested(
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/corto/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/corto/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Create a source file */
@@ -1418,11 +1418,11 @@ corto_void _test_Project_tc_packageNoCortoNested(
 
     /* Validate that library is present */
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/corto/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/corto/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1587,19 +1587,19 @@ corto_void _test_Project_tc_packageNodef(
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project",
+      "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1664,19 +1664,19 @@ corto_void _test_Project_tc_packageNodefC4cpp(
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project",
+      "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1740,19 +1740,19 @@ corto_void _test_Project_tc_packageNodefLocal(
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(!corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(!corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(!corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project",
+      "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(!corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1818,19 +1818,19 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
     test_assert(!corto_fileTest("Project/doc"));
 
     test_assert(!corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(!corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(!corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project",
+      "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(!corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */
@@ -1872,19 +1872,19 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
     test_assert(corto_fileTest("Project/include/Project.h"));
 
     test_assert(corto_fileTest(
-        "$HOME/.corto/lib/corto/%s.%s/Project",
+        "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/lib/corto/%s.%s/Project/libProject.so",
+      "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project",
+      "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/Project.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Create new include file */
@@ -1911,7 +1911,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
 
     /* Test if header is installed */
     test_assert(corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/MyInclude.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/MyInclude.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Remove header from project */
@@ -1937,7 +1937,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
 
     /* Verify header file is no longer installed in environment */
     test_assert(!corto_fileTest(
-      "$HOME/.corto/include/corto/%s.%s/Project/MyInclude.h",
+      "$CORTO_TARGET/include/corto/%s.%s/Project/MyInclude.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
 /* $end */

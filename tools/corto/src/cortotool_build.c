@@ -110,8 +110,14 @@ corto_int16 cortotool_loadRakefile(void) {
         goto error_result_fromcontent;
     }
 
-    if (corto_mkdir("$CORTO_TARGET/lib/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
-        goto error_mkdir;
+    if (!strcmp(r.type, "package")) {
+        if (corto_mkdir("$CORTO_TARGET/lib/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
+            goto error_mkdir;
+        }
+    } else if (!strcmp(r.type, "application")) {
+        if (corto_mkdir("$CORTO_TARGET/cortobin/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
+            goto error_mkdir;
+        }        
     }
 
     corto_package package = corto_package(corto_createFromContent("text/json", json));
@@ -201,7 +207,7 @@ error_loadRakefile:
 error_chdir:
     corto_argclean(data);
 error_argparse:
-    corto_error("corto: %s", corto_lasterr());
+    corto_error("%s", corto_lasterr());
     return -1;
 }
 
@@ -253,7 +259,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
             }
         }
 
-        corto_trace("corto: build %s: %s %s %s",
+        corto_trace("build %s: %s %s %s",
             corto_cwd(),
             coverage ? "coverage=true" : "coverage=false",
             release ? "config=release" : "config=debug",
@@ -306,7 +312,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: %s", corto_lasterr());
+    corto_error("%s", corto_lasterr());
     return -1;
 }
 
@@ -375,7 +381,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: %s", corto_lasterr());
+    corto_error("%s", corto_lasterr());
     return -1;
 }
 
@@ -440,7 +446,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: %s", corto_lasterr());
+    corto_error("%s", corto_lasterr());
     return -1;
 }
 

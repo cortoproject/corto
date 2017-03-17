@@ -53,7 +53,7 @@
 extern "C" {
 #endif
 
-CORTO_EXPORT int corto_start(void);
+CORTO_EXPORT int corto_start(char *appName);
 CORTO_EXPORT int corto_stop(void);
 CORTO_EXPORT corto_bool corto_enableload(corto_bool enable);
 CORTO_EXPORT void corto_autoload(corto_bool autoload);

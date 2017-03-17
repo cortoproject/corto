@@ -140,7 +140,7 @@ int corto_fileTest(const char* filefmt, ...) {
         exists = fopen(file, "rb");
         if (exists) {
             fclose(exists);
-        } else if (errno != ENOENT) {
+        } else if ((errno != ENOENT) && (errno != ENOTDIR)) {
             corto_seterr("%s: %s", file, strerror(errno));
         }
     }

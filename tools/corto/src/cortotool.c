@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
     }
 
     /* Start corto */
-    corto_start();
+    corto_start(argv[0]);
 
     /* Parse arguments */
     if (argc == 1) {
@@ -135,12 +135,12 @@ int main(int argc, char* argv[]) {
                     } else if (!strcmp(argv[i] + 2, "trace-stack")) {
                         /* Already handled */
                     } else {
-                        corto_error("corto: unknown option '%s'", argv[i] + 2);
+                        corto_error("unknown option '%s'", argv[i] + 2);
                         cortotool_printUsage(FALSE);
                         goto error;
                     }
                 } else {
-                    corto_error("corto: unknown option '%s'", argv[i] + 1);
+                    corto_error("unknown option '%s'", argv[i] + 1);
                     cortotool_printUsage(FALSE);
                     goto error;
                 }
@@ -255,9 +255,9 @@ int main(int argc, char* argv[]) {
                 if (corto_load(argv[i], argc-i, &argv[i])) {
                     if (!mute) {
                         if (corto_lasterr()) {
-                            corto_error("corto: %s: %s", argv[i], corto_lasterr());
+                            corto_error("%s: %s", argv[i], corto_lasterr());
                         } else {
-                            corto_error("corto: %s: unknown command", argv[i]);
+                            corto_error("%s: unknown command", argv[i]);
                         }
                     }
                     goto error;

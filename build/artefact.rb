@@ -41,6 +41,7 @@ INCLUDE <<
   "src" <<
   "." <<
   "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}" <<
+  "#{ENV['CORTO_HOME']}/include/corto/#{CORTO_VERSION}" <<
   "/usr/local/include/corto/#{CORTO_VERSION}"
 
 # Default CFLAGS

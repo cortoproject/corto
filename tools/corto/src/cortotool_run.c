@@ -111,7 +111,7 @@ static int cortotool_addDirToMonitor(corto_string dir, corto_ll monitorList) {
 
     corto_ll files = corto_opendir(srcDir);
     if (!files || !corto_fileTest(cortoDir)) {
-        corto_error("corto: '%s' isn't a valid project directory", dir);
+        corto_error("'%s' isn't a valid project directory", dir);
         goto error;
     }
 
@@ -162,7 +162,7 @@ static corto_ll cortotool_gatherFiles(void) {
         corto_string package = corto_iterNext(&iter);
         corto_string file = corto_locate(package, CORTO_LOCATION_LIB);
         if (!file) {
-            corto_error("corto: package '%s' could not be located\n", package);
+            corto_error("package '%s' could not be located\n", package);
             corto_error("  try: corto install %s", package);
             goto error;
         }
@@ -296,7 +296,7 @@ corto_int16 cortotool_monitor(char *argv[]) {
                 pid = 0;
             }
         } else {
-            corto_error("corto: fix your code!\n");
+            corto_error("fix your code!\n");
 
             /* Wait for changed before trying again */
             changed = cortotool_waitForChanges(0, files, changed);
@@ -314,7 +314,7 @@ corto_int16 cortotool_monitor(char *argv[]) {
     }
 
     if (retcode != -1) {
-        corto_error("corto: process stopped with error (%d)", retcode);
+        corto_error("process stopped with error (%d)", retcode);
     }
 
     return 0;
@@ -346,7 +346,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     );
 
     if (!data) {
-        corto_error("corto: %s", corto_lasterr());
+        corto_error("%s", corto_lasterr());
         goto error;
     }
 
@@ -377,16 +377,16 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
                     "/usr/local/bin/cortobin/$CORTO_VERSION/%s/%s",
                     project, noPath);
             } else {
-                corto_error("corto: %s", corto_lasterr());
+                corto_error("%s", corto_lasterr());
                 goto error;
             }
 
             corto_lasterr(); /* Silence uncatched error */
 
-            corto_trace("corto: run: found installed application '%s'", project);
+            corto_trace("run: found installed application '%s'", project);
             runLocal = FALSE;
         } else {
-            corto_trace("corto: run: found project directory '%s'", project);
+            corto_trace("run: found project directory '%s'", project);
             corto_id projectName;
             cortotool_stripPath(projectName, corto_cwd());
             corto_asprintf(&appName, "./%s", projectName);
@@ -397,26 +397,26 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
         corto_asprintf(&appName, "./%s", projectName);
     }
 
-    if (runLocal && corto_fileTest("rakefile")) {
+    if (runLocal && (corto_fileTest("rakefile") || corto_fileTest("project.json"))) {
         corto_id noPath;
         cortotool_stripPath(noPath, corto_cwd());
         corto_asprintf(&appName, "./%s", noPath);
         sprintf(appName, "./%s", noPath);
 
-        /* Only build when in a rake project */
+        /* Only build when in a project */
         if (cortotool_build(2, (char*[]){"build", "--silent", NULL})) {
             return -1;
         }
     }
 
     if (monitor) {
-        corto_trace("corto: run: start monitor");
+        corto_trace("run: start monitor");
         if (cortotool_monitor(argv)) {
             goto error;
         }
     } else {
         corto_pid pid;
-        corto_trace("corto: run: starting process '%s'", argv[1]);
+        corto_trace("run: starting process '%s'", argv[1]);
         if (argc > 1) {
             pid = corto_procrun(appName, &argv[1]);
         } else {
@@ -426,13 +426,14 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
             corto_error("failed to start process '%s'", appName);
             goto error;
         }
+        corto_ok("run: monitoring process '%s'", argv[1]);
         corto_int8 result = 0, sig = 0;
         if ((sig = corto_procwait(pid, &result)) || result) {
             if (sig > 0) {
-                corto_error("corto: process crashed (%d)", sig);
+                corto_error("process crashed (%d)", sig);
                 goto error;
             } else {
-                corto_error("corto: process returned with error %d", result);
+                corto_error("process returned %d", result);
                 goto error;
             }
         }

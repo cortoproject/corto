@@ -11,7 +11,7 @@
 int cortotool_help(int argc, char* argv[]) {
 
     if (argc <= 1) {
-        corto_error("corto: no command provided!");
+        corto_error("no command provided!");
         corto_error("Use 'corto --help' to get a list of available commands");
         goto error;
     }
@@ -51,7 +51,7 @@ int cortotool_help(int argc, char* argv[]) {
     } else if (!strcmp(argv[1], "test")) {
         cortotool_testHelp();
     } else {
-        corto_error("corto: unknown command\n");
+        corto_error("unknown command\n");
         corto_error("Use 'corto --help' to get a list of available commands");
         goto error;
     }

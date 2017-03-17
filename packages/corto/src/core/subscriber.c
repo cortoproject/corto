@@ -307,8 +307,6 @@ corto_int16 corto_notifySubscribersId(
 
                 corto_benchmark_start(S_B_MATCH);
                 if (!corto_matchProgram_run((corto_matchProgram)s->matchProgram, expr)) {
-                    corto_debug("subscriber: expression '%s' does not match '%s' (parent = '%s', path = '%s')",
-                      s->expr, expr, s->parent, path);
                     continue;
                 }
                 corto_benchmark_stop(S_B_MATCH);
@@ -772,7 +770,7 @@ corto_int16 _corto_subscriber_subscribe(
     corto_bool align = FALSE;
     corto_eventMask mask = corto_observer(this)->mask;
 
-    corto_debug("corto: subscriber '%s': subscribe for %s, %s",
+    corto_debug("subscriber '%s': subscribe for %s, %s",
       corto_fullpath(NULL, this),
       this->parent,
       this->expr);
@@ -871,7 +869,7 @@ corto_int16 _corto_subscriber_unsubscribe(
     corto_object instance)
 {
 /* $begin(corto/core/subscriber/unsubscribe) */
-    corto_debug("corto: subscriber '%s': unsubscribe for %s, %s",
+    corto_debug("subscriber '%s': unsubscribe for %s, %s",
       corto_fullpath(NULL, this),
       this->parent,
       this->expr);

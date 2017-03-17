@@ -41,7 +41,7 @@ static corto_int16 cortotool_setupProject(
         sprintf(id, "%s/.corto/version.txt", name);
         FILE *f = fopen(id, "w");
         if (!f) {
-            corto_error("corto: couldn't create '%s' (check permissions)",
+            corto_error("couldn't create '%s' (check permissions)",
               id);
         }
         fprintf(f, "%s", "0.0.0\n");
@@ -73,7 +73,7 @@ static corto_int16 cortotool_createRakefile(
     sprintf(buff, "%s/rakefile", shortName);
     file = fopen(buff, "w");
     if(!file) {
-        corto_error("corto: couldn't create %s/rakefile (check permissions)", buff);
+        corto_error("couldn't create %s/rakefile (check permissions)", buff);
         goto error;
     }
 
@@ -109,11 +109,11 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
     FILE *file;
 
     if (corto_mkdir("test")) {
-        corto_error("corto: couldn't create test directory for '%s' (check permissions)", name);
+        corto_error("couldn't create test directory for '%s' (check permissions)", name);
         goto error;
     }
     if (corto_mkdir("test/src")) {
-        corto_error("corto: couldn't create test/src directory for '%s' (check permissions)", name);
+        corto_error("couldn't create test/src directory for '%s' (check permissions)", name);
         goto error;
     }
 
@@ -132,7 +132,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
             language,
             NULL}
     )) {
-        corto_error("corto: couldn't create test skeleton (check permissions)");
+        corto_error("couldn't create test skeleton (check permissions)");
         goto error;
     }
 
@@ -156,7 +156,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
         fprintf(file, "/* $end */\n");
         fclose(file);
     } else {
-        corto_error("corto: couldn't create 'test/%s' (check permissions)", filename);
+        corto_error("couldn't create 'test/%s' (check permissions)", filename);
         goto error;
     }
 
@@ -167,7 +167,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
         fprintf(file, "    void testSomething()\n\n");
         fclose(file);
     } else {
-        corto_error("corto: couldn't create 'test/test.cx' (check permissions)");
+        corto_error("couldn't create 'test/test.cx' (check permissions)");
         goto error;
     }
 
@@ -192,7 +192,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
     cortotool_rebuild(2, (char*[]){"rebuild", "--silent", NULL});
 
     if (corto_chdir("..")) {
-        corto_error("corto: failed to change directory to parent");
+        corto_error("failed to change directory to parent");
         goto error;
     }
 
@@ -334,7 +334,7 @@ static corto_int16 cortotool_app (
 
     if (!(include = cortotool_fmtName(includeMem, NULL, projectName, &name))) {
         if (!mute) {
-            corto_error("corto: %s", corto_lasterr());
+            corto_error("%s", corto_lasterr());
         }
         goto error;
     }
@@ -349,7 +349,7 @@ static corto_int16 cortotool_app (
 
     sprintf(buff, "%s/src", name);
     if (corto_mkdir(buff)) {
-        corto_error("corto: couldn't create %s directory (check permissions)", buff);
+        corto_error("couldn't create %s directory (check permissions)", buff);
         goto error;
     }
 
@@ -371,12 +371,12 @@ static corto_int16 cortotool_app (
         fprintf(file, "}\n");
         fclose(file);
     } else {
-        corto_error("corto: couldn't create '%s' (check permissions)", buff);
+        corto_error("couldn't create '%s' (check permissions)", buff);
         goto error;
     }
 
     if (corto_chdir(name)) {
-        corto_error("corto: can't change working directory to '%s' (check permissions)", buff);
+        corto_error("can't change working directory to '%s' (check permissions)", buff);
         goto error;
     }
 
@@ -427,7 +427,7 @@ static corto_int16 cortotool_package(
 
     if (!(include = cortotool_fmtName(includeMem, parentName, projectname, &name))) {
         if (!mute) {
-            corto_error("corto: %s", corto_lasterr());
+            corto_error("%s", corto_lasterr());
         }
         goto error;
     }
@@ -445,14 +445,14 @@ static corto_int16 cortotool_package(
         (int)sizeof(cxfile))
     {
         if (!mute) {
-            corto_error("corto: package name '%s' is too long", name);
+            corto_error("package name '%s' is too long", name);
         }
         goto error;
     }
 
     if (corto_fileTest(cxfile)) {
         if (!mute) {
-            corto_error("corto: package '%s' already exists", cxfile);
+            corto_error("package '%s' already exists", cxfile);
         }
         goto error;
     }
@@ -507,7 +507,7 @@ static corto_int16 cortotool_package(
             name, name) >= (int)sizeof(srcfile))
         {
             if (!mute) {
-                corto_error("corto: package name '%s' is too long", name);
+                corto_error("package name '%s' is too long", name);
             }
             goto error;
         }
@@ -550,7 +550,7 @@ static corto_int16 cortotool_package(
                 fclose(file);
             } else {
                 if (!mute) {
-                    corto_error("corto: failed to open file '%s'", srcfile);
+                    corto_error("failed to open file '%s'", srcfile);
                 }
                 goto error;
             }
@@ -586,7 +586,7 @@ static corto_int16 cortotool_package(
                 fclose(file);
             } else {
                 if (!mute) {
-                    corto_error("corto: failed to open file '%s'", srcfile);
+                    corto_error("failed to open file '%s'", srcfile);
                 }
                 goto error;
             }
@@ -613,12 +613,12 @@ static corto_int16 cortotool_package(
                 fclose(file);
             } else {
                 if (!mute) {
-                    corto_error("corto: failed to open file '%s'", srcfile);
+                    corto_error("failed to open file '%s'", srcfile);
                 }
                 goto error;
             }
         } else {
-            corto_error("corto: file already exists, can't generate", srcfile);
+            corto_error("file already exists, can't generate", srcfile);
             goto error;
         }
     }
@@ -685,7 +685,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     );
 
     if (!data) {
-        corto_error("corto: %s", corto_lasterr());
+        corto_error("%s", corto_lasterr());
         goto error;
     }
 

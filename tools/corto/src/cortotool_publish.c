@@ -23,21 +23,21 @@ corto_int16 cortotool_publish(int argc, char *argv[]) {
     );
 
     if (!data) {
-        corto_error("corto: %s", corto_lasterr());
+        corto_error("%s", corto_lasterr());
         goto error;
     }
 
     if (dirs) {
         corto_string dir = corto_llGet(dirs, 0);
         if (corto_chdir(dir)) {
-            corto_error("corto: %s", corto_lasterr());
+            corto_error("%s", corto_lasterr());
             goto error;
         }
     }
 
 
     if (!corto_fileTest("./.corto")) {
-        corto_error("corto: invalid project directory");
+        corto_error("invalid project directory");
         goto error;
     }
 

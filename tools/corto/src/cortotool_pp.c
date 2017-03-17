@@ -51,7 +51,7 @@ corto_int16 cortotool_language(char *language) {
         corto_llAppend(attributes, "c4cpp=true");
         corto_llAppend(attributes, "lang=cpp");
     } else {
-        corto_error("corto: unknown language '%s'", language);
+        corto_error("unknown language '%s'", language);
         goto error;
     }
 
@@ -192,15 +192,15 @@ corto_int16 cortotool_ppParse(
         if (!o) {
             if (includes && corto_llSize(includes)) {
                 if (corto_llSize(includes) == 1) {
-                    corto_error("corto: '%s' does not define object '%s'",
+                    corto_error("'%s' does not define object '%s'",
                       corto_llGet(includes, 0),
                       id);
                 } else {
-                    corto_error("corto: object '%s' is not in loaded definitions",
+                    corto_error("object '%s' is not in loaded definitions",
                       id);
                 }
             } else {
-                corto_error("corto: unresolved object '%s' (did you forget to load the definitions?)", id);
+                corto_error("unresolved object '%s' (did you forget to load the definitions?)", id);
             }
             goto error;
         }
@@ -242,7 +242,7 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
             corto_object package = corto_lookup(NULL, import);
             if (!package) {
-                corto_error("corto: %s: package not found", import);
+                corto_error("%s: package not found", import);
                 goto error;
             }
 
@@ -306,7 +306,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     if (core) {
-        corto_trace("corto: pp: regenerate core");
+        corto_trace("pp: regenerate core");
         return cortotool_core();
     }
 
@@ -314,7 +314,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
         cortotool_language(corto_llGet(languages, 0));
     }
 
-    corto_trace("corto: pp: start generator from '%s'", corto_cwd());
+    corto_trace("pp: start generator from '%s'", corto_cwd());
 
     /* Load imports */
     if (imports) {
@@ -336,7 +336,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
         while (corto_iterHasNext(&it)) {
             include = corto_iterNext(&it);
 
-            corto_trace("corto: pp: loading '%s'", include);
+            corto_trace("pp: loading '%s'", include);
             if (corto_load(include, 0, NULL)) {
                 corto_seterr("%s: %s", include, corto_lasterr());
                 goto error;
@@ -416,7 +416,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             }
 
             /* Start generator */
-            corto_trace("corto: pp: run generator '%s'", lib);
+            corto_trace("pp: run generator '%s'", lib);
             if (g_start(g)) {
                 corto_seterr("%s: %s", lib, corto_lasterr());
                 g_free(g);
@@ -434,6 +434,6 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     return 0;
 error:
-    corto_error("corto: pp: %s", corto_lasterr());
+    corto_error("pp: %s", corto_lasterr());
     return -1;
 }

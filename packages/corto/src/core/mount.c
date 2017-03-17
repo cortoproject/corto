@@ -569,7 +569,7 @@ corto_object _corto_mount_resume(
 
     /* Resume object */
     if (this->hasResume) {
-        corto_debug("corto: mount: onResume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
+        corto_debug("mount: onResume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
         result = corto_mount_onResume(this, parent, name, o);
     } else {
         corto_id type;
@@ -589,7 +589,7 @@ corto_object _corto_mount_resume(
         r.content = TRUE;
 
         // Request object from mount
-        corto_debug("corto: mount: look for '%s/%s' (auto-resume, mount = '%s', o = %p)", parent, name, corto_fullpath(NULL, this), o);
+        corto_debug("mount: look for '%s/%s' (auto-resume, mount = '%s', o = %p)", parent, name, corto_fullpath(NULL, this), o);
         corto_resultIter it = corto_mount_request(this, &r);
 
         if (corto_iterHasNext(&it)) {
@@ -654,7 +654,7 @@ corto_object _corto_mount_resume(
     corto_setOwner(prevOwner);
 
     if (result) {
-        corto_trace("corto: mount: resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
+        corto_trace("mount: resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
     }
 
     return result;

@@ -7,22 +7,10 @@
 
 #include "corto/corto.h"
 
-
-#define BLACK   "\033[1;30m"
-#define RED     "\033[1;31m"
-#define GREEN   "\033[0;32m"
-#define YELLOW  "\033[0;33m"
-#define BLUE    "\033[1;34m"
-#define MAGENTA "\033[1;35m"
-#define CYAN    "\033[1;36m"
-#define WHITE   "\033[1;37m"
-#define GREY    "\033[0;37m"
-#define NORMAL  "\033[0;49m"
-#define BOLD    "\033[1;49m"
-
 static corto_threadKey corto_errKey = 0;
 extern corto_mutex_s corto_adminLock;
 static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
+extern char *corto_appName;
 
 #define DEPTH 60
 
@@ -46,7 +34,7 @@ static void corto_lasterrorFree(void* tls) {
     corto_errThreadData* data = tls;
     if (data) {
         if (!data->viewed && data->lastError) {
-            corto_warning("corto: uncatched error (use corto_lasterr): %s%s%s",
+            corto_warning("uncatched error (use corto_lasterr): %s%s%s",
               data->lastError, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
         }
         if (data->lastError) {
@@ -92,8 +80,9 @@ static char* corto_getLastInfo(void) {
 static void corto_setLastError(char* err) {
     corto_errThreadData *data = corto_getThreadData();
     if (!data->viewed && data->lastError) {
-        fprintf(stderr, "%scorto: uncatched error (use corto_lasterr): %s%s%s%s\n",
-          YELLOW, data->lastError, NORMAL, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
+        data->viewed = TRUE; /* Prevent recursion */
+        corto_warning("uncatched error (use corto_lasterr): %s%s%s",
+          data->lastError, data->backtrace ? "\n" : "", data->backtrace ? data->backtrace : "");
     }
     if (data->lastError) corto_dealloc(data->lastError);
     if (data->backtrace) corto_dealloc(data->backtrace);
@@ -214,24 +203,152 @@ corto_bool corto_err_callbacksRegistered(void) {
 }
 
 void corto_err_notifyCallkback(
-    corto_err_callback cb, 
+    corto_err_callback cb,
+    char *components[],
     corto_err level, 
     char *msg)
 {
     struct corto_err_callback* callback = cb;
     if (level >= callback->min_level && level <= callback->max_level) {
-        callback->cb(level, NULL, msg, callback->ctx);
+        callback->cb(level, components, msg, callback->ctx);
     }
 }
 
 #define CORTO_MAX_LOG (1024)
 
+static char* corto_log_componentString(char *components[]) {
+    corto_int32 i = 0;
+    corto_buffer buff = CORTO_BUFFER_INIT;
+
+    if (corto_appName) {
+        corto_buffer_append(&buff, "[%s%s%s] ", 
+            CORTO_CYAN, corto_appName, CORTO_NORMAL);
+    }
+
+    while (components[i]) {
+        corto_buffer_append(&buff, "%s%s%s: ", 
+            CORTO_MAGENTA, components[i], CORTO_NORMAL);
+        i ++;
+    }
+
+    return corto_buffer_str(&buff);
+}
+
+static char* corto_log_tokenize(char *msg) {
+    corto_buffer buff = CORTO_BUFFER_INIT;
+    char *ptr, ch, prev = '\0';
+    corto_bool isNum = FALSE;
+    char isStr = '\0';
+
+    for (ptr = msg; (ch = *ptr); ptr++) {
+
+        if (isNum && !isdigit(ch) && !isalpha(ch) && (ch != '.')) {
+            corto_buffer_appendstr(&buff, CORTO_NORMAL);
+            isNum = FALSE;
+        }
+        if (isStr && (isStr == ch) && !isalpha(ptr[1])) {
+            isStr = '\0';
+        } else if (((ch == '\'') || (ch == '"')) && !isStr && !isalpha(prev)) {
+            corto_buffer_appendstr(&buff, CORTO_CYAN);
+            isStr = ch;
+        }
+
+        if (isdigit(ch) && !isNum && !isStr && !isalpha(prev) && !isdigit(prev) && (prev != '_') && (prev != '.')) {
+            corto_buffer_appendstr(&buff, CORTO_GREEN);
+            isNum = TRUE;
+        }
+
+        corto_buffer_appendstrn(&buff, ptr, 1);
+
+        if (((ch == '\'') || (ch == '"')) && !isStr) {
+            corto_buffer_appendstr(&buff, CORTO_NORMAL);
+        }
+
+        prev = ch;
+    }
+
+    if (isNum || isStr) {
+        corto_buffer_appendstr(&buff, CORTO_NORMAL);
+    }
+
+    return corto_buffer_str(&buff);
+}
+
+static void corto_logprint(FILE *f, corto_err kind, char *components[], char *msg) {
+    size_t n = 0;
+    int levelspace;
+    char *color, *levelstr, *tokenized;
+    corto_time now;
+    corto_timeGet(&now);
+
+    switch(kind) {
+    case CORTO_ERROR: color = CORTO_RED; levelstr = "error"; break;
+    case CORTO_WARNING: color = CORTO_YELLOW; levelstr = "warn"; break;
+    case CORTO_INFO: color = CORTO_BLUE; levelstr = "info"; break;
+    case CORTO_OK: color = CORTO_GREEN; levelstr = "ok"; break;
+    case CORTO_TRACE: color = CORTO_GREY; levelstr = "trace"; break;
+    case CORTO_DEBUG: color = CORTO_GREY; levelstr = "debug"; break;
+    default: color = CORTO_NORMAL; levelstr = "critical"; break;
+    }
+
+    n = strlen(msg) + 1;
+    if (n < 80) {
+        n = 80 - n;
+    } else {
+        n = 0;
+    }
+
+    if (corto_verbosityGet() <= CORTO_TRACE) {
+        levelspace = 5;
+    } else {
+        levelspace = 4;
+    }
+
+    char *componentStr = corto_log_componentString(components);
+
+    /* If string already uses color coding, don't interfere */
+    if (!strchr(msg, '\033')) {
+        tokenized = corto_log_tokenize(msg);
+    }
+
+    fprintf(f, "%.9d.%.4d - %s%*s%s: %s%s%*s\n", 
+        now.sec, now.nanosec / 100000, 
+        color, levelspace, levelstr, CORTO_NORMAL, 
+        componentStr ? componentStr : "", tokenized, (int)n, " ");
+
+    if (tokenized != msg) {
+        corto_dealloc(tokenized);
+    }
+
+    corto_dealloc(componentStr);
+}
+
+static char* corto_log_parseComponents(char *components[], char *msg) {
+    char *ptr, *prev = msg, ch;
+    int count = 0;
+
+    for (ptr = msg; (ch = *ptr) && (isalpha(ch) || (ch == ':') || (ch == '/')); ptr++) {
+        if ((ch == ':') && (ptr[1] == ' ')) {
+            *ptr = '\0';
+            components[count ++] = prev;
+            ptr ++;
+            prev = ptr + 1;
+        }
+    }
+
+    components[count] = NULL;
+
+    return prev;
+}
+
 corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
     if (kind >= CORTO_LOG_LEVEL || corto_err_callbacks) {
         corto_string alloc = NULL;
         char buff[CORTO_MAX_LOG + 1];
+        char *components[CORTO_MAX_LOG_COMPONENTS];
         size_t n = 0;
-        corto_string msg = buff;
+
+        corto_string msg = buff, msgBody;
         va_list argcpy;
         va_copy(argcpy, arg); /* Make copy of arglist in
                                * case vsnprintf needs to be called twice */
@@ -244,27 +361,10 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
             msg = alloc;
         }
 
-        n = strlen(msg) + 1;
-        if (n < 80) {
-            n = 80 - n;
-        } else {
-            n = 0;
-        }
+        msgBody = corto_log_parseComponents(components, msg);
 
         if (kind >= CORTO_LOG_LEVEL) {
-            if (kind == CORTO_ERROR) {
-                fprintf(f, "%s%s%s%*s\n", RED, msg, NORMAL, (int)n, " ");
-            } else if (kind == CORTO_WARNING) {
-                fprintf(f, "%s%s%s%*s\n", YELLOW, msg, NORMAL, (int)n, " ");
-            } else if (kind == CORTO_OK) {
-                fprintf(f, "%s%s%s%*s\n", GREEN, msg, NORMAL, (int)n, " ");
-            } else if (kind == CORTO_TRACE) {
-                fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
-            } else if (kind == CORTO_DEBUG) {
-                fprintf(f, "%s%s%s%*s\n", GREY, msg, NORMAL, (int)n, " ");
-            } else {
-                fprintf(f, "%s%*s\n", msg, (int)n, " ");
-            }
+            corto_logprint(f, kind, components, msgBody);
         }
 
         if (corto_err_callbacks) {
@@ -275,6 +375,7 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
                     corto_err_callback callback = corto_iterNext(&it);
                     corto_err_notifyCallkback(
                         callback,
+                        components,
                         kind,
                         msg);
                 }
@@ -344,7 +445,7 @@ void corto_seterrv(char *fmt, va_list args) {
         } else if (CORTO_OPERATIONAL){
             corto_error("error raised while shutting down: %s", corto_lasterr());
         } else {
-            fprintf(stderr, "%s%s%s\n", RED, err, NORMAL);
+            corto_error("%s", err);
         }
         corto_backtrace(stderr);
     }

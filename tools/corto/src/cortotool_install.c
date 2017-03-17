@@ -11,7 +11,7 @@ static corto_bool cortotool_validProject(void) {
     }
 
     if (!corto_fileTest("rakefile")) {
-        corto_error("corto: need a valid project directory to install (no rakefile found)!");
+        corto_error("need a valid project directory to install (no rakefile found)!");
         goto error;
     }
     return TRUE;
@@ -32,7 +32,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose, corto_bool re
     /* Write installation script */
     FILE *install = fopen("install.sh", "w");
     if (!install) {
-        corto_error("corto: failed to create installation script (check permissions)");
+        corto_error("failed to create installation script (check permissions)");
         goto error;
     }
 
@@ -116,7 +116,7 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
     /* Write installation script */
     FILE *install = fopen("install.sh", "w");
     if (!install) {
-        corto_error("corto: failed to create installation script (check permissions)");
+        corto_error("failed to create installation script (check permissions)");
         goto error;
     }
     fprintf(install, "install_fail() {\n");
@@ -170,7 +170,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     );
 
     if (!data) {
-        corto_error("corto: install: %s", corto_lasterr());
+        corto_error("install: %s", corto_lasterr());
         goto error;
     }
 
@@ -245,10 +245,10 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
             if ((sig = corto_procwait(pid, &rc)) || rc) {
                 if (sig == -1) {
-                    corto_error("corto: failed to install (rake returned %d)", rc);
+                    corto_error("failed to install (rake returned %d)", rc);
                     goto error;
                 } else {
-                    corto_error("corto: failed to install (rake raised signal %d)", sig);
+                    corto_error("failed to install (rake raised signal %d)", sig);
                     goto error;
                 }
             }
@@ -263,7 +263,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                 goto error;
             }
         } else {
-            corto_error("corto: nothing to install");
+            corto_error("nothing to install");
             goto error;
         }
 
@@ -322,7 +322,7 @@ corto_int16 cortotool_uninstallAll(void) {
     if (ch == 'Y') {
         FILE *uninstall = fopen("uninstall.sh", "w");
         if (!uninstall) {
-            corto_error("corto: failed to create uninstall script (check permissions)");
+            corto_error("failed to create uninstall script (check permissions)");
             goto error;
         }
 
@@ -371,7 +371,7 @@ corto_bool cortotool_isDirEmpty(corto_string dir) {
 /* Return -1 when failed to remove file, 1 when uninstaller can't be found */
 int cortotool_uninstaller(corto_string env, corto_string dir) {
     corto_bool err = 0;
-    corto_uint32 filesTotal = 0, filesMissing = 0;
+    corto_uint32 filesTotal = 0;
 
     corto_string uninstall;
     corto_asprintf(&uninstall, "%s/uninstall.txt", dir);
@@ -385,17 +385,20 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
         corto_ll directories = corto_llNew();
         char *dependency;
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
+            if (!dependency) {
+                continue;
+            }
+
             filesTotal ++;
             if (!corto_fileTest(dependency)) {
-                corto_error("corto: cannot remove %s: file does not exist");
-                filesMissing ++;
+                corto_error("cannot remove %s: file does not exist");
                 continue;
             }
             if (corto_rm(dependency)) {
-                corto_error("corto: cannot remove %s: %s", dependency, corto_lasterr());
+                corto_error("cannot remove %s: %s", dependency, corto_lasterr());
                 err = -1;
             } else {
-                corto_trace("corto: removed '%s'", dependency);
+                corto_trace("removed '%s'", dependency);
                 corto_string dir = corto_strdup(dependency);
                 char *sep = strrchr(dir, '/');
                 if (sep && (sep != dir)) {
@@ -464,7 +467,7 @@ corto_int32 cortotool_forceCleanup(corto_string env, corto_string package, corto
                 corto_asprintf(&includeErr, "\n  %s: %s", d, corto_lasterr());
                 result--;
             } else {
-                corto_trace("corto: removed '%s'", d);
+                corto_trace("removed '%s'", d);
             }
         }
         if (result >= 0) result++;
@@ -483,7 +486,7 @@ corto_int32 cortotool_forceCleanup(corto_string env, corto_string package, corto
                 corto_asprintf(&etcErr, "\n  %s: %s", d, corto_lasterr());
                 result --;
             } else {
-                corto_trace("corto: removed '%s'", d);
+                corto_trace("removed '%s'", d);
             }
         }
         if (result >= 0) result++;
@@ -502,7 +505,7 @@ corto_int32 cortotool_forceCleanup(corto_string env, corto_string package, corto
                 corto_asprintf(&binErr, "\n  %s: %s", d, corto_lasterr());
                 result --;
             } else {
-                corto_trace("corto: removed '%s'", d);
+                corto_trace("removed '%s'", d);
             }
         }
         if (result >= 0) result++;
@@ -521,7 +524,7 @@ corto_int32 cortotool_forceCleanup(corto_string env, corto_string package, corto
                 corto_asprintf(&libErr, "\n  %s: %s", d, corto_lasterr());
                 result --;
             } else {
-                corto_trace("corto: removed '%s'", d);
+                corto_trace("removed '%s'", d);
             }
         }
         if (result >= 0) result++;
@@ -563,21 +566,21 @@ corto_int32 cortotool_uninstallFromEnv(corto_string env, corto_string package)
         /* If uninstaller isn't found, manually remove directories */
         r = cortotool_forceCleanup(env, package, TRUE);
         if (r != 0) {
-            corto_warning(
-                "corto: WARNING: no uninstaller found for package '%s' in '%s'",
+            printf(
+                "corto: WARNING: no uninstaller found for package '%s' in '%s'\n",
                 package, env);
 
-            corto_warning(
+            printf(
                 "  There are however still directories found in '%s' for '%s'.\n"
                 "  This is likely the result of uninstalling '%s' but not all\n"
                 "  of its child packages. If you proceed, you will recursively\n"
-                "  delete all child packages of '%s'.\n",
+                "  delete all child packages of '%s'.\n\n",
                 env, package, package, package);
 
-            printf("Proceed (Y/n)? ");
+            printf("Proceed (y/N)? ");
             char ch = getchar();
             getchar(); // Get rid of newline
-            if ((ch != 'y') && (ch != 'Y')) {
+            if (ch != 'y') {
                 goto dontdelete;
             }
         }
@@ -586,10 +589,10 @@ corto_int32 cortotool_uninstallFromEnv(corto_string env, corto_string package)
         if (r == 0) {
             /* Nothing to delete */
         } else if (r < 0) {
-            corto_error("corto: not all files could be removed:%s", corto_lasterr());
+            corto_error("not all files could be removed:%s", corto_lasterr());
         } else if (r < 4) {
             corto_warning(
-                "corto: partial installation removed for '%s' in '%s'",
+                "partial installation removed for '%s' in '%s'",
                 package, env);
         }
     } else if (err == -1) {
@@ -628,12 +631,12 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
             corto_int32 global = cortotool_uninstallFromEnv("/usr/local", package);
 
             if ((local == 0) && (global == 0)) {
-                corto_error("corto: package '%s' not found", package);
+                corto_error("package '%s' not found", package);
                 continue;
             } else if ((local >= 0) && (global >= 0)) {
-                corto_info(CORTO_PROMPT "package '%s' uninstalled", package);
+                corto_info("package '%s' uninstalled", package);
             } else {
-              corto_error("corto: failed to uninstall '%s'", package);
+              corto_error("failed to uninstall '%s'", package);
             }
         }
     } else {
@@ -744,7 +747,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
         location = corto_envparse("$CORTO_TARGET/redis/corto/$CORTO_VERSION/lib/lib%s.so", package);
         if (!corto_fileTest(location)) {
-            corto_trace("corto: library '%s' not found", location);
+            corto_trace("library '%s' not found", location);
             corto_dealloc(location);
             location = NULL;
         }
@@ -812,7 +815,7 @@ corto_int16 cortotool_tar(int argc, char* argv[]) {
     /* Write installation script */
     FILE *tar = fopen("tar.sh", "w");
     if (!tar) {
-        corto_error("corto: failed to create tar script (check permissions)");
+        corto_error("failed to create tar script (check permissions)");
         goto error;
     }
 
@@ -861,7 +864,7 @@ corto_int16 cortotool_untar(int argc, char* argv[]) {
     /* Write installation script */
     FILE *tar = fopen("untar.sh", "w");
     if (!tar) {
-        corto_error("corto: failed to create tar script (check permissions)");
+        corto_error("failed to create tar script (check permissions)");
         goto error;
     }
 

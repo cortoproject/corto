@@ -9,24 +9,12 @@
 
 #ifdef CORTO_CONVERSIONS
 
-#define BLACK   "\033[1;30m"
-#define RED     "\033[1;31m"
-#define GREEN   "\033[0;32m"
-#define YELLOW  "\033[0;33m"
-#define BLUE    "\033[1;34m"
-#define MAGENTA "\033[1;35m"
-#define CYAN    "\033[1;36m"
-#define WHITE   "\033[1;37m"
-#define GREY    "\033[0;37m"
-#define NORMAL  "\033[0;49m"
-#define BOLD    "\033[1;49m"
-
-#define STRING (RED)
-#define REFERENCE (CYAN)
-#define BOOLEAN (GREEN)
-#define NUMBER (GREEN)
-#define CONSTANT (MAGENTA)
-#define MEMBER (NORMAL)
+#define STRING (CORTO_RED)
+#define REFERENCE (CORTO_CYAN)
+#define BOOLEAN (CORTO_GREEN)
+#define NUMBER (CORTO_GREEN)
+#define CONSTANT (CORTO_MAGENTA)
+#define MEMBER (CORTO_NORMAL)
 
 static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* userData);
 
@@ -96,7 +84,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
                 goto finished;
             }
         }
-        corto_ser_appendColor(data, NORMAL);
+        corto_ser_appendColor(data, CORTO_NORMAL);
     } else if (corto_primitive(t)->kind == CORTO_CHARACTER) {
         corto_ser_appendColor(data, STRING);
         if (*(corto_char*)o) {
@@ -136,7 +124,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
             goto finished;
         }
         corto_dealloc(result);
-        corto_ser_appendColor(data, NORMAL);
+        corto_ser_appendColor(data, CORTO_NORMAL);
     }
 
     return 0;
@@ -215,7 +203,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     if (!corto_buffer_append(&data->buffer, "%s", str)) {
         goto finished;
     }
-    corto_ser_appendColor(data, NORMAL);
+    corto_ser_appendColor(data, CORTO_NORMAL);
 
     if (allocated) {
         corto_dealloc(str);
@@ -247,11 +235,11 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     privateData.compactNotation = data->compactNotation;
 
     /* Serialize composite members */
-    if (!corto_ser_appendColor(&privateData, BOLD)) goto finished;
+    if (!corto_ser_appendColor(&privateData, CORTO_BOLD)) goto finished;
     if (!corto_buffer_append(&privateData.buffer, "{")) {
         goto finished;
     }
-    if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
+    if (!corto_ser_appendColor(&privateData, CORTO_NORMAL)) goto finished;
     if (t->kind == CORTO_COMPOSITE) {
         if (corto_interface(t)->kind == CORTO_UNION) {
             void *ptr = corto_value_getPtr(v);
@@ -275,11 +263,11 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
         corto_assert(0, "corto_ser_scope: invalid typekind for function.");
     }
     if (!result) {
-        if (!corto_ser_appendColor(&privateData, BOLD)) goto finished;
+        if (!corto_ser_appendColor(&privateData, CORTO_BOLD)) goto finished;
         if (!corto_buffer_append(&privateData.buffer, "}")) {
             goto finished;
         }
-        if (!corto_ser_appendColor(&privateData, NORMAL)) goto finished;
+        if (!corto_ser_appendColor(&privateData, CORTO_NORMAL)) goto finished;
     }
 
     data->anonymousObjects = privateData.anonymousObjects;
@@ -321,9 +309,9 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
         if (!data->compactNotation) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
             if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.t))) goto finished;
-            if (!corto_ser_appendColor(data, BOLD)) goto finished;
+            if (!corto_ser_appendColor(data, CORTO_BOLD)) goto finished;
             if (!corto_buffer_append(&data->buffer, "=")) goto finished;
-            if (!corto_ser_appendColor(data, NORMAL)) goto finished;
+            if (!corto_ser_appendColor(data, CORTO_NORMAL)) goto finished;
         }
     }
 

@@ -78,7 +78,7 @@ CORTO_EXPORT void corto_setinfo(char *fmt, ...);
 typedef void* corto_err_callback;
 typedef void (*corto_err_callback_callback)(
     corto_err level, 
-    char *category, 
+    char *category[], 
     char *msg, 
     void *ctx);
 

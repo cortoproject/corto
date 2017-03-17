@@ -31,7 +31,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
     );
 
     if (!data) {
-        corto_error("corto: test: %s", corto_lasterr());
+        corto_error("test: %s", corto_lasterr());
         goto error;
     }
 
@@ -49,7 +49,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
     do {
         if (projectArg) {
             if (corto_chdir(projectArg)) {
-                corto_error("corto: can't change to directory '%s'", projectArg);
+                corto_error("can't change to directory '%s'", projectArg);
                 goto error;
             }
         }

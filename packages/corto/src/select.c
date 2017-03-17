@@ -466,7 +466,7 @@ static corto_resultIter corto_selectRequestMount(
 
     corto_cleanpath(parent, parent);
 
-    corto_debug("corto: select: RequestMount: request '%s' (%s), parent='%s', expr='%s'",
+    corto_debug("select: RequestMount: request '%s' (%s), parent='%s', expr='%s'",
       corto_fullpath(NULL, mount),
       corto_fullpath(NULL, corto_typeof(mount)),
       parent,
@@ -800,7 +800,7 @@ static void corto_selectLoadMounts(
 
     corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
 
-    corto_debug("corto: select: LoadMounts: found mounts in '%s' (%p)",
+    corto_debug("select: LoadMounts: found mounts in '%s' (%p)",
        corto_fullpath(NULL, frame->scope),
        ols);
 
@@ -844,7 +844,7 @@ static void corto_selectLoadMounts(
                 data->mounts[data->mountsLoaded] = odata->mount;
                 data->mountsLoaded ++;
 
-                corto_debug("corto: select: LoadMounts: load '%s', type = %s, mountsLoaded = %d",
+                corto_debug("select: LoadMounts: load '%s', type = %s, mountsLoaded = %d",
                   corto_fullpath(NULL, odata->mount),
                   corto_fullpath(NULL, corto_typeof(odata->mount)),
                   data->mountsLoaded);
@@ -1032,7 +1032,7 @@ static void* corto_selectNext(corto_resultIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->next) {
-        corto_debug("corto: select: Next (%s, %s)", data->next->id, data->next->parent);
+        corto_debug("select: Next (%s, %s)", data->next->id, data->next->parent);
         data->count ++;
     }
 
@@ -1045,7 +1045,7 @@ static void* corto_selectNextObjects(corto_objectIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->next) {
-        corto_debug("corto: select: NextObject (%s, %s)", data->next->id, data->next->parent);
+        corto_debug("select: NextObject (%s, %s)", data->next->id, data->next->parent);
         data->count ++;
     }
 
@@ -1671,7 +1671,7 @@ corto_selectFluent corto_select(
         memset(request, 0, sizeof(corto_selectRequest));
     }
 
-    corto_debug("corto: select: '%s', '%s'", scope, expr);
+    corto_debug("select: '%s', '%s'", scope, expr);
     
     if (expr) {
         va_start(arglist, expr);

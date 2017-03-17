@@ -374,7 +374,7 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
             corto_string str = corto_strp(&mask, corto_eventMask_o, 0);
-            corto_debug("corto: notify:  %s %s: %s (%s)",
+            corto_debug("notify:  %s %s: %s (%s)",
                 corto_fullpath(NULL, data->_this),
                 corto_fullpath(NULL, data->observer),
                 corto_fullpath(NULL, observable),
@@ -737,12 +737,12 @@ corto_void _corto_observer_destruct(
 
     if (this->enabled && this->observable) {
         if (corto_observer_unobserve(this, this->instance, this->observable)) {
-            corto_error("corto: unobserve failed: %s", corto_lasterr());
+            corto_error("unobserve failed: %s", corto_lasterr());
         }
     }
 
     if (this->active) {
-        corto_error("corto: observer '%s' deleted with %d active subscription(s)",
+        corto_error("observer '%s' deleted with %d active subscription(s)",
           corto_fullpath(NULL, this), this->active);
     }
 
@@ -865,7 +865,7 @@ corto_int16 _corto_observer_observe(
         );
   #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_debug("corto: postpone observe (instance not defined): %s %s %s (%s%s%s%s%s%s%s)",
+            corto_debug("postpone observe (instance not defined): %s %s %s (%s%s%s%s%s%s%s)",
                 corto_fullpath(NULL, instance),
                 corto_fullpath(NULL, this),
                 corto_fullpath(NULL, observable),
@@ -886,7 +886,7 @@ corto_int16 _corto_observer_observe(
 
     #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_debug("corto: observe: %s %s %s (%s%s%s%s%s%s%s)",
+            corto_debug("observe: %s %s %s (%s%s%s%s%s%s%s)",
                 corto_fullpath(NULL, instance),
                 corto_fullpath(NULL, this),
                 corto_fullpath(NULL, observable),
@@ -1114,7 +1114,7 @@ corto_int16 _corto_observer_unobserve(
 
     #ifndef NDEBUG
                 if (CORTO_TRACE_NOTIFICATIONS) {
-                    corto_debug("corto: unobserve: %s %s %s",
+                    corto_debug("unobserve: %s %s %s",
                         corto_fullpath(NULL, instance),
                         corto_fullpath(NULL, this),
                         corto_fullpath(NULL, observable));
