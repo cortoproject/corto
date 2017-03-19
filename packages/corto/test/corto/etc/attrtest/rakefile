@@ -1,9 +1,6 @@
 
 PACKAGE = 'attrtest'
 
-# Put this package in a temporary environment
-ENV['CORTO_TARGET'] = "#{ENV['HOME']}/.corto_tmp"
-
 # Don't build redistributable
 ENV['redis'] = "false"
 

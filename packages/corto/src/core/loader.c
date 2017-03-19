@@ -174,25 +174,38 @@ corto_resultIter _corto_loader_onRequest_v(
 
     CORTO_UNUSED(this);
 
-    corto_string localPath, globalPath;
-    localPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
+    corto_string targetPath, homePath, globalPath;
+    targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       request->parent);
-    corto_cleanpath(localPath, localPath);
+    corto_cleanpath(targetPath, targetPath);
+
+    homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
+      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+      request->parent);
+    corto_cleanpath(homePath, homePath);
+
     globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       request->parent);
     corto_cleanpath(globalPath, globalPath);
 
-    corto_loader_addDir(data, localPath, request);
-    corto_loader_addDir(data, globalPath, request);
+    corto_loader_addDir(data, targetPath, request);
+
+    if (strcmp(targetPath, homePath)) {
+        corto_loader_addDir(data, homePath, request);
+    }
+    
+    if (strcmp(targetPath, globalPath) && strcmp(homePath, globalPath)) {
+        corto_loader_addDir(data, globalPath, request);
+    }
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */
     result = corto_llIterAlloc(data);
     result.release = corto_loader_iterRelease;
 
-    corto_dealloc(localPath);
+    corto_dealloc(targetPath);
     corto_dealloc(globalPath);
 
     return result;

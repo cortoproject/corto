@@ -43,17 +43,6 @@ corto_int16 _corto_package_construct(
 /* $begin(corto/core/package/construct) */
 
     if (!corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        corto_id path;
-        corto_string localPath;
-        /*corto_path(path, root_o, this, "/");
-        localPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
-          CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
-          path);
-        corto_cleanpath(localPath, localPath);
-        if (corto_mkdir(localPath)) {
-            corto_lasterr(); /* Mute uncatched error messages * /
-        }
-        corto_dealloc(localPath);*/
 
         /* Load package after object has been defined. Create one-shot observer to
          * trigger on DEFINE event */

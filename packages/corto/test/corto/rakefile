@@ -6,6 +6,4 @@ COVERAGE = false
 
 LIB = ['m']
 
-COMPONENTS = ['attrtest']
-
 require "#{ENV['CORTO_BUILD']}/package"

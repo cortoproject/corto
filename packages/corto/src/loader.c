@@ -522,7 +522,7 @@ static corto_string corto_locatePackageIntern(
             targetErr = corto_strdup(corto_lasterr());
             fileError = TRUE;
         } else {
-            corto_debug("loader: '%s' not found while looking for '%s'", targetPath, lib);
+            corto_debug("loader: locate '%s': '%s' not found", lib, targetPath);
         }
     }
 
@@ -558,9 +558,12 @@ static corto_string corto_locatePackageIntern(
                 homeErr = corto_strdup(corto_lasterr());
                 fileError = TRUE;
             } else {
-                corto_debug("loader: '%s' not found while looking for '%s'", homePath, lib);
+                corto_debug("loader: locate '%s': '%s' not found", lib, homePath);
             }
         }
+    } else {
+        corto_debug("loader: locate '%s': '%s' already searched ($CORTO_HOME == $CORTO_TARGET)",
+            lib, corto_getenv("CORTO_HOME"));
     }
 
     /* Look for global packages */
@@ -596,9 +599,12 @@ static corto_string corto_locatePackageIntern(
                 usrErr = corto_strdup(corto_lasterr());
                 fileError = TRUE;
             } else {
-                corto_debug("loader: '%s' not found while looking for '%s'", usrPath, lib);
+                corto_debug("loader: locate '%s': '%s' not found", lib, usrPath);
             }
         }
+    } else {
+        corto_debug("loader: locate '%s': '/usr/local' already searched ($CORTO_HOME='%s' $CORTO_TARGET='%s')",
+            lib, corto_getenv("CORTO_HOME"), corto_getenv("CORTO_TARGET"));
     }
 
     corto_string targetDetail = NULL, homeDetail = NULL, usrDetail = NULL;

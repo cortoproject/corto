@@ -35,9 +35,20 @@ corto_void _test_AttrCheck_tc_packageMainAttr(
     test_AttrCheck this)
 {
 /* $begin(test/AttrCheck/tc_packageMainAttr) */
+    corto_int8 ret;
+    corto_int8 sig;
 
-    corto_int16 ret = corto_load("attrtest", 0, NULL);
+    test_assert(corto_chdir(TEST_ETC) == 0);
+
+    sig = corto_proccmd("corto rebuild attrtest --silent", &ret);
     test_assert(ret == 0);
+    test_assert(sig == 0);
+
+    test_assert(corto_load("attrtest", 0, NULL) == 0);
+
+    sig = corto_proccmd("corto clean attrtest", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
 
 /* $end */
 }
