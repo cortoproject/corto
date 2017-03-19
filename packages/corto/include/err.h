@@ -79,14 +79,14 @@ CORTO_EXPORT void corto_setinfo(char *fmt, ...);
 typedef void* corto_err_callback;
 typedef void (*corto_err_callback_callback)(
     corto_err level, 
-    char *category[], 
+    char *component[], 
     char *msg, 
     void *ctx);
 
 CORTO_EXPORT corto_err_callback corto_err_callbackRegister(
     corto_err min_level, 
     corto_err max_level,
-    corto_string category, 
+    corto_string component_filter, // filter in corto_match expr format
     corto_string auth_token,
     corto_err_callback_callback callback,
     void *context);

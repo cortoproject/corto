@@ -856,3 +856,125 @@ corto_void _test_Matcher_tc_treeNestedScopeFail(
 
 /* $end */
 }
+
+corto_void _test_Matcher_tc_treeOffset(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffset) */
+    corto_bool result = corto_match("/a//c", "/a/b/c");
+    test_assertint(result, TRUE);
+
+    result = corto_match("a//c", "/a/b/c/c");
+    test_assertint(result, TRUE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetAny(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetAny) */
+    corto_bool result = corto_match("/a//", "/a/b/c");
+    test_assertint(result, TRUE);
+
+    result = corto_match("a//", "/a/b/c/c");
+    test_assertint(result, TRUE);
+
+    result = corto_match("a//", "/a/b/c/d");
+    test_assertint(result, TRUE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetAnyFail(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetAnyFail) */
+    corto_bool result = corto_match("/a//", "/a");
+    test_assertint(result, FALSE);
+
+    result = corto_match("a//", "/b/a/");
+    test_assertint(result, FALSE);
+
+    result = corto_match("a//", "/b/a/c");
+    test_assertint(result, FALSE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetFail(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetFail) */
+    corto_bool result = corto_match("/a//c", "/a");
+    test_assertint(result, FALSE);
+
+    result = corto_match("/a//c", "/a/c/b");
+    test_assertint(result, FALSE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetNested(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetNested) */
+    corto_bool result = corto_match("/a/b//d", "/a/b/c/d");
+    test_assertint(result, TRUE);
+
+    result = corto_match("a/b//d", "/a/b/d");
+    test_assertint(result, TRUE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetNestedFail(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetNestedFail) */
+    corto_bool result = corto_match("/a/b//d", "/b/c/d");
+    test_assertint(result, FALSE);
+
+    result = corto_match("a/b//d", "/a/b//c");
+    test_assertint(result, FALSE);
+
+    result = corto_match("a/b//d", "/a/b//c/d/e");
+    test_assertint(result, FALSE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetOr(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetOr) */
+    corto_bool result = corto_match("/a|b//d", "/a/c/d");
+    test_assertint(result, TRUE);
+
+    result = corto_match("/a|b//d", "/a/d");
+    test_assertint(result, TRUE);
+
+    result = corto_match("/a|b//d", "/b/c/d");
+    test_assertint(result, TRUE);
+
+    result = corto_match("/a|b//d", "/b/d");
+    test_assertint(result, TRUE);
+
+/* $end */
+}
+
+corto_void _test_Matcher_tc_treeOffsetOrFail(
+    test_Matcher this)
+{
+/* $begin(test/Matcher/tc_treeOffsetOrFail) */
+    corto_bool result = corto_match("/a|b//d", "/c/c/d");
+    test_assertint(result, FALSE);
+
+    result = corto_match("/a|b//d", "/c/d");
+    test_assertint(result, FALSE);
+
+    result = corto_match("/a|b//d", "/b/d/b");
+    test_assertint(result, FALSE);
+
+/* $end */
+}

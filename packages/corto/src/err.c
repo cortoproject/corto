@@ -23,7 +23,8 @@ typedef struct corto_errThreadData {
 
 struct corto_err_callback {
     corto_err min_level, max_level;
-    char *category;
+    char *component_filter;
+    corto_matchProgram compiled_component_filter;
     char *auth_token;
     void *ctx;
     corto_err_callback_callback cb;
@@ -156,7 +157,7 @@ static corto_ll corto_err_callbacks;
 corto_err_callback corto_err_callbackRegister(
     corto_err min_level, 
     corto_err max_level,
-    corto_string category, 
+    corto_string component_filter, 
     corto_string auth_token,
     corto_err_callback_callback callback,
     void *ctx)
@@ -165,10 +166,21 @@ corto_err_callback corto_err_callbackRegister(
 
     result->min_level = min_level;
     result->max_level = max_level;
-    result->category = category ? corto_strdup(category) : NULL;
+    result->component_filter = component_filter ? corto_strdup(component_filter) : NULL;
     result->auth_token = auth_token ? corto_strdup(auth_token) : NULL;
     result->cb = callback;
     result->ctx = ctx;
+
+    if (result->component_filter) {
+        result->compiled_component_filter = 
+            corto_matchProgram_compile(result->component_filter, TRUE, TRUE);
+        if (!result->compiled_component_filter) {
+            corto_seterr("invalid filter: %s", corto_lasterr());
+            goto error;
+        }
+    } else {
+        result->compiled_component_filter = NULL;
+    }
 
     corto_mutexLock(&corto_adminLock);
     if (!corto_err_callbacks) {
@@ -178,6 +190,9 @@ corto_err_callback corto_err_callbackRegister(
     corto_mutexUnlock(&corto_adminLock);
 
     return result;
+error:
+    if (result) corto_dealloc(result);
+    return NULL;
 }
 
 void corto_err_callbackUnregister(corto_err_callback cb)
@@ -192,8 +207,9 @@ void corto_err_callbackUnregister(corto_err_callback cb)
         }
         corto_mutexUnlock(&corto_adminLock);
 
-        if (callback->category) corto_dealloc(callback->category);
+        if (callback->component_filter) corto_dealloc(callback->component_filter);
         if (callback->auth_token) corto_dealloc(callback->auth_token);
+        if (callback->compiled_component_filter) corto_matchProgram_free(callback->compiled_component_filter);
         corto_dealloc(callback);
     }
 }
@@ -209,8 +225,25 @@ void corto_err_notifyCallkback(
     char *msg)
 {
     struct corto_err_callback* callback = cb;
+    corto_bool filterMatch = TRUE;
     if (level >= callback->min_level && level <= callback->max_level) {
-        callback->cb(level, components, msg, callback->ctx);
+        if (callback->compiled_component_filter) {
+            corto_buffer buff = CORTO_BUFFER_INIT;
+            corto_int32 i;
+            for (i = 0; components[i]; i++) {
+                if (i) corto_buffer_appendstr(&buff, "/");
+                corto_buffer_appendstr(&buff, components[i]);
+            }
+            char *str = corto_buffer_str(&buff);
+            if (!corto_matchProgram_run(callback->compiled_component_filter, str)) {
+                filterMatch = FALSE;
+            }
+            corto_dealloc(str);
+        }
+
+        if (filterMatch) {
+            callback->cb(level, components, msg, callback->ctx);
+        }
     }
 }
 
@@ -328,7 +361,7 @@ static char* corto_log_parseComponents(char *components[], char *msg) {
     char *ptr, *prev = msg, ch;
     int count = 0;
 
-    for (ptr = msg; (ch = *ptr) && (isalpha(ch) || (ch == ':') || (ch == '/')); ptr++) {
+    for (ptr = msg; (ch = *ptr) && (isalpha(ch) || isdigit(ch) || (ch == ':') || (ch == '/')); ptr++) {
         if ((ch == ':') && (ptr[1] == ' ')) {
             *ptr = '\0';
             components[count ++] = prev;
@@ -378,7 +411,7 @@ corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg,
                         callback,
                         components,
                         kind,
-                        msg);
+                        msgBody);
                 }
             }
             corto_mutexUnlock(&corto_adminLock);

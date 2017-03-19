@@ -211,9 +211,17 @@ test/Suite Err::
     void tc_lasterr()
     void tc_lastinfo()
     void tc_callback()
+    void tc_category()
+    void tc_categoryMultiple()
+    void tc_categoryColonNoCategory()
+    void tc_categoryFilter()
+    void tc_categoryFilterMulti()
+    void tc_categoryFilterWildcard()
+    void tc_categoryRecursive()
 
     level: int32
     msg: string
+    category: string
 
 // Object management testcases
 test/Suite ObjectMgmt::
@@ -287,6 +295,13 @@ test/Suite ObjectMgmt::
     void tc_deleteTreeExplicit()
     void tc_deleteWithReference()
     void tc_deleteRedeclaration()
+
+    void tc_findOrDeclare()
+    void tc_findOrDeclareExisting()
+    void tc_findOrDeclareExistingOtherType()
+    void tc_findOrCreate()
+    void tc_findOrCreateExisting()
+    void tc_findOrCreateExistingOtherType()
 
     void tc_nameof()
     void tc_nameofOverride()
@@ -619,7 +634,14 @@ test/Suite Matcher::
   void tc_treeNestedFail()           // /a/b => //a
   void tc_treeNestedScope()          // /a/b/c => //b/c
   void tc_treeNestedScopeFail()      // /a/b/d => //b/c
-
+  void tc_treeOffset()               // /a/b/c => a//c
+  void tc_treeOffsetFail()           // /a => a//
+  void tc_treeOffsetNested()         // /a/b//d => /a/b/c/d
+  void tc_treeOffsetNestedFail()     // /a/b//d => b/c/d
+  void tc_treeOffsetAny()            // /a/b/c => a//
+  void tc_treeOffsetAnyFail()        // /a => a//
+  void tc_treeOffsetOr()             // /a|b//d => /b/c/d
+  void tc_treeOffsetOrFail()         // /a|b//d => /c/c/d
 
 
 // Test corto_select

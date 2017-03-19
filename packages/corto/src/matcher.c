@@ -336,6 +336,7 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
     corto_bool done = FALSE;
     corto_bool result = TRUE;
     corto_bool right = FALSE;
+    corto_bool identifierMatched = FALSE;
     corto_matchProgramOp *cur;
     char **start = *elements; // Pointer to array of strings
 
@@ -351,6 +352,7 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
         switch(cur->token) {
         case CORTO_MATCHER_TOKEN_THIS:
             result = !strcmp(".", (*elements)[0]);
+            identifierMatched = TRUE;
             break;
         case CORTO_MATCHER_TOKEN_IDENTIFIER:
         case CORTO_MATCHER_TOKEN_FILTER: {
@@ -361,6 +363,7 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
                 result = FALSE;
                 done = TRUE;
             }
+            identifierMatched = TRUE;
             break;
         }
         case CORTO_MATCHER_TOKEN_AND:
@@ -387,8 +390,17 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
             }
             break;
         case CORTO_MATCHER_TOKEN_TREE: {
-            char **elementPtr = *elements, **elementFound = NULL;
             corto_matchProgramOp *opPtr = *op;
+            if (identifierMatched) {
+                if (!result) {
+                    done = TRUE;
+                    break;
+                }
+                (*elements)++;
+
+            }
+
+            char **elementPtr = *elements, **elementFound = NULL;
             right = FALSE;
             if (!elementPtr[0]) {
                 result = TRUE;

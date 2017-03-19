@@ -1689,6 +1689,66 @@ corto_void _test_ObjectMgmt_tc_deleteWithReference(
 /* $end */
 }
 
+corto_void _test_ObjectMgmt_tc_findOrCreate(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_findOrCreate) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_findOrCreateExisting(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_findOrCreateExisting) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_findOrCreateExistingOtherType) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_findOrDeclare(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_findOrDeclare) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_findOrDeclareExisting(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_findOrDeclareExisting) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_findOrDeclareExistingOtherType) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 corto_void _test_ObjectMgmt_tc_invalidate(
     test_ObjectMgmt this)
 {
