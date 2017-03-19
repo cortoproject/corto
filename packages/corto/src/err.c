@@ -282,6 +282,7 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char *ms
     corto_timeGet(&now);
 
     switch(kind) {
+    case CORTO_THROW: color = CORTO_RED; levelstr = "throw"; break;
     case CORTO_ERROR: color = CORTO_RED; levelstr = "error"; break;
     case CORTO_WARNING: color = CORTO_YELLOW; levelstr = "warn"; break;
     case CORTO_INFO: color = CORTO_BLUE; levelstr = "info"; break;
@@ -304,7 +305,7 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char *ms
         levelspace = 4;
     }
 
-    char *componentStr = corto_log_componentString(components);
+    char *componentStr = components ? corto_log_componentString(components) : NULL;
 
     /* If string already uses color coding, don't interfere */
     if (!strchr(msg, '\033')) {
@@ -320,7 +321,7 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char *ms
         corto_dealloc(tokenized);
     }
 
-    corto_dealloc(componentStr);
+    if (componentStr) corto_dealloc(componentStr);
 }
 
 static char* corto_log_parseComponents(char *components[], char *msg) {
@@ -421,7 +422,11 @@ corto_err corto_warningv(char* fmt, va_list args) {
 }
 
 corto_err corto_errorv(char* fmt, va_list args) {
-    return corto_logv(CORTO_ERROR, 0, fmt, args, stderr);
+    corto_err result = corto_logv(CORTO_ERROR, 0, fmt, args, stderr);
+    if (CORTO_DEBUG_ENABLED) {
+        corto_backtrace(stderr);
+    }
+    return result;
 }
 
 corto_err corto_okv(char* fmt, va_list args) {
@@ -445,7 +450,7 @@ void corto_seterrv(char *fmt, va_list args) {
         } else if (CORTO_OPERATIONAL){
             corto_error("error raised while shutting down: %s", corto_lasterr());
         } else {
-            corto_error("%s", err);
+            corto_logprint(stderr, CORTO_THROW, NULL, err);
         }
         corto_backtrace(stderr);
     }

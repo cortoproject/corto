@@ -242,7 +242,7 @@ corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
             corto_object package = corto_lookup(NULL, import);
             if (!package) {
-                corto_error("%s: package not found", import);
+                corto_seterr("package '%s' not found", import);
                 goto error;
             }
 

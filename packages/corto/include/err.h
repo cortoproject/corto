@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 typedef enum corto_err {
+    CORTO_THROW = -1,   /* used for internal debugging purposes */
     CORTO_DEBUG = 0,    /* implementation-specific tracing */
     CORTO_TRACE = 1,    /* progress/state of an application */
     CORTO_OK = 2,       /* successful completion of a task */

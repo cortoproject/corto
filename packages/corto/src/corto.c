@@ -1022,6 +1022,8 @@ int corto_start(char *appName) {
     /* Initialize operating system environment */
     corto_initEnvironment();
 
+    corto_trace("corto initializing...");
+
     /* Initialize security */
     corto_secure_init();
 
@@ -1131,6 +1133,8 @@ int corto_start(char *appName) {
     }
 #endif
 
+    corto_ok("corto initialized");
+
     return 0;
 }
 
@@ -1167,6 +1171,8 @@ static void corto_exit(void) {
 int corto_stop(void) {
 
     CORTO_OPERATIONAL = 2; /* Shutting down */
+
+    corto_trace("corto shutting down");
 
     if (corto_getOwner()) {
         corto_error("owner has not been reset to NULL before shutting down");
@@ -1238,7 +1244,6 @@ int corto_stop(void) {
     corto_benchmark_fini(S_B_CONTENTTYPE);
     corto_benchmark_fini(S_B_INVOKE);
     corto_benchmark_fini(S_B_FINI);
-
 
     return 0;
 error:
