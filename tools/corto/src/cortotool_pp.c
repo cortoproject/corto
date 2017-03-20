@@ -204,10 +204,11 @@ corto_int16 cortotool_ppParse(
             }
             goto error;
         }
-        corto_release(o);
 
         /* Parse object as scope, with provided prefix */
         g_parse(g, o, parseSelf, parseScope, prefix);
+        
+        corto_release(o);
     }
 
     return 0;
@@ -267,6 +268,12 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     corto_ll core;
 
     CORTO_UNUSED(argc);
+
+    /* If a definition file contains a package that is not in the imports
+     * specified on the commandline, don't automatically load it, but throw an
+     * error. This guarantees that the definition file cannot use packages that
+     * are not part of the project dependencies. */
+    corto_autoload(FALSE);
 
     corto_argdata *data = corto_argparse(
       argv,
