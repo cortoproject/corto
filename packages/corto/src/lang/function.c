@@ -8,6 +8,21 @@
 
 #include <corto/lang/lang.h>
 
+/* $header(corto/lang/function/construct) */
+
+/* Not all types that inherit from from function are necessarily procedures. Find
+ * the first procedure type in the inheritance hierarchy. */
+corto_procedure corto_function_getProcedureType(corto_function this) {
+    corto_interface t = corto_interface(corto_typeof(this));
+
+    while (!corto_instanceof(corto_procedure_o, t)) {
+        t = t->base;
+        corto_assert(t != NULL, "no procedure type in inheritance hierarchy of function");
+    }
+
+    return corto_procedure(t);
+}
+/* $end */
 corto_int16 _corto_function_construct(
     corto_function this)
 {
@@ -24,11 +39,12 @@ corto_int16 _corto_function_construct(
     /* Count the size based on the parameters and store parameters in slots */
 
     if (!this->size) {
+        corto_procedure procedure = corto_function_getProcedureType(this);
 
         /* Add size of this-pointer */
-        if (!(corto_typeof(this) == corto_type(corto_function_o))) {
-            if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
-                this->size += sizeof(corto_any);
+        if (procedure->hasThis) {
+            if (procedure->thisType) {
+                this->size += corto_type_sizeof(procedure->thisType);
             } else {
                 this->size += sizeof(corto_object);
             }

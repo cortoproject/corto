@@ -592,6 +592,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_union_findCase_),\
     /* procedure */\
     SSO_OP_OBJ(lang_procedure_kind),\
+    SSO_OP_OBJ(lang_procedure_hasThis),\
+    SSO_OP_OBJ(lang_procedure_thisType),\
     SSO_OP_OBJ(lang_procedure_init_),\
     /* interfaceVector */\
     SSO_OP_OBJ(lang_interfaceVector_interface),\
@@ -606,6 +608,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_init_),\
     SSO_OP_OBJ(lang_class_instanceof_),\
     SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
+    /* leaf */\
+    SSO_OP_OBJ(lang_container_type),\
     /* tablescope */\
     SSO_OP_OBJ(lang_tablescope_type),\
     /* table */\
@@ -1022,7 +1026,7 @@ int corto_start(char *appName) {
     /* Initialize operating system environment */
     corto_initEnvironment();
 
-    corto_trace("corto initializing...");
+    corto_trace("init: initializing...");
 
     /* Initialize security */
     corto_secure_init();
@@ -1126,6 +1130,8 @@ int corto_start(char *appName) {
  * packages are installed in a common location */
 #ifndef CORTO_REDIS
     corto_loaderInstance = corto_create(corto_loader_o);
+
+    corto_loaderInstance->autoLoad = TRUE;
     
     /* If loader couldn't be created, json package is probably not installed */
     if (!corto_loaderInstance) {
@@ -1133,7 +1139,7 @@ int corto_start(char *appName) {
     }
 #endif
 
-    corto_ok("corto initialized");
+    corto_ok("init: initialized");
 
     return 0;
 }
@@ -1172,7 +1178,7 @@ int corto_stop(void) {
 
     CORTO_OPERATIONAL = 2; /* Shutting down */
 
-    corto_trace("corto shutting down");
+    corto_trace("init: shutting down");
 
     if (corto_getOwner()) {
         corto_error("owner has not been reset to NULL before shutting down");

@@ -1,5 +1,6 @@
 
 #include "corto/cdeclhandler.h"
+#include "_object.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */
 #ifdef __MACH__
@@ -137,8 +138,11 @@ corto_int16 corto_cdeclInit(corto_function this) {
     corto_uint8 hasThis = 0;
 
     /* Add size of this-pointer */
-    if (!(corto_typeof(this) == corto_type(corto_function_o))) {
-        if (corto_typeof(this) == corto_type(corto_metaprocedure_o)) {
+    corto_procedure procedure = corto_function_getProcedureType(this);
+
+    /* Add size of this-pointer */
+    if (procedure->hasThis) {
+        if (procedure->thisType == corto_any_o) {
             args[0] = &corto_ffi_type_any;
         } else {
             args[0] = &ffi_type_pointer;

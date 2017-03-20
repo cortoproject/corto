@@ -6,6 +6,7 @@
  */
 
 #include "corto/corto.h"
+#include "_object.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */
 #ifdef __MACH__
@@ -86,9 +87,10 @@ void corto_callDeinit(corto_function f) {
     corto_int32 i, arg = 0;\
     void **argptrs = alloca((f->parameters.length + 1) * sizeof(void*));\
     void *ptr;\
+    corto_procedure procedure = corto_function_getProcedureType(f);\
     /* Add this */\
-    if (corto_procedure(corto_typeof(f))->kind != CORTO_FUNCTION) {\
-        if (corto_procedure(corto_typeof(f))->kind == CORTO_METAPROCEDURE) {\
+    if (procedure->hasThis) {\
+        if (procedure->thisType == corto_any_o) {\
             argptrs[arg] = argcpy(args, corto_any);\
         } else {\
             argptrs[arg] = argcpy(args, void*);\

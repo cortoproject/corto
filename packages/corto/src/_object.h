@@ -210,6 +210,8 @@ corto_int16 ext_corto_expr_compb(ext_corto_expr *out, ext_corto_expr_opt *opt, c
 corto_int16 ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **args);
 corto_int16 ext_corto_expr_free(ext_corto_expr *expr);
 
+corto_procedure corto_function_getProcedureType(corto_function this);
+
 #ifdef __cplusplus
 }
 #endif

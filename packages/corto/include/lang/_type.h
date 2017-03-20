@@ -471,6 +471,7 @@ typedef struct corto_container_s *corto_container;
 
 struct corto_container_s {
     struct corto_class_s _parent;
+    corto_type type;
 };
 
 /*  default */
@@ -598,6 +599,8 @@ typedef struct corto_procedure_s *corto_procedure;
 struct corto_procedure_s {
     struct corto_class_s _parent;
     corto_procedureKind kind;
+    corto_bool hasThis;
+    corto_type thisType;
 };
 
 /*  sequence */

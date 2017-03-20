@@ -636,12 +636,12 @@ test/Suite Matcher::
   void tc_treeNestedScopeFail()      // /a/b/d => //b/c
   void tc_treeOffset()               // /a/b/c => a//c
   void tc_treeOffsetFail()           // /a => a//
-  void tc_treeOffsetNested()         // /a/b//d => /a/b/c/d
-  void tc_treeOffsetNestedFail()     // /a/b//d => b/c/d
-  void tc_treeOffsetAny()            // /a/b/c => a//
-  void tc_treeOffsetAnyFail()        // /a => a//
-  void tc_treeOffsetOr()             // /a|b//d => /b/c/d
-  void tc_treeOffsetOrFail()         // /a|b//d => /c/c/d
+  void tc_treeOffsetNested()         // /a/b/c/d => /a/b//d
+  void tc_treeOffsetNestedFail()     // /b/c/d => /a/b//d
+  void tc_treeOffsetAny()            // /a/b/c => /a//
+  void tc_treeOffsetAnyFail()        // /a => /a//
+  void tc_treeOffsetOr()             // /b/c/d => /a|b//d
+  void tc_treeOffsetOrFail()         // /c/c/d => /a|b//d
 
 
 // Test corto_select
@@ -740,6 +740,7 @@ test/Suite Select::
     void tc_selectInvertCase()
     void tc_selectInvertCaseFilter()
     void tc_selectInvertCaseScope()
+
 
 // Event test support type
 class EventTest::
