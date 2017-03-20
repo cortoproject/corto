@@ -1128,6 +1128,10 @@ error:
     return NULL;
 }
 
+static corto_type corto_containerType(corto_container c) {
+    if (c->type) return c->type; else return corto_type(c);
+}
+
 /* Recursively declare containers in its definition */
 static corto_int16 corto_declareContainer(corto_object parent) {
     corto_type type = corto_typeof(parent);
@@ -1141,7 +1145,7 @@ static corto_int16 corto_declareContainer(corto_object parent) {
             if ((corto_typeof(c) == corto_type(corto_container_o)) ||
                 (corto_typeof(c) == corto_type(corto_leaf_o))) 
             {
-                if (!corto_declareChild(parent, corto_idof(c), c)) {
+                if (!corto_declareChild(parent, corto_idof(c), corto_containerType(c))) {
                     goto error;
                 }
             } else if (corto_typeof(c) == corto_type(corto_table_o)) {
@@ -1149,7 +1153,7 @@ static corto_int16 corto_declareContainer(corto_object parent) {
                 if (!ts) {
                     goto error;
                 }
-                corto_setref(&ts->type, c);
+                corto_setref(&ts->type, corto_containerType(c));
             }
         }
         corto_scopeRelease(seq);
