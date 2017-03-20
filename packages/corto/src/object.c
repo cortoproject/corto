@@ -1913,19 +1913,24 @@ void corto_drop(corto_object o, corto_bool delete) {
                         corto_release(collected);
                     }
                 } else {
-                    corto_release(collected);
                     corto_drop(collected, delete);
                 }
 
                 if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
 
-                /* Double free - because corto_drop itself introduced a keep. */
-                corto_release(collected);
+                /* Release the claim introduced by corto_drop */
+                if (corto_release(collected) && !delete) {
+                    corto_release(collected);
+                } else {
+                    /* If the object was already deleted, the object was likely
+                     * resumed, and only kept alive by one of the objects that
+                     * also had been deleted by corto_drop. */
+                }
             }
             corto_llFree(walkData.objects);
         }
     } else {
-        corto_critical("corto_drop: object <%p> is not scoped.", o);
+        corto_critical("drop: object <%p> is not scoped.", o);
     }
 }
 
@@ -3354,12 +3359,10 @@ corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string con
 }
 
 corto_int32 corto_claim(corto_object o) {
-    corto_assertObject(o);
     return corto_claim_ext(NULL, o, NULL);
 }
 
 corto_int32 corto_release(corto_object o) {
-    corto_assertObject(o);
     return corto_release_ext(NULL, o, NULL);
 }
 

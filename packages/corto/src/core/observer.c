@@ -747,6 +747,7 @@ corto_void _corto_observer_destruct(
     }
 
     this->enabled = FALSE;
+    
 /* $end */
 }
 

@@ -322,7 +322,7 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char *ms
     case CORTO_OK: color = CORTO_GREEN; levelstr = "ok"; break;
     case CORTO_TRACE: color = CORTO_GREY; levelstr = "trace"; break;
     case CORTO_DEBUG: color = CORTO_GREY; levelstr = "debug"; break;
-    default: color = CORTO_NORMAL; levelstr = "critical"; break;
+    default: color = CORTO_RED; levelstr = "critical"; break;
     }
 
     n = strlen(msg) + 1;
