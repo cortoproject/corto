@@ -9,4 +9,5 @@ export CORTO_BUILD="$HOME/.corto/lib/corto/$CORTO_VERSION/build"
 export LD_LIBRARY_PATH="$CORTO_HOME/lib:$LD_LIBRARY_PATH"
 
 mkdir -p "$HOME/.corto/lib/corto/$CORTO_VERSION"
-cp -r "$DIR/build" "$HOME/.corto/lib/corto/$CORTO_VERSION"
+rm -rf "$HOME/.corto/lib/corto/$CORTO_VERSION/build"
+ln -s "$DIR/build" "$HOME/.corto/lib/corto/$CORTO_VERSION/build"
