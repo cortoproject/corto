@@ -1694,7 +1694,19 @@ corto_void _test_ObjectMgmt_tc_findOrCreate(
 {
 /* $begin(test/ObjectMgmt/tc_findOrCreate) */
 
-    /* << Insert implementation >> */
+    corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_typeof(o) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == root_o);
+    test_assert(corto_countof(o) == 1);
+    corto_object f = corto_lookup(root_o, "foo");
+    test_assert(f != NULL);
+    test_assert(f == o);
+    test_assert(corto_release(f) == 1);
+
+    test_assert(corto_delete(o) == 0);
 
 /* $end */
 }
@@ -1703,8 +1715,20 @@ corto_void _test_ObjectMgmt_tc_findOrCreateExisting(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrCreateExisting) */
+    corto_object e = corto_createChild(root_o, "foo", corto_int32_o);
+    test_assert(e != NULL);
 
-    /* << Insert implementation >> */
+    corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(o == e);
+    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_typeof(o) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == root_o);
+    test_assert(corto_countof(o) == 2);
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_release(e) == 0);
 
 /* $end */
 }
@@ -1713,8 +1737,19 @@ corto_void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrCreateExistingOtherType) */
+    corto_object e = corto_createChild(root_o, "foo", corto_float32_o);
 
-    /* << Insert implementation >> */
+    corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(o == e);
+    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_typeof(o) == corto_type(corto_float32_o));
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == root_o);
+    test_assert(corto_countof(o) == 2);
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_release(e) == 0);
 
 /* $end */
 }
@@ -1723,8 +1758,19 @@ corto_void _test_ObjectMgmt_tc_findOrDeclare(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrDeclare) */
+    corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_typeof(o) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == root_o);
+    test_assert(corto_countof(o) == 1);
+    corto_object f = corto_lookup(root_o, "foo");
+    test_assert(f != NULL);
+    test_assert(f == o);
+    test_assert(corto_release(f) == 1);
 
-    /* << Insert implementation >> */
+    test_assert(corto_delete(o) == 0);
 
 /* $end */
 }
@@ -1733,8 +1779,20 @@ corto_void _test_ObjectMgmt_tc_findOrDeclareExisting(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrDeclareExisting) */
+    corto_object e = corto_declareChild(root_o, "foo", corto_int32_o);
+    test_assert(e != NULL);
 
-    /* << Insert implementation >> */
+    corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(o == e);
+    test_assert(!corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_typeof(o) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == root_o);
+    test_assert(corto_countof(o) == 2);
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_release(e) == 0);
 
 /* $end */
 }
@@ -1743,9 +1801,20 @@ corto_void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrDeclareExistingOtherType) */
+    corto_object e = corto_declareChild(root_o, "foo", corto_float32_o);
 
-    /* << Insert implementation >> */
+    corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
+    test_assert(o != NULL);
+    test_assert(o == e);
+    test_assert(!corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_typeof(o) == corto_type(corto_float32_o));
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == root_o);
+    test_assert(corto_countof(o) == 2);
 
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_release(e) == 0);
+    
 /* $end */
 }
 

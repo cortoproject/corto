@@ -817,7 +817,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
             corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->id, child);
             if (existing && (existing != child)) {
                 corto_unlock(child);
-                if (!forceType || (corto_typeof(existing) != corto_typeof(child))) {
+                if (forceType && (corto_typeof(existing) != corto_typeof(child))) {
                     corto_seterr("'%s' is already declared with type '%s'",
                       c_scope->id,
                       corto_fullpath(NULL, corto_typeof(existing)));
@@ -1395,7 +1395,7 @@ corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_ty
 }
 
 corto_object _corto_findOrDeclare(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildIntern(parent, id, type, TRUE, FALSE);
+    return corto_declareChildIntern(parent, id, type, FALSE, FALSE);
 }
 
 static corto_object corto_createIntern(corto_object result) {
@@ -1434,7 +1434,7 @@ corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_typ
 corto_object _corto_findOrCreate(corto_object parent, corto_string id, corto_type type) {
     corto_assertObject(parent);
     corto_assertObject(type);
-    corto_object result = corto_declareChildIntern(parent, id, type, TRUE, FALSE);
+    corto_object result = corto_declareChildIntern(parent, id, type, FALSE, FALSE);
     return corto_createIntern(result);
 }
 
