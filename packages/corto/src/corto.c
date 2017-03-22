@@ -1043,7 +1043,7 @@ int corto_start(char *appName) {
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
     corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
-    
+
     /* Initialize OLS keys */
     CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
     CORTO_OLS_AUGMENT = corto_olsKey(NULL);
@@ -1131,10 +1131,11 @@ int corto_start(char *appName) {
 #ifndef CORTO_REDIS
     corto_loaderInstance = corto_create(corto_loader_o);
 
-    corto_loaderInstance->autoLoad = TRUE;
-    
-    /* If loader couldn't be created, json package is probably not installed */
-    if (!corto_loaderInstance) {
+    if (corto_loaderInstance) {
+        corto_loaderInstance->autoLoad = TRUE;
+    }
+    else {
+        /* If loader couldn't be created, json package is probably not installed */
         corto_lasterr();
     }
 #endif
@@ -1318,4 +1319,3 @@ void corto_assertObject(corto_object o) {
     }
 }
 #endif
-
