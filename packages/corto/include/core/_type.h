@@ -116,7 +116,7 @@ CORTO_BITMASK(corto_eventMask);
     #define CORTO_ON_TREE (0x200)
     #define CORTO_ON_VALUE (0x400)
     #define CORTO_ON_METAVALUE (0x800)
-    #define CORTO_ON_ANY (0xFFFF)
+    #define CORTO_ON_ANY (0xffff)
 
 /* /corto/core/frameKind */
 typedef enum corto_frameKind {

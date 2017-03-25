@@ -25,6 +25,12 @@ class StringReplicator : mount, hidden::
     int16 construct()
     resultIter onRequest(core/request request)
 
+class IdMount : mount, hidden::
+    alias mount: mount/mount
+    alias type: observer/type
+    int16 construct()
+    string onId()
+
 // Test setting content types
 test/Suite SelectContentType::
     void setup() method
@@ -315,6 +321,13 @@ test/Suite MountSubscription::
     void tc_subscribeTreeDelete()
     void tc_subscribeTreeDefineNested()
     void tc_subscribeTreeDeleteNested()
+
+// Test mount that provides unique id's
+test/Suite MountId::
+    void tc_id()
+    void tc_noIdAvailable()
+    void tc_idForNested()
+    void tc_idTypeFilter()
 
 // Test loader
 test/Suite Loader::

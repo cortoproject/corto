@@ -687,6 +687,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_construct_),\
     SSO_OP_OBJ(core_mount_destruct_),\
     SSO_OP_OBJ(core_mount_invoke_),\
+    SSO_OP_OBJ(core_mount_id_),\
     SSO_OP_OBJ(core_mount_request_),\
     SSO_OP_OBJ(core_mount_resume_),\
     SSO_OP_OBJ(core_mount_subscribe_),\
@@ -699,6 +700,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_onPoll_),\
     SSO_OP_OBJ(core_mount_onNotify_),\
     SSO_OP_OBJ(core_mount_onInvoke_),\
+    SSO_OP_OBJ(core_mount_onId_),\
     SSO_OP_OBJ(core_mount_onRequest_),\
     SSO_OP_OBJ(core_mount_onResume_),\
     SSO_OP_OBJ(core_mount_onSubscribe_),\

@@ -299,6 +299,15 @@ corto_void _corto_mount_destruct(
 /* $end */
 }
 
+corto_string _corto_mount_id(
+    corto_mount this)
+{
+/* $begin(corto/core/mount/id) */
+
+    return corto_mount_onId(this);
+/* $end */
+}
+
 corto_int16 _corto_mount_init(
     corto_mount this)
 {
@@ -329,6 +338,15 @@ corto_void _corto_mount_invoke(
         corto_setOwner(prevowner);
     }
 
+/* $end */
+}
+
+corto_string _corto_mount_onId_v(
+    corto_mount this)
+{
+/* $begin(corto/core/mount/onId) */
+    CORTO_UNUSED(this);
+    return NULL;
 /* $end */
 }
 

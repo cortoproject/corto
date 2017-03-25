@@ -1228,6 +1228,7 @@ static corto_object corto_declareChildIntern(
     corto_benchmark_start(CORTO_BENCHMARK_DECLARECHILD);
     corto_object o = NULL;
     corto_bool retry = FALSE;
+    corto_string mountId = NULL;
 
     corto_assertObject(parent);
     corto_assertObject(type);
@@ -1241,8 +1242,21 @@ static corto_object corto_declareChildIntern(
         goto error;
     }
 
-    if (!id || !id[0]) {
-        corto_seterr("invalid id (cannot be null or an empty string)");
+    /* If no id is provided, lookup id in mount */
+    if (!id) {
+        corto_id parentId, typeId;
+        corto_fullpath(parentId, parent);
+        corto_fullpath(typeId, type);
+        mountId = corto_select(parentId, "*").type(typeId).id();
+        if (!mountId) {
+            corto_seterr("no available id providers (id = 'null')");
+            goto error;
+        }
+        id = mountId;
+    }
+
+    if (!id[0]) {
+        corto_seterr("invalid id (cannot be an empty string)");
         goto error;
     }
 
@@ -1379,6 +1393,7 @@ static corto_object corto_declareChildIntern(
     }
 
 ok:
+    if (mountId) corto_dealloc(mountId);
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
 
     return o;
@@ -1388,6 +1403,7 @@ error:
     }
 access_error:
 owner_error:
+    if (mountId) corto_dealloc(mountId);
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
     return NULL;
 }

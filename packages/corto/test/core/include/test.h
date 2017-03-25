@@ -35,9 +35,11 @@ extern "C" {
 #include <include/Foo.h>
 #include <include/HistoryMount.h>
 #include <include/HistoryMount_data.h>
+#include <include/IdMount.h>
 #include <include/JsonReplicator.h>
 #include <include/ListMount.h>
 #include <include/Loader.h>
+#include <include/MountId.h>
 #include <include/MountIterCount.h>
 #include <include/MountSubscription.h>
 #include <include/MountWIterData.h>

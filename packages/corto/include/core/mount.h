@@ -26,6 +26,11 @@ CORTO_EXPORT
 corto_void _corto_mount_destruct(
     corto_mount _this);
 
+#define corto_mount_id(_this) _corto_mount_id(corto_mount(_this))
+CORTO_EXPORT
+corto_string _corto_mount_id(
+    corto_mount _this);
+
 #define corto_mount_init(_this) _corto_mount_init(corto_mount(_this))
 CORTO_EXPORT
 corto_int16 _corto_mount_init(
@@ -38,6 +43,16 @@ corto_void _corto_mount_invoke(
     corto_object instance,
     corto_function proc,
     corto_word argptrs);
+
+#define corto_mount_onId_v(_this) _corto_mount_onId_v(corto_mount(_this))
+CORTO_EXPORT
+corto_string _corto_mount_onId_v(
+    corto_mount _this);
+
+#define corto_mount_onId(_this) _corto_mount_onId(corto_mount(_this))
+CORTO_EXPORT
+corto_string _corto_mount_onId(
+    corto_mount _this);
 
 #define corto_mount_onInvoke_v(_this, instance, proc, argptrs) _corto_mount_onInvoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
 CORTO_EXPORT
