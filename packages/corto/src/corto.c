@@ -1003,6 +1003,9 @@ int corto_start(char *appName) {
     CORTO_OPERATIONAL = 1; /* Initializing */
 
     corto_appName = appName;
+    if ((appName[0] == '.') && (appName[1] == '/')) {
+        corto_appName += 2;
+    }
 
     /* Initialize benchmark constants */
     CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");

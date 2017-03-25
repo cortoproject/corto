@@ -960,7 +960,7 @@ corto_attr corto_getAttr(void) {
 }
 
 /* Create new object with attributes */
-corto_object _corto_declare(corto_type type) {
+static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
     corto_benchmark_start(CORTO_BENCHMARK_DECLARE);
 
     corto_uint32 size, headerSize;
@@ -1003,7 +1003,7 @@ corto_object _corto_declare(corto_type type) {
         }
     }
 
-    if ((corto_typeof(type) == corto_type(corto_target_o)) && !(attrs & CORTO_ATTR_SCOPED)) {
+    if ((corto_typeof(type) == corto_type(corto_target_o)) && (!orphan || (!(attrs & CORTO_ATTR_SCOPED)))) {
         attrs |= CORTO_ATTR_PERSISTENT;
     }
 
@@ -1126,6 +1126,10 @@ error:
 
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
     return NULL;
+}
+
+corto_object _corto_declare(corto_type type) {
+    return corto_declareIntern(type, FALSE);
 }
 
 static corto_type corto_containerType(corto_container c) {
@@ -1256,7 +1260,7 @@ static corto_object corto_declareChildIntern(
     /* Create new object */
     do {
         corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_SCOPED);
-        o = corto_declare(type);
+        o = corto_declareIntern(type, orphan);
         corto_setAttr(oldAttr);
 
         if (o) {
