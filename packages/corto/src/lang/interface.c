@@ -214,10 +214,15 @@ static int corto_interface_validateAlias(corto_alias this) {
 
     /* Find the member we're aliassing and verify access */
     if (!this->member) {
-        corto_seterr("alias '%s' doesn't point to anything",
+        corto_seterr("alias '%s' does not point to a member",
             corto_fullpath(NULL, this));
         goto error;
     } else {
+        if (this->member == corto_member(this)) {
+            corto_seterr("alias member '%s' refers to itself", 
+                corto_fullpath(NULL, this));
+            goto error;
+        }
         if (this->member->modifiers & (CORTO_PRIVATE|CORTO_LOCAL|CORTO_READONLY|CORTO_CONST)) {
             corto_seterr("alias '%s' doesn't have write-access to member '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
