@@ -93,12 +93,13 @@ void* corto_mount_thread(void* arg) {
 void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r, corto_subscriber s) {
     CORTO_UNUSED(s);
 
-    if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
-        corto_mount_onNotify(this, mask, r);
+    if (mask != CORTO_ON_DECLARE) {
+        if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
+            corto_mount_onNotify(this, mask, r);
+        }
     }
 
     switch(mask) {
-    case CORTO_ON_DECLARE: this->sent.declares ++; break;
     case CORTO_ON_DEFINE: this->sent.updates ++; break;
     case CORTO_ON_UPDATE: this->sent.updates ++; break;
     case CORTO_ON_DELETE: this->sent.deletes ++; break;
