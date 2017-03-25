@@ -27,26 +27,26 @@ corto_void _test_ReplicatorEvent_tc_event(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(ret == 0);
     test_assert(corto_ownerof(a) == NULL);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
@@ -73,19 +73,19 @@ corto_void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
 
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
-    test_assert(mount->declareCount == 1);
+    test_assertint(mount->declareCount, 0);
     test_assert(mount->updateCount == 0);
     test_assert(mount->deleteCount == 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assert(mount->declareCount == 1);
+    test_assertint(mount->declareCount, 0);
     test_assert(mount->updateCount == 1);
     test_assert(mount->deleteCount == 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assert(mount->declareCount == 1);
+    test_assertint(mount->declareCount, 0);
     test_assert(mount->updateCount == 1);
     test_assert(mount->deleteCount == 1);
 
@@ -113,46 +113,46 @@ corto_void _test_ReplicatorEvent_tc_eventTree(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     corto_int32DeclareChild_auto(a, a_a);
     test_assert(a_a != NULL);
     test_assert(corto_checkAttr(a_a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(ret == 0);
     test_assert(corto_ownerof(a) == NULL);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a_a);
     test_assert(corto_ownerof(a_a) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a_a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
@@ -180,46 +180,46 @@ corto_void _test_ReplicatorEvent_tc_eventTreeWithTree(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     corto_int32DeclareChild_auto(a, a_a);
     test_assert(a_a != NULL);
     test_assert(corto_checkAttr(a_a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(corto_ownerof(a) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a_a);
     test_assert(corto_ownerof(a_a) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 3);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a_a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 4);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 4);
     test_assertint(mount->deleteCount, 2);
 
@@ -247,26 +247,26 @@ corto_void _test_ReplicatorEvent_tc_eventWithTree(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(corto_ownerof(a) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
@@ -294,52 +294,52 @@ corto_void _test_ReplicatorEvent_tc_matchingType(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     corto_float32DeclareChild_auto(parent, b);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(b, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(corto_ownerof(a) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(b);
     test_assert(corto_ownerof(b) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_float32Update(b, 10.5);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
     ret = corto_delete(b);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
@@ -367,7 +367,7 @@ corto_void _test_ReplicatorEvent_tc_nonPersistent(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
@@ -376,45 +376,45 @@ corto_void _test_ReplicatorEvent_tc_nonPersistent(
     corto_setAttr(prev);
     test_assert(a != NULL);
     test_assert(!corto_checkAttr(b, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(corto_ownerof(a) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(b);
     test_assert(corto_ownerof(b) == NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_float32Update(b, 10.5);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
     ret = corto_delete(b);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
@@ -442,21 +442,21 @@ corto_void _test_ReplicatorEvent_tc_ownedByMount(
     corto_int32DeclareChild_auto(parent, a);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(a, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 1);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     corto_float32DeclareChild_auto(parent, b);
     test_assert(a != NULL);
     test_assert(corto_checkAttr(b, CORTO_ATTR_PERSISTENT));
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_define(a);
     test_assert(ret == 0);
     test_assert(corto_ownerof(a) == NULL);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
@@ -465,13 +465,13 @@ corto_void _test_ReplicatorEvent_tc_ownedByMount(
     corto_setOwner(NULL);
     test_assert(ret == 0);
     test_assert(corto_ownerof(b) == mount);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 1);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_int32Update(a, 20);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
@@ -479,13 +479,13 @@ corto_void _test_ReplicatorEvent_tc_ownedByMount(
     ret = corto_float32Update(b, 10.5);
     corto_setOwner(NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 0);
 
     ret = corto_delete(a);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
@@ -493,7 +493,7 @@ corto_void _test_ReplicatorEvent_tc_ownedByMount(
     ret = corto_delete(b);
     corto_setOwner(NULL);
     test_assert(ret == 0);
-    test_assertint(mount->declareCount, 2);
+    test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 2);
     test_assertint(mount->deleteCount, 1);
 
