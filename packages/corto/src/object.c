@@ -1290,13 +1290,15 @@ static corto_object corto_declareChildIntern(
                     if (owner && corto_instanceof(corto_mount_o, owner)) {
                         if (owner != corto_getOwner()) {
                             if (corto_getOwner() || corto_mount(owner)->kind != CORTO_SINK) {
-                                corto_release(o);
-                                corto_seterr(
-                                  "owner '%s' of existing object '%s' does not match owner '%s'",
-                                  corto_fullpath(NULL, owner),
-                                  corto_fullpath(NULL, o),
-                                  corto_fullpath(NULL, corto_getOwner()));
-                                goto owner_error;
+                                if (forceType) {
+                                    corto_release(o);
+                                    corto_seterr(
+                                      "owner '%s' of existing object '%s' does not match owner '%s'",
+                                      corto_fullpath(NULL, owner),
+                                      corto_fullpath(NULL, o),
+                                      corto_fullpath(NULL, corto_getOwner()));
+                                    goto owner_error;
+                                }
                             }
                         }
                     }
