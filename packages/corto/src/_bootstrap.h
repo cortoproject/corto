@@ -749,6 +749,7 @@ CORTO_BITMASK_O(core, eventMask);
     CORTO_CONSTANT_O(core_eventMask, ON_TREE);
     CORTO_CONSTANT_O(core_eventMask, ON_VALUE);
     CORTO_CONSTANT_O(core_eventMask, ON_METAVALUE);
+    CORTO_CONSTANT_O(core_eventMask, ON_ANY);
 
 CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, GLOBAL);

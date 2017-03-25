@@ -471,6 +471,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_eventMask_ON_TREE),\
     SSO_OP_OBJ(core_eventMask_ON_VALUE),\
     SSO_OP_OBJ(core_eventMask_ON_METAVALUE),\
+    SSO_OP_OBJ(core_eventMask_ON_ANY),\
     /* modifier */\
     SSO_OP_OBJ(lang_modifier_GLOBAL),\
     SSO_OP_OBJ(lang_modifier_LOCAL),\
