@@ -144,6 +144,7 @@ corto_int16 corto_matchProgramParseIntern(
     char *ptr, *start, ch;
     int op = 0;
 
+    data->size = 0;
     data->kind = 0;
     data->tokens = corto_strdup(expr);
     corto_strlower(data->tokens);
@@ -442,6 +443,10 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
 
 corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) {
     corto_bool result = FALSE;
+
+    if (!program->size) {
+        return FALSE;
+    }
 
     if (program->kind == 0) {
         char *elements[CORTO_MAX_SCOPE_DEPTH + 1];
