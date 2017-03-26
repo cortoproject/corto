@@ -104,7 +104,7 @@ int corto_interface_walkScope(corto_object o, void* userData) {
     corto_interface this;
     this = userData;
 
-    if (corto_class_instanceof(corto_procedure_o, corto_typeof(o)) && ((corto_procedure(corto_typeof(o))->kind == CORTO_METHOD))) {
+    if (corto_instanceof(corto_method_o, o)) {
         if (!corto_checkState(o, CORTO_DEFINED)) {
             if (corto_interface_bindMethod(this, o)) {
                 goto error;
@@ -374,11 +374,8 @@ static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, c
 
 /* Check whether two procedure objects are compatible */
 corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_function o2) {
-    corto_type t1;
     corto_bool result;
     corto_type returnType1, returnType2;
-
-    t1 = corto_typeof(o1);
 
     result = TRUE;
 
@@ -393,17 +390,10 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
             corto_fullpath(NULL, returnType2));
         result = FALSE; /* Returntypes must match exactly (save for typedefs) */
     } else {
-        switch(corto_procedure(t1)->kind) {
-        case CORTO_METAPROCEDURE:
-        case CORTO_FUNCTION:
-            result = FALSE; /* Static functions will never be overridden. */
-            break;
-        case CORTO_METHOD:
+        if (o1->overridable) {
             result = corto_interface_checkProcedureParameters(o1, o2);
-            break;
-        case CORTO_OBSERVER:
-            result = FALSE; /* Observers are not overridable and thus never need to be compared. */
-            break;
+        } else {
+            result = FALSE;
         }
     }
 
@@ -434,26 +424,27 @@ corto_int16 _corto_interface_bindMethod(
     corto_method method)
 {
 /* $begin(corto/lang/interface/bindMethod) */
-    corto_method* virtual = NULL;
+    corto_method* override = NULL;
     corto_int32 d = 0;
 
-    /* Check if a method with the same name is already in the vtable */
+    /* Check if an overridable method exists in the vtable */
     if (this->base &&
-       (((corto_typeof(method) == (corto_type)corto_virtual_o)) || (corto_typeof(method) == (corto_type)corto_method_o))) {
-        virtual = (corto_method *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
+       (corto_function(method)->overridable || (corto_typeof(method) == (corto_type)corto_override_o))) {
+        override = (corto_method *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
     } else {
         corto_int32 i;
+
+        /* If method is already in vtable, don't do anything */
         for (i = 0; i < this->methods.length; i++) {
-            if (this->methods.buffer[i] == (corto_function)method) {
-                virtual = (corto_method*)&this->methods.buffer[i];
-                d = 0;
-                break;
+            if (this->methods.buffer[i] == method) {
+                override = (corto_method*)&this->methods.buffer[i];
+                return 0;
             }
         }
     }
 
     /* vtableLookup failed (probably due to a failed overloading request) */
-    if (!virtual && (d == -1)) {
+    if (!override && (d == -1)) {
         if (!corto_lasterr()) {
             corto_seterr("method lookup error for '%s'", corto_idof(method));
         }
@@ -461,22 +452,22 @@ corto_int16 _corto_interface_bindMethod(
     }
 
     /* Function is reentrant */
-    if (virtual && (*virtual != method)) {
+    if (override && (*override != method)) {
         /* If distance is zero, override method (from base-class) */
         if (!d) {
             /* Cannot override method if in the same scope */
-            if (corto_parentof(*virtual) != corto_parentof(method)) {
-                if ((*virtual)->_virtual) {
+            if (corto_parentof(*override) != corto_parentof(method)) {
+                if (corto_function(*override)->overridable) {
                     /* Check if overriding method is compatible */
-                    if (!corto_interface_checkProcedureCompatibility(corto_function(*virtual), corto_function(method))) {
+                    if (!corto_interface_checkProcedureCompatibility(corto_function(*override), corto_function(method))) {
                         goto error;
                     }
                 }
-                corto_setref(virtual, method);
+                corto_setref(override, method);
             } else {
                 corto_id id, id2;
                 corto_fullpath(id, method);
-                corto_fullpath(id2, *virtual);
+                corto_fullpath(id2, *override);
                 if (strcmp(id, id2)) {
                     corto_seterr("definition of method '%s' conflicts with existing method '%s'", id, id2);
                     goto error;
@@ -487,10 +478,10 @@ corto_int16 _corto_interface_bindMethod(
         d = -1;
     }
 
-    if (!virtual || (d > 0)) {
+    if (!override || (d > 0)) {
         /* If distance is non-zero, construct new method */
-        if (virtual) {
-            corto_function(*virtual)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
+        if (override) {
+            corto_function(*override)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
             corto_function(method)->overloaded = TRUE;
         }
 
@@ -500,7 +491,7 @@ corto_int16 _corto_interface_bindMethod(
     }
 
     if (corto_interface(this)->kind == CORTO_INTERFACE) {
-        method->_virtual = TRUE;
+        corto_function(method)->overridable = TRUE;
     }
 
     return 0;

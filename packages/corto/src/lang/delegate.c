@@ -73,7 +73,7 @@ corto_int16 _corto_delegate_construct(
             (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE)) {
             if (corto_delegate_instanceof(corto_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
-                if (corto_procedure(corto_typeof(object))->kind == CORTO_METHOD) {
+                if (corto_procedure(corto_typeof(object))->hasThis) {
                     corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
                 }
                 /* Bind procedure */

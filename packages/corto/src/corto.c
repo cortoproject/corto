@@ -163,7 +163,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, primitiveKind),\
     SSO_OP_VALUE(lang_, compositeKind),\
     SSO_OP_VALUE(lang_, collectionKind),\
-    SSO_OP_VALUE(lang_, procedureKind),\
     SSO_OP_VALUE(lang_, equalityKind),\
     SSO_OP_VALUE(lang_, inout),\
     SSO_OP_VALUE(core_, operatorKind),\
@@ -210,7 +209,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, position),\
     SSO_OP_CLASS(lang_, function),\
     SSO_OP_CLASS(lang_, method),\
-    SSO_OP_CLASS(lang_, virtual),\
+    SSO_OP_CLASS(lang_, overridable),\
+    SSO_OP_CLASS(lang_, override),\
     SSO_OP_CLASS(core_, remote),\
     SSO_OP_CLASS(core_, observer),\
     SSO_OP_CLASS(core_, subscriber),\
@@ -274,26 +274,26 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* function */\
     SSO_OP_OBJ(lang_function_returnType),\
     SSO_OP_OBJ(lang_function_returnsReference),\
+    SSO_OP_OBJ(lang_function_parameters),\
+    SSO_OP_OBJ(lang_function_overridable),\
     SSO_OP_OBJ(lang_function_overloaded),\
     SSO_OP_OBJ(lang_function_kind),\
     SSO_OP_OBJ(lang_function_impl),\
     SSO_OP_OBJ(lang_function_fptr),\
     SSO_OP_OBJ(lang_function_fdata),\
-    SSO_OP_OBJ(lang_function_resource),\
     SSO_OP_OBJ(lang_function_size),\
-    SSO_OP_OBJ(lang_function_parameters),\
-    SSO_OP_OBJ(lang_function_nextParameterId),\
     SSO_OP_OBJ(lang_function_init_),\
     SSO_OP_OBJ(lang_function_construct_),\
     SSO_OP_OBJ(lang_function_destruct_),\
     SSO_OP_OBJ(lang_function_stringToParameterSeq),\
     SSO_OP_OBJ(lang_function_parseParamString_),\
     /* method */\
-    SSO_OP_OBJ(lang_method_virtual),\
     SSO_OP_OBJ(lang_method_init_),\
     SSO_OP_OBJ(lang_method_construct_),\
-    /* virtual */\
-    SSO_OP_OBJ(lang_virtual_init_),\
+    /* overridable */\
+    SSO_OP_OBJ(lang_overridable_init_),\
+    /* override */\
+    SSO_OP_OBJ(lang_override_init_),\
     /* observer */\
     SSO_OP_OBJ(core_observer_mask),\
     SSO_OP_OBJ(core_observer_observable),\
@@ -379,11 +379,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_collectionKind_SEQUENCE),\
     SSO_OP_OBJ(lang_collectionKind_LIST),\
     SSO_OP_OBJ(lang_collectionKind_MAP),\
-    /* procedureKind */\
-    SSO_OP_OBJ(lang_procedureKind_FUNCTION),\
-    SSO_OP_OBJ(lang_procedureKind_METHOD),\
-    SSO_OP_OBJ(lang_procedureKind_OBSERVER),\
-    SSO_OP_OBJ(lang_procedureKind_METAPROCEDURE),\
     /* equalityKind */\
     SSO_OP_OBJ(lang_equalityKind_EQ),\
     SSO_OP_OBJ(lang_equalityKind_LT),\
@@ -591,7 +586,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_union_construct_),\
     SSO_OP_OBJ(lang_union_findCase_),\
     /* procedure */\
-    SSO_OP_OBJ(lang_procedure_kind),\
     SSO_OP_OBJ(lang_procedure_hasThis),\
     SSO_OP_OBJ(lang_procedure_thisType),\
     SSO_OP_OBJ(lang_procedure_init_),\

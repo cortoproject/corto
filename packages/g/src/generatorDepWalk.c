@@ -153,13 +153,11 @@ static int corto_genDepBuildProc(corto_function f, struct g_depWalk_t* data) {
     corto_uint32 i;
     corto_type t;
 
-    if (corto_procedure(corto_typeof(f))->kind != CORTO_OBSERVER) {
-        for(i=0; i<f->parameters.length; i++) {
-            t = f->parameters.buffer[i].type;
-            if (g_mustParse(data->data->g, t)) {
-                t = corto_genDepFindAnonymous(data, t);
-                corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
-            }
+    for(i=0; i<f->parameters.length; i++) {
+        t = f->parameters.buffer[i].type;
+        if (g_mustParse(data->data->g, t)) {
+            t = corto_genDepFindAnonymous(data, t);
+            corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
         }
     }
 

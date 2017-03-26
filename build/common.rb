@@ -109,6 +109,7 @@ DEFINE = [] if not defined? DEFINE
 PP_PRELOAD = [] if not defined? PP_PRELOAD
 LANGUAGE = "c" if not defined? LANGUAGE
 ALWAYS_REBUILD = [] if not defined? ALWAYS_REBUILD
+CORE_ONLY = false if not defined? CORE_ONLY
 UNINSTALL = []
 
 # Variable that tracks files created by the buildsystem for uninstaller

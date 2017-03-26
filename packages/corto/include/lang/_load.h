@@ -22,9 +22,7 @@ CORTO_EXPORT extern corto_package corto_o;
 CORTO_EXPORT extern corto_package corto_lang_o;
 
 /* Forward declarations of classes */
-CORTO_META_OBJECT(class, typedef);
 CORTO_META_OBJECT(class, type);
-CORTO_META_OBJECT(class, template);
 CORTO_META_OBJECT(class, primitive);
 CORTO_META_OBJECT(class, collection);
 CORTO_META_OBJECT(class, interface);
@@ -129,7 +127,8 @@ CORTO_META_OBJECT(delegate, requestAction);
 
 CORTO_META_OBJECT(procedure, function);
 CORTO_META_OBJECT(procedure, method);
-CORTO_META_OBJECT(procedure, virtual);
+CORTO_META_OBJECT(procedure, overridable);
+CORTO_META_OBJECT(procedure, override);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, metaprocedure);
 

@@ -69,7 +69,7 @@ extern "C" {
 #include <corto/lang/uint.h>
 #include <corto/lang/union.h>
 #include <corto/lang/unit.h>
-#include <corto/lang/virtual.h>
+#include <corto/lang/overridable.h>
 
 #ifdef __cplusplus
 }

@@ -94,7 +94,7 @@ extern "C" {
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
-#define corto_virtual(o) ((corto_virtual)corto_assertType((corto_type)corto_virtual_o, o))
+#define corto_overridable(o) ((corto_overridable)corto_assertType((corto_type)corto_overridable_o, o))
 #define corto_void(o) ((corto_void*)o)
 #define corto_wordseq(o) ((corto_wordseq*)corto_assertType((corto_type)corto_wordseq_o, o))
 
@@ -182,15 +182,14 @@ typedef struct corto_function_s *corto_function;
 struct corto_function_s {
     corto_type returnType;
     corto_bool returnsReference;
+    corto_parameterseq parameters;
+    corto_bool overridable;
     corto_bool overloaded;
     corto_uint32 kind;
     corto_word impl;
     corto_word fptr;
     corto_word fdata;
-    corto_object resource;
     corto_uint16 size;
-    corto_parameterseq parameters;
-    corto_uint32 nextParameterId;
 };
 
 /*  delegatedata */
@@ -577,7 +576,6 @@ typedef struct corto_method_s *corto_method;
 
 struct corto_method_s {
     struct corto_function_s _parent;
-    corto_bool _virtual;
 };
 
 CORTO_LIST(corto_objectlist);
@@ -585,20 +583,11 @@ CORTO_LIST(corto_objectlist);
 /* octet */
 typedef uint8_t corto_octet;
 
-/* procedureKind */
-typedef enum corto_procedureKind {
-    CORTO_FUNCTION = 0,
-    CORTO_METHOD = 1,
-    CORTO_OBSERVER = 2,
-    CORTO_METAPROCEDURE = 3
-} corto_procedureKind;
-
 /*  procedure */
 typedef struct corto_procedure_s *corto_procedure;
 
 struct corto_procedure_s {
     struct corto_class_s _parent;
-    corto_procedureKind kind;
     corto_bool hasThis;
     corto_type thisType;
 };
@@ -663,10 +652,17 @@ struct corto_union_s {
     corto_type discriminator;
 };
 
-/*  virtual */
-typedef struct corto_virtual_s *corto_virtual;
+/*  overridable */
+typedef struct corto_overridable_s *corto_overridable;
 
-struct corto_virtual_s {
+struct corto_overridable_s {
+    struct corto_method_s _parent;
+};
+
+/*  override */
+typedef struct corto_override_s *corto_override;
+
+struct corto_override_s {
     struct corto_method_s _parent;
 };
 

@@ -53,7 +53,9 @@ if TARGET != "corto" and NOCORTO == false then
   if LANGUAGE == "cpp" or LANGUAGE == "c++" then
     USE_PACKAGE << "corto/cpp"
   elsif LANGUAGE == "c" or LANGUAGE == "c4cpp" then
-    USE_PACKAGE << "corto/lang/c" << "corto/core/c"
+    if not CORE_ONLY then
+      USE_PACKAGE << "corto/lang/c" << "corto/core/c"
+    end
   end
 end
 
