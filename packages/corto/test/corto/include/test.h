@@ -222,6 +222,7 @@ corto_void _test_ol_wildcard_int32_string(
 #include <include/TargetActualMember.h>
 #include <include/TestKey.h>
 #include <include/TestLock.h>
+#include <include/TypeAttr.h>
 #include <include/ValueCast.h>
 #include <include/ValueExpr.h>
 #include <include/VoidParent.h>

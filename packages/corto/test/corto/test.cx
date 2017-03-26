@@ -75,6 +75,9 @@ struct DefinedParent: options={parentState=defined} ::
 struct DeclaredParent: options={parentState=declared}::
     foo: int32
 
+struct TypeAttr: attr=ATTR_OBSERVABLE::
+    foo: int32
+
 ReferenceMember anonymousString{
     CompositeWithString{10, "Hello", "World", 20}
 }
@@ -204,8 +207,11 @@ class MethodForwardTest::
     
 test/Suite Attributes::
     void tc_testDefaultSet()
+    void tc_testTargetAttr()
+    void tc_testTargetOrphanAttr()
     void tc_isDefaultPersistent()
     void tc_isDefaultScopedPersistent()
+    void tc_typeOverridesAttributes()
 
 test/Suite Err::
     void tc_lasterr()
@@ -965,6 +971,7 @@ test/Suite SubscriberEvent::
 test/Suite Subscribe::
     subscriber noInitialSep: ON_UPDATE, "testScope", "*"
     triggered: uint8
+    owner: object
     void tc_noInitialSep()
     void tc_subscribeInvertCase()
     void tc_subscribeInvertCaseFilter()
@@ -976,6 +983,7 @@ test/Suite Subscribe::
     void tc_subscribeNestedScopeFromRoot()
     void tc_subscribePartialMatchingParent()
     void tc_subscribePartialMatchingParentObject()
+    void tc_subscribeOwnerSet()
 
 // Function overloading support types
 void ol_null(object a)

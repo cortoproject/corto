@@ -837,9 +837,11 @@ corto_uint32 cxsh_countSelect(char *expr) {
     corto_iter iter;
     if (corto_select(scope, expr).iter(&iter)) goto error;
     while (corto_iterHasNext(&iter)) {
+        corto_iterNext(&iter);
         result++;
         break;
     }
+    corto_iterRelease(&iter);
     if (!result) {
         if (corto_select(scope, expr).iter(&iter)) goto error;
         while (corto_iterHasNext(&iter)) {
@@ -847,6 +849,7 @@ corto_uint32 cxsh_countSelect(char *expr) {
             result++;
             break;
         }
+        corto_iterRelease(&iter);
     }
     if (!result) {
         if (corto_select(scope, expr).iter(&iter)) goto error;
@@ -855,6 +858,7 @@ corto_uint32 cxsh_countSelect(char *expr) {
             result++;
             break;
         }
+        corto_iterRelease(&iter);
     }
 
     return result;

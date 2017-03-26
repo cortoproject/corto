@@ -9,7 +9,7 @@ extern corto_threadKey CORTO_KEY_FLUENT;
 
 struct corto_selectData;
 
-typedef void (*corto_mountAction)(corto_mount _this, corto_request *r);
+typedef int (*corto_mountAction)(corto_mount _this, corto_request *r, void *userData);
 
 /* Fluent request */
 typedef struct corto_selectRequest {
@@ -23,7 +23,6 @@ typedef struct corto_selectRequest {
     corto_frame from;
     corto_frame to;
     corto_mountAction mountAction;
-    corto_bool dryRun;
     corto_object instance;
     corto_mount mount;
 } corto_selectRequest;
@@ -109,8 +108,8 @@ struct corto_selectData {
     /* Additional action to be performed when data is requested from mount */
     corto_mountAction mountAction;
 
-    /* Set to TRUE when a mountAction is the only thing that needs to be done. */
-    corto_bool dryRun;
+    /* Indicates if the walk should stop */
+    corto_bool quit;
 
     /* Ignore data from the instance (mount) if set */
     corto_object instance;
@@ -436,61 +435,69 @@ static corto_resultIter corto_selectRequestMount(
     corto_selectStack *frame,
     corto_mount mount)
 {
-    corto_id parent, filter, expr;
-    corto_int32 sp = data->sp;
+    if (data->mountAction || !data->quit) {
+        corto_id parent, filter, expr;
+        corto_int32 sp = data->sp;
 
-    while (!data->stack[sp].scope) {
-        sp --;
-    }
-    corto_path(parent, mount->mount, data->stack[sp].scope, "/");
+        while (!data->stack[sp].scope) {
+            sp --;
+        }
+        corto_path(parent, mount->mount, data->stack[sp].scope, "/");
 
-    if (!frame->scope) {
-        /* Recursively search in mount */
-        strcat(parent, data->recursiveQuery);
-    }
+        if (!frame->scope) {
+            /* Recursively search in mount */
+            strcat(parent, data->recursiveQuery);
+        }
 
-    filter[0] = '\0';
-    if (frame->scopeQuery) {
-        strcat(parent, "/");
-        strcat(parent, frame->scopeQuery);
-    }
-    if (frame->filter) {
-        strcat(filter, frame->filter);
-    }
+        filter[0] = '\0';
+        if (frame->scopeQuery) {
+            strcat(parent, "/");
+            strcat(parent, frame->scopeQuery);
+        }
+        if (frame->filter) {
+            strcat(filter, frame->filter);
+        }
 
-    corto_selectParseFilter(filter, parent, expr);
+        corto_selectParseFilter(filter, parent, expr);
 
-    if (data->mask == CORTO_ON_TREE) {
-        strcpy(expr, "*");
-    }
+        if (data->mask == CORTO_ON_TREE) {
+            strcpy(expr, "*");
+        }
 
-    corto_cleanpath(parent, parent);
+        corto_cleanpath(parent, parent);
 
-    corto_debug("select: RequestMount: request '%s' (%s), parent='%s', expr='%s'",
-      corto_fullpath(NULL, mount),
-      corto_fullpath(NULL, corto_typeof(mount)),
-      parent,
-      expr);
+        corto_debug("select: RequestMount: request '%s' (%s), parent='%s', expr='%s'",
+          corto_fullpath(NULL, mount),
+          corto_fullpath(NULL, corto_typeof(mount)),
+          parent,
+          expr);
 
-    corto_request r = {
-      parent,
-      expr,
-      data->type,
-      (data->offset > data->count) ? data->offset - data->count : 0,
-      (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
-      data->contentType ? TRUE : FALSE,
-      data->from,
-      data->to};
+        corto_request r = {
+          parent,
+          expr,
+          data->type,
+          (data->offset > data->count) ? data->offset - data->count : 0,
+          (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
+          data->contentType ? TRUE : FALSE,
+          data->from,
+          data->to};
 
-    if (data->mountAction) {
-        data->mountAction(mount, &r);
-    }
+        if (data->mountAction) {
+            /* If mount-action returns non-zero, quit the walk asap */
+            if (!data->mountAction(mount, &r, data)) {
+                data->mountAction = NULL;
+                data->quit = TRUE;
+            }
+        }
 
-    /* If this is a dry run, don't request data from mount */
-    if (data->dryRun) {
-        return CORTO_ITERATOR_EMPTY;
+        /* If this is a dry run, don't request data from mount */
+        if (data->quit) {
+            return CORTO_ITERATOR_EMPTY;
+        } else {
+            return corto_mount_request(mount, &r);
+        }
     } else {
-        return corto_mount_request(mount, &r);
+        return CORTO_ITERATOR_EMPTY;
     }
 }
 
@@ -869,16 +876,18 @@ static void corto_selectTree(
      * object after the last key. */
     corto_string lastKey = data->item.name;
     corto_bool noMatch = TRUE;
-
     data->next = NULL;
-
     corto_object o = NULL;
+
+    if (data->quit) {
+        return;
+    }
 
     do {
         corto_bool leaf = TRUE, hasData = FALSE;
 
         /* Unwind stack for depleted iterators */
-        while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) && data->sp) {
+        while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) && data->sp && !data->quit) {
             /* Cache name as next line might delete object */
             if (frame->scope) {
                 strcpy(data->item.name, corto_idof(frame->scope));
@@ -951,7 +960,7 @@ static void corto_selectTree(
         }
 
         if (o) corto_release(o);
-    } while (noMatch && data->next);
+    } while (noMatch && data->next && !data->quit);
 }
 
 /* Reset select data (either initially or when moving to next scope) */
@@ -1241,6 +1250,10 @@ error:
 
 static int corto_selectHasNext(corto_resultIter *iter) {
     corto_selectData *data = iter->udata;
+    if (data->quit) {
+        return 0;
+    }
+
     corto_selectStack *frame = &data->stack[data->sp];
 
     CORTO_UNUSED(iter);
@@ -1263,7 +1276,10 @@ static int corto_selectHasNext(corto_resultIter *iter) {
         corto_selectTree(data, frame);
     } while ((data->next == NULL) && (corto_selectNextScope(data)));
 
-    return data->next != NULL;
+    /* If the select has been aborted, the select data likely contains data that
+     * cannot yet be released. Therefore, give an application the opportunity to
+     * obtain the data before returning 0, and cleaning up the select data. */
+    return data->quit ? 1 : data->next != NULL;
 stop:
     return 0;
 }
@@ -1309,7 +1325,6 @@ static corto_resultIter corto_selectPrepareIterator (
     data->item.id = data->id;
     data->item.leaf = TRUE;
     data->mountAction = r->mountAction;
-    data->dryRun = r->dryRun;
     data->instance = r->instance;
     data->mount = r->mount;
     data->valueAllocated = FALSE;
@@ -1407,6 +1422,59 @@ error:
     return -1;
 }
 
+static int corto_mountAction_id(corto_mount m, corto_request *r, void *ctx) {
+    CORTO_UNUSED(r);
+
+    if (m->kind == CORTO_SINK) {
+        corto_selectData *data = ctx;
+        corto_string id = _corto_mount_id(m);
+        if (id) {
+            data->item.id = id;
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        return 1;
+    }
+}
+static corto_string corto_selectorId()
+{
+    corto_string result = NULL;
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+
+    if (request) {
+        request->mountAction = corto_mountAction_id;
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_iter it = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
+        }
+        corto_dealloc(request);
+
+        corto_selectData *data = it.udata;
+
+        /* Walk results until id is found */
+        while (corto_iterHasNext(&it) && !data->quit) {
+            corto_iterNext(&it);
+        }
+        if (data->quit) {
+            result = data->item.id;
+            corto_iterRelease(&it);
+        }
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
+static int corto_mountAction_subscribe(corto_mount m, corto_request *r, void *ctx) {
+    CORTO_UNUSED(ctx);
+    _corto_mount_subscribe(m, r);
+    return 1;
+}
 static corto_int16 corto_selectorSubscribe(corto_resultIter *ret)
 {
     corto_assert(ret != NULL, "no iterator provided to .subscribe()");
@@ -1414,7 +1482,7 @@ static corto_int16 corto_selectorSubscribe(corto_resultIter *ret)
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
-        request->mountAction = _corto_mount_subscribe;
+        request->mountAction = corto_mountAction_subscribe;
         corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1428,12 +1496,17 @@ error:
     return -1;
 }
 
+static int corto_mountAction_unsubscribe(corto_mount m, corto_request *r, void *ctx) {
+    CORTO_UNUSED(ctx);
+    _corto_mount_unsubscribe(m, r);
+    return 1;
+}
 static corto_int16 corto_selectorUnsubscribe()
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
-        request->mountAction = _corto_mount_unsubscribe;
+        request->mountAction = corto_mountAction_unsubscribe;
         corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1441,7 +1514,7 @@ static corto_int16 corto_selectorUnsubscribe()
         }
         corto_dealloc(request);
 
-        /* Walk resuts to unsubscribe all mounts */
+        /* Walk results to unsubscribe all mounts */
         while (corto_iterHasNext(&it)) {
             corto_iterNext(&it);
         }
@@ -1649,6 +1722,7 @@ static corto_selectFluent corto_selectFluentGet(void)
     result.iter = corto_selectorIter;
     result.subscribe = corto_selectorSubscribe;
     result.unsubscribe = corto_selectorUnsubscribe;
+    result.id = corto_selectorId;
     result.iterObjects = corto_selectorIterObjects;
     result.count = corto_selectorCount;
     result.instance = corto_selectorInstance;

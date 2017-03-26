@@ -744,6 +744,7 @@ CORTO_BITMASK_O(core, eventMask);
     CORTO_CONSTANT_O(core_eventMask, ON_TREE);
     CORTO_CONSTANT_O(core_eventMask, ON_VALUE);
     CORTO_CONSTANT_O(core_eventMask, ON_METAVALUE);
+    CORTO_CONSTANT_O(core_eventMask, ON_ANY);
 
 CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, GLOBAL);
@@ -1344,11 +1345,13 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_METHOD_O(core_mount, setContentTypeOut, "(string type)", lang_int16, corto_mount_setContentTypeOut);
     CORTO_METHOD_O(core_mount, return, "(core/result r)", lang_void, corto_mount_return);
     CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_invoke);
+    CORTO_METHOD_O(core_mount, id, "()", lang_string, corto_mount_onRequest_v);
     CORTO_METHOD_O(core_mount, request, "(core/request request)", core_resultIter, corto_mount_request);
     CORTO_METHOD_O(core_mount, resume, "(string parent,string name,object o)", lang_object, corto_mount_resume);
     CORTO_METHOD_O(core_mount, subscribe, "(/corto/core/request request)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(core_mount, unsubscribe, "(/corto/core/request request)", lang_void, corto_mount_unsubscribe);
     CORTO_OVERRIDABLE_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_onInvoke_v);
+    CORTO_OVERRIDABLE_O(core_mount, onId, "()", lang_string, corto_mount_onRequest_v);
     CORTO_OVERRIDABLE_O(core_mount, onRequest, "(/corto/core/request request)", core_resultIter, corto_mount_onRequest_v);
     CORTO_OVERRIDABLE_O(core_mount, onResume, "(string parent,string name,object o)", lang_object, corto_mount_onResume_v);
     CORTO_OVERRIDABLE_O(core_mount, onNotify, "(core/eventMask event,core/result object)", lang_void, corto_mount_onNotify_v);

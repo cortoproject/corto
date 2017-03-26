@@ -43,3 +43,45 @@ corto_void _test_Attributes_tc_testDefaultSet(
 
 /* $end */
 }
+
+corto_void _test_Attributes_tc_testTargetAttr(
+    test_Attributes this)
+{
+/* $begin(test/Attributes/tc_testTargetAttr) */
+
+    corto_object o = corto_createChild(NULL, "a", test_TargetActual_o);
+    test_assert(o != NULL);
+    test_assert(corto_typeof(o) == corto_type(test_TargetActual_o));
+    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_delete(o) == 0);
+
+/* $end */
+}
+
+corto_void _test_Attributes_tc_testTargetOrphanAttr(
+    test_Attributes this)
+{
+/* $begin(test/Attributes/tc_testTargetOrphanAttr) */
+
+    test_TargetActualMember* o = corto_createChild(NULL, "a", test_TargetActualMember_o);
+    test_assert(o != NULL);
+    test_assert(corto_typeof(o) == corto_type(test_TargetActualMember_o));
+    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(!corto_checkAttr(o->m, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_delete(o) == 0);
+
+/* $end */
+}
+
+corto_void _test_Attributes_tc_typeOverridesAttributes(
+    test_Attributes this)
+{
+/* $begin(test/Attributes/tc_typeOverridesAttributes) */
+
+    corto_object o = corto_create(test_TypeAttr_o);
+    test_assert(o != NULL);
+    test_assertint(corto_attrof(o), CORTO_ATTR_OBSERVABLE);
+    test_assert(corto_delete(o) == 0);
+
+/* $end */
+}

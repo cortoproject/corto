@@ -115,6 +115,35 @@ corto_resultIter _corto_loader_onRequest(
     return _result;
 }
 
+corto_string _corto_mount_onId(
+    corto_mount this)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_string _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onId()");
+    }
+    corto_assert(_methodId, "virtual 'onId()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onId()@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_string ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), &_result, this);
+    }
+    
+    return _result;
+}
+
 corto_void _corto_mount_onInvoke(
     corto_mount this,
     corto_object instance,

@@ -466,6 +466,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_eventMask_ON_TREE),\
     SSO_OP_OBJ(core_eventMask_ON_VALUE),\
     SSO_OP_OBJ(core_eventMask_ON_METAVALUE),\
+    SSO_OP_OBJ(core_eventMask_ON_ANY),\
     /* modifier */\
     SSO_OP_OBJ(lang_modifier_GLOBAL),\
     SSO_OP_OBJ(lang_modifier_LOCAL),\
@@ -680,6 +681,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_construct_),\
     SSO_OP_OBJ(core_mount_destruct_),\
     SSO_OP_OBJ(core_mount_invoke_),\
+    SSO_OP_OBJ(core_mount_id_),\
     SSO_OP_OBJ(core_mount_request_),\
     SSO_OP_OBJ(core_mount_resume_),\
     SSO_OP_OBJ(core_mount_subscribe_),\
@@ -692,6 +694,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_onPoll_),\
     SSO_OP_OBJ(core_mount_onNotify_),\
     SSO_OP_OBJ(core_mount_onInvoke_),\
+    SSO_OP_OBJ(core_mount_onId_),\
     SSO_OP_OBJ(core_mount_onRequest_),\
     SSO_OP_OBJ(core_mount_onResume_),\
     SSO_OP_OBJ(core_mount_onSubscribe_),\
@@ -997,6 +1000,9 @@ int corto_start(char *appName) {
     CORTO_OPERATIONAL = 1; /* Initializing */
 
     corto_appName = appName;
+    if ((appName[0] == '.') && (appName[1] == '/')) {
+        corto_appName += 2;
+    }
 
     /* Initialize benchmark constants */
     CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");

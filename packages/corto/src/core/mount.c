@@ -93,12 +93,13 @@ void* corto_mount_thread(void* arg) {
 void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r, corto_subscriber s) {
     CORTO_UNUSED(s);
 
-    if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
-        corto_mount_onNotify(this, mask, r);
+    if (mask != CORTO_ON_DECLARE) {
+        if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
+            corto_mount_onNotify(this, mask, r);
+        }
     }
 
     switch(mask) {
-    case CORTO_ON_DECLARE: this->sent.declares ++; break;
     case CORTO_ON_DEFINE: this->sent.updates ++; break;
     case CORTO_ON_UPDATE: this->sent.updates ++; break;
     case CORTO_ON_DELETE: this->sent.deletes ++; break;
@@ -298,6 +299,15 @@ corto_void _corto_mount_destruct(
 /* $end */
 }
 
+corto_string _corto_mount_id(
+    corto_mount this)
+{
+/* $begin(corto/core/mount/id) */
+
+    return corto_mount_onId(this);
+/* $end */
+}
+
 corto_int16 _corto_mount_init(
     corto_mount this)
 {
@@ -328,6 +338,15 @@ corto_void _corto_mount_invoke(
         corto_setOwner(prevowner);
     }
 
+/* $end */
+}
+
+corto_string _corto_mount_onId_v(
+    corto_mount this)
+{
+/* $begin(corto/core/mount/onId) */
+    CORTO_UNUSED(this);
+    return NULL;
 /* $end */
 }
 

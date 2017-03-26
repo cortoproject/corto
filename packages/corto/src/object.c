@@ -960,7 +960,7 @@ corto_attr corto_getAttr(void) {
 }
 
 /* Create new object with attributes */
-corto_object _corto_declare(corto_type type) {
+static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
     corto_benchmark_start(CORTO_BENCHMARK_DECLARE);
 
     corto_uint32 size, headerSize;
@@ -1003,7 +1003,7 @@ corto_object _corto_declare(corto_type type) {
         }
     }
 
-    if ((corto_typeof(type) == corto_type(corto_target_o)) && !(attrs & CORTO_ATTR_SCOPED)) {
+    if ((corto_typeof(type) == corto_type(corto_target_o)) && (!orphan || (!(attrs & CORTO_ATTR_SCOPED)))) {
         attrs |= CORTO_ATTR_PERSISTENT;
     }
 
@@ -1128,6 +1128,10 @@ error:
     return NULL;
 }
 
+corto_object _corto_declare(corto_type type) {
+    return corto_declareIntern(type, FALSE);
+}
+
 static corto_type corto_containerType(corto_container c) {
     if (c->type) return c->type; else return corto_type(c);
 }
@@ -1224,6 +1228,7 @@ static corto_object corto_declareChildIntern(
     corto_benchmark_start(CORTO_BENCHMARK_DECLARECHILD);
     corto_object o = NULL;
     corto_bool retry = FALSE;
+    corto_string mountId = NULL;
 
     corto_assertObject(parent);
     corto_assertObject(type);
@@ -1237,8 +1242,21 @@ static corto_object corto_declareChildIntern(
         goto error;
     }
 
-    if (!id || !id[0]) {
-        corto_seterr("invalid id (cannot be null or an empty string)");
+    /* If no id is provided, lookup id in mount */
+    if (!id) {
+        corto_id parentId, typeId;
+        corto_fullpath(parentId, parent);
+        corto_fullpath(typeId, type);
+        mountId = corto_select(parentId, "*").type(typeId).id();
+        if (!mountId) {
+            corto_seterr("no available id providers (id = 'null')");
+            goto error;
+        }
+        id = mountId;
+    }
+
+    if (!id[0]) {
+        corto_seterr("invalid id (cannot be an empty string)");
         goto error;
     }
 
@@ -1256,7 +1274,7 @@ static corto_object corto_declareChildIntern(
     /* Create new object */
     do {
         corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_SCOPED);
-        o = corto_declare(type);
+        o = corto_declareIntern(type, orphan);
         corto_setAttr(oldAttr);
 
         if (o) {
@@ -1286,13 +1304,15 @@ static corto_object corto_declareChildIntern(
                     if (owner && corto_instanceof(corto_mount_o, owner)) {
                         if (owner != corto_getOwner()) {
                             if (corto_getOwner() || corto_mount(owner)->kind != CORTO_SINK) {
-                                corto_release(o);
-                                corto_seterr(
-                                  "owner '%s' of existing object '%s' does not match owner '%s'",
-                                  corto_fullpath(NULL, owner),
-                                  corto_fullpath(NULL, o),
-                                  corto_fullpath(NULL, corto_getOwner()));
-                                goto owner_error;
+                                if (forceType) {
+                                    corto_release(o);
+                                    corto_seterr(
+                                      "owner '%s' of existing object '%s' does not match owner '%s'",
+                                      corto_fullpath(NULL, owner),
+                                      corto_fullpath(NULL, o),
+                                      corto_fullpath(NULL, corto_getOwner()));
+                                    goto owner_error;
+                                }
                             }
                         }
                     }
@@ -1373,6 +1393,7 @@ static corto_object corto_declareChildIntern(
     }
 
 ok:
+    if (mountId) corto_dealloc(mountId);
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
 
     return o;
@@ -1382,6 +1403,7 @@ error:
     }
 access_error:
 owner_error:
+    if (mountId) corto_dealloc(mountId);
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
     return NULL;
 }

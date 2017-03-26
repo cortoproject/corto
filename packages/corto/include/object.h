@@ -142,6 +142,7 @@ typedef struct corto_selectFluent {
     corto_int64 ___ (*count)(void);
     corto_int16 ___ (*subscribe)(corto_resultIter *ret); /* Unstable API */
     corto_int16 ___ (*unsubscribe)(void); /* Unstable API */
+    corto_string ___ (*id)(void); /* Unstable API */
 } corto_selectFluent;
 CORTO_EXPORT struct corto_selectFluent corto_select(corto_string scope, corto_string expr, ...);
 

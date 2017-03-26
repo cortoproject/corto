@@ -233,6 +233,7 @@ corto_int16 corto_notifySubscribersId(
     corto_value intermediateValue = corto_value_init();
     corto_contentType contentTypeHandle = NULL;
     corto_object owner = corto_getOwner();
+    corto_object objectOwner = owner;
 
     struct {
         corto_contentType ct;
@@ -243,6 +244,7 @@ corto_int16 corto_notifySubscribersId(
     if (!contentType && value) {
         intermediate = (corto_object)value;
         intermediateValue = corto_value_object(intermediate, NULL);
+        objectOwner = corto_ownerof(intermediate);
     }
 
     char *sep = NULL, *id = strrchr(path, '/');
@@ -382,13 +384,14 @@ corto_int16 corto_notifySubscribersId(
                 }
 
                 corto_result r = {
-                  id,
-                  NULL,
-                  relativeParent,
-                  type,
-                  content,
-                  FALSE,
-                  intermediate
+                  .id = id,
+                  .name = NULL,
+                  .parent = relativeParent,
+                  .type = type,
+                  .value = content,
+                  .leaf = FALSE,
+                  .object = intermediate,
+                  .owner = objectOwner
                 };
 
                 corto_benchmark_start(S_B_INVOKE);

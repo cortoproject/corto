@@ -206,6 +206,7 @@ corto_resultIter _corto_loader_onRequest_v(
     result.release = corto_loader_iterRelease;
 
     corto_dealloc(targetPath);
+    corto_dealloc(homePath);
     corto_dealloc(globalPath);
 
     return result;

@@ -292,6 +292,50 @@ corto_void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
 /* $end */
 }
 
+/* $header(test/Subscribe/tc_subscribeOwnerSet) */
+void tc_subscribeOwnerSet(
+    corto_object instance,
+    corto_eventMask event,
+    corto_result *result,
+    corto_subscriber subscriber)
+{
+    test_Subscribe this = instance;
+    corto_setref(&this->owner, result->owner);
+}
+/* $end */
+corto_void _test_Subscribe_tc_subscribeOwnerSet(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeOwnerSet) */
+    corto_object owner = corto_voidCreate();
+    corto_object prevOwner = corto_setOwner(owner);
+    corto_object a = corto_createChild(NULL, "a", corto_int32_o);
+    corto_setOwner(prevOwner);
+    corto_object b = corto_createChild(NULL, "b", corto_int32_o);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/", "a,b")
+      .instance(this)
+      .callback(tc_subscribeOwnerSet);
+ 
+    corto_setref(&this->owner, NULL);
+
+    test_assert(corto_update(a) == 0);
+    test_assert(this->owner == owner);
+
+    test_assert(corto_update(b) == 0);
+    test_assert(this->owner == NULL);
+
+    test_assert(corto_delete(b) == 0);
+
+    corto_setOwner(owner);
+    test_assert(corto_delete(a) == 0);
+    corto_setOwner(prevOwner);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
 corto_void _test_Subscribe_tc_subscribePartialMatchingParent(
     test_Subscribe this)
 {
