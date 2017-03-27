@@ -5,8 +5,17 @@ def msg(text)
   print "[ #{C_DEFAULT}#{text}#{C_NORMAL} ]\n"
 end
 
+def err(text)
+  print "[ #{C_FAIL}error #{C_NORMAL}#{text} ]\n"
+end
+
 def cmd(command)
-  sh command
+  begin
+    sh command
+  rescue
+    err command
+    raise
+  end
 end
 
 # Set Corto version variable
@@ -88,12 +97,12 @@ if not defined? CONFIG then
 end
 
 # Set colors
-C_DEFAULT = "\033[1;36m"
+C_DEFAULT = "\033[0;36m"
 C_BOLD = "\033[0;49m\033[1;49m"
 C_NORMAL = "\033[0;49m"
-C_FAIL = "\033[1;31m"
-C_OK = "\033[1;32m"
-C_WARNING = "\033[1;33m"
+C_FAIL = "\033[0;31m"
+C_OK = "\033[0;32m"
+C_WARNING = "\033[0;33m"
 
 # Initialize public variables
 INCLUDE = [] if not defined? INCLUDE
@@ -109,7 +118,7 @@ DEFINE = [] if not defined? DEFINE
 PP_PRELOAD = [] if not defined? PP_PRELOAD
 LANGUAGE = "c" if not defined? LANGUAGE
 ALWAYS_REBUILD = [] if not defined? ALWAYS_REBUILD
-CORE_ONLY = false if not defined? CORE_ONLY
+NOAPI = false if not defined? NOAPI
 UNINSTALL = []
 
 # Variable that tracks files created by the buildsystem for uninstaller

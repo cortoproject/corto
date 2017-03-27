@@ -13,7 +13,11 @@ def forward(dir, task)
       end
     end
     if File.exists? "#{dir}/rakefile" then
-      sh "rake #{task} -f #{dir}/rakefile"
+      begin
+        sh "rake #{task} -f #{dir}/rakefile"
+      rescue
+        exit(-1)
+      end
       COMPONENTS_DONE << dir
     end
   end
@@ -78,7 +82,7 @@ task :test do
       end
     end
     if error != 0 then
-      abort
+      exit(-1)
     end
   end
   COMPONENTS_DONE.clear
@@ -98,7 +102,7 @@ task :runtest do
       end
     end
     if error != 0 then
-      abort
+      exit(-1)
     end
   end
   COMPONENTS_DONE.clear

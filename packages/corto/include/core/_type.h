@@ -61,6 +61,7 @@ struct corto_package_s {
     corto_string description;
     corto_string env;
     corto_bool nocorto;
+    corto_bool noapi;
     corto_stringlist cflags;
     corto_stringlist dependencies;
     corto_stringlist definitions;

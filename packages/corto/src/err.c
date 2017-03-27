@@ -286,7 +286,7 @@ static char* corto_log_tokenize(char *msg) {
             isStr = ch;
         }
 
-        if (isdigit(ch) && !isNum && !isStr && !isalpha(prev) && !isdigit(prev) && (prev != '_') && (prev != '.')) {
+        if ((isdigit(ch) || (ch == '-' && isdigit(ptr[1]))) && !isNum && !isStr && !isalpha(prev) && !isdigit(prev) && (prev != '_') && (prev != '.')) {
             corto_buffer_appendstr(&buff, CORTO_GREEN);
             isNum = TRUE;
         }

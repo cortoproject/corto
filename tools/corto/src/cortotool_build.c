@@ -79,6 +79,9 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     if (package->nocorto) {
         fprintf((FILE*)rakefile, "NOCORTO = true\n");
     }
+    if (package->noapi) {
+        fprintf((FILE*)rakefile, "NOAPI = true\n");
+    }
 
     fprintf((FILE*)rakefile, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", corto_idof(corto_typeof(package)));
     corto_fileClose(rakefile);

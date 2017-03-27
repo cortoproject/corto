@@ -53,7 +53,7 @@ if TARGET != "corto" and NOCORTO == false then
   if LANGUAGE == "cpp" or LANGUAGE == "c++" then
     USE_PACKAGE << "corto/cpp"
   elsif LANGUAGE == "c" or LANGUAGE == "c4cpp" then
-    if not CORE_ONLY then
+    if not NOAPI then
       USE_PACKAGE << "corto/lang/c" << "corto/core/c"
     end
   end
@@ -170,11 +170,10 @@ if NOCORTO == false then
       begin
         cmd command
       rescue
-        STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
         if File.exists? "include/_type.h" then
           cmd "rm include/_type.h"
         end
-        abort()
+        exit(-1)
       end
     end
     task :default => ["include/_type.h"]
@@ -214,11 +213,10 @@ if NOCORTO == false then
       begin
         cmd command
       rescue
-        STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
         if File.exists? "include/#{NAME}.h" then
           cmd "rm include/#{NAME}.h"
         end
-        abort()
+        exit(-1)
       end
     end
     task :prebuild => [".corto/_project.#{EXT}"]
@@ -244,8 +242,7 @@ task :doc do
         begin
           # cmd command
         rescue
-          STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
-          abort
+          exit(-1)
         end
       end
     rescue
@@ -435,7 +432,7 @@ task :install_files do
         begin
           cmd "mkdir -p #{libpath}"
         rescue
-          abort "\033[1;31m[ command failed: mkdir #{libpath} ]\033[0;49m"
+          exit(-1)
         end
     end
 
