@@ -11,6 +11,7 @@ static corto_threadKey corto_errKey = 0;
 extern corto_mutex_s corto_adminLock;
 static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
 extern char *corto_appName;
+static char *corto_errfmt_current = CORTO_ERRFMT_DEFAULT;
 
 #define DEPTH 60
 
@@ -253,11 +254,6 @@ static char* corto_log_componentString(char *components[]) {
     corto_int32 i = 0;
     corto_buffer buff = CORTO_BUFFER_INIT;
 
-    if (corto_appName) {
-        corto_buffer_append(&buff, "[%s%s%s] ", 
-            CORTO_CYAN, corto_appName, CORTO_NORMAL);
-    }
-
     while (components[i]) {
         corto_buffer_append(&buff, "%s%s%s: ", 
             CORTO_MAGENTA, components[i], CORTO_NORMAL);
@@ -307,12 +303,9 @@ static char* corto_log_tokenize(char *msg) {
     return corto_buffer_str(&buff);
 }
 
-static void corto_logprint(FILE *f, corto_err kind, char *components[], char *msg) {
-    size_t n = 0;
+static void corto_logprint_kind(corto_buffer *buf, corto_err kind) {
+    char *color, *levelstr;
     int levelspace;
-    char *color, *levelstr, *tokenized;
-    corto_time now;
-    corto_timeGet(&now);
 
     switch(kind) {
     case CORTO_THROW: color = CORTO_RED; levelstr = "throw"; break;
@@ -325,36 +318,75 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char *ms
     default: color = CORTO_RED; levelstr = "critical"; break;
     }
 
-    n = strlen(msg) + 1;
-    if (n < 80) {
-        n = 80 - n;
-    } else {
-        n = 0;
-    }
-
     if (corto_verbosityGet() <= CORTO_TRACE) {
         levelspace = 5;
     } else {
         levelspace = 4;
     }
 
-    char *componentStr = components ? corto_log_componentString(components) : NULL;
+    corto_buffer_append(
+        buf, "%s%*s%s", color, levelspace, levelstr, CORTO_NORMAL);
+}
 
-    /* If string already uses color coding, don't interfere */
+static void corto_logprint_time(corto_buffer *buf, corto_time t) {
+    corto_buffer_append(buf, "%.9d.%.4d", t.sec, t.nanosec / 100000);
+}
+
+static void corto_logprint_components(corto_buffer *buf, char *components[]) {
+    char *componentStr = components ? corto_log_componentString(components) : NULL;
+    if (componentStr) {
+        corto_buffer_appendstr(buf, componentStr);
+        corto_dealloc(componentStr);
+    }
+}
+
+static void corto_logprint_msg(corto_buffer *buf, corto_string msg) {
+    char *tokenized = msg;
     if (!strchr(msg, '\033')) {
         tokenized = corto_log_tokenize(msg);
     }
+    corto_buffer_appendstr(buf, tokenized);
+    if (tokenized != msg) corto_dealloc(tokenized);
+}
 
-    fprintf(f, "%.9d.%.4d - %s%*s%s: %s%s%*s\n", 
-        now.sec, now.nanosec / 100000, 
-        color, levelspace, levelstr, CORTO_NORMAL, 
-        componentStr ? componentStr : "", tokenized, (int)n, " ");
+static void corto_logprint(FILE *f, corto_err kind, char *components[], char *msg) {
+    size_t n = 0;
+    corto_buffer buf = CORTO_BUFFER_INIT;
+    char *fmtptr, ch;
+    corto_time now;
+    corto_timeGet(&now);
 
-    if (tokenized != msg) {
-        corto_dealloc(tokenized);
+    for (fmtptr = corto_errfmt_current; (ch = *fmtptr); fmtptr++) {
+        if (ch == '%') {
+            switch(fmtptr[1]) {
+            case 't': corto_logprint_time(&buf, now); break;
+            case 'l': corto_logprint_kind(&buf, kind); break;
+            case 'c': corto_logprint_components(&buf, components); break;
+            case 'm': corto_logprint_msg(&buf, msg); break;
+            case 'a': corto_buffer_append(&buf, "%s%s%s", CORTO_CYAN, corto_appName, CORTO_NORMAL); break;
+            default:
+                corto_buffer_appendstr(&buf, "%");
+                corto_buffer_appendstrn(&buf, &fmtptr[1], 1);
+                break;
+            }
+            fmtptr += 1;
+        } else {
+            corto_buffer_appendstrn(&buf, &ch, 1);
+        }
     }
 
-    if (componentStr) corto_dealloc(componentStr);
+    char *str = corto_buffer_str(&buf);
+
+    n = strlen(str) + 1;
+    if (n < 80) {
+        n = 80 - n;
+    } else {
+        n = 0;
+    }
+
+    fprintf(f, "%s\n", str);
+
+    corto_dealloc(str);
 }
 
 static char* corto_log_parseComponents(char *components[], char *msg) {
@@ -373,6 +405,11 @@ static char* corto_log_parseComponents(char *components[], char *msg) {
     components[count] = NULL;
 
     return prev;
+}
+
+void corto_errfmt(char *fmt) {
+    corto_errfmt_current = fmt;
+    corto_setenv("CORTO_ERRFMT", "%s", fmt);
 }
 
 corto_err corto_logv(corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {

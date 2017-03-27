@@ -649,7 +649,7 @@ static corto_string corto_locatePackageIntern(
                 corto_seterr(details);
             }
         } else {
-            corto_setinfo("\n- library '%s' not found", lib);
+            corto_setinfo(" library '%s' not found", lib);
         }
     }
 

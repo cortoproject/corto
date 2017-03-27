@@ -2,6 +2,8 @@
 #include "cortotool_build.h"
 #include "corto/argparse/argparse.h"
 
+static char *errfmt = "[ %l %c%m ]";
+
 /* Run a command for multiple projects */
 static corto_int16 cortotool_runcmd(
   char *argv[], corto_bool silent, corto_bool mute)
@@ -26,7 +28,7 @@ static corto_int16 cortotool_runcmd(
     }
 
     if ((sig = corto_procwait(pid, &ret)) || ret) {
-        corto_seterr("%s failed (%s %d)", argv[0],
+        corto_seterr("%s: %s %d", argv[0],
             sig ? "signal" : "returncode", sig ? sig : ret);
         goto error;
     }
@@ -224,6 +226,8 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
 
     CORTO_UNUSED(argc);
 
+    corto_errfmt(errfmt);
+
     corto_argdata *data = corto_argparse(
       argv,
       (corto_argdata[]){
@@ -327,6 +331,8 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
 
     CORTO_UNUSED(argc);
 
+    corto_errfmt(errfmt);
+
     corto_argdata *data = corto_argparse(
       argv,
       (corto_argdata[]){
@@ -395,6 +401,8 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
     corto_id cwd;
 
     CORTO_UNUSED(argc);
+
+    corto_errfmt(errfmt);
 
     corto_argdata *data = corto_argparse(
       argv,
