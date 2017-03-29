@@ -192,7 +192,7 @@ error:
 }
 
 /* Test if name is a directory */
-int corto_isDirectory(const char *path) {
+int corto_isdir(const char *path) {
     struct stat buff;
     if (stat(path, &buff) != 0) {
         return 0;
@@ -214,7 +214,7 @@ error:
 int corto_rm(const char *name) {
     int result = 0;
 
-    if (corto_isDirectory(name)) {
+    if (corto_isdir(name)) {
         return corto_rmtree(name);
     } else if (remove(name)) {
         /* Don't care if file didn't exist since the postcondition

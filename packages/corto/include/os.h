@@ -43,7 +43,7 @@ CORTO_EXPORT int corto_chdir(const char *name);
 CORTO_EXPORT int corto_cp(const char *source, const char *destination);
 
 /* Test if name is a directory */
-CORTO_EXPORT int corto_isDirectory(const char *name);
+CORTO_EXPORT int corto_isdir(const char *name);
 
 /* Rename a file or directory. Returns 0 if OK, -1 if failed */
 CORTO_EXPORT int corto_rename(const char *oldName, const char *newName);

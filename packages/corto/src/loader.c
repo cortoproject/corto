@@ -397,24 +397,6 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         goto error;
     }
 
-    /* Handle known extensions */
-    if (!strcmp(ext, "cx")) {
-        if (corto_load("corto/ast", 0, NULL)) {
-            corto_seterr("while loading .cx parser:\n  %s", corto_lasterr());
-            goto error;
-        }
-    } else if (!strcmp(ext, "xml")) {
-        if (corto_load("corto/fmt/xml", 0, NULL)) {
-            corto_seterr("while loading .xml parser:\n  %s", corto_lasterr());
-            goto error;
-        }
-    } else if (!strcmp(ext, "md")) {
-        if (corto_load("corto/md", 0, NULL)) {
-            corto_seterr("while loading .md parser:\n  %s", corto_lasterr());
-            goto error;
-        }
-    }
-
     /* Lookup extension */
     corto_mutexLock(&corto_adminLock);
     h = corto_lookupExt(ext);
