@@ -68,7 +68,7 @@ static corto_subscriberAdmin corto_subscribers_global = {0};
 
 /* Optimization- if number is zero don't bother taking a lock and walking
  * subscribers */
-static corto_uint32 corto_subscribers_count;
+corto_uint32 corto_subscribers_count;
 
 /* Free all subscriptoins, but do not free corto_subscriberAdmin itself so
  * it can be reused when a thread needs to copy global subscriptions */
@@ -155,8 +155,6 @@ static corto_subscriberAdmin* corto_subscriberAdminGet() {
 error:
     return NULL;
 }
-
-
 
 /* Function to determine relative path from two path strings  */
 char* corto_pathstr(
