@@ -1,4 +1,4 @@
-#package ::test
+#package test
 
 int8 initCalled: 0
 int8 constructCalled: 0
@@ -47,6 +47,32 @@ struct ReferenceMember::
 struct ReferenceTargetMember::
     m: target{object}
     n: int32
+
+struct NestedInitFailInRoot::
+    int16 init()
+
+struct NestedInitFailInTier1::
+    int16 init()
+
+struct NestedInitFailInTier2::
+    int16 init()
+
+class NestedConstructFailInRoot::
+    int16 construct()
+
+class NestedConstructFailInTier1::
+    int16 construct()
+
+class NestedConstructFailInTier2::
+    int16 construct()
+
+struct EventCount::
+    declareCount: int32
+    defineCount: int32
+    updateCount: int32
+    deleteCount: int32
+    resumeCount: int32
+    suspendCount: int32
 
 array PrimitiveArray: int32, 4
 array StringArray: string, 4
@@ -308,6 +334,15 @@ test/Suite ObjectMgmt::
     void tc_findOrCreate()
     void tc_findOrCreateExisting()
     void tc_findOrCreateExistingOtherType()
+
+    void tc_declareNested()
+    void tc_declareNestedFirstFail()
+    void tc_declareNestedSecondFail()
+    void tc_declareNestedLastFail()
+    void tc_createNested()
+    void tc_createNestedFirstFail()
+    void tc_createNestedSecondFail()
+    void tc_createNestedLastFail()
 
     void tc_nameof()
     void tc_nameofOverride()

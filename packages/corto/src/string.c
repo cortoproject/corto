@@ -86,6 +86,16 @@ char* corto_elemcmp(char *path, char *elem) {
     return pathptr;
 }
 
+char *corto_strelem(char *str) {
+    char *ptr, ch;
+    for (ptr = str; (ch = *ptr); ptr++) {
+        if (ch == '(' || ch == '/') {
+            break;
+        }
+    }
+    return ch ? ptr : NULL;
+}
+
 char *strappend(char *src, char *fmt, ...) {
     char buff[1024];
     va_list args;

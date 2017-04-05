@@ -18,6 +18,9 @@ CORTO_EXPORT int tokicmp(char ** const str_out, const char *str2, char tok);
  * element, NULL when no match or "\0" when reached the end */
 CORTO_EXPORT char* corto_elemcmp(char *path, char *elem);
 
+/* Search element separator in id string. Stop when argument list is found. */
+char *corto_strelem(char *str);
+
 /* Convert characters in string to uppercase */
 CORTO_EXPORT char* corto_strupper(char *str);
 

@@ -234,13 +234,6 @@ static corto_object corto__initScope(
     corto_assert(scope != NULL,
       "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
-    /* If object is in a table, set keyvalues of object */
-    if (id && corto_instanceof(corto_struct_o, corto_typeof(o))) {
-        if (corto_setKeyvalues(o, id)) {
-            goto error;
-        }
-    }
-
     if (id) {
         scope->id = corto_strdup(id);
     } else {
@@ -270,6 +263,15 @@ static corto_object corto__initScope(
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
     } else {
+        /* If object is in a table, set keyvalues of object */
+        if (id && corto_instanceof(corto_struct_o, corto_typeof(o))) {
+            if (corto_setKeyvalues(o, id)) {
+                /* Remove object from scope */
+                corto__orphan(o);
+                goto error;
+            }
+        }
+
         /* Call framework initializer. */
         if (corto_init(o)) {
             corto_string err = corto_lasterr();
@@ -842,14 +844,16 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 /* If parentType is a tablescope, check if child type matches
                  * table type */
                 if (corto_instanceof(corto_tablescope_o, parent)) {
-                    corto_struct tableType = corto_tablescope(parent)->type;
-                    if (corto_type(tableType) != childType) {
-                        if (!corto_instanceof(childType, corto_container_o)) {
-                            corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
-                                corto_fullpath(NULL, childType),
-                                corto_fullpath(NULL, tableType),
-                                corto_fullpath(NULL, parent));
-                            goto err_invalid_child;
+                    if (childType != corto_type(corto_tablescope_o)) {
+                        corto_struct tableType = corto_tablescope(parent)->type;
+                        if ((corto_type(tableType) != childType)) {
+                            if (!corto_instanceof(childType, corto_container_o)) {
+                                corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
+                                    corto_fullpath(NULL, childType),
+                                    corto_fullpath(NULL, tableType),
+                                    corto_fullpath(NULL, parent));
+                                goto err_invalid_child;
+                            }
                         }
                     }
                 }
@@ -957,6 +961,20 @@ corto_attr corto_getAttr(void) {
     } else {
         return CORTO_ATTR_DEFAULT;
     }
+}
+
+corto_bool corto_childof(corto_object p, corto_object o) {
+    corto_bool result = FALSE;
+    if (p != o) {
+        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            corto_object parent = corto_parentof(o);
+            while (parent && (parent != p)) {
+                parent = corto_parentof(parent);
+            }
+            result = parent != NULL;
+        }
+    }
+    return result;
 }
 
 /* Create new object with attributes */
@@ -1210,6 +1228,17 @@ static corto_int16 corto_defineContainer(corto_object parent) {
             }
         }
         corto_scopeRelease(seq);        
+    } else if (corto_parentof(parent) == corto_type(corto_tablescope_o)) {
+        corto_objectseq seq = corto_scopeClaim(parent);
+        corto_int32 i, error = 0;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if (corto_define(c)) {
+                error = 1;
+            }
+        }
+        corto_scopeRelease(seq);  
+        if (error) goto error;      
     }
 
     return 0;
@@ -1408,18 +1437,6 @@ owner_error:
     return NULL;
 }
 
-corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildIntern(parent, id, type, FALSE, TRUE);
-}
-
-corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildIntern(parent, id, type, TRUE, TRUE);
-}
-
-corto_object _corto_findOrDeclare(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildIntern(parent, id, type, FALSE, FALSE);
-}
-
 static corto_object corto_createIntern(corto_object result) {
     if (result &&
         corto_checkState(result, CORTO_VALID) &&
@@ -1431,33 +1448,6 @@ static corto_object corto_createIntern(corto_object result) {
         }
     }
     return result;
-}
-
-corto_object _corto_create(corto_type type) {
-    corto_assertObject(type);
-    corto_object result = corto_declare(type);
-    return corto_createIntern(result);
-}
-
-corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type) {
-    corto_assertObject(parent);
-    corto_assertObject(type);
-    corto_object result = corto_declareChildIntern(parent, id, type, FALSE, TRUE);
-    return corto_createIntern(result);
-}
-
-corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type) {
-    corto_assertObject(parent);
-    corto_assertObject(type);
-    corto_object result = corto_declareChildIntern(parent, id, type, TRUE, TRUE);
-    return corto_createIntern(result);
-}
-
-corto_object _corto_findOrCreate(corto_object parent, corto_string id, corto_type type) {
-    corto_assertObject(parent);
-    corto_assertObject(type);
-    corto_object result = corto_declareChildIntern(parent, id, type, FALSE, FALSE);
-    return corto_createIntern(result);
 }
 
 corto_object corto_resume_fromMount(
@@ -1616,11 +1606,10 @@ corto_bool corto_resumeDeclared(corto_object o) {
     return resumed;
 }
 
-/* Resume a declared object */
-corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
+/* Construct a declared object */
+corto_int16 corto_defineDeclared(corto_object o) {
     corto_int16 result = 0;
     corto_type t = corto_typeof(o);
-    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
     corto_assertObject(o);
 
@@ -1628,7 +1617,7 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
     if (corto_ownerMatch(corto_ownerof(o), NULL)) {
         /* If object is instance of a class, call the constructor */
         if (corto_class_instanceof(corto_class_o, t)) {
-            /* Call constructor - will potentially override observer params */
+            /* Call constructor with default attributes */
             corto_attr prev = corto_setAttr(CORTO_ATTR_DEFAULT);
             result = corto_delegateConstruct(t, o);
             corto_setAttr(prev);
@@ -1637,25 +1626,7 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
         }
     }
 
-    if (!result) {
-        _o->align.attrs.state |= CORTO_DEFINED;
-        if (!corto_checkState(o, CORTO_VALID)) {
-            _o->align.attrs.state |= CORTO_VALID;
-        }
-
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_declaredAdminRemove(o);
-        }
-
-        /* Do postponed listen calls for instance */
-        corto_observerDelayedAdminDefine(o);
-
-        /* Notify observers of defined object, don't generate DEFINED event for
-         * orphaned objects (that don't have CORTO_DECLARED). */
-        if (_o->align.attrs.state & CORTO_DECLARED) {
-            corto_notify(o, mask);
-        }
-    } else {
+    if (result) {
         /* Remove valid state */
         corto_invalidate(o);
     }
@@ -1663,18 +1634,138 @@ corto_int16 corto_defineDeclared(corto_object o, corto_eventMask mask) {
     return result;
 }
 
-corto_bool corto_childof(corto_object p, corto_object o) {
-    corto_bool result = FALSE;
-    if (p != o) {
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-            corto_object parent = corto_parentof(o);
-            while (parent && (parent != p)) {
-                parent = corto_parentof(parent);
+/* Send DEFINE or RESUME notification for new object */
+corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
+    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+
+    _o->align.attrs.state |= CORTO_DEFINED;
+    if (!corto_checkState(o, CORTO_VALID)) {
+        _o->align.attrs.state |= CORTO_VALID;
+    }
+
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        corto_declaredAdminRemove(o);
+    }
+
+    /* Do postponed listen calls for instance */
+    corto_observerDelayedAdminDefine(o);
+
+    /* Notify observers of defined object, don't generate DEFINED event for
+     * orphaned objects (that don't have CORTO_DECLARED). */
+    if (_o->align.attrs.state & CORTO_DECLARED) {
+        corto_notify(o, mask);
+    }
+
+    return 0;
+}
+
+static corto_object corto_declareChildInternRecursive(
+    corto_object parent, 
+    corto_string id, 
+    corto_type type, 
+    corto_bool orphan, 
+    corto_bool forceType,
+    corto_bool create) 
+{
+    char *next;
+    corto_object result = NULL;
+
+    if (id && (next = corto_strelem(id)) && (*next != '(')) {
+        corto_id buf;
+        char *cur = buf;
+        strcpy(buf, id);
+        corto_object stack[CORTO_MAX_SCOPE_DEPTH];
+        corto_int32 sp = 0;
+
+        next = &cur[next - id];
+        *next = '\0';
+        next ++;
+
+        do {
+            result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
+
+            parent = result;
+            stack[sp ++] = result;
+
+            cur = next;
+            if (cur && (next = corto_strelem(cur))) {
+                *next = '\0';
+                next ++;
             }
-            result = parent != NULL;
+        } while (result && cur);
+
+        if (create && result) {
+            corto_int32 i;
+            corto_eventMask masks[CORTO_MAX_SCOPE_DEPTH];
+
+            /* First ensure all constructors are successfully called */
+            for (i = 0; i < sp; i++) {
+                masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
+                if (corto_defineDeclared(stack[i])) {
+                    result = NULL; /* Signal failure */
+                    break;
+                }
+            }
+
+            /* Send notifications for all objects */
+            if (result) {
+                for (i = 0; i < sp; i++) {
+                    corto_notifyDefined(stack[i], masks[i]);
+                }
+            }
+        }
+
+        /* If one of the operations failed, delete all objects */
+        if (!result) {
+            /* Recursively delete objects */
+            if (stack[0]) {
+                corto_delete(stack[0]);
+            }
+        }
+    } else {
+        result = corto_declareChildIntern(parent, id, type, orphan, forceType);
+        if (create) {
+            result = corto_createIntern(result);
         }
     }
+
     return result;
+}
+
+corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
+    return corto_declareChildInternRecursive(parent, id, type, FALSE, TRUE, FALSE);
+}
+
+corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type) {
+    return corto_declareChildInternRecursive(parent, id, type, TRUE, TRUE, FALSE);
+}
+
+corto_object _corto_findOrDeclare(corto_object parent, corto_string id, corto_type type) {
+    return corto_declareChildInternRecursive(parent, id, type, FALSE, FALSE, FALSE);
+}
+
+corto_object _corto_create(corto_type type) {
+    corto_assertObject(type);
+    corto_object result = corto_declare(type);
+    return corto_createIntern(result);
+}
+
+corto_object _corto_createChild(corto_object parent, corto_string id, corto_type type) {
+    corto_assertObject(parent);
+    corto_assertObject(type);
+    return corto_declareChildInternRecursive(parent, id, type, FALSE, TRUE, TRUE);
+}
+
+corto_object _corto_createOrphan(corto_object parent, corto_string id, corto_type type) {
+    corto_assertObject(parent);
+    corto_assertObject(type);
+    return corto_declareChildInternRecursive(parent, id, type, TRUE, TRUE, TRUE);
+}
+
+corto_object _corto_findOrCreate(corto_object parent, corto_string id, corto_type type) {
+    corto_assertObject(parent);
+    corto_assertObject(type);
+    return corto_declareChildInternRecursive(parent, id, type, FALSE, FALSE, TRUE);
 }
 
 /* Define object */
@@ -1701,7 +1792,10 @@ corto_int16 corto_define(corto_object o) {
         }
 
         corto_bool resumed = corto_resumeDeclared(o);
-        result = corto_defineDeclared(o, resumed ? CORTO_ON_RESUME : CORTO_ON_DEFINE);
+        result = corto_defineDeclared(o);
+        if (!result) {
+            result = corto_notifyDefined(o, resumed ? CORTO_ON_RESUME : CORTO_ON_DEFINE);
+        }
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("define", o, NULL);
     }
 
@@ -3642,7 +3736,10 @@ corto_int16 corto_update(corto_object o) {
         }
         if (!corto_checkState(o, CORTO_DEFINED)) {
             mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
-            result = corto_defineDeclared(o, mask);
+            result = corto_defineDeclared(o);
+            if (!result) {
+                result = corto_notifyDefined(o, mask);
+            }
         } else {
             if (corto_notifySecured(o, CORTO_ON_UPDATE)) {
                 goto error;
@@ -3651,7 +3748,10 @@ corto_int16 corto_update(corto_object o) {
     } else {
         if (!corto_checkState(o, CORTO_DEFINED)) {
             mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
-            result = corto_defineDeclared(o, mask);
+            result = corto_defineDeclared(o);
+            if (!result) {
+                result = corto_notifyDefined(o, mask);
+            }
         } else {
             if (corto_notify(o, CORTO_ON_UPDATE)) {
                 goto error;
@@ -3757,7 +3857,10 @@ corto_int16 corto_updateEnd(corto_object observable) {
             mask |= CORTO_ON_DEFINE;
         }
 
-        result = corto_defineDeclared(observable, mask);
+        result = corto_defineDeclared(observable);
+        if (!result) {
+            result = corto_notifyDefined(observable, mask);
+        }
     } else {
         if (!corto_secured()) {
             if (corto_notifySecured(observable, CORTO_ON_UPDATE)) {

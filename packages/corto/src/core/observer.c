@@ -12,6 +12,8 @@
 #include "../lang/_class.h"
 #include "_object.h"
 
+extern corto_uint32 corto_subscribers_count;
+
 /* Fluent request */
 typedef struct corto_observeRequest {
     corto_int16 err;
@@ -301,6 +303,40 @@ static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
     return freeArray;
 }
 
+static void corto_updateSubscriptionById(char *id) {
+    corto_iter it;
+
+    corto_select(NULL, id).subscribe(&it);
+    while (corto_iterHasNext(&it)) {
+        corto_result *r = corto_iterNext(&it);
+
+        /* Reuse id buffer. Because this function is recursive, using a
+         * large buffer allocated on stack is 'dangerous'. */
+        sprintf(id, "%s/%s/", r->parent, r->id);
+        corto_updateSubscriptionById(id);
+    }
+}
+
+static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventMask mask, corto_object observable) {
+    /* If there are no subscribers, then there are no mounts that are potentially
+     * interested in subscriptions */
+    if (corto_subscribers_count) {
+        if (observerMask & CORTO_ON_TREE) {
+            if (mask == CORTO_ON_DEFINE) {
+                corto_id id;
+                corto_fullpath(id, observable);
+                strcat(id, "/");
+                corto_updateSubscriptionById(id);
+            } else if (mask == CORTO_ON_DELETE) {
+                corto_id id;
+                corto_fullpath(id, observable);
+                corto_info("observer: unsubscribe for '%s'", id);
+                corto_select(id, "//").unsubscribe();
+            }
+        }
+    }
+}
+
 /* Notify one observer */
 static void corto_notifyObserver(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto_observer observer = data->observer;
@@ -382,11 +418,15 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
             corto_dealloc(str);
         }
 #endif
+        /* Update subscriptions for tree observers */
+        corto_updateSubscriptions(data->observer->mask, mask, observable);
+
         switch(data->notifyKind) {
         case 0: corto_notifyObserver(data, observable, prev, mask, depth); break;
         case 1: corto_notifyObserverCdecl(data, observable, prev, mask, depth); break;
         case 2: corto_notifyObserverDispatch(data, observable, prev, mask, depth); break;
         }
+        
         observers++;
     }
     corto_setOwner(prev);
@@ -970,8 +1010,25 @@ corto_int16 _corto_observer_observe(
 
         this->active ++;
         this->enabled = TRUE;
-    }
 
+        /* Let mounts know of observer */
+        corto_iter it;
+        corto_id observableId;
+        corto_fullpath(observableId, observable);
+        corto_int16 ret = corto_select(
+            observableId,
+            mask & CORTO_ON_SELF ? "." :
+            mask & CORTO_ON_SCOPE ? "/" : "//")
+          .instance(this)
+          .subscribe(&it);
+        if (ret) {
+            corto_seterr("observer: failed to notify mounts of subscription");
+            goto error;
+        }
+
+        /* TODO: use data from select to align observer */
+        while (corto_iterHasNext(&it)) corto_iterNext(&it);
+    }
 
     /* From this point onwards the old observer arrays are no longer accessible.
      * However, since notifications can still be in progress these arrays can't
@@ -1163,6 +1220,13 @@ corto_int16 _corto_observer_unobserve(
         if (!this->active) {
             this->enabled = FALSE;
         }
+        
+        corto_id observableId;
+        corto_fullpath(observableId, observable);
+        corto_select(observableId,
+            mask & CORTO_ON_SELF ? "." :
+            mask & CORTO_ON_SCOPE ? "/" : "//")
+           .instance(this).unsubscribe();
     }
 
     /* See comments in observe */

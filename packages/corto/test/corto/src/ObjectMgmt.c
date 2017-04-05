@@ -513,6 +513,149 @@ corto_void _test_ObjectMgmt_tc_createInvalidType(
 /* $end */
 }
 
+/* $header(test/ObjectMgmt/tc_createNested) */
+corto_void onCreateNested(
+    corto_object instance,
+    corto_eventMask event,
+    corto_object result,
+    corto_observer observer)
+{
+    test_EventCount *counter = instance;
+
+    if (event & CORTO_ON_DECLARE) counter->declareCount++;
+    if (event & CORTO_ON_DEFINE) counter->defineCount++;
+    if (event & CORTO_ON_UPDATE) counter->updateCount++;
+    if (event & CORTO_ON_DELETE) counter->deleteCount++;
+    if (event & CORTO_ON_RESUME) counter->resumeCount++;
+    if (event & CORTO_ON_SUSPEND) counter->suspendCount++;
+}
+/* $end */
+corto_void _test_ObjectMgmt_tc_createNested(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_createNested) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("int32")
+        .instance(counter)
+        .callback(onCreateNested);
+    test_assert(o != NULL);
+
+    corto_object c = corto_createChild(root_o, "a/b/c", corto_int32_o);
+    test_assert(c != NULL);
+    test_assert(corto_typeof(c) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(c), "c");
+    test_assert(corto_checkState(c, CORTO_VALID));
+    test_assert(corto_checkState(c, CORTO_DECLARED));
+    test_assert(corto_checkState(c, CORTO_DEFINED));
+
+    corto_object b = corto_lookup(root_o, "a/b");
+    test_assert(b != NULL);
+    test_assert(corto_parentof(c) == b);
+    test_assert(corto_typeof(b) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(b), "b");
+    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(corto_checkState(b, CORTO_DECLARED));
+    test_assert(corto_checkState(b, CORTO_DEFINED));
+
+    corto_object a = corto_lookup(root_o, "a");
+    test_assert(a != NULL);
+    test_assert(corto_parentof(b) == a);
+    test_assert(corto_typeof(a) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(a), "a");
+    test_assert(corto_checkState(a, CORTO_VALID));
+    test_assert(corto_checkState(a, CORTO_DECLARED));
+    test_assert(corto_checkState(a, CORTO_DEFINED));
+
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 3);
+    test_assertint(counter->defineCount, 3);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 3);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_createNestedFirstFail(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_createNestedFirstFail) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("/test/NestedConstructFailInRoot")
+        .instance(counter)
+        .callback(onCreateNested);
+    test_assert(o != NULL);
+
+    corto_object c = corto_createChild(root_o, "a/b/c", test_NestedConstructFailInRoot_o);
+    test_assert(c == NULL);
+    test_assert(corto_lookup(root_o, "a/b") == NULL);
+    test_assert(corto_lookup(root_o, "a") == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 3);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_createNestedLastFail(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_createNestedLastFail) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("/test/NestedConstructFailInTier2")
+        .instance(counter)
+        .callback(onCreateNested);
+    test_assert(o != NULL);
+
+    corto_object c = corto_createChild(root_o, "a/b/c", test_NestedConstructFailInTier2_o);
+    test_assert(c == NULL);
+    test_assert(corto_lookup(root_o, "a/b") == NULL);
+    test_assert(corto_lookup(root_o, "a") == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 3);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_createNestedSecondFail(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_createNestedSecondFail) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("/test/NestedConstructFailInTier1")
+        .instance(counter)
+        .callback(onCreateNested);
+    test_assert(o != NULL);
+
+    corto_object c = corto_createChild(root_o, "a/b/c", test_NestedConstructFailInTier1_o);
+    test_assert(c == NULL);
+    test_assert(corto_lookup(root_o, "a/b") == NULL);
+    test_assert(corto_lookup(root_o, "a") == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 3);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
+
+/* $end */
+}
+
 corto_void _test_ObjectMgmt_tc_createNullType(
     test_ObjectMgmt this)
 {
@@ -1029,6 +1172,150 @@ corto_void _test_ObjectMgmt_tc_declareInvalidType(
     corto_object o = corto_declare(t);
     test_assert(o == NULL);
     test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
+
+/* $end */
+}
+
+/* $header(test/ObjectMgmt/tc_declareNested) */
+corto_void onDeclareNested(
+    corto_object instance,
+    corto_eventMask event,
+    corto_object result,
+    corto_observer observer)
+{
+    test_EventCount *counter = instance;
+
+    if (event & CORTO_ON_DECLARE) counter->declareCount++;
+    if (event & CORTO_ON_DEFINE) counter->defineCount++;
+    if (event & CORTO_ON_UPDATE) counter->updateCount++;
+    if (event & CORTO_ON_DELETE) counter->deleteCount++;
+    if (event & CORTO_ON_RESUME) counter->resumeCount++;
+    if (event & CORTO_ON_SUSPEND) counter->suspendCount++;
+}
+/* $end */
+corto_void _test_ObjectMgmt_tc_declareNested(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_declareNested) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("int32")
+        .instance(counter)
+        .callback(onDeclareNested);
+    test_assert(o != NULL);
+
+    corto_object c = corto_declareChild(root_o, "a/b/c", corto_int32_o);
+    test_assert(c != NULL);
+    test_assert(corto_typeof(c) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(c), "c");
+    test_assert(corto_checkState(c, CORTO_VALID));
+    test_assert(corto_checkState(c, CORTO_DECLARED));
+    test_assert(!corto_checkState(c, CORTO_DEFINED));
+
+    corto_object b = corto_lookup(root_o, "a/b");
+    test_assert(b != NULL);
+    test_assert(corto_parentof(c) == b);
+    test_assert(corto_typeof(b) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(b), "b");
+    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(corto_checkState(b, CORTO_DECLARED));
+    test_assert(!corto_checkState(b, CORTO_DEFINED));
+
+    corto_object a = corto_lookup(root_o, "a");
+    test_assert(a != NULL);
+    test_assert(corto_parentof(b) == a);
+    test_assert(corto_typeof(a) == corto_type(corto_int32_o));
+    test_assertstr(corto_idof(a), "a");
+    test_assert(corto_checkState(a, CORTO_VALID));
+    test_assert(corto_checkState(a, CORTO_DECLARED));
+    test_assert(!corto_checkState(a, CORTO_DEFINED));
+
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 3);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
+
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_declareNestedFirstFail(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_declareNestedFirstFail) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("int32")
+        .instance(counter)
+        .callback(onDeclareNested);
+    test_assert(o != NULL);
+
+    corto_object c = test_NestedInitFailInRootDeclareChild(root_o, "a/b/c");
+    test_assert(c == NULL);
+    test_assert(corto_lookup(root_o, "a/b") == NULL);
+    test_assert(corto_lookup(root_o, "a") == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 0);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_declareNestedLastFail(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_declareNestedLastFail) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("/test/NestedInitFailInTier2")
+        .instance(counter)
+        .callback(onDeclareNested);
+    test_assert(o != NULL);
+
+    corto_object c = test_NestedInitFailInTier2DeclareChild(root_o, "a/b/c");
+    test_assert(c == NULL);
+    test_assert(corto_lookup(root_o, "a/b") == NULL);
+    test_assert(corto_lookup(root_o, "a") == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 2);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
+
+/* $end */
+}
+
+corto_void _test_ObjectMgmt_tc_declareNestedSecondFail(
+    test_ObjectMgmt this)
+{
+/* $begin(test/ObjectMgmt/tc_declareNestedSecondFail) */
+    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
+        .type("/test/NestedInitFailInTier1")
+        .instance(counter)
+        .callback(onDeclareNested);
+    test_assert(o != NULL);
+
+    corto_object c = test_NestedInitFailInTier1DeclareChild(root_o, "a/b/c");
+    test_assert(c == NULL);
+    test_assert(corto_lookup(root_o, "a/b") == NULL);
+    test_assert(corto_lookup(root_o, "a") == NULL);
+
+    test_assert(corto_delete(o) == 0);
+
+    test_assertint(counter->declareCount, 1);
+    test_assertint(counter->defineCount, 0);
+    test_assertint(counter->updateCount, 0);
+    test_assertint(counter->deleteCount, 0);
 
 /* $end */
 }

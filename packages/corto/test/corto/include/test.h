@@ -173,6 +173,7 @@ corto_void _test_ol_wildcard_int32_string(
 #include <include/Env.h>
 #include <include/Err.h>
 #include <include/Event.h>
+#include <include/EventCount.h>
 #include <include/EventTest.h>
 #include <include/Foo.h>
 #include <include/FooReplicator.h>
@@ -187,6 +188,12 @@ corto_void _test_ol_wildcard_int32_string(
 #include <include/MethodResolver.h>
 #include <include/MethodTester.h>
 #include <include/MethodTesterInherit.h>
+#include <include/NestedConstructFailInRoot.h>
+#include <include/NestedConstructFailInTier1.h>
+#include <include/NestedConstructFailInTier2.h>
+#include <include/NestedInitFailInRoot.h>
+#include <include/NestedInitFailInTier1.h>
+#include <include/NestedInitFailInTier2.h>
 #include <include/ObjectMgmt.h>
 #include <include/ObserverDispatcher.h>
 #include <include/Observers.h>
