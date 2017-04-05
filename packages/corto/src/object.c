@@ -234,13 +234,6 @@ static corto_object corto__initScope(
     corto_assert(scope != NULL,
       "corto__initScope: created scoped object, but corto__objectScope returned NULL.");
 
-    /* If object is in a table, set keyvalues of object */
-    if (id && corto_instanceof(corto_struct_o, corto_typeof(o))) {
-        if (corto_setKeyvalues(o, id)) {
-            goto error;
-        }
-    }
-
     if (id) {
         scope->id = corto_strdup(id);
     } else {
@@ -270,6 +263,15 @@ static corto_object corto__initScope(
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
     } else {
+        /* If object is in a table, set keyvalues of object */
+        if (id && corto_instanceof(corto_struct_o, corto_typeof(o))) {
+            if (corto_setKeyvalues(o, id)) {
+                /* Remove object from scope */
+                corto__orphan(o);
+                goto error;
+            }
+        }
+
         /* Call framework initializer. */
         if (corto_init(o)) {
             corto_string err = corto_lasterr();
@@ -842,14 +844,16 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 /* If parentType is a tablescope, check if child type matches
                  * table type */
                 if (corto_instanceof(corto_tablescope_o, parent)) {
-                    corto_struct tableType = corto_tablescope(parent)->type;
-                    if (corto_type(tableType) != childType) {
-                        if (!corto_instanceof(childType, corto_container_o)) {
-                            corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
-                                corto_fullpath(NULL, childType),
-                                corto_fullpath(NULL, tableType),
-                                corto_fullpath(NULL, parent));
-                            goto err_invalid_child;
+                    if (childType != corto_type(corto_tablescope_o)) {
+                        corto_struct tableType = corto_tablescope(parent)->type;
+                        if ((corto_type(tableType) != childType)) {
+                            if (!corto_instanceof(childType, corto_container_o)) {
+                                corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
+                                    corto_fullpath(NULL, childType),
+                                    corto_fullpath(NULL, tableType),
+                                    corto_fullpath(NULL, parent));
+                                goto err_invalid_child;
+                            }
                         }
                     }
                 }
@@ -1224,6 +1228,17 @@ static corto_int16 corto_defineContainer(corto_object parent) {
             }
         }
         corto_scopeRelease(seq);        
+    } else if (corto_parentof(parent) == corto_type(corto_tablescope_o)) {
+        corto_objectseq seq = corto_scopeClaim(parent);
+        corto_int32 i, error = 0;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if (corto_define(c)) {
+                error = 1;
+            }
+        }
+        corto_scopeRelease(seq);  
+        if (error) goto error;      
     }
 
     return 0;
@@ -1667,7 +1682,7 @@ static corto_object corto_declareChildInternRecursive(
         next ++;
 
         do {
-            result = corto_declareChildIntern(parent, cur, type, orphan, forceType);
+            result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
 
             parent = result;
             stack[sp ++] = result;
