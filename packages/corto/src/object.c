@@ -3618,7 +3618,7 @@ static corto_object corto_lookup_intern(
         ptr = next;
     } while (ch);
 
-    if (resume) {
+    if (resume && parent != corto_lang_o) {
         if (!prev) {
             prev = parent;
         }
