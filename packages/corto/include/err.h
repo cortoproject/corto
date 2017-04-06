@@ -65,6 +65,10 @@ CORTO_EXPORT corto_err corto_errorv(char* fmt, va_list args);
 CORTO_EXPORT void corto_seterrv(char *fmt, va_list args);
 CORTO_EXPORT void corto_criticalv(char* fmt, va_list args);
 
+/* Set error format */
+#define CORTO_ERRFMT_DEFAULT "%t - %l: [%a] %c%m"
+CORTO_EXPORT void corto_errfmt(char *fmt);
+
 /* Set & get last error */
 CORTO_EXPORT char* corto_lasterr(void);
 CORTO_EXPORT void corto_seterr(char *fmt, ...);

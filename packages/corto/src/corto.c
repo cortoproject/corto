@@ -1000,6 +1000,11 @@ void corto_initEnvironment(void) {
     if (memtraceBreakpoint) {
         CORTO_MEMTRACE_BREAKPOINT = atoi(memtraceBreakpoint);
     }
+
+    corto_string errfmt = corto_getenv("CORTO_ERRFMT");
+    if (errfmt) {
+        corto_errfmt(errfmt);
+    }
 }
 
 int corto_start(char *appName) {
