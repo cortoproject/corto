@@ -11,7 +11,7 @@ static corto_string cortotool_lookupPackage(corto_string str) {
     corto_object p = corto_resolve(NULL, str);
 
     if (!p) {
-        if (!corto_locate(str, CORTO_LOCATION_LIB)) {
+        if (!corto_locate(str, NULL, CORTO_LOCATION_LIB)) {
             corto_seterr("package '%s' not found", str);
             goto error;
         } else {
@@ -239,7 +239,7 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
             corto_iter iter = corto_llIter(packages);
             while (corto_iterHasNext(&iter)) {
                 corto_string str = corto_iterNext(&iter);
-                corto_string package = corto_locate(str, CORTO_LOCATION_LIB);
+                corto_string package = corto_locate(str, NULL, CORTO_LOCATION_LIB);
                 if (package) {
                     printf("  %s%s%s  =>  %s\n", CORTO_CYAN, str, CORTO_NORMAL, package);
                 } else {
@@ -263,10 +263,10 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
         while (corto_iterHasNext(&it)) {
             corto_result *r = corto_iterNext(&it);
             corto_id id; sprintf(id, "%s/%s", r->parent, r->id);
-            char *lib = corto_locate(id, CORTO_LOCATION_LIB);
+            char *lib = corto_locate(id, NULL, CORTO_LOCATION_LIB);
             if (lib) {
                 if (locate) {
-                    char *env = corto_locate(id, CORTO_LOCATION_ENV);
+                    char *env = corto_locate(id, NULL, CORTO_LOCATION_ENV);
                     corto_bool isGlobal = !strcmp(env, "/usr/local");
                     count ++;
                     if (isGlobal) globalCount ++;

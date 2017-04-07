@@ -1374,6 +1374,13 @@ test/Suite Buffer::
 // Test loader
 test/Suite Loader::
     void tc_loadNonExistent()
+    void tc_loadDepOnChild()
+    void tc_loadDepOnParent()
+    void tc_loadDepOnSibling()
+    void tc_loadChildNoDep()
+    void tc_loadSelf()
+    void tc_createSelfPackage()
+    void tc_locateSelf()
 
 // Key and lock for security tests
 class TestKey: secure/key::

@@ -45,7 +45,7 @@ typedef enum corto_loaderLocationKind {
     CORTO_LOCATION_FULLNAME
 } corto_loaderLocationKind;
 
-CORTO_EXPORT corto_string corto_locate(corto_string package, corto_loaderLocationKind kind);
+CORTO_EXPORT corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLocationKind kind);
 
 #ifdef __cplusplus
 }

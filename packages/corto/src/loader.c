@@ -255,12 +255,19 @@ error:
     return NULL;
 }
 
-static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_out) {
+static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_out, corto_dl *dl_out) {
     corto_dl dl = corto_loadValidLibrary(fileName, build_out);
     corto_bool result = FALSE;
     if (dl) {
         result = TRUE;
-        corto_dlClose(dl);
+        if (!dl_out) {
+            corto_dlClose(dl);
+        } else {
+            if (*dl_out) {
+                corto_dlClose(dl);
+            }
+            *dl_out = dl;
+        }
     }
     return result;
 }
@@ -478,6 +485,7 @@ static time_t corto_getModified(corto_string file) {
 static corto_string corto_locatePackageIntern(
     corto_string lib,
     corto_string *base,
+    corto_dl *dl_out,
     corto_bool isLibrary)
 {
     corto_string targetPath = NULL, homePath = NULL, usrPath = NULL;
@@ -486,6 +494,7 @@ static corto_string corto_locatePackageIntern(
     corto_string targetErr = NULL, homeErr = NULL, usrErr = NULL;
     corto_string details = NULL;
     corto_bool fileError = FALSE;
+    corto_dl dl = NULL;
     time_t t = 0;
 
     /* Reset error */
@@ -499,7 +508,7 @@ static corto_string corto_locatePackageIntern(
     }
     if (corto_fileTest(targetPath)) {
         corto_debug("loader: locate '%s': found '%s'", lib, targetPath);
-        if (!isLibrary || corto_checkLibrary(targetPath, &targetBuild)) {
+        if (!isLibrary || corto_checkLibrary(targetPath, &targetBuild, &dl)) {
             t = corto_getModified(targetPath);
             result = targetPath;
             if (base) {
@@ -532,7 +541,7 @@ static corto_string corto_locatePackageIntern(
             time_t myT = corto_getModified(homePath);
             corto_debug("loader: locate '%s': found '%s'", lib, homePath);
             if ((myT >= t) || !result) {
-                if (!isLibrary || corto_checkLibrary(homePath, &homeBuild)) {
+                if (!isLibrary || corto_checkLibrary(homePath, &homeBuild, &dl)) {
                     t = myT;
                     result = homePath;
                     if (base) {
@@ -573,7 +582,7 @@ static corto_string corto_locatePackageIntern(
             time_t myT = corto_getModified(usrPath);
             corto_debug("loader: locate '%s': found '%s'", usrPath, lib);
             if ((myT >= t) || !result) {
-                if (!isLibrary || corto_checkLibrary(usrPath, &usrBuild)) {
+                if (!isLibrary || corto_checkLibrary(usrPath, &usrBuild, &dl)) {
                     t = myT;
                     result = usrPath;
                     if (base) {
@@ -662,12 +671,22 @@ static corto_string corto_locatePackageIntern(
                 corto_seterr(details);
             }
         } else {
-            corto_setinfo("\n- library '%s' not found", lib);
+            corto_setinfo("library '%s' not found", lib);
+        }
+        if (dl) {
+            corto_dlClose(dl);
+            dl = NULL;
         }
     }
 
-    corto_setinfo(details);
-    corto_dealloc(details);
+    if (dl_out) {
+        *dl_out = dl;
+    }
+
+    if (details) {
+        corto_setinfo(details);
+        corto_dealloc(details);
+    }
 
     return result;
 error:
@@ -696,11 +715,12 @@ corto_string corto_locateGetName(corto_string package, corto_loaderLocationKind 
     return result;
 }
 
-corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
+corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLocationKind kind) {
     corto_string relativePath = NULL;
     corto_string result = NULL;
 
 #ifndef CORTO_REDIS
+    corto_dl dl = NULL;
     corto_string base = NULL;
     struct corto_loadedAdmin *loaded = NULL;
 
@@ -709,7 +729,7 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     if (loaded) {
         result = loaded->filename;
         base = loaded->base;
-    }
+    }    
 #endif
 
     if (!result) {
@@ -720,7 +740,7 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     }
 
 #ifdef CORTO_REDIS
-    if (!corto_checkLibrary(relativePath, NULL)) {
+    if (!corto_checkLibrary(relativePath, NULL, dl_out)) {
         goto error;
     }
 
@@ -744,10 +764,10 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
     }
 #else
     if (!loaded || (!result && loaded->loading)) {
-        result = corto_locatePackageIntern(relativePath, &base, TRUE);
+        result = corto_locatePackageIntern(relativePath, &base, &dl, TRUE);
         if (!result && (kind == CORTO_LOCATION_ENV)) {
             corto_lasterr();
-            result = corto_locatePackageIntern(package, &base, FALSE);
+            result = corto_locatePackageIntern(package, &base, &dl, FALSE);
         }
     }
     if (relativePath) corto_dealloc(relativePath);
@@ -790,9 +810,18 @@ corto_string corto_locate(corto_string package, corto_loaderLocationKind kind) {
             corto_mutexLock(&corto_adminLock);
             corto_setstr(&loaded->filename, result);
             corto_setstr(&loaded->base, base);
+            if (dl_out) {
+                loaded->library = dl;
+            }
             corto_mutexUnlock(&corto_adminLock);
             corto_dealloc(base);
         }
+    }
+
+    if (dl_out) {
+        *dl_out = loaded->library;
+    } else if (dl) {
+        corto_dlClose(dl);
     }
 #endif
 
@@ -876,14 +905,17 @@ int corto_fileLoader(corto_string package, int argc, char* argv[], void* udata) 
     CORTO_UNUSED(udata);
     corto_string fileName;
     int result;
+    corto_dl dl = NULL;
 
-    fileName = corto_locate(package, CORTO_LOCATION_LIB);
+    fileName = corto_locate(package, &dl, CORTO_LOCATION_LIB);
     if (!fileName) {
         corto_seterr(corto_lastinfo());
         return -1;
     }
 
-    result = corto_loadLibrary(fileName, TRUE, argc, argv);
+    corto_assert(dl != NULL, "package located but dl_out is NULL");
+
+    result = corto_loadFromDl(dl, fileName, argc, argv);
     corto_dealloc(fileName);
 
     return result;

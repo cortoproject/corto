@@ -608,7 +608,7 @@ corto_object _corto_mount_resume(
         r.content = TRUE;
 
         // Request object from mount
-        corto_debug("mount: look for '%s/%s' (auto-resume, mount = '%s', o = %p)", parent, name, corto_fullpath(NULL, this), o);
+        corto_debug("mount: try resume for '%s/%s' (mount = '%s')", parent, name, corto_fullpath(NULL, this));
         corto_resultIter it = corto_mount_request(this, &r);
 
         if (corto_iterHasNext(&it)) {
