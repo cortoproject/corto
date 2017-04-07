@@ -670,7 +670,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
         {"--mute", &mute, NULL},
         {"--nobuild", &nobuild, NULL},
         {"--notest", &notest, NULL},
-        {"--nocorto", &nocorto, NULL},
+        {"--unmanaged", &nocorto, NULL},
         {"--nodef", &nodef, NULL},
         {"--local", &local, NULL},
         {"--nocoverage", &nocoverage, NULL},
@@ -827,8 +827,8 @@ void cortotool_createHelp(void) {
     printf("                  other packages.\n");
     printf("\n");
     printf("Options:\n");
-    printf("   --local        Create a project that won't be installed in the Corto repository\n");
-    printf("   --nocorto      Create a package that doens't use any Corto functionality\n");
+    printf("   --local        Create a project that won't be installed to the package repository\n");
+    printf("   --unmanaged    Create an unmanaged project that doens't use corto code generation\n");
     printf("   --notest       Do not create a test skeleton\n");
     printf("   --nodef        Do not generate a definition file\n");
     printf("   --nobuild      Do not build the project after creating it\n");

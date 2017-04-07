@@ -146,24 +146,6 @@ corto_int16 cortotool_core(void) {
         goto error;
     }
 
-    pid = corto_procrun("corto", (char*[]){
-      "corto",
-      "pp",
-      "--prefix", "corto",
-      "--name", "corto",
-      "--attr", "c=src",
-      "--attr", "h=include",
-      "--attr", "bootstrap=true",
-      "--attr", "stubs=false",
-      "-g", "c/project",
-      NULL
-    });
-    if (corto_procwait(pid, &ret) || ret) {
-        corto_error("failed to setup project for corto (%d)", ret);
-        printf("   command: corto pp --prefix corto --name corto --attr c=src --attr h=include --attr bootstrap=true --attr stubs=false -g c/project\n");
-        goto error;
-    }
-
     return 0;
 error:
     return -1;
@@ -330,7 +312,7 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             corto_string import = corto_iterNext(&it);
             if (strcmp(import, "corto") && strcmp(import, "/corto")) {
                 if (corto_load(import, 0, NULL)) {
-                    corto_seterr("import of '%s' failed: %s", import, corto_lasterr());
+                    corto_seterr("importing '%s' failed: %s", import, corto_lasterr());
                     goto error;
                 }
             }

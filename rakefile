@@ -4,7 +4,6 @@ COMPONENTS = %w(
     packages/g
     packages/argparse
     tools
-    packages/c
 )
 
 task :default do

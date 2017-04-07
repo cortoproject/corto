@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
 
     /* Parse arguments */
     if (argc == 1) {
-        if (cortotool_shell(argc, argv)) {
+        if (cortotool_build(argc, argv)) {
             goto error;
         }
     } else {
@@ -110,6 +110,22 @@ int main(int argc, char* argv[]) {
                     i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "version")) {
+                        char *color1 = CORTO_GREEN, *color2 = CORTO_CYAN;
+
+                        printf("\n");
+                        printf("            %s##########%s\n", color1, CORTO_NORMAL);
+                        printf("          %s##########%s ####%s\n", color1, color2, CORTO_NORMAL);
+                        printf("        %s##########%s ########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("      %s##########%s   ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("    %s##########%s       ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("  %s##########%s           ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("   %s##########%s         ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("     %s##########%s     ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("       %s##########%s ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("         %s######%s ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("           %s##%s ##########%s\n", color1, color2, CORTO_NORMAL);
+                        printf("\n");
+
                         printf("corto version %s (%s)\n  library: %s (%s)\n",
                             CORTO_VERSION,
                             CORTO_PLATFORM_STRING,
@@ -234,7 +250,7 @@ int main(int argc, char* argv[]) {
                     goto error;
                 }
                 break;
-            } else if (!strcmp(argv[i], "shell")) {
+            } else if (!strcmp(argv[i], "sh")) {
                 startShell = TRUE;
             } else if (!strcmp(argv[1], "tar")) {
                 if (cortotool_tar(argc-i, &argv[i])) {

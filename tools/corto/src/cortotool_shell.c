@@ -17,12 +17,12 @@
 #define CXSH_COL_TYPE     (32)
 #define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE)
 
-#define SHELL_COLOR (CORTO_BOLD)
+#define SHELL_COLOR (CORTO_NORMAL)
 #define ERROR_COLOR (CORTO_RED)
 #define TYPE_COLOR (CORTO_MAGENTA)
 #define OBJECT_COLOR (CORTO_CYAN)
 #define META_COLOR (CORTO_MAGENTA)
-#define INTERFACE_COLOR (CORTO_BOLD)
+#define INTERFACE_COLOR (CORTO_NORMAL)
 #define HEADER_COLOR (CORTO_BOLD)
 
 static corto_id scope;
@@ -95,7 +95,7 @@ static corto_string cxsh_printColumnValue(corto_string str, unsigned int width){
 /* Print shell prompt */
 static void cxsh_prompt(int enableColors, corto_id prompt) {
     if (enableColors) {
-        sprintf(prompt, "%s%s%s %s$%s ", OBJECT_COLOR, scope, CORTO_NORMAL, SHELL_COLOR, CORTO_NORMAL);
+        sprintf(prompt, "%s<%s %s%s >%s ", CORTO_GREEN, CORTO_NORMAL, scope, CORTO_CYAN, CORTO_NORMAL);
     } else {
         sprintf(prompt, "%s $ ", scope);
     }

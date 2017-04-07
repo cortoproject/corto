@@ -227,29 +227,6 @@ else
   end
 end
 
-# Document framework integration
-task :doc do
-  verbose(VERBOSE)
-  if `which corto` != "" then
-    begin
-      cmd "corto locate corto/md --silent"
-      if File.exists? "#{NAME}.md" then
-        if not LOCAL and not NOCORTO then
-          command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
-        else
-          command = "corto pp #{NAME}.md -g doc/html"
-        end
-        begin
-          # cmd command
-        rescue
-          exit(-1)
-        end
-      end
-    rescue
-    end
-  end
-end
-
 # Generate a script with build instructions for this package
 task :buildscript do
   verbose(VERBOSE)
@@ -534,7 +511,7 @@ end
 task :prebuild => [:uninstall_files, :install_files]
 
 # Postbuild tasks
-task :postbuild => [:doc, :buildscript, :uninstaller]
+task :postbuild => [:buildscript, :uninstaller]
 
 require "#{CORTO_BUILD}/artefact"
 require "#{CORTO_BUILD}/subrake"
