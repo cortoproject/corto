@@ -1490,6 +1490,10 @@ corto_object corto_resume(
         return o;
     }
 
+    if (!parent) {
+        parent = root_o;
+    }
+
     if (!expr) {
         return NULL;
     }
@@ -1532,13 +1536,7 @@ corto_object corto_resume(
             corto_ll mountList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
             if (mountList) {
                 corto_iter iter = corto_llIter(mountList);
-
-                /* Parent must be relative to mount point of mount */
-                corto_path(
-                    parentId,
-                    p,
-                    parent,
-                    "/");
+                corto_bool parentIdSet = FALSE;
 
                 while (corto_iterHasNext(&iter)) {
                     corto_mount_olsData_t *rData = corto_iterNext(&iter);
@@ -1547,11 +1545,24 @@ corto_object corto_resume(
                      * provided object, or the mount must have ON_TREE set */
                     if ((p == parent) ||
                       (((corto_observer)rData->mount)->mask & CORTO_ON_TREE)) {
+                        corto_type mountType = corto_observer(rData->mount)->typeReference;
 
-                        result = corto_resume_fromMount(rData->mount, parentId, exprPtr, o);
-                        if (result) {
-                            lastMount = rData->mount;
-                            break;
+                        if (!mountType || (parent == p) || (corto_typeof(parent) == mountType)) {
+                            if (!parentIdSet) {
+                                /* Parent must be relative to mount point of mount */
+                                corto_path(
+                                    parentId,
+                                    p,
+                                    parent,
+                                    "/");
+                                parentIdSet = TRUE;
+                            }
+
+                            result = corto_resume_fromMount(rData->mount, parentId, exprPtr, o);
+                            if (result) {
+                                lastMount = rData->mount;
+                                break;
+                            }
                         }
                     }
                 }

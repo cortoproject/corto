@@ -135,7 +135,7 @@ void test_Project_load(corto_string target, corto_string fullname) {
     corto_int16 waitResult;
 
     if (fullname) {
-       corto_string location = corto_locate(fullname, CORTO_LOCATION_LIB);
+       corto_string location = corto_locate(fullname, NULL, CORTO_LOCATION_LIB);
        test_assert(location != NULL);
 
        /* If target is a library, load library with Corto to ensure that all

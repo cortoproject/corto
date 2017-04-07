@@ -1,25 +1,19 @@
-/* test.h
+/* tier2_B.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef TIER1_TIER2_B_H
+#define TIER1_TIER2_B_H
 
 #include <corto/corto.h>
-#include <corto/corto.h>
-#include <include/_project.h>
-#include <corto/test/test.h>
+#include <tier1/tier2_B/_project.h>
 #include <corto/core/c/c.h>
 #include <corto/lang/c/c.h>
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
-
-#include <include/_type.h>
-#include <include/_load.h>
-#include <include/_api.h>
 
 /* $body() */
 /* Enter code that requires types here */
@@ -28,9 +22,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <include/Application.h>
-#include <include/Builds.h>
-#include <include/Project.h>
 
 #ifdef __cplusplus
 }

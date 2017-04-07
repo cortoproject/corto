@@ -14,7 +14,7 @@
 #include <corto/lang/c/c.h>
 
 /* $header() */
-/* You can put your own definitions here! */
+/* Enter additional code here. */
 /* $end */
 
 #include <include/_type.h>

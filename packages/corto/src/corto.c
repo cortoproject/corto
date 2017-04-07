@@ -1000,7 +1000,6 @@ void corto_initEnvironment(void) {
     if (errfmt) {
         corto_errfmt(errfmt);
     }
-
 }
 
 int corto_start(char *appName) {

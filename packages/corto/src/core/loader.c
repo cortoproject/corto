@@ -99,9 +99,8 @@ void corto_loader_addDir(
                 corto_id package;
                 sprintf(package, "%s/%s", r->parent, f);
                 corto_cleanpath(package, package);
-                corto_string env = corto_locate(package, CORTO_LOCATION_ENV);
+                corto_string env = corto_locate(package, NULL, CORTO_LOCATION_ENV);
 
-                corto_debug("loader: evaluate '%s'\n- path: %s\n- env: %s", f, fpath, env);
                 if (!env) {
                     corto_lasterr();
                     //continue;
@@ -115,7 +114,7 @@ void corto_loader_addDir(
                     !strcmp(package, "corto/secure"))
                 {
                     if (!env) {
-                        env = corto_locate("corto", CORTO_LOCATION_ENV);
+                        env = corto_locate("corto", NULL, CORTO_LOCATION_ENV);
                         if (!env) corto_lasterr(); /* Catch error */
                     }
                 }

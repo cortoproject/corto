@@ -734,7 +734,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
     }
 
     if (!lib_redis) {
-        location = corto_locate(argv[1], CORTO_LOCATION_LIB);
+        location = corto_locate(argv[1], NULL, CORTO_LOCATION_LIB);
     } else {
         corto_id package;
         strcpy(package, argv[1][0] == '/' ? argv[1] + 1 : argv[1]);

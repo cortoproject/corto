@@ -218,17 +218,13 @@ corto_int16 g_load(g_generator g, corto_string library) {
     /* Load library from generator path */
     corto_string package = NULL;
     corto_asprintf(&package, "corto/gen/%s", library);
-    corto_string lib = corto_locate(package, CORTO_LOCATION_LIB);
+    corto_string lib = corto_locate(package, &g->library, CORTO_LOCATION_LIB);
     if (!lib) {
         corto_seterr("generator '%s' not found: %s", package, corto_lasterr()?corto_lasterr():"");
         goto error;
     }
 
-    g->library = corto_dlOpen(lib);
-    if (!g->library) {
-        corto_seterr("%s", corto_dlError());
-        goto error;
-    }
+    corto_assert(g->library != NULL, "generator located but dl_out is NULL");
 
     /* Load actions */
     g->start_action = (g_startAction)corto_dlProc(g->library, "corto_genMain");
@@ -378,7 +374,7 @@ corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
         corto_string prefix;
         corto_string includePath =
             corto_locate(
-                corto_path(NULL, root_o, p, "/"), CORTO_LOCATION_INCLUDE);
+                corto_path(NULL, root_o, p, "/"), NULL, CORTO_LOCATION_INCLUDE);
 
         if (!includePath) {
             corto_seterr("package '%s' not found", corto_path(NULL, root_o, p, "/"));
@@ -456,6 +452,7 @@ corto_int16 g_leafDependencies(
 {
     corto_string packageDir = corto_locate(
         corto_fullpath(NULL, parent),
+        NULL,
         CORTO_LOCATION_LIBPATH
     );
 
