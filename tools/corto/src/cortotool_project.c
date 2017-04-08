@@ -37,15 +37,6 @@ static corto_int16 cortotool_setupProject(
             goto error;
         }
 
-        /* Write version.txt */
-        sprintf(id, "%s/.corto/version.txt", name);
-        FILE *f = fopen(id, "w");
-        if (!f) {
-            corto_error("couldn't create '%s' (check permissions)",
-              id);
-        }
-        fprintf(f, "%s", "0.0.0\n");
-        fclose(f);
     } else {
         corto_error(
             "corto: couldn't create project directory '%s' (check permissions)",
@@ -441,20 +432,22 @@ static corto_int16 cortotool_package(
     }
 
     /* Write definition file */
-    if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", name, name) >=
-        (int)sizeof(cxfile))
-    {
-        if (!mute) {
-            corto_error("package name '%s' is too long", name);
+    if (!nocorto) {
+        if (snprintf(cxfile, sizeof(cxfile), "%s/%s.cx", name, name) >=
+            (int)sizeof(cxfile))
+        {
+            if (!mute) {
+                corto_error("package name '%s' is too long", name);
+            }
+            goto error;
         }
-        goto error;
-    }
 
-    if (corto_fileTest(cxfile)) {
-        if (!mute) {
-            corto_error("package '%s' already exists", cxfile);
+        if (corto_fileTest(cxfile)) {
+            if (!mute) {
+                corto_error("package '%s' already exists", cxfile);
+            }
+            goto error;
         }
-        goto error;
     }
 
     if (corto_mkdir(name)) {
@@ -466,7 +459,7 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    if (!nodef) {
+    if (!nodef && !nocorto) {
         file = fopen(cxfile, "w");
         if (file) {
             fprintf(file, "#package /%s\n\n", include);

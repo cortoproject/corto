@@ -6,8 +6,6 @@
 #ifndef CORTO_H
 #define CORTO_H
 
-#include <corto/corto.h>
-
 /* $header() */
 #include "corto/lang/lang.h"
 #include "corto/core/core.h"

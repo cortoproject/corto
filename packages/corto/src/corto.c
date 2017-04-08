@@ -32,10 +32,10 @@ struct corto_exitHandler {
     void* userData;
 };
 
-#define VERSION_MAJOR "0"
-#define VERSION_MINOR "2"
-#define VERSION_PATCH "16"
-#define VERSION_SUFFIX "alpha"
+#define VERSION_MAJOR "1"
+#define VERSION_MINOR "0"
+#define VERSION_PATCH "0"
+#define VERSION_SUFFIX "beta"
 
 #ifdef VERSION_SUFFIX
 const char* CORTO_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
@@ -180,7 +180,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, interfaceseq),\
     SSO_OP_VALUE(lang_, parameterseq),\
     SSO_OP_VALUE(lang_, stringseq),\
-    SSO_OP_VALUE(core_, augmentseq),\
     SSO_OP_VALUE(lang_, interfaceVectorseq),\
     SSO_OP_VALUE(lang_, interfaceVector),\
     SSO_OP_VALUE(lang_, objectlist),\
@@ -189,7 +188,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, mountSubscriptionList),\
     SSO_OP_VALUE(lang_, parameter),\
     SSO_OP_VALUE(lang_, typeOptions),\
-    SSO_OP_VALUE(core_, augmentData),\
     SSO_OP_VALUE(core_, time),\
     SSO_OP_VALUE(core_, frame),\
     SSO_OP_VALUE(core_, sample),\
@@ -780,9 +778,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_parameter_type),\
     SSO_OP_OBJ(lang_parameter_inout),\
     SSO_OP_OBJ(lang_parameter_passByReference),\
-    /* augmentData */\
-    SSO_OP_OBJ(core_augmentData_id),\
-    SSO_OP_OBJ(core_augmentData_data),\
     /* sample */\
     SSO_OP_OBJ(core_sample_timestamp),\
     SSO_OP_OBJ(core_sample_value),\
@@ -795,7 +790,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_result_leaf),\
     SSO_OP_OBJ(core_result_object),\
     SSO_OP_OBJ(core_result_history),\
-    SSO_OP_OBJ(core_result_augments),\
     SSO_OP_OBJ(core_result_owner),\
     SSO_OP_OBJ(core_result_getText_),\
     SSO_OP_OBJ(core_result_fromcontent_),\
@@ -982,7 +976,7 @@ void corto_initEnvironment(void) {
     }
 
     corto_string traceObject = corto_getenv("CORTO_TRACE_ID");
-    if (traceObject) {
+    if (traceObject && traceObject[0]) {
         CORTO_TRACE_ID = traceObject;
     }
 
@@ -992,12 +986,12 @@ void corto_initEnvironment(void) {
     }
 
     corto_string memtraceBreakpoint = corto_getenv("CORTO_MEMTRACE_BREAKPOINT");
-    if (memtraceBreakpoint) {
+    if (memtraceBreakpoint && memtraceBreakpoint[0]) {
         CORTO_MEMTRACE_BREAKPOINT = atoi(memtraceBreakpoint);
     }
 
     corto_string errfmt = corto_getenv("CORTO_ERRFMT");
-    if (errfmt) {
+    if (errfmt && errfmt[0]) {
         corto_errfmt(errfmt);
     }
 }

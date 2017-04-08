@@ -1,10 +1,11 @@
-/* _api.c
+/* secure.c
  *
  * API convenience functions for C-language.
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/secure/c/c.h>
+#include <corto/secure/secure.h>
+#include <corto/c/c.h>
 corto_secure_accessKind* _corto_secure_accessKindCreate(corto_secure_accessKind value) {
     corto_secure_accessKind* _this;
     _this = corto_secure_accessKind(corto_declare(corto_secure_accessKind_o));
@@ -420,3 +421,4 @@ corto_secure_lock corto_secure_lockFromStr(corto_secure_lock value, corto_string
 corto_equalityKind _corto_secure_lockCompare(corto_secure_lock dst, corto_secure_lock src) {
     return corto_compare(dst, src);
 }
+

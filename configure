@@ -4,7 +4,7 @@ DIR="$(echo $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
 export CORTO_HOME="$HOME/.corto"
 export CORTO_TARGET="$HOME/.corto"
 export PATH="$CORTO_TARGET/bin:$PATH"
-export CORTO_VERSION=0.2
+export CORTO_VERSION=1.0
 export CORTO_BUILD="$HOME/.corto/lib/corto/$CORTO_VERSION/build"
 export LD_LIBRARY_PATH="$CORTO_HOME/lib:$LD_LIBRARY_PATH"
 

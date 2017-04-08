@@ -53,6 +53,7 @@ g_generator g_new(corto_string name, corto_string language) {
 
     /* Current will be set by object walk */
     result->current = NULL;
+    result->inWalk = FALSE;
 
     return result;
 }
@@ -117,12 +118,12 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
 
     /* First do a lookup, check if the object already exists */
     if (g->objects) {
-        g_object *object;
+        g_object *gObj;
         objectIter = corto_llIter(g->objects);
         while(corto_iterHasNext(&objectIter)) {
-            object = corto_iterNext(&objectIter);
-            if (object->o == object) {
-                o = object;
+            gObj = corto_iterNext(&objectIter);
+            if (gObj->o == object) {
+                o = gObj;
                 break;
             }
         }
@@ -137,7 +138,7 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
 
         if (prefix) {
             if (strlen(prefix) >= sizeof(corto_id)) {
-                corto_seterr("prefix cannot be longer than %d characters", sizeof(corto_id));
+                corto_error("prefix cannot be longer than %d characters", sizeof(corto_id));
                 o->prefix = NULL;
             } else {
                 o->prefix = corto_strdup(prefix);
@@ -518,43 +519,56 @@ stop:
     return 0;
 }
 
-/* Walk objects, choose between recursive scopewalk or only top-level objects */
-static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
-    corto_iter iter;
-
-    if (g->objects) {
-        g_object* o;
-
-        iter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&iter)) {
-            o = corto_iterNext(&iter);
-
-            /* Parse object */
-            if (o->parseSelf) {
-                g->current = o;
-                if (!action(o->o, userData)) {
-                    goto stop;
-                }
+static int g_walkIterObject(g_generator g, g_object *o, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
+    /* Parse object */
+    if (o->parseSelf) {
+        g->current = o;
+        if (!action(o->o, userData)) {
+            goto stop;
+        }
+    }
+    /* Walk scopes */
+    if (o->parseScope && scopeWalk) {
+        g->current = o;
+        if (!recursiveWalk) {
+            if (!corto_scopeWalk(o->o, action, userData)) {
+                goto stop;
             }
-            /* Walk scopes */
-            if (o->parseScope && scopeWalk) {
-                g->current = o;
-                if (!recursiveWalk) {
-                    if (!corto_scopeWalk(o->o, action, userData)) {
-                        goto stop;
-                    }
-                } else {
-                    struct g_walkObjects_t walkData;
-                    walkData.action = action;
-                    walkData.userData = userData;
+        } else {
+            struct g_walkObjects_t walkData;
+            walkData.action = action;
+            walkData.userData = userData;
 
-                    /* Recursively walk scopes */
-                    if (!corto_scopeWalk(o->o, g_walkObjects, &walkData)) {
-                        goto stop;
-                    }
-                }
+            /* Recursively walk scopes */
+            if (!corto_scopeWalk(o->o, g_walkObjects, &walkData)) {
+                goto stop;
             }
         }
+    }
+
+    return 1;
+stop:
+    return 0;
+}
+
+/* Walk objects, choose between recursive scopewalk or only top-level objects */
+static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
+    if (g->inWalk) {
+        /* If already in a walk, continue */
+        g_object *o = g->current;
+        g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk);
+        g->current = o;
+    } else if (g->objects) {
+        g->inWalk = TRUE;
+        corto_iter iter = corto_llIter(g->objects);
+        while(corto_iterHasNext(&iter)) {
+            g_object* o = corto_iterNext(&iter);
+            if (!g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk)) {
+                g->inWalk = FALSE;
+                goto stop;
+            }
+        }
+        g->inWalk = FALSE;
     }
 
     return 1;
@@ -1049,7 +1063,6 @@ static g_file g_fileOpenIntern(g_generator g, corto_string name) {
     return result;
 error:
     corto_seterr("failed to open file '%s'", name);
-    abort();
     return NULL;
 }
 

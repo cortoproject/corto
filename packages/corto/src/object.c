@@ -708,7 +708,12 @@ static void corto_memtracePop(void) {
 static void corto_memtrace(corto_string oper, corto_object o, corto_string context) {
     corto_id path;
     corto_assertObject(o);
-    corto_fullpath(path, o);
+
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        corto_fullpath(path, o);
+    } else {
+        sprintf(path, "[%p]", o);
+    }
 
     if (memtrace[memtraceSp]) {
         corto_dealloc(memtrace[memtraceSp]);

@@ -1,9 +1,6 @@
+PACKAGE = 'corto/c'
 
-COMPONENTS = %w(
-    core
-    lang
-    native
-    secure
-)
+NOCORTO = true
+USE_PACKAGE = ['corto']
 
-require "#{ENV['CORTO_BUILD']}/forward"
+require "#{ENV['CORTO_BUILD']}/package"

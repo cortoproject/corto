@@ -54,6 +54,8 @@ extern "C" {
 #include <corto/lang/metaprocedure.h>
 #include <corto/lang/method.h>
 #include <corto/lang/nameAction.h>
+#include <corto/lang/overridable.h>
+#include <corto/lang/override.h>
 #include <corto/lang/parameter.h>
 #include <corto/lang/primitive.h>
 #include <corto/lang/procedure.h>
@@ -69,7 +71,6 @@ extern "C" {
 #include <corto/lang/uint.h>
 #include <corto/lang/union.h>
 #include <corto/lang/unit.h>
-#include <corto/lang/overridable.h>
 
 #ifdef __cplusplus
 }

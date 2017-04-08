@@ -24,7 +24,6 @@
 extern "C" {
 #endif
 #include <corto/core/application.h>
-#include <corto/core/augmentData.h>
 #include <corto/core/dispatcher.h>
 #include <corto/core/event.h>
 #include <corto/core/frame.h>

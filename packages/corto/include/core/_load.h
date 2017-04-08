@@ -27,6 +27,7 @@ CORTO_META_OBJECT(class, observableEvent);
 CORTO_META_OBJECT(class, subscriberEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
+CORTO_META_OBJECT(class, application);
 CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
@@ -68,6 +69,9 @@ CORTO_META_OBJECT(struct, position);
 CORTO_META_OBJECT(struct, sample);
 
 CORTO_META_OBJECT(subscriber, mount_on_notify);
+
+CORTO_META_OBJECT(iterator, resultIter);
+CORTO_META_OBJECT(iterator, sampleIter);
 
 #ifdef __cplusplus
 }

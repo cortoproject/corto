@@ -15,8 +15,6 @@ extern "C" {
 /* Casting macro's */
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
-#define corto_augmentData(o) ((corto_augmentData*)corto_assertType((corto_type)corto_augmentData_o, o))
-#define corto_augmentseq(o) ((corto_augmentseq*)corto_assertType((corto_type)corto_augmentseq_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
 #define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
@@ -80,16 +78,6 @@ typedef struct corto_application_s *corto_application;
 struct corto_application_s {
     struct corto_package_s _parent;
 };
-
-/*  /corto/core/augmentData */
-typedef struct corto_augmentData corto_augmentData;
-
-struct corto_augmentData {
-    corto_string id;
-    corto_word data;
-};
-
-CORTO_SEQUENCE(corto_augmentseq, corto_augmentData,);
 
 /*  /corto/core/dispatcher */
 CORTO_INTERFACE(corto_dispatcher);
@@ -355,7 +343,6 @@ struct corto_result {
     corto_bool leaf;
     corto_object object;
     corto_sampleIter history;
-    corto_augmentseq augments;
     corto_object owner;
 };
 

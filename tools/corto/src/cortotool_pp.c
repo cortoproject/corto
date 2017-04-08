@@ -146,6 +146,25 @@ corto_int16 cortotool_core(void) {
         goto error;
     }
 
+    /* Generate C API */
+    pid = corto_procrun("corto", (char*[]){
+      "corto",
+      "pp",
+      "--name", "corto",
+      "--scope", "corto/lang,corto/core,corto/secure,corto/native",
+      "--attr", "c=src",
+      "--attr", "h=include",
+      "--attr", "bootstrap=true",
+      "--attr", "stubs=false",
+      "-g", "c/api",
+      NULL
+    });
+    if (corto_procwait(pid, &ret) || ret) {
+        corto_error("failed to generate code for corto/c (%d)", ret);
+        printf("   command: corto pp --prefix corto --name corto --scope corto/core --attr c=src/core --attr h=include/core --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
+        goto error;
+    }
+
     return 0;
 error:
     return -1;

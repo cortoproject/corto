@@ -22,11 +22,11 @@ extern "C" {
 #define corto_uint16(o) ((corto_uint16*)corto_assertType((corto_type)corto_uint16_o, o))
 #define corto_object(o) ((corto_object)o)
 #define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
-#define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
 #define corto_string(o) ((corto_string*)corto_assertType((corto_type)corto_string_o, o))
 #define corto_inout(o) ((corto_inout*)corto_assertType((corto_type)corto_inout_o, o))
 #define corto_parameter(o) ((corto_parameter*)corto_assertType((corto_type)corto_parameter_o, o))
 #define corto_parameterseq(o) ((corto_parameterseq*)corto_assertType((corto_type)corto_parameterseq_o, o))
+#define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
 #define corto_function(o) ((corto_function)corto_assertType((corto_type)corto_function_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assertType((corto_type)corto_delegatedata_o, o))
 #define corto_initAction(o) ((corto_initAction*)corto_assertType((corto_type)corto_initAction_o, o))
@@ -83,7 +83,8 @@ extern "C" {
 #define corto_method(o) ((corto_method)corto_assertType((corto_type)corto_method_o, o))
 #define corto_objectlist(o) ((corto_objectlist*)corto_assertType((corto_type)corto_objectlist_o, o))
 #define corto_octet(o) ((corto_octet*)corto_assertType((corto_type)corto_octet_o, o))
-#define corto_procedureKind(o) ((corto_procedureKind*)corto_assertType((corto_type)corto_procedureKind_o, o))
+#define corto_overridable(o) ((corto_overridable)corto_assertType((corto_type)corto_overridable_o, o))
+#define corto_override(o) ((corto_override)corto_assertType((corto_type)corto_override_o, o))
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
@@ -94,7 +95,6 @@ extern "C" {
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
-#define corto_overridable(o) ((corto_overridable)corto_assertType((corto_type)corto_overridable_o, o))
 #define corto_void(o) ((corto_void*)o)
 #define corto_wordseq(o) ((corto_wordseq*)corto_assertType((corto_type)corto_wordseq_o, o))
 
@@ -151,9 +151,6 @@ typedef void *corto_object;
 
 CORTO_SEQUENCE(corto_objectseq, corto_object,);
 
-/* word */
-typedef uintptr_t corto_word;
-
 /* string */
 typedef char* corto_string;
 
@@ -175,6 +172,9 @@ struct corto_parameter {
 };
 
 CORTO_SEQUENCE(corto_parameterseq, corto_parameter,);
+
+/* word */
+typedef uintptr_t corto_word;
 
 /*  function */
 typedef struct corto_function_s *corto_function;
@@ -583,6 +583,20 @@ CORTO_LIST(corto_objectlist);
 /* octet */
 typedef uint8_t corto_octet;
 
+/*  overridable */
+typedef struct corto_overridable_s *corto_overridable;
+
+struct corto_overridable_s {
+    struct corto_method_s _parent;
+};
+
+/*  override */
+typedef struct corto_override_s *corto_override;
+
+struct corto_override_s {
+    struct corto_method_s _parent;
+};
+
 /*  procedure */
 typedef struct corto_procedure_s *corto_procedure;
 
@@ -650,20 +664,6 @@ typedef struct corto_union_s *corto_union;
 struct corto_union_s {
     struct corto_interface_s _parent;
     corto_type discriminator;
-};
-
-/*  overridable */
-typedef struct corto_overridable_s *corto_overridable;
-
-struct corto_overridable_s {
-    struct corto_method_s _parent;
-};
-
-/*  override */
-typedef struct corto_override_s *corto_override;
-
-struct corto_override_s {
-    struct corto_method_s _parent;
 };
 
 /* void */
