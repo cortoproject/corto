@@ -13,7 +13,7 @@
 #define CXSH_CMD_MAX (1024)
 
 #define CXSH_COL_NAME     (46)
-#define CXSH_COL_ID       (18)
+#define CXSH_COL_ID       (64)
 #define CXSH_COL_TYPE     (32)
 #define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE)
 
@@ -94,10 +94,11 @@ static corto_string cxsh_printColumnValue(corto_string str, unsigned int width){
 
 /* Print shell prompt */
 static void cxsh_prompt(int enableColors, corto_id prompt) {
+
     if (enableColors) {
         sprintf(prompt, "%s<%s %s%s >%s ", CORTO_GREEN, CORTO_NORMAL, scope, CORTO_CYAN, CORTO_NORMAL);
     } else {
-        sprintf(prompt, "%s $ ", scope);
+        sprintf(prompt, "< %s > ", scope);
     }
 }
 
@@ -167,34 +168,43 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
 
 static int cxsh_printRow(corto_string parent, corto_string id, corto_string name, corto_string type) {
     corto_string remaining = 0;
-    corto_string objcolor = OBJECT_COLOR;
+    corto_string objcolor;
     corto_uint32 colId = CXSH_COL_ID;
+    corto_id fullId;
+
+    sprintf(fullId, "%s/%s", parent, id);
+    corto_cleanpath(fullId, fullId);
+
+    corto_object obj = corto_find(NULL, fullId, CORTO_FIND_DEFAULT);
+    if (obj) corto_release(obj);
 
     /* Print columns */
-    cxsh_color(objcolor);
-    if (strcmp(parent, scope) && strcmp(parent, ".")) {
-        printf("%s/", parent);
-        colId -= strlen(parent) + 1;
+    if (obj) {
+        objcolor = CORTO_GREEN;
+    } else {
+        objcolor = CORTO_BLUE;
     }
-    cxsh_printColumnValue(id, colId);
-    cxsh_color(CORTO_NORMAL);
-    remaining = cxsh_printColumnValue(name, CXSH_COL_NAME);
+    cxsh_color(objcolor);
+    remaining = cxsh_printColumnValue(fullId, colId);
+
     cxsh_color(TYPE_COLOR); printf("%s", type); cxsh_color(CORTO_NORMAL);
     printf("\n");
 
     /* Print remainder of the name */
+    cxsh_color(objcolor);
     while (remaining) {
-        printf("%*s    ", CXSH_COL_ID, " ");
-        remaining = cxsh_printColumnValue(remaining, CXSH_COL_NAME - 4);
+        printf("    ");
+        remaining = cxsh_printColumnValue(remaining, CXSH_COL_ID - 4);
         printf("\n");
     }
+    cxsh_color(CORTO_NORMAL);
 
-    return 1;
+    return obj ? 1 : 0;
 }
 
 /* List scope */
 static void cxsh_ls(char* arg) {
-    corto_uint32 i = 0;
+    corto_uint32 i = 0, inStore = 0;
     corto_id buff;
     char ch;
 
@@ -220,16 +230,15 @@ static void cxsh_ls(char* arg) {
 
     while (corto_iterHasNext(&iter)) {
         corto_result *item = corto_iterNext(&iter);
-        cxsh_printRow(item->parent, item->id, item->name, item->type);
+        inStore += cxsh_printRow(item->parent, item->id, item->name, item->type);
         i ++; /* Count objects so total can be printed */
     }
 
     if (!i) {
         printf("  no objects.\n\n");
-    } else if (i > 1) {
-        printf("  %d objects\n\n", i);
     } else {
-        printf("  %d object\n\n", i);
+        printf("  %d objects (%d %sin store%s, %d %smounted%s)\n\n", i, 
+            inStore, CORTO_GREEN, CORTO_NORMAL, i - inStore, CORTO_BLUE, CORTO_NORMAL);
     }
 
     return;
@@ -404,13 +413,10 @@ static int cxsh_show(char* object) {
                       CORTO_NORMAL);
                 }
                 if (o != root_o) {
-                    char *parentPtr = corto_fullpath(id, corto_parentof(o));
-                    if (strcmp(parentPtr, "/")) {
-                        parentPtr += 1;
-                    }
+                    corto_fullpath(id, corto_parentof(o));
                     printf("%sparent:       %s%s%s\n",
                       INTERFACE_COLOR, OBJECT_COLOR,
-                      parentPtr,
+                      id,
                       CORTO_NORMAL);
                 }
             }
@@ -431,7 +437,7 @@ static int cxsh_show(char* object) {
                 printf("%sstate:        %s%s\n", CORTO_RED, cxsh_stateStr(o, state), CORTO_NORMAL);
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, CORTO_NORMAL, META_COLOR, cxsh_attrStr(o, attr), CORTO_NORMAL);
-            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, CORTO_NORMAL, OBJECT_COLOR,
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, CORTO_NORMAL, META_COLOR,
                 corto_fullpath(NULL, corto_value_getType(&result)), CORTO_NORMAL);
         }
 
@@ -469,7 +475,7 @@ static int cxsh_show(char* object) {
                 corto_metaWalk(&s, o, &sdata);
                 corto_string str = corto_buffer_str(&sdata.buffer);
                 if (str) {
-                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, CORTO_NORMAL, str);
+                    printf("%sinitializer:%s  %s\n", INTERFACE_COLOR, CORTO_NORMAL, str);
                     corto_dealloc(str);
                 }
             }
@@ -559,6 +565,52 @@ int cxsh_getErrorLocation(corto_string str) {
     return result;
 }
 
+
+static void cxsh_goodbye(char *cmd) {
+    char *ptr;
+    int bs;
+    corto_id partial, prompt;
+    strcpy(partial, cmd);
+    cxsh_prompt(TRUE, prompt);
+    for(ptr = &partial[strlen(cmd) - 1]; (ptr >= partial); ptr--) {
+        for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+            printf("\b");
+        }
+        *ptr = '\0';
+        printf("%s%s%s%s ", prompt, CORTO_BOLD, partial, CORTO_NORMAL);
+        fflush(stdout);
+        corto_sleep(0, 30000000);
+    }
+
+    strcpy(partial, scope);
+    for(ptr = &partial[strlen(partial) - 1]; (ptr >= partial); ptr-=2) {
+        for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+            printf("\b");
+        }
+        *ptr = '\0';
+        printf("%s<%s %s %s>%s   ", CORTO_GREEN, CORTO_NORMAL, partial, CORTO_CYAN, CORTO_NORMAL);
+        fflush(stdout);
+        corto_sleep(0, 30000000);
+    }
+
+    int i;
+    for (i = 2; i >= 0; i --) {
+        for (bs = 0; bs < 10; bs++) {
+            printf("\b");
+        }
+        printf("%s<%s%*s%s>%s ", CORTO_GREEN, CORTO_NORMAL, i, "", CORTO_CYAN, CORTO_NORMAL);
+        fflush(stdout);
+        corto_sleep(0, 30000000);
+    }
+
+    printf("B"); fflush(stdout); corto_sleep(0, 30000000);
+    printf("y"); fflush(stdout); corto_sleep(0, 30000000);
+    printf("e"); fflush(stdout); corto_sleep(0, 30000000);
+    printf("!");
+    printf("\n");
+}
+
+
 static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     CORTO_UNUSED(argc);
 
@@ -568,7 +620,7 @@ static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     } else
     /* exit */
     if (!strcmp(argv[0], "exit")) {
-        printf("Bye!\n");
+        cxsh_goodbye(cmd);
         goto quit;
     } else
     /* cd */
@@ -843,7 +895,7 @@ corto_uint32 cxsh_countSelect(char *expr) {
     }
     corto_iterRelease(&iter);
     if (!result) {
-        if (corto_select(scope, expr).iter(&iter)) goto error;
+        if (corto_select("corto/lang", expr).iter(&iter)) goto error;
         while (corto_iterHasNext(&iter)) {
             corto_iterNext(&iter);
             result++;
@@ -852,7 +904,7 @@ corto_uint32 cxsh_countSelect(char *expr) {
         corto_iterRelease(&iter);
     }
     if (!result) {
-        if (corto_select(scope, expr).iter(&iter)) goto error;
+        if (corto_select("corto", expr).iter(&iter)) goto error;
         while (corto_iterHasNext(&iter)) {
             corto_iterNext(&iter);
             result++;
@@ -931,32 +983,12 @@ void cxsh_print(const char *arg) {
             }
             if (ch == '/') {
                 printf("%s%c%s", CORTO_CYAN, ch, CORTO_NORMAL);
-            } else if (ch == '"') {
-                printf("%s%c%s", CORTO_RED, ch, CORTO_NORMAL);
             } else {
                 printf("%s%c%s", CORTO_BOLD, ch, CORTO_NORMAL);
             }
 
             bptr = buff;
             token++;
-
-            if (ch == '"') {
-                while ((ch = *(++ptr)) && (ch != '"')) {
-                    *bptr = ch;
-                    bptr++;
-                }
-                if (ch) {
-                    *bptr = '"';
-                    bptr++;
-                }
-                *bptr = '\0';
-                printf("%s%s%s", CORTO_RED, buff, CORTO_NORMAL);
-                bptr = buff;
-            } else if (ch == '.') {
-                isMember = TRUE;
-            } else {
-                isMember = FALSE;
-            }
         } else if ((bptr == buff) && isdigit(ch)) {
             printf("%s%c%s", CORTO_GREEN, ch, CORTO_NORMAL);
             bptr = buff;
@@ -1005,7 +1037,9 @@ static void cxsh_shell(void) {
 }
 
 corto_int16 cortotool_shell(int argc, char* argv[]) {
-    int i;
+    int i, bs;
+
+    corto_errfmt("%l: %c%m");
 
     cxsh_color(SHELL_COLOR);
     printf("corto shell - type 'help' for instructions.\n");
@@ -1019,6 +1053,19 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
             corto_load(argv[i], argc-i, &argv[i]);
             break;
         }
+    }
+
+    for (i = 0; i < 3; i ++) {
+        for (bs = 0; bs < 6; bs ++) {
+            printf("\b");
+        }
+        printf("%s<%s%*s>%s ", CORTO_GREEN, CORTO_CYAN, i, "", CORTO_NORMAL);
+        fflush(stdout);
+        corto_sleep(0, 50000000);
+    }
+
+    for (bs = 0; bs < 6; bs ++) {
+        printf("\b");
     }
 
     /* Set scope to root */

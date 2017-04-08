@@ -448,21 +448,7 @@ int corto_shellEngine_readInput(
 
         case XCON_KEY_BACKSPACE:
             if (buffLoc) {
-                corto_bool remove = FALSE;
-
-                switch (chremove(cmdbuff, consolePos, buffLoc)) {
-                case '{': if (cmdbuff[consolePos - 1] == '}') remove = TRUE;
-                    break;
-                case '[': if (cmdbuff[consolePos - 1] == ']') remove = TRUE;
-                    break;
-                case '(': if (cmdbuff[consolePos - 1] == ')') remove = TRUE;
-                    break;
-                case '"': if (cmdbuff[consolePos - 1] == '"') remove = TRUE;
-                    break;
-                }
-
-                if (remove) chremove(cmdbuff, consolePos, buffLoc);
-
+                chremove(cmdbuff, consolePos, buffLoc);
                 if (cursor) {
                     cursor--;
                 }
@@ -500,31 +486,12 @@ int corto_shellEngine_readInput(
 
         default: {
                 corto_bool insert = TRUE;
-                if (consolePos) {
-                    char cur = cmdbuff[consolePos];
-                    if ((ch == ')') && (cur == ')')) insert = FALSE;
-                    if ((ch == '}') && (cur == '}')) insert = FALSE;
-                    if ((ch == '"') && (cur == '"')) insert = FALSE;
-                    if ((ch == ']') && (cur == ']')) insert = FALSE;
-                }
                 if (insert) {
                     chinsert(cmdbuff, consolePos, buffLoc, ch);
                 }
             }
             cursor++;
             break;
-        }
-
-        if (ch == '(') {
-            /*printf("\ncmdbuff = '%s', cursor = %d, consolePos = %d, buffLoc = %d\n",
-              cmdbuff, cursor, consolePos, buffLoc);*/
-            chinsert(cmdbuff, cursor, buffLoc + 1, ')');
-        } else if (ch == '{') {
-            chinsert(cmdbuff, cursor, buffLoc + 1, '}');
-        } else if (ch == '"') {
-            chinsert(cmdbuff, cursor, buffLoc + 1, '"');
-        } else if (ch == '[') {
-            chinsert(cmdbuff, cursor, buffLoc + 1, ']');
         }
 
         if (!execute) {
@@ -539,7 +506,9 @@ int corto_shellEngine_readInput(
         ch = cortoconsole_getch();
     }
 
-    printf("\n");
+    if (strcmp(cmdbuff, "exit")) {
+        printf("\n");
+    }
 
     /* Execute command */
     if (cmd && execute) {
