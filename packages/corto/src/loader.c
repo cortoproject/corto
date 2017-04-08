@@ -264,7 +264,7 @@ static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_
             corto_dlClose(dl);
         } else {
             if (*dl_out) {
-                corto_dlClose(dl);
+                corto_dlClose(*dl_out);
             }
             *dl_out = dl;
         }
