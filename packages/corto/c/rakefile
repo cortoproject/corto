@@ -1,6 +1,6 @@
 PACKAGE = 'corto/c'
 
 NOCORTO = true
-USE_PACKAGE = ['corto']
+LINK = ["#{ENV['CORTO_TARGET']}/lib/corto/#{ENV['CORTO_VERSION']}/corto/corto"]
 
 require "#{ENV['CORTO_BUILD']}/package"

@@ -166,7 +166,7 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
     return buff;
 }
 
-static int cxsh_printRow(corto_string parent, corto_string id, corto_string name, corto_string type) {
+static int cxsh_printRow(corto_string parent, corto_string id, corto_string type) {
     corto_string remaining = 0;
     corto_string objcolor;
     corto_uint32 colId = CXSH_COL_ID;
@@ -230,7 +230,7 @@ static void cxsh_ls(char* arg) {
 
     while (corto_iterHasNext(&iter)) {
         corto_result *item = corto_iterNext(&iter);
-        inStore += cxsh_printRow(item->parent, item->id, item->name, item->type);
+        inStore += cxsh_printRow(item->parent, item->id, item->type);
         i ++; /* Count objects so total can be printed */
     }
 
@@ -1039,7 +1039,7 @@ static void cxsh_shell(void) {
 corto_int16 cortotool_shell(int argc, char* argv[]) {
     int i, bs;
 
-    corto_errfmt("%l: %c%m");
+    corto_errfmt("%k: %f:%l: %c: %m");
 
     cxsh_color(SHELL_COLOR);
     printf("corto shell - type 'help' for instructions.\n");

@@ -119,6 +119,7 @@ PP_PRELOAD = [] if not defined? PP_PRELOAD
 LANGUAGE = "c" if not defined? LANGUAGE
 ALWAYS_REBUILD = [] if not defined? ALWAYS_REBUILD
 NOAPI = false if not defined? NOAPI
+NOCORTO = false if not defined? NOCORTO
 UNINSTALL = []
 
 # Variable that tracks files created by the buildsystem for uninstaller

@@ -106,6 +106,9 @@ end
 # Setup default clean & clobber rules
 CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
+if NOCORTO == false
+  CLEAN.include("c")
+end
 CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
 CLOBBER.include(".corto/*.c")

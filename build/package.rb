@@ -17,6 +17,7 @@ ARTEFACT_EXT = "so" if not defined? ARTEFACT_EXT
 INSTALL = "lib/corto" if not defined? INSTALL
 NOCORTO = false if not defined? NOCORTO
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
+COMPONENTS = [] if not defined? COMPONENTS
 
 # Private variables
 GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
@@ -54,7 +55,7 @@ if TARGET != "corto" and NOCORTO == false then
     USE_PACKAGE << "corto/cpp"
   elsif LANGUAGE == "c" or LANGUAGE == "c4cpp" then
     if not NOAPI then
-      USE_PACKAGE << "corto/lang/c" << "corto/core/c"
+      USE_PACKAGE << "corto/c"
     end
   end
 end
@@ -113,16 +114,16 @@ if NOCORTO == false then
 
     if LANGUAGE == "c" or LANGUAGE == "c4cpp" then
       GENERATED_SOURCES <<
-        ".corto/_api.#{EXT}" <<
         ".corto/_wrapper.#{EXT}" <<
         ".corto/_project.#{EXT}" <<
         ".corto/_load.#{EXT}"
 
       GENERATED_HEADERS <<
-        "include/_api.h" <<
         "include/_load.h" <<
         "include/_type.h" <<
         "include/_project.h"
+
+      COMPONENTS << "c"
     else
       GENERATED_SOURCES <<
         ".corto/_api.#{EXT}" <<
@@ -142,16 +143,6 @@ if NOCORTO == false then
 
       localStr = " "
       docStr = " "
-
-      if LOCAL then
-        localStr = "--attr local=true "
-      else
-        begin
-          cmd "corto locate corto/gen/doc/doc --silent"
-          # docStr = "-g doc/doc"
-        rescue
-        end
-      end
 
       if defined? PREFIX then
         prefixStr = "--prefix #{PREFIX} "

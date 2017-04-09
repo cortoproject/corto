@@ -2,7 +2,7 @@
 #include "cortotool_build.h"
 #include "corto/argparse/argparse.h"
 
-static char *errfmt = "[ %l %c%m ]";
+static char *errfmt = "[ %k %f:%l: %c: %m ]";
 
 /* Run a command for multiple projects */
 static corto_int16 cortotool_runcmd(
