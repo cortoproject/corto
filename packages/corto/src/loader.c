@@ -763,11 +763,13 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
     }
     }
 #else
+    corto_bool setLoadAdminWhenFound = TRUE;
     if (!loaded || (!result && loaded->loading)) {
         result = corto_locatePackageIntern(relativePath, &base, &dl, TRUE);
         if (!result && (kind == CORTO_LOCATION_ENV)) {
             corto_lasterr();
             result = corto_locatePackageIntern(package, &base, &dl, FALSE);
+            setLoadAdminWhenFound = FALSE;
         }
     }
     if (relativePath) corto_dealloc(relativePath);
@@ -778,7 +780,7 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
             loaded = corto_loadedAdminAdd(package);
         }
 
-        if (!loaded->filename) {
+        if (!loaded->filename && setLoadAdminWhenFound) {
             corto_mutexLock(&corto_adminLock);
             corto_setstr(&loaded->filename, result);
             corto_setstr(&loaded->base, base);
