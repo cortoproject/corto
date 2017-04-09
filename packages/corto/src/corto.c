@@ -987,7 +987,7 @@ void corto_initEnvironment(void) {
     }
 
     corto_string traceObject = corto_getenv("CORTO_TRACE_ID");
-    if (traceObject) {
+    if (traceObject && traceObject[0]) {
         CORTO_TRACE_ID = traceObject;
     }
 
@@ -997,12 +997,12 @@ void corto_initEnvironment(void) {
     }
 
     corto_string memtraceBreakpoint = corto_getenv("CORTO_MEMTRACE_BREAKPOINT");
-    if (memtraceBreakpoint) {
+    if (memtraceBreakpoint && memtraceBreakpoint[0]) {
         CORTO_MEMTRACE_BREAKPOINT = atoi(memtraceBreakpoint);
     }
 
     corto_string errfmt = corto_getenv("CORTO_ERRFMT");
-    if (errfmt) {
+    if (errfmt && errfmt[0]) {
         corto_errfmt(errfmt);
     }
 }
