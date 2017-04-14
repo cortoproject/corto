@@ -12,12 +12,11 @@
 #include "_interface.h"
 #include "_sequence.h"
 
-static corto_objectseq *corto_interface_vtableFromBase(corto_interface this) {
+corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     corto_interface base;
-    corto_objectseq *myTable, *baseTable;
     corto_uint32 size;
 
-    myTable = NULL;
+    corto_objectseq *baseTable, myTable = {0, NULL};
 
     /* Lookup first vtable in inheritance hierarchy */
     base = corto_interface(this);
@@ -31,23 +30,21 @@ static corto_objectseq *corto_interface_vtableFromBase(corto_interface this) {
         size = baseTable->length * sizeof(corto_method);
 
         /* Create own vtable. */
-        myTable = corto_alloc(sizeof(corto_objectseq));
-        myTable->length = 0;
-        myTable->buffer = NULL;
+        myTable.length = 0;
+        myTable.buffer = NULL;
 
         /* Copy from base vtable. */
         if (size) {
             corto_uint32 i;
-            myTable->buffer = corto_alloc(size);
-            myTable->length = baseTable->length;
-            memcpy(myTable->buffer, baseTable->buffer, size);
+            myTable.buffer = corto_alloc(size);
+            myTable.length = baseTable->length;
+            memcpy(myTable.buffer, baseTable->buffer, size);
 
-            /* Keep functions */
-            for (i=0; i<myTable->length; i++) {
-                corto_claim(myTable->buffer[i]);
+            for (i=0; i<myTable.length; i++) {
+                corto_claim(myTable.buffer[i]);
             }
         } else {
-            myTable->buffer = NULL;
+            myTable.buffer = NULL;
         }
     }
 
@@ -105,10 +102,8 @@ int corto_interface_walkScope(corto_object o, void* userData) {
     this = userData;
 
     if (corto_instanceof(corto_method_o, o)) {
-        if (!corto_checkState(o, CORTO_DEFINED)) {
-            if (corto_interface_bindMethod(this, o)) {
-                goto error;
-            }
+        if (corto_interface_bindMethod(this, o)) {
+            goto error;
         }
     }
 
@@ -424,79 +419,86 @@ corto_int16 _corto_interface_baseof(
 /* $end */
 }
 
+/* $end */
 corto_int16 _corto_interface_bindMethod(
     corto_interface this,
     corto_method method)
 {
 /* $begin(corto/lang/interface/bindMethod) */
-    corto_method* override = NULL;
+    corto_function* found = NULL;
     corto_int32 d = 0;
+    corto_procedure procedureType = corto_procedure(corto_typeof(method));
+    corto_bool added = FALSE;
 
-    /* Check if an overridable method exists in the vtable */
-    if (this->base &&
-       (corto_function(method)->overridable || (corto_typeof(method) == (corto_type)corto_override_o))) {
-        override = (corto_method *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
-    } else {
-        corto_int32 i;
-
-        /* If method is already in vtable, don't do anything */
-        for (i = 0; i < this->methods.length; i++) {
-            if (this->methods.buffer[i] == method) {
-                override = (corto_method*)&this->methods.buffer[i];
-                return 0;
-            }
+    /* If parent is INTERFACE, method must be overridable */
+    if (this->kind == CORTO_INTERFACE) {
+        if (!corto_function(method)->overridable) {
+            corto_seterr("can't bind '%s': interfaces may only contain overridable methods",
+                corto_fullpath(NULL, method));
+            goto error;
         }
     }
 
+    /* Check if an overridable method exists in the vtable */
+    found = (corto_function *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
     /* vtableLookup failed (probably due to a failed overloading request) */
-    if (!override && (d == -1)) {
+    if (d == CORTO_OVERLOAD_ERROR) {
         if (!corto_lasterr()) {
             corto_seterr("method lookup error for '%s'", corto_idof(method));
         }
         goto error;
     }
 
+    /* If type is override, it must override a method */
+    if (found && !(*found)->overridable && procedureType == corto_override_o) {
+        if (!found) {
+            corto_seterr("no overridable method found for '%s'", 
+                corto_fullpath(NULL, method));
+        } else {
+            corto_seterr("method '%s' is not overridable by '%s'",
+                corto_fullpath(NULL, *found),
+                corto_fullpath(NULL, method));
+        }
+        goto error;
+    }
+
     /* Function is reentrant */
-    if (override && (*override != method)) {
+    if (found && (*found != (corto_function)method)) {
         /* If distance is zero, override method (from base-class) */
         if (!d) {
             /* Cannot override method if in the same scope */
-            if (corto_parentof(*override) != corto_parentof(method)) {
-                if (corto_function(*override)->overridable) {
+            if (corto_parentof(*found) != corto_parentof(method)) {
+                if ((*found)->overridable) {
                     /* Check if overriding method is compatible */
-                    if (!corto_interface_checkProcedureCompatibility(corto_function(*override), corto_function(method))) {
+                    if (!corto_interface_checkProcedureCompatibility(
+                        *found, 
+                        corto_function(method))) 
+                    {
                         goto error;
                     }
                 }
-                corto_setref(override, method);
+                corto_setref(found, method);
+                added = TRUE;
             } else {
                 corto_id id, id2;
                 corto_fullpath(id, method);
-                corto_fullpath(id2, *override);
+                corto_fullpath(id2, *found);
                 if (strcmp(id, id2)) {
-                    corto_seterr("definition of method '%s' conflicts with existing method '%s'", id, id2);
+                    corto_seterr("method '%s' conflicts with '%s'", id, id2);
                     goto error;
                 }
             }
         }
-    } else {
-        d = -1;
     }
 
-    if (!override || (d > 0)) {
-        /* If distance is non-zero, construct new method */
-        if (override) {
-            corto_function(*override)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
+    if (!added) {
+        if (found && (d > 0 || d == CORTO_OVERLOAD_NOMATCH_OVERLOAD)) {
+            (*found)->overloaded = TRUE;
             corto_function(method)->overloaded = TRUE;
         }
-
         if (corto_vtableInsert(&this->methods, corto_function(method))) {
             corto_claim(method);
         }
-    }
-
-    if (corto_interface(this)->kind == CORTO_INTERFACE) {
-        corto_function(method)->overridable = TRUE;
     }
 
     return 0;
@@ -535,30 +537,8 @@ corto_int16 _corto_interface_construct(
     corto_interface this)
 {
 /* $begin(corto/lang/interface/construct) */
-    corto_objectseq *superTable, ownTable;
-    corto_uint32 i;
 
-    superTable = NULL;
-
-    /* If a vtable exists on a super-class, merge it with my own. */
-    superTable = corto_interface_vtableFromBase(this);
-    if (superTable) {
-        ownTable = this->methods;
-        this->methods = *superTable;
-
-        /* re-construct methods */
-        if (ownTable.length) {
-            for (i=0; i<ownTable.length; i++) {
-                if (corto_instanceof(corto_type(corto_method_o), ownTable.buffer[i])) {
-                    corto_interface_bindMethod(this, corto_method(ownTable.buffer[i]));
-                }
-                corto_release(ownTable.buffer[i]);
-            }
-
-            corto_dealloc(ownTable.buffer);
-        }
-        corto_dealloc(superTable);
-    }
+    this->methods = corto_interface_vtableFromBase(this);
 
     if (!corto_scopeWalk(this, corto_interface_walkScope, this)) {
         goto error;
@@ -650,12 +630,15 @@ corto_method _corto_interface_resolveMethod(
 /* $begin(corto/lang/interface/resolveMethod) */
     corto_method result;
     corto_method* found;
+    corto_int32 d = 0;
 
     result = NULL;
 
     /* Lookup method */
-    if ((found = (corto_method*)corto_vtableLookup(&this->methods, name, NULL))) {
-        result = *found;
+    if ((found = (corto_method*)corto_vtableLookup(&this->methods, name, &d))) {
+        if (d >= 0) {
+            result = *found;
+        }
     }
 
     return result;

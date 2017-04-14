@@ -3556,9 +3556,12 @@ static corto_object corto_lookup_intern(
         } else if (scope) {
             if ((tree = scope->scope)) {
                 if (containsArgs) {
-                    corto_int32 diff;
-                    o = corto_lookupFunction(o, ptr, NULL, &diff);
-                    if (!diff) { /* Ambiguous reference */
+                    corto_int32 diff, d;
+                    o = corto_lookupFunction(o, ptr, &d, &diff);
+                    if (d < 0) {
+                        corto_release(o);
+                        o = NULL;
+                    } else if (!diff) { /* Ambiguous reference */
                         if (o) corto_release(o);
                         corto_setinfo("ambiguous reference '%s'", ptr);
                         goto error;
@@ -4405,7 +4408,6 @@ static corto_uint32 corto_overloadParamCompare(
             goto match;
         } else if (!o_reference &&
             ((o_type->kind != CORTO_PRIMITIVE) || (corto_primitive(o_type)->kind != CORTO_TEXT))) {
-            fprintf(stderr, "null but not reference or text!\n");
             goto nomatch;
         } else {
             goto match;
@@ -4507,7 +4509,7 @@ error:
     corto_seterr(
       "can't get signature from '%s' of non-procedure type '%s'",
       corto_fullpath(NULL, object),
-      corto_fullpath(NULL, t));    abort();
+      corto_fullpath(NULL, t));
     return NULL;
 }
 
@@ -4566,7 +4568,7 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
     o_parameterCount = corto_overloadParamCount(object);
 
     if ((r_parameterCount != -1) && (r_parameterCount != o_parameterCount)) {
-        goto nomatch;
+        goto nomatch_overload;
     }
 
     /* If request contains parameters, compare parameters of both */
@@ -4619,7 +4621,7 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
                     r_null);
 
                 if (paramDistance == -1) {
-                    goto nomatch;
+                    goto nomatch_overload;
                 } else {
                     d += paramDistance;
                 }
@@ -4631,9 +4633,13 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
 
     return 0;
 nomatch:
-    *distance = -1;
+    *distance = CORTO_OVERLOAD_NOMATCH;
+    return 0;
+nomatch_overload:
+    *distance = CORTO_OVERLOAD_NOMATCH_OVERLOAD;
     return 0;
 error:
+    *distance = CORTO_OVERLOAD_ERROR;
     if (!corto_lasterr()) {
         corto_seterr("invalid procedure request '%s'", requested);
     }
@@ -4703,13 +4709,14 @@ int corto_lookupFunctionWalk(corto_object *ptr, void* userData) {
     corto_int32 d = -1;
     corto_lookupFunction_t* data;
     corto_object o = *ptr;
+    corto_type t = corto_typeof(o);
 
     data = userData;
 
     /* If current object is a function, match it */
-    if ((corto_typeof(o)->kind == CORTO_COMPOSITE) &&
-        ((corto_interface(corto_typeof(o))->kind == CORTO_PROCEDURE) ||
-        (corto_interface(corto_typeof(o))->kind == CORTO_DELEGATE)))
+    if ((t->kind == CORTO_COMPOSITE) &&
+        ((((corto_interface)t)->kind == CORTO_PROCEDURE) ||
+        (((corto_interface)t)->kind == CORTO_DELEGATE)))
     {
         if (strchr(data->request, '(')) {
             if (corto_overload(o, data->request, &d)) {
@@ -4733,14 +4740,18 @@ int corto_lookupFunctionWalk(corto_object *ptr, void* userData) {
             }
         }
 
-        if (d != -1) {
-            if (d <= data->d) {
+        if (d >= 0) {
+            corto_int32 compare = data->d == CORTO_OVERLOAD_NOMATCH_OVERLOAD ? INT_MAX : data->d;
+            if (d <= compare) {
                 data->old_d = data->d;
             }
-            if (d < data->d) {
+            if (d < compare) {
                 data->result = (corto_object*)ptr;
                 data->d = d;
             }
+        } else if (d == CORTO_OVERLOAD_NOMATCH_OVERLOAD && !data->result) {
+            data->result = (corto_object*)ptr;
+            data->d = d;
         }
     } else {
         if (!stricmp(corto_idof(o), data->request)) {
@@ -4783,13 +4794,7 @@ corto_object* corto_lookupFunctionFromSequence(
     }
 
     if (d) {
-        if (walkData.error) {
-            *d = -1;
-        } else if (!walkData.result) {
-            *d = 0;
-        } else {
-            *d = walkData.d;
-        }
+        *d = walkData.d;
     }
 
     if (diff) {

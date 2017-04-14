@@ -13,7 +13,6 @@ corto_int16 _corto_override_init(
 {
 /* $begin(corto/lang/override/init) */
 
-    /* << Insert implementation >> */
-
+    return corto_method_init(corto_method(this));
 /* $end */
 }

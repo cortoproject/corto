@@ -1119,8 +1119,8 @@ class MethodTester::
     void overload(string a)
     void overload(int32 a, int32 b)
     void overload(MethodTester m)
-    void virtualSimple() virtual
-    void virtualOverload() virtual
+    void virtualSimple() overridable
+    void virtualOverload() overridable
     void virtualOverload(int32 a)
 
 class MethodTesterInherit: MethodTester::
@@ -1384,7 +1384,7 @@ test/Suite Loader::
 
 // Key and lock for security tests
 class TestKey: secure/key::
-    string authenticate(string user, string password)
+    string authenticate(string user, string password) override
 
 struct AccessRule::
     user: string
@@ -1393,7 +1393,7 @@ struct AccessRule::
 
 class TestLock: secure/lock::
     rules: list{AccessRule}
-    secure/accessKind authorize(string token, secure/actionKind action)
+    secure/accessKind authorize(string token, secure/actionKind action) override
 
 // Test security
 test/Suite Security::

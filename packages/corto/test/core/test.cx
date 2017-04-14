@@ -18,18 +18,18 @@ struct Point::
 class JsonReplicator : mount, hidden::
     alias mount: mount/mount
     int16 construct()
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
 class StringReplicator : mount, hidden::
     alias mount: mount/mount
     int16 construct()
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
 class IdMount : mount, hidden::
     alias mount: mount/mount
     alias type: observer/type
     int16 construct()
-    string onId()
+    string onId() override
 
 // Test setting content types
 test/Suite SelectContentType::
@@ -49,11 +49,11 @@ class ListMount : mount, hidden::
     alias kind : mount/kind
     items: resultList, private
     int16 construct()
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
 class MountWIterData: mount, hidden::
     alias mount: mount/mount
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
 class MountIterCount: mount, hidden::
     alias mount: mount/mount
@@ -62,7 +62,7 @@ class MountIterCount: mount, hidden::
     releaseCount: int32, readonly
     result: core/result, readonly
     id: string, readonly
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
 // Test corto_select requesting data from mounts
 test/Suite SelectMount::
@@ -123,7 +123,7 @@ test/Suite SelectMount::
 class HistoryMount : core/mount, hidden::
     alias mount: mount/mount
     int16 construct()
-    core/resultIter onRequest(core/request request)
+    core/resultIter onRequest(core/request request) override
 
     struct data::
         result: core/result
@@ -145,8 +145,8 @@ class SinkMount : core/mount, hidden::
     value: string
     items: resultList, private
     int16 construct()
-    resultIter onRequest(core/request request)
-    object onResume(string parent, string name, object o)
+    resultIter onRequest(core/request request) override
+    object onResume(string parent, string name, object o) override
 
 class AutoResumeSinkMount : core/mount, hidden::
     alias mount: mount/mount
@@ -156,9 +156,9 @@ class AutoResumeSinkMount : core/mount, hidden::
     unsubscribes: list{core/request},readonly
     items: resultList, private
     int16 construct()
-    resultIter onRequest(core/request request)
-    word onSubscribe(string parent, string expr, word ctx)
-    void onUnsubscribe(string parent, string expr, word ctx)
+    resultIter onRequest(core/request request) override
+    word onSubscribe(string parent, string expr, word ctx) override
+    void onUnsubscribe(string parent, string expr, word ctx) override
 
 // Request data from a SINK mount
 test/Suite SelectSink::
@@ -286,7 +286,7 @@ class EventReplicator: mount, hidden::
   updateCount: int32, readonly
   deleteCount: int32, readonly
 
-  void onNotify(core/eventMask event, core/result object)
+  void onNotify(core/eventMask event, core/result object) override
 
 // Test events received by replicator
 test/Suite ReplicatorEvent::

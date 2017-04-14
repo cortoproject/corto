@@ -31,18 +31,7 @@ corto_int16 _corto_method_init(
     extern int CORTO_BENCHMARK_METHOD_INIT;
     corto_benchmark_start(CORTO_BENCHMARK_METHOD_INIT);
 
-    corto_object parent;
     corto_int16 result;
-
-    /* Locate parent class object */
-    parent = corto_parentof(this);
-
-    /* Parent of method must be an interface type */
-    if (corto_class_instanceof(corto_interface_o, parent)) {
-        if (corto_interface_bindMethod(corto_interface(parent), this)) {
-            goto error;
-        }
-    }
 
     result = corto_function_init(corto_function(this));
     corto_benchmark_stop(CORTO_BENCHMARK_METHOD_INIT);

@@ -662,6 +662,28 @@ corto_string g_getPrefix(g_generator g, corto_object o) {
     return (prefix != NULL) ? prefix->prefix : NULL;
 }
 
+/* Instead of looking at function overload attribute, check if there are functions
+ * in the same scope that have the same name. The difference is that a method
+ * may overload a method from a baseclass from a different scope. In that case
+ * however, there is no danger of a name-clash in generated code, so a short
+ * name can still be used. */
+static corto_bool g_isOverloaded(corto_function o) {
+    corto_bool result = FALSE;
+    corto_int32 i, d = 0;
+    corto_objectseq scope = corto_scopeClaim(corto_parentof(o));
+    for (i = 0; i < scope.length; i ++) {
+        if (corto_instanceof(corto_procedure_o, corto_typeof(scope.buffer[i]))) {
+            corto_assert(corto_overload(scope.buffer[i], corto_idof(o), &d) == 0, "overloading error discovered in generator: %s", corto_lasterr());
+            if (d > 0 || d == CORTO_OVERLOAD_NOMATCH_OVERLOAD) {
+                result = TRUE;
+                break;
+            }
+        }
+    }
+    corto_scopeRelease(scope);
+    return result;
+}
+
 /* Object transformations */
 static corto_char* g_oidTransform(g_generator g, corto_object o, corto_id _id, g_idKind kind) {
     CORTO_UNUSED(g);
@@ -670,7 +692,7 @@ static corto_char* g_oidTransform(g_generator g, corto_object o, corto_id _id, g
      * from the name if the function is not overloaded. This keeps processing
      * for generators trivial. */
     if (corto_class_instanceof(corto_procedure_o, corto_typeof(o))) {
-        if (!corto_function(o)->overloaded) {
+        if (!g_isOverloaded(o)) {
             corto_char* ptr;
             ptr = strchr(_id, '(');
             if (ptr) {

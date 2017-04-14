@@ -347,9 +347,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
     {CORTO_SSO_PO_V(parent, #name args, lang_overridable), {{(corto_type)&returnType##__o.v, FALSE, {0,NULL}, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, 0}}}
 
 /* interface method object */
-#define CORTO_IMETHOD_O(parent, name, args, returnType, overridable) \
+#define CORTO_IMETHOD_O(parent, name, args, returnType) \
     sso_method parent##_##name##__o = \
-    {CORTO_SSO_PO_V(parent, #name args, lang_method), {{(corto_type)&returnType##__o.v, FALSE, {0,NULL}, overridable, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, 0}}}
+    {CORTO_SSO_PO_V(parent, #name args, lang_overridable), {{(corto_type)&returnType##__o.v, FALSE, {0,NULL}, FALSE, FALSE, CORTO_PROCEDURE_CDECL, 0, 0, 0}}}
 
 /* observer object */
 #define CORTO_OBSERVER_O(parent, name, impl) \
@@ -1051,7 +1051,7 @@ CORTO_PROCEDURE_O(lang, overridable, TRUE, NULL, lang_method, CORTO_GLOBAL, CORT
 /* /corto/lang/override */
 CORTO_FW_I(lang, override);
 CORTO_PROCEDURE_O(lang, override, TRUE, NULL, lang_method, CORTO_GLOBAL, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, CORTO_I);
-    CORTO_METHOD_O(lang_override, init, "()", lang_int16, corto_overridable_init);
+    CORTO_METHOD_O(lang_override, init, "()", lang_int16, corto_override_init);
 
 /* /corto/lang/metaprocedure */
 CORTO_FW_C(lang, metaprocedure);
@@ -1166,7 +1166,7 @@ CORTO_STRUCT_O(core, request, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
 
 /* /corto/lang/dispatcher */
 CORTO_INTERFACE_O(core, dispatcher);
-    CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void, FALSE);
+    CORTO_IMETHOD_O(core_dispatcher, post, "(event e)", lang_void);
 
 /* /corto/core/stageItem */
 CORTO_STRUCT_O(core, stageItem, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
