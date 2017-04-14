@@ -254,7 +254,6 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
             corto_loadFreePackages(packages);
         }
     } else {
-        corto_loader loader = corto_create(corto_loader_o);
         corto_iter it;
         corto_int32 count = 0, globalCount = 0;
         if (corto_select(NULL, "//").type("/corto/core/package").iter(&it)) {
@@ -289,7 +288,6 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
                 globalCount, CORTO_GREEN, CORTO_NORMAL, 
                 count - globalCount, CORTO_MAGENTA, CORTO_NORMAL);
         }
-        corto_delete(loader);
     }
 
     corto_argclean(data);

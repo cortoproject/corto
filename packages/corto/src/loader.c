@@ -763,16 +763,34 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
     }
     }
 #else
+    corto_bool setLoadAdminWhenFound = TRUE;
     if (!loaded || (!result && loaded->loading)) {
         result = corto_locatePackageIntern(relativePath, &base, &dl, TRUE);
         if (!result && (kind == CORTO_LOCATION_ENV)) {
             corto_lasterr();
             result = corto_locatePackageIntern(package, &base, &dl, FALSE);
+            setLoadAdminWhenFound = FALSE;
         }
     }
     if (relativePath) corto_dealloc(relativePath);
 
     if (result) {
+        corto_bool cleanupBase = FALSE;
+        if (!loaded) {
+            loaded = corto_loadedAdminAdd(package);
+        }
+
+        if (!loaded->filename && setLoadAdminWhenFound) {
+            corto_mutexLock(&corto_adminLock);
+            corto_setstr(&loaded->filename, result);
+            corto_setstr(&loaded->base, base);
+            if (dl_out) {
+                loaded->library = dl;
+            }
+            corto_mutexUnlock(&corto_adminLock);
+            cleanupBase = TRUE;
+        }
+
         switch(kind) {
         case CORTO_LOCATION_ENV:
             /* Quick & dirty trick to strip everything but the env */
@@ -802,18 +820,7 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
         }
         }
 
-        if (!loaded) {
-            loaded = corto_loadedAdminAdd(package);
-        }
-
-        if (!loaded->filename) {
-            corto_mutexLock(&corto_adminLock);
-            corto_setstr(&loaded->filename, result);
-            corto_setstr(&loaded->base, base);
-            if (dl_out) {
-                loaded->library = dl;
-            }
-            corto_mutexUnlock(&corto_adminLock);
+        if (cleanupBase) {
             corto_dealloc(base);
         }
     }
