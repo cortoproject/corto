@@ -170,12 +170,14 @@ static int cxsh_printRow(corto_string parent, corto_string id, corto_string type
     corto_string remaining = 0;
     corto_string objcolor;
     corto_uint32 colId = CXSH_COL_ID;
-    corto_id fullId;
+    corto_id fullId, searchId;
 
     sprintf(fullId, "%s/%s", parent, id);
     corto_cleanpath(fullId, fullId);
+    sprintf(searchId, "%s/%s", scope, fullId);
+    corto_cleanpath(searchId, searchId);
 
-    corto_object obj = corto_find(NULL, fullId, CORTO_FIND_DEFAULT);
+    corto_object obj = corto_find(NULL, searchId, CORTO_FIND_DEFAULT);
     if (obj) corto_release(obj);
 
     /* Print columns */
@@ -1061,7 +1063,7 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
         }
         printf("%s<%s%*s>%s ", CORTO_GREEN, CORTO_CYAN, i, "", CORTO_NORMAL);
         fflush(stdout);
-        corto_sleep(0, 50000000);
+        corto_sleep(0, 40000000);
     }
 
     for (bs = 0; bs < 6; bs ++) {

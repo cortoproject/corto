@@ -5,12 +5,16 @@
 #define GREEN   "\033[1;32m"
 #define NORMAL  "\033[0;49m"
 
+static char *errfmt = "[ %k %f:%l: %c: %m ]";
+
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string projectArg = NULL;
     corto_int8 ret, sig, err = 0;
     corto_ll verbose, project, build, rebuild, clean, tool;
 
     CORTO_UNUSED(argc);
+    
+    corto_errfmt(errfmt);
 
     if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
         goto error;
