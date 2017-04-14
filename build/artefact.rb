@@ -386,23 +386,7 @@ else
   end
 end
 
-# :prebuild and :postbuild allow projects to define actions that should happen
-# before and after the build.
-
-task :prebuild => GENERATED_SOURCES do
-  verbose(VERBOSE)
-
-  verbose(VERBOSE)
-  if ENV['silent'] != "true" then
-      pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
-      if pkg == "." then
-        msg "build"
-      else
-        msg "build #{C_NORMAL}#{pkg}"
-      end
-  end
-
-  # Load dependency build instructions before anything else
+def loadPackageConfigs()
   USE_PACKAGE.each do |p|
     location = `corto locate #{p} --path`.strip
     if not $?.to_i == 0 then
@@ -439,7 +423,29 @@ task :prebuild => GENERATED_SOURCES do
     if File.exists? buildscript then
         require "#{buildscript}"
     end
+
+    if not NOCORTO and defined? LANGUAGE and LANGUAGE != "none" then
+      lang_buildscript = "#{location}/#{LANGUAGE}/build.rb"
+      if File.exists? lang_buildscript then
+        require "#{lang_buildscript}"
+      end
+    end
   end
+end
+
+task :prebuild => GENERATED_SOURCES do
+  verbose(VERBOSE)
+  if ENV['silent'] != "true" then
+      pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
+      if pkg == "." then
+        msg "build"
+      else
+        msg "build #{C_NORMAL}#{pkg}"
+      end
+  end
+
+  # Load dependency build instructions before anything else
+  loadPackageConfigs()
 
   # Don't overwhelm the compiler with potentially duplicate include paths that can
   # be introduced when the same package is included multiple times, by multiple

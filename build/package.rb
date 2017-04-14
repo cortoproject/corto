@@ -303,7 +303,13 @@ def uninstallDir(dir)
       end
     end
   else
-    cmd "rm -rf #{dir}"
+    # Remove files from directory, keep directories
+    files = Dir.glob("#{dir}/*")
+    files.each do |f|
+      if not File.directory? f then
+        cmd "rm -f #{f}"
+      end
+    end
   end
 end
 
@@ -314,8 +320,10 @@ task :uninstall_files do
     uninstallDir(dir)
 
     # Also make sure that there are no packages with the same name but different case
-    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR.downcase}"
-    uninstallDir(dir)
+    dirLc = dir.downcase
+    if dirLc != dir then
+      uninstallDir(dirLc)
+    end
   end
 end
 
@@ -333,12 +341,10 @@ def installFile(source, target)
     begin
       cmd "ln -fs #{source} #{target}"
     rescue
-      STDERR.puts "#{C_WARNING}warning: failed to create link #{target}#{File.basename(source)}, retrying#{C_NORMAL}"
       if File.exists?(target) then
         cmd "rm -rf #{target}#{File.basename(source)}"
       end
       cmd "ln -fs #{source} #{target}"
-      STDERR.puts " => OK"
     end
   else
     begin

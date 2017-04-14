@@ -9,7 +9,6 @@
 #include <corto/corto.h>
 #include <corto/corto.h>
 #include <include/_project.h>
-#include <corto/test/c/c.h>
 #include <corto/test/test.h>
 #include <corto/c/c.h>
 

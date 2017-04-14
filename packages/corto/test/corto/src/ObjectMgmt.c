@@ -1669,7 +1669,7 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
-    test_assert(corto_countof(o) == 1);
+    test_assertint(corto_countof(o), 1);
 
     test_assert(*test_initCalled_o == 1);
     test_assert(*test_constructCalled_o == 1);
@@ -1679,20 +1679,20 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
     test_Foo o2 = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o2 != NULL);
     test_assert(o == o2);
-    test_assert(corto_countof(o) == 2);
+    test_assertint(corto_countof(o), 2);
 
     test_assert(*test_initCalled_o == 1);
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 0);
 
     test_EventTest e = test_EventTestCreate(o);
-    test_assert(corto_countof(o) == 4);
+    test_assertint(corto_countof(o), 4);
 
     corto_object p = corto_resolve(NULL, "o");
     test_assert(p == o);
-    test_assert(corto_countof(o) == 5);
+    test_assertint(corto_countof(o), 5);
     corto_release(p);
-    test_assert(corto_countof(o) == 4);
+    test_assertint(corto_countof(o), 4);
 
     test_assert(e->countDeclareSelf == 1);
     test_assert(e->countDefineSelf == 1);
@@ -1702,7 +1702,7 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
 
     result = corto_delete(o);
     test_assert(result == 0);
-    test_assert(corto_countof(o) == 3);
+    test_assertint(corto_countof(o), 3);
 
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
@@ -1717,7 +1717,7 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
 
     result = corto_delete(o2);
     test_assert(result == 0);
-    test_assert(corto_countof(o) == 2);
+    test_assertint(corto_countof(o), 2);
 
     test_assert(e->countDeleteSelf == 1);
     test_assert(e->countDeleteScope == 0);
@@ -1930,14 +1930,14 @@ corto_void _test_ObjectMgmt_tc_deleteWithReference(
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
-    test_assert(corto_countof(o) == 1);
+    test_assertint(corto_countof(o), 1);
 
     test_EventTest e = test_EventTestCreate(o);
-    test_assert(corto_countof(o) == 3); /* e holds 2 references */
+    test_assertint(corto_countof(o), 3); /* e holds 2 references */
 
     corto_object p = corto_resolve(NULL, "o");
     test_assert(p == o);
-    test_assert(corto_countof(o) == 4);
+    test_assertint(corto_countof(o), 4);
 
     /* Postpone release until after the delete */
 
@@ -1953,7 +1953,7 @@ corto_void _test_ObjectMgmt_tc_deleteWithReference(
 
     result = corto_delete(o);
     test_assert(result == 0);
-    test_assert(corto_countof(o) == 3);
+    test_assertint(corto_countof(o), 3);
 
     test_assert(e->countDeleteSelf == 1);
     test_assert(e->countDeleteScope == 0);
@@ -1965,7 +1965,7 @@ corto_void _test_ObjectMgmt_tc_deleteWithReference(
 
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
-    test_assert(corto_countof(o) == 3);
+    test_assertint(corto_countof(o), 3);
 
     result = corto_release(o);
     test_assert(result == 2); /* Refcount should be 2 */
@@ -1987,7 +1987,7 @@ corto_void _test_ObjectMgmt_tc_findOrCreate(
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
-    test_assert(corto_countof(o) == 1);
+    test_assertint(corto_countof(o), 1);
     corto_object f = corto_lookup(root_o, "foo");
     test_assert(f != NULL);
     test_assert(f == o);
@@ -2012,7 +2012,7 @@ corto_void _test_ObjectMgmt_tc_findOrCreateExisting(
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
-    test_assert(corto_countof(o) == 2);
+    test_assertint(corto_countof(o), 2);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
@@ -2033,7 +2033,7 @@ corto_void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
     test_assert(corto_typeof(o) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
-    test_assert(corto_countof(o) == 2);
+    test_assertint(corto_countof(o), 2);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
@@ -2051,7 +2051,7 @@ corto_void _test_ObjectMgmt_tc_findOrDeclare(
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
-    test_assert(corto_countof(o) == 1);
+    test_assertint(corto_countof(o), 1);
     corto_object f = corto_lookup(root_o, "foo");
     test_assert(f != NULL);
     test_assert(f == o);
@@ -2076,7 +2076,7 @@ corto_void _test_ObjectMgmt_tc_findOrDeclareExisting(
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
-    test_assert(corto_countof(o) == 2);
+    test_assertint(corto_countof(o), 2);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
@@ -2097,7 +2097,7 @@ corto_void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
     test_assert(corto_typeof(o) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
-    test_assert(corto_countof(o) == 2);
+    test_assertint(corto_countof(o), 2);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);

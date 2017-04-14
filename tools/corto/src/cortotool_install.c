@@ -778,7 +778,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 if (lib_redis) {
                     printf(CORTO_PROMPT "redistributable library for package '%s' not found", argv[1]);
                 } else {
-                    printf(CORTO_PROMPT "package '%s' not located", argv[1]);
+                    printf(CORTO_PROMPT "package '%s' not located: ", argv[1]);
                 }
             }
             if (corto_lastinfo()) {

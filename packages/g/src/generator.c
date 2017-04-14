@@ -504,6 +504,21 @@ struct g_walkObjects_t {
     void* userData;
 };
 
+int g_scopeWalk(corto_object o, int (*action)(corto_object,void*), void *data) {
+    corto_objectseq scope = corto_scopeClaim(o);
+    corto_int32 i;
+    for (i = 0; i < scope.length; i ++) {
+        if (!action(scope.buffer[i], data)) {
+            break;
+        }
+    }
+    corto_scopeRelease(scope);
+    if (i != scope.length) {
+        return 0;
+    }
+    return 1;
+}
+
 /* Recursively walk scopes */
 int g_walkObjects(void* o, void* userData) {
     struct g_walkObjects_t* data;
@@ -514,7 +529,7 @@ int g_walkObjects(void* o, void* userData) {
         goto stop;
     }
 
-    return corto_scopeWalk(o, g_walkObjects, userData);
+    return g_scopeWalk(o, g_walkObjects, userData);
 stop:
     return 0;
 }
@@ -531,7 +546,7 @@ static int g_walkIterObject(g_generator g, g_object *o, g_walkAction action, voi
     if (o->parseScope && scopeWalk) {
         g->current = o;
         if (!recursiveWalk) {
-            if (!corto_scopeWalk(o->o, action, userData)) {
+            if (!g_scopeWalk(o->o, action, userData)) {
                 goto stop;
             }
         } else {
@@ -540,7 +555,7 @@ static int g_walkIterObject(g_generator g, g_object *o, g_walkAction action, voi
             walkData.userData = userData;
 
             /* Recursively walk scopes */
-            if (!corto_scopeWalk(o->o, g_walkObjects, &walkData)) {
+            if (!g_scopeWalk(o->o, g_walkObjects, &walkData)) {
                 goto stop;
             }
         }

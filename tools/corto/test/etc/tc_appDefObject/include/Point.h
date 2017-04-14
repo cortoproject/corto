@@ -12,7 +12,7 @@
 
 #include <include/_type.h>
 #include <include/_load.h>
-#include <include/_api.h>
+#include <include/c/_api.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -1075,6 +1075,13 @@ static void corto_selectRelease(corto_iter *iter) {
         corto_iterRelease(&data->stack[i].iter);
     }
 
+    /* Free scope objects */
+    i = 0;
+    while (data->scopes[i].scope) {
+        corto_setref(&data->scopes[i].scope, NULL);
+        i++;
+    }
+
     corto_selectReset(data);
 
     data->expr = NULL;
