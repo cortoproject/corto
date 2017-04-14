@@ -407,14 +407,14 @@ task :prebuild => GENERATED_SOURCES do
     location = `corto locate #{p} --path`.strip
     if not $?.to_i == 0 then
       if ENV['binaries'] == "true" then
-        STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+        STDERR.puts "[\033[0;31m error\033[0;49m missing dependency: #{p} ]"
         sh "corto locate #{p} --verbose --error_only"
         abort
       else
         # If not building binaries, all we need is a build.rb
         location = "#{ENV['CORTO_TARGET']}/lib/corto/#{CORTO_VERSION}/#{p}"
         if not File.exists? location then
-          STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
+        STDERR.puts "[\033[0;31m error\033[0;49m missing dependency: #{p} ]"
           abort
         end
       end

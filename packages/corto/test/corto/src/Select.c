@@ -512,7 +512,7 @@ corto_void _test_Select_tc_selectFromRootEmpty(
 {
 /* $begin(test/Select/tc_selectFromRootEmpty) */
     corto_ll results = NULL;
-    corto_loaderCreate();
+    corto_loaderCreate(FALSE);
 
     results = test_Select_collect("/", "", 0, 0);
     test_assert(results != NULL);
@@ -526,7 +526,7 @@ corto_void _test_Select_tc_selectFromRootNull(
 {
 /* $begin(test/Select/tc_selectFromRootNull) */
     corto_ll results = NULL;
-    corto_loaderCreate();
+    corto_loaderCreate(FALSE);
 
     results = test_Select_collect("/", NULL, 0, 0);
     test_assert(results != NULL);
@@ -540,7 +540,7 @@ corto_void _test_Select_tc_selectFromRootThis(
 {
 /* $begin(test/Select/tc_selectFromRootThis) */
     corto_ll results = NULL;
-    corto_loaderCreate();
+    corto_loaderCreate(FALSE);
 
     results = test_Select_collect("/", ".", 0, 0);
     test_assert(results != NULL);
@@ -1310,7 +1310,7 @@ corto_void _test_Select_tc_selectParentWithSink(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParentWithSink) */
-    corto_loader l = corto_loaderCreate();
+    corto_loader l = corto_loaderCreate(FALSE);
     test_assert(l != NULL);
 
     corto_iter it;

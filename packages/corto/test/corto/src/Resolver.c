@@ -168,7 +168,7 @@ corto_void _test_Resolver_tc_resolveG(
 /* $begin(test/Resolver/tc_resolveG) */
 
     /* Start loader mount */
-    corto_loader p = corto_loaderCreate();
+    corto_loader p = corto_loaderCreate(FALSE);
     corto_object o = corto_resolve(NULL, "g");
     test_assert(o != NULL);
     test_assert (!strcmp(corto_idof(o), "g"));

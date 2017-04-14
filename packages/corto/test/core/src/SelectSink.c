@@ -283,7 +283,7 @@ corto_void _test_SelectSink_tc_selectSingleTypeFilter(
     corto_result *result;
 
     // Create SINK mount that is responsible for all package objects in scope
-    corto_loader l = corto_loaderCreate();
+    corto_loader l = corto_loaderCreate(FALSE);
     test_assert(l != NULL);
 
     // Select single object of the package type

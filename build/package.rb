@@ -122,8 +122,6 @@ if NOCORTO == false then
         "include/_load.h" <<
         "include/_type.h" <<
         "include/_project.h"
-
-      COMPONENTS << "c"
     else
       GENERATED_SOURCES <<
         ".corto/_api.#{EXT}" <<
@@ -144,14 +142,22 @@ if NOCORTO == false then
       localStr = " "
       docStr = " "
 
+      if LOCAL then
+        localStr = "--attr local=true "
+      end
+
       if defined? PREFIX then
         prefixStr = "--prefix #{PREFIX} "
+      end
+
+      packages_filtered = USE_PACKAGE.select do |elem|
+        elem != PACKAGE + "/c"
       end
 
       command = "#{DEBUGCMD}corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
                 "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
                 "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
-                "--import #{USE_PACKAGE.join(",")} " +
+                "--import #{packages_filtered.join(",")} " +
                 "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
                 "#{prefixStr}#{localStr}#{docStr}--lang #{LANGUAGE}"
 
@@ -391,6 +397,14 @@ def installDir(dir)
   end
 end
 
+task :build_binding do
+  # If a package for C language binding was generated, install its headers
+  # so the current package can be compiled
+  if not NOCORTO and File.exists? "c" then
+    sh "rake -f c/rakefile"
+  end
+end
+
 task :install_files do
   verbose(VERBOSE)
 
@@ -499,7 +513,7 @@ task :collect do
 end
 
 # Prebuild tasks
-task :prebuild => [:uninstall_files, :install_files]
+task :prebuild => [:uninstall_files, :install_files, :build_binding]
 
 # Postbuild tasks
 task :postbuild => [:buildscript, :uninstaller]

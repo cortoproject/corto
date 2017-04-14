@@ -13,7 +13,7 @@ typedef void*(*dlproc)(void);
 corto_dl corto_dlOpen(const char* file) {
     corto_dl dl;
 
-    dl = (corto_dl)dlopen(file, RTLD_NOW);
+    dl = (corto_dl)dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
 
     return dl;
 }

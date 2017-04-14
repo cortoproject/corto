@@ -358,7 +358,6 @@ static corto_bool corto_selectMatch(
                          * mount. This prevents returning duplicate results. */
                         if (!strcmp(rType, type)) {
                             result = FALSE;
-                            break;
                         } else {
                             continue;
                         }
@@ -366,19 +365,22 @@ static corto_bool corto_selectMatch(
                         /* A SINK mount that has no type specified blocks
                          * everything */
                         result = FALSE;
-                        break;
                     }
 
                     /* Do the same for attributes */
                     if (o && r->attr) {
                         if (corto_checkAttr(o, r->attr)) {
                             result = FALSE;
-                            break;
                         } else {
+                            /* If result was set to FALSE by type, reset to TRUE */
+                            result = TRUE;
                             continue;
                         }
                     } else {
                         result = FALSE;
+                    }
+
+                    if (!result) {
                         break;
                     }
                 }
@@ -806,10 +808,6 @@ static void corto_selectLoadMounts(
     }
 
     corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
-
-    corto_debug("select: LoadMounts: found mounts in '%s' (%p)",
-       corto_fullpath(NULL, frame->scope),
-       ols);
 
     if (ols) {
         corto_ll mounts = ols->value;

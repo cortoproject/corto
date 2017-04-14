@@ -99,6 +99,11 @@ void corto_loader_addDir(
                 corto_id package;
                 sprintf(package, "%s/%s", r->parent, f);
                 corto_cleanpath(package, package);
+
+                if (!strcmp(package, "corto")) {
+                    continue;
+                }
+
                 corto_string env = corto_locate(package, NULL, CORTO_LOCATION_ENV);
 
                 if (!env) {

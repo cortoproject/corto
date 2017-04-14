@@ -14,7 +14,7 @@ corto_void _test_functionToResolve(
 {
 /* $begin(test/functionToResolve) */
 
-    /* Dummy function */
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -241,5 +241,6 @@ int testMain(int argc, char *argv[]) {
     }
     corto_delete(runner);
     return result;
+    return 0;
 /* $end */
 }

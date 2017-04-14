@@ -11,8 +11,7 @@
 #include <include/_project.h>
 #include <corto/argparse/argparse.h>
 #include <corto/test/test.h>
-#include <corto/core/c/c.h>
-#include <corto/lang/c/c.h>
+#include <corto/c/c.h>
 
 /* $header() */
 /* Enter additional code here. */
