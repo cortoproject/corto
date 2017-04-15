@@ -95,6 +95,7 @@ extern "C" {
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
+#define corto_verbatim(o) ((corto_verbatim)corto_assertType((corto_type)corto_verbatim_o, o))
 #define corto_void(o) ((corto_void*)o)
 #define corto_wordseq(o) ((corto_wordseq*)corto_assertType((corto_type)corto_wordseq_o, o))
 
@@ -578,7 +579,10 @@ struct corto_method_s {
     struct corto_function_s _parent;
 };
 
+#ifndef corto_objectlist_DEFINED
+#define corto_objectlist_DEFINED
 CORTO_LIST(corto_objectlist);
+#endif
 
 /* octet */
 typedef uint8_t corto_octet;
@@ -613,7 +617,10 @@ struct corto_sequence_s {
     struct corto_collection_s _parent;
 };
 
+#ifndef corto_stringlist_DEFINED
+#define corto_stringlist_DEFINED
 CORTO_LIST(corto_stringlist);
+#endif
 
 /*  table */
 typedef struct corto_table_s *corto_table;
@@ -664,6 +671,14 @@ typedef struct corto_union_s *corto_union;
 struct corto_union_s {
     struct corto_interface_s _parent;
     corto_type discriminator;
+};
+
+/*  verbatim */
+typedef struct corto_verbatim_s *corto_verbatim;
+
+struct corto_verbatim_s {
+    struct corto_primitive_s _parent;
+    corto_string contentType;
 };
 
 /* void */

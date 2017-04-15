@@ -18,6 +18,14 @@ def cmd(command)
   end
 end
 
+def getArtefactName(prefix, name, ext)
+  if ext and ext != "" then
+    "#{TARGETDIR}/#{prefix}#{name}.#{ext}"
+  else
+    "#{TARGETDIR}/#{prefix}#{name}"
+  end
+end
+
 # Set Corto version variable
 if ENV['CORTO_VERSION'] then
   CORTO_VERSION = ENV['CORTO_VERSION']

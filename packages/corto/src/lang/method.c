@@ -36,8 +36,5 @@ corto_int16 _corto_method_init(
     result = corto_function_init(corto_function(this));
     corto_benchmark_stop(CORTO_BENCHMARK_METHOD_INIT);
     return result;
-error:
-    corto_benchmark_stop(CORTO_BENCHMARK_METHOD_INIT);
-    return -1;
 /* $end */
 }

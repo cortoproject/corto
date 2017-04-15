@@ -79,6 +79,7 @@ CORTO_STATIC_SCOPED_REFOBJECT(int);
 CORTO_STATIC_SCOPED_REFOBJECT(uint);
 CORTO_STATIC_SCOPED_REFOBJECT(float);
 CORTO_STATIC_SCOPED_REFOBJECT(text);
+CORTO_STATIC_SCOPED_REFOBJECT(verbatim);
 CORTO_STATIC_SCOPED_REFOBJECT(enum);
 CORTO_STATIC_SCOPED_REFOBJECT(bitmask);
 CORTO_STATIC_SCOPED_REFOBJECT(interface);
@@ -443,6 +444,7 @@ CORTO_FWDECL(class, sequence);
 CORTO_FWDECL(class, struct);
 CORTO_FWDECL(class, union);
 CORTO_FWDECL(class, text);
+CORTO_FWDECL(class, verbatim);
 CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
 CORTO_FWDECL_NATIVE(class, type);
@@ -902,6 +904,12 @@ CORTO_CLASS_O(lang, text, lang_primitive, CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL,
     CORTO_MEMBER_O(lang_text, charWidth, lang_width, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_text, length, lang_uint64, CORTO_GLOBAL);
     CORTO_METHOD_O(lang_text, init, "()", lang_int16, corto_text_init);
+
+/* /corto/lang/verbatim */
+CORTO_FW_I(lang, verbatim);
+CORTO_CLASS_O(lang, verbatim, lang_primitive, CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+    CORTO_MEMBER_O(lang_verbatim, contentType, lang_string, CORTO_GLOBAL);
+    CORTO_METHOD_O(lang_verbatim, init, "()", lang_int16, corto_text_init);
 
 /* /corto/lang/enum */
 CORTO_FW_ICD(lang, enum);

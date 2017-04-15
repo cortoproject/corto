@@ -33,6 +33,7 @@ CORTO_META_OBJECT(class, int);
 CORTO_META_OBJECT(class, uint);
 CORTO_META_OBJECT(class, float);
 CORTO_META_OBJECT(class, text);
+CORTO_META_OBJECT(class, verbatim);
 CORTO_META_OBJECT(class, enum);
 CORTO_META_OBJECT(class, bitmask);
 CORTO_META_OBJECT(class, struct);

@@ -278,9 +278,9 @@ static char* corto_log_tokenize(char *msg) {
             corto_buffer_appendstr(&buff, CORTO_NORMAL);
             isNum = FALSE;
         }
-        if (isStr && (isStr == ch) && !isalpha(ptr[1])) {
+        if (isStr && (isStr == ch) && !isalpha(ptr[1]) && (prev != '\\')) {
             isStr = '\0';
-        } else if (((ch == '\'') || (ch == '"')) && !isStr && !isalpha(prev)) {
+        } else if (((ch == '\'') || (ch == '"')) && !isStr && !isalpha(prev) && (prev != '\\')) {
             corto_buffer_appendstr(&buff, CORTO_CYAN);
             isStr = ch;
         }

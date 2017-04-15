@@ -8,8 +8,6 @@
 #ifndef CORTO__PRIMITIVE_H_
 #define CORTO__PRIMITIVE_H_
 
-#include "corto/lang/primitive.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

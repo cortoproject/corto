@@ -25,11 +25,7 @@ USE_PACKAGE_LOADED = [] if not defined? USE_PACKAGE_LOADED
 # resolved
 $redis_dependencies_resolved = true
 
-if ARTEFACT_EXT and ARTEFACT_EXT != "" then
-  ARTEFACT_NAME = "#{TARGETDIR}/#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}"
-else
-  ARTEFACT_NAME = "#{TARGETDIR}/#{ARTEFACT_PREFIX}#{ARTEFACT}"
-end
+ARTEFACT_NAME = getArtefactName(ARTEFACT_PREFIX, ARTEFACT, ARTEFACT_EXT)
 
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
@@ -122,10 +118,10 @@ end
 CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.a")
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
-CLOBBER.include("include/_load.h")
-CLOBBER.include("include/_interface.h")
 
 if TARGET != "corto" then
+  CLOBBER.include("include/_load.h")
+  CLOBBER.include("include/_interface.h")
   CLOBBER.include("include/_project.h")
 end
 
@@ -419,16 +415,16 @@ def loadPackageConfigs()
       end
     end
 
-    buildscript = location + "/build.rb"
-    if File.exists? buildscript then
-        require "#{buildscript}"
-    end
-
+    lang_buildscript = "#{location}/#{LANGUAGE}/build.rb"
     if not NOCORTO and defined? LANGUAGE and LANGUAGE != "none" then
-      lang_buildscript = "#{location}/#{LANGUAGE}/build.rb"
       if File.exists? lang_buildscript then
         require "#{lang_buildscript}"
       end
+    end
+
+    buildscript = location + "/build.rb"
+    if File.exists? buildscript then
+        require "#{buildscript}"
     end
   end
 end

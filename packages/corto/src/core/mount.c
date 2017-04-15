@@ -764,8 +764,8 @@ error:
 /* $end */
 }
 
-/* $header(corto/core/mount/subscribe) */
-corto_mountSubscription* corto_mount_findSubscription(
+/* $header(corto/core/mount/subscribe(/corto/core/request request)) */
+static corto_mountSubscription* corto_mount_findSubscription(
     corto_mount this,
     corto_request *request,
     corto_bool *found)
@@ -792,7 +792,7 @@ corto_void _corto_mount_subscribe(
     corto_mount this,
     corto_request *request)
 {
-/* $begin(corto/core/mount/subscribe) */
+/* $begin(corto/core/mount/subscribe(/corto/core/request request)) */
     corto_word ctx = 0;
     corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
@@ -876,7 +876,7 @@ corto_void _corto_mount_unsubscribe(
     corto_mount this,
     corto_request *request)
 {
-/* $begin(corto/core/mount/unsubscribe) */
+/* $begin(corto/core/mount/unsubscribe(/corto/core/request request)) */
     corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
 

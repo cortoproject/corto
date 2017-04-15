@@ -106,10 +106,13 @@ CORTO_EXPORT corto_string corto_pathname(corto_id str, corto_object from, corto_
 CORTO_EXPORT corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 CORTO_EXPORT corto_string corto_cleanpath(corto_id buffer, char* path);
 
-/* Lookup objects by id in scope */
+/* Lookup objects by id */
 CORTO_EXPORT corto_object corto_lookup(corto_object scope, corto_string id);
 
-/* Lookup objects by id according to rules for an input language */
+/* Lookup object by id, assert if not found or if wrong type, does not claim */
+CORTO_EXPORT corto_object _corto_lookupAssert(corto_object scope, corto_string id, corto_type type);
+
+/* Lookup type by id */
 CORTO_EXPORT corto_object corto_resolve(corto_object scope, corto_string id);
 
 /* Lookup objects by id according to custom settings */
@@ -178,9 +181,15 @@ CORTO_EXPORT void corto_matchProgram_free(corto_matchProgram matcher);
 /* Match parent of expression. Returns NULL if no match, or ptr to remainder (for corto_match) */
 CORTO_EXPORT char* corto_matchParent(char *parent, char *expr);
 
-/* Serialize object to contentType */
+/* Serialize object value to contentType */
 CORTO_EXPORT corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
 CORTO_EXPORT corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content, ...);
+
+/* Serialize object to contentType */
+CORTO_EXPORT corto_string corto_object_contentof(corto_id str, corto_string contentType, corto_object o);
+CORTO_EXPORT corto_int16 corto_object_fromcontent(corto_object *o, corto_string contentType, corto_string content, ...);
+
+/* Deprecated */
 CORTO_EXPORT corto_object corto_createFromContent(corto_string contentType, corto_string content);
 
 /* Object extensions (Object Local Storage) */
@@ -249,6 +258,7 @@ CORTO_EXPORT void corto_super_destruct(corto_object o);
 #define corto_declareChild(parent, name, type) _corto_declareChild(parent, name, corto_type(type))
 #define corto_declareOrphan(parent, name, type) _corto_declareOrphan(parent, name, corto_type(type))
 #define corto_findOrDeclare(parent, name, type) _corto_findOrDeclare(parent, name, corto_type(type))
+#define corto_lookupAssert(parent, id, type) _corto_lookupAssert(parent, id, corto_type(type))
 #define corto_strp(p, type, maxLength) _corto_strp(p, corto_type(type), maxLength)
 #define corto_fromStrp(out, type, string) _corto_fromStrp(out, corto_type(type), string)
 #define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)

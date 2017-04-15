@@ -245,7 +245,10 @@ error:
 static int corto_genDeclareAction(corto_object o, void* userData) {
     g_itemWalk_t data;
     data = userData;
-    data->onDeclare(o, data->userData);
+    if (data->onDeclare) {
+        data->onDeclare(o, data->userData);
+    }
+    
     return 1;
 }
 

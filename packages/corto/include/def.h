@@ -45,8 +45,6 @@
 #define CORTO_MAGIC_DESTRUCT (0x74726F6B)
 #endif
 
-#include <corto/iter.h>
-
 #ifdef __cplusplus
 #ifndef CORTO_CPP_H
 #include <utility>
@@ -82,12 +80,6 @@ extern "C" {
 #define ___
 
 #define CORTO_NULL_STRING ("null")
-
-CORTO_EXPORT extern const char* CORTO_VERSION;
-CORTO_EXPORT extern const char* CORTO_VERSION_MAJOR;
-CORTO_EXPORT extern const char* CORTO_VERSION_MINOR;
-CORTO_EXPORT extern const char* CORTO_VERSION_PATCH;
-CORTO_EXPORT extern const char* CORTO_VERSION_SUFFIX;
 
 typedef int (*corto_compareAction)(void* o1, void* o2);
 typedef int (*corto_walkAction)(void* o, void* userData);
@@ -225,6 +217,19 @@ extern int8_t CORTO_DEBUG_ENABLED;
 #define CORTO_SEQUENCE_EMPTY(name) (name){0, NULL}
 #define CORTO_LIST(type) typedef corto_ll type
 #define CORTO_MAP(type) typedef corto_rbtree type
+
+/* Create a typedef, so generic iterator functions can be used with user
+ * defined iterator types */
+#define CORTO_ITERATOR(_name) typedef corto_iter _name
+
+typedef struct corto_iter corto_iter;
+struct corto_iter {
+    int (*hasNext)(corto_iter*);
+    void *udata;
+    void* (*next)(corto_iter*);
+    void* (*nextPtr)(corto_iter*);
+    void (*release)(corto_iter*);
+};
 
 #ifdef __cplusplus
 }

@@ -20,7 +20,6 @@
 */
 
 #include "corto/object.h"
-#include "corto/lang/type.h"
 
 #ifdef __cplusplus
 #include <cstddef>

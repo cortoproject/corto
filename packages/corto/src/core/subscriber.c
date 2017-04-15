@@ -765,7 +765,7 @@ corto_int16 _corto_subscriber_subscribe(
     corto_subscriber this,
     corto_object instance)
 {
-/* $begin(corto/core/subscriber/subscribe) */
+/* $begin(corto/core/subscriber/subscribe(object instance)) */
     corto_int16 depth = corto_subscriber_getObjectDepth(this->parent);
     corto_iter it;
     corto_bool align = FALSE;
@@ -869,7 +869,7 @@ corto_int16 _corto_subscriber_unsubscribe(
     corto_subscriber this,
     corto_object instance)
 {
-/* $begin(corto/core/subscriber/unsubscribe) */
+/* $begin(corto/core/subscriber/unsubscribe(object instance)) */
     corto_debug("subscriber '%s': unsubscribe for %s, %s",
       corto_fullpath(NULL, this),
       this->parent,
@@ -878,3 +878,4 @@ corto_int16 _corto_subscriber_unsubscribe(
     return corto_subscriber_unsubscribeIntern(this, instance, FALSE);
 /* $end */
 }
+

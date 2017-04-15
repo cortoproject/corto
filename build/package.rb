@@ -286,6 +286,8 @@ task :uninstaller do
 end
 
 def uninstallDir(dir)
+  artefact = getArtefactName(ARTEFACT_PREFIX, ARTEFACT_NAME, ARTEFACT_EXT)
+
   if File.exists?("#{dir}/uninstall.txt") then
     File.open("#{dir}/uninstall.txt") do |file|
       file.each_line do |l|
@@ -294,10 +296,12 @@ def uninstallDir(dir)
           file = l[0...-1]
           if File.directory? file then
             if not Dir.glob("#{file}/*").length then
-              cmd "rm -rf #{l[0...-1]}"
+              cmd "rm -rf #{file}"
             end
           else
-            cmd "rm -f #{l[0...-1]}"
+            if file != artefact then
+              cmd "rm -f #{file}"
+            end
           end
         end
       end
@@ -306,8 +310,8 @@ def uninstallDir(dir)
     # Remove files from directory, keep directories
     files = Dir.glob("#{dir}/*")
     files.each do |f|
-      if not File.directory? f then
-        cmd "rm -f #{f}"
+      if not File.directory? file and file != artefact then
+        cmd "rm -f #{file}"
       end
     end
   end
@@ -325,11 +329,6 @@ task :uninstall_files do
       uninstallDir(dirLc)
     end
   end
-end
-
-# dep.rb contains CLOBBER rules for generated header files
-if File.exists? "./.corto/dep.rb"
-  require "./.corto/dep.rb"
 end
 
 # Crawl project directory for files that need to be installed with binary

@@ -1,16 +1,12 @@
-/* type.h
+/* _interface.h
  *
  * This file contains generated code. Do not modify!
  */
 
-#ifndef CORTO_NATIVE_TYPE_H
-#define CORTO_NATIVE_TYPE_H
+#ifndef CORTO_NATIVE_INTERFACE_H
+#define CORTO_NATIVE_INTERFACE_H
 
-#include <corto/corto.h>
 #include <corto/_project.h>
-
-#include <corto/native/_type.h>
-#include <corto/native/_load.h>
 
 #ifdef __cplusplus
 extern "C" {

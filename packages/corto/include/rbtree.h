@@ -9,7 +9,6 @@
 #define CORTO_RBTREE_H_
 
 #include "corto/object.h"
-#include "corto/lang/collection.h"
 #include "jsw_rbtree.h"
 
 #ifdef __cplusplus

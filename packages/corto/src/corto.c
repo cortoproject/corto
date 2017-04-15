@@ -232,6 +232,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, uint),\
     SSO_OP_CLASS(lang_, float),\
     SSO_OP_CLASS(lang_, text),\
+    SSO_OP_CLASS(lang_, verbatim),\
     SSO_OP_CLASS(lang_, enum),\
     SSO_OP_CLASS(lang_, bitmask),\
     SSO_OP_CLASS(lang_, array),\
@@ -561,6 +562,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_text_charWidth),\
     SSO_OP_OBJ(lang_text_length),\
     SSO_OP_OBJ(lang_text_init_),\
+    /* verbatim */\
+    SSO_OP_OBJ(lang_verbatim_contentType),\
+    SSO_OP_OBJ(lang_verbatim_init_),\
     /* enum */\
     SSO_OP_OBJ(lang_enum_constants),\
     SSO_OP_OBJ(lang_enum_constant_),\

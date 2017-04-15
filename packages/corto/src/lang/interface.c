@@ -419,7 +419,6 @@ corto_int16 _corto_interface_baseof(
 /* $end */
 }
 
-/* $end */
 corto_int16 _corto_interface_bindMethod(
     corto_interface this,
     corto_method method)

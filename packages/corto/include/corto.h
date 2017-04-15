@@ -7,45 +7,45 @@
 #define CORTO_H
 
 /* $header() */
-#include "corto/lang/lang.h"
-#include "corto/core/core.h"
-#include "corto/native/native.h"
-#include "corto/secure/secure.h"
+#include <corto/lang/lang.h>
+#include <corto/core/core.h>
+#include <corto/native/native.h>
+#include <corto/secure/secure.h>
 
-#include "corto/async.h"
-#include "corto/buffer.h"
-#include "corto/call.h"
-#include "corto/compare_ser.h"
-#include "corto/convert.h"
-#include "corto/copy_ser.h"
-#include "corto/depresolver.h"
-#include "corto/dl.h"
-#include "corto/env.h"
-#include "corto/err.h"
-#include "corto/file.h"
-#include "corto/os.h"
-#include "corto/init_ser.h"
-#include "corto/loader.h"
-#include "corto/iter.h"
-#include "corto/ll.h"
-#include "corto/loader.h"
-#include "corto/mem.h"
-#include "corto/memory_ser.h"
-#include "corto/metawalk.h"
-#include "corto/mm.h"
-#include "corto/object.h"
-#include "corto/operator.h"
-#include "corto/overload.h"
-#include "corto/platform.h"
-#include "corto/rbtree.h"
-#include "corto/serializer.h"
-#include "corto/string.h"
-#include "corto/string_deser.h"
-#include "corto/string_ser.h"
-#include "corto/string.h"
-#include "corto/time.h"
-#include "corto/util.h"
-#include "corto/value.h"
+#include <corto/async.h>
+#include <corto/buffer.h>
+#include <corto/call.h>
+#include <corto/compare_ser.h>
+#include <corto/convert.h>
+#include <corto/copy_ser.h>
+#include <corto/depresolver.h>
+#include <corto/dl.h>
+#include <corto/env.h>
+#include <corto/err.h>
+#include <corto/file.h>
+#include <corto/init_ser.h>
+#include <corto/loader.h>
+#include <corto/iter.h>
+#include <corto/ll.h>
+#include <corto/loader.h>
+#include <corto/mem.h>
+#include <corto/memory_ser.h>
+#include <corto/metawalk.h>
+#include <corto/mm.h>
+#include <corto/object.h>
+#include <corto/operator.h>
+#include <corto/os.h>
+#include <corto/overload.h>
+#include <corto/platform.h>
+#include <corto/rbtree.h>
+#include <corto/serializer.h>
+#include <corto/string.h>
+#include <corto/string_deser.h>
+#include <corto/string_ser.h>
+#include <corto/string.h>
+#include <corto/time.h>
+#include <corto/util.h>
+#include <corto/value.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,6 +71,12 @@ CORTO_EXPORT extern corto_object CORTO_TRACE_OBJECT;
 CORTO_EXPORT extern int8_t CORTO_TRACE_NOTIFICATIONS;
 CORTO_EXPORT extern int8_t CORTO_BACKTRACE_ENABLED;
 CORTO_EXPORT extern int32_t CORTO_MEMTRACE_BREAKPOINT;
+
+CORTO_EXPORT extern const char* CORTO_VERSION;
+CORTO_EXPORT extern const char* CORTO_VERSION_MAJOR;
+CORTO_EXPORT extern const char* CORTO_VERSION_MINOR;
+CORTO_EXPORT extern const char* CORTO_VERSION_PATCH;
+CORTO_EXPORT extern const char* CORTO_VERSION_SUFFIX;
 
 #ifdef __cplusplus
 }

@@ -186,7 +186,10 @@ struct corto_mountSubscription {
     corto_word userData;
 };
 
+#ifndef corto_mountSubscriptionList_DEFINED
+#define corto_mountSubscriptionList_DEFINED
 CORTO_LIST(corto_mountSubscriptionList);
+#endif
 
 /*  /corto/core/mount */
 typedef struct corto_mount_s *corto_mount;
@@ -348,7 +351,10 @@ struct corto_result {
 
 CORTO_ITERATOR(corto_resultIter);
 
+#ifndef corto_resultList_DEFINED
+#define corto_resultList_DEFINED
 CORTO_LIST(corto_resultList);
+#endif
 
 /*  /corto/core/route */
 typedef struct corto_route_s *corto_route;

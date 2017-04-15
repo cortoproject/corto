@@ -2311,10 +2311,10 @@ corto_contentType corto_loadContentType(
 
 
         sprintf(id, "%s_fromObject", packagePtr);
-        result->toObject =
-          (corto_int16 ___ (*)(corto_object*, corto_word))
+        result->fromObject =
+          (corto_int16 ___ (*)(corto_object))
             corto_loaderResolveProc(id);
-        if (!result->toObject) {
+        if (!result->fromObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
@@ -2414,6 +2414,59 @@ corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_st
 
     corto_value v = corto_value_object(o, NULL);
     result = type->toValue(&v, (corto_word)content);
+    corto_dealloc(content);
+
+    return result;
+error:
+    return -1;
+}
+
+corto_string corto_object_contentof(corto_id str, corto_string contentType, corto_object o) {
+    corto_contentType type;
+    corto_string result = NULL;
+
+    corto_assertObject(o);
+
+    if (!(type = corto_loadContentType(contentType))) {
+        goto error;
+    }
+
+    corto_string c = (corto_string)type->fromObject(o);
+    if (!c) {
+        goto error;
+    }
+
+    if (str) {
+        strncpy(str, c, sizeof(corto_id));
+        str[sizeof(corto_id) - 1] = '\0';
+        result = str;
+    } else {
+        result = corto_setThreadString(c);
+        corto_dealloc(c);
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
+corto_int16 corto_object_fromcontent(corto_object *o, corto_string contentType, corto_string fmt, ...) {
+    corto_contentType type;
+    va_list args;
+    corto_string content;
+    corto_int16 result;
+
+    corto_assertObject(o);
+
+    va_start(args, fmt);
+    corto_vasprintf(&content, fmt, args);
+    va_end(args);
+
+    if (!(type = corto_loadContentType(contentType))) {
+        goto error;
+    }
+
+    result = type->toObject(o, (corto_word)content);
     corto_dealloc(content);
 
     return result;
@@ -3660,6 +3713,15 @@ error:
 corto_object corto_lookup(corto_object scope, corto_string id)
 {
     return corto_lookup_intern(scope, id, TRUE);
+}
+
+corto_object _corto_lookupAssert(corto_object scope, corto_string id, corto_type type)
+{
+    corto_object result = corto_lookup_intern(scope, id, TRUE);
+    corto_assert(result != NULL, "corto_lookupAssert returned NULL for '%s'", id);
+    corto_assertType(type, result);
+    corto_release(result);
+    return result;
 }
 
 corto_object corto_find(corto_object scope, corto_string id, corto_findKind mode)
