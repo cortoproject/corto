@@ -143,6 +143,20 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
     return 0;
 }
 
+corto_int16 corto_ser_freeMember(corto_serializer s, corto_value* v, void* userData) {
+    corto_member m = v->is.member.t;
+    void *ptr = corto_value_getPtr(v);
+
+    corto_serializeValue(s, v, userData);
+
+    if (m->modifiers & CORTO_OPTIONAL) {
+        corto_dealloc(ptr);
+    }
+
+    return 0;
+}
+
+
 struct corto_serializer_s corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
     struct corto_serializer_s s;
 
@@ -183,6 +197,8 @@ struct corto_serializer_s corto_ser_freeResources(corto_modifier access, corto_o
     s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
     s.program[CORTO_PRIMITIVE] = corto_ser_freePrimitive;
     s.program[CORTO_COLLECTION] = corto_ser_freeCollection;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_freeMember;
+
     s.reference = corto_ser_freeReference;
     return s;
 }

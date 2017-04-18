@@ -451,7 +451,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
     corto_mutexUnlock(&corto_adminLock);
 
     if (!result) {
-        corto_trace("loader: '%s' loaded", str[0] == '/' ? &str[1] : str);
+        corto_trace("loader: loaded '%s'", str[0] == '/' ? &str[1] : str);
     }
 
     return result;

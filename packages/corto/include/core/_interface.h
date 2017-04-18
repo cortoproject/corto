@@ -438,6 +438,11 @@ CORTO_EXPORT
 corto_int16 _corto_subscriber_construct(
     corto_subscriber _this);
 
+#define corto_subscriber_deinit(_this) _corto_subscriber_deinit(corto_subscriber(_this))
+CORTO_EXPORT
+void _corto_subscriber_deinit(
+    corto_subscriber _this);
+
 #define corto_subscriber_destruct(_this) _corto_subscriber_destruct(corto_subscriber(_this))
 CORTO_EXPORT
 corto_void _corto_subscriber_destruct(

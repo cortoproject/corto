@@ -130,16 +130,18 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FW_C(parent, name) sso_method CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_IC(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_ICD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
+#define CORTO_FW_IFCD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 #define CORTO_FW_CD(parent, name) sso_method CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 
 /* Delegate assignments */
 #define CORTO_DELEGATE(name, delegate) {{NULL, (corto_function)&CORTO_ID(name##_##delegate##_).v}}
 #define CORTO_INIT(name) CORTO_DELEGATE(name, init)
+#define CORTO_DEINIT(name) CORTO_DELEGATE(name, deinit)
 #define CORTO_CONSTRUCT(name) CORTO_DELEGATE(name, construct)
 #define CORTO_BIND(name) CORTO_DELEGATE(name, construct)
 #define CORTO_DESTRUCT(name) CORTO_DELEGATE(name, destruct)
 
-#define CORTO_I_TYPE(name) CORTO_INIT(name)
+#define CORTO_I_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
 #define CORTO_I_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}
 #define CORTO_I_PROC(name) {{NULL, NULL}}
 
@@ -149,18 +151,21 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_C_TYPE(name)
 #define CORTO_C_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}
 
-#define CORTO_IC_TYPE(name) CORTO_INIT(name)
+#define CORTO_IC_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
 #define CORTO_IC_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}
 #define CORTO_IC_PROC(name) CORTO_BIND(name)
 
-#define CORTO_ICD_TYPE(name) CORTO_INIT(name)
+#define CORTO_ICD_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
 #define CORTO_ICD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
+
+#define CORTO_IFCD_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
+#define CORTO_IFCD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
 
 #define CORTO_CD_TYPE(name)
 #define CORTO_CD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
 #define CORTO_CD_PROC(name)
 
-#define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}
+#define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}, {{NULL, NULL}} 
 #define CORTO_NODELEGATE_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}
 #define CORTO_NODELEGATE_PROC(name) {{NULL, NULL}}
 
@@ -801,6 +806,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, metaprocedures, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, init, lang_initAction, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_type, deinit, lang_destructAction, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, nameof, lang_nameAction, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(lang_type, sizeof, "()", lang_uint32, corto_type_sizeof);
     CORTO_METHOD_O(lang_type, alignmentof, "()", lang_uint16, corto_type_alignmentof);
@@ -1251,8 +1257,8 @@ CORTO_PROCEDURE_O(core, observer, TRUE, NULL, lang_function, CORTO_LOCAL | CORTO
     CORTO_METHOD_O(core_observer, observing, "(object instance,object observable)", lang_bool, corto_observer_observing);
 
 /* /corto/core/subscriber */
-CORTO_FW_ICD(core, subscriber);
-CORTO_PROCEDURE_O(core, subscriber, TRUE, NULL, core_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
+CORTO_FW_IFCD(core, subscriber);
+CORTO_PROCEDURE_O(core, subscriber, TRUE, NULL, core_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IFCD);
     CORTO_ALIAS_O(core_subscriber, mask, core_observer_mask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);
@@ -1264,6 +1270,7 @@ CORTO_PROCEDURE_O(core, subscriber, TRUE, NULL, core_observer, CORTO_HIDDEN, NUL
     CORTO_MEMBER_O(core_subscriber, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_subscriber, matchProgram, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_subscriber, init, "()", lang_int16, corto_subscriber_init);
+    CORTO_METHOD_O(core_subscriber, deinit, "()", lang_void, corto_subscriber_init);
     CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, corto_subscriber_construct);
     CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, corto_subscriber_destruct);
     CORTO_METHOD_O(core_subscriber, subscribe, "(object instance)", lang_int16, corto_subscriber_subscribe);

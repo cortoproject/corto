@@ -546,6 +546,44 @@ corto_int16 corto_delegateInit(corto_type t, void *o) {
     return result;
 }
 
+/* Find the right initializer to call */
+void corto_delegateDeinit(corto_type t, void *o) {
+    corto_function delegate = NULL;
+    corto_interface i = NULL;
+
+    corto_assertObject(t);
+
+    delegate = t->deinit._parent.procedure;
+
+    if (t->kind == CORTO_COMPOSITE) {
+        if ((corto_interface(t)->kind == CORTO_CLASS) ||
+            (corto_interface(t)->kind == CORTO_STRUCT) ||
+            (corto_interface(t)->kind == CORTO_PROCEDURE))
+        {
+            corto_interface i = corto_interface(t)->base;
+            while(i && !delegate) {
+                delegate = corto_type(i)->deinit._parent.procedure;
+                if (!delegate) {
+                    i = i->base;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
+    if (delegate) {
+        corto_interface prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
+        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, i);
+        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
+            ((void ___ (*)(corto_object))delegate->fptr)(o);
+        } else {
+            corto_callb(delegate, NULL, (void*[]){&o});
+        }
+        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
+    }
+}
+
 /* Find the right constructor to call */
 static corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_function delegate = NULL;
@@ -2312,7 +2350,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_fromObject", packagePtr);
         result->fromObject =
-          (corto_int16 ___ (*)(corto_object))
+          (corto_string ___ (*)(corto_object))
             corto_loaderResolveProc(id);
         if (!result->fromObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
@@ -5233,6 +5271,7 @@ corto_int16 corto_inita(corto_any a) {
 corto_int16 corto_deinit(corto_object o) {
     corto_assertObject(o);
     corto_typeKind kind = corto_typeof(o)->kind;
+    corto_delegateDeinit(corto_typeof(o), o);
     switch(kind) {
         case CORTO_COMPOSITE:
         case CORTO_COLLECTION: {
@@ -5248,7 +5287,9 @@ corto_int16 corto_deinit(corto_object o) {
 
 corto_int16 corto_deinitv(corto_value *v) {
     struct corto_serializer_s s = corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    return corto_serializeValue(&s, v, NULL);
+    corto_serializeValue(&s, v, NULL);
+    corto_delegateDeinit(corto_value_getType(v), corto_value_getPtr(v));
+    return 0;
 }
 
 corto_int16 _corto_deinitp(void *p, corto_type type) {

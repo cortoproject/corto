@@ -2646,6 +2646,37 @@ CORTO_EXPORT corto_unit corto_unitFromStr(corto_unit value, corto_string str);
 CORTO_EXPORT corto_equalityKind _corto_unitCompare(corto_unit dst, corto_unit src);
 #define corto_unitCompare(dst, src) _corto_unitCompare(corto_unit(dst), corto_unit(src))
 
+/* verbatim */
+CORTO_EXPORT corto_verbatim _corto_verbatimCreate(corto_string contentType);
+#define corto_verbatimCreate(contentType) _corto_verbatimCreate(contentType)
+#define corto_verbatimCreate_auto(_id, contentType) corto_verbatim _id = corto_verbatimCreate(contentType); (void)_id
+CORTO_EXPORT corto_verbatim _corto_verbatimCreateChild(corto_object _parent, corto_string _id, corto_string contentType);
+#define corto_verbatimCreateChild(_parent, _id, contentType) _corto_verbatimCreateChild(_parent, _id, contentType)
+#define corto_verbatimCreateChild_auto(_parent, _id, contentType) corto_verbatim _id = corto_verbatimCreateChild(_parent, #_id, contentType); (void)_id
+CORTO_EXPORT corto_int16 _corto_verbatimUpdate(corto_verbatim _this, corto_string contentType);
+#define corto_verbatimUpdate(_this, contentType) _corto_verbatimUpdate(corto_verbatim(_this), contentType)
+
+CORTO_EXPORT corto_verbatim _corto_verbatimDeclare(void);
+#define corto_verbatimDeclare() _corto_verbatimDeclare()
+#define corto_verbatimDeclare_auto(_id) corto_verbatim _id = corto_verbatimDeclare(); (void)_id
+CORTO_EXPORT corto_verbatim _corto_verbatimDeclareChild(corto_object _parent, corto_string _id);
+#define corto_verbatimDeclareChild(_parent, _id) _corto_verbatimDeclareChild(_parent, _id)
+#define corto_verbatimDeclareChild_auto(_parent, _id) corto_verbatim _id = corto_verbatimDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_verbatimDefine(corto_verbatim _this, corto_string contentType);
+#define corto_verbatimDefine(_this, contentType) _corto_verbatimDefine(corto_verbatim(_this), contentType)
+CORTO_EXPORT corto_verbatim _corto_verbatimAssign(corto_verbatim _this, corto_string contentType);
+#define corto_verbatim__optional_NotSet NULL
+#define corto_verbatim__optional_Set(contentType) corto_verbatimAssign((corto_verbatim*)corto_calloc(sizeof(corto_verbatim)), contentType)
+#define corto_verbatim__optional_SetCond(cond, contentType) cond ? corto_verbatimAssign((corto_verbatim*)corto_calloc(sizeof(corto_verbatim)), contentType) : NULL
+#define corto_verbatimUnset(_this) _this ? corto_deinitp(_this, corto_verbatim_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_verbatimAssign(_this, contentType) _corto_verbatimAssign(_this, contentType)
+#define corto_verbatimSet(_this, contentType) _this = _this ? _this : (corto_verbatim*)corto_calloc(sizeof(corto_verbatim)); _corto_verbatimAssign(_this, contentType)
+CORTO_EXPORT corto_string _corto_verbatimStr(corto_verbatim value);
+#define corto_verbatimStr(value) _corto_verbatimStr(corto_verbatim(value))
+CORTO_EXPORT corto_verbatim corto_verbatimFromStr(corto_verbatim value, corto_string str);
+CORTO_EXPORT corto_equalityKind _corto_verbatimCompare(corto_verbatim dst, corto_verbatim src);
+#define corto_verbatimCompare(dst, src) _corto_verbatimCompare(corto_verbatim(dst), corto_verbatim(src))
+
 /* void */
 CORTO_EXPORT corto_void* _corto_voidCreate(void);
 #define corto_voidCreate() _corto_voidCreate()

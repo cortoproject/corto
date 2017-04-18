@@ -30,6 +30,7 @@ extern "C" {
 #define corto_function(o) ((corto_function)corto_assertType((corto_type)corto_function_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assertType((corto_type)corto_delegatedata_o, o))
 #define corto_initAction(o) ((corto_initAction*)corto_assertType((corto_type)corto_initAction_o, o))
+#define corto_destructAction(o) ((corto_destructAction*)corto_assertType((corto_type)corto_destructAction_o, o))
 #define corto_nameAction(o) ((corto_nameAction*)corto_assertType((corto_type)corto_nameAction_o, o))
 #define corto_type(o) ((corto_type)corto_assertType((corto_type)corto_type_o, o))
 #define corto_modifier(o) ((corto_modifier*)corto_assertType((corto_type)corto_modifier_o, o))
@@ -40,7 +41,6 @@ extern "C" {
 #define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assertType((corto_type)corto_interfaceseq_o, o))
 #define corto_interfaceVector(o) ((corto_interfaceVector*)corto_assertType((corto_type)corto_interfaceVector_o, o))
 #define corto_interfaceVectorseq(o) ((corto_interfaceVectorseq*)corto_assertType((corto_type)corto_interfaceVectorseq_o, o))
-#define corto_destructAction(o) ((corto_destructAction*)corto_assertType((corto_type)corto_destructAction_o, o))
 #define corto_class(o) ((corto_class)corto_assertType((corto_type)corto_class_o, o))
 #define corto_quantity(o) ((corto_quantity)corto_assertType((corto_type)corto_quantity_o, o))
 #define corto_unit(o) ((corto_unit)corto_assertType((corto_type)corto_unit_o, o))
@@ -208,6 +208,13 @@ struct corto_initAction {
     corto_delegatedata _parent;
 };
 
+/*  destructAction */
+typedef struct corto_destructAction corto_destructAction;
+
+struct corto_destructAction {
+    corto_delegatedata _parent;
+};
+
 /*  nameAction */
 typedef struct corto_nameAction corto_nameAction;
 
@@ -226,6 +233,7 @@ struct corto_type_s {
     corto_uint16 alignment;
     corto_objectseq metaprocedures;
     corto_initAction init;
+    corto_destructAction deinit;
     corto_nameAction nameof;
 };
 
@@ -286,13 +294,6 @@ struct corto_interfaceVector {
 };
 
 CORTO_SEQUENCE(corto_interfaceVectorseq, corto_interfaceVector,);
-
-/*  destructAction */
-typedef struct corto_destructAction corto_destructAction;
-
-struct corto_destructAction {
-    corto_delegatedata _parent;
-};
 
 /*  class */
 typedef struct corto_class_s *corto_class;

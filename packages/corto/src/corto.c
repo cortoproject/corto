@@ -492,6 +492,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_type_alignment),\
     SSO_OP_OBJ(lang_type_metaprocedures),\
     SSO_OP_OBJ(lang_type_init),\
+    SSO_OP_OBJ(lang_type_deinit),\
     SSO_OP_OBJ(lang_type_nameof),\
     SSO_OP_OBJ(lang_type_sizeof_),\
     SSO_OP_OBJ(lang_type_alignmentof_),\
@@ -635,6 +636,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_subscriber_contentTypeHandle),\
     SSO_OP_OBJ(core_subscriber_matchProgram),\
     SSO_OP_OBJ(core_subscriber_init_),\
+    SSO_OP_OBJ(core_subscriber_deinit_),\
     SSO_OP_OBJ(core_subscriber_construct_),\
     SSO_OP_OBJ(core_subscriber_destruct_),\
     SSO_OP_OBJ(core_subscriber_subscribe_),\
