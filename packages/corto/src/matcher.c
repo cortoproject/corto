@@ -297,6 +297,7 @@ corto_matchProgram corto_matchProgram_compile(
         corto_dealloc(result->tokens);
         corto_dealloc(result);
         result = NULL;
+        goto error;
     }
 
     /* Optimize for common cases (*, simple identifier) */
@@ -331,6 +332,8 @@ corto_matchProgram corto_matchProgram_compile(
     }
 
     return result;
+error:
+    return NULL;
 }
 
 corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements[], corto_matchProgramToken precedence) {
