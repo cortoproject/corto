@@ -310,8 +310,8 @@ def uninstallDir(dir)
     # Remove files from directory, keep directories
     files = Dir.glob("#{dir}/*")
     files.each do |f|
-      if not File.directory? file and file != artefact then
-        cmd "rm -f #{file}"
+      if not File.directory? f and f != artefact then
+        cmd "rm -f #{f}"
       end
     end
   end
