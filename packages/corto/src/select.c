@@ -110,6 +110,11 @@ struct corto_selectData {
 
     /* Indicates if the walk should stop */
     corto_bool quit;
+    corto_bool *quitPtr; /* If quit was not set to TRUE, this structure will be
+                          * cleaned up. This pointer allows apps to check if
+                          * iteration stopped because quit was set to TRUE. The
+                          * variable assigned to quitPtr must be initialized to
+                          * FALSE. */
 
     /* Ignore data from the instance (mount) if set */
     corto_object instance;
@@ -489,6 +494,9 @@ static corto_resultIter corto_selectRequestMount(
             if (!data->mountAction(mount, &r, data)) {
                 data->mountAction = NULL;
                 data->quit = TRUE;
+                if (data->quitPtr) {
+                    *(data->quitPtr) = TRUE;
+                }
             }
         }
 
@@ -567,6 +575,7 @@ static corto_int16 corto_selectIterMount(
 
     mount = data->mounts[frame->currentMount - 1];
     data->item.owner = mount;
+    data->item.object = NULL;
     data->item.leaf = result->leaf;
 
     /* Copy data, so mount can safely release it */
@@ -1450,6 +1459,7 @@ static corto_string corto_selectorId()
       corto_threadTlsGet(CORTO_KEY_FLUENT);
 
     if (request) {
+        corto_bool quit = FALSE;
         request->mountAction = corto_mountAction_id;
         corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
@@ -1459,12 +1469,13 @@ static corto_string corto_selectorId()
         corto_dealloc(request);
 
         corto_selectData *data = it.udata;
+        data->quitPtr = &quit;
 
         /* Walk results until id is found */
-        while (corto_iterHasNext(&it) && !data->quit) {
+        while (corto_iterHasNext(&it) && !quit) {
             corto_iterNext(&it);
         }
-        if (data->quit) {
+        if (quit) {
             result = data->item.id;
             corto_iterRelease(&it);
         }
