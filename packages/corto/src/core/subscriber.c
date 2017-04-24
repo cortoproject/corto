@@ -167,14 +167,12 @@ int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData) 
     int result = 1;
 
     if (corto_subscribers_count) {
-        if (corto_rwmutexRead(&corto_subscriberLock)) {
-            goto error;
-        }
+        corto_subscriberAdmin *admin = corto_subscriberAdminGet();
 
         int depth, sp, s;
         for (depth = 0; depth < CORTO_MAX_SCOPE_DEPTH; depth++) {
-            for (sp = 0; sp < corto_subscribers_global.subscribers[depth].length; sp++) {
-                corto_subscriptionPerParent *subPerParent = &corto_subscribers_global.subscribers[depth].buffer[sp];
+            for (sp = 0; sp < admin->subscribers[depth].length; sp++) {
+                corto_subscriptionPerParent *subPerParent = &admin->subscribers[depth].buffer[sp];
                 for (s = 0; s < subPerParent[sp].subscriptions.length; s ++) {
                     corto_subscription *sub = &subPerParent[sp].subscriptions.buffer[s];
                     if (!(result = action(sub->s, sub->instance, userData))) {
@@ -185,10 +183,6 @@ int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData) 
             if (!result) {
                 break;
             }
-        }
-
-        if (corto_rwmutexUnlock(&corto_subscriberLock)) {
-            goto error;
         }
     }
 
@@ -216,9 +210,12 @@ static corto_int16 corto_subscriber_invoke(
 {
     corto_dispatcher dispatcher = corto_observer(s)->dispatcher;
     if (!dispatcher) {
-        if (corto_function(s)->kind == CORTO_PROCEDURE_CDECL) {
-            ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
-              corto_function(s)->fptr)(instance, mask, r, s);
+        corto_function f = corto_function(s);
+        if (f->kind == CORTO_PROCEDURE_CDECL) {
+            if (f->fptr) {
+                ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
+                  corto_function(s)->fptr)(instance, mask, r, s);
+            }
         } else {
             void *args[4];
             args[0] = &instance;
@@ -707,6 +704,11 @@ corto_int16 _corto_subscriber_construct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/construct) */
+    if (!this->expr || !this->expr[0]) {
+        corto_seterr("'null' is not a valid subscriber expression");
+        goto error;
+    }
+
     if (this->contentType) {
         this->contentTypeHandle = (corto_word)corto_loadContentType(this->contentType);
         if (!this->contentTypeHandle) {
@@ -824,7 +826,9 @@ corto_int16 _corto_subscriber_subscribe(
     corto_subscriptionPerParent *subPerParent = NULL;
     for (sp = 0; sp < corto_subscribers_global.subscribers[depth].length; sp++) {
         subPerParent = &corto_subscribers_global.subscribers[depth].buffer[sp];
-        if (!stricmp(this->parent, subPerParent->parent)) {
+        if ((!this->parent && !subPerParent->parent) || 
+            (this->parent && subPerParent->parent && !stricmp(this->parent, subPerParent->parent))) 
+        {
             break;
         } else {
             subPerParent = NULL;
@@ -836,7 +840,7 @@ corto_int16 _corto_subscriber_subscribe(
         corto_uint32 length = corto_subscribers_global.subscribers[depth].length + 1;
         corto_subscribers_global.subscribers[depth].buffer =
           corto_realloc(corto_subscribers_global.subscribers[depth].buffer, length * sizeof(corto_subscriptionPerParent));
-        corto_subscribers_global.subscribers[depth].buffer[length - 1].parent = corto_strdup(this->parent);
+        corto_subscribers_global.subscribers[depth].buffer[length - 1].parent = this->parent ? corto_strdup(this->parent) : NULL;
         corto_subscribers_global.subscribers[depth].buffer[length - 1].subscriptions.length = 0;
         corto_subscribers_global.subscribers[depth].buffer[length - 1].subscriptions.buffer = NULL;
         corto_subscribers_global.subscribers[depth].length ++;
