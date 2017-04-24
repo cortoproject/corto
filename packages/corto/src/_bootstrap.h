@@ -171,7 +171,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* type */
 #define CORTO_TYPE_V(parent, name, kind, reference, attr, scopeType, scopeTypeKind, defaultType, defaultProcedureType, DELEGATE) \
-  {kind, reference, attr, {scopeType, scopeTypeKind, defaultType, defaultProcedureType}, FALSE, FALSE, 0, 0, {0,NULL}, DELEGATE##_TYPE(parent##_##name)}
+  {kind, reference, attr, {scopeType, scopeTypeKind, defaultType, defaultProcedureType}, 0, 0, 0, {0,NULL}, DELEGATE##_TYPE(parent##_##name)}
 
 /* primitive */
 #define CORTO_PRIMITIVE_V(parent, name, kind, width, scopeType, scopeStateKind, DELEGATE) \
@@ -800,8 +800,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_MEMBER_O(lang_type, reference, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_type, attr, lang_attr, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_type, options, lang_typeOptions, CORTO_HIDDEN);
-    CORTO_MEMBER_O(lang_type, hasResources, lang_bool, CORTO_PRIVATE | CORTO_LOCAL);
-    CORTO_MEMBER_O(lang_type, hasTarget, lang_bool, CORTO_PRIVATE | CORTO_LOCAL);
+    CORTO_MEMBER_O(lang_type, flags, lang_uint8, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, size, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, metaprocedures, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
@@ -1270,7 +1269,7 @@ CORTO_PROCEDURE_O(core, subscriber, TRUE, NULL, core_observer, CORTO_HIDDEN, NUL
     CORTO_MEMBER_O(core_subscriber, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_subscriber, matchProgram, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_subscriber, init, "()", lang_int16, corto_subscriber_init);
-    CORTO_METHOD_O(core_subscriber, deinit, "()", lang_void, corto_subscriber_init);
+    CORTO_METHOD_O(core_subscriber, deinit, "()", lang_void, corto_subscriber_deinit);
     CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, corto_subscriber_construct);
     CORTO_METHOD_O(core_subscriber, destruct, "()", lang_void, corto_subscriber_destruct);
     CORTO_METHOD_O(core_subscriber, subscribe, "(object instance)", lang_int16, corto_subscriber_subscribe);

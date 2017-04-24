@@ -486,8 +486,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_type_reference),\
     SSO_OP_OBJ(lang_type_attr),\
     SSO_OP_OBJ(lang_type_options),\
-    SSO_OP_OBJ(lang_type_hasResources),\
-    SSO_OP_OBJ(lang_type_hasTarget),\
+    SSO_OP_OBJ(lang_type_flags),\
     SSO_OP_OBJ(lang_type_size),\
     SSO_OP_OBJ(lang_type_alignment),\
     SSO_OP_OBJ(lang_type_metaprocedures),\

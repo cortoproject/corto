@@ -1289,6 +1289,26 @@ error:
     return -1;
 }
 
+static corto_string corto_randomId(
+    corto_uint16 n)
+{
+/* $begin(corto/web/server/random) */
+    static char *alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static char *alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890";
+    corto_uint16 i;
+    corto_string result = corto_alloc(n + 1);
+
+    result[0] = alpha[rand() % strlen(alpha)];
+    for (i = 1; i < n; i++) {
+        result[i] = alphanum[rand() % strlen(alphanum)];
+    }
+
+    result[i] = '\0';
+
+    return result;
+/* $end */
+}
+
 /* Declare object */
 static corto_object corto_declareChildIntern(
     corto_object parent,
@@ -1321,10 +1341,10 @@ static corto_object corto_declareChildIntern(
         corto_fullpath(typeId, type);
         mountId = corto_select(parentId, "*").type(typeId).id();
         if (!mountId) {
-            corto_seterr("no available id providers (id = 'null')");
-            goto error;
+            id = corto_randomId(16);
+        } else {
+            id = mountId;
         }
-        id = mountId;
     }
 
     if (!id[0]) {
@@ -3896,7 +3916,7 @@ corto_int16 corto_updateBegin(corto_object o) {
         corto_resumeDeclared(o);
     }
 
-    if (!type->hasTarget && (corto_typeof(corto_typeof(o)) != (corto_type)corto_target_o) && !corto_owned(o)) {
+    if (!(type->flags & CORTO_TYPE_HAS_TARGET) && (corto_typeof(type) != (corto_type)corto_target_o) && !corto_owned(o)) {
         corto_seterr("updateBegin: cannot update '%s', process does not own object",
             corto_fullpath(NULL, o));
         goto error;
@@ -5223,22 +5243,18 @@ corto_equalityKind corto_comparea(corto_any a1, corto_any a2) {
 
 corto_int16 corto_init(corto_object o) {
     corto_benchmark_start(CORTO_BENCHMARK_INIT);
-    corto_int16 result;
     corto_assertObject(o);
-    corto_typeKind kind = corto_typeof(o)->kind;
+    corto_int16 result;
+    corto_type type = corto_typeof(o);
 
-    switch(kind) {
-        case CORTO_COMPOSITE:
-        case CORTO_COLLECTION: {
-            struct corto_serializer_s s = corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-            if (corto_serialize(&s, o, NULL)) {
-                goto error;
-            }
-            break;
+    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+        struct corto_serializer_s s = 
+            corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        if (corto_serialize(&s, o, NULL)) {
+            goto error;
         }
-        default:
-            break;
     }
+
     result = corto_delegateInit(corto_typeof(o), o);
     corto_benchmark_stop(CORTO_BENCHMARK_INIT);
     return result;
@@ -5248,9 +5264,12 @@ error:
 }
 
 corto_int16 corto_initv(corto_value *v) {
-    struct corto_serializer_s s = corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    if (corto_serializeValue(&s, v, NULL)) {
-        return -1;
+    corto_type type = corto_value_getType(v);
+    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+        struct corto_serializer_s s = corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        if (corto_serializeValue(&s, v, NULL)) {
+            return -1;
+        }
     }
     return corto_delegateInit(corto_value_getType(v), corto_value_getPtr(v));
 }
@@ -5270,24 +5289,25 @@ corto_int16 corto_inita(corto_any a) {
 
 corto_int16 corto_deinit(corto_object o) {
     corto_assertObject(o);
-    corto_typeKind kind = corto_typeof(o)->kind;
+    corto_type type = corto_typeof(o);
     corto_delegateDeinit(corto_typeof(o), o);
-    switch(kind) {
-        case CORTO_COMPOSITE:
-        case CORTO_COLLECTION: {
-            struct corto_serializer_s s = corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-            corto_serialize(&s, o, NULL);
-            break;
-        }
-        default:
-            break;
+
+    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+        struct corto_serializer_s s = 
+            corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        corto_serialize(&s, o, NULL);
     }
+
     return 0;
 }
 
 corto_int16 corto_deinitv(corto_value *v) {
-    struct corto_serializer_s s = corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    corto_serializeValue(&s, v, NULL);
+    corto_type type = corto_value_getType(v);
+    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+        struct corto_serializer_s s = 
+            corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        corto_serializeValue(&s, v, NULL);
+    }
     corto_delegateDeinit(corto_value_getType(v), corto_value_getPtr(v));
     return 0;
 }

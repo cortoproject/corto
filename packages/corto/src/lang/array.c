@@ -60,6 +60,13 @@ corto_int16 _corto_array_construct(
         goto error;
     }
 
+    if (elementType->flags & CORTO_TYPE_HAS_RESOURCES) {
+        corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
+    }
+    if (elementType->flags & CORTO_TYPE_NEEDS_INIT) {
+        corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+    }
+
     return corto_type_construct(corto_type(this));
 error:
     return -1;

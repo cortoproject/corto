@@ -222,13 +222,15 @@ struct corto_nameAction {
     corto_delegatedata _parent;
 };
 
+/* int8 */
+typedef int8_t corto_int8;
+
 struct corto_type_s {
     corto_typeKind kind;
     corto_bool reference;
     corto_attr attr;
     corto_typeOptions options;
-    corto_bool hasResources;
-    corto_bool hasTarget;
+    corto_int8 flags;
     corto_uint32 size;
     corto_uint16 alignment;
     corto_objectseq metaprocedures;
@@ -529,9 +531,6 @@ struct corto_int_s {
 
 /* int16 */
 typedef int16_t corto_int16;
-
-/* int8 */
-typedef int8_t corto_int8;
 
 /*  iterator */
 typedef struct corto_iterator_s *corto_iterator;

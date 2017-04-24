@@ -47,7 +47,7 @@ corto_int16 _corto_target_construct(
     }
 
     corto_type(this)->reference = TRUE;
-    corto_type(this)->hasTarget = TRUE;
+    corto_type(this)->flags |= CORTO_TYPE_HAS_TARGET;
     corto_type(this)->attr = CORTO_ATTR_OBSERVABLE | CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE;
 
     return corto_struct_construct(this);

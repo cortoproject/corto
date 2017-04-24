@@ -10,7 +10,12 @@
 #include <corto/_project.h>
 
 /* $header() */
-/* Enter additional code here. */
+
+/* Type flags */
+#define CORTO_TYPE_HAS_RESOURCES (1)
+#define CORTO_TYPE_NEEDS_INIT (2)
+#define CORTO_TYPE_HAS_TARGET (4)
+
 /* $end */
 
 #include <corto/lang/_type.h>

@@ -188,8 +188,14 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
             }
             size = CORTO_ALIGN(size, alignment);
 
-            if (m->type->hasResources || m->type->reference) {
-                corto_type(this)->hasResources = TRUE;
+            if ((m->type->flags & CORTO_TYPE_HAS_RESOURCES) || m->type->reference) {
+                corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
+            }
+            if (m->type->flags & CORTO_TYPE_NEEDS_INIT) {
+                corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+            }
+            if (m->modifiers & CORTO_OBSERVABLE) {
+                corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
             }
 
             m->offset = size;

@@ -16,14 +16,9 @@ corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* u
 
     switch(corto_collection(t)->kind) {
         case CORTO_ARRAY:
-            /* Serialize elements */
             if (corto_serializeElements(s, v, userData)) {
                 goto error;
             }
-            break;
-        case CORTO_SEQUENCE:
-            ((corto_objectseq*)o)->buffer = NULL;
-            ((corto_objectseq*)o)->length = 0;
             break;
         case CORTO_LIST:
             *(corto_ll*)o = corto_llNew();
@@ -32,8 +27,6 @@ corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* u
             /**(corto_rbtree*)o = corto_rbtreeNew(t);*/
             break;
         default:
-            corto_error("invalid collection object!");
-            goto error;
             break;
     }
 

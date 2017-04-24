@@ -116,8 +116,11 @@ corto_int16 _corto_struct_construct(
     if (base) {
         size = corto_type(base)->size;
 
-        if (corto_type(base)->hasResources) {
-            corto_type(this)->hasResources = TRUE;
+        if (corto_type(base)->flags & CORTO_TYPE_HAS_RESOURCES) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
+        }
+        if (corto_type(base)->flags & CORTO_TYPE_NEEDS_INIT) {
+            corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
         }
     }
 

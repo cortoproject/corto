@@ -14,6 +14,7 @@ typedef struct __dummySeq {
     void* buffer;
 }__dummySeq;
 
+
 /* Allocate buffer of specific size */
 int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_uint32 elements) {
     corto_uint32 elementSize;
@@ -30,7 +31,7 @@ corto_int16 _corto_sequence_construct(
     corto_sequence this)
 {
 /* $begin(corto/lang/sequence/construct) */
-    corto_type(this)->hasResources = TRUE;
+    corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
     corto_type(this)->size = sizeof(__dummySeq);
     corto_type(this)->alignment = CORTO_ALIGNMENT(__dummySeq);
     if (!corto_collection(this)->elementType) {

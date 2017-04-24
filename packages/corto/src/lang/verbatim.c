@@ -12,7 +12,7 @@ corto_int16 _corto_verbatim_init(
     corto_verbatim this)
 {
 /* $begin(corto/lang/verbatim/init) */
-    corto_type(this)->hasResources = TRUE;
+    corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
     corto_primitive(this)->kind = CORTO_TEXT;
     corto_primitive(this)->width = CORTO_WIDTH_WORD;
     return corto_primitive_init((corto_primitive)this);
