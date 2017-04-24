@@ -797,7 +797,8 @@ corto_void _corto_mount_subscribe(
     corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
 
-    corto_lock(this);
+    if (corto_checkState(this, CORTO_DEFINED)) corto_lock(this);
+
     subscription = corto_mount_findSubscription(this, request, &found);
     if (subscription) {
         /* Ensure subscription isn't deleted outside of lock */
@@ -810,7 +811,7 @@ corto_void _corto_mount_subscribe(
         placeHolder->count = 1;
         corto_llAppend(this->subscriptions, placeHolder);
     }
-    corto_unlock(this);
+    if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
 
     /* Process callback outside of lock */
     if (!found && (!subscription || subscription->userData)) {
@@ -827,7 +828,7 @@ corto_void _corto_mount_subscribe(
      * subscription exists, and if context data differs from existing
      * subscription */
     if (ctx && (!subscription || (subscription->userData != ctx))) {
-        corto_lock(this);
+        if (corto_checkState(this, CORTO_DEFINED)) corto_lock(this);
 
         /* If a new subscription is required, undo increase of refcount of the
          * subscription that was found */
@@ -855,18 +856,18 @@ corto_void _corto_mount_subscribe(
 
         subscription->userData = ctx;
 
-        corto_unlock(this);
+        if (corto_checkState(this, CORTO_DEFINED))  corto_unlock(this);
     } else if (ctx && !found && subscription) {
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'expr' parameter of the
          * subscription is meaningless, so to avoid confusion set it to '*' */
-       corto_lock(this);
+       if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
        corto_setstr(&subscription->expr, "*");
 
        /* Doesn't count as new subscription, so undo increase in refcount */
        subscription->count --;
-       corto_unlock(this);
+       if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
     }
 
 /* $end */
