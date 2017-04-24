@@ -194,6 +194,8 @@ CORTO_EXPORT int g_fileWrite(g_file file, char* fmt, ...);
 /* Get generator */
 CORTO_EXPORT g_generator g_fileGetGenerator(g_file file);
 
+/* Get dependencies based on metadata */
+CORTO_EXPORT corto_ll g_getDependencies(g_generator g);
 
 /* == Generator unique name-generator for members utility */
 

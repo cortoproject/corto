@@ -7,8 +7,6 @@
 
 #include "corto/g/g.h"
 
-#ifdef CORTO_GENERATOR
-
 /* Generator functions */
 g_generator g_new(corto_string name, corto_string language) {
     g_generator result;
@@ -1372,4 +1370,91 @@ void corto_genMemberCacheClean(corto_ll cache) {
     corto_llFree(cache);
 }
 
-#endif
+typedef struct g_depWalk_t {
+    g_generator g;
+    corto_ll dependencies;
+} g_depWalk_t;
+
+static corto_package g_addDepencency(g_generator g, corto_object o, g_depWalk_t *data) {
+    corto_package result = NULL;
+
+    if (!g_mustParse(g, o)) {
+        corto_object parent = o;
+        while (parent && !corto_instanceof(corto_package_o, parent)) {
+            parent = corto_parentof(parent);
+        }
+
+        if (parent && !corto_childof(g_getCurrent(g), parent)) {
+            result = parent;
+        }
+    }
+
+    if (result) {
+        if (!data->dependencies) {
+            data->dependencies = corto_llNew();
+        }
+        if (!corto_llHasObject(data->dependencies, result)) {
+            corto_llAppend(data->dependencies, result);
+        }
+    }
+
+    return result;
+}
+
+/* Serialize dependencies on references */
+static corto_int16 g_evalRef(corto_serializer s, corto_value* info, void* userData) {
+    g_depWalk_t *data = userData;
+
+    CORTO_UNUSED(s);
+
+    corto_object dep = *(corto_object*)corto_value_getPtr(info);
+    if (dep) {
+        g_addDepencency(data->g, dep, data);
+    }
+
+    return 0;
+}
+
+/* Serialize object type */
+static corto_int16 g_evalObject(corto_serializer s, corto_value* info, void* userData) {
+    g_depWalk_t *data = userData;
+    corto_object o = corto_value_getObject(info);
+
+    CORTO_UNUSED(s);
+
+    g_addDepencency(data->g, corto_typeof(o), data);
+
+    return 0;
+}
+
+/* Dependency serializer */
+struct corto_serializer_s g_depSerializer(void) {
+    struct corto_serializer_s s;
+
+    corto_serializerInit(&s);
+    s.reference = g_evalRef;
+    s.metaprogram[CORTO_OBJECT] = g_evalObject;
+    s.access = CORTO_LOCAL;
+    s.accessKind = CORTO_NOT;
+
+    return s;
+}
+
+static int g_collectDependency(corto_object o, void *userData) {
+    struct corto_serializer_s s = g_depSerializer();
+    corto_serialize(&s, o, userData);
+    return 1;
+}
+
+corto_ll g_getDependencies(g_generator g) {
+    g_depWalk_t walkData = {.g = g};
+
+    /* Walk objects in dependency order */
+    if (corto_genDepWalk(g, NULL, g_collectDependency, &walkData)) {
+        goto error;
+    }
+
+    return walkData.dependencies;
+error:
+    return NULL;
+}
