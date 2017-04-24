@@ -102,9 +102,11 @@ static corto_bool corto_genTypeIsParsed(corto_object o, corto_genTypeWalk_t* dat
             }
         /* If object is not scoped (anonymous), it is matched structurally */
         } else {
-            if (corto_typeof(o) == corto_typeof(p)) {
-                if (corto_genTypeCompareStructural(o, p)) {
-                    found = TRUE;
+            if (!corto_checkAttr(p, CORTO_ATTR_SCOPED)) {
+                if (corto_typeof(o) == corto_typeof(p)) {
+                    if (corto_genTypeCompareStructural(o, p)) {
+                        found = TRUE;
+                    }
                 }
             }
         }
