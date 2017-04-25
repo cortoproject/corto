@@ -24,9 +24,18 @@ corto_int16 _corto_router_construct(
     corto_router this)
 {
 /* $begin(corto/core/router/construct) */
-    corto_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
+    if (!corto_interface(this)->base) {
+        corto_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
+    } else {
+        if (!corto_instanceofType(corto_routerimpl_o, corto_interface(this)->base)) {
+            corto_seterr("router must inherit from 'routerimpl'");
+            goto error;
+        }
+    }
     corto_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
     return corto_class_construct(this);
+error:
+    return -1;
 /* $end */
 }
 
@@ -76,7 +85,7 @@ corto_int16 _corto_router_match(
     
     corto_stringseq pattern = {elementCount, requestElements};
     if (!(match = corto_routerimpl_findRoute(router, instance, pattern, param, &routerData))) {
-        corto_seterr("%s: resource unknown", request);
+        corto_seterr("router: resource '%s' unknown", request);
         goto error;
     }
 

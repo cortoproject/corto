@@ -572,44 +572,18 @@ static void cxsh_goodbye(char *cmd) {
     char *ptr;
     int bs;
     corto_id partial, prompt;
-    strcpy(partial, cmd);
     cxsh_prompt(TRUE, prompt);
-    for(ptr = &partial[strlen(cmd) - 1]; (ptr >= partial); ptr--) {
-        for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
-            printf("\b");
-        }
-        *ptr = '\0';
-        printf("%s%s%s%s ", prompt, CORTO_BOLD, partial, CORTO_NORMAL);
-        fflush(stdout);
-        corto_sleep(0, 30000000);
-    }
 
-    strcpy(partial, scope);
-    for(ptr = &partial[strlen(partial) - 1]; (ptr >= partial); ptr-=2) {
-        for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
-            printf("\b");
-        }
-        *ptr = '\0';
-        printf("%s<%s %s %s>%s   ", CORTO_GREEN, CORTO_NORMAL, partial, CORTO_CYAN, CORTO_NORMAL);
-        fflush(stdout);
-        corto_sleep(0, 30000000);
+    for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+        printf("\b");
     }
-
-    int i;
-    for (i = 2; i >= 0; i --) {
-        for (bs = 0; bs < 10; bs++) {
-            printf("\b");
-        }
-        printf("%s<%s%*s%s>%s ", CORTO_GREEN, CORTO_NORMAL, i, "", CORTO_CYAN, CORTO_NORMAL);
-        fflush(stdout);
-        corto_sleep(0, 30000000);
+    for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+        printf(" ");
     }
-
-    printf("B"); fflush(stdout); corto_sleep(0, 30000000);
-    printf("y"); fflush(stdout); corto_sleep(0, 30000000);
-    printf("e"); fflush(stdout); corto_sleep(0, 30000000);
-    printf("!");
-    printf("\n");
+    for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+        printf("\b");
+    }
+    printf("Bye!\n");
 }
 
 

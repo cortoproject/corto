@@ -56,6 +56,10 @@ CORTO_EXPORT corto_int32 corto_release(corto_object o);
 CORTO_EXPORT void corto_setref(void* ptr, corto_object value);
 CORTO_EXPORT void corto_setstr(corto_string* ptr, corto_string value);
 
+/* Create heap objects for non-reference types */
+CORTO_EXPORT void* _corto_new(corto_type type);
+CORTO_EXPORT void _corto_free(corto_type type, void *ptr);
+
 /* Set/get object attributes for current thread */
 CORTO_EXPORT corto_attr corto_setAttr(corto_attr attr);
 CORTO_EXPORT corto_attr corto_getAttr(void);
@@ -268,6 +272,8 @@ CORTO_EXPORT void corto_super_destruct(corto_object o);
 #define corto_deinitp(p, type) _corto_deinitp(p, corto_type(type))
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
 #define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
+#define corto_new(type) _corto_new(corto_type(type))
+#define corto_free(type, ptr) _corto_free(corto_type(type), ptr)
 
 #ifdef __cplusplus
 }

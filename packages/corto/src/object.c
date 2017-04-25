@@ -599,6 +599,14 @@ static corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
             i = corto_interface(t);
             do {
                 delegate = corto_class(i)->construct._parent.procedure;
+
+                /* If a constructor has been created but has no implementation,
+                 * skip it. A typical scenario where this happens is in definition
+                 * files, where an instance is created from a type with a 
+                 * constructor that is defined in the same file. */
+                if (delegate && (delegate->kind == CORTO_PROCEDURE_STUB)) {
+                    delegate = NULL;
+                }
             } while(!delegate && (i = i->base));
         }
     }
@@ -5399,7 +5407,7 @@ corto_int16 corto_super_init(corto_object o) {
     }
     corto_interface base = cur->base;
     if (base) {
-        return corto_delegateInit(o, base);
+        return corto_delegateInit(corto_type(base), o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
@@ -5413,9 +5421,10 @@ corto_int16 corto_super_construct(corto_object o) {
         corto_seterr("can only call corto_super_construct from a constructor");
         goto error;
     }
+
     corto_interface base = cur->base;
     if (base) {
-        return corto_delegateConstruct(o, base);
+        return corto_delegateConstruct(corto_type(base), o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
@@ -5431,11 +5440,32 @@ void corto_super_destruct(corto_object o) {
     }
     corto_interface base = cur->base;
     if (base) {
-        return corto_delegateDestruct(o, base);
+        return corto_delegateDestruct(corto_type(base), o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
 error:;
 }
 
+void* _corto_new(corto_type type) {
+    void *result = NULL;
+
+    corto_assert(!type->reference, "cannot use corto_new for reference types, use corto_create");
+
+    result = corto_calloc(type->size);
+    if (corto_initp(result, type)) {
+        corto_dealloc(result);
+        goto error;
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
+void _corto_free(corto_type type, void *ptr) {
+    corto_assert(!type->reference, "cannot use corto_free for reference types, use corto_delete");
+    corto_deinitp(ptr, type);
+    corto_dealloc(ptr);
+}
 

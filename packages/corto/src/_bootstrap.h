@@ -995,11 +995,12 @@ CORTO_CLASS_O(lang, target, lang_struct, CORTO_READONLY, CORTO_ATTR_SCOPED|CORTO
     CORTO_MEMBER_O(lang_target, type, lang_type, CORTO_GLOBAL);
 
 /* /corto/lang/procedure */
-CORTO_FW_I(lang, procedure);
-CORTO_CLASS_O(lang, procedure, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_I);
+CORTO_FW_IC(lang, procedure);
+CORTO_CLASS_O(lang, procedure, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_MEMBER_O(lang_procedure, hasThis, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_procedure, thisType, lang_type, CORTO_GLOBAL);
     CORTO_METHOD_O(lang_procedure, init, "()", lang_int16, corto_procedure_init);
+    CORTO_METHOD_O(lang_procedure, construct, "()", lang_int16, corto_procedure_construct);
 
 /* /corto/lang/array */
 CORTO_FW_ICD(lang, array);
@@ -1366,7 +1367,7 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
 
 /* /corto/core/route */
 CORTO_FW_IC(core, route);
-CORTO_PROCEDURE_O(core, route, TRUE, NULL, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(core_routerimpl), CORTO_DECLARED | CORTO_DEFINED, CORTO_IC);
+CORTO_PROCEDURE_O(core, route, TRUE, NULL, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(core_routerimpl), CORTO_DEFINED, CORTO_IC);
     CORTO_MEMBER_O(core_route, pattern, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_route, elements, lang_stringseq, CORTO_READONLY);
     CORTO_METHOD_O(core_route, init, "()", lang_int16, corto_route_init);

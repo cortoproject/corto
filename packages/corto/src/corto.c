@@ -592,6 +592,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_procedure_hasThis),\
     SSO_OP_OBJ(lang_procedure_thisType),\
     SSO_OP_OBJ(lang_procedure_init_),\
+    SSO_OP_OBJ(lang_procedure_construct_),\
     /* interfaceVector */\
     SSO_OP_OBJ(lang_interfaceVector_interface),\
     SSO_OP_OBJ(lang_interfaceVector_vector),\

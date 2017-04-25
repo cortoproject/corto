@@ -1424,7 +1424,7 @@ static corto_int16 g_evalObject(corto_serializer s, corto_value* info, void* use
 
     g_addDepencency(data->g, corto_typeof(o), data);
 
-    return 0;
+    return corto_serializeValue(s, info, userData);
 }
 
 /* Dependency serializer */

@@ -187,8 +187,6 @@ int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData) 
     }
 
     return result;
-error:
-    return -1;
 }
 
 static corto_int16 corto_subscriber_getObjectDepth(corto_id id) {
