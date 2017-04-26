@@ -406,7 +406,7 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char *fi
             case 'f': ret = corto_logprint_file(&buf, file); break;
             case 'l': ret = corto_logprint_line(&buf, line); break;
             case 'm': ret = corto_logprint_msg(&buf, msg); break;
-            case 'a': corto_buffer_append(&buf, "%s%s%s%s", CORTO_CYAN, corto_appName, CORTO_NORMAL); break;
+            case 'a': corto_buffer_append(&buf, "%s%s%s", CORTO_CYAN, corto_appName, CORTO_NORMAL); break;
             default:
                 corto_buffer_appendstr(&buf, "%");
                 corto_buffer_appendstrn(&buf, &fmtptr[1], 1);
