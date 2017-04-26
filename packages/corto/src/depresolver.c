@@ -27,7 +27,7 @@ struct g_dependency {
     g_item item;
     g_item dependency;
     corto_bool weak; /* A weak dependency may be degraded to DECLARED if a cycle can otherwise not be broken. */
-    corto_bool marked;
+    corto_uint32 marked;
     corto_bool processed; /* When a cycles are broken, it can occur that a dependency is resolved twice, as
                           a cycle is broken by resolving a dependency. This could cause refcounts to dive below
                           zero which is undesired. */
@@ -41,6 +41,8 @@ struct corto_depresolver_s {
     void* userData;
     g_dependency stack[CYCLE_DEPTH]; /* For cycle detection */
     corto_uint32 sp;
+    corto_int32 iteration; /* dependency.marked equals this number when it has been marked in the current
+                            * cycle detection iteration. */
     corto_bool bootstrap; /* If a bootstrap is detected, disregard all dependencies. This can only mean that
                           the builtin-types are being generated, since these are the only ones that can
                           introduce a bootstrap (typeof(class) == class).
@@ -127,6 +129,11 @@ static int g_itemResolveDependency(void* o, void* userData) {
     data = userData;
 
     if (!dep->processed) {
+        corto_debug("depresolver: resolve dependency: %s '%s' before ? '%s'",
+                corto_strp(&dep->kind, corto_state_o, 0),
+                corto_fullpath(NULL, dep->item->o),
+                corto_fullpath(NULL, dep->dependency->o));
+
         switch(dep->kind) {
         case CORTO_DECLARED:
             dep->item->declareCount--;
@@ -179,6 +186,7 @@ static int g_itemPrint(void* o, void* userData) {
     /* Walk DECLARED dependencies */
     if (!item->declared && !item->declareCount) {
         item->declared = TRUE;
+        corto_debug("depresolver: declare '%s'", corto_fullpath(NULL, item->o));
         g_itemDeclare(item, data);
         if (item->onDeclared) {
             corto_llWalk(item->onDeclared, g_itemResolveDependency, data);
@@ -188,6 +196,7 @@ static int g_itemPrint(void* o, void* userData) {
     /* Walk DECLARED | DEFINED dependencies */
     if (item->declared && !item->defined && !item->defineCount) {
         item->defined = TRUE;
+        corto_debug("depresolver: define '%s'", corto_fullpath(NULL, item->o));
         g_itemDefine(item, data);
         if (item->onDefined) {
             corto_llWalk(item->onDefined, g_itemResolveDependency, data);
@@ -257,7 +266,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct corto_depreso
     corto_uint32 sp;
 
     /* If item is already marked, there is no need to investigate it further. */
-    if (!dep->marked) {
+    if (dep->marked != data->iteration) {
         /* If dependency is not on stack, scan further, if on stack, a cycle is found. */
         if (!(sp = g_dependencyOnStack(dep, data))) {
             data->stack[data->sp] = dep;
@@ -266,22 +275,37 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct corto_depreso
 
             /* Forward item and mark it. */
             g_itemResolveCycles(dep->item, data);
-            dep->marked = TRUE;
+            dep->marked = data->iteration;
             data->sp--;
+
         /* If a cycle is found, look on the stack for a weak dependency. */
         } else {
             corto_uint32 i;
 
-            for(i=sp-1; i<data->sp; i++) {
+            corto_debug("depresolver: >> begin breaking cycle [%p]", dep);
+            for(i = sp - 1; i < data->sp; i++) {
+                corto_debug("depresolver: on stack: can't %s '%s' before DECLARED|DEFINED '%s'",
+                    corto_strp(&data->stack[i]->kind, corto_state_o, 0),
+                    corto_fullpath(NULL, data->stack[i]->item->o),
+                    corto_fullpath(NULL, data->stack[i]->dependency->o));
+            }
+
+            for(i = sp - 1; i < data->sp; i++) {
                 /* Break first weak dependency */
                 if (data->stack[i]->weak && data->stack[i]->dependency->declared) {
                     g_itemResolveDependency(data->stack[i], data);
+
+                    corto_debug("depresolver: break can't %s '%s' before DECLARED|DEFINED '%s'",
+                        corto_strp(&data->stack[i]->kind, corto_state_o, 0),
+                        corto_fullpath(NULL, data->stack[i]->item->o),
+                        corto_fullpath(NULL, data->stack[i]->dependency->o));
 
                     /* This dependency is already weakened, it cannot be weakened again. */
                     data->stack[i]->weak = FALSE;
                     break;
                 }
             }
+            corto_debug("depresolver: << end breaking cycle [%p]", dep);
         }
     }
 }
@@ -298,10 +322,11 @@ static int g_itemResolveCycles(g_item item, struct corto_depresolver_s* data) {
 
     sp = data->sp;
 
+
     /* If item has not yet been declared, search onDeclared list. If the item is already declared, the
      * dependencies in this list have already been resolved, thus need not to be evaluated again. */
+    
     if (!item->declared && item->onDeclared) {
-
         /* Walk dependencies */
         iter = corto_llIter(item->onDeclared);
         while((corto_iterHasNext(&iter))) {
@@ -312,11 +337,18 @@ static int g_itemResolveCycles(g_item item, struct corto_depresolver_s* data) {
 
     /* Walk onDefined list if item is not yet defined. */
     if (!item->defined && item->onDefined) {
-
         /* Walk dependencies */
         iter = corto_llIter(item->onDefined);
         while((corto_iterHasNext(&iter))) {
             dep = corto_iterNext(&iter);
+
+            corto_debug("depresolver: onDefine: can't %s '%s' before DECLARED|DEFINED '%s' (marked = %d, iteration = %d)",
+                corto_strp(&dep->kind, corto_state_o, 0),
+                corto_fullpath(NULL, dep->item->o),
+                corto_fullpath(NULL, dep->dependency->o),
+                dep->marked,
+                data->iteration);
+
             g_itemResolveDependencyCycles(dep, data);
         }
      }
@@ -337,6 +369,7 @@ corto_depresolver corto_depresolverCreate(corto_depresolver_action onDeclare, co
     result->onDeclare = onDeclare;
     result->onDefine = onDefine;
     result->userData = userData;
+    result->iteration = 0;
 
     return result;
 }
@@ -350,6 +383,12 @@ corto_depresolver corto_depresolverCreate(corto_depresolver_action onDeclare, co
 void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind, void* d, corto_state dependencyKind) {
     g_dependency dep;
     g_item dependent, dependency;
+
+    corto_debug("depresolver: can't %s '%s' before %s '%s'",
+        corto_strp(&kind, corto_state_o, 0),
+        corto_fullpath(NULL, o),
+        corto_strp(&dependencyKind, corto_state_o, 0),
+        corto_fullpath(NULL, d));
 
     dependent = g_itemLookup(o, this);
     dependency = g_itemLookup(d, this);
@@ -421,8 +460,17 @@ int corto_depresolver_walk(corto_depresolver this) {
     while(corto_iterHasNext(&iter)) {
         item = corto_iterNext(&iter);
 
+        this->iteration ++;
+
         /* Process objects that have not yet been defined or declared */
         if (!item->defined) {
+            corto_debug("depresolver: item '%s' has cycles (declareCount = %d, defineCount = %d, onDeclare = %d, onDefine = %d)",
+                corto_fullpath(NULL, item->o),
+                item->declareCount,
+                item->defineCount,
+                item->onDeclared ? corto_llSize(item->onDeclared) : 0,
+                item->onDefined ? corto_llSize(item->onDefined) : 0);
+
             /* Locate and resolve cycles */
             this->sp = 0;
             if (g_itemResolveCycles(item, this)) {
@@ -461,7 +509,7 @@ int corto_depresolver_walk(corto_depresolver this) {
     corto_dealloc(this);
 
     if (unresolved) {
-        corto_error("unsolvable dependecy cycles encountered");
+        corto_seterr("unsolvable dependecy cycles encountered in data");
         goto error;
     }
 
