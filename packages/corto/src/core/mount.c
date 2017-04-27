@@ -150,7 +150,7 @@ corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
 }
 
 /* $end */
-corto_int16 _corto_mount_construct(
+int16_t _corto_mount_construct(
     corto_mount this)
 {
 /* $begin(corto/core/mount/construct) */
@@ -268,7 +268,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_mount_destruct(
+void _corto_mount_destruct(
     corto_mount this)
 {
 /* $begin(corto/core/mount/destruct) */
@@ -308,7 +308,7 @@ corto_string _corto_mount_id(
 /* $end */
 }
 
-corto_int16 _corto_mount_init(
+int16_t _corto_mount_init(
     corto_mount this)
 {
 /* $begin(corto/core/mount/init) */
@@ -321,11 +321,11 @@ corto_int16 _corto_mount_init(
 /* $end */
 }
 
-corto_void _corto_mount_invoke(
+void _corto_mount_invoke(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_word argptrs)
+    uintptr_t argptrs)
 {
 /* $begin(corto/core/mount/invoke) */
     corto_object owner = corto_ownerof(instance);
@@ -350,11 +350,11 @@ corto_string _corto_mount_onId_v(
 /* $end */
 }
 
-corto_void _corto_mount_onInvoke_v(
+void _corto_mount_onInvoke_v(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_word argptrs)
+    uintptr_t argptrs)
 {
 /* $begin(corto/core/mount/onInvoke) */
 
@@ -366,7 +366,7 @@ corto_void _corto_mount_onInvoke_v(
 /* $end */
 }
 
-corto_void _corto_mount_onNotify_v(
+void _corto_mount_onNotify_v(
     corto_mount this,
     corto_eventMask event,
     corto_result *object)
@@ -380,7 +380,7 @@ corto_void _corto_mount_onNotify_v(
 /* $end */
 }
 
-corto_void _corto_mount_onPoll_v(
+void _corto_mount_onPoll_v(
     corto_mount this)
 {
 /* $begin(corto/core/mount/onPoll) */
@@ -445,11 +445,11 @@ corto_object _corto_mount_onResume_v(
 /* $end */
 }
 
-corto_word _corto_mount_onSubscribe_v(
+uintptr_t _corto_mount_onSubscribe_v(
     corto_mount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
 /* $begin(corto/core/mount/onSubscribe) */
     CORTO_UNUSED(this);
@@ -461,11 +461,11 @@ corto_word _corto_mount_onSubscribe_v(
 /* $end */
 }
 
-corto_void _corto_mount_onUnsubscribe_v(
+void _corto_mount_onUnsubscribe_v(
     corto_mount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
 /* $begin(corto/core/mount/onUnsubscribe) */
     CORTO_UNUSED(this);
@@ -496,7 +496,7 @@ static corto_subscriberEvent corto_mount_findEvent(corto_mount this, corto_subsc
 #define MOUNT_QUEUE_THRESHOLD_SLEEP 10000000
 
 /* $end */
-corto_void _corto_mount_post(
+void _corto_mount_post(
     corto_mount this,
     corto_event e)
 {
@@ -682,7 +682,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_mount_return(
+void _corto_mount_return(
     corto_mount this,
     corto_result *r)
 {
@@ -708,7 +708,7 @@ corto_void _corto_mount_return(
 /* $end */
 }
 
-corto_int16 _corto_mount_setContentType(
+int16_t _corto_mount_setContentType(
     corto_mount this,
     corto_string type)
 {
@@ -728,7 +728,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_mount_setContentTypeIn(
+int16_t _corto_mount_setContentTypeIn(
     corto_mount this,
     corto_string type)
 {
@@ -746,7 +746,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_mount_setContentTypeOut(
+int16_t _corto_mount_setContentTypeOut(
     corto_mount this,
     corto_string type)
 {
@@ -768,7 +768,7 @@ error:
 static corto_mountSubscription* corto_mount_findSubscription(
     corto_mount this,
     corto_request *request,
-    corto_bool *found)
+    bool *found)
 {
     *found = FALSE;
     corto_mountSubscription *result = NULL;
@@ -788,14 +788,14 @@ static corto_mountSubscription* corto_mount_findSubscription(
     return result;
 }
 /* $end */
-corto_void _corto_mount_subscribe(
+void _corto_mount_subscribe(
     corto_mount this,
     corto_request *request)
 {
 /* $begin(corto/core/mount/subscribe(/corto/core/request request)) */
     corto_word ctx = 0;
     corto_mountSubscription *subscription = NULL;
-    corto_bool found = FALSE;
+    bool found = FALSE;
 
     if (corto_checkState(this, CORTO_DEFINED)) corto_lock(this);
 
@@ -873,7 +873,7 @@ corto_void _corto_mount_subscribe(
 /* $end */
 }
 
-corto_void _corto_mount_unsubscribe(
+void _corto_mount_unsubscribe(
     corto_mount this,
     corto_request *request)
 {

@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_case_construct(
+int16_t _corto_case_construct(
     corto_case this)
 {
 /* $begin(corto/lang/case/construct) */

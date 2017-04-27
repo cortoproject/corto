@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_boolean_init(
+int16_t _corto_boolean_init(
     corto_boolean this)
 {
 /* $begin(corto/lang/boolean/init) */

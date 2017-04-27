@@ -23,7 +23,7 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
     return corto_procedure(t);
 }
 /* $end */
-corto_int16 _corto_function_construct(
+int16_t _corto_function_construct(
     corto_function this)
 {
 /* $begin(corto/lang/function/construct) */
@@ -96,7 +96,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_function_destruct(
+void _corto_function_destruct(
     corto_function this)
 {
 /* $begin(corto/lang/function/destruct) */
@@ -157,7 +157,7 @@ finish:
     return 0;
 }
 /* $end */
-corto_int16 _corto_function_init(
+int16_t _corto_function_init(
     corto_function this)
 {
 /* $begin(corto/lang/function/init) */
@@ -207,7 +207,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_function_parseParamString(
+int16_t _corto_function_parseParamString(
     corto_function this,
     corto_string params)
 {

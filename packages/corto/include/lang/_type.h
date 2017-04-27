@@ -14,19 +14,20 @@ extern "C" {
 
 /* Casting macro's */
 #define corto_typeKind(o) ((corto_typeKind*)corto_assertType((corto_type)corto_typeKind_o, o))
-#define corto_bool(o) ((corto_bool*)corto_assertType((corto_type)corto_bool_o, o))
+#define corto_bool(o) ((bool*)corto_assertType((corto_type)corto_bool_o, o))
 #define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
 #define corto_state(o) ((corto_state*)corto_assertType((corto_type)corto_state_o, o))
 #define corto_typeOptions(o) ((corto_typeOptions*)corto_assertType((corto_type)corto_typeOptions_o, o))
-#define corto_uint32(o) ((corto_uint32*)corto_assertType((corto_type)corto_uint32_o, o))
-#define corto_uint16(o) ((corto_uint16*)corto_assertType((corto_type)corto_uint16_o, o))
+#define corto_uint8(o) ((uint8_t*)corto_assertType((corto_type)corto_uint8_o, o))
+#define corto_uint32(o) ((uint32_t*)corto_assertType((corto_type)corto_uint32_o, o))
+#define corto_uint16(o) ((uint16_t*)corto_assertType((corto_type)corto_uint16_o, o))
 #define corto_object(o) ((corto_object)o)
 #define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
 #define corto_string(o) ((corto_string*)corto_assertType((corto_type)corto_string_o, o))
 #define corto_inout(o) ((corto_inout*)corto_assertType((corto_type)corto_inout_o, o))
 #define corto_parameter(o) ((corto_parameter*)corto_assertType((corto_type)corto_parameter_o, o))
 #define corto_parameterseq(o) ((corto_parameterseq*)corto_assertType((corto_type)corto_parameterseq_o, o))
-#define corto_word(o) ((corto_word*)corto_assertType((corto_type)corto_word_o, o))
+#define corto_word(o) ((uintptr_t*)corto_assertType((corto_type)corto_word_o, o))
 #define corto_function(o) ((corto_function)corto_assertType((corto_type)corto_function_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assertType((corto_type)corto_delegatedata_o, o))
 #define corto_initAction(o) ((corto_initAction*)corto_assertType((corto_type)corto_initAction_o, o))
@@ -52,29 +53,28 @@ extern "C" {
 #define corto_array(o) ((corto_array)corto_assertType((corto_type)corto_array_o, o))
 #define corto_primitiveKind(o) ((corto_primitiveKind*)corto_assertType((corto_type)corto_primitiveKind_o, o))
 #define corto_width(o) ((corto_width*)corto_assertType((corto_type)corto_width_o, o))
-#define corto_uint8(o) ((corto_uint8*)corto_assertType((corto_type)corto_uint8_o, o))
 #define corto_primitive(o) ((corto_primitive)corto_assertType((corto_type)corto_primitive_o, o))
 #define corto_binary(o) ((corto_binary)corto_assertType((corto_type)corto_binary_o, o))
 #define corto_enum(o) ((corto_enum)corto_assertType((corto_type)corto_enum_o, o))
 #define corto_bitmask(o) ((corto_bitmask)corto_assertType((corto_type)corto_bitmask_o, o))
 #define corto_boolean(o) ((corto_boolean)corto_assertType((corto_type)corto_boolean_o, o))
-#define corto_int32(o) ((corto_int32*)corto_assertType((corto_type)corto_int32_o, o))
+#define corto_int32(o) ((int32_t*)corto_assertType((corto_type)corto_int32_o, o))
 #define corto_int32seq(o) ((corto_int32seq*)corto_assertType((corto_type)corto_int32seq_o, o))
 #define corto_case(o) ((corto_case)corto_assertType((corto_type)corto_case_o, o))
-#define corto_char(o) ((corto_char*)corto_assertType((corto_type)corto_char_o, o))
+#define corto_char(o) ((char*)corto_assertType((corto_type)corto_char_o, o))
 #define corto_character(o) ((corto_character)corto_assertType((corto_type)corto_character_o, o))
-#define corto_constant(o) ((corto_constant*)corto_assertType((corto_type)corto_constant_o, o))
+#define corto_constant(o) ((int32_t*)corto_assertType((corto_type)corto_constant_o, o))
 #define corto_container(o) ((corto_container)corto_assertType((corto_type)corto_container_o, o))
 #define corto_default(o) ((corto_default)corto_assertType((corto_type)corto_default_o, o))
 #define corto_delegate(o) ((corto_delegate)corto_assertType((corto_type)corto_delegate_o, o))
 #define corto_equalityKind(o) ((corto_equalityKind*)corto_assertType((corto_type)corto_equalityKind_o, o))
-#define corto_float64(o) ((corto_float64*)corto_assertType((corto_type)corto_float64_o, o))
+#define corto_float64(o) ((double*)corto_assertType((corto_type)corto_float64_o, o))
 #define corto_float(o) ((corto_float)corto_assertType((corto_type)corto_float_o, o))
-#define corto_float32(o) ((corto_float32*)corto_assertType((corto_type)corto_float32_o, o))
-#define corto_int64(o) ((corto_int64*)corto_assertType((corto_type)corto_int64_o, o))
+#define corto_float32(o) ((float*)corto_assertType((corto_type)corto_float32_o, o))
+#define corto_int64(o) ((int64_t*)corto_assertType((corto_type)corto_int64_o, o))
 #define corto_int(o) ((corto_int)corto_assertType((corto_type)corto_int_o, o))
-#define corto_int16(o) ((corto_int16*)corto_assertType((corto_type)corto_int16_o, o))
-#define corto_int8(o) ((corto_int8*)corto_assertType((corto_type)corto_int8_o, o))
+#define corto_int16(o) ((int16_t*)corto_assertType((corto_type)corto_int16_o, o))
+#define corto_int8(o) ((int8_t*)corto_assertType((corto_type)corto_int8_o, o))
 #define corto_iterator(o) ((corto_iterator)corto_assertType((corto_type)corto_iterator_o, o))
 #define corto_leaf(o) ((corto_leaf)corto_assertType((corto_type)corto_leaf_o, o))
 #define corto_list(o) ((corto_list)corto_assertType((corto_type)corto_list_o, o))
@@ -82,7 +82,7 @@ extern "C" {
 #define corto_metaprocedure(o) ((corto_metaprocedure)corto_assertType((corto_type)corto_metaprocedure_o, o))
 #define corto_method(o) ((corto_method)corto_assertType((corto_type)corto_method_o, o))
 #define corto_objectlist(o) ((corto_objectlist*)corto_assertType((corto_type)corto_objectlist_o, o))
-#define corto_octet(o) ((corto_octet*)corto_assertType((corto_type)corto_octet_o, o))
+#define corto_octet(o) ((uint8_t*)corto_assertType((corto_type)corto_octet_o, o))
 #define corto_overridable(o) ((corto_overridable)corto_assertType((corto_type)corto_overridable_o, o))
 #define corto_override(o) ((corto_override)corto_assertType((corto_type)corto_override_o, o))
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
@@ -91,13 +91,17 @@ extern "C" {
 #define corto_table(o) ((corto_table)corto_assertType((corto_type)corto_table_o, o))
 #define corto_tablescope(o) ((corto_tablescope)corto_assertType((corto_type)corto_tablescope_o, o))
 #define corto_target(o) ((corto_target)corto_assertType((corto_type)corto_target_o, o))
-#define corto_uint64(o) ((corto_uint64*)corto_assertType((corto_type)corto_uint64_o, o))
+#define corto_uint64(o) ((uint64_t*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
 #define corto_verbatim(o) ((corto_verbatim)corto_assertType((corto_type)corto_verbatim_o, o))
-#define corto_void(o) ((corto_void*)o)
+#define corto_void(o) ((void*)o)
 #define corto_wordseq(o) ((corto_wordseq*)corto_assertType((corto_type)corto_wordseq_o, o))
+
+/* Native types */
+#ifndef CORTO_LANG_H
+#endif
 
 /* Type definitions */
 /* typeKind */
@@ -111,7 +115,7 @@ typedef enum corto_typeKind {
 } corto_typeKind;
 
 /* bool */
-typedef char corto_bool;
+typedef bool corto_bool;
 
 /* attr */
 CORTO_BITMASK(corto_attr);
@@ -141,6 +145,9 @@ struct corto_typeOptions {
     corto_type defaultProcedureType;
 };
 
+/* uint8 */
+typedef uint8_t corto_uint8;
+
 /* uint32 */
 typedef uint32_t corto_uint32;
 
@@ -150,7 +157,7 @@ typedef uint16_t corto_uint16;
 /* object */
 typedef void *corto_object;
 
-CORTO_SEQUENCE(corto_objectseq, corto_object,);
+typedef struct corto_objectseq {uint32_t length; corto_object *buffer;} corto_objectseq;
 
 /* string */
 typedef char* corto_string;
@@ -169,10 +176,10 @@ struct corto_parameter {
     corto_string name;
     corto_type type;
     corto_inout inout;
-    corto_bool passByReference;
+    bool passByReference;
 };
 
-CORTO_SEQUENCE(corto_parameterseq, corto_parameter,);
+typedef struct corto_parameterseq {uint32_t length; corto_parameter *buffer;} corto_parameterseq;
 
 /* word */
 typedef uintptr_t corto_word;
@@ -182,15 +189,15 @@ typedef struct corto_function_s *corto_function;
 
 struct corto_function_s {
     corto_type returnType;
-    corto_bool returnsReference;
+    bool returnsReference;
     corto_parameterseq parameters;
-    corto_bool overridable;
-    corto_bool overloaded;
-    corto_uint32 kind;
-    corto_word impl;
-    corto_word fptr;
-    corto_word fdata;
-    corto_uint16 size;
+    bool overridable;
+    bool overloaded;
+    uint32_t kind;
+    uintptr_t impl;
+    uintptr_t fptr;
+    uintptr_t fdata;
+    uint16_t size;
 };
 
 /*  delegatedata */
@@ -205,34 +212,31 @@ struct corto_delegatedata {
 typedef struct corto_initAction corto_initAction;
 
 struct corto_initAction {
-    corto_delegatedata _parent;
+    corto_delegatedata super;
 };
 
 /*  destructAction */
 typedef struct corto_destructAction corto_destructAction;
 
 struct corto_destructAction {
-    corto_delegatedata _parent;
+    corto_delegatedata super;
 };
 
 /*  nameAction */
 typedef struct corto_nameAction corto_nameAction;
 
 struct corto_nameAction {
-    corto_delegatedata _parent;
+    corto_delegatedata super;
 };
-
-/* int8 */
-typedef int8_t corto_int8;
 
 struct corto_type_s {
     corto_typeKind kind;
-    corto_bool reference;
+    bool reference;
     corto_attr attr;
     corto_typeOptions options;
-    corto_int8 flags;
-    corto_uint32 size;
-    corto_uint16 alignment;
+    uint8_t flags;
+    uint32_t size;
+    uint16_t alignment;
     corto_objectseq metaprocedures;
     corto_initAction init;
     corto_destructAction deinit;
@@ -265,27 +269,27 @@ typedef enum corto_compositeKind {
 typedef struct corto_interface_s *corto_interface;
 
 struct corto_interface_s {
-    struct corto_type_s _parent;
+    struct corto_type_s super;
     corto_compositeKind kind;
-    corto_uint32 nextMemberId;
+    uint32_t nextMemberId;
     corto_objectseq members;
     corto_objectseq methods;
     corto_interface base;
 };
 
-CORTO_SEQUENCE(corto_stringseq, corto_string,);
+typedef struct corto_stringseq {uint32_t length; corto_string *buffer;} corto_stringseq;
 
 /*  struct */
 typedef struct corto_struct_s *corto_struct;
 
 struct corto_struct_s {
-    struct corto_interface_s _parent;
+    struct corto_interface_s super;
     corto_modifier baseAccess;
     corto_stringseq keys;
     corto_objectseq keycache;
 };
 
-CORTO_SEQUENCE(corto_interfaceseq, corto_interface,);
+typedef struct corto_interfaceseq {uint32_t length; corto_interface *buffer;} corto_interfaceseq;
 
 /*  interfaceVector */
 typedef struct corto_interfaceVector corto_interfaceVector;
@@ -295,13 +299,13 @@ struct corto_interfaceVector {
     corto_objectseq vector;
 };
 
-CORTO_SEQUENCE(corto_interfaceVectorseq, corto_interfaceVector,);
+typedef struct corto_interfaceVectorseq {uint32_t length; corto_interfaceVector *buffer;} corto_interfaceVectorseq;
 
 /*  class */
 typedef struct corto_class_s *corto_class;
 
 struct corto_class_s {
-    struct corto_struct_s _parent;
+    struct corto_struct_s super;
     corto_interfaceseq implements;
     corto_interfaceVectorseq interfaceVector;
     corto_initAction construct;
@@ -319,13 +323,13 @@ struct corto_quantity_s {
 typedef struct corto_unit_s *corto_unit;
 
 struct corto_unit_s {
-    struct corto_class_s _parent;
+    struct corto_class_s super;
     corto_quantity quantity;
     corto_string symbol;
     corto_string conversion;
     corto_type type;
-    corto_word toQuantity;
-    corto_word fromQuantity;
+    uintptr_t toQuantity;
+    uintptr_t fromQuantity;
 };
 
 /*  member */
@@ -337,16 +341,16 @@ struct corto_member_s {
     corto_unit unit;
     corto_state state;
     corto_string stateCondExpr;
-    corto_bool weak;
-    corto_uint32 id;
-    corto_uint32 offset;
+    bool weak;
+    uint32_t id;
+    uint32_t offset;
 };
 
 /*  alias */
 typedef struct corto_alias_s *corto_alias;
 
 struct corto_alias_s {
-    struct corto_member_s _parent;
+    struct corto_member_s super;
     corto_member member;
 };
 
@@ -365,17 +369,17 @@ typedef enum corto_collectionKind {
 typedef struct corto_collection_s *corto_collection;
 
 struct corto_collection_s {
-    struct corto_type_s _parent;
+    struct corto_type_s super;
     corto_collectionKind kind;
     corto_type elementType;
-    corto_uint32 max;
+    uint32_t max;
 };
 
 /*  array */
 typedef struct corto_array_s *corto_array;
 
 struct corto_array_s {
-    struct corto_collection_s _parent;
+    struct corto_collection_s super;
     corto_type elementType;
 };
 
@@ -401,31 +405,28 @@ typedef enum corto_width {
     CORTO_WIDTH_WORD = 4
 } corto_width;
 
-/* uint8 */
-typedef uint8_t corto_uint8;
-
 /*  primitive */
 typedef struct corto_primitive_s *corto_primitive;
 
 struct corto_primitive_s {
-    struct corto_type_s _parent;
+    struct corto_type_s super;
     corto_primitiveKind kind;
     corto_width width;
-    corto_uint8 convertId;
+    uint8_t convertId;
 };
 
 /*  binary */
 typedef struct corto_binary_s *corto_binary;
 
 struct corto_binary_s {
-    struct corto_primitive_s _parent;
+    struct corto_primitive_s super;
 };
 
 /*  enum */
 typedef struct corto_enum_s *corto_enum;
 
 struct corto_enum_s {
-    struct corto_primitive_s _parent;
+    struct corto_primitive_s super;
     corto_objectseq constants;
 };
 
@@ -433,26 +434,26 @@ struct corto_enum_s {
 typedef struct corto_bitmask_s *corto_bitmask;
 
 struct corto_bitmask_s {
-    struct corto_enum_s _parent;
+    struct corto_enum_s super;
 };
 
 /*  boolean */
 typedef struct corto_boolean_s *corto_boolean;
 
 struct corto_boolean_s {
-    struct corto_primitive_s _parent;
+    struct corto_primitive_s super;
 };
 
 /* int32 */
 typedef int32_t corto_int32;
 
-CORTO_SEQUENCE(corto_int32seq, corto_int32,);
+typedef struct corto_int32seq {uint32_t length; int32_t *buffer;} corto_int32seq;
 
 /*  case */
 typedef struct corto_case_s *corto_case;
 
 struct corto_case_s {
-    struct corto_member_s _parent;
+    struct corto_member_s super;
     corto_int32seq discriminator;
 };
 
@@ -463,7 +464,7 @@ typedef char corto_char;
 typedef struct corto_character_s *corto_character;
 
 struct corto_character_s {
-    struct corto_primitive_s _parent;
+    struct corto_primitive_s super;
 };
 
 /* constant */
@@ -473,7 +474,7 @@ typedef int32_t corto_constant;
 typedef struct corto_container_s *corto_container;
 
 struct corto_container_s {
-    struct corto_class_s _parent;
+    struct corto_class_s super;
     corto_type type;
 };
 
@@ -481,16 +482,16 @@ struct corto_container_s {
 typedef struct corto_default_s *corto_default;
 
 struct corto_default_s {
-    struct corto_case_s _parent;
+    struct corto_case_s super;
 };
 
 /*  delegate */
 typedef struct corto_delegate_s *corto_delegate;
 
 struct corto_delegate_s {
-    struct corto_struct_s _parent;
+    struct corto_struct_s super;
     corto_type returnType;
-    corto_bool returnsReference;
+    bool returnsReference;
     corto_parameterseq parameters;
 };
 
@@ -509,9 +510,9 @@ typedef double corto_float64;
 typedef struct corto_float_s *corto_float;
 
 struct corto_float_s {
-    struct corto_primitive_s _parent;
-    corto_float64 min;
-    corto_float64 max;
+    struct corto_primitive_s super;
+    double min;
+    double max;
 };
 
 /* float32 */
@@ -524,19 +525,22 @@ typedef int64_t corto_int64;
 typedef struct corto_int_s *corto_int;
 
 struct corto_int_s {
-    struct corto_primitive_s _parent;
-    corto_int64 min;
-    corto_int64 max;
+    struct corto_primitive_s super;
+    int64_t min;
+    int64_t max;
 };
 
 /* int16 */
 typedef int16_t corto_int16;
 
+/* int8 */
+typedef int8_t corto_int8;
+
 /*  iterator */
 typedef struct corto_iterator_s *corto_iterator;
 
 struct corto_iterator_s {
-    struct corto_type_s _parent;
+    struct corto_type_s super;
     corto_type elementType;
 };
 
@@ -544,44 +548,44 @@ struct corto_iterator_s {
 typedef struct corto_leaf_s *corto_leaf;
 
 struct corto_leaf_s {
-    struct corto_container_s _parent;
+    struct corto_container_s super;
 };
 
 /*  list */
 typedef struct corto_list_s *corto_list;
 
 struct corto_list_s {
-    struct corto_collection_s _parent;
+    struct corto_collection_s super;
 };
 
 /*  map */
 typedef struct corto_map_s *corto_map;
 
 struct corto_map_s {
-    struct corto_collection_s _parent;
+    struct corto_collection_s super;
     corto_type elementType;
     corto_type keyType;
-    corto_uint32 max;
+    uint32_t max;
 };
 
 /*  metaprocedure */
 typedef struct corto_metaprocedure_s *corto_metaprocedure;
 
 struct corto_metaprocedure_s {
-    struct corto_function_s _parent;
-    corto_bool referenceOnly;
+    struct corto_function_s super;
+    bool referenceOnly;
 };
 
 /*  method */
 typedef struct corto_method_s *corto_method;
 
 struct corto_method_s {
-    struct corto_function_s _parent;
+    struct corto_function_s super;
 };
 
 #ifndef corto_objectlist_DEFINED
 #define corto_objectlist_DEFINED
-CORTO_LIST(corto_objectlist);
+typedef corto_ll corto_objectlist;
 #endif
 
 /* octet */
@@ -591,22 +595,22 @@ typedef uint8_t corto_octet;
 typedef struct corto_overridable_s *corto_overridable;
 
 struct corto_overridable_s {
-    struct corto_method_s _parent;
+    struct corto_method_s super;
 };
 
 /*  override */
 typedef struct corto_override_s *corto_override;
 
 struct corto_override_s {
-    struct corto_method_s _parent;
+    struct corto_method_s super;
 };
 
 /*  procedure */
 typedef struct corto_procedure_s *corto_procedure;
 
 struct corto_procedure_s {
-    struct corto_class_s _parent;
-    corto_bool hasThis;
+    struct corto_class_s super;
+    bool hasThis;
     corto_type thisType;
 };
 
@@ -614,19 +618,19 @@ struct corto_procedure_s {
 typedef struct corto_sequence_s *corto_sequence;
 
 struct corto_sequence_s {
-    struct corto_collection_s _parent;
+    struct corto_collection_s super;
 };
 
 #ifndef corto_stringlist_DEFINED
 #define corto_stringlist_DEFINED
-CORTO_LIST(corto_stringlist);
+typedef corto_ll corto_stringlist;
 #endif
 
 /*  table */
 typedef struct corto_table_s *corto_table;
 
 struct corto_table_s {
-    struct corto_container_s _parent;
+    struct corto_container_s super;
 };
 
 /*  tablescope */
@@ -640,7 +644,7 @@ struct corto_tablescope_s {
 typedef struct corto_target_s *corto_target;
 
 struct corto_target_s {
-    struct corto_struct_s _parent;
+    struct corto_struct_s super;
     corto_type type;
 };
 
@@ -651,25 +655,25 @@ typedef uint64_t corto_uint64;
 typedef struct corto_text_s *corto_text;
 
 struct corto_text_s {
-    struct corto_primitive_s _parent;
+    struct corto_primitive_s super;
     corto_width charWidth;
-    corto_uint64 length;
+    uint64_t length;
 };
 
 /*  uint */
 typedef struct corto_uint_s *corto_uint;
 
 struct corto_uint_s {
-    struct corto_primitive_s _parent;
-    corto_uint64 min;
-    corto_uint64 max;
+    struct corto_primitive_s super;
+    uint64_t min;
+    uint64_t max;
 };
 
 /*  union */
 typedef struct corto_union_s *corto_union;
 
 struct corto_union_s {
-    struct corto_interface_s _parent;
+    struct corto_interface_s super;
     corto_type discriminator;
 };
 
@@ -677,14 +681,14 @@ struct corto_union_s {
 typedef struct corto_verbatim_s *corto_verbatim;
 
 struct corto_verbatim_s {
-    struct corto_primitive_s _parent;
+    struct corto_primitive_s super;
     corto_string contentType;
 };
 
 /* void */
 typedef void corto_void;
 
-CORTO_SEQUENCE(corto_wordseq, corto_word,);
+typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq;
 
 #ifdef __cplusplus
 }

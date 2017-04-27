@@ -12,7 +12,7 @@
 #include "_interface.h"
 /* $end */
 
-corto_int16 _corto_member_construct(
+int16_t _corto_member_construct(
     corto_member this)
 {
 /* $begin(corto/lang/member/construct) */
@@ -44,7 +44,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_member_init(
+int16_t _corto_member_init(
     corto_member this)
 {
 /* $begin(corto/lang/member/init) */

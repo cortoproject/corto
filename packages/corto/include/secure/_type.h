@@ -18,6 +18,10 @@ extern "C" {
 #define corto_secure_key(o) ((corto_secure_key)corto_assertType((corto_type)corto_secure_key_o, o))
 #define corto_secure_lock(o) ((corto_secure_lock)corto_assertType((corto_type)corto_secure_lock_o, o))
 
+/* Native types */
+#ifndef CORTO_SECURE_H
+#endif
+
 /* Type definitions */
 /* /corto/secure/accessKind */
 typedef enum corto_secure_accessKind {
@@ -38,7 +42,7 @@ typedef enum corto_secure_actionKind {
 typedef struct corto_secure_key_s *corto_secure_key;
 
 struct corto_secure_key_s {
-    corto_int8 __dummy;
+    int8_t __dummy;
 };
 
 /*  /corto/secure/lock */
@@ -47,7 +51,7 @@ typedef struct corto_secure_lock_s *corto_secure_lock;
 struct corto_secure_lock_s {
     corto_string mount;
     corto_string expr;
-    corto_int16 priority;
+    int16_t priority;
 };
 
 #ifdef __cplusplus

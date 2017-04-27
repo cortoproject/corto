@@ -8,7 +8,7 @@
 
 #include <corto/core/core.h>
 
-corto_void _corto_observableEvent_handle_v(
+void _corto_observableEvent_handle_v(
     corto_observableEvent this)
 {
 /* $begin(corto/core/observableEvent/handle) */

@@ -408,7 +408,7 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
 
 /* $end */
 
-corto_int16 _corto_interface_baseof(
+int16_t _corto_interface_baseof(
     corto_interface this,
     corto_interface type)
 {
@@ -425,7 +425,7 @@ corto_int16 _corto_interface_baseof(
 /* $end */
 }
 
-corto_int16 _corto_interface_bindMethod(
+int16_t _corto_interface_bindMethod(
     corto_interface this,
     corto_method method)
 {
@@ -512,7 +512,7 @@ error:
 /* $end */
 }
 
-corto_bool _corto_interface_compatible_v(
+bool _corto_interface_compatible_v(
     corto_interface this,
     corto_type type)
 {
@@ -538,7 +538,7 @@ corto_bool _corto_interface_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_interface_construct(
+int16_t _corto_interface_construct(
     corto_interface this)
 {
 /* $begin(corto/lang/interface/construct) */
@@ -555,7 +555,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_interface_destruct(
+void _corto_interface_destruct(
     corto_interface this)
 {
 /* $begin(corto/lang/interface/destruct) */
@@ -585,7 +585,7 @@ corto_void _corto_interface_destruct(
 /* $end */
 }
 
-corto_int16 _corto_interface_init(
+int16_t _corto_interface_init(
     corto_interface this)
 {
 /* $begin(corto/lang/interface/init) */
@@ -652,7 +652,7 @@ corto_method _corto_interface_resolveMethod(
 
 corto_method _corto_interface_resolveMethodById(
     corto_interface this,
-    corto_uint32 id)
+    uint32_t id)
 {
 /* $begin(corto/lang/interface/resolveMethodById) */
     corto_method result;
@@ -680,7 +680,7 @@ corto_method _corto_interface_resolveMethodById(
 /* $end */
 }
 
-corto_uint32 _corto_interface_resolveMethodId(
+uint32_t _corto_interface_resolveMethodId(
     corto_interface this,
     corto_string name)
 {

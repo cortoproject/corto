@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_overridable_init(
+int16_t _corto_overridable_init(
     corto_overridable this)
 {
 /* $begin(corto/lang/overridable/init) */

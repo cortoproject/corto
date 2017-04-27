@@ -698,7 +698,7 @@ error:
 
 /* $end */
 
-corto_int16 _corto_subscriber_construct(
+int16_t _corto_subscriber_construct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/construct) */
@@ -743,7 +743,7 @@ void _corto_subscriber_deinit(
 /* $end */
 }
 
-corto_void _corto_subscriber_destruct(
+void _corto_subscriber_destruct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/destruct) */
@@ -754,7 +754,7 @@ corto_void _corto_subscriber_destruct(
 /* $end */
 }
 
-corto_int16 _corto_subscriber_init(
+int16_t _corto_subscriber_init(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/init) */
@@ -786,7 +786,7 @@ corto_int16 _corto_subscriber_init(
 /* $end */
 }
 
-corto_int16 _corto_subscriber_subscribe(
+int16_t _corto_subscriber_subscribe(
     corto_subscriber this,
     corto_object instance)
 {
@@ -882,7 +882,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_subscriber_unsubscribe(
+int16_t _corto_subscriber_unsubscribe(
     corto_subscriber this,
     corto_object instance)
 {

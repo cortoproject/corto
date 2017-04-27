@@ -6,7 +6,7 @@
 #include <corto/core/core.h>
 #include <corto/core/_load.h>
 
-corto_void _corto_dispatcher_post(
+void _corto_dispatcher_post(
     corto_dispatcher this,
     corto_event e)
 {
@@ -33,7 +33,7 @@ corto_void _corto_dispatcher_post(
     }
 }
 
-corto_void _corto_event_handle(
+void _corto_event_handle(
     corto_event this)
 {
     static corto_uint32 _methodId;
@@ -59,7 +59,7 @@ corto_void _corto_event_handle(
     }
 }
 
-corto_void _corto_invokeEvent_handle(
+void _corto_invokeEvent_handle(
     corto_invokeEvent this)
 {
     static corto_uint32 _methodId;
@@ -144,11 +144,11 @@ corto_string _corto_mount_onId(
     return _result;
 }
 
-corto_void _corto_mount_onInvoke(
+void _corto_mount_onInvoke(
     corto_mount this,
     corto_object instance,
     corto_function proc,
-    corto_word argptrs)
+    uintptr_t argptrs)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -173,7 +173,7 @@ corto_void _corto_mount_onInvoke(
     }
 }
 
-corto_void _corto_mount_onNotify(
+void _corto_mount_onNotify(
     corto_mount this,
     corto_eventMask event,
     corto_result *object)
@@ -201,7 +201,7 @@ corto_void _corto_mount_onNotify(
     }
 }
 
-corto_void _corto_mount_onPoll(
+void _corto_mount_onPoll(
     corto_mount this)
 {
     static corto_uint32 _methodId;
@@ -289,15 +289,15 @@ corto_object _corto_mount_onResume(
     return _result;
 }
 
-corto_word _corto_mount_onSubscribe(
+uintptr_t _corto_mount_onSubscribe(
     corto_mount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_word _result;
+    uintptr_t _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -313,7 +313,7 @@ corto_word _corto_mount_onSubscribe(
     corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(string parent,string expr,lang/word ctx)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_word ___ (*)(corto_object, corto_string, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, expr, ctx);
+        _result = ((uintptr_t ___ (*)(corto_object, corto_string, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, expr, ctx);
     } else {
         corto_call(corto_function(_method), &_result, this, parent, expr, ctx);
     }
@@ -321,11 +321,11 @@ corto_word _corto_mount_onSubscribe(
     return _result;
 }
 
-corto_void _corto_mount_onUnsubscribe(
+void _corto_mount_onUnsubscribe(
     corto_mount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -350,7 +350,7 @@ corto_void _corto_mount_onUnsubscribe(
     }
 }
 
-corto_void _corto_observableEvent_handle(
+void _corto_observableEvent_handle(
     corto_observableEvent this)
 {
     static corto_uint32 _methodId;
@@ -409,7 +409,7 @@ corto_route _corto_routerimpl_findRoute(
     return _result;
 }
 
-corto_int32 _corto_routerimpl_matchRoute(
+int32_t _corto_routerimpl_matchRoute(
     corto_routerimpl this,
     corto_route route,
     corto_stringseq pattern,
@@ -418,7 +418,7 @@ corto_int32 _corto_routerimpl_matchRoute(
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_int32 _result;
+    int32_t _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -434,7 +434,7 @@ corto_int32 _corto_routerimpl_matchRoute(
     corto_assert(_method != NULL, "unresolved method '%s::matchRoute(core/route route,stringseq pattern,any param,out:any routerData)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_int32 ___ (*)(corto_object, corto_route, corto_stringseq, corto_any, corto_any*))((corto_function)_method)->fptr)(this, route, pattern, param, routerData);
+        _result = ((int32_t ___ (*)(corto_object, corto_route, corto_stringseq, corto_any, corto_any*))((corto_function)_method)->fptr)(this, route, pattern, param, routerData);
     } else {
         corto_call(corto_function(_method), &_result, this, route, pattern, param, routerData);
     }
@@ -442,7 +442,7 @@ corto_int32 _corto_routerimpl_matchRoute(
     return _result;
 }
 
-corto_void _corto_subscriberEvent_handle(
+void _corto_subscriberEvent_handle(
     corto_subscriberEvent this)
 {
     static corto_uint32 _methodId;

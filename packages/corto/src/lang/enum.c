@@ -44,7 +44,7 @@ static int corto_enum_findConstant(corto_object o, void* udata) {
 /* $end */
 corto_object _corto_enum_constant(
     corto_enum this,
-    corto_int32 value)
+    int32_t value)
 {
 /* $begin(corto/lang/enum/constant) */
     struct corto_enum_findConstant_t walkData;
@@ -58,7 +58,7 @@ corto_object _corto_enum_constant(
 /* $end */
 }
 
-corto_int16 _corto_enum_construct(
+int16_t _corto_enum_construct(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/construct) */
@@ -73,7 +73,7 @@ corto_int16 _corto_enum_construct(
 /* $end */
 }
 
-corto_void _corto_enum_destruct(
+void _corto_enum_destruct(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/destruct) */
@@ -82,7 +82,7 @@ corto_void _corto_enum_destruct(
 /* $end */
 }
 
-corto_int16 _corto_enum_init(
+int16_t _corto_enum_init(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/init) */

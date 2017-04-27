@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_alias_construct(
+int16_t _corto_alias_construct(
     corto_alias this)
 {
 /* $begin(corto/lang/alias/construct) */
@@ -19,7 +19,7 @@ corto_int16 _corto_alias_construct(
 /* $end */
 }
 
-corto_int16 _corto_alias_init(
+int16_t _corto_alias_init(
     corto_alias this)
 {
 /* $begin(corto/lang/alias/init) */

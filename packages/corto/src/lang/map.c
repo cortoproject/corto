@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_map_construct(
+int16_t _corto_map_construct(
     corto_map this)
 {
 /* $begin(corto/lang/map/construct) */
@@ -22,7 +22,7 @@ corto_int16 _corto_map_construct(
 /* $end */
 }
 
-corto_int16 _corto_map_init(
+int16_t _corto_map_init(
     corto_map this)
 {
 /* $begin(corto/lang/map/init) */

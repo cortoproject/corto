@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_table_construct(
+int16_t _corto_table_construct(
     corto_table this)
 {
 /* $begin(corto/lang/table/construct) */

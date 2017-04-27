@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_verbatim_init(
+int16_t _corto_verbatim_init(
     corto_verbatim this)
 {
 /* $begin(corto/lang/verbatim/init) */

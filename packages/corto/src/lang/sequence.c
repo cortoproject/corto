@@ -27,7 +27,7 @@ int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_ui
 }
 /* $end */
 
-corto_int16 _corto_sequence_construct(
+int16_t _corto_sequence_construct(
     corto_sequence this)
 {
 /* $begin(corto/lang/sequence/construct) */
@@ -44,7 +44,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_sequence_init(
+int16_t _corto_sequence_init(
     corto_sequence this)
 {
 /* $begin(corto/lang/sequence/init) */

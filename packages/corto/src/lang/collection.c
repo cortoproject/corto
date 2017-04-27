@@ -156,7 +156,7 @@ corto_uint32 corto_collection_size(corto_any this) {
 }
 /* $end */
 
-corto_bool _corto_collection_castable_v(
+bool _corto_collection_castable_v(
     corto_collection this,
     corto_type type)
 {
@@ -181,7 +181,7 @@ corto_bool _corto_collection_castable_v(
 /* $end */
 }
 
-corto_bool _corto_collection_compatible_v(
+bool _corto_collection_compatible_v(
     corto_collection this,
     corto_type type)
 {
@@ -205,7 +205,7 @@ corto_bool _corto_collection_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_collection_init(
+int16_t _corto_collection_init(
     corto_collection this)
 {
 /* $begin(corto/lang/collection/init) */
@@ -214,7 +214,7 @@ corto_int16 _corto_collection_init(
 /* $end */
 }
 
-corto_bool _corto_collection_requiresAlloc(
+bool _corto_collection_requiresAlloc(
     corto_type elementType)
 {
 /* $begin(corto/lang/collection/requiresAlloc) */

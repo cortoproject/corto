@@ -18,7 +18,7 @@ int corto_routerimpl_countArgs(corto_object o, void *userData) {
     return 1;
 }
 /* $end */
-corto_int16 _corto_routerimpl_construct(
+int16_t _corto_routerimpl_construct(
     corto_routerimpl this)
 {
 /* $begin(corto/core/routerimpl/construct) */
@@ -27,7 +27,7 @@ corto_int16 _corto_routerimpl_construct(
 /* $end */
 }
 
-corto_void _corto_routerimpl_destruct(
+void _corto_routerimpl_destruct(
     corto_routerimpl this)
 {
 /* $begin(corto/core/routerimpl/destruct) */
@@ -76,7 +76,7 @@ corto_route _corto_routerimpl_findRoute_v(
 /* $end */
 }
 
-corto_int32 _corto_routerimpl_matchRoute_v(
+int32_t _corto_routerimpl_matchRoute_v(
     corto_routerimpl this,
     corto_route route,
     corto_stringseq pattern,

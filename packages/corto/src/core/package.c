@@ -39,7 +39,7 @@ void corto_package_onDefine(
     corto_delete(observer); // Delete observer after first notification
 }
 /* $end */
-corto_int16 _corto_package_construct(
+int16_t _corto_package_construct(
     corto_package this)
 {
 /* $begin(corto/core/package/construct) */

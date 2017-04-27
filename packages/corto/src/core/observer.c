@@ -707,7 +707,7 @@ corto_int16 corto_unobserve(corto_observer observer) {
 
 /* $end */
 
-corto_int16 _corto_observer_construct(
+int16_t _corto_observer_construct(
     corto_observer this)
 {
 /* $begin(corto/core/observer/construct) */
@@ -770,7 +770,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_observer_destruct(
+void _corto_observer_destruct(
     corto_observer this)
 {
 /* $begin(corto/core/observer/destruct) */
@@ -792,7 +792,7 @@ corto_void _corto_observer_destruct(
 /* $end */
 }
 
-corto_int16 _corto_observer_init(
+int16_t _corto_observer_init(
     corto_observer this)
 {
 /* $begin(corto/core/observer/init) */
@@ -835,7 +835,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_observer_observe(
+int16_t _corto_observer_observe(
     corto_observer this,
     corto_object instance,
     corto_object observable)
@@ -1073,7 +1073,7 @@ error:
 /* $end */
 }
 
-corto_bool _corto_observer_observing(
+bool _corto_observer_observing(
     corto_observer this,
     corto_object instance,
     corto_object observable)
@@ -1122,7 +1122,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_observer_unobserve(
+int16_t _corto_observer_unobserve(
     corto_observer this,
     corto_object instance,
     corto_object observable)

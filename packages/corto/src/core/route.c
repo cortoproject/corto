@@ -20,7 +20,7 @@ static corto_routerimpl corto_route_findRouterImpl(corto_route this) {
 }
 /* $end */
 
-corto_int16 _corto_route_construct(
+int16_t _corto_route_construct(
     corto_route this)
 {
 /* $begin(corto/core/route/construct) */
@@ -117,7 +117,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_route_init(
+int16_t _corto_route_init(
     corto_route this)
 {
 /* $begin(corto/core/route/init) */

@@ -8,7 +8,7 @@
 
 #include <corto/core/core.h>
 
-corto_int16 _corto_loader_construct(
+int16_t _corto_loader_construct(
     corto_loader this)
 {
 /* $begin(corto/core/loader/construct) */
@@ -28,7 +28,7 @@ corto_int16 _corto_loader_construct(
 /* $end */
 }
 
-corto_void _corto_loader_destruct(
+void _corto_loader_destruct(
     corto_loader this)
 {
 /* $begin(corto/core/loader/destruct) */

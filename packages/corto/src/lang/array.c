@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_array_construct(
+int16_t _corto_array_construct(
     corto_array this)
 {
 /* $begin(corto/lang/array/construct) */
@@ -73,7 +73,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_array_destruct(
+void _corto_array_destruct(
     corto_array this)
 {
 /* $begin(corto/lang/array/destruct) */
@@ -85,7 +85,7 @@ corto_void _corto_array_destruct(
 /* $end */
 }
 
-corto_int16 _corto_array_init(
+int16_t _corto_array_init(
     corto_array this)
 {
 /* $begin(corto/lang/array/init) */

@@ -53,11 +53,11 @@ CORTO_EXPORT corto_equalityKind _corto_native_typeCompare(corto_native_type dst,
 /* int32seq */
 #define corto_int32seqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
-    corto_int32 elem;\
+    int32_t elem;\
     for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
 
-CORTO_EXPORT corto_int32* corto_int32seqAppend(corto_int32seq *seq, corto_int32 element);
-CORTO_EXPORT corto_int32* corto_int32seqAppendAlloc(corto_int32seq *seq);
+CORTO_EXPORT int32_t* corto_int32seqAppend(corto_int32seq *seq, int32_t element);
+CORTO_EXPORT int32_t* corto_int32seqAppendAlloc(corto_int32seq *seq);
 CORTO_EXPORT void corto_int32seqSize(corto_int32seq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_int32seqClear(corto_int32seq *seq);
 
@@ -148,11 +148,11 @@ CORTO_EXPORT void corto_stringseqClear(corto_stringseq *seq);
 /* wordseq */
 #define corto_wordseqForeach(seq, elem) \
     corto_uint32 elem##_iter;\
-    corto_word elem;\
+    uintptr_t elem;\
     for(elem##_iter = 0; (elem##_iter < (seq).length) ? elem = (seq).buffer[elem##_iter], TRUE : FALSE; elem##_iter++)\
 
-CORTO_EXPORT corto_word* corto_wordseqAppend(corto_wordseq *seq, corto_word element);
-CORTO_EXPORT corto_word* corto_wordseqAppendAlloc(corto_wordseq *seq);
+CORTO_EXPORT uintptr_t* corto_wordseqAppend(corto_wordseq *seq, uintptr_t element);
+CORTO_EXPORT uintptr_t* corto_wordseqAppendAlloc(corto_wordseq *seq);
 CORTO_EXPORT void corto_wordseqSize(corto_wordseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_wordseqClear(corto_wordseq *seq);
 

@@ -27,7 +27,7 @@ error:
 
 /* $end */
 
-corto_int16 _corto_unit_construct(
+int16_t _corto_unit_construct(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/construct) */
@@ -94,7 +94,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_unit_destruct(
+void _corto_unit_destruct(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/destruct) */
@@ -104,7 +104,7 @@ corto_void _corto_unit_destruct(
 /* $end */
 }
 
-corto_int16 _corto_unit_init(
+int16_t _corto_unit_init(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/init) */

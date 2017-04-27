@@ -163,7 +163,7 @@ corto_string _corto_secure_key_authenticate_v(
 /* $end */
 }
 
-corto_int16 _corto_secure_key_construct(
+int16_t _corto_secure_key_construct(
     corto_secure_key this)
 {
 /* $begin(corto/secure/key/construct) */
@@ -186,7 +186,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_secure_key_destruct(
+void _corto_secure_key_destruct(
     corto_secure_key this)
 {
 /* $begin(corto/secure/key/destruct) */

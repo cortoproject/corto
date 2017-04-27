@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_bool _corto_iterator_castable_v(
+bool _corto_iterator_castable_v(
     corto_iterator this,
     corto_type type)
 {
@@ -17,7 +17,7 @@ corto_bool _corto_iterator_castable_v(
 /* $end */
 }
 
-corto_bool _corto_iterator_compatible_v(
+bool _corto_iterator_compatible_v(
     corto_iterator this,
     corto_type type)
 {
@@ -32,7 +32,7 @@ corto_bool _corto_iterator_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_iterator_init(
+int16_t _corto_iterator_init(
     corto_iterator this)
 {
 /* $begin(corto/lang/iterator/init) */

@@ -28,12 +28,12 @@ corto_string _corto_secure_key_authenticate(
 
 #define corto_secure_key_construct(_this) _corto_secure_key_construct(corto_secure_key(_this))
 CORTO_EXPORT
-corto_int16 _corto_secure_key_construct(
+int16_t _corto_secure_key_construct(
     corto_secure_key _this);
 
 #define corto_secure_key_destruct(_this) _corto_secure_key_destruct(corto_secure_key(_this))
 CORTO_EXPORT
-corto_void _corto_secure_key_destruct(
+void _corto_secure_key_destruct(
     corto_secure_key _this);
 
 #define corto_secure_lock_authorize_v(_this, token, action) _corto_secure_lock_authorize_v(corto_secure_lock(_this), token, action)
@@ -52,12 +52,12 @@ corto_secure_accessKind _corto_secure_lock_authorize(
 
 #define corto_secure_lock_construct(_this) _corto_secure_lock_construct(corto_secure_lock(_this))
 CORTO_EXPORT
-corto_int16 _corto_secure_lock_construct(
+int16_t _corto_secure_lock_construct(
     corto_secure_lock _this);
 
 #define corto_secure_lock_destruct(_this) _corto_secure_lock_destruct(corto_secure_lock(_this))
 CORTO_EXPORT
-corto_void _corto_secure_lock_destruct(
+void _corto_secure_lock_destruct(
     corto_secure_lock _this);
 
 #ifdef __cplusplus

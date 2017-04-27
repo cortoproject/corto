@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_list_construct(
+int16_t _corto_list_construct(
     corto_list this)
 {
 /* $begin(corto/lang/list/construct) */
@@ -26,7 +26,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_list_init(
+int16_t _corto_list_init(
     corto_list this)
 {
 /* $begin(corto/lang/list/init) */

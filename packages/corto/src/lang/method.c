@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_method_construct(
+int16_t _corto_method_construct(
     corto_method this)
 {
 /* $begin(corto/lang/method/construct) */
@@ -24,7 +24,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_method_init(
+int16_t _corto_method_init(
     corto_method this)
 {
 /* $begin(corto/lang/method/init) */

@@ -4,8 +4,9 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/native/native.h>
 #include <corto/c/c.h>
+#include <corto/native/_load.h>
+
 corto_native_type _corto_native_typeCreate(corto_string name) {
     corto_native_type _this;
     _this = corto_native_type(corto_declare(corto_native_type_o));
@@ -100,26 +101,26 @@ corto_equalityKind _corto_native_typeCompare(corto_native_type dst, corto_native
     return corto_compare(dst, src);
 }
 
-corto_int32* corto_int32seqAppend(corto_int32seq *seq, corto_int32 element) {
+int32_t* corto_int32seqAppend(corto_int32seq *seq, int32_t element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = (corto_int32*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
+    seq->buffer = (int32_t*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     corto_copyp(&seq->buffer[seq->length-1], corto_int32_o, &element);
     return &seq->buffer[seq->length-1];
 }
 
-corto_int32* corto_int32seqAppendAlloc(corto_int32seq *seq) {
+int32_t* corto_int32seqAppendAlloc(corto_int32seq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = (corto_int32*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
+    seq->buffer = (int32_t*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_int32seqSize(corto_int32seq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = (corto_int32*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
+    seq->buffer = (int32_t*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     if (length > seq->length) {
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
     }
@@ -425,26 +426,26 @@ void corto_stringseqClear(corto_stringseq *seq) {
     corto_stringseqSize(seq, 0);
 }
 
-corto_word* corto_wordseqAppend(corto_wordseq *seq, corto_word element) {
+uintptr_t* corto_wordseqAppend(corto_wordseq *seq, uintptr_t element) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = (corto_word*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_word_o))));
+    seq->buffer = (uintptr_t*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_word_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     corto_copyp(&seq->buffer[seq->length-1], corto_word_o, &element);
     return &seq->buffer[seq->length-1];
 }
 
-corto_word* corto_wordseqAppendAlloc(corto_wordseq *seq) {
+uintptr_t* corto_wordseqAppendAlloc(corto_wordseq *seq) {
     corto_uint32 size;
     seq->length++;
-    seq->buffer = (corto_word*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_word_o))));
+    seq->buffer = (uintptr_t*)corto_realloc(seq->buffer, seq->length * (size=corto_type_sizeof(corto_type(corto_word_o))));
     memset(&seq->buffer[seq->length-1], 0, size);
     return &seq->buffer[seq->length-1];
 }
 
 void corto_wordseqSize(corto_wordseq *seq, corto_uint32 length) {
     corto_uint32 size;
-    seq->buffer = (corto_word*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_word_o))));
+    seq->buffer = (uintptr_t*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_word_o))));
     if (length > seq->length) {
         memset(&seq->buffer[seq->length], 0, size * (length - seq->length));
     }

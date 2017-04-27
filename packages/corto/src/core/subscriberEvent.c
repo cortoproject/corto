@@ -12,7 +12,7 @@
 #include "_object.h"
 /* $end */
 
-corto_int16 _corto_subscriberEvent_construct(
+int16_t _corto_subscriberEvent_construct(
     corto_subscriberEvent this)
 {
 /* $begin(corto/core/subscriberEvent/construct) */
@@ -21,7 +21,7 @@ corto_int16 _corto_subscriberEvent_construct(
 /* $end */
 }
 
-corto_void _corto_subscriberEvent_destruct(
+void _corto_subscriberEvent_destruct(
     corto_subscriberEvent this)
 {
 /* $begin(corto/core/subscriberEvent/destruct) */
@@ -32,7 +32,7 @@ corto_void _corto_subscriberEvent_destruct(
 /* $end */
 }
 
-corto_void _corto_subscriberEvent_handle_v(
+void _corto_subscriberEvent_handle_v(
     corto_subscriberEvent this)
 {
 /* $begin(corto/core/subscriberEvent/handle) */

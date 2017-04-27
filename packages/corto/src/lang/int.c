@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_int16 _corto_int_init(
+int16_t _corto_int_init(
     corto_int this)
 {
 /* $begin(corto/lang/int/init) */

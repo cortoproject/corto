@@ -8,7 +8,7 @@
 
 #include <corto/lang/lang.h>
 
-corto_bool _corto_delegate_castable_v(
+bool _corto_delegate_castable_v(
     corto_delegate this,
     corto_type type)
 {
@@ -17,7 +17,7 @@ corto_bool _corto_delegate_castable_v(
 /* $end */
 }
 
-corto_bool _corto_delegate_compatible_v(
+bool _corto_delegate_compatible_v(
     corto_delegate this,
     corto_type type)
 {
@@ -56,7 +56,7 @@ corto_bool _corto_delegate_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_delegate_construct(
+int16_t _corto_delegate_construct(
     corto_function object)
 {
 /* $begin(corto/lang/delegate/construct) */
@@ -97,7 +97,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_delegate_init(
+int16_t _corto_delegate_init(
     corto_delegate this)
 {
 /* $begin(corto/lang/delegate/init) */
@@ -133,7 +133,7 @@ corto_bool corto_delegate_matchParameter(
     }
 }
 /* $end */
-corto_bool _corto_delegate_instanceof(
+bool _corto_delegate_instanceof(
     corto_delegate this,
     corto_object object)
 {
