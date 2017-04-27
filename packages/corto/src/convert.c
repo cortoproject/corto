@@ -30,7 +30,8 @@ typedef corto_int16 bin16_t;
 typedef corto_int32 bin32_t;
 typedef corto_int64 bin64_t;
 typedef corto_word word_t;
-typedef corto_bool bool_t;
+typedef bool bool_t;
+typedef bool char_t;
 
 /* Conversions between numeric types */
 #define CORTO_CONVERT_NUM(typeFrom, typeTo) \
@@ -341,7 +342,7 @@ error:
     CORTO_CONVERT_NUM(fromType,uintptr)\
     CORTO_CONVERT_NUM(fromType,float32)\
     CORTO_CONVERT_NUM(fromType,float64)\
-    CORTO_CONVERT_BOOL(fromType, bool)\
+    CORTO_CONVERT_BOOL(fromType,bool)\
     CORTO_CONVERT_TO_STR(fromType, fmt)
 
 /* Conversion functions for integer types */

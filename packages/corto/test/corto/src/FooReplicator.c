@@ -12,7 +12,7 @@ corto_void _test_FooReplicator_onInvoke(
     test_FooReplicator this,
     corto_object instance,
     corto_function proc,
-    corto_word argptrs)
+    uintptr_t argptrs)
 {
 /* $begin(test/FooReplicator/onInvoke) */
 

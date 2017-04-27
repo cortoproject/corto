@@ -119,6 +119,9 @@ corto_int16 _corto_type_construct(
     default:
         break;
     }
+    if (this->kind == CORTO_ANY) {
+        this->flags |= CORTO_TYPE_NEEDS_INIT;
+    }
     return 0;
 /* $end */
 }

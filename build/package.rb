@@ -18,7 +18,7 @@ INSTALL = "lib/corto" if not defined? INSTALL
 NOCORTO = false if not defined? NOCORTO
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
 COMPONENTS = [] if not defined? COMPONENTS
-
+APP = false if not defined? APP
 # Private variables
 GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
 GENERATED_HEADERS = [] if not defined? GENERATED_HEADERS
@@ -122,6 +122,11 @@ if NOCORTO == false then
         "include/_load.h" <<
         "include/_type.h" <<
         "include/_project.h"
+
+      if LOCAL == true or APP == true then
+        GENERATED_SOURCES << ".corto/_api.#{EXT}"
+        GENERATED_HEADERS << "include/_api.h"
+      end
     else
       GENERATED_SOURCES <<
         ".corto/_api.#{EXT}" <<

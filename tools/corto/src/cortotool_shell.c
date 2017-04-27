@@ -569,9 +569,8 @@ int cxsh_getErrorLocation(corto_string str) {
 
 
 static void cxsh_goodbye(char *cmd) {
-    char *ptr;
     int bs;
-    corto_id partial, prompt;
+    corto_id prompt;
     cxsh_prompt(TRUE, prompt);
 
     for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {

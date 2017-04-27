@@ -415,7 +415,11 @@ def loadPackageConfigs()
       end
     end
 
-    lang_buildscript = "#{location}/#{LANGUAGE}/build.rb"
+    if LANGUAGE == "c4cpp" then
+      lang_buildscript = "#{location}/c/build.rb"
+    else
+      lang_buildscript = "#{location}/#{LANGUAGE}/build.rb"
+    end
     if not NOCORTO and defined? LANGUAGE and LANGUAGE != "none" then
       if File.exists? lang_buildscript then
         require "#{lang_buildscript}"

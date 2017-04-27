@@ -90,7 +90,7 @@ corto_void _test_Application_tc_appCortoDependencyNoCorto(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -168,7 +168,7 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -187,7 +187,7 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -289,7 +289,6 @@ corto_void _test_Application_tc_appDef(
 
     test_assert(corto_fileTest("Project/include"));
     test_assert(corto_fileTest("Project/include/Project.h"));
-    test_assert(corto_fileTest("Project/include/Point.h"));
     test_assert(corto_fileTest("Project/src/Point.c"));
 
 /* $end */
@@ -529,7 +528,7 @@ corto_void _test_Application_tc_appNoCortoDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -548,7 +547,7 @@ corto_void _test_Application_tc_appNoCortoDependency(
             "bar",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -608,7 +607,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -627,7 +626,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -646,7 +645,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 

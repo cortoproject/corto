@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_NestedInitFailInTier1_init(
+int16_t _test_NestedInitFailInTier1_init(
     test_NestedInitFailInTier1* this)
 {
 /* $begin(test/NestedInitFailInTier1/init) */

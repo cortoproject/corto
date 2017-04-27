@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_AttrConstructorTest_construct(
+int16_t _test_AttrConstructorTest_construct(
     test_AttrConstructorTest this)
 {
 /* $begin(test/AttrConstructorTest/construct) */

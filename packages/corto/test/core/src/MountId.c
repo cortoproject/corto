@@ -51,8 +51,11 @@ corto_void _test_MountId_tc_idTypeFilter(
 
     /* Create object with a type that does not match the id mount */
     corto_object o = corto_declareChild(root_o, NULL, corto_float32_o);
-    test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "no available id providers (id = 'null')");
+    test_assert(o != NULL);
+
+    /* Validate that this id was not obtained by IdMount */
+    test_assert(strcmp(corto_idof(o), "some_unique_id"));
+    corto_delete(o);
 
     o = corto_declareChild(root_o, NULL, corto_int32_o);
     test_assert(o != NULL);
@@ -68,8 +71,11 @@ corto_void _test_MountId_tc_noIdAvailable(
 /* $begin(test/MountId/tc_noIdAvailable) */
 
     corto_object o = corto_declareChild(root_o, NULL, corto_void_o);
-    test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "no available id providers (id = 'null')");
+    test_assert(o != NULL);
 
+    /* Validate that this id was not obtained by IdMount */
+    test_assert(strcmp(corto_idof(o), "some_unique_id"));
+    corto_delete(o);
+    
 /* $end */
 }

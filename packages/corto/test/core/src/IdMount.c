@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_IdMount_construct(
+int16_t _test_IdMount_construct(
     test_IdMount this)
 {
 /* $begin(test/IdMount/construct) */

@@ -59,6 +59,7 @@ CORTO_CLASS_DEF(g_generator) {
 
     g_object* current;
     corto_bool inWalk;
+    corto_ll anonymousObjects;
 };
 
 typedef struct g_fileSnippet {

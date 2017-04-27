@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_StringReplicator_construct(
+int16_t _test_StringReplicator_construct(
     test_StringReplicator this)
 {
 /* $begin(test/StringReplicator/construct) */

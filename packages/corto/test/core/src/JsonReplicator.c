@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_JsonReplicator_construct(
+int16_t _test_JsonReplicator_construct(
     test_JsonReplicator this)
 {
 /* $begin(test/JsonReplicator/construct) */

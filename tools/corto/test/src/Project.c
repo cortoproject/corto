@@ -277,7 +277,7 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -356,7 +356,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -375,7 +375,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1171,7 +1171,7 @@ corto_void _test_Project_tc_packageNoCorto(
             "package",
             "Project",
             "--silent",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1250,7 +1250,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1270,7 +1270,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(
             "bar",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1332,7 +1332,7 @@ corto_void _test_Project_tc_packageNoCortoLocal(
             "package",
             "foo",
             "--silent",
-            "--nocorto",
+            "--unmanaged",
             "--local",
             NULL
         });
@@ -1366,7 +1366,7 @@ corto_void _test_Project_tc_packageNoCortoNested(
             "package",
             "corto::Project",
             "--silent",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1445,7 +1445,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1464,7 +1464,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1484,7 +1484,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1575,13 +1575,13 @@ corto_void _test_Project_tc_packageNodef(
     test_assert(corto_fileTest("Project/test/src/MySuite.c"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/_api.c"));
     test_assert(!corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
@@ -1652,13 +1652,13 @@ corto_void _test_Project_tc_packageNodefC4cpp(
     test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/_api.cpp"));
     test_assert(!corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
@@ -1728,13 +1728,13 @@ corto_void _test_Project_tc_packageNodefLocal(
     test_assert(corto_fileTest("Project/test/src/MySuite.c"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/_api.c"));
     test_assert(corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
@@ -1806,7 +1806,6 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
     test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
@@ -1850,7 +1849,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
             "create",
             "package",
             "Project",
-            "--nocorto",
+            "--unmanaged",
             "--silent",
             "--notest",
             NULL
@@ -1939,120 +1938,6 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
     test_assert(!corto_fileTest(
       "$CORTO_TARGET/include/corto/%s.%s/Project/MyInclude.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
-
-/* $end */
-}
-
-corto_void _test_Project_tc_publishNotag(
-    test_Project this)
-{
-/* $begin(test/Project/tc_publishNotag) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "Project",
-            "--silent",
-            "--local",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    corto_string v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(v != NULL);
-    test_assert(!strcmp(v, "0.0.0\n"));
-    corto_dealloc(v);
-
-    /* Test patch version increase */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "publish",
-            "Project",
-            "patch",
-            "--silent",
-            "--notag",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(v != NULL);
-    test_assert(!strcmp(v, "0.0.1\n"));
-    corto_dealloc(v);
-
-    /* Test minor version increase */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "publish",
-            "Project",
-            "minor",
-            "--silent",
-            "--notag",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(v != NULL);
-    test_assert(!strcmp(v, "0.1.1\n"));
-    corto_dealloc(v);
-
-    /* Test major version increase */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "publish",
-            "Project",
-            "major",
-            "--silent",
-            "--notag",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(!strcmp(v, "1.1.1\n"));
-    corto_dealloc(v);
 
 /* $end */
 }

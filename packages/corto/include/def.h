@@ -52,6 +52,15 @@
 extern "C" {
 #endif
 
+#ifndef __cplusplus
+#undef bool
+#undef true
+#undef false
+#define bool char
+#define false 0
+#define true !false
+#endif
+
 #ifndef NULL
 #define NULL (0x0)
 #endif

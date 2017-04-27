@@ -9,8 +9,8 @@
 #include <include/test.h>
 
 corto_void _test_functionToResolve(
-    corto_int32 a,
-    corto_int32 b)
+    int32_t a,
+    int32_t b)
 {
 /* $begin(test/functionToResolve) */
 
@@ -30,7 +30,7 @@ corto_void _test_ol_any__test_Color(
 }
 
 corto_void _test_ol_any_bool(
-    corto_bool a)
+    bool a)
 {
 /* $begin(test/ol_any(bool a)) */
 
@@ -40,7 +40,7 @@ corto_void _test_ol_any_bool(
 }
 
 corto_void _test_ol_any_char(
-    corto_char a)
+    char a)
 {
 /* $begin(test/ol_any(char a)) */
 
@@ -50,7 +50,7 @@ corto_void _test_ol_any_char(
 }
 
 corto_void _test_ol_any_float32(
-    corto_float32 a)
+    float a)
 {
 /* $begin(test/ol_any(float32 a)) */
 
@@ -60,7 +60,7 @@ corto_void _test_ol_any_float32(
 }
 
 corto_void _test_ol_any_int32(
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/ol_any(int32 a)) */
 
@@ -90,7 +90,7 @@ corto_void _test_ol_any_string(
 }
 
 corto_void _test_ol_bool(
-    corto_bool a)
+    bool a)
 {
 /* $begin(test/ol_bool) */
 
@@ -120,7 +120,7 @@ corto_void _test_ol_inherit__test_Dog(
 }
 
 corto_void _test_ol_int(
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/ol_int) */
 
@@ -130,7 +130,7 @@ corto_void _test_ol_int(
 }
 
 corto_void _test_ol_null_bool(
-    corto_bool a)
+    bool a)
 {
 /* $begin(test/ol_null(bool a)) */
 
@@ -160,7 +160,7 @@ corto_void _test_ol_null_string(
 }
 
 corto_void _test_ol_num_float64(
-    corto_float64 a)
+    double a)
 {
 /* $begin(test/ol_num(float64 a)) */
 
@@ -170,7 +170,7 @@ corto_void _test_ol_num_float64(
 }
 
 corto_void _test_ol_num_int32(
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/ol_num(int32 a)) */
 
@@ -200,7 +200,7 @@ corto_void _test_ol_string(
 }
 
 corto_void _test_ol_uint(
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/ol_uint) */
 
@@ -210,7 +210,7 @@ corto_void _test_ol_uint(
 }
 
 corto_void _test_ol_wildcard_float32_string(
-    corto_float32 a,
+    float a,
     corto_string b)
 {
 /* $begin(test/ol_wildcard(float32 a,string b)) */
@@ -221,7 +221,7 @@ corto_void _test_ol_wildcard_float32_string(
 }
 
 corto_void _test_ol_wildcard_int32_string(
-    corto_int32 a,
+    int32_t a,
     corto_string b)
 {
 /* $begin(test/ol_wildcard(int32 a,string b)) */

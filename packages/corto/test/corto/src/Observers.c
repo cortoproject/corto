@@ -11,7 +11,7 @@
 corto_void _test_Observers_customSignatureObserver(
     test_Observers this,
     corto_eventMask event,
-    corto_int32 *observable,
+    int32_t *observable,
     corto_observer observer)
 {
 /* $begin(test/Observers/customSignatureObserver) */

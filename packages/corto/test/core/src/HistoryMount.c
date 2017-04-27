@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_HistoryMount_construct(
+int16_t _test_HistoryMount_construct(
     test_HistoryMount this)
 {
 /* $begin(test/HistoryMount/construct) */

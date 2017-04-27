@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_SinkMount_construct(
+int16_t _test_SinkMount_construct(
     test_SinkMount this)
 {
 /* $begin(test/SinkMount/construct) */

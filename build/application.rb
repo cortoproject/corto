@@ -8,6 +8,7 @@ INSTALL = "bin/cortobin"
 ARTEFACT_PREFIX = "" if not defined? ARTEFACT_PREFIX
 ARTEFACT_EXT = "" if not defined? ARTEFACT_EXT
 PP_ATTR << "app=true"
+APP = true
 
 if not defined? PACKAGE then
     if defined? TARGET then

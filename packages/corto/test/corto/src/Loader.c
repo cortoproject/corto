@@ -163,6 +163,10 @@ corto_void _test_Loader_tc_loadDepOnSibling(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
+    sig = corto_proccmd("corto rebuild tier1 --silent", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
     sig = corto_proccmd("corto tier1", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
@@ -172,6 +176,10 @@ corto_void _test_Loader_tc_loadDepOnSibling(
     test_assert(sig == 0);
 
     sig = corto_proccmd("corto clean tier2_B --silent", &ret);
+    test_assert(ret == 0);
+    test_assert(sig == 0);
+
+    sig = corto_proccmd("corto clean tier1 --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 

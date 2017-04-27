@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_AutoResumeSinkMount_construct(
+int16_t _test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
 /* $begin(test/AutoResumeSinkMount/construct) */
@@ -193,11 +193,11 @@ corto_resultIter _test_AutoResumeSinkMount_onRequest(
 /* $end */
 }
 
-corto_word _test_AutoResumeSinkMount_onSubscribe(
+uintptr_t _test_AutoResumeSinkMount_onSubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onSubscribe) */
     corto_request r = {.parent = parent, .expr = expr};
@@ -224,7 +224,7 @@ corto_void _test_AutoResumeSinkMount_onUnsubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onUnsubscribe) */
     corto_request r = {.parent = parent, .expr = expr};

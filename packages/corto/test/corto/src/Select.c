@@ -11,8 +11,8 @@
 corto_resultList _test_Select_collect(
     corto_string scope,
     corto_string expr,
-    corto_uint64 offset,
-    corto_uint64 limit)
+    uint64_t offset,
+    uint64_t limit)
 {
 /* $begin(test/Select/collect) */
     corto_selectFluent r = corto_select(scope, expr);
@@ -42,7 +42,7 @@ error:
 /* $end */
 }
 
-corto_bool _test_Select_hasObject(
+bool _test_Select_hasObject(
     corto_resultList items,
     corto_string parent,
     corto_string name,

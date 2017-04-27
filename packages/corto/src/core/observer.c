@@ -320,7 +320,8 @@ static void corto_updateSubscriptionById(char *id) {
 static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventMask mask, corto_object observable) {
     /* If there are no subscribers, then there are no mounts that are potentially
      * interested in subscriptions */
-    if (corto_subscribers_count) {
+
+    if (corto_subscribers_count && corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
         if (observerMask & CORTO_ON_TREE) {
             if (mask == CORTO_ON_DEFINE) {
                 corto_id id;
@@ -1012,22 +1013,24 @@ corto_int16 _corto_observer_observe(
         this->enabled = TRUE;
 
         /* Let mounts know of observer */
-        corto_iter it;
-        corto_id observableId;
-        corto_fullpath(observableId, observable);
-        corto_int16 ret = corto_select(
-            observableId,
-            mask & CORTO_ON_SELF ? "." :
-            mask & CORTO_ON_SCOPE ? "/" : "//")
-          .instance(this)
-          .subscribe(&it);
-        if (ret) {
-            corto_seterr("observer: failed to notify mounts of subscription");
-            goto error;
-        }
+        if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+            corto_iter it;
+            corto_id observableId;
+            corto_fullpath(observableId, observable);
+            corto_int16 ret = corto_select(
+                observableId,
+                mask & CORTO_ON_SELF ? "." :
+                mask & CORTO_ON_SCOPE ? "/" : "//")
+              .instance(this)
+              .subscribe(&it);
+            if (ret) {
+                corto_seterr("observer: failed to notify mounts of subscription");
+                goto error;
+            }
 
-        /* TODO: use data from select to align observer */
-        while (corto_iterHasNext(&it)) corto_iterNext(&it);
+            /* TODO: use data from select to align observer */
+            while (corto_iterHasNext(&it)) corto_iterNext(&it);
+        }
     }
 
     /* From this point onwards the old observer arrays are no longer accessible.
@@ -1221,12 +1224,14 @@ corto_int16 _corto_observer_unobserve(
             this->enabled = FALSE;
         }
         
-        corto_id observableId;
-        corto_fullpath(observableId, observable);
-        corto_select(observableId,
-            mask & CORTO_ON_SELF ? "." :
-            mask & CORTO_ON_SCOPE ? "/" : "//")
-           .instance(this).unsubscribe();
+        if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+            corto_id observableId;
+            corto_fullpath(observableId, observable);
+            corto_select(observableId,
+                mask & CORTO_ON_SELF ? "." :
+                mask & CORTO_ON_SCOPE ? "/" : "//")
+               .instance(this).unsubscribe();
+       }
     }
 
     /* See comments in observe */

@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_Foo_construct(
+int16_t _test_Foo_construct(
     test_Foo this)
 {
 /* $begin(test/Foo/construct) */
@@ -38,7 +38,7 @@ corto_void _test_Foo_destruct(
 /* $end */
 }
 
-corto_int16 _test_Foo_init(
+int16_t _test_Foo_init(
     test_Foo this)
 {
 /* $begin(test/Foo/init) */

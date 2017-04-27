@@ -10,7 +10,7 @@
 
 corto_void _test_MethodTester_onearg(
     test_MethodTester this,
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/MethodTester/onearg) */
 
@@ -32,7 +32,7 @@ corto_void _test_MethodTester_overload__test_MethodTester(
 
 corto_void _test_MethodTester_overload_int32(
     test_MethodTester this,
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/MethodTester/overload(int32 a)) */
 
@@ -43,8 +43,8 @@ corto_void _test_MethodTester_overload_int32(
 
 corto_void _test_MethodTester_overload_int32_int32(
     test_MethodTester this,
-    corto_int32 a,
-    corto_int32 b)
+    int32_t a,
+    int32_t b)
 {
 /* $begin(test/MethodTester/overload(int32 a,int32 b)) */
 
@@ -76,8 +76,8 @@ corto_void _test_MethodTester_simple(
 
 corto_void _test_MethodTester_twoargs(
     test_MethodTester this,
-    corto_int32 a,
-    corto_int32 b)
+    int32_t a,
+    int32_t b)
 {
 /* $begin(test/MethodTester/twoargs) */
 
@@ -98,7 +98,7 @@ corto_void _test_MethodTester_virtualOverload__v(
 
 corto_void _test_MethodTester_virtualOverload_int32(
     test_MethodTester this,
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/MethodTester/virtualOverload(int32 a)) */
 

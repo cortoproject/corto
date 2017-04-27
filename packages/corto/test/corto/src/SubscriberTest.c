@@ -34,7 +34,7 @@ corto_void _test_SubscriberTest_clear(
 /* $end */
 }
 
-corto_int16 _test_SubscriberTest_construct(
+int16_t _test_SubscriberTest_construct(
     test_SubscriberTest this)
 {
 /* $begin(test/SubscriberTest/construct) */

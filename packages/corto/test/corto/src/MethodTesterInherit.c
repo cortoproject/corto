@@ -43,7 +43,7 @@ corto_void _test_MethodTesterInherit_simple(
 
 corto_void _test_MethodTesterInherit_virtualOverload(
     test_MethodTesterInherit this,
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/MethodTesterInherit/virtualOverload) */
 

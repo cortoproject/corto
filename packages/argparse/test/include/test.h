@@ -18,21 +18,13 @@
 /* $end */
 
 #include <include/_type.h>
+#include <include/_interface.h>
 #include <include/_load.h>
 #include <include/_api.h>
 
 /* $body() */
 /* Enter code that requires types here */
 /* $end */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <include/Args.h>
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

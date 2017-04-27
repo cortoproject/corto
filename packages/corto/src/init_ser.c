@@ -7,6 +7,14 @@
 
 #include "corto/corto.h"
 
+corto_int16 corto_ser_initAny(corto_serializer s, corto_value* v, void* userData) {
+    corto_any *ptr = corto_value_getPtr(v);
+    CORTO_UNUSED(s);
+    CORTO_UNUSED(userData);
+    ptr->owner = TRUE;
+    return 0;
+}
+
 corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* userData) {
     corto_type t;
     void* o;
@@ -70,7 +78,7 @@ struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKi
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.program[CORTO_COLLECTION] = corto_ser_initCollection;
-    s.program[CORTO_ANY] = NULL;
+    s.program[CORTO_ANY] = corto_ser_initAny;
     s.metaprogram[CORTO_MEMBER] = corto_ser_initMember;
 
     return s;

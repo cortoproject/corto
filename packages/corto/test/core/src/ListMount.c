@@ -12,7 +12,7 @@
 #include "fnmatch.h"
 /* $end */
 
-corto_int16 _test_ListMount_construct(
+int16_t _test_ListMount_construct(
     test_ListMount this)
 {
 /* $begin(test/ListMount/construct) */

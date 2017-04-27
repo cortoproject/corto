@@ -53,6 +53,8 @@ g_generator g_new(corto_string name, corto_string language) {
     result->current = NULL;
     result->inWalk = FALSE;
 
+    result->anonymousObjects = NULL;
+
     return result;
 }
 
@@ -355,12 +357,17 @@ void g_free(g_generator g) {
         g->imports = NULL;
     }
 
+    if (g->anonymousObjects) {
+        corto_llFree(g->anonymousObjects);
+    }
+
     if (g->name) {
         corto_dealloc(g->name);
     }
     if (g->language) {
         corto_dealloc(g->language);
     }
+
     corto_dealloc(g);
 }
 
@@ -793,36 +800,63 @@ corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind k
 
     /* TODO: prefix i.c.m. !CORTO_GENERATOR_ID_DEFAULT & nested classes i.c.m. !CORTO_GENERATOR_ID_DEFAULT */
 
-    /* If prefix is found, replace the scope up until the found object with the prefix */
-    if (prefix && prefix->prefix) {
-        if (strcmp(prefix->prefix, ".")) {
-            corto_uint32 count;
-            corto_object scopes[CORTO_MAX_SCOPE_DEPTH];
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
+        /* If prefix is found, replace the scope up until the found object with the prefix */
+        if (prefix && prefix->prefix) {
+            if (strcmp(prefix->prefix, ".")) {
+                corto_uint32 count;
+                corto_object scopes[CORTO_MAX_SCOPE_DEPTH];
 
-            /* Obtain list of scopes from matched to object */
-            count = 0;
-            scopes[count] = o;
-            while(scopes[count] != match) {
-                scopes[count+1] = corto_parentof(scopes[count]);
-                count++;
-            }
+                /* Obtain list of scopes from matched to object */
+                count = 0;
+                scopes[count] = o;
+                while(scopes[count] != match) {
+                    scopes[count+1] = corto_parentof(scopes[count]);
+                    count++;
+                }
 
-            /* Paste in prefix */
-            strcpy(_id, prefix->prefix);
-            while(count) {
-                count--;
-                strcat(_id, "/");
-                strcat(_id, corto_idof(scopes[count]));
+                /* Paste in prefix */
+                strcpy(_id, prefix->prefix);
+                while(count) {
+                    count--;
+                    strcat(_id, "/");
+                    strcat(_id, corto_idof(scopes[count]));
+                }
+            } else {
+                corto_path(_id, g_getCurrent(g), o, "/");
             }
+        /* If no prefix is found for object, just use the scoped identifier */
         } else {
-            corto_path(_id, g_getCurrent(g), o, "/");
+            corto_fullpath(_id, o);
         }
-    /* If no prefix is found for object, just use the scoped identifier */
-    } else {
-        corto_fullpath(_id, o);
-    }
 
-    g_oidTransform(g, o, _id, kind);
+        g_oidTransform(g, o, _id, kind);
+    } else {
+        corto_uint32 count = 0;
+        if (!g->anonymousObjects) {
+            g->anonymousObjects = corto_llNew();
+        }
+        corto_iter it = corto_llIter(g->anonymousObjects);
+        while (corto_iterHasNext(&it)) {
+            corto_object e = corto_iterNext(&it);
+            if (e == o) {
+                break;
+            }
+            count ++;
+        }
+        if (count == corto_llSize(g->anonymousObjects)) {
+            corto_llAppend(g->anonymousObjects, o);
+        }
+
+        corto_object cur = g_getCurrent(g);
+        if (corto_instanceof(corto_package_o, cur)) {
+            corto_id packageId;
+            g_fullOid(g, cur, packageId);
+            sprintf(_id, "anonymous_%s_%u", packageId, count);
+        } else {
+            sprintf(_id, "anonymous_%u", count);
+        }
+    } 
 
     if (g->id_action) {
         g->id_action(_id, id);
