@@ -56,7 +56,7 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
 }
 
 /* Serialize dependencies on references */
-corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* userData) {
+corto_int16 corto_genDepReference(corto_walk_opt* s, corto_value* info, void* userData) {
     corto_object o = *(corto_object*)corto_value_ptrof(info);
     g_depWalk_t data = userData;
 
@@ -136,14 +136,14 @@ error:
 }
 
 /* Dependency serializer */
-struct corto_serializer_s corto_genDepSerializer(void) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_genDepSerializer(void) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
     s.reference = corto_genDepReference;
     s.access = CORTO_LOCAL;
     s.accessKind = CORTO_NOT;
-    s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
+    s.traceKind = CORTO_WALK_TRACE_ON_FAIL;
 
     return s;
 }
@@ -168,7 +168,7 @@ static int corto_genDepBuildProc(corto_function f, struct g_depWalk_t* data) {
 int corto_genDepBuildAction(corto_object o, void* userData) {
     g_itemWalk_t data;
     struct g_depWalk_t walkData;
-    struct corto_serializer_s s;
+    corto_walk_opt s;
     int result;
     corto_object parent = NULL;
 
@@ -228,7 +228,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
 
         /* Insert dependencies on references in the object-value */
         s = corto_genDepSerializer();
-        if (corto_serialize(&s, o, &walkData)) {
+        if (corto_walk(&s, o, &walkData)) {
             goto error;
         }
         data->anonymousObjects = walkData.anonymousObjects;

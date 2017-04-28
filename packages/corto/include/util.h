@@ -37,6 +37,12 @@ extern "C" {
 
 #define CORTO_ISNAN(x) ((x) != (x))
 
+/* Macros for memory allocation functions */
+#define corto_calloc(n) calloc(n, 1)
+#define corto_alloc(n) malloc(n)
+#define corto_dealloc free
+#define corto_realloc realloc
+
 /* In place replacelemt of '::' with '/' */
 CORTO_EXPORT corto_string corto_pathFromFullname(corto_id buffer);
 

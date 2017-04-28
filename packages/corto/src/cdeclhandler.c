@@ -1,5 +1,5 @@
 
-#include "corto/cdeclhandler.h"
+#include "cdeclhandler.h"
 #include "_object.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */

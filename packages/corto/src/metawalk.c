@@ -10,11 +10,11 @@
 #include "_object.h" /* To mimic an object on stack */
 
 /* Do metawalk on type */
-corto_int16 _corto_metaWalk(corto_serializer s, corto_type type, void* userData) {
+corto_int16 _corto_metawalk(corto_walk_opt* s, corto_type type, void* userData) {
     corto__object* o;
     corto_int16 result;
 
-    corto_assert(type != NULL, "corto_metaWalk called with NULL type");
+    corto_assert(type != NULL, "corto_metawalk called with NULL type");
 
     /* Instantiate dummy-object */
     o = corto_alloc(sizeof(corto__object) + type->size); /* alloca is dangerous here because objects can get large, causing stack overflows. */
@@ -25,15 +25,15 @@ corto_int16 _corto_metaWalk(corto_serializer s, corto_type type, void* userData)
     o->magic = CORTO_MAGIC;
 #endif
     s->visitAllCases = TRUE;
-    result = corto_serialize(s, CORTO_OFFSET(o, sizeof(corto__object)), userData);
+    result = corto_walk(s, CORTO_OFFSET(o, sizeof(corto__object)), userData);
     corto_dealloc(o);
 
     return result;
 }
 
 /* Serialize constants of enumeration */
-corto_int16 corto_serializeConstants(
-    corto_serializer s,
+corto_int16 corto_walk_constants(
+    corto_walk_opt* s,
     corto_value* v,
     void* userData)
 {
@@ -66,8 +66,8 @@ error:
 }
 
 /* Serialize union cases */
-corto_int16 corto_serializeCases(
-    corto_serializer s,
+corto_int16 corto_walk_cases(
+    corto_walk_opt* s,
     corto_value *v,
     void *userData)
 {

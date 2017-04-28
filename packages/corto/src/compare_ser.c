@@ -1,10 +1,11 @@
 
 #include "corto/corto.h"
+#include "compare_ser.h"
 #include "_object.h"
 
 #define CORTO_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? CORTO_GT : *(type*)v1 < *(type*)v2 ? CORTO_LT : CORTO_EQ
 
-static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_any *this = corto_value_ptrof(info);
     corto_compare_ser_t *data = userData, privateData;
     corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
@@ -16,14 +17,14 @@ static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *us
      * construct callback won't be called again */
     privateData.base = this->value;
 
-    corto_serializeValue(s, &v, &privateData);
+    corto_value_walk(s, &v, &privateData);
 
     data->result = privateData.result;
 
     return data->result != CORTO_EQ;
 }
 
-static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_equalityKind result = CORTO_EQ;
     corto_compare_ser_t *data = userData;
     corto_type type = corto_value_typeof(info);
@@ -118,7 +119,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, vo
     return data->result != CORTO_EQ;
 }
 
-static corto_int16 corto_ser_reference(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_compare_ser_t *data = userData;
     void *this = corto_value_ptrof(info);
     void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
@@ -184,7 +185,7 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
 }
 
 /* Compare composites */
-static corto_int16 corto_ser_composite(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_ser_composite(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_compare_ser_t *data = userData;
     corto_type t = corto_value_typeof(info);
     void *this = corto_value_ptrof(info);
@@ -203,7 +204,7 @@ static corto_int16 corto_ser_composite(corto_serializer s, corto_value *info, vo
         }
     }
 
-    return corto_serializeMembers(s, info, userData);
+    return corto_walk_members(s, info, userData);
 nomatch:
     data->result = CORTO_NEQ;
     return 1;
@@ -229,7 +230,7 @@ static corto_uint32 corto_ser_getCollectionSize(corto_any this) {
 }
 
 /* Compare collections */
-static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_type t1, t2;
     void *v1, *v2;
     corto_equalityKind result = CORTO_EQ;
@@ -330,7 +331,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
     return data->result != CORTO_EQ;
 }
 
-static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_compare_ser_t *data = userData;
     corto_bool compare = FALSE;
     CORTO_UNUSED(s);
@@ -390,10 +391,10 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
     return !compare;
 }
 
-struct corto_serializer_s corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;

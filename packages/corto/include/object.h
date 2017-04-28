@@ -32,18 +32,18 @@ CORTO_EXPORT corto_object _corto_declare(corto_type type);
 CORTO_EXPORT corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type);
 CORTO_EXPORT corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type);
 CORTO_EXPORT corto_object _corto_findOrDeclare(corto_object parent, corto_string id, corto_type type);
-CORTO_EXPORT corto_int16 corto_define(corto_object o);
-CORTO_EXPORT corto_int16 corto_delete(corto_object o);
+CORTO_EXPORT int16_t corto_define(corto_object o);
+CORTO_EXPORT int16_t corto_delete(corto_object o);
 
 /* Object notifications */
-CORTO_EXPORT corto_int16 corto_update(corto_object observable);
-CORTO_EXPORT corto_int16 corto_updateBegin(corto_object observable);
-CORTO_EXPORT corto_int16 corto_updateTry(corto_object observable);
-CORTO_EXPORT corto_int16 corto_updateEnd(corto_object observable);
-CORTO_EXPORT corto_int16 corto_updateCancel(corto_object observable);
-CORTO_EXPORT corto_int16 corto_invalidate(corto_object o);
+CORTO_EXPORT int16_t corto_update(corto_object observable);
+CORTO_EXPORT int16_t corto_updateBegin(corto_object observable);
+CORTO_EXPORT int16_t corto_updateTry(corto_object observable);
+CORTO_EXPORT int16_t corto_updateEnd(corto_object observable);
+CORTO_EXPORT int16_t corto_updateCancel(corto_object observable);
+CORTO_EXPORT int16_t corto_invalidate(corto_object o);
 /* Publish event without reference to an object */
-CORTO_EXPORT corto_int16 corto_publish(
+CORTO_EXPORT int16_t corto_publish(
     corto_eventMask event,
     corto_string id,
     corto_string type,
@@ -93,7 +93,7 @@ CORTO_EXPORT corto_uint32 corto_scopeSize(corto_object o);
 CORTO_EXPORT corto_objectseq corto_scopeClaim(corto_object o);
 CORTO_EXPORT corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, corto_string id);
 CORTO_EXPORT void corto_scopeRelease(corto_objectseq scope);
-CORTO_EXPORT corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
+CORTO_EXPORT int16_t corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void *userData);
 
 /* Ownership */
 CORTO_EXPORT corto_object corto_ownerof(corto_object o);
@@ -162,7 +162,7 @@ typedef struct corto_observeFluent {
     corto_observer ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_object, corto_observer));
 } corto_observeFluent;
 CORTO_EXPORT struct corto_observeFluent corto_observe(corto_eventMask event, corto_object observable);
-CORTO_EXPORT corto_int16 corto_unobserve(corto_observer observer);
+CORTO_EXPORT int16_t corto_unobserve(corto_observer observer);
 
 /* Subscribe for notifications matching an expression and eventmask */
 typedef struct corto_subscribeFluent {
@@ -174,7 +174,7 @@ typedef struct corto_subscribeFluent {
     corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_result*, corto_subscriber));
 } corto_subscribeFluent;
 CORTO_EXPORT struct corto_subscribeFluent corto_subscribe(corto_eventMask mask, corto_string scope, corto_string expr, ...);
-CORTO_EXPORT corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
+CORTO_EXPORT int16_t corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
 
 /* Match corto expression */
 typedef struct corto_matchProgram_s* corto_matchProgram;
@@ -187,11 +187,11 @@ CORTO_EXPORT char* corto_matchParent(char *parent, char *expr);
 
 /* Serialize object value to contentType */
 CORTO_EXPORT corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o);
-CORTO_EXPORT corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string content, ...);
+CORTO_EXPORT int16_t corto_fromcontent(corto_object o, corto_string contentType, corto_string content, ...);
 
 /* Serialize object to contentType */
 CORTO_EXPORT corto_string corto_object_contentof(corto_id str, corto_string contentType, corto_object o);
-CORTO_EXPORT corto_int16 corto_object_fromcontent(corto_object *o, corto_string contentType, corto_string content, ...);
+CORTO_EXPORT int16_t corto_object_fromcontent(corto_object *o, corto_string contentType, corto_string content, ...);
 
 /* Deprecated */
 CORTO_EXPORT corto_object corto_createFromContent(corto_string contentType, corto_string content);
@@ -205,12 +205,12 @@ CORTO_EXPORT void* corto_olsLockGet(corto_object o, corto_int8 key);
 CORTO_EXPORT void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value);
 
 /* Read locking */
-CORTO_EXPORT corto_int16 corto_readBegin(corto_object object);
-CORTO_EXPORT corto_int16 corto_readEnd(corto_object object);
+CORTO_EXPORT int16_t corto_readBegin(corto_object object);
+CORTO_EXPORT int16_t corto_readEnd(corto_object object);
 
 /* Write locking */
-CORTO_EXPORT corto_int16 corto_lock(corto_object object);
-CORTO_EXPORT corto_int16 corto_unlock(corto_object object);
+CORTO_EXPORT int16_t corto_lock(corto_object object);
+CORTO_EXPORT int16_t corto_unlock(corto_object object);
 
 /* Serialize to string */
 CORTO_EXPORT corto_string corto_str(corto_object object, corto_uint32 maxLength);
@@ -219,16 +219,16 @@ CORTO_EXPORT corto_string _corto_strp(void *p, corto_type type, corto_uint32 max
 CORTO_EXPORT corto_string corto_stra(corto_any a, corto_uint32 maxLength);
 
 /* Deserialize from string */
-CORTO_EXPORT corto_int16 corto_fromStr(void *o, corto_string string);
-CORTO_EXPORT corto_int16 corto_fromStrv(corto_value *v, corto_string string);
-CORTO_EXPORT corto_int16 _corto_fromStrp(void *p, corto_type type, corto_string string);
-CORTO_EXPORT corto_int16 corto_fromStra(corto_any *a, corto_string string);
+CORTO_EXPORT int16_t corto_fromStr(void *o, corto_string string);
+CORTO_EXPORT int16_t corto_fromStrv(corto_value *v, corto_string string);
+CORTO_EXPORT int16_t _corto_fromStrp(void *p, corto_type type, corto_string string);
+CORTO_EXPORT int16_t corto_fromStra(corto_any *a, corto_string string);
 
 /* Copy */
-CORTO_EXPORT corto_int16 _corto_copy(corto_object *dst, corto_object src);
-CORTO_EXPORT corto_int16 corto_copyv(corto_value *dst, corto_value *src);
-CORTO_EXPORT corto_int16 _corto_copyp(void *dst, corto_type type, void *src);
-CORTO_EXPORT corto_int16 corto_copya(corto_any *dst, corto_any src);
+CORTO_EXPORT int16_t _corto_copy(corto_object *dst, corto_object src);
+CORTO_EXPORT int16_t corto_copyv(corto_value *dst, corto_value *src);
+CORTO_EXPORT int16_t _corto_copyp(void *dst, corto_type type, void *src);
+CORTO_EXPORT int16_t corto_copya(corto_any *dst, corto_any src);
 
 /* Compare */
 CORTO_EXPORT corto_equalityKind corto_compare(corto_object o1, corto_object o2);
@@ -237,20 +237,20 @@ CORTO_EXPORT corto_equalityKind _corto_comparep(void *p1, corto_type type, void 
 CORTO_EXPORT corto_equalityKind corto_comparea(corto_any a1, corto_any a2);
 
 /* Init */
-CORTO_EXPORT corto_int16 corto_init(corto_object o);
-CORTO_EXPORT corto_int16 corto_initv(corto_value *v);
-CORTO_EXPORT corto_int16 _corto_initp(void *v, corto_type type);
-CORTO_EXPORT corto_int16 corto_inita(corto_any a);
+CORTO_EXPORT int16_t corto_init(corto_object o);
+CORTO_EXPORT int16_t corto_initv(corto_value *v);
+CORTO_EXPORT int16_t _corto_initp(void *v, corto_type type);
+CORTO_EXPORT int16_t corto_inita(corto_any a);
 
 /* Deinit */
-CORTO_EXPORT corto_int16 corto_deinit(corto_object o);
-CORTO_EXPORT corto_int16 corto_deinitv(corto_value *v);
-CORTO_EXPORT corto_int16 _corto_deinitp(void *v, corto_type type);
-CORTO_EXPORT corto_int16 corto_deinita(corto_any a);
+CORTO_EXPORT int16_t corto_deinit(corto_object o);
+CORTO_EXPORT int16_t corto_deinitv(corto_value *v);
+CORTO_EXPORT int16_t _corto_deinitp(void *v, corto_type type);
+CORTO_EXPORT int16_t corto_deinita(corto_any a);
 
 /* Call base initalizer / constructor / destructor */
-CORTO_EXPORT corto_int16 corto_super_init(corto_object o);
-CORTO_EXPORT corto_int16 corto_super_construct(corto_object o);
+CORTO_EXPORT int16_t corto_super_init(corto_object o);
+CORTO_EXPORT int16_t corto_super_construct(corto_object o);
 CORTO_EXPORT void corto_super_destruct(corto_object o);
 
 /* Macro's that automate casting of parameters */

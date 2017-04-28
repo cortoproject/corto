@@ -8,7 +8,7 @@
 #include "corto/corto.h"
 #include "_object.h"
 
-corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_keepReference(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_object o;
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
@@ -29,7 +29,7 @@ corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* us
     return 0;
 }
 
-corto_int16 corto_ser_freePrimitive(corto_serializer s, corto_value* v, void* udata) {
+corto_int16 corto_ser_freePrimitive(corto_walk_opt* s, corto_value* v, void* udata) {
     corto_type t;
     void* o;
 
@@ -61,7 +61,7 @@ int corto_ser_clear(void* o, void* udata) {
     return 1;
 }
 
-corto_int16 corto_ser_freeCollection(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_type t;
     void* o;
 
@@ -69,7 +69,7 @@ corto_int16 corto_ser_freeCollection(corto_serializer s, corto_value* v, void* u
     o = corto_value_ptrof(v);
 
     /* Serialize elements */
-    if (corto_serializeElements(s, v, userData)) {
+    if (corto_walk_elements(s, v, userData)) {
         goto error;
     }
 
@@ -115,7 +115,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_freeReference(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_object *optr, o;
 
     CORTO_UNUSED(s);
@@ -143,11 +143,11 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
     return 0;
 }
 
-corto_int16 corto_ser_freeMember(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_freeMember(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_member m = v->is.member.t;
     void *ptr = corto_value_ptrof(v);
 
-    corto_serializeValue(s, v, userData);
+    corto_value_walk(s, v, userData);
 
     if (m->modifiers & CORTO_OPTIONAL) {
         corto_dealloc(ptr);
@@ -157,44 +157,44 @@ corto_int16 corto_ser_freeMember(corto_serializer s, corto_value* v, void* userD
 }
 
 
-struct corto_serializer_s corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.reference = corto_ser_keepReference;
     return s;
 }
 
-struct corto_serializer_s corto_ser_free(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_free(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.reference = corto_ser_freeReference;
     return s;
 }
 
-struct corto_serializer_s corto_ser_freeResources(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_freeResources(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.program[CORTO_PRIMITIVE] = corto_ser_freePrimitive;
     s.program[CORTO_COLLECTION] = corto_ser_freeCollection;
     s.metaprogram[CORTO_MEMBER] = corto_ser_freeMember;

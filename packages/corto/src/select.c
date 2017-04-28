@@ -276,7 +276,7 @@ static void corto_setItemData(
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
     } else {
         corto_string_ser_t serData;
-        struct corto_serializer_s s;
+        corto_walk_opt s;
 
         serData.buffer = CORTO_BUFFER_INIT;
         serData.buffer.buf = item->type;
@@ -288,9 +288,9 @@ static void corto_setItemData(
         s = corto_string_ser(
             CORTO_LOCAL,
             CORTO_NOT,
-            CORTO_SERIALIZER_TRACE_NEVER);
+            CORTO_WALK_TRACE_NEVER);
 
-        corto_serialize(&s, corto_typeof(o), &serData);
+        corto_walk(&s, corto_typeof(o), &serData);
     }
 
     if (data->contentType) {

@@ -8,7 +8,7 @@
 #ifndef CORTO_STRING_SER_H_
 #define CORTO_STRING_SER_H_
 
-#include "corto/serializer.h"
+#include "corto/walk.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,7 +28,7 @@ typedef struct corto_string_ser_t {
     corto_ll anonymousObjects;
 } corto_string_ser_t;
 
-CORTO_EXPORT struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
+CORTO_EXPORT corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

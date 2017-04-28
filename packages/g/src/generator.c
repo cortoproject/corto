@@ -1340,7 +1340,7 @@ static corto_uint32 corto_genMemberCacheGet(corto_ll cache, corto_member m) {
     return result;
 }
 
-static corto_int16 corto_genMemberCache_member(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_genMemberCache_member(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_ll cache;
     CORTO_UNUSED(s);
 
@@ -1355,7 +1355,7 @@ static corto_int16 corto_genMemberCache_member(corto_serializer s, corto_value *
         parameter->occurred = corto_genMemberCacheCount(cache, m);
         corto_llAppend(cache, parameter);
     } else {
-        corto_serializeMembers(s, info, userData);
+        corto_walk_members(s, info, userData);
     }
 
     return 0;
@@ -1378,16 +1378,16 @@ corto_char* corto_genMemberName(g_generator g, corto_ll cache, corto_member m, c
 
 /* Build cache to determine whether membernames occur more than once (due to inheritance) */
 corto_ll corto_genMemberCacheBuild(corto_interface o) {
-    struct corto_serializer_s s;
+    corto_walk_opt s;
     corto_ll result;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
     s.access = CORTO_LOCAL | CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
     s.metaprogram[CORTO_MEMBER] = corto_genMemberCache_member;
     result = corto_llNew();
 
-    corto_metaWalk(&s, corto_type(o), result);
+    corto_metawalk(&s, corto_type(o), result);
 
     return result;
 }
@@ -1436,7 +1436,7 @@ static corto_package g_addDepencency(g_generator g, corto_object o, g_depWalk_t 
 }
 
 /* Serialize dependencies on references */
-static corto_int16 g_evalRef(corto_serializer s, corto_value* info, void* userData) {
+static corto_int16 g_evalRef(corto_walk_opt* s, corto_value* info, void* userData) {
     g_depWalk_t *data = userData;
 
     CORTO_UNUSED(s);
@@ -1450,7 +1450,7 @@ static corto_int16 g_evalRef(corto_serializer s, corto_value* info, void* userDa
 }
 
 /* Serialize object type */
-static corto_int16 g_evalObject(corto_serializer s, corto_value* info, void* userData) {
+static corto_int16 g_evalObject(corto_walk_opt* s, corto_value* info, void* userData) {
     g_depWalk_t *data = userData;
     corto_object o = corto_value_objectof(info);
 
@@ -1458,14 +1458,14 @@ static corto_int16 g_evalObject(corto_serializer s, corto_value* info, void* use
 
     g_addDepencency(data->g, corto_typeof(o), data);
 
-    return corto_serializeValue(s, info, userData);
+    return corto_value_walk(s, info, userData);
 }
 
 /* Dependency serializer */
-struct corto_serializer_s g_depSerializer(void) {
-    struct corto_serializer_s s;
+corto_walk_opt g_depSerializer(void) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
     s.reference = g_evalRef;
     s.metaprogram[CORTO_OBJECT] = g_evalObject;
     s.access = CORTO_LOCAL;
@@ -1475,8 +1475,8 @@ struct corto_serializer_s g_depSerializer(void) {
 }
 
 static int g_collectDependency(corto_object o, void *userData) {
-    struct corto_serializer_s s = g_depSerializer();
-    corto_serialize(&s, o, userData);
+    corto_walk_opt s = g_depSerializer();
+    corto_walk(&s, o, userData);
     return 1;
 }
 

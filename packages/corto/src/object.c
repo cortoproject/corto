@@ -6,9 +6,14 @@
  */
 
 #include "corto/corto.h"
+#include "lang/_class.h"
 #include "_object.h"
 #include "_matcher.h"
-#include "lang/_class.h"
+
+#include "compare_ser.h"
+#include "copy_ser.h"
+#include "init_ser.h"
+#include "memory_ser.h"
 
 extern corto_mutex_s corto_adminLock;
 
@@ -2236,14 +2241,14 @@ static corto_int16 corto_contentTypeFromStr(corto_value *v, corto_string str) {
 
 static corto_string corto_contentTypeToStrColor(corto_value *v) {
     corto_string_ser_t sdata;
-    struct corto_serializer_s s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+    corto_walk_opt s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     memset(&sdata, 0, sizeof(corto_string_ser_t));
     sdata.enableColors = TRUE;
     s.access = CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
-    corto_serializeValue(&s, v, &sdata);
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+    corto_value_walk(&s, v, &sdata);
     return corto_buffer_str(&sdata.buffer);
 }
 
@@ -3111,11 +3116,11 @@ corto_string corto_fullpath_intern(corto_id buffer, corto_object o, corto_bool u
     if (!o) {
         buffer[0] = '\0';
     } else if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
-        struct corto_serializer_s stringSer;
+        corto_walk_opt stringSer;
         corto_string_ser_t data;
 
         /* Serialize object string */
-        stringSer = corto_string_ser(CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        stringSer = corto_string_ser(CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
 
         *buffer = '\0';
         data.compactNotation = TRUE;
@@ -3124,7 +3129,7 @@ corto_string corto_fullpath_intern(corto_id buffer, corto_object o, corto_bool u
         data.buffer.max = sizeof(corto_id) - 1;
         data.prefixType = TRUE;
         data.enableColors = FALSE;
-        if (corto_serialize(&stringSer, o, &data)) {
+        if (corto_walk(&stringSer, o, &data)) {
             goto error;
         }
 
@@ -5067,7 +5072,7 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     corto_assertObject(object);
 
     corto_string_ser_t serData;
-    struct corto_serializer_s s;
+    corto_walk_opt s;
 
     serData.buffer = CORTO_BUFFER_INIT;
     serData.buffer.max = maxLength;
@@ -5075,16 +5080,16 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     serData.prefixType = FALSE;
     serData.enableColors = FALSE;
 
-    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
-    corto_serialize(&s, object, &serData);
+    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+    corto_walk(&s, object, &serData);
     corto_string result = corto_buffer_str(&serData.buffer);
-    corto_serializeDestruct(&s, &serData);
+    corto_walk_deinit(&s, &serData);
     return result;
 }
 
 corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     corto_string_ser_t serData;
-    struct corto_serializer_s s;
+    corto_walk_opt s;
 
     serData.buffer = CORTO_BUFFER_INIT;
     serData.buffer.max = maxLength;
@@ -5092,10 +5097,10 @@ corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     serData.prefixType = FALSE;
     serData.enableColors = FALSE;
 
-    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
-    corto_serializeValue(&s, v, &serData);
+    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+    corto_value_walk(&s, v, &serData);
     corto_string result = corto_buffer_str(&serData.buffer);
-    corto_serializeDestruct(&s, &serData);
+    corto_walk_deinit(&s, &serData);
     return result;
 }
 
@@ -5208,25 +5213,25 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
     corto_assertObject(o2);
 
     corto_compare_ser_t data;
-    struct corto_serializer_s s;
+    corto_walk_opt s;
 
     data.value = corto_value_value(o2, corto_typeof(o2));
 
-    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
-    corto_serialize(&s, o1, &data);
+    corto_walk(&s, o1, &data);
 
     return data.result;
 }
 
 corto_equalityKind corto_comparev(corto_value *value1, corto_value *value2) {
     corto_compare_ser_t data;
-    struct corto_serializer_s s;
+    corto_walk_opt s;
 
     data.value = *value2;
-    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
-    corto_serializeValue(&s, value1, &data);
+    corto_value_walk(&s, value1, &data);
 
     return data.result;
 }
@@ -5256,9 +5261,9 @@ corto_int16 corto_init(corto_object o) {
     corto_type type = corto_typeof(o);
 
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        struct corto_serializer_s s =
-            corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-        if (corto_serialize(&s, o, NULL)) {
+        corto_walk_opt s =
+            corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        if (corto_walk(&s, o, NULL)) {
             goto error;
         }
     }
@@ -5274,8 +5279,8 @@ error:
 corto_int16 corto_initv(corto_value *v) {
     corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        struct corto_serializer_s s = corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-        if (corto_serializeValue(&s, v, NULL)) {
+        corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        if (corto_value_walk(&s, v, NULL)) {
             return -1;
         }
     }
@@ -5301,9 +5306,9 @@ corto_int16 corto_deinit(corto_object o) {
     corto_delegateDeinit(corto_typeof(o), o);
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        struct corto_serializer_s s =
-            corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-        corto_serialize(&s, o, NULL);
+        corto_walk_opt s =
+            corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        corto_walk(&s, o, NULL);
     }
 
     return 0;
@@ -5312,9 +5317,9 @@ corto_int16 corto_deinit(corto_object o) {
 corto_int16 corto_deinitv(corto_value *v) {
     corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        struct corto_serializer_s s =
-            corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-        corto_serializeValue(&s, v, NULL);
+        corto_walk_opt s =
+            corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        corto_value_walk(&s, v, NULL);
     }
     corto_delegateDeinit(corto_value_typeof(v), corto_value_ptrof(v));
     return 0;
@@ -5336,7 +5341,7 @@ corto_int16 corto_deinita(corto_any a) {
 corto_int16 _corto_copy(corto_object *dst, corto_object src) {
     corto_assertObject(src);
 
-    struct corto_serializer_s s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     corto_int16 result;
     corto_bool newObject = FALSE;
@@ -5347,7 +5352,7 @@ corto_int16 _corto_copy(corto_object *dst, corto_object src) {
     }
 
     data.value = corto_value_object(*dst, NULL);
-    result = corto_serialize(&s, src, &data);
+    result = corto_walk(&s, src, &data);
 
     if (newObject) {
         corto_define(*dst);
@@ -5357,7 +5362,7 @@ corto_int16 _corto_copy(corto_object *dst, corto_object src) {
 }
 
 corto_int16 corto_copyv(corto_value *dst, corto_value *src) {
-    struct corto_serializer_s s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     corto_int16 result;
     corto_bool newObject = FALSE;
@@ -5369,7 +5374,7 @@ corto_int16 corto_copyv(corto_value *dst, corto_value *src) {
     }
 
     data.value = *dst;
-    result = corto_serializeValue(&s, src, &data);
+    result = corto_value_walk(&s, src, &data);
 
     if (newObject) {
         corto_define(corto_value_ptrof(dst));

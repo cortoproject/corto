@@ -8,7 +8,7 @@
 #ifndef CORTO_COPY_SER_H_
 #define CORTO_COPY_SER_H_
 
-#include "corto/serializer.h"
+#include "corto/walk.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,7 +22,7 @@ extern "C" {
         void *base;
     }corto_copy_ser_t;
 
-    struct corto_serializer_s corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
+    corto_walk_opt corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

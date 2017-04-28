@@ -10,7 +10,7 @@
 
 #include "corto/lang/_type.h"
 #include "corto/file.h"
-#include "corto/dl.h"
+#include "corto/os.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -109,18 +109,18 @@ CORTO_EXPORT void g_setAttribute(g_generator g, corto_string key, corto_string v
 CORTO_EXPORT corto_string g_getAttribute(g_generator g, corto_string key);
 
 /* Load a generator library. */
-CORTO_EXPORT corto_int16 g_load(g_generator generator, corto_string library);
+CORTO_EXPORT int16_t g_load(g_generator generator, corto_string library);
 
 /* Free generator. */
 CORTO_EXPORT void g_free(g_generator generator);
 
 /* Start generating. */
-CORTO_EXPORT corto_int16 g_start(g_generator generator);
+CORTO_EXPORT int16_t g_start(g_generator generator);
 
 /* === Generator utility functions */
 
 /* Add import */
-CORTO_EXPORT corto_int16 g_import(g_generator generator, corto_object package);
+CORTO_EXPORT int16_t g_import(g_generator generator, corto_object package);
 
 /* Walk generator objects. Parse scopes of generator objects when configured. */
 CORTO_EXPORT int g_walk(g_generator generator, g_walkAction o, void* userData);

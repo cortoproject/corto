@@ -268,7 +268,7 @@ void corto_operatorInit(void) {
     CORTO_STRING_OPS_INIT();
 }
 
-corto_int16 corto_unaryOperator(corto_type type, corto_operatorKind operator, void* operand, void* result) {
+corto_int16 corto_ptr_unaryOp(corto_type type, corto_operatorKind operator, void* operand, void* result) {
     if (type->kind == CORTO_PRIMITIVE) {
         corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
@@ -287,7 +287,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_binaryOperator(corto_type type, corto_operatorKind operator, void *operand1, void *operand2, void *result) {
+corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, void *operand1, void *operand2, void *result) {
     if (type->kind == CORTO_PRIMITIVE) {
         corto__binaryOperator impl = corto_binaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {

@@ -8,13 +8,13 @@
 #ifndef CORTO_INIT_SER_H_
 #define CORTO_INIT_SER_H_
 
-#include "corto/serializer.h"
+#include "corto/walk.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
+corto_walk_opt corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

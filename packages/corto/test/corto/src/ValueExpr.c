@@ -16,7 +16,7 @@ void _test_ValueExpr_tc_add(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -41,7 +41,7 @@ void _test_ValueExpr_tc_and(
     corto_value right = corto_value_int(9);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_AND, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_AND, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -66,7 +66,7 @@ void _test_ValueExpr_tc_condAnd(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_COND_AND, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_COND_AND, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -80,7 +80,7 @@ void _test_ValueExpr_tc_condAnd(
 
     // Set right to 0 so that expression evaluates to FALSE
     right = corto_value_int(0);
-    ret = corto_value_binary(CORTO_COND_AND, &left, &right, &out);
+    ret = corto_value_binaryOp(CORTO_COND_AND, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -94,7 +94,7 @@ void _test_ValueExpr_tc_condAnd(
 
     // Set left to 0 to validate that expression still evaluates to FALSE
     left = corto_value_int(0);
-    ret = corto_value_binary(CORTO_COND_AND, &left, &right, &out);
+    ret = corto_value_binaryOp(CORTO_COND_AND, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -118,7 +118,7 @@ void _test_ValueExpr_tc_condNot(
     corto_value left = corto_value_bool(FALSE);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_unary(CORTO_COND_NOT, &left, &out);
+    corto_int16 ret = corto_value_unaryOp(CORTO_COND_NOT, &left, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -143,7 +143,7 @@ void _test_ValueExpr_tc_condOr(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_COND_OR, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_COND_OR, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -157,7 +157,7 @@ void _test_ValueExpr_tc_condOr(
 
     // Set right to 0 so that expression evaluates to FALSE
     right = corto_value_int(0);
-    ret = corto_value_binary(CORTO_COND_OR, &left, &right, &out);
+    ret = corto_value_binaryOp(CORTO_COND_OR, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -171,7 +171,7 @@ void _test_ValueExpr_tc_condOr(
 
     // Set left to 0 to validate that expression still evaluates to FALSE
     left = corto_value_int(0);
-    ret = corto_value_binary(CORTO_COND_OR, &left, &right, &out);
+    ret = corto_value_binaryOp(CORTO_COND_OR, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -195,7 +195,7 @@ void _test_ValueExpr_tc_div(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_DIV, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_DIV, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -220,7 +220,7 @@ void _test_ValueExpr_tc_exprAddFltInt(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -245,7 +245,7 @@ void _test_ValueExpr_tc_exprAddIntFlt(
     corto_value right = corto_value_float(20.5);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -270,7 +270,7 @@ void _test_ValueExpr_tc_exprAddIntStr(
     corto_value right = corto_value_string("Hello");
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -295,7 +295,7 @@ void _test_ValueExpr_tc_exprAddStrInt(
     corto_value right = corto_value_int(10);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -320,7 +320,7 @@ void _test_ValueExpr_tc_exprAddStrStr(
     corto_value right = corto_value_string("World");
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -346,7 +346,7 @@ void _test_ValueExpr_tc_exprAssignBoolRef(
     corto_value right = corto_value_value(corto_typeKind_o, corto_object_o);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -377,7 +377,7 @@ void _test_ValueExpr_tc_exprAssignFltInt(
     corto_value right = corto_value_int(10);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -408,7 +408,7 @@ void _test_ValueExpr_tc_exprAssignIntFlt(
     corto_value right = corto_value_float(10.5);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -439,7 +439,7 @@ void _test_ValueExpr_tc_exprAssignIntInt(
     corto_value right = corto_value_int(10);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -470,7 +470,7 @@ void _test_ValueExpr_tc_exprAssignIntStr(
     corto_value right = corto_value_string("10");
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -501,7 +501,7 @@ void _test_ValueExpr_tc_exprAssignStrInt(
     corto_value right = corto_value_int(10);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -532,7 +532,7 @@ void _test_ValueExpr_tc_exprAssignStrStr(
     corto_value right = corto_value_string("Hello");
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -562,7 +562,7 @@ void _test_ValueExpr_tc_exprMemLiteralOut(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_int(0);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -588,7 +588,7 @@ void _test_ValueExpr_tc_exprMemMemberInOut(
     test_assert(corto_value_memberof(&pValue, "y", &pY) == 0);
     corto_value v = corto_value_int(30);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &pY, &v, &pY);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &pY, &v, &pY);
     test_assert(ret == 0);
     test_assert(pY.kind == CORTO_MEMBER);
 
@@ -617,7 +617,7 @@ void _test_ValueExpr_tc_exprMemMemberOut(
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &pX);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &pX);
     test_assert(ret == 0);
     test_assert(pX.kind == CORTO_MEMBER);
 
@@ -644,7 +644,7 @@ void _test_ValueExpr_tc_exprMemNullOut(
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value right = corto_value_int(20);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &left, &right, NULL);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, NULL);
     test_assert(ret == 0);
     test_assert(left.kind == CORTO_VALUE);
 
@@ -671,7 +671,7 @@ void _test_ValueExpr_tc_exprMemNullOutAssignMember(
     test_assert(corto_value_memberof(&pValue, "x", &pX) == 0);
     corto_value v = corto_value_int(30);
 
-    corto_int16 ret = corto_value_binary(CORTO_ASSIGN, &pX, &v, NULL);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &pX, &v, NULL);
     test_assert(ret == 0);
     test_assert(pX.kind == CORTO_MEMBER);
 
@@ -699,7 +699,7 @@ void _test_ValueExpr_tc_exprMemPtrOut(
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -725,7 +725,7 @@ void _test_ValueExpr_tc_exprMemSameInOut(
     corto_value out = corto_value_value(&val, corto_int64_o);
     corto_value v = corto_value_int(20);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &out, &v, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &out, &v, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -751,7 +751,7 @@ void _test_ValueExpr_tc_exprMemValueOut(
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
 
-    corto_int16 ret = corto_value_binary(CORTO_ADD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -859,7 +859,7 @@ void _test_ValueExpr_tc_mod(
     corto_value right = corto_value_int(3);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_MOD, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_MOD, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -884,7 +884,7 @@ void _test_ValueExpr_tc_mul(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_MUL, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_MUL, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -909,7 +909,7 @@ void _test_ValueExpr_tc_or(
     corto_value right = corto_value_int(9);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_OR, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_OR, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 
@@ -934,7 +934,7 @@ void _test_ValueExpr_tc_sub(
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
 
-    corto_int16 ret = corto_value_binary(CORTO_SUB, &left, &right, &out);
+    corto_int16 ret = corto_value_binaryOp(CORTO_SUB, &left, &right, &out);
     test_assert(ret == 0);
     test_assert(out.kind == CORTO_VALUE);
 

@@ -849,7 +849,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_unary(
+corto_int16 corto_value_unaryOp(
     corto_operatorKind _operator,
     corto_value *value,
     corto_value *result)
@@ -863,7 +863,7 @@ corto_int16 corto_value_unary(
         returnType = corto_type(corto_bool_o);
     }
 
-    if (corto_unaryOperator(t, _operator, corto_value_ptrof(value), v)) {
+    if (corto_ptr_unaryOp(t, _operator, corto_value_ptrof(value), v)) {
         goto error;
     }
 
@@ -885,7 +885,7 @@ corto_int16 _corto_value_cast(
     void *src = corto_value_ptrof(in);
     corto_type srcType = corto_value_typeof(in);
 
-    if (corto_convert(srcType, src, dstType, dst)) {
+    if (corto_ptr_cast(srcType, src, dstType, dst)) {
         goto error;
     }
 
@@ -898,7 +898,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_binary(
+corto_int16 corto_value_binaryOp(
     corto_operatorKind _operator,
     corto_value *left,
     corto_value *right,
@@ -943,7 +943,7 @@ corto_int16 corto_value_binary(
         rPtr = &rightCast;
     }
 
-    if (corto_binaryOperator(
+    if (corto_ptr_binaryOp(
         operType,
         _operator,
         corto_value_ptrof(lPtr),

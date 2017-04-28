@@ -186,7 +186,7 @@ typedef struct corto_ll_s* corto_ll;
 /* Maximum number of components in logmsg, like: "comp1: comp2: comp3: msg" */
 #define CORTO_MAX_LOG_COMPONENTS (16)
 
-/* #define CORTO_SERIALIZER_TRACING */
+/* #define CORTO_WALK_TRACING */
 #define CORTO_IC_TRACING
 #define CORTO_VM_DEBUG
 #define CORTO_VM

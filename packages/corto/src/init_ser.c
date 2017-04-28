@@ -7,7 +7,7 @@
 
 #include "corto/corto.h"
 
-corto_int16 corto_ser_initAny(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_initAny(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_any *ptr = corto_value_ptrof(v);
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
@@ -15,7 +15,7 @@ corto_int16 corto_ser_initAny(corto_serializer s, corto_value* v, void* userData
     return 0;
 }
 
-corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_initCollection(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_type t;
     void* o;
 
@@ -24,7 +24,7 @@ corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* u
 
     switch(corto_collection(t)->kind) {
         case CORTO_ARRAY:
-            if (corto_serializeElements(s, v, userData)) {
+            if (corto_walk_elements(s, v, userData)) {
                 goto error;
             }
             break;
@@ -43,7 +43,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_initMember(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_member m = v->is.member.t;
 
     /* If type is instanceof target, initialize member to a new target object */
@@ -64,15 +64,15 @@ corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userD
         *(corto_object*)ptr = o;
     }
 
-    return corto_serializeValue(s, v, userData);
+    return corto_value_walk(s, v, userData);
 error:
     return -1;
 }
 
-struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;

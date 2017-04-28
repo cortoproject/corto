@@ -8,6 +8,46 @@
 extern "C" {
 #endif
 
+#if INTPTR_MAX == INT32_MAX
+#define CORTO_CPU_32BIT
+#elif INTPTR_MAX == INT64_MAX
+#define CORTO_CPU_64BIT
+#else
+#warning "corto is not supported on platforms which are neither 32- nor 64-bit."
+#endif
+
+#if defined(WIN32) || defined(WIN64)
+#define CORTO_OS_WINDOWS
+#elif defined(__linux__)
+#define CORTO_OS_LINUX
+#elif defined(__APPLE__) && defined(__MACH__)
+#define CORTO_OS_OSX
+#else
+#warning "corto is not supported on non-unix or windows operating systems."
+#endif
+
+#ifdef __i386__
+#define CORTO_CPU_STRING "x86"
+#elif __x86_64__
+#define CORTO_CPU_STRING "x64"
+#elif defined(__arm__) && defined(CORTO_CPU_32BIT)
+#define CORTO_CPU_STRING "Arm"
+#elif defined(__arm__) && defined(CORTO_CPU_64BIT)
+#define CORTO_CPU_STRING "Arm64"
+#endif
+
+#ifdef CORTO_OS_WINDOWS
+#define CORTO_OS_STRING "windows"
+#elif defined(CORTO_OS_LINUX)
+#define CORTO_OS_STRING "linux"
+#define CORTO_DLL_CONSTRUCT void __attribute__ ((constructor)) DllMain(void)
+#elif defined(CORTO_OS_OSX)
+#define CORTO_OS_STRING "darwin"
+#define CORTO_DLL_CONSTRUCT void __attribute__ ((constructor)) DllMain(void)
+#endif
+
+#define CORTO_PLATFORM_STRING CORTO_CPU_STRING "-" CORTO_OS_STRING
+
 typedef int corto_pid;
 
 typedef enum corto_procsignal {
@@ -82,6 +122,36 @@ CORTO_EXPORT char* corto_hostname(void);
 /* Get PID of current process */
 #define corto_pid() _corto_pid()
 CORTO_EXPORT corto_pid _corto_pid(void);
+
+typedef struct corto_dl_s* corto_dl;
+
+/* Link dynamic library */
+CORTO_EXPORT corto_dl corto_dlOpen(const char* file);
+
+/* Close dynamic library */
+CORTO_EXPORT void corto_dlClose(corto_dl dl);
+
+/* Lookup symbol in dynamic library */
+CORTO_EXPORT void* corto_dlSym(corto_dl dl, const char* sym);
+
+/* Lookup procedure in dynamic library */
+CORTO_EXPORT void*(*corto_dlProc(corto_dl dl, const char* proc))(void);
+
+/* Return error code */
+CORTO_EXPORT const char* corto_dlError(void);
+
+/* Set environment variable */
+CORTO_EXPORT int16_t corto_setenv(const char *varname, const char *value, ...);
+
+/* Get environment variable */
+CORTO_EXPORT char* corto_getenv(const char *varname);
+
+/* Parse string with environment variable references */
+CORTO_EXPORT char* corto_envparse(const char* str, ...);
+
+/* Same as envparse with va_list */
+CORTO_EXPORT char* corto_venvparse(const char* str, va_list args);
+
 
 #ifdef __cplusplus
 }

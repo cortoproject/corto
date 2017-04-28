@@ -1,5 +1,5 @@
 /*
- * corto_convert.c
+ * corto_ptr_cast.c
  *
  *  Created on: Aug 23, 2012
  *      Author: sander
@@ -445,7 +445,7 @@ CORTO_CONVERT_FROM_STR_FLOAT(float64)
     CORTO_CONVERT_INIT_NUM(kind, width, CORTO_TEXT, CORTO_WIDTH_WORD, type, string);\
 
 /* Init conversions */
-void corto_convertInit(void) {
+void corto_ptr_castInit(void) {
     CORTO_CONVERT_INIT_NUM_INT(CORTO_BOOLEAN, CORTO_WIDTH_8, bool);
     CORTO_CONVERT_INIT_NUM_INT(CORTO_BINARY, CORTO_WIDTH_8, uint8);
     CORTO_CONVERT_INIT_NUM_INT(CORTO_BINARY, CORTO_WIDTH_16, int16);
@@ -527,7 +527,7 @@ void corto_convertInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-corto_int16 _corto_convert(corto_type fromType, void *from, corto_type toType, void *to) {
+corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, void *to) {
     corto_conversion c;
 
     if (fromType->reference) {

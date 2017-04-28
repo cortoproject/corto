@@ -10,7 +10,8 @@
 #include "_object.h"
 
 #include "corto/corto.h"
-#include "corto/cdeclhandler.h"
+#include "cdeclhandler.h"
+#include "memory_ser.h"
 
 void corto_secure_init(void);
 
@@ -905,16 +906,16 @@ static void corto_defineType(corto_object o, corto_uint32 size) {
 
 /* Update references */
 static void corto_updateRef(corto_object o) {
-    struct corto_serializer_s s;
-    s = corto_ser_keep(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    corto_serialize(&s, o, NULL);
+    corto_walk_opt s;
+    s = corto_ser_keep(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk(&s, o, NULL);
 }
 
 /* Decrease references */
 static void corto_decreaseRef(corto_object o) {
-    struct corto_serializer_s s;
-    s = corto_ser_free(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    corto_serialize(&s, o, NULL);
+    corto_walk_opt s;
+    s = corto_ser_free(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk(&s, o, NULL);
 }
 
 static void corto_genericTlsFree(void *o) {
@@ -1110,7 +1111,7 @@ int corto_start(char *appName) {
 
     /* Initialize conversions and operators */
 #ifdef CORTO_CONVERSIONS
-    corto_convertInit();
+    corto_ptr_castInit();
 #endif
 #ifdef CORTO_OPERATORS
     corto_operatorInit();

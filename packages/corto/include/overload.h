@@ -28,7 +28,7 @@ extern "C" {
 #define CORTO_OVERLOAD_NOMATCH_OVERLOAD    (-3)
 
 /* Calculate the distance between a function and a request signature */
-CORTO_EXPORT corto_int16 corto_overload(corto_object object, corto_string name, corto_int32* distance);
+CORTO_EXPORT int16_t corto_overload(corto_object object, corto_string name, corto_int32* distance);
 
 /* Obtain information from signature.
  *   Signatures can be of the following form:

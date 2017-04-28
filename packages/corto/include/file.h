@@ -19,6 +19,8 @@ extern "C" {
 
 typedef struct corto_file_s* corto_file;
 
+/* UNSTABLE API */
+
 CORTO_EXPORT char* corto_fileLoad(const char* file);
 CORTO_EXPORT corto_file corto_fileOpen(const char* file);
 CORTO_EXPORT corto_file corto_fileAppend(const char* file);

@@ -32,7 +32,7 @@ struct corto_fileHandler {
     void* userData;
 };
 
-static char* corto_convertToPath(corto_string lib, corto_id path) {
+static char* corto_ptr_castToPath(corto_string lib, corto_id path) {
     char *ptr, *bptr, ch;
     /* Convert '::' in library name to '/' */
     ptr = lib;
@@ -69,11 +69,11 @@ static struct corto_loadedAdmin* corto_loadedAdminFind(corto_string name) {
         struct corto_loadedAdmin *lib;
         corto_id libPath, adminPath;
 
-        corto_convertToPath(name, libPath);
+        corto_ptr_castToPath(name, libPath);
 
         while (corto_iterHasNext(&iter)) {
             lib = corto_iterNext(&iter);
-            corto_convertToPath(lib->name, adminPath);
+            corto_ptr_castToPath(lib->name, adminPath);
             if (!strcmp(adminPath, libPath)) {
                 return lib;
             }

@@ -9,6 +9,7 @@
 #define CORTO_LOADER_H_
 
 #include "corto/lang/_type.h"
+#include "corto/os.h"
 
 #ifdef __cplusplus
 extern "C" {

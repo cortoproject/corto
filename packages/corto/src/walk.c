@@ -1,5 +1,5 @@
 /*
- * corto_serializer.c
+ * corto_walk_opt*.c
  *
  *  Created on: Aug 23, 2012
  *      Author: sander
@@ -8,16 +8,16 @@
 #include "corto/corto.h"
 #include "_object.h"
 
-/*#define CORTO_SERIALIZER_TRACING*/
-#ifdef CORTO_SERIALIZER_TRACING
+/*#define CORTO_WALK_TRACING*/
+#ifdef CORTO_WALK_TRACING
 static int indent = 0;
 #endif
 
 /* Forward value to the right callback function */
-int16_t corto_serializeValue(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_value_walk(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_type t;
     int16_t result;
-    corto_serializerCallback cb;
+    corto_walk_cb cb;
     corto_bool isObservable = (info->kind == CORTO_MEMBER) && (info->is.member.t->modifiers & CORTO_OBSERVABLE);
 
     t = corto_value_typeof(info);
@@ -61,25 +61,25 @@ error:
     return -1;
 }
 
-void corto_serializerInit(corto_serializer this) {
-    memset(this, 0, sizeof(struct corto_serializer_s));
-    this->program[CORTO_ANY] = corto_serializeAny;
-    this->program[CORTO_COMPOSITE] = corto_serializeMembers;
-    this->program[CORTO_COLLECTION] = corto_serializeElements;
-    this->metaprogram[CORTO_BASE] = corto_serializeValue;
+void corto_walk_init(corto_walk_opt* this) {
+    memset(this, 0, sizeof(corto_walk_opt));
+    this->program[CORTO_ANY] = corto_any_walk;
+    this->program[CORTO_COMPOSITE] = corto_walk_members;
+    this->program[CORTO_COLLECTION] = corto_walk_elements;
+    this->metaprogram[CORTO_BASE] = corto_value_walk;
     this->initialized = TRUE;
     this->constructed = FALSE;
     this->access = CORTO_GLOBAL;
     this->accessKind = CORTO_XOR;
-    this->aliasAction = CORTO_SERIALIZER_ALIAS_FOLLOW;
-    this->optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    this->aliasAction = CORTO_WALK_ALIAS_FOLLOW;
+    this->optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     this->visitAllCases = FALSE;
 }
 
 /* Start serializing */
-int16_t corto_serialize(corto_serializer this, corto_object o, void* userData) {
+int16_t corto_walk(corto_walk_opt* this, corto_object o, void* userData) {
     corto_value info;
-    corto_serializerCallback cb;
+    corto_walk_cb cb;
     int16_t result;
 
     if (this->initialized != TRUE) {
@@ -100,10 +100,10 @@ int16_t corto_serialize(corto_serializer this, corto_object o, void* userData) {
     this->constructed = TRUE;
 
     if (!(cb = this->metaprogram[CORTO_OBJECT])) {
-        cb = corto_serializeValue;
+        cb = corto_value_walk;
     }
 
-#ifdef CORTO_SERIALIZER_TRACING
+#ifdef CORTO_WALK_TRACING
     {
         corto_id id, id2;
         printf("%*sserialize(%s : %s // %s)\n",
@@ -114,7 +114,7 @@ int16_t corto_serialize(corto_serializer this, corto_object o, void* userData) {
 
     result = cb(this, &info, userData);
 
-#ifdef CORTO_SERIALIZER_TRACING
+#ifdef CORTO_WALK_TRACING
     indent--;
 #endif
 
@@ -124,7 +124,7 @@ error:
 }
 
 /* Destruct serializerdata */
-int16_t corto_serializeDestruct(corto_serializer this, void* userData) {
+int16_t corto_walk_deinit(corto_walk_opt* this, void* userData) {
     if (this->destruct) {
         if (this->destruct(this, userData)) {
             goto error;
@@ -157,7 +157,7 @@ corto_bool corto_serializeMatchAccess(corto_operatorKind accessKind, corto_modif
 }
 
 /* Serialize any-value */
-int16_t corto_serializeAny(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_value v;
     corto_any *any;
     int16_t result = 0;
@@ -167,7 +167,7 @@ int16_t corto_serializeAny(corto_serializer this, corto_value* info, void* userD
     if (any->type) {
         v.parent = info;
         v = corto_value_value(any->value, corto_type(any->type));
-        result = corto_serializeValue(this, &v, userData);
+        result = corto_value_walk(this, &v, userData);
     }
 
     return result;
@@ -175,11 +175,11 @@ int16_t corto_serializeAny(corto_serializer this, corto_value* info, void* userD
 
 /* Serialize a single member */
 static int16_t corto_serializeMember(
-    corto_serializer this,
+    corto_walk_opt* this,
     corto_member m,
     corto_object o,
     void *v,
-    corto_serializerCallback cb,
+    corto_walk_cb cb,
     corto_value *info,
     void *userData)
 {
@@ -187,13 +187,13 @@ static int16_t corto_serializeMember(
     corto_modifier modifiers = m->modifiers;
     corto_bool isAlias = corto_instanceof(corto_alias_o, m);
 
-    if (isAlias && (this->aliasAction == CORTO_SERIALIZER_ALIAS_FOLLOW)) {
+    if (isAlias && (this->aliasAction == CORTO_WALK_ALIAS_FOLLOW)) {
         while (corto_instanceof(corto_alias_o, m)) {
             m = corto_alias(m)->member;
         }
     }
 
-    if (!isAlias || (this->aliasAction != CORTO_SERIALIZER_ALIAS_IGNORE)) {
+    if (!isAlias || (this->aliasAction != CORTO_WALK_ALIAS_IGNORE)) {
         if (corto_serializeMatchAccess(this->accessKind, this->access, modifiers)) {
             member.kind = CORTO_MEMBER;
             member.parent = info;
@@ -204,7 +204,7 @@ static int16_t corto_serializeMember(
             } else {
                 member.is.member.v = CORTO_OFFSET(v, m->offset);
             }
-#ifdef CORTO_SERIALIZER_TRACING
+#ifdef CORTO_WALK_TRACING
             {
                 corto_id id, id2;
                 printf("%*smember(%s : %s)\n", indent, " ",
@@ -216,14 +216,14 @@ static int16_t corto_serializeMember(
 #endif
             /* Don't serialize if member is optional and not set */
             if (!(modifiers & CORTO_OPTIONAL) ||
-                (this->optionalAction == CORTO_SERIALIZER_OPTIONAL_ALWAYS) ||
+                (this->optionalAction == CORTO_WALK_OPTIONAL_ALWAYS) ||
                 member.is.member.v)
             {
                 if (cb(this, &member, userData)) {
                     goto error;
                 }
             }
-#ifdef CORTO_SERIALIZER_TRACING
+#ifdef CORTO_WALK_TRACING
             indent--;
 #endif
         }
@@ -235,12 +235,12 @@ error:
 }
 
 /* Serialize members */
-int16_t corto_serializeMembers(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_interface t;
     corto_void* v;
     corto_uint32 i;
     corto_member m;
-    corto_serializerCallback cb;
+    corto_walk_cb cb;
     corto_object o;
 
     t = corto_interface(corto_value_typeof(info));
@@ -262,7 +262,7 @@ int16_t corto_serializeMembers(corto_serializer this, corto_value* info, void* u
                 base.is.base.v = v;
                 base.is.base.t = corto_type(corto_interface(t)->base);
                 base.is.base.o = o;
-    #ifdef CORTO_SERIALIZER_TRACING
+    #ifdef CORTO_WALK_TRACING
                 {
                     corto_id id;
                     printf("%*sbase(%s)\n", indent, " ", corto_fullname(base.is.base.t, id)); fflush(stdout);
@@ -272,7 +272,7 @@ int16_t corto_serializeMembers(corto_serializer this, corto_value* info, void* u
                 if (cb(this, &base, userData)) {
                     goto error;
                 }
-    #ifdef CORTO_SERIALIZER_TRACING
+    #ifdef CORTO_WALK_TRACING
                 indent--;
     #endif
             }
@@ -281,7 +281,7 @@ int16_t corto_serializeMembers(corto_serializer this, corto_value* info, void* u
 
     cb = this->metaprogram[CORTO_MEMBER];
     if (!cb) {
-        cb = corto_serializeValue;
+        cb = corto_value_walk;
     }
 
     /* Process members */
@@ -321,16 +321,16 @@ error:
 }
 
 struct corto_serializeElement_t {
-    corto_serializer this;
+    corto_walk_opt* this;
     void* userData;
     corto_value* info;
-    corto_serializerCallback cb;
+    corto_walk_cb cb;
 };
 
 /* Serialize element */
 int corto_serializeElement(void* e, void* userData) {
     struct corto_serializeElement_t* data;
-    corto_serializer this;
+    corto_walk_opt* this;
     corto_value* info;
 
     data = userData;
@@ -382,7 +382,7 @@ static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint3
 }
 
 /* Serialize elements */
-int16_t corto_serializeElements(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userData) {
     struct corto_serializeElement_t walkData;
     corto_collection t;
     corto_void* v;
@@ -405,7 +405,7 @@ int16_t corto_serializeElements(corto_serializer this, corto_value* info, void* 
     /* Determine callback now, instead of having to do this in the element callback */
     walkData.cb = this->metaprogram[CORTO_ELEMENT];
     if (!walkData.cb) {
-        walkData.cb = corto_serializeValue;
+        walkData.cb = corto_value_walk;
     }
 
     int16_t result = 1;

@@ -8,7 +8,7 @@
 #ifndef CORTO_COMPARE_SER_H_
 #define CORTO_COMPARE_SER_H_
 
-#include "corto/serializer.h"
+#include "corto/walk.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +24,7 @@ typedef struct corto_compare_ser_t {
     void *base;
 }corto_compare_ser_t;
 
-struct corto_serializer_s corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace);
+corto_walk_opt corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

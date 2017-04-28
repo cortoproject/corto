@@ -106,8 +106,8 @@ CORTO_EXPORT uint32_t corto_value_indexof(corto_value *val);
 CORTO_EXPORT int16_t corto_value_memberof(corto_value *val, corto_string member, corto_value *out);
 
 /* value expression API */
-CORTO_EXPORT int16_t corto_value_unary(corto_operatorKind _operator, corto_value *value, corto_value *result);
-CORTO_EXPORT int16_t corto_value_binary(corto_operatorKind _operator, corto_value *operand1, corto_value *operand2, corto_value *result);
+CORTO_EXPORT int16_t corto_value_unaryOp(corto_operatorKind _operator, corto_value *value, corto_value *result);
+CORTO_EXPORT int16_t corto_value_binaryOp(corto_operatorKind _operator, corto_value *operand1, corto_value *operand2, corto_value *result);
 CORTO_EXPORT int16_t _corto_value_cast(corto_value *in, corto_type dstType, corto_value *out);
 
 /* Initializers */

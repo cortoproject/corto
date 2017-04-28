@@ -372,7 +372,7 @@ static int cxsh_show(char* object) {
     corto_id id;
     char state[sizeof("valid | declared | defined")];
     char attr[sizeof("scope | writable | observable | persistent")];
-    struct corto_serializer_s s;
+    corto_walk_opt s;
     corto_string_ser_t sdata;
     corto_value result;
     char *expr = object;
@@ -444,17 +444,17 @@ static int cxsh_show(char* object) {
         }
 
         /* Initialize serializer userData */
-        s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
         memset(&sdata, 0, sizeof(corto_string_ser_t));
         sdata.enableColors = TRUE;
         s.access = CORTO_PRIVATE;
         s.accessKind = CORTO_NOT;
-        s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-        s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+        s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+        s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
 
         /* Serialize value to string */
         if (corto_value_ptrof(&result)) {
-            corto_serializeValue(&s, &result, &sdata);
+            corto_value_walk(&s, &result, &sdata);
             corto_string str = corto_buffer_str(&sdata.buffer);
             if (str) {
                 if (o) {
@@ -472,9 +472,9 @@ static int cxsh_show(char* object) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
-                s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-                s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
-                corto_metaWalk(&s, o, &sdata);
+                s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+                s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+                corto_metawalk(&s, o, &sdata);
                 corto_string str = corto_buffer_str(&sdata.buffer);
                 if (str) {
                     printf("%sinitializer:%s  %s\n", INTERFACE_COLOR, CORTO_NORMAL, str);
@@ -651,7 +651,7 @@ typedef struct cxsh_memberSer_t {
 } cxsh_memberSer_t;
 
 static corto_int16 cxsh_ser_member(
-  corto_serializer s,
+  corto_walk_opt* s,
   corto_value *info,
   void *userData)
 {
@@ -669,14 +669,14 @@ static corto_int16 cxsh_ser_member(
 }
 
 /* Resolve members for type */
-struct corto_serializer_s cxsh_memberSer(void) {
-    struct corto_serializer_s s;
+corto_walk_opt cxsh_memberSer(void) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
-    s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
+    s.traceKind = CORTO_WALK_TRACE_ON_FAIL;
     s.metaprogram[CORTO_MEMBER] = cxsh_ser_member;
     return s;
 }
@@ -763,8 +763,8 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     cxsh_memberSer_t walkData = {objExpr, filter, result};
 
                     /* Add members to auto complete */
-                    struct corto_serializer_s ser = cxsh_memberSer();
-                    corto_metaWalk(&ser, t, &walkData);
+                    corto_walk_opt ser = cxsh_memberSer();
+                    corto_metawalk(&ser, t, &walkData);
 
                     /* Add methods to auto complete */
                     corto_int32 i;

@@ -29,7 +29,7 @@ CORTO_EXPORT void _corto_callb(corto_function f, corto_void* result, void** argp
 
 /* Register binding */
 CORTO_EXPORT int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit);
-CORTO_EXPORT corto_int16 corto_callInit(corto_function f);
+CORTO_EXPORT int16_t corto_callInit(corto_function f);
 CORTO_EXPORT void corto_callDeinit(corto_function f);
 
 #define corto_call(f, ...) _corto_call(corto_function(f), __VA_ARGS__)
