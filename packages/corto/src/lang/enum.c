@@ -10,7 +10,6 @@
 
 /* $header() */
 #include "_enum.h"
-#include "_collection.h"
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
@@ -77,7 +76,14 @@ void _corto_enum_destruct(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/destruct) */
-    corto_clear(corto_collection(corto_objectseq_o), &this->constants);
+    int i;
+    for (i = 0; i < this->constants.length; i++) {
+      corto_release(this->constants.buffer[i]);
+    }
+    this->constants.length = 0;
+    corto_dealloc(this->constants.buffer);
+    this->constants.buffer = NULL;
+    
     corto_type_destruct(corto_type(this));
 /* $end */
 }

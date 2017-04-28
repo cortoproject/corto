@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Copy_tc_any(
+void _test_Copy_tc_any(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_any) */
@@ -28,7 +28,7 @@ corto_void _test_Copy_tc_any(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToArray(
+void _test_Copy_tc_arrayToArray(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToArray) */
@@ -46,7 +46,7 @@ corto_void _test_Copy_tc_arrayToArray(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToArrayAlloc(
+void _test_Copy_tc_arrayToArrayAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToArrayAlloc) */
@@ -63,7 +63,7 @@ corto_void _test_Copy_tc_arrayToArrayAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToArrayString(
+void _test_Copy_tc_arrayToArrayString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToArrayString) */
@@ -83,7 +83,7 @@ corto_void _test_Copy_tc_arrayToArrayString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToExistingArrayString(
+void _test_Copy_tc_arrayToExistingArrayString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToExistingArrayString) */
@@ -111,7 +111,7 @@ corto_void _test_Copy_tc_arrayToExistingArrayString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToExistingList(
+void _test_Copy_tc_arrayToExistingList(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToExistingList) */
@@ -139,7 +139,7 @@ corto_void _test_Copy_tc_arrayToExistingList(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToExistingListString(
+void _test_Copy_tc_arrayToExistingListString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToExistingListString) */
@@ -164,7 +164,7 @@ corto_void _test_Copy_tc_arrayToExistingListString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToList(
+void _test_Copy_tc_arrayToList(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToList) */
@@ -186,7 +186,7 @@ corto_void _test_Copy_tc_arrayToList(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToListAlloc(
+void _test_Copy_tc_arrayToListAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToListAlloc) */
@@ -208,7 +208,7 @@ corto_void _test_Copy_tc_arrayToListAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_arrayToListString(
+void _test_Copy_tc_arrayToListString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_arrayToListString) */
@@ -231,7 +231,7 @@ corto_void _test_Copy_tc_arrayToListString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_int(
+void _test_Copy_tc_int(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_int) */
@@ -246,7 +246,7 @@ corto_void _test_Copy_tc_int(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToArray(
+void _test_Copy_tc_listToArray(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToArray) */
@@ -267,7 +267,7 @@ corto_void _test_Copy_tc_listToArray(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToArrayAlloc(
+void _test_Copy_tc_listToArrayAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToArrayAlloc) */
@@ -288,7 +288,7 @@ corto_void _test_Copy_tc_listToArrayAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToArrayString(
+void _test_Copy_tc_listToArrayString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToArrayString) */
@@ -309,7 +309,7 @@ corto_void _test_Copy_tc_listToArrayString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToExistingList(
+void _test_Copy_tc_listToExistingList(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToExistingList) */
@@ -333,7 +333,7 @@ corto_void _test_Copy_tc_listToExistingList(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToExistingListString(
+void _test_Copy_tc_listToExistingListString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToExistingListString) */
@@ -357,7 +357,7 @@ corto_void _test_Copy_tc_listToExistingListString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToExistingSequence(
+void _test_Copy_tc_listToExistingSequence(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToExistingSequence) */
@@ -382,7 +382,7 @@ corto_void _test_Copy_tc_listToExistingSequence(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToExistingSequenceString(
+void _test_Copy_tc_listToExistingSequenceString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToExistingSequenceString) */
@@ -408,7 +408,7 @@ corto_void _test_Copy_tc_listToExistingSequenceString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToList(
+void _test_Copy_tc_listToList(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToList) */
@@ -431,7 +431,7 @@ corto_void _test_Copy_tc_listToList(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToListAlloc(
+void _test_Copy_tc_listToListAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToListAlloc) */
@@ -454,7 +454,7 @@ corto_void _test_Copy_tc_listToListAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToListResize(
+void _test_Copy_tc_listToListResize(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToListResize) */
@@ -483,7 +483,7 @@ corto_void _test_Copy_tc_listToListResize(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToListResizeAlloc(
+void _test_Copy_tc_listToListResizeAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToListResizeAlloc) */
@@ -512,7 +512,7 @@ corto_void _test_Copy_tc_listToListResizeAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToListString(
+void _test_Copy_tc_listToListString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToListString) */
@@ -535,7 +535,7 @@ corto_void _test_Copy_tc_listToListString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToSequence(
+void _test_Copy_tc_listToSequence(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToSequence) */
@@ -559,7 +559,7 @@ corto_void _test_Copy_tc_listToSequence(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToSequenceAlloc(
+void _test_Copy_tc_listToSequenceAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToSequenceAlloc) */
@@ -583,7 +583,7 @@ corto_void _test_Copy_tc_listToSequenceAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_listToSequenceString(
+void _test_Copy_tc_listToSequenceString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_listToSequenceString) */
@@ -607,7 +607,7 @@ corto_void _test_Copy_tc_listToSequenceString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToExistingSequence(
+void _test_Copy_tc_sequenceToExistingSequence(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToExistingSequence) */
@@ -632,7 +632,7 @@ corto_void _test_Copy_tc_sequenceToExistingSequence(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToExistingSequenceString(
+void _test_Copy_tc_sequenceToExistingSequenceString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToExistingSequenceString) */
@@ -657,7 +657,7 @@ corto_void _test_Copy_tc_sequenceToExistingSequenceString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToExistingSequenceStringStack(
+void _test_Copy_tc_sequenceToExistingSequenceStringStack(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToExistingSequenceStringStack) */
@@ -690,7 +690,7 @@ corto_void _test_Copy_tc_sequenceToExistingSequenceStringStack(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
+void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToExistingSequenceStringStackLarger) */
@@ -724,7 +724,7 @@ corto_void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
+void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToExistingSequenceStringStackSmaller) */
@@ -756,7 +756,7 @@ corto_void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequence(
+void _test_Copy_tc_sequenceToSequence(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequence) */
@@ -780,7 +780,7 @@ corto_void _test_Copy_tc_sequenceToSequence(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceAlloc(
+void _test_Copy_tc_sequenceToSequenceAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceAlloc) */
@@ -804,7 +804,7 @@ corto_void _test_Copy_tc_sequenceToSequenceAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceComposite(
+void _test_Copy_tc_sequenceToSequenceComposite(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceComposite) */
@@ -832,7 +832,7 @@ corto_void _test_Copy_tc_sequenceToSequenceComposite(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceResize(
+void _test_Copy_tc_sequenceToSequenceResize(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceResize) */
@@ -863,7 +863,7 @@ corto_void _test_Copy_tc_sequenceToSequenceResize(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceResizeAlloc(
+void _test_Copy_tc_sequenceToSequenceResizeAlloc(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceResizeAlloc) */
@@ -894,7 +894,7 @@ corto_void _test_Copy_tc_sequenceToSequenceResizeAlloc(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceString(
+void _test_Copy_tc_sequenceToSequenceString(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceString) */
@@ -918,7 +918,7 @@ corto_void _test_Copy_tc_sequenceToSequenceString(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceStringStack(
+void _test_Copy_tc_sequenceToSequenceStringStack(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceStringStack) */
@@ -940,7 +940,7 @@ corto_void _test_Copy_tc_sequenceToSequenceStringStack(
 /* $end */
 }
 
-corto_void _test_Copy_tc_sequenceToSequenceValueComposite(
+void _test_Copy_tc_sequenceToSequenceValueComposite(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_sequenceToSequenceValueComposite) */
@@ -964,7 +964,7 @@ corto_void _test_Copy_tc_sequenceToSequenceValueComposite(
 /* $end */
 }
 
-corto_void _test_Copy_tc_string(
+void _test_Copy_tc_string(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_string) */

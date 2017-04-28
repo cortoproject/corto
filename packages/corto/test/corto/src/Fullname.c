@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Fullname_tc_anonymousAnonymous(
+void _test_Fullname_tc_anonymousAnonymous(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_anonymousAnonymous) */
@@ -25,7 +25,7 @@ corto_void _test_Fullname_tc_anonymousAnonymous(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_anonymousCollection(
+void _test_Fullname_tc_anonymousCollection(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_anonymousCollection) */
@@ -42,7 +42,7 @@ corto_void _test_Fullname_tc_anonymousCollection(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_anonymousComposite(
+void _test_Fullname_tc_anonymousComposite(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_anonymousComposite) */
@@ -60,7 +60,7 @@ corto_void _test_Fullname_tc_anonymousComposite(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_anonymousPrimitive(
+void _test_Fullname_tc_anonymousPrimitive(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_anonymousPrimitive) */
@@ -77,7 +77,7 @@ corto_void _test_Fullname_tc_anonymousPrimitive(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_fromLang(
+void _test_Fullname_tc_fromLang(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_fromLang) */
@@ -90,7 +90,7 @@ corto_void _test_Fullname_tc_fromLang(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_null(
+void _test_Fullname_tc_null(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_null) */
@@ -106,7 +106,7 @@ corto_void _test_Fullname_tc_null(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_nullBuffer(
+void _test_Fullname_tc_nullBuffer(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_nullBuffer) */
@@ -120,7 +120,7 @@ corto_void _test_Fullname_tc_nullBuffer(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_onelevel(
+void _test_Fullname_tc_onelevel(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_onelevel) */
@@ -133,7 +133,7 @@ corto_void _test_Fullname_tc_onelevel(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_root(
+void _test_Fullname_tc_root(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_root) */
@@ -146,7 +146,7 @@ corto_void _test_Fullname_tc_root(
 /* $end */
 }
 
-corto_void _test_Fullname_tc_twolevels(
+void _test_Fullname_tc_twolevels(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_twolevels) */

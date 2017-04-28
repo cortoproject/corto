@@ -87,7 +87,7 @@ corto_secure_accessKind* _corto_secure_accessKindAssign(corto_secure_accessKind*
 corto_string _corto_secure_accessKindStr(corto_secure_accessKind value) {
     corto_string result;
     corto_value v;
-    v = corto_value_value(corto_type(corto_secure_accessKind_o), &value);
+    v = corto_value_value(&value, corto_type(corto_secure_accessKind_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -105,7 +105,7 @@ corto_int16 _corto_secure_accessKindInit(corto_secure_accessKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_secure_accessKind_o)->size);
     corto_value v;
-    v = corto_value_value(corto_type(corto_secure_accessKind_o), value);
+    v = corto_value_value(value, corto_type(corto_secure_accessKind_o));
     result = corto_initv(&v);
     return result;
 }
@@ -113,7 +113,7 @@ corto_int16 _corto_secure_accessKindInit(corto_secure_accessKind* value) {
 corto_int16 _corto_secure_accessKindDeinit(corto_secure_accessKind* value) {
     corto_int16 result;
     corto_value v;
-    v = corto_value_value(corto_type(corto_secure_accessKind_o), value);
+    v = corto_value_value(value, corto_type(corto_secure_accessKind_o));
     result = corto_deinitv(&v);
     return result;
 }
@@ -198,7 +198,7 @@ corto_secure_actionKind* _corto_secure_actionKindAssign(corto_secure_actionKind*
 corto_string _corto_secure_actionKindStr(corto_secure_actionKind value) {
     corto_string result;
     corto_value v;
-    v = corto_value_value(corto_type(corto_secure_actionKind_o), &value);
+    v = corto_value_value(&value, corto_type(corto_secure_actionKind_o));
     result = corto_strv(&v, 0);
     return result;
 }
@@ -216,7 +216,7 @@ corto_int16 _corto_secure_actionKindInit(corto_secure_actionKind* value) {
     corto_int16 result;
     memset(value, 0, corto_type(corto_secure_actionKind_o)->size);
     corto_value v;
-    v = corto_value_value(corto_type(corto_secure_actionKind_o), value);
+    v = corto_value_value(value, corto_type(corto_secure_actionKind_o));
     result = corto_initv(&v);
     return result;
 }
@@ -224,7 +224,7 @@ corto_int16 _corto_secure_actionKindInit(corto_secure_actionKind* value) {
 corto_int16 _corto_secure_actionKindDeinit(corto_secure_actionKind* value) {
     corto_int16 result;
     corto_value v;
-    v = corto_value_value(corto_type(corto_secure_actionKind_o), value);
+    v = corto_value_value(value, corto_type(corto_secure_actionKind_o));
     result = corto_deinitv(&v);
     return result;
 }

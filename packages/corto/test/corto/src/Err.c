@@ -26,7 +26,7 @@ void tc_callback_callback(corto_err level, char *category[], char *msg, void* ct
     }
 }
 /* $end */
-corto_void _test_Err_tc_callback(
+void _test_Err_tc_callback(
     test_Err this)
 {
 /* $begin(test/Err/tc_callback) */
@@ -73,7 +73,7 @@ corto_void _test_Err_tc_callback(
 /* $end */
 }
 
-corto_void _test_Err_tc_category(
+void _test_Err_tc_category(
     test_Err this)
 {
 /* $begin(test/Err/tc_category) */
@@ -96,7 +96,7 @@ corto_void _test_Err_tc_category(
 /* $end */
 }
 
-corto_void _test_Err_tc_categoryColonNoCategory(
+void _test_Err_tc_categoryColonNoCategory(
     test_Err this)
 {
 /* $begin(test/Err/tc_categoryColonNoCategory) */
@@ -118,7 +118,7 @@ corto_void _test_Err_tc_categoryColonNoCategory(
 /* $end */
 }
 
-corto_void _test_Err_tc_categoryFilter(
+void _test_Err_tc_categoryFilter(
     test_Err this)
 {
 /* $begin(test/Err/tc_categoryFilter) */
@@ -147,7 +147,7 @@ corto_void _test_Err_tc_categoryFilter(
 /* $end */
 }
 
-corto_void _test_Err_tc_categoryFilterMulti(
+void _test_Err_tc_categoryFilterMulti(
     test_Err this)
 {
 /* $begin(test/Err/tc_categoryFilterMulti) */
@@ -176,7 +176,7 @@ corto_void _test_Err_tc_categoryFilterMulti(
 /* $end */
 }
 
-corto_void _test_Err_tc_categoryFilterWildcard(
+void _test_Err_tc_categoryFilterWildcard(
     test_Err this)
 {
 /* $begin(test/Err/tc_categoryFilterWildcard) */
@@ -205,7 +205,7 @@ corto_void _test_Err_tc_categoryFilterWildcard(
 /* $end */
 }
 
-corto_void _test_Err_tc_categoryMultiple(
+void _test_Err_tc_categoryMultiple(
     test_Err this)
 {
 /* $begin(test/Err/tc_categoryMultiple) */
@@ -227,7 +227,7 @@ corto_void _test_Err_tc_categoryMultiple(
 /* $end */
 }
 
-corto_void _test_Err_tc_categoryRecursive(
+void _test_Err_tc_categoryRecursive(
     test_Err this)
 {
 /* $begin(test/Err/tc_categoryRecursive) */
@@ -262,7 +262,7 @@ corto_void _test_Err_tc_categoryRecursive(
 /* $end */
 }
 
-corto_void _test_Err_tc_lasterr(
+void _test_Err_tc_lasterr(
     test_Err this)
 {
 /* $begin(test/Err/tc_lasterr) */
@@ -273,7 +273,7 @@ corto_void _test_Err_tc_lasterr(
 /* $end */
 }
 
-corto_void _test_Err_tc_lastinfo(
+void _test_Err_tc_lastinfo(
     test_Err this)
 {
 /* $begin(test/Err/tc_lastinfo) */

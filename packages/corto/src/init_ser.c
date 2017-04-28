@@ -8,7 +8,7 @@
 #include "corto/corto.h"
 
 corto_int16 corto_ser_initAny(corto_serializer s, corto_value* v, void* userData) {
-    corto_any *ptr = corto_value_getPtr(v);
+    corto_any *ptr = corto_value_ptrof(v);
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
     ptr->owner = TRUE;
@@ -19,8 +19,8 @@ corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* u
     corto_type t;
     void* o;
 
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     switch(corto_collection(t)->kind) {
         case CORTO_ARRAY:
@@ -48,9 +48,9 @@ corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userD
 
     /* If type is instanceof target, initialize member to a new target object */
     if (m->modifiers & CORTO_OBSERVABLE) {
-        corto_type t = corto_value_getType(v);
-        corto_object p = corto_value_getObject(v);
-        void* ptr = corto_value_getPtr(v);
+        corto_type t = corto_value_typeof(v);
+        corto_object p = corto_value_objectof(v);
+        void* ptr = corto_value_ptrof(v);
 
         /* Create observable that is not added to the scope of its parent */
         corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);

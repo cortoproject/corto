@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_ObjectMgmt_setup(
+void _test_ObjectMgmt_setup(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/setup) */
@@ -19,7 +19,7 @@ corto_void _test_ObjectMgmt_setup(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildFoo(
+void _test_ObjectMgmt_tc_createChildFoo(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildFoo) */
@@ -57,7 +57,7 @@ corto_void _test_ObjectMgmt_tc_createChildFoo(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildFooAttr0(
+void _test_ObjectMgmt_tc_createChildFooAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildFooAttr0) */
@@ -96,7 +96,7 @@ corto_void _test_ObjectMgmt_tc_createChildFooAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildInitFail(
+void _test_ObjectMgmt_tc_createChildInitFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildInitFail) */
@@ -108,7 +108,7 @@ corto_void _test_ObjectMgmt_tc_createChildInitFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildInt(
+void _test_ObjectMgmt_tc_createChildInt(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildInt) */
@@ -138,7 +138,7 @@ corto_void _test_ObjectMgmt_tc_createChildInt(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildIntAttr0(
+void _test_ObjectMgmt_tc_createChildIntAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildIntAttr0) */
@@ -169,7 +169,7 @@ corto_void _test_ObjectMgmt_tc_createChildIntAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildInvalidType(
+void _test_ObjectMgmt_tc_createChildInvalidType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildInvalidType) */
@@ -195,7 +195,7 @@ corto_void _test_ObjectMgmt_tc_createChildInvalidType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildNested(
+void _test_ObjectMgmt_tc_createChildNested(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildNested) */
@@ -256,7 +256,7 @@ corto_void _test_ObjectMgmt_tc_createChildNested(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildNullType(
+void _test_ObjectMgmt_tc_createChildNullType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildNullType) */
@@ -268,7 +268,7 @@ corto_void _test_ObjectMgmt_tc_createChildNullType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildParentStateErr(
+void _test_ObjectMgmt_tc_createChildParentStateErr(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildParentStateErr) */
@@ -291,7 +291,7 @@ corto_void _test_ObjectMgmt_tc_createChildParentStateErr(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildParentTypeErr(
+void _test_ObjectMgmt_tc_createChildParentTypeErr(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildParentTypeErr) */
@@ -314,7 +314,7 @@ corto_void _test_ObjectMgmt_tc_createChildParentTypeErr(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildVoid(
+void _test_ObjectMgmt_tc_createChildVoid(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildVoid) */
@@ -344,7 +344,7 @@ corto_void _test_ObjectMgmt_tc_createChildVoid(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createChildVoidAttr0(
+void _test_ObjectMgmt_tc_createChildVoidAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createChildVoidAttr0) */
@@ -375,7 +375,7 @@ corto_void _test_ObjectMgmt_tc_createChildVoidAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createFoo(
+void _test_ObjectMgmt_tc_createFoo(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createFoo) */
@@ -404,7 +404,7 @@ corto_void _test_ObjectMgmt_tc_createFoo(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createFooAttr0(
+void _test_ObjectMgmt_tc_createFooAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createFooAttr0) */
@@ -434,7 +434,7 @@ corto_void _test_ObjectMgmt_tc_createFooAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createInitFail(
+void _test_ObjectMgmt_tc_createInitFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createInitFail) */
@@ -446,7 +446,7 @@ corto_void _test_ObjectMgmt_tc_createInitFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createInt(
+void _test_ObjectMgmt_tc_createInt(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createInt) */
@@ -466,7 +466,7 @@ corto_void _test_ObjectMgmt_tc_createInt(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createIntAttr0(
+void _test_ObjectMgmt_tc_createIntAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createIntAttr0) */
@@ -487,7 +487,7 @@ corto_void _test_ObjectMgmt_tc_createIntAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createInvalidType(
+void _test_ObjectMgmt_tc_createInvalidType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createInvalidType) */
@@ -530,7 +530,7 @@ corto_void onCreateNested(
     if (event & CORTO_ON_SUSPEND) counter->suspendCount++;
 }
 /* $end */
-corto_void _test_ObjectMgmt_tc_createNested(
+void _test_ObjectMgmt_tc_createNested(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createNested) */
@@ -578,7 +578,7 @@ corto_void _test_ObjectMgmt_tc_createNested(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createNestedFirstFail(
+void _test_ObjectMgmt_tc_createNestedFirstFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createNestedFirstFail) */
@@ -604,7 +604,7 @@ corto_void _test_ObjectMgmt_tc_createNestedFirstFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createNestedLastFail(
+void _test_ObjectMgmt_tc_createNestedLastFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createNestedLastFail) */
@@ -630,7 +630,7 @@ corto_void _test_ObjectMgmt_tc_createNestedLastFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createNestedSecondFail(
+void _test_ObjectMgmt_tc_createNestedSecondFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createNestedSecondFail) */
@@ -656,7 +656,7 @@ corto_void _test_ObjectMgmt_tc_createNestedSecondFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createNullType(
+void _test_ObjectMgmt_tc_createNullType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createNullType) */
@@ -668,7 +668,7 @@ corto_void _test_ObjectMgmt_tc_createNullType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createVoid(
+void _test_ObjectMgmt_tc_createVoid(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createVoid) */
@@ -688,7 +688,7 @@ corto_void _test_ObjectMgmt_tc_createVoid(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_createVoidAttr0(
+void _test_ObjectMgmt_tc_createVoidAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_createVoidAttr0) */
@@ -709,7 +709,7 @@ corto_void _test_ObjectMgmt_tc_createVoidAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildFoo(
+void _test_ObjectMgmt_tc_declareChildFoo(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildFoo) */
@@ -747,7 +747,7 @@ corto_void _test_ObjectMgmt_tc_declareChildFoo(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildFooAttr0(
+void _test_ObjectMgmt_tc_declareChildFooAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildFooAttr0) */
@@ -786,7 +786,7 @@ corto_void _test_ObjectMgmt_tc_declareChildFooAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildInitFail(
+void _test_ObjectMgmt_tc_declareChildInitFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildInitFail) */
@@ -798,7 +798,7 @@ corto_void _test_ObjectMgmt_tc_declareChildInitFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildInt(
+void _test_ObjectMgmt_tc_declareChildInt(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildInt) */
@@ -832,7 +832,7 @@ corto_void _test_ObjectMgmt_tc_declareChildInt(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildIntAttr0(
+void _test_ObjectMgmt_tc_declareChildIntAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildIntAttr0) */
@@ -863,7 +863,7 @@ corto_void _test_ObjectMgmt_tc_declareChildIntAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildInvalidType(
+void _test_ObjectMgmt_tc_declareChildInvalidType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildInvalidType) */
@@ -889,7 +889,7 @@ corto_void _test_ObjectMgmt_tc_declareChildInvalidType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildNullType(
+void _test_ObjectMgmt_tc_declareChildNullType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildNullType) */
@@ -901,7 +901,7 @@ corto_void _test_ObjectMgmt_tc_declareChildNullType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildParentStateErr(
+void _test_ObjectMgmt_tc_declareChildParentStateErr(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildParentStateErr) */
@@ -924,7 +924,7 @@ corto_void _test_ObjectMgmt_tc_declareChildParentStateErr(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildParentTypeErr(
+void _test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildParentTypeErr) */
@@ -947,7 +947,7 @@ corto_void _test_ObjectMgmt_tc_declareChildParentTypeErr(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildVoid(
+void _test_ObjectMgmt_tc_declareChildVoid(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildVoid) */
@@ -977,7 +977,7 @@ corto_void _test_ObjectMgmt_tc_declareChildVoid(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareChildVoidAttr0(
+void _test_ObjectMgmt_tc_declareChildVoidAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareChildVoidAttr0) */
@@ -1008,7 +1008,7 @@ corto_void _test_ObjectMgmt_tc_declareChildVoidAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareExistingWithParentState(
+void _test_ObjectMgmt_tc_declareExistingWithParentState(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareExistingWithParentState) */
@@ -1037,7 +1037,7 @@ corto_void _test_ObjectMgmt_tc_declareExistingWithParentState(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareFoo(
+void _test_ObjectMgmt_tc_declareFoo(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareFoo) */
@@ -1066,7 +1066,7 @@ corto_void _test_ObjectMgmt_tc_declareFoo(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareFooAttr0(
+void _test_ObjectMgmt_tc_declareFooAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareFooAttr0) */
@@ -1097,7 +1097,7 @@ corto_void _test_ObjectMgmt_tc_declareFooAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareInitFail(
+void _test_ObjectMgmt_tc_declareInitFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareInitFail) */
@@ -1109,7 +1109,7 @@ corto_void _test_ObjectMgmt_tc_declareInitFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareInt(
+void _test_ObjectMgmt_tc_declareInt(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareInt) */
@@ -1129,7 +1129,7 @@ corto_void _test_ObjectMgmt_tc_declareInt(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareIntAttr0(
+void _test_ObjectMgmt_tc_declareIntAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareIntAttr0) */
@@ -1150,7 +1150,7 @@ corto_void _test_ObjectMgmt_tc_declareIntAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareInvalidType(
+void _test_ObjectMgmt_tc_declareInvalidType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareInvalidType) */
@@ -1193,7 +1193,7 @@ corto_void onDeclareNested(
     if (event & CORTO_ON_SUSPEND) counter->suspendCount++;
 }
 /* $end */
-corto_void _test_ObjectMgmt_tc_declareNested(
+void _test_ObjectMgmt_tc_declareNested(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareNested) */
@@ -1242,7 +1242,7 @@ corto_void _test_ObjectMgmt_tc_declareNested(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareNestedFirstFail(
+void _test_ObjectMgmt_tc_declareNestedFirstFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareNestedFirstFail) */
@@ -1268,7 +1268,7 @@ corto_void _test_ObjectMgmt_tc_declareNestedFirstFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareNestedLastFail(
+void _test_ObjectMgmt_tc_declareNestedLastFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareNestedLastFail) */
@@ -1294,7 +1294,7 @@ corto_void _test_ObjectMgmt_tc_declareNestedLastFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareNestedSecondFail(
+void _test_ObjectMgmt_tc_declareNestedSecondFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareNestedSecondFail) */
@@ -1320,7 +1320,7 @@ corto_void _test_ObjectMgmt_tc_declareNestedSecondFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareNullType(
+void _test_ObjectMgmt_tc_declareNullType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareNullType) */
@@ -1332,7 +1332,7 @@ corto_void _test_ObjectMgmt_tc_declareNullType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareOrphan(
+void _test_ObjectMgmt_tc_declareOrphan(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareOrphan) */
@@ -1358,7 +1358,7 @@ corto_void _test_ObjectMgmt_tc_declareOrphan(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareScoped(
+void _test_ObjectMgmt_tc_declareScoped(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareScoped) */
@@ -1404,7 +1404,7 @@ corto_void _test_ObjectMgmt_tc_declareScoped(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareVoid(
+void _test_ObjectMgmt_tc_declareVoid(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareVoid) */
@@ -1424,7 +1424,7 @@ corto_void _test_ObjectMgmt_tc_declareVoid(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_declareVoidAttr0(
+void _test_ObjectMgmt_tc_declareVoidAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_declareVoidAttr0) */
@@ -1445,7 +1445,7 @@ corto_void _test_ObjectMgmt_tc_declareVoidAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineFoo(
+void _test_ObjectMgmt_tc_defineFoo(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineFoo) */
@@ -1483,7 +1483,7 @@ corto_void _test_ObjectMgmt_tc_defineFoo(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineFooAttr0(
+void _test_ObjectMgmt_tc_defineFooAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineFooAttr0) */
@@ -1522,7 +1522,7 @@ corto_void _test_ObjectMgmt_tc_defineFooAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineFooFail(
+void _test_ObjectMgmt_tc_defineFooFail(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineFooFail) */
@@ -1574,7 +1574,7 @@ corto_void _test_ObjectMgmt_tc_defineFooFail(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineInt(
+void _test_ObjectMgmt_tc_defineInt(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineInt) */
@@ -1595,7 +1595,7 @@ corto_void _test_ObjectMgmt_tc_defineInt(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineIntAttr0(
+void _test_ObjectMgmt_tc_defineIntAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineIntAttr0) */
@@ -1617,7 +1617,7 @@ corto_void _test_ObjectMgmt_tc_defineIntAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineVoid(
+void _test_ObjectMgmt_tc_defineVoid(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineVoid) */
@@ -1639,7 +1639,7 @@ corto_void _test_ObjectMgmt_tc_defineVoid(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_defineVoidAttr0(
+void _test_ObjectMgmt_tc_defineVoidAttr0(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_defineVoidAttr0) */
@@ -1662,7 +1662,7 @@ corto_void _test_ObjectMgmt_tc_defineVoidAttr0(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
+void _test_ObjectMgmt_tc_deleteRedeclaration(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_deleteRedeclaration) */
@@ -1732,7 +1732,7 @@ corto_void _test_ObjectMgmt_tc_deleteRedeclaration(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_deleteSingle(
+void _test_ObjectMgmt_tc_deleteSingle(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_deleteSingle) */
@@ -1775,7 +1775,7 @@ corto_void _test_ObjectMgmt_tc_deleteSingle(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_deleteTreeExplicit(
+void _test_ObjectMgmt_tc_deleteTreeExplicit(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_deleteTreeExplicit) */
@@ -1859,7 +1859,7 @@ corto_void _test_ObjectMgmt_tc_deleteTreeExplicit(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_deleteTreeImplicit(
+void _test_ObjectMgmt_tc_deleteTreeImplicit(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_deleteTreeImplicit) */
@@ -1923,7 +1923,7 @@ corto_void _test_ObjectMgmt_tc_deleteTreeImplicit(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_deleteWithReference(
+void _test_ObjectMgmt_tc_deleteWithReference(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_deleteWithReference) */
@@ -1976,7 +1976,7 @@ corto_void _test_ObjectMgmt_tc_deleteWithReference(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_findOrCreate(
+void _test_ObjectMgmt_tc_findOrCreate(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrCreate) */
@@ -1998,7 +1998,7 @@ corto_void _test_ObjectMgmt_tc_findOrCreate(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_findOrCreateExisting(
+void _test_ObjectMgmt_tc_findOrCreateExisting(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrCreateExisting) */
@@ -2020,7 +2020,7 @@ corto_void _test_ObjectMgmt_tc_findOrCreateExisting(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
+void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrCreateExistingOtherType) */
@@ -2041,7 +2041,7 @@ corto_void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_findOrDeclare(
+void _test_ObjectMgmt_tc_findOrDeclare(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrDeclare) */
@@ -2062,7 +2062,7 @@ corto_void _test_ObjectMgmt_tc_findOrDeclare(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_findOrDeclareExisting(
+void _test_ObjectMgmt_tc_findOrDeclareExisting(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrDeclareExisting) */
@@ -2084,7 +2084,7 @@ corto_void _test_ObjectMgmt_tc_findOrDeclareExisting(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
+void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_findOrDeclareExistingOtherType) */
@@ -2105,7 +2105,7 @@ corto_void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_invalidate(
+void _test_ObjectMgmt_tc_invalidate(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_invalidate) */
@@ -2125,7 +2125,7 @@ corto_void _test_ObjectMgmt_tc_invalidate(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_nameof(
+void _test_ObjectMgmt_tc_nameof(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_nameof) */
@@ -2136,7 +2136,7 @@ corto_void _test_ObjectMgmt_tc_nameof(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_nameofOverride(
+void _test_ObjectMgmt_tc_nameofOverride(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_nameofOverride) */
@@ -2147,7 +2147,7 @@ corto_void _test_ObjectMgmt_tc_nameofOverride(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_tc_redeclareWithDifferentType(
+void _test_ObjectMgmt_tc_redeclareWithDifferentType(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/tc_redeclareWithDifferentType) */
@@ -2174,7 +2174,7 @@ corto_void _test_ObjectMgmt_tc_redeclareWithDifferentType(
 /* $end */
 }
 
-corto_void _test_ObjectMgmt_teardown(
+void _test_ObjectMgmt_teardown(
     test_ObjectMgmt this)
 {
 /* $begin(test/ObjectMgmt/teardown) */

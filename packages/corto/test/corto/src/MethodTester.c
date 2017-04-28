@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_MethodTester_onearg(
+void _test_MethodTester_onearg(
     test_MethodTester this,
     int32_t a)
 {
@@ -19,7 +19,7 @@ corto_void _test_MethodTester_onearg(
 /* $end */
 }
 
-corto_void _test_MethodTester_overload__test_MethodTester(
+void _test_MethodTester_overload__test_MethodTester(
     test_MethodTester this,
     test_MethodTester m)
 {
@@ -30,7 +30,7 @@ corto_void _test_MethodTester_overload__test_MethodTester(
 /* $end */
 }
 
-corto_void _test_MethodTester_overload_int32(
+void _test_MethodTester_overload_int32(
     test_MethodTester this,
     int32_t a)
 {
@@ -41,7 +41,7 @@ corto_void _test_MethodTester_overload_int32(
 /* $end */
 }
 
-corto_void _test_MethodTester_overload_int32_int32(
+void _test_MethodTester_overload_int32_int32(
     test_MethodTester this,
     int32_t a,
     int32_t b)
@@ -53,7 +53,7 @@ corto_void _test_MethodTester_overload_int32_int32(
 /* $end */
 }
 
-corto_void _test_MethodTester_overload_string(
+void _test_MethodTester_overload_string(
     test_MethodTester this,
     corto_string a)
 {
@@ -64,7 +64,7 @@ corto_void _test_MethodTester_overload_string(
 /* $end */
 }
 
-corto_void _test_MethodTester_simple(
+void _test_MethodTester_simple(
     test_MethodTester this)
 {
 /* $begin(test/MethodTester/simple) */
@@ -74,7 +74,7 @@ corto_void _test_MethodTester_simple(
 /* $end */
 }
 
-corto_void _test_MethodTester_twoargs(
+void _test_MethodTester_twoargs(
     test_MethodTester this,
     int32_t a,
     int32_t b)
@@ -86,7 +86,7 @@ corto_void _test_MethodTester_twoargs(
 /* $end */
 }
 
-corto_void _test_MethodTester_virtualOverload__v(
+void _test_MethodTester_virtualOverload__v(
     test_MethodTester this)
 {
 /* $begin(test/MethodTester/virtualOverload()) */
@@ -96,7 +96,7 @@ corto_void _test_MethodTester_virtualOverload__v(
 /* $end */
 }
 
-corto_void _test_MethodTester_virtualOverload_int32(
+void _test_MethodTester_virtualOverload_int32(
     test_MethodTester this,
     int32_t a)
 {
@@ -107,7 +107,7 @@ corto_void _test_MethodTester_virtualOverload_int32(
 /* $end */
 }
 
-corto_void _test_MethodTester_virtualSimple_v(
+void _test_MethodTester_virtualSimple_v(
     test_MethodTester this)
 {
 /* $begin(test/MethodTester/virtualSimple) */

@@ -7,7 +7,6 @@
 
 #include "corto/corto.h"
 #include "_object.h"
-#include "lang/_collection.h"
 
 /*#define CORTO_SERIALIZER_TRACING*/
 #ifdef CORTO_SERIALIZER_TRACING
@@ -15,13 +14,13 @@ static int indent = 0;
 #endif
 
 /* Forward value to the right callback function */
-corto_int16 corto_serializeValue(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_serializeValue(corto_serializer this, corto_value* info, void* userData) {
     corto_type t;
-    corto_int16 result;
+    int16_t result;
     corto_serializerCallback cb;
     corto_bool isObservable = (info->kind == CORTO_MEMBER) && (info->is.member.t->modifiers & CORTO_OBSERVABLE);
 
-    t = corto_value_getType(info);
+    t = corto_value_typeof(info);
 
     cb = NULL;
 
@@ -49,7 +48,7 @@ corto_int16 corto_serializeValue(corto_serializer this, corto_value* info, void*
         cb = this->program[t->kind];
     }
     if (isObservable) {
-        corto_value_setPtr(info, *(void**)corto_value_getPtr(info));
+        corto_value_ptrset(info, *(void**)corto_value_ptrof(info));
     }
 
     result = 0;
@@ -78,10 +77,10 @@ void corto_serializerInit(corto_serializer this) {
 }
 
 /* Start serializing */
-corto_int16 corto_serialize(corto_serializer this, corto_object o, void* userData) {
+int16_t corto_serialize(corto_serializer this, corto_object o, void* userData) {
     corto_value info;
     corto_serializerCallback cb;
-    corto_int16 result;
+    int16_t result;
 
     if (this->initialized != TRUE) {
         corto_assert(0, "serializer is not initialized!");
@@ -125,7 +124,7 @@ error:
 }
 
 /* Destruct serializerdata */
-corto_int16 corto_serializeDestruct(corto_serializer this, void* userData) {
+int16_t corto_serializeDestruct(corto_serializer this, void* userData) {
     if (this->destruct) {
         if (this->destruct(this, userData)) {
             goto error;
@@ -158,16 +157,16 @@ corto_bool corto_serializeMatchAccess(corto_operatorKind accessKind, corto_modif
 }
 
 /* Serialize any-value */
-corto_int16 corto_serializeAny(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_serializeAny(corto_serializer this, corto_value* info, void* userData) {
     corto_value v;
     corto_any *any;
-    corto_int16 result = 0;
+    int16_t result = 0;
 
-    any = corto_value_getPtr(info);
+    any = corto_value_ptrof(info);
 
     if (any->type) {
         v.parent = info;
-        v = corto_value_value(corto_type(any->type), any->value);
+        v = corto_value_value(any->value, corto_type(any->type));
         result = corto_serializeValue(this, &v, userData);
     }
 
@@ -175,7 +174,7 @@ corto_int16 corto_serializeAny(corto_serializer this, corto_value* info, void* u
 }
 
 /* Serialize a single member */
-static corto_int16 corto_serializeMember(
+static int16_t corto_serializeMember(
     corto_serializer this,
     corto_member m,
     corto_object o,
@@ -236,7 +235,7 @@ error:
 }
 
 /* Serialize members */
-corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_serializeMembers(corto_serializer this, corto_value* info, void* userData) {
     corto_interface t;
     corto_void* v;
     corto_uint32 i;
@@ -244,9 +243,9 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
     corto_serializerCallback cb;
     corto_object o;
 
-    t = corto_interface(corto_value_getType(info));
-    v = corto_value_getPtr(info);
-    o = corto_value_getObject(info);
+    t = corto_interface(corto_value_typeof(info));
+    v = corto_value_ptrof(info);
+    o = corto_value_objectof(info);
 
     /* Process inheritance */
     if (!this->members.length) {
@@ -291,7 +290,7 @@ corto_int16 corto_serializeMembers(corto_serializer this, corto_value* info, voi
             m = this->members.buffer[i];
             if (corto_serializeMember(this, m, o, v, cb, info, userData)) {
                 goto error;
-            }            
+            }
         }
     } else if (!this->visitAllCases && (corto_typeof(t) == corto_type(corto_union_o))) {
         corto_int32 discriminator = *(corto_int32*)v;
@@ -354,19 +353,47 @@ error:
     return 0;
 }
 
+typedef struct __dummySeq {
+    corto_uint32 length;
+    void* buffer;
+}__dummySeq;
+
+static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint32 length, corto_walkAction action, corto_void* userData) {
+    void* v;
+    int result;
+    corto_type elementType;
+    corto_uint32 elementSize, i;
+
+    result = 1;
+
+    if (array) {
+        elementType = this->elementType;
+        elementSize = corto_type_sizeof(elementType);
+        v = array;
+
+        result = 1;
+        for(i=0; (i<length) && result; i++) {
+            result = action(v, userData);
+            v = CORTO_OFFSET(v, elementSize);
+        }
+    }
+
+    return result;
+}
+
 /* Serialize elements */
-corto_int16 corto_serializeElements(corto_serializer this, corto_value* info, void* userData) {
+int16_t corto_serializeElements(corto_serializer this, corto_value* info, void* userData) {
     struct corto_serializeElement_t walkData;
     corto_collection t;
     corto_void* v;
     corto_value elementInfo;
 
-    t = corto_collection(corto_value_getType(info));
-    v = corto_value_getPtr(info);
+    t = corto_collection(corto_value_typeof(info));
+    v = corto_value_ptrof(info);
 
     /* Value object for element */
     elementInfo.kind = CORTO_ELEMENT;
-    elementInfo.is.element.o = corto_value_getObject(info);
+    elementInfo.is.element.o = corto_value_objectof(info);
     elementInfo.parent = info;
     elementInfo.is.element.t.type = t->elementType;
     elementInfo.is.element.t.index = 0;
@@ -381,12 +408,38 @@ corto_int16 corto_serializeElements(corto_serializer this, corto_value* info, vo
         walkData.cb = corto_serializeValue;
     }
 
-    /* Walk elements */
-    if (!corto_walk(t, v, corto_serializeElement, &walkData)) {
-        goto error;
+    int16_t result = 1;
+
+    switch(t->kind) {
+    case CORTO_ARRAY:
+        result = corto_arrayWalk(t, v, t->max, corto_serializeElement, &walkData);
+        break;
+    case CORTO_SEQUENCE:
+        result = corto_arrayWalk(t, ((__dummySeq*)v)->buffer, ((__dummySeq*)v)->length, corto_serializeElement, &walkData);
+        break;
+    case CORTO_LIST: {
+        corto_ll list = *(corto_ll*)v;
+        if (list) {
+            if (corto_collection_requiresAlloc(t->elementType)) {
+                result = corto_llWalk(list, corto_serializeElement, &walkData);
+            } else {
+                result = corto_llWalkPtr(list, corto_serializeElement, &walkData);
+            }
+        }
+        break;
+    }
+    case CORTO_MAP: {
+        corto_rbtree tree = *(corto_rbtree*)v;
+        if (tree) {
+            if (corto_collection_requiresAlloc(t->elementType)) {
+                result = corto_rbtreeWalk(tree, corto_serializeElement, &walkData);
+            } else {
+                result = corto_rbtreeWalkPtr(tree, corto_serializeElement, &walkData);
+            }
+        }
+        break;
+    }
     }
 
-    return 0;
-error:
-    return -1;
+    return !result;
 }

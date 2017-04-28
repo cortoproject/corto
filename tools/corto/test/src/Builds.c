@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Builds_setup(
+void _test_Builds_setup(
     test_Builds this)
 {
 /* $begin(test/Builds/setup) */
@@ -19,7 +19,7 @@ corto_void _test_Builds_setup(
 /* $end */
 }
 
-corto_void _test_Builds_tc_appDef(
+void _test_Builds_tc_appDef(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_appDef) */
@@ -41,7 +41,7 @@ corto_void _test_Builds_tc_appDef(
 /* $end */
 }
 
-corto_void _test_Builds_tc_appDefObject(
+void _test_Builds_tc_appDefObject(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_appDefObject) */
@@ -63,7 +63,7 @@ corto_void _test_Builds_tc_appDefObject(
 /* $end */
 }
 
-corto_void _test_Builds_tc_appLocalDef(
+void _test_Builds_tc_appLocalDef(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_appLocalDef) */
@@ -85,7 +85,7 @@ corto_void _test_Builds_tc_appLocalDef(
 /* $end */
 }
 
-corto_void _test_Builds_tc_appLocalDefObject(
+void _test_Builds_tc_appLocalDefObject(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_appLocalDefObject) */
@@ -107,7 +107,7 @@ corto_void _test_Builds_tc_appLocalDefObject(
 /* $end */
 }
 
-corto_void _test_Builds_tc_appNested(
+void _test_Builds_tc_appNested(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_appNested) */
@@ -133,7 +133,7 @@ corto_void _test_Builds_tc_appNested(
 /* $end */
 }
 
-corto_void _test_Builds_tc_appNestedDef(
+void _test_Builds_tc_appNestedDef(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_appNestedDef) */
@@ -159,7 +159,7 @@ corto_void _test_Builds_tc_appNestedDef(
 /* $end */
 }
 
-corto_void _test_Builds_tc_packageNoDef(
+void _test_Builds_tc_packageNoDef(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_packageNoDef) */
@@ -189,7 +189,7 @@ corto_void _test_Builds_tc_packageNoDef(
 /* $end */
 }
 
-corto_void _test_Builds_tc_runDirect(
+void _test_Builds_tc_runDirect(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_runDirect) */
@@ -211,7 +211,7 @@ corto_void _test_Builds_tc_runDirect(
 /* $end */
 }
 
-corto_void _test_Builds_tc_runFromParent(
+void _test_Builds_tc_runFromParent(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_runFromParent) */
@@ -233,7 +233,7 @@ corto_void _test_Builds_tc_runFromParent(
 /* $end */
 }
 
-corto_void _test_Builds_tc_runFromProject(
+void _test_Builds_tc_runFromProject(
     test_Builds this)
 {
 /* $begin(test/Builds/tc_runFromProject) */

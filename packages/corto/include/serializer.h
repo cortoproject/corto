@@ -18,9 +18,9 @@ extern "C" {
 
 CORTO_CLASS(corto_serializer);
 
-typedef corto_int16 ___ (*corto_serializerCallback)(corto_serializer _this, corto_value *v, void* userData);
-typedef corto_int16 ___ (*corto_serializerConstruct)(corto_serializer _this, corto_value *v, void* userData);
-typedef corto_int16 ___ (*corto_serializerDestruct)(corto_serializer _this, void* userData);
+typedef int16_t ___ (*corto_serializerCallback)(corto_serializer _this, corto_value *v, void* userData);
+typedef int16_t ___ (*corto_serializerConstruct)(corto_serializer _this, corto_value *v, void* userData);
+typedef int16_t ___ (*corto_serializerDestruct)(corto_serializer _this, void* userData);
 
 typedef enum corto_serializerTraceKind {
     CORTO_SERIALIZER_TRACE_ALWAYS,
@@ -40,13 +40,13 @@ typedef enum corto_optionalActionKind {
 } corto_optionalActionKind;
 
 CORTO_CLASS_DEF(corto_serializer) {
-    corto_bool initialized;
-    corto_bool constructed;
+    bool initialized;
+    bool constructed;
     corto_modifier access;
     corto_operatorKind accessKind; /* OR, XOR, NOT */
     corto_aliasActionKind aliasAction;
     corto_optionalActionKind optionalAction;
-    corto_bool visitAllCases; /* If TRUE, serializer will visit all union cases */
+    bool visitAllCases; /* If TRUE, serializer will visit all union cases */
     corto_objectseq members; /* Only serialize specified members */
     corto_serializerTraceKind traceKind;
     corto_serializerConstruct construct;
@@ -56,13 +56,13 @@ CORTO_CLASS_DEF(corto_serializer) {
     corto_serializerCallback reference;
 };
 
-CORTO_EXPORT corto_int16 corto_serialize(corto_serializer _this, corto_object o, void* userData);
+CORTO_EXPORT int16_t corto_serialize(corto_serializer _this, corto_object o, void* userData);
 CORTO_EXPORT void corto_serializerInit(corto_serializer _this);
-CORTO_EXPORT corto_int16 corto_serializeDestruct(corto_serializer _this, void* userData);
-CORTO_EXPORT corto_int16 corto_serializeAny(corto_serializer _this, corto_value* info, void* userData);
-CORTO_EXPORT corto_int16 corto_serializeMembers(corto_serializer _this, corto_value* info, void* userData);
-CORTO_EXPORT corto_int16 corto_serializeElements(corto_serializer _this, corto_value* info, void* userData);
-CORTO_EXPORT corto_int16 corto_serializeValue(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT int16_t corto_serializeDestruct(corto_serializer _this, void* userData);
+CORTO_EXPORT int16_t corto_serializeAny(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT int16_t corto_serializeMembers(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT int16_t corto_serializeElements(corto_serializer _this, corto_value* info, void* userData);
+CORTO_EXPORT int16_t corto_serializeValue(corto_serializer _this, corto_value* info, void* userData);
 
 #ifdef __cplusplus
 }

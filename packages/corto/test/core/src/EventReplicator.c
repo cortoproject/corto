@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_EventReplicator_onNotify(
+void _test_EventReplicator_onNotify(
     test_EventReplicator this,
     corto_eventMask event,
     corto_result *object)

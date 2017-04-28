@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
+void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeSameIdDifferentCase) */
@@ -55,7 +55,7 @@ corto_void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeScope(
+void _test_MountSubscription_tc_subscribeScope(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeScope) */
@@ -90,7 +90,7 @@ corto_void _test_MountSubscription_tc_subscribeScope(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeScopeAlign(
+void _test_MountSubscription_tc_subscribeScopeAlign(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeScopeAlign) */
@@ -126,7 +126,7 @@ corto_void _test_MountSubscription_tc_subscribeScopeAlign(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeScopeTwice(
+void _test_MountSubscription_tc_subscribeScopeTwice(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeScopeTwice) */
@@ -172,7 +172,7 @@ corto_void _test_MountSubscription_tc_subscribeScopeTwice(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
+void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeScopeTwiceSameSubscriber) */
@@ -219,7 +219,7 @@ corto_void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeSingle(
+void _test_MountSubscription_tc_subscribeSingle(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeSingle) */
@@ -254,7 +254,7 @@ corto_void _test_MountSubscription_tc_subscribeSingle(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeSingleAlign(
+void _test_MountSubscription_tc_subscribeSingleAlign(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeSingleAlign) */
@@ -290,7 +290,7 @@ corto_void _test_MountSubscription_tc_subscribeSingleAlign(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeSingleTwice(
+void _test_MountSubscription_tc_subscribeSingleTwice(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeSingleTwice) */
@@ -336,7 +336,7 @@ corto_void _test_MountSubscription_tc_subscribeSingleTwice(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
+void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeSingleTwiceSameSubscriber) */
@@ -383,7 +383,7 @@ corto_void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTree(
+void _test_MountSubscription_tc_subscribeTree(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTree) */
@@ -527,7 +527,7 @@ corto_void _test_MountSubscription_tc_subscribeTree(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeAlign(
+void _test_MountSubscription_tc_subscribeTreeAlign(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeAlign) */
@@ -673,7 +673,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeAlign(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeDefine(
+void _test_MountSubscription_tc_subscribeTreeDefine(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeDefine) */
@@ -683,7 +683,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeDefine(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeDefineNested(
+void _test_MountSubscription_tc_subscribeTreeDefineNested(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeDefineNested) */
@@ -693,7 +693,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeDefineNested(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeDelete(
+void _test_MountSubscription_tc_subscribeTreeDelete(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeDelete) */
@@ -703,7 +703,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeDelete(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeDeleteNested(
+void _test_MountSubscription_tc_subscribeTreeDeleteNested(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeDeleteNested) */
@@ -713,7 +713,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeDeleteNested(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeTwice(
+void _test_MountSubscription_tc_subscribeTreeTwice(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeTwice) */
@@ -867,7 +867,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeTwice(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
+void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTreeTwiceSameSubscriber) */
@@ -1022,7 +1022,7 @@ corto_void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
+void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTwoSingleOtherCtx) */
@@ -1077,7 +1077,7 @@ corto_void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
 /* $end */
 }
 
-corto_void _test_MountSubscription_tc_subscribeTwoSingleSameCtx(
+void _test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     test_MountSubscription this)
 {
 /* $begin(test/MountSubscription/tc_subscribeTwoSingleSameCtx) */

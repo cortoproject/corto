@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_SelectSink_setup(
+void _test_SelectSink_setup(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/setup) */
@@ -23,7 +23,7 @@ corto_void _test_SelectSink_setup(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectMixedScope(
+void _test_SelectSink_tc_selectMixedScope(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectMixedScope) */
@@ -77,7 +77,7 @@ corto_void _test_SelectSink_tc_selectMixedScope(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectMixedScopeNested1(
+void _test_SelectSink_tc_selectMixedScopeNested1(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectMixedScopeNested1) */
@@ -131,7 +131,7 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested1(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectMixedScopeNested2(
+void _test_SelectSink_tc_selectMixedScopeNested2(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectMixedScopeNested2) */
@@ -186,7 +186,7 @@ corto_void _test_SelectSink_tc_selectMixedScopeNested2(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectMountInResult(
+void _test_SelectSink_tc_selectMountInResult(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectMountInResult) */
@@ -213,7 +213,7 @@ corto_void _test_SelectSink_tc_selectMountInResult(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectScope(
+void _test_SelectSink_tc_selectScope(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectScope) */
@@ -252,7 +252,7 @@ corto_void _test_SelectSink_tc_selectScope(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectSingle(
+void _test_SelectSink_tc_selectSingle(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectSingle) */
@@ -275,7 +275,7 @@ corto_void _test_SelectSink_tc_selectSingle(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectSingleTypeFilter(
+void _test_SelectSink_tc_selectSingleTypeFilter(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectSingleTypeFilter) */
@@ -302,7 +302,7 @@ corto_void _test_SelectSink_tc_selectSingleTypeFilter(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectSingleVirtualNested1(
+void _test_SelectSink_tc_selectSingleVirtualNested1(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectSingleVirtualNested1) */
@@ -331,7 +331,7 @@ corto_void _test_SelectSink_tc_selectSingleVirtualNested1(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectSingleVirtualNested2(
+void _test_SelectSink_tc_selectSingleVirtualNested2(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectSingleVirtualNested2) */
@@ -354,7 +354,7 @@ corto_void _test_SelectSink_tc_selectSingleVirtualNested2(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectVirtualScopeNested1(
+void _test_SelectSink_tc_selectVirtualScopeNested1(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectVirtualScopeNested1) */
@@ -399,7 +399,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeNested1(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectVirtualScopeNested2(
+void _test_SelectSink_tc_selectVirtualScopeNested2(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectVirtualScopeNested2) */
@@ -445,7 +445,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeNested2(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
+void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested1) */
@@ -484,7 +484,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
+void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested2) */
@@ -523,7 +523,7 @@ corto_void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectVirtualSingleNested1(
+void _test_SelectSink_tc_selectVirtualSingleNested1(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectVirtualSingleNested1) */
@@ -551,7 +551,7 @@ corto_void _test_SelectSink_tc_selectVirtualSingleNested1(
 /* $end */
 }
 
-corto_void _test_SelectSink_tc_selectVirtualSingleNested2(
+void _test_SelectSink_tc_selectVirtualSingleNested2(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/tc_selectVirtualSingleNested2) */
@@ -579,7 +579,7 @@ corto_void _test_SelectSink_tc_selectVirtualSingleNested2(
 /* $end */
 }
 
-corto_void _test_SelectSink_teardown(
+void _test_SelectSink_teardown(
     test_SelectSink this)
 {
 /* $begin(test/SelectSink/teardown) */

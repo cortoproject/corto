@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_SelectSinkNoOnRequest_setup(
+void _test_SelectSinkNoOnRequest_setup(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/setup) */
@@ -26,7 +26,7 @@ corto_void _test_SelectSinkNoOnRequest_setup(
 /* $end */
 }
 
-corto_void _test_SelectSinkNoOnRequest_tc_selectScope(
+void _test_SelectSinkNoOnRequest_tc_selectScope(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/tc_selectScope) */
@@ -57,7 +57,7 @@ corto_void _test_SelectSinkNoOnRequest_tc_selectScope(
 /* $end */
 }
 
-corto_void _test_SelectSinkNoOnRequest_tc_selectSingle(
+void _test_SelectSinkNoOnRequest_tc_selectSingle(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/tc_selectSingle) */
@@ -80,7 +80,7 @@ corto_void _test_SelectSinkNoOnRequest_tc_selectSingle(
 /* $end */
 }
 
-corto_void _test_SelectSinkNoOnRequest_teardown(
+void _test_SelectSinkNoOnRequest_teardown(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/teardown) */

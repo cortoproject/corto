@@ -57,7 +57,7 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
 
 /* Serialize dependencies on references */
 corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* userData) {
-    corto_object o = *(corto_object*)corto_value_getPtr(info);
+    corto_object o = *(corto_object*)corto_value_ptrof(info);
     g_depWalk_t data = userData;
 
     CORTO_UNUSED(s);
@@ -92,14 +92,14 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
                 corto_value v = corto_value_object(o, NULL);
                 corto_value out;
 
-                if (corto_value_getMember(&v, m->stateCondExpr, &out)) {
+                if (corto_value_memberof(&v, m->stateCondExpr, &out)) {
                     corto_seterr("invalid stateCondExpr '%s' for member '%s'",
                         m->stateCondExpr,
                         corto_fullpath(NULL, m));
                     goto error;
                 }
 
-                if (corto_value_getType(&out) != corto_type(corto_bool_o)) {
+                if (corto_value_typeof(&out) != corto_type(corto_bool_o)) {
                     if (corto_value_cast(&out, corto_bool_o, &out)) {
                         corto_seterr("stateCondExpr '%s' of member '%s' is not castable to a boolean",
                             m->stateCondExpr,
@@ -108,7 +108,7 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
                     }
                 }
 
-                corto_bool *result = corto_value_getPtr(&out);
+                corto_bool *result = corto_value_ptrof(&out);
 
                 if (!*result) {
                     switch(state) {

@@ -238,7 +238,7 @@ error:
 }
 /* $end */
 
-corto_void _test_Project_setup(
+void _test_Project_setup(
     test_Project this)
 {
 /* $begin(test/Project/setup) */
@@ -260,7 +260,7 @@ corto_void _test_Project_setup(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageCortoDependencyNoCorto(
+void _test_Project_tc_packageCortoDependencyNoCorto(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageCortoDependencyNoCorto) */
@@ -339,7 +339,7 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
+void _test_Project_tc_packageCortoNestedDependencyNoCorto(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageCortoNestedDependencyNoCorto) */
@@ -437,7 +437,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageDependency(
+void _test_Project_tc_packageDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageDependency) */
@@ -515,7 +515,7 @@ corto_void _test_Project_tc_packageDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageDependencyColons(
+void _test_Project_tc_packageDependencyColons(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageDependencyColons) */
@@ -592,7 +592,7 @@ corto_void _test_Project_tc_packageDependencyColons(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNested(
+void _test_Project_tc_packageNested(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNested) */
@@ -638,7 +638,7 @@ corto_void _test_Project_tc_packageNested(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedColons(
+void _test_Project_tc_packageNestedColons(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedColons) */
@@ -684,7 +684,7 @@ corto_void _test_Project_tc_packageNestedColons(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedDependency(
+void _test_Project_tc_packageNestedDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedDependency) */
@@ -780,7 +780,7 @@ corto_void _test_Project_tc_packageNestedDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedDependencyColons(
+void _test_Project_tc_packageNestedDependencyColons(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedDependencyColons) */
@@ -876,7 +876,7 @@ corto_void _test_Project_tc_packageNestedDependencyColons(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
+void _test_Project_tc_packageNestedDependencyFullyScoped(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedDependencyFullyScoped) */
@@ -972,7 +972,7 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(
+void _test_Project_tc_packageNestedDependencyFullyScopedColons(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedDependencyFullyScopedColons) */
@@ -1068,7 +1068,7 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedFullyScoped(
+void _test_Project_tc_packageNestedFullyScoped(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedFullyScoped) */
@@ -1112,7 +1112,7 @@ corto_void _test_Project_tc_packageNestedFullyScoped(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedFullyScopedColons(
+void _test_Project_tc_packageNestedFullyScopedColons(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedFullyScopedColons) */
@@ -1156,7 +1156,7 @@ corto_void _test_Project_tc_packageNestedFullyScopedColons(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCorto(
+void _test_Project_tc_packageNoCorto(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCorto) */
@@ -1233,7 +1233,7 @@ corto_void _test_Project_tc_packageNoCorto(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoDependency(
+void _test_Project_tc_packageNoCortoDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoDependency) */
@@ -1316,7 +1316,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoLocal(
+void _test_Project_tc_packageNoCortoLocal(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoLocal) */
@@ -1350,7 +1350,7 @@ corto_void _test_Project_tc_packageNoCortoLocal(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoNested(
+void _test_Project_tc_packageNoCortoNested(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoNested) */
@@ -1428,7 +1428,7 @@ corto_void _test_Project_tc_packageNoCortoNested(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoNestedDependency(
+void _test_Project_tc_packageNoCortoNestedDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoNestedDependency) */
@@ -1530,7 +1530,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodef(
+void _test_Project_tc_packageNodef(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodef) */
@@ -1605,7 +1605,7 @@ corto_void _test_Project_tc_packageNodef(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodefC4cpp(
+void _test_Project_tc_packageNodefC4cpp(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodefC4cpp) */
@@ -1682,7 +1682,7 @@ corto_void _test_Project_tc_packageNodefC4cpp(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodefLocal(
+void _test_Project_tc_packageNodefLocal(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodefLocal) */
@@ -1758,7 +1758,7 @@ corto_void _test_Project_tc_packageNodefLocal(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodefLocalC4cpp(
+void _test_Project_tc_packageNodefLocalC4cpp(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodefLocalC4cpp) */
@@ -1835,7 +1835,7 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
 /* $end */
 }
 
-corto_void _test_Project_tc_packagePublicHeaderRemoval(
+void _test_Project_tc_packagePublicHeaderRemoval(
     test_Project this)
 {
 /* $begin(test/Project/tc_packagePublicHeaderRemoval) */
@@ -1942,7 +1942,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
 /* $end */
 }
 
-corto_void _test_Project_teardown(
+void _test_Project_teardown(
     test_Project this)
 {
 /* $begin(test/Project/teardown) */

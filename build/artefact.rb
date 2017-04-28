@@ -123,6 +123,7 @@ if TARGET != "corto" then
   CLOBBER.include("include/_load.h")
   CLOBBER.include("include/_interface.h")
   CLOBBER.include("include/_project.h")
+  CLOBBER.include("include/_api.h")
 end
 
 if File.exists? "project.json"

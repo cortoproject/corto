@@ -13,7 +13,7 @@ corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* us
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
 
-    o = *(corto_object*)corto_value_getPtr(v);
+    o = *(corto_object*)corto_value_ptrof(v);
     if (o) {
         corto_bool weak = FALSE;
         if (v->kind == CORTO_MEMBER) {
@@ -36,8 +36,8 @@ corto_int16 corto_ser_freePrimitive(corto_serializer s, corto_value* v, void* ud
     CORTO_UNUSED(s);
     CORTO_UNUSED(udata);
 
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     /* Free strings */
     switch(corto_primitive(t)->kind) {
@@ -65,8 +65,8 @@ corto_int16 corto_ser_freeCollection(corto_serializer s, corto_value* v, void* u
     corto_type t;
     void* o;
 
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     /* Serialize elements */
     if (corto_serializeElements(s, v, userData)) {
@@ -120,7 +120,7 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
 
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
-    optr = corto_value_getPtr(v);
+    optr = corto_value_ptrof(v);
 
     if ((o = *optr)) {
         corto_bool weak = FALSE;
@@ -132,7 +132,7 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
         if (!weak) {
             if (CORTO_TRACE_OBJECT) {
                 corto_id buff;
-                corto_valueExpr(v, buff, sizeof(buff));
+                corto_value_exprStr(v, buff, sizeof(buff));
                 corto_release_ext(NULL, o, buff);
             } else {
                 corto_release(o);
@@ -145,7 +145,7 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
 
 corto_int16 corto_ser_freeMember(corto_serializer s, corto_value* v, void* userData) {
     corto_member m = v->is.member.t;
-    void *ptr = corto_value_getPtr(v);
+    void *ptr = corto_value_ptrof(v);
 
     corto_serializeValue(s, v, userData);
 

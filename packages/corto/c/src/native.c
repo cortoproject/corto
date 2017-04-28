@@ -157,7 +157,7 @@ void corto_interfaceseqSize(corto_interfaceseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                v = corto_value_value(corto_type(corto_interface_o), &seq->buffer[i]);
+                v = corto_value_value(&seq->buffer[i], corto_type(corto_interface_o));
                 corto_deinitv(&v);
             }
         }
@@ -176,7 +176,7 @@ corto_interfaceVector* corto_interfaceVectorseqAppend(corto_interfaceVectorseq *
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(&seq->buffer[seq->length-1], corto_type(corto_interfaceVector_o));
         corto_initv(&v);
     }
     corto_copyp(&seq->buffer[seq->length-1], corto_interfaceVector_o, &element);
@@ -190,7 +190,7 @@ corto_interfaceVector* corto_interfaceVectorseqAppendAlloc(corto_interfaceVector
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(&seq->buffer[seq->length-1], corto_type(corto_interfaceVector_o));
         corto_initv(&v);
     }
     return &seq->buffer[seq->length-1];
@@ -203,7 +203,7 @@ void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 le
         for(i=length; i<seq->length; i++) {
             {
                 corto_value v;
-                v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[i]);
+                v = corto_value_value(&seq->buffer[i], corto_type(corto_interfaceVector_o));
                 corto_deinitv(&v);
             }
         }
@@ -215,7 +215,7 @@ void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 le
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                v = corto_value_value(corto_type(corto_interfaceVector_o), &seq->buffer[i]);
+                v = corto_value_value(&seq->buffer[i], corto_type(corto_interfaceVector_o));
                 corto_deinitv(&v);
             }
         }
@@ -293,7 +293,7 @@ void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                v = corto_value_value(corto_type(corto_object_o), &seq->buffer[i]);
+                v = corto_value_value(&seq->buffer[i], corto_type(corto_object_o));
                 corto_deinitv(&v);
             }
         }
@@ -312,7 +312,7 @@ corto_parameter* corto_parameterseqAppend(corto_parameterseq *seq, corto_paramet
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(&seq->buffer[seq->length-1], corto_type(corto_parameter_o));
         corto_initv(&v);
     }
     corto_copyp(&seq->buffer[seq->length-1], corto_parameter_o, &element);
@@ -326,7 +326,7 @@ corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *seq) {
     memset(&seq->buffer[seq->length-1], 0, size);
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[seq->length-1]);
+        v = corto_value_value(&seq->buffer[seq->length-1], corto_type(corto_parameter_o));
         corto_initv(&v);
     }
     return &seq->buffer[seq->length-1];
@@ -339,7 +339,7 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
         for(i=length; i<seq->length; i++) {
             {
                 corto_value v;
-                v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[i]);
+                v = corto_value_value(&seq->buffer[i], corto_type(corto_parameter_o));
                 corto_deinitv(&v);
             }
         }
@@ -351,7 +351,7 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
         for(i=seq->length; i<length; i++) {
             {
                 corto_value v;
-                v = corto_value_value(corto_type(corto_parameter_o), &seq->buffer[i]);
+                v = corto_value_value(&seq->buffer[i], corto_type(corto_parameter_o));
                 corto_deinitv(&v);
             }
         }
@@ -461,7 +461,7 @@ corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubsc
     result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_mountSubscription_o), result);
+        v = corto_value_value(result, corto_type(corto_mountSubscription_o));
         corto_initv(&v);
     }
     corto_llInsert(list, result);
@@ -479,7 +479,7 @@ corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubsc
     result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_mountSubscription_o), result);
+        v = corto_value_value(result, corto_type(corto_mountSubscription_o));
         corto_initv(&v);
     }
     corto_llAppend(list, result);
@@ -523,7 +523,7 @@ corto_result* corto_resultListInsertAlloc(corto_resultList list) {
     result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_result_o), result);
+        v = corto_value_value(result, corto_type(corto_result_o));
         corto_initv(&v);
     }
     corto_llInsert(list, result);
@@ -541,7 +541,7 @@ corto_result* corto_resultListAppendAlloc(corto_resultList list) {
     result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
         corto_value v;
-        v = corto_value_value(corto_type(corto_result_o), result);
+        v = corto_value_value(result, corto_type(corto_result_o));
         corto_initv(&v);
     }
     corto_llAppend(list, result);

@@ -40,7 +40,7 @@ corto_int16 corto_serializeConstants(
     corto_enum t;
     corto_uint32 i;
 
-    t = corto_enum(corto_value_getType(v));
+    t = corto_enum(corto_value_typeof(v));
 
     /* If there is a callback for constants, serialize them */
     if (s->metaprogram[CORTO_CONSTANT]) {
@@ -51,7 +51,7 @@ corto_int16 corto_serializeConstants(
             info.kind = CORTO_CONSTANT;
             info.is.constant.t = t->constants.buffer[i];
             info.is.constant.v = NULL;
-            info.is.constant.o = corto_value_getObject(v);
+            info.is.constant.o = corto_value_objectof(v);
 
             /* Serialize constant */
             if (s->metaprogram[CORTO_CONSTANT](s, &info, userData)) {
@@ -71,14 +71,14 @@ corto_int16 corto_serializeCases(
     corto_value *v,
     void *userData)
 {
-    corto_union t = corto_union(corto_value_getType(v));
+    corto_union t = corto_union(corto_value_typeof(v));
     corto_uint32 i;
 
     if (s->metaprogram[CORTO_MEMBER]) {
         for (i = 0; i < corto_interface(t)->members.length; i++) {
             corto_member m = corto_interface(t)->members.buffer[i];
             corto_value memberValue = corto_value_member(
-                corto_value_getObject(v),
+                corto_value_objectof(v),
                 m,
                 NULL
             );

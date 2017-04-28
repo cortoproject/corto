@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Ownership_onDelete(
+void _test_Ownership_onDelete(
     test_Ownership this,
     corto_eventMask event,
     corto_object object,
@@ -20,7 +20,7 @@ corto_void _test_Ownership_onDelete(
 /* $end */
 }
 
-corto_void _test_Ownership_setup(
+void _test_Ownership_setup(
     test_Ownership this)
 {
 /* $begin(test/Ownership/setup) */
@@ -28,7 +28,7 @@ corto_void _test_Ownership_setup(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_checkOwnerNull(
+void _test_Ownership_tc_checkOwnerNull(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_checkOwnerNull) */
@@ -42,7 +42,7 @@ corto_void _test_Ownership_tc_checkOwnerNull(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_checkOwnerReplicator(
+void _test_Ownership_tc_checkOwnerReplicator(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_checkOwnerReplicator) */
@@ -67,7 +67,7 @@ corto_void _test_Ownership_tc_checkOwnerReplicator(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_createNotOwned(
+void _test_Ownership_tc_createNotOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_createNotOwned) */
@@ -104,7 +104,7 @@ corto_void _test_Ownership_tc_createNotOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_createOwned(
+void _test_Ownership_tc_createOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_createOwned) */
@@ -136,7 +136,7 @@ corto_void _test_Ownership_tc_createOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_declareNotOwned(
+void _test_Ownership_tc_declareNotOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_declareNotOwned) */
@@ -171,7 +171,7 @@ corto_void _test_Ownership_tc_declareNotOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_declareOwned(
+void _test_Ownership_tc_declareOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_declareOwned) */
@@ -200,7 +200,7 @@ corto_void _test_Ownership_tc_declareOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_deleteNotOwned(
+void _test_Ownership_tc_deleteNotOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_deleteNotOwned) */
@@ -226,7 +226,7 @@ corto_void _test_Ownership_tc_deleteNotOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_deleteOwned(
+void _test_Ownership_tc_deleteOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_deleteOwned) */
@@ -250,7 +250,7 @@ corto_void _test_Ownership_tc_deleteOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_invokeNotOwned(
+void _test_Ownership_tc_invokeNotOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_invokeNotOwned) */
@@ -283,7 +283,7 @@ corto_void _test_Ownership_tc_invokeNotOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_invokeOwned(
+void _test_Ownership_tc_invokeOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_invokeOwned) */
@@ -312,7 +312,7 @@ corto_void _test_Ownership_tc_invokeOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedMountMount(
+void _test_Ownership_tc_ownedMountMount(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedMountMount) */
@@ -344,7 +344,7 @@ corto_void _test_Ownership_tc_ownedMountMount(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedMountMountSame(
+void _test_Ownership_tc_ownedMountMountSame(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedMountMountSame) */
@@ -370,7 +370,7 @@ corto_void _test_Ownership_tc_ownedMountMountSame(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedMountObj(
+void _test_Ownership_tc_ownedMountObj(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedMountObj) */
@@ -403,7 +403,7 @@ corto_void _test_Ownership_tc_ownedMountObj(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedMountSelf(
+void _test_Ownership_tc_ownedMountSelf(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedMountSelf) */
@@ -431,7 +431,7 @@ corto_void _test_Ownership_tc_ownedMountSelf(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedObjMount(
+void _test_Ownership_tc_ownedObjMount(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedObjMount) */
@@ -464,7 +464,7 @@ corto_void _test_Ownership_tc_ownedObjMount(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedObjObj(
+void _test_Ownership_tc_ownedObjObj(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedObjObj) */
@@ -496,7 +496,7 @@ corto_void _test_Ownership_tc_ownedObjObj(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedObjObjSame(
+void _test_Ownership_tc_ownedObjObjSame(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedObjObjSame) */
@@ -522,7 +522,7 @@ corto_void _test_Ownership_tc_ownedObjObjSame(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedObjSelf(
+void _test_Ownership_tc_ownedObjSelf(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedObjSelf) */
@@ -550,7 +550,7 @@ corto_void _test_Ownership_tc_ownedObjSelf(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedSelfMount(
+void _test_Ownership_tc_ownedSelfMount(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedSelfMount) */
@@ -573,7 +573,7 @@ corto_void _test_Ownership_tc_ownedSelfMount(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedSelfObj(
+void _test_Ownership_tc_ownedSelfObj(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedSelfObj) */
@@ -596,7 +596,7 @@ corto_void _test_Ownership_tc_ownedSelfObj(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_ownedSelfSelf(
+void _test_Ownership_tc_ownedSelfSelf(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_ownedSelfSelf) */
@@ -612,7 +612,7 @@ corto_void _test_Ownership_tc_ownedSelfSelf(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_releaseNotOwned(
+void _test_Ownership_tc_releaseNotOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_releaseNotOwned) */
@@ -643,7 +643,7 @@ corto_void _test_Ownership_tc_releaseNotOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_releaseOwned(
+void _test_Ownership_tc_releaseOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_releaseOwned) */
@@ -662,7 +662,7 @@ corto_void _test_Ownership_tc_releaseOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_updateNotOwned(
+void _test_Ownership_tc_updateNotOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_updateNotOwned) */
@@ -695,7 +695,7 @@ corto_void _test_Ownership_tc_updateNotOwned(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_updateNotOwnedTarget(
+void _test_Ownership_tc_updateNotOwnedTarget(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_updateNotOwnedTarget) */
@@ -731,7 +731,7 @@ corto_void _test_Ownership_tc_updateNotOwnedTarget(
 /* $end */
 }
 
-corto_void _test_Ownership_tc_updateOwned(
+void _test_Ownership_tc_updateOwned(
     test_Ownership this)
 {
 /* $begin(test/Ownership/tc_updateOwned) */

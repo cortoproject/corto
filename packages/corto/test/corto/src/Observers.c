@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Observers_customSignatureObserver(
+void _test_Observers_customSignatureObserver(
     test_Observers this,
     corto_eventMask event,
     int32_t *observable,
@@ -21,7 +21,7 @@ corto_void _test_Observers_customSignatureObserver(
 /* $end */
 }
 
-corto_void _test_Observers_setup(
+void _test_Observers_setup(
     test_Observers this)
 {
 /* $begin(test/Observers/setup) */
@@ -29,7 +29,7 @@ corto_void _test_Observers_setup(
 /* $end */
 }
 
-corto_void _test_Observers_tc_customSignatureObserver(
+void _test_Observers_tc_customSignatureObserver(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_customSignatureObserver) */
@@ -50,7 +50,7 @@ corto_void _test_Observers_tc_customSignatureObserver(
 /* $end */
 }
 
-corto_void _test_Observers_tc_customSignatureObserverMissingEventMask(
+void _test_Observers_tc_customSignatureObserverMissingEventMask(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_customSignatureObserverMissingEventMask) */
@@ -67,7 +67,7 @@ corto_void _test_Observers_tc_customSignatureObserverMissingEventMask(
 /* $end */
 }
 
-corto_void _test_Observers_tc_customSignatureObserverMissingObserver(
+void _test_Observers_tc_customSignatureObserverMissingObserver(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_customSignatureObserverMissingObserver) */
@@ -84,7 +84,7 @@ corto_void _test_Observers_tc_customSignatureObserverMissingObserver(
 /* $end */
 }
 
-corto_void _test_Observers_tc_customSignatureObserverObservableNotReference(
+void _test_Observers_tc_customSignatureObserverObservableNotReference(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_customSignatureObserverObservableNotReference) */
@@ -101,7 +101,7 @@ corto_void _test_Observers_tc_customSignatureObserverObservableNotReference(
 /* $end */
 }
 
-corto_void _test_Observers_tc_customSignatureObserverWrongArgumentNumber(
+void _test_Observers_tc_customSignatureObserverWrongArgumentNumber(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_customSignatureObserverWrongArgumentNumber) */
@@ -132,7 +132,7 @@ void dispatchObserver_onUpdate(
     corto_setref(&this->observer, observer);
 }
 /* $end */
-corto_void _test_Observers_tc_dispatchObserver(
+void _test_Observers_tc_dispatchObserver(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_dispatchObserver) */
@@ -178,7 +178,7 @@ void notifyReadDenied_onUpdate(
     this->count ++;
 }
 /* $end */
-corto_void _test_Observers_tc_notifyReadDenied(
+void _test_Observers_tc_notifyReadDenied(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_notifyReadDenied) */
@@ -217,7 +217,7 @@ corto_void _test_Observers_tc_notifyReadDenied(
 /* $end */
 }
 
-corto_void _test_Observers_tc_notifyUpdateDenied(
+void _test_Observers_tc_notifyUpdateDenied(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_notifyUpdateDenied) */
@@ -254,7 +254,7 @@ corto_void _test_Observers_tc_notifyUpdateDenied(
 /* $end */
 }
 
-corto_void _test_Observers_tc_notObserving(
+void _test_Observers_tc_notObserving(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_notObserving) */
@@ -269,7 +269,7 @@ corto_void _test_Observers_tc_notObserving(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
+void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeNonScopedObjectWithScopeMaskErr) */
@@ -287,7 +287,7 @@ corto_void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observerMissingObservable(
+void _test_Observers_tc_observerMissingObservable(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observerMissingObservable) */
@@ -320,7 +320,7 @@ void observeTypeFilter_onUpdate(
     corto_setref(&this->observer, observer);
 }
 /* $end */
-corto_void _test_Observers_tc_observeTypeFilter(
+void _test_Observers_tc_observeTypeFilter(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeTypeFilter) */
@@ -355,7 +355,7 @@ corto_void _test_Observers_tc_observeTypeFilter(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observeTypeFilterNotAType(
+void _test_Observers_tc_observeTypeFilterNotAType(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeTypeFilterNotAType) */
@@ -369,7 +369,7 @@ corto_void _test_Observers_tc_observeTypeFilterNotAType(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observeTypeFilterUnresolved(
+void _test_Observers_tc_observeTypeFilterUnresolved(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeTypeFilterUnresolved) */
@@ -398,7 +398,7 @@ void observeWithMultipleInstances_onUpdate(
     this->count ++;
 }
 /* $end */
-corto_void _test_Observers_tc_observeWithMultipleInstances(
+void _test_Observers_tc_observeWithMultipleInstances(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeWithMultipleInstances) */
@@ -433,7 +433,7 @@ corto_void _test_Observers_tc_observeWithMultipleInstances(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observing(
+void _test_Observers_tc_observing(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observing) */
@@ -448,7 +448,7 @@ corto_void _test_Observers_tc_observing(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingDisabled(
+void _test_Observers_tc_observingDisabled(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingDisabled) */
@@ -464,7 +464,7 @@ corto_void _test_Observers_tc_observingDisabled(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingMultipleInstances(
+void _test_Observers_tc_observingMultipleInstances(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingMultipleInstances) */
@@ -495,7 +495,7 @@ corto_void _test_Observers_tc_observingMultipleInstances(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingScope(
+void _test_Observers_tc_observingScope(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingScope) */
@@ -510,7 +510,7 @@ corto_void _test_Observers_tc_observingScope(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingSingleInstance(
+void _test_Observers_tc_observingSingleInstance(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingSingleInstance) */
@@ -529,7 +529,7 @@ corto_void _test_Observers_tc_observingSingleInstance(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingTree(
+void _test_Observers_tc_observingTree(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingTree) */

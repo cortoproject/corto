@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Args_tc_matchAddNoProject(
+void _test_Args_tc_matchAddNoProject(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchAddNoProject) */
@@ -43,7 +43,7 @@ corto_void _test_Args_tc_matchAddNoProject(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchAll(
+void _test_Args_tc_matchAll(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchAll) */
@@ -72,7 +72,7 @@ corto_void _test_Args_tc_matchAll(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreate(
+void _test_Args_tc_matchCreate(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreate) */
@@ -111,7 +111,7 @@ corto_void _test_Args_tc_matchCreate(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreateApp(
+void _test_Args_tc_matchCreateApp(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreateApp) */
@@ -150,7 +150,7 @@ corto_void _test_Args_tc_matchCreateApp(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreateMultiple(
+void _test_Args_tc_matchCreateMultiple(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreateMultiple) */
@@ -190,7 +190,7 @@ corto_void _test_Args_tc_matchCreateMultiple(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreatePackage(
+void _test_Args_tc_matchCreatePackage(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreatePackage) */
@@ -229,7 +229,7 @@ corto_void _test_Args_tc_matchCreatePackage(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreatePackageAndApp(
+void _test_Args_tc_matchCreatePackageAndApp(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreatePackageAndApp) */
@@ -271,7 +271,7 @@ corto_void _test_Args_tc_matchCreatePackageAndApp(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreatePackageAndAppEscaped(
+void _test_Args_tc_matchCreatePackageAndAppEscaped(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreatePackageAndAppEscaped) */
@@ -313,7 +313,7 @@ corto_void _test_Args_tc_matchCreatePackageAndAppEscaped(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchCreatePackageOptions(
+void _test_Args_tc_matchCreatePackageOptions(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchCreatePackageOptions) */
@@ -361,7 +361,7 @@ corto_void _test_Args_tc_matchCreatePackageOptions(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchDuplicate(
+void _test_Args_tc_matchDuplicate(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchDuplicate) */
@@ -395,7 +395,7 @@ corto_void _test_Args_tc_matchDuplicate(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchDuplicateArg(
+void _test_Args_tc_matchDuplicateArg(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchDuplicateArg) */
@@ -438,7 +438,7 @@ corto_void _test_Args_tc_matchDuplicateArg(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchErr(
+void _test_Args_tc_matchErr(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchErr) */
@@ -460,7 +460,7 @@ corto_void _test_Args_tc_matchErr(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchFixed(
+void _test_Args_tc_matchFixed(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchFixed) */
@@ -502,7 +502,7 @@ corto_void _test_Args_tc_matchFixed(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchMultiple(
+void _test_Args_tc_matchMultiple(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchMultiple) */
@@ -534,7 +534,7 @@ corto_void _test_Args_tc_matchMultiple(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchMultipleArg(
+void _test_Args_tc_matchMultipleArg(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchMultipleArg) */
@@ -575,7 +575,7 @@ corto_void _test_Args_tc_matchMultipleArg(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchNone(
+void _test_Args_tc_matchNone(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchNone) */
@@ -598,7 +598,7 @@ corto_void _test_Args_tc_matchNone(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchOptional(
+void _test_Args_tc_matchOptional(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchOptional) */
@@ -631,7 +631,7 @@ corto_void _test_Args_tc_matchOptional(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchOptionalOneArg(
+void _test_Args_tc_matchOptionalOneArg(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchOptionalOneArg) */
@@ -660,7 +660,7 @@ corto_void _test_Args_tc_matchOptionalOneArg(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchOptionalWithOtherArgs(
+void _test_Args_tc_matchOptionalWithOtherArgs(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchOptionalWithOtherArgs) */
@@ -694,7 +694,7 @@ corto_void _test_Args_tc_matchOptionalWithOtherArgs(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchPattern(
+void _test_Args_tc_matchPattern(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchPattern) */
@@ -722,7 +722,7 @@ corto_void _test_Args_tc_matchPattern(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchPublish(
+void _test_Args_tc_matchPublish(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchPublish) */
@@ -757,7 +757,7 @@ corto_void _test_Args_tc_matchPublish(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchPublishNoProject(
+void _test_Args_tc_matchPublishNoProject(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchPublishNoProject) */
@@ -790,7 +790,7 @@ corto_void _test_Args_tc_matchPublishNoProject(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchShell(
+void _test_Args_tc_matchShell(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchShell) */
@@ -828,7 +828,7 @@ corto_void _test_Args_tc_matchShell(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchSingle(
+void _test_Args_tc_matchSingle(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchSingle) */
@@ -855,7 +855,7 @@ corto_void _test_Args_tc_matchSingle(
 /* $end */
 }
 
-corto_void _test_Args_tc_matchSingleArg(
+void _test_Args_tc_matchSingleArg(
     test_Args this)
 {
 /* $begin(test/Args/tc_matchSingleArg) */

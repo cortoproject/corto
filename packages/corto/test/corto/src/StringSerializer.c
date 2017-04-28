@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_StringSerializer_tc_serAnonymous(
+void _test_StringSerializer_tc_serAnonymous(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serAnonymous) */
@@ -29,7 +29,7 @@ corto_void _test_StringSerializer_tc_serAnonymous(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serAnonymousComplex(
+void _test_StringSerializer_tc_serAnonymousComplex(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serAnonymousComplex) */
@@ -53,7 +53,7 @@ corto_void _test_StringSerializer_tc_serAnonymousComplex(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serAnonymousComplexString(
+void _test_StringSerializer_tc_serAnonymousComplexString(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serAnonymousComplexString) */
@@ -79,7 +79,7 @@ corto_void _test_StringSerializer_tc_serAnonymousComplexString(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
+void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serAnonymousComplexStringEsc) */
@@ -105,7 +105,7 @@ corto_void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serArray(
+void _test_StringSerializer_tc_serArray(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serArray) */
@@ -125,7 +125,7 @@ corto_void _test_StringSerializer_tc_serArray(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serArrayComplex(
+void _test_StringSerializer_tc_serArrayComplex(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serArrayComplex) */
@@ -145,7 +145,7 @@ corto_void _test_StringSerializer_tc_serArrayComplex(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serBoolFalse(
+void _test_StringSerializer_tc_serBoolFalse(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serBoolFalse) */
@@ -162,7 +162,7 @@ corto_void _test_StringSerializer_tc_serBoolFalse(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serBoolTrue(
+void _test_StringSerializer_tc_serBoolTrue(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serBoolTrue) */
@@ -179,7 +179,7 @@ corto_void _test_StringSerializer_tc_serBoolTrue(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serChar(
+void _test_StringSerializer_tc_serChar(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serChar) */
@@ -196,7 +196,7 @@ corto_void _test_StringSerializer_tc_serChar(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serCharEscape(
+void _test_StringSerializer_tc_serCharEscape(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serCharEscape) */
@@ -213,7 +213,7 @@ corto_void _test_StringSerializer_tc_serCharEscape(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serCharNull(
+void _test_StringSerializer_tc_serCharNull(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serCharNull) */
@@ -230,7 +230,7 @@ corto_void _test_StringSerializer_tc_serCharNull(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serComposite(
+void _test_StringSerializer_tc_serComposite(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serComposite) */
@@ -246,7 +246,7 @@ corto_void _test_StringSerializer_tc_serComposite(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serCompositeNested(
+void _test_StringSerializer_tc_serCompositeNested(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serCompositeNested) */
@@ -262,7 +262,7 @@ corto_void _test_StringSerializer_tc_serCompositeNested(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serCycle(
+void _test_StringSerializer_tc_serCycle(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serCycle) */
@@ -277,7 +277,7 @@ corto_void _test_StringSerializer_tc_serCycle(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInheritance(
+void _test_StringSerializer_tc_serInheritance(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInheritance) */
@@ -293,7 +293,7 @@ corto_void _test_StringSerializer_tc_serInheritance(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt16(
+void _test_StringSerializer_tc_serInt16(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt16) */
@@ -309,7 +309,7 @@ corto_void _test_StringSerializer_tc_serInt16(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt16Minus(
+void _test_StringSerializer_tc_serInt16Minus(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt16Minus) */
@@ -325,7 +325,7 @@ corto_void _test_StringSerializer_tc_serInt16Minus(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt32(
+void _test_StringSerializer_tc_serInt32(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt32) */
@@ -341,7 +341,7 @@ corto_void _test_StringSerializer_tc_serInt32(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt32Minus(
+void _test_StringSerializer_tc_serInt32Minus(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt32Minus) */
@@ -357,7 +357,7 @@ corto_void _test_StringSerializer_tc_serInt32Minus(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt64(
+void _test_StringSerializer_tc_serInt64(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt64) */
@@ -373,7 +373,7 @@ corto_void _test_StringSerializer_tc_serInt64(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt64Minus(
+void _test_StringSerializer_tc_serInt64Minus(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt64Minus) */
@@ -389,7 +389,7 @@ corto_void _test_StringSerializer_tc_serInt64Minus(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt8(
+void _test_StringSerializer_tc_serInt8(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt8) */
@@ -405,7 +405,7 @@ corto_void _test_StringSerializer_tc_serInt8(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serInt8Minus(
+void _test_StringSerializer_tc_serInt8Minus(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serInt8Minus) */
@@ -421,7 +421,7 @@ corto_void _test_StringSerializer_tc_serInt8Minus(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serList(
+void _test_StringSerializer_tc_serList(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serList) */
@@ -444,7 +444,7 @@ corto_void _test_StringSerializer_tc_serList(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serListComplex(
+void _test_StringSerializer_tc_serListComplex(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serListComplex) */
@@ -468,7 +468,7 @@ corto_void _test_StringSerializer_tc_serListComplex(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serLongAnonymous(
+void _test_StringSerializer_tc_serLongAnonymous(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serLongAnonymous) */
@@ -491,7 +491,7 @@ corto_void _test_StringSerializer_tc_serLongAnonymous(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serSameAnonymous(
+void _test_StringSerializer_tc_serSameAnonymous(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serSameAnonymous) */
@@ -513,7 +513,7 @@ corto_void _test_StringSerializer_tc_serSameAnonymous(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serSequence(
+void _test_StringSerializer_tc_serSequence(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serSequence) */
@@ -533,7 +533,7 @@ corto_void _test_StringSerializer_tc_serSequence(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serSequenceComplex(
+void _test_StringSerializer_tc_serSequenceComplex(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serSequenceComplex) */
@@ -553,7 +553,7 @@ corto_void _test_StringSerializer_tc_serSequenceComplex(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serString(
+void _test_StringSerializer_tc_serString(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serString) */
@@ -569,7 +569,7 @@ corto_void _test_StringSerializer_tc_serString(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serStringEscape(
+void _test_StringSerializer_tc_serStringEscape(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serStringEscape) */
@@ -585,7 +585,7 @@ corto_void _test_StringSerializer_tc_serStringEscape(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serStringNull(
+void _test_StringSerializer_tc_serStringNull(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serStringNull) */
@@ -601,7 +601,7 @@ corto_void _test_StringSerializer_tc_serStringNull(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serStringWhitespace(
+void _test_StringSerializer_tc_serStringWhitespace(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serStringWhitespace) */
@@ -617,7 +617,7 @@ corto_void _test_StringSerializer_tc_serStringWhitespace(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serTwoAnonymous(
+void _test_StringSerializer_tc_serTwoAnonymous(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serTwoAnonymous) */
@@ -640,7 +640,7 @@ corto_void _test_StringSerializer_tc_serTwoAnonymous(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serUint16(
+void _test_StringSerializer_tc_serUint16(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serUint16) */
@@ -656,7 +656,7 @@ corto_void _test_StringSerializer_tc_serUint16(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serUint32(
+void _test_StringSerializer_tc_serUint32(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serUint32) */
@@ -672,7 +672,7 @@ corto_void _test_StringSerializer_tc_serUint32(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serUint64(
+void _test_StringSerializer_tc_serUint64(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serUint64) */
@@ -688,7 +688,7 @@ corto_void _test_StringSerializer_tc_serUint64(
 /* $end */
 }
 
-corto_void _test_StringSerializer_tc_serUint8(
+void _test_StringSerializer_tc_serUint8(
     test_StringSerializer this)
 {
 /* $begin(test/StringSerializer/tc_serUint8) */

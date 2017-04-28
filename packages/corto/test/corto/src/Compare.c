@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Compare_tc_any(
+void _test_Compare_tc_any(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_any) */
@@ -31,7 +31,7 @@ corto_void _test_Compare_tc_any(
 /* $end */
 }
 
-corto_void _test_Compare_tc_array(
+void _test_Compare_tc_array(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_array) */
@@ -53,7 +53,7 @@ corto_void _test_Compare_tc_array(
 /* $end */
 }
 
-corto_void _test_Compare_tc_arrayWithList(
+void _test_Compare_tc_arrayWithList(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_arrayWithList) */
@@ -80,7 +80,7 @@ corto_void _test_Compare_tc_arrayWithList(
 /* $end */
 }
 
-corto_void _test_Compare_tc_arrayWithListAlloc(
+void _test_Compare_tc_arrayWithListAlloc(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_arrayWithListAlloc) */
@@ -107,7 +107,7 @@ corto_void _test_Compare_tc_arrayWithListAlloc(
 /* $end */
 }
 
-corto_void _test_Compare_tc_arrayWithSequence(
+void _test_Compare_tc_arrayWithSequence(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_arrayWithSequence) */
@@ -134,7 +134,7 @@ corto_void _test_Compare_tc_arrayWithSequence(
 /* $end */
 }
 
-corto_void _test_Compare_tc_arrayWithSequenceAlloc(
+void _test_Compare_tc_arrayWithSequenceAlloc(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_arrayWithSequenceAlloc) */
@@ -161,7 +161,7 @@ corto_void _test_Compare_tc_arrayWithSequenceAlloc(
 /* $end */
 }
 
-corto_void _test_Compare_tc_bool(
+void _test_Compare_tc_bool(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_bool) */
@@ -184,7 +184,7 @@ corto_void _test_Compare_tc_bool(
 /* $end */
 }
 
-corto_void _test_Compare_tc_char(
+void _test_Compare_tc_char(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_char) */
@@ -206,7 +206,7 @@ corto_void _test_Compare_tc_char(
 /* $end */
 }
 
-corto_void _test_Compare_tc_float32(
+void _test_Compare_tc_float32(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_float32) */
@@ -228,7 +228,7 @@ corto_void _test_Compare_tc_float32(
 /* $end */
 }
 
-corto_void _test_Compare_tc_float64(
+void _test_Compare_tc_float64(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_float64) */
@@ -250,7 +250,7 @@ corto_void _test_Compare_tc_float64(
 /* $end */
 }
 
-corto_void _test_Compare_tc_int16(
+void _test_Compare_tc_int16(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_int16) */
@@ -272,7 +272,7 @@ corto_void _test_Compare_tc_int16(
 /* $end */
 }
 
-corto_void _test_Compare_tc_int32(
+void _test_Compare_tc_int32(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_int32) */
@@ -294,7 +294,7 @@ corto_void _test_Compare_tc_int32(
 /* $end */
 }
 
-corto_void _test_Compare_tc_int64(
+void _test_Compare_tc_int64(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_int64) */
@@ -316,7 +316,7 @@ corto_void _test_Compare_tc_int64(
 /* $end */
 }
 
-corto_void _test_Compare_tc_int8(
+void _test_Compare_tc_int8(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_int8) */
@@ -338,7 +338,7 @@ corto_void _test_Compare_tc_int8(
 /* $end */
 }
 
-corto_void _test_Compare_tc_intw(
+void _test_Compare_tc_intw(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_intw) */
@@ -360,7 +360,7 @@ corto_void _test_Compare_tc_intw(
 /* $end */
 }
 
-corto_void _test_Compare_tc_list(
+void _test_Compare_tc_list(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_list) */
@@ -388,7 +388,7 @@ corto_void _test_Compare_tc_list(
 /* $end */
 }
 
-corto_void _test_Compare_tc_listSizeMismatch(
+void _test_Compare_tc_listSizeMismatch(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_listSizeMismatch) */
@@ -414,7 +414,7 @@ corto_void _test_Compare_tc_listSizeMismatch(
 /* $end */
 }
 
-corto_void _test_Compare_tc_listWithArray(
+void _test_Compare_tc_listWithArray(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_listWithArray) */
@@ -441,7 +441,7 @@ corto_void _test_Compare_tc_listWithArray(
 /* $end */
 }
 
-corto_void _test_Compare_tc_listWithListAlloc(
+void _test_Compare_tc_listWithListAlloc(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_listWithListAlloc) */
@@ -469,7 +469,7 @@ corto_void _test_Compare_tc_listWithListAlloc(
 /* $end */
 }
 
-corto_void _test_Compare_tc_reference(
+void _test_Compare_tc_reference(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_reference) */
@@ -489,7 +489,7 @@ corto_void _test_Compare_tc_reference(
 /* $end */
 }
 
-corto_void _test_Compare_tc_sequence(
+void _test_Compare_tc_sequence(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_sequence) */
@@ -517,7 +517,7 @@ corto_void _test_Compare_tc_sequence(
 /* $end */
 }
 
-corto_void _test_Compare_tc_sequenceSizeMismatch(
+void _test_Compare_tc_sequenceSizeMismatch(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_sequenceSizeMismatch) */
@@ -543,7 +543,7 @@ corto_void _test_Compare_tc_sequenceSizeMismatch(
 /* $end */
 }
 
-corto_void _test_Compare_tc_sequenceWithList(
+void _test_Compare_tc_sequenceWithList(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_sequenceWithList) */
@@ -571,7 +571,7 @@ corto_void _test_Compare_tc_sequenceWithList(
 /* $end */
 }
 
-corto_void _test_Compare_tc_sequenceWithListAlloc(
+void _test_Compare_tc_sequenceWithListAlloc(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_sequenceWithListAlloc) */
@@ -598,7 +598,7 @@ corto_void _test_Compare_tc_sequenceWithListAlloc(
 /* $end */
 }
 
-corto_void _test_Compare_tc_string(
+void _test_Compare_tc_string(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_string) */
@@ -620,7 +620,7 @@ corto_void _test_Compare_tc_string(
 /* $end */
 }
 
-corto_void _test_Compare_tc_stringNull(
+void _test_Compare_tc_stringNull(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_stringNull) */
@@ -641,7 +641,7 @@ corto_void _test_Compare_tc_stringNull(
 /* $end */
 }
 
-corto_void _test_Compare_tc_uint16(
+void _test_Compare_tc_uint16(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_uint16) */
@@ -663,7 +663,7 @@ corto_void _test_Compare_tc_uint16(
 /* $end */
 }
 
-corto_void _test_Compare_tc_uint32(
+void _test_Compare_tc_uint32(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_uint32) */
@@ -685,7 +685,7 @@ corto_void _test_Compare_tc_uint32(
 /* $end */
 }
 
-corto_void _test_Compare_tc_uint64(
+void _test_Compare_tc_uint64(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_uint64) */
@@ -707,7 +707,7 @@ corto_void _test_Compare_tc_uint64(
 /* $end */
 }
 
-corto_void _test_Compare_tc_uint8(
+void _test_Compare_tc_uint8(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_uint8) */
@@ -729,7 +729,7 @@ corto_void _test_Compare_tc_uint8(
 /* $end */
 }
 
-corto_void _test_Compare_tc_uintw(
+void _test_Compare_tc_uintw(
     test_Compare this)
 {
 /* $begin(test/Compare/tc_uintw) */

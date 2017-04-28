@@ -29,7 +29,7 @@ error:
 /* $end */
 }
 
-corto_void _test_Foo_destruct(
+void _test_Foo_destruct(
     test_Foo this)
 {
 /* $begin(test/Foo/destruct) */

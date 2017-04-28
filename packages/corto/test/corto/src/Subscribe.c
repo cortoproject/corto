@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Subscribe_noInitialSep(
+void _test_Subscribe_noInitialSep(
     test_Subscribe this,
     corto_eventMask event,
     corto_result *object,
@@ -19,7 +19,7 @@ corto_void _test_Subscribe_noInitialSep(
 /* $end */
 }
 
-corto_void _test_Subscribe_tc_noInitialSep(
+void _test_Subscribe_tc_noInitialSep(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_noInitialSep) */
@@ -52,7 +52,7 @@ void subscribeInvertCaseOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeInvertCase(
+void _test_Subscribe_tc_subscribeInvertCase(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCase) */
@@ -87,7 +87,7 @@ void subscribeInvertCaseFilterOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeInvertCaseFilter(
+void _test_Subscribe_tc_subscribeInvertCaseFilter(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseFilter) */
@@ -122,7 +122,7 @@ void subscribeInvertCaseFilterFromPublishOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
+void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
@@ -152,7 +152,7 @@ void subscribeInvertCaseFromPublishOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
+void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
@@ -182,7 +182,7 @@ void subscribeInvertCaseParentOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeInvertCaseParent(
+void _test_Subscribe_tc_subscribeInvertCaseParent(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseParent) */
@@ -217,7 +217,7 @@ void subscribeInvertCaseParentFromPublishOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
+void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
@@ -247,7 +247,7 @@ void tc_subscribeNestedIdFromRootOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeNestedIdFromRoot(
+void _test_Subscribe_tc_subscribeNestedIdFromRoot(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeNestedIdFromRoot) */
@@ -275,7 +275,7 @@ void tc_subscribeNestedScopeFromRootOnUpdate(
     this->triggered = TRUE;
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
+void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
@@ -303,7 +303,7 @@ void tc_subscribeOwnerSet(
     corto_setref(&this->owner, result->owner);
 }
 /* $end */
-corto_void _test_Subscribe_tc_subscribeOwnerSet(
+void _test_Subscribe_tc_subscribeOwnerSet(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeOwnerSet) */
@@ -336,7 +336,7 @@ corto_void _test_Subscribe_tc_subscribeOwnerSet(
 /* $end */
 }
 
-corto_void _test_Subscribe_tc_subscribePartialMatchingParent(
+void _test_Subscribe_tc_subscribePartialMatchingParent(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribePartialMatchingParent) */
@@ -353,7 +353,7 @@ corto_void _test_Subscribe_tc_subscribePartialMatchingParent(
 /* $end */
 }
 
-corto_void _test_Subscribe_tc_subscribePartialMatchingParentObject(
+void _test_Subscribe_tc_subscribePartialMatchingParentObject(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribePartialMatchingParentObject) */

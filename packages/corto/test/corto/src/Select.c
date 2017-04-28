@@ -74,7 +74,7 @@ bool _test_Select_hasObject(
 /* $end */
 }
 
-corto_void _test_Select_setup(
+void _test_Select_setup(
     test_Select this)
 {
 /* $begin(test/Select/setup) */
@@ -118,7 +118,7 @@ corto_void _test_Select_setup(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteCurrent(
+void _test_Select_tc_selectDeleteCurrent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteCurrent) */
@@ -151,7 +151,7 @@ corto_void _test_Select_tc_selectDeleteCurrent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteFirst(
+void _test_Select_tc_selectDeleteFirst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteFirst) */
@@ -180,7 +180,7 @@ corto_void _test_Select_tc_selectDeleteFirst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteNext(
+void _test_Select_tc_selectDeleteNext(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteNext) */
@@ -209,7 +209,7 @@ corto_void _test_Select_tc_selectDeleteNext(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteParent(
+void _test_Select_tc_selectDeleteParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteParent) */
@@ -235,7 +235,7 @@ corto_void _test_Select_tc_selectDeleteParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeletePrevious(
+void _test_Select_tc_selectDeletePrevious(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeletePrevious) */
@@ -268,7 +268,7 @@ corto_void _test_Select_tc_selectDeletePrevious(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyParentAst(
+void _test_Select_tc_selectEmptyParentAst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyParentAst) */
@@ -315,7 +315,7 @@ corto_void _test_Select_tc_selectEmptyParentAst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyParentString(
+void _test_Select_tc_selectEmptyParentString(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyParentString) */
@@ -329,7 +329,7 @@ corto_void _test_Select_tc_selectEmptyParentString(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyQueryString(
+void _test_Select_tc_selectEmptyQueryString(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyQueryString) */
@@ -343,7 +343,7 @@ corto_void _test_Select_tc_selectEmptyQueryString(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyStrings(
+void _test_Select_tc_selectEmptyStrings(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyStrings) */
@@ -357,7 +357,7 @@ corto_void _test_Select_tc_selectEmptyStrings(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentAst(
+void _test_Select_tc_selectErrParentAst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentAst) */
@@ -371,7 +371,7 @@ corto_void _test_Select_tc_selectErrParentAst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentId(
+void _test_Select_tc_selectErrParentId(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentId) */
@@ -385,7 +385,7 @@ corto_void _test_Select_tc_selectErrParentId(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentTree(
+void _test_Select_tc_selectErrParentTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentTree) */
@@ -399,7 +399,7 @@ corto_void _test_Select_tc_selectErrParentTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentWc(
+void _test_Select_tc_selectErrParentWc(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentWc) */
@@ -413,7 +413,7 @@ corto_void _test_Select_tc_selectErrParentWc(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFilterAsterisk(
+void _test_Select_tc_selectFilterAsterisk(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFilterAsterisk) */
@@ -430,7 +430,7 @@ corto_void _test_Select_tc_selectFilterAsterisk(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFilterWildcard(
+void _test_Select_tc_selectFilterWildcard(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFilterWildcard) */
@@ -446,7 +446,7 @@ corto_void _test_Select_tc_selectFilterWildcard(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromCorto(
+void _test_Select_tc_selectFromCorto(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromCorto) */
@@ -461,7 +461,7 @@ corto_void _test_Select_tc_selectFromCorto(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromLangParent(
+void _test_Select_tc_selectFromLangParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromLangParent) */
@@ -476,7 +476,7 @@ corto_void _test_Select_tc_selectFromLangParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromNull(
+void _test_Select_tc_selectFromNull(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromNull) */
@@ -492,7 +492,7 @@ corto_void _test_Select_tc_selectFromNull(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRoot(
+void _test_Select_tc_selectFromRoot(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRoot) */
@@ -507,7 +507,7 @@ corto_void _test_Select_tc_selectFromRoot(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRootEmpty(
+void _test_Select_tc_selectFromRootEmpty(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRootEmpty) */
@@ -521,7 +521,7 @@ corto_void _test_Select_tc_selectFromRootEmpty(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRootNull(
+void _test_Select_tc_selectFromRootNull(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRootNull) */
@@ -535,7 +535,7 @@ corto_void _test_Select_tc_selectFromRootNull(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRootThis(
+void _test_Select_tc_selectFromRootThis(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRootThis) */
@@ -549,7 +549,7 @@ corto_void _test_Select_tc_selectFromRootThis(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectIdentifier(
+void _test_Select_tc_selectIdentifier(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectIdentifier) */
@@ -574,7 +574,7 @@ corto_void _test_Select_tc_selectIdentifier(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectIdentifierCaps(
+void _test_Select_tc_selectIdentifierCaps(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectIdentifierCaps) */
@@ -589,7 +589,7 @@ corto_void _test_Select_tc_selectIdentifierCaps(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectInvertCase(
+void _test_Select_tc_selectInvertCase(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectInvertCase) */
@@ -610,7 +610,7 @@ corto_void _test_Select_tc_selectInvertCase(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectInvertCaseFilter(
+void _test_Select_tc_selectInvertCaseFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectInvertCaseFilter) */
@@ -630,7 +630,7 @@ corto_void _test_Select_tc_selectInvertCaseFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectInvertCaseScope(
+void _test_Select_tc_selectInvertCaseScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectInvertCaseScope) */
@@ -650,7 +650,7 @@ corto_void _test_Select_tc_selectInvertCaseScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitOvershootScope(
+void _test_Select_tc_selectLimitOvershootScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitOvershootScope) */
@@ -673,7 +673,7 @@ corto_void _test_Select_tc_selectLimitOvershootScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitOvershootTree(
+void _test_Select_tc_selectLimitOvershootTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitOvershootTree) */
@@ -711,7 +711,7 @@ corto_void _test_Select_tc_selectLimitOvershootTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitScope(
+void _test_Select_tc_selectLimitScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitScope) */
@@ -734,7 +734,7 @@ corto_void _test_Select_tc_selectLimitScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitTree(
+void _test_Select_tc_selectLimitTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitTree) */
@@ -772,7 +772,7 @@ corto_void _test_Select_tc_selectLimitTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectNumeric(
+void _test_Select_tc_selectNumeric(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectNumeric) */
@@ -787,7 +787,7 @@ corto_void _test_Select_tc_selectNumeric(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObject(
+void _test_Select_tc_selectObject(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObject) */
@@ -802,7 +802,7 @@ corto_void _test_Select_tc_selectObject(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectParentScope(
+void _test_Select_tc_selectObjectParentScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectParentScope) */
@@ -816,7 +816,7 @@ corto_void _test_Select_tc_selectObjectParentScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectParentTree(
+void _test_Select_tc_selectObjectParentTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectParentTree) */
@@ -830,7 +830,7 @@ corto_void _test_Select_tc_selectObjectParentTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectPrefixScope(
+void _test_Select_tc_selectObjectPrefixScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectPrefixScope) */
@@ -844,7 +844,7 @@ corto_void _test_Select_tc_selectObjectPrefixScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectPrefixTrailingScope(
+void _test_Select_tc_selectObjectPrefixTrailingScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectPrefixTrailingScope) */
@@ -863,7 +863,7 @@ corto_void _test_Select_tc_selectObjectPrefixTrailingScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectScope(
+void _test_Select_tc_selectObjectScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectScope) */
@@ -877,7 +877,7 @@ corto_void _test_Select_tc_selectObjectScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectTrailingScope(
+void _test_Select_tc_selectObjectTrailingScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectTrailingScope) */
@@ -896,7 +896,7 @@ corto_void _test_Select_tc_selectObjectTrailingScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectTrailingTree(
+void _test_Select_tc_selectObjectTrailingTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectTrailingTree) */
@@ -937,7 +937,7 @@ corto_void _test_Select_tc_selectObjectTrailingTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectTree(
+void _test_Select_tc_selectObjectTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectTree) */
@@ -951,7 +951,7 @@ corto_void _test_Select_tc_selectObjectTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLargerThanLimit(
+void _test_Select_tc_selectOffsetLargerThanLimit(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLargerThanLimit) */
@@ -974,7 +974,7 @@ corto_void _test_Select_tc_selectOffsetLargerThanLimit(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimit(
+void _test_Select_tc_selectOffsetLimit(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimit) */
@@ -997,7 +997,7 @@ corto_void _test_Select_tc_selectOffsetLimit(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimitFilter(
+void _test_Select_tc_selectOffsetLimitFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimitFilter) */
@@ -1011,7 +1011,7 @@ corto_void _test_Select_tc_selectOffsetLimitFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimitOvershootScope(
+void _test_Select_tc_selectOffsetLimitOvershootScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimitOvershootScope) */
@@ -1034,7 +1034,7 @@ corto_void _test_Select_tc_selectOffsetLimitOvershootScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimitOvershootTree(
+void _test_Select_tc_selectOffsetLimitOvershootTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimitOvershootTree) */
@@ -1072,7 +1072,7 @@ corto_void _test_Select_tc_selectOffsetLimitOvershootTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetScope(
+void _test_Select_tc_selectOffsetScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetScope) */
@@ -1095,7 +1095,7 @@ corto_void _test_Select_tc_selectOffsetScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetTree(
+void _test_Select_tc_selectOffsetTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetTree) */
@@ -1133,7 +1133,7 @@ corto_void _test_Select_tc_selectOffsetTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOrder(
+void _test_Select_tc_selectOrder(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOrder) */
@@ -1266,7 +1266,7 @@ corto_void _test_Select_tc_selectOrder(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectParent(
+void _test_Select_tc_selectParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParent) */
@@ -1291,7 +1291,7 @@ corto_void _test_Select_tc_selectParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectParentNoSlash(
+void _test_Select_tc_selectParentNoSlash(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParentNoSlash) */
@@ -1306,7 +1306,7 @@ corto_void _test_Select_tc_selectParentNoSlash(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectParentWithSink(
+void _test_Select_tc_selectParentWithSink(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParentWithSink) */
@@ -1330,7 +1330,7 @@ corto_void _test_Select_tc_selectParentWithSink(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScope(
+void _test_Select_tc_selectScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScope) */
@@ -1352,7 +1352,7 @@ corto_void _test_Select_tc_selectScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopedIdentifier(
+void _test_Select_tc_selectScopedIdentifier(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopedIdentifier) */
@@ -1372,7 +1372,7 @@ corto_void _test_Select_tc_selectScopedIdentifier(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopedParent(
+void _test_Select_tc_selectScopedParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopedParent) */
@@ -1392,7 +1392,7 @@ corto_void _test_Select_tc_selectScopedParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopedThis(
+void _test_Select_tc_selectScopedThis(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopedThis) */
@@ -1412,7 +1412,7 @@ corto_void _test_Select_tc_selectScopedThis(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithAsterisk(
+void _test_Select_tc_selectScopeWithAsterisk(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithAsterisk) */
@@ -1434,7 +1434,7 @@ corto_void _test_Select_tc_selectScopeWithAsterisk(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithAsteriskFilter(
+void _test_Select_tc_selectScopeWithAsteriskFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithAsteriskFilter) */
@@ -1454,7 +1454,7 @@ corto_void _test_Select_tc_selectScopeWithAsteriskFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithWildcard(
+void _test_Select_tc_selectScopeWithWildcard(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithWildcard) */
@@ -1470,7 +1470,7 @@ corto_void _test_Select_tc_selectScopeWithWildcard(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithWildcardFilter(
+void _test_Select_tc_selectScopeWithWildcardFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithWildcardFilter) */
@@ -1486,7 +1486,7 @@ corto_void _test_Select_tc_selectScopeWithWildcardFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectSeparator(
+void _test_Select_tc_selectSeparator(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectSeparator) */
@@ -1503,7 +1503,7 @@ corto_void _test_Select_tc_selectSeparator(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectThis(
+void _test_Select_tc_selectThis(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectThis) */
@@ -1528,7 +1528,7 @@ corto_void _test_Select_tc_selectThis(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTree(
+void _test_Select_tc_selectTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTree) */
@@ -1569,7 +1569,7 @@ corto_void _test_Select_tc_selectTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteCurrent(
+void _test_Select_tc_selectTreeDeleteCurrent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteCurrent) */
@@ -1601,7 +1601,7 @@ corto_void _test_Select_tc_selectTreeDeleteCurrent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteFirst(
+void _test_Select_tc_selectTreeDeleteFirst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteFirst) */
@@ -1629,7 +1629,7 @@ corto_void _test_Select_tc_selectTreeDeleteFirst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteGrandparent(
+void _test_Select_tc_selectTreeDeleteGrandparent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteGrandparent) */
@@ -1701,7 +1701,7 @@ corto_void _test_Select_tc_selectTreeDeleteGrandparent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteNext(
+void _test_Select_tc_selectTreeDeleteNext(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteNext) */
@@ -1729,7 +1729,7 @@ corto_void _test_Select_tc_selectTreeDeleteNext(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteParent(
+void _test_Select_tc_selectTreeDeleteParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteParent) */
@@ -1755,7 +1755,7 @@ corto_void _test_Select_tc_selectTreeDeleteParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeletePrevious(
+void _test_Select_tc_selectTreeDeletePrevious(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeletePrevious) */
@@ -1787,7 +1787,7 @@ corto_void _test_Select_tc_selectTreeDeletePrevious(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeFromScope(
+void _test_Select_tc_selectTreeFromScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeFromScope) */
@@ -1828,7 +1828,7 @@ corto_void _test_Select_tc_selectTreeFromScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithAsteriskFilter(
+void _test_Select_tc_selectTreeWithAsteriskFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeWithAsteriskFilter) */
@@ -1864,7 +1864,7 @@ corto_void _test_Select_tc_selectTreeWithAsteriskFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithWildcard(
+void _test_Select_tc_selectTreeWithWildcard(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeWithWildcard) */
@@ -1883,7 +1883,7 @@ corto_void _test_Select_tc_selectTreeWithWildcard(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithWildcardFilter(
+void _test_Select_tc_selectTreeWithWildcardFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeWithWildcardFilter) */
@@ -1902,7 +1902,7 @@ corto_void _test_Select_tc_selectTreeWithWildcardFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectUnderscore(
+void _test_Select_tc_selectUnderscore(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectUnderscore) */
@@ -1917,7 +1917,7 @@ corto_void _test_Select_tc_selectUnderscore(
 /* $end */
 }
 
-corto_void _test_Select_teardown(
+void _test_Select_teardown(
     test_Select this)
 {
 /* $begin(test/Select/teardown) */

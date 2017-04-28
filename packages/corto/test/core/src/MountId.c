@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_MountId_tc_id(
+void _test_MountId_tc_id(
     test_MountId this)
 {
 /* $begin(test/MountId/tc_id) */
@@ -24,7 +24,7 @@ corto_void _test_MountId_tc_id(
 /* $end */
 }
 
-corto_void _test_MountId_tc_idForNested(
+void _test_MountId_tc_idForNested(
     test_MountId this)
 {
 /* $begin(test/MountId/tc_idForNested) */
@@ -43,7 +43,7 @@ corto_void _test_MountId_tc_idForNested(
 /* $end */
 }
 
-corto_void _test_MountId_tc_idTypeFilter(
+void _test_MountId_tc_idTypeFilter(
     test_MountId this)
 {
 /* $begin(test/MountId/tc_idTypeFilter) */
@@ -65,7 +65,7 @@ corto_void _test_MountId_tc_idTypeFilter(
 /* $end */
 }
 
-corto_void _test_MountId_tc_noIdAvailable(
+void _test_MountId_tc_noIdAvailable(
     test_MountId this)
 {
 /* $begin(test/MountId/tc_noIdAvailable) */

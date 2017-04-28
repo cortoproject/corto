@@ -9,7 +9,7 @@
 #include "corto/corto.h"
 #include "_object.h"
 
-corto_type corto_value_getType(corto_value* val) {
+corto_type corto_value_typeof(corto_value* val) {
     corto_type result;
 
     switch(val->kind) {
@@ -46,7 +46,7 @@ corto_type corto_value_getType(corto_value* val) {
             result = NULL;
             break;
         default:
-            corto_critical("corto_value_getType: invalid corto_literalKind(%d)", val->is.literal.kind);
+            corto_critical("corto_value_typeof: invalid corto_literalKind(%d)", val->is.literal.kind);
             result = NULL;
             break;
         }
@@ -55,7 +55,7 @@ corto_type corto_value_getType(corto_value* val) {
         result = val->is.member.t->type;
         break;
     case CORTO_CONSTANT:
-        result = corto_value_getType(val->parent);
+        result = corto_value_typeof(val->parent);
         break;
     case CORTO_ELEMENT:
         result = val->is.element.t.type;
@@ -64,7 +64,7 @@ corto_type corto_value_getType(corto_value* val) {
         result = val->is.mapElement.t.type;
         break;
     default:
-        corto_critical("corto_value_getType: invalid corto_valueKind(%d).", val->kind);
+        corto_critical("corto_value_typeof: invalid corto_valueKind(%d).", val->kind);
         result = NULL;
         break;
     }
@@ -72,7 +72,7 @@ corto_type corto_value_getType(corto_value* val) {
     return result;
 }
 
-corto_void* corto_value_getPtr(corto_value* val) {
+corto_void* corto_value_ptrof(corto_value* val) {
     corto_void* result;
     switch(val->kind) {
     case CORTO_OBJECT:
@@ -100,14 +100,14 @@ corto_void* corto_value_getPtr(corto_value* val) {
         result = val->is.mapElement.v;
         break;
     default:
-        corto_critical("corto_value_getPtr: invalid corto_valueKind(%d).", val->kind);
+        corto_critical("corto_value_ptrof: invalid corto_valueKind(%d).", val->kind);
         result = NULL;
         break;
     }
     return result;
 }
 
-corto_int16 corto_value_setPtr(corto_value *val, void *ptr) {
+corto_int16 corto_value_ptrset(corto_value *val, void *ptr) {
     switch(val->kind) {
     case CORTO_OBJECT:
         val->is.object.o = ptr;
@@ -134,7 +134,7 @@ corto_int16 corto_value_setPtr(corto_value *val, void *ptr) {
         corto_seterr("cannot set pointer for literal");
         goto error;
     default:
-        corto_critical("corto_value_setPtr: invalid corto_valueKind(%d).", val->kind);
+        corto_critical("corto_value_ptrset: invalid corto_valueKind(%d).", val->kind);
         break;
     }
     return 0;
@@ -142,7 +142,7 @@ error:
     return -1;
 }
 
-corto_object corto_value_getObject(corto_value* val) {
+corto_object corto_value_objectof(corto_value* val) {
     corto_object result;
 
     switch(val->kind) {
@@ -171,17 +171,17 @@ corto_object corto_value_getObject(corto_value* val) {
         result = val->is.mapElement.o;
         break;
     default:
-        corto_critical("corto_value_getObject: invalid corto_valueKind(%d).", val->kind);
+        corto_critical("corto_value_objectof: invalid corto_valueKind(%d).", val->kind);
         result = NULL;
         break;
     }
     return result;
 }
 
-corto_int16 corto_value_getMember(corto_value *val, corto_string member, corto_value *out) {
-    corto_type t = corto_value_getType(val);
-    corto_object o = corto_value_getObject(val);
-    void *ptr = corto_value_getPtr(val);
+corto_int16 corto_value_memberof(corto_value *val, corto_string member, corto_value *out) {
+    corto_type t = corto_value_typeof(val);
+    corto_object o = corto_value_objectof(val);
+    void *ptr = corto_value_ptrof(val);
 
     corto_id tokens;
     strncpy(tokens, member, sizeof(corto_id));
@@ -192,7 +192,7 @@ corto_int16 corto_value_getMember(corto_value *val, corto_string member, corto_v
 
         if (!corto_instanceof(corto_interface_o, t)) {
             corto_seterr(
-                "cannot get member from a non-composite value (type is '%s')", 
+                "cannot get member from a non-composite value (type is '%s')",
                 corto_fullpath(NULL, t));
             goto error;
         }
@@ -240,7 +240,7 @@ corto_function corto_valueFunction(corto_value* val) {
     return result;
 }
 
-corto_uint32 corto_value_getIndex(corto_value* val) {
+corto_uint32 corto_value_indexof(corto_value* val) {
     corto_uint32 result = 0;
     switch(val->kind) {
     case CORTO_ELEMENT:
@@ -255,80 +255,7 @@ corto_uint32 corto_value_getIndex(corto_value* val) {
 
 static char* corto_valueKindString[CORTO_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
 
-char* corto_strving(corto_value* v, char* buffer, unsigned int length) {
-    corto_id object_name;
-    corto_member m;
-    corto_value* parents[CORTO_MAX_INHERITANCE_DEPTH];
-    corto_int32 parentCount, i;
-    corto_value* vptr;
-
-    if (length < (strlen("ELEMENT") + 3)) {
-        corto_error("buffer passed to corto_strving is too short.");
-        goto error;
-    }
-
-    /* Put label in buffer */
-    sprintf(buffer, "%s ", corto_valueKindString[v->kind]);
-
-    /* Get name of object */
-    corto_fullpath(object_name, corto_value_getObject(v));
-    if ((strlen(buffer) + (strlen(object_name) + 2 + 1)) >= length) {
-        corto_error("buffer passed to corto_strving is too short for object name.");
-        goto error;
-    }
-
-    /* Put objectname in buffer */
-    strcat(buffer, object_name);
-
-    /* Collect parents */
-    parentCount = 0;
-    vptr = v;
-    do{
-        if (vptr->kind != CORTO_OBJECT) {
-            parents[parentCount] = vptr;
-            parentCount++;
-        }
-    }while((vptr = vptr->parent));
-
-    /* Put name of member or branch in buffer */
-    for(i=parentCount-1; i>=0; i--) {
-        vptr = parents[i];
-        m = NULL;
-        switch(vptr->kind) {
-        case CORTO_LITERAL:
-        case CORTO_VALUE:
-            /* Nothing to add for just a value */
-            break;
-        case CORTO_BASE:
-            break;
-        case CORTO_MEMBER:
-            m = vptr->is.member.t;
-            break;
-        case CORTO_ELEMENT:
-            sprintf(buffer, "%s[%d]", buffer, vptr->is.element.t.index);
-            m = NULL;
-            break;
-        default:
-            corto_trace("corto_strving: unhandled '%s'", corto_valueKindString[vptr->kind]);
-            m = NULL;
-            break;
-        }
-        if (m) {
-            if ((strlen(buffer) + strlen(corto_idof(m)) + 1) >= length) {
-                corto_error("buffer passed to corto_strving is too short for member name");
-            } else {
-                strcat(buffer, ".");
-                strcat(buffer, corto_idof(m));
-            }
-        }
-    }
-
-    return buffer;
-error:
-    return NULL;
-}
-
-char* corto_valueExpr(corto_value* v, char* buffer, unsigned int length) {
+char* corto_value_exprStr(corto_value* v, char* buffer, unsigned int length) {
     corto_member m;
     corto_value* parents[CORTO_MAX_INHERITANCE_DEPTH];
     corto_int32 parentCount, i;
@@ -364,7 +291,7 @@ char* corto_valueExpr(corto_value* v, char* buffer, unsigned int length) {
             m = NULL;
             break;
         default:
-            corto_trace("corto_valueExpr: unhandled '%s'", corto_valueKindString[vptr->kind]);
+            corto_trace("corto_value_exprStr: unhandled '%s'", corto_valueKindString[vptr->kind]);
             m = NULL;
             goto error;
         }
@@ -405,7 +332,7 @@ corto_value _corto_value_base(corto_void *v, corto_type t) {
     return val;
 }
 
-corto_value _corto_value_value(corto_type t, corto_void* v) {
+corto_value _corto_value_value(corto_void* v, corto_type t) {
     corto_value val;
     val.kind = CORTO_VALUE;
     val.parent = NULL;
@@ -491,22 +418,22 @@ corto_value corto_value_literal(corto_literalKind kind, corto_void* value) {
     return val;
 }
 
-corto_value corto_value_literalBoolean(corto_bool value) {
+corto_value corto_value_bool(corto_bool value) {
     return corto_value_literal(CORTO_LITERAL_BOOLEAN, &value);
 }
-corto_value corto_value_literalCharacter(corto_char value) {
+corto_value corto_value_char(corto_char value) {
     return corto_value_literal(CORTO_LITERAL_CHARACTER, &value);
 }
-corto_value corto_value_literalInteger(corto_uint64 value) {
+corto_value corto_value_int(corto_uint64 value) {
     return corto_value_literal(CORTO_LITERAL_INTEGER, &value);
 }
-corto_value corto_value_literalUnsignedInteger(corto_uint64 value) {
+corto_value corto_value_uint(corto_uint64 value) {
     return corto_value_literal(CORTO_LITERAL_UNSIGNED_INTEGER, &value);
 }
-corto_value corto_value_literalFloatingPoint(corto_float64 value) {
+corto_value corto_value_float(corto_float64 value) {
     return corto_value_literal(CORTO_LITERAL_FLOATING_POINT, &value);
 }
-corto_value corto_value_literalString(corto_string value) {
+corto_value corto_value_string(corto_string value) {
     return corto_value_literal(CORTO_LITERAL_STRING, &value);
 }
 
@@ -922,21 +849,21 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_unaryOperator(
+corto_int16 corto_value_unary(
     corto_operatorKind _operator,
     corto_value *value,
     corto_value *result)
 {
     corto_uint64 *v = &result->is.value.storage;
 
-    corto_type t = corto_value_getType(value);
+    corto_type t = corto_value_typeof(value);
     corto_type returnType = t;
 
     if (corto_valueExpr_isOperatorConditional(_operator)) {
         returnType = corto_type(corto_bool_o);
     }
 
-    if (corto_unaryOperator(t, _operator, corto_value_getPtr(value), v)) {
+    if (corto_unaryOperator(t, _operator, corto_value_ptrof(value), v)) {
         goto error;
     }
 
@@ -955,8 +882,8 @@ corto_int16 _corto_value_cast(
     corto_value *out)
 {
     void *dst = (void*)&out->is.value.storage;
-    void *src = corto_value_getPtr(in);
-    corto_type srcType = corto_value_getType(in);
+    void *src = corto_value_ptrof(in);
+    corto_type srcType = corto_value_typeof(in);
 
     if (corto_convert(srcType, src, dstType, dst)) {
         goto error;
@@ -971,32 +898,32 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_binaryOperator(
+corto_int16 corto_value_binary(
     corto_operatorKind _operator,
     corto_value *left,
     corto_value *right,
     corto_value *result)
 {
-    corto_value dummy = corto_value_init(); 
+    corto_value dummy = corto_value_init();
     corto_uint64 *v = &dummy.is.value.storage;
-    corto_type leftType = corto_value_getType(left);
-    corto_type rightType = corto_value_getType(right);
+    corto_type leftType = corto_value_typeof(left);
+    corto_type rightType = corto_value_typeof(right);
     corto_value *lPtr = left, *rPtr = right;
     corto_type operType = NULL, returnType = NULL;
 
     if (result) {
-        v = corto_value_getPtr(result);
+        v = corto_value_ptrof(result);
         if (!v) {
             v = &result->is.value.storage;
         }
     }
 
-    if (!result || ((result->kind == CORTO_VALUE) || (result->kind == CORTO_LITERAL) || !corto_value_getPtr(result))) {
+    if (!result || ((result->kind == CORTO_VALUE) || (result->kind == CORTO_LITERAL) || !corto_value_ptrof(result))) {
         if (corto_valueExpr_getTypeForBinary(leftType, FALSE, rightType, FALSE, _operator, &operType, &returnType)) {
             goto error;
         }
     } else {
-        corto_type resultType = corto_value_getType(result);
+        corto_type resultType = corto_value_typeof(result);
         if (corto_valueExpr_getTypeForBinary(resultType, FALSE, resultType, FALSE, _operator, &operType, &returnType)) {
             goto error;
         }
@@ -1019,8 +946,8 @@ corto_int16 corto_value_binaryOperator(
     if (corto_binaryOperator(
         operType,
         _operator,
-        corto_value_getPtr(lPtr),
-        corto_value_getPtr(rPtr),
+        corto_value_ptrof(lPtr),
+        corto_value_ptrof(rPtr),
         v))
     {
         goto error;
@@ -1052,14 +979,14 @@ void corto_value_free(corto_value *v) {
     switch(v->kind) {
     case CORTO_LITERAL:
     case CORTO_VALUE:
-        t = corto_value_getType(v);
+        t = corto_value_typeof(v);
         break;
     default:
         break;
     }
 
     if (t) {
-        void *ptr = corto_value_getPtr(v);
+        void *ptr = corto_value_ptrof(v);
         corto_deinitp(ptr, t);
         if (v->kind == CORTO_VALUE) {
             if (ptr != (void*)&v->is.value.storage) {

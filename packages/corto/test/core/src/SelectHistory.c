@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_SelectHistory_setup(
+void _test_SelectHistory_setup(
     test_SelectHistory this)
 {
 /* $begin(test/SelectHistory/setup) */
@@ -18,7 +18,7 @@ corto_void _test_SelectHistory_setup(
 /* $end */
 }
 
-corto_void _test_SelectHistory_tc_selectAll(
+void _test_SelectHistory_tc_selectAll(
     test_SelectHistory this)
 {
 /* $begin(test/SelectHistory/tc_selectAll) */
@@ -118,7 +118,7 @@ corto_void _test_SelectHistory_tc_selectAll(
 /* $end */
 }
 
-corto_void _test_SelectHistory_tc_selectJson(
+void _test_SelectHistory_tc_selectJson(
     test_SelectHistory this)
 {
 /* $begin(test/SelectHistory/tc_selectJson) */
@@ -201,7 +201,7 @@ corto_void _test_SelectHistory_tc_selectJson(
 /* $end */
 }
 
-corto_void _test_SelectHistory_tc_selectNowToDepth(
+void _test_SelectHistory_tc_selectNowToDepth(
     test_SelectHistory this)
 {
 /* $begin(test/SelectHistory/tc_selectNowToDepth) */
@@ -284,7 +284,7 @@ corto_void _test_SelectHistory_tc_selectNowToDepth(
 /* $end */
 }
 
-corto_void _test_SelectHistory_tc_selectSampleToDepth(
+void _test_SelectHistory_tc_selectSampleToDepth(
     test_SelectHistory this)
 {
 /* $begin(test/SelectHistory/tc_selectSampleToDepth) */
@@ -367,7 +367,7 @@ corto_void _test_SelectHistory_tc_selectSampleToDepth(
 /* $end */
 }
 
-corto_void _test_SelectHistory_tc_selectSampleToSample(
+void _test_SelectHistory_tc_selectSampleToSample(
     test_SelectHistory this)
 {
 /* $begin(test/SelectHistory/tc_selectSampleToSample) */

@@ -12,7 +12,7 @@
 static corto_object testScope;
 /* $end */
 
-corto_void _test_Event_setup(
+void _test_Event_setup(
     test_Event this)
 {
 /* $begin(test/Event/setup) */
@@ -27,7 +27,7 @@ corto_void _test_Event_setup(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclare(
+void _test_Event_tc_onDeclare(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclare) */
@@ -69,7 +69,7 @@ corto_void _test_Event_tc_onDeclare(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareOrphan(
+void _test_Event_tc_onDeclareOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareOrphan) */
@@ -99,7 +99,7 @@ corto_void _test_Event_tc_onDeclareOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareScope(
+void _test_Event_tc_onDeclareScope(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareScope) */
@@ -137,7 +137,7 @@ corto_void _test_Event_tc_onDeclareScope(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareScopeNotObservable(
+void _test_Event_tc_onDeclareScopeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareScopeNotObservable) */
@@ -182,7 +182,7 @@ corto_void _test_Event_tc_onDeclareScopeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareScopeOrphan(
+void _test_Event_tc_onDeclareScopeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareScopeOrphan) */
@@ -212,7 +212,7 @@ corto_void _test_Event_tc_onDeclareScopeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareSelf(
+void _test_Event_tc_onDeclareSelf(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareSelf) */
@@ -249,7 +249,7 @@ corto_void _test_Event_tc_onDeclareSelf(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareSelfOrphan(
+void _test_Event_tc_onDeclareSelfOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareSelfOrphan) */
@@ -279,7 +279,7 @@ corto_void _test_Event_tc_onDeclareSelfOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareTree(
+void _test_Event_tc_onDeclareTree(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareTree) */
@@ -321,7 +321,7 @@ corto_void _test_Event_tc_onDeclareTree(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareTreeNotObservable(
+void _test_Event_tc_onDeclareTreeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareTreeNotObservable) */
@@ -369,7 +369,7 @@ corto_void _test_Event_tc_onDeclareTreeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeclareTreeOrphan(
+void _test_Event_tc_onDeclareTreeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeclareTreeOrphan) */
@@ -399,7 +399,7 @@ corto_void _test_Event_tc_onDeclareTreeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefine(
+void _test_Event_tc_onDefine(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefine) */
@@ -440,7 +440,7 @@ corto_void _test_Event_tc_onDefine(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineOrphan(
+void _test_Event_tc_onDefineOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineOrphan) */
@@ -470,7 +470,7 @@ corto_void _test_Event_tc_onDefineOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineScope(
+void _test_Event_tc_onDefineScope(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineScope) */
@@ -510,7 +510,7 @@ corto_void _test_Event_tc_onDefineScope(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineScopeNotObservable(
+void _test_Event_tc_onDefineScopeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineScopeNotObservable) */
@@ -556,7 +556,7 @@ corto_void _test_Event_tc_onDefineScopeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineScopeOrphan(
+void _test_Event_tc_onDefineScopeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineScopeOrphan) */
@@ -586,7 +586,7 @@ corto_void _test_Event_tc_onDefineScopeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineSelf(
+void _test_Event_tc_onDefineSelf(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineSelf) */
@@ -622,7 +622,7 @@ corto_void _test_Event_tc_onDefineSelf(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineSelfOrphan(
+void _test_Event_tc_onDefineSelfOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineSelfOrphan) */
@@ -652,7 +652,7 @@ corto_void _test_Event_tc_onDefineSelfOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineTree(
+void _test_Event_tc_onDefineTree(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineTree) */
@@ -694,7 +694,7 @@ corto_void _test_Event_tc_onDefineTree(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineTreeNotObservable(
+void _test_Event_tc_onDefineTreeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineTreeNotObservable) */
@@ -742,7 +742,7 @@ corto_void _test_Event_tc_onDefineTreeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDefineTreeOrphan(
+void _test_Event_tc_onDefineTreeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDefineTreeOrphan) */
@@ -772,7 +772,7 @@ corto_void _test_Event_tc_onDefineTreeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDelete(
+void _test_Event_tc_onDelete(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDelete) */
@@ -809,7 +809,7 @@ corto_void _test_Event_tc_onDelete(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteOrphan(
+void _test_Event_tc_onDeleteOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteOrphan) */
@@ -839,7 +839,7 @@ corto_void _test_Event_tc_onDeleteOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteScope(
+void _test_Event_tc_onDeleteScope(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteScope) */
@@ -876,7 +876,7 @@ corto_void _test_Event_tc_onDeleteScope(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteScopeNotObservable(
+void _test_Event_tc_onDeleteScopeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteScopeNotObservable) */
@@ -919,7 +919,7 @@ corto_void _test_Event_tc_onDeleteScopeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteScopeOrphan(
+void _test_Event_tc_onDeleteScopeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteScopeOrphan) */
@@ -949,7 +949,7 @@ corto_void _test_Event_tc_onDeleteScopeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteSelf(
+void _test_Event_tc_onDeleteSelf(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteSelf) */
@@ -986,7 +986,7 @@ corto_void _test_Event_tc_onDeleteSelf(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteSelfOrphan(
+void _test_Event_tc_onDeleteSelfOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteSelfOrphan) */
@@ -1016,7 +1016,7 @@ corto_void _test_Event_tc_onDeleteSelfOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteTree(
+void _test_Event_tc_onDeleteTree(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteTree) */
@@ -1053,7 +1053,7 @@ corto_void _test_Event_tc_onDeleteTree(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteTreeNotObservable(
+void _test_Event_tc_onDeleteTreeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteTreeNotObservable) */
@@ -1096,7 +1096,7 @@ corto_void _test_Event_tc_onDeleteTreeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onDeleteTreeOrphan(
+void _test_Event_tc_onDeleteTreeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onDeleteTreeOrphan) */
@@ -1126,7 +1126,7 @@ corto_void _test_Event_tc_onDeleteTreeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdate(
+void _test_Event_tc_onUpdate(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdate) */
@@ -1198,7 +1198,7 @@ corto_void _test_Event_tc_onUpdate(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefine(
+void _test_Event_tc_onUpdateDefine(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefine) */
@@ -1270,7 +1270,7 @@ corto_void _test_Event_tc_onUpdateDefine(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineOrphan(
+void _test_Event_tc_onUpdateDefineOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineOrphan) */
@@ -1302,7 +1302,7 @@ corto_void _test_Event_tc_onUpdateDefineOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineScope(
+void _test_Event_tc_onUpdateDefineScope(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineScope) */
@@ -1370,7 +1370,7 @@ corto_void _test_Event_tc_onUpdateDefineScope(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineScopeNotObservable(
+void _test_Event_tc_onUpdateDefineScopeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineScopeNotObservable) */
@@ -1444,7 +1444,7 @@ corto_void _test_Event_tc_onUpdateDefineScopeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineScopeOrphan(
+void _test_Event_tc_onUpdateDefineScopeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineScopeOrphan) */
@@ -1474,7 +1474,7 @@ corto_void _test_Event_tc_onUpdateDefineScopeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineSelf(
+void _test_Event_tc_onUpdateDefineSelf(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineSelf) */
@@ -1540,7 +1540,7 @@ corto_void _test_Event_tc_onUpdateDefineSelf(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineSelfOrphan(
+void _test_Event_tc_onUpdateDefineSelfOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineSelfOrphan) */
@@ -1572,7 +1572,7 @@ corto_void _test_Event_tc_onUpdateDefineSelfOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineTree(
+void _test_Event_tc_onUpdateDefineTree(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineTree) */
@@ -1642,7 +1642,7 @@ corto_void _test_Event_tc_onUpdateDefineTree(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineTreeNotObservable(
+void _test_Event_tc_onUpdateDefineTreeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineTreeNotObservable) */
@@ -1718,7 +1718,7 @@ corto_void _test_Event_tc_onUpdateDefineTreeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateDefineTreeOrphan(
+void _test_Event_tc_onUpdateDefineTreeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateDefineTreeOrphan) */
@@ -1748,7 +1748,7 @@ corto_void _test_Event_tc_onUpdateDefineTreeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateOrphan(
+void _test_Event_tc_onUpdateOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateOrphan) */
@@ -1780,7 +1780,7 @@ corto_void _test_Event_tc_onUpdateOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateScope(
+void _test_Event_tc_onUpdateScope(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateScope) */
@@ -1848,7 +1848,7 @@ corto_void _test_Event_tc_onUpdateScope(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateScopeNotObservable(
+void _test_Event_tc_onUpdateScopeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateScopeNotObservable) */
@@ -1922,7 +1922,7 @@ corto_void _test_Event_tc_onUpdateScopeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateScopeOrphan(
+void _test_Event_tc_onUpdateScopeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateScopeOrphan) */
@@ -1952,7 +1952,7 @@ corto_void _test_Event_tc_onUpdateScopeOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateSelf(
+void _test_Event_tc_onUpdateSelf(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateSelf) */
@@ -2018,7 +2018,7 @@ corto_void _test_Event_tc_onUpdateSelf(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateSelfOrphan(
+void _test_Event_tc_onUpdateSelfOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateSelfOrphan) */
@@ -2050,7 +2050,7 @@ corto_void _test_Event_tc_onUpdateSelfOrphan(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateTree(
+void _test_Event_tc_onUpdateTree(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateTree) */
@@ -2120,7 +2120,7 @@ corto_void _test_Event_tc_onUpdateTree(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateTreeNotObservable(
+void _test_Event_tc_onUpdateTreeNotObservable(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateTreeNotObservable) */
@@ -2196,7 +2196,7 @@ corto_void _test_Event_tc_onUpdateTreeNotObservable(
 /* $end */
 }
 
-corto_void _test_Event_tc_onUpdateTreeOrphan(
+void _test_Event_tc_onUpdateTreeOrphan(
     test_Event this)
 {
 /* $begin(test/Event/tc_onUpdateTreeOrphan) */
@@ -2236,7 +2236,7 @@ void test_Event_tc_postponeListenForUndefinedCallback(
     *corto_int32(this) = *corto_int32(observable);
 }
 /* $end */
-corto_void _test_Event_tc_postponeListenForUndefined(
+void _test_Event_tc_postponeListenForUndefined(
     test_Event this)
 {
 /* $begin(test/Event/tc_postponeListenForUndefined) */
@@ -2268,7 +2268,7 @@ corto_void _test_Event_tc_postponeListenForUndefined(
 /* $end */
 }
 
-corto_void _test_Event_tc_postponeListenSilence(
+void _test_Event_tc_postponeListenSilence(
     test_Event this)
 {
 /* $begin(test/Event/tc_postponeListenSilence) */
@@ -2298,7 +2298,7 @@ corto_void _test_Event_tc_postponeListenSilence(
 /* $end */
 }
 
-corto_void _test_Event_tc_updateUndefined(
+void _test_Event_tc_updateUndefined(
     test_Event this)
 {
 /* $begin(test/Event/tc_updateUndefined) */
@@ -2326,7 +2326,7 @@ corto_void _test_Event_tc_updateUndefined(
 /* $end */
 }
 
-corto_void _test_Event_tc_updateVoid(
+void _test_Event_tc_updateVoid(
     test_Event this)
 {
 /* $begin(test/Event/tc_updateVoid) */
@@ -2341,7 +2341,7 @@ corto_void _test_Event_tc_updateVoid(
 /* $end */
 }
 
-corto_void _test_Event_teardown(
+void _test_Event_teardown(
     test_Event this)
 {
 /* $begin(test/Event/teardown) */

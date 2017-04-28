@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_SelectMount_setup(
+void _test_SelectMount_setup(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/setup) */
@@ -26,7 +26,7 @@ corto_void _test_SelectMount_setup(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
+void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectGrandparentFromVirtualScope) */
@@ -49,7 +49,7 @@ corto_void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectInvertCase(
+void _test_SelectMount_tc_selectInvertCase(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectInvertCase) */
@@ -72,7 +72,7 @@ corto_void _test_SelectMount_tc_selectInvertCase(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectInvertCaseFilter(
+void _test_SelectMount_tc_selectInvertCaseFilter(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectInvertCaseFilter) */
@@ -95,7 +95,7 @@ corto_void _test_SelectMount_tc_selectInvertCaseFilter(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectInvertCaseScope(
+void _test_SelectMount_tc_selectInvertCaseScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectInvertCaseScope) */
@@ -118,7 +118,7 @@ corto_void _test_SelectMount_tc_selectInvertCaseScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectIteratorPartialRelease(
+void _test_SelectMount_tc_selectIteratorPartialRelease(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectIteratorPartialRelease) */
@@ -146,7 +146,7 @@ corto_void _test_SelectMount_tc_selectIteratorPartialRelease(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
+void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectIteratorPartialReleaseTwoMounts) */
@@ -182,7 +182,7 @@ corto_void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
+void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectIteratorPartialReleaseTwoMountsNested) */
@@ -218,7 +218,7 @@ corto_void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectIteratorRelease(
+void _test_SelectMount_tc_selectIteratorRelease(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectIteratorRelease) */
@@ -244,7 +244,7 @@ corto_void _test_SelectMount_tc_selectIteratorRelease(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectParentFromScope(
+void _test_SelectMount_tc_selectParentFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectParentFromScope) */
@@ -267,7 +267,7 @@ corto_void _test_SelectMount_tc_selectParentFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectParentFromVirtualScope(
+void _test_SelectMount_tc_selectParentFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectParentFromVirtualScope) */
@@ -289,7 +289,7 @@ corto_void _test_SelectMount_tc_selectParentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScope(
+void _test_SelectMount_tc_selectScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScope) */
@@ -328,7 +328,7 @@ corto_void _test_SelectMount_tc_selectScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeFilter(
+void _test_SelectMount_tc_selectScopeFilter(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeFilter) */
@@ -360,7 +360,7 @@ corto_void _test_SelectMount_tc_selectScopeFilter(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeFilterFromScope(
+void _test_SelectMount_tc_selectScopeFilterFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeFilterFromScope) */
@@ -391,7 +391,7 @@ corto_void _test_SelectMount_tc_selectScopeFilterFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
+void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeFilterFromVirtualScope) */
@@ -422,7 +422,7 @@ corto_void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeFromScope(
+void _test_SelectMount_tc_selectScopeFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeFromScope) */
@@ -461,7 +461,7 @@ corto_void _test_SelectMount_tc_selectScopeFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeFromVirtualScope(
+void _test_SelectMount_tc_selectScopeFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeFromVirtualScope) */
@@ -499,7 +499,7 @@ corto_void _test_SelectMount_tc_selectScopeFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeMixed(
+void _test_SelectMount_tc_selectScopeMixed(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeMixed) */
@@ -570,7 +570,7 @@ corto_void _test_SelectMount_tc_selectScopeMixed(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeNested(
+void _test_SelectMount_tc_selectScopeNested(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeNested) */
@@ -609,7 +609,7 @@ corto_void _test_SelectMount_tc_selectScopeNested(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeNestedDirty(
+void _test_SelectMount_tc_selectScopeNestedDirty(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeNestedDirty) */
@@ -648,7 +648,7 @@ corto_void _test_SelectMount_tc_selectScopeNestedDirty(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
+void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeNestedDirtyFromScope) */
@@ -687,7 +687,7 @@ corto_void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
+void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeNestedDirtyFromVirtualScope) */
@@ -718,7 +718,7 @@ corto_void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeNestedFromScope(
+void _test_SelectMount_tc_selectScopeNestedFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeNestedFromScope) */
@@ -757,7 +757,7 @@ corto_void _test_SelectMount_tc_selectScopeNestedFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
+void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectScopeNestedFromVirtualScope) */
@@ -788,7 +788,7 @@ corto_void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingle(
+void _test_SelectMount_tc_selectSingle(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingle) */
@@ -811,7 +811,7 @@ corto_void _test_SelectMount_tc_selectSingle(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleFromScope(
+void _test_SelectMount_tc_selectSingleFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleFromScope) */
@@ -834,7 +834,7 @@ corto_void _test_SelectMount_tc_selectSingleFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleFromScopeTree(
+void _test_SelectMount_tc_selectSingleFromScopeTree(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleFromScopeTree) */
@@ -857,7 +857,7 @@ corto_void _test_SelectMount_tc_selectSingleFromScopeTree(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleFromVirtualScope(
+void _test_SelectMount_tc_selectSingleFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleFromVirtualScope) */
@@ -880,7 +880,7 @@ corto_void _test_SelectMount_tc_selectSingleFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleNested(
+void _test_SelectMount_tc_selectSingleNested(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleNested) */
@@ -903,7 +903,7 @@ corto_void _test_SelectMount_tc_selectSingleNested(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleNestedFromScope(
+void _test_SelectMount_tc_selectSingleNestedFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleNestedFromScope) */
@@ -926,7 +926,7 @@ corto_void _test_SelectMount_tc_selectSingleNestedFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
+void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleNestedFromScopeTree) */
@@ -949,7 +949,7 @@ corto_void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
+void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleNestedFromVirtualScope) */
@@ -972,7 +972,7 @@ corto_void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleTree(
+void _test_SelectMount_tc_selectSingleTree(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleTree) */
@@ -1003,7 +1003,7 @@ corto_void _test_SelectMount_tc_selectSingleTree(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleTree2(
+void _test_SelectMount_tc_selectSingleTree2(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleTree2) */
@@ -1026,7 +1026,7 @@ corto_void _test_SelectMount_tc_selectSingleTree2(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectSingleTree3(
+void _test_SelectMount_tc_selectSingleTree3(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectSingleTree3) */
@@ -1049,7 +1049,7 @@ corto_void _test_SelectMount_tc_selectSingleTree3(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTree(
+void _test_SelectMount_tc_selectTree(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTree) */
@@ -1168,7 +1168,7 @@ corto_void _test_SelectMount_tc_selectTree(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTreeEmptyNestedScope(
+void _test_SelectMount_tc_selectTreeEmptyNestedScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTreeEmptyNestedScope) */
@@ -1210,7 +1210,7 @@ corto_void _test_SelectMount_tc_selectTreeEmptyNestedScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTreeEmptyScope(
+void _test_SelectMount_tc_selectTreeEmptyScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTreeEmptyScope) */
@@ -1245,7 +1245,7 @@ corto_void _test_SelectMount_tc_selectTreeEmptyScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTreeFromNestedScope(
+void _test_SelectMount_tc_selectTreeFromNestedScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTreeFromNestedScope) */
@@ -1292,7 +1292,7 @@ corto_void _test_SelectMount_tc_selectTreeFromNestedScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTreeFromScope(
+void _test_SelectMount_tc_selectTreeFromScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTreeFromScope) */
@@ -1363,7 +1363,7 @@ corto_void _test_SelectMount_tc_selectTreeFromScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
+void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTreeFromVirtualNestedScope) */
@@ -1410,7 +1410,7 @@ corto_void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectTreeFromVirtualScope(
+void _test_SelectMount_tc_selectTreeFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectTreeFromVirtualScope) */
@@ -1481,7 +1481,7 @@ corto_void _test_SelectMount_tc_selectTreeFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
+void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectVirtualGrandparentFromVirtualScope) */
@@ -1504,7 +1504,7 @@ corto_void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
+void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/tc_selectVirtualParentFromVirtualScope) */
@@ -1527,7 +1527,7 @@ corto_void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
 /* $end */
 }
 
-corto_void _test_SelectMount_teardown(
+void _test_SelectMount_teardown(
     test_SelectMount this)
 {
 /* $begin(test/SelectMount/teardown) */

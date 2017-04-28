@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Container_tc_complexContainer(
+void _test_Container_tc_complexContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_complexContainer) */
@@ -59,7 +59,7 @@ corto_void _test_Container_tc_complexContainer(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerEmpty(
+void _test_Container_tc_containerEmpty(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerEmpty) */
@@ -79,7 +79,7 @@ corto_void _test_Container_tc_containerEmpty(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerNestedContainer(
+void _test_Container_tc_containerNestedContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerNestedContainer) */
@@ -115,7 +115,7 @@ corto_void _test_Container_tc_containerNestedContainer(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerNestedLeaf(
+void _test_Container_tc_containerNestedLeaf(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerNestedLeaf) */
@@ -151,7 +151,7 @@ corto_void _test_Container_tc_containerNestedLeaf(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerNestedTable(
+void _test_Container_tc_containerNestedTable(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerNestedTable) */
@@ -184,7 +184,7 @@ corto_void _test_Container_tc_containerNestedTable(
 /* $end */
 }
 
-corto_void _test_Container_tc_leafRoot(
+void _test_Container_tc_leafRoot(
     test_Container this)
 {
 /* $begin(test/Container/tc_leafRoot) */
@@ -204,7 +204,7 @@ corto_void _test_Container_tc_leafRoot(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableMultiKey(
+void _test_Container_tc_tableMultiKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiKey) */
@@ -228,7 +228,7 @@ corto_void _test_Container_tc_tableMultiKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableMultiMixedKey(
+void _test_Container_tc_tableMultiMixedKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiMixedKey) */
@@ -252,7 +252,7 @@ corto_void _test_Container_tc_tableMultiMixedKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableMultiStringKey(
+void _test_Container_tc_tableMultiStringKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiStringKey) */
@@ -275,7 +275,7 @@ corto_void _test_Container_tc_tableMultiStringKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableNested(
+void _test_Container_tc_tableNested(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNested) */
@@ -307,7 +307,7 @@ corto_void _test_Container_tc_tableNested(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableNestedContainer(
+void _test_Container_tc_tableNestedContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNestedContainer) */
@@ -339,7 +339,7 @@ corto_void _test_Container_tc_tableNestedContainer(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableNestedLeafs(
+void _test_Container_tc_tableNestedLeafs(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNestedLeafs) */
@@ -378,7 +378,7 @@ corto_void _test_Container_tc_tableNestedLeafs(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableSingleKey(
+void _test_Container_tc_tableSingleKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableSingleKey) */
@@ -401,7 +401,7 @@ corto_void _test_Container_tc_tableSingleKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableStringKey(
+void _test_Container_tc_tableStringKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableStringKey) */

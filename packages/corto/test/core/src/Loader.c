@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Loader_tc_loadNonExistent(
+void _test_Loader_tc_loadNonExistent(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadNonExistent) */

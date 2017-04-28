@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Loader_tc_createSelfPackage(
+void _test_Loader_tc_createSelfPackage(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_createSelfPackage) */
@@ -32,7 +32,7 @@ corto_void _test_Loader_tc_createSelfPackage(
 /* $end */
 }
 
-corto_void _test_Loader_tc_loadChildNoDep(
+void _test_Loader_tc_loadChildNoDep(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadChildNoDep) */
@@ -56,7 +56,7 @@ corto_void _test_Loader_tc_loadChildNoDep(
 /* $end */
 }
 
-corto_void _test_Loader_tc_loadDepOnChild(
+void _test_Loader_tc_loadDepOnChild(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadDepOnChild) */
@@ -96,7 +96,7 @@ corto_void _test_Loader_tc_loadDepOnChild(
 /* $end */
 }
 
-corto_void _test_Loader_tc_loadDepOnParent(
+void _test_Loader_tc_loadDepOnParent(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadDepOnParent) */
@@ -146,7 +146,7 @@ corto_void _test_Loader_tc_loadDepOnParent(
 /* $end */
 }
 
-corto_void _test_Loader_tc_loadDepOnSibling(
+void _test_Loader_tc_loadDepOnSibling(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadDepOnSibling) */
@@ -186,7 +186,7 @@ corto_void _test_Loader_tc_loadDepOnSibling(
 /* $end */
 }
 
-corto_void _test_Loader_tc_loadNonExistent(
+void _test_Loader_tc_loadNonExistent(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadNonExistent) */
@@ -199,7 +199,7 @@ corto_void _test_Loader_tc_loadNonExistent(
 /* $end */
 }
 
-corto_void _test_Loader_tc_loadSelf(
+void _test_Loader_tc_loadSelf(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_loadSelf) */
@@ -223,7 +223,7 @@ corto_void _test_Loader_tc_loadSelf(
 /* $end */
 }
 
-corto_void _test_Loader_tc_locateSelf(
+void _test_Loader_tc_locateSelf(
     test_Loader this)
 {
 /* $begin(test/Loader/tc_locateSelf) */

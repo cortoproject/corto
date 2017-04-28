@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_SelectContentType_setup(
+void _test_SelectContentType_setup(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/setup) */
@@ -36,7 +36,7 @@ corto_void _test_SelectContentType_setup(
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectJsonFromJson(
+void _test_SelectContentType_tc_selectJsonFromJson(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/tc_selectJsonFromJson) */
@@ -83,7 +83,7 @@ corto_void _test_SelectContentType_tc_selectJsonFromJson(
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectJsonFromObjects(
+void _test_SelectContentType_tc_selectJsonFromObjects(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/tc_selectJsonFromObjects) */
@@ -130,7 +130,7 @@ corto_void _test_SelectContentType_tc_selectJsonFromObjects(
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectJsonFromString(
+void _test_SelectContentType_tc_selectJsonFromString(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/tc_selectJsonFromString) */
@@ -177,7 +177,7 @@ corto_void _test_SelectContentType_tc_selectJsonFromString(
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromJson(
+void _test_SelectContentType_tc_selectStringFromJson(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/tc_selectStringFromJson) */
@@ -224,7 +224,7 @@ corto_void _test_SelectContentType_tc_selectStringFromJson(
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromObjects(
+void _test_SelectContentType_tc_selectStringFromObjects(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/tc_selectStringFromObjects) */
@@ -271,7 +271,7 @@ corto_void _test_SelectContentType_tc_selectStringFromObjects(
 /* $end */
 }
 
-corto_void _test_SelectContentType_tc_selectStringFromString(
+void _test_SelectContentType_tc_selectStringFromString(
     test_SelectContentType this)
 {
 /* $begin(test/SelectContentType/tc_selectStringFromString) */

@@ -30,11 +30,11 @@ static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string c
 /* Serialize any */
 static corto_int16 corto_ser_any(corto_serializer s, corto_value* v, void* userData) {
     corto_string_ser_t* data = userData;
-    corto_any *this = corto_value_getPtr(v);
+    corto_any *this = corto_value_ptrof(v);
     corto_int16 result = 0;
     corto_id id;
     corto_value anyValue;
-    anyValue = corto_value_value(this->type, this->value);
+    anyValue = corto_value_value(this->value, this->type);
 
     if (!corto_buffer_append(&data->buffer, "{%s,", corto_fullpath(id, this->type))) {
         goto finished;
@@ -64,8 +64,8 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
     result = NULL;
 
     data = (corto_string_ser_t*)userData;
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     /* If src is string and value is null, put NULL in result. */
     if (corto_primitive(t)->kind == CORTO_TEXT) {
@@ -142,7 +142,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     corto_string_ser_t* data;
 
     data = userData;
-    o = corto_value_getPtr(v);
+    o = corto_value_ptrof(v);
     object = *(corto_object*)o;
 
     /* Obtain fully scoped name */
@@ -163,7 +163,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 data->anonymousObjects = corto_llNew();
             }
 
-            if (object == corto_value_getObject(v)) {
+            if (object == corto_value_objectof(v)) {
                 sprintf(id, "<0>");
                 str = id;
             }else if ((index = corto_llHasObject(data->anonymousObjects, object))) {
@@ -223,7 +223,7 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     corto_type t;
 
     data = userData;
-    t = corto_value_getType(v);
+    t = corto_value_typeof(v);
     result = 0;
 
     /* Nested data has private itemCount, which prevents superfluous ',' to be added to the result. */
@@ -242,7 +242,7 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     if (!corto_ser_appendColor(&privateData, CORTO_NORMAL)) goto finished;
     if (t->kind == CORTO_COMPOSITE) {
         if (corto_interface(t)->kind == CORTO_UNION) {
-            void *ptr = corto_value_getPtr(v);
+            void *ptr = corto_value_ptrof(v);
             char *d;
             if (corto_convert(corto_union(t)->discriminator, ptr, corto_string_o, &d)) {
                 corto_seterr("invalid discriminator value '%d' for union '%s'",
@@ -343,7 +343,7 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
         corto_string str = corto_buffer_str(&data->buffer);
 
         if (str) {
-            o = corto_value_getObject(v);
+            o = corto_value_objectof(v);
             if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
                 corto_fullpath(typeId, corto_typeof(o));
             } else {

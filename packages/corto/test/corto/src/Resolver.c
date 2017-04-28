@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Resolver_setup(
+void _test_Resolver_setup(
     test_Resolver this)
 {
 /* $begin(test/Resolver/setup) */
@@ -16,7 +16,7 @@ corto_void _test_Resolver_setup(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_caseInsensitive(
+void _test_Resolver_tc_caseInsensitive(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_caseInsensitive) */
@@ -58,7 +58,7 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
     return 1;
 }
 /* $end */
-corto_void _test_Resolver_tc_resolveAll(
+void _test_Resolver_tc_resolveAll(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveAll) */
@@ -70,7 +70,7 @@ corto_void _test_Resolver_tc_resolveAll(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveAnonymous(
+void _test_Resolver_tc_resolveAnonymous(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveAnonymous) */
@@ -90,7 +90,7 @@ corto_void _test_Resolver_tc_resolveAnonymous(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveAnonymousAnonymousType(
+void _test_Resolver_tc_resolveAnonymousAnonymousType(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveAnonymousAnonymousType) */
@@ -114,7 +114,7 @@ corto_void _test_Resolver_tc_resolveAnonymousAnonymousType(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveCorto(
+void _test_Resolver_tc_resolveCorto(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveCorto) */
@@ -126,7 +126,7 @@ corto_void _test_Resolver_tc_resolveCorto(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveEmptyString(
+void _test_Resolver_tc_resolveEmptyString(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveEmptyString) */
@@ -138,7 +138,7 @@ corto_void _test_Resolver_tc_resolveEmptyString(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveFunctionArgs(
+void _test_Resolver_tc_resolveFunctionArgs(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveFunctionArgs) */
@@ -150,7 +150,7 @@ corto_void _test_Resolver_tc_resolveFunctionArgs(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveFunctionNoArgs(
+void _test_Resolver_tc_resolveFunctionNoArgs(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveFunctionNoArgs) */
@@ -162,7 +162,7 @@ corto_void _test_Resolver_tc_resolveFunctionNoArgs(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveG(
+void _test_Resolver_tc_resolveG(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveG) */
@@ -181,7 +181,7 @@ corto_void _test_Resolver_tc_resolveG(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveIdFromNull(
+void _test_Resolver_tc_resolveIdFromNull(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveIdFromNull) */
@@ -193,7 +193,7 @@ corto_void _test_Resolver_tc_resolveIdFromNull(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveIdFromRoot(
+void _test_Resolver_tc_resolveIdFromRoot(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveIdFromRoot) */
@@ -205,7 +205,7 @@ corto_void _test_Resolver_tc_resolveIdFromRoot(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveIdFromScope(
+void _test_Resolver_tc_resolveIdFromScope(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveIdFromScope) */
@@ -217,7 +217,7 @@ corto_void _test_Resolver_tc_resolveIdFromScope(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveLang(
+void _test_Resolver_tc_resolveLang(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveLang) */
@@ -231,7 +231,7 @@ corto_void _test_Resolver_tc_resolveLang(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNested2FromNull(
+void _test_Resolver_tc_resolveNested2FromNull(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNested2FromNull) */
@@ -243,7 +243,7 @@ corto_void _test_Resolver_tc_resolveNested2FromNull(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNested2FromRoot(
+void _test_Resolver_tc_resolveNested2FromRoot(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNested2FromRoot) */
@@ -255,7 +255,7 @@ corto_void _test_Resolver_tc_resolveNested2FromRoot(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNested2FromScope(
+void _test_Resolver_tc_resolveNested2FromScope(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNested2FromScope) */
@@ -274,7 +274,7 @@ corto_void _test_Resolver_tc_resolveNested2FromScope(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNestedFromNull(
+void _test_Resolver_tc_resolveNestedFromNull(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNestedFromNull) */
@@ -286,7 +286,7 @@ corto_void _test_Resolver_tc_resolveNestedFromNull(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNestedFromRoot(
+void _test_Resolver_tc_resolveNestedFromRoot(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNestedFromRoot) */
@@ -298,7 +298,7 @@ corto_void _test_Resolver_tc_resolveNestedFromRoot(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNestedFromScope(
+void _test_Resolver_tc_resolveNestedFromScope(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNestedFromScope) */
@@ -310,7 +310,7 @@ corto_void _test_Resolver_tc_resolveNestedFromScope(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveNull(
+void _test_Resolver_tc_resolveNull(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveNull) */
@@ -321,7 +321,7 @@ corto_void _test_Resolver_tc_resolveNull(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveObjectAFromScopeWithFunctionA(
+void _test_Resolver_tc_resolveObjectAFromScopeWithFunctionA(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveObjectAFromScopeWithFunctionA) */
@@ -333,7 +333,7 @@ corto_void _test_Resolver_tc_resolveObjectAFromScopeWithFunctionA(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParent(
+void _test_Resolver_tc_resolveParent(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParent) */
@@ -345,7 +345,7 @@ corto_void _test_Resolver_tc_resolveParent(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParentAfterExpr(
+void _test_Resolver_tc_resolveParentAfterExpr(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParentAfterExpr) */
@@ -357,7 +357,7 @@ corto_void _test_Resolver_tc_resolveParentAfterExpr(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParentBeforeExpr(
+void _test_Resolver_tc_resolveParentBeforeExpr(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParentBeforeExpr) */
@@ -369,7 +369,7 @@ corto_void _test_Resolver_tc_resolveParentBeforeExpr(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParenthesesNoFunction(
+void _test_Resolver_tc_resolveParenthesesNoFunction(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunction) */
@@ -388,7 +388,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunction(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(
+void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionArgs) */
@@ -407,7 +407,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgs(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(
+void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionArgsScoped) */
@@ -430,7 +430,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionArgsScoped(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(
+void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgs) */
@@ -447,7 +447,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgs(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(
+void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionMatchingArgsScoped) */
@@ -468,7 +468,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionMatchingArgsScoped(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(
+void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParenthesesNoFunctionScoped) */
@@ -493,7 +493,7 @@ corto_void _test_Resolver_tc_resolveParenthesesNoFunctionScoped(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveParentInExpr(
+void _test_Resolver_tc_resolveParentInExpr(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveParentInExpr) */
@@ -505,7 +505,7 @@ corto_void _test_Resolver_tc_resolveParentInExpr(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveRoot(
+void _test_Resolver_tc_resolveRoot(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveRoot) */
@@ -517,7 +517,7 @@ corto_void _test_Resolver_tc_resolveRoot(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveString(
+void _test_Resolver_tc_resolveString(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveString) */
@@ -529,7 +529,7 @@ corto_void _test_Resolver_tc_resolveString(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveThis(
+void _test_Resolver_tc_resolveThis(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveThis) */
@@ -541,7 +541,7 @@ corto_void _test_Resolver_tc_resolveThis(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveThisAfterExpr(
+void _test_Resolver_tc_resolveThisAfterExpr(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveThisAfterExpr) */
@@ -553,7 +553,7 @@ corto_void _test_Resolver_tc_resolveThisAfterExpr(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveThisBeforeExpr(
+void _test_Resolver_tc_resolveThisBeforeExpr(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveThisBeforeExpr) */
@@ -565,7 +565,7 @@ corto_void _test_Resolver_tc_resolveThisBeforeExpr(
 /* $end */
 }
 
-corto_void _test_Resolver_tc_resolveThisInExpr(
+void _test_Resolver_tc_resolveThisInExpr(
     test_Resolver this)
 {
 /* $begin(test/Resolver/tc_resolveThisInExpr) */
@@ -577,7 +577,7 @@ corto_void _test_Resolver_tc_resolveThisInExpr(
 /* $end */
 }
 
-corto_void _test_Resolver_teardown(
+void _test_Resolver_teardown(
     test_Resolver this)
 {
 /* $begin(test/Resolver/teardown) */

@@ -220,7 +220,7 @@ uintptr_t _test_AutoResumeSinkMount_onSubscribe(
 /* $end */
 }
 
-corto_void _test_AutoResumeSinkMount_onUnsubscribe(
+void _test_AutoResumeSinkMount_onUnsubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
     corto_string expr,

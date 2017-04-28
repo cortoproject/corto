@@ -1441,7 +1441,7 @@ static corto_int16 g_evalRef(corto_serializer s, corto_value* info, void* userDa
 
     CORTO_UNUSED(s);
 
-    corto_object dep = *(corto_object*)corto_value_getPtr(info);
+    corto_object dep = *(corto_object*)corto_value_ptrof(info);
     if (dep) {
         g_addDepencency(data->g, dep, data);
     }
@@ -1452,7 +1452,7 @@ static corto_int16 g_evalRef(corto_serializer s, corto_value* info, void* userDa
 /* Serialize object type */
 static corto_int16 g_evalObject(corto_serializer s, corto_value* info, void* userData) {
     g_depWalk_t *data = userData;
-    corto_object o = corto_value_getObject(info);
+    corto_object o = corto_value_objectof(info);
 
     CORTO_UNUSED(s);
 

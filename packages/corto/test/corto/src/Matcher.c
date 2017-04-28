@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Matcher_tc_filterA(
+void _test_Matcher_tc_filterA(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterA) */
@@ -18,7 +18,7 @@ corto_void _test_Matcher_tc_filterA(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterAnd(
+void _test_Matcher_tc_filterAnd(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterAnd) */
@@ -28,7 +28,7 @@ corto_void _test_Matcher_tc_filterAnd(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterAndFail(
+void _test_Matcher_tc_filterAndFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterAndFail) */
@@ -38,7 +38,7 @@ corto_void _test_Matcher_tc_filterAndFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterAQ(
+void _test_Matcher_tc_filterAQ(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterAQ) */
@@ -48,7 +48,7 @@ corto_void _test_Matcher_tc_filterAQ(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterFail(
+void _test_Matcher_tc_filterFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterFail) */
@@ -58,7 +58,7 @@ corto_void _test_Matcher_tc_filterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterIdA(
+void _test_Matcher_tc_filterIdA(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterIdA) */
@@ -68,7 +68,7 @@ corto_void _test_Matcher_tc_filterIdA(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterIdAFail(
+void _test_Matcher_tc_filterIdAFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterIdAFail) */
@@ -78,7 +78,7 @@ corto_void _test_Matcher_tc_filterIdAFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterIdQ(
+void _test_Matcher_tc_filterIdQ(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterIdQ) */
@@ -88,7 +88,7 @@ corto_void _test_Matcher_tc_filterIdQ(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterIdQFail(
+void _test_Matcher_tc_filterIdQFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterIdQFail) */
@@ -98,7 +98,7 @@ corto_void _test_Matcher_tc_filterIdQFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNot(
+void _test_Matcher_tc_filterNot(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNot) */
@@ -108,7 +108,7 @@ corto_void _test_Matcher_tc_filterNot(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotAnd(
+void _test_Matcher_tc_filterNotAnd(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotAnd) */
@@ -118,7 +118,7 @@ corto_void _test_Matcher_tc_filterNotAnd(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotAndFail(
+void _test_Matcher_tc_filterNotAndFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotAndFail) */
@@ -128,7 +128,7 @@ corto_void _test_Matcher_tc_filterNotAndFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotFail(
+void _test_Matcher_tc_filterNotFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotFail) */
@@ -138,7 +138,7 @@ corto_void _test_Matcher_tc_filterNotFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotFilter(
+void _test_Matcher_tc_filterNotFilter(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotFilter) */
@@ -151,7 +151,7 @@ corto_void _test_Matcher_tc_filterNotFilter(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotFilterFail(
+void _test_Matcher_tc_filterNotFilterFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotFilterFail) */
@@ -164,7 +164,7 @@ corto_void _test_Matcher_tc_filterNotFilterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotOr(
+void _test_Matcher_tc_filterNotOr(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotOr) */
@@ -174,7 +174,7 @@ corto_void _test_Matcher_tc_filterNotOr(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterNotOrFail(
+void _test_Matcher_tc_filterNotOrFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterNotOrFail) */
@@ -190,7 +190,7 @@ corto_void _test_Matcher_tc_filterNotOrFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterOr(
+void _test_Matcher_tc_filterOr(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterOr) */
@@ -212,7 +212,7 @@ corto_void _test_Matcher_tc_filterOr(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterOrFail(
+void _test_Matcher_tc_filterOrFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterOrFail) */
@@ -225,7 +225,7 @@ corto_void _test_Matcher_tc_filterOrFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterQA(
+void _test_Matcher_tc_filterQA(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterQA) */
@@ -238,7 +238,7 @@ corto_void _test_Matcher_tc_filterQA(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterQFail(
+void _test_Matcher_tc_filterQFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterQFail) */
@@ -248,7 +248,7 @@ corto_void _test_Matcher_tc_filterQFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterQQ(
+void _test_Matcher_tc_filterQQ(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterQQ) */
@@ -258,7 +258,7 @@ corto_void _test_Matcher_tc_filterQQ(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_filterQQFail(
+void _test_Matcher_tc_filterQQFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_filterQQFail) */
@@ -268,7 +268,7 @@ corto_void _test_Matcher_tc_filterQQFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_id(
+void _test_Matcher_tc_id(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_id) */
@@ -278,7 +278,7 @@ corto_void _test_Matcher_tc_id(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idAnd(
+void _test_Matcher_tc_idAnd(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idAnd) */
@@ -288,7 +288,7 @@ corto_void _test_Matcher_tc_idAnd(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idAndFail(
+void _test_Matcher_tc_idAndFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idAndFail) */
@@ -298,7 +298,7 @@ corto_void _test_Matcher_tc_idAndFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idFail(
+void _test_Matcher_tc_idFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idFail) */
@@ -308,7 +308,7 @@ corto_void _test_Matcher_tc_idFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idNot(
+void _test_Matcher_tc_idNot(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idNot) */
@@ -318,7 +318,7 @@ corto_void _test_Matcher_tc_idNot(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idNotAnd(
+void _test_Matcher_tc_idNotAnd(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idNotAnd) */
@@ -328,7 +328,7 @@ corto_void _test_Matcher_tc_idNotAnd(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idNotAndFail(
+void _test_Matcher_tc_idNotAndFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idNotAndFail) */
@@ -338,7 +338,7 @@ corto_void _test_Matcher_tc_idNotAndFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idNotFail(
+void _test_Matcher_tc_idNotFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idNotFail) */
@@ -348,7 +348,7 @@ corto_void _test_Matcher_tc_idNotFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idNotOr(
+void _test_Matcher_tc_idNotOr(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idNotOr) */
@@ -358,7 +358,7 @@ corto_void _test_Matcher_tc_idNotOr(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idNotOrFail(
+void _test_Matcher_tc_idNotOrFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idNotOrFail) */
@@ -368,7 +368,7 @@ corto_void _test_Matcher_tc_idNotOrFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idOr(
+void _test_Matcher_tc_idOr(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idOr) */
@@ -381,7 +381,7 @@ corto_void _test_Matcher_tc_idOr(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idOrFail(
+void _test_Matcher_tc_idOrFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idOrFail) */
@@ -391,7 +391,7 @@ corto_void _test_Matcher_tc_idOrFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idOrMulti(
+void _test_Matcher_tc_idOrMulti(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idOrMulti) */
@@ -416,7 +416,7 @@ corto_void _test_Matcher_tc_idOrMulti(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_idOrMultiFail(
+void _test_Matcher_tc_idOrMultiFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_idOrMultiFail) */
@@ -426,7 +426,7 @@ corto_void _test_Matcher_tc_idOrMultiFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilter(
+void _test_Matcher_tc_scopeFilter(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilter) */
@@ -442,7 +442,7 @@ corto_void _test_Matcher_tc_scopeFilter(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterFail(
+void _test_Matcher_tc_scopeFilterFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilterFail) */
@@ -452,7 +452,7 @@ corto_void _test_Matcher_tc_scopeFilterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterMulti(
+void _test_Matcher_tc_scopeFilterMulti(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilterMulti) */
@@ -468,7 +468,7 @@ corto_void _test_Matcher_tc_scopeFilterMulti(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterMultiFail1(
+void _test_Matcher_tc_scopeFilterMultiFail1(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilterMultiFail1) */
@@ -484,7 +484,7 @@ corto_void _test_Matcher_tc_scopeFilterMultiFail1(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterMultiFail2(
+void _test_Matcher_tc_scopeFilterMultiFail2(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilterMultiFail2) */
@@ -497,7 +497,7 @@ corto_void _test_Matcher_tc_scopeFilterMultiFail2(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterMultiSingleFail(
+void _test_Matcher_tc_scopeFilterMultiSingleFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilterMultiSingleFail) */
@@ -507,7 +507,7 @@ corto_void _test_Matcher_tc_scopeFilterMultiSingleFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeFilterSingleMultiFail(
+void _test_Matcher_tc_scopeFilterSingleMultiFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeFilterSingleMultiFail) */
@@ -517,7 +517,7 @@ corto_void _test_Matcher_tc_scopeFilterSingleMultiFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeId(
+void _test_Matcher_tc_scopeId(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeId) */
@@ -527,7 +527,7 @@ corto_void _test_Matcher_tc_scopeId(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeIdFail(
+void _test_Matcher_tc_scopeIdFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeIdFail) */
@@ -537,7 +537,7 @@ corto_void _test_Matcher_tc_scopeIdFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeIdMulti(
+void _test_Matcher_tc_scopeIdMulti(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeIdMulti) */
@@ -547,7 +547,7 @@ corto_void _test_Matcher_tc_scopeIdMulti(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeIdMultiFail(
+void _test_Matcher_tc_scopeIdMultiFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeIdMultiFail) */
@@ -557,7 +557,7 @@ corto_void _test_Matcher_tc_scopeIdMultiFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeIdMultiSingleFail(
+void _test_Matcher_tc_scopeIdMultiSingleFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeIdMultiSingleFail) */
@@ -567,7 +567,7 @@ corto_void _test_Matcher_tc_scopeIdMultiSingleFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeIdSingleMultiFail(
+void _test_Matcher_tc_scopeIdSingleMultiFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeIdSingleMultiFail) */
@@ -577,7 +577,7 @@ corto_void _test_Matcher_tc_scopeIdSingleMultiFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeImplicit(
+void _test_Matcher_tc_scopeImplicit(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeImplicit) */
@@ -593,7 +593,7 @@ corto_void _test_Matcher_tc_scopeImplicit(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeImplicitFail(
+void _test_Matcher_tc_scopeImplicitFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeImplicitFail) */
@@ -609,7 +609,7 @@ corto_void _test_Matcher_tc_scopeImplicitFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeOr(
+void _test_Matcher_tc_scopeOr(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeOr) */
@@ -622,7 +622,7 @@ corto_void _test_Matcher_tc_scopeOr(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeOrFail(
+void _test_Matcher_tc_scopeOrFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeOrFail) */
@@ -632,7 +632,7 @@ corto_void _test_Matcher_tc_scopeOrFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeOrMulti(
+void _test_Matcher_tc_scopeOrMulti(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeOrMulti) */
@@ -645,7 +645,7 @@ corto_void _test_Matcher_tc_scopeOrMulti(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_scopeOrMultiFail(
+void _test_Matcher_tc_scopeOrMultiFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_scopeOrMultiFail) */
@@ -658,7 +658,7 @@ corto_void _test_Matcher_tc_scopeOrMultiFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_separatorFilter(
+void _test_Matcher_tc_separatorFilter(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_separatorFilter) */
@@ -674,7 +674,7 @@ corto_void _test_Matcher_tc_separatorFilter(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_separatorFilterFail(
+void _test_Matcher_tc_separatorFilterFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_separatorFilterFail) */
@@ -684,7 +684,7 @@ corto_void _test_Matcher_tc_separatorFilterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_separatorId(
+void _test_Matcher_tc_separatorId(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_separatorId) */
@@ -697,7 +697,7 @@ corto_void _test_Matcher_tc_separatorId(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_separatorIdFail(
+void _test_Matcher_tc_separatorIdFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_separatorIdFail) */
@@ -707,7 +707,7 @@ corto_void _test_Matcher_tc_separatorIdFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_separatorNotFilter(
+void _test_Matcher_tc_separatorNotFilter(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_separatorNotFilter) */
@@ -720,7 +720,7 @@ corto_void _test_Matcher_tc_separatorNotFilter(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_separatorNotFilterFail(
+void _test_Matcher_tc_separatorNotFilterFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_separatorNotFilterFail) */
@@ -730,7 +730,7 @@ corto_void _test_Matcher_tc_separatorNotFilterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeFilter(
+void _test_Matcher_tc_treeFilter(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeFilter) */
@@ -743,7 +743,7 @@ corto_void _test_Matcher_tc_treeFilter(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeFilterFail(
+void _test_Matcher_tc_treeFilterFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeFilterFail) */
@@ -756,7 +756,7 @@ corto_void _test_Matcher_tc_treeFilterFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeId(
+void _test_Matcher_tc_treeId(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeId) */
@@ -766,7 +766,7 @@ corto_void _test_Matcher_tc_treeId(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeIdFail(
+void _test_Matcher_tc_treeIdFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeIdFail) */
@@ -776,7 +776,7 @@ corto_void _test_Matcher_tc_treeIdFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeImplicit(
+void _test_Matcher_tc_treeImplicit(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeImplicit) */
@@ -792,7 +792,7 @@ corto_void _test_Matcher_tc_treeImplicit(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeImplicitFail(
+void _test_Matcher_tc_treeImplicitFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeImplicitFail) */
@@ -802,7 +802,7 @@ corto_void _test_Matcher_tc_treeImplicitFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeNested(
+void _test_Matcher_tc_treeNested(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeNested) */
@@ -818,7 +818,7 @@ corto_void _test_Matcher_tc_treeNested(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeNestedFail(
+void _test_Matcher_tc_treeNestedFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeNestedFail) */
@@ -828,7 +828,7 @@ corto_void _test_Matcher_tc_treeNestedFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeNestedScope(
+void _test_Matcher_tc_treeNestedScope(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeNestedScope) */
@@ -844,7 +844,7 @@ corto_void _test_Matcher_tc_treeNestedScope(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeNestedScopeFail(
+void _test_Matcher_tc_treeNestedScopeFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeNestedScopeFail) */
@@ -857,7 +857,7 @@ corto_void _test_Matcher_tc_treeNestedScopeFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffset(
+void _test_Matcher_tc_treeOffset(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffset) */
@@ -870,7 +870,7 @@ corto_void _test_Matcher_tc_treeOffset(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetAny(
+void _test_Matcher_tc_treeOffsetAny(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetAny) */
@@ -886,7 +886,7 @@ corto_void _test_Matcher_tc_treeOffsetAny(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetAnyFail(
+void _test_Matcher_tc_treeOffsetAnyFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetAnyFail) */
@@ -902,7 +902,7 @@ corto_void _test_Matcher_tc_treeOffsetAnyFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetFail(
+void _test_Matcher_tc_treeOffsetFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetFail) */
@@ -915,7 +915,7 @@ corto_void _test_Matcher_tc_treeOffsetFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetNested(
+void _test_Matcher_tc_treeOffsetNested(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetNested) */
@@ -928,7 +928,7 @@ corto_void _test_Matcher_tc_treeOffsetNested(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetNestedFail(
+void _test_Matcher_tc_treeOffsetNestedFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetNestedFail) */
@@ -944,7 +944,7 @@ corto_void _test_Matcher_tc_treeOffsetNestedFail(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetOr(
+void _test_Matcher_tc_treeOffsetOr(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetOr) */
@@ -963,7 +963,7 @@ corto_void _test_Matcher_tc_treeOffsetOr(
 /* $end */
 }
 
-corto_void _test_Matcher_tc_treeOffsetOrFail(
+void _test_Matcher_tc_treeOffsetOrFail(
     test_Matcher this)
 {
 /* $begin(test/Matcher/tc_treeOffsetOrFail) */

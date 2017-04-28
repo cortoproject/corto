@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Security_setup(
+void _test_Security_setup(
     test_Security this)
 {
 /* $begin(test/Security/setup) */
@@ -23,7 +23,7 @@ corto_void _test_Security_setup(
 /* $end */
 }
 
-corto_void _test_Security_tc_authenticate(
+void _test_Security_tc_authenticate(
     test_Security this)
 {
 /* $begin(test/Security/tc_authenticate) */
@@ -38,7 +38,7 @@ corto_void _test_Security_tc_authenticate(
 /* $end */
 }
 
-corto_void _test_Security_tc_authenticateFail(
+void _test_Security_tc_authenticateFail(
     test_Security this)
 {
 /* $begin(test/Security/tc_authenticateFail) */
@@ -48,7 +48,7 @@ corto_void _test_Security_tc_authenticateFail(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeCreate(
+void _test_Security_tc_authorizeCreate(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeCreate) */
@@ -77,7 +77,7 @@ corto_void _test_Security_tc_authorizeCreate(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDelete(
+void _test_Security_tc_authorizeDelete(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDelete) */
@@ -106,7 +106,7 @@ corto_void _test_Security_tc_authorizeDelete(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedCreate(
+void _test_Security_tc_authorizeDeniedCreate(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedCreate) */
@@ -133,7 +133,7 @@ corto_void _test_Security_tc_authorizeDeniedCreate(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedDelete(
+void _test_Security_tc_authorizeDeniedDelete(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedDelete) */
@@ -161,7 +161,7 @@ corto_void _test_Security_tc_authorizeDeniedDelete(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedLookup(
+void _test_Security_tc_authorizeDeniedLookup(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedLookup) */
@@ -183,7 +183,7 @@ corto_void _test_Security_tc_authorizeDeniedLookup(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedResolve(
+void _test_Security_tc_authorizeDeniedResolve(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedResolve) */
@@ -205,7 +205,7 @@ corto_void _test_Security_tc_authorizeDeniedResolve(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedScopeClaim(
+void _test_Security_tc_authorizeDeniedScopeClaim(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedScopeClaim) */
@@ -242,7 +242,7 @@ int test_Security_tc_authorizeDeniedScopeWalk_walk(
     return 1;
 }
 /* $end */
-corto_void _test_Security_tc_authorizeDeniedScopeWalk(
+void _test_Security_tc_authorizeDeniedScopeWalk(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedScopeWalk) */
@@ -270,7 +270,7 @@ corto_void _test_Security_tc_authorizeDeniedScopeWalk(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedSelect(
+void _test_Security_tc_authorizeDeniedSelect(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedSelect) */
@@ -308,7 +308,7 @@ corto_void _test_Security_tc_authorizeDeniedSelect(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedUpdate(
+void _test_Security_tc_authorizeDeniedUpdate(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedUpdate) */
@@ -335,7 +335,7 @@ corto_void _test_Security_tc_authorizeDeniedUpdate(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeDeniedUpdateVoid(
+void _test_Security_tc_authorizeDeniedUpdateVoid(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeDeniedUpdateVoid) */
@@ -362,7 +362,7 @@ corto_void _test_Security_tc_authorizeDeniedUpdateVoid(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeLookup(
+void _test_Security_tc_authorizeLookup(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeLookup) */
@@ -385,7 +385,7 @@ corto_void _test_Security_tc_authorizeLookup(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeResolve(
+void _test_Security_tc_authorizeResolve(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeResolve) */
@@ -408,7 +408,7 @@ corto_void _test_Security_tc_authorizeResolve(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeSelect(
+void _test_Security_tc_authorizeSelect(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeSelect) */
@@ -450,7 +450,7 @@ corto_void _test_Security_tc_authorizeSelect(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeUpdate(
+void _test_Security_tc_authorizeUpdate(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeUpdate) */
@@ -477,7 +477,7 @@ corto_void _test_Security_tc_authorizeUpdate(
 /* $end */
 }
 
-corto_void _test_Security_tc_authorizeUpdateVoid(
+void _test_Security_tc_authorizeUpdateVoid(
     test_Security this)
 {
 /* $begin(test/Security/tc_authorizeUpdateVoid) */
@@ -504,7 +504,7 @@ corto_void _test_Security_tc_authorizeUpdateVoid(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
+void _test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantLowerDepthHigherPrio) */
@@ -530,7 +530,7 @@ corto_void _test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
+void _test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantLowerDepthLowerPrio) */
@@ -557,7 +557,7 @@ corto_void _test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantLowerDepthSamePrio(
+void _test_Security_tc_lockDenyGrantLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantLowerDepthSamePrio) */
@@ -584,7 +584,7 @@ corto_void _test_Security_tc_lockDenyGrantLowerDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantSameDepthHigherPrio(
+void _test_Security_tc_lockDenyGrantSameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantSameDepthHigherPrio) */
@@ -610,7 +610,7 @@ corto_void _test_Security_tc_lockDenyGrantSameDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantSameDepthLowerPrio(
+void _test_Security_tc_lockDenyGrantSameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantSameDepthLowerPrio) */
@@ -637,7 +637,7 @@ corto_void _test_Security_tc_lockDenyGrantSameDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyGrantSameDepthSamePrio(
+void _test_Security_tc_lockDenyGrantSameDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyGrantSameDepthSamePrio) */
@@ -663,7 +663,7 @@ corto_void _test_Security_tc_lockDenyGrantSameDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
+void _test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedLowerDepthHigherPrio) */
@@ -689,7 +689,7 @@ corto_void _test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
+void _test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedLowerDepthLowerPrio) */
@@ -715,7 +715,7 @@ corto_void _test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
+void _test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedLowerDepthSamePrio) */
@@ -741,7 +741,7 @@ corto_void _test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
+void _test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedSameDepthHigherPrio) */
@@ -767,7 +767,7 @@ corto_void _test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
+void _test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedSameDepthLowerPrio) */
@@ -793,7 +793,7 @@ corto_void _test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
+void _test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockDenyUndefinedSameDepthSamePrio) */
@@ -819,7 +819,7 @@ corto_void _test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
+void _test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenyLowerDepthHigherPrio) */
@@ -846,7 +846,7 @@ corto_void _test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
+void _test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenyLowerDepthLowerPrio) */
@@ -872,7 +872,7 @@ corto_void _test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenyLowerDepthSamePrio(
+void _test_Security_tc_lockGrantDenyLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenyLowerDepthSamePrio) */
@@ -898,7 +898,7 @@ corto_void _test_Security_tc_lockGrantDenyLowerDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenySameDepthHigherPrio(
+void _test_Security_tc_lockGrantDenySameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenySameDepthHigherPrio) */
@@ -925,7 +925,7 @@ corto_void _test_Security_tc_lockGrantDenySameDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenySameDepthLowerPrio(
+void _test_Security_tc_lockGrantDenySameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenySameDepthLowerPrio) */
@@ -951,7 +951,7 @@ corto_void _test_Security_tc_lockGrantDenySameDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockGrantDenySameDepthSamePrio(
+void _test_Security_tc_lockGrantDenySameDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockGrantDenySameDepthSamePrio) */
@@ -977,7 +977,7 @@ corto_void _test_Security_tc_lockGrantDenySameDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockSwitchUser(
+void _test_Security_tc_lockSwitchUser(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockSwitchUser) */
@@ -1010,7 +1010,7 @@ corto_void _test_Security_tc_lockSwitchUser(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
+void _test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenyLowerDepthHigherPrio) */
@@ -1036,7 +1036,7 @@ corto_void _test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
+void _test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenyLowerDepthLowerPrio) */
@@ -1062,7 +1062,7 @@ corto_void _test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
+void _test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenyLowerDepthSamePrio) */
@@ -1088,7 +1088,7 @@ corto_void _test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
+void _test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenySameDepthHigherPrio) */
@@ -1114,7 +1114,7 @@ corto_void _test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
+void _test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenySameDepthLowerPrio) */
@@ -1140,7 +1140,7 @@ corto_void _test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
 /* $end */
 }
 
-corto_void _test_Security_tc_lockUndefinedDenySameDepthSamePrio(
+void _test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     test_Security this)
 {
 /* $begin(test/Security/tc_lockUndefinedDenySameDepthSamePrio) */

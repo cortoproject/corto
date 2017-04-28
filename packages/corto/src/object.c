@@ -513,7 +513,7 @@ corto_int16 corto_delegateInit(corto_type t, void *o) {
 
     corto_assertObject(t);
 
-    delegate = t->init._parent.procedure;
+    delegate = t->init.super.procedure;
 
     if (t->kind == CORTO_COMPOSITE) {
         if ((corto_interface(t)->kind == CORTO_CLASS) ||
@@ -522,7 +522,7 @@ corto_int16 corto_delegateInit(corto_type t, void *o) {
         {
             corto_interface i = corto_interface(t)->base;
             while(i && !delegate) {
-                delegate = corto_type(i)->init._parent.procedure;
+                delegate = corto_type(i)->init.super.procedure;
                 if (!delegate) {
                     i = i->base;
                 } else {
@@ -553,7 +553,7 @@ void corto_delegateDeinit(corto_type t, void *o) {
 
     corto_assertObject(t);
 
-    delegate = t->deinit._parent.procedure;
+    delegate = t->deinit.super.procedure;
 
     if (t->kind == CORTO_COMPOSITE) {
         if ((corto_interface(t)->kind == CORTO_CLASS) ||
@@ -562,7 +562,7 @@ void corto_delegateDeinit(corto_type t, void *o) {
         {
             corto_interface i = corto_interface(t)->base;
             while(i && !delegate) {
-                delegate = corto_type(i)->deinit._parent.procedure;
+                delegate = corto_type(i)->deinit.super.procedure;
                 if (!delegate) {
                     i = i->base;
                 } else {
@@ -593,16 +593,16 @@ static corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
     corto_assertObject(t);
 
     if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) || 
-            (corto_interface(t)->kind == CORTO_PROCEDURE)) 
+        if ((corto_interface(t)->kind == CORTO_CLASS) ||
+            (corto_interface(t)->kind == CORTO_PROCEDURE))
         {
             i = corto_interface(t);
             do {
-                delegate = corto_class(i)->construct._parent.procedure;
+                delegate = corto_class(i)->construct.super.procedure;
 
                 /* If a constructor has been created but has no implementation,
                  * skip it. A typical scenario where this happens is in definition
-                 * files, where an instance is created from a type with a 
+                 * files, where an instance is created from a type with a
                  * constructor that is defined in the same file. */
                 if (delegate && (delegate->kind == CORTO_PROCEDURE_STUB)) {
                     delegate = NULL;
@@ -636,7 +636,7 @@ static void corto_delegateDestruct(corto_type t, corto_object o) {
         if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
             i = corto_interface(t);
             do {
-                delegate = corto_class(i)->destruct._parent.procedure;
+                delegate = corto_class(i)->destruct.super.procedure;
             } while(!delegate && (i = i->base));
         }
     }
@@ -663,7 +663,7 @@ static void corto__destructor(corto_object o) {
     t = corto_typeof(o);
     if (corto_checkState(o, CORTO_DEFINED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
-        
+
         corto_delegateDestruct(t, o);
 
         _o->align.attrs.state &= ~CORTO_DEFINED;
@@ -1216,7 +1216,7 @@ static corto_int16 corto_declareContainer(corto_object parent) {
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
             if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o))) 
+                (corto_typeof(c) == corto_type(corto_leaf_o)))
             {
                 if (!corto_declareChild(parent, corto_idof(c), corto_containerType(c))) {
                     goto error;
@@ -1278,7 +1278,7 @@ static corto_int16 corto_defineContainer(corto_object parent) {
                 corto_release(c);
             }
         }
-        corto_scopeRelease(seq);        
+        corto_scopeRelease(seq);
     } else if (corto_parentof(parent) == corto_type(corto_tablescope_o)) {
         corto_objectseq seq = corto_scopeClaim(parent);
         corto_int32 i, error = 0;
@@ -1288,8 +1288,8 @@ static corto_int16 corto_defineContainer(corto_object parent) {
                 error = 1;
             }
         }
-        corto_scopeRelease(seq);  
-        if (error) goto error;      
+        corto_scopeRelease(seq);
+        if (error) goto error;
     }
 
     return 0;
@@ -1742,12 +1742,12 @@ corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
 }
 
 static corto_object corto_declareChildInternRecursive(
-    corto_object parent, 
-    corto_string id, 
-    corto_type type, 
-    corto_bool orphan, 
+    corto_object parent,
+    corto_string id,
+    corto_type type,
+    corto_bool orphan,
     corto_bool forceType,
-    corto_bool create) 
+    corto_bool create)
 {
     char *next;
     corto_object result = NULL;
@@ -2937,11 +2937,11 @@ corto_string corto_nameof(corto_id buffer, corto_object o) {
     if (t->kind == CORTO_COMPOSITE) {
         corto_interface i = corto_interface(t);
         do {
-            delegate = corto_type(i)->nameof._parent.procedure;
+            delegate = corto_type(i)->nameof.super.procedure;
             i = i->base;
         } while(i && !delegate);
     } else {
-        delegate = t->nameof._parent.procedure;
+        delegate = t->nameof.super.procedure;
     }
 
     if (delegate) {
@@ -3545,7 +3545,7 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
 corto_bool corto_owned(corto_object o) {
     corto_assertObject(o);
 
-    /* If object is not persistent, and it is not declared (orphans) 
+    /* If object is not persistent, and it is not declared (orphans)
      * the application is free to do with the object what it wants. */
     if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT) && corto_checkState(o, CORTO_DECLARED)) {
         return TRUE;
@@ -4299,10 +4299,10 @@ corto_int32 corto_signatureParamType(corto_string signature, corto_uint32 id, co
                 } else {
                     parsing = TRUE;
                     *bptr = ch;
-                    bptr++;     
+                    bptr++;
                     *bptr = ch;
                     bptr++;
-                    srcptr++;               
+                    srcptr++;
                 }
             } else {
                 parsing = TRUE;
@@ -5103,13 +5103,13 @@ corto_string _corto_strp(void *p, corto_type type, corto_uint32 maxLength) {
     corto_assertObject(type);
 
     corto_value v;
-    v = corto_value_value(type, p);
+    v = corto_value_value(p, type);
     return corto_strv(&v, maxLength);
 }
 
 corto_string corto_stra(corto_any a, corto_uint32 maxLength) {
     corto_value v;
-    v = corto_value_value(a.type, a.value);
+    v = corto_value_value(a.value, a.type);
     return corto_strv(&v, maxLength);
 }
 
@@ -5137,8 +5137,8 @@ error:
 
 corto_int16 corto_fromStrv(corto_value *v, corto_string string) {
     corto_string_deser_t serData = {
-        .out = corto_value_getPtr(v),
-        .type = corto_value_getType(v),
+        .out = corto_value_ptrof(v),
+        .type = corto_value_typeof(v),
         .isObject = v->kind == CORTO_OBJECT
     };
 
@@ -5147,7 +5147,7 @@ corto_int16 corto_fromStrv(corto_value *v, corto_string string) {
     }
 
     if (serData.out) {
-        corto_valueSetValue(v, serData.out);
+        corto_value_ptrset(v, serData.out);
     } else {
         goto error;
     }
@@ -5210,7 +5210,7 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
     corto_compare_ser_t data;
     struct corto_serializer_s s;
 
-    data.value = corto_value_value(corto_typeof(o2), o2);
+    data.value = corto_value_value(o2, corto_typeof(o2));
 
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_NEVER);
 
@@ -5236,16 +5236,16 @@ corto_equalityKind _corto_comparep(void *p1, corto_type type, void *p2) {
 
     corto_value vdst;
     corto_value vsrc;
-    vdst = corto_value_value(type, p1);
-    vsrc = corto_value_value(type, p2);
+    vdst = corto_value_value(p1, type);
+    vsrc = corto_value_value(p2, type);
     return corto_comparev(&vdst, &vsrc);
 }
 
 corto_equalityKind corto_comparea(corto_any a1, corto_any a2) {
     corto_value vdst;
     corto_value vsrc;
-    vdst = corto_value_value(a1.type, a1.value);
-    vsrc = corto_value_value(a2.type, a2.value);
+    vdst = corto_value_value(a1.value, a1.type);
+    vsrc = corto_value_value(a2.value, a2.type);
     return corto_comparev(&vdst, &vsrc);
 }
 
@@ -5256,7 +5256,7 @@ corto_int16 corto_init(corto_object o) {
     corto_type type = corto_typeof(o);
 
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        struct corto_serializer_s s = 
+        struct corto_serializer_s s =
             corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
         if (corto_serialize(&s, o, NULL)) {
             goto error;
@@ -5272,26 +5272,26 @@ error:
 }
 
 corto_int16 corto_initv(corto_value *v) {
-    corto_type type = corto_value_getType(v);
+    corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
         struct corto_serializer_s s = corto_ser_init(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
         if (corto_serializeValue(&s, v, NULL)) {
             return -1;
         }
     }
-    return corto_delegateInit(corto_value_getType(v), corto_value_getPtr(v));
+    return corto_delegateInit(corto_value_typeof(v), corto_value_ptrof(v));
 }
 
 corto_int16 _corto_initp(void *p, corto_type type) {
     corto_assertObject(type);
     corto_value v;
-    v = corto_value_value(type, p);
+    v = corto_value_value(p, type);
     return corto_initv(&v);
 }
 
 corto_int16 corto_inita(corto_any a) {
     corto_value v;
-    v = corto_value_value(a.type, a.value);
+    v = corto_value_value(a.value, a.type);
     return corto_initv(&v);
 }
 
@@ -5301,7 +5301,7 @@ corto_int16 corto_deinit(corto_object o) {
     corto_delegateDeinit(corto_typeof(o), o);
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        struct corto_serializer_s s = 
+        struct corto_serializer_s s =
             corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
         corto_serialize(&s, o, NULL);
     }
@@ -5310,26 +5310,26 @@ corto_int16 corto_deinit(corto_object o) {
 }
 
 corto_int16 corto_deinitv(corto_value *v) {
-    corto_type type = corto_value_getType(v);
+    corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        struct corto_serializer_s s = 
+        struct corto_serializer_s s =
             corto_ser_freeResources(0, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
         corto_serializeValue(&s, v, NULL);
     }
-    corto_delegateDeinit(corto_value_getType(v), corto_value_getPtr(v));
+    corto_delegateDeinit(corto_value_typeof(v), corto_value_ptrof(v));
     return 0;
 }
 
 corto_int16 _corto_deinitp(void *p, corto_type type) {
     corto_assertObject(type);
     corto_value v;
-    v = corto_value_value(type, p);
+    v = corto_value_value(p, type);
     return corto_deinitv(&v);
 }
 
 corto_int16 corto_deinita(corto_any a) {
     corto_value v;
-    v = corto_value_value(a.type, a.value);
+    v = corto_value_value(a.value, a.type);
     return corto_deinitv(&v);
 }
 
@@ -5362,8 +5362,9 @@ corto_int16 corto_copyv(corto_value *dst, corto_value *src) {
     corto_int16 result;
     corto_bool newObject = FALSE;
 
-    if (!corto_value_getPtr(dst)) {
-        *dst = corto_value_value(corto_value_getType(src), corto_declare(corto_value_getType(src)));
+    if (!corto_value_ptrof(dst)) {
+        corto_type t = corto_value_typeof(src);
+        *dst = corto_value_value(corto_declare(t), t);
         newObject = TRUE;
     }
 
@@ -5371,7 +5372,7 @@ corto_int16 corto_copyv(corto_value *dst, corto_value *src) {
     result = corto_serializeValue(&s, src, &data);
 
     if (newObject) {
-        corto_define(corto_value_getPtr(dst));
+        corto_define(corto_value_ptrof(dst));
     }
 
     return result;
@@ -5383,8 +5384,8 @@ corto_int16 _corto_copyp(void *dst, corto_type type, void *src) {
     corto_value vdst;
     corto_value vsrc;
     corto_int16 result;
-    vdst = corto_value_value(type, dst);
-    vsrc = corto_value_value(type, src);
+    vdst = corto_value_value(dst, type);
+    vsrc = corto_value_value(src, type);
     result = corto_copyv(&vdst, &vsrc);
     return result;
 }
@@ -5393,8 +5394,8 @@ corto_int16 corto_copya(corto_any *dst, corto_any src) {
     corto_value vdst;
     corto_value vsrc;
     corto_int16 result;
-    vdst = corto_value_value(corto_type(corto_any_o), dst);
-    vsrc = corto_value_value(corto_type(corto_any_o), &src);
+    vdst = corto_value_value(dst, corto_type(corto_any_o));
+    vsrc = corto_value_value(&src, corto_type(corto_any_o));
     result = corto_copyv(&vdst, &vsrc);
     return result;
 }
@@ -5468,4 +5469,3 @@ void _corto_free(corto_type type, void *ptr) {
     corto_deinitp(ptr, type);
     corto_dealloc(ptr);
 }
-
