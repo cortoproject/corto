@@ -214,7 +214,7 @@ def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
       prefix = ""
       ext = ""
     else
-      directory = ENV['CORTO_TARGET'] + "/redis/corto/" + ENV['CORTO_VERSION'] + "/" + artefact + "/"
+      directory = ENV['CORTO_TARGET'] + "/redistr/corto/" + ENV['CORTO_VERSION'] + "/" + artefact + "/"
       sh "mkdir -p #{directory}"
     end
   end
@@ -256,7 +256,7 @@ def build_target(hardcodedPaths)
     LINK_NO_DEPS.each do |l|
       l = corto_replace(l)
       so = File.dirname(l) + "/lib" + File.basename(l) + ".so"
-      targetDir = ENV['CORTO_TARGET'] + "/redis/corto/" + ENV['CORTO_VERSION'] + "/lib"
+      targetDir = ENV['CORTO_TARGET'] + "/redistr/corto/" + ENV['CORTO_VERSION'] + "/lib"
       targetSo = targetDir + "/lib" + File.basename(l) + ".so"
       if File.exists? so and not File.exists? targetSo then
         sh "cp #{so} #{targetDir}"
@@ -294,7 +294,7 @@ def build_target(hardcodedPaths)
   lflags = "#{LFLAGS.join(" ")}"
 
   if not hardcodedPaths then
-    libpath = libpath + " -L#{CORTO_TARGET}/redis/corto/#{CORTO_VERSION}/lib"
+    libpath = libpath + " -L#{CORTO_TARGET}/redistr/corto/#{CORTO_VERSION}/lib"
   end
 
   linkShared = ""
@@ -346,7 +346,7 @@ def build()
 
   if not ENV['binaries'] == "false" then
     if not LOCAL then
-      if not ENV['redis'] == "false" then
+      if not ENV['redistr'] == "false" then
         if $redis_dependencies_resolved then
           build_target(false)
           if ENV['silent'] != "true" then
@@ -403,11 +403,11 @@ def loadPackageConfigs()
       redis_msg = ""
 
       # Check if redistributable library can be found for dependency
-      if ENV['redis'] != "false" then
-        redis = `corto locate #{p} --lib-redis`.strip
+      if ENV['redistr'] != "false" then
+        redistr = `corto locate #{p} --lib-redistr`.strip
         if not $?.to_i == 0 then
           # Disable redistributable build when there are unresolved dependencies
-          redis_msg = "#{C_WARNING} (no redis)#{C_NORMAL}"
+          redis_msg = "#{C_WARNING} (no redistr)#{C_NORMAL}"
           $redis_dependencies_resolved = false
         end
       end

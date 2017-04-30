@@ -171,8 +171,8 @@ CORTO_BUILDROOT = if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].empty
     end
     if ENV['binaries'] != "false" then
       print "  Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
-      if ENV['redis'] != "false" then
-        print "  The #{C_DEFAULT}#{CORTO_TARGET}/redis/corto/#{CORTO_VERSION}#{C_NORMAL} directory contains\n"
+      if ENV['redistr'] != "false" then
+        print "  The #{C_DEFAULT}#{CORTO_TARGET}/redistr/corto/#{CORTO_VERSION}#{C_NORMAL} directory contains\n"
         print "  binaries that can be embedded in other (non-corto) projects.\n"
       end
       print "\n"
@@ -194,8 +194,8 @@ else
 end
 
 include_ld_path =  "#{ENV['CORTO_TARGET']}/lib"
-include_ld_path += ":#{ENV['CORTO_TARGET']}/redis/corto/#{CORTO_VERSION}/lib"
-include_ld_path += ":/usr/local/redis/corto/#{CORTO_VERSION}/lib"
+include_ld_path += ":#{ENV['CORTO_TARGET']}/redistr/corto/#{CORTO_VERSION}/lib"
+include_ld_path += ":/usr/local/redistr/corto/#{CORTO_VERSION}/lib"
 ENV["LD_LIBRARY_PATH"] = "#{include_ld_path}:#{ENV["LD_LIBRARY_PATH"]}"
 
 # Utility that replaces buildsystem tokens with actual values
