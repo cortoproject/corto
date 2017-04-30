@@ -816,7 +816,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_package_author),\
     SSO_OP_OBJ(core_package_description),\
     SSO_OP_OBJ(core_package_env),\
-    SSO_OP_OBJ(core_package_nocorto),\
+    SSO_OP_OBJ(core_package_language),\
+    SSO_OP_OBJ(core_package_managed),\
     SSO_OP_OBJ(core_package_noapi),\
     SSO_OP_OBJ(core_package_cflags),\
     SSO_OP_OBJ(core_package_dependencies),\
@@ -828,6 +829,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_package_libpath),\
     SSO_OP_OBJ(core_package_include),\
     SSO_OP_OBJ(core_package_link),\
+    SSO_OP_OBJ(core_package_coverage),\
+    SSO_OP_OBJ(core_package_init_),\
     SSO_OP_OBJ(core_package_construct_),\
     /* time */\
     SSO_OP_OBJ(core_time_sec),\

@@ -590,14 +590,15 @@ CORTO_TYPE_O(lang, void, CORTO_VOID, FALSE);
 CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 
 /* Package type */
-CORTO_FW_C(core, package);
-CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_C);
+CORTO_FW_IC(core, package);
+CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IC);
     CORTO_MEMBER_O(core_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, env, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(core_package, nocorto, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, language, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, noapi, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, cflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
@@ -609,6 +610,8 @@ CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NU
     CORTO_MEMBER_O(core_package, libpath, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, include, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(core_package, link, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(core_package, coverage, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_METHOD_O(core_package, init, "()", lang_int16, corto_package_init);
     CORTO_METHOD_O(core_package, construct, "()", lang_int16, corto_package_construct);
 
 CORTO_CLASS_O(core, application, core_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);

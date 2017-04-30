@@ -320,6 +320,11 @@ CORTO_EXPORT
 int16_t _corto_package_construct(
     corto_package _this);
 
+#define corto_package_init(_this) _corto_package_init(corto_package(_this))
+CORTO_EXPORT
+int16_t _corto_package_init(
+    corto_package _this);
+
 #define corto_result_contentof(_this, contentType) _corto_result_contentof(_this, contentType)
 CORTO_EXPORT
 corto_string _corto_result_contentof(

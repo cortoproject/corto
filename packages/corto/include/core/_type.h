@@ -62,7 +62,8 @@ struct corto_package_s {
     corto_string author;
     corto_string description;
     corto_string env;
-    bool nocorto;
+    corto_string language;
+    bool managed;
     bool noapi;
     corto_stringlist cflags;
     corto_stringlist dependencies;
@@ -74,6 +75,7 @@ struct corto_package_s {
     corto_stringlist libpath;
     corto_stringlist include;
     corto_stringlist link;
+    bool coverage;
 };
 
 /*  /corto/core/application */

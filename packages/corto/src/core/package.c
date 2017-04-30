@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_object.h"
@@ -59,5 +59,14 @@ int16_t _corto_package_construct(
     return 0;
 error:
     return -1;
+/* $end */
+}
+
+int16_t _corto_package_init(
+    corto_package this)
+{
+/* $begin(corto/core/package/init) */
+    this->managed = TRUE;
+    return 0;
 /* $end */
 }
