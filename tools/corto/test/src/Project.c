@@ -1182,7 +1182,7 @@ void _test_Project_tc_packageNoCorto(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
@@ -1377,7 +1377,7 @@ void _test_Project_tc_packageNoCortoNested(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
@@ -1556,7 +1556,7 @@ void _test_Project_tc_packageNodef(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1568,7 +1568,7 @@ void _test_Project_tc_packageNodef(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.c"));
@@ -1633,7 +1633,7 @@ void _test_Project_tc_packageNodefC4cpp(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1645,7 +1645,7 @@ void _test_Project_tc_packageNodefC4cpp(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.cpp"));
@@ -1709,7 +1709,7 @@ void _test_Project_tc_packageNodefLocal(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1721,7 +1721,7 @@ void _test_Project_tc_packageNodefLocal(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.c"));
@@ -1787,7 +1787,7 @@ void _test_Project_tc_packageNodefLocalC4cpp(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1799,7 +1799,7 @@ void _test_Project_tc_packageNodefLocalC4cpp(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.cpp"));
@@ -1862,7 +1862,7 @@ void _test_Project_tc_packagePublicHeaderRemoval(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));

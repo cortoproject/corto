@@ -78,11 +78,17 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     if (corto_llSize(package->cflags)) {
         cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
     }
-    if (package->nocorto) {
+    if (!package->managed) {
         fprintf((FILE*)rakefile, "NOCORTO = true\n");
+    }
+    if (package->language) {
+        fprintf((FILE*)rakefile, "LANGUAGE = '%s'\n", package->language);
     }
     if (package->noapi) {
         fprintf((FILE*)rakefile, "NOAPI = true\n");
+    }
+    if (package->local) {
+        fprintf((FILE*)rakefile, "LOCAL = true\n");
     }
 
     fprintf((FILE*)rakefile, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", corto_idof(corto_typeof(package)));

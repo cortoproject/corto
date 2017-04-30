@@ -49,7 +49,7 @@ error:
     return -1;
 }
 
-static corto_int16 cortotool_createRakefile(
+static corto_int16 cortotool_createProjectJson(
     const char *projectKind,
     const char *name,
     const char *shortName,
@@ -60,35 +60,40 @@ static corto_int16 cortotool_createRakefile(
 {
     FILE *file;
     corto_id buff;
+    int8_t count = 0;
 
-    sprintf(buff, "%s/rakefile", shortName);
+    sprintf(buff, "%s/project.json", shortName);
     file = fopen(buff, "w");
     if(!file) {
         corto_error("couldn't create %s/rakefile (check permissions)", buff);
         goto error;
     }
 
-    fprintf(file, "\n");
-    if (!strcmp(projectKind, CORTO_PACKAGE)) {
-        fprintf(file, "PACKAGE = '%s'\n\n", name);
-    } else {
-        fprintf(file, "TARGET = '%s'\n\n", name);
-    }
+    fprintf(file, 
+        "{\n"\
+        "    \"id\": \"%s\",\n"\
+        "    \"type\": \"%s\",\n"\
+        "    \"value\": {",
+        name,
+        !strcmp(projectKind, CORTO_PACKAGE) ? "package" : "application");
+
+    fprintf(file,  "\n        \"description\": \"Making the world a better place\"");
+    fprintf(file, ",\n        \"author\": \"Arthur Dent\"");
+    fprintf(file, ",\n        \"version\": \"1.0.0\"");
+    fprintf(file, ",\n        \"language\": \"%s\"", language);
 
     if (isLocal) {
-        fprintf(file, "LOCAL = true\n\n");
+        fprintf(file, ",\n        \"local\": true");
+        count ++;
     }
     if (nocorto) {
-        fprintf(file, "NOCORTO = true\n\n");
+        fprintf(file, ",\n        \"managed\": false");
     }
     if (nocoverage) {
-        fprintf(file, "COVERAGE = false\n\n");
-    }
-    if (strcmp(language, "c")) {
-        fprintf(file, "LANGUAGE = \"%s\"\n\n", language);
+        fprintf(file, ",\n        \"coverage\": false");
     }
 
-    fprintf(file, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", projectKind);
+    fprintf(file, "\n    }\n}\n");
     fclose(file);
 
     return 0;
@@ -334,7 +339,7 @@ static corto_int16 cortotool_app (
         goto error;
     }
 
-    if (cortotool_createRakefile(projectKind, include, name, local, nocorto, nocoverage, language)) {
+    if (cortotool_createProjectJson(projectKind, include, name, local, nocorto, nocoverage, language)) {
         goto error;
     }
 
@@ -427,7 +432,7 @@ static corto_int16 cortotool_package(
         goto error;
     }
 
-    if (cortotool_createRakefile(CORTO_PACKAGE, include, name, local, nocorto, nocoverage, language)) {
+    if (cortotool_createProjectJson(CORTO_PACKAGE, include, name, local, nocorto, nocoverage, language)) {
         goto error;
     }
 

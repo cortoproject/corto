@@ -74,7 +74,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose, corto_bool re
     /* Build libraries to global environment */
     fprintf(
         install, 
-        "rake default verbose=%s config=%s coverage=false softlinks=false multithread=false redis=false show_header=false\n",
+        "rake default verbose=%s config=%s coverage=false softlinks=false multithread=false redistr=false show_header=false\n",
         verbose ? "true" : "false",
         release ? "release" : "debug");
 
@@ -225,7 +225,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                       "config=release",
                       "coverage=false",
                       "multithread=false",
-                      "redis=false",
+                      "redistr=false",
                       "show_header=false",
                       NULL
                 });
@@ -237,7 +237,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                       debug ? "debug=true" : "debug=false",
                       "coverage=false",
                       "multithread=false",
-                      "redis=false",
+                      "redistr=false",
                       "show_header=false",
                       NULL
                 });
@@ -259,9 +259,17 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
             printf (CORTO_PROMPT "step 2: generate binaries\n\n");
         } else if (installRemote){
-            if (cortotool_installFromRemote(argv[1])) {
+            corto_lasterr();
+            corto_info("binary installers are currently under development! To install from source, do:")
+            corto_info("   git clone <package repository>, followed by:")
+            corto_info("   corto install <cloned directory>");
+            corto_info("");
+            corto_info("   Please mail sander@corto.io if you'd like to donate capacity to our")
+            corto_info("   build infrastructure. Happy coding!");
+            return 0;
+            /*if (cortotool_installFromRemote(argv[1])) {
                 goto error;
-            }
+            }*/
         } else {
             corto_error("nothing to install");
             goto error;
@@ -703,7 +711,7 @@ void cortotool_toLibPath(char *location) {
 
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
-    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE, lib_redis = FALSE;
+    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE, lib_redistr = FALSE;
     corto_bool error_only = FALSE;
 
     if (argc <= 1) {
@@ -718,8 +726,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 lib = TRUE;
             } else if (!strcmp(argv[i], "--path")) {
                 path = TRUE;
-            } else if (!strcmp(argv[i], "--lib-redis")) {
-                lib_redis = TRUE;
+            } else if (!strcmp(argv[i], "--lib-redistr")) {
+                lib_redistr = TRUE;
             } else if (!strcmp(argv[i], "--env")) {
                 env = TRUE;
             } else if (!strcmp(argv[i], "--silent")) {
@@ -733,7 +741,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
     }
 
-    if (!lib_redis) {
+    if (!lib_redistr) {
         location = corto_locate(argv[1], NULL, CORTO_LOCATION_LIB);
     } else {
         corto_id package;
@@ -745,7 +753,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             }
             ptr++;
         }
-        location = corto_envparse("$CORTO_TARGET/redis/corto/$CORTO_VERSION/lib/lib%s.so", package);
+        location = corto_envparse("$CORTO_TARGET/redistr/corto/$CORTO_VERSION/lib/lib%s.so", package);
         if (!corto_fileTest(location)) {
             corto_trace("library '%s' not found", location);
             corto_dealloc(location);
@@ -767,7 +775,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             cortotool_toLibPath(location);
         }
 
-        if (lib || lib_redis || path || env) {
+        if (lib || lib_redistr || path || env) {
             if (!silent && !error_only) printf("%s\n", location);
         } else {
             if (!silent && !error_only) printf("%s%s%s  =>  %s\n", CORTO_CYAN, argv[1], CORTO_NORMAL, location);
@@ -775,7 +783,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
     } else {
         if (!silent) {
             if (!error_only) {
-                if (lib_redis) {
+                if (lib_redistr) {
                     printf(CORTO_PROMPT "redistributable library for package '%s' not found", argv[1]);
                 } else {
                     printf(CORTO_PROMPT "package '%s' not located: ", argv[1]);
@@ -968,7 +976,7 @@ void cortotool_locateHelp(void) {
     printf("\n");
     printf("Options:\n");
     printf("   --lib        Return the path including library name\n");
-    printf("   --lib-redis  Returns the path to a redistributable library\n");
+    printf("   --lib-redistr  Returns the path to a redistributable library\n");
     printf("   --path       Return only the path (no library name)\n");
     printf("   --env        Return only the environment (local or global package repository)\n");
     printf("   --silent     Do not print anything, just return if the package is installed\n");
