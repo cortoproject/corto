@@ -24,8 +24,9 @@ int tc_lookupAllWalk(corto_object o, void *udata) {
     corto_release(r);
 
     corto_objectseq scope = corto_scopeClaim(o);
-    corto_objectseqForeach(scope, child) {
-        tc_lookupAllWalk(child, NULL);
+    int i;
+    for (i = 0; i < scope.length; i ++) {
+        tc_lookupAllWalk(scope.buffer[i], NULL);
     }
     corto_scopeRelease(scope);
 
@@ -37,8 +38,9 @@ void _test_Lookup_tc_lookupAll(
 {
 /* $begin(test/Lookup/tc_lookupAll) */
     corto_objectseq scope = corto_scopeClaim(root_o);
-    corto_objectseqForeach(scope, o) {
-        tc_lookupAllWalk(o, NULL);
+    int i;
+    for (i = 0; i < scope.length; i ++) {
+        tc_lookupAllWalk(scope.buffer[i], NULL);
     }
     corto_scopeRelease(scope);
 /* $end */

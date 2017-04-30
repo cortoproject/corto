@@ -50,8 +50,9 @@ int tc_resolveAllWalk(corto_object o, void *udata) {
     corto_release(r);
 
     corto_objectseq scope = corto_scopeClaim(o);
-    corto_objectseqForeach(scope, child) {
-        tc_resolveAllWalk(child, NULL);
+    int i;
+    for (i = 0; i < scope.length; i ++) {
+        tc_resolveAllWalk(scope.buffer[i], NULL);
     }
     corto_scopeRelease(scope);
 
@@ -63,8 +64,9 @@ void _test_Resolver_tc_resolveAll(
 {
 /* $begin(test/Resolver/tc_resolveAll) */
     corto_objectseq scope = corto_scopeClaim(root_o);
-    corto_objectseqForeach(scope, o) {
-        tc_resolveAllWalk(o, NULL);
+    int i;
+    for (i = 0; i < scope.length; i ++) {
+        tc_resolveAllWalk(scope.buffer[i], NULL);
     }
     corto_scopeRelease(scope);
 /* $end */

@@ -222,8 +222,9 @@ void _test_Security_tc_authorizeDeniedScopeClaim(
     test_assert(b != NULL);
 
     corto_objectseq seq = corto_scopeClaim(b);
-    corto_objectseqForeach(seq, o) {
-        test_assert(strcmp(corto_idof(o), "c"));
+    int i;
+    for (i = 0; i < seq.length; i ++) {
+        test_assert(strcmp(corto_idof(seq.buffer[i]), "c"));
     }
     corto_scopeRelease(seq);
 
