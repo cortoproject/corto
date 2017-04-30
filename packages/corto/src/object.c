@@ -1757,6 +1757,11 @@ static corto_object corto_declareChildInternRecursive(
     char *next;
     corto_object result = NULL;
 
+    if (id && id[0] == '/') {
+        parent = root_o;
+        id ++;
+    }
+
     if (id && (next = corto_strelem(id)) && (*next != '(')) {
         corto_id buf;
         char *cur = buf;
