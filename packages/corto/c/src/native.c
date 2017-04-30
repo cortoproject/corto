@@ -84,23 +84,6 @@ corto_native_type _corto_native_typeAssign(corto_native_type _this, corto_string
     return _this;
 }
 
-corto_string _corto_native_typeStr(corto_native_type value) {
-    corto_string result;
-    corto_value v;
-    v = corto_value_object(value, corto_type(corto_native_type_o));
-    result = corto_strv(&v, 0);
-    return result;
-}
-
-corto_native_type corto_native_typeFromStr(corto_native_type value, corto_string str) {
-    corto_fromStrp(&value, corto_type(corto_native_type_o), str);
-    return value;
-}
-
-corto_equalityKind _corto_native_typeCompare(corto_native_type dst, corto_native_type src) {
-    return corto_compare(dst, src);
-}
-
 int32_t* corto_int32seqAppend(corto_int32seq *seq, int32_t element) {
     corto_uint32 size;
     seq->length++;

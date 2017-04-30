@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_object.h"
@@ -43,6 +43,7 @@ typedef struct corto_subscribeRequest {
 typedef struct corto_subscription {
     corto_subscriber s;
     corto_object instance;
+    corto_bool isMount;
 } corto_subscription;
 
 CORTO_SEQUENCE(corto_subscriptionSeq, corto_subscription,);
@@ -852,6 +853,7 @@ int16_t _corto_subscriber_subscribe(
     seq->buffer = corto_realloc(seq->buffer, length * sizeof(corto_subscription));
     seq->buffer[length - 1].s = this;
     seq->buffer[length - 1].instance = instance;
+    seq->buffer[length - 1].isMount = corto_instanceof(corto_mount_o, this);
     seq->length ++;
     corto_subscribers_count ++;
     corto_subscribers_global.changed ++;

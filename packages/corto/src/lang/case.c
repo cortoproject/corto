@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 int16_t _corto_case_construct(
     corto_case this)

@@ -287,7 +287,7 @@ void _test_SelectSink_tc_selectSingleTypeFilter(
     test_assert(l != NULL);
 
     // Select single object of the package type
-    corto_int16 ret = corto_select(NULL, "//lang*").iter( &iter );
+    corto_int16 ret = corto_select(NULL, "//native*").iter( &iter );
     test_assert(ret == 0);
     test_assertstr(corto_lasterr(), NULL);
 
@@ -295,9 +295,9 @@ void _test_SelectSink_tc_selectSingleTypeFilter(
     result = corto_iterNext(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
-    test_assert(!strcmp(result->id, "lang"));
-    test_assert(!strcmp(result->parent, "/corto"));
-    test_assert(!strcmp(result->type, "/corto/core/package"));
+    test_assertstr(result->id, "native");
+    test_assertstr(result->parent, "/corto");
+    test_assertstr(result->type, "/corto/core/package");
 
 /* $end */
 }

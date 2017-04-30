@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 /* $header(corto/core/routerimpl/construct) */
 int corto_routerimpl_countArgs(corto_object o, void *userData) {

@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 /* $header() */
 static int corto_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */

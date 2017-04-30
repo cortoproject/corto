@@ -36,7 +36,7 @@ typedef enum corto_aliasActionKind {
 
 typedef enum corto_optionalActionKind {
     CORTO_WALK_OPTIONAL_IF_SET,
-    CORTO_WALK_OPTIONAL_ALWAYS,
+    CORTO_WALK_OPTIONAL_ALWAYS
 } corto_optionalActionKind;
 
 struct corto_walk_opt {

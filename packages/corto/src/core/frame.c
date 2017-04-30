@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 corto_time _corto_frame_getTime(
     corto_frame* this)

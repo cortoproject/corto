@@ -2,6 +2,6 @@
 PACKAGE = 'attrtest'
 
 # Don't build redistributable
-ENV['redis'] = "false"
+ENV['redistr'] = "false"
 
 require "#{ENV['CORTO_BUILD']}/package"

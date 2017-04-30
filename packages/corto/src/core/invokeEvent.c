@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 void _corto_invokeEvent_handle_v(
     corto_invokeEvent this)

@@ -122,7 +122,7 @@ CORTO_EXPORT corto_object corto_resolve(corto_object scope, corto_string id);
 /* Lookup objects by id according to custom settings */
 typedef enum corto_findKind {
     CORTO_FIND_DEFAULT = 0,
-    CORTO_FIND_RESUME = 1,
+    CORTO_FIND_RESUME = 1
     /* Will be extended with more options */
 } corto_findKind;
 

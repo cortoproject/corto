@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/secure/secure.h>
+#include <corto/corto.h>
 
 /* $header() */
 static corto_secure_key corto_secure_keyInstance;

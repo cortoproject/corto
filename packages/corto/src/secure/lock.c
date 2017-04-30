@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/secure/secure.h>
+#include <corto/corto.h>
 
 /* $header() */
 corto_int16 corto_secure_registerLock(corto_secure_lock lock);
