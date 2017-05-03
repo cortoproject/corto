@@ -27,8 +27,8 @@ corto_resultList _test_Select_collect(
 
     corto_ll result = corto_llNew();
 
-    while (corto_iterHasNext(&iter)) {
-        corto_result *item = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_result *item = corto_iter_next(&iter);
         corto_result *listItem = corto_alloc(sizeof(corto_result));
         listItem->parent = corto_strdup(item->parent);
         listItem->name = corto_strdup(item->name);
@@ -51,8 +51,8 @@ bool _test_Select_hasObject(
 /* $begin(test/Select/hasObject) */
 
     corto_iter iter = corto_llIter(items);
-    while (corto_iterHasNext(&iter)) {
-        corto_result *item = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_result *item = corto_iter_next(&iter);
         if (!strcmp(item->parent, parent)) {
             if (!strcmp(item->name, name)) {
                 if (!strcmp(item->type, type)) {
@@ -130,20 +130,20 @@ void _test_Select_tc_selectDeleteCurrent(
     ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -163,16 +163,16 @@ void _test_Select_tc_selectDeleteFirst(
     ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_release(o);
@@ -192,16 +192,16 @@ void _test_Select_tc_selectDeleteNext(
     ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -221,15 +221,15 @@ void _test_Select_tc_selectDeleteParent(
     ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a");
     test_assert(check == NULL);
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     corto_release(o);
 /* $end */
@@ -247,20 +247,20 @@ void _test_Select_tc_selectDeletePrevious(
     ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -277,36 +277,36 @@ void _test_Select_tc_selectEmptyParentAst(
     corto_int16 ret = corto_select("", "*").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "void");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "corto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "/corto/core/package");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "karto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "void");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "korto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "void");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "test");
     test_assertstr(r->parent, "");
@@ -512,7 +512,6 @@ void _test_Select_tc_selectFromRootEmpty(
 {
 /* $begin(test/Select/tc_selectFromRootEmpty) */
     corto_ll results = NULL;
-    corto_loaderCreate(FALSE);
 
     results = test_Select_collect("/", "", 0, 0);
     test_assert(results != NULL);
@@ -526,7 +525,6 @@ void _test_Select_tc_selectFromRootNull(
 {
 /* $begin(test/Select/tc_selectFromRootNull) */
     corto_ll results = NULL;
-    corto_loaderCreate(FALSE);
 
     results = test_Select_collect("/", NULL, 0, 0);
     test_assert(results != NULL);
@@ -540,7 +538,6 @@ void _test_Select_tc_selectFromRootThis(
 {
 /* $begin(test/Select/tc_selectFromRootThis) */
     corto_ll results = NULL;
-    corto_loaderCreate(FALSE);
 
     results = test_Select_collect("/", ".", 0, 0);
     test_assert(results != NULL);
@@ -597,14 +594,14 @@ void _test_Select_tc_selectInvertCase(
     corto_int16 ret = corto_select("/a", "ABC").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "abc");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
 
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
 
 /* $end */
@@ -618,14 +615,14 @@ void _test_Select_tc_selectInvertCaseFilter(
     corto_int16 ret = corto_select("/a", "ABA?").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "Abab");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
 
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
@@ -638,14 +635,14 @@ void _test_Select_tc_selectInvertCaseScope(
     corto_int16 ret = corto_select("/A", "abc").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "abc");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
 
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
@@ -1143,123 +1140,123 @@ void _test_Select_tc_selectOrder(
     corto_int16 ret = corto_select(NULL, "a//*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab_ab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "Abab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abd"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abdc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "b"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "c"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab_ab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "Abab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abd"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abdc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "b"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "c"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
@@ -1310,22 +1307,16 @@ void _test_Select_tc_selectParentWithSink(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParentWithSink) */
-    corto_loader l = corto_loaderCreate(FALSE);
-    test_assert(l != NULL);
-
     corto_iter it;
     corto_int16 ret = corto_select("/corto", "..").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "");
     test_assertstr(r->parent, "..");
-    test_assert(!corto_iterHasNext(&it));
-
-    ret = corto_delete(l);
-    test_assert(ret == 0);
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
@@ -1580,20 +1571,20 @@ void _test_Select_tc_selectTreeDeleteCurrent(
     corto_int16 ret = corto_select(NULL, "a//*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -1612,16 +1603,16 @@ void _test_Select_tc_selectTreeDeleteFirst(
     corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_release(o);
@@ -1640,53 +1631,53 @@ void _test_Select_tc_selectTreeDeleteGrandparent(
     corto_int16 ret = corto_select(NULL, "a//*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab_ab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "Abab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abd"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abdc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "b"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "c"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
@@ -1694,7 +1685,7 @@ void _test_Select_tc_selectTreeDeleteGrandparent(
     corto_object check = corto_resolve(NULL, "a");
     test_assert(check == NULL);
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     corto_release(o);
 
@@ -1712,16 +1703,16 @@ void _test_Select_tc_selectTreeDeleteNext(
     corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -1740,15 +1731,15 @@ void _test_Select_tc_selectTreeDeleteParent(
     corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a");
     test_assert(check == NULL);
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     corto_release(o);
 
@@ -1766,20 +1757,20 @@ void _test_Select_tc_selectTreeDeletePrevious(
     corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);

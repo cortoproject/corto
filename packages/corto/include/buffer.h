@@ -23,19 +23,19 @@ extern "C" {
 
 typedef struct corto_buffer_element {
    char buf[CORTO_BUFFER_ELEMENT_SIZE + 1];
-   corto_uint32 pos;
+   uint32_t pos;
    struct corto_buffer_element *next;
 } corto_buffer_element;
 
 typedef struct corto_buffer {
     /* When set by an application, append will write to this buffer */
-    corto_string buf;
+    char *buf;
 
     /* The maximum number of characters that may be printed */
-    corto_uint32 max;
+    uint32_t max;
 
     /* The number of elements in use */
-    corto_uint32 elementCount;
+    uint32_t elementCount;
 
     /* Always allocate at least one element */
     corto_buffer_element firstElement;
@@ -46,26 +46,26 @@ typedef struct corto_buffer {
 
 /* Append format string to a buffer.
  * Returns false when max is reached, true when there is still space */
-CORTO_EXPORT corto_bool corto_buffer_append(
+CORTO_EXPORT bool corto_buffer_append(
     corto_buffer *buffer,
-    corto_string fmt,
+    char *fmt,
     ...);
 
 /* Append string to buffer.
  * Returns false when max is reached, true when there is still space */
-CORTO_EXPORT corto_bool corto_buffer_appendstr(
+CORTO_EXPORT bool corto_buffer_appendstr(
     corto_buffer *buffer,
-    corto_string str);
+    char *str);
 
 /* Append n characters to buffer.
  * Returns false when max is reached, true when there is still space */
-CORTO_EXPORT corto_bool corto_buffer_appendstrn(
+CORTO_EXPORT bool corto_buffer_appendstrn(
     corto_buffer *buffer,
-    corto_string str,
-    corto_uint32 n);
+    char *str,
+    uint32_t n);
 
 /* Return result string */
-CORTO_EXPORT corto_string corto_buffer_str(corto_buffer *buffer);
+CORTO_EXPORT char *corto_buffer_str(corto_buffer *buffer);
 
 #ifdef __cplusplus
 }

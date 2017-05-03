@@ -747,7 +747,7 @@ void _test_ValueExpr_tc_exprMemValueOut(
     test_ValueExpr this)
 {
 /* $begin(test/ValueExpr/tc_exprMemValueOut) */
-    corto_value out = corto_value_init();
+    corto_value out = corto_value_empty();
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
 

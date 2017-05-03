@@ -68,14 +68,14 @@ typedef struct iterData {
 
 int hasNext(corto_iter *it) {
     iterData *ctx = it->udata;
-    return corto_iterHasNext(&ctx->iter);
+    return corto_iter_hasNext(&ctx->iter);
 }
 
 void* next(corto_iter *it) {
     int start, stop, i;
 
     iterData *ctx = it->udata;
-    test_HistoryMount_data *data = corto_iterNext(&ctx->iter);
+    test_HistoryMount_data *data = corto_iter_next(&ctx->iter);
     corto_result *result = &data->result;
 
     /* Clear previous history */

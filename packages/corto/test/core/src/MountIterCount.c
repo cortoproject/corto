@@ -32,7 +32,7 @@ corto_resultIter _test_MountIterCount_onRequest(
     corto_request *request)
 {
 /* $begin(test/MountIterCount/onRequest) */
-    corto_iter it = CORTO_ITERATOR_EMPTY;
+    corto_iter it = CORTO_ITER_EMPTY;
 
     if (!strcmp(request->expr, "*")) {
         it.udata = this;

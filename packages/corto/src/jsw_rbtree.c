@@ -5,7 +5,8 @@
     > Modified (Julienne Walker): March 14, 2008
 */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
+#include "jsw_rbtree.h"
 
 #ifdef __cplusplus
 #include <cstdlib>
@@ -26,7 +27,7 @@ typedef corto_equalityKind ___ (*corto_equalFunction)(corto_any this, corto_any 
 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
-  corto_equalsAction cmp;  /* Compare two items */
+  corto_equals_cb cmp;  /* Compare two items */
   corto_type type; /* This object which must be passed to cmp-function */
   size_t size; /* Number of items (user-defined) */
   corto_int32 changes; /* Change counter- for iterators */
@@ -121,7 +122,7 @@ void *jsw_rbnodedata(jsw_rbnode_t *node) {
 
 /* Marshall between intern comparefunction and corto::type::equals */
 static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v1, const void* v2) {
-    return corto_comparep((void*)v1, (corto_map(t))->keyType, (void*)v2);
+    return corto_ptr_compare((void*)v1, (corto_map(t))->keyType, (void*)v2);
 }
 
 /**
@@ -137,7 +138,7 @@ static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v
   The returned pointer must be released with jsw_rbdelete
   </remarks>
 */
-jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equalsAction cmp)
+jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp)
 {
   jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
 
@@ -287,7 +288,7 @@ int jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data )
   return jsw_rbhaskey_w_cmp( tree, key, data, tree->cmp );
 }
 
-int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equalsAction f_cmp )
+int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equals_cb f_cmp )
 {
   jsw_rbnode_t *it = tree->root;
 

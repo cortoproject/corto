@@ -36,15 +36,15 @@ void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "../..").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "/corto/core/package");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -59,15 +59,15 @@ void _test_SelectMount_tc_selectInvertCase(
     corto_int16 ret = corto_select("/a", "XYZ").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -82,15 +82,15 @@ void _test_SelectMount_tc_selectInvertCaseFilter(
     corto_int16 ret = corto_select("/a", "XY?").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -105,15 +105,15 @@ void _test_SelectMount_tc_selectInvertCaseScope(
     corto_int16 ret = corto_select("/A", "xyz").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -132,10 +132,10 @@ void _test_SelectMount_tc_selectIteratorPartialRelease(
     test_assert(ret == 0);
 
     for (i = 0; i < 5; i++) {
-        test_assert(corto_iterHasNext(&it));
-        test_assert(corto_iterNext(&it) != NULL);
+        test_assert(corto_iter_hasNext(&it));
+        test_assert(corto_iter_next(&it) != NULL);
     }
-    corto_iterRelease(&it);
+    corto_iter_release(&it);
 
     test_assertint(mount->hasNextCount, 5);
     test_assertint(mount->nextCount, 5);
@@ -165,10 +165,10 @@ void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
     test_assert(ret == 0);
 
     for (i = 0; i < 15; i++) {
-        test_assert(corto_iterHasNext(&it));
-        test_assert(corto_iterNext(&it) != NULL);
+        test_assert(corto_iter_hasNext(&it));
+        test_assert(corto_iter_next(&it) != NULL);
     }
-    corto_iterRelease(&it);
+    corto_iter_release(&it);
 
     test_assertint(mountA->hasNextCount + mountB->hasNextCount, 16);
     test_assertint(mountA->nextCount + mountB->nextCount, 15);
@@ -199,10 +199,10 @@ void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
     test_assert(ret == 0);
 
     for (i = 0; i < 15; i++) {
-        test_assert(corto_iterHasNext(&it));
-        test_assert(corto_iterNext(&it) != NULL);
+        test_assert(corto_iter_hasNext(&it));
+        test_assert(corto_iter_next(&it) != NULL);
     }
-    corto_iterRelease(&it);
+    corto_iter_release(&it);
 
     test_assertint(mountA->releaseCount, 1);
     test_assertint(mountB->releaseCount, 1);
@@ -229,8 +229,8 @@ void _test_SelectMount_tc_selectIteratorRelease(
     corto_int16 ret = corto_select("/mount", "*").iter( &it );
     test_assert(ret == 0);
 
-    while (corto_iterHasNext(&it)) {
-        corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_iter_next(&it);
         count ++;
     }
 
@@ -254,15 +254,15 @@ void _test_SelectMount_tc_selectParentFromScope(
     corto_int16 ret = corto_select("/a", "..").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "");
     test_assertstr(result->parent, "..");
     test_assertstr(result->type, "/corto/core/package");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -277,15 +277,15 @@ void _test_SelectMount_tc_selectParentFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "..").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "void");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 /* $end */
 }
 
@@ -299,31 +299,31 @@ void _test_SelectMount_tc_selectScope(
     corto_int16 ret = corto_select("/", "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "x");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "string");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -339,23 +339,23 @@ void _test_SelectMount_tc_selectScopeFilter(
 
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "string");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -370,23 +370,23 @@ void _test_SelectMount_tc_selectScopeFilterFromScope(
     corto_int16 ret = corto_select("/a", "*z").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "string");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -401,23 +401,23 @@ void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "*c").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -432,31 +432,31 @@ void _test_SelectMount_tc_selectScopeFromScope(
     corto_int16 ret = corto_select("/a", "*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "x");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "string");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -471,31 +471,31 @@ void _test_SelectMount_tc_selectScopeFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 /* $end */
 }
 
@@ -517,55 +517,55 @@ void _test_SelectMount_tc_selectScopeMixed(
     corto_int16 ret = corto_select("/", "a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "void");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "b");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "void");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "void");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "x");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "string");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -580,31 +580,31 @@ void _test_SelectMount_tc_selectScopeNested(
     corto_int16 ret = corto_select("/", "a/xyz/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -619,31 +619,31 @@ void _test_SelectMount_tc_selectScopeNestedDirty(
     corto_int16 ret = corto_select("/", "a/../a/./xyz/./*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -658,31 +658,31 @@ void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
     corto_int16 ret = corto_select("/a", "../a/./xyz/./*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -697,23 +697,23 @@ void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "../../a/../a/./xyz/./abc/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -728,31 +728,31 @@ void _test_SelectMount_tc_selectScopeNestedFromScope(
     corto_int16 ret = corto_select("/a", "xyz/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -767,23 +767,23 @@ void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "abc/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -798,15 +798,15 @@ void _test_SelectMount_tc_selectSingle(
     corto_int16 ret = corto_select("/", "a/xyz").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, "a");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -821,15 +821,15 @@ void _test_SelectMount_tc_selectSingleFromScope(
     corto_int16 ret = corto_select("/a", "xyz").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -844,15 +844,15 @@ void _test_SelectMount_tc_selectSingleFromScopeTree(
     corto_int16 ret = corto_select("/a", "//foo").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -867,15 +867,15 @@ void _test_SelectMount_tc_selectSingleFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "bc").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -890,15 +890,15 @@ void _test_SelectMount_tc_selectSingleNested(
     corto_int16 ret = corto_select("/", "a/xyz/abc").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "a/xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -913,15 +913,15 @@ void _test_SelectMount_tc_selectSingleNestedFromScope(
     corto_int16 ret = corto_select("/a", "xyz/bc").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -936,15 +936,15 @@ void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
     corto_int16 ret = corto_select("/a", "xyz//foo").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -959,15 +959,15 @@ void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz", "abc/foo").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -982,23 +982,23 @@ void _test_SelectMount_tc_selectSingleTree(
     corto_int16 ret = corto_select("/a", "//a").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1013,15 +1013,15 @@ void _test_SelectMount_tc_selectSingleTree2(
     corto_int16 ret = corto_select("/a", "//foo").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1036,15 +1036,15 @@ void _test_SelectMount_tc_selectSingleTree3(
     corto_int16 ret = corto_select("/", "//hello").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "hello");
     test_assertstr(result->parent, "a/xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1059,111 +1059,111 @@ void _test_SelectMount_tc_selectTree(
     corto_int16 ret = corto_select("/a", "//").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "x");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "b");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "c");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "yz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "string");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float64");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "hello");
     test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "world");
     test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1191,15 +1191,15 @@ void _test_SelectMount_tc_selectTreeEmptyNestedScope(
     corto_int16 ret = corto_select("/b", "//").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "mount");
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "mount2");
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
     ret = corto_delete(m);
     test_assert(ret == 0);
@@ -1230,11 +1230,11 @@ void _test_SelectMount_tc_selectTreeEmptyScope(
     corto_int16 ret = corto_select("/b", "//").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "mount");
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
     ret = corto_delete(m);
     test_assert(ret == 0);
@@ -1255,39 +1255,39 @@ void _test_SelectMount_tc_selectTreeFromNestedScope(
     corto_int16 ret = corto_select("/a/xyz/abc", "//").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "hello");
     test_assertstr(result->parent, "foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "world");
     test_assertstr(result->parent, "foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1302,63 +1302,63 @@ void _test_SelectMount_tc_selectTreeFromScope(
     corto_int16 ret = corto_select("/a/xyz", "//").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "hello");
     test_assertstr(result->parent, "abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "world");
     test_assertstr(result->parent, "abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1373,39 +1373,39 @@ void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
     corto_int16 ret = corto_select("/a", "xyz/abc//").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "hello");
     test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "world");
     test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1420,63 +1420,63 @@ void _test_SelectMount_tc_selectTreeFromVirtualScope(
     corto_int16 ret = corto_select("/a", "xyz//").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "foo");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "hello");
     test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "world");
     test_assertstr(result->parent, "xyz/abc/foo");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bar");
     test_assertstr(result->parent, "xyz/abc");
     test_assertstr(result->type, "uint32");
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "bc");
     test_assertstr(result->parent, "xyz");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1491,15 +1491,15 @@ void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz/abc/foo", "../..").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "xyz");
     test_assertstr(result->parent, "../../..");
     test_assertstr(result->type, "float64");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
@@ -1514,15 +1514,15 @@ void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
     corto_int16 ret = corto_select("/a/xyz/abc/foo", "..").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "abc");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "uint32");
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }

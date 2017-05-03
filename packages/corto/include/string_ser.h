@@ -8,8 +8,6 @@
 #ifndef CORTO_STRING_SER_H_
 #define CORTO_STRING_SER_H_
 
-#include "corto/walk.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

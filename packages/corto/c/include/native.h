@@ -34,7 +34,7 @@ CORTO_EXPORT corto_native_type _corto_native_typeAssign(corto_native_type _this,
 #define corto_native_type__optional_NotSet NULL
 #define corto_native_type__optional_Set(name) corto_native_typeAssign((corto_native_type*)corto_calloc(sizeof(corto_native_type)), name)
 #define corto_native_type__optional_SetCond(cond, name) cond ? corto_native_typeAssign((corto_native_type*)corto_calloc(sizeof(corto_native_type)), name) : NULL
-#define corto_native_typeUnset(_this) _this ? corto_deinitp(_this, corto_native_type_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_native_typeUnset(_this) _this ? corto_ptr_deinit(_this, corto_native_type_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_native_typeAssign(_this, name) _corto_native_typeAssign(_this, name)
 #define corto_native_typeSet(_this, name) _this = _this ? _this : (corto_native_type*)corto_calloc(sizeof(corto_native_type)); _corto_native_typeAssign(_this, name)
 
@@ -129,13 +129,13 @@ CORTO_EXPORT corto_uint32 corto_resultListSize(corto_resultList list);
 CORTO_EXPORT void corto_resultListClear(corto_resultList list);
 #define corto_objectIterForeach(iter, elem) \
     corto_object elem;\
-    while(corto_iterHasNext(&iter) ? elem = (corto_object)corto_iterNext(&iter), TRUE : FALSE)
+    while(corto_iter_hasNext(&iter) ? elem = (corto_object)corto_iter_next(&iter), TRUE : FALSE)
 
 #define corto_resultIterForeach(iter, elem) \
     corto_result elem;\
-    while(corto_iterHasNext(&iter) ? elem = *(corto_result*)(corto_word)corto_iterNext(&iter), TRUE : FALSE)
+    while(corto_iter_hasNext(&iter) ? elem = *(corto_result*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
 
 #define corto_sampleIterForeach(iter, elem) \
     corto_sample elem;\
-    while(corto_iterHasNext(&iter) ? elem = *(corto_sample*)(corto_word)corto_iterNext(&iter), TRUE : FALSE)
+    while(corto_iter_hasNext(&iter) ? elem = *(corto_sample*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
 

@@ -95,7 +95,7 @@ corto_any* _corto_anyCreate(corto_type type, void *value) {
         v.value = value;
         v.type = type;
         _this->owner = TRUE;
-        corto_copyp(_this, corto_any_o, &v);
+        corto_ptr_copy(_this, corto_any_o, &v);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -115,7 +115,7 @@ corto_any* _corto_anyCreateChild(corto_object _parent, corto_string _id, corto_t
         v.value = value;
         v.type = type;
         _this->owner = TRUE;
-        corto_copyp(_this, corto_any_o, &v);
+        corto_ptr_copy(_this, corto_any_o, &v);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -132,13 +132,13 @@ corto_int16 _corto_anyUpdate(corto_any* _this, corto_type type, void *value) {
             v.value = value;
             v.type = type;
             ((corto_any*)CORTO_OFFSET(_this, ((corto_type)corto_any_o)->size))->owner = TRUE;
-            corto_copyp(((corto_any*)CORTO_OFFSET(_this, ((corto_type)corto_any_o)->size)), corto_any_o, &v);
+            corto_ptr_copy(((corto_any*)CORTO_OFFSET(_this, ((corto_type)corto_any_o)->size)), corto_any_o, &v);
         } else {
             corto_any v;
             v.value = value;
             v.type = type;
             _this->owner = TRUE;
-            corto_copyp(_this, corto_any_o, &v);
+            corto_ptr_copy(_this, corto_any_o, &v);
         }
         corto_updateEnd(_this);
     } else {
@@ -171,7 +171,7 @@ corto_int16 _corto_anyDefine(corto_any* _this, corto_type type, void *value) {
     v.value = value;
     v.type = type;
     _this->owner = TRUE;
-    corto_copyp(_this, corto_any_o, &v);
+    corto_ptr_copy(_this, corto_any_o, &v);
     return corto_define(_this);
 }
 
@@ -181,7 +181,7 @@ corto_any* _corto_anyAssign(corto_any* _this, corto_type type, void *value) {
     v.value = value;
     v.type = type;
     _this->owner = TRUE;
-    corto_copyp(_this, corto_any_o, &v);
+    corto_ptr_copy(_this, corto_any_o, &v);
     return _this;
 }
 
@@ -648,7 +648,7 @@ corto_case _corto_caseCreate(corto_int32seq discriminator, corto_type type) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+        corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
         corto_setref(&((corto_member)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -665,7 +665,7 @@ corto_case _corto_caseCreateChild(corto_object _parent, corto_string _id, corto_
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+        corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
         corto_setref(&((corto_member)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -679,10 +679,10 @@ corto_int16 _corto_caseUpdate(corto_case _this, corto_int32seq discriminator, co
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_copyp(&((corto_case)((corto_case)CORTO_OFFSET(_this, ((corto_type)corto_case_o)->size)))->discriminator, corto_int32seq_o, &discriminator);
+            corto_ptr_copy(&((corto_case)((corto_case)CORTO_OFFSET(_this, ((corto_type)corto_case_o)->size)))->discriminator, corto_int32seq_o, &discriminator);
             corto_setref(&((corto_member)((corto_case)CORTO_OFFSET(_this, ((corto_type)corto_case_o)->size)))->type, type);
         } else {
-            corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+            corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
             corto_setref(&((corto_member)_this)->type, type);
         }
         corto_updateEnd(_this);
@@ -712,14 +712,14 @@ corto_case _corto_caseDeclareChild(corto_object _parent, corto_string _id) {
 
 corto_int16 _corto_caseDefine(corto_case _this, corto_int32seq discriminator, corto_type type) {
     CORTO_UNUSED(_this);
-    corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+    corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
     corto_setref(&((corto_member)_this)->type, type);
     return corto_define(_this);
 }
 
 corto_case _corto_caseAssign(corto_case _this, corto_int32seq discriminator, corto_type type) {
     CORTO_UNUSED(_this);
-    corto_copyp(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
+    corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
     corto_setref(&((corto_member)_this)->type, type);
     return _this;
 }
@@ -887,7 +887,7 @@ corto_class _corto_classCreate(corto_interface base, corto_modifier baseAccess, 
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -905,7 +905,7 @@ corto_class _corto_classCreateChild(corto_object _parent, corto_string _id, cort
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -920,11 +920,11 @@ corto_int16 _corto_classUpdate(corto_class _this, corto_interface base, corto_mo
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setref(&((corto_interface)((corto_class)CORTO_OFFSET(_this, ((corto_type)corto_class_o)->size)))->base, base);
             ((corto_struct)((corto_class)CORTO_OFFSET(_this, ((corto_type)corto_class_o)->size)))->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)((corto_class)CORTO_OFFSET(_this, ((corto_type)corto_class_o)->size)))->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)((corto_class)CORTO_OFFSET(_this, ((corto_type)corto_class_o)->size)))->implements, corto_interfaceseq_o, &implements);
         } else {
             corto_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         }
         corto_updateEnd(_this);
     } else {
@@ -955,7 +955,7 @@ corto_int16 _corto_classDefine(corto_class _this, corto_interface base, corto_mo
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     return corto_define(_this);
 }
 
@@ -963,7 +963,7 @@ corto_class _corto_classAssign(corto_class _this, corto_interface base, corto_mo
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     return _this;
 }
 
@@ -1290,7 +1290,7 @@ corto_container _corto_containerCreate(corto_interface base, corto_modifier base
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_container)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -1309,7 +1309,7 @@ corto_container _corto_containerCreateChild(corto_object _parent, corto_string _
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_container)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -1325,12 +1325,12 @@ corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, 
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setref(&((corto_interface)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->base, base);
             ((corto_struct)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->implements, corto_interfaceseq_o, &implements);
             corto_setref(&((corto_container)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->type, type);
         } else {
             corto_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
             corto_setref(&((corto_container)_this)->type, type);
         }
         corto_updateEnd(_this);
@@ -1362,7 +1362,7 @@ corto_int16 _corto_containerDefine(corto_container _this, corto_interface base, 
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_container)_this)->type, type);
     return corto_define(_this);
 }
@@ -1371,7 +1371,7 @@ corto_container _corto_containerAssign(corto_container _this, corto_interface ba
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_container)_this)->type, type);
     return _this;
 }
@@ -1462,7 +1462,7 @@ corto_delegate _corto_delegateCreate(corto_type returnType, bool returnsReferenc
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_delegate)_this)->returnType, returnType);
         ((corto_delegate)_this)->returnsReference = returnsReference;
-        corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+        corto_ptr_copy(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -1480,7 +1480,7 @@ corto_delegate _corto_delegateCreateChild(corto_object _parent, corto_string _id
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_delegate)_this)->returnType, returnType);
         ((corto_delegate)_this)->returnsReference = returnsReference;
-        corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+        corto_ptr_copy(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -1495,11 +1495,11 @@ corto_int16 _corto_delegateUpdate(corto_delegate _this, corto_type returnType, b
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setref(&((corto_delegate)((corto_delegate)CORTO_OFFSET(_this, ((corto_type)corto_delegate_o)->size)))->returnType, returnType);
             ((corto_delegate)((corto_delegate)CORTO_OFFSET(_this, ((corto_type)corto_delegate_o)->size)))->returnsReference = returnsReference;
-            corto_copyp(&((corto_delegate)((corto_delegate)CORTO_OFFSET(_this, ((corto_type)corto_delegate_o)->size)))->parameters, corto_parameterseq_o, &parameters);
+            corto_ptr_copy(&((corto_delegate)((corto_delegate)CORTO_OFFSET(_this, ((corto_type)corto_delegate_o)->size)))->parameters, corto_parameterseq_o, &parameters);
         } else {
             corto_setref(&((corto_delegate)_this)->returnType, returnType);
             ((corto_delegate)_this)->returnsReference = returnsReference;
-            corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+            corto_ptr_copy(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
         }
         corto_updateEnd(_this);
     } else {
@@ -1530,7 +1530,7 @@ corto_int16 _corto_delegateDefine(corto_delegate _this, corto_type returnType, b
     CORTO_UNUSED(_this);
     corto_setref(&((corto_delegate)_this)->returnType, returnType);
     ((corto_delegate)_this)->returnsReference = returnsReference;
-    corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+    corto_ptr_copy(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
     return corto_define(_this);
 }
 
@@ -1538,7 +1538,7 @@ corto_delegate _corto_delegateAssign(corto_delegate _this, corto_type returnType
     CORTO_UNUSED(_this);
     corto_setref(&((corto_delegate)_this)->returnType, returnType);
     ((corto_delegate)_this)->returnsReference = returnsReference;
-    corto_copyp(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
+    corto_ptr_copy(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
     return _this;
 }
 
@@ -3106,7 +3106,7 @@ corto_interfaceVector* _corto_interfaceVectorCreate(corto_interface interface, c
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-        corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
+        corto_ptr_copy(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -3123,7 +3123,7 @@ corto_interfaceVector* _corto_interfaceVectorCreateChild(corto_object _parent, c
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-        corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
+        corto_ptr_copy(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -3137,10 +3137,10 @@ corto_int16 _corto_interfaceVectorUpdate(corto_interfaceVector* _this, corto_int
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setref(&((corto_interfaceVector*)((corto_interfaceVector*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVector_o)->size)))->interface, interface);
-            corto_copyp(&((corto_interfaceVector*)((corto_interfaceVector*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVector_o)->size)))->vector, corto_objectseq_o, &vector);
+            corto_ptr_copy(&((corto_interfaceVector*)((corto_interfaceVector*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVector_o)->size)))->vector, corto_objectseq_o, &vector);
         } else {
             corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-            corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
+            corto_ptr_copy(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
         }
         corto_updateEnd(_this);
     } else {
@@ -3170,14 +3170,14 @@ corto_interfaceVector* _corto_interfaceVectorDeclareChild(corto_object _parent, 
 corto_int16 _corto_interfaceVectorDefine(corto_interfaceVector* _this, corto_interface interface, corto_objectseq vector) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-    corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
+    corto_ptr_copy(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
     return corto_define(_this);
 }
 
 corto_interfaceVector* _corto_interfaceVectorAssign(corto_interfaceVector* _this, corto_interface interface, corto_objectseq vector) {
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interfaceVector*)_this)->interface, interface);
-    corto_copyp(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
+    corto_ptr_copy(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
     return _this;
 }
 
@@ -3192,7 +3192,7 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqCreate(corto_uint32 length, c
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
-                corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+                corto_ptr_copy(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
             }
         }
         if (corto_define(_this)) {
@@ -3214,7 +3214,7 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqCreateChild(corto_object _par
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
-                corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+                corto_ptr_copy(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
             }
         }
         if (corto_define(_this)) {
@@ -3233,7 +3233,7 @@ corto_int16 _corto_interfaceVectorseqUpdate(corto_interfaceVectorseq* _this, cor
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
-                    corto_copyp(&((corto_interfaceVectorseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVectorseq_o)->size))->buffer[i], corto_interfaceVector_o, &elements[i]);
+                    corto_ptr_copy(&((corto_interfaceVectorseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVectorseq_o)->size))->buffer[i], corto_interfaceVector_o, &elements[i]);
                 }
             }
         } else {
@@ -3241,7 +3241,7 @@ corto_int16 _corto_interfaceVectorseqUpdate(corto_interfaceVectorseq* _this, cor
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
-                    corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+                    corto_ptr_copy(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
                 }
             }
         }
@@ -3276,7 +3276,7 @@ corto_int16 _corto_interfaceVectorseqDefine(corto_interfaceVectorseq* _this, cor
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+            corto_ptr_copy(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
         }
     }
     return corto_define(_this);
@@ -3288,7 +3288,7 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqAssign(corto_interfaceVectors
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
+            corto_ptr_copy(&_this->buffer[i], corto_interfaceVector_o, &elements[i]);
         }
     }
     return _this;
@@ -3380,7 +3380,7 @@ corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, co
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_container)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -3399,7 +3399,7 @@ corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_container)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -3415,12 +3415,12 @@ corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modi
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setref(&((corto_interface)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->base, base);
             ((corto_struct)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->implements, corto_interfaceseq_o, &implements);
             corto_setref(&((corto_container)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->type, type);
         } else {
             corto_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
             corto_setref(&((corto_container)_this)->type, type);
         }
         corto_updateEnd(_this);
@@ -3452,7 +3452,7 @@ corto_int16 _corto_leafDefine(corto_leaf _this, corto_interface base, corto_modi
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_container)_this)->type, type);
     return corto_define(_this);
 }
@@ -3461,7 +3461,7 @@ corto_leaf _corto_leafAssign(corto_leaf _this, corto_interface base, corto_modif
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_container)_this)->type, type);
     return _this;
 }
@@ -4713,7 +4713,7 @@ corto_parameterseq* _corto_parameterseqCreate(corto_uint32 length, corto_paramet
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
-                corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+                corto_ptr_copy(&_this->buffer[i], corto_parameter_o, &elements[i]);
             }
         }
         if (corto_define(_this)) {
@@ -4735,7 +4735,7 @@ corto_parameterseq* _corto_parameterseqCreateChild(corto_object _parent, corto_s
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
-                corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+                corto_ptr_copy(&_this->buffer[i], corto_parameter_o, &elements[i]);
             }
         }
         if (corto_define(_this)) {
@@ -4754,7 +4754,7 @@ corto_int16 _corto_parameterseqUpdate(corto_parameterseq* _this, corto_uint32 le
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
-                    corto_copyp(&((corto_parameterseq*)CORTO_OFFSET(_this, ((corto_type)corto_parameterseq_o)->size))->buffer[i], corto_parameter_o, &elements[i]);
+                    corto_ptr_copy(&((corto_parameterseq*)CORTO_OFFSET(_this, ((corto_type)corto_parameterseq_o)->size))->buffer[i], corto_parameter_o, &elements[i]);
                 }
             }
         } else {
@@ -4762,7 +4762,7 @@ corto_int16 _corto_parameterseqUpdate(corto_parameterseq* _this, corto_uint32 le
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
-                    corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+                    corto_ptr_copy(&_this->buffer[i], corto_parameter_o, &elements[i]);
                 }
             }
         }
@@ -4797,7 +4797,7 @@ corto_int16 _corto_parameterseqDefine(corto_parameterseq* _this, corto_uint32 le
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+            corto_ptr_copy(&_this->buffer[i], corto_parameter_o, &elements[i]);
         }
     }
     return corto_define(_this);
@@ -4809,7 +4809,7 @@ corto_parameterseq* _corto_parameterseqAssign(corto_parameterseq* _this, corto_u
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
-            corto_copyp(&_this->buffer[i], corto_parameter_o, &elements[i]);
+            corto_ptr_copy(&_this->buffer[i], corto_parameter_o, &elements[i]);
         }
     }
     return _this;
@@ -5660,7 +5660,7 @@ corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, 
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_container)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -5679,7 +5679,7 @@ corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, cort
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_setref(&((corto_interface)_this)->base, base);
         ((corto_struct)_this)->baseAccess = baseAccess;
-        corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+        corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_setref(&((corto_container)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -5695,12 +5695,12 @@ corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_mo
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_setref(&((corto_interface)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->base, base);
             ((corto_struct)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->implements, corto_interfaceseq_o, &implements);
             corto_setref(&((corto_container)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->type, type);
         } else {
             corto_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
-            corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+            corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
             corto_setref(&((corto_container)_this)->type, type);
         }
         corto_updateEnd(_this);
@@ -5732,7 +5732,7 @@ corto_int16 _corto_tableDefine(corto_table _this, corto_interface base, corto_mo
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_container)_this)->type, type);
     return corto_define(_this);
 }
@@ -5741,7 +5741,7 @@ corto_table _corto_tableAssign(corto_table _this, corto_interface base, corto_mo
     CORTO_UNUSED(_this);
     corto_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
-    corto_copyp(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
+    corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_setref(&((corto_container)_this)->type, type);
     return _this;
 }

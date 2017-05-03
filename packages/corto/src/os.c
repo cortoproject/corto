@@ -275,8 +275,8 @@ corto_ll corto_opendir(const char *name) {
 void corto_closedir(corto_ll dir) {
     corto_iter iter = corto_llIter(dir);
 
-    while(corto_iterHasNext(&iter)) {
-        corto_dealloc(corto_iterNext(&iter));
+    while(corto_iter_hasNext(&iter)) {
+        corto_dealloc(corto_iter_next(&iter));
     }
     corto_llFree(dir);
 }

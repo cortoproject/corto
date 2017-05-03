@@ -7,7 +7,8 @@
  *  This implementation is a wrapper around the jsw_rbtree (http://www.eternallyconfuzzled.com) implementation.
  */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
+#include "jsw_rbtree.h"
 
 corto_rbtree corto_rbtreeNew(corto_type keyType) {
 
@@ -16,7 +17,7 @@ corto_rbtree corto_rbtreeNew(corto_type keyType) {
     return (corto_rbtree)jsw_rbnew(keyType, NULL);
 }
 
-corto_rbtree corto_rbtreeNew_w_func(corto_equalsAction compare) {
+corto_rbtree corto_rbtreeNew_w_func(corto_equals_cb compare) {
     return (corto_rbtree)jsw_rbnew(NULL, compare);
 }
 
@@ -50,7 +51,7 @@ corto_bool corto_rbtreeHasKey(corto_rbtree tree, const void* key, void** value) 
     return jsw_rbhaskey((jsw_rbtree_t*)tree, key, value);
 }
 
-corto_bool corto_rbtreeHasKey_w_cmp(corto_rbtree tree, const void* key, void** value, corto_equalsAction cmp) {
+corto_bool corto_rbtreeHasKey_w_cmp(corto_rbtree tree, const void* key, void** value, corto_equals_cb cmp) {
     return jsw_rbhaskey_w_cmp((jsw_rbtree_t*)tree, key, value, cmp);
 }
 
@@ -75,7 +76,7 @@ void* corto_rbtreePrev(corto_rbtree tree, void* key, void** key_out)  {
 }
 
 /* Note that this function cannot handle NULL values in the tree */
-int corto_rbtreeWalk(corto_rbtree tree, corto_walkAction callback, void* userData) {
+int corto_rbtreeWalk(corto_rbtree tree, corto_elementWalk_cb callback, void* userData) {
     jsw_rbtrav_t tdata;
     void* data;
 
@@ -98,7 +99,7 @@ int corto_rbtreeWalk(corto_rbtree tree, corto_walkAction callback, void* userDat
 }
 
 /* Note that this function cannot handle NULL values in the tree */
-int corto_rbtreeWalkPtr(corto_rbtree tree, corto_walkAction callback, void* userData) {
+int corto_rbtreeWalkPtr(corto_rbtree tree, corto_elementWalk_cb callback, void* userData) {
     jsw_rbtrav_t tdata;
     void* data;
 

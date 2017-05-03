@@ -65,7 +65,6 @@ char *corto_appName = NULL;
 
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
-corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;
 corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 corto_threadKey CORTO_KEY_LISTEN_ADMIN;
 corto_threadKey CORTO_KEY_OWNER;
@@ -74,10 +73,6 @@ corto_threadKey CORTO_KEY_FLUENT;
 corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_threadKey CORTO_KEY_MOUNT_RESULT;
 corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
-
-/* OLS keys */
-corto_int8 CORTO_OLS_REPLICATOR;
-corto_int8 CORTO_OLS_AUGMENT;
 
 /* variables that control verbosity of logging functions */
 int8_t CORTO_DEBUG_ENABLED = 0;
@@ -1043,7 +1038,6 @@ int corto_start(char *appName) {
 
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_SUBSCRIBER_ADMIN, corto_subscriberAdminFree);
     corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
     corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
@@ -1054,9 +1048,9 @@ int corto_start(char *appName) {
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
     corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
 
-    /* Initialize OLS keys */
-    CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
-    CORTO_OLS_AUGMENT = corto_olsKey(NULL);
+    /* Initialize entity administrations */
+    corto_threadTlsKey(&corto_subscriber_admin.key, corto_entityAdmin_free);
+    corto_threadTlsKey(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Register CDECL as first binding */
     if (corto_callRegister(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {

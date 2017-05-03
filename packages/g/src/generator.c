@@ -120,8 +120,8 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
     if (g->objects) {
         g_object *gObj;
         objectIter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&objectIter)) {
-            gObj = corto_iterNext(&objectIter);
+        while(corto_iter_hasNext(&objectIter)) {
+            gObj = corto_iter_next(&objectIter);
             if (gObj->o == object) {
                 o = gObj;
                 break;
@@ -374,8 +374,8 @@ void g_free(g_generator g) {
 corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
     corto_iter iter = corto_llIter(list);
 
-    while (corto_iterHasNext(&iter)) {
-        corto_object p = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_object p = corto_iter_next(&iter);
         corto_string prefixFileStr;
         corto_string prefix;
         corto_string includePath =
@@ -471,8 +471,8 @@ corto_int16 g_leafDependencies(
             g->importsNested = corto_llNew();
         }
         corto_iter it = corto_llIter(deps);
-        while (corto_iterHasNext(&it)) {
-            corto_string dep = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_string dep = corto_iter_next(&it);
             corto_object o = corto_resolve(NULL, dep);
             if (o) {
                 if (!corto_llHasObject(g->importsNested, o)) {
@@ -581,8 +581,8 @@ static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_
     } else if (g->objects) {
         g->inWalk = TRUE;
         corto_iter iter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&iter)) {
-            g_object* o = corto_iterNext(&iter);
+        while(corto_iter_hasNext(&iter)) {
+            g_object* o = corto_iter_next(&iter);
             if (!g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk)) {
                 g->inWalk = FALSE;
                 goto stop;
@@ -628,8 +628,8 @@ static g_object* g_findObjectIntern(
     if (g->objects) {
         minDistance = -1;
         iter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&iter)) {
-            t = corto_iterNext(&iter);
+        while(corto_iter_hasNext(&iter)) {
+            t = corto_iter_next(&iter);
 
             /* Check if object occurs in scope of 'o' and measure distance to 'o' */
             parent = o;
@@ -837,8 +837,8 @@ corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind k
             g->anonymousObjects = corto_llNew();
         }
         corto_iter it = corto_llIter(g->anonymousObjects);
-        while (corto_iterHasNext(&it)) {
-            corto_object e = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_object e = corto_iter_next(&it);
             if (e == o) {
                 break;
             }
@@ -1168,8 +1168,8 @@ corto_string g_fileLookupSnippetIntern(g_file file, corto_string snippetId, cort
 
     if (list) {
         iter = corto_llIter(list);
-        while(corto_iterHasNext(&iter)) {
-            snippet = corto_iterNext(&iter);
+        while(corto_iter_hasNext(&iter)) {
+            snippet = corto_iter_next(&iter);
             corto_id path; strcpy(path, snippet->id);
             char *snippetPtr = path;
 
@@ -1313,8 +1313,8 @@ static corto_uint32 corto_genMemberCacheCount(corto_ll cache, corto_member m) {
     corto_uint32 result = 0;
 
     memberIter = corto_llIter(cache);
-    while(corto_iterHasNext(&memberIter)) {
-        member = corto_iterNext(&memberIter);
+    while(corto_iter_hasNext(&memberIter)) {
+        member = corto_iter_next(&memberIter);
         if (!strcmp(corto_idof(member->member), corto_idof(m))) {
             result++;
         }
@@ -1329,8 +1329,8 @@ static corto_uint32 corto_genMemberCacheGet(corto_ll cache, corto_member m) {
     corto_uint32 result = 0;
 
     memberIter = corto_llIter(cache);
-    while(corto_iterHasNext(&memberIter)) {
-        member = corto_iterNext(&memberIter);
+    while(corto_iter_hasNext(&memberIter)) {
+        member = corto_iter_next(&memberIter);
         if (member->member == m) {
             result = member->occurred;
             break;
@@ -1397,8 +1397,8 @@ void corto_genMemberCacheClean(corto_ll cache) {
     corto_genWalkMember_t *member;
 
     memberIter = corto_llIter(cache);
-    while(corto_iterHasNext(&memberIter)) {
-        member = corto_iterNext(&memberIter);
+    while(corto_iter_hasNext(&memberIter)) {
+        member = corto_iter_next(&memberIter);
         corto_dealloc(member);
     }
     corto_llFree(cache);

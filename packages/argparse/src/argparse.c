@@ -196,8 +196,8 @@ void corto_argclean(corto_argdata *data) {
         }
         if (data[p].gc) {
           corto_iter it = corto_llIter(data[p].gc);
-          while (corto_iterHasNext(&it)) {
-            corto_string s = corto_iterNext(&it);
+          while (corto_iter_hasNext(&it)) {
+            corto_string s = corto_iter_next(&it);
             corto_dealloc(s);
           }
           corto_llFree(data[p].gc);

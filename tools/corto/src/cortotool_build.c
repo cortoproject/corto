@@ -43,8 +43,8 @@ static corto_int16 cortotool_printCortoListAsRubyArray(corto_file f, const char*
     fprintf((FILE*)f, "%s = [\n", rubyName);
     {
         corto_iter it = corto_llIter(list);
-        while (corto_iterHasNext(&it)) {
-            corto_string elem = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_string elem = corto_iter_next(&it);
             fprintf((FILE*)f, "    \"%s\",\n", elem);
         }
     }
@@ -142,7 +142,7 @@ corto_int16 cortotool_loadRakefile(void) {
 
     corto_release(package);
     corto_dealloc(json);
-    corto_deinitp(&r, corto_result_o);
+    corto_ptr_deinit(&r, corto_result_o);
 
 skip:
     return 0;
@@ -151,7 +151,7 @@ error_createRakefile:
     corto_delete(package);
 error_mkdir:
 error_result_fromcontent:
-    corto_deinitp(&r, corto_result_o);
+    corto_ptr_deinit(&r, corto_result_o);
 error_createFromContent:
     corto_dealloc(json);
 error_fileLoad:
@@ -186,8 +186,8 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
 
     if (dirs) {
         it = corto_llIter(dirs);
-        if (corto_iterHasNext(&it)) {
-            dir = corto_iterNext(&it);
+        if (corto_iter_hasNext(&it)) {
+            dir = corto_iter_next(&it);
         }
     }
 
@@ -209,7 +209,7 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
         if (dir) {
             corto_chdir("..");
         }
-    } while (dirs && corto_iterHasNext(&it) && (dir = corto_iterNext(&it)));
+    } while (dirs && corto_iter_hasNext(&it) && (dir = corto_iter_next(&it)));
 
     corto_argclean(data);
 
@@ -264,7 +264,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
 
     do {
         if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
+            corto_string dir = corto_iter_next(&iter);
 
             /* Change working directory to project */
             if (corto_chdir(dir)) {
@@ -315,7 +315,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
-    } while (!ret && dirs && corto_iterHasNext(&iter));
+    } while (!ret && dirs && corto_iter_hasNext(&iter));
 
     corto_argclean(data);
 
@@ -363,7 +363,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
 
     do {
         if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
+            corto_string dir = corto_iter_next(&iter);
 
             /* Change working directory to project */
             if (corto_chdir(dir)) {
@@ -387,7 +387,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
-    } while (!ret && dirs && corto_iterHasNext(&iter));
+    } while (!ret && dirs && corto_iter_hasNext(&iter));
 
     corto_argclean(data);
     if (ret) {
@@ -426,7 +426,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
 
     do {
         if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
+            corto_string dir = corto_iter_next(&iter);
 
             /* Change working directory to project */
             if (corto_chdir(dir)) {
@@ -452,7 +452,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
-    } while (!ret && dirs && corto_iterHasNext(&iter));
+    } while (!ret && dirs && corto_iter_hasNext(&iter));
 
 
     corto_argclean(data);

@@ -8,9 +8,6 @@
 #ifndef CORTO_LL_H_
 #define CORTO_LL_H_
 
-#include "corto/def.h"
-#include "corto/iter.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,10 +24,10 @@ CORTO_EXPORT corto_ll corto_llNew(void);
 CORTO_EXPORT void corto_llFree(corto_ll);
 
 /* Walk list */
-CORTO_EXPORT int corto_llWalk(corto_ll list, corto_walkAction callback, void* userdata);
+CORTO_EXPORT int corto_llWalk(corto_ll list, corto_elementWalk_cb callback, void* userdata);
 
 /* Walk list, return pointers to elements */
-CORTO_EXPORT int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata);
+CORTO_EXPORT int corto_llWalkPtr(corto_ll list, corto_elementWalk_cb callback, void* userdata);
 
 /* Insert at start. */
 CORTO_EXPORT void corto_llInsert(corto_ll list, void* data);
@@ -54,7 +51,7 @@ CORTO_EXPORT void* corto_llGet(corto_ll list, int index);
 CORTO_EXPORT void* corto_llGetPtr(corto_ll list, int index);
 
 /* Find object - performs semantic comparison */
-CORTO_EXPORT void* corto_llFind(corto_ll list, corto_compareAction callback, void* o);
+CORTO_EXPORT void* corto_llFind(corto_ll list, corto_compare_cb callback, void* o);
 
 /* Check if object is in list - simple compare on address */
 CORTO_EXPORT unsigned int corto_llHasObject(corto_ll list, void* o);
@@ -69,7 +66,7 @@ CORTO_EXPORT int corto_llSize(corto_ll list);
 #define corto_llIter(list) _corto_llIter(list, alloca(sizeof(corto_llIter_s)));
 CORTO_EXPORT corto_iter _corto_llIter(corto_ll, void *udata);
 
-/* Obtain persistent iterator. Requries corto_iterRelease to be called */
+/* Obtain persistent iterator. Requries corto_iter_release to be called */
 CORTO_EXPORT corto_iter corto_llIterAlloc(corto_ll);
 
 /* Iterator cleanup functions */

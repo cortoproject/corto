@@ -1,12 +1,12 @@
 /*
- * corto_def.h
+ * base.h
  *
  *  Created on: Aug 2, 2012
  *      Author: sander
  */
 
-#ifndef CORTO_DEF_H
-#define CORTO_DEF_H
+#ifndef CORTO_BASE_H
+#define CORTO_BASE_H
 
 #include <alloca.h>
 #include <assert.h>
@@ -51,51 +51,6 @@
 #endif
 extern "C" {
 #endif
-
-#ifndef __cplusplus
-#undef bool
-#undef true
-#undef false
-#define bool char
-#define false 0
-#define true !false
-#endif
-
-#ifndef NULL
-#define NULL (0x0)
-#endif
-
-#ifndef FALSE
-#define FALSE (0)
-#endif
-
-#ifndef TRUE
-#define TRUE (!FALSE)
-#endif
-
-#define CORTO_BLACK   "\033[1;30m"
-#define CORTO_RED     "\033[0;31m"
-#define CORTO_GREEN   "\033[0;32m"
-#define CORTO_YELLOW  "\033[0;33m"
-#define CORTO_BLUE    "\033[0;34m"
-#define CORTO_MAGENTA "\033[0;35m"
-#define CORTO_CYAN    "\033[0;36m"
-#define CORTO_WHITE   "\033[1;37m"
-#define CORTO_GREY    "\033[0;37m"
-#define CORTO_NORMAL  "\033[0;49m"
-#define CORTO_BOLD    "\033[1;49m"
-
-/* Macro used to prevent type checking macro's from expanding */
-#define ___
-
-#define CORTO_NULL_STRING ("null")
-
-typedef int (*corto_compareAction)(void* o1, void* o2);
-typedef int (*corto_walkAction)(void* o, void* userData);
-
-/* Builtin collection-implementation definitions */
-typedef struct corto_rbtree_s* corto_rbtree;
-typedef struct corto_ll_s* corto_ll;
 
 /*
  * Configuration parameters
@@ -158,16 +113,6 @@ typedef struct corto_ll_s* corto_ll;
  * length will take advantage of the memory. */
 #define CORTO_MAX_TLS_STRINGS_MAX (1024)
 
-/* The maximum number of mounts that can attached to the same path.
- * This number controls the number of mounts a select call will process at
- * most. */
-#define CORTO_MAX_REPLICATORS (16)
-
-/* The maximum number of augments that can attached to the same path.
- * This number controls the number of augments a select call will process per
- * object at most. */
-#define CORTO_MAX_AUGMENTS (16)
-
 /* Maximum length of a command (to run a process) */
 #define CORTO_MAX_CMD (1024)
 
@@ -198,39 +143,67 @@ typedef struct corto_ll_s* corto_ll;
 #define CORTO_VM_BOUNDSCHECK
 extern int8_t CORTO_DEBUG_ENABLED;
 
-/* Procedure kinds */
+/* Boolean definitions (compatible with C++ and C99 stdbool) */
+#ifndef __cplusplus
+#undef bool
+#undef true
+#undef false
+#define bool char
+#define false 0
+#define true !false
+#endif
+
+#ifndef FALSE
+#define FALSE (0)
+#endif
+
+#ifndef TRUE
+#define TRUE (!FALSE)
+#endif
+
+/* NULL pointer value */
+#ifndef NULL
+#define NULL (0x0)
+#endif
+
+/* Color constants */
+#define CORTO_BLACK   "\033[1;30m"
+#define CORTO_RED     "\033[0;31m"
+#define CORTO_GREEN   "\033[0;32m"
+#define CORTO_YELLOW  "\033[0;33m"
+#define CORTO_BLUE    "\033[0;34m"
+#define CORTO_MAGENTA "\033[0;35m"
+#define CORTO_CYAN    "\033[0;36m"
+#define CORTO_WHITE   "\033[1;37m"
+#define CORTO_GREY    "\033[0;37m"
+#define CORTO_NORMAL  "\033[0;49m"
+#define CORTO_BOLD    "\033[1;49m"
+
+/* Macro used to prevent type checking macro's from expanding */
+#define ___ 
+/* Macro used to annotate parameters in _bootstrap.h */
+#define _(txt) 
+
+/* Corto string representing null */
+#define CORTO_NULL_STRING ("null")
+
+/* String type that is large enough to hold any corto identifier */
+typedef char corto_id[CORTO_MAX_PATH_LENGTH];
+
+/* Builtin collection-implementation definitions */
+typedef struct corto_rbtree_s* corto_rbtree;
+typedef struct corto_ll_s* corto_ll;
+
+/* Builtin procedure kinds */
 #define CORTO_PROCEDURE_STUB (0)
 #define CORTO_PROCEDURE_CDECL (1)
 
-/* Event kinds */
-#define CORTO_EVENT_NONE       (0)
-#define CORTO_EVENT_OBSERVABLE (1)
-
 /* C language binding type definition macro's */
 #define CORTO_ANY(__type) typedef struct __type {corto_type type; void *value; uint8_t owner;} __type
-#define CORTO_BITMASK(type) typedef uint32_t type
-
-#define CORTO_STRUCT(type) typedef struct type type
-#define CORTO_INTERFACE(type) typedef void *type
-#define CORTO_CLASS(type) typedef struct type##_s *type
-#define CORTO_PROCEDURE(type) typedef struct type##_s* type
-
-#define CORTO_STRUCT_DEF(type) struct type
-#define CORTO_CLASS_DEF(type) struct type##_s
-#define CORTO_PROCEDURE_DEF(type) struct type##_s
-#define CORTO_EXTEND(type) struct type##_s _base
-
-#define _(txt) /* This macro prevents expansion of type-casting macro's */
 #define CORTO_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type
-#define CORTO_SEQUENCE_ANONYMOUS(subtype, postexpr) struct {uint32_t length; subtype _()(*buffer) postexpr;}
-#define CORTO_SEQUENCE_EMPTY(name) (name){0, NULL}
-#define CORTO_LIST(type) typedef corto_ll type
-#define CORTO_MAP(type) typedef corto_rbtree type
+#define CORTO_SEQUENCE_EMPTY(type) (type){0}
 
-/* Create a typedef, so generic iterator functions can be used with user
- * defined iterator types */
-#define CORTO_ITERATOR(_name) typedef corto_iter _name
-
+/* Iterator type */
 typedef struct corto_iter corto_iter;
 struct corto_iter {
     int (*hasNext)(corto_iter*);
@@ -240,8 +213,15 @@ struct corto_iter {
     void (*release)(corto_iter*);
 };
 
+/* Callback used to compare values */
+typedef int (*corto_compare_cb)(void* o1, void* o2);
+
+/* Callback used to walk elements in collection */
+typedef int (*corto_elementWalk_cb)(void* o, void* userData);
+
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* CORTO_DEF_H */
+#endif /* CORTO_BASE_H */

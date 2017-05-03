@@ -7,7 +7,8 @@
 #ifndef CORTO_LANG__TYPE_H
 #define CORTO_LANG__TYPE_H
 
-#include <corto/def.h>
+#include <corto/base.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -118,7 +119,7 @@ typedef enum corto_typeKind {
 typedef bool corto_bool;
 
 /* attr */
-CORTO_BITMASK(corto_attr);
+typedef uint32_t corto_attr;
     #define CORTO_ATTR_SCOPED (0x1)
     #define CORTO_ATTR_WRITABLE (0x2)
     #define CORTO_ATTR_OBSERVABLE (0x4)
@@ -129,7 +130,7 @@ CORTO_BITMASK(corto_attr);
 typedef struct corto_type_s *corto_type;
 
 /* state */
-CORTO_BITMASK(corto_state);
+typedef uint32_t corto_state;
     #define CORTO_VALID (0x1)
     #define CORTO_DECLARED (0x2)
     #define CORTO_DEFINED (0x4)
@@ -244,7 +245,7 @@ struct corto_type_s {
 };
 
 /* modifier */
-CORTO_BITMASK(corto_modifier);
+typedef uint32_t corto_modifier;
     #define CORTO_GLOBAL (0x0)
     #define CORTO_LOCAL (0x1)
     #define CORTO_PRIVATE (0x2)
@@ -355,7 +356,7 @@ struct corto_alias_s {
 };
 
 /* any */
-CORTO_ANY(corto_any);
+typedef struct corto_any {corto_type type; void *value; uint8_t owner;} corto_any;
 
 /* collectionKind */
 typedef enum corto_collectionKind {

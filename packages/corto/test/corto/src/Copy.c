@@ -23,7 +23,7 @@ void _test_Copy_tc_any(
     test_assert(dst.owner == TRUE);
     test_assert(*(corto_int32*)dst.value == 10);
 
-    corto_deinitp(&dst, corto_any_o);
+    corto_ptr_deinit(&dst, corto_any_o);
 
 /* $end */
 }
@@ -36,7 +36,7 @@ void _test_Copy_tc_arrayToArray(
     corto_int32 v2[] = {0, 0, 0, 0};
     corto_int16 ret;
 
-    ret = corto_copyp(v2, test_PrimitiveArray_o, v1);
+    ret = corto_ptr_copy(v2, test_PrimitiveArray_o, v1);
     test_assert(ret == 0);
     test_assert(v2[0] == 10);
     test_assert(v2[1] == 20);
@@ -54,7 +54,7 @@ void _test_Copy_tc_arrayToArrayAlloc(
     corto_int64 v2[] = {0, 0, 0, 0};
     corto_int16 ret;
 
-    ret = corto_copyp(v2, test_AllocArray_o, v1);
+    ret = corto_ptr_copy(v2, test_AllocArray_o, v1);
     test_assert(ret == 0);
     test_assertint(v2[0], 10);
     test_assertint(v2[1], 20);
@@ -71,14 +71,14 @@ void _test_Copy_tc_arrayToArrayString(
     corto_string v2[] = {0, 0, 0, 0};
     corto_int16 ret;
 
-    ret = corto_copyp(v2, test_StringArray_o, v1);
+    ret = corto_ptr_copy(v2, test_StringArray_o, v1);
     test_assert(ret == 0);
     test_assertstr(v2[0], "Foo");
     test_assertstr(v2[1], "Bar");
     test_assertstr(v2[2], "Hello");
     test_assertstr(v2[3], "World");
 
-    corto_deinitp(v2, test_StringArray_o);
+    corto_ptr_deinit(v2, test_StringArray_o);
 
 /* $end */
 }
@@ -91,7 +91,7 @@ void _test_Copy_tc_arrayToExistingArrayString(
     corto_string v2[] = {NULL, NULL, NULL, NULL};
     corto_int16 ret;
 
-    ret = corto_copyp(v2, test_StringArray_o, v1);
+    ret = corto_ptr_copy(v2, test_StringArray_o, v1);
     test_assert(ret == 0);
     test_assertstr(v2[0], "HELLO");
     test_assertstr(v2[1], "WORLD");
@@ -99,14 +99,14 @@ void _test_Copy_tc_arrayToExistingArrayString(
     test_assertstr(v2[3], "BAR");
 
     corto_string v3[] = {"Foo", "Bar", "Hello", "World"};
-    ret = corto_copyp(v2, test_StringArray_o, v3);
+    ret = corto_ptr_copy(v2, test_StringArray_o, v3);
     test_assert(ret == 0);
     test_assertstr(v2[0], "Foo");
     test_assertstr(v2[1], "Bar");
     test_assertstr(v2[2], "Hello");
     test_assertstr(v2[3], "World");
 
-    corto_deinitp(v2, test_StringArray_o);
+    corto_ptr_deinit(v2, test_StringArray_o);
 
 /* $end */
 }
@@ -239,7 +239,7 @@ void _test_Copy_tc_int(
     corto_int32 v2 = 0;
     corto_int16 ret;
 
-    ret = corto_copyp(&v2, corto_int32_o, &v1);
+    ret = corto_ptr_copy(&v2, corto_int32_o, &v1);
     test_assert(ret == 0);
     test_assert(v1 == 10);
 
@@ -665,7 +665,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStack(
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
 
-    ret = corto_copyp(&v2, test_StringSequence_o, &v1);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
     test_assert(v2.buffer != NULL);
@@ -676,7 +676,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStack(
 
     /* Copy new value into existing sequence */
     test_StringSequence v3 = {4, (char*[]){"Foo", "Bar", "Hello", "World"}};
-    ret = corto_copyp(&v2, test_StringSequence_o, &v3);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v3);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
     test_assert(v2.buffer != NULL);
@@ -685,7 +685,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStack(
     test_assertstr(v2.buffer[2], "Hello");
     test_assertstr(v2.buffer[3], "World");
 
-    corto_deinitp(&v2, test_StringSequence_o);
+    corto_ptr_deinit(&v2, test_StringSequence_o);
 
 /* $end */
 }
@@ -698,7 +698,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
 
-    ret = corto_copyp(&v2, test_StringSequence_o, &v1);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
     test_assert(v2.buffer != NULL);
@@ -709,7 +709,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
 
     /* Copy new value into existing sequence */
     test_StringSequence v3 = {5, (char*[]){"Foo", "Bar", "Hello", "World", "Zoo"}};
-    ret = corto_copyp(&v2, test_StringSequence_o, &v3);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v3);
     test_assert(ret == 0);
     test_assertint(v2.length, 5);
     test_assert(v2.buffer != NULL);
@@ -719,7 +719,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     test_assertstr(v2.buffer[3], "World");
     test_assertstr(v2.buffer[4], "Zoo");
 
-    corto_deinitp(&v2, test_StringSequence_o);
+    corto_ptr_deinit(&v2, test_StringSequence_o);
 
 /* $end */
 }
@@ -732,7 +732,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
 
-    ret = corto_copyp(&v2, test_StringSequence_o, &v1);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
     test_assert(v2.buffer != NULL);
@@ -743,7 +743,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
 
     /* Copy new value into existing sequence */
     test_StringSequence v3 = {3, (char*[]){"Foo", "Bar", "Hello"}};
-    ret = corto_copyp(&v2, test_StringSequence_o, &v3);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v3);
     test_assert(ret == 0);
     test_assertint(v2.length, 3);
     test_assert(v2.buffer != NULL);
@@ -751,7 +751,7 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     test_assertstr(v2.buffer[1], "Bar");
     test_assertstr(v2.buffer[2], "Hello");
 
-    corto_deinitp(&v2, test_StringSequence_o);
+    corto_ptr_deinit(&v2, test_StringSequence_o);
 
 /* $end */
 }
@@ -926,7 +926,7 @@ void _test_Copy_tc_sequenceToSequenceStringStack(
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
 
-    ret = corto_copyp(&v2, test_StringSequence_o, &v1);
+    ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
     test_assert(v2.buffer != NULL);
@@ -935,7 +935,7 @@ void _test_Copy_tc_sequenceToSequenceStringStack(
     test_assertstr(v2.buffer[2], "FOO");
     test_assertstr(v2.buffer[3], "BAR");
 
-    corto_deinitp(&v2, test_StringSequence_o);
+    corto_ptr_deinit(&v2, test_StringSequence_o);
 
 /* $end */
 }
@@ -950,7 +950,7 @@ void _test_Copy_tc_sequenceToSequenceValueComposite(
     corto_parameterseq v1 = {2, (corto_parameter[]){p1, p2}};
     corto_parameterseq v2 = {0, NULL};
 
-    ret = corto_copyp(&v2, corto_parameterseq_o, &v1);
+    ret = corto_ptr_copy(&v2, corto_parameterseq_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 2);
     test_assert(v2.buffer != NULL);
@@ -972,7 +972,7 @@ void _test_Copy_tc_string(
     corto_string v2 = NULL;
     corto_int32 ret;
 
-    ret = corto_copyp(&v2, corto_string_o, &v1);
+    ret = corto_ptr_copy(&v2, corto_string_o, &v1);
     test_assert(ret == 0);
     test_assert(!strcmp(v2, "foo"));
 

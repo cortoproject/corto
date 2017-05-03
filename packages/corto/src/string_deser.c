@@ -51,8 +51,8 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
         iter = corto_llIter(data->index);
 
         /* Lookup member in index */
-        while(corto_iterHasNext(&iter)) {
-            info = corto_iterNext(&iter);
+        while(corto_iter_hasNext(&iter)) {
+            info = corto_iter_next(&iter);
 
             /* Ambiguous members must always be referenced from their own scope.
              * Even if the current scope does not have a member with the
@@ -78,8 +78,8 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexNext(corto_str
     info = NULL;
 
     if (data->index) {
-        if (corto_iterHasNext(&data->currentIter)) {
-            info = corto_iterNext(&data->currentIter);
+        if (corto_iter_hasNext(&data->currentIter)) {
+            info = corto_iter_next(&data->currentIter);
         }
     }
 

@@ -2,7 +2,7 @@
 #ifndef corto_files_H
 #define corto_files_H
 
-#include "corto/ll.h"
+#include "corto/async_posix.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -151,6 +151,99 @@ CORTO_EXPORT char* corto_envparse(const char* str, ...);
 
 /* Same as envparse with va_list */
 CORTO_EXPORT char* corto_venvparse(const char* str, va_list args);
+
+#define CORTO_LOCK_BUSY (1)
+
+/* Thread */
+typedef unsigned long int corto_thread;
+typedef void* (*corto_threadFunc)(void*);
+
+CORTO_EXPORT corto_thread corto_threadNew(corto_threadFunc f, void* arg);
+CORTO_EXPORT int corto_threadJoin(corto_thread thread, void**);
+CORTO_EXPORT int corto_threadDetach(corto_thread thread);
+CORTO_EXPORT int corto_threadFree(corto_thread thread);
+CORTO_EXPORT int corto_threadSetPriority(corto_thread thread, int priority);
+CORTO_EXPORT int corto_threadGetPriority(corto_thread thread);
+CORTO_EXPORT int corto_threadKill(corto_thread, int signal);
+CORTO_EXPORT int corto_threadCancel(corto_thread);
+CORTO_EXPORT corto_thread corto_threadSelf(void);
+CORTO_EXPORT int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*));
+CORTO_EXPORT int corto_threadTlsSet(corto_threadKey key, void* value);
+CORTO_EXPORT void* corto_threadTlsGet(corto_threadKey key);
+CORTO_EXPORT void corto_threadTlsKeysDestruct(void);
+
+/* Mutex */
+typedef struct corto_mutex_s* corto_mutex;
+
+CORTO_EXPORT int corto_mutexNew(struct corto_mutex_s *m);
+CORTO_EXPORT int corto_mutexLock(corto_mutex mutex);
+CORTO_EXPORT int corto_mutexUnlock(corto_mutex mutex);
+CORTO_EXPORT int corto_mutexFree(corto_mutex mutex);
+CORTO_EXPORT int corto_mutexTry(corto_mutex mutex);
+CORTO_EXPORT int corto_mutexLockTimed(corto_mutex mutex, corto_time timeout);
+
+/* Read-write mutex */
+typedef struct corto_rwmutex_s* corto_rwmutex;
+
+CORTO_EXPORT int corto_rwmutexNew(struct corto_rwmutex_s *m);
+CORTO_EXPORT int corto_rwmutexRead(corto_rwmutex mutex);
+CORTO_EXPORT int corto_rwmutexWrite(corto_rwmutex mutex);
+CORTO_EXPORT int corto_rwmutexTryRead(corto_rwmutex mutex);
+CORTO_EXPORT int corto_rwmutexTryWrite(corto_rwmutex mutex);
+CORTO_EXPORT int corto_rwmutexUnlock(corto_rwmutex mutex);
+CORTO_EXPORT int corto_rwmutexFree(corto_rwmutex mutex);
+
+/* Semaphore */
+typedef struct corto_sem_s* corto_sem;
+
+CORTO_EXPORT corto_sem corto_semNew(unsigned int initValue);
+CORTO_EXPORT int corto_semPost(corto_sem);
+CORTO_EXPORT int corto_semWait(corto_sem);
+CORTO_EXPORT int corto_semTryWait(corto_sem);
+CORTO_EXPORT int corto_semValue(corto_sem);
+CORTO_EXPORT int corto_semFree(corto_sem);
+
+/* Atomic increment and decrement */
+CORTO_EXPORT int corto_ainc(int* count);
+CORTO_EXPORT int corto_adec(int* count);
+
+/* use GNU atomic compare and swap */
+#define corto_cas(ptr, old, new) __sync_bool_compare_and_swap(ptr, old, new)
+
+typedef struct corto_file_s* corto_file;
+
+/* File functions */
+CORTO_EXPORT char* corto_fileLoad(const char* file);
+CORTO_EXPORT corto_file corto_fileOpen(const char* file);
+CORTO_EXPORT corto_file corto_fileAppend(const char* file);
+CORTO_EXPORT corto_file corto_fileRead(const char* file);
+
+CORTO_EXPORT FILE* corto_fileGet(corto_file file);
+CORTO_EXPORT void corto_fileClose(corto_file);
+CORTO_EXPORT char* corto_fileSearch(const char* file, corto_ll locations);
+CORTO_EXPORT int corto_fileTest(const char* filefmt, ...);
+
+CORTO_EXPORT unsigned int corto_fileSize(corto_file);
+CORTO_EXPORT unsigned int corto_fileTell(corto_file);
+CORTO_EXPORT corto_bool corto_fileEof(corto_file);
+
+CORTO_EXPORT char* corto_fileReadLine(corto_file file, char* buf, unsigned int length);
+
+CORTO_EXPORT char* corto_fileExtension(char* file, char* buffer);
+CORTO_EXPORT char* corto_filePath(char* file, char* buffer);
+
+/* Time functions */
+CORTO_EXPORT void corto_sleep(unsigned int sec, unsigned int nanosec);
+CORTO_EXPORT void corto_timeGet(corto_time* time);
+CORTO_EXPORT corto_time corto_timeAdd(corto_time t1, corto_time t2);
+CORTO_EXPORT corto_time corto_timeSub(corto_time t1, corto_time t2);
+CORTO_EXPORT int corto_time_compare(corto_time t1, corto_time t2);
+CORTO_EXPORT double corto_timeToDouble(corto_time t);
+
+/* Do not belong here */
+CORTO_EXPORT char* corto_itoa (int num, char* buff);
+CORTO_EXPORT char* corto_utoa (unsigned int num, char* buff);
+CORTO_EXPORT char* corto_ftoa (float num, char* buff);
 
 
 #ifdef __cplusplus

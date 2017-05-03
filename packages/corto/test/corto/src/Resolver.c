@@ -170,15 +170,11 @@ void _test_Resolver_tc_resolveG(
 /* $begin(test/Resolver/tc_resolveG) */
 
     /* Start loader mount */
-    corto_loader p = corto_loaderCreate(FALSE);
     corto_object o = corto_resolve(NULL, "g");
     test_assert(o != NULL);
     test_assert (!strcmp(corto_idof(o), "g"));
     test_assert (corto_parentof(o) == corto_o);
     corto_release(o);
-
-    /* Delete loader mount */
-    corto_delete(p);
 
 /* $end */
 }

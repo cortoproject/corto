@@ -79,11 +79,7 @@ corto_object corto_resolve(corto_object _scope, corto_string str) {
         _scope = root_o;
     }
 
-    if (*(corto_uint16*)str == CORTO_SCOPE_HEX) {
-        str += 2;
-        scope = root_o;
-        fullyQualified = TRUE;
-    } else if (*str == '/') {
+    if (*str == '/') {
         str += 1;
         scope = root_o;
         fullyQualified = TRUE;
@@ -177,8 +173,6 @@ repeat:
 
 
                     break;
-                } else if (*(corto_uint16*)ptr == CORTO_SCOPE_HEX) {
-                    ptr += 2;
                 } else if (ch == '/') {
                     ptr += 1;
                 } else {

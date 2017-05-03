@@ -93,8 +93,8 @@ static corto_bool corto_genTypeIsParsed(corto_object o, corto_genTypeWalk_t* dat
     found = FALSE;
 
     iter = corto_llIter(data->parsed);
-    while(!found && corto_iterHasNext(&iter)) {
-        p = corto_iterNext(&iter);
+    while(!found && corto_iter_hasNext(&iter)) {
+        p = corto_iter_next(&iter);
         /* If object is scoped, it must be matched exactly */
         if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
             if (o == p) {
@@ -122,8 +122,8 @@ static struct corto_genTypeDeclaration* corto_genTypeIsDeclared(corto_object o, 
 
     p = NULL;
     iter = corto_llIter(data->declared);
-    while(corto_iterHasNext(&iter)) {
-        p = corto_iterNext(&iter);
+    while(corto_iter_hasNext(&iter)) {
+        p = corto_iter_next(&iter);
         if (o == p->o) {
             break;
         }

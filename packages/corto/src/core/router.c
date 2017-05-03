@@ -142,7 +142,7 @@ int16_t _corto_router_match(
     }
 
     if (routerBase->routerDataType) {
-        corto_deinitp(&routerData, corto_any_o);
+        corto_ptr_deinit(&routerData, corto_any_o);
     }
 
     return 0;

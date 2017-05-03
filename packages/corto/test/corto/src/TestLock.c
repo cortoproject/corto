@@ -16,8 +16,8 @@ corto_secure_accessKind _test_TestLock_authorize(
 /* $begin(test/TestLock/authorize) */
     if (token) {
         corto_iter it = corto_llIter(this->rules);
-        while (corto_iterHasNext(&it)) {
-            test_AccessRule *r = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            test_AccessRule *r = corto_iter_next(&it);
             if (!strcmp(r->user, token) && (r->action == action)) {
                 return r->access;
             }

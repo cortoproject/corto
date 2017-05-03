@@ -22,7 +22,7 @@ int16_t _corto_loader_construct(
         corto_setstr(&corto_subscriber(this)->contentType, "text/json");
         return corto_mount_construct(this);
     } else {
-        return 0;
+        return -1;
     }
 
 /* $end */
@@ -42,9 +42,9 @@ void corto_loader_iterRelease(corto_iter *iter) {
 
     /* Delete data from request */
     corto_iter it = corto_llIter(data->list);
-    while (corto_iterHasNext(&it)) {
-        corto_result *r = corto_iterNext(&it);
-        corto_deinitp(r, corto_result_o);
+    while (corto_iter_hasNext(&it)) {
+        corto_result *r = corto_iter_next(&it);
+        corto_ptr_deinit(r, corto_result_o);
         corto_dealloc(r);
     }
     corto_llFree(data->list);
@@ -55,8 +55,8 @@ void corto_loader_iterRelease(corto_iter *iter) {
 
 corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
     corto_iter it = corto_llIter(list);
-    while (corto_iterHasNext(&it)) {
-        corto_result *r = corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_result *r = corto_iter_next(&it);
         if (!stricmp(r->id, name)) {
             return TRUE;
         }
@@ -75,8 +75,8 @@ void corto_loader_addDir(
     if (dirs) {
         corto_iter iter = corto_llIter(dirs);
 
-        while (corto_iterHasNext(&iter)) {
-            corto_string f = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_string f = corto_iter_next(&iter);
 
             if (!corto_loader_checkIfAdded(list, f) && corto_match(r->expr, f)) {
                 struct stat attr;

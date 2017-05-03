@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+/* Base corto value kinds */
 typedef enum corto_valueKind {
     CORTO_OBJECT = 0,
     CORTO_BASE = 1, /* serialize inheritance relation */
@@ -23,6 +24,7 @@ typedef enum corto_valueKind {
     CORTO_CONSTANT = 7 /* must be last */
 }corto_valueKind;
 
+/* Base corto literal kinds */
 typedef enum corto_literalKind {
     CORTO_LITERAL_BOOLEAN,
     CORTO_LITERAL_CHARACTER,
@@ -33,17 +35,15 @@ typedef enum corto_literalKind {
     CORTO_LITERAL_NULL
 }corto_literalKind;
 
-/* corto_value
- *  Structure that is capable of expressing values in a metadata-organized stack. Used by serializer and as expression result.
- */
+/* Struct capable of representing any corto value */
 typedef struct corto_value corto_value;
 struct corto_value {
-    corto_value* parent;
+    corto_value* parent; /* Used for nested values, like foo.bar (parent = foo) */
     corto_valueKind kind;
     union {
         struct {
             corto_object o;
-            corto_type t;
+            corto_type t; /* Can differ from typeof(o) when using inheritance */
         } object;
         struct {
             corto_object o;
@@ -54,7 +54,7 @@ struct corto_value {
             corto_object o;
             corto_type t;
             void* v;
-            corto_uint64 storage; /* Optional storage for a value. */
+            corto_uint64 storage; /* Optional storage for a value */
         } value;
         struct {
             corto_literalKind kind;
@@ -103,7 +103,7 @@ CORTO_EXPORT void* corto_value_ptrof(corto_value *val);
 CORTO_EXPORT int16_t corto_value_ptrset(corto_value *val, void *ptr);
 CORTO_EXPORT corto_object corto_value_objectof(corto_value *val);
 CORTO_EXPORT uint32_t corto_value_indexof(corto_value *val);
-CORTO_EXPORT int16_t corto_value_memberof(corto_value *val, corto_string member, corto_value *out);
+CORTO_EXPORT int16_t corto_value_memberof(corto_value *val, char *member, corto_value *out);
 
 /* value expression API */
 CORTO_EXPORT int16_t corto_value_unaryOp(corto_operatorKind _operator, corto_value *value, corto_value *result);
@@ -111,7 +111,7 @@ CORTO_EXPORT int16_t corto_value_binaryOp(corto_operatorKind _operator, corto_va
 CORTO_EXPORT int16_t _corto_value_cast(corto_value *in, corto_type dstType, corto_value *out);
 
 /* Initializers */
-CORTO_EXPORT corto_value corto_value_init(void);
+CORTO_EXPORT corto_value corto_value_empty(void);
 CORTO_EXPORT void corto_value_free(corto_value *v);
 CORTO_EXPORT corto_value _corto_value_object(corto_object o, corto_type t);
 CORTO_EXPORT corto_value _corto_value_base(void *v, corto_type t);
@@ -121,26 +121,32 @@ CORTO_EXPORT corto_value corto_value_constant(corto_object o, corto_constant *c,
 CORTO_EXPORT corto_value _corto_value_element(corto_object o, corto_type t, uint32_t index, void *v);
 CORTO_EXPORT corto_value corto_value_mapElement(corto_object o, corto_type t, corto_type keyType, void *key, void *v);
 CORTO_EXPORT corto_value corto_value_literal(corto_literalKind kind, void *value);
-CORTO_EXPORT corto_value corto_value_bool(corto_bool value);
+CORTO_EXPORT corto_value corto_value_bool(bool value);
 CORTO_EXPORT corto_value corto_value_char(corto_char value);
 CORTO_EXPORT corto_value corto_value_uint(corto_uint64 value);
 CORTO_EXPORT corto_value corto_value_int(corto_uint64 value);
 CORTO_EXPORT corto_value corto_value_float(corto_float64 value);
-CORTO_EXPORT corto_value corto_value_string(corto_string value);
+CORTO_EXPORT corto_value corto_value_string(char *value);
 
 /* Helpers */
 CORTO_EXPORT char* corto_value_exprStr(corto_value *val, char *buffer, unsigned int length);
 int16_t corto_binaryExpr_getType(
     corto_type leftType,
-    corto_bool t1ByRef,
+    bool t1ByRef,
     corto_type rightType,
-    corto_bool t2ByRef,
+    bool t2ByRef,
     corto_operatorKind _operator,
     corto_type *operandType,
     corto_type *resultType);
 
-CORTO_EXPORT int16_t corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content);
-CORTO_EXPORT corto_string corto_value_contentof(corto_value *v, corto_string contentType);
+CORTO_EXPORT int16_t corto_value_fromcontent(corto_value *v, char *contentType, char *content);
+CORTO_EXPORT char *corto_value_contentof(corto_value *v, char *contentType);
+CORTO_EXPORT char *corto_value_str(corto_value* v, uint32_t maxLength);
+CORTO_EXPORT int16_t corto_value_fromStr(corto_value *v, char *string);
+CORTO_EXPORT int16_t corto_value_copy(corto_value *dst, corto_value *src);
+CORTO_EXPORT corto_equalityKind corto_value_compare(corto_value *v1, corto_value *value2);
+CORTO_EXPORT int16_t corto_value_init(corto_value *v);
+CORTO_EXPORT int16_t corto_value_deinit(corto_value *v);
 
 /* Type safe macro's */
 #define corto_value_object(o, t) _corto_value_object(o, corto_type(t))

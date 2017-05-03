@@ -1,1 +1,0 @@
-/home/vagrant/cortoproject/corto/packages/corto/c/lang/include/c.h

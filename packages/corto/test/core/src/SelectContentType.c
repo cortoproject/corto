@@ -47,8 +47,8 @@ void _test_SelectContentType_tc_selectJsonFromJson(
     corto_int16 ret = corto_select("/", "/json/*").contentType("text/json").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
@@ -58,8 +58,8 @@ void _test_SelectContentType_tc_selectJsonFromJson(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":10,\"y\":20}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "b"));
@@ -69,8 +69,8 @@ void _test_SelectContentType_tc_selectJsonFromJson(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":30,\"y\":40}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "c"));
@@ -94,8 +94,8 @@ void _test_SelectContentType_tc_selectJsonFromObjects(
     corto_int16 ret = corto_select("/", "/obj/*").contentType("text/json").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
@@ -105,8 +105,8 @@ void _test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":10,\"y\":20}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "b"));
@@ -116,8 +116,8 @@ void _test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":30,\"y\":40}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "c"));
@@ -141,8 +141,8 @@ void _test_SelectContentType_tc_selectJsonFromString(
     corto_int16 ret = corto_select("/", "/str/*").contentType("text/json").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
@@ -152,8 +152,8 @@ void _test_SelectContentType_tc_selectJsonFromString(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":10,\"y\":20}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "b"));
@@ -163,8 +163,8 @@ void _test_SelectContentType_tc_selectJsonFromString(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":30,\"y\":40}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "c"));
@@ -188,8 +188,8 @@ void _test_SelectContentType_tc_selectStringFromJson(
     corto_int16 ret = corto_select("/", "/json/*").contentType("text/corto").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
@@ -199,8 +199,8 @@ void _test_SelectContentType_tc_selectStringFromJson(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{10,20}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "b"));
@@ -210,8 +210,8 @@ void _test_SelectContentType_tc_selectStringFromJson(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{30,40}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "c"));
@@ -235,8 +235,8 @@ void _test_SelectContentType_tc_selectStringFromObjects(
     corto_int16 ret = corto_select("/", "/obj/*").contentType("text/corto").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
@@ -246,8 +246,8 @@ void _test_SelectContentType_tc_selectStringFromObjects(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{10,20}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "b"));
@@ -257,8 +257,8 @@ void _test_SelectContentType_tc_selectStringFromObjects(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{30,40}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "c"));
@@ -282,8 +282,8 @@ void _test_SelectContentType_tc_selectStringFromString(
     corto_int16 ret = corto_select("/", "/str/*").contentType("text/corto").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "a"));
@@ -293,8 +293,8 @@ void _test_SelectContentType_tc_selectStringFromString(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{10,20}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "b"));
@@ -304,8 +304,8 @@ void _test_SelectContentType_tc_selectStringFromString(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{30,40}"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "c"));

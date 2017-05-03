@@ -3,7 +3,6 @@
 #include "_object.h"
 #include "_matcher.h"
 
-extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_int8 CORTO_OLS_AUGMENT;
 extern corto_threadKey CORTO_KEY_FLUENT;
 
@@ -502,24 +501,24 @@ static corto_resultIter corto_selectRequestMount(
 
         /* If this is a dry run, don't request data from mount */
         if (data->quit) {
-            return CORTO_ITERATOR_EMPTY;
+            return CORTO_ITER_EMPTY;
         } else {
             return corto_mount_request(mount, &r);
         }
     } else {
-        return CORTO_ITERATOR_EMPTY;
+        return CORTO_ITER_EMPTY;
     }
 }
 
 int corto_selectHistoryHasNext(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->udata;
-    return corto_iterHasNext(&ctx->iter);
+    return corto_iter_hasNext(&ctx->iter);
 }
 
 void* corto_selectHistoryNext(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->udata;
     corto_word dstValue;
-    corto_sample *s = corto_iterNext(&ctx->iter);
+    corto_sample *s = corto_iter_next(&ctx->iter);
     
     dstValue = corto_selectConvert(ctx->data, ctx->data->item.type, s->value);
 
@@ -540,7 +539,7 @@ void corto_selectHistoryRelease(corto_iter *it) {
         ctx->data->dstSer->release(ctx->sample.value);
     }
 
-    corto_iterRelease(&ctx->iter);
+    corto_iter_release(&ctx->iter);
 
     ctx->data->item.history.udata = NULL;
 }
@@ -561,7 +560,7 @@ static corto_int16 corto_selectIterMount(
 
     corto_selectParseFilter(frame->filter, parent, expr);
 
-    corto_result *result = corto_iterNext(&frame->iter);
+    corto_result *result = corto_iter_next(&frame->iter);
     if (!result) {
         corto_error("mount iterator returned NULL");
         goto error;
@@ -737,16 +736,16 @@ static corto_bool corto_selectIterNext(
                  * results in a temporary list. */
                 if (corto_scopeof(frame->scope) && corto_rbtreeIterChanged(&frame->iter)) {
                     frame->iter = _corto_rbtreeIter(corto_scopeof(frame->scope), &frame->trav);
-                    while (corto_iterHasNext(&frame->iter)) {
-                        corto_object o = corto_iterNext(&frame->iter);
+                    while (corto_iter_hasNext(&frame->iter)) {
+                        corto_object o = corto_iter_next(&frame->iter);
                         if (stricmp(corto_idof(o), lastKey) > 0) {
                             result = o;
                             break;
                         }
                     }
                 } else {
-                    if (corto_iterHasNext(&frame->iter)) {
-                        result = corto_iterNext(&frame->iter);
+                    if (corto_iter_hasNext(&frame->iter)) {
+                        result = corto_iter_next(&frame->iter);
                     }
                 }
             }
@@ -769,7 +768,7 @@ static corto_bool corto_selectIterNext(
                   data, frame, data->mounts[frame->currentMount - 1]);
             }
 
-            while (!(hasData = corto_iterHasNext(&frame->iter)) && (frame->currentMount < data->mountsLoaded)) {
+            while (!(hasData = corto_iter_hasNext(&frame->iter)) && (frame->currentMount < data->mountsLoaded)) {
                 frame->currentMount ++;
                 frame->iter = corto_selectRequestMount(
                   data, frame, data->mounts[frame->currentMount - 1]);
@@ -780,7 +779,7 @@ static corto_bool corto_selectIterNext(
             }
         }
     } else {
-        if ((hasData = corto_iterHasNext(&frame->iter))) {
+        if ((hasData = corto_iter_hasNext(&frame->iter))) {
             corto_selectIterMount(data, frame);
         }
     }
@@ -792,14 +791,61 @@ static corto_bool corto_selectIterNext(
     return hasData;
 }
 
+static int corto_selectLoadMountWalk(
+    corto_object entity, 
+    corto_object instance, 
+    void *userData) 
+{
+    corto_selectData *data = userData;
+    corto_mount mount = entity;
+
+    CORTO_UNUSED(instance);
+
+    /* If only querying data from one mount, ignore all others */
+    if (data->mount && (mount != data->mount)) {
+        return 1;
+    }
+
+    /* If a mount is querying data for itself, ignore self */
+    if (data->instance && (mount == data->instance)) {
+        return 1;
+    }
+
+    /* If historical data is requested, only request from
+     * historians and vice versa. */
+    if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
+        if (mount->kind != CORTO_HISTORIAN) {
+            return 1;
+        }
+    } else if (mount->kind == CORTO_HISTORIAN) {
+        return 1;
+    }
+
+    /* If type is requested, test whether it is compatible with
+     * the type of the mount */
+    corto_string rType = corto_observer(mount)->type;
+    if (data->typeFilter && rType) {
+        if (!corto_match(data->typeFilter, rType)) {
+            return 1;
+        }
+    }
+
+    data->mounts[data->mountsLoaded] = mount;
+    data->mountsLoaded ++;
+
+    corto_debug("select: LoadMounts: load '%s', type = %s, mountsLoaded = %d",
+      corto_fullpath(NULL, mount),
+      corto_fullpath(NULL, corto_typeof(mount)),
+      data->mountsLoaded);
+
+    return 1;
+}
+
 /* Load mounts for a scope */
 static void corto_selectLoadMounts(
     corto_selectData *data,
-    corto_selectStack *frame,
-    corto__scope *scope)
+    corto_selectStack *frame)
 {
-    corto_bool releaseScope = FALSE;
-
     data->mountsLoaded = 0;
 
     /* 1: Count mounts registered on parent scopes */
@@ -810,66 +856,10 @@ static void corto_selectLoadMounts(
     frame->currentMount = data->mountsLoaded;
     frame->firstMount = data->mountsLoaded;
 
-    /* 2: Lock scope and get mounts */
-    if (!scope) {
-        scope = corto__scopeClaim(frame->scope);
-        releaseScope = TRUE;
-    }
+    corto_id parentId;
+    corto_fullpath(parentId, frame->scope);
 
-    corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
-
-    if (ols) {
-        corto_ll mounts = ols->value;
-        if (mounts) {
-            corto_iter iter = corto_llIter(mounts);
-
-            while (corto_iterHasNext(&iter)) {
-                corto_mount_olsData_t *odata = corto_iterNext(&iter);
-
-                /* If only querying data from one mount, ignore all others */
-                if (data->mount && (odata->mount != data->mount)) {
-                    continue;
-                }
-
-                /* If a mount is querying data for itself, ignore self */
-                if (data->instance && (odata->mount == data->instance)) {
-                    continue;
-                }
-
-                /* If historical data is requested, only request from
-                 * historians and vice versa. */
-                if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
-                    if (odata->mount->kind != CORTO_HISTORIAN) {
-                        continue;
-                    }
-                } else if (odata->mount->kind == CORTO_HISTORIAN) {
-                    continue;
-                }
-
-                /* If type is requested, test whether it is compatible with
-                 * the type of the mount */
-                corto_string rType = corto_observer(odata->mount)->type;
-                if (data->typeFilter && rType) {
-                    if (!corto_match(data->typeFilter, rType)) {
-                        continue;
-                    }
-                }
-
-                data->mounts[data->mountsLoaded] = odata->mount;
-                data->mountsLoaded ++;
-
-                corto_debug("select: LoadMounts: load '%s', type = %s, mountsLoaded = %d",
-                  corto_fullpath(NULL, odata->mount),
-                  corto_fullpath(NULL, corto_typeof(odata->mount)),
-                  data->mountsLoaded);
-            }
-        }
-    }
-
-    /* Unlock scope */
-    if (releaseScope) {
-        corto__scopeRelease(frame->scope);
-    }
+    corto_entityAdmin_walk(&corto_mount_admin, corto_selectLoadMountWalk, parentId, data);
 }
 
 /* Depth first search */
@@ -947,7 +937,7 @@ static void corto_selectTree(
                     if (scope) {
                         frame->iter = _corto_rbtreeIter(scope, &frame->trav);
                     }
-                    corto_selectLoadMounts(data, frame, NULL);
+                    corto_selectLoadMounts(data, frame);
                 } else {
                     frame->currentMount = prevFrame->currentMount;
                     if (prevFrame->scopeQuery) {
@@ -1016,7 +1006,7 @@ static void corto_selectPrepareFrame(
         memset(&frame->iter, 0, sizeof(corto_iter));
     }
 
-    corto_selectLoadMounts(data, frame, NULL);
+    corto_selectLoadMounts(data, frame);
 }
 
 /* When moving to the next scope element, filter out active mounts that
@@ -1081,7 +1071,7 @@ static void corto_selectRelease(corto_iter *iter) {
     /* Free iterators */
     corto_int32 i;
     for (i = 0; i <= data->sp; i ++) {
-        corto_iterRelease(&data->stack[i].iter);
+        corto_iter_release(&data->stack[i].iter);
     }
 
     /* Free scope objects */
@@ -1472,12 +1462,12 @@ static corto_string corto_selectorId()
         data->quitPtr = &quit;
 
         /* Walk results until id is found */
-        while (corto_iterHasNext(&it) && !quit) {
-            corto_iterNext(&it);
+        while (corto_iter_hasNext(&it) && !quit) {
+            corto_iter_next(&it);
         }
         if (quit) {
             result = data->item.id;
-            corto_iterRelease(&it);
+            corto_iter_release(&it);
         }
     }
 
@@ -1531,8 +1521,8 @@ static corto_int16 corto_selectorUnsubscribe()
         corto_dealloc(request);
 
         /* Walk results to unsubscribe all mounts */
-        while (corto_iterHasNext(&it)) {
-            corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_iter_next(&it);
         }
     }
 
@@ -1587,8 +1577,8 @@ static corto_int64 corto_selectorCount()
         }
         corto_dealloc(request);
 
-        while (corto_iterHasNext(&it)) {
-            corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_iter_next(&it);
             count ++;
         }
     }

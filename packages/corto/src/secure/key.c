@@ -101,8 +101,8 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
             corto_ll locks = corto_secure_locks[depth];
             if (locks) {
                 corto_iter it = corto_llIter(locks);
-                while (corto_iterHasNext(&it)) {
-                    corto_secure_lock lock = corto_iterNext(&it);
+                while (corto_iter_hasNext(&it)) {
+                    corto_secure_lock lock = corto_iter_next(&it);
                     char *expr;
                     if (!(expr = corto_matchParent(lock->mount, objectId))) {
                         continue;

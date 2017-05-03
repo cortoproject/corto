@@ -506,8 +506,8 @@ corto_err corto_logv(char *file, unsigned int line, corto_err kind, unsigned int
             corto_mutexLock(&corto_adminLock);
             if (corto_err_callbacks) {
                 corto_iter it = corto_llIter(corto_err_callbacks);
-                while (corto_iterHasNext(&it)) {
-                    corto_err_callback callback = corto_iterNext(&it);
+                while (corto_iter_hasNext(&it)) {
+                    corto_err_callback callback = corto_iter_next(&it);
                     corto_err_notifyCallkback(
                         callback,
                         components,

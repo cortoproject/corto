@@ -105,8 +105,8 @@ g_item g_itemLookup(corto_object o, corto_depresolver data) {
     /* Lookup item for 'o' in items list */
     item = NULL;
     iter = corto_llIter(data->items);
-    while(!item && corto_iterHasNext(&iter)) {
-        item = corto_iterNext(&iter);
+    while(!item && corto_iter_hasNext(&iter)) {
+        item = corto_iter_next(&iter);
         if (item->o != o) {
             item = NULL;
         }
@@ -130,7 +130,7 @@ static int g_itemResolveDependency(void* o, void* userData) {
 
     if (!dep->processed) {
         corto_debug("depresolver: resolve dependency: %s '%s' before ? '%s'",
-                corto_strp(&dep->kind, corto_state_o, 0),
+                corto_ptr_str(&dep->kind, corto_state_o, 0),
                 corto_fullpath(NULL, dep->item->o),
                 corto_fullpath(NULL, dep->dependency->o));
 
@@ -285,7 +285,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct corto_depreso
             corto_debug("depresolver: >> begin breaking cycle [%p]", dep);
             for(i = sp - 1; i < data->sp; i++) {
                 corto_debug("depresolver: on stack: can't %s '%s' before DECLARED|DEFINED '%s'",
-                    corto_strp(&data->stack[i]->kind, corto_state_o, 0),
+                    corto_ptr_str(&data->stack[i]->kind, corto_state_o, 0),
                     corto_fullpath(NULL, data->stack[i]->item->o),
                     corto_fullpath(NULL, data->stack[i]->dependency->o));
             }
@@ -296,7 +296,7 @@ static void g_itemResolveDependencyCycles(g_dependency dep, struct corto_depreso
                     g_itemResolveDependency(data->stack[i], data);
 
                     corto_debug("depresolver: break can't %s '%s' before DECLARED|DEFINED '%s'",
-                        corto_strp(&data->stack[i]->kind, corto_state_o, 0),
+                        corto_ptr_str(&data->stack[i]->kind, corto_state_o, 0),
                         corto_fullpath(NULL, data->stack[i]->item->o),
                         corto_fullpath(NULL, data->stack[i]->dependency->o));
 
@@ -329,8 +329,8 @@ static int g_itemResolveCycles(g_item item, struct corto_depresolver_s* data) {
     if (!item->declared && item->onDeclared) {
         /* Walk dependencies */
         iter = corto_llIter(item->onDeclared);
-        while((corto_iterHasNext(&iter))) {
-            dep = corto_iterNext(&iter);
+        while((corto_iter_hasNext(&iter))) {
+            dep = corto_iter_next(&iter);
             g_itemResolveDependencyCycles(dep, data);
         }
     }
@@ -339,11 +339,11 @@ static int g_itemResolveCycles(g_item item, struct corto_depresolver_s* data) {
     if (!item->defined && item->onDefined) {
         /* Walk dependencies */
         iter = corto_llIter(item->onDefined);
-        while((corto_iterHasNext(&iter))) {
-            dep = corto_iterNext(&iter);
+        while((corto_iter_hasNext(&iter))) {
+            dep = corto_iter_next(&iter);
 
             corto_debug("depresolver: onDefine: can't %s '%s' before DECLARED|DEFINED '%s' (marked = %d, iteration = %d)",
-                corto_strp(&dep->kind, corto_state_o, 0),
+                corto_ptr_str(&dep->kind, corto_state_o, 0),
                 corto_fullpath(NULL, dep->item->o),
                 corto_fullpath(NULL, dep->dependency->o),
                 dep->marked,
@@ -385,9 +385,9 @@ void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind,
     g_item dependent, dependency;
 
     corto_debug("depresolver: can't %s '%s' before %s '%s'",
-        corto_strp(&kind, corto_state_o, 0),
+        corto_ptr_str(&kind, corto_state_o, 0),
         corto_fullpath(NULL, o),
-        corto_strp(&dependencyKind, corto_state_o, 0),
+        corto_ptr_str(&dependencyKind, corto_state_o, 0),
         corto_fullpath(NULL, d));
 
     dependent = g_itemLookup(o, this);
@@ -457,8 +457,8 @@ int corto_depresolver_walk(corto_depresolver this) {
 
     /* Resolve items with cycles */
     iter = corto_llIter(this->items);
-    while(corto_iterHasNext(&iter)) {
-        item = corto_iterNext(&iter);
+    while(corto_iter_hasNext(&iter)) {
+        item = corto_iter_next(&iter);
 
         this->iteration ++;
 

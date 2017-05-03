@@ -21,9 +21,6 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
 static void corto_olsDestroy(corto__scope *scope);
 static corto_bool corto_ownerMatch(corto_object owner, corto_object current);
 
-extern corto_int8 CORTO_OLS_REPLICATOR;
-extern corto_int8 CORTO_OLS_AUGMENT;
-
 extern corto_threadKey CORTO_KEY_ATTR;
 extern corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 extern corto_threadKey CORTO_KEY_OWNER;
@@ -37,6 +34,9 @@ extern int CORTO_BENCHMARK_DELETE;
 
 /* Lists all the anonymous objects in use. Used by the garbage collector. */
 corto_ll corto_anonymousObjects = NULL;
+
+int16_t corto_init(corto_object o);
+int16_t corto_deinit(corto_object o);
 
 void corto_declaredAdminFree(void *admin) {
     if (admin) {
@@ -927,8 +927,8 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 {
                     corto_uint32 childState = childType->options.parentState;
                     corto_uint32 parentState = _parent->align.attrs.state;
-                    char *parentStateStr = corto_strp(&parentState, corto_state_o, 0);
-                    char *childStateStr = corto_strp(&childState, corto_state_o, 0);
+                    char *parentStateStr = corto_ptr_str(&parentState, corto_state_o, 0);
+                    char *childStateStr = corto_ptr_str(&childState, corto_state_o, 0);
                     corto_seterr("parent '%s' is %s, must be %s",
                         corto_fullpath(NULL, parent),
                         parentStateStr,
@@ -1555,6 +1555,55 @@ corto_object corto_resume_fromMount(
     return result;
 }
 
+typedef struct corto_resumeWalk_t {
+    corto_object o;
+    corto_object p;
+    corto_object parent;
+    corto_mount result;
+    corto_mount lastMount;
+    corto_id parentId;
+    bool parentIdSet;
+    char *exprPtr;
+} corto_resumeWalk_t;
+
+static int corto_resumeWalk(
+    corto_object entity, 
+    corto_object instance,
+    void *userData) 
+{
+    corto_mount mount = entity;
+    corto_resumeWalk_t *data = userData;
+
+    CORTO_UNUSED(instance);
+
+    /* Either the mount registered for the direct parent of the
+     * provided object, or the mount must have ON_TREE set */
+    if ((data->p == data->parent) ||
+      (((corto_observer)mount)->mask & CORTO_ON_TREE)) {
+        corto_type mountType = corto_observer(mount)->typeReference;
+
+        if (!mountType || (data->parent == data->p) || (corto_typeof(data->parent) == mountType)) {
+            if (!data->parentIdSet) {
+                /* Parent must be relative to mount point of mount */
+                corto_path(
+                    data->parentId,
+                    data->p,
+                    data->parent,
+                    "/");
+                data->parentIdSet = TRUE;
+            }
+
+            data->result = corto_resume_fromMount(mount, data->parentId, data->exprPtr, data->o);
+            if (data->result) {
+                data->lastMount = mount;
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
+
 /* Precondition: 'expr' contains the expression starting from the object that
  * could not be found in the object store. */
 corto_object corto_resume(
@@ -1574,11 +1623,18 @@ corto_object corto_resume(
         return NULL;
     }
 
-    corto_object result = NULL;
-    corto_object p = parent;
     corto_id exprBuff;
-    char *exprPtr = exprBuff;
-    corto_mount lastMount = NULL;
+
+    corto_resumeWalk_t walkData = {
+        .o = o,
+        .p = parent,
+        .parent = parent,
+        .result = NULL,
+        .lastMount = NULL,
+        .parentId = {0},
+        .parentIdSet = FALSE,
+        .exprPtr = exprBuff
+    };
 
     /* If expression contains / cut expression up without modifying original
      * parameter value */
@@ -1586,65 +1642,33 @@ corto_object corto_resume(
 
     char *nextSep = NULL;
     do {
-        corto_id parentId;
-        corto_object prev = result;
+        corto_object prev = walkData.result;
 
-        nextSep = strchr(exprPtr, '/');
+        nextSep = strchr(walkData.exprPtr, '/');
         if (nextSep) {
             *nextSep = '\0';
         }
 
-        result = NULL;
+        walkData.result = NULL;
 
         /* If expression consists of multiple elements, and one element has been
          * found in a mount, it is likely that the next elements are going to be
          * found in the same mount, so start searching there. */
-        if (lastMount) {
+        if (walkData.lastMount) {
             corto_path(
-                parentId,
-                p,
-                parent,
+                walkData.parentId,
+                walkData.p,
+                walkData.parent,
                 "/");
-            result = corto_resume_fromMount(lastMount, parentId, exprPtr, o);
+            walkData.result = corto_resume_fromMount(walkData.lastMount, walkData.parentId, walkData.exprPtr, walkData.o);
         }
 
-        while (!result && p) {
-            corto_ll mountList = corto_olsGet(p, CORTO_OLS_REPLICATOR);
-            if (mountList) {
-                corto_iter iter = corto_llIter(mountList);
-                corto_bool parentIdSet = FALSE;
-
-                while (corto_iterHasNext(&iter)) {
-                    corto_mount_olsData_t *rData = corto_iterNext(&iter);
-
-                    /* Either the mount registered for the direct parent of the
-                     * provided object, or the mount must have ON_TREE set */
-                    if ((p == parent) ||
-                      (((corto_observer)rData->mount)->mask & CORTO_ON_TREE)) {
-                        corto_type mountType = corto_observer(rData->mount)->typeReference;
-
-                        if (!mountType || (parent == p) || (corto_typeof(parent) == mountType)) {
-                            if (!parentIdSet) {
-                                /* Parent must be relative to mount point of mount */
-                                corto_path(
-                                    parentId,
-                                    p,
-                                    parent,
-                                    "/");
-                                parentIdSet = TRUE;
-                            }
-
-                            result = corto_resume_fromMount(rData->mount, parentId, exprPtr, o);
-                            if (result) {
-                                lastMount = rData->mount;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (!result) {
-                p = corto_parentof(p);
+        while (!walkData.result && walkData.p) {
+            corto_id pId;
+            corto_fullpath(pId, walkData.p);
+            corto_entityAdmin_walk(&corto_mount_admin, corto_resumeWalk, pId, &walkData);
+            if (!walkData.result) {
+                walkData.p = corto_parentof(walkData.p);
             }
         }
 
@@ -1652,11 +1676,11 @@ corto_object corto_resume(
             corto_release(prev);
         }
 
-        parent = result;
-        exprPtr = nextSep + 1;
-    } while (parent && nextSep);
+        walkData.parent = walkData.result;
+        walkData.exprPtr = nextSep + 1;
+    } while (walkData.parent && nextSep);
 
-    return result;
+    return walkData.result;
 }
 
 /* Resume a declared object */
@@ -2108,8 +2132,8 @@ void corto_drop(corto_object o, corto_bool delete) {
             }
 
             iter = corto_llIter(walkData.objects);
-            while(corto_iterHasNext(&iter)) {
-                collected = corto_iterNext(&iter);
+            while(corto_iter_hasNext(&iter)) {
+                collected = corto_iter_next(&iter);
 
                 if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
 
@@ -2237,11 +2261,11 @@ corto_attr corto_attrof(corto_object o) {
 static corto_ll contentTypes = NULL;
 
 static corto_string corto_contentTypeToStr(corto_value *v) {
-    return corto_strv(v, 0);
+    return corto_value_str(v, 0);
 }
 
 static corto_int16 corto_contentTypeFromStr(corto_value *v, corto_string str) {
-    return corto_fromStrv(v, str);
+    return corto_value_fromStr(v, str);
 }
 
 static corto_string corto_contentTypeToStrColor(corto_value *v) {
@@ -2263,8 +2287,8 @@ static corto_contentType corto_findContentType(
     corto_contentType result = NULL;
     if (contentTypes) {
         corto_iter it = corto_llIter(contentTypes);
-        while (corto_iterHasNext(&it)) {
-            corto_contentType ct = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_contentType ct = corto_iter_next(&it);
             if (!strcmp(ct->name, contentType)) {
                 result = ct;
                 break;
@@ -2568,7 +2592,7 @@ error:
 
 
 /* Check for a state */
-corto_bool corto_checkState(corto_object o, corto_int8 state) {
+bool corto_checkState(corto_object o, corto_state state) {
     corto__object* _o;
     corto_assertObject(o);
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -2576,7 +2600,7 @@ corto_bool corto_checkState(corto_object o, corto_int8 state) {
 }
 
 /* Check for an attribute */
-corto_bool corto_checkAttr(corto_object o, corto_int8 attr) {
+bool corto_checkAttr(corto_object o, corto_attr attr) {
     corto_bool result;
     corto__object* _o;
 
@@ -3057,7 +3081,7 @@ err_not_scoped:
 
 /* Secure object walk */
 typedef struct corto_scopeWalkSecured_t {
-    corto_scopeWalkAction action;
+    corto_scopeWalk_cb action;
     void *userData;
 } corto_scopeWalkSecured_t;
 int corto_scopeWalkSecured(corto_object o, void *userData) {
@@ -3070,7 +3094,7 @@ int corto_scopeWalkSecured(corto_object o, void *userData) {
 }
 
 /* Walk objects in scope */
-corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* userData) {
+corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalk_cb action, void* userData) {
     corto_assertObject(o);
 
     corto_int16 result;
@@ -3086,12 +3110,12 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalkAction action, void* 
         if (scope->scope) {
             corto_rwmutexRead(&scope->align.scopeLock);
             if (!corto_secured()) {
-                result = corto_rbtreeWalk(scope->scope, (corto_walkAction)action, userData);
+                result = corto_rbtreeWalk(scope->scope, (corto_elementWalk_cb)action, userData);
             } else {
                 corto_scopeWalkSecured_t walkData = {action, userData};
                 result = corto_rbtreeWalk(
                     scope->scope,
-                    (corto_walkAction)corto_scopeWalkSecured,
+                    (corto_elementWalk_cb)corto_scopeWalkSecured,
                     &walkData);
             }
             corto_rwmutexUnlock(&scope->align.scopeLock);
@@ -4019,7 +4043,7 @@ corto_int16 corto_updateEnd(corto_object observable) {
             result = corto_notifyDefined(observable, mask);
         }
     } else {
-        if (!corto_secured()) {
+        if (corto_secured()) {
             if (corto_notifySecured(observable, CORTO_ON_UPDATE)) {
                 goto error;
             }
@@ -5092,7 +5116,7 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     return result;
 }
 
-corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
+corto_string corto_value_str(corto_value* v, corto_uint32 maxLength) {
     corto_string_ser_t serData;
     corto_walk_opt s;
 
@@ -5109,18 +5133,12 @@ corto_string corto_strv(corto_value* v, corto_uint32 maxLength) {
     return result;
 }
 
-corto_string _corto_strp(void *p, corto_type type, corto_uint32 maxLength) {
+corto_string _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
     corto_assertObject(type);
 
     corto_value v;
     v = corto_value_value(p, type);
-    return corto_strv(&v, maxLength);
-}
-
-corto_string corto_stra(corto_any a, corto_uint32 maxLength) {
-    corto_value v;
-    v = corto_value_value(a.value, a.type);
-    return corto_strv(&v, maxLength);
+    return corto_value_str(&v, maxLength);
 }
 
 corto_int16 corto_fromStr(void *o, corto_string string) {
@@ -5145,7 +5163,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_fromStrv(corto_value *v, corto_string string) {
+corto_int16 corto_value_fromStr(corto_value *v, corto_string string) {
     corto_string_deser_t serData = {
         .out = corto_value_ptrof(v),
         .type = corto_value_typeof(v),
@@ -5167,7 +5185,7 @@ error:
     return -1;
 }
 
-corto_int16 _corto_fromStrp(void* out, corto_type type, corto_string string) {
+corto_int16 _corto_ptr_fromStr(void* out, corto_type type, corto_string string) {
     corto_assertObject(type);
 
     corto_string_deser_t serData = {
@@ -5182,28 +5200,6 @@ corto_int16 _corto_fromStrp(void* out, corto_type type, corto_string string) {
 
     if (serData.out) {
         *(void**)out = serData.out;
-    } else {
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
-corto_int16 corto_fromStra(corto_any *a, corto_string string) {
-    corto_string_deser_t serData = {
-        .out = a->value,
-        .type = a->type,
-        .isObject = FALSE
-    };
-
-    if (!corto_string_deser(string, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
-    }
-
-    if (serData.out) {
-        a->value = serData.out;
     } else {
         goto error;
     }
@@ -5229,7 +5225,7 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
     return data.result;
 }
 
-corto_equalityKind corto_comparev(corto_value *value1, corto_value *value2) {
+corto_equalityKind corto_value_compare(corto_value *value1, corto_value *value2) {
     corto_compare_ser_t data;
     corto_walk_opt s;
 
@@ -5241,22 +5237,14 @@ corto_equalityKind corto_comparev(corto_value *value1, corto_value *value2) {
     return data.result;
 }
 
-corto_equalityKind _corto_comparep(void *p1, corto_type type, void *p2) {
+corto_equalityKind _corto_ptr_compare(void *p1, corto_type type, void *p2) {
     corto_assertObject(type);
 
     corto_value vdst;
     corto_value vsrc;
     vdst = corto_value_value(p1, type);
     vsrc = corto_value_value(p2, type);
-    return corto_comparev(&vdst, &vsrc);
-}
-
-corto_equalityKind corto_comparea(corto_any a1, corto_any a2) {
-    corto_value vdst;
-    corto_value vsrc;
-    vdst = corto_value_value(a1.value, a1.type);
-    vsrc = corto_value_value(a2.value, a2.type);
-    return corto_comparev(&vdst, &vsrc);
+    return corto_value_compare(&vdst, &vsrc);
 }
 
 corto_int16 corto_init(corto_object o) {
@@ -5281,7 +5269,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_initv(corto_value *v) {
+corto_int16 corto_value_init(corto_value *v) {
     corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
         corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
@@ -5292,17 +5280,11 @@ corto_int16 corto_initv(corto_value *v) {
     return corto_delegateInit(corto_value_typeof(v), corto_value_ptrof(v));
 }
 
-corto_int16 _corto_initp(void *p, corto_type type) {
+corto_int16 _corto_ptr_init(void *p, corto_type type) {
     corto_assertObject(type);
     corto_value v;
     v = corto_value_value(p, type);
-    return corto_initv(&v);
-}
-
-corto_int16 corto_inita(corto_any a) {
-    corto_value v;
-    v = corto_value_value(a.value, a.type);
-    return corto_initv(&v);
+    return corto_value_init(&v);
 }
 
 corto_int16 corto_deinit(corto_object o) {
@@ -5319,7 +5301,7 @@ corto_int16 corto_deinit(corto_object o) {
     return 0;
 }
 
-corto_int16 corto_deinitv(corto_value *v) {
+corto_int16 corto_value_deinit(corto_value *v) {
     corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
         corto_walk_opt s =
@@ -5330,17 +5312,11 @@ corto_int16 corto_deinitv(corto_value *v) {
     return 0;
 }
 
-corto_int16 _corto_deinitp(void *p, corto_type type) {
+corto_int16 _corto_ptr_deinit(void *p, corto_type type) {
     corto_assertObject(type);
     corto_value v;
     v = corto_value_value(p, type);
-    return corto_deinitv(&v);
-}
-
-corto_int16 corto_deinita(corto_any a) {
-    corto_value v;
-    v = corto_value_value(a.value, a.type);
-    return corto_deinitv(&v);
+    return corto_value_deinit(&v);
 }
 
 corto_int16 _corto_copy(corto_object *dst, corto_object src) {
@@ -5366,7 +5342,7 @@ corto_int16 _corto_copy(corto_object *dst, corto_object src) {
     return result;
 }
 
-corto_int16 corto_copyv(corto_value *dst, corto_value *src) {
+corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
     corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     corto_int16 result;
@@ -5388,7 +5364,7 @@ corto_int16 corto_copyv(corto_value *dst, corto_value *src) {
     return result;
 }
 
-corto_int16 _corto_copyp(void *dst, corto_type type, void *src) {
+corto_int16 _corto_ptr_copy(void *dst, corto_type type, void *src) {
     corto_assertObject(type);
 
     corto_value vdst;
@@ -5396,17 +5372,7 @@ corto_int16 _corto_copyp(void *dst, corto_type type, void *src) {
     corto_int16 result;
     vdst = corto_value_value(dst, type);
     vsrc = corto_value_value(src, type);
-    result = corto_copyv(&vdst, &vsrc);
-    return result;
-}
-
-corto_int16 corto_copya(corto_any *dst, corto_any src) {
-    corto_value vdst;
-    corto_value vsrc;
-    corto_int16 result;
-    vdst = corto_value_value(dst, corto_type(corto_any_o));
-    vsrc = corto_value_value(&src, corto_type(corto_any_o));
-    result = corto_copyv(&vdst, &vsrc);
+    result = corto_value_copy(&vdst, &vsrc);
     return result;
 }
 
@@ -5458,13 +5424,13 @@ void corto_super_destruct(corto_object o) {
 error:;
 }
 
-void* _corto_new(corto_type type) {
+void* _corto_ptr_new(corto_type type) {
     void *result = NULL;
 
-    corto_assert(!type->reference, "cannot use corto_new for reference types, use corto_create");
+    corto_assert(!type->reference, "cannot use corto_ptr_new for reference types, use corto_create");
 
     result = corto_calloc(type->size);
-    if (corto_initp(result, type)) {
+    if (corto_ptr_init(result, type)) {
         corto_dealloc(result);
         goto error;
     }
@@ -5474,8 +5440,8 @@ error:
     return NULL;
 }
 
-void _corto_free(corto_type type, void *ptr) {
-    corto_assert(!type->reference, "cannot use corto_free for reference types, use corto_delete");
-    corto_deinitp(ptr, type);
+void _corto_ptr_free(corto_type type, void *ptr) {
+    corto_assert(!type->reference, "cannot use corto_ptr_free for reference types, use corto_delete");
+    corto_ptr_deinit(ptr, type);
     corto_dealloc(ptr);
 }

@@ -177,9 +177,9 @@ corto_int16 cortotool_ppParse(
     corto_bool parseScope)
 {
     corto_iter it = corto_llIter(list);
-    while (corto_iterHasNext(&it)) {
+    while (corto_iter_hasNext(&it)) {
         corto_id id;
-        char *objId = corto_iterNext(&it);
+        char *objId = corto_iter_next(&it);
 
         /* Ensure the scope is fully qualified */
         if ((objId[0] != '/') && (objId[0] != ':')) {
@@ -238,8 +238,8 @@ void cortotool_splitId(corto_string path, char **parent, char **id) {
 corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
     corto_iter it = corto_llIter(imports);
 
-    while (corto_iterHasNext(&it)) {
-        corto_string import = corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_string import = corto_iter_next(&it);
 
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
             corto_object package = corto_lookup(NULL, import);
@@ -327,8 +327,8 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     /* Load imports */
     if (imports) {
         corto_iter it = corto_llIter(imports);
-        while (corto_iterHasNext(&it)) {
-            corto_string import = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_string import = corto_iter_next(&it);
             if (strcmp(import, "corto") && strcmp(import, "/corto")) {
                 if (corto_load(import, 0, NULL)) {
                     corto_seterr("importing '%s' failed: %s", import, corto_lasterr());
@@ -341,8 +341,8 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     /* Load includes */
     if (includes) {
         it = corto_llIter(includes);
-        while (corto_iterHasNext(&it)) {
-            include = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            include = corto_iter_next(&it);
 
             corto_trace("pp: loading '%s'", include);
             if (corto_load(include, 0, NULL)) {
@@ -408,10 +408,10 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
             /* Set attributes */
             if (attributes) {
                 it = corto_llIter(attributes);
-                while (corto_iterHasNext(&it)) {
+                while (corto_iter_hasNext(&it)) {
                     corto_string ptr;
 
-                    attr = corto_strdup(corto_iterNext(&it));
+                    attr = corto_strdup(corto_iter_next(&it));
 
                     ptr = strchr(attr, '=');
                     if (ptr) {

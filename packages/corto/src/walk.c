@@ -358,7 +358,7 @@ typedef struct __dummySeq {
     void* buffer;
 }__dummySeq;
 
-static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint32 length, corto_walkAction action, corto_void* userData) {
+static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint32 length, corto_elementWalk_cb action, corto_void* userData) {
     void* v;
     int result;
     corto_type elementType;

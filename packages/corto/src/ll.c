@@ -60,7 +60,7 @@ void corto_llFree(corto_ll list) {
     free(list);
 }
 
-int corto_llWalk(corto_ll list, corto_walkAction callback, void* userdata) {
+int corto_llWalk(corto_ll list, corto_elementWalk_cb callback, void* userdata) {
     corto_llNode next;
     corto_llNode ptr;
     int result;
@@ -82,7 +82,7 @@ int corto_llWalk(corto_ll list, corto_walkAction callback, void* userdata) {
     return result;
 }
 
-int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata) {
+int corto_llWalkPtr(corto_ll list, corto_elementWalk_cb callback, void* userdata) {
     corto_llNode next;
     corto_llNode ptr;
     int result;
@@ -166,7 +166,7 @@ void* corto_llGetPtr(corto_ll list, int index) {
     return result;
 }
 
-void* corto_llFind(corto_ll list, corto_compareAction callback, void* o) {
+void* corto_llFind(corto_ll list, corto_compare_cb callback, void* o) {
     corto_llNode ptr;
     void* result;
 
@@ -326,8 +326,8 @@ corto_ll corto_llCopy(corto_ll list) {
     corto_ll result = NULL;
     if (list) {
         result = corto_llNew();
-        while (corto_iterHasNext(&iter)) {
-            corto_llAppend(result, corto_iterNext(&iter));
+        while (corto_iter_hasNext(&iter)) {
+            corto_llAppend(result, corto_iter_next(&iter));
         }
     }
     return result;
@@ -384,7 +384,7 @@ void* corto_llIterMove(corto_iter* iter, unsigned int index) {
     }
     corto_llIterMoveFirst(iter);
     while(index) {
-        result = corto_iterNext(iter);
+        result = corto_iter_next(iter);
         index--;
     }
 
@@ -507,8 +507,8 @@ corto_ll corto_llMap(corto_ll l, corto_mapAction f, void* data)
     corto_ll ll = corto_llNew();
     {
         corto_iter i = corto_llIter(l);
-        while (corto_iterHasNext(&i)) {
-            void* e = corto_iterNext(&i);
+        while (corto_iter_hasNext(&i)) {
+            void* e = corto_iter_next(&i);
             void* r = f(e, data);
             corto_llAppend(ll, r);
         }

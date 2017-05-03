@@ -8,34 +8,30 @@
 #ifndef CORTO_GEN_H_
 #define CORTO_GEN_H_
 
-#include "corto/lang/_type.h"
-#include "corto/file.h"
-#include "corto/os.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-CORTO_CLASS(g_generator);
+typedef struct g_generator_s* g_generator;
 
 typedef int (*g_walkAction)(corto_object o, void* userData);
 typedef corto_string ___ (*g_idAction)(corto_string in, corto_id out);
 typedef corto_int16 ___ (*g_startAction)(g_generator g);
 typedef void (*g_stopAction)(g_generator g);
 
-CORTO_STRUCT(g_object);
-CORTO_STRUCT_DEF(g_object) {
+typedef struct g_object {
     corto_object o;
     corto_bool parseSelf;
     corto_bool parseScope;
     corto_string prefix;
-};
+} g_object;
 
-CORTO_STRUCT(g_attribute);
-CORTO_STRUCT_DEF(g_attribute) {
+typedef struct g_attribute {
     corto_string key;
     corto_string value;
-};
+} g_attribute;
 
 typedef enum g_idKind {
     CORTO_GENERATOR_ID_DEFAULT,
@@ -43,7 +39,7 @@ typedef enum g_idKind {
     CORTO_GENERATOR_ID_CLASS_LOWER
 }g_idKind;
 
-CORTO_CLASS_DEF(g_generator) {
+struct g_generator_s {
     corto_ll objects;
     corto_ll files;
     corto_dl library;
@@ -69,8 +65,8 @@ typedef struct g_fileSnippet {
     corto_bool used;
 }g_fileSnippet;
 
-CORTO_CLASS(g_file);
-CORTO_CLASS_DEF(g_file) {
+typedef struct g_file_s* g_file;
+struct g_file_s {
     corto_file file;
     corto_string name;
     corto_uint32 indent;

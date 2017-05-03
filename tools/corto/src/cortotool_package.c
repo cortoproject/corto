@@ -70,10 +70,10 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
     /* Load packages */
     if (packages) {
         corto_iter iter = corto_llIter(packages);
-        while (corto_iterHasNext(&iter)) {
+        while (corto_iter_hasNext(&iter)) {
             /* Test whether package exists */
             corto_string package =
-                cortotool_lookupPackage(corto_iterNext(&iter));
+                cortotool_lookupPackage(corto_iter_next(&iter));
             if (!package) {
                 goto error;
             }
@@ -130,8 +130,8 @@ static corto_bool cortotool_removeEntry(corto_file file, corto_ll list, corto_st
     corto_bool found = FALSE;
     corto_iter iter = corto_llIter(list);
 
-    while (corto_iterHasNext(&iter)) {
-        corto_string str = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_string str = corto_iter_next(&iter);
         if (strcmp(str, entry)) {
             fprintf(corto_fileGet(file), "%s\n", str);
         } else {
@@ -175,8 +175,8 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
 
     if (packages) {
         corto_iter iter = corto_llIter(packages);
-        while (corto_iterHasNext(&iter)) {
-            corto_string arg = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_string arg = corto_iter_next(&iter);
             corto_string package = cortotool_lookupPackage(arg);
             if (!package) {
                 package = arg; /* Try to remove by matching string */
@@ -237,8 +237,8 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
         corto_ll packages = corto_loadGetPackages();
         if (packages && corto_llSize(packages)) {
             corto_iter iter = corto_llIter(packages);
-            while (corto_iterHasNext(&iter)) {
-                corto_string str = corto_iterNext(&iter);
+            while (corto_iter_hasNext(&iter)) {
+                corto_string str = corto_iter_next(&iter);
                 corto_string package = corto_locate(str, NULL, CORTO_LOCATION_LIB);
                 if (package) {
                     printf("  %s%s%s  =>  %s\n", CORTO_CYAN, str, CORTO_NORMAL, package);
@@ -259,8 +259,8 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
         if (corto_select(NULL, "//").type("/corto/core/package").iter(&it)) {
             goto error;
         }
-        while (corto_iterHasNext(&it)) {
-            corto_result *r = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_result *r = corto_iter_next(&it);
             corto_id id; sprintf(id, "%s/%s", r->parent, r->id);
             char *lib = corto_locate(id, NULL, CORTO_LOCATION_LIB);
             if (lib) {

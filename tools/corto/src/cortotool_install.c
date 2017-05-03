@@ -177,7 +177,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     corto_iter it;
     if (dirs && corto_llSize(dirs)) {
         it = corto_llIter(dirs);
-        corto_assert(corto_iterHasNext(&it), "non-empty list returns empty iterator");
+        corto_assert(corto_iter_hasNext(&it), "non-empty list returns empty iterator");
     } else {
         if (cortotool_validProject()) {
             installLocal = TRUE;
@@ -190,7 +190,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     do {
         corto_string dir = NULL;
         if (dirs && corto_llSize(dirs)) {
-            dir = corto_iterNext(&it);
+            dir = corto_iter_next(&it);
             if (corto_chdir(dir)) {
                 installRemote = TRUE;
             } else {
@@ -312,7 +312,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         if (dirs) {
             corto_chdir(cwd);
         }
-    } while (dirs && corto_iterHasNext(&it));
+    } while (dirs && corto_iter_hasNext(&it));
 
     corto_argclean(data);
 
@@ -412,7 +412,7 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
                 if (sep && (sep != dir)) {
                     *sep = '\0';
                 }
-                if (!corto_llFind(directories, (corto_compareAction)strcmp, dir)) {
+                if (!corto_llFind(directories, (corto_compare_cb)strcmp, dir)) {
                     corto_llAppend(directories, dir);
                 } else {
                     corto_dealloc(dir);
@@ -432,15 +432,15 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
         corto_dealloc(root);
         do {
             empty = FALSE;
-            while (corto_iterHasNext(&it)) {
-                corto_string dir = corto_iterNext(&it);
+            while (corto_iter_hasNext(&it)) {
+                corto_string dir = corto_iter_next(&it);
                 if ((strlen(dir) > minLen) && cortotool_isDirEmpty(dir)) {
                     corto_rm(dir);
                     char *sep = strrchr(dir, '/');
                     if (sep && (sep != dir)) {
                         *sep = '\0';
                     }
-                    if (!corto_llFind(directories, (corto_compareAction)strcmp, dir)) {
+                    if (!corto_llFind(directories, (corto_compare_cb)strcmp, dir)) {
                         corto_llAppend(directories, dir);
                     } else {
                         corto_dealloc(dir);
@@ -633,8 +633,8 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
 
     if (packages && corto_llSize(packages)) {
         corto_iter it = corto_llIter(packages);
-        while (corto_iterHasNext(&it)) {
-            corto_string package = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_string package = corto_iter_next(&it);
             corto_int32 local = cortotool_uninstallFromEnv("$CORTO_TARGET", package);
             corto_int32 global = cortotool_uninstallFromEnv("/usr/local", package);
 

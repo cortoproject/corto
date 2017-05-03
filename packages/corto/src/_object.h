@@ -8,7 +8,8 @@
 #ifndef CORTO__OBJECT_H_
 #define CORTO__OBJECT_H_
 
-#include "corto/corto.h"
+#include <corto/corto.h>
+#include "entityadmin.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -188,10 +189,6 @@ corto_object corto_resume(corto_object parent, corto_string expr, corto_object o
 corto_int16 corto_suspend(corto_object o);
 int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool _try, corto_bool ignoreRecursive);
 
-typedef int (*corto_subscriptionWalkAction)(corto_subscriber s, corto_object instance, void *userData);
-int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData);
-
-
 /* proxy for corto/expr functions */
 typedef struct ext_corto_expr {
     corto_function function;
@@ -210,6 +207,9 @@ corto_int16 ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **a
 corto_int16 ext_corto_expr_free(ext_corto_expr *expr);
 
 corto_procedure corto_function_getProcedureType(corto_function this);
+
+extern corto_entityAdmin corto_subscriber_admin;
+extern corto_entityAdmin corto_mount_admin;
 
 #ifdef __cplusplus
 }

@@ -14,7 +14,7 @@ int16_t _test_EmptySinkMount_construct(
 /* $begin(test/EmptySinkMount/construct) */
 
     corto_mount(this)->kind = CORTO_SINK;
-    return 0;
+    return corto_mount_construct(this);
 
 /* $end */
 }

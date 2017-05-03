@@ -122,7 +122,7 @@ char* corto_fileSearch(const char* file, corto_ll locations) {
     walkData.file = file;
     walkData.result = 0;
 
-    corto_llWalk(locations, (corto_walkAction)fileSearchWalk, &walkData);
+    corto_llWalk(locations, (corto_elementWalk_cb)fileSearchWalk, &walkData);
 
     return walkData.result;
 }

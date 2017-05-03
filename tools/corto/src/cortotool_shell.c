@@ -230,8 +230,8 @@ static void cxsh_ls(char* arg) {
         goto error;
     }
 
-    while (corto_iterHasNext(&iter)) {
-        corto_result *item = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_result *item = corto_iter_next(&iter);
         inStore += cxsh_printRow(item->parent, item->id, item->type);
         i ++; /* Count objects so total can be printed */
     }
@@ -267,8 +267,8 @@ static void cxsh_cd(char* arg) {
         if (corto_select(scope, arg).iter(&iter)) goto error;
 
         /* Reuse request to temporarily store result, count results */
-        while (corto_iterHasNext(&iter)) {
-            corto_result *e = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_result *e = corto_iter_next(&iter);
 
             if (count) {
                 corto_seterr("more than one result returned by 'cd %s' (%s/%s/%s)", arg, scope, e->parent, e->id);
@@ -782,8 +782,8 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
         } else {
             corto_int32 i = 0;
             if (corto_select(scope, expr).iter(&iter)) goto error;
-            while (corto_iterHasNext(&iter)) {
-                corto_result *item = corto_iterNext(&iter);
+            while (corto_iter_hasNext(&iter)) {
+                corto_result *item = corto_iter_next(&iter);
                 corto_id scopedItem;
                 if (strcmp(item->parent, ".")) {
                     sprintf(scopedItem, "%s/%s", item->parent, item->id);
@@ -799,8 +799,8 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
 
             if (!i) {
                 if (corto_select("/corto", expr).iter(&iter)) goto error;
-                while (corto_iterHasNext(&iter)) {
-                    corto_result *item = corto_iterNext(&iter);
+                while (corto_iter_hasNext(&iter)) {
+                    corto_result *item = corto_iter_next(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
                         sprintf(scopedItem, "corto/%s/%s", item->parent, item->id);
@@ -817,8 +817,8 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
 
             if (!i) {
                 if (corto_select("/corto/lang", expr).iter(&iter)) goto error;
-                while (corto_iterHasNext(&iter)) {
-                    corto_result *item = corto_iterNext(&iter);
+                while (corto_iter_hasNext(&iter)) {
+                    corto_result *item = corto_iter_next(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
                         sprintf(scopedItem, "corto/lang/%s/%s", item->parent, item->name);
@@ -863,29 +863,29 @@ corto_uint32 cxsh_countSelect(char *expr) {
     corto_uint32 result = 0;
     corto_iter iter;
     if (corto_select(scope, expr).iter(&iter)) goto error;
-    while (corto_iterHasNext(&iter)) {
-        corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_iter_next(&iter);
         result++;
         break;
     }
-    corto_iterRelease(&iter);
+    corto_iter_release(&iter);
     if (!result) {
         if (corto_select("corto/lang", expr).iter(&iter)) goto error;
-        while (corto_iterHasNext(&iter)) {
-            corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_iter_next(&iter);
             result++;
             break;
         }
-        corto_iterRelease(&iter);
+        corto_iter_release(&iter);
     }
     if (!result) {
         if (corto_select("corto", expr).iter(&iter)) goto error;
-        while (corto_iterHasNext(&iter)) {
-            corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_iter_next(&iter);
             result++;
             break;
         }
-        corto_iterRelease(&iter);
+        corto_iter_release(&iter);
     }
 
     return result;

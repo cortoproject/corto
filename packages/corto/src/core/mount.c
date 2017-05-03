@@ -10,64 +10,8 @@
 
 /* $header() */
 #include "_object.h"
-extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_threadKey CORTO_KEY_MOUNT_RESULT;
-
-/* Attach mount entry to object */
-corto_int16 corto_mount_attach(
-    corto_mount this,
-    corto_object o,
-    corto_eventMask mask)
-{
-    corto_ll mounts = corto_olsLockGet(o, CORTO_OLS_REPLICATOR);
-    corto_mount_olsData_t *data;
-
-    if (!mounts) {
-        mounts = corto_llNew();
-    }
-
-    if (corto_llSize(mounts) >= CORTO_MAX_REPLICATORS) {
-        corto_seterr("maximum number of replicatos for scope set");
-        corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, mounts);
-        goto error;
-    }
-
-    data = corto_alloc(sizeof(corto_mount_olsData_t));
-    data->mount = this;
-    data->mask = mask;
-    corto_llAppend(mounts, data);
-
-    corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, mounts);
-
-    return 0;
-error:
-    return -1;
-}
-
-/* Detach mount entry from object */
-corto_int16 corto_mount_detach(
-    corto_mount this,
-    corto_object o)
-{
-    if (o) {
-        corto_ll mounts = corto_olsLockGet(o, CORTO_OLS_REPLICATOR);
-
-        if (mounts) {
-            corto_iter it = corto_llIter(mounts);
-            while (corto_iterHasNext(&it)) {
-                corto_mount_olsData_t *data = corto_iterNext(&it);
-                if (data->mount == this) {
-                    corto_llRemove(mounts, data);
-                    break;
-                }
-            }
-        }
-
-        corto_olsUnlockSet(o, CORTO_OLS_REPLICATOR, mounts);
-    }
-
-    return 0;
-}
+corto_entityAdmin corto_mount_admin;
 /* $end */
 
 /* $header(corto/core/mount/construct) */
@@ -108,12 +52,13 @@ void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r,
 }
 
 int corto_mount_alignSubscriptionsAction(
-  corto_subscriber s,
+  corto_object e,
   corto_object instance,
   void *userData)
 {
     corto_mount this = userData;
     corto_iter it;
+    corto_subscriber s = e;
 
     CORTO_UNUSED(instance);
 
@@ -122,8 +67,8 @@ int corto_mount_alignSubscriptionsAction(
       .subscribe(&it);
 
     /* Visit all objects to find all subscriptions */
-    while (corto_iterHasNext(&it)) {
-        corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_iter_next(&it);
     }
 
     return 1;
@@ -131,7 +76,7 @@ int corto_mount_alignSubscriptionsAction(
 
 corto_int16 corto_mount_alignSubscriptions(corto_mount this) {
 
-    if (!corto_subscriptionWalk(corto_mount_alignSubscriptionsAction, this)) {
+    if (!corto_entityAdmin_walk(&corto_subscriber_admin, corto_mount_alignSubscriptionsAction, NULL, this)) {
         goto error;
     }
 
@@ -197,7 +142,7 @@ int16_t _corto_mount_construct(
         corto_string value;
         void *policies = &this->policies;
         corto_asprintf(&value, "{%s}", this->policy);
-        if (corto_fromStrp(&policies, corto_mountPolicy_o, value)) {
+        if (corto_ptr_fromStr(&policies, corto_mountPolicy_o, value)) {
             corto_dealloc(value);
             goto error;
         }
@@ -238,28 +183,20 @@ int16_t _corto_mount_construct(
         corto_setstr(&corto_subscriber(this)->expr, "//");
     }
 
-    if (this->mount && mask) {
-        /* Attach mount to the observable if mask != ON_SELF. No longer necessary
-         * once integration with subscribers is completed. */
-        if (mask != CORTO_ON_SELF) {
-            if (corto_mount_attach(this, this->mount, mask)) {
-                goto error;
-            }
-        }
-    }
+    corto_entityAdmin_add(&corto_mount_admin, corto_subscriber(this)->parent, this, this);
 
     /* If mount is interested in subscriptions, align from existing subscribers */
     if (corto_mount_hasMethod(this, "onSubscribe") ||
         corto_mount_hasMethod(this, "onUnsubscribe"))
-     {
+    {
         if (corto_mount_alignSubscriptions(this)) {
             goto error;
         }
-     }
+    }
 
     corto_int16 ret = corto_subscriber_construct(this);
     if (ret) {
-        corto_mount_detach(this, this->mount);
+        corto_entityAdmin_remove(&corto_mount_admin, corto_subscriber(this)->parent, this, this, FALSE);
     }
     
     return ret;
@@ -284,7 +221,7 @@ void _corto_mount_destruct(
             s->parent,
             s->expr,
             s->userData);
-        corto_deinitp(s, corto_mountSubscription_o);
+        corto_ptr_deinit(s, corto_mountSubscription_o);
         corto_dealloc(s);
     }
 
@@ -294,7 +231,9 @@ void _corto_mount_destruct(
 
     corto_subscriber_destruct(this);
 
-    corto_mount_detach(this, this->mount);
+    corto_assert(
+        corto_entityAdmin_remove(&corto_mount_admin, corto_subscriber(this)->parent, this, this, FALSE) != -1, 
+        "trying to remove mount that was never added to mountAdmin");
 
 /* $end */
 }
@@ -480,8 +419,8 @@ void _corto_mount_onUnsubscribe_v(
 static corto_subscriberEvent corto_mount_findEvent(corto_mount this, corto_subscriberEvent e) {
     corto_iter iter = corto_llIter(this->events);
     corto_subscriberEvent e2;
-    while ((corto_iterHasNext(&iter))) {
-        e2 = corto_iterNext(&iter);
+    while ((corto_iter_hasNext(&iter))) {
+        e2 = corto_iter_next(&iter);
         if (!strcmp(e2->result.id, e->result.id) &&
             !strcmp(e2->result.parent, e->result.parent) &&
             (corto_observableEvent(e2)->observer == corto_observableEvent(e)->observer))
@@ -492,8 +431,8 @@ static corto_subscriberEvent corto_mount_findEvent(corto_mount this, corto_subsc
     return NULL;
 }
 
-#define MOUNT_QUEUE_THRESHOLD 100
-#define MOUNT_QUEUE_THRESHOLD_SLEEP 10000000
+#define MOUNT_QUEUE_THRESHOLD 2000
+#define MOUNT_QUEUE_THRESHOLD_SLEEP 1000000
 
 /* $end */
 void _corto_mount_post(
@@ -541,7 +480,7 @@ void _corto_mount_post(
 /* $header(corto/core/mount/request) */
 void corto_mount_requestRelease(corto_iter *iter) {
     corto_llIter_s *data = iter->udata;
-    corto_deinitp(&data->list, corto_resultList_o);
+    corto_ptr_deinit(&data->list, corto_resultList_o);
     corto_llIterRelease(iter);
 }
 /* $end */
@@ -611,8 +550,8 @@ corto_object _corto_mount_resume(
         corto_debug("mount: try resume for '%s/%s' (mount = '%s')", parent, name, corto_fullpath(NULL, this));
         corto_resultIter it = corto_mount_request(this, &r);
 
-        if (corto_iterHasNext(&it)) {
-            corto_result *iterResult = corto_iterNext(&it);
+        if (corto_iter_hasNext(&it)) {
+            corto_result *iterResult = corto_iter_next(&it);
 
             if (!o) {
                 if (iterResult->parent[0] == '/') {
@@ -654,16 +593,16 @@ corto_object _corto_mount_resume(
             }
         }
 
-        if (corto_iterHasNext(&it)) {
+        if (corto_iter_hasNext(&it)) {
             corto_error(
               "corto: mount should not return more than one object (scope = '%s', id = '%s')",
               parent,
               name);
 
             do {
-                corto_result *r = corto_iterNext(&it);
+                corto_result *r = corto_iter_next(&it);
                 fprintf(stderr, "  excess result: %s/%s\n", r->parent, r->id);
-            } while (corto_iterHasNext(&it));
+            } while (corto_iter_hasNext(&it));
             goto error;
         }
     }
@@ -774,8 +713,8 @@ static corto_mountSubscription* corto_mount_findSubscription(
     corto_mountSubscription *result = NULL;
 
     corto_iter it = corto_llIter(this->subscriptions);
-    while (corto_iterHasNext(&it)) {
-        corto_mountSubscription *s = corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_mountSubscription *s = corto_iter_next(&it);
         if (!stricmp(s->parent, request->parent)) {
              result = s;
              if (!stricmp(s->expr, request->expr)) {
@@ -896,7 +835,7 @@ void _corto_mount_unsubscribe(
 
     if (subscription) {
         corto_mount_onUnsubscribe(this, subscription->parent, subscription->expr, subscription->userData);
-        corto_deinitp(subscription, corto_mountSubscription_o);
+        corto_ptr_deinit(subscription, corto_mountSubscription_o);
         corto_dealloc(subscription);
     }
 

@@ -333,9 +333,9 @@ static corto_bool corto_shellAutoExpand(
 
             printf("\n");
             corto_iter iter = corto_llIter(items);
-            while (corto_iterHasNext(&iter)) {
+            while (corto_iter_hasNext(&iter)) {
                 if (!prev) prev = str; else prev = NULL;
-                str = corto_iterNext(&iter);
+                str = corto_iter_next(&iter);
                 if (prev) {
                     printf("%*s", 40 - (int)strlen(prev), " ");
                 }
@@ -377,8 +377,8 @@ static corto_bool corto_shellAutoExpand(
         corto_shellEngine_cmdAppend(append, replace);
 
         corto_iter iter = corto_llIter(items);
-        while (corto_iterHasNext(&iter)) {
-            corto_dealloc(corto_iterNext(&iter));
+        while (corto_iter_hasNext(&iter)) {
+            corto_dealloc(corto_iter_next(&iter));
         }
         corto_llFree(items);
   	}

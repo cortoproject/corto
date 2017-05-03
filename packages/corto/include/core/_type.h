@@ -86,8 +86,7 @@ struct corto_application_s {
 };
 
 /*  /corto/core/dispatcher */
-CORTO_INTERFACE(corto_dispatcher);
-
+typedef void *corto_dispatcher;
 
 /*  /corto/core/event */
 typedef struct corto_event_s *corto_event;
@@ -98,7 +97,7 @@ struct corto_event_s {
 };
 
 /* /corto/core/eventMask */
-CORTO_BITMASK(corto_eventMask);
+typedef uint32_t corto_eventMask;
     #define CORTO_ON_DECLARE (0x1)
     #define CORTO_ON_DEFINE (0x2)
     #define CORTO_ON_DELETE (0x4)

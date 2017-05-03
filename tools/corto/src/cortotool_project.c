@@ -717,8 +717,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (apps) {
         corto_iter iter = corto_llIter(apps);
-        while (corto_iterHasNext(&iter)) {
-            char *name = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            char *name = corto_iter_next(&iter);
             if (cortotool_app(
                 CORTO_APPLICATION,
                 name,
@@ -738,9 +738,9 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (apps_noname) {
         corto_iter iter = corto_llIter(apps_noname);
-        while (corto_iterHasNext(&iter)) {
+        while (corto_iter_hasNext(&iter)) {
             char *name = cortotool_randomName();
-            corto_iterNext(&iter);
+            corto_iter_next(&iter);
             if (cortotool_app(
                 CORTO_APPLICATION,
                 name,
@@ -760,8 +760,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (packages) {
         corto_iter iter = corto_llIter(packages);
-        while (corto_iterHasNext(&iter)) {
-            char *name = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            char *name = corto_iter_next(&iter);
             if (cortotool_package(
                 name,
                 silent != NULL,
@@ -781,9 +781,9 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
 
     if (packages_noname) {
         corto_iter iter = corto_llIter(packages_noname);
-        while (corto_iterHasNext(&iter)) {
+        while (corto_iter_hasNext(&iter)) {
             char *name = cortotool_randomName();
-            corto_iterNext(&iter);
+            corto_iter_next(&iter);
             if (cortotool_package(
                 name,
                 silent != NULL,

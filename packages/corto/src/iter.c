@@ -1,10 +1,10 @@
 
 #include "corto/corto.h"
 
-int corto_iterHasNext(corto_iter* iter) {
+int corto_iter_hasNext(corto_iter* iter) {
     if (iter->hasNext) {
         if (!iter->hasNext(iter)) {
-            corto_iterRelease(iter);
+            corto_iter_release(iter);
             iter->hasNext = NULL;
             return 0;
         } else {
@@ -15,15 +15,15 @@ int corto_iterHasNext(corto_iter* iter) {
     }
 }
 
-void* corto_iterNext(corto_iter* iter) {
+void* corto_iter_next(corto_iter* iter) {
     return iter->next(iter);
 }
 
-void* corto_iterNextPtr(corto_iter* iter) {
+void* corto_iter_nextPtr(corto_iter* iter) {
     return iter->nextPtr(iter);
 }
 
-void corto_iterRelease(corto_iter* iter) {
+void corto_iter_release(corto_iter* iter) {
     if (iter->release) {
         iter->release(iter);
         iter->release = NULL;

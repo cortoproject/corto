@@ -8,9 +8,6 @@
 #ifndef CORTO_STRING_DESER_H_
 #define CORTO_STRING_DESER_H_
 
-#include "corto/lang/_type.h"
-#include "corto/ll.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

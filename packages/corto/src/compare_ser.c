@@ -142,14 +142,14 @@ static corto_equalityKind corto_collection_compareArrayWithList(corto_collection
     corto_type elementType = t->elementType;
 
     iter = corto_llIter(list);
-    while(corto_iterHasNext(&iter)) {
+    while(corto_iter_hasNext(&iter)) {
         if (corto_collection_requiresAlloc(elementType)) {
-            e1 = corto_iterNext(&iter);
+            e1 = corto_iter_next(&iter);
         } else {
-            e1 = corto_iterNextPtr(&iter);
+            e1 = corto_iter_nextPtr(&iter);
         }
         e2 = CORTO_OFFSET(array, elementSize * i);
-        result = corto_comparep(e2, elementType, e1);
+        result = corto_ptr_compare(e2, elementType, e1);
         if (result != CORTO_EQ) {
             break;
         }
@@ -167,15 +167,15 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
 
     iter1 = corto_llIter(list1);
     iter2 = corto_llIter(list2);
-    while(corto_iterHasNext(&iter1) && corto_iterHasNext(&iter2)) {
+    while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
         if (corto_collection_requiresAlloc(elementType)) {
-            e1 = corto_iterNext(&iter1);
-            e2 = corto_iterNext(&iter2);
+            e1 = corto_iter_next(&iter1);
+            e2 = corto_iter_next(&iter2);
         } else {
-            e1 = corto_iterNextPtr(&iter1);
-            e2 = corto_iterNextPtr(&iter2);
+            e1 = corto_iter_nextPtr(&iter1);
+            e2 = corto_iter_nextPtr(&iter2);
         }
-        result = corto_comparep(e1, elementType, e2);
+        result = corto_ptr_compare(e1, elementType, e2);
         if (result != CORTO_EQ) {
             break;
         }

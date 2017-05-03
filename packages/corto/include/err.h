@@ -8,25 +8,9 @@
 #ifndef CORE_ERR_H_
 #define CORE_ERR_H_
 
-#include <stdio.h>
-#include <stdarg.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef enum corto_err {
-    CORTO_THROW = -1,   /* used for internal debugging purposes */
-    CORTO_DEBUG = 0,    /* implementation-specific tracing */
-    CORTO_TRACE = 1,    /* progress/state of an application */
-    CORTO_OK = 2,       /* successful completion of a task */
-    CORTO_INFO = 3,     /* neutral message directed at user */
-    CORTO_WARNING = 4,  /* issue that does not require immediate action */
-    CORTO_ERROR = 5,    /* unsuccessful completion of a task */
-    CORTO_CRITICAL = 6, /* task left application in undefined state (abort) */
-    CORTO_ASSERT = 7    /* assertion failed (abort) */
-} corto_err;
-
 
 #define corto_critical(...) _corto_critical(__FILE__, __LINE__, __VA_ARGS__);
 #define corto_error(...) _corto_error(__FILE__, __LINE__, __VA_ARGS__);
@@ -49,11 +33,25 @@ typedef enum corto_err {
 #define corto_ok(...)
 #endif
 
-/* Set verbosity */
+/* Error verbosity levels */
+typedef enum corto_err {
+    CORTO_THROW = -1,   /* used for internal debugging purposes */
+    CORTO_DEBUG = 0,    /* implementation-specific tracing */
+    CORTO_TRACE = 1,    /* progress/state of an application */
+    CORTO_OK = 2,       /* successful completion of a task */
+    CORTO_INFO = 3,     /* neutral message directed at user */
+    CORTO_WARNING = 4,  /* issue that does not require immediate action */
+    CORTO_ERROR = 5,    /* unsuccessful completion of a task */
+    CORTO_CRITICAL = 6, /* task left application in undefined state (abort) */
+    CORTO_ASSERT = 7    /* assertion failed (abort) */
+} corto_err;
+
+
+/* Set / get console verbosity level */
 CORTO_EXPORT void corto_verbosity(corto_err level);
 CORTO_EXPORT corto_err corto_verbosityGet(void);
 
-/* Log errors to console */
+/* Report errors */
 CORTO_EXPORT void _corto_assert(char *file, unsigned int line, unsigned int condition, char* fmt, ...);
 CORTO_EXPORT corto_err _corto_debug(char *file, unsigned int line, char* fmt, ...);
 CORTO_EXPORT corto_err _corto_trace(char *file, unsigned int line, char* fmt, ...);
@@ -63,6 +61,7 @@ CORTO_EXPORT corto_err _corto_warning(char *file, unsigned int line, char* fmt, 
 CORTO_EXPORT corto_err _corto_error(char *file, unsigned int line, char* fmt, ...);
 CORTO_EXPORT void _corto_critical(char *file, unsigned int line, char* fmt, ...);
 
+/* Report errors (va_list as parameter) */
 CORTO_EXPORT void _corto_assertv(char *file, unsigned int line, unsigned int condition, char* fmt, va_list args);
 CORTO_EXPORT corto_err corto_debugv(char *file, unsigned int line, char* fmt, va_list args);
 CORTO_EXPORT corto_err corto_tracev(char *file, unsigned int line, char* fmt, va_list args);
@@ -73,7 +72,7 @@ CORTO_EXPORT corto_err corto_errorv(char *file, unsigned int line, char* fmt, va
 CORTO_EXPORT void corto_criticalv(char *file, unsigned int line, char* fmt, va_list args);
 CORTO_EXPORT void corto_seterrv(char *fmt, va_list args);
 
-/* Set error format */
+/* Set console error format */
 #define CORTO_ERRFMT_DEFAULT "%T - %k: [%a] %c: %m"
 CORTO_EXPORT void corto_errfmt(char *fmt);
 
@@ -106,7 +105,7 @@ CORTO_EXPORT corto_err_callback corto_err_callbackRegister(
 CORTO_EXPORT void corto_err_callbackUnregister(corto_err_callback callback);
 CORTO_EXPORT corto_bool corto_err_callbacksRegistered(void);
 
-/* Get backtraces */
+/* Get stack backtraces */
 CORTO_EXPORT void corto_printBacktrace(FILE* f, int nEntries, char** symbols);
 CORTO_EXPORT void corto_backtrace(FILE* f);
 CORTO_EXPORT char* corto_backtraceString(void);

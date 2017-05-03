@@ -76,7 +76,7 @@ void corto_collection_deinitElement(corto_collection t, void *ptr) {
     } else {
         v = corto_value_value(&ptr, corto_type(t->elementType));
     }
-    corto_deinitv(&v);
+    corto_value_deinit(&v);
 }
 
 static corto_int16 corto_collection_copyListToArray(corto_collection t, void *array, corto_uint32 elementSize, corto_ll list, corto_bool reverse) {
@@ -87,11 +87,11 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
     corto_type elementType = t->elementType;
 
     iter = corto_llIter(list);
-    while(corto_iterHasNext(&iter)) {
+    while(corto_iter_hasNext(&iter)) {
         if (corto_collection_requiresAlloc(t->elementType)) {
-            e2 = corto_iterNext(&iter);
+            e2 = corto_iter_next(&iter);
         } else {
-            e2 = corto_iterNextPtr(&iter);
+            e2 = corto_iter_nextPtr(&iter);
         }
         e1 = CORTO_OFFSET(array, elementSize * i);
         if (reverse) {
@@ -103,7 +103,7 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
         if (elementType->reference) {
             corto_setref(e1, *(corto_object*)e2);
         } else {
-            result = corto_copyp(e1, elementType, e2);
+            result = corto_ptr_copy(e1, elementType, e2);
         }
 
         i++;
@@ -121,19 +121,19 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
 
     iter1 = corto_llIter(list1);
     iter2 = corto_llIter(list2);
-    while(corto_iterHasNext(&iter1) && corto_iterHasNext(&iter2)) {
+    while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
         if (corto_collection_requiresAlloc(t->elementType)) {
-            e1 = corto_iterNext(&iter1);
-            e2 = corto_iterNext(&iter2);
+            e1 = corto_iter_next(&iter1);
+            e2 = corto_iter_next(&iter2);
         } else {
-            e1 = corto_iterNextPtr(&iter1);
-            e2 = corto_iterNextPtr(&iter2);
+            e1 = corto_iter_nextPtr(&iter1);
+            e2 = corto_iter_nextPtr(&iter2);
         }
 
         if (elementType->reference) {
             corto_setref((corto_object*)e1, *(corto_object*)e2);
         } else {
-            result = corto_copyp(e1, elementType, e2);
+            result = corto_ptr_copy(e1, elementType, e2);
         }
     }
 
@@ -181,7 +181,7 @@ static void* corto_collection_resizeArray(corto_collection t, void* sequence, co
         if (ownSize > size) {
             corto_uint32 i;
             for(i = size; i < ownSize; i++) {
-                corto_deinitp(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i), elementType);
+                corto_ptr_deinit(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i), elementType);
             }
             /* Reallocate buffer */
             result = ((corto_objectseq*)sequence)->buffer =

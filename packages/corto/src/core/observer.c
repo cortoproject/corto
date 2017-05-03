@@ -12,8 +12,6 @@
 #include "../lang/_class.h"
 #include "_object.h"
 
-extern corto_uint32 corto_subscribers_count;
-
 /* Fluent request */
 typedef struct corto_observeRequest {
     corto_int16 err;
@@ -74,8 +72,8 @@ void corto_observerDelayedAdminRemove(
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
     if (admin) {
         corto_iter it = corto_llIter(admin);
-        while (corto_iterHasNext(&it)) {
-            corto_observerDelayedAdmin *elem = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_observerDelayedAdmin *elem = corto_iter_next(&it);
             if ((elem->instance == instance) &&
                 (elem->observer == observer))
             {
@@ -96,8 +94,8 @@ void corto_observerDelayedAdminDefine(
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
     if (admin) {
         corto_iter it = corto_llIter(admin);
-        while (corto_iterHasNext(&it)) {
-            corto_observerDelayedAdmin *elem = corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_observerDelayedAdmin *elem = corto_iter_next(&it);
             if (elem->instance == instance) {
                 if (corto_observer_observe(elem->observer, elem->instance, elem->observable)) {
                     /* This should never happen as the input parameters have
@@ -177,8 +175,8 @@ static void corto_observersCopyOut(corto_ll list, corto__observer** observers) {
 
     iter = corto_llIter(list);
     i = 0;
-    while(corto_iterHasNext(&iter)) {
-        observers[i] = corto_iterNext(&iter);
+    while(corto_iter_hasNext(&iter)) {
+        observers[i] = corto_iter_next(&iter);
         observers[i]->count++;
         i++;
     }
@@ -195,8 +193,8 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
 
     if (on) {
         iter = corto_llIter(on);
-        while(corto_iterHasNext(&iter)) {
-            result = corto_iterNext(&iter);
+        while(corto_iter_hasNext(&iter)) {
+            result = corto_iter_next(&iter);
             if ((result->observer == observer) && (result->_this == instance)) {
                 break;
             } else {
@@ -307,8 +305,8 @@ static void corto_updateSubscriptionById(char *id) {
     corto_iter it;
 
     corto_select(NULL, id).subscribe(&it);
-    while (corto_iterHasNext(&it)) {
-        corto_result *r = corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_result *r = corto_iter_next(&it);
 
         /* Reuse id buffer. Because this function is recursive, using a
          * large buffer allocated on stack is 'dangerous'. */
@@ -321,7 +319,7 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
     /* If there are no subscribers, then there are no mounts that are potentially
      * interested in subscriptions */
 
-    if (corto_subscribers_count && corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+    if (corto_subscriber_admin.count && corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
         if (observerMask & CORTO_ON_TREE) {
             if (mask == CORTO_ON_DEFINE) {
                 corto_id id;
@@ -410,7 +408,7 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
     while((data = *observers)) {
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_string str = corto_strp(&mask, corto_eventMask_o, 0);
+            corto_string str = corto_ptr_str(&mask, corto_eventMask_o, 0);
             corto_debug("notify:  %s %s: %s (%s)",
                 corto_fullpath(NULL, data->_this),
                 corto_fullpath(NULL, data->observer),
@@ -1029,7 +1027,7 @@ int16_t _corto_observer_observe(
             }
 
             /* TODO: use data from select to align observer */
-            while (corto_iterHasNext(&it)) corto_iterNext(&it);
+            while (corto_iter_hasNext(&it)) corto_iter_next(&it);
         }
     }
 

@@ -115,7 +115,7 @@ void _test_StringSerializer_tc_serArray(
 
     corto_int32 v[] = {10, 20, 30};
 
-    result = corto_strp(&v, t, 0);
+    result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{10,20,30}"));
 
@@ -135,7 +135,7 @@ void _test_StringSerializer_tc_serArrayComplex(
 
     test_Point v[] = {{10, 20}, {30, 40}, {50, 60}};
 
-    result = corto_strp(&v, t, 0);
+    result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
 
@@ -152,7 +152,7 @@ void _test_StringSerializer_tc_serBoolFalse(
     corto_bool v = FALSE;
     corto_string result = NULL;
 
-    result = corto_strp(&v, corto_bool_o, 0);
+    result = corto_ptr_str(&v, corto_bool_o, 0);
 
     test_assert(result != NULL);
     test_assert(!strcmp(result, "false"));
@@ -169,7 +169,7 @@ void _test_StringSerializer_tc_serBoolTrue(
     corto_bool v = TRUE;
     corto_string result = NULL;
 
-    result = corto_strp(&v, corto_bool_o, 0);
+    result = corto_ptr_str(&v, corto_bool_o, 0);
 
     test_assert(result != NULL);
     test_assert(!strcmp(result, "true"));
@@ -186,7 +186,7 @@ void _test_StringSerializer_tc_serChar(
     corto_char v = 'a';
     corto_string result = NULL;
 
-    result = corto_strp(&v, corto_char_o, 0);
+    result = corto_ptr_str(&v, corto_char_o, 0);
 
     test_assert(result != NULL);
     test_assert(!strcmp(result, "'a'"));
@@ -203,7 +203,7 @@ void _test_StringSerializer_tc_serCharEscape(
     corto_char v = '\n';
     corto_string result = NULL;
 
-    result = corto_strp(&v, corto_char_o, 0);
+    result = corto_ptr_str(&v, corto_char_o, 0);
 
     test_assert(result != NULL);
     test_assert(!strcmp(result, "'\n'"));
@@ -220,7 +220,7 @@ void _test_StringSerializer_tc_serCharNull(
     corto_char v = '\0';
     corto_string result = NULL;
 
-    result = corto_strp(&v, corto_char_o, 0);
+    result = corto_ptr_str(&v, corto_char_o, 0);
 
     test_assert(result != NULL);
     test_assert(!strcmp(result, "''"));
@@ -237,7 +237,7 @@ void _test_StringSerializer_tc_serComposite(
     test_Point v = {10, 20};
     corto_string result;
 
-    result = corto_strp(&v, test_Point_o, 0);
+    result = corto_ptr_str(&v, test_Point_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{10,20}"));
 
@@ -253,7 +253,7 @@ void _test_StringSerializer_tc_serCompositeNested(
     test_Line v = {{10, 20}, {30, 40}};
     corto_string result;
 
-    result = corto_strp(&v, test_Line_o, 0);
+    result = corto_ptr_str(&v, test_Line_o, 0);
     test_assert(result != NULL);
     test_assertstr(result, "{{10,20},{30,40}}");
 
@@ -284,7 +284,7 @@ void _test_StringSerializer_tc_serInheritance(
     test_Point3D v = {{10, 20}, 30};
     corto_string result;
 
-    result = corto_strp(&v, test_Point3D_o, 0);
+    result = corto_ptr_str(&v, test_Point3D_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{10,20,30}"));
 
@@ -300,7 +300,7 @@ void _test_StringSerializer_tc_serInt16(
     corto_int16 v = 32767;
     corto_string result;
 
-    result = corto_strp(&v, corto_int16_o, 0);
+    result = corto_ptr_str(&v, corto_int16_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "32767"));
 
@@ -316,7 +316,7 @@ void _test_StringSerializer_tc_serInt16Minus(
     corto_int16 v = -32768;
     corto_string result;
 
-    result = corto_strp(&v, corto_int16_o, 0);
+    result = corto_ptr_str(&v, corto_int16_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "-32768"));
 
@@ -332,7 +332,7 @@ void _test_StringSerializer_tc_serInt32(
     corto_int32 v = 2147483647;
     corto_string result;
 
-    result = corto_strp(&v, corto_int32_o, 0);
+    result = corto_ptr_str(&v, corto_int32_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "2147483647"));
 
@@ -348,7 +348,7 @@ void _test_StringSerializer_tc_serInt32Minus(
     corto_int32 v = -2147483648;
     corto_string result;
 
-    result = corto_strp(&v, corto_int32_o, 0);
+    result = corto_ptr_str(&v, corto_int32_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "-2147483648"));
 
@@ -364,7 +364,7 @@ void _test_StringSerializer_tc_serInt64(
     corto_int64 v = 9223372036854775807;
     corto_string result;
 
-    result = corto_strp(&v, corto_int64_o, 0);
+    result = corto_ptr_str(&v, corto_int64_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "9223372036854775807"));
 
@@ -380,7 +380,7 @@ void _test_StringSerializer_tc_serInt64Minus(
     corto_int64 v = -9223372036854775807 - 1;
     corto_string result;
 
-    result = corto_strp(&v, corto_int64_o, 0);
+    result = corto_ptr_str(&v, corto_int64_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "-9223372036854775808"));
 
@@ -396,7 +396,7 @@ void _test_StringSerializer_tc_serInt8(
     corto_int64 v = 127;
     corto_string result;
 
-    result = corto_strp(&v, corto_int64_o, 0);
+    result = corto_ptr_str(&v, corto_int64_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "127"));
 
@@ -412,7 +412,7 @@ void _test_StringSerializer_tc_serInt8Minus(
     corto_int64 v = -128;
     corto_string result;
 
-    result = corto_strp(&v, corto_int64_o, 0);
+    result = corto_ptr_str(&v, corto_int64_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "-128"));
 
@@ -433,7 +433,7 @@ void _test_StringSerializer_tc_serList(
     corto_llAppend(v, (void*)20);
     corto_llAppend(v, (void*)30);
 
-    result = corto_strp(&v, t, 0);
+    result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{10,20,30}"));
 
@@ -457,7 +457,7 @@ void _test_StringSerializer_tc_serListComplex(
     corto_llAppend(v, &e2);
     corto_llAppend(v, &e3);
 
-    result = corto_strp(&v, t, 0);
+    result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
 
@@ -523,7 +523,7 @@ void _test_StringSerializer_tc_serSequence(
     seqType v = {3, elements};
     corto_string result;
 
-    result = corto_strp(&v, t, 0);
+    result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{10,20,30}"));
 
@@ -543,7 +543,7 @@ void _test_StringSerializer_tc_serSequenceComplex(
     seqType v = {3, elements};
     corto_string result;
 
-    result = corto_strp(&v, t, 0);
+    result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
 
@@ -560,7 +560,7 @@ void _test_StringSerializer_tc_serString(
     corto_string v = "Hello World";
     corto_string result;
 
-    result = corto_strp(&v, corto_string_o, 0);
+    result = corto_ptr_str(&v, corto_string_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "\"Hello World\""));
 
@@ -576,7 +576,7 @@ void _test_StringSerializer_tc_serStringEscape(
     corto_string v = "Hello World\n";
     corto_string result;
 
-    result = corto_strp(&v, corto_string_o, 0);
+    result = corto_ptr_str(&v, corto_string_o, 0);
     test_assert(result != NULL);
     test_assertstr(result, "\"Hello World\\n\"");
 
@@ -592,7 +592,7 @@ void _test_StringSerializer_tc_serStringNull(
     corto_string v = NULL;
     corto_string result;
 
-    result = corto_strp(&v, corto_string_o, 0);
+    result = corto_ptr_str(&v, corto_string_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "null"));
 
@@ -608,7 +608,7 @@ void _test_StringSerializer_tc_serStringWhitespace(
     corto_string v = "  Hello World   ";
     corto_string result;
 
-    result = corto_strp(&v, corto_string_o, 0);
+    result = corto_ptr_str(&v, corto_string_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "\"  Hello World   \""));
 
@@ -647,7 +647,7 @@ void _test_StringSerializer_tc_serUint16(
     corto_uint16 v = 65535;
     corto_string result;
 
-    result = corto_strp(&v, corto_uint16_o, 0);
+    result = corto_ptr_str(&v, corto_uint16_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "65535"));
 
@@ -663,7 +663,7 @@ void _test_StringSerializer_tc_serUint32(
     corto_uint32 v = 4294967295;
     corto_string result;
 
-    result = corto_strp(&v, corto_uint32_o, 0);
+    result = corto_ptr_str(&v, corto_uint32_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "4294967295"));
 
@@ -679,7 +679,7 @@ void _test_StringSerializer_tc_serUint64(
     corto_uint64 v = 18446744073709551615u;
     corto_string result;
 
-    result = corto_strp(&v, corto_uint64_o, 0);
+    result = corto_ptr_str(&v, corto_uint64_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "18446744073709551615"));
 
@@ -695,7 +695,7 @@ void _test_StringSerializer_tc_serUint8(
     corto_uint64 v = 255;
     corto_string result;
 
-    result = corto_strp(&v, corto_uint64_o, 0);
+    result = corto_ptr_str(&v, corto_uint64_o, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "255"));
 

@@ -39,8 +39,8 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
         }
 
         corto_iter iter = corto_llIter(data->anonymousObjects);
-        while (corto_iterHasNext(&iter)) {
-            corto_object a = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_object a = corto_iter_next(&iter);
             if (corto_compare(o, a) == CORTO_EQ) {
                 result = a;
                 break;

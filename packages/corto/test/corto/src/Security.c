@@ -287,11 +287,11 @@ void _test_Security_tc_authorizeDeniedSelect(
     corto_iter iter;
     corto_int16 ret = corto_select("/a/b", ".").iter(&iter);
     test_assert(ret == 0);
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     ret = corto_select("/a", "b").iter(&iter);
     test_assert(ret == 0);
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     ret = corto_select("/a", "*").iter(&iter);
     test_assert(ret == 0);
@@ -301,7 +301,7 @@ void _test_Security_tc_authorizeDeniedSelect(
 
     ret = corto_select("/a/b/c", "..").iter(&iter);
     test_assert(ret == 0);
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     prev = corto_authenticate(prev);
     test_assert(prev == token);
@@ -425,11 +425,11 @@ void _test_Security_tc_authorizeSelect(
     corto_iter iter;
     corto_int16 ret = corto_select("/a/b", ".").iter(&iter);
     test_assert(ret == 0);
-    test_assert(corto_iterHasNext(&iter));
+    test_assert(corto_iter_hasNext(&iter));
 
     ret = corto_select("/a", "b").iter(&iter);
     test_assert(ret == 0);
-    test_assert(corto_iterHasNext(&iter));
+    test_assert(corto_iter_hasNext(&iter));
 
     ret = corto_select("/a", "*").iter(&iter);
     test_assert(ret == 0);
@@ -443,7 +443,7 @@ void _test_Security_tc_authorizeSelect(
 
     ret = corto_select("/a/b/c", "..").iter(&iter);
     test_assert(ret == 0);
-    test_assert(corto_iterHasNext(&iter));
+    test_assert(corto_iter_hasNext(&iter));
 
     prev = corto_authenticate(prev);
     test_assert(prev == token);

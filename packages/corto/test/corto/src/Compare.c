@@ -39,15 +39,15 @@ void _test_Compare_tc_array(
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {10, 20, 30, 40};
 
-    eq = corto_comparep(v1, test_PrimitiveArray_o, v2);
+    eq = corto_ptr_compare(v1, test_PrimitiveArray_o, v2);
     test_assert(eq == CORTO_EQ);
 
     v2[0] = 20;
-    eq = corto_comparep(v1, test_PrimitiveArray_o, v2);
+    eq = corto_ptr_compare(v1, test_PrimitiveArray_o, v2);
     test_assert(eq == CORTO_LT);
 
     v2[0] = 0;
-    eq = corto_comparep(v1, test_PrimitiveArray_o, v2);
+    eq = corto_ptr_compare(v1, test_PrimitiveArray_o, v2);
     test_assert(eq == CORTO_GT);
 
 /* $end */
@@ -169,16 +169,16 @@ void _test_Compare_tc_bool(
     corto_bool v1 = FALSE;
     corto_bool v2 = FALSE;
 
-    eq = corto_comparep(&v1, corto_bool_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_bool_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = TRUE;
-    eq = corto_comparep(&v1, corto_bool_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_bool_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = FALSE;
     v2 = TRUE;
-    eq = corto_comparep(&v1, corto_bool_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_bool_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -192,15 +192,15 @@ void _test_Compare_tc_char(
     corto_char v1 = 'a';
     corto_char v2 = 'a';
 
-    eq = corto_comparep(&v1, corto_char_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_char_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 'b';
-    eq = corto_comparep(&v1, corto_char_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_char_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v2 = 'c';
-    eq = corto_comparep(&v1, corto_char_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_char_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -214,15 +214,15 @@ void _test_Compare_tc_float32(
     corto_float32 v1 = 10.5;
     corto_float32 v2 = 10.5;
 
-    eq = corto_comparep(&v1, corto_float32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_float32_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 11.5;
-    eq = corto_comparep(&v1, corto_float32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_float32_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v2 = 12.5;
-    eq = corto_comparep(&v1, corto_float32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_float32_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -236,15 +236,15 @@ void _test_Compare_tc_float64(
     corto_float64 v1 = 10.5;
     corto_float64 v2 = 10.5;
 
-    eq = corto_comparep(&v1, corto_float64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_float64_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 11.5;
-    eq = corto_comparep(&v1, corto_float64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_float64_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v2 = 12.5;
-    eq = corto_comparep(&v1, corto_float64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_float64_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -258,15 +258,15 @@ void _test_Compare_tc_int16(
     corto_int16 v1 = 1000;
     corto_int16 v2 = 1000;
 
-    eq = corto_comparep(&v1, corto_int16_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int16_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 2000;
-    eq = corto_comparep(&v1, corto_int16_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int16_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = -1000;
-    eq = corto_comparep(&v1, corto_int16_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int16_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -280,15 +280,15 @@ void _test_Compare_tc_int32(
     corto_int32 v1 = 1000000;
     corto_int32 v2 = 1000000;
 
-    eq = corto_comparep(&v1, corto_int32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int32_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 2000000;
-    eq = corto_comparep(&v1, corto_int32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int32_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = -1000000;
-    eq = corto_comparep(&v1, corto_int32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int32_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -302,15 +302,15 @@ void _test_Compare_tc_int64(
     corto_int64 v1 = 10000000000;
     corto_int64 v2 = 10000000000;
 
-    eq = corto_comparep(&v1, corto_int64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int64_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 20000000000;
-    eq = corto_comparep(&v1, corto_int64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int64_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = -10000000000;
-    eq = corto_comparep(&v1, corto_int64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int64_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -324,15 +324,15 @@ void _test_Compare_tc_int8(
     corto_int8 v1 = 100;
     corto_int8 v2 = 100;
 
-    eq = corto_comparep(&v1, corto_int8_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int8_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 120;
-    eq = corto_comparep(&v1, corto_int8_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int8_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = -100;
-    eq = corto_comparep(&v1, corto_int8_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_int8_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -346,15 +346,15 @@ void _test_Compare_tc_intw(
     test_intw v1 = 100;
     test_intw v2 = 100;
 
-    eq = corto_comparep(&v1, test_intw_o, &v2);
+    eq = corto_ptr_compare(&v1, test_intw_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 120;
-    eq = corto_comparep(&v1, test_intw_o, &v2);
+    eq = corto_ptr_compare(&v1, test_intw_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = -100;
-    eq = corto_comparep(&v1, test_intw_o, &v2);
+    eq = corto_ptr_compare(&v1, test_intw_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -477,10 +477,10 @@ void _test_Compare_tc_reference(
     corto_voidCreate_auto(o1);
     corto_voidCreate_auto(o2);
 
-    eq = corto_comparep(&o1, corto_object_o, &o1);
+    eq = corto_ptr_compare(&o1, corto_object_o, &o1);
     test_assert(eq == CORTO_EQ);
 
-    eq = corto_comparep(&o1, corto_object_o, &o2);
+    eq = corto_ptr_compare(&o1, corto_object_o, &o2);
     test_assert(eq == CORTO_NEQ);
 
     corto_delete(o1);
@@ -606,15 +606,15 @@ void _test_Compare_tc_string(
     corto_string v2 = "foo";
     corto_equalityKind eq;
 
-    eq = corto_comparep(&v1, corto_string_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_string_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = "bar";
-    eq = corto_comparep(&v1, corto_string_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_string_o, &v2);
     test_assert(eq == CORTO_LT);
 
     v1 = "zoo";
-    eq = corto_comparep(&v1, corto_string_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_string_o, &v2);
     test_assert(eq == CORTO_GT);
 
 /* $end */
@@ -628,14 +628,14 @@ void _test_Compare_tc_stringNull(
     corto_string v2 = NULL;
     corto_equalityKind eq;
 
-    eq = corto_comparep(&v1, corto_string_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_string_o, &v2);
     test_assert(eq == CORTO_GT);
 
-    eq = corto_comparep(&v2, corto_string_o, &v1);
+    eq = corto_ptr_compare(&v2, corto_string_o, &v1);
     test_assert(eq == CORTO_LT);
 
     v1 = NULL;
-    eq = corto_comparep(&v1, corto_string_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_string_o, &v2);
     test_assert(eq == CORTO_EQ);
 
 /* $end */
@@ -649,15 +649,15 @@ void _test_Compare_tc_uint16(
     corto_uint16 v1 = 1000;
     corto_uint16 v2 = 1000;
 
-    eq = corto_comparep(&v1, corto_uint16_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint16_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 45000;
-    eq = corto_comparep(&v1, corto_uint16_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint16_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = 500;
-    eq = corto_comparep(&v1, corto_uint16_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint16_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -671,15 +671,15 @@ void _test_Compare_tc_uint32(
     corto_uint32 v1 = 1000000000;
     corto_uint32 v2 = 1000000000;
 
-    eq = corto_comparep(&v1, corto_uint32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint32_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 4000000000;
-    eq = corto_comparep(&v1, corto_uint32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint32_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = 1000;
-    eq = corto_comparep(&v1, corto_uint32_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint32_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -693,15 +693,15 @@ void _test_Compare_tc_uint64(
     corto_uint64 v1 = 10000000000;
     corto_uint64 v2 = 10000000000;
 
-    eq = corto_comparep(&v1, corto_uint64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint64_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 40000000000;
-    eq = corto_comparep(&v1, corto_uint64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint64_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = 1000;
-    eq = corto_comparep(&v1, corto_uint64_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint64_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -715,15 +715,15 @@ void _test_Compare_tc_uint8(
     corto_uint8 v1 = 200;
     corto_uint8 v2 = 200;
 
-    eq = corto_comparep(&v1, corto_uint8_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint8_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 250;
-    eq = corto_comparep(&v1, corto_uint8_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint8_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = 50;
-    eq = corto_comparep(&v1, corto_uint8_o, &v2);
+    eq = corto_ptr_compare(&v1, corto_uint8_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */
@@ -737,15 +737,15 @@ void _test_Compare_tc_uintw(
     test_uintw v1 = 200;
     test_uintw v2 = 200;
 
-    eq = corto_comparep(&v1, test_uintw_o, &v2);
+    eq = corto_ptr_compare(&v1, test_uintw_o, &v2);
     test_assert(eq == CORTO_EQ);
 
     v1 = 250;
-    eq = corto_comparep(&v1, test_uintw_o, &v2);
+    eq = corto_ptr_compare(&v1, test_uintw_o, &v2);
     test_assert(eq == CORTO_GT);
 
     v1 = 50;
-    eq = corto_comparep(&v1, test_uintw_o, &v2);
+    eq = corto_ptr_compare(&v1, test_uintw_o, &v2);
     test_assert(eq == CORTO_LT);
 
 /* $end */

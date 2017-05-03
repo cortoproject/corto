@@ -904,7 +904,7 @@ corto_int16 corto_value_binaryOp(
     corto_value *right,
     corto_value *result)
 {
-    corto_value dummy = corto_value_init();
+    corto_value dummy = corto_value_empty();
     corto_uint64 *v = &dummy.is.value.storage;
     corto_type leftType = corto_value_typeof(left);
     corto_type rightType = corto_value_typeof(right);
@@ -929,7 +929,7 @@ corto_int16 corto_value_binaryOp(
         }
     }
 
-    corto_value leftCast = corto_value_init(), rightCast = corto_value_init();
+    corto_value leftCast = corto_value_empty(), rightCast = corto_value_empty();
     if (leftType != operType) {
         if (corto_value_cast(left, operType, &leftCast)) {
             goto error;
@@ -967,7 +967,7 @@ error:
     return -1;
 }
 
-corto_value corto_value_init(void) {
+corto_value corto_value_empty(void) {
     corto_value v;
     memset(&v, 0, sizeof(corto_value));
     v.kind = CORTO_VALUE;
@@ -987,14 +987,14 @@ void corto_value_free(corto_value *v) {
 
     if (t) {
         void *ptr = corto_value_ptrof(v);
-        corto_deinitp(ptr, t);
+        corto_ptr_deinit(ptr, t);
         if (v->kind == CORTO_VALUE) {
             if (ptr != (void*)&v->is.value.storage) {
                 corto_dealloc(ptr);
             }
         }
     }
-    *v = corto_value_init();
+    *v = corto_value_empty();
 }
 
 corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content) {

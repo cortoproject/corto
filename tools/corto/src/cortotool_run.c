@@ -26,8 +26,8 @@ corto_fileMonitor* cortotool_monitorNew(char *file, char *lib) {
 static void cortotool_addChangedLibrary(corto_ll *libs, corto_string lib) {
     if (*libs && lib) {
         corto_iter iter = corto_llIter(*libs);
-        while (corto_iterHasNext(&iter)) {
-            corto_string l = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_string l = corto_iter_next(&iter);
             if (!strcmp(l, lib)) {
                 return;
             }
@@ -51,9 +51,9 @@ static corto_ll cortotool_getModified(corto_ll files, corto_ll changed) {
 
     if (files) {
         corto_iter iter = corto_llIter(files);
-        while (corto_iterHasNext(&iter)) {
+        while (corto_iter_hasNext(&iter)) {
             struct stat attr;
-            corto_fileMonitor *mon = corto_iterNext(&iter);
+            corto_fileMonitor *mon = corto_iter_next(&iter);
 
             if (stat(mon->file, &attr) < 0) {
                 printf("corto: failed to stat '%s' (%s)\n", mon->file, strerror(errno));
@@ -116,9 +116,9 @@ static int cortotool_addDirToMonitor(corto_string dir, corto_ll monitorList) {
     }
 
     corto_iter iter = corto_llIter(files);
-    while (corto_iterHasNext(&iter)) {
+    while (corto_iter_hasNext(&iter)) {
         corto_id srcFile;
-        corto_string file = corto_iterNext(&iter);
+        corto_string file = corto_iter_next(&iter);
         sprintf(srcFile, "%s/src/%s", dir, file);
         corto_fileMonitor *mon = cortotool_monitorNew(srcFile, dir);
         corto_llAppend(monitorList, mon);
@@ -157,9 +157,9 @@ static corto_ll cortotool_gatherFiles(void) {
     /* Walk packages */
     packages = corto_loadGetPackages();
     corto_iter iter = corto_llIter(packages);
-    while (corto_iterHasNext(&iter)) {
+    while (corto_iter_hasNext(&iter)) {
         corto_id sourceLink;
-        corto_string package = corto_iterNext(&iter);
+        corto_string package = corto_iter_next(&iter);
         corto_string file = corto_locate(package, NULL, CORTO_LOCATION_LIB);
         if (!file) {
             corto_error("package '%s' could not be located\n", package);
@@ -241,8 +241,8 @@ corto_int16 cortotool_monitor(char *argv[]) {
         } else {
             depErrors = 0;
             corto_iter iter = corto_llIter(changed);
-            while (corto_iterHasNext(&iter)) {
-                corto_string lib = corto_iterNext(&iter);
+            while (corto_iter_hasNext(&iter)) {
+                corto_string lib = corto_iter_next(&iter);
                 if (lib && strcmp(lib, ".")) {
                     printf("corto: '%s' changed, rebuilding\n", lib);
                     if (!cortotool_buildDependency(lib)) {
