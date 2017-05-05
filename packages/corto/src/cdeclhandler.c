@@ -157,6 +157,7 @@ corto_int16 corto_cdeclInit(corto_function this) {
     ffi_type **args = CORTO_OFFSET(cif, sizeof(ffi_cif));
     corto_uint8 hasThis = 0;
 
+
     /* Add size of this-pointer */
     corto_procedure procedure = corto_function_getProcedureType(this);
 
@@ -171,7 +172,7 @@ corto_int16 corto_cdeclInit(corto_function this) {
     }
 
     corto_uint32 i;
-    for(i=0; i<this->parameters.length; i++) {
+    for(i = 0; i < this->parameters.length; i++) {
         if (this->parameters.buffer[i].passByReference) {
             args[i + hasThis] = &ffi_type_pointer;
         } else {

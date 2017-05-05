@@ -9,14 +9,11 @@
 #include <include/test.h>
 
 void _test_Ownership_onDelete(
-    test_Ownership this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/Ownership/onDelete) */
-    CORTO_UNUSED(this);
-    this->observable = (corto_word)object;
+    test_Ownership this = e->instance;
+    this->observable = (corto_word)e->data;
 /* $end */
 }
 

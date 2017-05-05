@@ -514,20 +514,16 @@ void _test_ObjectMgmt_tc_createInvalidType(
 }
 
 /* $header(test/ObjectMgmt/tc_createNested) */
-corto_void onCreateNested(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object result,
-    corto_observer observer)
+corto_void onCreateNested(corto_observerEvent *e)
 {
-    test_EventCount *counter = instance;
+    test_EventCount *counter = e->instance;
 
-    if (event & CORTO_ON_DECLARE) counter->declareCount++;
-    if (event & CORTO_ON_DEFINE) counter->defineCount++;
-    if (event & CORTO_ON_UPDATE) counter->updateCount++;
-    if (event & CORTO_ON_DELETE) counter->deleteCount++;
-    if (event & CORTO_ON_RESUME) counter->resumeCount++;
-    if (event & CORTO_ON_SUSPEND) counter->suspendCount++;
+    if (e->event & CORTO_ON_DECLARE) counter->declareCount++;
+    if (e->event & CORTO_ON_DEFINE) counter->defineCount++;
+    if (e->event & CORTO_ON_UPDATE) counter->updateCount++;
+    if (e->event & CORTO_ON_DELETE) counter->deleteCount++;
+    if (e->event & CORTO_ON_RESUME) counter->resumeCount++;
+    if (e->event & CORTO_ON_SUSPEND) counter->suspendCount++;
 }
 /* $end */
 void _test_ObjectMgmt_tc_createNested(
@@ -1177,20 +1173,16 @@ void _test_ObjectMgmt_tc_declareInvalidType(
 }
 
 /* $header(test/ObjectMgmt/tc_declareNested) */
-corto_void onDeclareNested(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object result,
-    corto_observer observer)
+corto_void onDeclareNested(corto_observerEvent *e)
 {
-    test_EventCount *counter = instance;
+    test_EventCount *counter = e->instance;
 
-    if (event & CORTO_ON_DECLARE) counter->declareCount++;
-    if (event & CORTO_ON_DEFINE) counter->defineCount++;
-    if (event & CORTO_ON_UPDATE) counter->updateCount++;
-    if (event & CORTO_ON_DELETE) counter->deleteCount++;
-    if (event & CORTO_ON_RESUME) counter->resumeCount++;
-    if (event & CORTO_ON_SUSPEND) counter->suspendCount++;
+    if (e->event & CORTO_ON_DECLARE) counter->declareCount++;
+    if (e->event & CORTO_ON_DEFINE) counter->defineCount++;
+    if (e->event & CORTO_ON_UPDATE) counter->updateCount++;
+    if (e->event & CORTO_ON_DELETE) counter->deleteCount++;
+    if (e->event & CORTO_ON_RESUME) counter->resumeCount++;
+    if (e->event & CORTO_ON_SUSPEND) counter->suspendCount++;
 }
 /* $end */
 void _test_ObjectMgmt_tc_declareNested(
@@ -1393,7 +1385,7 @@ void _test_ObjectMgmt_tc_declareScoped(
     test_assert(p != NULL);
     *(corto_int32*)CORTO_OFFSET(p, x->offset) = 10;
     *(corto_int32*)CORTO_OFFSET(p, y->offset) = 20;
-    test_assertstr("{10,20}", corto_contentof(NULL, "text/corto", p));
+    test_assertstr("{10,20}", corto_contentof(p, "text/corto"));
 
     ret = corto_delete(s);
     test_assert(ret == 0);

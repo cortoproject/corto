@@ -9,78 +9,60 @@
 #include <include/test.h>
 
 void _test_AutoResumeSink_onDeclare(
-    test_AutoResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/AutoResumeSink/onDeclare) */
-
+    test_AutoResumeSink this = e->instance;
     this->declared ++;
 
 /* $end */
 }
 
 void _test_AutoResumeSink_onDefine(
-    test_AutoResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/AutoResumeSink/onDefine) */
-
+    test_AutoResumeSink this = e->instance;
     this->defined ++;
 
 /* $end */
 }
 
 void _test_AutoResumeSink_onDelete(
-    test_AutoResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/AutoResumeSink/onDelete) */
-
+    test_AutoResumeSink this = e->instance;
     this->deleted ++;
 
 /* $end */
 }
 
 void _test_AutoResumeSink_onResume(
-    test_AutoResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/AutoResumeSink/onResume) */
-
+    test_AutoResumeSink this = e->instance;
     this->resumed ++;
 
 /* $end */
 }
 
 void _test_AutoResumeSink_onSuspend(
-    test_AutoResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/AutoResumeSink/onSuspend) */
-
-      this->suspended ++;
+    test_AutoResumeSink this = e->instance;
+    this->suspended ++;
 
 /* $end */
 }
 
 void _test_AutoResumeSink_onUpdate(
-    test_AutoResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/AutoResumeSink/onUpdate) */
-
+    test_AutoResumeSink this = e->instance;
     this->updated ++;
 
 /* $end */
@@ -93,8 +75,6 @@ void _test_AutoResumeSink_setup(
     /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
     test_AutoResumeSinkMountCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
-
-    CORTO_DEBUG_ENABLED = 1;
 
     /* Setup observers */
     corto_observer_observe(test_ResumeSink_onDeclare_o, this, mount);

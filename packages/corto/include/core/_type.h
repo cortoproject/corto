@@ -16,7 +16,8 @@ extern "C" {
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
-#define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
+#define corto_handleAction(o) ((corto_handleAction*)corto_assertType((corto_type)corto_handleAction_o, o))
+#define corto_event(o) ((corto_event*)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
 #define corto_frameKind(o) ((corto_frameKind*)corto_assertType((corto_type)corto_frameKind_o, o))
 #define corto_frame(o) ((corto_frame*)corto_assertType((corto_type)corto_frame_o, o))
@@ -31,7 +32,7 @@ extern "C" {
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
-#define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
+#define corto_observerEvent(o) ((corto_observerEvent*)corto_assertType((corto_type)corto_observerEvent_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
@@ -46,7 +47,7 @@ extern "C" {
 #define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
 #define corto_stager(o) ((corto_stager)corto_assertType((corto_type)corto_stager_o, o))
-#define corto_subscriberEvent(o) ((corto_subscriberEvent)corto_assertType((corto_type)corto_subscriberEvent_o, o))
+#define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assertType((corto_type)corto_subscriberEvent_o, o))
 
 /* Native types */
 #ifndef CORTO_CORE_H
@@ -88,12 +89,21 @@ struct corto_application_s {
 /*  /corto/core/dispatcher */
 typedef void *corto_dispatcher;
 
-/*  /corto/core/event */
-typedef struct corto_event_s *corto_event;
 
-struct corto_event_s {
+/*  /corto/core/handleAction */
+typedef struct corto_handleAction corto_handleAction;
+
+struct corto_handleAction {
+    corto_delegatedata super;
+};
+
+/*  /corto/core/event */
+typedef struct corto_event corto_event;
+
+struct corto_event {
     uint16_t kind;
     bool handled;
+    corto_handleAction handleAction;
 };
 
 /* /corto/core/eventMask */
@@ -225,7 +235,7 @@ struct corto_mount_s {
 typedef struct corto_invokeEvent_s *corto_invokeEvent;
 
 struct corto_invokeEvent_s {
-    struct corto_event_s super;
+    corto_event super;
     corto_mount mount;
     corto_object instance;
     corto_function function;
@@ -242,16 +252,16 @@ struct corto_loader_s {
 
 typedef corto_iter corto_objectIter;
 
-/*  /corto/core/observableEvent */
-typedef struct corto_observableEvent_s *corto_observableEvent;
+/*  /corto/core/observerEvent */
+typedef struct corto_observerEvent corto_observerEvent;
 
-struct corto_observableEvent_s {
-    struct corto_event_s super;
-    corto_function observer;
-    corto_object me;
+struct corto_observerEvent {
+    corto_event super;
+    corto_observer observer;
+    corto_object instance;
     corto_object source;
-    corto_object observable;
-    corto_eventMask mask;
+    corto_eventMask event;
+    corto_object data;
     uintptr_t thread;
 };
 
@@ -400,11 +410,15 @@ struct corto_stager_s {
 };
 
 /*  /corto/core/subscriberEvent */
-typedef struct corto_subscriberEvent_s *corto_subscriberEvent;
+typedef struct corto_subscriberEvent corto_subscriberEvent;
 
-struct corto_subscriberEvent_s {
-    struct corto_observableEvent_s super;
-    corto_result result;
+struct corto_subscriberEvent {
+    corto_event super;
+    corto_subscriber subscriber;
+    corto_object instance;
+    corto_object source;
+    corto_eventMask event;
+    corto_result data;
     uintptr_t contentTypeHandle;
 };
 

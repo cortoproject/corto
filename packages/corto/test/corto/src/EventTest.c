@@ -118,261 +118,221 @@ void _test_EventTest_destruct(
 }
 
 void _test_EventTest_onDeclare(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeclare) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeclare++;
 /* $end */
 }
 
 void _test_EventTest_onDeclareScope(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeclareScope) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeclareScope++;
 /* $end */
 }
 
 void _test_EventTest_onDeclareSelf(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeclareSelf) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeclareSelf++;
 /* $end */
 }
 
 void _test_EventTest_onDeclareTree(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeclareTree) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeclareTree++;
 /* $end */
 }
 
 void _test_EventTest_onDefine(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDefine) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDefine++;
 /* $end */
 }
 
 void _test_EventTest_onDefineScope(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDefineScope) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDefineScope++;
 /* $end */
 }
 
 void _test_EventTest_onDefineSelf(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDefineSelf) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDefineSelf++;
 /* $end */
 }
 
 void _test_EventTest_onDefineTree(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDefineTree) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDefineTree++;
 /* $end */
 }
 
 void _test_EventTest_onDelete(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDelete) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDelete++;
 /* $end */
 }
 
 void _test_EventTest_onDeleteScope(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeleteScope) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeleteScope++;
 /* $end */
 }
 
 void _test_EventTest_onDeleteSelf(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeleteSelf) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeleteSelf++;
 /* $end */
 }
 
 void _test_EventTest_onDeleteTree(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onDeleteTree) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countDeleteTree++;
 /* $end */
 }
 
 void _test_EventTest_onUpdate(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdate) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdate++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateDefine(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateDefine) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateDefine++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateDefineScope(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateDefineScope) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateDefineScope++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateDefineSelf(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateDefineSelf) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateDefineSelf++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateDefineTree(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateDefineTree) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateDefineTree++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateScope(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateScope) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateScope++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateSelf(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateSelf) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateSelf++;
 /* $end */
 }
 
 void _test_EventTest_onUpdateTree(
-    test_EventTest this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/EventTest/onUpdateTree) */
-   corto_setref(&this->lastThis, this);
-   corto_setref(&this->lastObservable, object);
+   test_EventTest this = e->instance;
+   corto_setref(&this->lastThis, e->instance);
+   corto_setref(&this->lastObservable, e->data);
    this->countUpdateTree++;
 /* $end */
 }

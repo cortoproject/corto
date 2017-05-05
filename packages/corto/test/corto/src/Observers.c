@@ -8,128 +8,22 @@
 
 #include <include/test.h>
 
-void _test_Observers_customSignatureObserver(
-    test_Observers this,
-    corto_eventMask event,
-    int32_t *observable,
-    corto_observer observer)
-{
-/* $begin(test/Observers/customSignatureObserver) */
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
-/* $end */
-}
-
 void _test_Observers_setup(
     test_Observers this)
 {
 /* $begin(test/Observers/setup) */
-    test_Observers_customSignatureObserver_o->mask = CORTO_ON_UPDATE;
-/* $end */
-}
-
-void _test_Observers_tc_customSignatureObserver(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserver) */
-    corto_object o = corto_create(corto_void_o);
-    test_assert(o != NULL);
-
-    test_assert(corto_observer_observe(test_Observers_customSignatureObserver_o, this, o) == 0);
-
-    test_assert(corto_update(o) == 0);
-    test_assert(this->mask == CORTO_ON_UPDATE);
-    test_assert(this->observable == o);
-    test_assert(this->observer == test_Observers_customSignatureObserver_o);
-
-    test_assert(corto_observer_unobserve(test_Observers_customSignatureObserver_o, this, o) == 0);
-
-    test_assert(corto_delete(o) == 0);
-
-/* $end */
-}
-
-void _test_Observers_tc_customSignatureObserverMissingEventMask(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverMissingEventMask) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(int32 event,int32& observable,core/observer observer)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(int32 event,int32& observable,core/observer observer)' of '/corto/core/observer' failed: first argument must be of type core/eventMask"
-    );
-
-/* $end */
-}
-
-void _test_Observers_tc_customSignatureObserverMissingObserver(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverMissingObserver) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(core/eventMask event,int32& observable,object observer)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32& observable,object observer)' of '/corto/core/observer' failed: third argument must be of type core/observer"
-    );
-
-/* $end */
-}
-
-void _test_Observers_tc_customSignatureObserverObservableNotReference(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverObservableNotReference) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(core/eventMask event,int32 observable,core/observer observer)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32 observable,core/observer observer)' of '/corto/core/observer' failed: observer parameter must be of a reference type"
-    );
-
-/* $end */
-}
-
-void _test_Observers_tc_customSignatureObserverWrongArgumentNumber(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverWrongArgumentNumber) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(core/eventMask event,int32& observable)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32& observable)' of '/corto/core/observer' failed: observers must have three arguments"
-    );
 
 /* $end */
 }
 
 /* $header(test/Observers/tc_dispatchObserver) */
 void dispatchObserver_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
-    test_Observers this = instance;
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = e->instance;
+    this->mask = e->event;
+    corto_setref(&this->observable, e->data);
+    corto_setref(&this->observer, e->observer);
 }
 /* $end */
 void _test_Observers_tc_dispatchObserver(
@@ -164,17 +58,12 @@ void _test_Observers_tc_dispatchObserver(
 }
 
 /* $header(test/Observers/tc_notifyReadDenied) */
-void notifyReadDenied_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+void notifyReadDenied_onUpdate(corto_observerEvent *e)
 {
-    test_Observers this = test_Observers(observer->instance);
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = e->instance;
+    this->mask = e->event;
+    corto_setref(&this->observable, e->data);
+    corto_setref(&this->observer, e->observer);
     this->count ++;
 }
 /* $end */
@@ -307,17 +196,12 @@ void _test_Observers_tc_observerMissingObservable(
 }
 
 /* $header(test/Observers/tc_observeTypeFilter) */
-void observeTypeFilter_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+void observeTypeFilter_onUpdate(corto_observerEvent *e)
 {
-    test_Observers this = instance;
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = e->instance;
+    this->mask = e->event;
+    corto_setref(&this->observable, e->data);
+    corto_setref(&this->observer, e->observer);
 }
 /* $end */
 void _test_Observers_tc_observeTypeFilter(
@@ -385,16 +269,12 @@ void _test_Observers_tc_observeTypeFilterUnresolved(
 
 /* $header(test/Observers/tc_observeWithMultipleInstances) */
 void observeWithMultipleInstances_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
-    test_Observers this = test_Observers(observer->instance);
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = corto_observer(e->observer)->instance;
+    this->mask = e->event;
+    corto_setref(&this->observable, e->data);
+    corto_setref(&this->observer, e->observer);
     this->count ++;
 }
 /* $end */

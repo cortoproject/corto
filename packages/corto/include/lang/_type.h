@@ -8,7 +8,6 @@
 #define CORTO_LANG__TYPE_H
 
 #include <corto/base.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

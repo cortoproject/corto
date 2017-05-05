@@ -16,7 +16,7 @@ void _test_Copy_tc_any(
     corto_any src = {corto_type(corto_int32_o), &v, FALSE};
     corto_any dst = {NULL, NULL, FALSE};
 
-    corto_int16 ret = corto_copya(&dst, src);
+    corto_int16 ret = corto_ptr_copy(&dst, corto_any_o, &src);
     test_assert(ret == 0);
     test_assert(dst.type == corto_type(corto_int32_o));
     test_assert(dst.value != NULL);

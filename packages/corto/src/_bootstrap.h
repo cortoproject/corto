@@ -145,6 +145,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FW_IC(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_ICD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 #define CORTO_FW_IFCD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
+#define CORTO_FW_IF(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_)
 #define CORTO_FW_CD(parent, name) sso_method CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 
 /* Delegate assignments */
@@ -174,6 +175,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 #define CORTO_IFCD_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
 #define CORTO_IFCD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
+
+#define CORTO_IF_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
+#define CORTO_IF_CLASS(name)
 
 #define CORTO_CD_TYPE(name)
 #define CORTO_CD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
@@ -290,6 +294,11 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_STRUCT_O(parent, name, scopeType, scopeStateKind, defaultType, defaultProcedureType)\
     sso_struct parent##_##name##__o = \
     {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_NOBASE_V(parent, name, CORTO_STRUCT, FALSE, CORTO_ATTR_DEFAULT, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE)}
+
+/* struct object */
+#define CORTO_STRUCT_BASE_O(parent, name, base, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE)\
+    sso_struct parent##_##name##__o = \
+    {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_V(parent, name, CORTO_STRUCT, base, CORTO_GLOBAL, FALSE, CORTO_ATTR_DEFAULT, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE)}
 
 /* interface object */
 #define CORTO_INTERFACE_O(parent, name)\
@@ -428,7 +437,6 @@ CORTO_FWDECL(class, container);
 CORTO_FWDECL(class, default);
 CORTO_FWDECL(class, delegate);
 CORTO_FWDECL(class, target);
-CORTO_FWDECL_CORE(class, event);
 CORTO_FWDECL(class, character);
 CORTO_FWDECL(class, collection);
 CORTO_FWDECL(class, enum);
@@ -446,7 +454,6 @@ CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
 CORTO_FWDECL_CORE(class, mount);
 CORTO_FWDECL_CORE(class, notifyEvent);
-CORTO_FWDECL_CORE(class, observableEvent);
 CORTO_FWDECL_CORE(class, package);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
@@ -454,7 +461,6 @@ CORTO_FWDECL(class, quantity);
 CORTO_FWDECL_CORE(class, router);
 CORTO_FWDECL_CORE(class, routerimpl);
 CORTO_FWDECL_CORE(class, stager);
-CORTO_FWDECL_CORE(class, subscriberEvent);
 CORTO_FWDECL(class, table);
 CORTO_FWDECL(class, tablescope);
 CORTO_FWDECL(class, unit);
@@ -468,6 +474,7 @@ CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
 CORTO_FWDECL_NATIVE(class, type);
 
+CORTO_FWDECL_CORE(struct, event);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
@@ -476,9 +483,11 @@ CORTO_FWDECL_CORE(struct, frame);
 CORTO_FWDECL_CORE(struct, mountStats);
 CORTO_FWDECL_CORE(struct, mountPolicy);
 CORTO_FWDECL_CORE(struct, mountSubscription);
+CORTO_FWDECL_CORE(struct, observerEvent);
 CORTO_FWDECL_CORE(struct, result);
 CORTO_FWDECL_CORE(struct, request);
 CORTO_FWDECL_CORE(struct, sample);
+CORTO_FWDECL_CORE(struct, subscriberEvent);
 
 /* Abstract classes */
 CORTO_FWDECL_CORE(interface, dispatcher);
@@ -549,6 +558,7 @@ CORTO_FWDECL_CORE(list, mountSubscriptionList);
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, nameAction);
+CORTO_FWDECL_CORE(delegate, handleAction);
 
 CORTO_FWDECL_CORE(iterator, resultIter);
 CORTO_FWDECL_CORE(iterator, objectIter);
@@ -556,6 +566,9 @@ CORTO_FWDECL_CORE(iterator, sampleIter);
 
 CORTO_FWDECL_CORE(struct, time);
 CORTO_FWDECL_CORE(struct, position);
+
+CORTO_FWDECL_CORE(function, observerEvent_handle);
+CORTO_FWDECL_CORE(function, subscriberEvent_handle);
 
 /* database root */
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
@@ -797,6 +810,7 @@ CORTO_LIST_O(core, mountSubscriptionList, core_mountSubscription, 0);
 CORTO_DELEGATE_O(lang, initAction, lang_int16);
 CORTO_DELEGATE_O(lang, nameAction, lang_string);
 CORTO_DELEGATE_O(lang, destructAction, lang_void);
+CORTO_DELEGATE_O(core, handleAction, lang_void);
 
 /* Iterator types */
 CORTO_ITERATOR_O(core, objectIter, lang_object);
@@ -1216,33 +1230,41 @@ CORTO_CLASS_NOBASE_O(core, stager, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CO
     CORTO_MEMBER_O(core_stager, resolver, lang_word, CORTO_PRIVATE|CORTO_LOCAL);
     CORTO_METHOD_O(core_stager, construct, "()", lang_int16, corto_loader_construct);
     CORTO_METHOD_O(core_stager, destruct, "()", lang_void, corto_loader_destruct);
-    CORTO_METHOD_O(core_stager, add, "(string id,string type,string contentType,word content,uint64 childcount)", lang_int16, corto_subscriberEvent_handle_v);
+    CORTO_METHOD_O(core_stager, add, "(string id,string type,string contentType,word content,uint64 childcount)", lang_int16, corto_subscriberEvent_handle);
 
 /* /corto/lang/event */
-CORTO_CLASS_NOBASE_O(core, event, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_STRUCT_O(core, event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_event, kind, lang_uint16, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_event, handled, lang_bool, CORTO_LOCAL | CORTO_READONLY);
-    CORTO_OVERRIDABLE_O(core_event, handle, "()", lang_void, corto_event_handle_v);
+    CORTO_MEMBER_O(core_event, handleAction, core_handleAction, CORTO_LOCAL | CORTO_READONLY);
+    CORTO_METHOD_O(core_event, handle, "()", lang_void, corto_event_handle);
     CORTO_FUNCTION_O(core_event, uniqueKind, "()", lang_int16, corto_event_uniqueKind);
 
-/* /corto/lang/observableEvent */
-CORTO_CLASS_O(core, observableEvent, core_event, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_REFERENCE_O(core_observableEvent, observer, lang_function, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
-    CORTO_REFERENCE_O(core_observableEvent, me, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
-    CORTO_REFERENCE_O(core_observableEvent, source, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
-    CORTO_REFERENCE_O(core_observableEvent, observable, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
-    CORTO_MEMBER_O(core_observableEvent, mask, core_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_observableEvent, thread, lang_word, CORTO_GLOBAL);
-    CORTO_OVERRIDABLE_O(core_observableEvent, handle, "()", lang_void, corto_observableEvent_handle_v);
+/* /corto/lang/observerEvent */
+CORTO_FW_IF(core, observerEvent);
+CORTO_STRUCT_BASE_O(core, observerEvent, core_event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IF);
+    CORTO_REFERENCE_O(core_observerEvent, observer, core_observer, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_REFERENCE_O(core_observerEvent, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_REFERENCE_O(core_observerEvent, source, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_MEMBER_O(core_observerEvent, event, core_eventMask, CORTO_GLOBAL);
+    CORTO_REFERENCE_O(core_observerEvent, data, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_MEMBER_O(core_observerEvent, thread, lang_word, CORTO_GLOBAL);
+    CORTO_FUNCTION_O(core_observerEvent, handle, "(core/event e)", lang_void, corto_observerEvent_handle);
+    CORTO_METHOD_O(core_observerEvent, init, "()", lang_int16, corto_observerEvent_init);
+    CORTO_METHOD_O(core_observerEvent, deinit, "()", lang_void, corto_observerEvent_deinit);
 
 /* /corto/lang/subscriberEvent */
-CORTO_FW_CD(core, subscriberEvent);
-CORTO_CLASS_O(core, subscriberEvent, core_observableEvent, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_CD);
-    CORTO_MEMBER_O(core_subscriberEvent, result, core_result, CORTO_GLOBAL);
+CORTO_FW_IF(core, subscriberEvent);
+CORTO_STRUCT_BASE_O(core, subscriberEvent, core_event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_IF);
+    CORTO_REFERENCE_O(core_subscriberEvent, subscriber, core_subscriber, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_REFERENCE_O(core_subscriberEvent, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_REFERENCE_O(core_subscriberEvent, source, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
+    CORTO_MEMBER_O(core_subscriberEvent, event, core_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_subscriberEvent, data, core_result, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriberEvent, contentTypeHandle, lang_word, CORTO_GLOBAL);
-    CORTO_OVERRIDABLE_O(core_subscriberEvent, handle, "()", lang_void, corto_subscriberEvent_handle_v);
-    CORTO_METHOD_O(core_subscriberEvent, construct, "()", lang_int16, corto_subscriberEvent_construct);
-    CORTO_METHOD_O(core_subscriberEvent, destruct, "()", lang_void, corto_subscriberEvent_destruct);
+    CORTO_FUNCTION_O(core_subscriberEvent, handle, "(core/event e)", lang_void, corto_subscriberEvent_handle);
+    CORTO_METHOD_O(core_subscriberEvent, init, "()", lang_int16, corto_subscriberEvent_init);
+    CORTO_METHOD_O(core_subscriberEvent, deinit, "()", lang_void, corto_subscriberEvent_deinit);
 
 /* /corto/lang/invokeEvent */
 CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
@@ -1257,7 +1279,7 @@ CORTO_PROCEDURE_O(core, remote, TRUE, NULL, lang_method, CORTO_GLOBAL, CORTO_TYP
 
 /* /corto/core/observer */
 CORTO_FW_ICD(core, observer);
-CORTO_PROCEDURE_O(core, observer, TRUE, NULL, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
+CORTO_PROCEDURE_O(core, observer, FALSE, NULL, lang_function, CORTO_LOCAL | CORTO_READONLY, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_ICD);
     CORTO_MEMBER_O(core_observer, mask, core_eventMask, CORTO_GLOBAL);
     CORTO_REFERENCE_O(core_observer, observable, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(core_observer, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
@@ -1275,7 +1297,7 @@ CORTO_PROCEDURE_O(core, observer, TRUE, NULL, lang_function, CORTO_LOCAL | CORTO
 
 /* /corto/core/subscriber */
 CORTO_FW_IFCD(core, subscriber);
-CORTO_PROCEDURE_O(core, subscriber, TRUE, NULL, core_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IFCD);
+CORTO_PROCEDURE_O(core, subscriber, FALSE, NULL, core_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_IFCD);
     CORTO_ALIAS_O(core_subscriber, mask, core_observer_mask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, expr, lang_string, CORTO_GLOBAL);

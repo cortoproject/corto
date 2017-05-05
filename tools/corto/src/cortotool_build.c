@@ -141,16 +141,6 @@ corto_int16 cortotool_loadRakefile(void) {
         goto error_result_fromcontent;
     }
 
-    if (!strcmp(r.type, "package")) {
-        if (corto_mkdir("$CORTO_TARGET/lib/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
-            goto error_mkdir;
-        }
-    } else if (!strcmp(r.type, "application")) {
-        if (corto_mkdir("$CORTO_TARGET/cortobin/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
-            goto error_mkdir;
-        }        
-    }
-
     corto_package package = corto_package(corto_createFromContent("text/json", json));
     if (!package) {
         goto error_createFromContent;
@@ -169,7 +159,6 @@ skip:
 
 error_createRakefile:
     corto_delete(package);
-error_mkdir:
 error_result_fromcontent:
     corto_ptr_deinit(&r, corto_result_o);
 error_createFromContent:

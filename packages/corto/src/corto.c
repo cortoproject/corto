@@ -212,6 +212,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, initAction),\
     SSO_OP_VALUE(lang_, nameAction),\
     SSO_OP_VALUE(lang_, destructAction),\
+    SSO_OP_VALUE(core_, handleAction),\
     SSO_OP_VALUE(core_, resultIter),\
     SSO_OP_VALUE(core_, objectIter),\
     SSO_OP_VALUE(core_, position),\
@@ -231,9 +232,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, iterator),\
     SSO_OP_CLASS(lang_, struct),\
     SSO_OP_CLASS(lang_, union),\
-    SSO_OP_CLASS(core_, event),\
-    SSO_OP_CLASS(core_, observableEvent),\
-    SSO_OP_CLASS(core_, subscriberEvent),\
+    SSO_OP_VALUE(core_, event),\
+    SSO_OP_VALUE(core_, observerEvent),\
+    SSO_OP_VALUE(core_, subscriberEvent),\
     SSO_OP_CLASS(core_, invokeEvent),\
     SSO_OP_CLASS(lang_, binary),\
     SSO_OP_CLASS(lang_, boolean),\
@@ -331,22 +332,29 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* event */\
     SSO_OP_OBJ(core_event_kind),\
     SSO_OP_OBJ(core_event_handled),\
+    SSO_OP_OBJ(core_event_handleAction),\
     SSO_OP_OBJ(core_event_handle_),\
     SSO_OP_OBJ(core_event_uniqueKind),\
-    /* observableEvent */\
-    SSO_OP_OBJ(core_observableEvent_observer),\
-    SSO_OP_OBJ(core_observableEvent_me),\
-    SSO_OP_OBJ(core_observableEvent_source),\
-    SSO_OP_OBJ(core_observableEvent_observable),\
-    SSO_OP_OBJ(core_observableEvent_mask),\
-    SSO_OP_OBJ(core_observableEvent_thread),\
-    SSO_OP_OBJ(core_observableEvent_handle_),\
+    /* observerEvent */\
+    SSO_OP_OBJ(core_observerEvent_observer),\
+    SSO_OP_OBJ(core_observerEvent_instance),\
+    SSO_OP_OBJ(core_observerEvent_source),\
+    SSO_OP_OBJ(core_observerEvent_event),\
+    SSO_OP_OBJ(core_observerEvent_data),\
+    SSO_OP_OBJ(core_observerEvent_thread),\
+    SSO_OP_OBJ(core_observerEvent_handle),\
+    SSO_OP_OBJ(core_observerEvent_init_),\
+    SSO_OP_OBJ(core_observerEvent_deinit_),\
     /* subscriberEvent */\
-    SSO_OP_OBJ(core_subscriberEvent_result),\
+    SSO_OP_OBJ(core_subscriberEvent_subscriber),\
+    SSO_OP_OBJ(core_subscriberEvent_instance),\
+    SSO_OP_OBJ(core_subscriberEvent_source),\
+    SSO_OP_OBJ(core_subscriberEvent_event),\
+    SSO_OP_OBJ(core_subscriberEvent_data),\
     SSO_OP_OBJ(core_subscriberEvent_contentTypeHandle),\
-    SSO_OP_OBJ(core_subscriberEvent_handle_),\
-    SSO_OP_OBJ(core_subscriberEvent_construct_),\
-    SSO_OP_OBJ(core_subscriberEvent_destruct_),\
+    SSO_OP_OBJ(core_subscriberEvent_handle),\
+    SSO_OP_OBJ(core_subscriberEvent_init_),\
+    SSO_OP_OBJ(core_subscriberEvent_deinit_),\
     /* invokeEvent */\
     SSO_OP_OBJ(core_invokeEvent_mount),\
     SSO_OP_OBJ(core_invokeEvent_instance),\
@@ -935,10 +943,17 @@ static void corto_genericTlsFree(void *o) {
 }
 
 static void corto_patchSequences(void) {
-    /* Replicator implements table */
+    /* Mount implements dispatcher */
     corto_mount_o->implements.length = 1;
     corto_mount_o->implements.buffer = corto_alloc(sizeof(corto_object));
     corto_mount_o->implements.buffer[0] = corto_dispatcher_o;
+
+    /* Add parameter to handleAction */
+    corto_handleAction_o->parameters.length = 1;
+    corto_handleAction_o->parameters.buffer = corto_calloc(sizeof(corto_parameter));
+    corto_parameter *p = &corto_handleAction_o->parameters.buffer[0];
+    corto_setref(&p->type, corto_event_o);
+    corto_setstr(&p->name, "event");
 }
 
 void corto_initEnvironment(void) {
@@ -1111,6 +1126,10 @@ int corto_start(char *appName) {
     /* Patch sequences- these aren't set statically since sequences are
      * allocated on the heap */
     corto_patchSequences();
+
+    /* Manually assign two function objects that are used as delegate callbacks */
+    corto_observerEvent_handle_o = &core_observerEvent_handle__o.v;
+    corto_subscriberEvent_handle_o = &core_subscriberEvent_handle__o.v;
 
     /* Construct objects */
     for (i = 0; (o = objects[i].o); i++) corto_defineObject(o);

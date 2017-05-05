@@ -2227,13 +2227,9 @@ void _test_Event_tc_onUpdateTreeOrphan(
 }
 
 /* $header(test/Event/tc_postponeListenForUndefined) */
-void test_Event_tc_postponeListenForUndefinedCallback(
-    corto_object this,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+void test_Event_tc_postponeListenForUndefinedCallback(corto_observerEvent *e)
 {
-    *corto_int32(this) = *corto_int32(observable);
+    *corto_int32(e->instance) = *corto_int32(e->data);
 }
 /* $end */
 void _test_Event_tc_postponeListenForUndefined(

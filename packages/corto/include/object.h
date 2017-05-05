@@ -484,7 +484,7 @@ typedef struct corto_observeFluent {
     struct corto_observeFluent (*dispatcher)(corto_dispatcher dispatcher);
     struct corto_observeFluent (*instance)(corto_object instance);
     struct corto_observeFluent (*type)(char *type);
-    corto_observer ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_object, corto_observer));
+    corto_observer ___ (*callback)(void (*r)(corto_observerEvent*));
 } corto_observeFluent;
 CORTO_EXPORT struct corto_observeFluent corto_observe(corto_eventMask event, corto_object observable);
 CORTO_EXPORT int16_t corto_unobserve(corto_observer observer);
@@ -496,7 +496,7 @@ typedef struct corto_subscribeFluent {
     struct corto_subscribeFluent (*instance)(corto_object instance);
     struct corto_subscribeFluent (*contentType)(char *contentType);
     struct corto_subscribeFluent (*type)(char *type);
-    corto_subscriber ___ (*callback)(void (*r)(corto_object, corto_eventMask, corto_result*, corto_subscriber));
+    corto_subscriber ___ (*callback)(void (*r)(corto_subscriberEvent*));
 } corto_subscribeFluent;
 CORTO_EXPORT struct corto_subscribeFluent corto_subscribe(corto_eventMask mask, char *scope, char *expr, ...);
 CORTO_EXPORT int16_t corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
@@ -511,11 +511,11 @@ CORTO_EXPORT void corto_matchProgram_free(corto_matchProgram matcher);
 CORTO_EXPORT char* corto_matchParent(char *parent, char *expr);
 
 /* Serialize object value to contentType */
-CORTO_EXPORT char *corto_contentof(corto_id str, char *contentType, corto_object o);
+CORTO_EXPORT char *corto_contentof(corto_object o, char *contentType);
 CORTO_EXPORT int16_t corto_fromcontent(corto_object o, char *contentType, char *content, ...);
 
 /* Serialize object to contentType */
-CORTO_EXPORT char *corto_object_contentof(corto_id str, char *contentType, corto_object o);
+CORTO_EXPORT char *corto_object_contentof(corto_object o, char *contentType);
 CORTO_EXPORT int16_t corto_object_fromcontent(corto_object *o, char *contentType, char *content, ...);
 
 /* Deprecated */

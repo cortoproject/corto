@@ -21,7 +21,7 @@ typedef struct corto_observeRequest {
     corto_object dispatcher;
     corto_string type;
     corto_bool enabled;
-    void (*callback)(corto_object, corto_eventMask, corto_object, corto_observer);
+    void (*callback)(corto_observerEvent*);
 } corto_observeRequest;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
@@ -336,7 +336,6 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
     }
 }
 
-/* Notify one observer */
 static void corto_notifyObserver(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
@@ -347,7 +346,15 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
     {
         corto_object this = data->_this;
         if (!this || (this != source)) {
-            corto_call(observer, NULL, this, mask, observable, observer);
+            corto_observerEvent e = {
+                .instance = this,
+                .event = mask,
+                .data = observable,
+                .observer = observer
+            },
+            *ePtr = &e;
+            void *args[] = {&ePtr};
+            corto_callb(observer, NULL, args);
         }
     }
 }
@@ -362,12 +369,13 @@ static void corto_notifyObserverCdecl(corto__observer *data, corto_object observ
     {
         corto_object this = data->_this;
         if (!this || (this != source)) {
-            ((void(*)(
-              corto_object,
-              corto_eventMask,
-              corto_object,
-              corto_observer))((corto_function)observer)->fptr
-            )(this, mask, observable, observer);
+            corto_observerEvent e = {
+                .instance = this,
+                .event = mask,
+                .data = observable,
+                .observer = observer
+            };
+            ((void(*)(corto_observerEvent*))((corto_function)observer)->fptr)(&e);
         }
     }
 }
@@ -384,14 +392,14 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
 
         if (!data->_this || (data->_this != source)) {
             corto_attr oldAttr = corto_setAttr(0);
-            corto_observableEvent event = corto_declare(corto_type(corto_observableEvent_o));
+            corto_observerEvent *event = corto_declare(corto_type(corto_observerEvent_o));
             corto_setAttr(oldAttr);
 
             corto_setref(&event->observer, observer);
-            corto_setref(&event->me, data->_this);
-            corto_setref(&event->observable, observable);
+            corto_setref(&event->instance, data->_this);
+            corto_setref(&event->data, observable);
             corto_setref(&event->source, source);
-            event->mask = mask;
+            event->event = mask;
 
             /* Set thread handle so the dispatcher can figure out whether a
              * readlock is needed */
@@ -658,7 +666,7 @@ static corto_observeFluent corto_observeDispatcher(
 }
 
 static corto_observer corto_observeCallback(
-    void (*callback)(corto_object, corto_eventMask, corto_object, corto_observer))
+    void (*callback)(corto_observerEvent*))
 {
     corto_observer result = NULL;
 
@@ -725,27 +733,15 @@ int16_t _corto_observer_construct(
 
     if (!corto_function(this)->parameters.length) {
         if (!corto_checkAttr(this, CORTO_ATTR_SCOPED) || !strchr(corto_idof(this), '(')) {
-            corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 3);
-            corto_function(this)->parameters.length = 3;
+            corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
+            corto_function(this)->parameters.length = 1;
             corto_parameter *p;
 
             /* Parameter event */
             p = &corto_function(this)->parameters.buffer[0];
-            p->name = corto_strdup("event");
+            p->name = corto_strdup("e");
             p->passByReference = FALSE;
-            corto_setref(&p->type, corto_eventMask_o);
-
-            /* Parameter object */
-            p = &corto_function(this)->parameters.buffer[1];
-            p->name = corto_strdup("object");
-            p->passByReference = TRUE;
-            corto_setref(&p->type, t);
-
-            /* Parameter subscriber */
-            p = &corto_function(this)->parameters.buffer[2];
-            p->name = corto_strdup("observer");
-            p->passByReference = TRUE;
-            corto_setref(&p->type, corto_observer_o);
+            corto_setref(&p->type, corto_observerEvent_o);
         }
     }
 
@@ -804,25 +800,13 @@ int16_t _corto_observer_init(
             goto error;
         }
 
-        if (corto_function(this)->parameters.length != 3) {
-            corto_seterr("observers must have three arguments");
+        if (corto_function(this)->parameters.length != 1) {
+            corto_seterr("observers must have one argument");
             goto error;
         }
 
-        if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_eventMask_o)) {
+        if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_observerEvent_o)) {
             corto_seterr("first argument must be of type core/eventMask");
-            goto error;
-        }
-
-        if (!corto_function(this)->parameters.buffer[1].passByReference &&
-            !corto_function(this)->parameters.buffer[1].type->reference)
-        {
-            corto_seterr("observer parameter must be of a reference type");
-            goto error;
-        }
-
-        if (corto_function(this)->parameters.buffer[2].type != corto_type(corto_observer_o)) {
-            corto_seterr("third argument must be of type core/observer");
             goto error;
         }
     }

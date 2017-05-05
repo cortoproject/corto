@@ -13,30 +13,21 @@
 /* $end */
 
 /* $header(corto/core/package/construct) */
-void corto_package_onDefine(
-    corto_object instance,
-    corto_eventMask mask,
-    corto_object observable,
-    corto_observer observer)
+void corto_package_onDefine(corto_observerEvent *e)
 {
-    corto_object owner = corto_ownerof(observable);
-
-    CORTO_UNUSED(instance);
-    CORTO_UNUSED(mask);
-    CORTO_UNUSED(observable);
-    CORTO_UNUSED(observer);
+    corto_object owner = corto_ownerof(e->data);
 
     /* If owner is a mount, object is being resumed */
     if (owner && corto_instanceof(corto_loader_o, owner)) {
         if (corto_loader(owner)->autoLoad) {
             corto_id id;
-            if (corto_loadIntern(corto_fullpath(id, observable), 0, NULL, FALSE, TRUE)) {
+            if (corto_loadIntern(corto_fullpath(id, e->data), 0, NULL, FALSE, TRUE)) {
                 corto_lasterr(); /* Ignore error */
             }
         }
     }
 
-    corto_delete(observer); // Delete observer after first notification
+    corto_delete(e->observer); // Delete observer after first notification
 }
 /* $end */
 int16_t _corto_package_construct(

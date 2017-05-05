@@ -9,17 +9,13 @@
 #include <include/test.h>
 
 /* $header() */
-void test_SubscriberTest_setMembers(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
 {
-
-    corto_setstr(&this->lastId, object->id);
-    corto_setstr(&this->lastParent, object->parent);
-    this->lastMask |= event;
-    corto_subscriberListAppend(this->triggered, subscriber);
+    test_SubscriberTest this = e->instance;
+    corto_setstr(&this->lastId, e->data.id);
+    corto_setstr(&this->lastParent,  e->data.parent);
+    this->lastMask |= e->event;
+    corto_subscriberListAppend(this->triggered, corto_subscriber(e->subscriber));
 }
 /* $end */
 
@@ -127,145 +123,121 @@ void _test_SubscriberTest_destruct(
 }
 
 void _test_SubscriberTest_onDeclare(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclare) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclare ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDeclareScope(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclareScope) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclareScope ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDeclareSelf(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclareSelf) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclareSelf ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDeclareTree(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclareTree) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclareTree ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDefine(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefine) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefine ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDefineScope(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefineScope) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefineScope ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDefineSelf(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefineSelf) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefineSelf ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onDefineTree(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefineTree) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefineTree ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onUpdate(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdate) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdate ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onUpdateScope(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdateScope) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdateScope ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onUpdateSelf(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdateSelf) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdateSelf ++;
 /* $end */
 }
 
 void _test_SubscriberTest_onUpdateTree(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdateTree) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdateTree ++;
 /* $end */
 }

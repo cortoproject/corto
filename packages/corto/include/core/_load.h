@@ -22,9 +22,6 @@ CORTO_EXPORT extern corto_package corto_o;
 CORTO_EXPORT extern corto_package corto_core_o;
 
 /* Forward declarations of classes */
-CORTO_META_OBJECT(class, event);
-CORTO_META_OBJECT(class, observableEvent);
-CORTO_META_OBJECT(class, subscriberEvent);
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, application);
@@ -59,19 +56,27 @@ CORTO_META_OBJECT(sequence, augmentseq);
 CORTO_META_OBJECT(delegate, notifyAction);
 CORTO_META_OBJECT(delegate, invokeAction);
 CORTO_META_OBJECT(delegate, requestAction);
+CORTO_META_OBJECT(delegate, handleAction);
 
 CORTO_META_OBJECT(procedure, remote);
 CORTO_META_OBJECT(procedure, subscriber);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, route);
-CORTO_META_OBJECT(struct, time);
+
+CORTO_META_OBJECT(struct, event);
+CORTO_META_OBJECT(struct, observerEvent);
 CORTO_META_OBJECT(struct, position);
 CORTO_META_OBJECT(struct, sample);
+CORTO_META_OBJECT(struct, subscriberEvent);
+CORTO_META_OBJECT(struct, time);
 
 CORTO_META_OBJECT(subscriber, mount_on_notify);
 
 CORTO_META_OBJECT(iterator, resultIter);
 CORTO_META_OBJECT(iterator, sampleIter);
+
+CORTO_META_OBJECT(function, observerEvent_handle);
+CORTO_META_OBJECT(function, subscriberEvent_handle);
 
 #ifdef __cplusplus
 }

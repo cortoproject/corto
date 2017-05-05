@@ -34,16 +34,18 @@ void* corto_mount_thread(void* arg) {
     return NULL;
 }
 
-void corto_mount_notify(corto_mount this, corto_eventMask mask, corto_result *r, corto_subscriber s) {
-    CORTO_UNUSED(s);
+void corto_mount_notify(corto_subscriberEvent *e) {
+    corto_mount this = (corto_mount)e->subscriber;
+    corto_eventMask event = e->event;
+    corto_result *r = &e->data;
 
-    if (mask != CORTO_ON_DECLARE) {
+    if (event != CORTO_ON_DECLARE) {
         if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
-            corto_mount_onNotify(this, mask, r);
+            corto_mount_onNotify(this, event, r);
         }
     }
 
-    switch(mask) {
+    switch(event) {
     case CORTO_ON_DEFINE: this->sent.updates ++; break;
     case CORTO_ON_UPDATE: this->sent.updates ++; break;
     case CORTO_ON_DELETE: this->sent.deletes ++; break;
@@ -323,7 +325,7 @@ void _corto_mount_onPoll_v(
     corto_mount this)
 {
 /* $begin(corto/core/mount/onPoll) */
-    corto_event e;
+    corto_event *e;
     corto_ll events = corto_llNew();
 
     /* Collect events */
@@ -416,14 +418,14 @@ void _corto_mount_onUnsubscribe_v(
 }
 
 /* $header(corto/core/mount/post) */
-static corto_subscriberEvent corto_mount_findEvent(corto_mount this, corto_subscriberEvent e) {
+static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subscriberEvent *e) {
     corto_iter iter = corto_llIter(this->events);
-    corto_subscriberEvent e2;
+    corto_subscriberEvent *e2;
     while ((corto_iter_hasNext(&iter))) {
         e2 = corto_iter_next(&iter);
-        if (!strcmp(e2->result.id, e->result.id) &&
-            !strcmp(e2->result.parent, e->result.parent) &&
-            (corto_observableEvent(e2)->observer == corto_observableEvent(e)->observer))
+        if (!strcmp(e2->data.id, e->data.id) &&
+            !strcmp(e2->data.parent, e->data.parent) &&
+            (e2->subscriber == e->subscriber))
         {
             return e2;
         }
@@ -437,7 +439,7 @@ static corto_subscriberEvent corto_mount_findEvent(corto_mount this, corto_subsc
 /* $end */
 void _corto_mount_post(
     corto_mount this,
-    corto_event e)
+    corto_event *e)
 {
 /* $begin(corto/core/mount/post) */
 
@@ -445,7 +447,7 @@ void _corto_mount_post(
      * at the specified rate. */
     if (this->policies.sampleRate) {
         corto_uint32 size = 0;
-        corto_subscriberEvent e2;
+        corto_subscriberEvent *e2;
 
         /* Append new event to queue */
         corto_lock(this);
@@ -454,9 +456,9 @@ void _corto_mount_post(
          * if so, replace event with latest update. */
         if ((e2 = corto_mount_findEvent(this, corto_subscriberEvent(e)))) {
             corto_llReplace(this->events, e2, e);
-            if (corto_observableEvent(e2)->mask & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
-            if (corto_observableEvent(e2)->mask & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
-            if (corto_observableEvent(e2)->mask & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
+            if (e2->event & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
+            if (e2->event & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
+            if (e2->event & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
             corto_assert(corto_release(e2) == 0);
         } else {
             corto_llAppend(this->events, e);

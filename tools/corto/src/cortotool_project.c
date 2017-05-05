@@ -179,7 +179,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
     file = fopen("test.cx", "w");
     if (file) {
         fprintf(file, "#package ::test\n\n");
-        fprintf(file, "test::Suite MySuite::\n");
+        fprintf(file, "test/Suite MySuite::\n");
         fprintf(file, "    void testSomething()\n\n");
         fclose(file);
     } else {

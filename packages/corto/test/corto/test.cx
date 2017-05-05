@@ -8,27 +8,27 @@ int8 destructCalled: 0
 uint uintw: WIDTH_WORD
 int intw: WIDTH_WORD
 
-class Foo::
+class Foo:/
     fail: bool, local
     x, y: int32
     int16 init()
     int16 construct()
     void destruct()
 
-class Bar::
+class Bar:/
     int16 init()
 
-struct Point::
+struct Point:/
     x, y: int32
     string nameof()
 
-struct Point3D: Point::
+struct Point3D: Point:/
     z: int32
 
-struct Line::
+struct Line:/
     start, stop: Point
 
-struct CompositeWithString::
+struct CompositeWithString:/
     a: int32
     b: string
     c: string
@@ -36,37 +36,37 @@ struct CompositeWithString::
 
 target TargetActual: int32
 
-struct TargetActualMember::
+struct TargetActualMember:/
     m: TargetActual
     n: int32
 
-struct ReferenceMember::
+struct ReferenceMember:/
     m: object
     n: int32
 
-struct ReferenceTargetMember::
+struct ReferenceTargetMember:/
     m: target{object}
     n: int32
 
-struct NestedInitFailInRoot::
+struct NestedInitFailInRoot:/
     int16 init()
 
-struct NestedInitFailInTier1::
+struct NestedInitFailInTier1:/
     int16 init()
 
-struct NestedInitFailInTier2::
+struct NestedInitFailInTier2:/
     int16 init()
 
-class NestedConstructFailInRoot::
+class NestedConstructFailInRoot:/
     int16 construct()
 
-class NestedConstructFailInTier1::
+class NestedConstructFailInTier1:/
     int16 construct()
 
-class NestedConstructFailInTier2::
+class NestedConstructFailInTier2:/
     int16 construct()
 
-struct EventCount::
+struct EventCount:/
     declareCount: int32
     defineCount: int32
     updateCount: int32
@@ -92,16 +92,16 @@ list CompositeList: Point
 list ObjectList: object
 list AllocList: int64
 
-struct VoidParent: options={parentType=void}::
+struct VoidParent: options={parentType=void}:/
     foo: int32
 
-struct DefinedParent: options={parentState=defined} ::
+struct DefinedParent: options={parentState=defined} :/
     foo: int32
 
-struct DeclaredParent: options={parentState=declared}::
+struct DeclaredParent: options={parentState=declared}:/
     foo: int32
 
-struct TypeAttr: attr=ATTR_OBSERVABLE::
+struct TypeAttr: attr=ATTR_OBSERVABLE:/
     foo: int32
 
 ReferenceMember anonymousString{
@@ -112,126 +112,126 @@ ReferenceMember anonymousStringEsc{
 }
 
 // Support types for container testcases
-table TableSingleKey::
+table TableSingleKey:/
     id: int32, key
     value: string
 
-table TableMultiKey::
+table TableMultiKey:/
     id1: int32, key
     id2: int32, key
     value: string
 
-table TableStringKey::
+table TableStringKey:/
     id: string, key
     value: string
 
-table TableMultiStringKey::
+table TableMultiStringKey:/
     id1: string, key
     id2: string, key
     value: string
 
-table TableMultiMixedKey::
+table TableMultiMixedKey:/
     id1: int32, key
     id2: string, key
     value: string
 
-table TableNested::
+table TableNested:/
     id: int32, key
     value: string
 
-    table ChildTable::
+    table ChildTable:/
         id: int32, key
         value: string
 
-table TableNestedContainer::
+table TableNestedContainer:/
     id: int32, key
     value: string
 
-    container ChildContainer::
+    container ChildContainer:/
         id: int32
         value: string
 
-        leaf ChildLeaf::
+        leaf ChildLeaf:/
             id: int32
             value: string
 
-table TableNestedLeafs::
+table TableNestedLeafs:/
     id: int32, key
     value: string
 
-    leaf ChildLeaf1::
+    leaf ChildLeaf1:/
         id: int32
         value: string
 
-    leaf ChildLeaf2::
+    leaf ChildLeaf2:/
         id: int32
         value: string
 
-container ContainerEmpty::
+container ContainerEmpty:/
     id: int32
     value: string
 
-container ContainerNestedTable::
+container ContainerNestedTable:/
     id: int32
     value: string
 
-    table ChildTable::
+    table ChildTable:/
         id: int32, key
         value: string
 
-container ContainerNestedLeaf::
+container ContainerNestedLeaf:/
     id: int32
     value: string
 
-    leaf ChildLeaf::
+    leaf ChildLeaf:/
         id: int32
         value: string
 
-container ContainerNestedContainer::
+container ContainerNestedContainer:/
     id: int32
     value: string
 
-    container ChildContainer::
+    container ChildContainer:/
         id: int32
         value: string
 
-        leaf ChildLeaf::
+        leaf ChildLeaf:/
             id: int32
             value: string
 
-leaf LeafRoot::
+leaf LeafRoot:/
     id: int32
     value: string
 
-container Car::
+container Car:/
     license_plate: string
     speed: uint16
 
-    enum WheelLocation:: FrontLeft, FrontRight, BackLeft, BackRight
+    enum WheelLocation:/ FrontLeft, FrontRight, BackLeft, BackRight
 
-    table Wheel::
+    table Wheel:/
         location: WheelLocation, key
         position: uint16
 
-        leaf Tire::
+        leaf Tire:/
             brand: string
 
-    leaf Engine::
+    leaf Engine:/
         rpm: uint16
         temperature: uint16
 
 // Replicator for ownership testcase
-class FooReplicator : mount, hidden ::
+class FooReplicator : mount, hidden :/
     alias mount: mount/mount
     void onInvoke(object instance, function proc, word argptrs)
     invoked: uint32, readonly
 
 // Class with method for testing ownership onInvoke
-class MethodForwardTest::
+class MethodForwardTest:/
     void func() remote
     invoked: int32, readonly
     
-test/Suite Attributes::
+test/Suite Attributes:/
     void tc_testDefaultSet()
     void tc_testTargetAttr()
     void tc_testTargetOrphanAttr()
@@ -239,7 +239,7 @@ test/Suite Attributes::
     void tc_isDefaultScopedPersistent()
     void tc_typeOverridesAttributes()
 
-test/Suite Err::
+test/Suite Err:/
     void tc_lasterr()
     void tc_lastinfo()
     void tc_callback()
@@ -256,7 +256,7 @@ test/Suite Err::
     category: string
 
 // Object management testcases
-test/Suite ObjectMgmt::
+test/Suite ObjectMgmt:/
     prevAttr: lang/attr, local|private
 
     void setup() method
@@ -348,16 +348,16 @@ test/Suite ObjectMgmt::
     void tc_nameofOverride()
 
 // Test whether attributes are set correctly in different contexts
-class AttrConstructorTest::
+class AttrConstructorTest:/
   int16 construct()
 
-test/Suite AttrCheck::
+test/Suite AttrCheck:/
     void tc_packageMainAttr()
     void tc_packageObjectAttr()
     void tc_constructorAttr()
 
 // Test compare serializer
-test/Suite Compare::
+test/Suite Compare:/
     void tc_uint8()
     void tc_uint16()
     void tc_uint32()
@@ -391,7 +391,7 @@ test/Suite Compare::
     void tc_listSizeMismatch()
 
 // Test copy serializer
-test/Suite Copy::
+test/Suite Copy:/
     void tc_any()
     void tc_int()
     void tc_string()
@@ -434,7 +434,7 @@ test/Suite Copy::
     void tc_listToExistingListString()
 
 // Test ownership scenarios
-test/Suite Ownership::
+test/Suite Ownership:/
     observable: word
 
     void setup() method
@@ -473,7 +473,7 @@ test/Suite Ownership::
     observer onDelete: ON_DELETE
 
 // Generate fully scoped names
-test/Suite Fullname::
+test/Suite Fullname:/
     void tc_root()
     void tc_onelevel()
     void tc_twolevels()
@@ -486,7 +486,7 @@ test/Suite Fullname::
     void tc_anonymousAnonymous()
 
 // Generate names relative to an object
-test/Suite RelativeName::
+test/Suite RelativeName:/
     void setup() method
     void teardown() method
 
@@ -514,7 +514,7 @@ test/Suite RelativeName::
 void functionToResolve(int32 a, int32 b)
 
 // Test corto_resolve
-test/Suite Resolver::
+test/Suite Resolver:/
     void setup() method
     void teardown() method
 
@@ -561,7 +561,7 @@ test/Suite Resolver::
     void tc_resolveAll()
 
 // Test corto_lookup
-test/Suite Lookup::
+test/Suite Lookup:/
     void tc_lookupIdFromNull()
     void tc_lookupIdFromRoot()
     void tc_lookupIdFromScope()
@@ -601,7 +601,7 @@ test/Suite Lookup::
     void tc_lookupAll()
 
 // Test matcher
-test/Suite Matcher::
+test/Suite Matcher:/
   void tc_id()                       // a => a
   void tc_idFail()                   // a => b
   void tc_idOr()                     // a => a|b
@@ -686,7 +686,7 @@ test/Suite Matcher::
 
 
 // Test corto_select
-test/Suite Select::
+test/Suite Select:/
     void setup() method
     void teardown() method
 
@@ -784,7 +784,7 @@ test/Suite Select::
 
 
 // Event test support type
-class EventTest::
+class EventTest:/
     scope: object
     lastThis: object, readonly
     lastObservable: object, readonly
@@ -839,7 +839,7 @@ class EventTest::
 
 
 // Test notifications
-test/Suite Event::
+test/Suite Event:/
     void setup() method
     void teardown() method
 
@@ -908,19 +908,13 @@ test/Suite Event::
     void tc_postponeListenSilence()
 
 // Dispatcher class
-class ObserverDispatcher: implements={dispatcher}::
+class ObserverDispatcher: implements={dispatcher}:/
     void post(core/event e)
     called: bool
 
 // Observer tests
-test/Suite Observers::
+test/Suite Observers:/
     void setup() method
-    void customSignatureObserver(eventMask event, int32& observable, core/observer observer) observer
-    void tc_customSignatureObserver()
-    void tc_customSignatureObserverWrongArgumentNumber()
-    void tc_customSignatureObserverObservableNotReference()
-    void tc_customSignatureObserverMissingObserver()
-    void tc_customSignatureObserverMissingEventMask()
     void tc_dispatchObserver()
     void tc_notifyReadDenied()
     void tc_notifyUpdateDenied()
@@ -944,7 +938,7 @@ test/Suite Observers::
     count: int32
 
 // Event test support type
-class SubscriberTest::
+class SubscriberTest:/
     lastParent: string, readonly
     lastId: string, readonly
     lastMask: eventMask, readonly
@@ -981,7 +975,7 @@ class SubscriberTest::
     countUpdateScope: uint32, readonly
     countUpdateTree: uint32, readonly
 
-test/Suite SubscriberEvent::
+test/Suite SubscriberEvent:/
     void setup() method
     void teardown() method
 
@@ -1003,7 +997,7 @@ test/Suite SubscriberEvent::
     prevAttr: lang/attr
     st: SubscriberTest
 
-test/Suite Subscribe::
+test/Suite Subscribe:/
     subscriber noInitialSep: ON_UPDATE, "testScope", "*"
     triggered: uint8
     owner: object
@@ -1038,7 +1032,7 @@ void ol_uint(int32 a)
 void ol_num(int32 a)
 void ol_num(float64 a)
 
-enum Color:: Red, Orange, Yellow, Green, Blue
+enum Color:/ Red, Orange, Yellow, Green, Blue
 void ol_any(bool a)
 void ol_any(char a)
 void ol_any(int32 a)
@@ -1047,23 +1041,23 @@ void ol_any(string a)
 void ol_any(object a)
 void ol_any(Color a)
 
-class Animal::
+class Animal:/
     a: bool
 
-class Dog : Animal::
+class Dog : Animal:/
     b: bool
 
-class GoldenRetriever : Dog::
+class GoldenRetriever : Dog:/
     c: bool
 
-class Cat : Animal::
+class Cat : Animal:/
     b: bool
 
 void ol_inherit(Animal a)
 void ol_inherit(Dog a)
 
 // Function overloading test suite
-test/Suite Overload::
+test/Suite Overload:/
     void tc_ambiguous()
     void tc_ambiguousWildcard()
     void tc_ambiguousNull()
@@ -1111,7 +1105,7 @@ test/Suite Overload::
     void tc_inheritanceMatchSub()
     void tc_inheritSibling()
 
-class MethodTester::
+class MethodTester:/
     void simple()
     void onearg(int32 a)
     void twoargs(int32 a, int32 b)
@@ -1123,14 +1117,14 @@ class MethodTester::
     void virtualOverload() overridable
     void virtualOverload(int32 a)
 
-class MethodTesterInherit: MethodTester::
+class MethodTesterInherit: MethodTester:/
     void simple()
     void overload(string a, string b)
     void overload(MethodTesterInherit m)
     void virtualOverload(int32 a)
 
 // Test resolving methods
-test/Suite MethodResolver::
+test/Suite MethodResolver:/
     void tc_simple()
     void tc_simpleNoArgs()
     void tc_simpleErr()
@@ -1167,7 +1161,7 @@ test/Suite MethodResolver::
     void tc_redeclare()
 
 // Test Corto string serializer
-test/Suite StringSerializer::
+test/Suite StringSerializer:/
     void tc_serBoolTrue()
     void tc_serBoolFalse()
 
@@ -1218,11 +1212,11 @@ test/Suite StringSerializer::
     void tc_serAnonymousComplexStringEsc()
 
 
-class AnonymousTest::
+class AnonymousTest:/
     objects: list{object}
 
 // String deserializer testcases
-test/Suite StringDeserializer::
+test/Suite StringDeserializer:/
     void setup() method
     void teardown() method
 
@@ -1341,7 +1335,7 @@ test/Suite StringDeserializer::
     void tc_deserTargetRefAnonymousMemberNotOwned()
 
 // Test environment variable parsing functions
-test/Suite Env::
+test/Suite Env:/
     void tc_envparseSimpleFormat()
     void tc_envparseSimpleReplace()
     void tc_envparseReplaceMultiple()
@@ -1359,7 +1353,7 @@ test/Suite Env::
     void tc_setenvNull()
 
 // Test buffer implementation
-test/Suite Buffer::
+test/Suite Buffer:/
     void tc_append()
     void tc_appendToExisting()
     void tc_appendEmpty()
@@ -1372,7 +1366,7 @@ test/Suite Buffer::
     void tc_appendOverflow()
 
 // Test loader
-test/Suite Loader::
+test/Suite Loader:/
     void tc_loadNonExistent()
     void tc_loadDepOnChild()
     void tc_loadDepOnParent()
@@ -1383,20 +1377,20 @@ test/Suite Loader::
     void tc_locateSelf()
 
 // Key and lock for security tests
-class TestKey: secure/key::
+class TestKey: secure/key:/
     string authenticate(string user, string password) override
 
-struct AccessRule::
+struct AccessRule:/
     user: string
     action: secure/actionKind
     access: secure/accessKind
 
-class TestLock: secure/lock::
+class TestLock: secure/lock:/
     rules: list{AccessRule}
     secure/accessKind authorize(string token, secure/actionKind action) override
 
 // Test security
-test/Suite Security::
+test/Suite Security:/
     void setup() method
     void tc_authenticate()
     void tc_authenticateFail()
@@ -1443,7 +1437,7 @@ test/Suite Security::
     void tc_lockSwitchUser()
 
 // Test value casting
-test/Suite ValueCast::
+test/Suite ValueCast:/
     void tc_castBoolBinary()
     void tc_castBoolInt()
     void tc_castBoolUint()
@@ -1478,7 +1472,7 @@ test/Suite ValueCast::
     void tc_castStringEnum()
 
 // Test value expressions
-test/Suite ValueExpr::
+test/Suite ValueExpr:/
     void tc_add()
     void tc_sub()
     void tc_mul()
@@ -1513,7 +1507,7 @@ test/Suite ValueExpr::
     void tc_exprMemMemberInOut()
 
 // Test containers, leafs and tables
-test/Suite Container::
+test/Suite Container:/
     void tc_tableSingleKey()
     void tc_tableMultiKey()
     void tc_tableStringKey()

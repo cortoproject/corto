@@ -65,24 +65,24 @@ CORTO_EXPORT corto_dispatcher _corto_dispatcherAssign(corto_dispatcher _this);
 #define corto_dispatcherSet(_this) _this = _this ? _this : (corto_dispatcher*)corto_calloc(sizeof(corto_dispatcher)); _corto_dispatcherAssign(_this)
 
 /* /corto/core/event */
-CORTO_EXPORT corto_event _corto_eventCreate(uint16_t kind);
+CORTO_EXPORT corto_event* _corto_eventCreate(uint16_t kind);
 #define corto_eventCreate(kind) _corto_eventCreate(kind)
-#define corto_eventCreate_auto(_id, kind) corto_event _id = corto_eventCreate(kind); (void)_id
-CORTO_EXPORT corto_event _corto_eventCreateChild(corto_object _parent, corto_string _id, uint16_t kind);
+#define corto_eventCreate_auto(_id, kind) corto_event* _id = corto_eventCreate(kind); (void)_id
+CORTO_EXPORT corto_event* _corto_eventCreateChild(corto_object _parent, corto_string _id, uint16_t kind);
 #define corto_eventCreateChild(_parent, _id, kind) _corto_eventCreateChild(_parent, _id, kind)
-#define corto_eventCreateChild_auto(_parent, _id, kind) corto_event _id = corto_eventCreateChild(_parent, #_id, kind); (void)_id
-CORTO_EXPORT corto_int16 _corto_eventUpdate(corto_event _this, uint16_t kind);
+#define corto_eventCreateChild_auto(_parent, _id, kind) corto_event* _id = corto_eventCreateChild(_parent, #_id, kind); (void)_id
+CORTO_EXPORT corto_int16 _corto_eventUpdate(corto_event* _this, uint16_t kind);
 #define corto_eventUpdate(_this, kind) _corto_eventUpdate(corto_event(_this), kind)
 
-CORTO_EXPORT corto_event _corto_eventDeclare(void);
+CORTO_EXPORT corto_event* _corto_eventDeclare(void);
 #define corto_eventDeclare() _corto_eventDeclare()
-#define corto_eventDeclare_auto(_id) corto_event _id = corto_eventDeclare(); (void)_id
-CORTO_EXPORT corto_event _corto_eventDeclareChild(corto_object _parent, corto_string _id);
+#define corto_eventDeclare_auto(_id) corto_event* _id = corto_eventDeclare(); (void)_id
+CORTO_EXPORT corto_event* _corto_eventDeclareChild(corto_object _parent, corto_string _id);
 #define corto_eventDeclareChild(_parent, _id) _corto_eventDeclareChild(_parent, _id)
-#define corto_eventDeclareChild_auto(_parent, _id) corto_event _id = corto_eventDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_eventDefine(corto_event _this, uint16_t kind);
+#define corto_eventDeclareChild_auto(_parent, _id) corto_event* _id = corto_eventDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_eventDefine(corto_event* _this, uint16_t kind);
 #define corto_eventDefine(_this, kind) _corto_eventDefine(corto_event(_this), kind)
-CORTO_EXPORT corto_event _corto_eventAssign(corto_event _this, uint16_t kind);
+CORTO_EXPORT corto_event* _corto_eventAssign(corto_event* _this, uint16_t kind);
 #define corto_event__optional_NotSet NULL
 #define corto_event__optional_Set(kind) corto_eventAssign((corto_event*)corto_calloc(sizeof(corto_event)), kind)
 #define corto_event__optional_SetCond(cond, kind) cond ? corto_eventAssign((corto_event*)corto_calloc(sizeof(corto_event)), kind) : NULL
@@ -168,6 +168,37 @@ CORTO_EXPORT corto_frameKind* _corto_frameKindAssign(corto_frameKind* _this, cor
 #define corto_frameKindAssign(_this, value) _corto_frameKindAssign(_this, value)
 #define corto_frameKindSet(_this, value) _this = _this ? _this : (corto_frameKind*)corto_calloc(sizeof(corto_frameKind)); _corto_frameKindAssign(_this, value)
 
+/* /corto/core/handleAction */
+CORTO_EXPORT corto_handleAction* _corto_handleActionCreate(corto_object instance, corto_function procedure);
+#define corto_handleActionCreate(instance, procedure) _corto_handleActionCreate(instance, corto_function(procedure))
+#define corto_handleActionCreate_auto(_id, instance, procedure) corto_handleAction* _id = corto_handleActionCreate(instance, procedure); (void)_id
+CORTO_EXPORT corto_handleAction* _corto_handleActionCreateChild(corto_object _parent, corto_string _id, corto_object instance, corto_function procedure);
+#define corto_handleActionCreateChild(_parent, _id, instance, procedure) _corto_handleActionCreateChild(_parent, _id, instance, corto_function(procedure))
+#define corto_handleActionCreateChild_auto(_parent, _id, instance, procedure) corto_handleAction* _id = corto_handleActionCreateChild(_parent, #_id, instance, procedure); (void)_id
+CORTO_EXPORT corto_int16 _corto_handleActionUpdate(corto_handleAction* _this, corto_object instance, corto_function procedure);
+#define corto_handleActionUpdate(_this, instance, procedure) _corto_handleActionUpdate(corto_handleAction(_this), instance, corto_function(procedure))
+
+CORTO_EXPORT corto_handleAction* _corto_handleActionDeclare(void);
+#define corto_handleActionDeclare() _corto_handleActionDeclare()
+#define corto_handleActionDeclare_auto(_id) corto_handleAction* _id = corto_handleActionDeclare(); (void)_id
+CORTO_EXPORT corto_handleAction* _corto_handleActionDeclareChild(corto_object _parent, corto_string _id);
+#define corto_handleActionDeclareChild(_parent, _id) _corto_handleActionDeclareChild(_parent, _id)
+#define corto_handleActionDeclareChild_auto(_parent, _id) corto_handleAction* _id = corto_handleActionDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_handleActionDefine(corto_handleAction* _this, corto_object instance, corto_function procedure);
+#define corto_handleActionDefine(_this, instance, procedure) _corto_handleActionDefine(corto_handleAction(_this), instance, corto_function(procedure))
+CORTO_EXPORT corto_handleAction* _corto_handleActionAssign(corto_handleAction* _this, corto_object instance, corto_function procedure);
+#define corto_handleAction__optional_NotSet NULL
+#define corto_handleAction__optional_Set(instance, procedure) corto_handleActionAssign((corto_handleAction*)corto_calloc(sizeof(corto_handleAction)), instance, procedure)
+#define corto_handleAction__optional_SetCond(cond, instance, procedure) cond ? corto_handleActionAssign((corto_handleAction*)corto_calloc(sizeof(corto_handleAction)), instance, procedure) : NULL
+#define corto_handleActionUnset(_this) _this ? corto_ptr_deinit(_this, corto_handleAction_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_handleActionAssign(_this, instance, procedure) _corto_handleActionAssign(_this, instance, corto_function(procedure))
+#define corto_handleActionSet(_this, instance, procedure) _this = _this ? _this : (corto_handleAction*)corto_calloc(sizeof(corto_handleAction)); _corto_handleActionAssign(_this, instance, corto_function(procedure))
+
+corto_int16 corto_handleActionCall(corto_handleAction *_delegate, corto_event* event);
+#define corto_handleActionInitC_auto(d, callback) corto_handleAction d; corto_handleActionInitC(&d, callback)
+CORTO_EXPORT corto_int16 corto_handleActionInitC(corto_handleAction *d, corto_void ___ (*callback)(corto_event*));
+#define corto_handleActionInitCInstance_auto(d, instance, callback)corto_handleAction d; corto_handleActionInitCInstance(&d, instance, callback)
+CORTO_EXPORT corto_int16 corto_handleActionInitCInstance(corto_handleAction *d, corto_object instance, corto_void ___ (*callback)(corto_object, corto_event*));
 /* /corto/core/invokeEvent */
 CORTO_EXPORT corto_invokeEvent _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
 #define corto_invokeEventCreate(mount, instance, function, args) _corto_invokeEventCreate(corto_mount(mount), instance, corto_function(function), args)
@@ -402,32 +433,6 @@ CORTO_EXPORT corto_objectIter* _corto_objectIterAssign(corto_objectIter* _this);
 #define corto_objectIterAssign(_this) _corto_objectIterAssign(_this)
 #define corto_objectIterSet(_this) _this = _this ? _this : (corto_objectIter*)corto_calloc(sizeof(corto_objectIter)); _corto_objectIterAssign(_this)
 
-/* /corto/core/observableEvent */
-CORTO_EXPORT corto_observableEvent _corto_observableEventCreate(corto_function observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, uintptr_t thread);
-#define corto_observableEventCreate(observer, me, source, observable, mask, thread) _corto_observableEventCreate(corto_function(observer), me, source, observable, mask, thread)
-#define corto_observableEventCreate_auto(_id, observer, me, source, observable, mask, thread) corto_observableEvent _id = corto_observableEventCreate(observer, me, source, observable, mask, thread); (void)_id
-CORTO_EXPORT corto_observableEvent _corto_observableEventCreateChild(corto_object _parent, corto_string _id, corto_function observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, uintptr_t thread);
-#define corto_observableEventCreateChild(_parent, _id, observer, me, source, observable, mask, thread) _corto_observableEventCreateChild(_parent, _id, corto_function(observer), me, source, observable, mask, thread)
-#define corto_observableEventCreateChild_auto(_parent, _id, observer, me, source, observable, mask, thread) corto_observableEvent _id = corto_observableEventCreateChild(_parent, #_id, observer, me, source, observable, mask, thread); (void)_id
-CORTO_EXPORT corto_int16 _corto_observableEventUpdate(corto_observableEvent _this, corto_function observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, uintptr_t thread);
-#define corto_observableEventUpdate(_this, observer, me, source, observable, mask, thread) _corto_observableEventUpdate(corto_observableEvent(_this), corto_function(observer), me, source, observable, mask, thread)
-
-CORTO_EXPORT corto_observableEvent _corto_observableEventDeclare(void);
-#define corto_observableEventDeclare() _corto_observableEventDeclare()
-#define corto_observableEventDeclare_auto(_id) corto_observableEvent _id = corto_observableEventDeclare(); (void)_id
-CORTO_EXPORT corto_observableEvent _corto_observableEventDeclareChild(corto_object _parent, corto_string _id);
-#define corto_observableEventDeclareChild(_parent, _id) _corto_observableEventDeclareChild(_parent, _id)
-#define corto_observableEventDeclareChild_auto(_parent, _id) corto_observableEvent _id = corto_observableEventDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_observableEventDefine(corto_observableEvent _this, corto_function observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, uintptr_t thread);
-#define corto_observableEventDefine(_this, observer, me, source, observable, mask, thread) _corto_observableEventDefine(corto_observableEvent(_this), corto_function(observer), me, source, observable, mask, thread)
-CORTO_EXPORT corto_observableEvent _corto_observableEventAssign(corto_observableEvent _this, corto_function observer, corto_object me, corto_object source, corto_object observable, corto_eventMask mask, uintptr_t thread);
-#define corto_observableEvent__optional_NotSet NULL
-#define corto_observableEvent__optional_Set(observer, me, source, observable, mask, thread) corto_observableEventAssign((corto_observableEvent*)corto_calloc(sizeof(corto_observableEvent)), observer, me, source, observable, mask, thread)
-#define corto_observableEvent__optional_SetCond(cond, observer, me, source, observable, mask, thread) cond ? corto_observableEventAssign((corto_observableEvent*)corto_calloc(sizeof(corto_observableEvent)), observer, me, source, observable, mask, thread) : NULL
-#define corto_observableEventUnset(_this) _this ? corto_ptr_deinit(_this, corto_observableEvent_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_observableEventAssign(_this, observer, me, source, observable, mask, thread) _corto_observableEventAssign(_this, corto_function(observer), me, source, observable, mask, thread)
-#define corto_observableEventSet(_this, observer, me, source, observable, mask, thread) _this = _this ? _this : (corto_observableEvent*)corto_calloc(sizeof(corto_observableEvent)); _corto_observableEventAssign(_this, corto_function(observer), me, source, observable, mask, thread)
-
 /* /corto/core/observer */
 CORTO_EXPORT corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_string type, bool enabled, void(*_impl)(void));
 #define corto_observerCreate(mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerCreate(mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
@@ -453,6 +458,32 @@ CORTO_EXPORT corto_observer _corto_observerAssign(corto_observer _this, corto_ev
 #define corto_observerUnset(_this) _this ? corto_ptr_deinit(_this, corto_observer_o) : 0; corto_dealloc(_this); _this = NULL;
 #define corto_observerAssign(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerAssign(_this, mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
 #define corto_observerSet(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _this = _this ? _this : (corto_observer*)corto_calloc(sizeof(corto_observer)); _corto_observerAssign(_this, mask, observable, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
+
+/* /corto/core/observerEvent */
+CORTO_EXPORT corto_observerEvent* _corto_observerEventCreate(uint16_t kind, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observerEventCreate(kind, observer, instance, source, event, data, thread) _corto_observerEventCreate(kind, corto_observer(observer), instance, source, event, data, thread)
+#define corto_observerEventCreate_auto(_id, kind, observer, instance, source, event, data, thread) corto_observerEvent* _id = corto_observerEventCreate(kind, observer, instance, source, event, data, thread); (void)_id
+CORTO_EXPORT corto_observerEvent* _corto_observerEventCreateChild(corto_object _parent, corto_string _id, uint16_t kind, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observerEventCreateChild(_parent, _id, kind, observer, instance, source, event, data, thread) _corto_observerEventCreateChild(_parent, _id, kind, corto_observer(observer), instance, source, event, data, thread)
+#define corto_observerEventCreateChild_auto(_parent, _id, kind, observer, instance, source, event, data, thread) corto_observerEvent* _id = corto_observerEventCreateChild(_parent, #_id, kind, observer, instance, source, event, data, thread); (void)_id
+CORTO_EXPORT corto_int16 _corto_observerEventUpdate(corto_observerEvent* _this, uint16_t kind, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observerEventUpdate(_this, kind, observer, instance, source, event, data, thread) _corto_observerEventUpdate(corto_observerEvent(_this), kind, corto_observer(observer), instance, source, event, data, thread)
+
+CORTO_EXPORT corto_observerEvent* _corto_observerEventDeclare(void);
+#define corto_observerEventDeclare() _corto_observerEventDeclare()
+#define corto_observerEventDeclare_auto(_id) corto_observerEvent* _id = corto_observerEventDeclare(); (void)_id
+CORTO_EXPORT corto_observerEvent* _corto_observerEventDeclareChild(corto_object _parent, corto_string _id);
+#define corto_observerEventDeclareChild(_parent, _id) _corto_observerEventDeclareChild(_parent, _id)
+#define corto_observerEventDeclareChild_auto(_parent, _id) corto_observerEvent* _id = corto_observerEventDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_observerEventDefine(corto_observerEvent* _this, uint16_t kind, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observerEventDefine(_this, kind, observer, instance, source, event, data, thread) _corto_observerEventDefine(corto_observerEvent(_this), kind, corto_observer(observer), instance, source, event, data, thread)
+CORTO_EXPORT corto_observerEvent* _corto_observerEventAssign(corto_observerEvent* _this, uint16_t kind, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observerEvent__optional_NotSet NULL
+#define corto_observerEvent__optional_Set(kind, observer, instance, source, event, data, thread) corto_observerEventAssign((corto_observerEvent*)corto_calloc(sizeof(corto_observerEvent)), kind, observer, instance, source, event, data, thread)
+#define corto_observerEvent__optional_SetCond(cond, kind, observer, instance, source, event, data, thread) cond ? corto_observerEventAssign((corto_observerEvent*)corto_calloc(sizeof(corto_observerEvent)), kind, observer, instance, source, event, data, thread) : NULL
+#define corto_observerEventUnset(_this) _this ? corto_ptr_deinit(_this, corto_observerEvent_o) : 0; corto_dealloc(_this); _this = NULL;
+#define corto_observerEventAssign(_this, kind, observer, instance, source, event, data, thread) _corto_observerEventAssign(_this, kind, corto_observer(observer), instance, source, event, data, thread)
+#define corto_observerEventSet(_this, kind, observer, instance, source, event, data, thread) _this = _this ? _this : (corto_observerEvent*)corto_calloc(sizeof(corto_observerEvent)); _corto_observerEventAssign(_this, kind, corto_observer(observer), instance, source, event, data, thread)
 
 /* /corto/core/operatorKind */
 CORTO_EXPORT corto_operatorKind* _corto_operatorKindCreate(corto_operatorKind value);
@@ -845,30 +876,30 @@ CORTO_EXPORT corto_subscriber _corto_subscriberAssign(corto_subscriber _this, co
 #define corto_subscriberSet(_this, mask, parent, expr, contentType, instance, dispatcher, type, enabled, _impl) _this = _this ? _this : (corto_subscriber*)corto_calloc(sizeof(corto_subscriber)); _corto_subscriberAssign(_this, mask, parent, expr, contentType, instance, corto_dispatcher(dispatcher), type, enabled, (void(*)(void))_impl)
 
 /* /corto/core/subscriberEvent */
-CORTO_EXPORT corto_subscriberEvent _corto_subscriberEventCreate(corto_result* result, uintptr_t contentTypeHandle);
-#define corto_subscriberEventCreate(result, contentTypeHandle) _corto_subscriberEventCreate(result, contentTypeHandle)
-#define corto_subscriberEventCreate_auto(_id, result, contentTypeHandle) corto_subscriberEvent _id = corto_subscriberEventCreate(result, contentTypeHandle); (void)_id
-CORTO_EXPORT corto_subscriberEvent _corto_subscriberEventCreateChild(corto_object _parent, corto_string _id, corto_result* result, uintptr_t contentTypeHandle);
-#define corto_subscriberEventCreateChild(_parent, _id, result, contentTypeHandle) _corto_subscriberEventCreateChild(_parent, _id, result, contentTypeHandle)
-#define corto_subscriberEventCreateChild_auto(_parent, _id, result, contentTypeHandle) corto_subscriberEvent _id = corto_subscriberEventCreateChild(_parent, #_id, result, contentTypeHandle); (void)_id
-CORTO_EXPORT corto_int16 _corto_subscriberEventUpdate(corto_subscriberEvent _this, corto_result* result, uintptr_t contentTypeHandle);
-#define corto_subscriberEventUpdate(_this, result, contentTypeHandle) _corto_subscriberEventUpdate(corto_subscriberEvent(_this), result, contentTypeHandle)
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventCreate(uint16_t kind, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
+#define corto_subscriberEventCreate(kind, subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventCreate(kind, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
+#define corto_subscriberEventCreate_auto(_id, kind, subscriber, instance, source, event, data, contentTypeHandle) corto_subscriberEvent* _id = corto_subscriberEventCreate(kind, subscriber, instance, source, event, data, contentTypeHandle); (void)_id
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventCreateChild(corto_object _parent, corto_string _id, uint16_t kind, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
+#define corto_subscriberEventCreateChild(_parent, _id, kind, subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventCreateChild(_parent, _id, kind, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
+#define corto_subscriberEventCreateChild_auto(_parent, _id, kind, subscriber, instance, source, event, data, contentTypeHandle) corto_subscriberEvent* _id = corto_subscriberEventCreateChild(_parent, #_id, kind, subscriber, instance, source, event, data, contentTypeHandle); (void)_id
+CORTO_EXPORT corto_int16 _corto_subscriberEventUpdate(corto_subscriberEvent* _this, uint16_t kind, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
+#define corto_subscriberEventUpdate(_this, kind, subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventUpdate(corto_subscriberEvent(_this), kind, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
 
-CORTO_EXPORT corto_subscriberEvent _corto_subscriberEventDeclare(void);
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventDeclare(void);
 #define corto_subscriberEventDeclare() _corto_subscriberEventDeclare()
-#define corto_subscriberEventDeclare_auto(_id) corto_subscriberEvent _id = corto_subscriberEventDeclare(); (void)_id
-CORTO_EXPORT corto_subscriberEvent _corto_subscriberEventDeclareChild(corto_object _parent, corto_string _id);
+#define corto_subscriberEventDeclare_auto(_id) corto_subscriberEvent* _id = corto_subscriberEventDeclare(); (void)_id
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventDeclareChild(corto_object _parent, corto_string _id);
 #define corto_subscriberEventDeclareChild(_parent, _id) _corto_subscriberEventDeclareChild(_parent, _id)
-#define corto_subscriberEventDeclareChild_auto(_parent, _id) corto_subscriberEvent _id = corto_subscriberEventDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_subscriberEventDefine(corto_subscriberEvent _this, corto_result* result, uintptr_t contentTypeHandle);
-#define corto_subscriberEventDefine(_this, result, contentTypeHandle) _corto_subscriberEventDefine(corto_subscriberEvent(_this), result, contentTypeHandle)
-CORTO_EXPORT corto_subscriberEvent _corto_subscriberEventAssign(corto_subscriberEvent _this, corto_result* result, uintptr_t contentTypeHandle);
+#define corto_subscriberEventDeclareChild_auto(_parent, _id) corto_subscriberEvent* _id = corto_subscriberEventDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_subscriberEventDefine(corto_subscriberEvent* _this, uint16_t kind, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
+#define corto_subscriberEventDefine(_this, kind, subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventDefine(corto_subscriberEvent(_this), kind, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventAssign(corto_subscriberEvent* _this, uint16_t kind, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
 #define corto_subscriberEvent__optional_NotSet NULL
-#define corto_subscriberEvent__optional_Set(result, contentTypeHandle) corto_subscriberEventAssign((corto_subscriberEvent*)corto_calloc(sizeof(corto_subscriberEvent)), result, contentTypeHandle)
-#define corto_subscriberEvent__optional_SetCond(cond, result, contentTypeHandle) cond ? corto_subscriberEventAssign((corto_subscriberEvent*)corto_calloc(sizeof(corto_subscriberEvent)), result, contentTypeHandle) : NULL
+#define corto_subscriberEvent__optional_Set(kind, subscriber, instance, source, event, data, contentTypeHandle) corto_subscriberEventAssign((corto_subscriberEvent*)corto_calloc(sizeof(corto_subscriberEvent)), kind, subscriber, instance, source, event, data, contentTypeHandle)
+#define corto_subscriberEvent__optional_SetCond(cond, kind, subscriber, instance, source, event, data, contentTypeHandle) cond ? corto_subscriberEventAssign((corto_subscriberEvent*)corto_calloc(sizeof(corto_subscriberEvent)), kind, subscriber, instance, source, event, data, contentTypeHandle) : NULL
 #define corto_subscriberEventUnset(_this) _this ? corto_ptr_deinit(_this, corto_subscriberEvent_o) : 0; corto_dealloc(_this); _this = NULL;
-#define corto_subscriberEventAssign(_this, result, contentTypeHandle) _corto_subscriberEventAssign(_this, result, contentTypeHandle)
-#define corto_subscriberEventSet(_this, result, contentTypeHandle) _this = _this ? _this : (corto_subscriberEvent*)corto_calloc(sizeof(corto_subscriberEvent)); _corto_subscriberEventAssign(_this, result, contentTypeHandle)
+#define corto_subscriberEventAssign(_this, kind, subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventAssign(_this, kind, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
+#define corto_subscriberEventSet(_this, kind, subscriber, instance, source, event, data, contentTypeHandle) _this = _this ? _this : (corto_subscriberEvent*)corto_calloc(sizeof(corto_subscriberEvent)); _corto_subscriberEventAssign(_this, kind, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
 
 /* /corto/core/time */
 CORTO_EXPORT corto_time* _corto_timeCreate(int32_t sec, uint32_t nanosec);

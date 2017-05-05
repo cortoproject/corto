@@ -37,7 +37,7 @@ typedef struct corto_subscribeRequest {
     corto_string contentType;
     corto_dispatcher dispatcher;
     corto_bool enabled;
-    void (*callback)(corto_object, corto_eventMask mask, corto_result*, corto_subscriber);
+    void (*callback)(corto_subscriberEvent*);
 } corto_subscribeRequest;
 
 corto_entityAdmin corto_subscriber_admin = {
@@ -65,30 +65,38 @@ static corto_int16 corto_subscriber_invoke(
         corto_function f = corto_function(s);
         if (f->kind == CORTO_PROCEDURE_CDECL) {
             if (f->fptr) {
-                ((void(*)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
-                  corto_function(s)->fptr)(instance, mask, r, s);
+                corto_subscriberEvent e = {
+                    .instance = instance,
+                    .event = mask,
+                    .source = NULL,
+                    .subscriber = s,
+                    .data = *r
+                };
+                ((void(*)(corto_subscriberEvent*))((corto_function)s)->fptr)(&e);
             }
         } else {
-            void *args[4];
-            args[0] = &instance;
-            args[1] = &mask;
-            args[2] = &r;
-            args[3] = &s;
-            corto_callb(corto_function(s), NULL, args);
+            corto_subscriberEvent e = {
+                .instance = instance,
+                .event = mask,
+                .source = NULL,
+                .subscriber = s,
+                .data = *r
+            },
+            *ePtr = &e;
+            void *args[] = {&ePtr};
+            corto_callb((corto_function)s, NULL, args);
         }
     } else {
         corto_attr oldAttr = corto_setAttr(0);
-        corto_subscriberEvent event = corto_declare(corto_subscriberEvent_o);
+        corto_subscriberEvent *event = corto_declare(corto_subscriberEvent_o);
         corto_setAttr(oldAttr);
-        corto_observableEvent oEvent = corto_observableEvent(event);
-        corto_setref(&oEvent->observer, s);
-        corto_setref(&oEvent->me, instance);
-        corto_setref(&oEvent->observable, NULL);
-        corto_setref(&oEvent->source, NULL);
-        oEvent->mask = mask;
-        corto_ptr_copy(&event->result, corto_result_o, r);
+        corto_setref(&event->subscriber, s);
+        corto_setref(&event->instance, instance);
+        corto_setref(&event->source, NULL);
+        event->event = mask;
+        corto_ptr_copy(&event->data, corto_result_o, r);
         if (r->value) {
-            event->result.value =
+            event->data.value =
               ((corto_contentType)s->contentTypeHandle)->copy(r->value);
         }
         event->contentTypeHandle = s->contentTypeHandle;
@@ -425,7 +433,7 @@ static corto_subscribeFluent corto_subscribeDispatcher(corto_dispatcher dispatch
 }
 
 static corto_subscriber corto_subscribeCallback(
-    void (*callback)(corto_object, corto_eventMask, corto_result*, corto_subscriber))
+    void (*callback)(corto_subscriberEvent*))
 {
     corto_subscriber result = NULL;
 
@@ -573,26 +581,14 @@ int16_t _corto_subscriber_init(
 {
 /* $begin(corto/core/subscriber/init) */
     corto_parameter *p;
-    corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 4);
-    corto_function(this)->parameters.length = 3;
+    corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
+    corto_function(this)->parameters.length = 1;
 
     /* Parameter event */
     p = &corto_function(this)->parameters.buffer[0];
-    p->name = corto_strdup("event");
+    p->name = corto_strdup("e");
     p->passByReference = FALSE;
-    corto_setref(&p->type, corto_eventMask_o);
-
-    /* Parameter object */
-    p = &corto_function(this)->parameters.buffer[1];
-    p->name = corto_strdup("object");
-    p->passByReference = TRUE;
-    corto_setref(&p->type, corto_result_o);
-
-    /* Parameter subscriber */
-    p = &corto_function(this)->parameters.buffer[2];
-    p->name = corto_strdup("subscriber");
-    p->passByReference = TRUE;
-    corto_setref(&p->type, corto_subscriber_o);
+    corto_setref(&p->type, corto_subscriberEvent_o);
 
     corto_observer(this)->mask = CORTO_ON_ANY;
 

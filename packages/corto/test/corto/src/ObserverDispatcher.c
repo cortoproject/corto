@@ -10,7 +10,7 @@
 
 void _test_ObserverDispatcher_post(
     test_ObserverDispatcher this,
-    corto_event e)
+    corto_event *e)
 {
 /* $begin(test/ObserverDispatcher/post) */
 

@@ -12,27 +12,23 @@
 extern "C" {
 #endif
 
-#define corto_dispatcher_post_v(_this, e) _corto_dispatcher_post_v(corto_dispatcher(_this), corto_event(e))
+
+#define corto_dispatcher_post_v(_this, e) _corto_dispatcher_post_v(corto_dispatcher(_this), e)
 CORTO_EXPORT
 void _corto_dispatcher_post_v(
     corto_dispatcher _this,
-    corto_event e);
+    corto_event *e);
 
-#define corto_dispatcher_post(_this, e) _corto_dispatcher_post(corto_dispatcher(_this), corto_event(e))
+#define corto_dispatcher_post(_this, e) _corto_dispatcher_post(corto_dispatcher(_this), e)
 CORTO_EXPORT
 void _corto_dispatcher_post(
     corto_dispatcher _this,
-    corto_event e);
+    corto_event *e);
 
-#define corto_event_handle_v(_this) _corto_event_handle_v(corto_event(_this))
-CORTO_EXPORT
-void _corto_event_handle_v(
-    corto_event _this);
-
-#define corto_event_handle(_this) _corto_event_handle(corto_event(_this))
+#define corto_event_handle(_this) _corto_event_handle(_this)
 CORTO_EXPORT
 void _corto_event_handle(
-    corto_event _this);
+    corto_event* _this);
 
 #define corto_event_uniqueKind() _corto_event_uniqueKind()
 CORTO_EXPORT
@@ -213,11 +209,11 @@ void _corto_mount_onUnsubscribe(
     corto_string expr,
     uintptr_t ctx);
 
-#define corto_mount_post(_this, e) _corto_mount_post(corto_mount(_this), corto_event(e))
+#define corto_mount_post(_this, e) _corto_mount_post(corto_mount(_this), e)
 CORTO_EXPORT
 void _corto_mount_post(
     corto_mount _this,
-    corto_event e);
+    corto_event *e);
 
 #define corto_mount_request(_this, request) _corto_mount_request(corto_mount(_this), request)
 CORTO_EXPORT
@@ -269,16 +265,6 @@ void _corto_mount_unsubscribe(
     corto_mount _this,
     corto_request *request);
 
-#define corto_observableEvent_handle_v(_this) _corto_observableEvent_handle_v(corto_observableEvent(_this))
-CORTO_EXPORT
-void _corto_observableEvent_handle_v(
-    corto_observableEvent _this);
-
-#define corto_observableEvent_handle(_this) _corto_observableEvent_handle(corto_observableEvent(_this))
-CORTO_EXPORT
-void _corto_observableEvent_handle(
-    corto_observableEvent _this);
-
 #define corto_observer_construct(_this) _corto_observer_construct(corto_observer(_this))
 CORTO_EXPORT
 int16_t _corto_observer_construct(
@@ -314,6 +300,21 @@ int16_t _corto_observer_unobserve(
     corto_observer _this,
     corto_object instance,
     corto_object observable);
+
+#define corto_observerEvent_deinit(_this) _corto_observerEvent_deinit(_this)
+CORTO_EXPORT
+void _corto_observerEvent_deinit(
+    corto_observerEvent* _this);
+
+#define corto_observerEvent_handle(e) _corto_observerEvent_handle(e)
+CORTO_EXPORT
+void _corto_observerEvent_handle(
+    corto_event *e);
+
+#define corto_observerEvent_init(_this) _corto_observerEvent_init(_this)
+CORTO_EXPORT
+int16_t _corto_observerEvent_init(
+    corto_observerEvent* _this);
 
 #define corto_package_construct(_this) _corto_package_construct(corto_package(_this))
 CORTO_EXPORT
@@ -470,25 +471,20 @@ int16_t _corto_subscriber_unsubscribe(
     corto_subscriber _this,
     corto_object instance);
 
-#define corto_subscriberEvent_construct(_this) _corto_subscriberEvent_construct(corto_subscriberEvent(_this))
+#define corto_subscriberEvent_deinit(_this) _corto_subscriberEvent_deinit(_this)
 CORTO_EXPORT
-int16_t _corto_subscriberEvent_construct(
-    corto_subscriberEvent _this);
+void _corto_subscriberEvent_deinit(
+    corto_subscriberEvent* _this);
 
-#define corto_subscriberEvent_destruct(_this) _corto_subscriberEvent_destruct(corto_subscriberEvent(_this))
-CORTO_EXPORT
-void _corto_subscriberEvent_destruct(
-    corto_subscriberEvent _this);
-
-#define corto_subscriberEvent_handle_v(_this) _corto_subscriberEvent_handle_v(corto_subscriberEvent(_this))
-CORTO_EXPORT
-void _corto_subscriberEvent_handle_v(
-    corto_subscriberEvent _this);
-
-#define corto_subscriberEvent_handle(_this) _corto_subscriberEvent_handle(corto_subscriberEvent(_this))
+#define corto_subscriberEvent_handle(e) _corto_subscriberEvent_handle(e)
 CORTO_EXPORT
 void _corto_subscriberEvent_handle(
-    corto_subscriberEvent _this);
+    corto_event *e);
+
+#define corto_subscriberEvent_init(_this) _corto_subscriberEvent_init(_this)
+CORTO_EXPORT
+int16_t _corto_subscriberEvent_init(
+    corto_subscriberEvent* _this);
 
 #ifdef __cplusplus
 }

@@ -2480,7 +2480,7 @@ error:
 }
 
 /* Get contentstring */
-corto_string corto_contentof(corto_id str, corto_string contentType, corto_object o) {
+corto_string corto_contentof(corto_object o, corto_string contentType) {
     corto_contentType type;
     corto_string result = NULL;
 
@@ -2491,19 +2491,7 @@ corto_string corto_contentof(corto_id str, corto_string contentType, corto_objec
     }
 
     corto_value v = corto_value_object(o, NULL);
-    corto_string c = (corto_string)type->fromValue(&v);
-    if (!c) {
-        goto error;
-    }
-
-    if (str) {
-        strncpy(str, c, sizeof(corto_id));
-        str[sizeof(corto_id) - 1] = '\0';
-        result = str;
-    } else {
-        result = corto_setThreadString(c);
-        corto_dealloc(c);
-    }
+    result = (corto_string)type->fromValue(&v);
 
     return result;
 error:
@@ -2535,7 +2523,7 @@ error:
     return -1;
 }
 
-corto_string corto_object_contentof(corto_id str, corto_string contentType, corto_object o) {
+corto_string corto_object_contentof(corto_object o, corto_string contentType) {
     corto_contentType type;
     corto_string result = NULL;
 
@@ -2545,19 +2533,7 @@ corto_string corto_object_contentof(corto_id str, corto_string contentType, cort
         goto error;
     }
 
-    corto_string c = (corto_string)type->fromObject(o);
-    if (!c) {
-        goto error;
-    }
-
-    if (str) {
-        strncpy(str, c, sizeof(corto_id));
-        str[sizeof(corto_id) - 1] = '\0';
-        result = str;
-    } else {
-        result = corto_setThreadString(c);
-        corto_dealloc(c);
-    }
+    result = (corto_string)type->fromObject(o);
 
     return result;
 error:

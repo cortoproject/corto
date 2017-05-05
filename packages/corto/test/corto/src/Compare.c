@@ -17,15 +17,15 @@ void _test_Compare_tc_any(
     corto_any a1 = {corto_type(corto_int32_o), &v1, FALSE};
     corto_any a2 = {corto_type(corto_int32_o), &v2, FALSE};
 
-    eq = corto_comparea(a1, a2);
+    eq = corto_ptr_compare(a1.value, a1.type, a2.value);
     test_assert(eq == CORTO_EQ);
 
     v2 = 20;
-    eq = corto_comparea(a1, a2);
+    eq = corto_ptr_compare(a1.value, a1.type, a2.value);
     test_assert(eq == CORTO_LT);
 
     v2 = 0;
-    eq = corto_comparea(a1, a2);
+    eq = corto_ptr_compare(a1.value, a1.type, a2.value);
     test_assert(eq == CORTO_GT);
 
 /* $end */

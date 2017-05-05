@@ -9,12 +9,10 @@
 #include <include/test.h>
 
 void _test_Subscribe_noInitialSep(
-    test_Subscribe this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+    corto_subscriberEvent *e)
 {
 /* $begin(test/Subscribe/noInitialSep) */
+    test_Subscribe this = e->instance;
     this->triggered ++;
 /* $end */
 }
@@ -42,13 +40,9 @@ void _test_Subscribe_tc_noInitialSep(
 }
 
 /* $header(test/Subscribe/tc_subscribeInvertCase) */
-void subscribeInvertCaseOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void subscribeInvertCaseOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -77,13 +71,9 @@ void _test_Subscribe_tc_subscribeInvertCase(
 }
 
 /* $header(test/Subscribe/tc_subscribeInvertCaseFilter) */
-void subscribeInvertCaseFilterOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void subscribeInvertCaseFilterOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -112,13 +102,9 @@ void _test_Subscribe_tc_subscribeInvertCaseFilter(
 }
 
 /* $header(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
-void subscribeInvertCaseFilterFromPublishOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void subscribeInvertCaseFilterFromPublishOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -142,13 +128,9 @@ void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
 }
 
 /* $header(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
-void subscribeInvertCaseFromPublishOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void subscribeInvertCaseFromPublishOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -172,13 +154,9 @@ void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
 }
 
 /* $header(test/Subscribe/tc_subscribeInvertCaseParent) */
-void subscribeInvertCaseParentOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void subscribeInvertCaseParentOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -207,13 +185,9 @@ void _test_Subscribe_tc_subscribeInvertCaseParent(
 }
 
 /* $header(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
-void subscribeInvertCaseParentFromPublishOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void subscribeInvertCaseParentFromPublishOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -237,13 +211,9 @@ void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
 }
 
 /* $header(test/Subscribe/tc_subscribeNestedIdFromRoot) */
-void tc_subscribeNestedIdFromRootOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void tc_subscribeNestedIdFromRootOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -265,13 +235,9 @@ void _test_Subscribe_tc_subscribeNestedIdFromRoot(
 }
 
 /* $header(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
-void tc_subscribeNestedScopeFromRootOnUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void tc_subscribeNestedScopeFromRootOnUpdate(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
+    test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
 /* $end */
@@ -293,14 +259,10 @@ void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
 }
 
 /* $header(test/Subscribe/tc_subscribeOwnerSet) */
-void tc_subscribeOwnerSet(
-    corto_object instance,
-    corto_eventMask event,
-    corto_result *result,
-    corto_subscriber subscriber)
+void tc_subscribeOwnerSet(corto_subscriberEvent *e)
 {
-    test_Subscribe this = instance;
-    corto_setref(&this->owner, result->owner);
+    test_Subscribe this = e->instance;
+    corto_setref(&this->owner, e->data.owner);
 }
 /* $end */
 void _test_Subscribe_tc_subscribeOwnerSet(

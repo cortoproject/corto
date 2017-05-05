@@ -12,45 +12,38 @@
 #include "_object.h"
 /* $end */
 
-int16_t _corto_subscriberEvent_construct(
-    corto_subscriberEvent this)
+void _corto_subscriberEvent_deinit(
+    corto_subscriberEvent* this)
 {
-/* $begin(corto/core/subscriberEvent/construct) */
-    CORTO_UNUSED(this);
-    return 0;
-/* $end */
-}
+/* $begin(corto/core/subscriberEvent/deinit) */
 
-void _corto_subscriberEvent_destruct(
-    corto_subscriberEvent this)
-{
-/* $begin(corto/core/subscriberEvent/destruct) */
-    if (this->contentTypeHandle && this->result.value) {
-        ((corto_contentType)this->contentTypeHandle)->release(this->result.value);
+    if (this->contentTypeHandle && this->data.value) {
+        ((corto_contentType)this->contentTypeHandle)->release(this->data.value);
     }
 
 /* $end */
 }
 
-void _corto_subscriberEvent_handle_v(
-    corto_subscriberEvent this)
+void _corto_subscriberEvent_handle(
+    corto_event *e)
 {
 /* $begin(corto/core/subscriberEvent/handle) */
-    corto_observableEvent e = corto_observableEvent(this);
-    corto_function f = corto_function(e->observer);
+    corto_function f = corto_function(((corto_subscriberEvent*)e)->subscriber);
 
     if (f->kind == CORTO_PROCEDURE_CDECL) {
-        ((void(*)(
-          corto_object,
-          corto_eventMask,
-          corto_result*,
-          corto_subscriber))f->fptr
-        )(e->me, e->mask, &this->result, corto_subscriber(e->observer));
+        ((void(*)(corto_event*))f->fptr)(e);
     } else {
-        corto_call(f, NULL, e->me, e->mask, &this->result, e->observer);
+        corto_call(f, NULL, e);
     }
 
-    corto_event_handle_v(corto_event(this));
+/* $end */
+}
 
+int16_t _corto_subscriberEvent_init(
+    corto_subscriberEvent* this)
+{
+/* $begin(corto/core/subscriberEvent/init) */
+    ((corto_event*)this)->handleAction.super.procedure = corto_subscriberEvent_handle_o;
+    return 0;
 /* $end */
 }

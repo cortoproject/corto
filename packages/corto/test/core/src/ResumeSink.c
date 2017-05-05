@@ -9,78 +9,60 @@
 #include <include/test.h>
 
 void _test_ResumeSink_onDeclare(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onDeclare) */
-
+    test_ResumeSink this = e->instance;
     this->declared ++;
 
 /* $end */
 }
 
 void _test_ResumeSink_onDefine(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onDefine) */
-
+    test_ResumeSink this = e->instance;
     this->defined ++;
 
 /* $end */
 }
 
 void _test_ResumeSink_onDelete(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onDelete) */
-
+    test_ResumeSink this = e->instance;
     this->deleted ++;
 
 /* $end */
 }
 
 void _test_ResumeSink_onResume(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onResume) */
-
+    test_ResumeSink this = e->instance;
     this->resumed ++;
 
 /* $end */
 }
 
 void _test_ResumeSink_onSuspend(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onSuspend) */
-
-      this->suspended ++;
+    test_ResumeSink this = e->instance;
+    this->suspended ++;
 
 /* $end */
 }
 
 void _test_ResumeSink_onUpdate(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onUpdate) */
-
+    test_ResumeSink this = e->instance;
     this->updated ++;
 
 /* $end */
