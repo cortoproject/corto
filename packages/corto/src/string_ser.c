@@ -174,13 +174,13 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
             int index = 0;
 
             if (!data->anonymousObjects) {
-                data->anonymousObjects = corto_llNew();
+                data->anonymousObjects = corto_ll_new();
             }
 
             if (object == corto_value_objectof(v)) {
                 sprintf(id, "<0>");
                 str = id;
-            }else if ((index = corto_llHasObject(data->anonymousObjects, object))) {
+            }else if ((index = corto_ll_hasObject(data->anonymousObjects, object))) {
                 sprintf(id, "<%d>", index);
                 str = id;
             } else {
@@ -194,8 +194,8 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
                 walkData.anonymousObjects = data->anonymousObjects;
                 walkData.enableColors = data->enableColors;
 
-                corto_llAppend(data->anonymousObjects, object);
-                if (!corto_buffer_append(&data->buffer, "<%d>", corto_llSize(data->anonymousObjects))) {
+                corto_ll_append(data->anonymousObjects, object);
+                if (!corto_buffer_append(&data->buffer, "<%d>", corto_ll_size(data->anonymousObjects))) {
                     goto finished;
                 }
 
@@ -434,7 +434,7 @@ corto_int16 corto_ser_destruct(corto_walk_opt* s, void* userData) {
     CORTO_UNUSED(s);
     corto_string_ser_t* data = userData;
     if (data->anonymousObjects) {
-        corto_llFree(data->anonymousObjects);
+        corto_ll_free(data->anonymousObjects);
         data->anonymousObjects = NULL;
     }
     return 0;

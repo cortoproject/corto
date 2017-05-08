@@ -127,7 +127,7 @@ void _test_Copy_tc_arrayToExistingList(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_llSize(*v2), 4);
+    test_assertint(corto_ll_size(*v2), 4);
     test_assertint(test_PrimitiveListGet(*v2, 0), 10);
     test_assertint(test_PrimitiveListGet(*v2, 1), 20);
     test_assertint(test_PrimitiveListGet(*v2, 2), 30);
@@ -152,7 +152,7 @@ void _test_Copy_tc_arrayToExistingListString(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_llSize(*v2), 4);
+    test_assertint(corto_ll_size(*v2), 4);
     test_assertstr(test_StringListGet(*v2, 0), "HELLO");
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
@@ -219,7 +219,7 @@ void _test_Copy_tc_arrayToListString(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_llSize(*v2), 4);
+    test_assertint(corto_ll_size(*v2), 4);
     test_assertstr(test_StringListGet(*v2, 0), "HELLO");
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
@@ -321,7 +321,7 @@ void _test_Copy_tc_listToExistingList(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_llSize(*v2), 4);
+    test_assertint(corto_ll_size(*v2), 4);
     test_assertint(test_PrimitiveListGet(*v2, 0), 10);
     test_assertint(test_PrimitiveListGet(*v2, 1), 20);
     test_assertint(test_PrimitiveListGet(*v2, 2), 30);
@@ -345,7 +345,7 @@ void _test_Copy_tc_listToExistingListString(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_llSize(*v2), 4);
+    test_assertint(corto_ll_size(*v2), 4);
     test_assertstr(test_StringListGet(*v2, 0), "HELLO");
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
@@ -419,7 +419,7 @@ void _test_Copy_tc_listToList(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_llSize(*v2) == 4);
+    test_assert(corto_ll_size(*v2) == 4);
     test_assert(test_PrimitiveListGet(*v2, 0) == 10);
     test_assert(test_PrimitiveListGet(*v2, 1) == 20);
     test_assert(test_PrimitiveListGet(*v2, 2) == 30);
@@ -442,7 +442,7 @@ void _test_Copy_tc_listToListAlloc(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_llSize(*v2) == 4);
+    test_assert(corto_ll_size(*v2) == 4);
     test_assert(test_AllocListGet(*v2, 0) == 10);
     test_assert(test_AllocListGet(*v2, 1) == 20);
     test_assert(test_AllocListGet(*v2, 2) == 30);
@@ -464,7 +464,7 @@ void _test_Copy_tc_listToListResize(
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_PrimitiveListCreate_auto(v2, 4, v);
 
-    test_assert(corto_llSize(*v2) == 4);
+    test_assert(corto_ll_size(*v2) == 4);
     test_assert(test_PrimitiveListGet(*v2, 0) == 15);
     test_assert(test_PrimitiveListGet(*v2, 1) == 25);
     test_assert(test_PrimitiveListGet(*v2, 2) == 35);
@@ -472,7 +472,7 @@ void _test_Copy_tc_listToListResize(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_llSize(*v2) == 3);
+    test_assert(corto_ll_size(*v2) == 3);
     test_assert(test_PrimitiveListGet(*v2, 0) == 10);
     test_assert(test_PrimitiveListGet(*v2, 1) == 20);
     test_assert(test_PrimitiveListGet(*v2, 2) == 30);
@@ -493,7 +493,7 @@ void _test_Copy_tc_listToListResizeAlloc(
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_AllocListCreate_auto(v2, 4, v);
 
-    test_assert(corto_llSize(*v2) == 4);
+    test_assert(corto_ll_size(*v2) == 4);
     test_assert(test_AllocListGet(*v2, 0) == 15);
     test_assert(test_AllocListGet(*v2, 1) == 25);
     test_assert(test_AllocListGet(*v2, 2) == 35);
@@ -501,7 +501,7 @@ void _test_Copy_tc_listToListResizeAlloc(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_llSize(*v2) == 3);
+    test_assert(corto_ll_size(*v2) == 3);
     test_assert(test_AllocListGet(*v2, 0) == 10);
     test_assert(test_AllocListGet(*v2, 1) == 20);
     test_assert(test_AllocListGet(*v2, 2) == 30);
@@ -523,7 +523,7 @@ void _test_Copy_tc_listToListString(
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_llSize(*v2), 4);
+    test_assertint(corto_ll_size(*v2), 4);
     test_assertstr(test_StringListGet(*v2, 0), "HELLO");
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");

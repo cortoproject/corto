@@ -61,11 +61,11 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
     }
 
     if (project) {
-        projectArg = corto_llGet(project, 0);
+        projectArg = corto_ll_get(project, 0);
     }
 
     if (tool) {
-        char *toolstr = corto_llGet(tool, 0);
+        char *toolstr = corto_ll_get(tool, 0);
         setenv("CORTO_TEST_TOOL", toolstr, TRUE);
         setenv("CI", "TRUE", TRUE);
     }
@@ -102,7 +102,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         }
 
         i ++;
-    } while (project && (projectArg = corto_llGet(project, i)));
+    } while (project && (projectArg = corto_ll_get(project, i)));
 
     corto_argclean(data);
 

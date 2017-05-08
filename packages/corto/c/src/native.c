@@ -211,43 +211,43 @@ void corto_interfaceVectorseqClear(corto_interfaceVectorseq *seq) {
 }
 
 void corto_objectlistInsert(corto_objectlist list, corto_object element) {
-    corto_llInsert(list, (void*)(corto_word)element);
+    corto_ll_insert(list, (void*)(corto_word)element);
     corto_claim(element);
 }
 
 void corto_objectlistAppend(corto_objectlist list, corto_object element) {
-    corto_llAppend(list, (void*)(corto_word)element);
+    corto_ll_append(list, (void*)(corto_word)element);
     corto_claim(element);
 }
 
 void corto_objectlistRemove(corto_objectlist list, corto_object element) {
-    corto_llRemove(list, element);
+    corto_ll_remove(list, element);
     corto_release(element);
 }
 
 corto_object corto_objectlistTakeFirst(corto_objectlist list) {
-    return (corto_object)(corto_word)corto_llTakeFirst(list);
+    return (corto_object)(corto_word)corto_ll_takeFirst(list);
 }
 
 corto_object corto_objectlistLast(corto_objectlist list) {
-    return (corto_object)(corto_word)corto_llLast(list);
+    return (corto_object)(corto_word)corto_ll_last(list);
 }
 
 corto_object corto_objectlistGet(corto_objectlist list, corto_uint32 index) {
-    return (corto_object)(corto_word)corto_llGet(list, index);
+    return (corto_object)(corto_word)corto_ll_get(list, index);
 }
 
 corto_uint32 corto_objectlistSize(corto_objectlist list) {
-    return corto_llSize(list);
+    return corto_ll_size(list);
 }
 
 void corto_objectlistClear(corto_objectlist list) {
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
         corto_release(ptr);
     }
-    corto_llClear(list);
+    corto_ll_clear(list);
 }
 
 corto_object* corto_objectseqAppend(corto_objectseq *seq, corto_object element) {
@@ -347,36 +347,36 @@ void corto_parameterseqClear(corto_parameterseq *seq) {
 }
 
 void corto_stringlistInsert(corto_stringlist list, corto_string element) {
-    corto_llInsert(list, (void*)corto_strdup(element));
+    corto_ll_insert(list, (void*)corto_strdup(element));
 }
 
 void corto_stringlistAppend(corto_stringlist list, corto_string element) {
-    corto_llAppend(list, (void*)corto_strdup(element));
+    corto_ll_append(list, (void*)corto_strdup(element));
 }
 
 corto_string corto_stringlistTakeFirst(corto_stringlist list) {
-    return (corto_string)(corto_word)corto_llTakeFirst(list);
+    return (corto_string)(corto_word)corto_ll_takeFirst(list);
 }
 
 corto_string corto_stringlistLast(corto_stringlist list) {
-    return (corto_string)(corto_word)corto_llLast(list);
+    return (corto_string)(corto_word)corto_ll_last(list);
 }
 
 corto_string corto_stringlistGet(corto_stringlist list, corto_uint32 index) {
-    return (corto_string)(corto_word)corto_llGet(list, index);
+    return (corto_string)(corto_word)corto_ll_get(list, index);
 }
 
 corto_uint32 corto_stringlistSize(corto_stringlist list) {
-    return corto_llSize(list);
+    return corto_ll_size(list);
 }
 
 void corto_stringlistClear(corto_stringlist list) {
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
         corto_ptr_deinit(ptr, corto_string_o);
     }
-    corto_llClear(list);
+    corto_ll_clear(list);
 }
 
 corto_string* corto_stringseqAppend(corto_stringseq *seq, corto_string element) {
@@ -447,7 +447,7 @@ corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubsc
         v = corto_value_value(result, corto_type(corto_mountSubscription_o));
         corto_value_init(&v);
     }
-    corto_llInsert(list, result);
+    corto_ll_insert(list, result);
     return result;
 }
 
@@ -465,7 +465,7 @@ corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubsc
         v = corto_value_value(result, corto_type(corto_mountSubscription_o));
         corto_value_init(&v);
     }
-    corto_llAppend(list, result);
+    corto_ll_append(list, result);
     return result;
 }
 
@@ -476,29 +476,29 @@ corto_mountSubscription* corto_mountSubscriptionListAppend(corto_mountSubscripti
 }
 
 corto_mountSubscription* corto_mountSubscriptionListTakeFirst(corto_mountSubscriptionList list) {
-    return (corto_mountSubscription*)(corto_word)corto_llTakeFirst(list);
+    return (corto_mountSubscription*)(corto_word)corto_ll_takeFirst(list);
 }
 
 corto_mountSubscription* corto_mountSubscriptionListLast(corto_mountSubscriptionList list) {
-    return (corto_mountSubscription*)(corto_word)corto_llLast(list);
+    return (corto_mountSubscription*)(corto_word)corto_ll_last(list);
 }
 
 corto_mountSubscription* corto_mountSubscriptionListGet(corto_mountSubscriptionList list, corto_uint32 index) {
-    return (corto_mountSubscription*)corto_llGet(list, index);
+    return (corto_mountSubscription*)corto_ll_get(list, index);
 }
 
 corto_uint32 corto_mountSubscriptionListSize(corto_mountSubscriptionList list) {
-    return corto_llSize(list);
+    return corto_ll_size(list);
 }
 
 void corto_mountSubscriptionListClear(corto_mountSubscriptionList list) {
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
         corto_ptr_deinit(ptr, corto_mountSubscription_o);
         corto_dealloc(ptr);
     }
-    corto_llClear(list);
+    corto_ll_clear(list);
 }
 
 corto_result* corto_resultListInsertAlloc(corto_resultList list) {
@@ -509,7 +509,7 @@ corto_result* corto_resultListInsertAlloc(corto_resultList list) {
         v = corto_value_value(result, corto_type(corto_result_o));
         corto_value_init(&v);
     }
-    corto_llInsert(list, result);
+    corto_ll_insert(list, result);
     return result;
 }
 
@@ -527,7 +527,7 @@ corto_result* corto_resultListAppendAlloc(corto_resultList list) {
         v = corto_value_value(result, corto_type(corto_result_o));
         corto_value_init(&v);
     }
-    corto_llAppend(list, result);
+    corto_ll_append(list, result);
     return result;
 }
 
@@ -538,28 +538,28 @@ corto_result* corto_resultListAppend(corto_resultList list, corto_result* elemen
 }
 
 corto_result* corto_resultListTakeFirst(corto_resultList list) {
-    return (corto_result*)(corto_word)corto_llTakeFirst(list);
+    return (corto_result*)(corto_word)corto_ll_takeFirst(list);
 }
 
 corto_result* corto_resultListLast(corto_resultList list) {
-    return (corto_result*)(corto_word)corto_llLast(list);
+    return (corto_result*)(corto_word)corto_ll_last(list);
 }
 
 corto_result* corto_resultListGet(corto_resultList list, corto_uint32 index) {
-    return (corto_result*)corto_llGet(list, index);
+    return (corto_result*)corto_ll_get(list, index);
 }
 
 corto_uint32 corto_resultListSize(corto_resultList list) {
-    return corto_llSize(list);
+    return corto_ll_size(list);
 }
 
 void corto_resultListClear(corto_resultList list) {
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
         corto_ptr_deinit(ptr, corto_result_o);
         corto_dealloc(ptr);
     }
-    corto_llClear(list);
+    corto_ll_clear(list);
 }
 

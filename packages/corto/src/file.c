@@ -136,7 +136,7 @@ char* corto_fileSearch(const char* file, corto_ll locations) {
     walkData.file = file;
     walkData.result = 0;
 
-    corto_llWalk(locations, (corto_elementWalk_cb)fileSearchWalk, &walkData);
+    corto_ll_walk(locations, (corto_elementWalk_cb)fileSearchWalk, &walkData);
 
     return walkData.result;
 }
@@ -238,6 +238,16 @@ char* corto_fileExtension(char* file, char* buffer) {
         *bptr = '\0';
         return buffer;
     }
+}
+
+/* Get file base */
+char* corto_fileBase(char* file, char* buffer) {
+    strcpy(buffer, file);
+    char *ch = strrchr(buffer, '.');
+    if (ch) {
+        *ch = '\0';
+    }
+    return buffer;
 }
 
 /* Get file path */

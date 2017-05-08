@@ -66,9 +66,9 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                 /* '$' Indicates constraint */
                 if (pattern->pattern[0] == '$') {
                     corto_int32 matchCount = pattern->match ?
-                        *pattern->match ? corto_llSize(*pattern->match) : 0 : 0;
+                        *pattern->match ? corto_ll_size(*pattern->match) : 0 : 0;
                     corto_int32 argCount = pattern->args ?
-                        *pattern->args ? corto_llSize(*pattern->args) : 0 : 0;
+                        *pattern->args ? corto_ll_size(*pattern->args) : 0 : 0;
 
                     /* | can be used with + or ? to indicate an OR relationship
                      * between multiple AT LEAST/AT MOST once patterns */
@@ -92,14 +92,14 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                             if (count && tentative && !fnmatch(tentative->pattern + 2, arg, 0))  {
                                 /* Push back one element to optional pattern */
                                 if (matchCount && pattern->match && *pattern->match) {
-                                    corto_string arg = corto_llTakeFirst(*pattern->match);
-                                    *tentative->match = corto_llNew();
-                                    corto_llAppend(*tentative->match, arg);
+                                    corto_string arg = corto_ll_takeFirst(*pattern->match);
+                                    *tentative->match = corto_ll_new();
+                                    corto_ll_append(*tentative->match, arg);
                                 }
                                 if (argCount && pattern->args && *pattern->args) {
-                                    corto_string arg = corto_llTakeFirst(*pattern->args);
-                                    *tentative->args = corto_llNew();
-                                    corto_llAppend(*tentative->args, arg);
+                                    corto_string arg = corto_ll_takeFirst(*pattern->args);
+                                    *tentative->args = corto_ll_new();
+                                    corto_ll_append(*tentative->args, arg);
                                 }
                                 tentative = NULL;
                                 match = TRUE;
@@ -135,15 +135,15 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
         if (match) {
             if (pattern->match) {
                  if(!*(pattern->match)) {
-                    *(pattern->match) = corto_llNew();
+                    *(pattern->match) = corto_ll_new();
                 }
-                corto_llAppend(*(pattern->match), arg);
+                corto_ll_append(*(pattern->match), arg);
             }
 
             if (pattern->args) {
                 if (argv[a + 1]) {
                     if (!*pattern->args) {
-                        *(pattern->args) = corto_llNew();
+                        *(pattern->args) = corto_ll_new();
                     }
                     a++;
                     char *arg = argv[a], *ptr = arg, *prev;
@@ -154,12 +154,12 @@ corto_argdata* corto_argparse(char *argv[], corto_argdata *data) {
                             int len = ptr - prev;
                             prev = strdup(prev);
                             if (!pattern->gc) {
-                                pattern->gc = corto_llNew();
+                                pattern->gc = corto_ll_new();
                             }
-                            corto_llAppend(pattern->gc, prev);
+                            corto_ll_append(pattern->gc, prev);
                             prev[len] = '\0';
                         }
-                        corto_llAppend(*(pattern->args), prev);
+                        corto_ll_append(*(pattern->args), prev);
                     } while (ptr && ++ptr);
                 } else {
                     corto_seterr("missing argument for option %s", arg);
@@ -204,23 +204,23 @@ void corto_argclean(corto_argdata *data) {
         pattern = &data[p];
         if (pattern->match && *pattern->match) {
             if (!corto_argcleanDeleted(*pattern->match, deleted, count)) {
-                corto_llFree(*pattern->match);
+                corto_ll_free(*pattern->match);
                 deleted[count ++] = *pattern->match;
             }
         }
         if (pattern->args && *pattern->args) {
             if (!corto_argcleanDeleted(*pattern->args, deleted, count)) {
-                corto_llFree(*pattern->args);
+                corto_ll_free(*pattern->args);
                 deleted[count ++] = *pattern->args;
             }
         }
         if (data[p].gc) {
-          corto_iter it = corto_llIter(data[p].gc);
+          corto_iter it = corto_ll_iter(data[p].gc);
           while (corto_iter_hasNext(&it)) {
             corto_string s = corto_iter_next(&it);
             corto_dealloc(s);
           }
-          corto_llFree(data[p].gc);
+          corto_ll_free(data[p].gc);
         }
         p++;
     }

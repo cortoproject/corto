@@ -49,10 +49,10 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
 
     if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         if (!data->anonymousObjects) {
-            data->anonymousObjects = corto_llNew();
+            data->anonymousObjects = corto_ll_new();
         }
 
-        corto_iter iter = corto_llIter(data->anonymousObjects);
+        corto_iter iter = corto_ll_iter(data->anonymousObjects);
         while (corto_iter_hasNext(&iter)) {
             corto_object a = corto_iter_next(&iter);
             if (corto_compare(o, a) == CORTO_EQ) {
@@ -62,7 +62,7 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
         }
 
         if (o == result) {
-            corto_llAppend(data->anonymousObjects, o);
+            corto_ll_append(data->anonymousObjects, o);
         }
     }
 
@@ -302,7 +302,7 @@ int corto_genDepWalk(g_generator g, corto_depresolver_action onDeclare, corto_de
     }
 
     if (walkData.anonymousObjects) {
-        corto_llFree(walkData.anonymousObjects);
+        corto_ll_free(walkData.anonymousObjects);
     }
 
     return corto_depresolver_walk(resolver);

@@ -1192,9 +1192,9 @@ void corto_onexit(void(*handler)(void*), void* userData) {
 
     corto_mutexLock(&corto_adminLock);
     if (!corto_exitHandlers) {
-        corto_exitHandlers = corto_llNew();
+        corto_exitHandlers = corto_ll_new();
     }
-    corto_llInsert(corto_exitHandlers, h);
+    corto_ll_insert(corto_exitHandlers, h);
     corto_mutexUnlock(&corto_adminLock);
 }
 
@@ -1203,11 +1203,11 @@ static void corto_exit(void) {
     struct corto_exitHandler* h;
 
     if (corto_exitHandlers) {
-        while((h = corto_llTakeFirst(corto_exitHandlers))) {
+        while((h = corto_ll_takeFirst(corto_exitHandlers))) {
             h->handler(h->userData);
             corto_dealloc(h);
         }
-        corto_llFree(corto_exitHandlers);
+        corto_ll_free(corto_exitHandlers);
         corto_exitHandlers = NULL;
     }
 }

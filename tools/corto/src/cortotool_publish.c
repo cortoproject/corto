@@ -49,7 +49,7 @@ corto_int16 cortotool_publish(int argc, char *argv[]) {
     }
 
     if (dirs) {
-        corto_string dir = corto_llGet(dirs, 0);
+        corto_string dir = corto_ll_get(dirs, 0);
         if (corto_chdir(dir)) {
             corto_error("%s", corto_lasterr());
             goto error;

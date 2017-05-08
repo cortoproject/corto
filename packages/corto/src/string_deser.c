@@ -43,10 +43,10 @@ static corto_int16 corto_string_deserBuildIndexComposite(corto_walk_opt* s, cort
 /* Insert info into index */
 static void corto_string_deserIndexInsert(corto_string_deser_t* data, struct corto_string_deserIndexInfo* info) {
     if (!data->index) {
-        data->index = corto_llNew();
+        data->index = corto_ll_new();
         data->current = 0;
     }
-    corto_llAppend(data->index, info);
+    corto_ll_append(data->index, info);
 }
 
 /* Lookup index */
@@ -62,7 +62,7 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
     found = FALSE;
 
     if (data->index) {
-        iter = corto_llIter(data->index);
+        iter = corto_ll_iter(data->index);
 
         /* Lookup member in index */
         while(corto_iter_hasNext(&iter)) {
@@ -73,7 +73,7 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
              * specified name, implicit referencing is not allowed. */
             if (!strcmp(corto_idof(info->m), member) && (!info->parsed)) {
                 found = TRUE;
-                data->iterData = *(corto_llIter_s*)iter.udata;
+                data->iterData = *(corto_ll_iter_s*)iter.udata;
                 data->currentIter = iter;
                 data->currentIter.udata = &data->iterData;
                 break;
@@ -110,8 +110,8 @@ int corto_string_deserWalkIndex(void* o, void* udata) {
 /* Free index */
 void corto_string_deserFreeIndex(corto_string_deser_t* data) {
     if (data->index) {
-        corto_llWalk(data->index, corto_string_deserWalkIndex, NULL);
-        corto_llFree(data->index);
+        corto_ll_walk(data->index, corto_string_deserWalkIndex, NULL);
+        corto_ll_free(data->index);
     }
 }
 
@@ -208,10 +208,10 @@ void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
             corto_ll list = *(corto_ll*)ptr;
             if (corto_collection_requiresAlloc(t->elementType)) {
                 result = corto_calloc(size);
-                corto_llAppend(list, result);
+                corto_ll_append(list, result);
             } else {
-                corto_llAppend(list, NULL);
-                result = corto_llGetPtr(list, corto_llSize(list) - 1);
+                corto_ll_append(list, NULL);
+                result = corto_ll_getPtr(list, corto_ll_size(list) - 1);
             }
             break;
         default:
@@ -312,7 +312,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
 
         /* Create iterator for index */
         if (privateData.index) {
-            privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
+            privateData.currentIter = _corto_ll_iter(privateData.index, &privateData.iterData);
         }
     /* If type is a collection, build index with one node for element */
     } else if (info->type->kind == CORTO_COLLECTION) {
@@ -324,7 +324,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
         corto_string_deserIndexInsert(&privateData, elementNode);
 
         /* Create iterator for index */
-        privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
+        privateData.currentIter = _corto_ll_iter(privateData.index, &privateData.iterData);
         privateData.allocValue = corto_string_deserAllocElem;
         privateData.allocUdata = info->type;
 
@@ -335,9 +335,9 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
                 break;
             case CORTO_LIST:
                 if (!*(corto_ll*)ptr) {
-                    *(corto_ll*)ptr = corto_llNew();
+                    *(corto_ll*)ptr = corto_ll_new();
                 } else {
-                    corto_llClear(*(corto_ll*)ptr);
+                    corto_ll_clear(*(corto_ll*)ptr);
                 }
                 privateData.ptr = ptr;
                 break;
@@ -352,7 +352,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
           anyNode->parsed = FALSE;
           anyNode->type = corto_type(corto_type_o);
           corto_string_deserIndexInsert(&privateData, anyNode);
-          privateData.currentIter = _corto_llIter(privateData.index, &privateData.iterData);
+          privateData.currentIter = _corto_ll_iter(privateData.index, &privateData.iterData);
           privateData.allocValue = corto_string_deserAllocAny;
           privateData.allocUdata = anyNode;
     }
@@ -469,8 +469,8 @@ static corto_int16 corto_string_deserParseValue(
                     corto_seterr("cannot refer to self (<0>), not deserializing an object");
                     goto error;
                 }
-            } else if (data->anonymousObjects && (index <= corto_llSize(data->anonymousObjects))) {
-                o = corto_llGet(data->anonymousObjects, index - 1);
+            } else if (data->anonymousObjects && (index <= corto_ll_size(data->anonymousObjects))) {
+                o = corto_ll_get(data->anonymousObjects, index - 1);
                 corto_claim(o);
             } else {
                 corto_seterr("undefined anonymous identifier '%s'", value);
@@ -613,9 +613,9 @@ static corto_string corto_string_parseAnonymous(
     /* Check if this is a 'named' anonymous object in which case it is
      * prefixed with <[id]> */
     if ((valuePtr = corto_string_deserParseAnonymousId(valuePtr, &index))) {
-        if (data->anonymousObjects && (index <= corto_llSize(data->anonymousObjects))) {
+        if (data->anonymousObjects && (index <= corto_ll_size(data->anonymousObjects))) {
             if (!*valuePtr) {
-                o = corto_llGet(data->anonymousObjects, index - 1);
+                o = corto_ll_get(data->anonymousObjects, index - 1);
                 corto_claim(o);
             } else {
                 /* If the <n> is followed up with more data, a new anonymous
@@ -684,10 +684,10 @@ static corto_string corto_string_parseAnonymous(
             data->anonymousObjects = privateData.anonymousObjects;
 
             if (!data->anonymousObjects) {
-                data->anonymousObjects = corto_llNew();
+                data->anonymousObjects = corto_ll_new();
             }
 
-            corto_llAppend(data->anonymousObjects, o);
+            corto_ll_append(data->anonymousObjects, o);
         }
     }
 
@@ -995,7 +995,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     }
 
     if (data->anonymousObjects) {
-        corto_llFree(data->anonymousObjects);
+        corto_ll_free(data->anonymousObjects);
     }
 
     return ptr;

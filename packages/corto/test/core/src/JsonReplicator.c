@@ -22,10 +22,10 @@ int16_t _test_JsonReplicator_construct(
 /* $header(test/JsonReplicator/onRequest) */
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {
-    corto_llIter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->udata;
     corto_resultListClear(data->list);
-    corto_llFree(data->list);
-    corto_llIterRelease(iter);
+    corto_ll_free(data->list);
+    corto_ll_iterRelease(iter);
 }
 /* $end */
 corto_resultIter _test_JsonReplicator_onRequest(
@@ -33,7 +33,7 @@ corto_resultIter _test_JsonReplicator_onRequest(
     corto_request *request)
 {
 /* $begin(test/JsonReplicator/onRequest) */
-    corto_ll data = corto_llNew();
+    corto_ll data = corto_ll_new();
 
     /* Create top level objects */
     corto_resultAssign(
@@ -65,7 +65,7 @@ corto_resultIter _test_JsonReplicator_onRequest(
     );
 
     /* Create persistent iterator */
-    corto_iter result = corto_llIterAlloc(data);
+    corto_iter result = corto_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_JsonReplicator_iterRelease;

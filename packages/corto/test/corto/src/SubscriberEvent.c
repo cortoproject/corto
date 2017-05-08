@@ -35,7 +35,7 @@ void _test_SubscriberEvent_tc_onDeclare(
     corto_int16 ret;
 
     test_assertint(this->st->countDeclare, 1);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
@@ -44,7 +44,7 @@ void _test_SubscriberEvent_tc_onDeclare(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(o);
@@ -57,7 +57,7 @@ void _test_SubscriberEvent_tc_onDeclare(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -66,7 +66,7 @@ void _test_SubscriberEvent_tc_onDeclare(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclare_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(q);
@@ -88,7 +88,7 @@ void _test_SubscriberEvent_tc_onDeclareScope(
     corto_int16 ret;
 
     test_assert(this->st->countDeclareScope == 0);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
@@ -97,7 +97,7 @@ void _test_SubscriberEvent_tc_onDeclareScope(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(o);
@@ -110,7 +110,7 @@ void _test_SubscriberEvent_tc_onDeclareScope(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -119,7 +119,7 @@ void _test_SubscriberEvent_tc_onDeclareScope(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareScope_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(q);
@@ -141,7 +141,7 @@ void _test_SubscriberEvent_tc_onDeclareSelf(
     corto_int16 ret;
 
     test_assert(this->st->countDeclareSelf == 1);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
@@ -150,7 +150,7 @@ void _test_SubscriberEvent_tc_onDeclareSelf(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(o);
@@ -163,7 +163,7 @@ void _test_SubscriberEvent_tc_onDeclareSelf(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -172,7 +172,7 @@ void _test_SubscriberEvent_tc_onDeclareSelf(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareSelf_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(q);
@@ -194,7 +194,7 @@ void _test_SubscriberEvent_tc_onDeclareTree(
     corto_int16 ret;
 
     test_assert(this->st->countDeclareTree == 0);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
@@ -203,7 +203,7 @@ void _test_SubscriberEvent_tc_onDeclareTree(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(o);
@@ -215,7 +215,7 @@ void _test_SubscriberEvent_tc_onDeclareTree(
     test_assert(this->st->countDeclareTree == 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -224,7 +224,7 @@ void _test_SubscriberEvent_tc_onDeclareTree(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_DECLARE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDeclareTree_o));
     test_SubscriberTest_clear(this->st);
 
     ret = corto_define(q);
@@ -246,13 +246,13 @@ void _test_SubscriberEvent_tc_onDefine(
     corto_int16 ret;
 
     test_assertint(this->st->countDefine, 1);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
     test_assert(o != NULL);
     test_assertint(this->st->countDefine, 1);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
 
     ret = corto_define(o);
     test_assert(ret == 0);
@@ -260,7 +260,7 @@ void _test_SubscriberEvent_tc_onDefine(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
@@ -269,7 +269,7 @@ void _test_SubscriberEvent_tc_onDefine(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -282,7 +282,7 @@ void _test_SubscriberEvent_tc_onDefine(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefine_o));
     test_SubscriberTest_clear(this->st);
 
     corto_delete(o);
@@ -300,12 +300,12 @@ void _test_SubscriberEvent_tc_onDefineScope(
     corto_int16 ret;
 
     test_assert(this->st->countDefineScope == 0);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
     test_assert(o != NULL);
     test_assert(this->st->countDefineScope == 0);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
 
     ret = corto_define(o);
     test_assert(ret == 0);
@@ -313,7 +313,7 @@ void _test_SubscriberEvent_tc_onDefineScope(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
@@ -322,7 +322,7 @@ void _test_SubscriberEvent_tc_onDefineScope(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -332,7 +332,7 @@ void _test_SubscriberEvent_tc_onDefineScope(
     ret = corto_define(q);
     test_assert(ret == 0);
     test_assert(this->st->countDefineScope == 2);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineScope_o));
     test_SubscriberTest_clear(this->st);
 
     corto_delete(o);
@@ -350,33 +350,33 @@ void _test_SubscriberEvent_tc_onDefineSelf(
     corto_int16 ret;
 
     test_assert(this->st->countDefineSelf == 1);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
     test_assert(o != NULL);
     test_assert(this->st->countDefineSelf == 1);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
 
     ret = corto_define(o);
     test_assert(ret == 0);
     test_assert(this->st->countDefineSelf == 1);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->st->countDefineSelf == 1);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
 
     corto_object q = corto_int32DeclareChild(p, "q");
     test_assert(q != NULL);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
     test_assert(this->st->countDefineSelf == 1);
 
     ret = corto_define(q);
     test_assert(ret == 0);
     test_assert(this->st->countDefineSelf == 1);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineSelf_o));
 
     corto_delete(o);
     corto_delete(p);
@@ -393,12 +393,12 @@ void _test_SubscriberEvent_tc_onDefineTree(
     corto_int16 ret;
 
     test_assert(this->st->countDefineTree == 0);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
     test_assert(o != NULL);
     test_assert(this->st->countDefineTree == 0);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
 
     ret = corto_define(o);
     test_assert(ret == 0);
@@ -406,7 +406,7 @@ void _test_SubscriberEvent_tc_onDefineTree(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
@@ -415,13 +415,13 @@ void _test_SubscriberEvent_tc_onDefineTree(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
     test_assert(q != NULL);
     test_assert(this->st->countDefineTree == 2);
-    test_assert(!corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
+    test_assert(!corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
 
     ret = corto_define(q);
     test_assert(ret == 0);
@@ -429,7 +429,7 @@ void _test_SubscriberEvent_tc_onDefineTree(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_DEFINE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onDefineTree_o));
     test_SubscriberTest_clear(this->st);
 
     corto_delete(o);
@@ -454,7 +454,7 @@ void _test_SubscriberEvent_tc_onUpdate(
     test_assertstr(this->st->lastParent, "..");
     test_assertstr(this->st->lastId, "testScope");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
@@ -475,7 +475,7 @@ void _test_SubscriberEvent_tc_onUpdate(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
@@ -492,7 +492,7 @@ void _test_SubscriberEvent_tc_onUpdate(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -513,7 +513,7 @@ void _test_SubscriberEvent_tc_onUpdate(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_delete(o);
@@ -554,7 +554,7 @@ void _test_SubscriberEvent_tc_onUpdateScope(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
@@ -571,7 +571,7 @@ void _test_SubscriberEvent_tc_onUpdateScope(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -592,7 +592,7 @@ void _test_SubscriberEvent_tc_onUpdateScope(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_delete(o);
@@ -617,7 +617,7 @@ void _test_SubscriberEvent_tc_onUpdateSelf(
     test_assertstr(this->st->lastParent, "..");
     test_assertstr(this->st->lastId, "testScope");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
@@ -702,7 +702,7 @@ void _test_SubscriberEvent_tc_onUpdateTree(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object p = corto_int32CreateChild(testScope, "p", 0);
@@ -719,7 +719,7 @@ void _test_SubscriberEvent_tc_onUpdateTree(
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_object q = corto_int32DeclareChild(p, "q");
@@ -740,7 +740,7 @@ void _test_SubscriberEvent_tc_onUpdateTree(
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
     test_assert(this->st->lastMask & CORTO_ON_UPDATE);
-    test_assert(corto_llHasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
+    test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onUpdate_o));
     test_SubscriberTest_clear(this->st);
 
     corto_delete(o);

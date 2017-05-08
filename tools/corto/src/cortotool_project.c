@@ -164,7 +164,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
         fprintf(file, "    int result = 0;\n");
         fprintf(file, "    test_Runner runner = test_RunnerCreate(\"%s\", argv[0], (argc > 1) ? argv[1] : NULL);\n", name);
         fprintf(file, "    if (!runner) return -1;\n");
-        fprintf(file, "    if (corto_llSize(runner->failures)) {\n");
+        fprintf(file, "    if (corto_ll_size(runner->failures)) {\n");
         fprintf(file, "        result = -1;\n");
         fprintf(file, "    }\n");
         fprintf(file, "    corto_delete(runner);\n");
@@ -712,7 +712,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     }
 
     if (lang) {
-        language = corto_llGet(lang, 0);
+        language = corto_ll_get(lang, 0);
     }
 
     /* If no arguments are provided, create an application with a random name */
@@ -736,7 +736,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     }
 
     if (apps) {
-        corto_iter iter = corto_llIter(apps);
+        corto_iter iter = corto_ll_iter(apps);
         while (corto_iter_hasNext(&iter)) {
             char *name = corto_iter_next(&iter);
             if (cortotool_app(
@@ -757,7 +757,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     }
 
     if (apps_noname) {
-        corto_iter iter = corto_llIter(apps_noname);
+        corto_iter iter = corto_ll_iter(apps_noname);
         while (corto_iter_hasNext(&iter)) {
             char *name = cortotool_randomName();
             corto_iter_next(&iter);
@@ -779,7 +779,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     }
 
     if (packages) {
-        corto_iter iter = corto_llIter(packages);
+        corto_iter iter = corto_ll_iter(packages);
         while (corto_iter_hasNext(&iter)) {
             char *name = corto_iter_next(&iter);
             if (cortotool_package(
@@ -800,7 +800,7 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     }
 
     if (packages_noname) {
-        corto_iter iter = corto_llIter(packages_noname);
+        corto_iter iter = corto_ll_iter(packages_noname);
         while (corto_iter_hasNext(&iter)) {
             char *name = cortotool_randomName();
             corto_iter_next(&iter);

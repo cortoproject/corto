@@ -45,7 +45,7 @@ corto_fileMonitor* cortotool_monitorNew(char *file, char *lib) {
 
 static void cortotool_addChangedLibrary(corto_ll *libs, corto_string lib) {
     if (*libs && lib) {
-        corto_iter iter = corto_llIter(*libs);
+        corto_iter iter = corto_ll_iter(*libs);
         while (corto_iter_hasNext(&iter)) {
             corto_string l = corto_iter_next(&iter);
             if (!strcmp(l, lib)) {
@@ -55,9 +55,9 @@ static void cortotool_addChangedLibrary(corto_ll *libs, corto_string lib) {
     }
 
     if (!*libs) {
-        *libs = corto_llNew();
+        *libs = corto_ll_new();
     }
-    corto_llAppend(*libs, lib);
+    corto_ll_append(*libs, lib);
 }
 
 static corto_ll cortotool_getModified(corto_ll files, corto_ll changed) {
@@ -65,12 +65,12 @@ static corto_ll cortotool_getModified(corto_ll files, corto_ll changed) {
     corto_ll libs = NULL;
 
     if (changed) {
-        corto_llFree(changed);
+        corto_ll_free(changed);
         changed = NULL;
     }
 
     if (files) {
-        corto_iter iter = corto_llIter(files);
+        corto_iter iter = corto_ll_iter(files);
         while (corto_iter_hasNext(&iter)) {
             struct stat attr;
             corto_fileMonitor *mon = corto_iter_next(&iter);
@@ -97,7 +97,7 @@ static corto_ll cortotool_waitForChanges(corto_pid pid, corto_ll files, corto_ll
     corto_int32 i = 0;
 
     if (changed) {
-        corto_llFree(changed);
+        corto_ll_free(changed);
         changed = NULL;
     }
 
@@ -135,13 +135,13 @@ static int cortotool_addDirToMonitor(corto_string dir, corto_ll monitorList) {
         goto error;
     }
 
-    corto_iter iter = corto_llIter(files);
+    corto_iter iter = corto_ll_iter(files);
     while (corto_iter_hasNext(&iter)) {
         corto_id srcFile;
         corto_string file = corto_iter_next(&iter);
         sprintf(srcFile, "%s/src/%s", dir, file);
         corto_fileMonitor *mon = cortotool_monitorNew(srcFile, dir);
-        corto_llAppend(monitorList, mon);
+        corto_ll_append(monitorList, mon);
     }
 
     corto_closedir(files);
@@ -167,7 +167,7 @@ error:
 }
 
 static corto_ll cortotool_gatherFiles(void) {
-    corto_ll result = corto_llNew();
+    corto_ll result = corto_ll_new();
     corto_ll packages;
 
     if (cortotool_addDirToMonitor(".", result)) {
@@ -176,7 +176,7 @@ static corto_ll cortotool_gatherFiles(void) {
 
     /* Walk packages */
     packages = corto_loadGetPackages();
-    corto_iter iter = corto_llIter(packages);
+    corto_iter iter = corto_ll_iter(packages);
     while (corto_iter_hasNext(&iter)) {
         corto_id sourceLink;
         corto_string package = corto_iter_next(&iter);
@@ -188,7 +188,7 @@ static corto_ll cortotool_gatherFiles(void) {
         }
         corto_fileMonitor *mon = cortotool_monitorNew(file, NULL);
         if (file) {
-            corto_llAppend(result, mon);
+            corto_ll_append(result, mon);
         } else {
             printf("couldn't find file '%s'\n", file);
         }
@@ -211,7 +211,7 @@ static corto_ll cortotool_gatherFiles(void) {
 
     return result;
 error:
-    corto_llFree(result);
+    corto_ll_free(result);
     return NULL;
 }
 
@@ -260,7 +260,7 @@ corto_int16 cortotool_monitor(char *argv[]) {
             rebuild++;
         } else {
             depErrors = 0;
-            corto_iter iter = corto_llIter(changed);
+            corto_iter iter = corto_ll_iter(changed);
             while (corto_iter_hasNext(&iter)) {
                 corto_string lib = corto_iter_next(&iter);
                 if (lib && strcmp(lib, ".")) {
@@ -371,7 +371,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     }
 
     if (dir) {
-        corto_string project = corto_llGet(dir, 0);
+        corto_string project = corto_ll_get(dir, 0);
 
         /* Maybe this function fails, which is ok as it doesn't directly mean
          * an error. */

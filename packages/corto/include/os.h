@@ -22,6 +22,8 @@
 #ifndef CORTO_OS_H
 #define CORTO_OS_H
 
+/* UNSTABLE API */
+
 #include "corto/async_posix.h"
 
 #ifdef __cplusplus
@@ -251,6 +253,7 @@ CORTO_EXPORT char* corto_fileReadLine(corto_file file, char* buf, unsigned int l
 
 CORTO_EXPORT char* corto_fileExtension(char* file, char* buffer);
 CORTO_EXPORT char* corto_filePath(char* file, char* buffer);
+CORTO_EXPORT char* corto_fileBase(char* file, char* buffer);
 
 /* Time functions */
 CORTO_EXPORT void corto_sleep(unsigned int sec, unsigned int nanosec);

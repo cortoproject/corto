@@ -199,9 +199,9 @@ corto_err_callback corto_err_callbackRegister(
 
     corto_mutexLock(&corto_adminLock);
     if (!corto_err_callbacks) {
-        corto_err_callbacks = corto_llNew();
+        corto_err_callbacks = corto_ll_new();
     }
-    corto_llAppend(corto_err_callbacks, result);
+    corto_ll_append(corto_err_callbacks, result);
     corto_mutexUnlock(&corto_adminLock);
 
     return result;
@@ -215,9 +215,9 @@ void corto_err_callbackUnregister(corto_err_callback cb)
     struct corto_err_callback* callback = cb;
     if (callback) {
         corto_mutexLock(&corto_adminLock);
-        corto_llRemove(corto_err_callbacks, callback);
-        if (!corto_llSize(corto_err_callbacks)) {
-            corto_llFree(corto_err_callbacks);
+        corto_ll_remove(corto_err_callbacks, callback);
+        if (!corto_ll_size(corto_err_callbacks)) {
+            corto_ll_free(corto_err_callbacks);
             corto_err_callbacks = NULL;
         }
         corto_mutexUnlock(&corto_adminLock);
@@ -519,7 +519,7 @@ corto_err corto_logv(char *file, unsigned int line, corto_err kind, unsigned int
         if (corto_err_callbacks) {
             corto_mutexLock(&corto_adminLock);
             if (corto_err_callbacks) {
-                corto_iter it = corto_llIter(corto_err_callbacks);
+                corto_iter it = corto_ll_iter(corto_err_callbacks);
                 while (corto_iter_hasNext(&it)) {
                     corto_err_callback callback = corto_iter_next(&it);
                     corto_err_notifyCallkback(

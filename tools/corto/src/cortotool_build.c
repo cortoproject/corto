@@ -62,7 +62,7 @@ static corto_int16 cortotool_printCortoListAsRubyArray(corto_file f, const char*
 {
     fprintf((FILE*)f, "%s = [\n", rubyName);
     {
-        corto_iter it = corto_llIter(list);
+        corto_iter it = corto_ll_iter(list);
         while (corto_iter_hasNext(&it)) {
             corto_string elem = corto_iter_next(&it);
             fprintf((FILE*)f, "    \"%s\",\n", elem);
@@ -77,25 +77,25 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     corto_file rakefile = corto_fileOpen("rakefile");
     fprintf((FILE*)rakefile, "PACKAGE = '%s'\n", corto_path(NULL, root_o, package, "/"));
 
-    if (corto_llSize(package->lib)) {
+    if (corto_ll_size(package->lib)) {
         cortotool_printCortoListAsRubyArray(rakefile, "LIB", package->lib);
     }
-    if (corto_llSize(package->libpath)) {
+    if (corto_ll_size(package->libpath)) {
         cortotool_printCortoListAsRubyArray(rakefile, "LIBPATH", package->libpath);
     }
-    if (corto_llSize(package->include)) {
+    if (corto_ll_size(package->include)) {
         cortotool_printCortoListAsRubyArray(rakefile, "INCLUDE", package->include);
     }
-    if (corto_llSize(package->link)) {
+    if (corto_ll_size(package->link)) {
         cortotool_printCortoListAsRubyArray(rakefile, "LINK", package->link);
     }
-    if (corto_llSize(package->dependencies)) {
+    if (corto_ll_size(package->dependencies)) {
         cortotool_printCortoListAsRubyArray(rakefile, "USE_PACKAGE", package->dependencies);
     }
-    if (corto_llSize(package->definitions)) {
+    if (corto_ll_size(package->definitions)) {
         cortotool_printCortoListAsRubyArray(rakefile, "PP_SCOPES", package->definitions);
     }
-    if (corto_llSize(package->cflags)) {
+    if (corto_ll_size(package->cflags)) {
         cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
     }
     if (!package->managed) {
@@ -194,7 +194,7 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
     }
 
     if (dirs) {
-        it = corto_llIter(dirs);
+        it = corto_ll_iter(dirs);
         if (corto_iter_hasNext(&it)) {
             dir = corto_iter_next(&it);
         }
@@ -268,7 +268,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
     strcpy(cwd, corto_cwd());
 
     if (dirs) {
-        iter = corto_llIter(dirs);
+        iter = corto_ll_iter(dirs);
     }
 
     do {
@@ -367,7 +367,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
     strcpy(cwd, corto_cwd());
 
     if (dirs) {
-        iter = corto_llIter(dirs);
+        iter = corto_ll_iter(dirs);
     }
 
     do {

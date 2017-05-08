@@ -36,7 +36,7 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
 
 /* Mark type as parsed */
 static void corto_genTypeParsed(corto_object o, corto_genTypeWalk_t* data) {
-    corto_llInsert(data->parsed, o);
+    corto_ll_insert(data->parsed, o);
 }
 
 /* Mark object as declared */
@@ -56,7 +56,7 @@ static corto_genTypeDeclaration* corto_genTypeDeclared(corto_object o, corto_gen
     decl->o = o;
     decl->printed = FALSE;
     decl->parsing = FALSE;
-    corto_llInsert(data->declared, decl);
+    corto_ll_insert(data->declared, decl);
 
     return decl;
 }
@@ -106,7 +106,7 @@ static corto_bool corto_genTypeIsParsed(corto_object o, corto_genTypeWalk_t* dat
     p = NULL;
     found = FALSE;
 
-    iter = corto_llIter(data->parsed);
+    iter = corto_ll_iter(data->parsed);
     while(!found && corto_iter_hasNext(&iter)) {
         p = corto_iter_next(&iter);
         /* If object is scoped, it must be matched exactly */
@@ -135,7 +135,7 @@ static struct corto_genTypeDeclaration* corto_genTypeIsDeclared(corto_object o, 
     struct corto_genTypeDeclaration* p;
 
     p = NULL;
-    iter = corto_llIter(data->declared);
+    iter = corto_ll_iter(data->declared);
     while(corto_iter_hasNext(&iter)) {
         p = corto_iter_next(&iter);
         if (o == p->o) {
@@ -537,8 +537,8 @@ int corto_genTypeDepWalk(g_generator g, g_walkAction onDeclare, g_walkAction onD
 
     /* Prepare walkdata, open headerfile */
     walkData.g = g;
-    walkData.parsed = corto_llNew();
-    walkData.declared = corto_llNew();
+    walkData.parsed = corto_ll_new();
+    walkData.declared = corto_ll_new();
     walkData.onDeclare = onDeclare;
     walkData.onDefine = onDefine;
     walkData.userData = userData;
@@ -549,12 +549,12 @@ int corto_genTypeDepWalk(g_generator g, g_walkAction onDeclare, g_walkAction onD
     }
 
     /* Free parsed-list */
-    corto_llFree(walkData.parsed);
+    corto_ll_free(walkData.parsed);
 
-    while((decl = corto_llTakeFirst(walkData.declared))) {
+    while((decl = corto_ll_takeFirst(walkData.declared))) {
         corto_dealloc(decl);
     }
-    corto_llFree(walkData.declared);
+    corto_ll_free(walkData.declared);
 
     return 0;
 error:

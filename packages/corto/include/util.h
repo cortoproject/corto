@@ -22,6 +22,8 @@
 #ifndef CORTO_UTIL_H_
 #define CORTO_UTIL_H_
 
+/* UNSTABLE API */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

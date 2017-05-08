@@ -133,7 +133,7 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
     /* First do a lookup, check if the object already exists */
     if (g->objects) {
         g_object *gObj;
-        objectIter = corto_llIter(g->objects);
+        objectIter = corto_ll_iter(g->objects);
         while(corto_iter_hasNext(&objectIter)) {
             gObj = corto_iter_next(&objectIter);
             if (gObj->o == object) {
@@ -162,9 +162,9 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
         }
 
         if (!g->objects) {
-            g->objects = corto_llNew();
+            g->objects = corto_ll_new();
         }
-        corto_llAppend(g->objects, o);
+        corto_ll_append(g->objects, o);
 
         if ((parseSelf || parseScope) && !g->current) {
             g->current = o;
@@ -191,10 +191,10 @@ void g_setAttribute(g_generator g, corto_string key, corto_string value) {
     g_attribute* attr = NULL;
 
     if (!g->attributes) {
-        g->attributes = corto_llNew();
+        g->attributes = corto_ll_new();
     }else {
         void* userData = key;
-        if(!corto_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+        if(!corto_ll_walk(g->attributes, g_genAttributeFind, &userData)) {
             attr = userData;
         }
     }
@@ -202,7 +202,7 @@ void g_setAttribute(g_generator g, corto_string key, corto_string value) {
     if(!attr) {
         attr = corto_alloc(sizeof(g_attribute));
         attr->key = corto_strdup(key);
-        corto_llAppend(g->attributes, attr);
+        corto_ll_append(g->attributes, attr);
     }else {
         corto_dealloc(attr->value);
     }
@@ -215,7 +215,7 @@ corto_string g_getAttribute(g_generator g, corto_string key) {
 
     if(g->attributes) {
         void *userData = key;
-        if(!corto_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+        if(!corto_ll_walk(g->attributes, g_genAttributeFind, &userData)) {
             result = ((g_attribute*)userData)->value;
         }
     }
@@ -348,31 +348,31 @@ void g_free(g_generator g) {
     }
 
     if (g->objects) {
-        corto_llWalk(g->objects, g_freeObjects, NULL);
-        corto_llFree(g->objects);
+        corto_ll_walk(g->objects, g_freeObjects, NULL);
+        corto_ll_free(g->objects);
         g->objects = NULL;
     }
 
     if (g->files) {
-        corto_llWalk(g->files, g_closeFile, NULL);
-        corto_llFree(g->files);
+        corto_ll_walk(g->files, g_closeFile, NULL);
+        corto_ll_free(g->files);
         g->files = NULL;
     }
 
     if (g->attributes) {
-        corto_llWalk(g->attributes, g_freeAttribute, NULL);
-        corto_llFree(g->attributes);
+        corto_ll_walk(g->attributes, g_freeAttribute, NULL);
+        corto_ll_free(g->attributes);
         g->attributes = NULL;
     }
 
     if (g->imports) {
-        corto_llWalk(g->imports, g_freeImport, NULL);
-        corto_llFree(g->imports);
+        corto_ll_walk(g->imports, g_freeImport, NULL);
+        corto_ll_free(g->imports);
         g->imports = NULL;
     }
 
     if (g->anonymousObjects) {
-        corto_llFree(g->anonymousObjects);
+        corto_ll_free(g->anonymousObjects);
     }
 
     if (g->name) {
@@ -386,7 +386,7 @@ void g_free(g_generator g) {
 }
 
 corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
 
     while (corto_iter_hasNext(&iter)) {
         corto_object p = corto_iter_next(&iter);
@@ -482,15 +482,15 @@ corto_int16 g_leafDependencies(
     corto_ll deps = corto_loadGetDependencies(packagesTxt);
     if (deps) {
         if (!g->importsNested) {
-            g->importsNested = corto_llNew();
+            g->importsNested = corto_ll_new();
         }
-        corto_iter it = corto_llIter(deps);
+        corto_iter it = corto_ll_iter(deps);
         while (corto_iter_hasNext(&it)) {
             corto_string dep = corto_iter_next(&it);
             corto_object o = corto_resolve(NULL, dep);
             if (o) {
-                if (!corto_llHasObject(g->importsNested, o)) {
-                    corto_llAppend(g->importsNested, o);
+                if (!corto_ll_hasObject(g->importsNested, o)) {
+                    corto_ll_append(g->importsNested, o);
                     corto_claim(o);
                 } else {
                     corto_release(o);
@@ -505,10 +505,10 @@ corto_int16 g_leafDependencies(
 
 corto_int16 g_import(g_generator g, corto_object package) {
     if (!g->imports) {
-        g->imports = corto_llNew();
+        g->imports = corto_ll_new();
     }
-    if (!corto_llHasObject(g->imports, package)) {
-        corto_llInsert(g->imports, package);
+    if (!corto_ll_hasObject(g->imports, package)) {
+        corto_ll_insert(g->imports, package);
         corto_claim(package);
 
         /* Recursively obtain imports */
@@ -594,7 +594,7 @@ static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_
         g->current = o;
     } else if (g->objects) {
         g->inWalk = TRUE;
-        corto_iter iter = corto_llIter(g->objects);
+        corto_iter iter = corto_ll_iter(g->objects);
         while(corto_iter_hasNext(&iter)) {
             g_object* o = corto_iter_next(&iter);
             if (!g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk)) {
@@ -641,7 +641,7 @@ static g_object* g_findObjectIntern(
     result = NULL;
     if (g->objects) {
         minDistance = -1;
-        iter = corto_llIter(g->objects);
+        iter = corto_ll_iter(g->objects);
         while(corto_iter_hasNext(&iter)) {
             t = corto_iter_next(&iter);
 
@@ -848,9 +848,9 @@ corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind k
     } else {
         corto_uint32 count = 0;
         if (!g->anonymousObjects) {
-            g->anonymousObjects = corto_llNew();
+            g->anonymousObjects = corto_ll_new();
         }
-        corto_iter it = corto_llIter(g->anonymousObjects);
+        corto_iter it = corto_ll_iter(g->anonymousObjects);
         while (corto_iter_hasNext(&it)) {
             corto_object e = corto_iter_next(&it);
             if (e == o) {
@@ -858,8 +858,8 @@ corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind k
             }
             count ++;
         }
-        if (count == corto_llSize(g->anonymousObjects)) {
-            corto_llAppend(g->anonymousObjects, o);
+        if (count == corto_ll_size(g->anonymousObjects)) {
+            corto_ll_append(g->anonymousObjects, o);
         }
 
         corto_object cur = g_getCurrent(g);
@@ -1038,7 +1038,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
                         src = corto_strdup(ptr);
 
                         if (!*list) {
-                            *list = corto_llNew();
+                            *list = corto_ll_new();
                         }
 
                         if(strstr(src, "$begin")) {
@@ -1053,7 +1053,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
                         existing->id = corto_strdup(identifier);
                         existing->src = src;
                         existing->used = FALSE;
-                        corto_llInsert(*list, existing);
+                        corto_ll_insert(*list, existing);
 
                         ptr = endptr + 1;
 
@@ -1084,16 +1084,16 @@ error:
 
 void g_fileClose(g_file file) {
     /* Remove file from generator administration */
-    corto_llRemove(file->generator->files, file);
+    corto_ll_remove(file->generator->files, file);
 
     /* Free snippets */
     if (file->snippets) {
-        corto_llWalk(file->snippets, g_freeSnippet, file);
-        corto_llFree(file->snippets);
+        corto_ll_walk(file->snippets, g_freeSnippet, file);
+        corto_ll_free(file->snippets);
     }
     if (file->headers) {
-        corto_llWalk(file->headers, g_freeSnippet, file);
-        corto_llFree(file->headers);
+        corto_ll_walk(file->headers, g_freeSnippet, file);
+        corto_ll_free(file->headers);
     }
 
     corto_fileClose(file->file);
@@ -1139,9 +1139,9 @@ static g_file g_fileOpenIntern(g_generator g, corto_string name) {
     }
 
     if (!g->files) {
-        g->files = corto_llNew();
+        g->files = corto_ll_new();
     }
-    corto_llInsert(g->files, result);
+    corto_ll_insert(g->files, result);
 
     return result;
 error:
@@ -1181,7 +1181,7 @@ corto_string g_fileLookupSnippetIntern(g_file file, corto_string snippetId, cort
     snippet = NULL;
 
     if (list) {
-        iter = corto_llIter(list);
+        iter = corto_ll_iter(list);
         while(corto_iter_hasNext(&iter)) {
             snippet = corto_iter_next(&iter);
             corto_id path; strcpy(path, snippet->id);
@@ -1250,7 +1250,7 @@ corto_bool g_mustParse(g_generator g, corto_object o) {
 
     result = TRUE;
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
-        if (corto_llWalk(g->objects, g_checkParseWalk, o)) {
+        if (corto_ll_walk(g->objects, g_checkParseWalk, o)) {
             result = FALSE;
         }
     }
@@ -1326,7 +1326,7 @@ static corto_uint32 corto_genMemberCacheCount(corto_ll cache, corto_member m) {
     corto_genWalkMember_t *member;
     corto_uint32 result = 0;
 
-    memberIter = corto_llIter(cache);
+    memberIter = corto_ll_iter(cache);
     while(corto_iter_hasNext(&memberIter)) {
         member = corto_iter_next(&memberIter);
         if (!strcmp(corto_idof(member->member), corto_idof(m))) {
@@ -1342,7 +1342,7 @@ static corto_uint32 corto_genMemberCacheGet(corto_ll cache, corto_member m) {
     corto_genWalkMember_t *member;
     corto_uint32 result = 0;
 
-    memberIter = corto_llIter(cache);
+    memberIter = corto_ll_iter(cache);
     while(corto_iter_hasNext(&memberIter)) {
         member = corto_iter_next(&memberIter);
         if (member->member == m) {
@@ -1367,7 +1367,7 @@ static corto_int16 corto_genMemberCache_member(corto_walk_opt* s, corto_value *i
         parameter = corto_alloc(sizeof(corto_genWalkMember_t));
         parameter->member = m;
         parameter->occurred = corto_genMemberCacheCount(cache, m);
-        corto_llAppend(cache, parameter);
+        corto_ll_append(cache, parameter);
     } else {
         corto_walk_members(s, info, userData);
     }
@@ -1399,7 +1399,7 @@ corto_ll corto_genMemberCacheBuild(corto_interface o) {
     s.access = CORTO_LOCAL | CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
     s.metaprogram[CORTO_MEMBER] = corto_genMemberCache_member;
-    result = corto_llNew();
+    result = corto_ll_new();
 
     corto_metawalk(&s, corto_type(o), result);
 
@@ -1410,12 +1410,12 @@ void corto_genMemberCacheClean(corto_ll cache) {
     corto_iter memberIter;
     corto_genWalkMember_t *member;
 
-    memberIter = corto_llIter(cache);
+    memberIter = corto_ll_iter(cache);
     while(corto_iter_hasNext(&memberIter)) {
         member = corto_iter_next(&memberIter);
         corto_dealloc(member);
     }
-    corto_llFree(cache);
+    corto_ll_free(cache);
 }
 
 typedef struct g_depWalk_t {
@@ -1439,10 +1439,10 @@ static corto_package g_addDepencency(g_generator g, corto_object o, g_depWalk_t 
 
     if (result) {
         if (!data->dependencies) {
-            data->dependencies = corto_llNew();
+            data->dependencies = corto_ll_new();
         }
-        if (!corto_llHasObject(data->dependencies, result)) {
-            corto_llAppend(data->dependencies, result);
+        if (!corto_ll_hasObject(data->dependencies, result)) {
+            corto_ll_append(data->dependencies, result);
         }
     }
 

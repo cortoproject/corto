@@ -280,10 +280,10 @@ corto_ll corto_opendir(const char *name) {
     dp = opendir (name);
 
     if (dp != NULL) {
-        result = corto_llNew();
+        result = corto_ll_new();
         while ((ep = readdir (dp))) {
             if (*ep->d_name != '.') {
-                corto_llAppend(result, corto_strdup(ep->d_name));
+                corto_ll_append(result, corto_strdup(ep->d_name));
             }
         }
         closedir (dp);
@@ -293,12 +293,12 @@ corto_ll corto_opendir(const char *name) {
 }
 
 void corto_closedir(corto_ll dir) {
-    corto_iter iter = corto_llIter(dir);
+    corto_iter iter = corto_ll_iter(dir);
 
     while(corto_iter_hasNext(&iter)) {
         corto_dealloc(corto_iter_next(&iter));
     }
-    corto_llFree(dir);
+    corto_ll_free(dir);
 }
 
 corto_pid corto_procrun(const char* exec, char *argv[]) {

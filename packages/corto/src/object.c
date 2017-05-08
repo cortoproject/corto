@@ -54,7 +54,7 @@ int16_t corto_deinit(corto_object o);
 
 void corto_declaredAdminFree(void *admin) {
     if (admin) {
-        corto_llFree(admin);
+        corto_ll_free(admin);
     }
 }
 
@@ -94,7 +94,7 @@ corto_bool corto_declaredAdminCheck(corto_object o) {
     if (!admin) {
         return FALSE;
     } else {
-        return corto_llHasObject(admin, o) != 0;
+        return corto_ll_hasObject(admin, o) != 0;
     }
 }
 
@@ -102,17 +102,17 @@ static void corto_declaredAdminAdd(corto_object o) {
     corto_assertObject(o);
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
     if (!admin) {
-        admin = corto_llNew();
+        admin = corto_ll_new();
         corto_threadTlsSet(CORTO_KEY_DECLARED_ADMIN, admin);
     }
-    corto_llAppend(admin, o);
+    corto_ll_append(admin, o);
 }
 
 static corto_bool corto_declaredAdminRemove(corto_object o) {
     corto_assertObject(o);
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
     if (admin) {
-        if (corto_llRemove(admin, o)) {
+        if (corto_ll_remove(admin, o)) {
             corto_unlock(o);
             return TRUE;
         }
@@ -407,25 +407,25 @@ static void corto__deinitObservable(corto_object o) {
     /* Delete observer objects in onSelf and onChild */
     if (observable->onSelf) {
         corto__observer* observer;
-        while((observer = corto_llTakeFirst(observable->onSelf))) {
+        while((observer = corto_ll_takeFirst(observable->onSelf))) {
             if (!--observer->count) {
                 observer->observer->active --;
                 corto_dealloc(observer);
             }
         }
-        corto_llFree(observable->onSelf);
+        corto_ll_free(observable->onSelf);
         observable->onSelf = NULL;
     }
 
     if (observable->onChild) {
         corto__observer* observer;
-        while((observer = corto_llTakeFirst(observable->onChild))) {
+        while((observer = corto_ll_takeFirst(observable->onChild))) {
             if (!--observer->count) {
                 observer->observer->active --;
                 corto_dealloc(observer);
             }
         }
-        corto_llFree(observable->onChild);
+        corto_ll_free(observable->onChild);
         observable->onChild = NULL;
     }
 
@@ -479,15 +479,15 @@ corto_int16 corto__freeSSO(corto_object sso) {
     if (scope->scope) {
         /* Don't print this error - without a proper cycle detector this could
          * be reported without there actually being a problem
-        if (corto_rbtreeSize(scope->scope)) {
+        if (corto_rb_size(scope->scope)) {
             corto_error("corto__freeSSO: scope of object '%s' is not empty (%p/%p: %d left)",
                 corto_idof(sso),
                 sso,
                 scope->scope,
-                corto_rbtreeSize(scope->scope));
+                corto_rb_size(scope->scope));
             goto error;
         }*/
-        corto_rbtreeFree(scope->scope);
+        corto_rb_free(scope->scope);
         scope->scope = NULL;
     }
 
@@ -883,10 +883,10 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
-                p_scope->scope = corto_rbtreeNew_w_func(corto_compareDefault);
+                p_scope->scope = corto_rb_new_w_func(corto_compareDefault);
             }
 
-            corto_object existing = corto_rbtreeFindOrSet(p_scope->scope, c_scope->id, child);
+            corto_object existing = corto_rb_findOrSet(p_scope->scope, c_scope->id, child);
             if (existing && (existing != child)) {
                 corto_unlock(child);
                 if (forceType && (corto_typeof(existing) != corto_typeof(child))) {
@@ -978,7 +978,7 @@ err_invalid_parent:
 err_invalid_child:
 err_invalid_parent_leaf:
     c_scope->parent = NULL;
-    corto_rbtreeRemove(p_scope->scope, c_scope->id);
+    corto_rb_remove(p_scope->scope, c_scope->id);
 err_existing:
     corto_rwmutexUnlock(&p_scope->align.scopeLock);
 error:
@@ -1001,7 +1001,7 @@ void corto__orphan(corto_object o) {
 
         /* Remove object from parent scope */
         if (corto_rwmutexWrite(&p_scope->align.scopeLock)) goto err_parent_mutex;
-        corto_rbtreeRemove(p_scope->scope, (void*)corto_idof(o));
+        corto_rb_remove(p_scope->scope, (void*)corto_idof(o));
 
         if (corto_rwmutexUnlock(&p_scope->align.scopeLock)) goto err_parent_mutex;
     }
@@ -1184,9 +1184,9 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
             /* Add object to anonymous cache */
             corto_mutexLock(&corto_adminLock);
             if (!corto_anonymousObjects) {
-                corto_anonymousObjects = corto_llNew();
+                corto_anonymousObjects = corto_ll_new();
             }
-            corto_llInsert(corto_anonymousObjects, CORTO_OFFSET(o, sizeof(corto__object)));
+            corto_ll_insert(corto_anonymousObjects, CORTO_OFFSET(o, sizeof(corto__object)));
             corto_mutexUnlock(&corto_adminLock);
 
             /* void objects are instantly defined because they have no value. */
@@ -2018,7 +2018,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         } else {
             /* Remove from anonymous cache */
             corto_mutexLock(&corto_adminLock);
-            corto_llRemove(corto_anonymousObjects, o);
+            corto_ll_remove(corto_anonymousObjects, o);
             corto_mutexUnlock(&corto_adminLock);
         }
 
@@ -2068,7 +2068,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             _o = CORTO_OFFSET(o, -sizeof(corto__object));
              corto__scope *scope = corto__objectScope(_o);
             if (scope->scope) {
-                corto_rbtreeFree(scope->scope);
+                corto_rb_free(scope->scope);
             }
 
             if (scope->id) {
@@ -2107,9 +2107,9 @@ static int corto_dropWalk(void* o, void* userData) {
 
     /* Insert object in list */
     if (!data->objects) {
-        data->objects = corto_llNew();
+        data->objects = corto_ll_new();
     }
-    corto_llInsert(data->objects, o);
+    corto_ll_insert(data->objects, o);
 
     return 1;
 }
@@ -2135,7 +2135,7 @@ void corto_drop(corto_object o, corto_bool delete) {
         corto_rwmutexRead(&scope->align.scopeLock);
         walkData.objects = NULL;
         if (scope->scope) {
-            corto_rbtreeWalk(scope->scope, corto_dropWalk, &walkData);
+            corto_rb_walk(scope->scope, corto_dropWalk, &walkData);
         }
         corto_rwmutexUnlock(&scope->align.scopeLock);
 
@@ -2145,7 +2145,7 @@ void corto_drop(corto_object o, corto_bool delete) {
                 corto_memtrace(delete ? "drop:delete" : "drop:suspend", o, NULL);
             }
 
-            iter = corto_llIter(walkData.objects);
+            iter = corto_ll_iter(walkData.objects);
             while(corto_iter_hasNext(&iter)) {
                 collected = corto_iter_next(&iter);
 
@@ -2173,7 +2173,7 @@ void corto_drop(corto_object o, corto_bool delete) {
                      * also had been deleted by corto_drop. */
                 }
             }
-            corto_llFree(walkData.objects);
+            corto_ll_free(walkData.objects);
         }
     } else {
         corto_critical("drop: object <%p> is not scoped.", o);
@@ -2300,7 +2300,7 @@ static corto_contentType corto_findContentType(
 {
     corto_contentType result = NULL;
     if (contentTypes) {
-        corto_iter it = corto_llIter(contentTypes);
+        corto_iter it = corto_ll_iter(contentTypes);
         while (corto_iter_hasNext(&it)) {
             corto_contentType ct = corto_iter_next(&it);
             if (!strcmp(ct->name, contentType)) {
@@ -2309,7 +2309,7 @@ static corto_contentType corto_findContentType(
             }
         }
     } else {
-        contentTypes = corto_llNew();
+        contentTypes = corto_ll_new();
     }
 
     if (!result && !strcmp(contentType, "corto")) {
@@ -2325,7 +2325,7 @@ static corto_contentType corto_findContentType(
         result->release = (void ___ (*)(corto_word))corto_dealloc;
 
         result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
-        corto_llAppend(contentTypes, result);
+        corto_ll_append(contentTypes, result);
 
     } else if (!result && !strcmp(contentType, "corto-color")) {
         result = corto_alloc(sizeof(struct corto_contentType));
@@ -2338,7 +2338,7 @@ static corto_contentType corto_findContentType(
         result->release = (void ___ (*)(corto_word))corto_dealloc;
 
         result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
-        corto_llAppend(contentTypes, result);
+        corto_ll_append(contentTypes, result);
     }
 
     return result;
@@ -2465,7 +2465,7 @@ corto_contentType corto_loadContentType(
          corto_mutexLock(&corto_adminLock);
          corto_contentType alreadyAdded = corto_findContentType(packagePtr);
          if (!alreadyAdded) {
-            corto_llAppend(contentTypes, result);
+            corto_ll_append(contentTypes, result);
          } else {
             corto_dealloc(result->name);
             corto_dealloc(result);
@@ -3057,7 +3057,7 @@ corto_uint32 corto_scopeSize(corto_object o) {
     if (scope) {
         tree = scope->scope;
         if (tree) {
-            result = corto_rbtreeSize(tree);
+            result = corto_rb_size(tree);
         }
     } else {
         goto err_not_scoped;
@@ -3100,10 +3100,10 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalk_cb action, void* use
         if (scope->scope) {
             corto_rwmutexRead(&scope->align.scopeLock);
             if (!corto_secured()) {
-                result = corto_rbtreeWalk(scope->scope, (corto_elementWalk_cb)action, userData);
+                result = corto_rb_walk(scope->scope, (corto_elementWalk_cb)action, userData);
             } else {
                 corto_scopeWalkSecured_t walkData = {action, userData};
-                result = corto_rbtreeWalk(
+                result = corto_rb_walk(
                     scope->scope,
                     (corto_elementWalk_cb)corto_scopeWalkSecured,
                     &walkData);
@@ -3713,7 +3713,7 @@ static corto_object corto_lookup_intern(
                     if (o) corto_release(o);
                 } else {
                     corto_rwmutexRead(&scope->align.scopeLock);
-                    if (!corto_rbtreeHasKey_w_cmp(
+                    if (!corto_rb_hasKey_w_cmp(
                           tree,
                           ptr,
                           (void**)&o,
@@ -3726,7 +3726,7 @@ static corto_object corto_lookup_intern(
                         /* If requesting an id without '()' and an id with '()'
                          * is returned, look again without allowing for '()' to
                          * give preference to an object without '()' */
-                        if (corto_rbtreeHasKey_w_cmp(
+                        if (corto_rb_hasKey_w_cmp(
                               tree,
                               ptr,
                               (void**)&checkNoArgs,

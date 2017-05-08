@@ -332,7 +332,7 @@ static corto_bool corto_shellAutoExpand(
      * a space between the first argument */
     if (!items) {
         corto_shellEngine_cmdAppend(" ", 0);
-    } else if (corto_llSize(items)) {
+    } else if (corto_ll_size(items)) {
         corto_id append;
         append[0] = '\0';
         int first = 0;
@@ -347,13 +347,13 @@ static corto_bool corto_shellAutoExpand(
             arg = "";
         }
 
-        if (corto_llSize(items) >= 2) {
+        if (corto_ll_size(items) >= 2) {
             corto_string prev = NULL, str = NULL;
             corto_shellEngine_keepInput();
             result = TRUE;
 
             printf("\n");
-            corto_iter iter = corto_llIter(items);
+            corto_iter iter = corto_ll_iter(items);
             while (corto_iter_hasNext(&iter)) {
                 if (!prev) prev = str; else prev = NULL;
                 str = corto_iter_next(&iter);
@@ -387,21 +387,21 @@ static corto_bool corto_shellAutoExpand(
                 printf("\n");
             }
     		} else {
-            if (!memcmp(corto_llGet(items, 0), arg, strlen(arg))) {
-                strcpy(append, &(((corto_string)corto_llGet(items, 0))[strlen(arg)]));
+            if (!memcmp(corto_ll_get(items, 0), arg, strlen(arg))) {
+                strcpy(append, &(((corto_string)corto_ll_get(items, 0))[strlen(arg)]));
             } else {
-                strcpy(append, corto_llGet(items, 0));
+                strcpy(append, corto_ll_get(items, 0));
                 replace = strlen(arg);
             }
         }
 
         corto_shellEngine_cmdAppend(append, replace);
 
-        corto_iter iter = corto_llIter(items);
+        corto_iter iter = corto_ll_iter(items);
         while (corto_iter_hasNext(&iter)) {
             corto_dealloc(corto_iter_next(&iter));
         }
-        corto_llFree(items);
+        corto_ll_free(items);
   	}
 
   	return result;

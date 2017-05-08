@@ -195,8 +195,8 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     }
 
     corto_iter it;
-    if (dirs && corto_llSize(dirs)) {
-        it = corto_llIter(dirs);
+    if (dirs && corto_ll_size(dirs)) {
+        it = corto_ll_iter(dirs);
         corto_assert(corto_iter_hasNext(&it), "non-empty list returns empty iterator");
     } else {
         if (cortotool_validProject()) {
@@ -209,7 +209,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
     do {
         corto_string dir = NULL;
-        if (dirs && corto_llSize(dirs)) {
+        if (dirs && corto_ll_size(dirs)) {
             dir = corto_iter_next(&it);
             if (corto_chdir(dir)) {
                 installRemote = TRUE;
@@ -389,7 +389,7 @@ error:
 corto_bool cortotool_isDirEmpty(corto_string dir) {
     corto_bool empty = FALSE;
     corto_ll files = corto_opendir(dir);
-    if (files && !corto_llSize(files)) {
+    if (files && !corto_ll_size(files)) {
         empty = TRUE;
     }
     corto_closedir(files);
@@ -410,7 +410,7 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
 
         /* Keep track of directories in which files are uninstalled. If empty
          * after uninstalling, also remove directory */
-        corto_ll directories = corto_llNew();
+        corto_ll directories = corto_ll_new();
         char *dependency;
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
             if (!dependency) {
@@ -432,8 +432,8 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
                 if (sep && (sep != dir)) {
                     *sep = '\0';
                 }
-                if (!corto_llFind(directories, (corto_compare_cb)strcmp, dir)) {
-                    corto_llAppend(directories, dir);
+                if (!corto_ll_find(directories, (corto_compare_cb)strcmp, dir)) {
+                    corto_ll_append(directories, dir);
                 } else {
                     corto_dealloc(dir);
                 }
@@ -441,7 +441,7 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
         }
 
         /* Loop directories, recursively remove empty ones */
-        corto_iter it = corto_llIter(directories);
+        corto_iter it = corto_ll_iter(directories);
         corto_bool empty;
         corto_string root = corto_envparse(
             "%s/include/corto/%s.%s",
@@ -460,8 +460,8 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
                     if (sep && (sep != dir)) {
                         *sep = '\0';
                     }
-                    if (!corto_llFind(directories, (corto_compare_cb)strcmp, dir)) {
-                        corto_llAppend(directories, dir);
+                    if (!corto_ll_find(directories, (corto_compare_cb)strcmp, dir)) {
+                        corto_ll_append(directories, dir);
                     } else {
                         corto_dealloc(dir);
                     }
@@ -651,8 +651,8 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
       }
     );
 
-    if (packages && corto_llSize(packages)) {
-        corto_iter it = corto_llIter(packages);
+    if (packages && corto_ll_size(packages)) {
+        corto_iter it = corto_ll_iter(packages);
         while (corto_iter_hasNext(&it)) {
             corto_string package = corto_iter_next(&it);
             corto_int32 local = cortotool_uninstallFromEnv("$CORTO_TARGET", package);

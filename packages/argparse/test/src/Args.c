@@ -32,11 +32,11 @@ void _test_Args_tc_matchAddNoProject(
     test_assert(project == NULL);
     test_assert(packages != NULL);
 
-    test_assert(corto_llSize(silent) == 1);
-    test_assert(corto_llSize(packages) == 1);
+    test_assert(corto_ll_size(silent) == 1);
+    test_assert(corto_ll_size(packages) == 1);
 
-    test_assertstr(corto_llGet(silent, 0), "--silent");
-    test_assertstr(corto_llGet(packages, 0), "::corto::test");
+    test_assertstr(corto_ll_get(silent, 0), "--silent");
+    test_assertstr(corto_ll_get(packages, 0), "::corto::test");
 
     corto_argclean(data);
 
@@ -61,11 +61,11 @@ void _test_Args_tc_matchAll(
 
     test_assert(data != NULL);
     test_assert(args != NULL);
-    test_assert(corto_llSize(args) == 4);
-    test_assert(!strcmp(corto_llGet(args, 0), "abc"));
-    test_assert(!strcmp(corto_llGet(args, 1), "def"));
-    test_assert(!strcmp(corto_llGet(args, 2), "-g"));
-    test_assert(!strcmp(corto_llGet(args, 3), "--hi"));
+    test_assert(corto_ll_size(args) == 4);
+    test_assert(!strcmp(corto_ll_get(args, 0), "abc"));
+    test_assert(!strcmp(corto_ll_get(args, 1), "def"));
+    test_assert(!strcmp(corto_ll_get(args, 2), "-g"));
+    test_assert(!strcmp(corto_ll_get(args, 3), "--hi"));
 
     corto_argclean(data);
 
@@ -97,8 +97,8 @@ void _test_Args_tc_matchCreate(
     test_assert(data != NULL);
 
     test_assert(app != NULL);
-    test_assert(corto_llSize(app) == 1);
-    test_assert(!strcmp(corto_llGet(app, 0), "MyApp"));
+    test_assert(corto_ll_size(app) == 1);
+    test_assert(!strcmp(corto_ll_get(app, 0), "MyApp"));
 
     test_assert(package == NULL);
     test_assert(component == NULL);
@@ -136,8 +136,8 @@ void _test_Args_tc_matchCreateApp(
     test_assert(data != NULL);
 
     test_assert(app != NULL);
-    test_assert(corto_llSize(app) == 1);
-    test_assert(!strcmp(corto_llGet(app, 0), "MyApp"));
+    test_assert(corto_ll_size(app) == 1);
+    test_assert(!strcmp(corto_ll_get(app, 0), "MyApp"));
 
     test_assert(package == NULL);
     test_assert(component == NULL);
@@ -175,9 +175,9 @@ void _test_Args_tc_matchCreateMultiple(
     test_assert(data != NULL);
 
     test_assert(app != NULL);
-    test_assert(corto_llSize(app) == 2);
-    test_assert(!strcmp(corto_llGet(app, 0), "MyApp1"));
-    test_assert(!strcmp(corto_llGet(app, 1), "MyApp2"));
+    test_assert(corto_ll_size(app) == 2);
+    test_assert(!strcmp(corto_ll_get(app, 0), "MyApp1"));
+    test_assert(!strcmp(corto_ll_get(app, 1), "MyApp2"));
 
     test_assert(package == NULL);
     test_assert(component == NULL);
@@ -215,8 +215,8 @@ void _test_Args_tc_matchCreatePackage(
     test_assert(data != NULL);
 
     test_assert(package != NULL);
-    test_assert(corto_llSize(package) == 1);
-    test_assert(!strcmp(corto_llGet(package, 0), "myPackage"));
+    test_assert(corto_ll_size(package) == 1);
+    test_assert(!strcmp(corto_ll_get(package, 0), "myPackage"));
 
     test_assert(app == NULL);
     test_assert(component == NULL);
@@ -254,12 +254,12 @@ void _test_Args_tc_matchCreatePackageAndApp(
     test_assert(data != NULL);
 
     test_assert(package != NULL);
-    test_assert(corto_llSize(package) == 1);
-    test_assert(!strcmp(corto_llGet(package, 0), "myPackage"));
+    test_assert(corto_ll_size(package) == 1);
+    test_assert(!strcmp(corto_ll_get(package, 0), "myPackage"));
 
     test_assert(app != NULL);
-    test_assert(corto_llSize(app) == 1);
-    test_assert(!strcmp(corto_llGet(app, 0), "MyApp"));
+    test_assert(corto_ll_size(app) == 1);
+    test_assert(!strcmp(corto_ll_get(app, 0), "MyApp"));
 
     test_assert(component == NULL);
     test_assert(silent == NULL);
@@ -296,12 +296,12 @@ void _test_Args_tc_matchCreatePackageAndAppEscaped(
     test_assert(data != NULL);
 
     test_assert(package != NULL);
-    test_assert(corto_llSize(package) == 1);
-    test_assert(!strcmp(corto_llGet(package, 0), "package"));
+    test_assert(corto_ll_size(package) == 1);
+    test_assert(!strcmp(corto_ll_get(package, 0), "package"));
 
     test_assert(app != NULL);
-    test_assert(corto_llSize(app) == 1);
-    test_assert(!strcmp(corto_llGet(app, 0), "app"));
+    test_assert(corto_ll_size(app) == 1);
+    test_assert(!strcmp(corto_ll_get(app, 0), "app"));
 
     test_assert(component == NULL);
     test_assert(silent == NULL);
@@ -338,20 +338,20 @@ void _test_Args_tc_matchCreatePackageOptions(
     test_assert(data != NULL);
 
     test_assert(package != NULL);
-    test_assert(corto_llSize(package) == 1);
-    test_assert(!strcmp(corto_llGet(package, 0), "myPackage"));
+    test_assert(corto_ll_size(package) == 1);
+    test_assert(!strcmp(corto_ll_get(package, 0), "myPackage"));
 
     test_assert(silent != NULL);
-    test_assert(corto_llSize(silent) == 1);
-    test_assert(!strcmp(corto_llGet(silent, 0), "--silent"));
+    test_assert(corto_ll_size(silent) == 1);
+    test_assert(!strcmp(corto_ll_get(silent, 0), "--silent"));
 
     test_assert(notest != NULL);
-    test_assert(corto_llSize(notest) == 1);
-    test_assert(!strcmp(corto_llGet(notest, 0), "--notest"));
+    test_assert(corto_ll_size(notest) == 1);
+    test_assert(!strcmp(corto_ll_get(notest, 0), "--notest"));
 
     test_assert(local != NULL);
-    test_assert(corto_llSize(local) == 1);
-    test_assert(!strcmp(corto_llGet(local, 0), "--local"));
+    test_assert(corto_ll_size(local) == 1);
+    test_assert(!strcmp(corto_ll_get(local, 0), "--local"));
 
     test_assert(app == NULL);
     test_assert(component == NULL);
@@ -380,15 +380,15 @@ void _test_Args_tc_matchDuplicate(
     test_assert(data != NULL);
 
     test_assert(abc != NULL);
-    test_assert(corto_llSize(abc) == 2);
+    test_assert(corto_ll_size(abc) == 2);
 
     test_assert(def != NULL);
-    test_assert(corto_llSize(def) == 2);
+    test_assert(corto_ll_size(def) == 2);
 
-    test_assert(!strcmp(corto_llGet(abc, 0), "abc"));
-    test_assert(!strcmp(corto_llGet(abc, 1), "abc"));
-    test_assert(!strcmp(corto_llGet(def, 0), "def"));
-    test_assert(!strcmp(corto_llGet(def, 1), "def"));
+    test_assert(!strcmp(corto_ll_get(abc, 0), "abc"));
+    test_assert(!strcmp(corto_ll_get(abc, 1), "abc"));
+    test_assert(!strcmp(corto_ll_get(def, 0), "def"));
+    test_assert(!strcmp(corto_ll_get(def, 1), "def"));
 
     corto_argclean(data);
 
@@ -414,24 +414,24 @@ void _test_Args_tc_matchDuplicateArg(
     test_assert(data != NULL);
 
     test_assert(option1 != NULL);
-    test_assert(corto_llSize(option1) == 2);
+    test_assert(corto_ll_size(option1) == 2);
 
     test_assert(option2 != NULL);
-    test_assert(corto_llSize(option2) == 1);
+    test_assert(corto_ll_size(option2) == 1);
 
-    test_assert(!strcmp(corto_llGet(option1, 0), "--option1"));
-    test_assert(!strcmp(corto_llGet(option1, 1), "--option1"));
-    test_assert(!strcmp(corto_llGet(option2, 0), "--option2"));
+    test_assert(!strcmp(corto_ll_get(option1, 0), "--option1"));
+    test_assert(!strcmp(corto_ll_get(option1, 1), "--option1"));
+    test_assert(!strcmp(corto_ll_get(option2, 0), "--option2"));
 
     test_assert(args1 != NULL);
-    test_assert(corto_llSize(args1) == 2);
+    test_assert(corto_ll_size(args1) == 2);
 
     test_assert(args2 != NULL);
-    test_assert(corto_llSize(args2) == 1);
+    test_assert(corto_ll_size(args2) == 1);
 
-    test_assert(!strcmp(corto_llGet(args1, 0), "arg1"));
-    test_assert(!strcmp(corto_llGet(args1, 1), "arg2"));
-    test_assert(!strcmp(corto_llGet(args2, 0), "arg3"));
+    test_assert(!strcmp(corto_ll_get(args1, 0), "arg1"));
+    test_assert(!strcmp(corto_ll_get(args1, 1), "arg2"));
+    test_assert(!strcmp(corto_ll_get(args2, 0), "arg3"));
 
     corto_argclean(data);
 
@@ -481,21 +481,21 @@ void _test_Args_tc_matchFixed(
     test_assert(data != NULL);
 
     test_assert(a != NULL);
-    test_assert(corto_llSize(a) == 1);
+    test_assert(corto_ll_size(a) == 1);
 
     test_assert(b != NULL);
-    test_assert(corto_llSize(b) == 1);
+    test_assert(corto_ll_size(b) == 1);
 
     test_assert(c != NULL);
-    test_assert(corto_llSize(c) == 1);
+    test_assert(corto_ll_size(c) == 1);
 
     test_assert(d != NULL);
-    test_assert(corto_llSize(d) == 1);
+    test_assert(corto_ll_size(d) == 1);
 
-    test_assert(!strcmp(corto_llGet(a, 0), "a"));
-    test_assert(!strcmp(corto_llGet(b, 0), "b"));
-    test_assert(!strcmp(corto_llGet(c, 0), "c"));
-    test_assert(!strcmp(corto_llGet(d, 0), "d"));
+    test_assert(!strcmp(corto_ll_get(a, 0), "a"));
+    test_assert(!strcmp(corto_ll_get(b, 0), "b"));
+    test_assert(!strcmp(corto_ll_get(c, 0), "c"));
+    test_assert(!strcmp(corto_ll_get(d, 0), "d"));
 
     corto_argclean(data);
 
@@ -521,13 +521,13 @@ void _test_Args_tc_matchMultiple(
     test_assert(data != NULL);
 
     test_assert(abc != NULL);
-    test_assert(corto_llSize(abc) == 1);
+    test_assert(corto_ll_size(abc) == 1);
 
     test_assert(def != NULL);
-    test_assert(corto_llSize(def) == 1);
+    test_assert(corto_ll_size(def) == 1);
 
-    test_assert(!strcmp(corto_llGet(abc, 0), "abc"));
-    test_assert(!strcmp(corto_llGet(def, 0), "def"));
+    test_assert(!strcmp(corto_ll_get(abc, 0), "abc"));
+    test_assert(!strcmp(corto_ll_get(def, 0), "def"));
 
     corto_argclean(data);
 
@@ -553,22 +553,22 @@ void _test_Args_tc_matchMultipleArg(
     test_assert(data != NULL);
 
     test_assert(option1 != NULL);
-    test_assert(corto_llSize(option1) == 1);
+    test_assert(corto_ll_size(option1) == 1);
 
     test_assert(option2 != NULL);
-    test_assert(corto_llSize(option2) == 1);
+    test_assert(corto_ll_size(option2) == 1);
 
-    test_assert(!strcmp(corto_llGet(option1, 0), "--option1"));
-    test_assert(!strcmp(corto_llGet(option2, 0), "--option2"));
+    test_assert(!strcmp(corto_ll_get(option1, 0), "--option1"));
+    test_assert(!strcmp(corto_ll_get(option2, 0), "--option2"));
 
     test_assert(args1 != NULL);
-    test_assert(corto_llSize(args1) == 1);
+    test_assert(corto_ll_size(args1) == 1);
 
     test_assert(args2 != NULL);
-    test_assert(corto_llSize(args2) == 1);
+    test_assert(corto_ll_size(args2) == 1);
 
-    test_assert(!strcmp(corto_llGet(args1, 0), "arg1"));
-    test_assert(!strcmp(corto_llGet(args2, 0), "arg2"));
+    test_assert(!strcmp(corto_ll_get(args1, 0), "arg1"));
+    test_assert(!strcmp(corto_ll_get(args2, 0), "arg2"));
 
     corto_argclean(data);
 
@@ -617,14 +617,14 @@ void _test_Args_tc_matchOptional(
     test_assert(data != NULL);
 
     test_assert(atMostOnce != NULL);
-    test_assert(corto_llSize(atMostOnce) == 1);
+    test_assert(corto_ll_size(atMostOnce) == 1);
 
     test_assert(atLeastOnce != NULL);
-    test_assert(corto_llSize(atLeastOnce) == 2);
+    test_assert(corto_ll_size(atLeastOnce) == 2);
 
-    test_assert(!strcmp(corto_llGet(atMostOnce, 0), "ab"));
-    test_assert(!strcmp(corto_llGet(atLeastOnce, 0), "cd"));
-    test_assert(!strcmp(corto_llGet(atLeastOnce, 1), "ef"));
+    test_assert(!strcmp(corto_ll_get(atMostOnce, 0), "ab"));
+    test_assert(!strcmp(corto_ll_get(atLeastOnce, 0), "cd"));
+    test_assert(!strcmp(corto_ll_get(atLeastOnce, 1), "ef"));
 
     corto_argclean(data);
 
@@ -651,9 +651,9 @@ void _test_Args_tc_matchOptionalOneArg(
 
     test_assert(atMostOnce == NULL);
     test_assert(atLeastOnce != NULL);
-    test_assert(corto_llSize(atLeastOnce) == 1);
+    test_assert(corto_ll_size(atLeastOnce) == 1);
 
-    test_assert(!strcmp(corto_llGet(atLeastOnce, 0), "ab"));
+    test_assert(!strcmp(corto_ll_get(atLeastOnce, 0), "ab"));
 
     corto_argclean(data);
 
@@ -683,11 +683,11 @@ void _test_Args_tc_matchOptionalWithOtherArgs(
     test_assert(atMostOnce == NULL);
     test_assert(atLeastOnce != NULL);
 
-    test_assert(corto_llSize(other) == 1);
-    test_assert(corto_llSize(atLeastOnce) == 1);
+    test_assert(corto_ll_size(other) == 1);
+    test_assert(corto_ll_size(atLeastOnce) == 1);
 
-    test_assert(!strcmp(corto_llGet(other, 0), "other"));
-    test_assert(!strcmp(corto_llGet(atLeastOnce, 0), "ab"));
+    test_assert(!strcmp(corto_ll_get(other, 0), "other"));
+    test_assert(!strcmp(corto_ll_get(atLeastOnce, 0), "ab"));
 
     corto_argclean(data);
 
@@ -712,10 +712,10 @@ void _test_Args_tc_matchPattern(
     test_assert(data != NULL);
 
     test_assert(args != NULL);
-    test_assert(corto_llSize(args) == 2);
+    test_assert(corto_ll_size(args) == 2);
 
-    test_assert(!strcmp(corto_llGet(args, 0), "abcd"));
-    test_assert(!strcmp(corto_llGet(args, 1), "bacd"));
+    test_assert(!strcmp(corto_ll_get(args, 0), "abcd"));
+    test_assert(!strcmp(corto_ll_get(args, 1), "bacd"));
 
     corto_argclean(data);
 
@@ -750,7 +750,7 @@ void _test_Args_tc_matchPublish(
     test_assert(patcharg == NULL);
 
     test_assert(dirs != NULL);
-    test_assert(!strcmp(corto_llGet(dirs, 0), "MyApp"));
+    test_assert(!strcmp(corto_ll_get(dirs, 0), "MyApp"));
 
     corto_argclean(data);
 
@@ -811,17 +811,17 @@ void _test_Args_tc_matchShell(
     test_assert(data != NULL);
 
     test_assert(pp != NULL);
-    test_assert(corto_llSize(pp) == 1);
-    test_assert(!strcmp(corto_llGet(pp, 0), "corto/idl"));
+    test_assert(corto_ll_size(pp) == 1);
+    test_assert(!strcmp(corto_ll_get(pp, 0), "corto/idl"));
 
     test_assert(d != NULL);
-    test_assert(corto_llSize(d) == 1);
-    test_assert(!strcmp(corto_llGet(d, 0), "-d"));
+    test_assert(corto_ll_size(d) == 1);
+    test_assert(!strcmp(corto_ll_get(d, 0), "-d"));
 
     test_assert(load != NULL);
-    test_assert(corto_llSize(load) == 2);
-    test_assert(!strcmp(corto_llGet(load, 0), "test.cx"));
-    test_assert(!strcmp(corto_llGet(load, 1), "test2.cx"));
+    test_assert(corto_ll_size(load) == 2);
+    test_assert(!strcmp(corto_ll_get(load, 0), "test.cx"));
+    test_assert(!strcmp(corto_ll_get(load, 1), "test2.cx"));
 
     corto_argclean(data);
 
@@ -846,9 +846,9 @@ void _test_Args_tc_matchSingle(
     test_assert(data != NULL);
 
     test_assert(abc != NULL);
-    test_assert(corto_llSize(abc) == 1);
+    test_assert(corto_ll_size(abc) == 1);
 
-    test_assert(!strcmp(corto_llGet(abc, 0), "abc"));
+    test_assert(!strcmp(corto_ll_get(abc, 0), "abc"));
 
     corto_argclean(data);
 
@@ -873,13 +873,13 @@ void _test_Args_tc_matchSingleArg(
     test_assert(data != NULL);
 
     test_assert(options != NULL);
-    test_assert(corto_llSize(options) == 1);
+    test_assert(corto_ll_size(options) == 1);
 
     test_assert(args != NULL);
-    test_assert(corto_llSize(args) == 1);
+    test_assert(corto_ll_size(args) == 1);
 
-    test_assert(!strcmp(corto_llGet(options, 0), "--option"));
-    test_assert(!strcmp(corto_llGet(args, 0), "arg"));
+    test_assert(!strcmp(corto_ll_get(options, 0), "--option"));
+    test_assert(!strcmp(corto_ll_get(args, 0), "arg"));
 
     corto_argclean(data);
 

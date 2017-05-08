@@ -18,7 +18,7 @@ int16_t _test_HistoryMount_construct(
     corto_mount(this)->kind = CORTO_HISTORIAN;
     corto_mount_setContentType(this, "text/corto");
 
-    samples = corto_llNew();
+    samples = corto_ll_new();
     corto_stringListAppend(samples, "{10,11}");
     corto_stringListAppend(samples, "{20,22}");
 
@@ -29,7 +29,7 @@ int16_t _test_HistoryMount_construct(
         samples
     );
 
-    corto_llClear(samples);
+    corto_ll_clear(samples);
     corto_stringListAppend(samples, "{30,33}");
     corto_stringListAppend(samples, "{40,44}");
     corto_stringListAppend(samples, "{50,55}");
@@ -41,7 +41,7 @@ int16_t _test_HistoryMount_construct(
         samples
     );
 
-    corto_llClear(samples);
+    corto_ll_clear(samples);
     corto_stringListAppend(samples, "{60,66}");
     corto_stringListAppend(samples, "{70,77}");
     corto_stringListAppend(samples, "{80,88}");
@@ -80,18 +80,18 @@ void* next(corto_iter *it) {
 
     /* Clear previous history */
     corto_sample *s;
-    while ((s = corto_llTakeFirst(ctx->history))) {
+    while ((s = corto_ll_takeFirst(ctx->history))) {
         corto_dealloc(s);
     }
 
     /* Populate history list, only supporting indexes, the oldest sample being
      * index 0 */
     if (ctx->from.kind == CORTO_FRAME_NOW) {
-        start = corto_llSize(data->history) - 1;
+        start = corto_ll_size(data->history) - 1;
     } else if (ctx->from.kind == CORTO_FRAME_SAMPLE) {
         start = ctx->from.value;
-        if (start >= corto_llSize(data->history)) {
-            start = corto_llSize(data->history) - 1;
+        if (start >= corto_ll_size(data->history)) {
+            start = corto_ll_size(data->history) - 1;
         }
     }
     if (ctx->to.kind == CORTO_FRAME_SAMPLE) {
@@ -108,21 +108,21 @@ void* next(corto_iter *it) {
         corto_sample *s = corto_alloc(sizeof(corto_sample));
         s->timestamp.sec = i;
         s->timestamp.nanosec = 0;
-        s->value = (corto_word)corto_llGet(data->history, i);
-        corto_llAppend(ctx->history, s);
+        s->value = (corto_word)corto_ll_get(data->history, i);
+        corto_ll_append(ctx->history, s);
     }
 
-    result->history = corto_llIterAlloc(ctx->history);
+    result->history = corto_ll_iterAlloc(ctx->history);
     return result;
 }
 
 void release(corto_iter *it) {
     iterData *ctx = it->udata;
     corto_sample *s;
-    while ((s = corto_llTakeFirst(ctx->history))) {
+    while ((s = corto_ll_takeFirst(ctx->history))) {
         corto_dealloc(s);
     }
-    corto_llFree(ctx->history);
+    corto_ll_free(ctx->history);
     corto_dealloc(ctx);
 }
 /* $end */
@@ -137,8 +137,8 @@ corto_resultIter _test_HistoryMount_onRequest(
     data->this = this;
     data->from = request->from;
     data->to = request->to;
-    data->iter = corto_llIterAlloc(this->history);
-    data->history = corto_llNew();
+    data->iter = corto_ll_iterAlloc(this->history);
+    data->history = corto_ll_new();
 
     it.next = next;
     it.hasNext = hasNext;

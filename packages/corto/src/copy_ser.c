@@ -106,7 +106,7 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
-    iter = corto_llIter(list);
+    iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         if (corto_collection_requiresAlloc(t->elementType)) {
             e2 = corto_iter_next(&iter);
@@ -139,8 +139,8 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
-    iter1 = corto_llIter(list1);
-    iter2 = corto_llIter(list2);
+    iter1 = corto_ll_iter(list1);
+    iter2 = corto_ll_iter(list2);
     while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
         if (corto_collection_requiresAlloc(t->elementType)) {
             e1 = corto_iter_next(&iter1);
@@ -162,7 +162,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
 
 /* Resize list */
 static void corto_collection_resizeList(corto_collection t, corto_ll list, corto_uint32 size) {
-    corto_uint32 ownSize = corto_llSize(list);
+    corto_uint32 ownSize = corto_ll_size(list);
     corto_type elementType = t->elementType;
 
     /* If there are more elements in the destination, remove superfluous elements */
@@ -170,7 +170,7 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
         corto_uint32 i;
         void *ptr;
         for(i=size; i<ownSize; i++) {
-            ptr = corto_llTakeFirst(list);
+            ptr = corto_ll_takeFirst(list);
             corto_collection_deinitElement(t, ptr);
         }
         /* If there are less elements in the destination, add new elements */
@@ -181,7 +181,7 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
             if (corto_collection_requiresAlloc(t->elementType)) {
                 ptr = corto_calloc(elementType->size);
             }
-            corto_llInsert(list, ptr);
+            corto_ll_insert(list, ptr);
         }
     }
 }
@@ -272,7 +272,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
                 break;
             case CORTO_LIST:
                 list1 = *(corto_ll*)v1;
-                size1 = corto_llSize(list1);
+                size1 = corto_ll_size(list1);
                 break;
             case CORTO_MAP:
                 break;

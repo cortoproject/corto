@@ -96,7 +96,6 @@ struct corto_walk_opt {
 
 CORTO_EXPORT int16_t corto_walk(corto_walk_opt* _this, corto_object o, void* userData);
 CORTO_EXPORT int16_t corto_value_walk(corto_walk_opt* _this, corto_value* info, void* userData);
-CORTO_EXPORT int16_t corto_any_walk(corto_walk_opt* _this, corto_value* info, void* userData);
 CORTO_EXPORT int16_t corto_walk_members(corto_walk_opt* _this, corto_value* info, void* userData);
 CORTO_EXPORT int16_t corto_walk_elements(corto_walk_opt* _this, corto_value* info, void* userData);
 CORTO_EXPORT void corto_walk_init(corto_walk_opt* _this);

@@ -676,7 +676,7 @@ static corto_int16 cxsh_ser_member(
     if (m && !fnmatch(data->filter, m, 0)) {
         corto_id str;
         sprintf(str, "%s.%s", data->prefix, m);
-        corto_llAppend(data->results, corto_strdup(str));
+        corto_ll_append(data->results, corto_strdup(str));
     }
 
     return 0;
@@ -719,7 +719,7 @@ corto_type cxsh_exprType(corto_string expr) {
 
 /* Return result for TAB expansion */
 corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
-    corto_ll result = corto_llNew();
+    corto_ll result = corto_ll_new();
     corto_iter iter;
     corto_id expr;
 
@@ -743,7 +743,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             /* If first argument doesn't end with a space, insert space on first
              * tab. */
             if (!firstArgSpace) {
-                corto_llFree(result);
+                corto_ll_free(result);
                 result = NULL;
             } else {
                 strcat(expr, "*");
@@ -788,7 +788,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                         corto_signatureName(corto_idof(m), sigName);
                         if (!fnmatch(filter, sigName, 0)) {
                             sprintf(method, "%s.%s(", objExpr, sigName);
-                            corto_llAppend(result, corto_strdup(method));
+                            corto_ll_append(result, corto_strdup(method));
                         }
                     }
                 }
@@ -807,7 +807,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                 if (appendSlash) {
                     strcat(scopedItem, "/");
                 }
-                corto_llAppend(result, corto_strdup(scopedItem));
+                corto_ll_append(result, corto_strdup(scopedItem));
                 i++;
             }
 
@@ -824,7 +824,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     if (appendSlash) {
                         strcat(scopedItem, "/");
                     }
-                    corto_llAppend(result, corto_strdup(scopedItem));
+                    corto_ll_append(result, corto_strdup(scopedItem));
                     i++;
                 }
             }
@@ -842,27 +842,27 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     if (appendSlash) {
                         strcat(scopedItem, "/");
                     }
-                    corto_llAppend(result, corto_strdup(scopedItem));
+                    corto_ll_append(result, corto_strdup(scopedItem));
                     i++;
                 }
             }
         }
 
         if (!argc || !firstArgSpace) {
-            if (!fnmatch(expr, "cd", 0)) corto_llAppend(result, corto_strdup ("cd"));
-            if (!fnmatch(expr, "ls", 0)) corto_llAppend(result, corto_strdup ("ls"));
-            if (!fnmatch(expr, "tree", 0)) corto_llAppend(result, corto_strdup ("tree"));
-            if (!fnmatch(expr, "delete", 0)) corto_llAppend(result, corto_strdup ("delete"));
-            if (!fnmatch(expr, "import", 0)) corto_llAppend(result, corto_strdup ("import"));
-            if (!fnmatch(expr, "exit", 0)) corto_llAppend(result, corto_strdup ("exit"));
-            if (!fnmatch(expr, "clear", 0)) corto_llAppend(result, corto_strdup ("clear"));
-            if (!fnmatch(expr, "help", 0)) corto_llAppend(result, corto_strdup ("help"));
+            if (!fnmatch(expr, "cd", 0)) corto_ll_append(result, corto_strdup ("cd"));
+            if (!fnmatch(expr, "ls", 0)) corto_ll_append(result, corto_strdup ("ls"));
+            if (!fnmatch(expr, "tree", 0)) corto_ll_append(result, corto_strdup ("tree"));
+            if (!fnmatch(expr, "delete", 0)) corto_ll_append(result, corto_strdup ("delete"));
+            if (!fnmatch(expr, "import", 0)) corto_ll_append(result, corto_strdup ("import"));
+            if (!fnmatch(expr, "exit", 0)) corto_ll_append(result, corto_strdup ("exit"));
+            if (!fnmatch(expr, "clear", 0)) corto_ll_append(result, corto_strdup ("clear"));
+            if (!fnmatch(expr, "help", 0)) corto_ll_append(result, corto_strdup ("help"));
         }
     }
 
     return result;
 error:
-    corto_llFree(result);
+    corto_ll_free(result);
     corto_error("%s", corto_lasterr());
     return NULL;
 }

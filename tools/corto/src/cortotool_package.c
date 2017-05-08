@@ -82,14 +82,14 @@ corto_int16 cortotool_add(int argc, char* argv[]) {
 
     /* Move to project directory */
     if (project) {
-        if (corto_chdir(corto_llGet(project, 0))) {
+        if (corto_chdir(corto_ll_get(project, 0))) {
             goto error;
         }
     }
 
     /* Load packages */
     if (packages) {
-        corto_iter iter = corto_llIter(packages);
+        corto_iter iter = corto_ll_iter(packages);
         while (corto_iter_hasNext(&iter)) {
             /* Test whether package exists */
             corto_string package =
@@ -148,7 +148,7 @@ error:
 
 static corto_bool cortotool_removeEntry(corto_file file, corto_ll list, corto_string entry) {
     corto_bool found = FALSE;
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
 
     while (corto_iter_hasNext(&iter)) {
         corto_string str = corto_iter_next(&iter);
@@ -188,13 +188,13 @@ corto_int16 cortotool_remove(int argc, char* argv[]) {
 
     /* Move to project directory */
     if (project) {
-        if (corto_chdir(corto_llGet(project, 0))) {
+        if (corto_chdir(corto_ll_get(project, 0))) {
             goto error;
         }
     }
 
     if (packages) {
-        corto_iter iter = corto_llIter(packages);
+        corto_iter iter = corto_ll_iter(packages);
         while (corto_iter_hasNext(&iter)) {
             corto_string arg = corto_iter_next(&iter);
             corto_string package = cortotool_lookupPackage(arg);
@@ -253,10 +253,10 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
     );
 
     if (project) {
-        corto_chdir(corto_llGet(project, 0));
+        corto_chdir(corto_ll_get(project, 0));
         corto_ll packages = corto_loadGetPackages();
-        if (packages && corto_llSize(packages)) {
-            corto_iter iter = corto_llIter(packages);
+        if (packages && corto_ll_size(packages)) {
+            corto_iter iter = corto_ll_iter(packages);
             while (corto_iter_hasNext(&iter)) {
                 corto_string str = corto_iter_next(&iter);
                 corto_string package = corto_locate(str, NULL, CORTO_LOCATION_LIB);

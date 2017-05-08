@@ -38,7 +38,7 @@ typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 
 #include <corto/iter.h>
 #include <corto/ll.h>
-#include <corto/rbtree.h>
+#include <corto/rb.h>
 #include <corto/value.h>
 #include <corto/walk.h>
 #include <corto/os.h>

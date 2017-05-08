@@ -217,7 +217,7 @@ void _corto_mount_destruct(
     this->quit = TRUE;
 
     /* Unsubscribe from active subscriptions */
-    while ((s = corto_llTakeFirst(this->subscriptions))) {
+    while ((s = corto_ll_takeFirst(this->subscriptions))) {
         corto_mount_onUnsubscribe(
             this,
             s->parent,
@@ -326,22 +326,22 @@ void _corto_mount_onPoll_v(
 {
 /* $begin(corto/core/mount/onPoll) */
     corto_event *e;
-    corto_ll events = corto_llNew();
+    corto_ll events = corto_ll_new();
 
     /* Collect events */
     corto_lock(this);
-    while ((e = corto_llTakeFirst(this->events))) {
-        corto_llAppend(events, e);
+    while ((e = corto_ll_takeFirst(this->events))) {
+        corto_ll_append(events, e);
     }
     corto_unlock(this);
 
     /* Handle events outside of lock */
-    while ((e = corto_llTakeFirst(events))) {
+    while ((e = corto_ll_takeFirst(events))) {
         corto_event_handle(e);
         corto_assert(corto_release(e) == 0);
     }
 
-    corto_llFree(events);
+    corto_ll_free(events);
 /* $end */
 }
 
@@ -419,7 +419,7 @@ void _corto_mount_onUnsubscribe_v(
 
 /* $header(corto/core/mount/post) */
 static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subscriberEvent *e) {
-    corto_iter iter = corto_llIter(this->events);
+    corto_iter iter = corto_ll_iter(this->events);
     corto_subscriberEvent *e2;
     while ((corto_iter_hasNext(&iter))) {
         e2 = corto_iter_next(&iter);
@@ -455,16 +455,16 @@ void _corto_mount_post(
         /* Check if there is already another event in the queue for the same object.
          * if so, replace event with latest update. */
         if ((e2 = corto_mount_findEvent(this, corto_subscriberEvent(e)))) {
-            corto_llReplace(this->events, e2, e);
+            corto_ll_replace(this->events, e2, e);
             if (e2->event & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
             if (e2->event & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
             if (e2->event & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
             corto_assert(corto_release(e2) == 0);
         } else {
-            corto_llAppend(this->events, e);
+            corto_ll_append(this->events, e);
         }
 
-        size = corto_llSize(this->events);
+        size = corto_ll_size(this->events);
         corto_unlock(this);
 
         /* If queue is getting big, slow down publisher */
@@ -481,9 +481,9 @@ void _corto_mount_post(
 
 /* $header(corto/core/mount/request) */
 void corto_mount_requestRelease(corto_iter *iter) {
-    corto_llIter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->udata;
     corto_ptr_deinit(&data->list, corto_resultList_o);
-    corto_llIterRelease(iter);
+    corto_ll_iterRelease(iter);
 }
 /* $end */
 corto_resultIter _corto_mount_request(
@@ -500,7 +500,7 @@ corto_resultIter _corto_mount_request(
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
     if (!result.hasNext && (r = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT))) {
-        result = corto_llIterAlloc(r);
+        result = corto_ll_iterAlloc(r);
         result.release = corto_mount_requestRelease;
     }
 
@@ -633,7 +633,7 @@ void _corto_mount_return(
     CORTO_UNUSED(this);
 
     if (!result) {
-        result = corto_llNew();
+        result = corto_ll_new();
         corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, result);
     }
 
@@ -644,7 +644,7 @@ void _corto_mount_return(
     elem->type = corto_strdup(r->type);
     elem->value = (corto_word)r->value;
     elem->leaf = r->leaf;
-    corto_llAppend(result, elem);
+    corto_ll_append(result, elem);
 
 /* $end */
 }
@@ -714,7 +714,7 @@ static corto_mountSubscription* corto_mount_findSubscription(
     *found = FALSE;
     corto_mountSubscription *result = NULL;
 
-    corto_iter it = corto_llIter(this->subscriptions);
+    corto_iter it = corto_ll_iter(this->subscriptions);
     while (corto_iter_hasNext(&it)) {
         corto_mountSubscription *s = corto_iter_next(&it);
         if (!stricmp(s->parent, request->parent)) {
@@ -750,7 +750,7 @@ void _corto_mount_subscribe(
         placeHolder->parent = corto_strdup(request->parent);
         placeHolder->expr = corto_strdup(request->expr);
         placeHolder->count = 1;
-        corto_llAppend(this->subscriptions, placeHolder);
+        corto_ll_append(this->subscriptions, placeHolder);
     }
     if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
 
@@ -784,7 +784,7 @@ void _corto_mount_subscribe(
             subscription->parent = corto_strdup(request->parent);
             subscription->expr = corto_strdup(request->expr);
             subscription->count = 1;
-            corto_llAppend(this->subscriptions, subscription);
+            corto_ll_append(this->subscriptions, subscription);
         } else if (subscription->userData) {
             /* Increase refcount of new or existing subscription (can be new if
              * during the unlock a new subscription was added). */
@@ -827,7 +827,7 @@ void _corto_mount_unsubscribe(
 
     if (subscription) {
         if (! --subscription->count) {
-            corto_llRemove(this->subscriptions, subscription);
+            corto_ll_remove(this->subscriptions, subscription);
         } else {
             subscription = NULL;
         }

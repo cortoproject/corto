@@ -33,6 +33,7 @@ extern "C" {
 
 /** Create a new anonymous object.
  * Equivalent to calling corto_declare + corto_define.
+ *
  * @param type The type of the object to create.
  * @return The new object, NULL if failed.
  * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
@@ -45,6 +46,7 @@ corto_object _corto_create(
 
 /** Create a new scoped object.
  * Equivalent to calling corto_declareChild + corto_define.
+ *
  * @param parent The parent for the new object.
  * @param id The object id. If NULL, a random unique id is generated. A name may contain
  *     multiple elements, separated by the '/' character. If one or more elements
@@ -63,6 +65,7 @@ corto_object _corto_createChild(
 
 /** Create a new orphan object.
  * Equivalent to corto_declareOrphan + corto_define.
+ *
  * @param parent The parent for the new object.
  * @param id The object id. If NULL, a random unique id is generated. A name may contain
  *     multiple elements, separated by the '/' character. If one or more elements
@@ -81,6 +84,7 @@ corto_object _corto_createOrphan(
 
 /** Find or create a new object.
  * Equivalent to calling corto_findOrDeclare + corto_define.
+ *
  * @param parent The parent for the new object.
  * @param id The object id. If NULL, a random unique id is generated. A name may contain
  *     multiple elements, separated by the '/' character. If one or more elements
@@ -101,6 +105,7 @@ corto_object _corto_findOrCreate(
  * This function returns an object in the DECLARED state, allowing for setting 
  * the object value before invoking the type constructor with corto_define. The
  * function fails if the type initializer fails.
+ *
  * @param type The type of the object to create.
  * @return The new object, NULL if failed.
  * @see corto_declareChild corto_declareOrphan corto_findOrDeclare
@@ -128,8 +133,9 @@ corto_object _corto_declare(
  * This function will block if there is another thread that has declared, but not
  * defined the same object. Once the other thread defines the object, the function
  * will unblock, and return an object in the DEFINED state. The calling thread can
- * (and should) use the state of the returned object to determine if it needs to
- * initialize the object. The same thread may declare an object multiple times.
+ * (and should) check the state of the returned object using corto_checkState to 
+ * determine if it needs to initialize the object. The same thread may declare 
+ * an object multiple times before it is defined.
  *
  * @param parent The parent for the new object.
  * @param id The object id. If NULL, a random unique id is generated. A name may contain
@@ -434,6 +440,7 @@ corto_type corto_typeof(
  * This function returns true when types exactly match, when o is of a type that
  * is a subtype of type, when o is of a type that implements type, and when o is of
  * target{type}.
+ *
  * @param type The type against which to check.
  * @param o The object to check.
  * @return true if o is an instance of type, otherwise false.
@@ -457,6 +464,7 @@ bool _corto_instanceofType(
 
 /** Obtain the current state mask of the object.
  * Object state changes as an object is declared, defined and ultimately deleted.
+ *
  * @param o The object of which to obtain the state.
  * @return The state mask of the current object.
  * @see corto_checkState
@@ -467,6 +475,7 @@ corto_state corto_stateof(
 
 /** Obtain the attribute mask of the object.
  * Object attributes are static after an object is declared.
+ *
  * @param o The object of which to obtain the attributes.
  * @return The attribute mask of the current object.
  * @see corto_checkAttr corto_getAttr corto_setAttr
@@ -477,6 +486,7 @@ corto_attr corto_attrof(
 
 /** Check if an object is of a specified state.
  * Object state changes as an object is declared, defined and ultimately deleted.
+ *
  * @param o The object for which to check the state.
  * @param state The state to look for.
  * @return true if the object is in the specified state, otherwise false.
@@ -489,6 +499,7 @@ bool corto_checkState(
 
 /** Check if an object is of a specified attribute.
  * Object attributes are static after an object is declared.
+ *
  * @param o The object for which to check the attribute.
  * @param state The attribute to look for.
  * @return true if the object has the specified attribute, otherwise false.
@@ -504,6 +515,7 @@ bool corto_checkAttr(
  * the underlying garbage collection mechanism. A valid use for this function
  * would be in testcases, where it can be used to validate if an specific
  * operation did not introduce any leaks.
+ *
  * @param o The object for which to obtain the reference count.
  * @return The reference count of the object.
  */
@@ -516,6 +528,7 @@ int32_t corto_countof(
  * object that is created with declareChild or createChild has this attribute. If
  * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
  * undefined. 
+ *
  * @param o A scoped object for which to obtain the id.
  * @return The object id. The returned string is not owned by the application.
  * @see corto_nameof
@@ -535,6 +548,7 @@ char *corto_idof(
  * 
  * Object names are meant to provide a user friendly, though not necessarily
  * unique way to refer to an object.
+ *
  * @param str An id buffer in which to store the name. If NULL, a corto-managed 
  * string is returned which may change with subsequent calls to corto_nameof and 
  * other functions that use the corto stringcache.
@@ -567,6 +581,7 @@ corto_object corto_parentof(
  * object that is created with declareChild or createChild has this attribute. If
  * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
  * undefined. 
+ *
  * @param p The parent object.
  * @param o The child object.
  * @return true if o is a child of p, otherwise false.
@@ -587,6 +602,7 @@ bool corto_childof(
  * are currently loaded in the object store. If there are mounted objects in this
  * scope that are not loaded in the store they will not be counted. To obtain an
  * accurate count, use corto_select().count().
+ *
  * @param o A scoped object.
  * @return The number of objects in the scope of the object.
  */
@@ -604,6 +620,7 @@ uint32_t corto_scopeSize(
  * currently loaded in the object store. If there are mounted objects in this
  * scope that are not loaded in the store they will not be returned. To obtain a
  * full list of objects count, use corto_select().iterObjects().
+ *
  * @param o A scoped object.
  * @return A sequence with the objects in the scope of the object.
  * @see corto_scopeRelease
@@ -633,6 +650,7 @@ void corto_scopeRelease(
  *
  * Use this function only for fast, low-level operations. For all other operations
  * that need to walk a scope, use the safer corto_scopeClaim and corto_scopeRelease.
+ *
  * @param o A scoped object.
  * @return A sequence with the objects in the scope of the object.
  * @see corto_scopeClaim corto_scopeRelease
@@ -648,6 +666,7 @@ int16_t corto_scopeWalk(
  * the object is not PERSISTENT and is an orphan (created with either corto_declareOrphan 
  * or corto_createOrphan) the function will obtain the owner of the parent. In
  * all other scenarios the function will return NULL.
+ *
  * @param o A valid object.
  * @return The owner of the object.
  * @see corto_owned corto_setOwner corto_getOwner
@@ -671,6 +690,7 @@ corto_object corto_ownerof(
  * the mount is a SOURCE, only that mount will be able to change the object.
  *  
  * The owner is determined as specified by corto_ownerof.
+ *
  * @param o A valid object.
  * @return The owner of the object.
  * @see corto_owned corto_setOwner corto_getOwner
@@ -730,6 +750,7 @@ corto_object corto_lookup(
  *
  * If an object is found that is not of the specified type, this function will
  * also assert.
+ *
  * @param scope The scope in which to lookup the object.
  * @param id An id expression (foo/bar) identifying the object to lookup.
  * @param type The type of the object to lookup.
@@ -766,6 +787,7 @@ corto_object _corto_lookupAssert(
  * If the id expression contains {}, corto_resolve will create an anonymous object
  * by deserializing the contents within {} according to the rules of the corto
  * string format.
+ *
  * @param scope The scope in which to lookup the object.
  * @param id An id expression (foo/bar) identifying the object to lookup.
  * @return The object if found, NULL if not found.
@@ -794,6 +816,7 @@ CORTO_EXPORT corto_object corto_find(corto_object scope, char *id, corto_findKin
  * @param str An id buffer in which to store the id. If NULL, a corto-managed
  * string is returned which may change with subsequent calls to corto_fullpath and 
  * other functions that use the corto stringcache.
+ *
  * @param o The object for which to obtain the id.
  * @return The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
  * @see corto_idof corto_fullname corto_path corto_pathname
@@ -806,6 +829,7 @@ char *corto_fullpath(
 /** Obtain a full path identifier to an object using corto_nameof.
  * This function is equivalent to corto_fullpath, but uses corto_nameof instead
  * of corto_idof.
+ *
  * @param o The object for which to obtain the id.
  * @return The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
  * @see corto_idof corto_fullpath corto_path corto_pathname
@@ -830,6 +854,7 @@ char *corto_fullname(
  * @param str An id buffer in which to store the id. If NULL, a corto-managed
  * string is returned which may change with subsequent calls to corto_fullpath and 
  * other functions that use the corto stringcache.
+ *
  * @param from The object from the path should be offset.
  * @param o The object to which to generate the path.
  * @param sep The path separator.
@@ -849,6 +874,7 @@ char *corto_path(
  * @param str An id buffer in which to store the id. If NULL, a corto-managed
  * string is returned which may change with subsequent calls to corto_fullpath and 
  * other functions that use the corto stringcache.
+ *
  * @param from The object from the path should be offset.
  * @param o The object to which to generate the path.
  * @param sep The path separator.
@@ -867,6 +893,7 @@ char *corto_pathname(
  * at least CORTO_MAX_SCOPE_DEPTH elements must be provided. 
  * 
  * WARNING: This function modifies the input path.
+ *
  * @param path The path to be split up.
  * @param elements The result array with the path elements.
  * @param sep The separator used to split up the path.
@@ -884,6 +911,7 @@ int32_t corto_pathToArray(
  * @param str An id buffer in which to store the id. If NULL, a corto-managed
  * string is returned which may change with subsequent calls to corto_fullpath and 
  * other functions that use the corto stringcache.
+ *
  * @param path The input path. Can be the same as buffer.
  * @return The path. If buffer is NULL, the returned string is not owned by the application. Otherwise, buffer is returned.
  * @see corto_idof corto_fullname corto_path corto_pathname
@@ -893,29 +921,149 @@ char *corto_cleanpath(
     corto_id buffer, 
     char* path);
 
-/* Iterate over objects matching an expression */
-typedef struct corto_selectFluent {
-    struct corto_selectFluent (*contentType)(char *contentType);
-    struct corto_selectFluent (*limit)(corto_uint64 offset, corto_uint64 limit);
-    struct corto_selectFluent (*type)(char *filter);
-    struct corto_selectFluent (*instance)(corto_object instance);
-    struct corto_selectFluent (*mount)(corto_mount mount);
-    struct corto_selectFluent (*fromNow)(void);
-    struct corto_selectFluent (*fromTime)(corto_time t);
-    struct corto_selectFluent (*fromSample)(corto_uint64 sample);
-    struct corto_selectFluent (*toNow)(void);
-    struct corto_selectFluent (*toTime)(corto_time t);
-    struct corto_selectFluent (*toSample)(corto_uint64 sample);
-    struct corto_selectFluent (*forDuration)(corto_time t);
-    struct corto_selectFluent (*forDepth)(int64_t depth);
-    int16_t ___ (*iter)(corto_resultIter *ret);
-    int16_t ___ (*iterObjects)(corto_objectIter *ret); /* Unstable API */
+typedef struct corto_select_request {
+    /** Request results in a specific contentType.
+     * @param contentType A MIME identifier identifying a contentType.
+     */
+    struct corto_select_request (*contentType)(
+        char *contentType);
+
+    /** Enable pagination by specifying an offset and limit.
+     * @param offset Specifies from which nth object results should be returned.
+     * @param limit Specifies the total number of results that should be returned.
+     */
+    struct corto_select_request (*limit)(
+        corto_uint64 offset, 
+        corto_uint64 limit);
+
+    /** Filter results by type.
+     * @param filter An id expression matching one or more types.
+     */
+    struct corto_select_request (*type)(
+        char *filter);
+
+    /** Filter out results from a specific instance (mount).
+     * This is typically useful when using corto_select from a mount, and the
+     * mount does not want to invoke itself.
+     *
+     * @param instance The instance object.
+     */
+    struct corto_select_request (*instance)(
+        corto_object instance);
+
+    /** Only return results for a specific mount.
+     * This is typically useful when using corto_select from a mount, and the
+     * mount does not want to invoke itself.
+     *
+     * @param instance The instance object.
+     */    
+    struct corto_select_request (*mount)(
+        corto_mount mount);
+
+    /** Request historical data starting from the current time. */
+    struct corto_select_request (*fromNow)(void);
+
+    /** Request historical data starting from fixed timestamp 
+     * @param t The timestamp from which to return historical data.
+     */
+    struct corto_select_request (*fromTime)(
+        corto_time t);
+
+    /** Request historical data from a fixed sample id.
+     * @param sample Sample id, starting from the beginning of the sequence.
+     */
+    struct corto_select_request (*fromSample)(
+        corto_uint64 sample);
+
+    /** Request historical data until now. */
+    struct corto_select_request (*toNow)(void);
+
+    /** Request historical data until a fixed timestamp.
+     * @param t The timestamp until which to return historical data.
+     */
+    struct corto_select_request (*toTime)(corto_time t);
+
+    /** Request historical data until a fixed sample id.
+     * @param sample Sample id, starting from the beginning of the sequence.
+     */    
+    struct corto_select_request (*toSample)(corto_uint64 sample);
+
+    /** Request historical data for a specific time window.
+     * @param t The duration of the time window.
+     */
+    struct corto_select_request (*forDuration)(corto_time t);
+
+    /** Request historical data for a specific number of samples.
+     * @param depth The number of samples in the window.
+     */
+    struct corto_select_request (*forDepth)(int64_t depth);
+
+    /** Return an iterator to the requested results.
+     * Results are returned as corto_result instances. A corto_result contains
+     * metadata and when a content type is specified, a serialized value of an 
+     * object. When using this function, no objects are created.
+     *
+     * @param iter_out A pointer to an iterator object.
+     * @return 0 if success, -1 if failed.
+     */
+    int16_t ___ (*iter)(corto_resultIter *iter_out);
+
+    /** Return an iterator to the requested objects.
+     * This function will return results as anonymous objects. No objects will be
+     * created in the object store.
+     *
+     * @param iter_out A pointer to an iterator object.
+     * @return 0 if success, -1 if failed.
+     */
+    int16_t ___ (*iterObjects)(corto_objectIter *iter_out); /* Unstable API */
+
+    /** Return the number of objects for a query.
+     * This function requires a walk over all the returned results to determine
+     * the total number of objects. 
+     *
+     * @return -1 if failed, otherwise the total number of objects.
+     */
     int64_t ___ (*count)(void);
+
+    /** Internal API. */
     int16_t ___ (*subscribe)(corto_resultIter *ret); /* Unstable API */
+    /** Internal API. */
     int16_t ___ (*unsubscribe)(void); /* Unstable API */
+    /** Internal API. */
     char *___ (*id)(void); /* Unstable API */
-} corto_selectFluent;
-CORTO_EXPORT struct corto_selectFluent corto_select(char *scope, char *expr, ...);
+} corto_select_request;
+
+/** Query for objects.
+ * This function performs an operation on objects matching a corto identifier 
+ * expression (parent, expr). Selector methods control what kind of information
+ * is to be retrieved.
+ *
+ * The corto_select function is designed to be an API that enables accessing large 
+ * datasets with constrained resources. The iterative design of the API allows the
+ * corto mount implementations to feed data to the application one object at a time,
+ * so that even with large result sets, the memory of an application will not be
+ * exhausted. Furthermore the API has native support for pagination, which allows
+ * applications to further narrow down results.
+ *
+ * The results returned by corto_select are in abitrary order, which is a result
+ * of the requirement of being able to deal with large datasets. Ordering results
+ * would require obtaining a full resultset before anything can be returned to
+ * the application, which is not scalable.
+ *
+ * The performance of corto_select highly depends on the implementation of a mount.
+ * The backend provides as much information as possible upfront to the mount about
+ * which information is required, which allows a mount to prefetch/cache results. 
+ * A mount may choose to implement such optimizations, but this is not enforced.
+ *
+ * The function employs minimal locking on the object store while an application
+ * is iterating over a resultset. Outside of the corto_iter_next and corto_iter_hasNext
+ * calls no locks will be held, which enables applications to run corto_select
+ * queries concurrently and without disturbing other tasks in an application.
+ *
+ * @param scope The scope of the request. Query results are relative to the scope.
+ * @param expr An expression matching one or more objects [printf-style format specifier].
+ */ 
+CORTO_EXPORT struct corto_select_request corto_select(char *scope, char *expr, ...);
 
 /* Observe objects for an observable matching an eventmask */
 typedef struct corto_observeFluent {

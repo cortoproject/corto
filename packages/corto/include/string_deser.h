@@ -39,7 +39,7 @@ typedef struct corto_string_deser_t {
     corto_objectseq members; /* Custom list of members to deserialize */
 
     /* Private */
-    corto_llIter_s iterData;
+    corto_ll_iter_s iterData;
     corto_iter currentIter;
     corto_uint32 current;
     corto_ll index;

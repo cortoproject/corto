@@ -38,23 +38,23 @@ void _corto_loader_destruct(
 
 /* $header(corto/core/loader/onRequest) */
 void corto_loader_iterRelease(corto_iter *iter) {
-    corto_llIter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->udata;
 
     /* Delete data from request */
-    corto_iter it = corto_llIter(data->list);
+    corto_iter it = corto_ll_iter(data->list);
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
         corto_ptr_deinit(r, corto_result_o);
         corto_dealloc(r);
     }
-    corto_llFree(data->list);
+    corto_ll_free(data->list);
 
     /* Call iter release function that was overridden by this function */
-    corto_llIterRelease(iter);
+    corto_ll_iterRelease(iter);
 }
 
 corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
-    corto_iter it = corto_llIter(list);
+    corto_iter it = corto_ll_iter(list);
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
         if (!stricmp(r->id, name)) {
@@ -73,7 +73,7 @@ void corto_loader_addDir(
 
     /* Walk files, add files to result */
     if (dirs) {
-        corto_iter iter = corto_llIter(dirs);
+        corto_iter iter = corto_ll_iter(dirs);
 
         while (corto_iter_hasNext(&iter)) {
             corto_string f = corto_iter_next(&iter);
@@ -156,7 +156,7 @@ void corto_loader_addDir(
                 r->parent = corto_strdup(".");
                 r->type = corto_strdup("/corto/core/package");
                 r->value = (corto_word)content;
-                corto_llAppend(list, r);
+                corto_ll_append(list, r);
             }
         }
 
@@ -173,7 +173,7 @@ corto_resultIter _corto_loader_onRequest_v(
     corto_request *request)
 {
 /* $begin(corto/core/loader/onRequest) */
-    corto_ll data = corto_llNew(); /* Will contain result of request */
+    corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
 
     CORTO_UNUSED(this);
@@ -206,7 +206,7 @@ corto_resultIter _corto_loader_onRequest_v(
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */
-    result = corto_llIterAlloc(data);
+    result = corto_ll_iterAlloc(data);
     result.release = corto_loader_iterRelease;
 
     corto_dealloc(targetPath);

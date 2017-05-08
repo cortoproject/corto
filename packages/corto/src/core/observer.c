@@ -54,7 +54,7 @@ void corto_observerDelayedAdminAdd(
 {
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
     if (!admin) {
-        admin = corto_llNew();
+        admin = corto_ll_new();
         corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, admin);
     }
 
@@ -62,7 +62,7 @@ void corto_observerDelayedAdminAdd(
     elem->instance = instance;
     elem->observer = observer;
     elem->observable = observable;
-    corto_llAppend(admin, elem);
+    corto_ll_append(admin, elem);
 }
 
 void corto_observerDelayedAdminRemove(
@@ -71,18 +71,18 @@ void corto_observerDelayedAdminRemove(
 {
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
     if (admin) {
-        corto_iter it = corto_llIter(admin);
+        corto_iter it = corto_ll_iter(admin);
         while (corto_iter_hasNext(&it)) {
             corto_observerDelayedAdmin *elem = corto_iter_next(&it);
             if ((elem->instance == instance) &&
                 (elem->observer == observer))
             {
                 corto_dealloc(elem);
-                corto_llRemove(admin, elem);
+                corto_ll_remove(admin, elem);
             }
         }
-        if (!corto_llSize(admin)) {
-            corto_llFree(admin);
+        if (!corto_ll_size(admin)) {
+            corto_ll_free(admin);
             corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
     }
@@ -93,7 +93,7 @@ void corto_observerDelayedAdminDefine(
 {
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
     if (admin) {
-        corto_iter it = corto_llIter(admin);
+        corto_iter it = corto_ll_iter(admin);
         while (corto_iter_hasNext(&it)) {
             corto_observerDelayedAdmin *elem = corto_iter_next(&it);
             if (elem->instance == instance) {
@@ -106,11 +106,11 @@ void corto_observerDelayedAdminDefine(
                 }
 
                 corto_dealloc(elem);
-                corto_llRemove(admin, elem);
+                corto_ll_remove(admin, elem);
             }
         }
-        if (!corto_llSize(admin)) {
-            corto_llFree(admin);
+        if (!corto_ll_size(admin)) {
+            corto_ll_free(admin);
             corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
     }
@@ -173,7 +173,7 @@ static void corto_observersCopyOut(corto_ll list, corto__observer** observers) {
     corto_iter iter;
     corto_uint32 i;
 
-    iter = corto_llIter(list);
+    iter = corto_ll_iter(list);
     i = 0;
     while(corto_iter_hasNext(&iter)) {
         observers[i] = corto_iter_next(&iter);
@@ -192,7 +192,7 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
     corto_iter iter;
 
     if (on) {
-        iter = corto_llIter(on);
+        iter = corto_ll_iter(on);
         while(corto_iter_hasNext(&iter)) {
             result = corto_iter_next(&iter);
             if ((result->observer == observer) && (result->_this == instance)) {
@@ -210,7 +210,7 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
 static corto__observer** corto_observersArrayNew(corto_ll list) {
     corto__observer** array;
 
-    array = corto_alloc((corto_llSize(list) + 2) * sizeof(corto__observer*));
+    array = corto_alloc((corto_ll_size(list) + 2) * sizeof(corto__observer*));
     corto_observersCopyOut(list, &array[1]);
 
     /* Observers start from the second element */
@@ -944,9 +944,9 @@ int16_t _corto_observer_observe(
         }
         if (!corto_observerFind(_o->onSelf, this, instance)) {
             if (!_o->onSelf) {
-                _o->onSelf = corto_llNew();
+                _o->onSelf = corto_ll_new();
             }
-            corto_llAppend(_o->onSelf, _observerData);
+            corto_ll_append(_o->onSelf, _observerData);
             added = TRUE;
 
             /* Build new observer array. This array can be accessed without
@@ -966,10 +966,10 @@ int16_t _corto_observer_observe(
         }
         if (!corto_observerFind(_o->onChild, this, instance)) {
             if (!_o->onChild) {
-                _o->onChild = corto_llNew();
+                _o->onChild = corto_ll_new();
             }
 
-            corto_llAppend(_o->onChild, _observerData);
+            corto_ll_append(_o->onChild, _observerData);
             added = TRUE;
 
             /* Build new observer array. This array can be accessed without
@@ -1147,7 +1147,7 @@ int16_t _corto_observer_unobserve(
             }
             observerData = corto_observerFind(_o->onSelf, this, instance);
             if (observerData) {
-                corto_llRemove(_o->onSelf, observerData);
+                corto_ll_remove(_o->onSelf, observerData);
                 observerData->count--;
                 removed = TRUE;
 
@@ -1177,7 +1177,7 @@ int16_t _corto_observer_unobserve(
                 }
                 observerData = corto_observerFind(_o->onChild, this, instance);
                 if (observerData) {
-                    corto_llRemove(_o->onChild, observerData);
+                    corto_ll_remove(_o->onChild, observerData);
                     observerData->count--;
                     removed = TRUE;
 

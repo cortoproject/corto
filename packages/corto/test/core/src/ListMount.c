@@ -156,10 +156,10 @@ int16_t _test_ListMount_construct(
 /* $header(test/ListMount/onRequest) */
 /* Custom release function */
 void test_ListMount_iterRelease(corto_iter *iter) {
-    corto_llIter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->udata;
     corto_resultListClear(data->list);
-    corto_llFree(data->list);
-    corto_llIterRelease(iter);
+    corto_ll_free(data->list);
+    corto_ll_iterRelease(iter);
 }
 /* $end */
 corto_resultIter _test_ListMount_onRequest(
@@ -167,8 +167,8 @@ corto_resultIter _test_ListMount_onRequest(
     corto_request *request)
 {
 /* $begin(test/ListMount/onRequest) */
-    corto_iter iter = corto_llIter(this->items);
-    corto_ll data = corto_llNew();
+    corto_iter iter = corto_ll_iter(this->items);
+    corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
@@ -188,7 +188,7 @@ corto_resultIter _test_ListMount_onRequest(
     }
 
     /* Create persistent iterator */
-    corto_iter result = corto_llIterAlloc(data);
+    corto_iter result = corto_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_ListMount_iterRelease;

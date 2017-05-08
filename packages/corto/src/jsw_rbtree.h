@@ -42,7 +42,7 @@
 */
 
 #include "corto/object.h"
-#include "corto/rbtree.h"
+#include "corto/rb.h"
 
 #ifdef __cplusplus
 #include <cstddef>

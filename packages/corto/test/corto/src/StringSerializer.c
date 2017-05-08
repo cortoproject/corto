@@ -13,8 +13,8 @@ void _test_StringSerializer_tc_serAnonymous(
 {
 /* $begin(test/StringSerializer/tc_serAnonymous) */
     corto_object anonymous = corto_int32Create(10);
-    corto_objectList objList = corto_llNew();
-    corto_llAppend(objList, anonymous);
+    corto_objectList objList = corto_ll_new();
+    corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
 
@@ -24,7 +24,7 @@ void _test_StringSerializer_tc_serAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 
 /* $end */
 }
@@ -34,8 +34,8 @@ void _test_StringSerializer_tc_serAnonymousComplex(
 {
 /* $begin(test/StringSerializer/tc_serAnonymousComplex) */
     test_Point *anonymous = corto_create(test_Point_o);
-    corto_objectList objList = corto_llNew();
-    corto_llAppend(objList, anonymous);
+    corto_objectList objList = corto_ll_new();
+    corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
 
@@ -48,7 +48,7 @@ void _test_StringSerializer_tc_serAnonymousComplex(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 
 /* $end */
 }
@@ -58,8 +58,8 @@ void _test_StringSerializer_tc_serAnonymousComplexString(
 {
 /* $begin(test/StringSerializer/tc_serAnonymousComplexString) */
     test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
-    corto_objectList objList = corto_llNew();
-    corto_llAppend(objList, anonymous);
+    corto_objectList objList = corto_ll_new();
+    corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
 
@@ -74,7 +74,7 @@ void _test_StringSerializer_tc_serAnonymousComplexString(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 
 /* $end */
 }
@@ -84,8 +84,8 @@ void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
 {
 /* $begin(test/StringSerializer/tc_serAnonymousComplexStringEsc) */
     test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
-    corto_objectList objList = corto_llNew();
-    corto_llAppend(objList, anonymous);
+    corto_objectList objList = corto_ll_new();
+    corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
 
@@ -100,7 +100,7 @@ void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 
 /* $end */
 }
@@ -426,19 +426,19 @@ void _test_StringSerializer_tc_serList(
 {
 /* $begin(test/StringSerializer/tc_serList) */
     corto_list t = corto_listCreate(corto_int32_o, 0);
-    corto_ll v = corto_llNew();
+    corto_ll v = corto_ll_new();
     corto_string result;
 
-    corto_llAppend(v, (void*)10);
-    corto_llAppend(v, (void*)20);
-    corto_llAppend(v, (void*)30);
+    corto_ll_append(v, (void*)10);
+    corto_ll_append(v, (void*)20);
+    corto_ll_append(v, (void*)30);
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{10,20,30}"));
 
     corto_dealloc(result);
-    corto_llFree(v);
+    corto_ll_free(v);
     corto_release(t);
 
 /* $end */
@@ -449,20 +449,20 @@ void _test_StringSerializer_tc_serListComplex(
 {
 /* $begin(test/StringSerializer/tc_serListComplex) */
     corto_list t = corto_listCreate(test_Point_o, 0);
-    corto_ll v = corto_llNew();
+    corto_ll v = corto_ll_new();
     test_Point e1 = {10, 20}, e2 = {30, 40}, e3 = {50, 60};
     corto_string result;
 
-    corto_llAppend(v, &e1);
-    corto_llAppend(v, &e2);
-    corto_llAppend(v, &e3);
+    corto_ll_append(v, &e1);
+    corto_ll_append(v, &e2);
+    corto_ll_append(v, &e3);
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
 
     corto_dealloc(result);
-    corto_llFree(v);
+    corto_ll_free(v);
     corto_release(t);
 
 /* $end */
@@ -473,10 +473,10 @@ void _test_StringSerializer_tc_serLongAnonymous(
 {
 /* $begin(test/StringSerializer/tc_serLongAnonymous) */
     corto_object anonymous = corto_int32Create(10);
-    corto_objectList objList = corto_llNew();
+    corto_objectList objList = corto_ll_new();
     corto_uint32 i;
     for (i = 0; i < 300; i++) {
-        corto_llAppend(objList, anonymous);
+        corto_ll_append(objList, anonymous);
     }
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
@@ -487,7 +487,7 @@ void _test_StringSerializer_tc_serLongAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 /* $end */
 }
 
@@ -496,9 +496,9 @@ void _test_StringSerializer_tc_serSameAnonymous(
 {
 /* $begin(test/StringSerializer/tc_serSameAnonymous) */
     corto_object anonymous = corto_int32Create(10);
-    corto_objectList objList = corto_llNew();
-    corto_llAppend(objList, anonymous);
-    corto_llAppend(objList, anonymous);
+    corto_objectList objList = corto_ll_new();
+    corto_ll_append(objList, anonymous);
+    corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
 
@@ -508,7 +508,7 @@ void _test_StringSerializer_tc_serSameAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 
 /* $end */
 }
@@ -623,9 +623,9 @@ void _test_StringSerializer_tc_serTwoAnonymous(
 /* $begin(test/StringSerializer/tc_serTwoAnonymous) */
     corto_object anonymous1 = corto_int32Create(10);
     corto_object anonymous2 = corto_int32Create(20);
-    corto_objectList objList = corto_llNew();
-    corto_llAppend(objList, anonymous1);
-    corto_llAppend(objList, anonymous2);
+    corto_objectList objList = corto_ll_new();
+    corto_ll_append(objList, anonymous1);
+    corto_ll_append(objList, anonymous2);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
     test_assert(o != NULL);
 
@@ -635,7 +635,7 @@ void _test_StringSerializer_tc_serTwoAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_llFree(objList);
+    corto_ll_free(objList);
 
 /* $end */
 }

@@ -82,7 +82,7 @@ g_item g_itemNew(corto_object o, corto_depresolver data) {
         result->defined = TRUE;
     }
 
-    corto_llInsert(data->items, result);
+    corto_ll_insert(data->items, result);
 
     return result;
 }
@@ -93,18 +93,18 @@ void g_itemFree(g_item item) {
 
     /* Free onDeclared list */
     if (item->onDeclared) {
-        while((dep = corto_llTakeFirst(item->onDeclared))) {
+        while((dep = corto_ll_takeFirst(item->onDeclared))) {
             corto_dealloc(dep);
         }
-        corto_llFree(item->onDeclared);
+        corto_ll_free(item->onDeclared);
     }
 
     /* Free onDefined list */
     if (item->onDefined) {
-        while((dep = corto_llTakeFirst(item->onDefined))) {
+        while((dep = corto_ll_takeFirst(item->onDefined))) {
             corto_dealloc(dep);
         }
-        corto_llFree(item->onDefined);
+        corto_ll_free(item->onDefined);
     }
 
     corto_dealloc(item);
@@ -117,7 +117,7 @@ g_item g_itemLookup(corto_object o, corto_depresolver data) {
 
     /* Lookup item for 'o' in items list */
     item = NULL;
-    iter = corto_llIter(data->items);
+    iter = corto_ll_iter(data->items);
     while(!item && corto_iter_hasNext(&iter)) {
         item = corto_iter_next(&iter);
         if (item->o != o) {
@@ -154,7 +154,7 @@ static int g_itemResolveDependency(void* o, void* userData) {
             corto_assert(dep->item->declareCount >= 0, "negative declareCount for item '%s'.", corto_idof(dep->item->o));
 
             if (!dep->item->declareCount) {
-                corto_llInsert(data->toPrint, dep->item);
+                corto_ll_insert(data->toPrint, dep->item);
             }
             break;
         case CORTO_DEFINED:
@@ -163,7 +163,7 @@ static int g_itemResolveDependency(void* o, void* userData) {
             corto_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", corto_idof(dep->item->o));
 
             if (!dep->item->defineCount) {
-                corto_llInsert(data->toPrint, dep->item);
+                corto_ll_insert(data->toPrint, dep->item);
             }
             break;
         }
@@ -202,7 +202,7 @@ static int g_itemPrint(void* o, void* userData) {
         corto_debug("depresolver: declare '%s'", corto_fullpath(NULL, item->o));
         g_itemDeclare(item, data);
         if (item->onDeclared) {
-            corto_llWalk(item->onDeclared, g_itemResolveDependency, data);
+            corto_ll_walk(item->onDeclared, g_itemResolveDependency, data);
         }
     }
 
@@ -212,7 +212,7 @@ static int g_itemPrint(void* o, void* userData) {
         corto_debug("depresolver: define '%s'", corto_fullpath(NULL, item->o));
         g_itemDefine(item, data);
         if (item->onDefined) {
-            corto_llWalk(item->onDefined, g_itemResolveDependency, data);
+            corto_ll_walk(item->onDefined, g_itemResolveDependency, data);
         }
     }
 
@@ -228,7 +228,7 @@ int g_itemCollectinitial(void* o, void* userData) {
     data = userData;
 
     if (!item->declareCount) {
-        corto_llInsert(data->toPrint, item);
+        corto_ll_insert(data->toPrint, item);
     }
 
     return 1;
@@ -239,12 +239,12 @@ int g_itemPrintItems(struct corto_depresolver_s* data) {
     g_item item;
 
     /* Collect initial items */
-    if (!corto_llWalk(data->items, g_itemCollectinitial, data)) {
+    if (!corto_ll_walk(data->items, g_itemCollectinitial, data)) {
         goto error;
     }
 
     /* Print items */
-    while((item = corto_llTakeFirst(data->toPrint))) {
+    while((item = corto_ll_takeFirst(data->toPrint))) {
         if (!g_itemPrint(item, data)) {
             goto error;
         }
@@ -341,7 +341,7 @@ static int g_itemResolveCycles(g_item item, struct corto_depresolver_s* data) {
     
     if (!item->declared && item->onDeclared) {
         /* Walk dependencies */
-        iter = corto_llIter(item->onDeclared);
+        iter = corto_ll_iter(item->onDeclared);
         while((corto_iter_hasNext(&iter))) {
             dep = corto_iter_next(&iter);
             g_itemResolveDependencyCycles(dep, data);
@@ -351,7 +351,7 @@ static int g_itemResolveCycles(g_item item, struct corto_depresolver_s* data) {
     /* Walk onDefined list if item is not yet defined. */
     if (!item->defined && item->onDefined) {
         /* Walk dependencies */
-        iter = corto_llIter(item->onDefined);
+        iter = corto_ll_iter(item->onDefined);
         while((corto_iter_hasNext(&iter))) {
             dep = corto_iter_next(&iter);
 
@@ -377,8 +377,8 @@ corto_depresolver corto_depresolverCreate(corto_depresolver_action onDeclare, co
 
     result = corto_alloc(sizeof(struct corto_depresolver_s));
 
-    result->items = corto_llNew();
-    result->toPrint = corto_llNew();
+    result->items = corto_ll_new();
+    result->toPrint = corto_ll_new();
     result->onDeclare = onDeclare;
     result->onDefine = onDefine;
     result->userData = userData;
@@ -434,18 +434,18 @@ void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind,
         switch(dependencyKind) {
         case CORTO_DECLARED:
             if (!dependency->onDeclared) {
-                dependency->onDeclared = corto_llNew();
+                dependency->onDeclared = corto_ll_new();
             }
-            corto_llInsert(dependency->onDeclared, dep);
+            corto_ll_insert(dependency->onDeclared, dep);
             break;
         case CORTO_DECLARED | CORTO_DEFINED:
             dep->weak = TRUE;
             /* no break */
         case CORTO_DEFINED:
             if (!dependency->onDefined) {
-                dependency->onDefined = corto_llNew();
+                dependency->onDefined = corto_ll_new();
             }
-            corto_llInsert(dependency->onDefined, dep);
+            corto_ll_insert(dependency->onDefined, dep);
             break;
         default:
             corto_assert(0, "invalid dependency-kind.");
@@ -469,7 +469,7 @@ int corto_depresolver_walk(corto_depresolver this) {
     }
 
     /* Resolve items with cycles */
-    iter = corto_llIter(this->items);
+    iter = corto_ll_iter(this->items);
     while(corto_iter_hasNext(&iter)) {
         item = corto_iter_next(&iter);
 
@@ -481,8 +481,8 @@ int corto_depresolver_walk(corto_depresolver this) {
                 corto_fullpath(NULL, item->o),
                 item->declareCount,
                 item->defineCount,
-                item->onDeclared ? corto_llSize(item->onDeclared) : 0,
-                item->onDefined ? corto_llSize(item->onDefined) : 0);
+                item->onDeclared ? corto_ll_size(item->onDeclared) : 0,
+                item->onDefined ? corto_ll_size(item->onDefined) : 0);
 
             /* Locate and resolve cycles */
             this->sp = 0;
@@ -499,7 +499,7 @@ int corto_depresolver_walk(corto_depresolver this) {
 
 
     /* Free items and check if there are still undeclared or undefined objects. */
-    while((item = corto_llTakeFirst(this->items))) {
+    while((item = corto_ll_takeFirst(this->items))) {
         if (!item->defined) {
             if (!item->declared) {
                 corto_warning("not declared/defined: '%s'",
@@ -515,8 +515,8 @@ int corto_depresolver_walk(corto_depresolver this) {
     }
 
     /* Free lists */
-    corto_llFree(this->toPrint);
-    corto_llFree(this->items);
+    corto_ll_free(this->toPrint);
+    corto_ll_free(this->items);
 
     /* Free this */
     corto_dealloc(this);

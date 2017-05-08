@@ -161,7 +161,7 @@ static corto_equalityKind corto_collection_compareArrayWithList(corto_collection
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
-    iter = corto_llIter(list);
+    iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         if (corto_collection_requiresAlloc(elementType)) {
             e1 = corto_iter_next(&iter);
@@ -185,8 +185,8 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
-    iter1 = corto_llIter(list1);
-    iter2 = corto_llIter(list2);
+    iter1 = corto_ll_iter(list1);
+    iter2 = corto_ll_iter(list2);
     while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
         if (corto_collection_requiresAlloc(elementType)) {
             e1 = corto_iter_next(&iter1);
@@ -240,10 +240,10 @@ static corto_uint32 corto_ser_getCollectionSize(corto_any this) {
         result = ((corto_objectseq*)this.value)->length;
         break;
     case CORTO_LIST:
-        result = corto_llSize(*(corto_ll*)this.value);
+        result = corto_ll_size(*(corto_ll*)this.value);
         break;
     case CORTO_MAP:
-        result = corto_rbtreeSize(*(corto_rbtree*)this.value);
+        result = corto_rb_size(*(corto_rbtree*)this.value);
         break;
     }
     return result;

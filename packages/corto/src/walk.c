@@ -27,6 +27,8 @@
 static int indent = 0;
 #endif
 
+int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData);
+
 /* Forward value to the right callback function */
 int16_t corto_value_walk(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_type t;
@@ -435,9 +437,9 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
         corto_ll list = *(corto_ll*)v;
         if (list) {
             if (corto_collection_requiresAlloc(t->elementType)) {
-                result = corto_llWalk(list, corto_serializeElement, &walkData);
+                result = corto_ll_walk(list, corto_serializeElement, &walkData);
             } else {
-                result = corto_llWalkPtr(list, corto_serializeElement, &walkData);
+                result = corto_ll_walkPtr(list, corto_serializeElement, &walkData);
             }
         }
         break;
@@ -446,9 +448,9 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
         corto_rbtree tree = *(corto_rbtree*)v;
         if (tree) {
             if (corto_collection_requiresAlloc(t->elementType)) {
-                result = corto_rbtreeWalk(tree, corto_serializeElement, &walkData);
+                result = corto_rb_walk(tree, corto_serializeElement, &walkData);
             } else {
-                result = corto_rbtreeWalkPtr(tree, corto_serializeElement, &walkData);
+                result = corto_rb_walkPtr(tree, corto_serializeElement, &walkData);
             }
         }
         break;

@@ -8,6 +8,10 @@
 
 #include <corto/corto.h>
 
+/* $header() */
+#include "_object.h"
+/* $end */
+
 /* $header(corto/lang/function/construct) */
 
 /* Not all types that inherit from from function are necessarily procedures. Find
