@@ -22,7 +22,7 @@ void _test_SubscriberEvent_setup(
     test_assert(testScope != NULL);
     test_SubscriberTest st = test_SubscriberTestCreate();
     test_assert(st != NULL);
-    corto_setref(&this->st, st);
+    corto_ptr_setref(&this->st, st);
     corto_release(st);
 
 /* $end */
@@ -759,7 +759,7 @@ void _test_SubscriberEvent_teardown(
     corto_setAttr(this->prevAttr);
 
     /* Delete before stopping testcase, to catch errors while unsubscribing */
-    corto_setref(&this->st, NULL);
+    corto_ptr_setref(&this->st, NULL);
 
 /* $end */
 }

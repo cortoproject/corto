@@ -1,0 +1,416 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="__equals_8h" kind="file" language="C++">
+    <compoundname>_equals.h</compoundname>
+    <includes local="yes">corto/corto.h</includes>
+    <includedby refid="__bootstrap_8h" local="yes">_bootstrap.h</includedby>
+    <incdepgraph>
+      <node id="14">
+        <label>_equals.h</label>
+        <link refid="__equals_8h"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>corto/corto.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="16">
+        <label>_equals.h</label>
+        <link refid="__equals_8h"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>_bootstrap.h</label>
+        <link refid="__bootstrap_8h"/>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="__equals_8h_1a145e7676c2f673b294ccbad392606357" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_any_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_any_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="31" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a8f087892a37f89867e4ed18b40df9e3c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_object_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_object_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="32" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1af78cb6a8b627f534987b13f51eea61a4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_octet_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_octet_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="33" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a63d6f8335606be1a371de27313e39835" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_bool_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_bool_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="34" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1aa414a3ea913dcfd547c19182443d299f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_char_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_char_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="35" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a9ca267919b3d2a2b2d8e9ea78e269f0b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_uint8_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_uint8_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="36" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1ae8dce7ad328ee03f55686b7df8119d82" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_uint16_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_uint16_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="37" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1af9367c923bc5ed3c0d6505de3dcfe33b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_uint32_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_uint32_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="38" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a3cbbda962003fd7de2d689afd95bb3b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_uint64_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_uint64_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="39" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a70866a5f98fb5f50aa6a98cc0a6a387c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_int8_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_int8_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="40" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1ad79be504b9656ca6411107c3ebb839b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_int16_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_int16_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="41" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a95a40d12ab61d8eefb28372299fe9065" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_int32_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_int32_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="42" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1ad4502f447feb73712316af35a11fa27a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_int64_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_int64_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="43" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a3c225e1fd2563d7ddee08047b7d891dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_float32_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_float32_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="44" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a05ecc155c521fe035689ad4d5fb5236a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_float64_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_float64_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="45" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a8bee3fdcc27e53ef56d658aa1a31e4da" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_word_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_word_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="46" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a98bec158ff1e774635c410cdc05d1035" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_constant_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_constant_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="47" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__equals_8h_1a341498d25792bba9e895f42aee246010" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>corto_equalityKind corto_string_equals</definition>
+        <argsstring>(corto_any value1, corto_any value2)</argsstring>
+        <name>corto_string_equals</name>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>value2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h" line="48" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_equals.h"/>
+  </compounddef>
+</doxygen>

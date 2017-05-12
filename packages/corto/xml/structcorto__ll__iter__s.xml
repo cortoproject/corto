@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__ll__iter__s" kind="struct" language="C++" prot="public">
+    <compoundname>corto_ll_iter_s</compoundname>
+    <includes local="no">ll.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__ll__iter__s_1aed7dc83b5166f7c17c42b1243ad221cb" prot="public" static="no" mutable="no">
+        <type><ref refid="base_8h_1aaca9118859184d499be5dc95bf79c061" kindref="member">corto_ll</ref></type>
+        <definition>corto_ll corto_ll_iter_s::list</definition>
+        <argsstring></argsstring>
+        <name>list</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" line="32" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__ll__iter__s_1a68676b07a93efca54310cabd0d228727" prot="public" static="no" mutable="no">
+        <type><ref refid="ll_8h_1a3ceff5cffd0334b34717073517474209" kindref="member">corto_ll_node</ref></type>
+        <definition>corto_ll_node corto_ll_iter_s::cur</definition>
+        <argsstring></argsstring>
+        <name>cur</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" line="33" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__ll__iter__s_1a8beb1f4a3791bdd37040b1c5c3dfa39b" prot="public" static="no" mutable="no">
+        <type><ref refid="ll_8h_1a3ceff5cffd0334b34717073517474209" kindref="member">corto_ll_node</ref></type>
+        <definition>corto_ll_node corto_ll_iter_s::next</definition>
+        <argsstring></argsstring>
+        <name>next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" line="34" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="576">
+        <label>corto_ll_iter_s</label>
+        <link refid="structcorto__ll__iter__s"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" line="31" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/ll.h" bodystart="31" bodyend="35"/>
+    <listofallmembers>
+      <member refid="structcorto__ll__iter__s_1a68676b07a93efca54310cabd0d228727" prot="public" virt="non-virtual"><scope>corto_ll_iter_s</scope><name>cur</name></member>
+      <member refid="structcorto__ll__iter__s_1aed7dc83b5166f7c17c42b1243ad221cb" prot="public" virt="non-virtual"><scope>corto_ll_iter_s</scope><name>list</name></member>
+      <member refid="structcorto__ll__iter__s_1a8beb1f4a3791bdd37040b1c5c3dfa39b" prot="public" virt="non-virtual"><scope>corto_ll_iter_s</scope><name>next</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

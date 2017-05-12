@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__mount_subscription" kind="struct" language="C++" prot="public">
+    <compoundname>corto_mountSubscription</compoundname>
+    <includes local="no">_type.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__mount_subscription_1ad26e44479716003c14781ceb5672130e" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>corto_string corto_mountSubscription::parent</definition>
+        <argsstring></argsstring>
+        <name>parent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" line="197" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" bodystart="197" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__mount_subscription_1af1488215f5c74dc52878eed6ffad0b77" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>corto_string corto_mountSubscription::expr</definition>
+        <argsstring></argsstring>
+        <name>expr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" line="198" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__mount_subscription_1ab09931e3798768fb57320663112aa27b" prot="public" static="no" mutable="no">
+        <type><ref refid="core_2__type_8h_1a5966a2010b608c90d536380d1f2d2405" kindref="member">corto_eventMask</ref></type>
+        <definition>corto_eventMask corto_mountSubscription::mask</definition>
+        <argsstring></argsstring>
+        <name>mask</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" line="199" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" bodystart="199" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__mount_subscription_1a729722053203599d0d98a05edbe3a7ea" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t corto_mountSubscription::count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" line="200" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" bodystart="200" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__mount_subscription_1a60fe06b70df558edc015822edf69cd23" prot="public" static="no" mutable="no">
+        <type>uintptr_t</type>
+        <definition>uintptr_t corto_mountSubscription::userData</definition>
+        <argsstring></argsstring>
+        <name>userData</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" line="201" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" bodystart="201" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="695">
+        <label>corto_mountSubscription</label>
+        <link refid="structcorto__mount_subscription"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" line="196" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_type.h" bodystart="196" bodyend="202"/>
+    <listofallmembers>
+      <member refid="structcorto__mount_subscription_1a729722053203599d0d98a05edbe3a7ea" prot="public" virt="non-virtual"><scope>corto_mountSubscription</scope><name>count</name></member>
+      <member refid="structcorto__mount_subscription_1af1488215f5c74dc52878eed6ffad0b77" prot="public" virt="non-virtual"><scope>corto_mountSubscription</scope><name>expr</name></member>
+      <member refid="structcorto__mount_subscription_1ab09931e3798768fb57320663112aa27b" prot="public" virt="non-virtual"><scope>corto_mountSubscription</scope><name>mask</name></member>
+      <member refid="structcorto__mount_subscription_1ad26e44479716003c14781ceb5672130e" prot="public" virt="non-virtual"><scope>corto_mountSubscription</scope><name>parent</name></member>
+      <member refid="structcorto__mount_subscription_1a60fe06b70df558edc015822edf69cd23" prot="public" virt="non-virtual"><scope>corto_mountSubscription</scope><name>userData</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

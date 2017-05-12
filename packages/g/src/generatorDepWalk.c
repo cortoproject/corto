@@ -106,7 +106,7 @@ corto_int16 corto_genDepReference(corto_walk_opt* s, corto_value* info, void* us
                 corto_value v = corto_value_object(o, NULL);
                 corto_value out;
 
-                if (corto_value_memberof(&v, m->stateCondExpr, &out)) {
+                if (corto_value_memberExpr(&v, m->stateCondExpr, &out)) {
                     corto_seterr("invalid stateCondExpr '%s' for member '%s'",
                         m->stateCondExpr,
                         corto_fullpath(NULL, m));

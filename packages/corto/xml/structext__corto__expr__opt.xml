@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structext__corto__expr__opt" kind="struct" language="C++" prot="public">
+    <compoundname>ext_corto_expr_opt</compoundname>
+    <includes local="no">_object.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structext__corto__expr__opt_1a3d35feb50b3742e6dbc7c23b6956b99a" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>corto_object ext_corto_expr_opt::scope</definition>
+        <argsstring></argsstring>
+        <name>scope</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="217" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structext__corto__expr__opt_1a896dd4dfdce55ff2bb13b42879f245b8" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+        <definition>corto_type ext_corto_expr_opt::returnType</definition>
+        <argsstring></argsstring>
+        <name>returnType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="218" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structext__corto__expr__opt_1a4d73d64ad71ea31688324de80ed34208" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>corto_bool ext_corto_expr_opt::returnsReference</definition>
+        <argsstring></argsstring>
+        <name>returnsReference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="219" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="219" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structext__corto__expr__opt_1ab1a098db62c009e3cce66051456af5ff" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>corto_bool ext_corto_expr_opt::inverse</definition>
+        <argsstring></argsstring>
+        <name>inverse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="220" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="220" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1275">
+        <label>ext_corto_expr_opt</label>
+        <link refid="structext__corto__expr__opt"/>
+        <childnode refid="1276" relation="usage">
+          <edgelabel>+returnType</edgelabel>
+        </childnode>
+      </node>
+      <node id="1283">
+        <label>corto_destructAction</label>
+        <link refid="structcorto__destruct_action"/>
+        <childnode refid="1279" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="1280">
+        <label>corto_function_s</label>
+        <link refid="structcorto__function__s"/>
+        <childnode refid="1276" relation="usage">
+          <edgelabel>+returnType</edgelabel>
+        </childnode>
+        <childnode refid="1281" relation="usage">
+          <edgelabel>+parameters</edgelabel>
+        </childnode>
+      </node>
+      <node id="1279">
+        <label>corto_delegatedata</label>
+        <link refid="structcorto__delegatedata"/>
+        <childnode refid="1280" relation="usage">
+          <edgelabel>+procedure</edgelabel>
+        </childnode>
+      </node>
+      <node id="1277">
+        <label>corto_typeOptions</label>
+        <link refid="structcorto__type_options"/>
+        <childnode refid="1276" relation="usage">
+          <edgelabel>+parentType</edgelabel>
+          <edgelabel>+defaultType</edgelabel>
+          <edgelabel>+defaultProcedureType</edgelabel>
+        </childnode>
+      </node>
+      <node id="1282">
+        <label>corto_parameter</label>
+        <link refid="structcorto__parameter"/>
+        <childnode refid="1276" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+      </node>
+      <node id="1276">
+        <label>corto_type_s</label>
+        <link refid="structcorto__type__s"/>
+        <childnode refid="1277" relation="usage">
+          <edgelabel>+options</edgelabel>
+        </childnode>
+        <childnode refid="1278" relation="usage">
+          <edgelabel>+nameof</edgelabel>
+        </childnode>
+        <childnode refid="1283" relation="usage">
+          <edgelabel>+deinit</edgelabel>
+        </childnode>
+        <childnode refid="1284" relation="usage">
+          <edgelabel>+init</edgelabel>
+        </childnode>
+        <childnode refid="1285" relation="usage">
+          <edgelabel>+metaprocedures</edgelabel>
+        </childnode>
+      </node>
+      <node id="1281">
+        <label>corto_parameterseq</label>
+        <link refid="structcorto__parameterseq"/>
+        <childnode refid="1282" relation="usage">
+          <edgelabel>+buffer</edgelabel>
+        </childnode>
+      </node>
+      <node id="1285">
+        <label>corto_objectseq</label>
+        <link refid="structcorto__objectseq"/>
+      </node>
+      <node id="1284">
+        <label>corto_initAction</label>
+        <link refid="structcorto__init_action"/>
+        <childnode refid="1279" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="1278">
+        <label>corto_nameAction</label>
+        <link refid="structcorto__name_action"/>
+        <childnode refid="1279" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="216" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="216" bodyend="221"/>
+    <listofallmembers>
+      <member refid="structext__corto__expr__opt_1ab1a098db62c009e3cce66051456af5ff" prot="public" virt="non-virtual"><scope>ext_corto_expr_opt</scope><name>inverse</name></member>
+      <member refid="structext__corto__expr__opt_1a4d73d64ad71ea31688324de80ed34208" prot="public" virt="non-virtual"><scope>ext_corto_expr_opt</scope><name>returnsReference</name></member>
+      <member refid="structext__corto__expr__opt_1a896dd4dfdce55ff2bb13b42879f245b8" prot="public" virt="non-virtual"><scope>ext_corto_expr_opt</scope><name>returnType</name></member>
+      <member refid="structext__corto__expr__opt_1a3d35feb50b3742e6dbc7c23b6956b99a" prot="public" virt="non-virtual"><scope>ext_corto_expr_opt</scope><name>scope</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

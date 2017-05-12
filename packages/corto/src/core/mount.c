@@ -105,14 +105,14 @@ int16_t _corto_mount_construct(
 
     /* If mount isn't set, and object is scoped, mount data on itself */
     if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED) && !corto_subscriber(this)->parent) {
-        corto_setref(&this->mount, this);
+        corto_ptr_setref(&this->mount, this);
     }
 
     if (this->mount) {
         /*corto_warning(
           "corto: %s: using mount/mount is deprecated, please use 'parent' and 'expr'",
           corto_fullpath(NULL, corto_typeof(this)));*/
-        corto_setstr(&corto_subscriber(this)->parent, corto_fullpath(NULL, this->mount));
+        corto_ptr_setstr(&corto_subscriber(this)->parent, corto_fullpath(NULL, this->mount));
     }
 
     corto_eventMask mask = corto_observer(this)->mask;
@@ -126,16 +126,16 @@ int16_t _corto_mount_construct(
                 corto_subscriber(this)->parent);
             goto error;
         }
-        corto_setref(&this->mount, o);
+        corto_ptr_setref(&this->mount, o);
         corto_release(o);
 
         /* Set the expression according to the mask */
         if (mask & CORTO_ON_TREE) {
-            corto_setstr(&corto_subscriber(this)->expr, "//");
+            corto_ptr_setstr(&corto_subscriber(this)->expr, "//");
         } else if (mask & CORTO_ON_SCOPE) {
-            corto_setstr(&corto_subscriber(this)->expr, "/");
+            corto_ptr_setstr(&corto_subscriber(this)->expr, "/");
         } else {
-            corto_setstr(&corto_subscriber(this)->expr, ".");
+            corto_ptr_setstr(&corto_subscriber(this)->expr, ".");
         }
     }
 
@@ -171,8 +171,8 @@ int16_t _corto_mount_construct(
     /* Set the callback function */
     corto_function(this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(this)->fptr = (corto_word)corto_mount_notify;
-    corto_setref(&corto_observer(this)->instance, this);
-    corto_setref(&corto_observer(this)->dispatcher, dispatcher);
+    corto_ptr_setref(&corto_observer(this)->instance, this);
+    corto_ptr_setref(&corto_observer(this)->dispatcher, dispatcher);
 
     /* Enable subscriber only when mount implements onNotify */
     if (corto_mount_hasMethod(this, "onNotify")) {
@@ -182,7 +182,7 @@ int16_t _corto_mount_construct(
     corto_observer(this)->mask |=
       CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
     if (!corto_subscriber(this)->expr) {
-        corto_setstr(&corto_subscriber(this)->expr, "//");
+        corto_ptr_setstr(&corto_subscriber(this)->expr, "//");
     }
 
     corto_entityAdmin_add(&corto_mount_admin, corto_subscriber(this)->parent, this, this);
@@ -675,7 +675,7 @@ int16_t _corto_mount_setContentTypeIn(
 {
 /* $begin(corto/core/mount/setContentTypeIn) */
 
-    corto_setstr(&corto_subscriber(this)->contentType, type);
+    corto_ptr_setstr(&corto_subscriber(this)->contentType, type);
     corto_subscriber(this)->contentTypeHandle = (corto_word)corto_loadContentType(type);
     if (!corto_subscriber(this)->contentTypeHandle) {
         goto error;
@@ -693,7 +693,7 @@ int16_t _corto_mount_setContentTypeOut(
 {
 /* $begin(corto/core/mount/setContentTypeOut) */
 
-    corto_setstr(&this->contentTypeOut, type);
+    corto_ptr_setstr(&this->contentTypeOut, type);
     this->contentTypeOutHandle = (corto_word)corto_loadContentType(type);
     if (!this->contentTypeOutHandle) {
         goto error;
@@ -804,7 +804,7 @@ void _corto_mount_subscribe(
          * existing connection. In that case, the 'expr' parameter of the
          * subscription is meaningless, so to avoid confusion set it to '*' */
        if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
-       corto_setstr(&subscription->expr, "*");
+       corto_ptr_setstr(&subscription->expr, "*");
 
        /* Doesn't count as new subscription, so undo increase in refcount */
        subscription->count --;

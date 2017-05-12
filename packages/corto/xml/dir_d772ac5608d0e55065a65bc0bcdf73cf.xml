@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_d772ac5608d0e55065a65bc0bcdf73cf" kind="dir">
+    <compoundname>src</compoundname>
+    <innerdir refid="dir_b8bca73460fc68cc9e3a978e80f99d4f">lang</innerdir>
+    <innerfile refid="__bootstrap_8h">_bootstrap.h</innerfile>
+    <innerfile refid="__equals_8h">_equals.h</innerfile>
+    <innerfile refid="__matcher_8h">_matcher.h</innerfile>
+    <innerfile refid="__object_8h">_object.h</innerfile>
+    <innerfile refid="cdeclhandler_8h">cdeclhandler.h</innerfile>
+    <innerfile refid="compare__ser_8h">compare_ser.h</innerfile>
+    <innerfile refid="copy__ser_8h">copy_ser.h</innerfile>
+    <innerfile refid="entityadmin_8h">entityadmin.h</innerfile>
+    <innerfile refid="init__ser_8h">init_ser.h</innerfile>
+    <innerfile refid="jsw__rbtree_8h">jsw_rbtree.h</innerfile>
+    <innerfile refid="memory__ser_8h">memory_ser.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/"/>
+  </compounddef>
+</doxygen>

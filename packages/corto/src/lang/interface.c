@@ -482,7 +482,7 @@ int16_t _corto_interface_bindMethod(
                         goto error;
                     }
                 }
-                corto_setref(found, method);
+                corto_ptr_setref(found, method);
                 added = TRUE;
             } else {
                 corto_id id, id2;
@@ -563,7 +563,7 @@ void _corto_interface_destruct(
 
     /* Free members */
     for (i=0; i<this->members.length; i++) {
-        corto_setref(&this->members.buffer[i], NULL);
+        corto_ptr_setref(&this->members.buffer[i], NULL);
     }
 
     if (this->members.buffer) {
@@ -573,7 +573,7 @@ void _corto_interface_destruct(
 
     /* Free methods */
     for (i=0; i<this->methods.length; i++) {
-        corto_setref(&this->methods.buffer[i], NULL);
+        corto_ptr_setref(&this->methods.buffer[i], NULL);
     }
 
     if (this->methods.buffer) {

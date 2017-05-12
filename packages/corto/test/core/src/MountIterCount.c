@@ -43,7 +43,7 @@ corto_resultIter _test_MountIterCount_onRequest(
         this->result.id = "foo";
         this->result.parent = "/bar";
         this->result.parent = "/hello/world";
-        corto_setstr(&this->id, "a");
+        corto_ptr_setstr(&this->id, "a");
     }
 
     return it;

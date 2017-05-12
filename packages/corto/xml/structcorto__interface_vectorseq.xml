@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__interface_vectorseq" kind="struct" language="C++" prot="public">
+    <compoundname>corto_interfaceVectorseq</compoundname>
+    <includes local="no">_type.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__interface_vectorseq_1a256e6ae28f46604765b07256fe7164fd" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t corto_interfaceVectorseq::length</definition>
+        <argsstring></argsstring>
+        <name>length</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" line="302" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" bodystart="302" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__interface_vectorseq_1a4c72d94aa125bb1cedd3d05f86efe1ba" prot="public" static="no" mutable="no">
+        <type><ref refid="structcorto__interface_vector" kindref="compound">corto_interfaceVector</ref> *</type>
+        <definition>corto_interfaceVector* corto_interfaceVectorseq::buffer</definition>
+        <argsstring></argsstring>
+        <name>buffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" line="302" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" bodystart="302" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="506">
+        <label>corto_destructAction</label>
+        <link refid="structcorto__destruct_action"/>
+        <childnode refid="502" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="503">
+        <label>corto_function_s</label>
+        <link refid="structcorto__function__s"/>
+        <childnode refid="499" relation="usage">
+          <edgelabel>+returnType</edgelabel>
+        </childnode>
+        <childnode refid="504" relation="usage">
+          <edgelabel>+parameters</edgelabel>
+        </childnode>
+      </node>
+      <node id="502">
+        <label>corto_delegatedata</label>
+        <link refid="structcorto__delegatedata"/>
+        <childnode refid="503" relation="usage">
+          <edgelabel>+procedure</edgelabel>
+        </childnode>
+      </node>
+      <node id="500">
+        <label>corto_typeOptions</label>
+        <link refid="structcorto__type_options"/>
+        <childnode refid="499" relation="usage">
+          <edgelabel>+parentType</edgelabel>
+          <edgelabel>+defaultType</edgelabel>
+          <edgelabel>+defaultProcedureType</edgelabel>
+        </childnode>
+      </node>
+      <node id="505">
+        <label>corto_parameter</label>
+        <link refid="structcorto__parameter"/>
+        <childnode refid="499" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+      </node>
+      <node id="496">
+        <label>corto_interfaceVectorseq</label>
+        <link refid="structcorto__interface_vectorseq"/>
+        <childnode refid="497" relation="usage">
+          <edgelabel>+buffer</edgelabel>
+        </childnode>
+      </node>
+      <node id="499">
+        <label>corto_type_s</label>
+        <link refid="structcorto__type__s"/>
+        <childnode refid="500" relation="usage">
+          <edgelabel>+options</edgelabel>
+        </childnode>
+        <childnode refid="501" relation="usage">
+          <edgelabel>+nameof</edgelabel>
+        </childnode>
+        <childnode refid="506" relation="usage">
+          <edgelabel>+deinit</edgelabel>
+        </childnode>
+        <childnode refid="507" relation="usage">
+          <edgelabel>+init</edgelabel>
+        </childnode>
+        <childnode refid="508" relation="usage">
+          <edgelabel>+metaprocedures</edgelabel>
+        </childnode>
+      </node>
+      <node id="504">
+        <label>corto_parameterseq</label>
+        <link refid="structcorto__parameterseq"/>
+        <childnode refid="505" relation="usage">
+          <edgelabel>+buffer</edgelabel>
+        </childnode>
+      </node>
+      <node id="497">
+        <label>corto_interfaceVector</label>
+        <link refid="structcorto__interface_vector"/>
+        <childnode refid="498" relation="usage">
+          <edgelabel>+interface</edgelabel>
+        </childnode>
+        <childnode refid="508" relation="usage">
+          <edgelabel>+vector</edgelabel>
+        </childnode>
+      </node>
+      <node id="498">
+        <label>corto_interface_s</label>
+        <link refid="structcorto__interface__s"/>
+        <childnode refid="498" relation="usage">
+          <edgelabel>+base</edgelabel>
+        </childnode>
+        <childnode refid="499" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+        <childnode refid="508" relation="usage">
+          <edgelabel>+methods</edgelabel>
+          <edgelabel>+members</edgelabel>
+        </childnode>
+      </node>
+      <node id="508">
+        <label>corto_objectseq</label>
+        <link refid="structcorto__objectseq"/>
+      </node>
+      <node id="507">
+        <label>corto_initAction</label>
+        <link refid="structcorto__init_action"/>
+        <childnode refid="502" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="501">
+        <label>corto_nameAction</label>
+        <link refid="structcorto__name_action"/>
+        <childnode refid="502" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" line="302" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" bodystart="302" bodyend="302"/>
+    <listofallmembers>
+      <member refid="structcorto__interface_vectorseq_1a4c72d94aa125bb1cedd3d05f86efe1ba" prot="public" virt="non-virtual"><scope>corto_interfaceVectorseq</scope><name>buffer</name></member>
+      <member refid="structcorto__interface_vectorseq_1a256e6ae28f46604765b07256fe7164fd" prot="public" virt="non-virtual"><scope>corto_interfaceVectorseq</scope><name>length</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

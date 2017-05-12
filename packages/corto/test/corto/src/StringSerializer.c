@@ -270,7 +270,7 @@ void _test_StringSerializer_tc_serCycle(
     test_ReferenceMember *o = corto_create(test_ReferenceMember_o);
     test_assert(o != NULL);
 
-    corto_setref(&o->m, o);
+    corto_ptr_setref(&o->m, o);
     result = corto_str(o, 0);
     test_assertstr(result, "{<0>,0}");
 

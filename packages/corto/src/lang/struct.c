@@ -70,7 +70,7 @@ int16_t _corto_struct_construct(
         if (!m) {
             corto_critical("failed to declare dummy member (%s)", corto_lasterr());
         }
-        corto_setref(&m->type, corto_int8_o);
+        corto_ptr_setref(&m->type, corto_int8_o);
         m->modifiers = CORTO_PRIVATE|CORTO_LOCAL;
         corto_define(m);
     }

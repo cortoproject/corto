@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="async__posix_8h" kind="file" language="C++">
+    <compoundname>async_posix.h</compoundname>
+    <includes local="yes">pthread.h</includes>
+    <includes local="yes">signal.h</includes>
+    <incdepgraph>
+      <node id="79">
+        <label>async_posix.h</label>
+        <link refid="async__posix_8h"/>
+        <childnode refid="80" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+      </node>
+      <node id="80">
+        <label>pthread.h</label>
+      </node>
+      <node id="81">
+        <label>signal.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__rwmutex__s" prot="public">corto_rwmutex_s</innerclass>
+    <innerclass refid="structcorto__mutex__s" prot="public">corto_mutex_s</innerclass>
+    <innerclass refid="structcorto__sem__s" prot="public">corto_sem_s</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="async__posix_8h_1abaa37b6b80a409f123236d903e0dc344" prot="public" static="no">
+        <name>DETECT_CONTENTION</name>
+        <initializer>(0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="38" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="async__posix_8h_1aa5b00e0f92ad59b71c33347db870aa03" prot="public" static="no">
+        <name>CORTO_MUTEX_INITIALIZER</name>
+        <initializer>{PTHREAD_MUTEX_INITIALIZER}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="63" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="async__posix_8h_1af7bd135b350aae01ad0b17aafc36e799" prot="public" static="no">
+        <name>CORTO_RWMUTEX_INITIALIZER</name>
+        <initializer>{PTHREAD_RWLOCK_INITIALIZER}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="64" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="async__posix_8h_1a7cea1b246da706ec7ad19ab8fcf453b7" prot="public" static="no">
+        <type>pthread_key_t</type>
+        <definition>typedef pthread_key_t corto_threadKey</definition>
+        <argsstring></argsstring>
+        <name>corto_threadKey</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="32" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="async__posix_8h_1acc7b9949a9f00f0c60376cafa847d6b1" prot="public" static="no">
+        <type>struct <ref refid="structcorto__rwmutex__s" kindref="compound">corto_rwmutex_s</ref></type>
+        <definition>typedef struct corto_rwmutex_s corto_rwmutex_s</definition>
+        <argsstring></argsstring>
+        <name>corto_rwmutex_s</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="36" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="async__posix_8h_1a83c17348aad87e985a3ac064d0e9d0b3" prot="public" static="no">
+        <type>struct <ref refid="structcorto__mutex__s" kindref="compound">corto_mutex_s</ref></type>
+        <definition>typedef struct corto_mutex_s corto_mutex_s</definition>
+        <argsstring></argsstring>
+        <name>corto_mutex_s</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="55" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="async__posix_8h_1afb40666d37aca34a72718a174675022d" prot="public" static="no">
+        <type>struct <ref refid="structcorto__sem__s" kindref="compound">corto_sem_s</ref></type>
+        <definition>typedef struct corto_sem_s corto_sem_s</definition>
+        <argsstring></argsstring>
+        <name>corto_sem_s</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h" line="61" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/async_posix.h"/>
+  </compounddef>
+</doxygen>

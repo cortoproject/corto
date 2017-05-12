@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__entity_per_parent" kind="struct" language="C++" prot="public">
+    <compoundname>corto_entityPerParent</compoundname>
+    <includes local="no">entityadmin.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__entity_per_parent_1ad459fa3e33cf87e30f43e38f4c544526" prot="public" static="no" mutable="no">
+        <type>corto_entitySeq</type>
+        <definition>corto_entitySeq corto_entityPerParent::entities</definition>
+        <argsstring></argsstring>
+        <name>entities</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/entityadmin.h" line="37" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/entityadmin.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__entity_per_parent_1aaee7f6058ca7028b417adce53e6c46ec" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* corto_entityPerParent::parent</definition>
+        <argsstring></argsstring>
+        <name>parent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/entityadmin.h" line="38" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/entityadmin.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="366">
+        <label>corto_entityPerParent</label>
+        <link refid="structcorto__entity_per_parent"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/entityadmin.h" line="36" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/entityadmin.h" bodystart="36" bodyend="39"/>
+    <listofallmembers>
+      <member refid="structcorto__entity_per_parent_1ad459fa3e33cf87e30f43e38f4c544526" prot="public" virt="non-virtual"><scope>corto_entityPerParent</scope><name>entities</name></member>
+      <member refid="structcorto__entity_per_parent_1aaee7f6058ca7028b417adce53e6c46ec" prot="public" virt="non-virtual"><scope>corto_entityPerParent</scope><name>parent</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

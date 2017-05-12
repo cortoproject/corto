@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__walk__opt" kind="struct" language="C++" prot="public">
+    <compoundname>corto_walk_opt</compoundname>
+    <includes local="no">walk.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__walk__opt_1a0f347da686648dd9a265252a12984910" prot="public" static="no" mutable="no">
+        <type><ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>bool corto_walk_opt::initialized</definition>
+        <argsstring></argsstring>
+        <name>initialized</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="58" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a4c6361db704ddf95679fec8143baa5d9" prot="public" static="no" mutable="no">
+        <type><ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>bool corto_walk_opt::constructed</definition>
+        <argsstring></argsstring>
+        <name>constructed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="59" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a67345027bffa3093279be3d055468fc6" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a87dddb4b21beabdba55d89ffc6822860" kindref="member">corto_modifier</ref></type>
+        <definition>corto_modifier corto_walk_opt::access</definition>
+        <argsstring></argsstring>
+        <name>access</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="65" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a7ecf98703c65996475f676d73792880e" prot="public" static="no" mutable="no">
+        <type><ref refid="core_2__type_8h_1a13fb18c6d9e6dc93030863154b162e88" kindref="member">corto_operatorKind</ref></type>
+        <definition>corto_operatorKind corto_walk_opt::accessKind</definition>
+        <argsstring></argsstring>
+        <name>accessKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="66" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1ad8430ae949dba7126e2402c5e0e0cade" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a49819804400e360998c6ec9a685b500f" kindref="member">corto_aliasActionKind</ref></type>
+        <definition>corto_aliasActionKind corto_walk_opt::aliasAction</definition>
+        <argsstring></argsstring>
+        <name>aliasAction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="69" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a53f9e3b15f8e58987c8d8531aa85528e" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a261fd1048bd3dbc2352750cdf4847ebf" kindref="member">corto_optionalActionKind</ref></type>
+        <definition>corto_optionalActionKind corto_walk_opt::optionalAction</definition>
+        <argsstring></argsstring>
+        <name>optionalAction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="70" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a79066db9bd159c4f38cfd62e7ad637a6" prot="public" static="no" mutable="no">
+        <type><ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>bool corto_walk_opt::visitAllCases</definition>
+        <argsstring></argsstring>
+        <name>visitAllCases</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="74" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1af9e59951031d3ddaac9f8f45dfe52843" prot="public" static="no" mutable="no">
+        <type><ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref></type>
+        <definition>corto_objectseq corto_walk_opt::members</definition>
+        <argsstring></argsstring>
+        <name>members</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="77" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1acdabfc1edf4ab48f6d7a06a73aa680a0" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a6a6916299ff1a61a6d3cb1bc3fb6bf8e" kindref="member">corto_walk_traceKind</ref></type>
+        <definition>corto_walk_traceKind corto_walk_opt::traceKind</definition>
+        <argsstring></argsstring>
+        <name>traceKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="80" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1abfb4e4195b148dcd866e308f4069e0fe" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a4bfb1e98609302c1fba5871b8fdb0434" kindref="member">corto_walk_init_cb</ref></type>
+        <definition>corto_walk_init_cb corto_walk_opt::construct</definition>
+        <argsstring></argsstring>
+        <name>construct</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="84" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1ae8db30ac5db4cdee7078fe171689be9a" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1abf5950668cc1e086134d119c8bd16802" kindref="member">corto_walk_deinit_cb</ref></type>
+        <definition>corto_walk_deinit_cb corto_walk_opt::destruct</definition>
+        <argsstring></argsstring>
+        <name>destruct</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="85" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a224e4678c66088da5c8fdfa36b808563" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a6552ca1f20cfacd67e40c5e312e3a51a" kindref="member">corto_walk_cb</ref></type>
+        <definition>corto_walk_cb corto_walk_opt::program[CORTO_ITERATOR+1]</definition>
+        <argsstring>[CORTO_ITERATOR+1]</argsstring>
+        <name>program</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="88" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a46f995f00767943c75816591e1e207fd" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a6552ca1f20cfacd67e40c5e312e3a51a" kindref="member">corto_walk_cb</ref></type>
+        <definition>corto_walk_cb corto_walk_opt::metaprogram[CORTO_CONSTANT+1]</definition>
+        <argsstring>[CORTO_CONSTANT+1]</argsstring>
+        <name>metaprogram</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="91" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__walk__opt_1a5d9b16bc6b6a5e0a4c3f813f3f76fcf3" prot="public" static="no" mutable="no">
+        <type><ref refid="walk_8h_1a6552ca1f20cfacd67e40c5e312e3a51a" kindref="member">corto_walk_cb</ref></type>
+        <definition>corto_walk_cb corto_walk_opt::reference</definition>
+        <argsstring></argsstring>
+        <name>reference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="94" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1258">
+        <label>corto_walk_opt</label>
+        <link refid="structcorto__walk__opt"/>
+        <childnode refid="1258" relation="usage">
+          <edgelabel>+destruct</edgelabel>
+          <edgelabel>+construct</edgelabel>
+          <edgelabel>+program</edgelabel>
+          <edgelabel>+metaprogram</edgelabel>
+          <edgelabel>+reference</edgelabel>
+        </childnode>
+        <childnode refid="1259" relation="usage">
+          <edgelabel>+members</edgelabel>
+        </childnode>
+      </node>
+      <node id="1259">
+        <label>corto_objectseq</label>
+        <link refid="structcorto__objectseq"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" line="57" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/walk.h" bodystart="57" bodyend="95"/>
+    <listofallmembers>
+      <member refid="structcorto__walk__opt_1a67345027bffa3093279be3d055468fc6" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>access</name></member>
+      <member refid="structcorto__walk__opt_1a7ecf98703c65996475f676d73792880e" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>accessKind</name></member>
+      <member refid="structcorto__walk__opt_1ad8430ae949dba7126e2402c5e0e0cade" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>aliasAction</name></member>
+      <member refid="structcorto__walk__opt_1abfb4e4195b148dcd866e308f4069e0fe" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>construct</name></member>
+      <member refid="structcorto__walk__opt_1a4c6361db704ddf95679fec8143baa5d9" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>constructed</name></member>
+      <member refid="structcorto__walk__opt_1ae8db30ac5db4cdee7078fe171689be9a" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>destruct</name></member>
+      <member refid="structcorto__walk__opt_1a0f347da686648dd9a265252a12984910" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>initialized</name></member>
+      <member refid="structcorto__walk__opt_1af9e59951031d3ddaac9f8f45dfe52843" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>members</name></member>
+      <member refid="structcorto__walk__opt_1a46f995f00767943c75816591e1e207fd" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>metaprogram</name></member>
+      <member refid="structcorto__walk__opt_1a53f9e3b15f8e58987c8d8531aa85528e" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>optionalAction</name></member>
+      <member refid="structcorto__walk__opt_1a224e4678c66088da5c8fdfa36b808563" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>program</name></member>
+      <member refid="structcorto__walk__opt_1a5d9b16bc6b6a5e0a4c3f813f3f76fcf3" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>reference</name></member>
+      <member refid="structcorto__walk__opt_1acdabfc1edf4ab48f6d7a06a73aa680a0" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>traceKind</name></member>
+      <member refid="structcorto__walk__opt_1a79066db9bd159c4f38cfd62e7ad637a6" prot="public" virt="non-virtual"><scope>corto_walk_opt</scope><name>visitAllCases</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

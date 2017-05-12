@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__subscribe____fluent" kind="struct" language="C++" prot="public">
+    <compoundname>corto_subscribe__fluent</compoundname>
+    <includes local="no">object.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__subscribe____fluent_1ac851801b6aa96f769c231dfc560b8b2d" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref>(*</type>
+        <definition>struct corto_subscribe__fluent(* corto_subscribe__fluent::disabled) (void)</definition>
+        <argsstring>)(void)</argsstring>
+        <name>disabled</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1113" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__subscribe____fluent_1aab65e793a12b039db77a497b781e57ed" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref>(*</type>
+        <definition>struct corto_subscribe__fluent(* corto_subscribe__fluent::dispatcher) (corto_dispatcher dispatcher)</definition>
+        <argsstring>)(corto_dispatcher dispatcher)</argsstring>
+        <name>dispatcher</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1113" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1121" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__subscribe____fluent_1a43941539c0afaa457106ab59fd6a3bd3" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref>(*</type>
+        <definition>struct corto_subscribe__fluent(* corto_subscribe__fluent::instance) (corto_object instance)</definition>
+        <argsstring>)(corto_object instance)</argsstring>
+        <name>instance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1113" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1122" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__subscribe____fluent_1a5ec0a9a530761af0cbecbcc4a052943f" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref>(*</type>
+        <definition>struct corto_subscribe__fluent(* corto_subscribe__fluent::contentType) (char *contentType)</definition>
+        <argsstring>)(char *contentType)</argsstring>
+        <name>contentType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1113" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1123" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__subscribe____fluent_1a5d4091e8bad6f0006478ce3f7a10cce4" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref>(*</type>
+        <definition>struct corto_subscribe__fluent(* corto_subscribe__fluent::type) (char *type)</definition>
+        <argsstring>)(char *type)</argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1113" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1124" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__subscribe____fluent_1a1e323448a4fb41e4cf0fe0647aa68c00" prot="public" static="no" mutable="no">
+        <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_subscriber ___(* corto_subscribe__fluent::callback) (void(*r)(corto_subscriberEvent *))</definition>
+        <argsstring>)(void(*r)(corto_subscriberEvent *))</argsstring>
+        <name>callback</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1125" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1125" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1046">
+        <label>corto_subscriber_s</label>
+        <link refid="structcorto__subscriber__s"/>
+        <childnode refid="1047" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="1053">
+        <label>corto_destructAction</label>
+        <link refid="structcorto__destruct_action"/>
+        <childnode refid="1052" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="1048">
+        <label>corto_function_s</label>
+        <link refid="structcorto__function__s"/>
+        <childnode refid="1049" relation="usage">
+          <edgelabel>+returnType</edgelabel>
+        </childnode>
+        <childnode refid="1056" relation="usage">
+          <edgelabel>+parameters</edgelabel>
+        </childnode>
+      </node>
+      <node id="1045">
+        <label>corto_subscribe__fluent</label>
+        <link refid="structcorto__subscribe____fluent"/>
+        <childnode refid="1046" relation="usage">
+          <edgelabel>+callback</edgelabel>
+        </childnode>
+        <childnode refid="1045" relation="usage">
+          <edgelabel>+instance</edgelabel>
+          <edgelabel>+type</edgelabel>
+          <edgelabel>+contentType</edgelabel>
+          <edgelabel>+disabled</edgelabel>
+          <edgelabel>+dispatcher</edgelabel>
+        </childnode>
+      </node>
+      <node id="1052">
+        <label>corto_delegatedata</label>
+        <link refid="structcorto__delegatedata"/>
+        <childnode refid="1048" relation="usage">
+          <edgelabel>+procedure</edgelabel>
+        </childnode>
+      </node>
+      <node id="1050">
+        <label>corto_typeOptions</label>
+        <link refid="structcorto__type_options"/>
+        <childnode refid="1049" relation="usage">
+          <edgelabel>+parentType</edgelabel>
+          <edgelabel>+defaultType</edgelabel>
+          <edgelabel>+defaultProcedureType</edgelabel>
+        </childnode>
+      </node>
+      <node id="1057">
+        <label>corto_parameter</label>
+        <link refid="structcorto__parameter"/>
+        <childnode refid="1049" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+      </node>
+      <node id="1049">
+        <label>corto_type_s</label>
+        <link refid="structcorto__type__s"/>
+        <childnode refid="1050" relation="usage">
+          <edgelabel>+options</edgelabel>
+        </childnode>
+        <childnode refid="1051" relation="usage">
+          <edgelabel>+nameof</edgelabel>
+        </childnode>
+        <childnode refid="1053" relation="usage">
+          <edgelabel>+deinit</edgelabel>
+        </childnode>
+        <childnode refid="1054" relation="usage">
+          <edgelabel>+init</edgelabel>
+        </childnode>
+        <childnode refid="1055" relation="usage">
+          <edgelabel>+metaprocedures</edgelabel>
+        </childnode>
+      </node>
+      <node id="1056">
+        <label>corto_parameterseq</label>
+        <link refid="structcorto__parameterseq"/>
+        <childnode refid="1057" relation="usage">
+          <edgelabel>+buffer</edgelabel>
+        </childnode>
+      </node>
+      <node id="1047">
+        <label>corto_observer_s</label>
+        <link refid="structcorto__observer__s"/>
+        <childnode refid="1048" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+        <childnode refid="1049" relation="usage">
+          <edgelabel>+typeReference</edgelabel>
+        </childnode>
+      </node>
+      <node id="1055">
+        <label>corto_objectseq</label>
+        <link refid="structcorto__objectseq"/>
+      </node>
+      <node id="1054">
+        <label>corto_initAction</label>
+        <link refid="structcorto__init_action"/>
+        <childnode refid="1052" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="1051">
+        <label>corto_nameAction</label>
+        <link refid="structcorto__name_action"/>
+        <childnode refid="1052" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1119" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1119" bodyend="1126"/>
+    <listofallmembers>
+      <member refid="structcorto__subscribe____fluent_1a1e323448a4fb41e4cf0fe0647aa68c00" prot="public" virt="non-virtual"><scope>corto_subscribe__fluent</scope><name>callback</name></member>
+      <member refid="structcorto__subscribe____fluent_1a5ec0a9a530761af0cbecbcc4a052943f" prot="public" virt="non-virtual"><scope>corto_subscribe__fluent</scope><name>contentType</name></member>
+      <member refid="structcorto__subscribe____fluent_1ac851801b6aa96f769c231dfc560b8b2d" prot="public" virt="non-virtual"><scope>corto_subscribe__fluent</scope><name>disabled</name></member>
+      <member refid="structcorto__subscribe____fluent_1aab65e793a12b039db77a497b781e57ed" prot="public" virt="non-virtual"><scope>corto_subscribe__fluent</scope><name>dispatcher</name></member>
+      <member refid="structcorto__subscribe____fluent_1a43941539c0afaa457106ab59fd6a3bd3" prot="public" virt="non-virtual"><scope>corto_subscribe__fluent</scope><name>instance</name></member>
+      <member refid="structcorto__subscribe____fluent_1a5d4091e8bad6f0006478ce3f7a10cce4" prot="public" virt="non-virtual"><scope>corto_subscribe__fluent</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

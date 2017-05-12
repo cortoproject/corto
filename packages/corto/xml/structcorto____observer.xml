@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto____observer" kind="struct" language="C++" prot="public">
+    <compoundname>corto__observer</compoundname>
+    <includes local="no">_object.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto____observer_1adffd804b0b295c8e7c9179ea9564cd1d" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>corto_object corto__observer::_this</definition>
+        <argsstring></argsstring>
+        <name>_this</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="119" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="119" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto____observer_1a1aed71c54077d6df1cf7887d1db6c48f" prot="public" static="no" mutable="no">
+        <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+        <definition>corto_observer corto__observer::observer</definition>
+        <argsstring></argsstring>
+        <name>observer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="120" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto____observer_1ab8d7df8ba254f09acda432d739ef13b1" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char corto__observer::notifyKind</definition>
+        <argsstring></argsstring>
+        <name>notifyKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="121" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="121" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto____observer_1af2f733c9d8efcccff698dd7cbbe504bd" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a07932ee30448a445bcaea9adc06c3222" kindref="member">corto_int32</ref></type>
+        <definition>corto_int32 corto__observer::count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="122" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="122" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="31">
+        <label>corto__observer</label>
+        <link refid="structcorto____observer"/>
+        <childnode refid="32" relation="usage">
+          <edgelabel>+observer</edgelabel>
+        </childnode>
+      </node>
+      <node id="38">
+        <label>corto_destructAction</label>
+        <link refid="structcorto__destruct_action"/>
+        <childnode refid="37" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="33">
+        <label>corto_function_s</label>
+        <link refid="structcorto__function__s"/>
+        <childnode refid="34" relation="usage">
+          <edgelabel>+returnType</edgelabel>
+        </childnode>
+        <childnode refid="41" relation="usage">
+          <edgelabel>+parameters</edgelabel>
+        </childnode>
+      </node>
+      <node id="37">
+        <label>corto_delegatedata</label>
+        <link refid="structcorto__delegatedata"/>
+        <childnode refid="33" relation="usage">
+          <edgelabel>+procedure</edgelabel>
+        </childnode>
+      </node>
+      <node id="35">
+        <label>corto_typeOptions</label>
+        <link refid="structcorto__type_options"/>
+        <childnode refid="34" relation="usage">
+          <edgelabel>+parentType</edgelabel>
+          <edgelabel>+defaultType</edgelabel>
+          <edgelabel>+defaultProcedureType</edgelabel>
+        </childnode>
+      </node>
+      <node id="42">
+        <label>corto_parameter</label>
+        <link refid="structcorto__parameter"/>
+        <childnode refid="34" relation="usage">
+          <edgelabel>+type</edgelabel>
+        </childnode>
+      </node>
+      <node id="34">
+        <label>corto_type_s</label>
+        <link refid="structcorto__type__s"/>
+        <childnode refid="35" relation="usage">
+          <edgelabel>+options</edgelabel>
+        </childnode>
+        <childnode refid="36" relation="usage">
+          <edgelabel>+nameof</edgelabel>
+        </childnode>
+        <childnode refid="38" relation="usage">
+          <edgelabel>+deinit</edgelabel>
+        </childnode>
+        <childnode refid="39" relation="usage">
+          <edgelabel>+init</edgelabel>
+        </childnode>
+        <childnode refid="40" relation="usage">
+          <edgelabel>+metaprocedures</edgelabel>
+        </childnode>
+      </node>
+      <node id="41">
+        <label>corto_parameterseq</label>
+        <link refid="structcorto__parameterseq"/>
+        <childnode refid="42" relation="usage">
+          <edgelabel>+buffer</edgelabel>
+        </childnode>
+      </node>
+      <node id="32">
+        <label>corto_observer_s</label>
+        <link refid="structcorto__observer__s"/>
+        <childnode refid="33" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+        <childnode refid="34" relation="usage">
+          <edgelabel>+typeReference</edgelabel>
+        </childnode>
+      </node>
+      <node id="40">
+        <label>corto_objectseq</label>
+        <link refid="structcorto__objectseq"/>
+      </node>
+      <node id="39">
+        <label>corto_initAction</label>
+        <link refid="structcorto__init_action"/>
+        <childnode refid="37" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+      <node id="36">
+        <label>corto_nameAction</label>
+        <link refid="structcorto__name_action"/>
+        <childnode refid="37" relation="usage">
+          <edgelabel>+super</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="118" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="118" bodyend="123"/>
+    <listofallmembers>
+      <member refid="structcorto____observer_1adffd804b0b295c8e7c9179ea9564cd1d" prot="public" virt="non-virtual"><scope>corto__observer</scope><name>_this</name></member>
+      <member refid="structcorto____observer_1af2f733c9d8efcccff698dd7cbbe504bd" prot="public" virt="non-virtual"><scope>corto__observer</scope><name>count</name></member>
+      <member refid="structcorto____observer_1ab8d7df8ba254f09acda432d739ef13b1" prot="public" virt="non-virtual"><scope>corto__observer</scope><name>notifyKind</name></member>
+      <member refid="structcorto____observer_1a1aed71c54077d6df1cf7887d1db6c48f" prot="public" virt="non-virtual"><scope>corto__observer</scope><name>observer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

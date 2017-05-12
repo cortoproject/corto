@@ -1,0 +1,865 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="base_8h" kind="file" language="C++">
+    <compoundname>base.h</compoundname>
+    <includes local="no">alloca.h</includes>
+    <includes local="no">assert.h</includes>
+    <includes local="no">ctype.h</includes>
+    <includes local="no">errno.h</includes>
+    <includes local="no">limits.h</includes>
+    <includes local="no">math.h</includes>
+    <includes local="no">stdarg.h</includes>
+    <includes local="no">stddef.h</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">stdio.h</includes>
+    <includes local="no">stdlib.h</includes>
+    <includes local="no">string.h</includes>
+    <includes local="no">time.h</includes>
+    <includes local="no">fnmatch.h</includes>
+    <includes local="no">inttypes.h</includes>
+    <includes local="no">execinfo.h</includes>
+    <includes local="no">dlfcn.h</includes>
+    <includes local="no">sys/stat.h</includes>
+    <includes local="no">sys/types.h</includes>
+    <includes local="no">sys/wait.h</includes>
+    <includes local="no">sys/ptrace.h</includes>
+    <includes local="no">dirent.h</includes>
+    <includes local="no">unistd.h</includes>
+    <includes local="no">signal.h</includes>
+    <includes local="no">ftw.h</includes>
+    <incdepgraph>
+      <node id="101">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="90">
+        <label>stdarg.h</label>
+      </node>
+      <node id="85">
+        <label>assert.h</label>
+      </node>
+      <node id="92">
+        <label>stdint.h</label>
+      </node>
+      <node id="94">
+        <label>stdlib.h</label>
+      </node>
+      <node id="87">
+        <label>errno.h</label>
+      </node>
+      <node id="91">
+        <label>stddef.h</label>
+      </node>
+      <node id="84">
+        <label>alloca.h</label>
+      </node>
+      <node id="88">
+        <label>limits.h</label>
+      </node>
+      <node id="83">
+        <label>base.h</label>
+        <link refid="base_8h"/>
+        <childnode refid="84" relation="include">
+        </childnode>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+        <childnode refid="87" relation="include">
+        </childnode>
+        <childnode refid="88" relation="include">
+        </childnode>
+        <childnode refid="89" relation="include">
+        </childnode>
+        <childnode refid="90" relation="include">
+        </childnode>
+        <childnode refid="91" relation="include">
+        </childnode>
+        <childnode refid="92" relation="include">
+        </childnode>
+        <childnode refid="93" relation="include">
+        </childnode>
+        <childnode refid="94" relation="include">
+        </childnode>
+        <childnode refid="95" relation="include">
+        </childnode>
+        <childnode refid="96" relation="include">
+        </childnode>
+        <childnode refid="97" relation="include">
+        </childnode>
+        <childnode refid="98" relation="include">
+        </childnode>
+        <childnode refid="99" relation="include">
+        </childnode>
+        <childnode refid="100" relation="include">
+        </childnode>
+        <childnode refid="101" relation="include">
+        </childnode>
+        <childnode refid="102" relation="include">
+        </childnode>
+        <childnode refid="103" relation="include">
+        </childnode>
+        <childnode refid="104" relation="include">
+        </childnode>
+        <childnode refid="105" relation="include">
+        </childnode>
+        <childnode refid="106" relation="include">
+        </childnode>
+        <childnode refid="107" relation="include">
+        </childnode>
+        <childnode refid="108" relation="include">
+        </childnode>
+      </node>
+      <node id="102">
+        <label>sys/types.h</label>
+      </node>
+      <node id="95">
+        <label>string.h</label>
+      </node>
+      <node id="106">
+        <label>unistd.h</label>
+      </node>
+      <node id="104">
+        <label>sys/ptrace.h</label>
+      </node>
+      <node id="107">
+        <label>signal.h</label>
+      </node>
+      <node id="96">
+        <label>time.h</label>
+      </node>
+      <node id="89">
+        <label>math.h</label>
+      </node>
+      <node id="103">
+        <label>sys/wait.h</label>
+      </node>
+      <node id="86">
+        <label>ctype.h</label>
+      </node>
+      <node id="93">
+        <label>stdio.h</label>
+      </node>
+      <node id="99">
+        <label>execinfo.h</label>
+      </node>
+      <node id="97">
+        <label>fnmatch.h</label>
+      </node>
+      <node id="108">
+        <label>ftw.h</label>
+      </node>
+      <node id="98">
+        <label>inttypes.h</label>
+      </node>
+      <node id="105">
+        <label>dirent.h</label>
+      </node>
+      <node id="100">
+        <label>dlfcn.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__iter" prot="public">corto_iter</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="base_8h_1ae6b8279926bae9af8449166bb6fe6908" prot="public" static="no">
+        <name>CORTO_MAGIC</name>
+        <initializer>(0x6B6F7274)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="58" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1afe41cf0f9ee517f8102b1b042e1f844a" prot="public" static="no">
+        <name>CORTO_MAGIC_DESTRUCT</name>
+        <initializer>(0x74726F6B)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="59" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a6a50b724384c09abdd3146f2c80548c7" prot="public" static="no">
+        <name>CORTO_MAX_SCOPE_DEPTH</name>
+        <initializer>(64)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="79" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1add9ea9031e54ea5da963ecffbb98e9e2" prot="public" static="no">
+        <name>CORTO_MAX_INHERITANCE_DEPTH</name>
+        <initializer>(16)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="87" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ac075388b475290520a25fa74e1bd668f" prot="public" static="no">
+        <name>CORTO_MAX_BINDINGS</name>
+        <initializer>(16)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="90" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1abb088d83bdaf4e52e24c311a1fc0258d" prot="public" static="no">
+        <name>CORTO_MAX_THREADS</name>
+        <initializer>(64)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="94" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ab7595b7650a0ac4ed500882badb9cdde" prot="public" static="no">
+        <name>CORTO_MAX_NOTIFY_DEPTH</name>
+        <initializer>(16)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="97" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a088ab006b9132428875f6be1dfe1f2de" prot="public" static="no">
+        <name>CORTO_MAX_PATH_LENGTH</name>
+        <initializer>(512)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="104" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a56503ca97e7dfcc9f2af7e59d0fed54d" prot="public" static="no">
+        <name>CORTO_MAX_WAIT_FOR_OBJECTS</name>
+        <initializer>(32)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="107" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a6f67b65005bc946bbbb69d70d714670d" prot="public" static="no">
+        <name>CORTO_MAX_FILE_EXTENSION</name>
+        <initializer>(16)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="110" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a5e8bb080f9824e02e156bdab61e4366e" prot="public" static="no">
+        <name>CORTO_MAX_OLS_KEY</name>
+        <initializer>(256)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="113" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ab7074bf17a328433d5ba76a998b844a2" prot="public" static="no">
+        <name>CORTO_MAX_THREAD_KEY</name>
+        <initializer>(256)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="116" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a931db4c4cc8ff3d0118d79ed8f00ece3" prot="public" static="no">
+        <name>CORTO_ARG_MAX</name>
+        <initializer>(256)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="119" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="119" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ae383f218fbcd8a0c1235c65b092a1b28" prot="public" static="no">
+        <name>CORTO_MAX_TLS_STRINGS</name>
+        <initializer>(5)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="122" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="122" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a203ca7aabc72ff9167a4b58761797be7" prot="public" static="no">
+        <name>CORTO_MAX_TLS_STRINGS_MAX</name>
+        <initializer>(1024)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="128" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="128" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1aef7f1db28c2bcf494c76aeaae2bf4521" prot="public" static="no">
+        <name>CORTO_MAX_CMD</name>
+        <initializer>(1024)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="131" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a601f15f052b84f75b9c42613c12bab02" prot="public" static="no">
+        <name>CORTO_MAX_CMD_ARGS</name>
+        <initializer>(64)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="134" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="134" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1acf390f5d4bfcb1400a31c5fe5be17af4" prot="public" static="no">
+        <name>CORTO_MATCHER_MAX_OP</name>
+        <initializer>(32)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="137" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="137" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a7abffcc2e5967ac61b58f4a72fa3deaf" prot="public" static="no">
+        <name>CORTO_MAX_CONTENTTYPE</name>
+        <initializer>(32)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="140" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a421e9c70a1c6119d812f44509e016f09" prot="public" static="no">
+        <name>CORTO_MAX_BENCHMARK</name>
+        <initializer>(64)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="143" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a95208c82da8d62cc92ae25e34b3c1bae" prot="public" static="no">
+        <name>CORTO_MAX_LOG_COMPONENTS</name>
+        <initializer>(16)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="146" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="146" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a16f828c98beb414ac837fd8ff8de947a" prot="public" static="no">
+        <name>CORTO_IC_TRACING</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="149" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a594712a406d311065c6fbd89bac663b8" prot="public" static="no">
+        <name>CORTO_VM_DEBUG</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="150" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ac4f2404a675261eebd77e5c2d674b83d" prot="public" static="no">
+        <name>CORTO_VM</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="151" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a74252f8c770fad169593ab9484c4b8e0" prot="public" static="no">
+        <name>CORTO_API</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="152" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1aa93e911f7dfbcfc1710d787415bb8a25" prot="public" static="no">
+        <name>CORTO_GENERATOR</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="153" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="153" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a1a6e6cc0f0916c0cf459f3893d85a73a" prot="public" static="no">
+        <name>CORTO_CONVERSIONS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="154" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="154" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a22e969a77d6d33f5d8fd50085a35df7a" prot="public" static="no">
+        <name>CORTO_OPERATORS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="155" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="155" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a4ea4647c536a1e0363774a48720eeb2e" prot="public" static="no">
+        <name>CORTO_LOADER</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="156" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="156" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ab176dca8e29768c89347681928046a9a" prot="public" static="no">
+        <name>CORTO_VM_BOUNDSCHECK</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="157" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1abb452686968e48b67397da5f97445f5b" prot="public" static="no">
+        <name>bool</name>
+        <initializer>char</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="165" column="12" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a65e9886d74aaee76545e83dd09011727" prot="public" static="no">
+        <name>false</name>
+        <initializer>0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="166" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a41f9c5fb8b08eb5dc3edce4dcb37fee7" prot="public" static="no">
+        <name>true</name>
+        <initializer>!<ref refid="base_8h_1a65e9886d74aaee76545e83dd09011727" kindref="member">false</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="167" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1aa93f0eb578d23995850d61f7d61c55c1" prot="public" static="no">
+        <name>FALSE</name>
+        <initializer>(0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="171" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1aa8cecfc5c5c054d2875c03e77b7be15d" prot="public" static="no">
+        <name>TRUE</name>
+        <initializer>(!<ref refid="base_8h_1aa93f0eb578d23995850d61f7d61c55c1" kindref="member">FALSE</ref>)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="175" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a070d2ce7b6bb7e5c05602aa8c308d0c4" prot="public" static="no">
+        <name>NULL</name>
+        <initializer>(0x0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="180" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="180" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1ae2699bca98aca600f02aeeaea4d326f0" prot="public" static="no">
+        <name>CORTO_BLACK</name>
+        <initializer>&quot;\033[1;30m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="184" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="184" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1abd942072278bb19fbda1d92001b4b414" prot="public" static="no">
+        <name>CORTO_RED</name>
+        <initializer>&quot;\033[0;31m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="185" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="185" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a076486f5ce63943f0f7659f3ab7737c4" prot="public" static="no">
+        <name>CORTO_GREEN</name>
+        <initializer>&quot;\033[0;32m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="186" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="186" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a83c403e48da21eb55132e8d8c6e7b036" prot="public" static="no">
+        <name>CORTO_YELLOW</name>
+        <initializer>&quot;\033[0;33m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="187" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="187" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1aee93c9e96ba8785f8c143223d22717cf" prot="public" static="no">
+        <name>CORTO_BLUE</name>
+        <initializer>&quot;\033[0;34m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="188" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1adadfe6e888ef6f98633aecc72c0016ae" prot="public" static="no">
+        <name>CORTO_MAGENTA</name>
+        <initializer>&quot;\033[0;35m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="189" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="189" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1af54b85e3711d23cfded1ac835e4bab11" prot="public" static="no">
+        <name>CORTO_CYAN</name>
+        <initializer>&quot;\033[0;36m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="190" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="190" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a4b9923febf896a8efd04eb7d65a27a30" prot="public" static="no">
+        <name>CORTO_WHITE</name>
+        <initializer>&quot;\033[1;37m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="191" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="191" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a0b1ad3e14982ad4e7458e37f866a2217" prot="public" static="no">
+        <name>CORTO_GREY</name>
+        <initializer>&quot;\033[0;37m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="192" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a8d1a7e65fd3f3760325a87b85643292b" prot="public" static="no">
+        <name>CORTO_NORMAL</name>
+        <initializer>&quot;\033[0;49m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="193" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="193" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1adeb3f6eae4cb5a38bda5e7bb570e5ad8" prot="public" static="no">
+        <name>CORTO_BOLD</name>
+        <initializer>&quot;\033[1;49m&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="194" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a0f5b98af54701f71c72c1a566d111d23" prot="public" static="no">
+        <name>___</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="197" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="197" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a4421dd728163249c057ea3f304e3d066" prot="public" static="no">
+        <name>_</name>
+        <param><defname>txt</defname></param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="199" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="199" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a6032b83f1bf023e6e317461d1ee9790a" prot="public" static="no">
+        <name>CORTO_NULL_STRING</name>
+        <initializer>(&quot;null&quot;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="202" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="202" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1aefb0f77fcc3d768acfdf0a7a0b55ed83" prot="public" static="no">
+        <name>CORTO_PROCEDURE_STUB</name>
+        <initializer>(0)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="212" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a259ede9e49f74ce4852cf2fdb8b994b5" prot="public" static="no">
+        <name>CORTO_PROCEDURE_CDECL</name>
+        <initializer>(1)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="213" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="213" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a55545f779dced7a10f26c3a8362a1053" prot="public" static="no">
+        <name>CORTO_ANY</name>
+        <param><defname>__type</defname></param>
+        <initializer>typedef struct __type {<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref> type; void *value; uint8_t owner;} __type</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="216" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1a984f178c1b27f152d84b5fb1a7c57963" prot="public" static="no">
+        <name>CORTO_SEQUENCE</name>
+        <param><defname>type</defname></param>
+        <param><defname>subtype</defname></param>
+        <param><defname>postexpr</defname></param>
+        <initializer>typedef struct type {uint32_t length; subtype <ref refid="base_8h_1a4421dd728163249c057ea3f304e3d066" kindref="member">_</ref>()(*buffer) postexpr;} type</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="217" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="base_8h_1af4cceb37ecf819cc2f2a74d221074da0" prot="public" static="no">
+        <name>CORTO_SEQUENCE_EMPTY</name>
+        <param><defname>type</defname></param>
+        <initializer>(type){0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="218" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" prot="public" static="no">
+        <type>char</type>
+        <definition>typedef char corto_id[CORTO_MAX_PATH_LENGTH]</definition>
+        <argsstring>[CORTO_MAX_PATH_LENGTH]</argsstring>
+        <name>corto_id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="205" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="205" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" prot="public" static="no">
+        <type>struct corto_rbtree_s *</type>
+        <definition>typedef struct corto_rbtree_s* corto_rbtree</definition>
+        <argsstring></argsstring>
+        <name>corto_rbtree</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="208" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="base_8h_1aaca9118859184d499be5dc95bf79c061" prot="public" static="no">
+        <type>struct corto_ll_s *</type>
+        <definition>typedef struct corto_ll_s* corto_ll</definition>
+        <argsstring></argsstring>
+        <name>corto_ll</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="209" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="209" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="base_8h_1a0d5f278ea470d7ef67a5ca2f6245f7c6" prot="public" static="no">
+        <type>struct <ref refid="structcorto__iter" kindref="compound">corto_iter</ref></type>
+        <definition>typedef struct corto_iter corto_iter</definition>
+        <argsstring></argsstring>
+        <name>corto_iter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="209" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="221" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="base_8h_1af11246ec3a9efc5535f20317638e9258" prot="public" static="no">
+        <type>int(*</type>
+        <definition>typedef int(* corto_compare_cb) (void *o1, void *o2)</definition>
+        <argsstring>)(void *o1, void *o2)</argsstring>
+        <name>corto_compare_cb</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="231" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="231" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="base_8h_1aa7a3bdaa1ab6425ddfe64b15d8571917" prot="public" static="no">
+        <type>int(*</type>
+        <definition>typedef int(* corto_elementWalk_cb) (void *o, void *userData)</definition>
+        <argsstring>)(void *o, void *userData)</argsstring>
+        <name>corto_elementWalk_cb</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="234" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="234" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="base_8h_1ad60344e3ad60e35eb055b7a86f6fd582" prot="public" static="no" mutable="no">
+        <type>int8_t</type>
+        <definition>int8_t CORTO_DEBUG_ENABLED</definition>
+        <argsstring></argsstring>
+        <name>CORTO_DEBUG_ENABLED</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="158" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h"/>
+  </compounddef>
+</doxygen>

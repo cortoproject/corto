@@ -1,0 +1,980 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="core_2__load_8h" kind="file" language="C++">
+    <compoundname>core/_load.h</compoundname>
+    <includes local="yes">corto/lang/_type.h</includes>
+    <includes local="yes">corto/core/_type.h</includes>
+    <incdepgraph>
+      <node id="33">
+        <label>_load.h</label>
+        <link refid="core_2__load_8h"/>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>corto/core/_type.h</label>
+      </node>
+      <node id="34">
+        <label>corto/lang/_type.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="core_2__load_8h_1a50937096a46a0e612e65f367463570a4" prot="public" static="no">
+        <name>CORTO_META_OBJECT</name>
+        <param><defname>type</defname></param>
+        <param><defname>name</defname></param>
+        <initializer><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> extern corto_##type corto_##name##_o</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="18" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="core_2__load_8h_1acb010f30e20dbfb768cefe464043fd65" prot="public" static="no" mutable="no">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref></type>
+        <definition>CORTO_EXPORT corto_package root_o</definition>
+        <argsstring></argsstring>
+        <name>root_o</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="20" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_bootstrap.h" bodystart="575" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="core_2__load_8h_1aa2b5f0adaef19e832bf70dc9a88f53eb" prot="public" static="no" mutable="no">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref></type>
+        <definition>CORTO_EXPORT corto_package corto_o</definition>
+        <argsstring></argsstring>
+        <name>corto_o</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="21" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_bootstrap.h" bodystart="584" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="core_2__load_8h_1a701876562bf2b5e264f4fcfe874ac6d9" prot="public" static="no" mutable="no">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref></type>
+        <definition>CORTO_EXPORT corto_package corto_core_o</definition>
+        <argsstring></argsstring>
+        <name>corto_core_o</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="22" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_bootstrap.h" bodystart="586" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="core_2__load_8h_1ae6ab977bb5b6210d9e1d59c3295ee8bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, invokeEvent)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>invokeEvent</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="25" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1ab7d5ca5704b6d1e44b04def3dcd565cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, package)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>package</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="26" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a2ab17b21a9cdd622d8630df6f4749cc8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, application)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>application</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="27" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a4c1b4d066bf7e14904ddbf5ddcb060a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, query)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>query</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="28" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a078434fa7dff1e96121e0afbfee60d17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, router)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>router</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="29" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1aa443fcbc329b65e734125214ffee6ec9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, routerimpl)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>routerimpl</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="30" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1aa926fccfa4829d91171e768abc8d8517" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, mount)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>mount</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="31" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a565c2c8970d4eb629d05efb8cda23211" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, mountStats)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>mountStats</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="32" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a3cfc8c7446427e5bebd65748d1f4ac9d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, mountPolicy)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>mountPolicy</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="33" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a5afadedb6c48d986fcba7f7461c1eb78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, mountSubscription)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>mountSubscription</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="34" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1afa58f93158ed7d5149b1bf0d03ed4948" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, loader)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>loader</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="35" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a827287591f209aff5396e8204b1d0295" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(class, stager)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>stager</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="36" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a44a29b5a576c5e044984e5a0b795fbb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, augmentData)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>augmentData</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="37" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a1ff7c56f71fcee80c8ba9100e35209dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, result)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>result</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="38" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a94f0a5a63594a2873f0d3e8421f3009e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, request)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>request</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="39" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1aa91afa54b3729d96b4823f768156270b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, frame)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>frame</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="40" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1af7c6b3149af247e6ae28e6e2495ab97b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(interface, dispatcher)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>interface</type>
+        </param>
+        <param>
+          <type>dispatcher</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="41" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a0262fab49888261071466a316b80e0b1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(enum, equalityKind)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>enum</type>
+        </param>
+        <param>
+          <type>equalityKind</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="43" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a0383d6243c8b4b663881b14314e42952" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(enum, operatorKind)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>enum</type>
+        </param>
+        <param>
+          <type>operatorKind</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="44" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a9fd359d1014d0e737b3b459c7897d5f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(bitmask, eventMask)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>bitmask</type>
+        </param>
+        <param>
+          <type>eventMask</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="45" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a74c5caec1695e5ee0f3be815c87f335c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(bitmask, modifier)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>bitmask</type>
+        </param>
+        <param>
+          <type>modifier</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="46" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a8e7570121addc544f90ed8bd6ded0c9b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(enum, mountKind)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>enum</type>
+        </param>
+        <param>
+          <type>mountKind</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="47" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1abb2e74025c568be0bd8ff2a3ec52d57d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(enum, frameKind)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>enum</type>
+        </param>
+        <param>
+          <type>frameKind</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="48" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a5602f50d326b4248ea0650fb551b1499" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(bitmask, state)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>bitmask</type>
+        </param>
+        <param>
+          <type>state</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="49" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1aac779685110da18f757a1f8aad0ba6e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(bitmask, attr)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>bitmask</type>
+        </param>
+        <param>
+          <type>attr</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="50" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1af42c8e69467038d40dcd75e0a6fc37db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(list, resultList)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>list</type>
+        </param>
+        <param>
+          <type>resultList</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="52" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a6704506e4d47a47a0de05fc59783102f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(list, mountSubscriptionList)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>list</type>
+        </param>
+        <param>
+          <type>mountSubscriptionList</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="53" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1aba982279e420ad13d0bdfa94e97a7bd1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(sequence, augmentseq)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>sequence</type>
+        </param>
+        <param>
+          <type>augmentseq</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="54" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a31a9740d9bb1523ed64092da03f24044" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(delegate, notifyAction)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>delegate</type>
+        </param>
+        <param>
+          <type>notifyAction</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="56" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a47ff60c153cd467b2aa38fbc21dea5ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(delegate, invokeAction)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>delegate</type>
+        </param>
+        <param>
+          <type>invokeAction</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="57" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a3a39c1a8d1d0976461bde78d03336d09" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(delegate, requestAction)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>delegate</type>
+        </param>
+        <param>
+          <type>requestAction</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="58" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a50e8911042175c6259da0e18091725b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(delegate, handleAction)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>delegate</type>
+        </param>
+        <param>
+          <type>handleAction</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="59" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a7915275a0c09981599ec3ffdc4f13a24" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(procedure, remote)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>procedure</type>
+        </param>
+        <param>
+          <type>remote</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="61" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1af3fa8ef67506e87372f79003d3554df3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(procedure, subscriber)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>procedure</type>
+        </param>
+        <param>
+          <type>subscriber</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="62" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a48445525d6748e7150f18f189c3f6f7a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(procedure, observer)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>procedure</type>
+        </param>
+        <param>
+          <type>observer</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="63" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a1e4b2d319fa36b430ade6388ecaeadb7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(procedure, route)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>procedure</type>
+        </param>
+        <param>
+          <type>route</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="64" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a0ccc484fa7f05492d10e1f1325f4d627" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, event)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>event</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="66" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a1c7f5141416d15761635864a6b42ef7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, observerEvent)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>observerEvent</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="67" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a3b0c07e85b723ead9d5da3b5dca05d6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, position)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>position</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="68" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1ad0772890a04fd68ad43ad53d97996d7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, sample)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>sample</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="69" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a6d6717606ce74dbe4cfe92a5e36aa185" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, subscriberEvent)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>subscriberEvent</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="70" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a1c8eb6c1fc6aa43593cc87286c1d76e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(struct, time)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>struct</type>
+        </param>
+        <param>
+          <type>time</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="71" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1ad045b3b6fee828b215cb45c75964d26b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(subscriber, mount_on_notify)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>subscriber</type>
+        </param>
+        <param>
+          <type>mount_on_notify</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="73" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a6c674e2a28bd2facc0e0a30b197de4f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(iterator, resultIter)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>iterator</type>
+        </param>
+        <param>
+          <type>resultIter</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="75" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1a21aeb04ad093575193bf3a09dbdf52ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(iterator, sampleIter)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>iterator</type>
+        </param>
+        <param>
+          <type>sampleIter</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="76" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1af695a2e0645578f76811d7eaef68d2ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(function, observerEvent_handle)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>function</type>
+        </param>
+        <param>
+          <type>observerEvent_handle</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="78" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="core_2__load_8h_1acdaf2d818866d8e82a0931a650af32c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_OBJECT</definition>
+        <argsstring>(function, subscriberEvent_handle)</argsstring>
+        <name>CORTO_META_OBJECT</name>
+        <param>
+          <type>function</type>
+        </param>
+        <param>
+          <type>subscriberEvent_handle</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h" line="79" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_load.h"/>
+  </compounddef>
+</doxygen>

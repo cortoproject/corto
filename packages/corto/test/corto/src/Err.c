@@ -13,7 +13,7 @@ void tc_callback_callback(corto_err level, char *category[], char *msg, void* ct
 {
     test_Err this = ctx;
     this->level = level;
-    corto_setstr(&this->msg, msg);
+    corto_ptr_setstr(&this->msg, msg);
 
     if (category) {
         corto_buffer buff = CORTO_BUFFER_INIT;

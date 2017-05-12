@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="jsw__rbtree_8h" kind="file" language="C++">
+    <compoundname>jsw_rbtree.h</compoundname>
+    <includes local="yes">corto/object.h</includes>
+    <includes local="yes">corto/rb.h</includes>
+    <includes local="no">stddef.h</includes>
+    <incdepgraph>
+      <node id="163">
+        <label>jsw_rbtree.h</label>
+        <link refid="jsw__rbtree_8h"/>
+        <childnode refid="164" relation="include">
+        </childnode>
+        <childnode refid="165" relation="include">
+        </childnode>
+        <childnode refid="166" relation="include">
+        </childnode>
+      </node>
+      <node id="166">
+        <label>stddef.h</label>
+      </node>
+      <node id="165">
+        <label>corto/rb.h</label>
+      </node>
+      <node id="164">
+        <label>corto/object.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="jsw__rbtree_8h_1a2a629199c7b786bc20b92328524e1ad6" prot="public" static="no">
+        <type>void *(*</type>
+        <definition>typedef void*(* dup_f) (void *p)</definition>
+        <argsstring>)(void *p)</argsstring>
+        <name>dup_f</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="58" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="jsw__rbtree_8h_1ad5944e909224d17a637f464683d7f77c" prot="public" static="no">
+        <type>void(*</type>
+        <definition>typedef void(* rel_f) (void *p)</definition>
+        <argsstring>)(void *p)</argsstring>
+        <name>rel_f</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="59" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="jsw__rbtree_8h_1ad37efdb8ee5bb3feabdfedaa46582fce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+        <definition>jsw_rbtree_t* jsw_rbnew</definition>
+        <argsstring>(corto_type type, corto_equals_cb cmp)</argsstring>
+        <name>jsw_rbnew</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type><ref refid="corto_8h_1a4f6c97d3d4c7ac96084510a74c00b1e9" kindref="member">corto_equals_cb</ref></type>
+          <declname>cmp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="62" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a8f16920b433444d0898e52d6f4493a9e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void jsw_rbdelete</definition>
+        <argsstring>(jsw_rbtree_t *tree)</argsstring>
+        <name>jsw_rbdelete</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="63" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a48981161a48406d8ad7e878dfdaf2e63" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+        <definition>corto_type jsw_rbtype</definition>
+        <argsstring>(jsw_rbtree_t *tree)</argsstring>
+        <name>jsw_rbtype</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="64" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1aeb0ac871a77ac1f719e0bc539f35280f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbfind</definition>
+        <argsstring>(jsw_rbtree_t *tree, void *key)</argsstring>
+        <name>jsw_rbfind</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="65" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a242e094c84476eb41233f2ffceae637f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbfindPtr</definition>
+        <argsstring>(jsw_rbtree_t *tree, void *key)</argsstring>
+        <name>jsw_rbfindPtr</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="66" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1ad6f862b613eb9c72f1adb116021108eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int jsw_rbhaskey</definition>
+        <argsstring>(jsw_rbtree_t *tree, const void *key, void **data)</argsstring>
+        <name>jsw_rbhaskey</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="67" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1afbf788955d62ab79b5e29603eef227c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int jsw_rbhaskey_w_cmp</definition>
+        <argsstring>(jsw_rbtree_t *tree, const void *key, void **data, corto_equals_cb f_cmp)</argsstring>
+        <name>jsw_rbhaskey_w_cmp</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="corto_8h_1a4f6c97d3d4c7ac96084510a74c00b1e9" kindref="member">corto_equals_cb</ref></type>
+          <declname>f_cmp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="68" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1afab4c5b8a698f2cd341bca4914b1b21a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int jsw_rbinsert</definition>
+        <argsstring>(jsw_rbtree_t *tree, void *key, void *data, void **old_out, corto_bool overwrite)</argsstring>
+        <name>jsw_rbinsert</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>old_out</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+          <declname>overwrite</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="69" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a212a9ce40bb25dd86865415b6a4acd41" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int jsw_rberase</definition>
+        <argsstring>(jsw_rbtree_t *tree, void *key)</argsstring>
+        <name>jsw_rberase</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="70" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a1d330a5a2d49ba7cd873a108a25fdc49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t jsw_rbsize</definition>
+        <argsstring>(jsw_rbtree_t *tree)</argsstring>
+        <name>jsw_rbsize</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="71" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a43e769204109f85fd7fd9c4be8e2e433" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbgetmin</definition>
+        <argsstring>(jsw_rbtree_t *tree, void **key_out)</argsstring>
+        <name>jsw_rbgetmin</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="74" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a2bc054e9761220575f5bbcb98958b152" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbgetmax</definition>
+        <argsstring>(jsw_rbtree_t *tree, void **key_out)</argsstring>
+        <name>jsw_rbgetmax</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="75" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a876abebcc103b5e02eb0782cc9d767b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbgetnext</definition>
+        <argsstring>(jsw_rbtree_t *tree, void *key, void **key_out)</argsstring>
+        <name>jsw_rbgetnext</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="78" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1ab16169c36a875ad207fa1a4888bbf2fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbgetprev</definition>
+        <argsstring>(jsw_rbtree_t *tree, void *key, void **key_out)</argsstring>
+        <name>jsw_rbgetprev</name>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="79" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1aa5d2372c39c49ae94fbf4ea81d348a14" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+        <definition>jsw_rbtrav_t* jsw_rbtnew</definition>
+        <argsstring>(void)</argsstring>
+        <name>jsw_rbtnew</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="82" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1adc264f2b6d9adb4bd058d7c3b628ecf5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void jsw_rbtdelete</definition>
+        <argsstring>(jsw_rbtrav_t *trav)</argsstring>
+        <name>jsw_rbtdelete</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="83" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a4ccc97e611d371c56567b4bb9c2492d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbtfirst</definition>
+        <argsstring>(jsw_rbtrav_t *trav, jsw_rbtree_t *tree)</argsstring>
+        <name>jsw_rbtfirst</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="84" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a80990cafc505e225acf0d2f61c7eb671" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbtfirstptr</definition>
+        <argsstring>(jsw_rbtrav_t *trav, jsw_rbtree_t *tree)</argsstring>
+        <name>jsw_rbtfirstptr</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="85" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a7aff79a9c55e07fef71e057430a63555" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbtlast</definition>
+        <argsstring>(jsw_rbtrav_t *trav, jsw_rbtree_t *tree)</argsstring>
+        <name>jsw_rbtlast</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <param>
+          <type><ref refid="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" kindref="member">jsw_rbtree_t</ref> *</type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="86" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a52c41b1f35ab0038c69309031aea5842" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbtnext</definition>
+        <argsstring>(jsw_rbtrav_t *trav)</argsstring>
+        <name>jsw_rbtnext</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="87" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a7a51f3160e78e6d2ec995670a919c878" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbtnextptr</definition>
+        <argsstring>(jsw_rbtrav_t *trav)</argsstring>
+        <name>jsw_rbtnextptr</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="88" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1a854bf072826712ec4b821695f54f73ce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbtprev</definition>
+        <argsstring>(jsw_rbtrav_t *trav)</argsstring>
+        <name>jsw_rbtprev</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="89" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1abd3752002f37e57153886d0b4a844ef2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>corto_bool jsw_rbtchanged</definition>
+        <argsstring>(jsw_rbtrav_t *trav)</argsstring>
+        <name>jsw_rbtchanged</name>
+        <param>
+          <type><ref refid="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" kindref="member">jsw_rbtrav_t</ref> *</type>
+          <declname>trav</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="90" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="jsw__rbtree_8h_1aff43ad96e388739cf433e1736c989488" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>void* jsw_rbnodedata</definition>
+        <argsstring>(jsw_rbnode_t *node)</argsstring>
+        <name>jsw_rbnodedata</name>
+        <param>
+          <type><ref refid="rb_8h_1a636f11cd6ce571fad23f14cf336816a9" kindref="member">jsw_rbnode_t</ref> *</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h" line="92" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/jsw_rbtree.h"/>
+  </compounddef>
+</doxygen>

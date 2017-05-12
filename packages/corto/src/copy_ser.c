@@ -58,7 +58,7 @@ static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, voi
     if (corto_primitive(type)->kind != CORTO_TEXT) {
         memcpy(value, this, type->size);
     } else {
-        corto_setstr((corto_string*)value, *(corto_string*)this);
+        corto_ptr_setstr((corto_string*)value, *(corto_string*)this);
     }
 
     return 0;
@@ -70,7 +70,7 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value *info, voi
     void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
     CORTO_UNUSED(s);
 
-    corto_setref(value, *(corto_object*)this);
+    corto_ptr_setref(value, *(corto_object*)this);
 
     return 0;
 }
@@ -121,7 +121,7 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
         }
 
         if (elementType->reference) {
-            corto_setref(e1, *(corto_object*)e2);
+            corto_ptr_setref(e1, *(corto_object*)e2);
         } else {
             result = corto_ptr_copy(e1, elementType, e2);
         }
@@ -151,7 +151,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
         }
 
         if (elementType->reference) {
-            corto_setref((corto_object*)e1, *(corto_object*)e2);
+            corto_ptr_setref((corto_object*)e1, *(corto_object*)e2);
         } else {
             result = corto_ptr_copy(e1, elementType, e2);
         }

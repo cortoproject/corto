@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_ad5972df91d74637314cee47f062eb74" kind="dir">
+    <compoundname>native</compoundname>
+    <innerfile refid="include_2native_2__interface_8h">include/native/_interface.h</innerfile>
+    <innerfile refid="native_2__load_8h">native/_load.h</innerfile>
+    <innerfile refid="native_2__type_8h">native/_type.h</innerfile>
+    <innerfile refid="native_8h">native.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/"/>
+  </compounddef>
+</doxygen>

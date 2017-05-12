@@ -1366,13 +1366,13 @@ void _test_ObjectMgmt_tc_declareScoped(
     /* Create members in scope of anonymous object */
     corto_member x = corto_declareChild(s, "x", corto_member_o);
     test_assert(x != NULL);
-    corto_setref(&x->type, corto_int32_o);
+    corto_ptr_setref(&x->type, corto_int32_o);
     ret = corto_define(x);
     test_assert(ret == 0);
 
     corto_member y = corto_declareChild(s, "y", corto_member_o);
     test_assert(y != NULL);
-    corto_setref(&y->type, corto_int32_o);
+    corto_ptr_setref(&y->type, corto_int32_o);
     ret = corto_define(y);
     test_assert(ret == 0);
 

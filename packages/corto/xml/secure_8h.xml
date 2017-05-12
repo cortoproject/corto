@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="secure_8h" kind="file" language="C++">
+    <compoundname>secure.h</compoundname>
+    <includes local="no">corto/corto.h</includes>
+    <includes local="no">corto/_project.h</includes>
+    <includes local="no">corto/secure/_type.h</includes>
+    <includes local="no">corto/secure/_load.h</includes>
+    <includes local="no">corto/secure/_interface.h</includes>
+    <incdepgraph>
+      <node id="202">
+        <label>corto/_project.h</label>
+      </node>
+      <node id="205">
+        <label>corto/secure/_interface.h</label>
+      </node>
+      <node id="204">
+        <label>corto/secure/_load.h</label>
+      </node>
+      <node id="201">
+        <label>corto/corto.h</label>
+      </node>
+      <node id="200">
+        <label>secure.h</label>
+        <link refid="secure_8h"/>
+        <childnode refid="201" relation="include">
+        </childnode>
+        <childnode refid="202" relation="include">
+        </childnode>
+        <childnode refid="203" relation="include">
+        </childnode>
+        <childnode refid="204" relation="include">
+        </childnode>
+        <childnode refid="205" relation="include">
+        </childnode>
+      </node>
+      <node id="203">
+        <label>corto/secure/_type.h</label>
+      </node>
+    </incdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/secure.h"/>
+  </compounddef>
+</doxygen>

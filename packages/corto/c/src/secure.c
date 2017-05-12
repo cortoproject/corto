@@ -239,8 +239,8 @@ corto_secure_lock _corto_secure_lockCreate(corto_string mount, corto_string expr
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_setstr(&((corto_secure_lock)_this)->mount, mount);
-        corto_setstr(&((corto_secure_lock)_this)->expr, expr);
+        corto_ptr_setstr(&((corto_secure_lock)_this)->mount, mount);
+        corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
         ((corto_secure_lock)_this)->priority = priority;
         if (corto_define(_this)) {
             corto_release(_this);
@@ -257,8 +257,8 @@ corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, corto_stri
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_setstr(&((corto_secure_lock)_this)->mount, mount);
-        corto_setstr(&((corto_secure_lock)_this)->expr, expr);
+        corto_ptr_setstr(&((corto_secure_lock)_this)->mount, mount);
+        corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
         ((corto_secure_lock)_this)->priority = priority;
         if (corto_define(_this)) {
             corto_release(_this);
@@ -272,12 +272,12 @@ corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_string mount
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_setstr(&((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->mount, mount);
-            corto_setstr(&((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->expr, expr);
+            corto_ptr_setstr(&((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->mount, mount);
+            corto_ptr_setstr(&((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->expr, expr);
             ((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->priority = priority;
         } else {
-            corto_setstr(&((corto_secure_lock)_this)->mount, mount);
-            corto_setstr(&((corto_secure_lock)_this)->expr, expr);
+            corto_ptr_setstr(&((corto_secure_lock)_this)->mount, mount);
+            corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
             ((corto_secure_lock)_this)->priority = priority;
         }
         corto_updateEnd(_this);
@@ -307,16 +307,16 @@ corto_secure_lock _corto_secure_lockDeclareChild(corto_object _parent, corto_str
 
 corto_int16 _corto_secure_lockDefine(corto_secure_lock _this, corto_string mount, corto_string expr, int16_t priority) {
     CORTO_UNUSED(_this);
-    corto_setstr(&((corto_secure_lock)_this)->mount, mount);
-    corto_setstr(&((corto_secure_lock)_this)->expr, expr);
+    corto_ptr_setstr(&((corto_secure_lock)_this)->mount, mount);
+    corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
     ((corto_secure_lock)_this)->priority = priority;
     return corto_define(_this);
 }
 
 corto_secure_lock _corto_secure_lockAssign(corto_secure_lock _this, corto_string mount, corto_string expr, int16_t priority) {
     CORTO_UNUSED(_this);
-    corto_setstr(&((corto_secure_lock)_this)->mount, mount);
-    corto_setstr(&((corto_secure_lock)_this)->expr, expr);
+    corto_ptr_setstr(&((corto_secure_lock)_this)->mount, mount);
+    corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
     ((corto_secure_lock)_this)->priority = priority;
     return _this;
 }

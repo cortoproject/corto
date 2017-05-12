@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__secure__key__s" kind="struct" language="C++" prot="public">
+    <compoundname>corto_secure_key_s</compoundname>
+    <includes local="no">_type.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__secure__key__s_1acdc6eaf3cbbc722bdbe844722b1d421b" prot="public" static="no" mutable="no">
+        <type>int8_t</type>
+        <definition>int8_t corto_secure_key_s::__dummy</definition>
+        <argsstring></argsstring>
+        <name>__dummy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="45" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="929">
+        <label>corto_secure_key_s</label>
+        <link refid="structcorto__secure__key__s"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="44" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="44" bodyend="46"/>
+    <listofallmembers>
+      <member refid="structcorto__secure__key__s_1acdc6eaf3cbbc722bdbe844722b1d421b" prot="public" virt="non-virtual"><scope>corto_secure_key_s</scope><name>__dummy</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

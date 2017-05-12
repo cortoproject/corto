@@ -21,7 +21,7 @@ void _test_Event_setup(
     test_assert(testScope != NULL);
     test_EventTest et = test_EventTestCreate(testScope);
     test_assert(et != NULL);
-    corto_setref(&this->et, et);
+    corto_ptr_setref(&this->et, et);
     corto_release(et);
 
 /* $end */

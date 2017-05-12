@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_44b42d46a0a88d49d3f25ea754a67195" kind="dir">
+    <compoundname>lang</compoundname>
+    <innerfile refid="include_2lang_2__interface_8h">include/lang/_interface.h</innerfile>
+    <innerfile refid="lang_2__load_8h">lang/_load.h</innerfile>
+    <innerfile refid="lang_2__type_8h">lang/_type.h</innerfile>
+    <innerfile refid="lang_8h">lang.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/"/>
+  </compounddef>
+</doxygen>

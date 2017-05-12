@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_b8bca73460fc68cc9e3a978e80f99d4f" kind="dir">
+    <compoundname>lang</compoundname>
+    <innerfile refid="__bitmask_8h">_bitmask.h</innerfile>
+    <innerfile refid="__class_8h">_class.h</innerfile>
+    <innerfile refid="__enum_8h">_enum.h</innerfile>
+    <innerfile refid="src_2lang_2__interface_8h">src/lang/_interface.h</innerfile>
+    <innerfile refid="__primitive_8h">_primitive.h</innerfile>
+    <innerfile refid="__procedure_8h">_procedure.h</innerfile>
+    <innerfile refid="__sequence_8h">_sequence.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__buffer__element" kind="struct" language="C++" prot="public">
+    <compoundname>corto_buffer_element</compoundname>
+    <includes local="no">buffer.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__buffer__element_1a7f992c0dd857afce6b2f8eec5cba6ef7" prot="public" static="no" mutable="no">
+        <type>char</type>
+        <definition>char corto_buffer_element::buf[CORTO_BUFFER_ELEMENT_SIZE+1]</definition>
+        <argsstring>[CORTO_BUFFER_ELEMENT_SIZE+1]</argsstring>
+        <name>buf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" line="45" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__buffer__element_1a6a9a064526c8753aefc96271d83fc7a0" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t corto_buffer_element::pos</definition>
+        <argsstring></argsstring>
+        <name>pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" line="46" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__buffer__element_1a278a37fc2b342f0fae8896e3ebcc86cc" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__buffer__element" kindref="compound">corto_buffer_element</ref> *</type>
+        <definition>struct corto_buffer_element* corto_buffer_element::next</definition>
+        <argsstring></argsstring>
+        <name>next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" line="47" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="165">
+        <label>corto_buffer_element</label>
+        <link refid="structcorto__buffer__element"/>
+        <childnode refid="165" relation="usage">
+          <edgelabel>+next</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" line="44" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/buffer.h" bodystart="44" bodyend="48"/>
+    <listofallmembers>
+      <member refid="structcorto__buffer__element_1a7f992c0dd857afce6b2f8eec5cba6ef7" prot="public" virt="non-virtual"><scope>corto_buffer_element</scope><name>buf</name></member>
+      <member refid="structcorto__buffer__element_1a278a37fc2b342f0fae8896e3ebcc86cc" prot="public" virt="non-virtual"><scope>corto_buffer_element</scope><name>next</name></member>
+      <member refid="structcorto__buffer__element_1a6a9a064526c8753aefc96271d83fc7a0" prot="public" virt="non-virtual"><scope>corto_buffer_element</scope><name>pos</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

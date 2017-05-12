@@ -585,7 +585,7 @@ void _test_ValueExpr_tc_exprMemMemberInOut(
 /* $begin(test/ValueExpr/tc_exprMemMemberInOut) */
     test_Point p = {10, 20};
     corto_value pY, pValue = corto_value_value(&p, test_Point_o);
-    test_assert(corto_value_memberof(&pValue, "y", &pY) == 0);
+    test_assert(corto_value_memberExpr(&pValue, "y", &pY) == 0);
     corto_value v = corto_value_int(30);
 
     corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &pY, &v, &pY);
@@ -613,7 +613,7 @@ void _test_ValueExpr_tc_exprMemMemberOut(
 /* $begin(test/ValueExpr/tc_exprMemMemberOut) */
     test_Point p = {10, 20};
     corto_value pX, pValue = corto_value_value(&p, test_Point_o);
-    test_assert(corto_value_memberof(&pValue, "x", &pX) == 0);
+    test_assert(corto_value_memberExpr(&pValue, "x", &pX) == 0);
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
 
@@ -668,7 +668,7 @@ void _test_ValueExpr_tc_exprMemNullOutAssignMember(
 /* $begin(test/ValueExpr/tc_exprMemNullOutAssignMember) */
     test_Point p = {10, 20};
     corto_value pX, pValue = corto_value_value(&p, test_Point_o);
-    test_assert(corto_value_memberof(&pValue, "x", &pX) == 0);
+    test_assert(corto_value_memberExpr(&pValue, "x", &pX) == 0);
     corto_value v = corto_value_int(30);
 
     corto_int16 ret = corto_value_binaryOp(CORTO_ASSIGN, &pX, &v, NULL);
@@ -781,7 +781,7 @@ void _test_ValueExpr_tc_member(
     corto_value v = corto_value_object(p, NULL);
     corto_value out;
 
-    corto_int16 ret = corto_value_memberof(&v, "x", &out);
+    corto_int16 ret = corto_value_memberExpr(&v, "x", &out);
     test_assert(ret == 0);
     corto_type type = corto_value_typeof(&out);
     test_assert(type == corto_type(corto_int32_o));
@@ -789,7 +789,7 @@ void _test_ValueExpr_tc_member(
     test_assert(ptr != NULL);
     test_assertint(*(corto_int32*)ptr, 10);
 
-    ret = corto_value_memberof(&v, "y", &out);
+    ret = corto_value_memberExpr(&v, "y", &out);
     test_assert(ret == 0);
     type = corto_value_typeof(&out);
     test_assert(type == corto_type(corto_int32_o));
@@ -816,7 +816,7 @@ void _test_ValueExpr_tc_memberNested(
     corto_value v = corto_value_object(l, NULL);
     corto_value out;
 
-    corto_int16 ret = corto_value_memberof(&v, "start.x", &out);
+    corto_int16 ret = corto_value_memberExpr(&v, "start.x", &out);
     test_assert(ret == 0);
     corto_type type = corto_value_typeof(&out);
     test_assert(type == corto_type(corto_int32_o));
@@ -824,7 +824,7 @@ void _test_ValueExpr_tc_memberNested(
     test_assert(ptr != NULL);
     test_assertint(*(corto_int32*)ptr, 10);
 
-    ret = corto_value_memberof(&v, "start.y", &out);
+    ret = corto_value_memberExpr(&v, "start.y", &out);
     test_assert(ret == 0);
     type = corto_value_typeof(&out);
     test_assert(type == corto_type(corto_int32_o));
@@ -832,7 +832,7 @@ void _test_ValueExpr_tc_memberNested(
     test_assert(ptr != NULL);
     test_assertint(*(corto_int32*)ptr, 20);
 
-    ret = corto_value_memberof(&v, "stop.x", &out);
+    ret = corto_value_memberExpr(&v, "stop.x", &out);
     test_assert(ret == 0);
     type = corto_value_typeof(&out);
     test_assert(type == corto_type(corto_int32_o));
@@ -840,7 +840,7 @@ void _test_ValueExpr_tc_memberNested(
     test_assert(ptr != NULL);
     test_assertint(*(corto_int32*)ptr, 30);
 
-    ret = corto_value_memberof(&v, "stop.y", &out);
+    ret = corto_value_memberExpr(&v, "stop.y", &out);
     test_assert(ret == 0);
     type = corto_value_typeof(&out);
     test_assert(type == corto_type(corto_int32_o));

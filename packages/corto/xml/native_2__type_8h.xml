@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="native_2__type_8h" kind="file" language="C++">
+    <compoundname>native/_type.h</compoundname>
+    <includes local="no">corto/lang/_type.h</includes>
+    <incdepgraph>
+      <node id="73">
+        <label>_type.h</label>
+        <link refid="native_2__type_8h"/>
+        <childnode refid="74" relation="include">
+        </childnode>
+      </node>
+      <node id="74">
+        <label>corto/lang/_type.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__native__type__s" prot="public">corto_native_type_s</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="native_2__type_8h_1a4c9fc8cb0b9c9c863ba61a7757cc96c2" prot="public" static="no">
+        <name>corto_native_type</name>
+        <param><defname>o</defname></param>
+        <initializer>((<ref refid="native_2__type_8h_1a547cd02bcdd823d701df2c8074692796" kindref="member">corto_native_type</ref>)<ref refid="util_8h_1a5fe8ddbb7d735726d5ce9e2028ece8b1" kindref="member">corto_assertType</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)corto_native_type_o, o))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_type.h" line="16" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_type.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="native_2__type_8h_1a547cd02bcdd823d701df2c8074692796" prot="public" static="no">
+        <type>struct <ref refid="structcorto__native__type__s" kindref="compound">corto_native_type_s</ref> *</type>
+        <definition>typedef struct corto_native_type_s* corto_native_type</definition>
+        <argsstring></argsstring>
+        <name>corto_native_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_type.h" line="24" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_type.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_type.h"/>
+  </compounddef>
+</doxygen>

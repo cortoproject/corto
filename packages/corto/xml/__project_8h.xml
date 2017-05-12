@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="__project_8h" kind="file" language="C++">
+    <compoundname>_project.h</compoundname>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" prot="public" static="no">
+        <name>CORTO_EXPORT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/_project.h" line="13" column="10" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/_project.h" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/_project.h"/>
+  </compounddef>
+</doxygen>

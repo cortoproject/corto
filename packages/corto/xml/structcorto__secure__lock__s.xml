@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__secure__lock__s" kind="struct" language="C++" prot="public">
+    <compoundname>corto_secure_lock_s</compoundname>
+    <includes local="no">_type.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__secure__lock__s_1a2d4e6742eefd33c7b2d4f26aa0079ed0" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>corto_string corto_secure_lock_s::mount</definition>
+        <argsstring></argsstring>
+        <name>mount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="52" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__secure__lock__s_1a1a45daef4a49379c383ec43cdc9ea149" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>corto_string corto_secure_lock_s::expr</definition>
+        <argsstring></argsstring>
+        <name>expr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="53" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__secure__lock__s_1a2581a1a19ec006550e5d410f009862d3" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t corto_secure_lock_s::priority</definition>
+        <argsstring></argsstring>
+        <name>priority</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="54" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="931">
+        <label>corto_secure_lock_s</label>
+        <link refid="structcorto__secure__lock__s"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="51" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="51" bodyend="55"/>
+    <listofallmembers>
+      <member refid="structcorto__secure__lock__s_1a1a45daef4a49379c383ec43cdc9ea149" prot="public" virt="non-virtual"><scope>corto_secure_lock_s</scope><name>expr</name></member>
+      <member refid="structcorto__secure__lock__s_1a2d4e6742eefd33c7b2d4f26aa0079ed0" prot="public" virt="non-virtual"><scope>corto_secure_lock_s</scope><name>mount</name></member>
+      <member refid="structcorto__secure__lock__s_1a2581a1a19ec006550e5d410f009862d3" prot="public" virt="non-virtual"><scope>corto_secure_lock_s</scope><name>priority</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

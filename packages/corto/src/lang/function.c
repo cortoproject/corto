@@ -33,7 +33,7 @@ int16_t _corto_function_construct(
 /* $begin(corto/lang/function/construct) */
     /* If no returntype is set, make it void */
     if (!this->returnType) {
-        corto_setref(&this->returnType, corto_void_o);
+        corto_ptr_setref(&this->returnType, corto_void_o);
     }
 
     if (this->returnType->reference) {

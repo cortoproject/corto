@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="__matcher_8h" kind="file" language="C++">
+    <compoundname>_matcher.h</compoundname>
+    <includes local="no">corto/corto.h</includes>
+    <incdepgraph>
+      <node id="49">
+        <label>_matcher.h</label>
+        <link refid="__matcher_8h"/>
+        <childnode refid="50" relation="include">
+        </childnode>
+      </node>
+      <node id="50">
+        <label>corto/corto.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__match_program_op" prot="public">corto_matchProgramOp</innerclass>
+    <innerclass refid="structcorto__match_program__s" prot="public">corto_matchProgram_s</innerclass>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218" prot="public" static="no">
+        <name>corto_matchProgramToken</name>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a652f7ecc073aeb87978c2079b0a100d0" prot="public">
+          <name>CORTO_MATCHER_TOKEN_NONE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218afc48e990eed699febb366e99f391cc7d" prot="public">
+          <name>CORTO_MATCHER_TOKEN_THIS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218aca0c7e366b9de462d74ba30b3d295de1" prot="public">
+          <name>CORTO_MATCHER_TOKEN_PARENT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a86f9310a22333bf9f766003ab63177a6" prot="public">
+          <name>CORTO_MATCHER_TOKEN_IDENTIFIER</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a029347ccf937cc5a37c05085065cdaf3" prot="public">
+          <name>CORTO_MATCHER_TOKEN_FILTER</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a78b24a1648d0d6a0dd36395f5c261c2a" prot="public">
+          <name>CORTO_MATCHER_TOKEN_AND</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a8a8d5e11c2f4aa926428e3e3de446616" prot="public">
+          <name>CORTO_MATCHER_TOKEN_OR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a9eb83b3a699466590f5fee9bd09eb815" prot="public">
+          <name>CORTO_MATCHER_TOKEN_NOT</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218aa3939a66d1c97a130f0ff807677dddae" prot="public">
+          <name>CORTO_MATCHER_TOKEN_SCOPE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218a1ed05c41ddbd8a6c33f2797dc643d7ac" prot="public">
+          <name>CORTO_MATCHER_TOKEN_TREE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218af19b3c02d386f10822021ae2aad8b3f9" prot="public">
+          <name>CORTO_MATCHER_TOKEN_SEPARATOR</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="27" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" bodystart="27" bodyend="39"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="__matcher_8h_1ab756df68709fc980cc47f038e5420df9" prot="public" static="no">
+        <type>enum <ref refid="__matcher_8h_1a1809dba63ec78a6f5b01f20b905bc218" kindref="member">corto_matchProgramToken</ref></type>
+        <definition>typedef enum corto_matchProgramToken  corto_matchProgramToken</definition>
+        <argsstring></argsstring>
+        <name>corto_matchProgramToken</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="39" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="__matcher_8h_1adf97c0e080eefc0e98fda250bb0ea655" prot="public" static="no">
+        <type>struct <ref refid="structcorto__match_program_op" kindref="compound">corto_matchProgramOp</ref></type>
+        <definition>typedef struct corto_matchProgramOp  corto_matchProgramOp</definition>
+        <argsstring></argsstring>
+        <name>corto_matchProgramOp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="45" column="1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="__matcher_8h_1adc9f3342cc73ef62c7b8448a45ad6916" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref></type>
+        <definition>corto_int16 corto_matchProgramParseIntern</definition>
+        <argsstring>(corto_matchProgram data, corto_string expr, corto_bool allowScopes, corto_bool allowSeparators)</argsstring>
+        <name>corto_matchProgramParseIntern</name>
+        <param>
+          <type><ref refid="object_8h_1a0110bfcd2a7dd8474650ff1ad8ec5b50" kindref="member">corto_matchProgram</ref></type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+          <declname>allowScopes</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+          <declname>allowSeparators</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="54" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h"/>
+  </compounddef>
+</doxygen>

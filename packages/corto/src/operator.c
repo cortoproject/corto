@@ -68,8 +68,8 @@ static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) 
     sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
 }
 static void CORTO_NAME_BINARYOP(string,assign)(void* op1, void* op2, void* result) {
-    corto_setstr((corto_string*)result, *(corto_string*)op2);
-    corto_setstr((corto_string*)op1, *(corto_string*)op2);
+    corto_ptr_setstr((corto_string*)result, *(corto_string*)op2);
+    corto_ptr_setstr((corto_string*)op1, *(corto_string*)op2);
 }
 
 

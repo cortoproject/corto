@@ -796,8 +796,8 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
 
         if (!loaded->filename && setLoadAdminWhenFound) {
             corto_mutexLock(&corto_adminLock);
-            corto_setstr(&loaded->filename, result);
-            corto_setstr(&loaded->base, base);
+            corto_ptr_setstr(&loaded->filename, result);
+            corto_ptr_setstr(&loaded->base, base);
             if (dl_out) {
                 loaded->library = dl;
             }

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="lang_8h" kind="file" language="C++">
+    <compoundname>lang.h</compoundname>
+    <includes local="no">corto/corto.h</includes>
+    <includes local="no">corto/_project.h</includes>
+    <includes local="no">corto/lang/_type.h</includes>
+    <includes local="no">corto/lang/_load.h</includes>
+    <includes local="no">corto/lang/_interface.h</includes>
+    <incdepgraph>
+      <node id="170">
+        <label>corto/_project.h</label>
+      </node>
+      <node id="172">
+        <label>corto/lang/_load.h</label>
+      </node>
+      <node id="169">
+        <label>corto/corto.h</label>
+      </node>
+      <node id="168">
+        <label>lang.h</label>
+        <link refid="lang_8h"/>
+        <childnode refid="169" relation="include">
+        </childnode>
+        <childnode refid="170" relation="include">
+        </childnode>
+        <childnode refid="171" relation="include">
+        </childnode>
+        <childnode refid="172" relation="include">
+        </childnode>
+        <childnode refid="173" relation="include">
+        </childnode>
+      </node>
+      <node id="171">
+        <label>corto/lang/_type.h</label>
+      </node>
+      <node id="173">
+        <label>corto/lang/_interface.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="lang_8h_1a2b4c28e2e3c673f8cc098f96856b04c4" prot="public" static="no">
+        <name>CORTO_TYPE_HAS_RESOURCES</name>
+        <initializer>(1)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h" line="15" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="lang_8h_1a6e941120780729ab94edfe621a170e8d" prot="public" static="no">
+        <name>CORTO_TYPE_NEEDS_INIT</name>
+        <initializer>(2)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h" line="16" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="lang_8h_1aa1b4dd88dc9994cb959907fc542dd0be" prot="public" static="no">
+        <name>CORTO_TYPE_HAS_TARGET</name>
+        <initializer>(4)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h" line="17" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/lang.h"/>
+  </compounddef>
+</doxygen>

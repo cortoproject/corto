@@ -1,0 +1,415 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__select____fluent" kind="struct" language="C++" prot="public">
+    <compoundname>corto_select__fluent</compoundname>
+    <includes local="no">object.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__select____fluent_1a8fa74e8722742eb4763a8a958e15ce33" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::contentType) (char *contentType)</definition>
+        <argsstring>)(char *contentType)</argsstring>
+        <name>contentType</name>
+        <briefdescription>
+<para>Request results in a specific contentType. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>contentType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A MIME identifier identifying a contentType. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="969" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a4222be347f6757dc0214e8b313ea8684" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::limit) (corto_uint64 offset, corto_uint64 limit)</definition>
+        <argsstring>)(corto_uint64 offset, corto_uint64 limit)</argsstring>
+        <name>limit</name>
+        <briefdescription>
+<para>Enable pagination by specifying an offset and limit. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies from which nth object results should be returned. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>limit</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Specifies the total number of results that should be returned. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="976" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a10837e9dc029104609b53c8ecccb87bf" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::type) (char *filter)</definition>
+        <argsstring>)(char *filter)</argsstring>
+        <name>type</name>
+        <briefdescription>
+<para>Filter results by type. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id expression matching one or more types. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="983" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a67b15051ef626f6d6287d3765378f4fe" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::instance) (corto_object instance)</definition>
+        <argsstring>)(corto_object instance)</argsstring>
+        <name>instance</name>
+        <briefdescription>
+<para>Filter out results from a specific instance (mount). </para>        </briefdescription>
+        <detaileddescription>
+<para>This is typically useful when using corto_select from a mount, and the mount does not want to invoke itself.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>instance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The instance object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="992" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1aeab568646f04fcfd3a61e26283f0c859" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::mount) (corto_mount mount)</definition>
+        <argsstring>)(corto_mount mount)</argsstring>
+        <name>mount</name>
+        <briefdescription>
+<para>Only return results for a specific mount. </para>        </briefdescription>
+        <detaileddescription>
+<para>This is typically useful when using corto_select from a mount, and the mount does not want to invoke itself.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>instance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The instance object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1001" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a9df7532e1b57b1b7ecea9d27f4a65bd5" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::fromNow) (void)</definition>
+        <argsstring>)(void)</argsstring>
+        <name>fromNow</name>
+        <briefdescription>
+<para>Request historical data starting from the current time. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1005" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1ab790012ffeb2032cd18d2426a524c92e" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::fromTime) (corto_time t)</definition>
+        <argsstring>)(corto_time t)</argsstring>
+        <name>fromTime</name>
+        <briefdescription>
+<para>Request historical data starting from fixed timestamp. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The timestamp from which to return historical data. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1010" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a6611107e1701eb24e7ddc8d50e43cd0b" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::fromSample) (corto_uint64 sample)</definition>
+        <argsstring>)(corto_uint64 sample)</argsstring>
+        <name>fromSample</name>
+        <briefdescription>
+<para>Request historical data from a fixed sample id. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sample</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Sample id, starting from the beginning of the sequence. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1016" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a2fcd1d6c7fffb6301c9a3444e13a94a0" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::toNow) (void)</definition>
+        <argsstring>)(void)</argsstring>
+        <name>toNow</name>
+        <briefdescription>
+<para>Request historical data until now. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1020" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a0dc9e044be128346c6ff0e26ec358a63" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::toTime) (corto_time t)</definition>
+        <argsstring>)(corto_time t)</argsstring>
+        <name>toTime</name>
+        <briefdescription>
+<para>Request historical data until a fixed timestamp. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The timestamp until which to return historical data. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1025" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a365829811b18f47a75ea6efb4df1efe5" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::toSample) (corto_uint64 sample)</definition>
+        <argsstring>)(corto_uint64 sample)</argsstring>
+        <name>toSample</name>
+        <briefdescription>
+<para>Request historical data until a fixed sample id. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>sample</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Sample id, starting from the beginning of the sequence. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1030" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a8b23687bf82f1af4c153f4bf70858731" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::forDuration) (corto_time t)</definition>
+        <argsstring>)(corto_time t)</argsstring>
+        <name>forDuration</name>
+        <briefdescription>
+<para>Request historical data for a specific time window. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>t</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The duration of the time window. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1035" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a2b3e5b3441697a4e0b22f1f002c7c7f9" prot="public" static="no" mutable="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref>(*</type>
+        <definition>struct corto_select__fluent(* corto_select__fluent::forDepth) (int64_t depth)</definition>
+        <argsstring>)(int64_t depth)</argsstring>
+        <name>forDepth</name>
+        <briefdescription>
+<para>Request historical data for a specific number of samples. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>depth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of samples in the window. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1040" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1aed372b24f59208b1f9c6ec9a49d77939" prot="public" static="no" mutable="no">
+        <type>int16_t(*</type>
+        <definition>int16_t(* corto_select__fluent::iter) (corto_resultIter *iter_out)</definition>
+        <argsstring>)(corto_resultIter *iter_out)</argsstring>
+        <name>iter</name>
+        <briefdescription>
+<para>Return an iterator to the requested results. </para>        </briefdescription>
+        <detaileddescription>
+<para>Results are returned as <ref refid="structcorto__result" kindref="compound">corto_result</ref> instances. A <ref refid="structcorto__result" kindref="compound">corto_result</ref> contains metadata and when a content type is specified, a serialized value of an object. When using this function, no objects are created.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iter_out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to an iterator object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, -1 if failed. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1050" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1050" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a08994dfb7e6af61f503752824cd1a249" prot="public" static="no" mutable="no">
+        <type>int16_t(*</type>
+        <definition>int16_t(* corto_select__fluent::iterObjects) (corto_objectIter *iter_out)</definition>
+        <argsstring>)(corto_objectIter *iter_out)</argsstring>
+        <name>iterObjects</name>
+        <briefdescription>
+<para>Return an iterator to the requested objects. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function will return results as anonymous objects. No objects will be created in the object store.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iter_out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to an iterator object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, -1 if failed. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1059" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1059" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a906f05524deeb792f12ae4c1124e8b3d" prot="public" static="no" mutable="no">
+        <type>int64_t(*</type>
+        <definition>int64_t(* corto_select__fluent::count) (void)</definition>
+        <argsstring>)(void)</argsstring>
+        <name>count</name>
+        <briefdescription>
+<para>Return the number of objects for a query. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function requires a walk over all the returned results to determine the total number of objects.</para><para><simplesect kind="return"><para>-1 if failed, otherwise the total number of objects. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1067" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1067" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a60c05ab145762dd9b5de1e449bb39540" prot="public" static="no" mutable="no">
+        <type>int16_t(*</type>
+        <definition>int16_t(* corto_select__fluent::subscribe) (corto_resultIter *ret)</definition>
+        <argsstring>)(corto_resultIter *ret)</argsstring>
+        <name>subscribe</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1070" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1070" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a102ebaba29b7f15c72b8fa8782bf159c" prot="public" static="no" mutable="no">
+        <type>int16_t(*</type>
+        <definition>int16_t(* corto_select__fluent::unsubscribe) (void)</definition>
+        <argsstring>)(void)</argsstring>
+        <name>unsubscribe</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1071" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1071" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__select____fluent_1a3bf7506d85411ad27c6a43acc3b9dee8" prot="public" static="no" mutable="no">
+        <type>char *(*</type>
+        <definition>char*(* corto_select__fluent::id) (void)</definition>
+        <argsstring>)(void)</argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1072" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1072" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="933">
+        <label>corto_select__fluent</label>
+        <link refid="structcorto__select____fluent"/>
+        <childnode refid="933" relation="usage">
+          <edgelabel>+forDepth</edgelabel>
+          <edgelabel>+fromTime</edgelabel>
+          <edgelabel>+instance</edgelabel>
+          <edgelabel>+type</edgelabel>
+          <edgelabel>+toTime</edgelabel>
+          <edgelabel>+fromSample</edgelabel>
+          <edgelabel>+forDuration</edgelabel>
+          <edgelabel>+contentType</edgelabel>
+          <edgelabel>+mount</edgelabel>
+          <edgelabel>+limit</edgelabel>
+          <edgelabel>...</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="965" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="965" bodyend="1073"/>
+    <listofallmembers>
+      <member refid="structcorto__select____fluent_1a8fa74e8722742eb4763a8a958e15ce33" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>contentType</name></member>
+      <member refid="structcorto__select____fluent_1a906f05524deeb792f12ae4c1124e8b3d" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>count</name></member>
+      <member refid="structcorto__select____fluent_1a2b3e5b3441697a4e0b22f1f002c7c7f9" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>forDepth</name></member>
+      <member refid="structcorto__select____fluent_1a8b23687bf82f1af4c153f4bf70858731" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>forDuration</name></member>
+      <member refid="structcorto__select____fluent_1a9df7532e1b57b1b7ecea9d27f4a65bd5" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>fromNow</name></member>
+      <member refid="structcorto__select____fluent_1a6611107e1701eb24e7ddc8d50e43cd0b" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>fromSample</name></member>
+      <member refid="structcorto__select____fluent_1ab790012ffeb2032cd18d2426a524c92e" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>fromTime</name></member>
+      <member refid="structcorto__select____fluent_1a3bf7506d85411ad27c6a43acc3b9dee8" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>id</name></member>
+      <member refid="structcorto__select____fluent_1a67b15051ef626f6d6287d3765378f4fe" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>instance</name></member>
+      <member refid="structcorto__select____fluent_1aed372b24f59208b1f9c6ec9a49d77939" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>iter</name></member>
+      <member refid="structcorto__select____fluent_1a08994dfb7e6af61f503752824cd1a249" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>iterObjects</name></member>
+      <member refid="structcorto__select____fluent_1a4222be347f6757dc0214e8b313ea8684" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>limit</name></member>
+      <member refid="structcorto__select____fluent_1aeab568646f04fcfd3a61e26283f0c859" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>mount</name></member>
+      <member refid="structcorto__select____fluent_1a60c05ab145762dd9b5de1e449bb39540" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>subscribe</name></member>
+      <member refid="structcorto__select____fluent_1a2fcd1d6c7fffb6301c9a3444e13a94a0" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>toNow</name></member>
+      <member refid="structcorto__select____fluent_1a365829811b18f47a75ea6efb4df1efe5" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>toSample</name></member>
+      <member refid="structcorto__select____fluent_1a0dc9e044be128346c6ff0e26ec358a63" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>toTime</name></member>
+      <member refid="structcorto__select____fluent_1a10837e9dc029104609b53c8ecccb87bf" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>type</name></member>
+      <member refid="structcorto__select____fluent_1a102ebaba29b7f15c72b8fa8782bf159c" prot="public" virt="non-virtual"><scope>corto_select__fluent</scope><name>unsubscribe</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

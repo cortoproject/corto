@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__match_program__s" kind="struct" language="C++" prot="public">
+    <compoundname>corto_matchProgram_s</compoundname>
+    <includes local="no">_matcher.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__match_program__s_1a160e14e5e41d1414a91defa6247d501b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int corto_matchProgram_s::kind</definition>
+        <argsstring></argsstring>
+        <name>kind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="48" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__match_program__s_1ac24d3ec59896fb9c4794aad4e62fd6f2" prot="public" static="no" mutable="no">
+        <type><ref refid="structcorto__match_program_op" kindref="compound">corto_matchProgramOp</ref></type>
+        <definition>corto_matchProgramOp corto_matchProgram_s::ops[CORTO_MATCHER_MAX_OP]</definition>
+        <argsstring>[CORTO_MATCHER_MAX_OP]</argsstring>
+        <name>ops</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="49" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__match_program__s_1abfca45a47fd63f1f2ad18fa63585e2db" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a02ec669e8d8f80c385fe2a717544c982" kindref="member">corto_uint8</ref></type>
+        <definition>corto_uint8 corto_matchProgram_s::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="50" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__match_program__s_1a25d533f71ae6d6312297955550722317" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>corto_string corto_matchProgram_s::tokens</definition>
+        <argsstring></argsstring>
+        <name>tokens</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="51" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="608">
+        <label>corto_matchProgram_s</label>
+        <link refid="structcorto__match_program__s"/>
+        <childnode refid="609" relation="usage">
+          <edgelabel>+ops</edgelabel>
+        </childnode>
+      </node>
+      <node id="609">
+        <label>corto_matchProgramOp</label>
+        <link refid="structcorto__match_program_op"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" line="47" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_matcher.h" bodystart="47" bodyend="52"/>
+    <listofallmembers>
+      <member refid="structcorto__match_program__s_1a160e14e5e41d1414a91defa6247d501b" prot="public" virt="non-virtual"><scope>corto_matchProgram_s</scope><name>kind</name></member>
+      <member refid="structcorto__match_program__s_1ac24d3ec59896fb9c4794aad4e62fd6f2" prot="public" virt="non-virtual"><scope>corto_matchProgram_s</scope><name>ops</name></member>
+      <member refid="structcorto__match_program__s_1abfca45a47fd63f1f2ad18fa63585e2db" prot="public" virt="non-virtual"><scope>corto_matchProgram_s</scope><name>size</name></member>
+      <member refid="structcorto__match_program__s_1a25d533f71ae6d6312297955550722317" prot="public" virt="non-virtual"><scope>corto_matchProgram_s</scope><name>tokens</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

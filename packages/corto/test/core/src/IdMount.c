@@ -14,7 +14,7 @@ int16_t _test_IdMount_construct(
 /* $begin(test/IdMount/construct) */
 
     corto_mount(this)->kind = CORTO_SINK;
-    corto_setstr(&corto_subscriber(this)->expr, "//");
+    corto_ptr_setstr(&corto_subscriber(this)->expr, "//");
 
     return corto_mount_construct(this);
 /* $end */

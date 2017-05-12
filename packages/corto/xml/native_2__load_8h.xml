@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="native_2__load_8h" kind="file" language="C++">
+    <compoundname>native/_load.h</compoundname>
+    <includes local="yes">corto/lang/_type.h</includes>
+    <includes local="yes">corto/core/_type.h</includes>
+    <incdepgraph>
+      <node id="43">
+        <label>corto/core/_type.h</label>
+      </node>
+      <node id="42">
+        <label>corto/lang/_type.h</label>
+      </node>
+      <node id="41">
+        <label>_load.h</label>
+        <link refid="native_2__load_8h"/>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="native_2__load_8h_1ada08dd69f6616bc88c84f3afbcb1695f" prot="public" static="no">
+        <name>CORTO_META_NATIVE_OBJECT</name>
+        <param><defname>type</defname></param>
+        <param><defname>name</defname></param>
+        <initializer><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> extern corto_##type corto_native_##name##_o</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_load.h" line="18" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_load.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="native_2__load_8h_1a6bcefab374fe65d9a9d89a242b3ee569" prot="public" static="no" mutable="no">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref></type>
+        <definition>CORTO_EXPORT corto_package corto_native_o</definition>
+        <argsstring></argsstring>
+        <name>corto_native_o</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_load.h" line="20" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_bootstrap.h" bodystart="587" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="native_2__load_8h_1a6117064d2a40bd3ce167877c9d890b4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CORTO_META_NATIVE_OBJECT</definition>
+        <argsstring>(class, type)</argsstring>
+        <name>CORTO_META_NATIVE_OBJECT</name>
+        <param>
+          <type>class</type>
+        </param>
+        <param>
+          <type>type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_load.h" line="23" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/native/_load.h"/>
+  </compounddef>
+</doxygen>

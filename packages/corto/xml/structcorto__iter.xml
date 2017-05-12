@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__iter" kind="struct" language="C++" prot="public">
+    <compoundname>corto_iter</compoundname>
+    <includes local="no">base.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__iter_1a56a6801824c431bb3fcbe89a9058358c" prot="public" static="no" mutable="no">
+        <type>int(*</type>
+        <definition>int(* corto_iter::hasNext) (corto_iter *)</definition>
+        <argsstring>)(corto_iter *)</argsstring>
+        <name>hasNext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="223" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__iter_1a34aec9c2567164794696eb586bc3b569" prot="public" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* corto_iter::udata</definition>
+        <argsstring></argsstring>
+        <name>udata</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="224" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__iter_1ad99e44b6f5290ce9e1f30826cfe08c59" prot="public" static="no" mutable="no">
+        <type>void *(*</type>
+        <definition>void*(* corto_iter::next) (corto_iter *)</definition>
+        <argsstring>)(corto_iter *)</argsstring>
+        <name>next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="225" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="225" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__iter_1a5b1684d21cf9ce3d181d338fc8a8fd9a" prot="public" static="no" mutable="no">
+        <type>void *(*</type>
+        <definition>void*(* corto_iter::nextPtr) (corto_iter *)</definition>
+        <argsstring>)(corto_iter *)</argsstring>
+        <name>nextPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="226" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="226" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__iter_1a45d1889e33a0e498b0124651755ce6f5" prot="public" static="no" mutable="no">
+        <type>void(*</type>
+        <definition>void(* corto_iter::release) (corto_iter *)</definition>
+        <argsstring>)(corto_iter *)</argsstring>
+        <name>release</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="227" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="227" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="529">
+        <label>corto_iter</label>
+        <link refid="structcorto__iter"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" line="222" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/base.h" bodystart="222" bodyend="228"/>
+    <listofallmembers>
+      <member refid="structcorto__iter_1a56a6801824c431bb3fcbe89a9058358c" prot="public" virt="non-virtual"><scope>corto_iter</scope><name>hasNext</name></member>
+      <member refid="structcorto__iter_1ad99e44b6f5290ce9e1f30826cfe08c59" prot="public" virt="non-virtual"><scope>corto_iter</scope><name>next</name></member>
+      <member refid="structcorto__iter_1a5b1684d21cf9ce3d181d338fc8a8fd9a" prot="public" virt="non-virtual"><scope>corto_iter</scope><name>nextPtr</name></member>
+      <member refid="structcorto__iter_1a45d1889e33a0e498b0124651755ce6f5" prot="public" virt="non-virtual"><scope>corto_iter</scope><name>release</name></member>
+      <member refid="structcorto__iter_1a34aec9c2567164794696eb586bc3b569" prot="public" virt="non-virtual"><scope>corto_iter</scope><name>udata</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

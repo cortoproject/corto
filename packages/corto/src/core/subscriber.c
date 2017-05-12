@@ -90,9 +90,9 @@ static corto_int16 corto_subscriber_invoke(
         corto_attr oldAttr = corto_setAttr(0);
         corto_subscriberEvent *event = corto_declare(corto_subscriberEvent_o);
         corto_setAttr(oldAttr);
-        corto_setref(&event->subscriber, s);
-        corto_setref(&event->instance, instance);
-        corto_setref(&event->source, NULL);
+        corto_ptr_setref(&event->subscriber, s);
+        corto_ptr_setref(&event->instance, instance);
+        corto_ptr_setref(&event->source, NULL);
         event->event = mask;
         corto_ptr_copy(&event->data, corto_result_o, r);
         if (r->value) {
@@ -352,7 +352,7 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 {
     corto_subscriber s = corto_declare(corto_subscriber_o);
     ((corto_observer)s)->mask = r->mask;
-    corto_setstr(&s->parent, r->scope);
+    corto_ptr_setstr(&s->parent, r->scope);
 
     if (r->scope && *r->scope) {
         if (*r->scope != '/') {
@@ -363,11 +363,11 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
         s->parent = NULL;
     }
 
-    corto_setstr(&s->expr, r->expr);
-    corto_setstr(&s->contentType, r->contentType);
-    corto_setref(&((corto_observer)s)->instance, r->instance);
-    corto_setref(&((corto_observer)s)->dispatcher, r->dispatcher);
-    corto_setstr(&((corto_observer)s)->type, r->type);
+    corto_ptr_setstr(&s->expr, r->expr);
+    corto_ptr_setstr(&s->contentType, r->contentType);
+    corto_ptr_setref(&((corto_observer)s)->instance, r->instance);
+    corto_ptr_setref(&((corto_observer)s)->dispatcher, r->dispatcher);
+    corto_ptr_setstr(&((corto_observer)s)->type, r->type);
     ((corto_observer)s)->enabled = r->enabled;
     ((corto_function)s)->fptr = (corto_word)r->callback;
     ((corto_function)s)->kind = CORTO_PROCEDURE_CDECL;
@@ -382,54 +382,54 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
     return s;
 }
 
-static corto_subscribeFluent corto_subscribeFluentGet(void);
+static corto_subscribe__fluent corto_subscribe__fluentGet(void);
 
-static corto_subscribeFluent corto_subscribeContentType(
+static corto_subscribe__fluent corto_subscribeContentType(
     corto_string contentType)
 {
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->contentType = contentType;
     }
-    return corto_subscribeFluentGet();
+    return corto_subscribe__fluentGet();
 }
 
-static corto_subscribeFluent corto_subscribeType(
+static corto_subscribe__fluent corto_subscribeType(
     corto_string type)
 {
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
     }
-    return corto_subscribeFluentGet();
+    return corto_subscribe__fluentGet();
 }
 
-static corto_subscribeFluent corto_subscribeInstance(
+static corto_subscribe__fluent corto_subscribeInstance(
     corto_object instance)
 {
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
-    return corto_subscribeFluentGet();
+    return corto_subscribe__fluentGet();
 }
 
-static corto_subscribeFluent corto_subscribeDisabled(void)
+static corto_subscribe__fluent corto_subscribeDisabled(void)
 {
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->enabled = FALSE;
     }
-    return corto_subscribeFluentGet();
+    return corto_subscribe__fluentGet();
 }
 
-static corto_subscribeFluent corto_subscribeDispatcher(corto_dispatcher dispatcher)
+static corto_subscribe__fluent corto_subscribeDispatcher(corto_dispatcher dispatcher)
 {
     corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->dispatcher = dispatcher;
     }
-    return corto_subscribeFluentGet();
+    return corto_subscribe__fluentGet();
 }
 
 static corto_subscriber corto_subscribeCallback(
@@ -448,9 +448,9 @@ static corto_subscriber corto_subscribeCallback(
     return result;
 }
 
-static corto_subscribeFluent corto_subscribeFluentGet(void)
+static corto_subscribe__fluent corto_subscribe__fluentGet(void)
 {
-    corto_subscribeFluent result;
+    corto_subscribe__fluent result;
     result.contentType = corto_subscribeContentType;
     result.callback = corto_subscribeCallback;
     result.instance = corto_subscribeInstance;
@@ -460,7 +460,7 @@ static corto_subscribeFluent corto_subscribeFluentGet(void)
     return result;
 }
 
-corto_subscribeFluent corto_subscribe(
+corto_subscribe__fluent corto_subscribe(
     corto_eventMask mask,
     corto_string scope,
     corto_string expr,
@@ -483,7 +483,7 @@ corto_subscribeFluent corto_subscribe(
     request->mask = mask;
     request->scope = scope;
     request->enabled = TRUE;
-    return corto_subscribeFluentGet();
+    return corto_subscribe__fluentGet();
 }
 
 corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance) {
@@ -588,7 +588,7 @@ int16_t _corto_subscriber_init(
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("e");
     p->passByReference = FALSE;
-    corto_setref(&p->type, corto_subscriberEvent_o);
+    corto_ptr_setref(&p->type, corto_subscriberEvent_o);
 
     corto_observer(this)->mask = CORTO_ON_ANY;
 

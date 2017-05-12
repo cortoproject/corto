@@ -191,7 +191,7 @@ corto_object corto_value_objectof(corto_value* val) {
     return result;
 }
 
-corto_int16 corto_value_memberof(corto_value *val, corto_string member, corto_value *out) {
+corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_value *out) {
     corto_type t = corto_value_typeof(val);
     corto_object o = corto_value_objectof(val);
     void *ptr = corto_value_ptrof(val);
@@ -250,19 +250,6 @@ corto_function corto_valueFunction(corto_value* val) {
        break;
     }
 
-    return result;
-}
-
-corto_uint32 corto_value_indexof(corto_value* val) {
-    corto_uint32 result = 0;
-    switch(val->kind) {
-    case CORTO_ELEMENT:
-        result = val->is.element.t.index;
-        break;
-    default:
-        corto_error("cannot obtain index from non-element value");
-        break;
-    }
     return result;
 }
 
@@ -336,7 +323,7 @@ corto_value _corto_value_object(corto_object o, corto_type t) {
     return val;
 }
 
-corto_value _corto_value_base(corto_void *v, corto_type t) {
+corto_value _corto_value_base(void *v, corto_type t) {
     corto_value val;
     val.kind = CORTO_BASE;
     val.parent = NULL;
@@ -345,7 +332,7 @@ corto_value _corto_value_base(corto_void *v, corto_type t) {
     return val;
 }
 
-corto_value _corto_value_value(corto_void* v, corto_type t) {
+corto_value _corto_value_value(void* v, corto_type t) {
     corto_value val;
     val.kind = CORTO_VALUE;
     val.parent = NULL;
@@ -682,17 +669,17 @@ static corto_bool corto_valueExpr_isOperatorConditional(
                     switch(width) {
                     case CORTO_WIDTH_8:
                         if ((v <= 127) && (v >= -128)) {
-                            corto_setref(&expr->type, target);
+                            corto_ptr_setref(&expr->type, target);
                         }
                         break;
                     case CORTO_WIDTH_16:
                         if ((v <= 32767) && (v >= -32768)) {
-                            corto_setref(&expr->type, target);
+                            corto_ptr_setref(&expr->type, target);
                         }
                         break;
                     case CORTO_WIDTH_32:
                         if ((v <= 2147483647) && (v >= -2147483648)) {
-                            corto_setref(&expr->type, target);
+                            corto_ptr_setref(&expr->type, target);
                         }
                         break;
                     default:
@@ -705,17 +692,17 @@ static corto_bool corto_valueExpr_isOperatorConditional(
                     switch(width) {
                     case CORTO_WIDTH_8:
                         if (v <= 255) {
-                            corto_setref(&expr->type, target);
+                            corto_ptr_setref(&expr->type, target);
                         }
                         break;
                     case CORTO_WIDTH_16:
                         if (v <= 65535) {
-                            corto_setref(&expr->type, target);
+                            corto_ptr_setref(&expr->type, target);
                         }
                         break;
                     case CORTO_WIDTH_32:
                         if (v <= 4294967295) {
-                            corto_setref(&expr->type, target);
+                            corto_ptr_setref(&expr->type, target);
                         }
                         break;
                     default:

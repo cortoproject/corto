@@ -15,7 +15,7 @@ corto_resultList _test_Select_collect(
     uint64_t limit)
 {
 /* $begin(test/Select/collect) */
-    corto_select_request r = corto_select(scope, expr);
+    corto_select__fluent r = corto_select(scope, expr);
 
     if (offset || limit) {
         r.limit(offset, limit);

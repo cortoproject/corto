@@ -156,7 +156,7 @@ repeat:
                     corto_seterr("cannot resolve parent of root");
                     goto error;
                 }
-                corto_setref(&lookup, o);
+                corto_ptr_setref(&lookup, o);
             } else {
                 corto_object prevLookup = lookup;
 

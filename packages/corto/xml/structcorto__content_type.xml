@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__content_type" kind="struct" language="C++" prot="public">
+    <compoundname>corto_contentType</compoundname>
+    <includes local="no">_object.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__content_type_1a96a68a2bec113e9bd7c698c9918fb72b" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>corto_string corto_contentType::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="40" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1ab83e5de283c18328f1357af7d0365065" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a0459363f88ee8e547f488d710acfd274" kindref="member">corto_word</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_word ___(* corto_contentType::fromValue) (corto_value *v)</definition>
+        <argsstring>)(corto_value *v)</argsstring>
+        <name>fromValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="43" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1ad0370874c77b37bda84f58463680afe0" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_int16 ___(* corto_contentType::toValue) (corto_value *v, corto_word content)</definition>
+        <argsstring>)(corto_value *v, corto_word content)</argsstring>
+        <name>toValue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="44" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1a35b2e11ebb9f035d1c10f6114753bde4" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a0459363f88ee8e547f488d710acfd274" kindref="member">corto_word</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_word ___(* corto_contentType::fromResult) (corto_result *o)</definition>
+        <argsstring>)(corto_result *o)</argsstring>
+        <name>fromResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="47" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1a15ec9b323e7c0f0bb4fe0b6f9cd896c0" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_int16 ___(* corto_contentType::toResult) (corto_result *o, corto_word content)</definition>
+        <argsstring>)(corto_result *o, corto_word content)</argsstring>
+        <name>toResult</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="48" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1ac3ff7a0c7599c3038c2618e32d739382" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_string ___(* corto_contentType::fromObject) (corto_object o)</definition>
+        <argsstring>)(corto_object o)</argsstring>
+        <name>fromObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="51" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1af68295c084daec18c996c87ea02c1d27" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_int16 ___(* corto_contentType::toObject) (corto_object *o, corto_word content)</definition>
+        <argsstring>)(corto_object *o, corto_word content)</argsstring>
+        <name>toObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="52" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1a381d775defce596d7ee5f198b77ddbfa" prot="public" static="no" mutable="no">
+        <type><ref refid="lang_2__type_8h_1a0459363f88ee8e547f488d710acfd274" kindref="member">corto_word</ref> <ref refid="base_8h_1a0f5b98af54701f71c72c1a566d111d23" kindref="member">___</ref>(*</type>
+        <definition>corto_word ___(* corto_contentType::copy) (corto_word content)</definition>
+        <argsstring>)(corto_word content)</argsstring>
+        <name>copy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="55" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__content_type_1a7c4985a9c6c148851ad35badb44c8ccb" prot="public" static="no" mutable="no">
+        <type>void(*</type>
+        <definition>void(* corto_contentType::release) (corto_word content)</definition>
+        <argsstring>)(corto_word content)</argsstring>
+        <name>release</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="58" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="275">
+        <label>corto_contentType</label>
+        <link refid="structcorto__content_type"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" line="39" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/_object.h" bodystart="39" bodyend="59"/>
+    <listofallmembers>
+      <member refid="structcorto__content_type_1a381d775defce596d7ee5f198b77ddbfa" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>copy</name></member>
+      <member refid="structcorto__content_type_1ac3ff7a0c7599c3038c2618e32d739382" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>fromObject</name></member>
+      <member refid="structcorto__content_type_1a35b2e11ebb9f035d1c10f6114753bde4" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>fromResult</name></member>
+      <member refid="structcorto__content_type_1ab83e5de283c18328f1357af7d0365065" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>fromValue</name></member>
+      <member refid="structcorto__content_type_1a96a68a2bec113e9bd7c698c9918fb72b" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>name</name></member>
+      <member refid="structcorto__content_type_1a7c4985a9c6c148851ad35badb44c8ccb" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>release</name></member>
+      <member refid="structcorto__content_type_1af68295c084daec18c996c87ea02c1d27" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>toObject</name></member>
+      <member refid="structcorto__content_type_1a15ec9b323e7c0f0bb4fe0b6f9cd896c0" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>toResult</name></member>
+      <member refid="structcorto__content_type_1ad0370874c77b37bda84f58463680afe0" prot="public" virt="non-virtual"><scope>corto_contentType</scope><name>toValue</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

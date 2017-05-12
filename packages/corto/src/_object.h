@@ -29,6 +29,9 @@
 extern "C" {
 #endif
 
+void corto_operatorInit(void);
+void corto_ptr_castInit(void);
+
 void corto_drop(corto_object o, corto_bool delete);
 corto_object corto_resumePersistent(corto_object o);
 

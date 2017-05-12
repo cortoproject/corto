@@ -1,0 +1,2919 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="object_8h" kind="file" language="C++">
+    <compoundname>object.h</compoundname>
+    <includes local="no">corto/base.h</includes>
+    <includes local="no">corto/core/_type.h</includes>
+    <includes local="no">corto/lang/_type.h</includes>
+    <includes local="no">corto/secure/_type.h</includes>
+    <incdepgraph>
+      <node id="187">
+        <label>object.h</label>
+        <link refid="object_8h"/>
+        <childnode refid="188" relation="include">
+        </childnode>
+        <childnode refid="189" relation="include">
+        </childnode>
+        <childnode refid="190" relation="include">
+        </childnode>
+        <childnode refid="191" relation="include">
+        </childnode>
+      </node>
+      <node id="189">
+        <label>corto/core/_type.h</label>
+      </node>
+      <node id="188">
+        <label>corto/base.h</label>
+      </node>
+      <node id="191">
+        <label>corto/secure/_type.h</label>
+      </node>
+      <node id="190">
+        <label>corto/lang/_type.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__select____fluent" prot="public">corto_select__fluent</innerclass>
+    <innerclass refid="structcorto__observe____fluent" prot="public">corto_observe__fluent</innerclass>
+    <innerclass refid="structcorto__subscribe____fluent" prot="public">corto_subscribe__fluent</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" prot="public" static="no">
+        <name>corto_create</name>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1ab354761fa951f436f0c7c4489e544e58" kindref="member">_corto_create</ref>(<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1187" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1187" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" prot="public" static="no">
+        <name>corto_createChild</name>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a1e79640b4cf610f9053d63f1676bfca8" kindref="member">_corto_createChild</ref>(parent, name, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1188" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" prot="public" static="no">
+        <name>corto_createOrphan</name>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a168ef659c0e42833487952f530d696e9" kindref="member">_corto_createOrphan</ref>(parent, name, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1189" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1189" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" prot="public" static="no">
+        <name>corto_findOrCreate</name>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a5662a10503d472bad466d7ed6f5b750f" kindref="member">_corto_findOrCreate</ref>(parent, name, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1190" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1190" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" prot="public" static="no">
+        <name>corto_declare</name>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a222aabddb8de33db042963e7f1a988b0" kindref="member">_corto_declare</ref>(<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1191" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1191" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a6f9a335a0199634845fe74f540bba781" prot="public" static="no">
+        <name>corto_declareChild</name>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a39dad0f13e43495a5619b39dcf5c233d" kindref="member">_corto_declareChild</ref>(parent, name, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1192" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1adff0bd6a408940085eca55265ef6c86d" prot="public" static="no">
+        <name>corto_declareOrphan</name>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a4e13f6362b8c7a79c886af660bf4c067" kindref="member">_corto_declareOrphan</ref>(parent, name, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1193" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1193" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" prot="public" static="no">
+        <name>corto_findOrDeclare</name>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1af2504c878ffa8f16412365b76c4e45eb" kindref="member">_corto_findOrDeclare</ref>(parent, name, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1194" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1aeb08295b2399365698303ad539492ddd" prot="public" static="no">
+        <name>corto_lookupAssert</name>
+        <param><defname>parent</defname></param>
+        <param><defname>id</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="object_8h_1a92f514446883449ad51b681a7a07975d" kindref="member">_corto_lookupAssert</ref>(parent, id, <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>(type))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1195" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1195" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1aad4c5166e673f998c8fef4d1a60ae0aa" prot="public" static="no">
+        <name>corto_copy</name>
+        <param><defname>dst</defname></param>
+        <param><defname>src</defname></param>
+        <initializer><ref refid="object_8h_1a79cfa6e311f1ba64fea831923384d4fa" kindref="member">_corto_copy</ref>((<ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref>*)dst, src)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1196" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1196" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a7236635565c9a1c33b2fd960c73fb584" prot="public" static="no">
+        <name>corto_instanceof</name>
+        <param><defname>type</defname></param>
+        <param><defname>o</defname></param>
+        <initializer><ref refid="object_8h_1ae612ceccbabc868b3fa858d40fc00939" kindref="member">_corto_instanceof</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)type, o)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1197" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1197" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="object_8h_1a31f37d1782649258d2e0571f49d51190" prot="public" static="no">
+        <name>corto_instanceofType</name>
+        <param><defname>type</defname></param>
+        <param><defname>valueType</defname></param>
+        <initializer><ref refid="object_8h_1a659f221645a67b09e7ec70b8b2b6a917" kindref="member">_corto_instanceofType</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)type, (<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)valueType)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1198" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1198" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="object_8h_1a185cb12d197cf814d8b8db3a2ec56ae4" prot="public" static="no">
+        <name>corto_findKind</name>
+        <enumvalue id="object_8h_1a185cb12d197cf814d8b8db3a2ec56ae4a46ebc4097c339c9b7c2b0d1522378fc4" prot="public">
+          <name>CORTO_FIND_DEFAULT</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="object_8h_1a185cb12d197cf814d8b8db3a2ec56ae4ac7f2b8305a742c0628857879ace69605" prot="public">
+          <name>CORTO_FIND_RESUME</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="841" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="841" bodyend="845"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="object_8h_1a7d5feb3225221c94ba2589b004787e9f" prot="public" static="no">
+        <type>enum <ref refid="object_8h_1a185cb12d197cf814d8b8db3a2ec56ae4" kindref="member">corto_findKind</ref></type>
+        <definition>typedef enum corto_findKind  corto_findKind</definition>
+        <argsstring></argsstring>
+        <name>corto_findKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="845" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="object_8h_1a8b2c9a5c5b8e3f10ed7ba65d547a46b0" prot="public" static="no">
+        <type>struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref></type>
+        <definition>typedef struct corto_select__fluent  corto_select__fluent</definition>
+        <argsstring></argsstring>
+        <name>corto_select__fluent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1073" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="object_8h_1a55f66f086edb040d065414f2fac2091e" prot="public" static="no">
+        <type>struct <ref refid="structcorto__observe____fluent" kindref="compound">corto_observe__fluent</ref></type>
+        <definition>typedef struct corto_observe__fluent  corto_observe__fluent</definition>
+        <argsstring></argsstring>
+        <name>corto_observe__fluent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1114" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="object_8h_1add4aea96c4db04ebda04b596a015150d" prot="public" static="no">
+        <type>struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref></type>
+        <definition>typedef struct corto_subscribe__fluent  corto_subscribe__fluent</definition>
+        <argsstring></argsstring>
+        <name>corto_subscribe__fluent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1126" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="object_8h_1a0110bfcd2a7dd8474650ff1ad8ec5b50" prot="public" static="no">
+        <type>struct <ref refid="structcorto__match_program__s" kindref="compound">corto_matchProgram_s</ref> *</type>
+        <definition>typedef struct corto_matchProgram_s* corto_matchProgram</definition>
+        <argsstring></argsstring>
+        <name>corto_matchProgram</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1131" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" bodystart="1131" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="object_8h_1ab354761fa951f436f0c7c4489e544e58" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_create</definition>
+        <argsstring>(corto_type type)</argsstring>
+        <name>_corto_create</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Create a new anonymous object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to calling corto_declare + corto_define.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="80" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a1e79640b4cf610f9053d63f1676bfca8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_createChild</definition>
+        <argsstring>(corto_object parent, char *id, corto_type type)</argsstring>
+        <name>_corto_createChild</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Create a new named object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to calling corto_declareChild + corto_define.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent for the new object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object id. If NULL, a random unique id is generated. A name may contain multiple elements, separated by the &apos;/&apos; character. If one or more elements do not yet exist, they are created with the specified type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="97" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a168ef659c0e42833487952f530d696e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_createOrphan</definition>
+        <argsstring>(corto_object parent, char *id, corto_type type)</argsstring>
+        <name>_corto_createOrphan</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Create a new orphan object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to corto_declareOrphan + corto_define.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent for the new object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object id. If NULL, a random unique id is generated. A name may contain multiple elements, separated by the &apos;/&apos; character. If one or more elements do not yet exist, they are created with the specified type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="116" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a5662a10503d472bad466d7ed6f5b750f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_findOrCreate</definition>
+        <argsstring>(corto_object parent, char *id, corto_type type)</argsstring>
+        <name>_corto_findOrCreate</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Find or create a new object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to calling corto_findOrDeclare + corto_define.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent for the new object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object id. If NULL, a random unique id is generated. A name may contain multiple elements, separated by the &apos;/&apos; character. If one or more elements do not yet exist, they are created with the specified type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="135" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a222aabddb8de33db042963e7f1a988b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_declare</definition>
+        <argsstring>(corto_type type)</argsstring>
+        <name>_corto_declare</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Declare a new anonymous object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns an object in the DECLARED state, allowing for setting the object value before invoking the type constructor with corto_define. The function fails if the type initializer fails.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="152" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a39dad0f13e43495a5619b39dcf5c233d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_declareChild</definition>
+        <argsstring>(corto_object parent, char *id, corto_type type)</argsstring>
+        <name>_corto_declareChild</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Declare a new object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns an object in the DECLARED state, which enables setting the object value before invoking the type constructor with corto_define. When the object already exists with the specified type, the existing object will be returned.</para><para>The function fails if the type initializer fails or if it violates constraints of the specified type on the state or type of the specified parent. The function also fails when the object already exists with a different type.</para><para>Scoped objects are added to the scope of their parent and have a unique id which makes them discoverable in the object store. When this function succeeds an ON_DECLARE event is emitted.</para><para>This function will block if there is another thread that has declared, but not defined the same object. Once the other thread defines the object, the function will unblock, and return an object in the DEFINED state. The calling thread can (and should) check the state of the returned object using corto_checkState to determine if it needs to initialize the object. The same thread may declare an object multiple times before it is defined.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent for the new object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object id. If NULL, a random unique id is generated. A name may contain multiple elements, separated by the &apos;/&apos; character. If one or more elements do not yet exist, they are created with the specified type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="187" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a4e13f6362b8c7a79c886af660bf4c067" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_declareOrphan</definition>
+        <argsstring>(corto_object parent, char *id, corto_type type)</argsstring>
+        <name>_corto_declareOrphan</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Declare a new orphaned object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to corto_declareChild, except that the function returns an orphaned object.</para><para>Orphaned objects, like named objects have a name and hold a reference to their parent, but are not added to the scope of their parent and are thus not discoverable. Orphaned objects are typically used for observable members.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent for the new object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object id. If NULL, a random unique id is generated. A name may contain multiple elements, separated by the &apos;/&apos; character. If one or more elements do not yet exist, they are created with the specified type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="211" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1af2504c878ffa8f16412365b76c4e45eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_findOrDeclare</definition>
+        <argsstring>(corto_object parent, char *id, corto_type type)</argsstring>
+        <name>_corto_findOrDeclare</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Declare a new object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Equivalent to corto_declareChild, except that when the function finds an existing object with a different type, it does not fail.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>parent</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent for the new object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object id. If NULL, a random unique id is generated. A name may contain multiple elements, separated by the &apos;/&apos; character. If one or more elements do not yet exist, they are created with the specified type. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to create. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The new object, NULL if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a14daca15a3399f709d0264234b4d3b05" kindref="member">corto_define</ref> <ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="231" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a14daca15a3399f709d0264234b4d3b05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_define</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_define</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Define an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function changes the state of an object to DEFINED. When an object is defined, the type constructor is invoked. If successful, an ON_DEFINE event is emitted. The DEFINE event indicates the moment when the value of an object is ready to be interpreted by contexts other than the one where the object was being created.</para><para>This function may emit an ON_RESUME event instead of ON_DEFINE if a SINK mount indicates that it has a copy of the object available. In this case, the function will overwrite the initial object value with the value that the SINK mount provides.</para><para>This mechanism enables transparent persistency of objects. The value specified by the application is treated as an initial value which is overridden by the latest value of the SINK, which is typically some form of persistent storage.</para><para>This function will fail if the type constructor fails.</para><para>If the function fails, the object is left in an undefined, invalid state. An application can attempt again to define the object by calling corto_define again on the object after resolving the issue that caused it to fail.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be defined. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="264" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ae207f13bf4109d2619715c04522bd02a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_delete</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_delete</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Delete an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function deletes an object. If the object was DEFINED, the type destructor will be invoked.</para><para>Deleting an object does not guarantee that its memory is freed, as there still may be references to the object. Once all references have been released, the object will be deallocated.</para><para>If a named object is deleted, all it&apos;s children will be recursively deleted as well, using a depth-first walk.</para><para>This function fails if the current context does not own the object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be deleted. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0d5fe70d04413af1dbc4ef1ecd28e0e9" kindref="member">corto_declare</ref> <ref refid="object_8h_1a6f9a335a0199634845fe74f540bba781" kindref="member">corto_declareChild</ref> <ref refid="object_8h_1adff0bd6a408940085eca55265ef6c86d" kindref="member">corto_declareOrphan</ref> <ref refid="object_8h_1a73d7108d6ab4dda41c6663b57d7d9780" kindref="member">corto_findOrDeclare</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3e5128a9ecb442870d9be457ebbd38e6" kindref="member">corto_create</ref> <ref refid="object_8h_1a3a9ccd759fd2f8f0b58a3aecd5643d58" kindref="member">corto_createChild</ref> <ref refid="object_8h_1a1b2ac41e65fc2967d5844909e468ee16" kindref="member">corto_createOrphan</ref> <ref refid="object_8h_1ad04a38a156e81d68ecb5c39c504611a1" kindref="member">corto_findOrCreate</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ae207f13bf4109d2619715c04522bd02a" kindref="member">corto_delete</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="287" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a4d16af01c84843f000a5f6c65f53b29e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_update</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_update</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Update an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function emits an UPDATE event for the specified object.</para><para>This function fails if the current context does not own the object or if the object passed to was not created with ATTR_OBSERVABLE.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be updated. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="302" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a3745235190de391b8caf764d09b9994d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_updateBegin</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_updateBegin</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Start updating an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function locks the object for thread-safe updating. No event is emitted yet. This function must be followed up by corto_updateEnd or corto_updateCancel.</para><para>This function fails if the current context does not own the object or if the object passed to was not created with ATTR_OBSERVABLE.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be updated. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="318" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_updateTry</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_updateTry</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Try start updating an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function locks the object for thread-safe updating only when no other thread is locking the object. Use this function when updating the object has to be as non-intrusive as possible to the application.</para><para>This function fails if the current context does not own the object or if the object passed to was not created with ATTR_OBSERVABLE, or when the object is already locked.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be updated. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="336" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_updateEnd</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_updateEnd</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Update an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function emits an ON_UPDATE event and must be called after either a successful call to corto_updateBegin or corto_updateTry. If the function is called without first calling corto_updateBegin or corto_updateTry the behavior is undefined. The function will unlock the object.</para><para>This function behaves like corto_define when the object is not yet defined, in that it defines the object, and may either emit ON_DEFINE or ON_RESUME, depending on whether a SINK mount has a copy of the object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be updated. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="355" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a40d57e9ebc0880cdd74d391032889d59" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_updateCancel</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_updateCancel</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Cancel updating an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function unlocks the object without any other side-effects. The application is responsible for reversing any changes made to the object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which the update must be cancelled. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="368" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1aa94112cadc3f78966a53d20fba73ea5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_invalidate</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_invalidate</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Invalidate an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function emits an ON_INVALIDATE event when a valid object is passed to it. This function is typically used to indicate that an object has gone stale, or that the constructor of the object has failed.</para><para>This function fails if the current context does not own the object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to be invalidated </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="384" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_publish</definition>
+        <argsstring>(corto_eventMask event, char *id, char *type, char *contentType, void *content)</argsstring>
+        <name>corto_publish</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5966a2010b608c90d536380d1f2d2405" kindref="member">corto_eventMask</ref></type>
+          <declname>event</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>content</declname>
+        </param>
+        <briefdescription>
+<para>Publish event for an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function enables emitting events for objects that are not loaded in the RAM store. This allows for efficient routing of events between subscribers without the need to (de)marshall object values.</para><para>If the object is loaded in the RAM store, a call to corto_publish will demarshall the specified value into the object.</para><para>The function may only emit &quot;data events&quot;, which are ON_DEFINE, ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for objects that are loaded in the RAM store.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>event</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The event to be emitted </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A string representing the id of the object in the form of &apos;foo/bar&apos;. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A string representing the id of the type as returned by corto_fullpath. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>contentType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A string representing the content type (format) of the specified value. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A string (or binary value) representing the serialized value of the object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if success, nonzero if failed. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3745235190de391b8caf764d09b9994d" kindref="member">corto_updateBegin</ref> <ref refid="object_8h_1ac48315a9a93b60392a6a474529f6e2ba" kindref="member">corto_updateEnd</ref> <ref refid="object_8h_1a1c99f3e2fe6e46a6cdaae22d18e9ea26" kindref="member">corto_updateTry</ref> <ref refid="object_8h_1a40d57e9ebc0880cdd74d391032889d59" kindref="member">corto_updateCancel</ref> <ref refid="object_8h_1a6d845dd6f8af3b9348e2331cffae0db2" kindref="member">corto_publish</ref> </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" kindref="member">corto_observe</ref> <ref refid="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" kindref="member">corto_subscribe</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="409" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a3cdebe8a421892f9dbe0f68dbe8dabbd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int32_t</type>
+        <definition>CORTO_EXPORT int32_t corto_claim</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_claim</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Claim an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function increases the reference count of an object, which will prevent it from being deallocated.</para><para>It is usually not needed to call this function manually. When setting a member of a reference type, use the corto_ptr_setref function.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object of which to increase the reference count. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The reference count of the object after the operation. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="428" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1aaa32f335386f1477aee3506f1b03fddb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int32_t</type>
+        <definition>CORTO_EXPORT int32_t corto_release</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_release</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Release an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function decreases the reference count of an object. When the reference count reaches zero, it will be deallocated.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object of which to increase the reference count. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The reference count of the object after the operation. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3cdebe8a421892f9dbe0f68dbe8dabbd" kindref="member">corto_claim</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="440" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a884ef933cb020c77f171820d7d432009" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a2a5116c4239116da2b9d3ae65f47bfc7" kindref="member">corto_attr</ref></type>
+        <definition>CORTO_EXPORT corto_attr corto_setAttr</definition>
+        <argsstring>(corto_attr attr)</argsstring>
+        <name>corto_setAttr</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a2a5116c4239116da2b9d3ae65f47bfc7" kindref="member">corto_attr</ref></type>
+          <declname>attr</declname>
+        </param>
+        <briefdescription>
+<para>Set object attributes for the current thread. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function sets the attributes of objects that will be created in the current thread. For valid attribute values see the corto/lang/attr type.</para><para>Attributes were introduced to reduce footprint of corto objects by disabling features that are not used. For example, if an object does not need to be observed, it can be created without the CORTO_ATTR_OBSERVABLE attribute.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>attr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A mask containing the attributes for the current thread. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The previous attribute mask for this thread. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a0b7ad7b7b8b2467a6cab666d8838f20c" kindref="member">corto_getAttr</ref> <ref refid="object_8h_1a3eb2409588052e480ded4a9b6a0c9859" kindref="member">corto_attrof</ref> <ref refid="object_8h_1abffff24ef3b3414414fd8db887b8db73" kindref="member">corto_checkAttr</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="456" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a0b7ad7b7b8b2467a6cab666d8838f20c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a2a5116c4239116da2b9d3ae65f47bfc7" kindref="member">corto_attr</ref></type>
+        <definition>CORTO_EXPORT corto_attr corto_getAttr</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_getAttr</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Get the object attributes for the current thread. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns the current object attributes that are set for this thread.</para><para><simplesect kind="return"><para>The object attributes for the current thread. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a884ef933cb020c77f171820d7d432009" kindref="member">corto_setAttr</ref> <ref refid="object_8h_1a3eb2409588052e480ded4a9b6a0c9859" kindref="member">corto_attrof</ref> <ref refid="object_8h_1abffff24ef3b3414414fd8db887b8db73" kindref="member">corto_checkAttr</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="467" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a655332dab7f75a7b4d6ff3ca824d81a3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+        <definition>CORTO_EXPORT corto_type corto_typeof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_typeof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Get the type of an object. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to obtain the type. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object type. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a7236635565c9a1c33b2fd960c73fb584" kindref="member">corto_instanceof</ref> <ref refid="object_8h_1a31f37d1782649258d2e0571f49d51190" kindref="member">corto_instanceofType</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="475" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ae612ceccbabc868b3fa858d40fc00939" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool _corto_instanceof</definition>
+        <argsstring>(corto_type type, corto_object o)</argsstring>
+        <name>_corto_instanceof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Check if object is an instance of a specified type. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns true when types exactly match, when o is of a type that is a subtype of type, when o is of a type that implements type, and when o is of target{type}.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type against which to check. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if o is an instance of type, otherwise false. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a655332dab7f75a7b4d6ff3ca824d81a3" kindref="member">corto_typeof</ref> <ref refid="object_8h_1a31f37d1782649258d2e0571f49d51190" kindref="member">corto_instanceofType</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="489" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a659f221645a67b09e7ec70b8b2b6a917" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool _corto_instanceofType</definition>
+        <argsstring>(corto_type type, corto_type valueType)</argsstring>
+        <name>_corto_instanceofType</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>valueType</declname>
+        </param>
+        <briefdescription>
+<para>Check if objects of a type are an instance of another type. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type against which to check. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>valueType</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to check. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if objects of valueType are an instance of type, otherwise false. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a655332dab7f75a7b4d6ff3ca824d81a3" kindref="member">corto_typeof</ref> <ref refid="object_8h_1a7236635565c9a1c33b2fd960c73fb584" kindref="member">corto_instanceof</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="500" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ab4b5752ddd1a3679aa3ac038794745e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a71c2dd4c8ed0520abba61879e78f9099" kindref="member">corto_state</ref></type>
+        <definition>CORTO_EXPORT corto_state corto_stateof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_stateof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Obtain the current state mask of the object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Object state changes as an object is declared, defined and ultimately deleted.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object of which to obtain the state. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The state mask of the current object. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ac187c7e16b61d892bad8f1e6fe4eabca" kindref="member">corto_checkState</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="512" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a3eb2409588052e480ded4a9b6a0c9859" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a2a5116c4239116da2b9d3ae65f47bfc7" kindref="member">corto_attr</ref></type>
+        <definition>CORTO_EXPORT corto_attr corto_attrof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_attrof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Obtain the attribute mask of the object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Object attributes are static after an object is declared.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object of which to obtain the attributes. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The attribute mask of the current object. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1abffff24ef3b3414414fd8db887b8db73" kindref="member">corto_checkAttr</ref> <ref refid="object_8h_1a0b7ad7b7b8b2467a6cab666d8838f20c" kindref="member">corto_getAttr</ref> <ref refid="object_8h_1a884ef933cb020c77f171820d7d432009" kindref="member">corto_setAttr</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="523" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ac187c7e16b61d892bad8f1e6fe4eabca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_checkState</definition>
+        <argsstring>(corto_object o, corto_state state)</argsstring>
+        <name>corto_checkState</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a71c2dd4c8ed0520abba61879e78f9099" kindref="member">corto_state</ref></type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+<para>Check if an object is of a specified state. </para>        </briefdescription>
+        <detaileddescription>
+<para>Object state changes as an object is declared, defined and ultimately deleted.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to check the state. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The state to look for. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the object is in the specified state, otherwise false. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ac187c7e16b61d892bad8f1e6fe4eabca" kindref="member">corto_checkState</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="535" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1abffff24ef3b3414414fd8db887b8db73" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_checkAttr</definition>
+        <argsstring>(corto_object o, corto_attr attr)</argsstring>
+        <name>corto_checkAttr</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a2a5116c4239116da2b9d3ae65f47bfc7" kindref="member">corto_attr</ref></type>
+          <declname>attr</declname>
+        </param>
+        <briefdescription>
+<para>Check if an object is of a specified attribute. </para>        </briefdescription>
+        <detaileddescription>
+<para>Object attributes are static after an object is declared.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to check the attribute. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The attribute to look for. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the object has the specified attribute, otherwise false. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a3eb2409588052e480ded4a9b6a0c9859" kindref="member">corto_attrof</ref> <ref refid="object_8h_1a0b7ad7b7b8b2467a6cab666d8838f20c" kindref="member">corto_getAttr</ref> <ref refid="object_8h_1a884ef933cb020c77f171820d7d432009" kindref="member">corto_setAttr</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="548" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a826b3d7cfebcafc97682bb25dc1cebc0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int32_t</type>
+        <definition>CORTO_EXPORT int32_t corto_countof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_countof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>The current reference count of the object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function should be used with caution, as it introduces dependencies on the underlying garbage collection mechanism. A valid use for this function would be in testcases, where it can be used to validate if an specific operation did not introduce any leaks.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to obtain the reference count. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The reference count of the object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="562" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a4b877510fab830da330d3aed43e323b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_idof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_idof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Get the object id. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A named object for which to obtain the id. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object id. The returned string is not owned by the application. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a50a9dbc0357026a1857a2219021ea7e6" kindref="member">corto_nameof</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="576" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a50a9dbc0357026a1857a2219021ea7e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_nameof</definition>
+        <argsstring>(corto_id str, corto_object o)</argsstring>
+        <name>corto_nameof</name>
+        <param>
+          <type><ref refid="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" kindref="member">corto_id</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Get the object name. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para>The object name is the same as the object id, unless the &apos;nameof&apos; function of a type is overridden, in which case the result of that function is used.</para><para>Object names are meant to provide a user friendly, though not necessarily unique way to refer to an object.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id buffer in which to store the name. If NULL, a corto-managed string is returned which may change with subsequent calls to corto_nameof and other functions that use the corto stringcache. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A named object for which to obtain the name. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object name. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="599" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a47eb1133439bdc070b0451952e7edacf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_parentof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_parentof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Get the parent of an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para>This function may return NULL if the corto root object is passed as argument. If <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to obtain the id. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object id. The returned string is not owned by the application. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a164de0e0baf6a9e09de7af7dbf7f3e06" kindref="member">corto_childof</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="615" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a164de0e0baf6a9e09de7af7dbf7f3e06" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_childof</definition>
+        <argsstring>(corto_object p, corto_object o)</argsstring>
+        <name>corto_childof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Check if object is a child of the specified parent. </para>        </briefdescription>
+        <detaileddescription>
+<para>The objects passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The parent object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The child object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if o is a child of p, otherwise false. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a47eb1133439bdc070b0451952e7edacf" kindref="member">corto_parentof</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="630" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ad8d827f760aa158a5e0b62dfbede3f3c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> uint32_t</type>
+        <definition>CORTO_EXPORT uint32_t corto_scopeSize</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_scopeSize</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Returns the number of child objects in a scope. </para>        </briefdescription>
+        <detaileddescription>
+<para>The objects passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para>This function must be used with care as it only returns number of objects that are currently loaded in the object store. If there are mounted objects in this scope that are not loaded in the store they will not be counted. To obtain an accurate count, use <ref refid="object_8h_1a0c4d0b2e5ddd341761820e586c06e46e" kindref="member">corto_select()</ref>.count().</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A named object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The number of objects in the scope of the object. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="649" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a4084959cca689f11f67b596c2025be8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref></type>
+        <definition>CORTO_EXPORT corto_objectseq corto_scopeClaim</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_scopeClaim</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Returns a sequence with the objects in the current scope. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para>This function must be used with care as it only returns objects that are currently loaded in the object store. If there are mounted objects in this scope that are not loaded in the store they will not be returned. To obtain a full list of objects count, use <ref refid="object_8h_1a0c4d0b2e5ddd341761820e586c06e46e" kindref="member">corto_select()</ref>.iterObjects().</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A named object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A sequence with the objects in the scope of the object. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a98dbb16e7132020d6f4c8f3e7e103720" kindref="member">corto_scopeRelease</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="668" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a98dbb16e7132020d6f4c8f3e7e103720" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_scopeRelease</definition>
+        <argsstring>(corto_objectseq scope)</argsstring>
+        <name>corto_scopeRelease</name>
+        <param>
+          <type><ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref></type>
+          <declname>scope</declname>
+        </param>
+        <briefdescription>
+<para>Release a sequence obtained by corto_scopeClaim. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>scope</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A sequence obtained by corto_scopeClaim. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="object_8h_1a4084959cca689f11f67b596c2025be8c" kindref="member">corto_scopeClaim</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="676" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a6c1e54bab46a354e11b423a36bc099fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_scopeWalk</definition>
+        <argsstring>(corto_object o, corto_scopeWalk_cb action, void *userData)</argsstring>
+        <name>corto_scopeWalk</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type><ref refid="corto_8h_1acdacdf8a01f9786fc5c7b25ae6ae2afe" kindref="member">corto_scopeWalk_cb</ref></type>
+          <declname>action</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>userData</declname>
+        </param>
+        <briefdescription>
+<para>Invoke a callback for each object in a scope. </para>        </briefdescription>
+        <detaileddescription>
+<para>The object passed to this function must be created with CORTO_ATTR_SCOPED. Any object that is created with declareChild or createChild has this attribute. If an object without CORTO_ATTR_SCOPED is passed to this function the behavior is undefined.</para><para>Usage of this function is generally NOT recommended as it locks the scope which is a very intrusive operation. The lock is still being held when the action is called, so care must be taken not to introduce any deadlocks while in the action.</para><para>Use this function only for fast, low-level operations. For all other operations that need to walk a scope, use the safer corto_scopeClaim and corto_scopeRelease.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A named object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A sequence with the objects in the scope of the object. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4084959cca689f11f67b596c2025be8c" kindref="member">corto_scopeClaim</ref> <ref refid="object_8h_1a98dbb16e7132020d6f4c8f3e7e103720" kindref="member">corto_scopeRelease</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="698" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ab02c533178964c7a22e4ca61c74f89be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_ownerof</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_ownerof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Returns the owner for an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>Only objects created with CORTO_ATTR_PERSISTENT can explicitly set an owner. If the object is not PERSISTENT and is an orphan (created with either corto_declareOrphan or corto_createOrphan) the function will obtain the owner of the parent. In all other scenarios the function will return NULL.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A valid object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The owner of the object. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a85c4ff6077e60b3c0db0272f072d6f17" kindref="member">corto_owned</ref> <ref refid="object_8h_1ab82426baf3a5fe67cdf1425b2d1e333e" kindref="member">corto_setOwner</ref> <ref refid="object_8h_1a711ce76319d88b51233d384b3203d6d9" kindref="member">corto_getOwner</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="714" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a85c4ff6077e60b3c0db0272f072d6f17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_owned</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_owned</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Check if object is owned by current thread. </para>        </briefdescription>
+        <detaileddescription>
+<para>Corto uses this function to check if a thread is allowed to change an object through corto_update or corto_delete functions. The rules for ownership are as follows:</para><para><orderedlist>
+<listitem><para>If the object owner is NULL, the object is owned by the application. A SOURCE mount will not be able to modify the object.</para></listitem><listitem><para>If the object owner is not NULL and not an instance of corto/core/mount, the rule 1 applies. This mode can be used to emit notifications from a non-mount instance without an observer for that instance receiving the notification.</para></listitem><listitem><para>If the object owner is an instance of corto/core/mount, the mount owns the object. If the mount is a SINK, it shares ownership with the application. If the mount is a SOURCE, only that mount will be able to change the object.</para></listitem></orderedlist>
+</para><para>The owner is determined as specified by corto_ownerof.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A valid object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The owner of the object. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a85c4ff6077e60b3c0db0272f072d6f17" kindref="member">corto_owned</ref> <ref refid="object_8h_1ab82426baf3a5fe67cdf1425b2d1e333e" kindref="member">corto_setOwner</ref> <ref refid="object_8h_1a711ce76319d88b51233d384b3203d6d9" kindref="member">corto_getOwner</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="738" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ab82426baf3a5fe67cdf1425b2d1e333e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_setOwner</definition>
+        <argsstring>(corto_object owner)</argsstring>
+        <name>corto_setOwner</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>owner</declname>
+        </param>
+        <briefdescription>
+<para>Set the owner for the current thread. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>owner</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A valid object. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The previous owner of the thread. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ab02c533178964c7a22e4ca61c74f89be" kindref="member">corto_ownerof</ref> <ref refid="object_8h_1a85c4ff6077e60b3c0db0272f072d6f17" kindref="member">corto_owned</ref> <ref refid="object_8h_1a711ce76319d88b51233d384b3203d6d9" kindref="member">corto_getOwner</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="747" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a711ce76319d88b51233d384b3203d6d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_getOwner</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_getOwner</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Get the owner for the current thread. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>The owner of the current thread. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ab02c533178964c7a22e4ca61c74f89be" kindref="member">corto_ownerof</ref> <ref refid="object_8h_1a85c4ff6077e60b3c0db0272f072d6f17" kindref="member">corto_owned</ref> <ref refid="object_8h_1ab82426baf3a5fe67cdf1425b2d1e333e" kindref="member">corto_setOwner</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="755" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ae973ae5ba243d18d8d6001010eb86679" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_lookup</definition>
+        <argsstring>(corto_object scope, char *id)</argsstring>
+        <name>corto_lookup</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>scope</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Lookup an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function looks up an object and obtains a reference to it. If the object is not loaded in the store but is provided by a mount, it will be resumed from the mount into the store. After the object is no longer needed, an application should call corto_release.</para><para>corto_lookup can be used to find overloaded functions by specifying an parameter list between parentheses that contains the required types. For example, to find a function called add with two int32 parameters, &apos;add(int32,int32)&apos; can be specified in id.</para><para>The following operators can be used in the parameter list: &lt;type&gt;&amp; - The requested argument is a reference. &lt;type&gt;&amp;&amp; - The offered argument must be a reference. null - The requested argument is either a reference or a string (null value). ? - The type is unknown.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>scope</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The scope in which to lookup the object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id expression (foo/bar) identifying the object to lookup. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object if found, NULL if not found. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1aeb08295b2399365698303ad539492ddd" kindref="member">corto_lookupAssert</ref> <ref refid="object_8h_1a9717109de3888cdbb3ee8cd1fb60864d" kindref="member">corto_resolve</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="780" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a92f514446883449ad51b681a7a07975d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_lookupAssert</definition>
+        <argsstring>(corto_object scope, char *id, corto_type type)</argsstring>
+        <name>_corto_lookupAssert</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>scope</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Lookup an object, assert if not found. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function looks up an object and asserts if the object is not found. Use this function only when the specified object is guaranteed to be resolvable. Because the returned object is guaranteed to be alive, the application does not need to invoke corto_release.</para><para>If an object is found that is not of the specified type, this function will also assert.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>scope</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The scope in which to lookup the object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id expression (foo/bar) identifying the object to lookup. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the object to lookup. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object if found, NULL if not found. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ae973ae5ba243d18d8d6001010eb86679" kindref="member">corto_lookup</ref> <ref refid="object_8h_1a9717109de3888cdbb3ee8cd1fb60864d" kindref="member">corto_resolve</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="800" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a9717109de3888cdbb3ee8cd1fb60864d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_resolve</definition>
+        <argsstring>(corto_object scope, char *id)</argsstring>
+        <name>corto_resolve</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>scope</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Resolve an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is similar to corto_lookup, but follows a set of rules that is used to lookup types. Note however that corto_resolve can be used to lookup any object, not just types.</para><para>The reason that types use a different set of lookup rules is to enable short identifiers for builtin types (int32, struct, class, etc) and to types / packages in the corto package. Because these are frequently used, using an optimized set of rules will reduce footprint of type identifiers, which can significantly impact memory usage and bandwidth usage that rely on exchange of type information.</para><para>The rules of corto_resolve are:<orderedlist>
+<listitem><para>If the identifier starts with an &apos;/&apos;, lookup in root and return result.</para></listitem><listitem><para>If not, look for the identifier in corto/lang.</para></listitem><listitem><para>If not found, look for the identifier in the specified scope.</para></listitem><listitem><para>If not found, look for the identifier in the parent of the current scope [repeat]</para></listitem><listitem><para>If not found, look for the identifier in /corto.</para></listitem></orderedlist>
+</para><para>corto_resolve will never look twice in a path, so if scope is corto/lang, the function will only look in corto/lang once.</para><para>If the id expression contains {}, corto_resolve will create an anonymous object by deserializing the contents within {} according to the rules of the corto string format.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>scope</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The scope in which to lookup the object. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id expression (foo/bar) identifying the object to lookup. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The object if found, NULL if not found. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1ae973ae5ba243d18d8d6001010eb86679" kindref="member">corto_lookup</ref> <ref refid="object_8h_1aeb08295b2399365698303ad539492ddd" kindref="member">corto_lookupAssert</ref> <ref refid="object_8h_1aaa32f335386f1477aee3506f1b03fddb" kindref="member">corto_release</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="836" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ade9cbae8ceea5cfaf7108e7c4550dfa7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_find</definition>
+        <argsstring>(corto_object scope, char *id, corto_findKind mode)</argsstring>
+        <name>corto_find</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>scope</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="object_8h_1a185cb12d197cf814d8b8db3a2ec56ae4" kindref="member">corto_findKind</ref></type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="846" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a56bf84481e4695e0b9cf235aff103050" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fullpath</definition>
+        <argsstring>(corto_id str, corto_object o)</argsstring>
+        <name>corto_fullpath</name>
+        <param>
+          <type><ref refid="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" kindref="member">corto_id</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Obtain a full path identifier to an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns the shortest path that will lead to resolving the object using a corto_resolve where the root is specified as scope.</para><para>In practice this means that for objects in corto/lang it will only return the object id (int32) while for all other objects the function will a forward slash (&apos;/&apos;) separated list of ids as obtained by corto_idof (/grandparent/parent/object). <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id buffer in which to store the id. If NULL, a corto-managed string is returned which may change with subsequent calls to corto_fullpath and other functions that use the corto stringcache.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to obtain the id. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> <ref refid="object_8h_1afd94688ddf997beaacff1e0687832dd1" kindref="member">corto_fullname</ref> <ref refid="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" kindref="member">corto_path</ref> <ref refid="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" kindref="member">corto_pathname</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="864" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1afd94688ddf997beaacff1e0687832dd1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fullname</definition>
+        <argsstring>(corto_id str, corto_object o)</argsstring>
+        <name>corto_fullname</name>
+        <param>
+          <type><ref refid="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" kindref="member">corto_id</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+<para>Obtain a full path identifier to an object using corto_nameof. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is equivalent to corto_fullpath, but uses corto_nameof instead of corto_idof.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object for which to obtain the id. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> <ref refid="object_8h_1a56bf84481e4695e0b9cf235aff103050" kindref="member">corto_fullpath</ref> <ref refid="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" kindref="member">corto_path</ref> <ref refid="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" kindref="member">corto_pathname</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="877" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_path</definition>
+        <argsstring>(corto_id str, corto_object from, corto_object to, const char *sep)</argsstring>
+        <name>corto_path</name>
+        <param>
+          <type><ref refid="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" kindref="member">corto_id</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>to</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sep</declname>
+        </param>
+        <briefdescription>
+<para>Obtain a relative path identifier to an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function returns the shortest path from the specified from object to the to object, separated by sep. If to is a parent of from, this function will insert the appropriate number of &apos;..&apos; operators. This function uses corto_idof to determine the object ids.</para><para>The result of this function can be used with corto_lookup to lookup the to object, where from is specifed as scope and result as id.</para><para>If NULL is specified for from, an initial forward slash will be added to the resulting path. If root_o is specified for from, no initial slash will be added to the resulting path. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id buffer in which to store the id. If NULL, a corto-managed string is returned which may change with subsequent calls to corto_fullpath and other functions that use the corto stringcache.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object from the path should be offset. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to which to generate the path. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sep</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path separator. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> <ref refid="object_8h_1afd94688ddf997beaacff1e0687832dd1" kindref="member">corto_fullname</ref> <ref refid="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" kindref="member">corto_path</ref> <ref refid="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" kindref="member">corto_pathname</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="904" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_pathname</definition>
+        <argsstring>(corto_id str, corto_object from, corto_object o, const char *sep)</argsstring>
+        <name>corto_pathname</name>
+        <param>
+          <type><ref refid="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" kindref="member">corto_id</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>from</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sep</declname>
+        </param>
+        <briefdescription>
+<para>Obtain a relative path identifier to an object. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function is equivalent to corto_path, but uses corto_nameof instead of corto_idof. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id buffer in which to store the id. If NULL, a corto-managed string is returned which may change with subsequent calls to corto_fullpath and other functions that use the corto stringcache.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>from</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object from the path should be offset. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>o</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to which to generate the path. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sep</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path separator. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> <ref refid="object_8h_1afd94688ddf997beaacff1e0687832dd1" kindref="member">corto_fullname</ref> <ref refid="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" kindref="member">corto_path</ref> <ref refid="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" kindref="member">corto_pathname</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="924" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1afca382072fca3828452772cd35defd75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int32_t</type>
+        <definition>CORTO_EXPORT int32_t corto_pathToArray</definition>
+        <argsstring>(char *path, char *elements[], char *sep)</argsstring>
+        <name>corto_pathToArray</name>
+        <param>
+          <type>char *</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>elements</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>sep</declname>
+        </param>
+        <briefdescription>
+<para>Obtain an array with the individual elements of a path. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function splits up a path using the specified separator. An element with at least <emphasis>CORTO_MAX_SCOPE_DEPTH</emphasis> elements must be provided.</para><para>``warning This function modifies the input path. ``</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The path to be split up. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>elements</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The result array with the path elements. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>sep</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The separator used to split up the path. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The number of elements in the array. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> <ref refid="object_8h_1afd94688ddf997beaacff1e0687832dd1" kindref="member">corto_fullname</ref> <ref refid="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" kindref="member">corto_path</ref> <ref refid="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" kindref="member">corto_pathname</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="945" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a8a067d365adf83c50c13ab95f6953b38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_cleanpath</definition>
+        <argsstring>(corto_id buffer, char *path)</argsstring>
+        <name>corto_cleanpath</name>
+        <param>
+          <type><ref refid="base_8h_1a844aa00aea2daef8f163b6f2c4aa2cf1" kindref="member">corto_id</ref></type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Create a canonical version of a path. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function reduces a path to its canonical form by resolving . and .. operators. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An id buffer in which to store the id. If NULL, a corto-managed string is returned which may change with subsequent calls to corto_fullpath and other functions that use the corto stringcache.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The input path. Can be the same as buffer. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The path. If buffer is NULL, the returned string is not owned by the application. Otherwise, buffer is returned. </para></simplesect>
+<simplesect kind="see"><para><ref refid="object_8h_1a4b877510fab830da330d3aed43e323b0" kindref="member">corto_idof</ref> <ref refid="object_8h_1afd94688ddf997beaacff1e0687832dd1" kindref="member">corto_fullname</ref> <ref refid="object_8h_1a86fba8bc5b45d58ee20e74bcc9f4f28e" kindref="member">corto_path</ref> <ref refid="object_8h_1a1caeda5ee67e85a0f3604c6b20ff1efb" kindref="member">corto_pathname</ref> </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="961" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a0c4d0b2e5ddd341761820e586c06e46e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> struct <ref refid="structcorto__select____fluent" kindref="compound">corto_select__fluent</ref></type>
+        <definition>CORTO_EXPORT struct corto_select__fluent corto_select</definition>
+        <argsstring>(char *scope, char *expr,...)</argsstring>
+        <name>corto_select</name>
+        <param>
+          <type>char *</type>
+          <declname>scope</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+<para>Query for objects. </para>        </briefdescription>
+        <detaileddescription>
+<para>This function performs an operation on objects matching a corto identifier expression (parent, expr). Selector methods control what kind of information is to be retrieved.</para><para>The corto_select function is designed to be an API that enables accessing large datasets with constrained resources. The iterative design of the API allows the corto mount implementations to feed data to the application one object at a time, so that even with large result sets, the memory of an application will not be exhausted. Furthermore the API has native support for pagination, which allows applications to further narrow down results.</para><para>The results returned by corto_select are in abitrary order, which is a result of the requirement of being able to deal with large datasets. Ordering results would require obtaining a full resultset before anything can be returned to the application, which is not scalable.</para><para>The performance of corto_select highly depends on the implementation of a mount. The backend provides as much information as possible upfront to the mount about which information is required, which allows a mount to prefetch/cache results. A mount may choose to implement such optimizations, but this is not enforced.</para><para>The function employs minimal locking on the object store while an application is iterating over a resultset. Outside of the corto_iter_next and corto_iter_hasNext calls no locks will be held, which enables applications to run corto_select queries concurrently and without disturbing other tasks in an application.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>scope</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The scope of the request. Query results are relative to the scope. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>expr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An expression matching one or more objects [printf-style format specifier]. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1105" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ad148fe5e8ca5525437ecfd652cea254d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> struct <ref refid="structcorto__observe____fluent" kindref="compound">corto_observe__fluent</ref></type>
+        <definition>CORTO_EXPORT struct corto_observe__fluent corto_observe</definition>
+        <argsstring>(corto_eventMask event, corto_object observable)</argsstring>
+        <name>corto_observe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5966a2010b608c90d536380d1f2d2405" kindref="member">corto_eventMask</ref></type>
+          <declname>event</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>observable</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1115" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ad653c3221734920e648018cc10f8667a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_unobserve</definition>
+        <argsstring>(corto_observer observer)</argsstring>
+        <name>corto_unobserve</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>observer</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1116" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a5e8a22e17fbebdb0e72a3d54a703bc1e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> struct <ref refid="structcorto__subscribe____fluent" kindref="compound">corto_subscribe__fluent</ref></type>
+        <definition>CORTO_EXPORT struct corto_subscribe__fluent corto_subscribe</definition>
+        <argsstring>(corto_eventMask mask, char *scope, char *expr,...)</argsstring>
+        <name>corto_subscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5966a2010b608c90d536380d1f2d2405" kindref="member">corto_eventMask</ref></type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>scope</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1127" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a22c959d47f31a56a5beb91a97867718b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_unsubscribe</definition>
+        <argsstring>(corto_subscriber subscriber, corto_object instance)</argsstring>
+        <name>corto_unsubscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>subscriber</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1128" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a99d3e19fce04f65bc75892dafa45def6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_match</definition>
+        <argsstring>(char *expr, char *str)</argsstring>
+        <name>corto_match</name>
+        <param>
+          <type>char *</type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>str</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1132" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a9c3f6c97c8db81b46c278fedaa96011e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="object_8h_1a0110bfcd2a7dd8474650ff1ad8ec5b50" kindref="member">corto_matchProgram</ref></type>
+        <definition>CORTO_EXPORT corto_matchProgram corto_matchProgram_compile</definition>
+        <argsstring>(char *expr, bool allowScopes, bool allowSeparators)</argsstring>
+        <name>corto_matchProgram_compile</name>
+        <param>
+          <type>char *</type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type><ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+          <declname>allowScopes</declname>
+        </param>
+        <param>
+          <type><ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+          <declname>allowSeparators</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1133" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a3c7b195d6bccc28a13446204263d1c45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_matchProgram_run</definition>
+        <argsstring>(corto_matchProgram program, char *str)</argsstring>
+        <name>corto_matchProgram_run</name>
+        <param>
+          <type><ref refid="object_8h_1a0110bfcd2a7dd8474650ff1ad8ec5b50" kindref="member">corto_matchProgram</ref></type>
+          <declname>program</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>str</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1134" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a6a88be8ebdd35c925e08141107a1337d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_matchProgram_free</definition>
+        <argsstring>(corto_matchProgram matcher)</argsstring>
+        <name>corto_matchProgram_free</name>
+        <param>
+          <type><ref refid="object_8h_1a0110bfcd2a7dd8474650ff1ad8ec5b50" kindref="member">corto_matchProgram</ref></type>
+          <declname>matcher</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1135" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1aab9446fc46da261edd0f4ebdb88dfd76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_matchParent</definition>
+        <argsstring>(char *parent, char *expr)</argsstring>
+        <name>corto_matchParent</name>
+        <param>
+          <type>char *</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>expr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1137" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a390f2c631ca765d318da31af28fd975b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_contentof</definition>
+        <argsstring>(corto_object o, char *contentType)</argsstring>
+        <name>corto_contentof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>contentType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1140" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1aa62fad7f162900a9cfb09847995fc326" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_fromcontent</definition>
+        <argsstring>(corto_object o, char *contentType, char *content,...)</argsstring>
+        <name>corto_fromcontent</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>content</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1141" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1acfd66b4bca8d93906b031b8240cfceee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_object_contentof</definition>
+        <argsstring>(corto_object o, char *contentType)</argsstring>
+        <name>corto_object_contentof</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>contentType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1144" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a33758d7d55e7e6f92f14b306bd900917" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_object_fromcontent</definition>
+        <argsstring>(corto_object *o, char *contentType, char *content,...)</argsstring>
+        <name>corto_object_fromcontent</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref> *</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>content</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1145" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1aad29652dc0600d780e9101a2d88ce12b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object corto_createFromContent</definition>
+        <argsstring>(char *contentType, char *content)</argsstring>
+        <name>corto_createFromContent</name>
+        <param>
+          <type>char *</type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>content</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1148" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1abe71edd20afbcf0629de1b68961695a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> uint8_t</type>
+        <definition>CORTO_EXPORT uint8_t corto_olsKey</definition>
+        <argsstring>(void(*destructor)(void *))</argsstring>
+        <name>corto_olsKey</name>
+        <param>
+          <type>void(*)(void *)</type>
+          <declname>destructor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1151" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a23a606a45bfb0011cbcef659ec9da39f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_olsSet</definition>
+        <argsstring>(corto_object o, int8_t key, void *data)</argsstring>
+        <name>corto_olsSet</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>int8_t</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1152" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a6c4705c2358a43f1125e78f570ea39c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_olsGet</definition>
+        <argsstring>(corto_object o, int8_t key)</argsstring>
+        <name>corto_olsGet</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>int8_t</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1153" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a6bf6ff5a9b3db44877dd2f1e6b929f38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_olsLockGet</definition>
+        <argsstring>(corto_object o, int8_t key)</argsstring>
+        <name>corto_olsLockGet</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>int8_t</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1155" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a5d84914ad9a9fdc2c528d677aa428ff9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_olsUnlockSet</definition>
+        <argsstring>(corto_object o, int8_t key, void *value)</argsstring>
+        <name>corto_olsUnlockSet</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>int8_t</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1156" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1ac79a909637db1cb88e061224c97d394c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_readBegin</definition>
+        <argsstring>(corto_object object)</argsstring>
+        <name>corto_readBegin</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1159" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a3b0896804f8164877587c1b63cfe4fc8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_readEnd</definition>
+        <argsstring>(corto_object object)</argsstring>
+        <name>corto_readEnd</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1160" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a3cd1a07cd6afba4103eaa38908cf200b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_lock</definition>
+        <argsstring>(corto_object object)</argsstring>
+        <name>corto_lock</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1163" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a6a4a0f357ddad90f369f1e1bdfec1127" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_unlock</definition>
+        <argsstring>(corto_object object)</argsstring>
+        <name>corto_unlock</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1164" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a1556993d19038757742e9fe109dafc75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_str</definition>
+        <argsstring>(corto_object object, uint32_t maxLength)</argsstring>
+        <name>corto_str</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>maxLength</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1166" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a2cd5442f3366b427edb1a7acd28c1846" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_fromStr</definition>
+        <argsstring>(void *o, char *string)</argsstring>
+        <name>corto_fromStr</name>
+        <param>
+          <type>void *</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>string</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1167" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a79cfa6e311f1ba64fea831923384d4fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_copy</definition>
+        <argsstring>(corto_object *dst, corto_object src)</argsstring>
+        <name>_corto_copy</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref> *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>src</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1168" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a606aedb9d476c2341ad75c78166f5ad5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a2aecfe9c8ad66fd9c6f334887715b020" kindref="member">corto_equalityKind</ref></type>
+        <definition>CORTO_EXPORT corto_equalityKind corto_compare</definition>
+        <argsstring>(corto_object o1, corto_object o2)</argsstring>
+        <name>corto_compare</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o1</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1169" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a7bb8099863682ccc86e3c9d1074cdf36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_super_init</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_super_init</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1172" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1af797c3d65cddf00b314d9521bb56601a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_super_construct</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_super_construct</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1173" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a5a009f2a59bf77f40975a454d3d0b7f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_super_destruct</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_super_destruct</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1174" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a55794892132d070189a19478f705d81e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_useradd</definition>
+        <argsstring>(char *userId, char *password, char *group, char *home)</argsstring>
+        <name>corto_useradd</name>
+        <param>
+          <type>char *</type>
+          <declname>userId</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>password</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>group</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>home</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1177" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a75131033a7412cf55b1e7bedb1eab5fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_userdel</definition>
+        <argsstring>(char *userId)</argsstring>
+        <name>corto_userdel</name>
+        <param>
+          <type>char *</type>
+          <declname>userId</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1178" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1aecf7d5e7c7fb3102fee3c4ffed98a64c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_login</definition>
+        <argsstring>(char *username, char *password)</argsstring>
+        <name>corto_login</name>
+        <param>
+          <type>char *</type>
+          <declname>username</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>password</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1179" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a834ef16691e6f2697e15982e22e8efc0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_logout</definition>
+        <argsstring>(char *token)</argsstring>
+        <name>corto_logout</name>
+        <param>
+          <type>char *</type>
+          <declname>token</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1180" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1af94e6d58d9c3456085fffd42036131c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_authenticate</definition>
+        <argsstring>(char *key)</argsstring>
+        <name>corto_authenticate</name>
+        <param>
+          <type>char *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1181" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a28012903d5db6f24240afbf5ae65e115" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_authorized</definition>
+        <argsstring>(corto_object object, corto_secure_actionKind access)</argsstring>
+        <name>corto_authorized</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type><ref refid="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" kindref="member">corto_secure_actionKind</ref></type>
+          <declname>access</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1182" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1af25ad7034fb12094a57c1c39cb34cb63" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_authorizedId</definition>
+        <argsstring>(char *id, corto_secure_actionKind access)</argsstring>
+        <name>corto_authorizedId</name>
+        <param>
+          <type>char *</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" kindref="member">corto_secure_actionKind</ref></type>
+          <declname>access</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1183" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="object_8h_1a1e2ba14f279efeefab995a26b7024574" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool corto_secured</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_secured</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h" line="1184" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>API for corto objects. </para>    </briefdescription>
+    <detaileddescription>
+<para>Corto objects are application-level entities that populate the corto object store. Application logic is expressed through creating, updating and deleting corto objects.</para><para>Every corto object is annotated with a type, which allows for runtime reflection. Typical usecases for reflection are marshalling/demarshalling objects to other formats, or dynamically inspecting the value of an object without having to know its type upfront.</para><para>Objects can be either anonymous or named. Named objects are identified by a string identifier and can be discovered dynamically in the corto object store. Anonymous objects have no name, and cannot be automatically discovered, but are otherwise the same as named objects. The corto_declare and corto_create functions create anonymous objects.</para><para>In addition to a name, named objects also have a parent. Objects in corto are stored in a hierarchy, and any named object can act as a parent for another object. Once created, an object cannot be moved to another parent. The corto_declareChild and corto_createChild functions create named objects.</para><para>Objects are reference counted. When there are no more references to an object it is deleted from RAM. This does not mean the object does not exist anymore as it can still &apos;live&apos; in another medium, like a database. Objects that are no longer in the store but are still alive are called &quot;suspended objects&quot;.</para><para>Suspended objects can be resumed by doing a lookup for the object id, which will re-insert the object in RAM if it is still available. The corto_lookup and corto_resolve functions can resume objects.</para><para>Whenever an object is created, updated or deleted events are emitted. These events can be catched with observers and subscribers. See corto_observe and corto_subscribe for more details. </para>    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/object.h"/>
+  </compounddef>
+</doxygen>

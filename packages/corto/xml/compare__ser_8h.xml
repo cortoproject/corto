@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="compare__ser_8h" kind="file" language="C++">
+    <compoundname>compare_ser.h</compoundname>
+    <includes local="yes">corto/walk.h</includes>
+    <incdepgraph>
+      <node id="115">
+        <label>compare_ser.h</label>
+        <link refid="compare__ser_8h"/>
+        <childnode refid="116" relation="include">
+        </childnode>
+      </node>
+      <node id="116">
+        <label>corto/walk.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__compare__ser__t" prot="public">corto_compare_ser_t</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="compare__ser_8h_1a7b4028ebddaaee89d92908b8cad917a9" prot="public" static="no">
+        <type>struct <ref refid="structcorto__compare__ser__t" kindref="compound">corto_compare_ser_t</ref></type>
+        <definition>typedef struct corto_compare_ser_t corto_compare_ser_t</definition>
+        <argsstring></argsstring>
+        <name>corto_compare_ser_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/compare_ser.h" line="39" column="1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="compare__ser_8h_1a2664573eb0ffc91ec5280bf9c2e0e7ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structcorto__walk__opt" kindref="compound">corto_walk_opt</ref></type>
+        <definition>corto_walk_opt corto_compare_ser</definition>
+        <argsstring>(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace)</argsstring>
+        <name>corto_compare_ser</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87dddb4b21beabdba55d89ffc6822860" kindref="member">corto_modifier</ref></type>
+          <declname>access</declname>
+        </param>
+        <param>
+          <type><ref refid="core_2__type_8h_1a13fb18c6d9e6dc93030863154b162e88" kindref="member">corto_operatorKind</ref></type>
+          <declname>accessKind</declname>
+        </param>
+        <param>
+          <type><ref refid="walk_8h_1a6a6916299ff1a61a6d3cb1bc3fb6bf8e" kindref="member">corto_walk_traceKind</ref></type>
+          <declname>trace</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/compare_ser.h" line="41" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/compare_ser.h"/>
+  </compounddef>
+</doxygen>

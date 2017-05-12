@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="secure_2__type_8h" kind="file" language="C++">
+    <compoundname>secure/_type.h</compoundname>
+    <includes local="no">corto/lang/_type.h</includes>
+    <incdepgraph>
+      <node id="76">
+        <label>_type.h</label>
+        <link refid="secure_2__type_8h"/>
+        <childnode refid="77" relation="include">
+        </childnode>
+      </node>
+      <node id="77">
+        <label>corto/lang/_type.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structcorto__secure__key__s" prot="public">corto_secure_key_s</innerclass>
+    <innerclass refid="structcorto__secure__lock__s" prot="public">corto_secure_lock_s</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="secure_2__type_8h_1a299dd21e5f2f3e2c2296ac2478d312e1" prot="public" static="no">
+        <name>corto_secure_accessKind</name>
+        <param><defname>o</defname></param>
+        <initializer>((<ref refid="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0ca" kindref="member">corto_secure_accessKind</ref>*)<ref refid="util_8h_1a5fe8ddbb7d735726d5ce9e2028ece8b1" kindref="member">corto_assertType</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)corto_secure_accessKind_o, o))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="16" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="secure_2__type_8h_1a8478229bd913c023755fac9ee81795c9" prot="public" static="no">
+        <name>corto_secure_actionKind</name>
+        <param><defname>o</defname></param>
+        <initializer>((<ref refid="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" kindref="member">corto_secure_actionKind</ref>*)<ref refid="util_8h_1a5fe8ddbb7d735726d5ce9e2028ece8b1" kindref="member">corto_assertType</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)corto_secure_actionKind_o, o))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="17" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="secure_2__type_8h_1a31d31c14691e8f473ea3886a28c22068" prot="public" static="no">
+        <name>corto_secure_key</name>
+        <param><defname>o</defname></param>
+        <initializer>((<ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref>)<ref refid="util_8h_1a5fe8ddbb7d735726d5ce9e2028ece8b1" kindref="member">corto_assertType</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)corto_secure_key_o, o))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="18" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="secure_2__type_8h_1af555d772e0eef13404a49b149a615079" prot="public" static="no">
+        <name>corto_secure_lock</name>
+        <param><defname>o</defname></param>
+        <initializer>((<ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref>)<ref refid="util_8h_1a5fe8ddbb7d735726d5ce9e2028ece8b1" kindref="member">corto_assertType</ref>((<ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref>)corto_secure_lock_o, o))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="19" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0ca" prot="public" static="no">
+        <name>corto_secure_accessKind</name>
+        <enumvalue id="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0caa9046a9ebb5c9ba75ba08d1b528da9b6a" prot="public">
+          <name>CORTO_SECURE_ACCESS_GRANTED</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0caa06cd9718e5e46d17d069cb59ee081780" prot="public">
+          <name>CORTO_SECURE_ACCESS_DENIED</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0caa5b97b60c67aea88e533eaa1aee6fae4c" prot="public">
+          <name>CORTO_SECURE_ACCESS_UNDEFINED</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="27" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="27" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="enum" id="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" prot="public" static="no">
+        <name>corto_secure_actionKind</name>
+        <enumvalue id="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99a08fbf030f3c3e387a826f61876dc2b19" prot="public">
+          <name>CORTO_SECURE_ACTION_CREATE</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99a13ccc99b0496a48102120eb6a72d0663" prot="public">
+          <name>CORTO_SECURE_ACTION_READ</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99a5ec6b3e6ac683baeabe651e776aee084" prot="public">
+          <name>CORTO_SECURE_ACTION_UPDATE</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99a43c51b2d0b5f3e1f603b8b7f38c15db2" prot="public">
+          <name>CORTO_SECURE_ACTION_DELETE</name>
+          <initializer>= 3</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="34" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="34" bodyend="39"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="secure_2__type_8h_1a09176a80001f4853416c03b1067874f6" prot="public" static="no">
+        <type>enum <ref refid="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0ca" kindref="member">corto_secure_accessKind</ref></type>
+        <definition>typedef enum corto_secure_accessKind  corto_secure_accessKind</definition>
+        <argsstring></argsstring>
+        <name>corto_secure_accessKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="31" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="secure_2__type_8h_1ad3421c9bae6a5e1e363a9dec58a08d08" prot="public" static="no">
+        <type>enum <ref refid="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" kindref="member">corto_secure_actionKind</ref></type>
+        <definition>typedef enum corto_secure_actionKind  corto_secure_actionKind</definition>
+        <argsstring></argsstring>
+        <name>corto_secure_actionKind</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="39" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" prot="public" static="no">
+        <type>struct <ref refid="structcorto__secure__key__s" kindref="compound">corto_secure_key_s</ref> *</type>
+        <definition>typedef struct corto_secure_key_s* corto_secure_key</definition>
+        <argsstring></argsstring>
+        <name>corto_secure_key</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="42" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" prot="public" static="no">
+        <type>struct <ref refid="structcorto__secure__lock__s" kindref="compound">corto_secure_lock_s</ref> *</type>
+        <definition>typedef struct corto_secure_lock_s* corto_secure_lock</definition>
+        <argsstring></argsstring>
+        <name>corto_secure_lock</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" line="49" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_type.h"/>
+  </compounddef>
+</doxygen>

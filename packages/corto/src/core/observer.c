@@ -395,10 +395,10 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
             corto_observerEvent *event = corto_declare(corto_type(corto_observerEvent_o));
             corto_setAttr(oldAttr);
 
-            corto_setref(&event->observer, observer);
-            corto_setref(&event->instance, data->_this);
-            corto_setref(&event->data, observable);
-            corto_setref(&event->source, source);
+            corto_ptr_setref(&event->observer, observer);
+            corto_ptr_setref(&event->instance, data->_this);
+            corto_ptr_setref(&event->data, observable);
+            corto_ptr_setref(&event->source, source);
             event->event = mask;
 
             /* Set thread handle so the dispatcher can figure out whether a
@@ -603,17 +603,17 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
 }
 
 
-static corto_observeFluent corto_observeFluentGet(void);
+static corto_observe__fluent corto_observe__fluentGet(void);
 
 static corto_observer corto_observeObserve(corto_observeRequest *r)
 {
     corto_observer result = corto_declare(corto_observer_o);
 
     result->mask = r->mask;
-    corto_setref(&result->observable, r->observable);
-    corto_setref(&result->instance, r->instance);
-    corto_setref(&result->dispatcher, r->dispatcher);
-    corto_setstr(&result->type, r->type);
+    corto_ptr_setref(&result->observable, r->observable);
+    corto_ptr_setref(&result->instance, r->instance);
+    corto_ptr_setref(&result->dispatcher, r->dispatcher);
+    corto_ptr_setstr(&result->type, r->type);
     result->enabled = r->enabled;
     ((corto_function)result)->fptr = (corto_word)r->callback;
     ((corto_function)result)->kind = CORTO_PROCEDURE_CDECL;
@@ -626,43 +626,43 @@ static corto_observer corto_observeObserve(corto_observeRequest *r)
     return result;
 }
 
-static corto_observeFluent corto_observeInstance(
+static corto_observe__fluent corto_observeInstance(
     corto_object instance)
 {
     corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
-    return corto_observeFluentGet();
+    return corto_observe__fluentGet();
 }
 
-static corto_observeFluent corto_observeType(
+static corto_observe__fluent corto_observeType(
     corto_string type)
 {
     corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
     }
-    return corto_observeFluentGet();
+    return corto_observe__fluentGet();
 }
 
-static corto_observeFluent corto_observeDisabled(void)
+static corto_observe__fluent corto_observeDisabled(void)
 {
     corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->enabled = FALSE;
     }
-    return corto_observeFluentGet();
+    return corto_observe__fluentGet();
 }
 
-static corto_observeFluent corto_observeDispatcher(
+static corto_observe__fluent corto_observeDispatcher(
     corto_dispatcher dispatcher)
 {
     corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->dispatcher = dispatcher;
     }
-    return corto_observeFluentGet();
+    return corto_observe__fluentGet();
 }
 
 static corto_observer corto_observeCallback(
@@ -681,9 +681,9 @@ static corto_observer corto_observeCallback(
     return result;
 }
 
-static corto_observeFluent corto_observeFluentGet(void)
+static corto_observe__fluent corto_observe__fluentGet(void)
 {
-    corto_observeFluent result;
+    corto_observe__fluent result;
     result.callback = corto_observeCallback;
     result.instance = corto_observeInstance;
     result.type = corto_observeType;
@@ -692,7 +692,7 @@ static corto_observeFluent corto_observeFluentGet(void)
     return result;
 }
 
-struct corto_observeFluent corto_observe(corto_eventMask mask, corto_object observable) {
+struct corto_observe__fluent corto_observe(corto_eventMask mask, corto_object observable) {
     corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_observeRequest));
@@ -704,7 +704,7 @@ struct corto_observeFluent corto_observe(corto_eventMask mask, corto_object obse
     request->mask = mask;
     request->observable = observable;
     request->enabled = TRUE;
-    return corto_observeFluentGet();
+    return corto_observe__fluentGet();
 }
 
 corto_int16 corto_unobserve(corto_observer observer) {
@@ -728,7 +728,7 @@ int16_t _corto_observer_construct(
             corto_seterr("'%s' is not a type", this->type);
             goto error;
         }
-        corto_setref(&this->typeReference, t);
+        corto_ptr_setref(&this->typeReference, t);
     }
 
     if (!corto_function(this)->parameters.length) {
@@ -741,7 +741,7 @@ int16_t _corto_observer_construct(
             p = &corto_function(this)->parameters.buffer[0];
             p->name = corto_strdup("e");
             p->passByReference = FALSE;
-            corto_setref(&p->type, corto_observerEvent_o);
+            corto_ptr_setref(&p->type, corto_observerEvent_o);
         }
     }
 
@@ -790,7 +790,7 @@ int16_t _corto_observer_init(
     corto_observer this)
 {
 /* $begin(corto/core/observer/init) */
-    corto_setref(&corto_function(this)->returnType, corto_void_o);
+    corto_ptr_setref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED) && strchr(corto_idof(this), '(')) {

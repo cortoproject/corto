@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="include_2secure_2__interface_8h" kind="file" language="C++">
+    <compoundname>include/secure/_interface.h</compoundname>
+    <includes local="no">corto/_project.h</includes>
+    <incdepgraph>
+      <node id="30">
+        <label>_interface.h</label>
+        <link refid="include_2secure_2__interface_8h"/>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>corto/_project.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1ae2d4f48167694ece6a56b49a50ef030a" prot="public" static="no">
+        <name>corto_secure_key_authenticate_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>user</defname></param>
+        <param><defname>password</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1ac66d827c50c1b7c11ec421160c0cd1d2" kindref="member">_corto_secure_key_authenticate_v</ref>(<ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref>(_this), user, password)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="15" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1a8f535043133cb14e273d4f32816032f7" prot="public" static="no">
+        <name>corto_secure_key_authenticate</name>
+        <param><defname>_this</defname></param>
+        <param><defname>user</defname></param>
+        <param><defname>password</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1aed3434577075c1f1b1daec1ed24d28de" kindref="member">_corto_secure_key_authenticate</ref>(<ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref>(_this), user, password)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="22" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1a6af61d8c759711fcb79bf653777c288c" prot="public" static="no">
+        <name>corto_secure_key_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1a3b98c9f88ffa1a65d37b37080ef80dcb" kindref="member">_corto_secure_key_construct</ref>(<ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="29" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1a11a0161cc596621a7960602ff89a3997" prot="public" static="no">
+        <name>corto_secure_key_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1af3d336803c6df9f8297f9d3a89b7c0e3" kindref="member">_corto_secure_key_destruct</ref>(<ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="34" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1acab2da6905832055b46ea12ee162c04f" prot="public" static="no">
+        <name>corto_secure_lock_authorize_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>token</defname></param>
+        <param><defname>action</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1a678d69d83d6d3c87b1374e7410ca08a3" kindref="member">_corto_secure_lock_authorize_v</ref>(<ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref>(_this), token, action)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="39" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1a627bc2277734a852373623fff282932f" prot="public" static="no">
+        <name>corto_secure_lock_authorize</name>
+        <param><defname>_this</defname></param>
+        <param><defname>token</defname></param>
+        <param><defname>action</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1a006c3bbba7dc259af2c15da6fd65e536" kindref="member">_corto_secure_lock_authorize</ref>(<ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref>(_this), token, action)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="46" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1a41ba027305d7ed216f9c7b7d31f69e80" prot="public" static="no">
+        <name>corto_secure_lock_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1a3684741652b1a343e435558af2f4c73f" kindref="member">_corto_secure_lock_construct</ref>(<ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="53" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2secure_2__interface_8h_1ac67e35c767ea81a02155c44be5cfdaf1" prot="public" static="no">
+        <name>corto_secure_lock_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2secure_2__interface_8h_1ae3b7b62a43557b278301f31bf349e2ad" kindref="member">_corto_secure_lock_destruct</ref>(<ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="58" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1ac66d827c50c1b7c11ec421160c0cd1d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_secure_key_authenticate_v</definition>
+        <argsstring>(corto_secure_key _this, corto_string user, corto_string password)</argsstring>
+        <name>_corto_secure_key_authenticate_v</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>user</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>password</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="17" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1aed3434577075c1f1b1daec1ed24d28de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_secure_key_authenticate</definition>
+        <argsstring>(corto_secure_key _this, corto_string user, corto_string password)</argsstring>
+        <name>_corto_secure_key_authenticate</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>user</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>password</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="24" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1a3b98c9f88ffa1a65d37b37080ef80dcb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_secure_key_construct</definition>
+        <argsstring>(corto_secure_key _this)</argsstring>
+        <name>_corto_secure_key_construct</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="31" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1af3d336803c6df9f8297f9d3a89b7c0e3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_secure_key_destruct</definition>
+        <argsstring>(corto_secure_key _this)</argsstring>
+        <name>_corto_secure_key_destruct</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1aa294d8c5ac6fee1d3ffd62b535a28469" kindref="member">corto_secure_key</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="36" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1a678d69d83d6d3c87b1374e7410ca08a3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0ca" kindref="member">corto_secure_accessKind</ref></type>
+        <definition>CORTO_EXPORT corto_secure_accessKind _corto_secure_lock_authorize_v</definition>
+        <argsstring>(corto_secure_lock _this, corto_string token, corto_secure_actionKind action)</argsstring>
+        <name>_corto_secure_lock_authorize_v</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>token</declname>
+        </param>
+        <param>
+          <type><ref refid="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" kindref="member">corto_secure_actionKind</ref></type>
+          <declname>action</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="41" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1a006c3bbba7dc259af2c15da6fd65e536" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="secure_2__type_8h_1ae6dd76c565b2e0f7e3000855a676c0ca" kindref="member">corto_secure_accessKind</ref></type>
+        <definition>CORTO_EXPORT corto_secure_accessKind _corto_secure_lock_authorize</definition>
+        <argsstring>(corto_secure_lock _this, corto_string token, corto_secure_actionKind action)</argsstring>
+        <name>_corto_secure_lock_authorize</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>token</declname>
+        </param>
+        <param>
+          <type><ref refid="secure_2__type_8h_1abf4f3c073b96954bc737c8e94bb0ae99" kindref="member">corto_secure_actionKind</ref></type>
+          <declname>action</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="48" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1a3684741652b1a343e435558af2f4c73f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_secure_lock_construct</definition>
+        <argsstring>(corto_secure_lock _this)</argsstring>
+        <name>_corto_secure_lock_construct</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="55" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2secure_2__interface_8h_1ae3b7b62a43557b278301f31bf349e2ad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_secure_lock_destruct</definition>
+        <argsstring>(corto_secure_lock _this)</argsstring>
+        <name>_corto_secure_lock_destruct</name>
+        <param>
+          <type><ref refid="secure_2__type_8h_1a4729cf1e9902ddccce5a6b57ec9be4bd" kindref="member">corto_secure_lock</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h" line="60" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/secure/_interface.h"/>
+  </compounddef>
+</doxygen>

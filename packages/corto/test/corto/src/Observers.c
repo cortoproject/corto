@@ -22,8 +22,8 @@ void dispatchObserver_onUpdate(
 {
     test_Observers this = e->instance;
     this->mask = e->event;
-    corto_setref(&this->observable, e->data);
-    corto_setref(&this->observer, e->observer);
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
 }
 /* $end */
 void _test_Observers_tc_dispatchObserver(
@@ -62,8 +62,8 @@ void notifyReadDenied_onUpdate(corto_observerEvent *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
-    corto_setref(&this->observable, e->data);
-    corto_setref(&this->observer, e->observer);
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
     this->count ++;
 }
 /* $end */
@@ -200,8 +200,8 @@ void observeTypeFilter_onUpdate(corto_observerEvent *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
-    corto_setref(&this->observable, e->data);
-    corto_setref(&this->observer, e->observer);
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
 }
 /* $end */
 void _test_Observers_tc_observeTypeFilter(
@@ -273,8 +273,8 @@ void observeWithMultipleInstances_onUpdate(
 {
     test_Observers this = corto_observer(e->observer)->instance;
     this->mask = e->event;
-    corto_setref(&this->observable, e->data);
-    corto_setref(&this->observer, e->observer);
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
     this->count ++;
 }
 /* $end */

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="__primitive_8h" kind="file" language="C++">
+    <compoundname>_primitive.h</compoundname>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="__primitive_8h_1adbf0fbdb3b2bdaf913389d59cd46473b" prot="public" static="no">
+        <name>CORTO_PRIMITIVE_MAX_CONVERTID</name>
+        <initializer>(24)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_primitive.h" line="15" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_primitive.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="__primitive_8h_1ad7ec430a73339b802331d7f7de3b0b73" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a02ec669e8d8f80c385fe2a717544c982" kindref="member">corto_uint8</ref></type>
+        <definition>corto_uint8 corto__primitive_convertId</definition>
+        <argsstring>(corto_primitiveKind kind, corto_width width)</argsstring>
+        <name>corto__primitive_convertId</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1aedf47196258315f8db56863d5363ee9a" kindref="member">corto_primitiveKind</ref></type>
+          <declname>kind</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a05551da2acfe587d5def62ebc28aa9e7" kindref="member">corto_width</ref></type>
+          <declname>width</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_primitive.h" line="17" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__primitive_8h_1a84f00e2bc485b1d86f05e4d86392692a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref></type>
+        <definition>corto_int16 corto__bitmask_bindConstant</definition>
+        <argsstring>(corto_bitmask _this, corto_constant *c)</argsstring>
+        <name>corto__bitmask_bindConstant</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac92b69cc3049b1ef1cc69ee669c2d260" kindref="member">corto_bitmask</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ad0859709f0359f6b126a9ae9551089d2" kindref="member">corto_constant</ref> *</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_primitive.h" line="19" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_primitive.h"/>
+  </compounddef>
+</doxygen>

@@ -15,11 +15,11 @@ int16_t _corto_loader_construct(
     static corto_int32 constructOnce;
 
     if (corto_ainc(&constructOnce) == 1) {
-        corto_setref(&corto_mount(this)->mount, root_o);
+        corto_ptr_setref(&corto_mount(this)->mount, root_o);
         corto_observer(this)->mask = CORTO_ON_TREE;
         corto_mount(this)->kind = CORTO_SINK;
-        corto_setstr(&corto_observer(this)->type, "/corto/core/package");
-        corto_setstr(&corto_subscriber(this)->contentType, "text/json");
+        corto_ptr_setstr(&corto_observer(this)->type, "/corto/core/package");
+        corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
         return corto_mount_construct(this);
     } else {
         return -1;

@@ -1,0 +1,512 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="rb_8h" kind="file" language="C++">
+    <compoundname>rb.h</compoundname>
+    <innerclass refid="structjsw__rbtrav" prot="public">jsw_rbtrav</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="rb_8h_1a8a9cf4e7e1f3ae66d78e67246f158cd1" prot="public" static="no">
+        <name>HEIGHT_LIMIT</name>
+        <initializer>24 /* 16M nodes in a single tree */</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="33" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="rb_8h_1af3f4fde0026889a163e335a393bd4d81" prot="public" static="no">
+        <name>corto_rb_iter</name>
+        <param><defname>tree</defname></param>
+        <initializer><ref refid="rb_8h_1abde217d10010cd278112bc9ee433361a" kindref="member">_corto_rb_iter</ref>(tree, alloca(sizeof(struct <ref refid="structjsw__rbtrav" kindref="compound">jsw_rbtrav</ref>)));</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="64" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="rb_8h_1a96c688c1c2d47378c3a11b22bb839600" prot="public" static="no">
+        <type>struct <ref refid="structjsw__rbtrav" kindref="compound">jsw_rbtrav</ref></type>
+        <definition>typedef struct jsw_rbtrav jsw_rbtrav_t</definition>
+        <argsstring></argsstring>
+        <name>jsw_rbtrav_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="214" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="rb_8h_1ad2b630a9a80d282030f9d936f1ff74b8" prot="public" static="no">
+        <type>struct jsw_rbtree</type>
+        <definition>typedef struct jsw_rbtree jsw_rbtree_t</definition>
+        <argsstring></argsstring>
+        <name>jsw_rbtree_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="214" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="rb_8h_1a636f11cd6ce571fad23f14cf336816a9" prot="public" static="no">
+        <type>struct jsw_rbnode</type>
+        <definition>typedef struct jsw_rbnode jsw_rbnode_t</definition>
+        <argsstring></argsstring>
+        <name>jsw_rbnode_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="214" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="rb_8h_1aa6398bb21f4d453778575be00b1e4e28" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+        <definition>CORTO_EXPORT corto_rbtree corto_rb_new</definition>
+        <argsstring>(corto_type keyType)</argsstring>
+        <name>corto_rb_new</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+          <declname>keyType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="46" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1ab18376acb32f4ea7322c8b53ea4caee1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+        <definition>CORTO_EXPORT corto_rbtree corto_rb_new_w_func</definition>
+        <argsstring>(corto_equals_cb compare)</argsstring>
+        <name>corto_rb_new_w_func</name>
+        <param>
+          <type><ref refid="corto_8h_1a4f6c97d3d4c7ac96084510a74c00b1e9" kindref="member">corto_equals_cb</ref></type>
+          <declname>compare</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="47" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1afae4ee33e0030b8b47b07cf5334c8967" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_rb_free</definition>
+        <argsstring>(corto_rbtree tree)</argsstring>
+        <name>corto_rb_free</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="48" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a5cbb543f21ed713b707920a8c422d382" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_get</definition>
+        <argsstring>(corto_rbtree tree, void *key)</argsstring>
+        <name>corto_rb_get</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="49" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a706a7bd7b125707e6e7a51a4f870dc7b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_getPtr</definition>
+        <argsstring>(corto_rbtree tree, void *key)</argsstring>
+        <name>corto_rb_getPtr</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="50" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a9309c98a26667981d387428965c525e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_rb_set</definition>
+        <argsstring>(corto_rbtree tree, const void *key, void *value)</argsstring>
+        <name>corto_rb_set</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="51" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a1e6ce66991c02c7efd5f47a070b3e438" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_findOrSet</definition>
+        <argsstring>(corto_rbtree tree, const void *key, void *value)</argsstring>
+        <name>corto_rb_findOrSet</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="52" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1afc004c507ad0ac86ceb2f5af84b6aafa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_rb_remove</definition>
+        <argsstring>(corto_rbtree tree, void *key)</argsstring>
+        <name>corto_rb_remove</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="53" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1ab2cd96b6167f130a0ae4dafe7bdc5097" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>CORTO_EXPORT corto_bool corto_rb_hasKey</definition>
+        <argsstring>(corto_rbtree tree, const void *key, void **value)</argsstring>
+        <name>corto_rb_hasKey</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="54" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a79ba62908aeaef03e873b070c8daee29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>CORTO_EXPORT corto_bool corto_rb_hasKey_w_cmp</definition>
+        <argsstring>(corto_rbtree tree, const void *key, void **value, corto_equals_cb cmp)</argsstring>
+        <name>corto_rb_hasKey_w_cmp</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type><ref refid="corto_8h_1a4f6c97d3d4c7ac96084510a74c00b1e9" kindref="member">corto_equals_cb</ref></type>
+          <declname>cmp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="55" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a39da3370bbb12d0d2d95d8e92dfd54f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_min</definition>
+        <argsstring>(corto_rbtree tree, void **key_out)</argsstring>
+        <name>corto_rb_min</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="56" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a56aa08b23aa582b4b6d4a7ded45108a3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_max</definition>
+        <argsstring>(corto_rbtree tree, void **key_out)</argsstring>
+        <name>corto_rb_max</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="57" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a4e536d463f82d0c19d7a253f60db607f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_next</definition>
+        <argsstring>(corto_rbtree tree, void *key, void **key_out)</argsstring>
+        <name>corto_rb_next</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="58" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a9e842a60eb80df19871a13a96f442b34" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_rb_prev</definition>
+        <argsstring>(corto_rbtree tree, void *key, void **key_out)</argsstring>
+        <name>corto_rb_prev</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void **</type>
+          <declname>key_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="59" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a92060ae8c5291a468ea3f8ef47063677" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a6b075867fbfc9f5b56b185fed5f84ab1" kindref="member">corto_uint32</ref></type>
+        <definition>CORTO_EXPORT corto_uint32 corto_rb_size</definition>
+        <argsstring>(corto_rbtree tree)</argsstring>
+        <name>corto_rb_size</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="60" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a040a269eeedb5d9208e8558c8150203e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rb_walk</definition>
+        <argsstring>(corto_rbtree tree, corto_elementWalk_cb callback, void *userData)</argsstring>
+        <name>corto_rb_walk</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type><ref refid="base_8h_1aa7a3bdaa1ab6425ddfe64b15d8571917" kindref="member">corto_elementWalk_cb</ref></type>
+          <declname>callback</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>userData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="61" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a2718cf3d94697c204ff699dcb6c1c5ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rb_walkPtr</definition>
+        <argsstring>(corto_rbtree tree, corto_elementWalk_cb callback, void *userData)</argsstring>
+        <name>corto_rb_walkPtr</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type><ref refid="base_8h_1aa7a3bdaa1ab6425ddfe64b15d8571917" kindref="member">corto_elementWalk_cb</ref></type>
+          <declname>callback</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>userData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="62" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1abde217d10010cd278112bc9ee433361a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="structcorto__iter" kindref="compound">corto_iter</ref></type>
+        <definition>CORTO_EXPORT corto_iter _corto_rb_iter</definition>
+        <argsstring>(corto_rbtree tree, void *udata)</argsstring>
+        <name>_corto_rb_iter</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>udata</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="65" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a90b7627fc2ef7746b8f4d9144c98191e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1acb5da53862edc3abc4e290a1bd0ba165" kindref="member">corto_type</ref></type>
+        <definition>CORTO_EXPORT corto_type corto_rb_keyType</definition>
+        <argsstring>(corto_rbtree tree)</argsstring>
+        <name>corto_rb_keyType</name>
+        <param>
+          <type><ref refid="base_8h_1a4b8fc86bc615b79048ddb5dc42483c3c" kindref="member">corto_rbtree</ref></type>
+          <declname>tree</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="66" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="rb_8h_1a32671b6c98f548b2ed00eccab9c83e25" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>CORTO_EXPORT corto_bool corto_rb_iterChanged</definition>
+        <argsstring>(corto_iter *iter)</argsstring>
+        <name>corto_rb_iterChanged</name>
+        <param>
+          <type><ref refid="structcorto__iter" kindref="compound">corto_iter</ref> *</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h" line="67" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/rb.h"/>
+  </compounddef>
+</doxygen>

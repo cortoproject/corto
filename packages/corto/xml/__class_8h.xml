@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="__class_8h" kind="file" language="C++">
+    <compoundname>_class.h</compoundname>
+    <includes local="yes">corto/corto.h</includes>
+    <incdepgraph>
+      <node id="10">
+        <label>corto/corto.h</label>
+      </node>
+      <node id="9">
+        <label>_class.h</label>
+        <link refid="__class_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="__class_8h_1a65b7e25ce98092805d25e6c8d6b1ae78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void corto_class_attachObservers</definition>
+        <argsstring>(corto_class _this, corto_object object)</argsstring>
+        <name>corto_class_attachObservers</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a04a294c239ab4f9a6d7f36f2f242cc90" kindref="member">corto_class</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_class.h" line="19" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__class_8h_1a10de9ecea37cb54c47666cffc213fd99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void corto_class_listenObservers</definition>
+        <argsstring>(corto_class _this, corto_object object)</argsstring>
+        <name>corto_class_listenObservers</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a04a294c239ab4f9a6d7f36f2f242cc90" kindref="member">corto_class</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_class.h" line="20" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__class_8h_1a6a53b81d61afc380c7b91f0d7bc6cc91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void corto_class_detachObservers</definition>
+        <argsstring>(corto_class _this, corto_object object)</argsstring>
+        <name>corto_class_detachObservers</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a04a294c239ab4f9a6d7f36f2f242cc90" kindref="member">corto_class</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_class.h" line="21" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="__class_8h_1af65a50ecd591eeed38823f372cdba005" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref> *</type>
+        <definition>corto_objectseq* corto_class_getObserverVtable</definition>
+        <argsstring>(corto_object o)</argsstring>
+        <name>corto_class_getObserverVtable</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_class.h" line="23" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_class.h"/>
+  </compounddef>
+</doxygen>

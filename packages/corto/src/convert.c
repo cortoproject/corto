@@ -559,7 +559,7 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
                 *(corto_bool*)to = *(corto_object*)from ? TRUE : FALSE;
             } else if (corto_primitive(toType)->kind == CORTO_TEXT) {
                 corto_id id;
-                corto_setstr((corto_string*)to,
+                corto_ptr_setstr((corto_string*)to,
                   corto_fullpath(id, *(corto_object*)from));
             } else {
                 corto_seterr(

@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="src_2lang_2__interface_8h" kind="file" language="C++">
+    <compoundname>src/lang/_interface.h</compoundname>
+    <includes local="yes">corto/corto.h</includes>
+    <incdepgraph>
+      <node id="19">
+        <label>corto/corto.h</label>
+      </node>
+      <node id="18">
+        <label>_interface.h</label>
+        <link refid="src_2lang_2__interface_8h"/>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1a06d7aec1acbf80d762d9f6797da20c39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref></type>
+        <definition>corto_int16 corto__interface_bindMember</definition>
+        <argsstring>(corto_interface _this, corto_member o)</argsstring>
+        <name>corto__interface_bindMember</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a91b786ab7d62d45cde3fda6dee073400" kindref="member">corto_interface</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a64e2395a8ea5c66a0e6ae696dc272522" kindref="member">corto_member</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="17" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1a7eb8ee93835336d92a4b91c9e4a50978" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1ab7b5d64e9c19735e6851d2b588650651" kindref="member">corto_int16</ref></type>
+        <definition>corto_int16 corto__interface_insertMembers</definition>
+        <argsstring>(corto_interface _this)</argsstring>
+        <name>corto__interface_insertMembers</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a91b786ab7d62d45cde3fda6dee073400" kindref="member">corto_interface</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="18" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1a2b0a57d5af0f1d23251b57447f3da4f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a48f236d7640c85cfe662bdfea5ed113f" kindref="member">corto_uint16</ref></type>
+        <definition>corto_uint16 corto__interface_calculateAlignment</definition>
+        <argsstring>(corto_interface _this)</argsstring>
+        <name>corto__interface_calculateAlignment</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a91b786ab7d62d45cde3fda6dee073400" kindref="member">corto_interface</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="19" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1a668cb6945c385f8f93ce205ef5f9b8af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a6b075867fbfc9f5b56b185fed5f84ab1" kindref="member">corto_uint32</ref></type>
+        <definition>corto_uint32 corto__interface_calculateSize</definition>
+        <argsstring>(corto_interface _this, corto_uint32 base)</argsstring>
+        <name>corto__interface_calculateSize</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a91b786ab7d62d45cde3fda6dee073400" kindref="member">corto_interface</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a6b075867fbfc9f5b56b185fed5f84ab1" kindref="member">corto_uint32</ref></type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="20" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1ad14b258664d91b842e601c10d16c91c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>corto_bool corto_interface_checkProcedureCompatibility</definition>
+        <argsstring>(corto_function o1, corto_function o2)</argsstring>
+        <name>corto_interface_checkProcedureCompatibility</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref></type>
+          <declname>o1</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref></type>
+          <declname>o2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="21" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1af2f065e9a76553efb263fcf1e432a8ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref> *</type>
+        <definition>corto_function* corto_vtableLookup</definition>
+        <argsstring>(corto_objectseq *vtable, corto_string member, corto_int32 *d_out)</argsstring>
+        <name>corto_vtableLookup</name>
+        <param>
+          <type><ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref> *</type>
+          <declname>vtable</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>member</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a07932ee30448a445bcaea9adc06c3222" kindref="member">corto_int32</ref> *</type>
+          <declname>d_out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="22" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1abcffbd6a17c1ee2a5cd8d89ea738e997" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>corto_bool corto_vtableInsert</definition>
+        <argsstring>(corto_objectseq *vtable, corto_function method)</argsstring>
+        <name>corto_vtableInsert</name>
+        <param>
+          <type><ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref> *</type>
+          <declname>vtable</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref></type>
+          <declname>method</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="23" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="src_2lang_2__interface_8h_1a245b3ba03bfc7261237b128c16abfab2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structcorto__objectseq" kindref="compound">corto_objectseq</ref></type>
+        <definition>corto_objectseq corto_interface_vtableFromBase</definition>
+        <argsstring>(corto_interface this)</argsstring>
+        <name>corto_interface_vtableFromBase</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a91b786ab7d62d45cde3fda6dee073400" kindref="member">corto_interface</ref></type>
+          <declname>this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h" line="24" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/src/lang/_interface.h"/>
+  </compounddef>
+</doxygen>

@@ -13,12 +13,12 @@ void _test_RelativeName_setup(
 {
 /* $begin(test/RelativeName/setup) */
 
-    corto_setref(&this->tier1, corto_voidCreateChild(NULL, "tier1"));
-    corto_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
-    corto_setref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
-    corto_setref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
-    corto_setref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
-    corto_setref(&this->child, corto_voidCreateChild(this->obj, "child"));
+    corto_ptr_setref(&this->tier1, corto_voidCreateChild(NULL, "tier1"));
+    corto_ptr_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
+    corto_ptr_setref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
+    corto_ptr_setref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
+    corto_ptr_setref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
+    corto_ptr_setref(&this->child, corto_voidCreateChild(this->obj, "child"));
 
     test_assert(this->tier1 != NULL);
     test_assert(this->tier2 != NULL);
@@ -229,12 +229,12 @@ void _test_RelativeName_teardown(
 /* $begin(test/RelativeName/teardown) */
 
     corto_delete(this->tier1);
-    corto_setref(&this->tier1, NULL);
-    corto_setref(&this->tier2, NULL);
-    corto_setref(&this->tier3, NULL);
-    corto_setref(&this->obj, NULL);
-    corto_setref(&this->disjunct, NULL);
-    corto_setref(&this->child, NULL);
+    corto_ptr_setref(&this->tier1, NULL);
+    corto_ptr_setref(&this->tier2, NULL);
+    corto_ptr_setref(&this->tier3, NULL);
+    corto_ptr_setref(&this->obj, NULL);
+    corto_ptr_setref(&this->disjunct, NULL);
+    corto_ptr_setref(&this->child, NULL);
 
 /* $end */
 }

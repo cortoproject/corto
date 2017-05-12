@@ -1,0 +1,2708 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="include_2core_2__interface_8h" kind="file" language="C++">
+    <compoundname>include/core/_interface.h</compoundname>
+    <includes local="no">corto/_project.h</includes>
+    <incdepgraph>
+      <node id="22">
+        <label>corto/_project.h</label>
+      </node>
+      <node id="21">
+        <label>_interface.h</label>
+        <link refid="include_2core_2__interface_8h"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a8e3a971cadc9044862cc7bf05df1f6ff" prot="public" static="no">
+        <name>corto_dispatcher_post_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>e</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a1c2ccc73515565edd7722b773c609b4f" kindref="member">_corto_dispatcher_post_v</ref>(<ref refid="core_2__type_8h_1a591701d59d3183bd51a628d565f9fd25" kindref="member">corto_dispatcher</ref>(_this), e)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="16" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ac89d07caee55a0a0657e9c1c21207229" prot="public" static="no">
+        <name>corto_dispatcher_post</name>
+        <param><defname>_this</defname></param>
+        <param><defname>e</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1adbd4f74ba683a575ff6095bd451e50d2" kindref="member">_corto_dispatcher_post</ref>(<ref refid="core_2__type_8h_1a591701d59d3183bd51a628d565f9fd25" kindref="member">corto_dispatcher</ref>(_this), e)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="22" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1af8a85def8f341d23de42d41468a04346" prot="public" static="no">
+        <name>corto_event_handle</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ac9f7ec6d7063d1ec59f877ad4c01e3e4" kindref="member">_corto_event_handle</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="28" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ad133148191ca1b8bf8059bffebf3e8a6" prot="public" static="no">
+        <name>corto_event_uniqueKind</name>
+        <param></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aaf5fdccf747aac49acc260d2ed6f6503" kindref="member">_corto_event_uniqueKind</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="33" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a61be28b824f95bc72e877c111aa97345" prot="public" static="no">
+        <name>corto_frame_getTime</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aad2effed17ca1bb67881b5c5c514c3fb" kindref="member">_corto_frame_getTime</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="37" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a7972c0a43dc353b77e959c826137e557" prot="public" static="no">
+        <name>corto_invokeEvent_handle_v</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a045b80e3bc849fb6f28bc0ba0e4a79b4" kindref="member">_corto_invokeEvent_handle_v</ref>(<ref refid="core_2__type_8h_1a21d7f84b946d72d756ffc85deff8b301" kindref="member">corto_invokeEvent</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="42" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a652e5a4516de1daaadb656ea454df3b1" prot="public" static="no">
+        <name>corto_invokeEvent_handle</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8271a488600d81160fa8eae346532905" kindref="member">_corto_invokeEvent_handle</ref>(<ref refid="core_2__type_8h_1a21d7f84b946d72d756ffc85deff8b301" kindref="member">corto_invokeEvent</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="47" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a136a12743b10bbee6f4f9856865badcf" prot="public" static="no">
+        <name>corto_loader_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a9de56c7f0bbcbcea86b06c16a5aed2e8" kindref="member">_corto_loader_construct</ref>(<ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="52" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a72d0de663c5e571493ccca2d5c596880" prot="public" static="no">
+        <name>corto_loader_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a9aa66fe264802868b9293072ed6e90ca" kindref="member">_corto_loader_destruct</ref>(<ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="57" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a5ccd65591c6d3c8dd88a68cebe79f9cb" prot="public" static="no">
+        <name>corto_loader_onRequest_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a468d3e98185ef3f2dd78e5e84cd54794" kindref="member">_corto_loader_onRequest_v</ref>(<ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="62" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ace958741767e2fd4fd37603e385d56a6" prot="public" static="no">
+        <name>corto_loader_onRequest</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aaf0859f21ac144ce404b354bb3381188" kindref="member">_corto_loader_onRequest</ref>(<ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="68" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a3f607d0c66848b61a31333589861357a" prot="public" static="no">
+        <name>corto_mount_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a025eead60f6e5bae0e8bbc7524a91989" kindref="member">_corto_mount_construct</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="74" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a26d87d0a22e215f700ab4d84950ed0cf" prot="public" static="no">
+        <name>corto_mount_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a77c20d78626a01269ab6c21a42a7d90a" kindref="member">_corto_mount_destruct</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="79" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a897952a5446c9c8f9e3d0ff036a9272f" prot="public" static="no">
+        <name>corto_mount_id</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ab4401d517af850ee0eeec82401d69c75" kindref="member">_corto_mount_id</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="84" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a89464d5e0d411358cb0ecb16298ed429" prot="public" static="no">
+        <name>corto_mount_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a7aff513fbe60ef3afff385e56b7f4ef3" kindref="member">_corto_mount_init</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="89" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a8275cdb3324874b44cc0b5f46e59520b" prot="public" static="no">
+        <name>corto_mount_invoke</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>proc</defname></param>
+        <param><defname>argptrs</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8ceb6ad26d5b08390ef366f950cf26c8" kindref="member">_corto_mount_invoke</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), instance, <ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref>(proc), argptrs)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="94" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aab84a3f2b17ca406ba067ac9a60b1c4c" prot="public" static="no">
+        <name>corto_mount_onId_v</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a36a556fb8f43acb1f18e648daa899f9e" kindref="member">_corto_mount_onId_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="102" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1abdb10fd0a449e1bca1708f3fe6526487" prot="public" static="no">
+        <name>corto_mount_onId</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a3567ed5521ffd212aefa30e2ebd87756" kindref="member">_corto_mount_onId</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="107" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a6c1b5422229306a36126db4186f6fe28" prot="public" static="no">
+        <name>corto_mount_onInvoke_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>proc</defname></param>
+        <param><defname>argptrs</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ae690a0befb257515437cbc89de18405c" kindref="member">_corto_mount_onInvoke_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), instance, <ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref>(proc), argptrs)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="112" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ad9562db4a654a683e8fc40e39d8d7133" prot="public" static="no">
+        <name>corto_mount_onInvoke</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>proc</defname></param>
+        <param><defname>argptrs</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aaeba365968d08f3f3b7a3e8be38e3c0e" kindref="member">_corto_mount_onInvoke</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), instance, <ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref>(proc), argptrs)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="120" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="120" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a199b62b9651538e3d6033b7d90dd6032" prot="public" static="no">
+        <name>corto_mount_onNotify_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>event</defname></param>
+        <param><defname>object</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ab242e146d00195c0c1e9c5448be23a7e" kindref="member">_corto_mount_onNotify_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), event, object)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="128" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="128" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a5404de92781c6d620c382f84ddb07356" prot="public" static="no">
+        <name>corto_mount_onNotify</name>
+        <param><defname>_this</defname></param>
+        <param><defname>event</defname></param>
+        <param><defname>object</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a4fa2786fc7b2c3351c38f6fc86781781" kindref="member">_corto_mount_onNotify</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), event, object)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="135" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a0c72c3f529d802d623422a9fd6eaf25e" prot="public" static="no">
+        <name>corto_mount_onPoll_v</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ac685937de2648e9a83c6b0aee3c5eeca" kindref="member">_corto_mount_onPoll_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="142" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a5c7006b8eb52d10b5d55945b669c7e17" prot="public" static="no">
+        <name>corto_mount_onPoll</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8d63ac0c1e7373f8fa61ba1e323c1368" kindref="member">_corto_mount_onPoll</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="147" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ae72495e146f5bc4ee28af22ddc3a055b" prot="public" static="no">
+        <name>corto_mount_onRequest_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a21cb473546e96bc1b4b36797fb8bc55c" kindref="member">_corto_mount_onRequest_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="152" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a3e43dbd8e1b417dc8c00eab6f7273591" prot="public" static="no">
+        <name>corto_mount_onRequest</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a9abe060e094f703c2b8eb8239e20d617" kindref="member">_corto_mount_onRequest</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="158" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a460de8b9914c4f714c7ec487ac5e93b0" prot="public" static="no">
+        <name>corto_mount_onResume_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>o</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ae44aac1cf6f24117efef64575c313953" kindref="member">_corto_mount_onResume_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, name, o)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="164" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a182ef18d85a8fa521dc3daf9df321939" prot="public" static="no">
+        <name>corto_mount_onResume</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>o</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a3fd3c2570e1c5cb121175880ce988795" kindref="member">_corto_mount_onResume</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, name, o)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="172" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a4ec38578da53362fd69abb87c31feb61" prot="public" static="no">
+        <name>corto_mount_onSubscribe_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>expr</defname></param>
+        <param><defname>ctx</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1af41ad5c53e68188a2e8d2afb3cdcaaf3" kindref="member">_corto_mount_onSubscribe_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, expr, ctx)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="180" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="180" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a2044cd0dd1fc2e8b9268321970b54887" prot="public" static="no">
+        <name>corto_mount_onSubscribe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>expr</defname></param>
+        <param><defname>ctx</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a7102287f9ac06d62844e92fd8f6ebce5" kindref="member">_corto_mount_onSubscribe</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, expr, ctx)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="188" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1af5938373415aa9ce78a31744d0277b20" prot="public" static="no">
+        <name>corto_mount_onUnsubscribe_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>expr</defname></param>
+        <param><defname>ctx</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ab450104865f099eb8bef2a1b58cc2127" kindref="member">_corto_mount_onUnsubscribe_v</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, expr, ctx)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="196" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="196" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1afe7a72b76386c196472c8c50bc612c1b" prot="public" static="no">
+        <name>corto_mount_onUnsubscribe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>expr</defname></param>
+        <param><defname>ctx</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a016f9a32da0be517e04d5d2fba720c15" kindref="member">_corto_mount_onUnsubscribe</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, expr, ctx)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="204" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="204" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1abd38b9922b51941be02593fbf98cb1a6" prot="public" static="no">
+        <name>corto_mount_post</name>
+        <param><defname>_this</defname></param>
+        <param><defname>e</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a1753ddb5fc90305da23bb8b3f6649d6b" kindref="member">_corto_mount_post</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), e)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="212" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a9bf4fddb4627f8cc068fcf6fc4f77b7b" prot="public" static="no">
+        <name>corto_mount_request</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a07bd10d14b272b742674021c08107562" kindref="member">_corto_mount_request</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="218" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a9776f6a6acdcf2eef20d96623a669535" prot="public" static="no">
+        <name>corto_mount_resume</name>
+        <param><defname>_this</defname></param>
+        <param><defname>parent</defname></param>
+        <param><defname>name</defname></param>
+        <param><defname>o</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8ab43f7faa4e3cfb73a53ffd5c7fdc06" kindref="member">_corto_mount_resume</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), parent, name, o)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="224" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ae1bc4b317f2c92a6445d1fc37b1a30b8" prot="public" static="no">
+        <name>corto_mount_return</name>
+        <param><defname>_this</defname></param>
+        <param><defname>r</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a837775dbf606f4b433a7fa59976bafb6" kindref="member">_corto_mount_return</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), r)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="232" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="232" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ac22244fd4a714bded8a2327aa9b20d44" prot="public" static="no">
+        <name>corto_mount_setContentType</name>
+        <param><defname>_this</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a59db2e1380837b027d1447872fa12c79" kindref="member">_corto_mount_setContentType</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), type)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="238" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="238" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a6fa28ec990f46b257954a51e07ae2a42" prot="public" static="no">
+        <name>corto_mount_setContentTypeIn</name>
+        <param><defname>_this</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8fbd864f33c67808c35507dd118686f4" kindref="member">_corto_mount_setContentTypeIn</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), type)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="244" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="244" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a03d252f537c28c1ae053df0eda87cffa" prot="public" static="no">
+        <name>corto_mount_setContentTypeOut</name>
+        <param><defname>_this</defname></param>
+        <param><defname>type</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a284fa33df4cfc39f57d6fcacdcd7aa89" kindref="member">_corto_mount_setContentTypeOut</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), type)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="250" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a5e1ee73506a7a89cd088bc3c3224d09c" prot="public" static="no">
+        <name>corto_mount_subscribe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ac1ffc561b441d6a6113fcd4348136c47" kindref="member">_corto_mount_subscribe</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="256" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="256" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a57febc2c0833a3c43c348800d3365fff" prot="public" static="no">
+        <name>corto_mount_unsubscribe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>request</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ad7483fa161e9640846fc8e5299047b3e" kindref="member">_corto_mount_unsubscribe</ref>(<ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref>(_this), request)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="262" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="262" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aa40d73ca1483e22d1de19ba1932163c6" prot="public" static="no">
+        <name>corto_observer_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a42130e4699c673e476b5e9b3272462eb" kindref="member">_corto_observer_construct</ref>(<ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="268" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="268" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1af1ca51824d264140d481a68538e43e5f" prot="public" static="no">
+        <name>corto_observer_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ac82f142828d37908e7fd9e8ce654afa3" kindref="member">_corto_observer_destruct</ref>(<ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="273" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="273" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ac796d5ef68db9f40f78349d887fd0b4a" prot="public" static="no">
+        <name>corto_observer_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1af0b4bf18832c03e4d164f142cc58e426" kindref="member">_corto_observer_init</ref>(<ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="278" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="278" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a23ad5647d0260693e4c1e160938859c1" prot="public" static="no">
+        <name>corto_observer_observe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>observable</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ad688d4d891237332715040fa5dd0ed19" kindref="member">_corto_observer_observe</ref>(<ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref>(_this), instance, observable)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="283" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="283" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a9668ce814ec652dd68f07ef7390286fe" prot="public" static="no">
+        <name>corto_observer_observing</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>observable</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a445ab36d7b3ac33f84483ca26f69c3e5" kindref="member">_corto_observer_observing</ref>(<ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref>(_this), instance, observable)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="290" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="290" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a7c37d8150eb1411ce312cde79226efb4" prot="public" static="no">
+        <name>corto_observer_unobserve</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>observable</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a158f3754472075bbc6e62b37cc487e4f" kindref="member">_corto_observer_unobserve</ref>(<ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref>(_this), instance, observable)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="297" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1af64f3ac5661df3203b9f2955f36605ef" prot="public" static="no">
+        <name>corto_observerEvent_deinit</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a3711fa3e7648a6f99c795ffb47173bf9" kindref="member">_corto_observerEvent_deinit</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="304" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="304" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a471cc29e68fa813779693b2307a15153" prot="public" static="no">
+        <name>corto_observerEvent_handle</name>
+        <param><defname>e</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1abb6ab65b3c07e4b6189f78c7b1bc5b05" kindref="member">_corto_observerEvent_handle</ref>(e)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="309" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="309" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a02353171037c5bb141745b02b25dcfec" prot="public" static="no">
+        <name>corto_observerEvent_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ad7f55bc97abf7495a34e82bc365a3813" kindref="member">_corto_observerEvent_init</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="314" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="314" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a6adb9a6328f23bb8cc07f26ac98ce76d" prot="public" static="no">
+        <name>corto_package_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1af04e06142b0a42fdcdee99dd886d9541" kindref="member">_corto_package_construct</ref>(<ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="319" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="319" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ab483bd6585b6760fcc41e217dc2786f0" prot="public" static="no">
+        <name>corto_package_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8bb8fd19a483600c453d62b9fdc64a69" kindref="member">_corto_package_init</ref>(<ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="324" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="324" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a8b8d459a39a5c2863c4be88c0194cd06" prot="public" static="no">
+        <name>corto_result_contentof</name>
+        <param><defname>_this</defname></param>
+        <param><defname>contentType</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a0cc34da1e7210f9c7e913c60d61f7679" kindref="member">_corto_result_contentof</ref>(_this, contentType)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="329" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="329" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a768d97a8b97510fc12cce2c86928d241" prot="public" static="no">
+        <name>corto_result_fromcontent</name>
+        <param><defname>_this</defname></param>
+        <param><defname>contentType</defname></param>
+        <param><defname>content</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1af2d7e600051935cba3ef43f731dff9c3" kindref="member">_corto_result_fromcontent</ref>(_this, contentType, content)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="335" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="335" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1af7e952b889d56c509a33331ed5f2176c" prot="public" static="no">
+        <name>corto_result_getText</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a3e2de51607d39f648acec921762a151d" kindref="member">_corto_result_getText</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="342" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="342" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a32da0ff366b3258d124a696522930a8e" prot="public" static="no">
+        <name>corto_route_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a46b7d86eb14a270fa77bbece65ddb2ec" kindref="member">_corto_route_construct</ref>(<ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="347" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="347" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1adf8604d3024cba1d58a3a34637b7ebae" prot="public" static="no">
+        <name>corto_route_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aa43b8c91ab982e193433b89b4f61c054" kindref="member">_corto_route_init</ref>(<ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="352" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="352" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aa01c7e060438b0d95f05634db302bedf" prot="public" static="no">
+        <name>corto_router_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ad0723c73d9c05c1722e161ad0189346c" kindref="member">_corto_router_construct</ref>(<ref refid="core_2__type_8h_1adf219a12443cf9d8b5b0c1aee8458dc1" kindref="member">corto_router</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="357" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="357" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a99dfae1e1b8e5489f2bafaa91fe25f9c" prot="public" static="no">
+        <name>corto_router_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a8465f0d8ca23122b17d7e7b9d9888773" kindref="member">_corto_router_init</ref>(<ref refid="core_2__type_8h_1adf219a12443cf9d8b5b0c1aee8458dc1" kindref="member">corto_router</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="362" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="362" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a2cd0d7aead5ffe69ea301a49a18ea192" prot="public" static="no">
+        <name>corto_router_match</name>
+        <param><defname>instance</defname></param>
+        <param><defname>request</defname></param>
+        <param><defname>param</defname></param>
+        <param><defname>result</defname></param>
+        <param><defname>matched</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a9d1286befbfa1149060176d357311ae1" kindref="member">_corto_router_match</ref>(instance, request, param, result, matched)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="367" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="367" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a36a6bc17a71a62d587fb72300e4fc0c3" prot="public" static="no">
+        <name>corto_routerimpl_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a97721690d2c8faf27857fbdcc9a696fc" kindref="member">_corto_routerimpl_construct</ref>(<ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="376" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="376" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aaa4c70aedd8c445a4518013b6bd5385f" prot="public" static="no">
+        <name>corto_routerimpl_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a9f9d614c92addb1f0955010dfc681716" kindref="member">_corto_routerimpl_destruct</ref>(<ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="381" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="381" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a91dc35369e21de2002510e7fedf46756" prot="public" static="no">
+        <name>corto_routerimpl_findRoute_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>pattern</defname></param>
+        <param><defname>param</defname></param>
+        <param><defname>routerData</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a07f1900e5fd108da10874b5ff537d964" kindref="member">_corto_routerimpl_findRoute_v</ref>(<ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref>(_this), instance, pattern, param, routerData)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="386" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="386" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ac4f84ebd06b4a47864449caecee05c1c" prot="public" static="no">
+        <name>corto_routerimpl_findRoute</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <param><defname>pattern</defname></param>
+        <param><defname>param</defname></param>
+        <param><defname>routerData</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a016a48bc138cde6939d5c9db98a6c33e" kindref="member">_corto_routerimpl_findRoute</ref>(<ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref>(_this), instance, pattern, param, routerData)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="395" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="395" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aeeb0d4d971a0e7a6478f0834ca2b4671" prot="public" static="no">
+        <name>corto_routerimpl_matchRoute_v</name>
+        <param><defname>_this</defname></param>
+        <param><defname>route</defname></param>
+        <param><defname>pattern</defname></param>
+        <param><defname>param</defname></param>
+        <param><defname>routerData</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a1459c42bc39c9ecbb778746ed60b58c2" kindref="member">_corto_routerimpl_matchRoute_v</ref>(<ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref>(_this), <ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref>(route), pattern, param, routerData)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="404" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="404" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a9a30e52ac97b83f0073ec28ad8709d1e" prot="public" static="no">
+        <name>corto_routerimpl_matchRoute</name>
+        <param><defname>_this</defname></param>
+        <param><defname>route</defname></param>
+        <param><defname>pattern</defname></param>
+        <param><defname>param</defname></param>
+        <param><defname>routerData</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a158dc221268a94f55b846ac76a5196a9" kindref="member">_corto_routerimpl_matchRoute</ref>(<ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref>(_this), <ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref>(route), pattern, param, routerData)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="413" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="413" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a1ea7d3d09fa4eb885e81458f715b4272" prot="public" static="no">
+        <name>corto_stager_add</name>
+        <param><defname>_this</defname></param>
+        <param><defname>id</defname></param>
+        <param><defname>type</defname></param>
+        <param><defname>contentType</defname></param>
+        <param><defname>content</defname></param>
+        <param><defname>childcount</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aefeecaf341811aee4dd506efb2940e50" kindref="member">_corto_stager_add</ref>(<ref refid="core_2__type_8h_1a529c58e1d1760fbde27b5f867044ed2a" kindref="member">corto_stager</ref>(_this), id, type, contentType, content, childcount)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="422" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="422" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ab5c113a40075ca245928292531422a2d" prot="public" static="no">
+        <name>corto_stager_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a20df3226ccd34553b37fb8efc2cea53d" kindref="member">_corto_stager_construct</ref>(<ref refid="core_2__type_8h_1a529c58e1d1760fbde27b5f867044ed2a" kindref="member">corto_stager</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="432" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="432" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aadcf25552dfea9a6e0dff32837347275" prot="public" static="no">
+        <name>corto_stager_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a606a0cd9a3b97caded8308340a685e61" kindref="member">_corto_stager_destruct</ref>(<ref refid="core_2__type_8h_1a529c58e1d1760fbde27b5f867044ed2a" kindref="member">corto_stager</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="437" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="437" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a0d1ca6c1dc855ea4f35a44fd9bd8a97a" prot="public" static="no">
+        <name>corto_subscriber_construct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a4c9b24a53aae0267e2889b54ddea1820" kindref="member">_corto_subscriber_construct</ref>(<ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="442" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="442" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a1aa7238fcf32c12d6dd8c08df40d9b77" prot="public" static="no">
+        <name>corto_subscriber_deinit</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a61147258750f3517a97745f6a52d27d9" kindref="member">_corto_subscriber_deinit</ref>(<ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="447" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="447" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a867610dda2df0aeb31afb0e658f8658b" prot="public" static="no">
+        <name>corto_subscriber_destruct</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aa57f41dd536255f8463765e5cde36292" kindref="member">_corto_subscriber_destruct</ref>(<ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="452" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="452" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a268af4b06d8cb3ed49d5003bea9a057d" prot="public" static="no">
+        <name>corto_subscriber_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aad32556636221f69692a9a7d0bb347ef" kindref="member">_corto_subscriber_init</ref>(<ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref>(_this))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="457" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="457" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1a06784aba96d8c9beec934f27d758f1f2" prot="public" static="no">
+        <name>corto_subscriber_subscribe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a2f327c046897553fce4d41be6736fbf2" kindref="member">_corto_subscriber_subscribe</ref>(<ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref>(_this), instance)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="462" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="462" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ae01bd8f421a146811f6ab047b997cb6a" prot="public" static="no">
+        <name>corto_subscriber_unsubscribe</name>
+        <param><defname>_this</defname></param>
+        <param><defname>instance</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1ac9855de14f4b2ff51601c10536727440" kindref="member">_corto_subscriber_unsubscribe</ref>(<ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref>(_this), instance)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="468" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="468" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1ab36357234240065ebdda28e59fc2453a" prot="public" static="no">
+        <name>corto_subscriberEvent_deinit</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1aa16f6fbdc6c94fa644ddd36639dc5de5" kindref="member">_corto_subscriberEvent_deinit</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="474" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="474" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aa4b03e47f1c61bd89c7db7c6e4d70b41" prot="public" static="no">
+        <name>corto_subscriberEvent_handle</name>
+        <param><defname>e</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a20f77af637e5e330be699e33e698301d" kindref="member">_corto_subscriberEvent_handle</ref>(e)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="479" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="479" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="include_2core_2__interface_8h_1aed94478024591bb5cd8f510bfd253524" prot="public" static="no">
+        <name>corto_subscriberEvent_init</name>
+        <param><defname>_this</defname></param>
+        <initializer><ref refid="include_2core_2__interface_8h_1a55da17c178d3f7667857784c38967720" kindref="member">_corto_subscriberEvent_init</ref>(_this)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="484" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" bodystart="484" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a1c2ccc73515565edd7722b773c609b4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_dispatcher_post_v</definition>
+        <argsstring>(corto_dispatcher _this, corto_event *e)</argsstring>
+        <name>_corto_dispatcher_post_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a591701d59d3183bd51a628d565f9fd25" kindref="member">corto_dispatcher</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__event" kindref="compound">corto_event</ref> *</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="18" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1adbd4f74ba683a575ff6095bd451e50d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_dispatcher_post</definition>
+        <argsstring>(corto_dispatcher _this, corto_event *e)</argsstring>
+        <name>_corto_dispatcher_post</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a591701d59d3183bd51a628d565f9fd25" kindref="member">corto_dispatcher</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__event" kindref="compound">corto_event</ref> *</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="24" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ac9f7ec6d7063d1ec59f877ad4c01e3e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_event_handle</definition>
+        <argsstring>(corto_event *_this)</argsstring>
+        <name>_corto_event_handle</name>
+        <param>
+          <type><ref refid="structcorto__event" kindref="compound">corto_event</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="30" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aaf5fdccf747aac49acc260d2ed6f6503" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_event_uniqueKind</definition>
+        <argsstring>(void)</argsstring>
+        <name>_corto_event_uniqueKind</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="35" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aad2effed17ca1bb67881b5c5c514c3fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+        <definition>CORTO_EXPORT corto_time _corto_frame_getTime</definition>
+        <argsstring>(corto_frame *_this)</argsstring>
+        <name>_corto_frame_getTime</name>
+        <param>
+          <type><ref refid="structcorto__frame" kindref="compound">corto_frame</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="39" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a045b80e3bc849fb6f28bc0ba0e4a79b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_invokeEvent_handle_v</definition>
+        <argsstring>(corto_invokeEvent _this)</argsstring>
+        <name>_corto_invokeEvent_handle_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a21d7f84b946d72d756ffc85deff8b301" kindref="member">corto_invokeEvent</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="44" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8271a488600d81160fa8eae346532905" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_invokeEvent_handle</definition>
+        <argsstring>(corto_invokeEvent _this)</argsstring>
+        <name>_corto_invokeEvent_handle</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a21d7f84b946d72d756ffc85deff8b301" kindref="member">corto_invokeEvent</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="49" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a9de56c7f0bbcbcea86b06c16a5aed2e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_loader_construct</definition>
+        <argsstring>(corto_loader _this)</argsstring>
+        <name>_corto_loader_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="54" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a9aa66fe264802868b9293072ed6e90ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_loader_destruct</definition>
+        <argsstring>(corto_loader _this)</argsstring>
+        <name>_corto_loader_destruct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="59" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a468d3e98185ef3f2dd78e5e84cd54794" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a84ec4305e972c54edc6b746debeb690e" kindref="member">corto_resultIter</ref></type>
+        <definition>CORTO_EXPORT corto_resultIter _corto_loader_onRequest_v</definition>
+        <argsstring>(corto_loader _this, corto_request *request)</argsstring>
+        <name>_corto_loader_onRequest_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="64" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aaf0859f21ac144ce404b354bb3381188" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a84ec4305e972c54edc6b746debeb690e" kindref="member">corto_resultIter</ref></type>
+        <definition>CORTO_EXPORT corto_resultIter _corto_loader_onRequest</definition>
+        <argsstring>(corto_loader _this, corto_request *request)</argsstring>
+        <name>_corto_loader_onRequest</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a8c608d7830f5042955b77f23841d346b" kindref="member">corto_loader</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="70" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a025eead60f6e5bae0e8bbc7524a91989" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_mount_construct</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="76" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a77c20d78626a01269ab6c21a42a7d90a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_destruct</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_destruct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="81" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ab4401d517af850ee0eeec82401d69c75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_mount_id</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_id</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="86" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a7aff513fbe60ef3afff385e56b7f4ef3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_mount_init</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_init</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="91" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8ceb6ad26d5b08390ef366f950cf26c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_invoke</definition>
+        <argsstring>(corto_mount _this, corto_object instance, corto_function proc, uintptr_t argptrs)</argsstring>
+        <name>_corto_mount_invoke</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref></type>
+          <declname>proc</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>argptrs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="96" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a36a556fb8f43acb1f18e648daa899f9e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_mount_onId_v</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_onId_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="104" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a3567ed5521ffd212aefa30e2ebd87756" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_mount_onId</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_onId</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="109" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ae690a0befb257515437cbc89de18405c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onInvoke_v</definition>
+        <argsstring>(corto_mount _this, corto_object instance, corto_function proc, uintptr_t argptrs)</argsstring>
+        <name>_corto_mount_onInvoke_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref></type>
+          <declname>proc</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>argptrs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="114" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aaeba365968d08f3f3b7a3e8be38e3c0e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onInvoke</definition>
+        <argsstring>(corto_mount _this, corto_object instance, corto_function proc, uintptr_t argptrs)</argsstring>
+        <name>_corto_mount_onInvoke</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a87d1530235ecee1ddac7d08b8f383616" kindref="member">corto_function</ref></type>
+          <declname>proc</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>argptrs</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="122" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ab242e146d00195c0c1e9c5448be23a7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onNotify_v</definition>
+        <argsstring>(corto_mount _this, corto_eventMask event, corto_result *object)</argsstring>
+        <name>_corto_mount_onNotify_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5966a2010b608c90d536380d1f2d2405" kindref="member">corto_eventMask</ref></type>
+          <declname>event</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__result" kindref="compound">corto_result</ref> *</type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="130" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a4fa2786fc7b2c3351c38f6fc86781781" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onNotify</definition>
+        <argsstring>(corto_mount _this, corto_eventMask event, corto_result *object)</argsstring>
+        <name>_corto_mount_onNotify</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5966a2010b608c90d536380d1f2d2405" kindref="member">corto_eventMask</ref></type>
+          <declname>event</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__result" kindref="compound">corto_result</ref> *</type>
+          <declname>object</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="137" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ac685937de2648e9a83c6b0aee3c5eeca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onPoll_v</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_onPoll_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="144" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8d63ac0c1e7373f8fa61ba1e323c1368" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onPoll</definition>
+        <argsstring>(corto_mount _this)</argsstring>
+        <name>_corto_mount_onPoll</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="149" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a21cb473546e96bc1b4b36797fb8bc55c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a84ec4305e972c54edc6b746debeb690e" kindref="member">corto_resultIter</ref></type>
+        <definition>CORTO_EXPORT corto_resultIter _corto_mount_onRequest_v</definition>
+        <argsstring>(corto_mount _this, corto_request *request)</argsstring>
+        <name>_corto_mount_onRequest_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="154" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a9abe060e094f703c2b8eb8239e20d617" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a84ec4305e972c54edc6b746debeb690e" kindref="member">corto_resultIter</ref></type>
+        <definition>CORTO_EXPORT corto_resultIter _corto_mount_onRequest</definition>
+        <argsstring>(corto_mount _this, corto_request *request)</argsstring>
+        <name>_corto_mount_onRequest</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="160" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ae44aac1cf6f24117efef64575c313953" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_mount_onResume_v</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string name, corto_object o)</argsstring>
+        <name>_corto_mount_onResume_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="166" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a3fd3c2570e1c5cb121175880ce988795" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_mount_onResume</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string name, corto_object o)</argsstring>
+        <name>_corto_mount_onResume</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="174" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1af41ad5c53e68188a2e8d2afb3cdcaaf3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> uintptr_t</type>
+        <definition>CORTO_EXPORT uintptr_t _corto_mount_onSubscribe_v</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string expr, uintptr_t ctx)</argsstring>
+        <name>_corto_mount_onSubscribe_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>ctx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="182" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a7102287f9ac06d62844e92fd8f6ebce5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> uintptr_t</type>
+        <definition>CORTO_EXPORT uintptr_t _corto_mount_onSubscribe</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string expr, uintptr_t ctx)</argsstring>
+        <name>_corto_mount_onSubscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>ctx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="190" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ab450104865f099eb8bef2a1b58cc2127" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onUnsubscribe_v</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string expr, uintptr_t ctx)</argsstring>
+        <name>_corto_mount_onUnsubscribe_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>ctx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="198" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a016f9a32da0be517e04d5d2fba720c15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_onUnsubscribe</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string expr, uintptr_t ctx)</argsstring>
+        <name>_corto_mount_onUnsubscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>ctx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="206" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a1753ddb5fc90305da23bb8b3f6649d6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_post</definition>
+        <argsstring>(corto_mount _this, corto_event *e)</argsstring>
+        <name>_corto_mount_post</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__event" kindref="compound">corto_event</ref> *</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="214" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a07bd10d14b272b742674021c08107562" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1a84ec4305e972c54edc6b746debeb690e" kindref="member">corto_resultIter</ref></type>
+        <definition>CORTO_EXPORT corto_resultIter _corto_mount_request</definition>
+        <argsstring>(corto_mount _this, corto_request *request)</argsstring>
+        <name>_corto_mount_request</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="220" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8ab43f7faa4e3cfb73a53ffd5c7fdc06" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+        <definition>CORTO_EXPORT corto_object _corto_mount_resume</definition>
+        <argsstring>(corto_mount _this, corto_string parent, corto_string name, corto_object o)</argsstring>
+        <name>_corto_mount_resume</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="226" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a837775dbf606f4b433a7fa59976bafb6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_return</definition>
+        <argsstring>(corto_mount _this, corto_result *r)</argsstring>
+        <name>_corto_mount_return</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__result" kindref="compound">corto_result</ref> *</type>
+          <declname>r</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="234" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a59db2e1380837b027d1447872fa12c79" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_mount_setContentType</definition>
+        <argsstring>(corto_mount _this, corto_string type)</argsstring>
+        <name>_corto_mount_setContentType</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="240" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8fbd864f33c67808c35507dd118686f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_mount_setContentTypeIn</definition>
+        <argsstring>(corto_mount _this, corto_string type)</argsstring>
+        <name>_corto_mount_setContentTypeIn</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="246" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a284fa33df4cfc39f57d6fcacdcd7aa89" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_mount_setContentTypeOut</definition>
+        <argsstring>(corto_mount _this, corto_string type)</argsstring>
+        <name>_corto_mount_setContentTypeOut</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="252" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ac1ffc561b441d6a6113fcd4348136c47" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_subscribe</definition>
+        <argsstring>(corto_mount _this, corto_request *request)</argsstring>
+        <name>_corto_mount_subscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="258" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ad7483fa161e9640846fc8e5299047b3e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_mount_unsubscribe</definition>
+        <argsstring>(corto_mount _this, corto_request *request)</argsstring>
+        <name>_corto_mount_unsubscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a65fd4ab9cdbf3098f029c17a1ce79199" kindref="member">corto_mount</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__request" kindref="compound">corto_request</ref> *</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="264" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a42130e4699c673e476b5e9b3272462eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_observer_construct</definition>
+        <argsstring>(corto_observer _this)</argsstring>
+        <name>_corto_observer_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="270" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ac82f142828d37908e7fd9e8ce654afa3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_observer_destruct</definition>
+        <argsstring>(corto_observer _this)</argsstring>
+        <name>_corto_observer_destruct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="275" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1af0b4bf18832c03e4d164f142cc58e426" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_observer_init</definition>
+        <argsstring>(corto_observer _this)</argsstring>
+        <name>_corto_observer_init</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="280" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ad688d4d891237332715040fa5dd0ed19" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_observer_observe</definition>
+        <argsstring>(corto_observer _this, corto_object instance, corto_object observable)</argsstring>
+        <name>_corto_observer_observe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>observable</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="285" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a445ab36d7b3ac33f84483ca26f69c3e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1abb452686968e48b67397da5f97445f5b" kindref="member">bool</ref></type>
+        <definition>CORTO_EXPORT bool _corto_observer_observing</definition>
+        <argsstring>(corto_observer _this, corto_object instance, corto_object observable)</argsstring>
+        <name>_corto_observer_observing</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>observable</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="292" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a158f3754472075bbc6e62b37cc487e4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_observer_unobserve</definition>
+        <argsstring>(corto_observer _this, corto_object instance, corto_object observable)</argsstring>
+        <name>_corto_observer_unobserve</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a9f0f42fc4b0507ae978186108bc0f684" kindref="member">corto_observer</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>observable</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="299" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a3711fa3e7648a6f99c795ffb47173bf9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_observerEvent_deinit</definition>
+        <argsstring>(corto_observerEvent *_this)</argsstring>
+        <name>_corto_observerEvent_deinit</name>
+        <param>
+          <type><ref refid="structcorto__observer_event" kindref="compound">corto_observerEvent</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="306" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1abb6ab65b3c07e4b6189f78c7b1bc5b05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_observerEvent_handle</definition>
+        <argsstring>(corto_event *e)</argsstring>
+        <name>_corto_observerEvent_handle</name>
+        <param>
+          <type><ref refid="structcorto__event" kindref="compound">corto_event</ref> *</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="311" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ad7f55bc97abf7495a34e82bc365a3813" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_observerEvent_init</definition>
+        <argsstring>(corto_observerEvent *_this)</argsstring>
+        <name>_corto_observerEvent_init</name>
+        <param>
+          <type><ref refid="structcorto__observer_event" kindref="compound">corto_observerEvent</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="316" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1af04e06142b0a42fdcdee99dd886d9541" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_package_construct</definition>
+        <argsstring>(corto_package _this)</argsstring>
+        <name>_corto_package_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="321" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8bb8fd19a483600c453d62b9fdc64a69" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_package_init</definition>
+        <argsstring>(corto_package _this)</argsstring>
+        <name>_corto_package_init</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a6a3aefeb01b6c0a83668b35fe8c2bfd1" kindref="member">corto_package</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="326" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a0cc34da1e7210f9c7e913c60d61f7679" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_result_contentof</definition>
+        <argsstring>(corto_result *_this, corto_string contentType)</argsstring>
+        <name>_corto_result_contentof</name>
+        <param>
+          <type><ref refid="structcorto__result" kindref="compound">corto_result</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>contentType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="331" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1af2d7e600051935cba3ef43f731dff9c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_result_fromcontent</definition>
+        <argsstring>(corto_result *_this, corto_string contentType, corto_string content)</argsstring>
+        <name>_corto_result_fromcontent</name>
+        <param>
+          <type><ref refid="structcorto__result" kindref="compound">corto_result</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>content</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="337" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a3e2de51607d39f648acec921762a151d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+        <definition>CORTO_EXPORT corto_string _corto_result_getText</definition>
+        <argsstring>(corto_result *_this)</argsstring>
+        <name>_corto_result_getText</name>
+        <param>
+          <type><ref refid="structcorto__result" kindref="compound">corto_result</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="344" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a46b7d86eb14a270fa77bbece65ddb2ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_route_construct</definition>
+        <argsstring>(corto_route _this)</argsstring>
+        <name>_corto_route_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="349" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aa43b8c91ab982e193433b89b4f61c054" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_route_init</definition>
+        <argsstring>(corto_route _this)</argsstring>
+        <name>_corto_route_init</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="354" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ad0723c73d9c05c1722e161ad0189346c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_router_construct</definition>
+        <argsstring>(corto_router _this)</argsstring>
+        <name>_corto_router_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1adf219a12443cf9d8b5b0c1aee8458dc1" kindref="member">corto_router</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="359" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a8465f0d8ca23122b17d7e7b9d9888773" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_router_init</definition>
+        <argsstring>(corto_router _this)</argsstring>
+        <name>_corto_router_init</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1adf219a12443cf9d8b5b0c1aee8458dc1" kindref="member">corto_router</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="364" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a9d1286befbfa1149060176d357311ae1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_router_match</definition>
+        <argsstring>(corto_object instance, corto_string request, corto_any param, corto_any result, corto_route *matched)</argsstring>
+        <name>_corto_router_match</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>request</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>param</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type><ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref> *</type>
+          <declname>matched</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="369" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a97721690d2c8faf27857fbdcc9a696fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_routerimpl_construct</definition>
+        <argsstring>(corto_routerimpl _this)</argsstring>
+        <name>_corto_routerimpl_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="378" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a9f9d614c92addb1f0955010dfc681716" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_routerimpl_destruct</definition>
+        <argsstring>(corto_routerimpl _this)</argsstring>
+        <name>_corto_routerimpl_destruct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="383" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a07f1900e5fd108da10874b5ff537d964" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref></type>
+        <definition>CORTO_EXPORT corto_route _corto_routerimpl_findRoute_v</definition>
+        <argsstring>(corto_routerimpl _this, corto_object instance, corto_stringseq pattern, corto_any param, corto_any *routerData)</argsstring>
+        <name>_corto_routerimpl_findRoute_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__stringseq" kindref="compound">corto_stringseq</ref></type>
+          <declname>pattern</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>param</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref> *</type>
+          <declname>routerData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="388" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a016a48bc138cde6939d5c9db98a6c33e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref></type>
+        <definition>CORTO_EXPORT corto_route _corto_routerimpl_findRoute</definition>
+        <argsstring>(corto_routerimpl _this, corto_object instance, corto_stringseq pattern, corto_any param, corto_any *routerData)</argsstring>
+        <name>_corto_routerimpl_findRoute</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__stringseq" kindref="compound">corto_stringseq</ref></type>
+          <declname>pattern</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>param</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref> *</type>
+          <declname>routerData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="397" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a1459c42bc39c9ecbb778746ed60b58c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int32_t</type>
+        <definition>CORTO_EXPORT int32_t _corto_routerimpl_matchRoute_v</definition>
+        <argsstring>(corto_routerimpl _this, corto_route route, corto_stringseq pattern, corto_any param, corto_any *routerData)</argsstring>
+        <name>_corto_routerimpl_matchRoute_v</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref></type>
+          <declname>route</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__stringseq" kindref="compound">corto_stringseq</ref></type>
+          <declname>pattern</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>param</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref> *</type>
+          <declname>routerData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="406" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a158dc221268a94f55b846ac76a5196a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int32_t</type>
+        <definition>CORTO_EXPORT int32_t _corto_routerimpl_matchRoute</definition>
+        <argsstring>(corto_routerimpl _this, corto_route route, corto_stringseq pattern, corto_any param, corto_any *routerData)</argsstring>
+        <name>_corto_routerimpl_matchRoute</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a627bc9a5cd2c7c7ca39e638539db3b1c" kindref="member">corto_routerimpl</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="core_2__type_8h_1aee6d1fee5d84bc69c3ec672758468331" kindref="member">corto_route</ref></type>
+          <declname>route</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__stringseq" kindref="compound">corto_stringseq</ref></type>
+          <declname>pattern</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref></type>
+          <declname>param</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__any" kindref="compound">corto_any</ref> *</type>
+          <declname>routerData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="415" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aefeecaf341811aee4dd506efb2940e50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_stager_add</definition>
+        <argsstring>(corto_stager _this, corto_string id, corto_string type, corto_string contentType, uintptr_t content, uint64_t childcount)</argsstring>
+        <name>_corto_stager_add</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a529c58e1d1760fbde27b5f867044ed2a" kindref="member">corto_stager</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>contentType</declname>
+        </param>
+        <param>
+          <type>uintptr_t</type>
+          <declname>content</declname>
+        </param>
+        <param>
+          <type>uint64_t</type>
+          <declname>childcount</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="424" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a20df3226ccd34553b37fb8efc2cea53d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_stager_construct</definition>
+        <argsstring>(corto_stager _this)</argsstring>
+        <name>_corto_stager_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a529c58e1d1760fbde27b5f867044ed2a" kindref="member">corto_stager</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="434" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a606a0cd9a3b97caded8308340a685e61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_stager_destruct</definition>
+        <argsstring>(corto_stager _this)</argsstring>
+        <name>_corto_stager_destruct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a529c58e1d1760fbde27b5f867044ed2a" kindref="member">corto_stager</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="439" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a4c9b24a53aae0267e2889b54ddea1820" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_subscriber_construct</definition>
+        <argsstring>(corto_subscriber _this)</argsstring>
+        <name>_corto_subscriber_construct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="444" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a61147258750f3517a97745f6a52d27d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_subscriber_deinit</definition>
+        <argsstring>(corto_subscriber _this)</argsstring>
+        <name>_corto_subscriber_deinit</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="449" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aa57f41dd536255f8463765e5cde36292" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_subscriber_destruct</definition>
+        <argsstring>(corto_subscriber _this)</argsstring>
+        <name>_corto_subscriber_destruct</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="454" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aad32556636221f69692a9a7d0bb347ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_subscriber_init</definition>
+        <argsstring>(corto_subscriber _this)</argsstring>
+        <name>_corto_subscriber_init</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="459" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a2f327c046897553fce4d41be6736fbf2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_subscriber_subscribe</definition>
+        <argsstring>(corto_subscriber _this, corto_object instance)</argsstring>
+        <name>_corto_subscriber_subscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="464" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1ac9855de14f4b2ff51601c10536727440" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_subscriber_unsubscribe</definition>
+        <argsstring>(corto_subscriber _this, corto_object instance)</argsstring>
+        <name>_corto_subscriber_unsubscribe</name>
+        <param>
+          <type><ref refid="core_2__type_8h_1a5fc68d67ae5917058fc11f434bf1aa5f" kindref="member">corto_subscriber</ref></type>
+          <declname>_this</declname>
+        </param>
+        <param>
+          <type><ref refid="lang_2__type_8h_1ac604b6df806fdb3438bc2413be8aebf9" kindref="member">corto_object</ref></type>
+          <declname>instance</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="470" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1aa16f6fbdc6c94fa644ddd36639dc5de5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_subscriberEvent_deinit</definition>
+        <argsstring>(corto_subscriberEvent *_this)</argsstring>
+        <name>_corto_subscriberEvent_deinit</name>
+        <param>
+          <type><ref refid="structcorto__subscriber_event" kindref="compound">corto_subscriberEvent</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="476" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a20f77af637e5e330be699e33e698301d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void _corto_subscriberEvent_handle</definition>
+        <argsstring>(corto_event *e)</argsstring>
+        <name>_corto_subscriberEvent_handle</name>
+        <param>
+          <type><ref refid="structcorto__event" kindref="compound">corto_event</ref> *</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="481" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="include_2core_2__interface_8h_1a55da17c178d3f7667857784c38967720" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t _corto_subscriberEvent_init</definition>
+        <argsstring>(corto_subscriberEvent *_this)</argsstring>
+        <name>_corto_subscriberEvent_init</name>
+        <param>
+          <type><ref refid="structcorto__subscriber_event" kindref="compound">corto_subscriberEvent</ref> *</type>
+          <declname>_this</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h" line="486" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/core/_interface.h"/>
+  </compounddef>
+</doxygen>

@@ -25,14 +25,14 @@ int16_t _corto_router_construct(
 {
 /* $begin(corto/core/router/construct) */
     if (!corto_interface(this)->base) {
-        corto_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
+        corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
         if (!corto_instanceofType(corto_routerimpl_o, corto_interface(this)->base)) {
             corto_seterr("router must inherit from 'routerimpl'");
             goto error;
         }
     }
-    corto_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
+    corto_ptr_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
     return corto_class_construct(this);
 error:
     return -1;
@@ -43,7 +43,7 @@ int16_t _corto_router_init(
     corto_router this)
 {
 /* $begin(corto/core/router/init) */
-    corto_setstr(&this->elementSeparator, "/");
+    corto_ptr_setstr(&this->elementSeparator, "/");
     return corto_class_init(this);
 /* $end */
 }

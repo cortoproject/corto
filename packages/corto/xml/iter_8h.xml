@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="iter_8h" kind="file" language="C++">
+    <compoundname>iter.h</compoundname>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="iter_8h_1a896c420f1e3b753095b0ef0f1350de7d" prot="public" static="no">
+        <name>CORTO_ITER_STACK_LIMIT</name>
+        <initializer>(64)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" line="29" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="iter_8h_1a60d245dc1e11a676cb2e6203b119ee5d" prot="public" static="no">
+        <name>CORTO_ITER_EMPTY</name>
+        <initializer>(<ref refid="structcorto__iter" kindref="compound">corto_iter</ref>){<ref refid="base_8h_1a070d2ce7b6bb7e5c05602aa8c308d0c4" kindref="member">NULL</ref>}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" line="30" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="iter_8h_1a0ed4d5c5513f05d89c26431c3fa437b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_iter_hasNext</definition>
+        <argsstring>(corto_iter *iter)</argsstring>
+        <name>corto_iter_hasNext</name>
+        <param>
+          <type><ref refid="structcorto__iter" kindref="compound">corto_iter</ref> *</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" line="32" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="iter_8h_1aff600d3051a45b7e14b4e8923b58473b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_iter_next</definition>
+        <argsstring>(corto_iter *iter)</argsstring>
+        <name>corto_iter_next</name>
+        <param>
+          <type><ref refid="structcorto__iter" kindref="compound">corto_iter</ref> *</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" line="33" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="iter_8h_1ab3d34ac57192f40fe78c33e1f18a8ca1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_iter_nextPtr</definition>
+        <argsstring>(corto_iter *iter)</argsstring>
+        <name>corto_iter_nextPtr</name>
+        <param>
+          <type><ref refid="structcorto__iter" kindref="compound">corto_iter</ref> *</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" line="34" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="iter_8h_1ac42df66a3432627bcb04d5be187879d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_iter_release</definition>
+        <argsstring>(corto_iter *iter)</argsstring>
+        <name>corto_iter_release</name>
+        <param>
+          <type><ref refid="structcorto__iter" kindref="compound">corto_iter</ref> *</type>
+          <declname>iter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h" line="35" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/iter.h"/>
+  </compounddef>
+</doxygen>

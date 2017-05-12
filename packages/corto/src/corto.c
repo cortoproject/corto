@@ -952,8 +952,8 @@ static void corto_patchSequences(void) {
     corto_handleAction_o->parameters.length = 1;
     corto_handleAction_o->parameters.buffer = corto_calloc(sizeof(corto_parameter));
     corto_parameter *p = &corto_handleAction_o->parameters.buffer[0];
-    corto_setref(&p->type, corto_event_o);
-    corto_setstr(&p->name, "event");
+    corto_ptr_setref(&p->type, corto_event_o);
+    corto_ptr_setstr(&p->name, "event");
 }
 
 void corto_initEnvironment(void) {

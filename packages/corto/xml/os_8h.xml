@@ -1,0 +1,1888 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="os_8h" kind="file" language="C++">
+    <compoundname>os.h</compoundname>
+    <includes local="yes">corto/async_posix.h</includes>
+    <incdepgraph>
+      <node id="193">
+        <label>os.h</label>
+        <link refid="os_8h"/>
+        <childnode refid="194" relation="include">
+        </childnode>
+      </node>
+      <node id="194">
+        <label>corto/async_posix.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="os_8h_1a03fa03214882a846678dc0da1fa08e7b" prot="public" static="no">
+        <name>CORTO_CPU_32BIT</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="34" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="os_8h_1acf074a0e77ae35e5eb747c0003395034" prot="public" static="no">
+        <name>CORTO_PLATFORM_STRING</name>
+        <initializer>CORTO_CPU_STRING &quot;-&quot; CORTO_OS_STRING</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="71" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="os_8h_1a87672cbe4458da4679da1f7ccd097142" prot="public" static="no">
+        <name>corto_pid</name>
+        <param></param>
+        <initializer><ref refid="os_8h_1a9690817ff5d11529f5b74e7eb2c94528" kindref="member">_corto_pid</ref>()</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="145" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="os_8h_1a5c12695b7b403e092bec4257d944c269" prot="public" static="no">
+        <name>CORTO_LOCK_BUSY</name>
+        <initializer>(1)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="177" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="177" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="os_8h_1a4505108e898da5556f47995c486df596" prot="public" static="no">
+        <name>corto_cas</name>
+        <param><defname>ptr</defname></param>
+        <param><defname>old</defname></param>
+        <param><defname>new</defname></param>
+        <initializer>__sync_bool_compare_and_swap(ptr, old, new)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="233" column="9" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="233" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="os_8h_1acff52b1631cc485512e03ba312554cd1" prot="public" static="no">
+        <name>corto_procsignal</name>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1abeb429d62e7140b4bf02ccbd253b13a5" prot="public">
+          <name>CORTO_SIGINT</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1af1eabc4db406d934c5b6b3ed25af2f1f" prot="public">
+          <name>CORTO_SIGQUIT</name>
+          <initializer>= 3</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1a4d1d725b1a0e15455ecc22513827ed85" prot="public">
+          <name>CORTO_SIGILL</name>
+          <initializer>= 4</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1a947c5b11713828be88eb3241f3e47ee9" prot="public">
+          <name>CORTO_SIGABRT</name>
+          <initializer>= 6</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1a9c292200932152b607d9be113907ffab" prot="public">
+          <name>CORTO_SIGFPE</name>
+          <initializer>= 8</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1a52371afc008aad0837164d6f925a594b" prot="public">
+          <name>CORTO_SIGKILL</name>
+          <initializer>= 9</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1ae153fd15dbdfb452cd893c3c6e4f9f59" prot="public">
+          <name>CORTO_SIGSEGV</name>
+          <initializer>= 11</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="os_8h_1acff52b1631cc485512e03ba312554cd1a1040217eb719647755897225e8b9775d" prot="public">
+          <name>CORTO_SIGTERM</name>
+          <initializer>= 15</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="75" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="75" bodyend="84"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int corto_pid</definition>
+        <argsstring></argsstring>
+        <name>corto_pid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="73" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1a536a70251fd25fff89b5d86f1c317696" prot="public" static="no">
+        <type>enum <ref refid="os_8h_1acff52b1631cc485512e03ba312554cd1" kindref="member">corto_procsignal</ref></type>
+        <definition>typedef enum corto_procsignal  corto_procsignal</definition>
+        <argsstring></argsstring>
+        <name>corto_procsignal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="84" column="1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1af2c937079c7b8319b1f31224f890d2a3" prot="public" static="no">
+        <type>struct corto_dl_s *</type>
+        <definition>typedef struct corto_dl_s* corto_dl</definition>
+        <argsstring></argsstring>
+        <name>corto_dl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="148" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1a3b3690255054da754453998a48e7acca" prot="public" static="no">
+        <type>unsigned long int</type>
+        <definition>typedef unsigned long int corto_thread</definition>
+        <argsstring></argsstring>
+        <name>corto_thread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="180" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="180" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1a29276183058a2dbf0d307b3c9a5a507a" prot="public" static="no">
+        <type>void *(*</type>
+        <definition>typedef void*(* corto_threadFunc) (void *)</definition>
+        <argsstring>)(void *)</argsstring>
+        <name>corto_threadFunc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="181" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="181" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1ad9d4907c962fa4c7c9c2bbca1a958644" prot="public" static="no">
+        <type>struct <ref refid="structcorto__mutex__s" kindref="compound">corto_mutex_s</ref> *</type>
+        <definition>typedef struct corto_mutex_s* corto_mutex</definition>
+        <argsstring></argsstring>
+        <name>corto_mutex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="198" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" prot="public" static="no">
+        <type>struct <ref refid="structcorto__rwmutex__s" kindref="compound">corto_rwmutex_s</ref> *</type>
+        <definition>typedef struct corto_rwmutex_s* corto_rwmutex</definition>
+        <argsstring></argsstring>
+        <name>corto_rwmutex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="208" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1af5ef34744ef12394e9810f0863f2dff4" prot="public" static="no">
+        <type>struct <ref refid="structcorto__sem__s" kindref="compound">corto_sem_s</ref> *</type>
+        <definition>typedef struct corto_sem_s* corto_sem</definition>
+        <argsstring></argsstring>
+        <name>corto_sem</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="219" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="219" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="os_8h_1a406cacd909a3ef2674c762e076ba8a76" prot="public" static="no">
+        <type>struct corto_file_s *</type>
+        <definition>typedef struct corto_file_s* corto_file</definition>
+        <argsstring></argsstring>
+        <name>corto_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="235" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="235" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="os_8h_1a391986d9b0247fafe6b75fa4e2d2d691" prot="public" static="no" mutable="no">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *(*)(void)</type>
+        <definition>CORTO_EXPORT void*(*)(void) corto_dlProc(corto_dl dl, const char *proc)</definition>
+        <argsstring>(corto_dl dl, const char *proc)</argsstring>
+        <name>corto_dlProc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="160" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" bodystart="160" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="os_8h_1a07393cf6ebc6fcacc3159fbc9d503c3a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mkdir</definition>
+        <argsstring>(const char *name,...)</argsstring>
+        <name>corto_mkdir</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="87" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1add138450043121550a2bda0f8db4a72c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="base_8h_1aaca9118859184d499be5dc95bf79c061" kindref="member">corto_ll</ref></type>
+        <definition>CORTO_EXPORT corto_ll corto_opendir</definition>
+        <argsstring>(const char *name)</argsstring>
+        <name>corto_opendir</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="90" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a5c8298689085538e716fd406ef3c8b93" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_closedir</definition>
+        <argsstring>(corto_ll dir)</argsstring>
+        <name>corto_closedir</name>
+        <param>
+          <type><ref refid="base_8h_1aaca9118859184d499be5dc95bf79c061" kindref="member">corto_ll</ref></type>
+          <declname>dir</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="93" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a36ea959315713007290630cd61ad51e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_touch</definition>
+        <argsstring>(const char *name)</argsstring>
+        <name>corto_touch</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="96" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a5324727697ae9aebeee21e19022d5172" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_cwd</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_cwd</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="99" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a8d093ef9b15194b0ee58ee2faec56641" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_chdir</definition>
+        <argsstring>(const char *name)</argsstring>
+        <name>corto_chdir</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="102" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aa33ad6522546b43676d19ec0dd8017f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_cp</definition>
+        <argsstring>(const char *source, const char *destination)</argsstring>
+        <name>corto_cp</name>
+        <param>
+          <type>const char *</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>destination</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="105" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a55a9aa5f531dba7065cbe1c64d2e821b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_isdir</definition>
+        <argsstring>(const char *name)</argsstring>
+        <name>corto_isdir</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="108" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ac218ce2d29837df333b47b91505cf002" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rename</definition>
+        <argsstring>(const char *oldName, const char *newName)</argsstring>
+        <name>corto_rename</name>
+        <param>
+          <type>const char *</type>
+          <declname>oldName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>newName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="111" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ae54c497e9a9be81dbab221179f988875" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rm</definition>
+        <argsstring>(const char *name)</argsstring>
+        <name>corto_rm</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="114" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aacab89e46399fda76b3fdc972e9f5afc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rmtree</definition>
+        <argsstring>(const char *name)</argsstring>
+        <name>corto_rmtree</name>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="117" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aeea7bc78c086713a5f50557e85fb84be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" kindref="member">corto_pid</ref></type>
+        <definition>CORTO_EXPORT corto_pid corto_procrun</definition>
+        <argsstring>(const char *exec, char *argv[])</argsstring>
+        <name>corto_procrun</name>
+        <param>
+          <type>const char *</type>
+          <declname>exec</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="120" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1abd0ef364130d839d650c014ba2c8ffbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" kindref="member">corto_pid</ref></type>
+        <definition>CORTO_EXPORT corto_pid corto_procrunRedirect</definition>
+        <argsstring>(const char *exec, char *argv[], FILE *in, FILE *out, FILE *err)</argsstring>
+        <name>corto_procrunRedirect</name>
+        <param>
+          <type>const char *</type>
+          <declname>exec</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <param>
+          <type>FILE *</type>
+          <declname>in</declname>
+        </param>
+        <param>
+          <type>FILE *</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>FILE *</type>
+          <declname>err</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="123" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1af6a67633caa49c2144145c419506e400" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_prockill</definition>
+        <argsstring>(corto_pid pid, corto_procsignal sig)</argsstring>
+        <name>corto_prockill</name>
+        <param>
+          <type><ref refid="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" kindref="member">corto_pid</ref></type>
+          <declname>pid</declname>
+        </param>
+        <param>
+          <type><ref refid="os_8h_1acff52b1631cc485512e03ba312554cd1" kindref="member">corto_procsignal</ref></type>
+          <declname>sig</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="127" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a732722a649c0a3fdb52c82b84f49cc99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_procwait</definition>
+        <argsstring>(corto_pid pid, int8_t *rc)</argsstring>
+        <name>corto_procwait</name>
+        <param>
+          <type><ref refid="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" kindref="member">corto_pid</ref></type>
+          <declname>pid</declname>
+        </param>
+        <param>
+          <type>int8_t *</type>
+          <declname>rc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="130" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ac8ee42ddf5c8dc395b7d9e139908a476" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_proccheck</definition>
+        <argsstring>(corto_pid pid, int8_t *rc)</argsstring>
+        <name>corto_proccheck</name>
+        <param>
+          <type><ref refid="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" kindref="member">corto_pid</ref></type>
+          <declname>pid</declname>
+        </param>
+        <param>
+          <type>int8_t *</type>
+          <declname>rc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="133" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a1508f50cce1c677d4988647055792911" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_proccmd</definition>
+        <argsstring>(corto_string cmd, int8_t *rc)</argsstring>
+        <name>corto_proccmd</name>
+        <param>
+          <type><ref refid="lang_2__type_8h_1a4c2e6b80c62ac88db2fd39e01a7d6e4c" kindref="member">corto_string</ref></type>
+          <declname>cmd</declname>
+        </param>
+        <param>
+          <type>int8_t *</type>
+          <declname>rc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="136" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1af8b9f5bd748cab5eb8710da051f3f157" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_beingTraced</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_beingTraced</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="139" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1af5ead0c70bfa80367ca8195a7ee4ac65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_hostname</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_hostname</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="142" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9690817ff5d11529f5b74e7eb2c94528" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a3a7a5661f0ca5a2bc2b9201519090127" kindref="member">corto_pid</ref></type>
+        <definition>CORTO_EXPORT corto_pid _corto_pid</definition>
+        <argsstring>(void)</argsstring>
+        <name>_corto_pid</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="146" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a4ad95496bf1b61c63423e307b0b28144" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1af2c937079c7b8319b1f31224f890d2a3" kindref="member">corto_dl</ref></type>
+        <definition>CORTO_EXPORT corto_dl corto_dlOpen</definition>
+        <argsstring>(const char *file)</argsstring>
+        <name>corto_dlOpen</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="151" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1abf3a0d5a59822463eb3f918894e4c5e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_dlClose</definition>
+        <argsstring>(corto_dl dl)</argsstring>
+        <name>corto_dlClose</name>
+        <param>
+          <type><ref refid="os_8h_1af2c937079c7b8319b1f31224f890d2a3" kindref="member">corto_dl</ref></type>
+          <declname>dl</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="154" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aa2159cfff776adc8e7583058a15ed2fc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_dlSym</definition>
+        <argsstring>(corto_dl dl, const char *sym)</argsstring>
+        <name>corto_dlSym</name>
+        <param>
+          <type><ref refid="os_8h_1af2c937079c7b8319b1f31224f890d2a3" kindref="member">corto_dl</ref></type>
+          <declname>dl</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sym</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="157" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1abcf2c1481525fdb042e690481946301e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> const char *</type>
+        <definition>CORTO_EXPORT const char* corto_dlError</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_dlError</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="163" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aa577a957e49a39794c1d16fffb036051" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int16_t</type>
+        <definition>CORTO_EXPORT int16_t corto_setenv</definition>
+        <argsstring>(const char *varname, const char *value,...)</argsstring>
+        <name>corto_setenv</name>
+        <param>
+          <type>const char *</type>
+          <declname>varname</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="166" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a430dbff9e1f1077af4894784d1d9d474" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_getenv</definition>
+        <argsstring>(const char *varname)</argsstring>
+        <name>corto_getenv</name>
+        <param>
+          <type>const char *</type>
+          <declname>varname</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="169" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a8ec5e3eb8848e7e15d88b9682fb25477" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_envparse</definition>
+        <argsstring>(const char *str,...)</argsstring>
+        <name>corto_envparse</name>
+        <param>
+          <type>const char *</type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="172" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a7e6fea2d62f3df42f3c83791aaa05359" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_venvparse</definition>
+        <argsstring>(const char *str, va_list args)</argsstring>
+        <name>corto_venvparse</name>
+        <param>
+          <type>const char *</type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type>va_list</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="175" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ada61fa9072e01dc3f930f71f5bd32073" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+        <definition>CORTO_EXPORT corto_thread corto_threadNew</definition>
+        <argsstring>(corto_threadFunc f, void *arg)</argsstring>
+        <name>corto_threadNew</name>
+        <param>
+          <type><ref refid="os_8h_1a29276183058a2dbf0d307b3c9a5a507a" kindref="member">corto_threadFunc</ref></type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>arg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="183" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aefbb78cdd0b4d03f4b6a1cf9d57047b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadJoin</definition>
+        <argsstring>(corto_thread thread, void **)</argsstring>
+        <name>corto_threadJoin</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+          <declname>thread</declname>
+        </param>
+        <param>
+          <type>void **</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="184" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a2d8f0019f3d8b64577dad3da17e83ed0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadDetach</definition>
+        <argsstring>(corto_thread thread)</argsstring>
+        <name>corto_threadDetach</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+          <declname>thread</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="185" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1afd8a6c607229a7b330ba5a2c23bd7630" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadFree</definition>
+        <argsstring>(corto_thread thread)</argsstring>
+        <name>corto_threadFree</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+          <declname>thread</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="186" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a6f19222c038be5f83fd8e45e5e745027" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadSetPriority</definition>
+        <argsstring>(corto_thread thread, int priority)</argsstring>
+        <name>corto_threadSetPriority</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+          <declname>thread</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>priority</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="187" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a4918344b20da24b7d853d7347ebad294" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadGetPriority</definition>
+        <argsstring>(corto_thread thread)</argsstring>
+        <name>corto_threadGetPriority</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+          <declname>thread</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="188" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a204d921e1fd111e6fda411a8d1ac218d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadKill</definition>
+        <argsstring>(corto_thread, int signal)</argsstring>
+        <name>corto_threadKill</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>signal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="189" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a74f796afa7cdebcae4e985b05d2c2007" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadCancel</definition>
+        <argsstring>(corto_thread)</argsstring>
+        <name>corto_threadCancel</name>
+        <param>
+          <type><ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="190" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1afc8162d935f3d98277e1ec9fe7dad53c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a3b3690255054da754453998a48e7acca" kindref="member">corto_thread</ref></type>
+        <definition>CORTO_EXPORT corto_thread corto_threadSelf</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_threadSelf</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="191" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a5fc85b9e7bb00c3758b9c65f72a3a0e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadTlsKey</definition>
+        <argsstring>(corto_threadKey *key, void(*destructor)(void *))</argsstring>
+        <name>corto_threadTlsKey</name>
+        <param>
+          <type><ref refid="async__posix_8h_1a7cea1b246da706ec7ad19ab8fcf453b7" kindref="member">corto_threadKey</ref> *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void(*)(void *)</type>
+          <declname>destructor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="192" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a3a9403bf78138d742cdb3b2c25d864a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_threadTlsSet</definition>
+        <argsstring>(corto_threadKey key, void *value)</argsstring>
+        <name>corto_threadTlsSet</name>
+        <param>
+          <type><ref refid="async__posix_8h_1a7cea1b246da706ec7ad19ab8fcf453b7" kindref="member">corto_threadKey</ref></type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="193" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9893a3184e71771819758c2200d2cca8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void *</type>
+        <definition>CORTO_EXPORT void* corto_threadTlsGet</definition>
+        <argsstring>(corto_threadKey key)</argsstring>
+        <name>corto_threadTlsGet</name>
+        <param>
+          <type><ref refid="async__posix_8h_1a7cea1b246da706ec7ad19ab8fcf453b7" kindref="member">corto_threadKey</ref></type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="194" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1afabc5bad4c821c4188885e4b2692fa91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_threadTlsKeysDestruct</definition>
+        <argsstring>(void)</argsstring>
+        <name>corto_threadTlsKeysDestruct</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="195" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a3a98d6dbc8e956de1d49c42373b9fc8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mutexNew</definition>
+        <argsstring>(struct corto_mutex_s *m)</argsstring>
+        <name>corto_mutexNew</name>
+        <param>
+          <type>struct <ref refid="structcorto__mutex__s" kindref="compound">corto_mutex_s</ref> *</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="200" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1abd5c1587de34773cd086ecda6e9778dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mutexLock</definition>
+        <argsstring>(corto_mutex mutex)</argsstring>
+        <name>corto_mutexLock</name>
+        <param>
+          <type><ref refid="os_8h_1ad9d4907c962fa4c7c9c2bbca1a958644" kindref="member">corto_mutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="201" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9a1a6e6daaae97c6c2425d9f32948a36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mutexUnlock</definition>
+        <argsstring>(corto_mutex mutex)</argsstring>
+        <name>corto_mutexUnlock</name>
+        <param>
+          <type><ref refid="os_8h_1ad9d4907c962fa4c7c9c2bbca1a958644" kindref="member">corto_mutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="202" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9444b7bca049398fe9b028921df46e6e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mutexFree</definition>
+        <argsstring>(corto_mutex mutex)</argsstring>
+        <name>corto_mutexFree</name>
+        <param>
+          <type><ref refid="os_8h_1ad9d4907c962fa4c7c9c2bbca1a958644" kindref="member">corto_mutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="203" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a77359df7acd65ffbe754880ea9e84eef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mutexTry</definition>
+        <argsstring>(corto_mutex mutex)</argsstring>
+        <name>corto_mutexTry</name>
+        <param>
+          <type><ref refid="os_8h_1ad9d4907c962fa4c7c9c2bbca1a958644" kindref="member">corto_mutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="204" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1af650c66341dd68cd946e16f501634f52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_mutexLockTimed</definition>
+        <argsstring>(corto_mutex mutex, corto_time timeout)</argsstring>
+        <name>corto_mutexLockTimed</name>
+        <param>
+          <type><ref refid="os_8h_1ad9d4907c962fa4c7c9c2bbca1a958644" kindref="member">corto_mutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="205" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a544b81ec624e619ea3588082965ebe57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexNew</definition>
+        <argsstring>(struct corto_rwmutex_s *m)</argsstring>
+        <name>corto_rwmutexNew</name>
+        <param>
+          <type>struct <ref refid="structcorto__rwmutex__s" kindref="compound">corto_rwmutex_s</ref> *</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="210" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a2cfefb5900afb2d337ea290ad62345ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexRead</definition>
+        <argsstring>(corto_rwmutex mutex)</argsstring>
+        <name>corto_rwmutexRead</name>
+        <param>
+          <type><ref refid="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" kindref="member">corto_rwmutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="211" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1aeaca3af0acfff4250fb7499d506af131" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexWrite</definition>
+        <argsstring>(corto_rwmutex mutex)</argsstring>
+        <name>corto_rwmutexWrite</name>
+        <param>
+          <type><ref refid="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" kindref="member">corto_rwmutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="212" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a24b1c5213149bbaa7e7cefb4594ac89a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexTryRead</definition>
+        <argsstring>(corto_rwmutex mutex)</argsstring>
+        <name>corto_rwmutexTryRead</name>
+        <param>
+          <type><ref refid="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" kindref="member">corto_rwmutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="213" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a278ea08c191d63b6acb9ad6b90077963" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexTryWrite</definition>
+        <argsstring>(corto_rwmutex mutex)</argsstring>
+        <name>corto_rwmutexTryWrite</name>
+        <param>
+          <type><ref refid="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" kindref="member">corto_rwmutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="214" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ac0331e18aac587b378fdcea6c20b9d11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexUnlock</definition>
+        <argsstring>(corto_rwmutex mutex)</argsstring>
+        <name>corto_rwmutexUnlock</name>
+        <param>
+          <type><ref refid="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" kindref="member">corto_rwmutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="215" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ac38a3eaef75a3c25103bfea39870eab7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_rwmutexFree</definition>
+        <argsstring>(corto_rwmutex mutex)</argsstring>
+        <name>corto_rwmutexFree</name>
+        <param>
+          <type><ref refid="os_8h_1a52cda573753b3d9d3d741de98eaa9fa4" kindref="member">corto_rwmutex</ref></type>
+          <declname>mutex</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="216" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a288f4bb35461ff77deb3e88c1e375d60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1af5ef34744ef12394e9810f0863f2dff4" kindref="member">corto_sem</ref></type>
+        <definition>CORTO_EXPORT corto_sem corto_semNew</definition>
+        <argsstring>(unsigned int initValue)</argsstring>
+        <name>corto_semNew</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>initValue</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="221" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a6449cacbd519c9268ba353fcdf14c362" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_semPost</definition>
+        <argsstring>(corto_sem)</argsstring>
+        <name>corto_semPost</name>
+        <param>
+          <type><ref refid="os_8h_1af5ef34744ef12394e9810f0863f2dff4" kindref="member">corto_sem</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="222" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a746fb1d58369869ce40bf238383dfd40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_semWait</definition>
+        <argsstring>(corto_sem)</argsstring>
+        <name>corto_semWait</name>
+        <param>
+          <type><ref refid="os_8h_1af5ef34744ef12394e9810f0863f2dff4" kindref="member">corto_sem</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="223" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a4424c895ce592d429574f559ec5ffd9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_semTryWait</definition>
+        <argsstring>(corto_sem)</argsstring>
+        <name>corto_semTryWait</name>
+        <param>
+          <type><ref refid="os_8h_1af5ef34744ef12394e9810f0863f2dff4" kindref="member">corto_sem</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="224" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ae21225b989cc99adb03ddcf3467aad8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_semValue</definition>
+        <argsstring>(corto_sem)</argsstring>
+        <name>corto_semValue</name>
+        <param>
+          <type><ref refid="os_8h_1af5ef34744ef12394e9810f0863f2dff4" kindref="member">corto_sem</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="225" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a965a2f64cb44077f3d98bca4e6fc15ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_semFree</definition>
+        <argsstring>(corto_sem)</argsstring>
+        <name>corto_semFree</name>
+        <param>
+          <type><ref refid="os_8h_1af5ef34744ef12394e9810f0863f2dff4" kindref="member">corto_sem</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="226" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ae1d74177118795798539b8d914065265" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_ainc</definition>
+        <argsstring>(int *count)</argsstring>
+        <name>corto_ainc</name>
+        <param>
+          <type>int *</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="229" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a53b311915b7812b9d425c86aeabd2d46" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_adec</definition>
+        <argsstring>(int *count)</argsstring>
+        <name>corto_adec</name>
+        <param>
+          <type>int *</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="230" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a37c1155c09beb421c47475a0b1cae193" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fileLoad</definition>
+        <argsstring>(const char *file)</argsstring>
+        <name>corto_fileLoad</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="238" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9c02ac83e48ca2f1daa994fdd726d885" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        <definition>CORTO_EXPORT corto_file corto_fileOpen</definition>
+        <argsstring>(const char *file)</argsstring>
+        <name>corto_fileOpen</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="239" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1adc18837808a53efa26be0a11ddb412ee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        <definition>CORTO_EXPORT corto_file corto_fileAppend</definition>
+        <argsstring>(const char *file)</argsstring>
+        <name>corto_fileAppend</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="240" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ae60bdd0da34d3c168eaae6075fabc504" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        <definition>CORTO_EXPORT corto_file corto_fileRead</definition>
+        <argsstring>(const char *file)</argsstring>
+        <name>corto_fileRead</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="241" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a3d15d165e72f98f7c0887c3b422c4db7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> FILE *</type>
+        <definition>CORTO_EXPORT FILE* corto_fileGet</definition>
+        <argsstring>(corto_file file)</argsstring>
+        <name>corto_fileGet</name>
+        <param>
+          <type><ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="243" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ade57487138ac3e4180032cb99f1e9173" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_fileClose</definition>
+        <argsstring>(corto_file)</argsstring>
+        <name>corto_fileClose</name>
+        <param>
+          <type><ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="244" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a8b31dc732e217da1b10ff94199c7dde7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fileSearch</definition>
+        <argsstring>(const char *file, corto_ll locations)</argsstring>
+        <name>corto_fileSearch</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type><ref refid="base_8h_1aaca9118859184d499be5dc95bf79c061" kindref="member">corto_ll</ref></type>
+          <declname>locations</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="245" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9894a1368fc1fb52e431fe0aed5198b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_fileTest</definition>
+        <argsstring>(const char *filefmt,...)</argsstring>
+        <name>corto_fileTest</name>
+        <param>
+          <type>const char *</type>
+          <declname>filefmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="246" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a23d6e432b8b8d24ea18bd1d93875fb30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> unsigned int</type>
+        <definition>CORTO_EXPORT unsigned int corto_fileSize</definition>
+        <argsstring>(corto_file)</argsstring>
+        <name>corto_fileSize</name>
+        <param>
+          <type><ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="248" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a17249de5572935249eeb05eb88ac9c5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> unsigned int</type>
+        <definition>CORTO_EXPORT unsigned int corto_fileTell</definition>
+        <argsstring>(corto_file)</argsstring>
+        <name>corto_fileTell</name>
+        <param>
+          <type><ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="249" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a5a9978749e859507e6adaeddef17efbb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="lang_2__type_8h_1abd7a9290a93c6c4db515de8c32df0063" kindref="member">corto_bool</ref></type>
+        <definition>CORTO_EXPORT corto_bool corto_fileEof</definition>
+        <argsstring>(corto_file)</argsstring>
+        <name>corto_fileEof</name>
+        <param>
+          <type><ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="250" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ac4eaa6b2ab28bd7cb9b79c7ea4b964f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fileReadLine</definition>
+        <argsstring>(corto_file file, char *buf, unsigned int length)</argsstring>
+        <name>corto_fileReadLine</name>
+        <param>
+          <type><ref refid="os_8h_1a406cacd909a3ef2674c762e076ba8a76" kindref="member">corto_file</ref></type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buf</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="252" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a8dd8baad3c0180f2c02c7989d5b8086f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fileExtension</definition>
+        <argsstring>(char *file, char *buffer)</argsstring>
+        <name>corto_fileExtension</name>
+        <param>
+          <type>char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="254" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a877501a4207e39869285f835083733ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_filePath</definition>
+        <argsstring>(char *file, char *buffer)</argsstring>
+        <name>corto_filePath</name>
+        <param>
+          <type>char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="255" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a7ae8a7c8865770f0e90ba8fada2b3b69" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_fileBase</definition>
+        <argsstring>(char *file, char *buffer)</argsstring>
+        <name>corto_fileBase</name>
+        <param>
+          <type>char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buffer</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="256" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ae553e5a6494a8d70c374d424839dcf8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_sleep</definition>
+        <argsstring>(unsigned int sec, unsigned int nanosec)</argsstring>
+        <name>corto_sleep</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>sec</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>nanosec</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="259" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a77ab9f72e3b3db231861fdd3600dc921" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> void</type>
+        <definition>CORTO_EXPORT void corto_timeGet</definition>
+        <argsstring>(corto_time *time)</argsstring>
+        <name>corto_timeGet</name>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref> *</type>
+          <declname>time</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="260" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a49502d196a0ec4ddf07d6a2f4edce619" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+        <definition>CORTO_EXPORT corto_time corto_timeAdd</definition>
+        <argsstring>(corto_time t1, corto_time t2)</argsstring>
+        <name>corto_timeAdd</name>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="261" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a2c29fc1c978fa9cea106230509ab0d99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> <ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+        <definition>CORTO_EXPORT corto_time corto_timeSub</definition>
+        <argsstring>(corto_time t1, corto_time t2)</argsstring>
+        <name>corto_timeSub</name>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="262" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a84c4056b9e38579b766d3f602a73802a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> int</type>
+        <definition>CORTO_EXPORT int corto_time_compare</definition>
+        <argsstring>(corto_time t1, corto_time t2)</argsstring>
+        <name>corto_time_compare</name>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t1</declname>
+        </param>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="263" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ac50777ec91e2da61704123f937b73841" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> double</type>
+        <definition>CORTO_EXPORT double corto_timeToDouble</definition>
+        <argsstring>(corto_time t)</argsstring>
+        <name>corto_timeToDouble</name>
+        <param>
+          <type><ref refid="structcorto__time" kindref="compound">corto_time</ref></type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="264" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ad78baaf5c363a8ef7ab3552a73002b4d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_itoa</definition>
+        <argsstring>(int num, char *buff)</argsstring>
+        <name>corto_itoa</name>
+        <param>
+          <type>int</type>
+          <declname>num</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="267" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1ae85698c2d728b205b2a1a03f8d04c51d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_utoa</definition>
+        <argsstring>(unsigned int num, char *buff)</argsstring>
+        <name>corto_utoa</name>
+        <param>
+          <type>unsigned int</type>
+          <declname>num</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="268" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="os_8h_1a9b7d52c2ae8a1aaa1ae7739fc0c8a95c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="__project_8h_1aaf94e8b92f63a9c93989d705fdd1e573" kindref="member">CORTO_EXPORT</ref> char *</type>
+        <definition>CORTO_EXPORT char* corto_ftoa</definition>
+        <argsstring>(float num, char *buff)</argsstring>
+        <name>corto_ftoa</name>
+        <param>
+          <type>float</type>
+          <declname>num</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>buff</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h" line="269" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/os.h"/>
+  </compounddef>
+</doxygen>

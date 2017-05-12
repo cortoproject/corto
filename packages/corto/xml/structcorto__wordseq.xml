@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="structcorto__wordseq" kind="struct" language="C++" prot="public">
+    <compoundname>corto_wordseq</compoundname>
+    <includes local="no">_type.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcorto__wordseq_1a3a54367ebe117108425d71394dbebbb6" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t corto_wordseq::length</definition>
+        <argsstring></argsstring>
+        <name>length</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" line="691" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" bodystart="691" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcorto__wordseq_1a4e187b3fd98ccf1534c782ad922d3d3d" prot="public" static="no" mutable="no">
+        <type>uintptr_t *</type>
+        <definition>uintptr_t* corto_wordseq::buffer</definition>
+        <argsstring></argsstring>
+        <name>buffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" line="691" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" bodystart="691" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1261">
+        <label>corto_wordseq</label>
+        <link refid="structcorto__wordseq"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" line="691" column="1" bodyfile="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/lang/_type.h" bodystart="691" bodyend="691"/>
+    <listofallmembers>
+      <member refid="structcorto__wordseq_1a4e187b3fd98ccf1534c782ad922d3d3d" prot="public" virt="non-virtual"><scope>corto_wordseq</scope><name>buffer</name></member>
+      <member refid="structcorto__wordseq_1a3a54367ebe117108425d71394dbebbb6" prot="public" virt="non-virtual"><scope>corto_wordseq</scope><name>length</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

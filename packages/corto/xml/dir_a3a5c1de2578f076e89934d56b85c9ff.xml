@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_a3a5c1de2578f076e89934d56b85c9ff" kind="dir">
+    <compoundname>packages</compoundname>
+    <innerdir refid="dir_43bd35991d60f031fdbe625940c5ee71">corto</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/"/>
+  </compounddef>
+</doxygen>

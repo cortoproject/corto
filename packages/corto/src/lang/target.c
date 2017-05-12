@@ -18,7 +18,7 @@ int16_t _corto_target_construct(
         goto error;
     }
     if (!corto_checkState(actual, CORTO_DEFINED)) {
-        corto_setref(&actual->type, this->type);
+        corto_ptr_setref(&actual->type, this->type);
         if (corto_define(actual)) {
             goto error;
         }
@@ -29,7 +29,7 @@ int16_t _corto_target_construct(
         goto error;
     }
     if (!corto_checkState(target, CORTO_DEFINED)) {
-        corto_setref(&target->type, this->type);
+        corto_ptr_setref(&target->type, this->type);
         if (corto_define(target)) {
             goto error;
         }
@@ -40,7 +40,7 @@ int16_t _corto_target_construct(
         goto error;
     }
     if (!corto_checkState(objective, CORTO_DEFINED)) {
-        corto_setref(&objective->type, this->type);
+        corto_ptr_setref(&objective->type, this->type);
         if (corto_define(objective)) {
             goto error;
         }

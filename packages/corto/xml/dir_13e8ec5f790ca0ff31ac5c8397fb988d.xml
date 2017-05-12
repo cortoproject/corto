@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.13">
+  <compounddef id="dir_13e8ec5f790ca0ff31ac5c8397fb988d" kind="dir">
+    <compoundname>include</compoundname>
+    <innerdir refid="dir_432737de5f1cd116c78f706c3388b7ba">core</innerdir>
+    <innerdir refid="dir_44b42d46a0a88d49d3f25ea754a67195">lang</innerdir>
+    <innerdir refid="dir_ad5972df91d74637314cee47f062eb74">native</innerdir>
+    <innerdir refid="dir_ca6caa49c2df52a33ac40a37209d7fa0">secure</innerdir>
+    <innerfile refid="__project_8h">_project.h</innerfile>
+    <innerfile refid="async__posix_8h">async_posix.h</innerfile>
+    <innerfile refid="base_8h">base.h</innerfile>
+    <innerfile refid="buffer_8h">buffer.h</innerfile>
+    <innerfile refid="corto_8h">corto.h</innerfile>
+    <innerfile refid="depresolver_8h">depresolver.h</innerfile>
+    <innerfile refid="err_8h">err.h</innerfile>
+    <innerfile refid="iter_8h">iter.h</innerfile>
+    <innerfile refid="ll_8h">ll.h</innerfile>
+    <innerfile refid="object_8h">object.h</innerfile>
+    <innerfile refid="os_8h">os.h</innerfile>
+    <innerfile refid="ptr_8h">ptr.h</innerfile>
+    <innerfile refid="rb_8h">rb.h</innerfile>
+    <innerfile refid="string__deser_8h">string_deser.h</innerfile>
+    <innerfile refid="string__ser_8h">string_ser.h</innerfile>
+    <innerfile refid="util_8h">util.h</innerfile>
+    <innerfile refid="value_8h">value.h</innerfile>
+    <innerfile refid="walk_8h">walk.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/sander/GitHub/cortoproject/corto/packages/corto/include/"/>
+  </compounddef>
+</doxygen>

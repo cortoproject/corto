@@ -74,10 +74,10 @@ int16_t _corto_delegate_construct(
             if (corto_delegate_instanceof(corto_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
                 if (corto_procedure(corto_typeof(object))->hasThis) {
-                    corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
+                    corto_ptr_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
                 }
                 /* Bind procedure */
-                corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
+                corto_ptr_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
             } else {
                 /* If there is a member that corresponds to a delegate but has a non matching
                  * signature, always report error */

@@ -1245,7 +1245,7 @@ static corto_int16 corto_declareContainer(corto_object parent) {
                 if (!ts) {
                     goto error;
                 }
-                corto_setref(&ts->type, corto_containerType(c));
+                corto_ptr_setref(&ts->type, corto_containerType(c));
             }
         }
         corto_scopeRelease(seq);
@@ -1562,7 +1562,7 @@ corto_object corto_resume_fromMount(
             corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
             corto__persistent *_p = corto__objectPersistent(_o);
             corto_assert(_p != NULL, "cannot resume object that is not persistent");
-            corto_setref(&_p->owner, m);
+            corto_ptr_setref(&_p->owner, m);
         }
     }
 
@@ -5065,7 +5065,7 @@ corto_string corto_signatureClose(corto_string sig) {
 }
 
 /* Set reference field */
-void corto_setref(void* ptr, corto_object value) {
+void corto_ptr_setref(void* ptr, corto_object value) {
     corto_assertObject(value);
 
     corto_object old;
@@ -5080,7 +5080,7 @@ void corto_setref(void* ptr, corto_object value) {
 }
 
 /* Set string field */
-void corto_setstr(corto_string* ptr, corto_string value) {
+void corto_ptr_setstr(corto_string* ptr, corto_string value) {
     if (*ptr) {
         corto_dealloc(*ptr);
     }
