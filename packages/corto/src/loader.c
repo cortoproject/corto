@@ -452,6 +452,10 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         }
         corto_mutexLock(&corto_adminLock);
         h = corto_lookupExt(ext);
+        if (!h) {
+            corto_seterr("extension found but could not be loaded: %s", corto_lasterr());
+            goto error;
+        }
     }
 
     /* Load file */
