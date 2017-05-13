@@ -9,7 +9,7 @@
 #include <corto/corto.h>
 
 /* $header() */
-#include "entityAdmin.h"
+#include "entityadmin.h"
 #include "_object.h"
 
 extern corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;

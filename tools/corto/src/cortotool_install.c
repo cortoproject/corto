@@ -341,13 +341,18 @@ error:
     return -1;
 }
 
-corto_int16 cortotool_uninstallAll(void) {
-    printf("This will completely remove corto from your system, including all\n"
-           "installed packages and applications. Proceed? [Y/n] ");
+corto_int16 cortotool_uninstallAll(bool force) {
+    char ch;
+    if (!force) {
+        printf("This will completely remove corto from your system, including all\n"
+               "installed packages and applications. Proceed? [y/N] ");
 
-    char ch = getc(stdin);
+        ch = getc(stdin);
+    } else {
+        ch = 'y';
+    }
 
-    if (ch == 'Y') {
+    if (ch == 'y') {
         FILE *uninstall = fopen("uninstall.sh", "w");
         if (!uninstall) {
             corto_error("failed to create uninstall script (check permissions)");
@@ -637,7 +642,7 @@ dontdelete:
 }
 
 corto_int16 cortotool_uninstall(int argc, char *argv[]) {
-    corto_ll packages, verbose;
+    corto_ll packages, verbose, force;
 
     CORTO_UNUSED(argc);
 
@@ -646,6 +651,7 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
       (corto_argdata[]){
         {"$0", NULL, NULL}, /* Ignore 'uninstall' */
         {"--verbose", &verbose, NULL},
+        {"--force", &force, NULL},
         {"*", &packages, NULL},
         {NULL}
       }
@@ -668,7 +674,7 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
             }
         }
     } else {
-        if (cortotool_uninstallAll()) {
+        if (cortotool_uninstallAll(force != NULL)) {
             goto error;
         }
     }
