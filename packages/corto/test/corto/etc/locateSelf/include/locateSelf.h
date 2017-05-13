@@ -8,8 +8,7 @@
 
 #include <corto/corto.h>
 #include <locateSelf/_project.h>
-#include <corto/core/c/c.h>
-#include <corto/lang/c/c.h>
+#include <corto/c/c.h>
 
 /* $header() */
 /* Enter additional code here. */
@@ -18,14 +17,6 @@
 /* $body() */
 /* Enter code that requires types here */
 /* $end */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

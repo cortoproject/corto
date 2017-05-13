@@ -12,7 +12,7 @@
 #include <math.h>
 /* $end */
 
-corto_void _test_ReplicatorEvent_tc_event(
+void _test_ReplicatorEvent_tc_event(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_event) */
@@ -59,7 +59,7 @@ corto_void _test_ReplicatorEvent_tc_event(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
+void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_eventDefineWithUpdate) */
@@ -98,7 +98,7 @@ corto_void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_eventTree(
+void _test_ReplicatorEvent_tc_eventTree(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_eventTree) */
@@ -165,7 +165,7 @@ corto_void _test_ReplicatorEvent_tc_eventTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_eventTreeWithTree(
+void _test_ReplicatorEvent_tc_eventTreeWithTree(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_eventTreeWithTree) */
@@ -232,7 +232,7 @@ corto_void _test_ReplicatorEvent_tc_eventTreeWithTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_eventWithTree(
+void _test_ReplicatorEvent_tc_eventWithTree(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_eventWithTree) */
@@ -279,7 +279,7 @@ corto_void _test_ReplicatorEvent_tc_eventWithTree(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_matchingType(
+void _test_ReplicatorEvent_tc_matchingType(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_matchingType) */
@@ -352,7 +352,7 @@ corto_void _test_ReplicatorEvent_tc_matchingType(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_nonPersistent(
+void _test_ReplicatorEvent_tc_nonPersistent(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_nonPersistent) */
@@ -427,7 +427,7 @@ corto_void _test_ReplicatorEvent_tc_nonPersistent(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_ownedByMount(
+void _test_ReplicatorEvent_tc_ownedByMount(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_ownedByMount) */
@@ -506,7 +506,7 @@ corto_void _test_ReplicatorEvent_tc_ownedByMount(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_rateLimitOneObject(
+void _test_ReplicatorEvent_tc_rateLimitOneObject(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_rateLimitOneObject) */
@@ -557,7 +557,7 @@ corto_void _test_ReplicatorEvent_tc_rateLimitOneObject(
 /* $end */
 }
 
-corto_void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
+void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
     test_ReplicatorEvent this)
 {
 /* $begin(test/ReplicatorEvent/tc_rateLimitThreeObjects) */

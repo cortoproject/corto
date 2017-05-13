@@ -1,3 +1,23 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "cortotool_run.h"
 #include "cortotool_build.h"
@@ -25,9 +45,9 @@ corto_fileMonitor* cortotool_monitorNew(char *file, char *lib) {
 
 static void cortotool_addChangedLibrary(corto_ll *libs, corto_string lib) {
     if (*libs && lib) {
-        corto_iter iter = corto_llIter(*libs);
-        while (corto_iterHasNext(&iter)) {
-            corto_string l = corto_iterNext(&iter);
+        corto_iter iter = corto_ll_iter(*libs);
+        while (corto_iter_hasNext(&iter)) {
+            corto_string l = corto_iter_next(&iter);
             if (!strcmp(l, lib)) {
                 return;
             }
@@ -35,9 +55,9 @@ static void cortotool_addChangedLibrary(corto_ll *libs, corto_string lib) {
     }
 
     if (!*libs) {
-        *libs = corto_llNew();
+        *libs = corto_ll_new();
     }
-    corto_llAppend(*libs, lib);
+    corto_ll_append(*libs, lib);
 }
 
 static corto_ll cortotool_getModified(corto_ll files, corto_ll changed) {
@@ -45,15 +65,15 @@ static corto_ll cortotool_getModified(corto_ll files, corto_ll changed) {
     corto_ll libs = NULL;
 
     if (changed) {
-        corto_llFree(changed);
+        corto_ll_free(changed);
         changed = NULL;
     }
 
     if (files) {
-        corto_iter iter = corto_llIter(files);
-        while (corto_iterHasNext(&iter)) {
+        corto_iter iter = corto_ll_iter(files);
+        while (corto_iter_hasNext(&iter)) {
             struct stat attr;
-            corto_fileMonitor *mon = corto_iterNext(&iter);
+            corto_fileMonitor *mon = corto_iter_next(&iter);
 
             if (stat(mon->file, &attr) < 0) {
                 printf("corto: failed to stat '%s' (%s)\n", mon->file, strerror(errno));
@@ -77,7 +97,7 @@ static corto_ll cortotool_waitForChanges(corto_pid pid, corto_ll files, corto_ll
     corto_int32 i = 0;
 
     if (changed) {
-        corto_llFree(changed);
+        corto_ll_free(changed);
         changed = NULL;
     }
 
@@ -115,13 +135,13 @@ static int cortotool_addDirToMonitor(corto_string dir, corto_ll monitorList) {
         goto error;
     }
 
-    corto_iter iter = corto_llIter(files);
-    while (corto_iterHasNext(&iter)) {
+    corto_iter iter = corto_ll_iter(files);
+    while (corto_iter_hasNext(&iter)) {
         corto_id srcFile;
-        corto_string file = corto_iterNext(&iter);
+        corto_string file = corto_iter_next(&iter);
         sprintf(srcFile, "%s/src/%s", dir, file);
         corto_fileMonitor *mon = cortotool_monitorNew(srcFile, dir);
-        corto_llAppend(monitorList, mon);
+        corto_ll_append(monitorList, mon);
     }
 
     corto_closedir(files);
@@ -147,7 +167,7 @@ error:
 }
 
 static corto_ll cortotool_gatherFiles(void) {
-    corto_ll result = corto_llNew();
+    corto_ll result = corto_ll_new();
     corto_ll packages;
 
     if (cortotool_addDirToMonitor(".", result)) {
@@ -156,10 +176,10 @@ static corto_ll cortotool_gatherFiles(void) {
 
     /* Walk packages */
     packages = corto_loadGetPackages();
-    corto_iter iter = corto_llIter(packages);
-    while (corto_iterHasNext(&iter)) {
+    corto_iter iter = corto_ll_iter(packages);
+    while (corto_iter_hasNext(&iter)) {
         corto_id sourceLink;
-        corto_string package = corto_iterNext(&iter);
+        corto_string package = corto_iter_next(&iter);
         corto_string file = corto_locate(package, NULL, CORTO_LOCATION_LIB);
         if (!file) {
             corto_error("package '%s' could not be located\n", package);
@@ -168,7 +188,7 @@ static corto_ll cortotool_gatherFiles(void) {
         }
         corto_fileMonitor *mon = cortotool_monitorNew(file, NULL);
         if (file) {
-            corto_llAppend(result, mon);
+            corto_ll_append(result, mon);
         } else {
             printf("couldn't find file '%s'\n", file);
         }
@@ -191,7 +211,7 @@ static corto_ll cortotool_gatherFiles(void) {
 
     return result;
 error:
-    corto_llFree(result);
+    corto_ll_free(result);
     return NULL;
 }
 
@@ -240,9 +260,9 @@ corto_int16 cortotool_monitor(char *argv[]) {
             rebuild++;
         } else {
             depErrors = 0;
-            corto_iter iter = corto_llIter(changed);
-            while (corto_iterHasNext(&iter)) {
-                corto_string lib = corto_iterNext(&iter);
+            corto_iter iter = corto_ll_iter(changed);
+            while (corto_iter_hasNext(&iter)) {
+                corto_string lib = corto_iter_next(&iter);
                 if (lib && strcmp(lib, ".")) {
                     printf("corto: '%s' changed, rebuilding\n", lib);
                     if (!cortotool_buildDependency(lib)) {
@@ -351,7 +371,7 @@ corto_int16 cortotool_run(int argc, char *argv[]) {
     }
 
     if (dir) {
-        corto_string project = corto_llGet(dir, 0);
+        corto_string project = corto_ll_get(dir, 0);
 
         /* Maybe this function fails, which is ok as it doesn't directly mean
          * an error. */

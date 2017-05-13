@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_MethodTesterInherit_overload__test_MethodTesterInherit(
+void _test_MethodTesterInherit_overload__test_MethodTesterInherit(
     test_MethodTesterInherit this,
     test_MethodTesterInherit m)
 {
@@ -19,7 +19,7 @@ corto_void _test_MethodTesterInherit_overload__test_MethodTesterInherit(
 /* $end */
 }
 
-corto_void _test_MethodTesterInherit_overload_string_string(
+void _test_MethodTesterInherit_overload_string_string(
     test_MethodTesterInherit this,
     corto_string a,
     corto_string b)
@@ -31,7 +31,7 @@ corto_void _test_MethodTesterInherit_overload_string_string(
 /* $end */
 }
 
-corto_void _test_MethodTesterInherit_simple(
+void _test_MethodTesterInherit_simple(
     test_MethodTesterInherit this)
 {
 /* $begin(test/MethodTesterInherit/simple) */
@@ -41,9 +41,9 @@ corto_void _test_MethodTesterInherit_simple(
 /* $end */
 }
 
-corto_void _test_MethodTesterInherit_virtualOverload(
+void _test_MethodTesterInherit_virtualOverload(
     test_MethodTesterInherit this,
-    corto_int32 a)
+    int32_t a)
 {
 /* $begin(test/MethodTesterInherit/virtualOverload) */
 

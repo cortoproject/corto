@@ -6,157 +6,9 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-/* $header() */
-typedef struct __dummySeq {
-    corto_uint32 length;
-    void* buffer;
-}__dummySeq;
-
-static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint32 length, corto_walkAction action, corto_void* userData) {
-    void* v;
-    int result;
-    corto_type elementType;
-    corto_uint32 elementSize, i;
-
-    result = 1;
-
-    if (array) {
-        elementType = this->elementType;
-        elementSize = corto_type_sizeof(elementType);
-        v = array;
-
-        result = 1;
-        for(i=0; (i<length) && result; i++) {
-            result = action(v, userData);
-            v = CORTO_OFFSET(v, elementSize);
-        }
-    }
-
-    return result;
-}
-
-/* Walk contents of collection */
-int corto_walk(corto_collection this, corto_void* collection, corto_walkAction action, corto_void* userData) {
-    int result;
-
-    result = 1;
-
-    switch(this->kind) {
-    case CORTO_ARRAY:
-        result = corto_arrayWalk(this, collection, this->max, action, userData);
-        break;
-    case CORTO_SEQUENCE:
-        result = corto_arrayWalk(this, ((__dummySeq*)collection)->buffer, ((__dummySeq*)collection)->length, action, userData);
-        break;
-    case CORTO_LIST: {
-        corto_ll list = *(corto_ll*)collection;
-        if (list) {
-            if (corto_collection_requiresAlloc(this->elementType)) {
-                result = corto_llWalk(list, action, userData);
-            } else {
-                result = corto_llWalkPtr(list, action, userData);
-            }
-        }
-        break;
-    }
-    case CORTO_MAP: {
-        corto_rbtree tree = *(corto_rbtree*)collection;
-        if (tree) {
-            if (corto_collection_requiresAlloc(this->elementType)) {
-                result = corto_rbtreeWalk(tree, action, userData);
-            } else {
-                result = corto_rbtreeWalkPtr(tree, action, userData);
-            }
-        }
-        break;
-    }
-    }
-    return result;
-}
-
-/* Free references in collection */
-static int corto_clearFreeReferences(void* o, void* udata) {
-    CORTO_UNUSED(udata);
-    corto_release(*(corto_object*)o);
-    return 1;
-}
-
-/* Free values in collection */
-static int corto_clearFreeValues(void* o, void* udata) {
-    CORTO_UNUSED(udata);
-    corto_dealloc(o);
-    return 1;
-}
-
-/* Clear collection */
-void corto_clear(corto_collection this, corto_void* collection) {
-   corto_type elementType;
-
-   elementType = this->elementType;
-
-   /* If type is a reference type, do free's on all elements */
-   if (elementType->reference) {
-       corto_walk(this, collection, corto_clearFreeReferences, NULL);
-   }
-
-   switch(this->kind) {
-   case CORTO_SEQUENCE:
-       corto_dealloc(((__dummySeq*)collection)->buffer);
-       ((__dummySeq*)collection)->buffer = NULL;
-       ((__dummySeq*)collection)->length = 0;
-       break;
-   case CORTO_LIST: {
-       corto_ll c;
-       if ((c = *(corto_ll*)collection)) {
-           if (corto_collection_requiresAlloc(elementType)) {
-               corto_walk(this, collection, corto_clearFreeValues, NULL);
-           }
-           corto_llFree(c);
-       }
-       break;
-   }
-   case CORTO_MAP: {
-       corto_rbtree c;
-       if ((c = *(corto_rbtree*)collection)) {
-           if (!elementType->reference) {
-               corto_walk(this, collection, corto_clearFreeValues, NULL);
-           }
-           corto_rbtreeFree(c);
-       }
-       break;
-   }
-   default: {
-       corto_error(
-         "the clear operation is only valid for sequences, lists and maps (got %s)",
-         corto_fullpath(NULL, this));
-       break;
-   }
-   }
-}
-
-corto_uint32 corto_collection_size(corto_any this) {
-    corto_uint32 result = 0;
-    switch(corto_collection(this.type)->kind) {
-    case CORTO_ARRAY:
-        result = corto_collection(this.type)->max;
-        break;
-    case CORTO_SEQUENCE:
-        result = ((corto_objectseq*)this.value)->length;
-        break;
-    case CORTO_LIST:
-        result = corto_llSize(*(corto_ll*)this.value);
-        break;
-    case CORTO_MAP:
-        result = corto_rbtreeSize(*(corto_rbtree*)this.value);
-        break;
-    }
-    return result;
-}
-/* $end */
-
-corto_bool _corto_collection_castable_v(
+bool _corto_collection_castable_v(
     corto_collection this,
     corto_type type)
 {
@@ -181,7 +33,7 @@ corto_bool _corto_collection_castable_v(
 /* $end */
 }
 
-corto_bool _corto_collection_compatible_v(
+bool _corto_collection_compatible_v(
     corto_collection this,
     corto_type type)
 {
@@ -205,7 +57,7 @@ corto_bool _corto_collection_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_collection_init(
+int16_t _corto_collection_init(
     corto_collection this)
 {
 /* $begin(corto/lang/collection/init) */
@@ -214,7 +66,7 @@ corto_int16 _corto_collection_init(
 /* $end */
 }
 
-corto_bool _corto_collection_requiresAlloc(
+bool _corto_collection_requiresAlloc(
     corto_type elementType)
 {
 /* $begin(corto/lang/collection/requiresAlloc) */

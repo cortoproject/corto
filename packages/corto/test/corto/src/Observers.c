@@ -8,131 +8,25 @@
 
 #include <include/test.h>
 
-corto_void _test_Observers_customSignatureObserver(
-    test_Observers this,
-    corto_eventMask event,
-    corto_int32 *observable,
-    corto_observer observer)
-{
-/* $begin(test/Observers/customSignatureObserver) */
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
-/* $end */
-}
-
-corto_void _test_Observers_setup(
+void _test_Observers_setup(
     test_Observers this)
 {
 /* $begin(test/Observers/setup) */
-    test_Observers_customSignatureObserver_o->mask = CORTO_ON_UPDATE;
-/* $end */
-}
-
-corto_void _test_Observers_tc_customSignatureObserver(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserver) */
-    corto_object o = corto_create(corto_void_o);
-    test_assert(o != NULL);
-
-    test_assert(corto_observer_observe(test_Observers_customSignatureObserver_o, this, o) == 0);
-
-    test_assert(corto_update(o) == 0);
-    test_assert(this->mask == CORTO_ON_UPDATE);
-    test_assert(this->observable == o);
-    test_assert(this->observer == test_Observers_customSignatureObserver_o);
-
-    test_assert(corto_observer_unobserve(test_Observers_customSignatureObserver_o, this, o) == 0);
-
-    test_assert(corto_delete(o) == 0);
-
-/* $end */
-}
-
-corto_void _test_Observers_tc_customSignatureObserverMissingEventMask(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverMissingEventMask) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(int32 event,int32& observable,core/observer observer)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(int32 event,int32& observable,core/observer observer)' of '/corto/core/observer' failed: first argument must be of type core/eventMask"
-    );
-
-/* $end */
-}
-
-corto_void _test_Observers_tc_customSignatureObserverMissingObserver(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverMissingObserver) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(core/eventMask event,int32& observable,object observer)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32& observable,object observer)' of '/corto/core/observer' failed: third argument must be of type core/observer"
-    );
-
-/* $end */
-}
-
-corto_void _test_Observers_tc_customSignatureObserverObservableNotReference(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverObservableNotReference) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(core/eventMask event,int32 observable,core/observer observer)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32 observable,core/observer observer)' of '/corto/core/observer' failed: observer parameter must be of a reference type"
-    );
-
-/* $end */
-}
-
-corto_void _test_Observers_tc_customSignatureObserverWrongArgumentNumber(
-    test_Observers this)
-{
-/* $begin(test/Observers/tc_customSignatureObserverWrongArgumentNumber) */
-    corto_object o = corto_createChild(
-      root_o,
-      "myObserver(core/eventMask event,int32& observable)",
-      corto_observer_o);
-    test_assert(o == NULL);
-    test_assertstr(
-      corto_lasterr(),
-      "init for 'myObserver(core/eventMask event,int32& observable)' of '/corto/core/observer' failed: observers must have three arguments"
-    );
 
 /* $end */
 }
 
 /* $header(test/Observers/tc_dispatchObserver) */
 void dispatchObserver_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
-    test_Observers this = instance;
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = e->instance;
+    this->mask = e->event;
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
 }
 /* $end */
-corto_void _test_Observers_tc_dispatchObserver(
+void _test_Observers_tc_dispatchObserver(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_dispatchObserver) */
@@ -164,21 +58,16 @@ corto_void _test_Observers_tc_dispatchObserver(
 }
 
 /* $header(test/Observers/tc_notifyReadDenied) */
-void notifyReadDenied_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+void notifyReadDenied_onUpdate(corto_observerEvent *e)
 {
-    test_Observers this = test_Observers(observer->instance);
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = e->instance;
+    this->mask = e->event;
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
     this->count ++;
 }
 /* $end */
-corto_void _test_Observers_tc_notifyReadDenied(
+void _test_Observers_tc_notifyReadDenied(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_notifyReadDenied) */
@@ -217,7 +106,7 @@ corto_void _test_Observers_tc_notifyReadDenied(
 /* $end */
 }
 
-corto_void _test_Observers_tc_notifyUpdateDenied(
+void _test_Observers_tc_notifyUpdateDenied(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_notifyUpdateDenied) */
@@ -254,7 +143,7 @@ corto_void _test_Observers_tc_notifyUpdateDenied(
 /* $end */
 }
 
-corto_void _test_Observers_tc_notObserving(
+void _test_Observers_tc_notObserving(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_notObserving) */
@@ -269,7 +158,7 @@ corto_void _test_Observers_tc_notObserving(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
+void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeNonScopedObjectWithScopeMaskErr) */
@@ -287,7 +176,7 @@ corto_void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observerMissingObservable(
+void _test_Observers_tc_observerMissingObservable(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observerMissingObservable) */
@@ -307,20 +196,15 @@ corto_void _test_Observers_tc_observerMissingObservable(
 }
 
 /* $header(test/Observers/tc_observeTypeFilter) */
-void observeTypeFilter_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+void observeTypeFilter_onUpdate(corto_observerEvent *e)
 {
-    test_Observers this = instance;
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = e->instance;
+    this->mask = e->event;
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
 }
 /* $end */
-corto_void _test_Observers_tc_observeTypeFilter(
+void _test_Observers_tc_observeTypeFilter(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeTypeFilter) */
@@ -355,7 +239,7 @@ corto_void _test_Observers_tc_observeTypeFilter(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observeTypeFilterNotAType(
+void _test_Observers_tc_observeTypeFilterNotAType(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeTypeFilterNotAType) */
@@ -369,7 +253,7 @@ corto_void _test_Observers_tc_observeTypeFilterNotAType(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observeTypeFilterUnresolved(
+void _test_Observers_tc_observeTypeFilterUnresolved(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeTypeFilterUnresolved) */
@@ -385,20 +269,16 @@ corto_void _test_Observers_tc_observeTypeFilterUnresolved(
 
 /* $header(test/Observers/tc_observeWithMultipleInstances) */
 void observeWithMultipleInstances_onUpdate(
-    corto_object instance,
-    corto_eventMask event,
-    corto_object observable,
-    corto_observer observer)
+    corto_observerEvent *e)
 {
-    test_Observers this = test_Observers(observer->instance);
-
-    this->mask = event;
-    corto_setref(&this->observable, observable);
-    corto_setref(&this->observer, observer);
+    test_Observers this = corto_observer(e->observer)->instance;
+    this->mask = e->event;
+    corto_ptr_setref(&this->observable, e->data);
+    corto_ptr_setref(&this->observer, e->observer);
     this->count ++;
 }
 /* $end */
-corto_void _test_Observers_tc_observeWithMultipleInstances(
+void _test_Observers_tc_observeWithMultipleInstances(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observeWithMultipleInstances) */
@@ -433,7 +313,7 @@ corto_void _test_Observers_tc_observeWithMultipleInstances(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observing(
+void _test_Observers_tc_observing(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observing) */
@@ -448,7 +328,7 @@ corto_void _test_Observers_tc_observing(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingDisabled(
+void _test_Observers_tc_observingDisabled(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingDisabled) */
@@ -464,7 +344,7 @@ corto_void _test_Observers_tc_observingDisabled(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingMultipleInstances(
+void _test_Observers_tc_observingMultipleInstances(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingMultipleInstances) */
@@ -495,7 +375,7 @@ corto_void _test_Observers_tc_observingMultipleInstances(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingScope(
+void _test_Observers_tc_observingScope(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingScope) */
@@ -510,7 +390,7 @@ corto_void _test_Observers_tc_observingScope(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingSingleInstance(
+void _test_Observers_tc_observingSingleInstance(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingSingleInstance) */
@@ -529,7 +409,7 @@ corto_void _test_Observers_tc_observingSingleInstance(
 /* $end */
 }
 
-corto_void _test_Observers_tc_observingTree(
+void _test_Observers_tc_observingTree(
     test_Observers this)
 {
 /* $begin(test/Observers/tc_observingTree) */

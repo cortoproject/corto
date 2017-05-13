@@ -1,3 +1,23 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "cortotool_build.h"
 #include "cortotool_install.h"
@@ -74,7 +94,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose, corto_bool re
     /* Build libraries to global environment */
     fprintf(
         install, 
-        "rake default verbose=%s config=%s coverage=false softlinks=false multithread=false redis=false show_header=false\n",
+        "rake default verbose=%s config=%s coverage=false softlinks=false multithread=false redistr=false show_header=false\n",
         verbose ? "true" : "false",
         release ? "release" : "debug");
 
@@ -175,9 +195,9 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     }
 
     corto_iter it;
-    if (dirs && corto_llSize(dirs)) {
-        it = corto_llIter(dirs);
-        corto_assert(corto_iterHasNext(&it), "non-empty list returns empty iterator");
+    if (dirs && corto_ll_size(dirs)) {
+        it = corto_ll_iter(dirs);
+        corto_assert(corto_iter_hasNext(&it), "non-empty list returns empty iterator");
     } else {
         if (cortotool_validProject()) {
             installLocal = TRUE;
@@ -189,8 +209,8 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
     do {
         corto_string dir = NULL;
-        if (dirs && corto_llSize(dirs)) {
-            dir = corto_iterNext(&it);
+        if (dirs && corto_ll_size(dirs)) {
+            dir = corto_iter_next(&it);
             if (corto_chdir(dir)) {
                 installRemote = TRUE;
             } else {
@@ -225,7 +245,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                       "config=release",
                       "coverage=false",
                       "multithread=false",
-                      "redis=false",
+                      "redistr=false",
                       "show_header=false",
                       NULL
                 });
@@ -237,7 +257,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                       debug ? "debug=true" : "debug=false",
                       "coverage=false",
                       "multithread=false",
-                      "redis=false",
+                      "redistr=false",
                       "show_header=false",
                       NULL
                 });
@@ -259,9 +279,17 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
 
             printf (CORTO_PROMPT "step 2: generate binaries\n\n");
         } else if (installRemote){
-            if (cortotool_installFromRemote(argv[1])) {
+            corto_lasterr();
+            corto_info("binary installers are currently under development! To install from source, do:")
+            corto_info("   git clone <package repository>, followed by:")
+            corto_info("   corto install <cloned directory>");
+            corto_info("");
+            corto_info("   Please mail sander@corto.io if you'd like to donate capacity to our")
+            corto_info("   build infrastructure. Happy coding!");
+            return 0;
+            /*if (cortotool_installFromRemote(argv[1])) {
                 goto error;
-            }
+            }*/
         } else {
             corto_error("nothing to install");
             goto error;
@@ -304,7 +332,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         if (dirs) {
             corto_chdir(cwd);
         }
-    } while (dirs && corto_iterHasNext(&it));
+    } while (dirs && corto_iter_hasNext(&it));
 
     corto_argclean(data);
 
@@ -361,7 +389,7 @@ error:
 corto_bool cortotool_isDirEmpty(corto_string dir) {
     corto_bool empty = FALSE;
     corto_ll files = corto_opendir(dir);
-    if (files && !corto_llSize(files)) {
+    if (files && !corto_ll_size(files)) {
         empty = TRUE;
     }
     corto_closedir(files);
@@ -382,7 +410,7 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
 
         /* Keep track of directories in which files are uninstalled. If empty
          * after uninstalling, also remove directory */
-        corto_ll directories = corto_llNew();
+        corto_ll directories = corto_ll_new();
         char *dependency;
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
             if (!dependency) {
@@ -404,8 +432,8 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
                 if (sep && (sep != dir)) {
                     *sep = '\0';
                 }
-                if (!corto_llFind(directories, (corto_compareAction)strcmp, dir)) {
-                    corto_llAppend(directories, dir);
+                if (!corto_ll_find(directories, (corto_compare_cb)strcmp, dir)) {
+                    corto_ll_append(directories, dir);
                 } else {
                     corto_dealloc(dir);
                 }
@@ -413,7 +441,7 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
         }
 
         /* Loop directories, recursively remove empty ones */
-        corto_iter it = corto_llIter(directories);
+        corto_iter it = corto_ll_iter(directories);
         corto_bool empty;
         corto_string root = corto_envparse(
             "%s/include/corto/%s.%s",
@@ -424,16 +452,16 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
         corto_dealloc(root);
         do {
             empty = FALSE;
-            while (corto_iterHasNext(&it)) {
-                corto_string dir = corto_iterNext(&it);
+            while (corto_iter_hasNext(&it)) {
+                corto_string dir = corto_iter_next(&it);
                 if ((strlen(dir) > minLen) && cortotool_isDirEmpty(dir)) {
                     corto_rm(dir);
                     char *sep = strrchr(dir, '/');
                     if (sep && (sep != dir)) {
                         *sep = '\0';
                     }
-                    if (!corto_llFind(directories, (corto_compareAction)strcmp, dir)) {
-                        corto_llAppend(directories, dir);
+                    if (!corto_ll_find(directories, (corto_compare_cb)strcmp, dir)) {
+                        corto_ll_append(directories, dir);
                     } else {
                         corto_dealloc(dir);
                     }
@@ -623,10 +651,10 @@ corto_int16 cortotool_uninstall(int argc, char *argv[]) {
       }
     );
 
-    if (packages && corto_llSize(packages)) {
-        corto_iter it = corto_llIter(packages);
-        while (corto_iterHasNext(&it)) {
-            corto_string package = corto_iterNext(&it);
+    if (packages && corto_ll_size(packages)) {
+        corto_iter it = corto_ll_iter(packages);
+        while (corto_iter_hasNext(&it)) {
+            corto_string package = corto_iter_next(&it);
             corto_int32 local = cortotool_uninstallFromEnv("$CORTO_TARGET", package);
             corto_int32 global = cortotool_uninstallFromEnv("/usr/local", package);
 
@@ -703,7 +731,7 @@ void cortotool_toLibPath(char *location) {
 
 corto_int16 cortotool_locate(int argc, char* argv[]) {
     corto_string location;
-    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE, lib_redis = FALSE;
+    corto_bool lib = FALSE, path = FALSE, env = FALSE, silent = FALSE, lib_redistr = FALSE;
     corto_bool error_only = FALSE;
 
     if (argc <= 1) {
@@ -718,8 +746,8 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
                 lib = TRUE;
             } else if (!strcmp(argv[i], "--path")) {
                 path = TRUE;
-            } else if (!strcmp(argv[i], "--lib-redis")) {
-                lib_redis = TRUE;
+            } else if (!strcmp(argv[i], "--lib-redistr")) {
+                lib_redistr = TRUE;
             } else if (!strcmp(argv[i], "--env")) {
                 env = TRUE;
             } else if (!strcmp(argv[i], "--silent")) {
@@ -733,7 +761,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
         }
     }
 
-    if (!lib_redis) {
+    if (!lib_redistr) {
         location = corto_locate(argv[1], NULL, CORTO_LOCATION_LIB);
     } else {
         corto_id package;
@@ -745,7 +773,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             }
             ptr++;
         }
-        location = corto_envparse("$CORTO_TARGET/redis/corto/$CORTO_VERSION/lib/lib%s.so", package);
+        location = corto_envparse("$CORTO_TARGET/redistr/corto/$CORTO_VERSION/lib/lib%s.so", package);
         if (!corto_fileTest(location)) {
             corto_trace("library '%s' not found", location);
             corto_dealloc(location);
@@ -767,7 +795,7 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
             cortotool_toLibPath(location);
         }
 
-        if (lib || lib_redis || path || env) {
+        if (lib || lib_redistr || path || env) {
             if (!silent && !error_only) printf("%s\n", location);
         } else {
             if (!silent && !error_only) printf("%s%s%s  =>  %s\n", CORTO_CYAN, argv[1], CORTO_NORMAL, location);
@@ -775,10 +803,10 @@ corto_int16 cortotool_locate(int argc, char* argv[]) {
     } else {
         if (!silent) {
             if (!error_only) {
-                if (lib_redis) {
+                if (lib_redistr) {
                     printf(CORTO_PROMPT "redistributable library for package '%s' not found", argv[1]);
                 } else {
-                    printf(CORTO_PROMPT "package '%s' not located", argv[1]);
+                    printf(CORTO_PROMPT "package '%s' not located: ", argv[1]);
                 }
             }
             if (corto_lastinfo()) {
@@ -968,7 +996,7 @@ void cortotool_locateHelp(void) {
     printf("\n");
     printf("Options:\n");
     printf("   --lib        Return the path including library name\n");
-    printf("   --lib-redis  Returns the path to a redistributable library\n");
+    printf("   --lib-redistr  Returns the path to a redistributable library\n");
     printf("   --path       Return only the path (no library name)\n");
     printf("   --env        Return only the environment (local or global package repository)\n");
     printf("   --silent     Do not print anything, just return if the package is installed\n");

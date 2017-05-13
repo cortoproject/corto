@@ -9,21 +9,17 @@
 #include <include/test.h>
 
 /* $header() */
-void test_SubscriberTest_setMembers(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
 {
-
-    corto_setstr(&this->lastId, object->id);
-    corto_setstr(&this->lastParent, object->parent);
-    this->lastMask |= event;
-    corto_subscriberListAppend(this->triggered, subscriber);
+    test_SubscriberTest this = e->instance;
+    corto_ptr_setstr(&this->lastId, e->data.id);
+    corto_ptr_setstr(&this->lastParent,  e->data.parent);
+    this->lastMask |= e->event;
+    corto_subscriberListAppend(this->triggered, corto_subscriber(e->subscriber));
 }
 /* $end */
 
-corto_void _test_SubscriberTest_clear(
+void _test_SubscriberTest_clear(
     test_SubscriberTest this)
 {
 /* $begin(test/SubscriberTest/clear) */
@@ -34,7 +30,7 @@ corto_void _test_SubscriberTest_clear(
 /* $end */
 }
 
-corto_int16 _test_SubscriberTest_construct(
+int16_t _test_SubscriberTest_construct(
     test_SubscriberTest this)
 {
 /* $begin(test/SubscriberTest/construct) */
@@ -81,7 +77,7 @@ corto_int16 _test_SubscriberTest_construct(
 /* $end */
 }
 
-corto_void _test_SubscriberTest_destruct(
+void _test_SubscriberTest_destruct(
     test_SubscriberTest this)
 {
 /* $begin(test/SubscriberTest/destruct) */
@@ -126,146 +122,122 @@ corto_void _test_SubscriberTest_destruct(
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDeclare(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDeclare(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclare) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclare ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDeclareScope(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDeclareScope(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclareScope) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclareScope ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDeclareSelf(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDeclareSelf(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclareSelf) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclareSelf ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDeclareTree(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDeclareTree(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDeclareTree) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDeclareTree ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDefine(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDefine(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefine) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefine ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDefineScope(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDefineScope(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefineScope) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefineScope ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDefineSelf(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDefineSelf(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefineSelf) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefineSelf ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onDefineTree(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onDefineTree(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onDefineTree) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countDefineTree ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onUpdate(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onUpdate(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdate) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdate ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onUpdateScope(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onUpdateScope(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdateScope) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdateScope ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onUpdateSelf(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onUpdateSelf(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdateSelf) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdateSelf ++;
 /* $end */
 }
 
-corto_void _test_SubscriberTest_onUpdateTree(
-    test_SubscriberTest this,
-    corto_eventMask event,
-    corto_result *object,
-    corto_subscriber subscriber)
+void _test_SubscriberTest_onUpdateTree(
+    corto_subscriberEvent *e)
 {
 /* $begin(test/SubscriberTest/onUpdateTree) */
-    test_SubscriberTest_setMembers(this, event, object, subscriber);
+    test_SubscriberTest this = e->instance;
+    test_SubscriberTest_setMembers(e);
     this->countUpdateTree ++;
 /* $end */
 }

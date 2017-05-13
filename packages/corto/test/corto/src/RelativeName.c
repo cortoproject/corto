@@ -8,17 +8,17 @@
 
 #include <include/test.h>
 
-corto_void _test_RelativeName_setup(
+void _test_RelativeName_setup(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/setup) */
 
-    corto_setref(&this->tier1, corto_voidCreateChild(NULL, "tier1"));
-    corto_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
-    corto_setref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
-    corto_setref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
-    corto_setref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
-    corto_setref(&this->child, corto_voidCreateChild(this->obj, "child"));
+    corto_ptr_setref(&this->tier1, corto_voidCreateChild(NULL, "tier1"));
+    corto_ptr_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
+    corto_ptr_setref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
+    corto_ptr_setref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
+    corto_ptr_setref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
+    corto_ptr_setref(&this->child, corto_voidCreateChild(this->obj, "child"));
 
     test_assert(this->tier1 != NULL);
     test_assert(this->tier2 != NULL);
@@ -30,7 +30,7 @@ corto_void _test_RelativeName_setup(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromChild(
+void _test_RelativeName_tc_fromChild(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromChild) */
@@ -45,7 +45,7 @@ corto_void _test_RelativeName_tc_fromChild(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromDisjunct(
+void _test_RelativeName_tc_fromDisjunct(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromDisjunct) */
@@ -60,7 +60,7 @@ corto_void _test_RelativeName_tc_fromDisjunct(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromGrandchild(
+void _test_RelativeName_tc_fromGrandchild(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromGrandchild) */
@@ -75,7 +75,7 @@ corto_void _test_RelativeName_tc_fromGrandchild(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromNull(
+void _test_RelativeName_tc_fromNull(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromNull) */
@@ -90,7 +90,7 @@ corto_void _test_RelativeName_tc_fromNull(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromOneUp(
+void _test_RelativeName_tc_fromOneUp(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromOneUp) */
@@ -105,7 +105,7 @@ corto_void _test_RelativeName_tc_fromOneUp(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromParent(
+void _test_RelativeName_tc_fromParent(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromParent) */
@@ -120,7 +120,7 @@ corto_void _test_RelativeName_tc_fromParent(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromRoot(
+void _test_RelativeName_tc_fromRoot(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromRoot) */
@@ -135,7 +135,7 @@ corto_void _test_RelativeName_tc_fromRoot(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromSelf(
+void _test_RelativeName_tc_fromSelf(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromSelf) */
@@ -150,7 +150,7 @@ corto_void _test_RelativeName_tc_fromSelf(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromThreeUp(
+void _test_RelativeName_tc_fromThreeUp(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromThreeUp) */
@@ -165,7 +165,7 @@ corto_void _test_RelativeName_tc_fromThreeUp(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_fromTwoUp(
+void _test_RelativeName_tc_fromTwoUp(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_fromTwoUp) */
@@ -180,7 +180,7 @@ corto_void _test_RelativeName_tc_fromTwoUp(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_rootFromNull(
+void _test_RelativeName_tc_rootFromNull(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_rootFromNull) */
@@ -194,7 +194,7 @@ corto_void _test_RelativeName_tc_rootFromNull(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_rootFromNullColon(
+void _test_RelativeName_tc_rootFromNullColon(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_rootFromNullColon) */
@@ -208,7 +208,7 @@ corto_void _test_RelativeName_tc_rootFromNullColon(
 /* $end */
 }
 
-corto_void _test_RelativeName_tc_rootFromObj(
+void _test_RelativeName_tc_rootFromObj(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/tc_rootFromObj) */
@@ -223,18 +223,18 @@ corto_void _test_RelativeName_tc_rootFromObj(
 /* $end */
 }
 
-corto_void _test_RelativeName_teardown(
+void _test_RelativeName_teardown(
     test_RelativeName this)
 {
 /* $begin(test/RelativeName/teardown) */
 
     corto_delete(this->tier1);
-    corto_setref(&this->tier1, NULL);
-    corto_setref(&this->tier2, NULL);
-    corto_setref(&this->tier3, NULL);
-    corto_setref(&this->obj, NULL);
-    corto_setref(&this->disjunct, NULL);
-    corto_setref(&this->child, NULL);
+    corto_ptr_setref(&this->tier1, NULL);
+    corto_ptr_setref(&this->tier2, NULL);
+    corto_ptr_setref(&this->tier3, NULL);
+    corto_ptr_setref(&this->obj, NULL);
+    corto_ptr_setref(&this->disjunct, NULL);
+    corto_ptr_setref(&this->child, NULL);
 
 /* $end */
 }

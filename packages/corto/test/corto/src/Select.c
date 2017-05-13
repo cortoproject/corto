@@ -11,11 +11,11 @@
 corto_resultList _test_Select_collect(
     corto_string scope,
     corto_string expr,
-    corto_uint64 offset,
-    corto_uint64 limit)
+    uint64_t offset,
+    uint64_t limit)
 {
 /* $begin(test/Select/collect) */
-    corto_selectFluent r = corto_select(scope, expr);
+    corto_select__fluent r = corto_select(expr).from(scope);
 
     if (offset || limit) {
         r.limit(offset, limit);
@@ -25,15 +25,15 @@ corto_resultList _test_Select_collect(
     corto_int16 ret = r.iter(&iter);
     if (ret) goto error;
 
-    corto_ll result = corto_llNew();
+    corto_ll result = corto_ll_new();
 
-    while (corto_iterHasNext(&iter)) {
-        corto_result *item = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_result *item = corto_iter_next(&iter);
         corto_result *listItem = corto_alloc(sizeof(corto_result));
         listItem->parent = corto_strdup(item->parent);
         listItem->name = corto_strdup(item->name);
         listItem->type = corto_strdup(item->type);
-        corto_llAppend(result, listItem);
+        corto_ll_append(result, listItem);
     }
 
     return result;
@@ -42,7 +42,7 @@ error:
 /* $end */
 }
 
-corto_bool _test_Select_hasObject(
+bool _test_Select_hasObject(
     corto_resultList items,
     corto_string parent,
     corto_string name,
@@ -50,9 +50,9 @@ corto_bool _test_Select_hasObject(
 {
 /* $begin(test/Select/hasObject) */
 
-    corto_iter iter = corto_llIter(items);
-    while (corto_iterHasNext(&iter)) {
-        corto_result *item = corto_iterNext(&iter);
+    corto_iter iter = corto_ll_iter(items);
+    while (corto_iter_hasNext(&iter)) {
+        corto_result *item = corto_iter_next(&iter);
         if (!strcmp(item->parent, parent)) {
             if (!strcmp(item->name, name)) {
                 if (!strcmp(item->type, type)) {
@@ -74,7 +74,7 @@ corto_bool _test_Select_hasObject(
 /* $end */
 }
 
-corto_void _test_Select_setup(
+void _test_Select_setup(
     test_Select this)
 {
 /* $begin(test/Select/setup) */
@@ -118,7 +118,7 @@ corto_void _test_Select_setup(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteCurrent(
+void _test_Select_tc_selectDeleteCurrent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteCurrent) */
@@ -127,23 +127,23 @@ corto_void _test_Select_tc_selectDeleteCurrent(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    ret = corto_select(NULL, "a/*").iter( &iter );
+    ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -151,7 +151,7 @@ corto_void _test_Select_tc_selectDeleteCurrent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteFirst(
+void _test_Select_tc_selectDeleteFirst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteFirst) */
@@ -160,19 +160,19 @@ corto_void _test_Select_tc_selectDeleteFirst(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    ret = corto_select(NULL, "a/*").iter( &iter );
+    ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_release(o);
@@ -180,7 +180,7 @@ corto_void _test_Select_tc_selectDeleteFirst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteNext(
+void _test_Select_tc_selectDeleteNext(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteNext) */
@@ -189,19 +189,19 @@ corto_void _test_Select_tc_selectDeleteNext(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    ret = corto_select(NULL, "a/*").iter( &iter );
+    ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -209,7 +209,7 @@ corto_void _test_Select_tc_selectDeleteNext(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeleteParent(
+void _test_Select_tc_selectDeleteParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeleteParent) */
@@ -218,24 +218,24 @@ corto_void _test_Select_tc_selectDeleteParent(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
-    ret = corto_select(NULL, "a/*").iter( &iter );
+    ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a");
     test_assert(check == NULL);
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     corto_release(o);
 /* $end */
 }
 
-corto_void _test_Select_tc_selectDeletePrevious(
+void _test_Select_tc_selectDeletePrevious(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectDeletePrevious) */
@@ -244,23 +244,23 @@ corto_void _test_Select_tc_selectDeletePrevious(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    ret = corto_select(NULL, "a/*").iter( &iter );
+    ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -268,45 +268,45 @@ corto_void _test_Select_tc_selectDeletePrevious(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyParentAst(
+void _test_Select_tc_selectEmptyParentAst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyParentAst) */
     corto_iter it;
     corto_result *r;
-    corto_int16 ret = corto_select("", "*").iter(&it);
+    corto_int16 ret = corto_select("*").from("").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "void");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "corto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "/corto/core/package");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "karto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "void");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "korto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "void");
 
-    test_assert(corto_iterHasNext(&it));
-    r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "test");
     test_assertstr(r->parent, "");
@@ -315,7 +315,7 @@ corto_void _test_Select_tc_selectEmptyParentAst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyParentString(
+void _test_Select_tc_selectEmptyParentString(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyParentString) */
@@ -323,13 +323,13 @@ corto_void _test_Select_tc_selectEmptyParentString(
 
     results = test_Select_collect("", "corto", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyQueryString(
+void _test_Select_tc_selectEmptyQueryString(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyQueryString) */
@@ -337,13 +337,13 @@ corto_void _test_Select_tc_selectEmptyQueryString(
 
     results = test_Select_collect("/", "", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, ".", "", "/corto/core/package"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectEmptyStrings(
+void _test_Select_tc_selectEmptyStrings(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectEmptyStrings) */
@@ -351,19 +351,19 @@ corto_void _test_Select_tc_selectEmptyStrings(
 
     results = test_Select_collect("", "", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "", "", "/corto/core/package"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentAst(
+void _test_Select_tc_selectErrParentAst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentAst) */
     corto_int16 ret = 0;
     corto_iter iter;
-    ret = corto_select("/", "..*").iter( &iter );
+    ret = corto_select("..*").from("/").iter( &iter );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..*' failed: unexpected 'filter' after '..'"));
@@ -371,13 +371,13 @@ corto_void _test_Select_tc_selectErrParentAst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentId(
+void _test_Select_tc_selectErrParentId(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentId) */
     corto_int16 ret = 0;
     corto_iter iter;
-    ret = corto_select(NULL, "..id").iter( &iter );
+    ret = corto_select("..id").iter( &iter );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..id' failed: unexpected 'identifier' after '..'"));
@@ -385,13 +385,13 @@ corto_void _test_Select_tc_selectErrParentId(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentTree(
+void _test_Select_tc_selectErrParentTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentTree) */
     corto_int16 ret = 0;
     corto_iter iter;
-    ret = corto_select(NULL, "...").iter( &iter );
+    ret = corto_select("...").iter( &iter );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '...' failed: unexpected '.' after '..'"));
@@ -399,13 +399,13 @@ corto_void _test_Select_tc_selectErrParentTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectErrParentWc(
+void _test_Select_tc_selectErrParentWc(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectErrParentWc) */
     corto_int16 ret = 0;
     corto_iter iter;
-    ret = corto_select(NULL, "..?").iter( &iter );
+    ret = corto_select("..?").iter( &iter );
     test_assert(ret != 0);
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "select '..?' failed: unexpected 'filter' after '..'"));
@@ -413,7 +413,7 @@ corto_void _test_Select_tc_selectErrParentWc(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFilterAsterisk(
+void _test_Select_tc_selectFilterAsterisk(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFilterAsterisk) */
@@ -421,7 +421,7 @@ corto_void _test_Select_tc_selectFilterAsterisk(
 
     results = test_Select_collect(NULL, "*rto", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 3);
+    test_assertint(corto_ll_size(results), 3);
 
     test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "", "karto", "void"));
@@ -430,7 +430,7 @@ corto_void _test_Select_tc_selectFilterAsterisk(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFilterWildcard(
+void _test_Select_tc_selectFilterWildcard(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFilterWildcard) */
@@ -438,7 +438,7 @@ corto_void _test_Select_tc_selectFilterWildcard(
 
     results = test_Select_collect(NULL, "?orto", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 2);
+    test_assertint(corto_ll_size(results), 2);
 
     test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "", "korto", "void"));
@@ -446,7 +446,7 @@ corto_void _test_Select_tc_selectFilterWildcard(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromCorto(
+void _test_Select_tc_selectFromCorto(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromCorto) */
@@ -454,14 +454,14 @@ corto_void _test_Select_tc_selectFromCorto(
 
     results = test_Select_collect("/corto", "//lang", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, ".", "lang", "/corto/core/package"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromLangParent(
+void _test_Select_tc_selectFromLangParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromLangParent) */
@@ -469,14 +469,14 @@ corto_void _test_Select_tc_selectFromLangParent(
 
     results = test_Select_collect("/", "/corto/lang/compositeKind/DELEGATE", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "corto/lang/compositeKind", "DELEGATE", "constant"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromNull(
+void _test_Select_tc_selectFromNull(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromNull) */
@@ -485,14 +485,14 @@ corto_void _test_Select_tc_selectFromNull(
     results = test_Select_collect(NULL, "//lang", 0, 0);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/core/package"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRoot(
+void _test_Select_tc_selectFromRoot(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRoot) */
@@ -500,56 +500,53 @@ corto_void _test_Select_tc_selectFromRoot(
 
     results = test_Select_collect("/", "//lang", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "corto", "lang", "/corto/core/package"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRootEmpty(
+void _test_Select_tc_selectFromRootEmpty(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRootEmpty) */
     corto_ll results = NULL;
-    corto_loaderCreate();
 
     results = test_Select_collect("/", "", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRootNull(
+void _test_Select_tc_selectFromRootNull(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRootNull) */
     corto_ll results = NULL;
-    corto_loaderCreate();
 
     results = test_Select_collect("/", NULL, 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectFromRootThis(
+void _test_Select_tc_selectFromRootThis(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectFromRootThis) */
     corto_ll results = NULL;
-    corto_loaderCreate();
 
     results = test_Select_collect("/", ".", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectIdentifier(
+void _test_Select_tc_selectIdentifier(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectIdentifier) */
@@ -561,9 +558,9 @@ corto_void _test_Select_tc_selectIdentifier(
 
     results = test_Select_collect(NULL, "a", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
-    item = corto_llGet(results, 0);
+    item = corto_ll_get(results, 0);
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, "a"));
@@ -574,7 +571,7 @@ corto_void _test_Select_tc_selectIdentifier(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectIdentifierCaps(
+void _test_Select_tc_selectIdentifierCaps(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectIdentifierCaps) */
@@ -582,75 +579,75 @@ corto_void _test_Select_tc_selectIdentifierCaps(
 
     results = test_Select_collect(NULL, "a/ABC", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectInvertCase(
+void _test_Select_tc_selectInvertCase(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectInvertCase) */
     corto_iter it;
-    corto_int16 ret = corto_select("/a", "ABC").iter(&it);
+    corto_int16 ret = corto_select("ABC").from("/a").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "abc");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
 
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectInvertCaseFilter(
+void _test_Select_tc_selectInvertCaseFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectInvertCaseFilter) */
     corto_iter it;
-    corto_int16 ret = corto_select("/a", "ABA?").iter(&it);
+    corto_int16 ret = corto_select("ABA?").from("/a").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "Abab");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
 
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectInvertCaseScope(
+void _test_Select_tc_selectInvertCaseScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectInvertCaseScope) */
     corto_iter it;
-    corto_int16 ret = corto_select("/A", "abc").iter(&it);
+    corto_int16 ret = corto_select("abc").from("/A").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "abc");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
 
-    test_assert(!corto_iterHasNext(&it));
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitOvershootScope(
+void _test_Select_tc_selectLimitOvershootScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitOvershootScope) */
@@ -659,7 +656,7 @@ corto_void _test_Select_tc_selectLimitOvershootScope(
     results = test_Select_collect(NULL, "a/*", 0, 10);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 8);
+    test_assertint(corto_ll_size(results), 8);
 
     test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -673,7 +670,7 @@ corto_void _test_Select_tc_selectLimitOvershootScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitOvershootTree(
+void _test_Select_tc_selectLimitOvershootTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitOvershootTree) */
@@ -681,7 +678,7 @@ corto_void _test_Select_tc_selectLimitOvershootTree(
 
     results = test_Select_collect(NULL, "a//*", 0, 30);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 24);
+    test_assertint(corto_ll_size(results), 24);
 
     test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -711,7 +708,7 @@ corto_void _test_Select_tc_selectLimitOvershootTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitScope(
+void _test_Select_tc_selectLimitScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitScope) */
@@ -720,7 +717,7 @@ corto_void _test_Select_tc_selectLimitScope(
     results = test_Select_collect(NULL, "a/*", 0, 4);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 4);
+    test_assertint(corto_ll_size(results), 4);
 
     test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -734,7 +731,7 @@ corto_void _test_Select_tc_selectLimitScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectLimitTree(
+void _test_Select_tc_selectLimitTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectLimitTree) */
@@ -742,7 +739,7 @@ corto_void _test_Select_tc_selectLimitTree(
 
     results = test_Select_collect(NULL, "a//*", 0, 20);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 20);
+    test_assertint(corto_ll_size(results), 20);
 
     test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -772,7 +769,7 @@ corto_void _test_Select_tc_selectLimitTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectNumeric(
+void _test_Select_tc_selectNumeric(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectNumeric) */
@@ -780,14 +777,14 @@ corto_void _test_Select_tc_selectNumeric(
 
     results = test_Select_collect(NULL, "a/ab01234567890", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "/a", "ab01234567890", "void"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObject(
+void _test_Select_tc_selectObject(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObject) */
@@ -795,14 +792,14 @@ corto_void _test_Select_tc_selectObject(
 
     results = test_Select_collect(NULL, "corto", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectParentScope(
+void _test_Select_tc_selectObjectParentScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectParentScope) */
@@ -810,13 +807,13 @@ corto_void _test_Select_tc_selectObjectParentScope(
 
     results = test_Select_collect("corto", "lang/word", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "lang", "word", "binary"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectParentTree(
+void _test_Select_tc_selectObjectParentTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectParentTree) */
@@ -824,13 +821,13 @@ corto_void _test_Select_tc_selectObjectParentTree(
 
     results = test_Select_collect("corto", "//word", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "lang", "word", "binary"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectPrefixScope(
+void _test_Select_tc_selectObjectPrefixScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectPrefixScope) */
@@ -838,13 +835,13 @@ corto_void _test_Select_tc_selectObjectPrefixScope(
 
     results = test_Select_collect(NULL, "/corto", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "", "corto", "/corto/core/package"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectPrefixTrailingScope(
+void _test_Select_tc_selectObjectPrefixTrailingScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectPrefixTrailingScope) */
@@ -852,7 +849,7 @@ corto_void _test_Select_tc_selectObjectPrefixTrailingScope(
 
     results = test_Select_collect(NULL, "/corto/", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 5);
+    test_assertint(corto_ll_size(results), 5);
 
     test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "core", "/corto/core/package"));
@@ -863,7 +860,7 @@ corto_void _test_Select_tc_selectObjectPrefixTrailingScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectScope(
+void _test_Select_tc_selectObjectScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectScope) */
@@ -871,13 +868,13 @@ corto_void _test_Select_tc_selectObjectScope(
 
     results = test_Select_collect(NULL, "/corto/lang/word", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "/corto/lang", "word", "binary"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectTrailingScope(
+void _test_Select_tc_selectObjectTrailingScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectTrailingScope) */
@@ -885,7 +882,7 @@ corto_void _test_Select_tc_selectObjectTrailingScope(
 
     results = test_Select_collect(NULL, "corto/", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 5);
+    test_assertint(corto_ll_size(results), 5);
 
     test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/core/package"));
     test_assert(test_Select_hasObject(results, "/corto", "core", "/corto/core/package"));
@@ -896,7 +893,7 @@ corto_void _test_Select_tc_selectObjectTrailingScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectTrailingTree(
+void _test_Select_tc_selectObjectTrailingTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectTrailingTree) */
@@ -905,7 +902,7 @@ corto_void _test_Select_tc_selectObjectTrailingTree(
     results = test_Select_collect(NULL, "a//", 0, 0);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 24);
+    test_assertint(corto_ll_size(results), 24);
 
     test_assert(test_Select_hasObject(results, "/a", "b", "void"));
     test_assert(test_Select_hasObject(results, "/a", "c", "void"));
@@ -937,7 +934,7 @@ corto_void _test_Select_tc_selectObjectTrailingTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectObjectTree(
+void _test_Select_tc_selectObjectTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectObjectTree) */
@@ -945,13 +942,13 @@ corto_void _test_Select_tc_selectObjectTree(
 
     results = test_Select_collect(NULL, "//word", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "/corto/lang", "word", "binary"));
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLargerThanLimit(
+void _test_Select_tc_selectOffsetLargerThanLimit(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLargerThanLimit) */
@@ -960,7 +957,7 @@ corto_void _test_Select_tc_selectOffsetLargerThanLimit(
     results = test_Select_collect(NULL, "a/*", 4, 2);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 2);
+    test_assertint(corto_ll_size(results), 2);
 
     test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -974,7 +971,7 @@ corto_void _test_Select_tc_selectOffsetLargerThanLimit(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimit(
+void _test_Select_tc_selectOffsetLimit(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimit) */
@@ -983,7 +980,7 @@ corto_void _test_Select_tc_selectOffsetLimit(
     results = test_Select_collect(NULL, "a/*", 2, 4);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 4);
+    test_assertint(corto_ll_size(results), 4);
 
     test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -997,7 +994,7 @@ corto_void _test_Select_tc_selectOffsetLimit(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimitFilter(
+void _test_Select_tc_selectOffsetLimitFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimitFilter) */
@@ -1006,12 +1003,12 @@ corto_void _test_Select_tc_selectOffsetLimitFilter(
     results = test_Select_collect(NULL, "//delegate*", 0, 0);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 3);
+    test_assertint(corto_ll_size(results), 3);
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimitOvershootScope(
+void _test_Select_tc_selectOffsetLimitOvershootScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimitOvershootScope) */
@@ -1020,7 +1017,7 @@ corto_void _test_Select_tc_selectOffsetLimitOvershootScope(
     results = test_Select_collect(NULL, "a/*", 2, 8);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 6);
+    test_assertint(corto_ll_size(results), 6);
 
     test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -1034,7 +1031,7 @@ corto_void _test_Select_tc_selectOffsetLimitOvershootScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetLimitOvershootTree(
+void _test_Select_tc_selectOffsetLimitOvershootTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetLimitOvershootTree) */
@@ -1042,7 +1039,7 @@ corto_void _test_Select_tc_selectOffsetLimitOvershootTree(
 
     results = test_Select_collect(NULL, "a//*", 6, 20);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 18);
+    test_assertint(corto_ll_size(results), 18);
 
     test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -1072,7 +1069,7 @@ corto_void _test_Select_tc_selectOffsetLimitOvershootTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetScope(
+void _test_Select_tc_selectOffsetScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetScope) */
@@ -1081,7 +1078,7 @@ corto_void _test_Select_tc_selectOffsetScope(
     results = test_Select_collect(NULL, "a/*", 2, 0);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 6);
+    test_assertint(corto_ll_size(results), 6);
 
     test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -1095,7 +1092,7 @@ corto_void _test_Select_tc_selectOffsetScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOffsetTree(
+void _test_Select_tc_selectOffsetTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOffsetTree) */
@@ -1103,7 +1100,7 @@ corto_void _test_Select_tc_selectOffsetTree(
 
     results = test_Select_collect(NULL, "a//*", 6, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 18);
+    test_assertint(corto_ll_size(results), 18);
 
     test_assert(!test_Select_hasObject(results, "/a", "ab01234567890", "void"));
     test_assert(!test_Select_hasObject(results, "/a", "ab_ab", "void"));
@@ -1133,140 +1130,140 @@ corto_void _test_Select_tc_selectOffsetTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectOrder(
+void _test_Select_tc_selectOrder(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectOrder) */
     corto_result *item;
     corto_iter iter;
 
-    corto_int16 ret = corto_select(NULL, "a//*").iter( &iter );
+    corto_int16 ret = corto_select("a//*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab_ab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "Abab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abd"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abdc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "b"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "c"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab_ab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "Abab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abd"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abdc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "b"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "c"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectParent(
+void _test_Select_tc_selectParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParent) */
@@ -1278,9 +1275,9 @@ corto_void _test_Select_tc_selectParent(
 
     results = test_Select_collect("/a", "..", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
-    item = corto_llGet(results, 0);
+    item = corto_ll_get(results, 0);
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ".."));
     test_assert(!strcmp(item->name, ""));
@@ -1291,7 +1288,7 @@ corto_void _test_Select_tc_selectParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectParentNoSlash(
+void _test_Select_tc_selectParentNoSlash(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParentNoSlash) */
@@ -1299,38 +1296,32 @@ corto_void _test_Select_tc_selectParentNoSlash(
 
     results = test_Select_collect("corto", "lang", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, ".", "lang", "/corto/core/package"));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectParentWithSink(
+void _test_Select_tc_selectParentWithSink(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectParentWithSink) */
-    corto_loader l = corto_loaderCreate();
-    test_assert(l != NULL);
-
     corto_iter it;
-    corto_int16 ret = corto_select("/corto", "..").iter(&it);
+    corto_int16 ret = corto_select("..").from("/corto").iter(&it);
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&it));
-    corto_result *r = corto_iterNext(&it);
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "");
     test_assertstr(r->parent, "..");
-    test_assert(!corto_iterHasNext(&it));
-
-    ret = corto_delete(l);
-    test_assert(ret == 0);
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScope(
+void _test_Select_tc_selectScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScope) */
@@ -1338,7 +1329,7 @@ corto_void _test_Select_tc_selectScope(
 
     results = test_Select_collect(NULL, "a/*", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 8);
+    test_assertint(corto_ll_size(results), 8);
 
     test_assert(test_Select_hasObject(results, "/a", "b", "void"));
     test_assert(test_Select_hasObject(results, "/a", "c", "void"));
@@ -1352,7 +1343,7 @@ corto_void _test_Select_tc_selectScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopedIdentifier(
+void _test_Select_tc_selectScopedIdentifier(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopedIdentifier) */
@@ -1361,9 +1352,9 @@ corto_void _test_Select_tc_selectScopedIdentifier(
 
     results = test_Select_collect(NULL, "a/b", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
-    item = corto_llGet(results, 0);
+    item = corto_ll_get(results, 0);
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, "/a"));
     test_assert(!strcmp(item->name, "b"));
@@ -1372,7 +1363,7 @@ corto_void _test_Select_tc_selectScopedIdentifier(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopedParent(
+void _test_Select_tc_selectScopedParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopedParent) */
@@ -1381,9 +1372,9 @@ corto_void _test_Select_tc_selectScopedParent(
 
     results = test_Select_collect(NULL, "a/..", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
-    item = corto_llGet(results, 0);
+    item = corto_ll_get(results, 0);
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, ""));
@@ -1392,7 +1383,7 @@ corto_void _test_Select_tc_selectScopedParent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopedThis(
+void _test_Select_tc_selectScopedThis(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopedThis) */
@@ -1401,9 +1392,9 @@ corto_void _test_Select_tc_selectScopedThis(
 
     results = test_Select_collect(NULL, "a/.", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
-    item = corto_llGet(results, 0);
+    item = corto_ll_get(results, 0);
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ""));
     test_assert(!strcmp(item->name, "a"));
@@ -1412,7 +1403,7 @@ corto_void _test_Select_tc_selectScopedThis(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithAsterisk(
+void _test_Select_tc_selectScopeWithAsterisk(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithAsterisk) */
@@ -1420,7 +1411,7 @@ corto_void _test_Select_tc_selectScopeWithAsterisk(
 
     results = test_Select_collect(NULL, "a/*", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 8);
+    test_assertint(corto_ll_size(results), 8);
 
     test_assert(test_Select_hasObject(results, "/a", "b", "void"));
     test_assert(test_Select_hasObject(results, "/a", "c", "void"));
@@ -1434,7 +1425,7 @@ corto_void _test_Select_tc_selectScopeWithAsterisk(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithAsteriskFilter(
+void _test_Select_tc_selectScopeWithAsteriskFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithAsteriskFilter) */
@@ -1442,7 +1433,7 @@ corto_void _test_Select_tc_selectScopeWithAsteriskFilter(
 
     results = test_Select_collect(NULL, "a/ab*", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 6);
+    test_assertint(corto_ll_size(results), 6);
 
     test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
     test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
@@ -1454,7 +1445,7 @@ corto_void _test_Select_tc_selectScopeWithAsteriskFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithWildcard(
+void _test_Select_tc_selectScopeWithWildcard(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithWildcard) */
@@ -1462,7 +1453,7 @@ corto_void _test_Select_tc_selectScopeWithWildcard(
 
     results = test_Select_collect(NULL, "a/?", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 2);
+    test_assertint(corto_ll_size(results), 2);
 
     test_assert(test_Select_hasObject(results, "/a", "b", "void"));
     test_assert(test_Select_hasObject(results, "/a", "c", "void"));
@@ -1470,7 +1461,7 @@ corto_void _test_Select_tc_selectScopeWithWildcard(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectScopeWithWildcardFilter(
+void _test_Select_tc_selectScopeWithWildcardFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectScopeWithWildcardFilter) */
@@ -1478,7 +1469,7 @@ corto_void _test_Select_tc_selectScopeWithWildcardFilter(
 
     results = test_Select_collect(NULL, "a/ab?", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 2);
+    test_assertint(corto_ll_size(results), 2);
 
     test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
     test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
@@ -1486,7 +1477,7 @@ corto_void _test_Select_tc_selectScopeWithWildcardFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectSeparator(
+void _test_Select_tc_selectSeparator(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectSeparator) */
@@ -1494,7 +1485,7 @@ corto_void _test_Select_tc_selectSeparator(
 
     results = test_Select_collect(NULL, "a/abc,a/abd", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 2);
+    test_assertint(corto_ll_size(results), 2);
 
     test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
     test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
@@ -1503,7 +1494,7 @@ corto_void _test_Select_tc_selectSeparator(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectThis(
+void _test_Select_tc_selectThis(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectThis) */
@@ -1515,9 +1506,9 @@ corto_void _test_Select_tc_selectThis(
 
     results = test_Select_collect("/a", ".", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
-    item = corto_llGet(results, 0);
+    item = corto_ll_get(results, 0);
     test_assert(item != NULL);
     test_assert(!strcmp(item->parent, ".."));
     test_assert(!strcmp(item->name, "a"));
@@ -1528,7 +1519,7 @@ corto_void _test_Select_tc_selectThis(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTree(
+void _test_Select_tc_selectTree(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTree) */
@@ -1537,7 +1528,7 @@ corto_void _test_Select_tc_selectTree(
     results = test_Select_collect(NULL, "a//*", 0, 0);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 24);
+    test_assertint(corto_ll_size(results), 24);
 
     test_assert(test_Select_hasObject(results, "/a", "b", "void"));
     test_assert(test_Select_hasObject(results, "/a", "c", "void"));
@@ -1569,7 +1560,7 @@ corto_void _test_Select_tc_selectTree(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteCurrent(
+void _test_Select_tc_selectTreeDeleteCurrent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteCurrent) */
@@ -1577,23 +1568,23 @@ corto_void _test_Select_tc_selectTreeDeleteCurrent(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    corto_int16 ret = corto_select(NULL, "a//*").iter( &iter );
+    corto_int16 ret = corto_select("a//*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -1601,7 +1592,7 @@ corto_void _test_Select_tc_selectTreeDeleteCurrent(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteFirst(
+void _test_Select_tc_selectTreeDeleteFirst(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteFirst) */
@@ -1609,19 +1600,19 @@ corto_void _test_Select_tc_selectTreeDeleteFirst(
     corto_iter iter;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
+    corto_int16 ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_release(o);
@@ -1629,7 +1620,7 @@ corto_void _test_Select_tc_selectTreeDeleteFirst(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteGrandparent(
+void _test_Select_tc_selectTreeDeleteGrandparent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteGrandparent) */
@@ -1637,56 +1628,56 @@ corto_void _test_Select_tc_selectTreeDeleteGrandparent(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
-    corto_int16 ret = corto_select(NULL, "a//*").iter( &iter );
+    corto_int16 ret = corto_select("a//*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab_ab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "Abab"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abd"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abdc"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "b"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "c"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(item != NULL);
     test_assert(!strcmp(item->name, "abcdef"));
 
@@ -1694,14 +1685,14 @@ corto_void _test_Select_tc_selectTreeDeleteGrandparent(
     corto_object check = corto_resolve(NULL, "a");
     test_assert(check == NULL);
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     corto_release(o);
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteNext(
+void _test_Select_tc_selectTreeDeleteNext(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteNext) */
@@ -1709,19 +1700,19 @@ corto_void _test_Select_tc_selectTreeDeleteNext(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
-    corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
+    corto_int16 ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab_ab");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -1729,7 +1720,7 @@ corto_void _test_Select_tc_selectTreeDeleteNext(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeleteParent(
+void _test_Select_tc_selectTreeDeleteParent(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeleteParent) */
@@ -1737,25 +1728,25 @@ corto_void _test_Select_tc_selectTreeDeleteParent(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a");
 
-    corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
+    corto_int16 ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a");
     test_assert(check == NULL);
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
     corto_release(o);
 
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeDeletePrevious(
+void _test_Select_tc_selectTreeDeletePrevious(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeDeletePrevious) */
@@ -1763,23 +1754,23 @@ corto_void _test_Select_tc_selectTreeDeletePrevious(
     corto_result *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
-    corto_int16 ret = corto_select(NULL, "a/*").iter( &iter );
+    corto_int16 ret = corto_select("a/*").iter( &iter );
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab01234567890"));
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "ab_ab"));
 
     corto_delete(o);
     corto_object check = corto_resolve(NULL, "a/ab01234567890");
     test_assert(check == NULL);
 
-    test_assert(corto_iterHasNext(&iter));
-    item = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    item = corto_iter_next(&iter);
     test_assert(!strcmp(item->name, "Abab"));
 
     corto_release(o);
@@ -1787,7 +1778,7 @@ corto_void _test_Select_tc_selectTreeDeletePrevious(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeFromScope(
+void _test_Select_tc_selectTreeFromScope(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeFromScope) */
@@ -1796,7 +1787,7 @@ corto_void _test_Select_tc_selectTreeFromScope(
     results = test_Select_collect("/a", "//", 0, 0);
     test_assert(results != NULL);
 
-    test_assertint(corto_llSize(results), 24);
+    test_assertint(corto_ll_size(results), 24);
 
     test_assert(test_Select_hasObject(results, ".", "b", "void"));
     test_assert(test_Select_hasObject(results, ".", "c", "void"));
@@ -1828,7 +1819,7 @@ corto_void _test_Select_tc_selectTreeFromScope(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithAsteriskFilter(
+void _test_Select_tc_selectTreeWithAsteriskFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeWithAsteriskFilter) */
@@ -1836,7 +1827,7 @@ corto_void _test_Select_tc_selectTreeWithAsteriskFilter(
 
     results = test_Select_collect(NULL, "a//ab*", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 20);
+    test_assertint(corto_ll_size(results), 20);
 
     test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
     test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
@@ -1864,7 +1855,7 @@ corto_void _test_Select_tc_selectTreeWithAsteriskFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithWildcard(
+void _test_Select_tc_selectTreeWithWildcard(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeWithWildcard) */
@@ -1872,7 +1863,7 @@ corto_void _test_Select_tc_selectTreeWithWildcard(
 
     results = test_Select_collect(NULL, "a//?", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 4);
+    test_assertint(corto_ll_size(results), 4);
 
     test_assert(test_Select_hasObject(results, "/a", "b", "void"));
     test_assert(test_Select_hasObject(results, "/a", "c", "void"));
@@ -1883,7 +1874,7 @@ corto_void _test_Select_tc_selectTreeWithWildcard(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectTreeWithWildcardFilter(
+void _test_Select_tc_selectTreeWithWildcardFilter(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectTreeWithWildcardFilter) */
@@ -1891,7 +1882,7 @@ corto_void _test_Select_tc_selectTreeWithWildcardFilter(
 
     results = test_Select_collect(NULL, "a//ab?", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 4);
+    test_assertint(corto_ll_size(results), 4);
 
     test_assert(test_Select_hasObject(results, "/a", "abc", "void"));
     test_assert(test_Select_hasObject(results, "/a", "abd", "void"));
@@ -1902,7 +1893,7 @@ corto_void _test_Select_tc_selectTreeWithWildcardFilter(
 /* $end */
 }
 
-corto_void _test_Select_tc_selectUnderscore(
+void _test_Select_tc_selectUnderscore(
     test_Select this)
 {
 /* $begin(test/Select/tc_selectUnderscore) */
@@ -1910,14 +1901,14 @@ corto_void _test_Select_tc_selectUnderscore(
 
     results = test_Select_collect(NULL, "a/ab_ab", 0, 0);
     test_assert(results != NULL);
-    test_assertint(corto_llSize(results), 1);
+    test_assertint(corto_ll_size(results), 1);
 
     test_assert(test_Select_hasObject(results, "/a", "ab_ab", "void"));
 
 /* $end */
 }
 
-corto_void _test_Select_teardown(
+void _test_Select_teardown(
     test_Select this)
 {
 /* $begin(test/Select/teardown) */

@@ -6,13 +6,13 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_interface.h"
 /* $end */
 
-corto_int16 _corto_member_construct(
+int16_t _corto_member_construct(
     corto_member this)
 {
 /* $begin(corto/lang/member/construct) */
@@ -30,7 +30,9 @@ corto_int16 _corto_member_construct(
         goto error;
     }
 
-    ((corto_type)corto_parentof(this))->hasTarget |= this->type->hasTarget;
+    if (this->type->flags & CORTO_TYPE_HAS_TARGET) {
+        ((corto_type)corto_parentof(this))->flags |= CORTO_TYPE_HAS_TARGET;
+    }
 
     if (corto_typeof(this->type) == (corto_type)corto_target_o) {
         this->modifiers |= CORTO_OBSERVABLE;
@@ -42,7 +44,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_member_init(
+int16_t _corto_member_init(
     corto_member this)
 {
 /* $begin(corto/lang/member/init) */

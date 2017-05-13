@@ -6,9 +6,9 @@
  * when the file is regenerated.
  */
 
-#include <corto/native/native.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_native_type_init(
+int16_t _corto_native_type_init(
     corto_native_type this)
 {
 /* $begin(corto/native/type/init) */

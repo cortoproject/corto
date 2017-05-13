@@ -6,7 +6,11 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
+
+/* $header() */
+#include "_object.h"
+/* $end */
 
 /* $header(corto/lang/function/construct) */
 
@@ -23,13 +27,13 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
     return corto_procedure(t);
 }
 /* $end */
-corto_int16 _corto_function_construct(
+int16_t _corto_function_construct(
     corto_function this)
 {
 /* $begin(corto/lang/function/construct) */
     /* If no returntype is set, make it void */
     if (!this->returnType) {
-        corto_setref(&this->returnType, corto_void_o);
+        corto_ptr_setref(&this->returnType, corto_void_o);
     }
 
     if (this->returnType->reference) {
@@ -96,7 +100,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_function_destruct(
+void _corto_function_destruct(
     corto_function this)
 {
 /* $begin(corto/lang/function/destruct) */
@@ -146,17 +150,9 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
                 data->error = TRUE;
                 goto finish;
             }
-        } else {
-            corto_id id;
-
-            /* Get name of function */
-            corto_signatureName(corto_idof(o), id);
-
-            /* Set overloading flags if a function with same name is found. */
-            if (!strcmp(data->name, id)) {
-                corto_function(o)->overloaded = TRUE;
-                data->f->overloaded = TRUE;
-            }
+        } else if (d > 0 || d == CORTO_OVERLOAD_NOMATCH_OVERLOAD) {
+            corto_function(o)->overloaded = TRUE;
+            data->f->overloaded = TRUE;
         }
     }
 
@@ -165,38 +161,44 @@ finish:
     return 0;
 }
 /* $end */
-corto_int16 _corto_function_init(
+int16_t _corto_function_init(
     corto_function this)
 {
 /* $begin(corto/lang/function/init) */
     extern int CORTO_BENCHMARK_FUNCTION_INIT;
     corto_benchmark_start(CORTO_BENCHMARK_FUNCTION_INIT);
 
-    corto_functionLookup_t walkData;
-    corto_objectseq scope;
-    corto_uint32 i;
-
     if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
-        scope = corto_scopeClaimWithFilter(corto_parentof(this), NULL, corto_idof(this));
+        if (!corto_instanceof(corto_interface_o, corto_parentof(this)) &&
+            !corto_instanceof(corto_method_o, this)) 
+        {
+            corto_functionLookup_t walkData = {.f = this, .error = FALSE};
+            corto_uint32 i;
 
-        walkData.f = this;
-        walkData.error = FALSE;
-        corto_signatureName(corto_idof(this), walkData.name);
+            corto_objectseq scope = 
+                corto_scopeClaimWithFilter(
+                    corto_parentof(this), 
+                    NULL, 
+                    corto_idof(this)
+                );
 
-        for (i = 0; i < scope.length; i++) {
-            if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
-                break;
+
+            corto_signatureName(corto_idof(this), walkData.name);
+            for (i = 0; i < scope.length; i++) {
+                if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
+                    break;
+                }
             }
-        }
-        if (walkData.error) {
-            goto error;
-        }
+            if (walkData.error) {
+                goto error;
+            }
 
-        corto_scopeRelease(scope);
+            corto_scopeRelease(scope);
+        }
 
         /* Parse arguments from name */
         if (corto_function_parseParamString(this, corto_idof(this))) {
-          goto error;
+            goto error;
         }
     }
 
@@ -209,7 +211,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_function_parseParamString(
+int16_t _corto_function_parseParamString(
     corto_function this,
     corto_string params)
 {

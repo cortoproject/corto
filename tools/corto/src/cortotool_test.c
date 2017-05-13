@@ -1,3 +1,24 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 #include "cortotool_test.h"
 #include "cortotool_build.h"
 #include "corto/argparse/argparse.h"
@@ -5,12 +26,16 @@
 #define GREEN   "\033[1;32m"
 #define NORMAL  "\033[0;49m"
 
+static char *errfmt = "[ %k %f:%l: %c: %m ]";
+
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string projectArg = NULL;
     corto_int8 ret, sig, err = 0;
     corto_ll verbose, project, build, rebuild, clean, tool;
 
     CORTO_UNUSED(argc);
+    
+    corto_errfmt(errfmt);
 
     if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
         goto error;
@@ -36,11 +61,11 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
     }
 
     if (project) {
-        projectArg = corto_llGet(project, 0);
+        projectArg = corto_ll_get(project, 0);
     }
 
     if (tool) {
-        char *toolstr = corto_llGet(tool, 0);
+        char *toolstr = corto_ll_get(tool, 0);
         setenv("CORTO_TEST_TOOL", toolstr, TRUE);
         setenv("CI", "TRUE", TRUE);
     }
@@ -77,7 +102,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         }
 
         i ++;
-    } while (project && (projectArg = corto_llGet(project, i)));
+    } while (project && (projectArg = corto_ll_get(project, i)));
 
     corto_argclean(data);
 

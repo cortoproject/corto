@@ -1,3 +1,24 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 #include "cortotool_shellengine.h"
 
 #include "string.h"
@@ -311,7 +332,7 @@ static corto_bool corto_shellAutoExpand(
      * a space between the first argument */
     if (!items) {
         corto_shellEngine_cmdAppend(" ", 0);
-    } else if (corto_llSize(items)) {
+    } else if (corto_ll_size(items)) {
         corto_id append;
         append[0] = '\0';
         int first = 0;
@@ -326,16 +347,16 @@ static corto_bool corto_shellAutoExpand(
             arg = "";
         }
 
-        if (corto_llSize(items) >= 2) {
+        if (corto_ll_size(items) >= 2) {
             corto_string prev = NULL, str = NULL;
             corto_shellEngine_keepInput();
             result = TRUE;
 
             printf("\n");
-            corto_iter iter = corto_llIter(items);
-            while (corto_iterHasNext(&iter)) {
+            corto_iter iter = corto_ll_iter(items);
+            while (corto_iter_hasNext(&iter)) {
                 if (!prev) prev = str; else prev = NULL;
-                str = corto_iterNext(&iter);
+                str = corto_iter_next(&iter);
                 if (prev) {
                     printf("%*s", 40 - (int)strlen(prev), " ");
                 }
@@ -366,21 +387,21 @@ static corto_bool corto_shellAutoExpand(
                 printf("\n");
             }
     		} else {
-            if (!memcmp(corto_llGet(items, 0), arg, strlen(arg))) {
-                strcpy(append, &(((corto_string)corto_llGet(items, 0))[strlen(arg)]));
+            if (!memcmp(corto_ll_get(items, 0), arg, strlen(arg))) {
+                strcpy(append, &(((corto_string)corto_ll_get(items, 0))[strlen(arg)]));
             } else {
-                strcpy(append, corto_llGet(items, 0));
+                strcpy(append, corto_ll_get(items, 0));
                 replace = strlen(arg);
             }
         }
 
         corto_shellEngine_cmdAppend(append, replace);
 
-        corto_iter iter = corto_llIter(items);
-        while (corto_iterHasNext(&iter)) {
-            corto_dealloc(corto_iterNext(&iter));
+        corto_iter iter = corto_ll_iter(items);
+        while (corto_iter_hasNext(&iter)) {
+            corto_dealloc(corto_iter_next(&iter));
         }
-        corto_llFree(items);
+        corto_ll_free(items);
   	}
 
   	return result;
@@ -448,21 +469,7 @@ int corto_shellEngine_readInput(
 
         case XCON_KEY_BACKSPACE:
             if (buffLoc) {
-                corto_bool remove = FALSE;
-
-                switch (chremove(cmdbuff, consolePos, buffLoc)) {
-                case '{': if (cmdbuff[consolePos - 1] == '}') remove = TRUE;
-                    break;
-                case '[': if (cmdbuff[consolePos - 1] == ']') remove = TRUE;
-                    break;
-                case '(': if (cmdbuff[consolePos - 1] == ')') remove = TRUE;
-                    break;
-                case '"': if (cmdbuff[consolePos - 1] == '"') remove = TRUE;
-                    break;
-                }
-
-                if (remove) chremove(cmdbuff, consolePos, buffLoc);
-
+                chremove(cmdbuff, consolePos, buffLoc);
                 if (cursor) {
                     cursor--;
                 }
@@ -500,31 +507,12 @@ int corto_shellEngine_readInput(
 
         default: {
                 corto_bool insert = TRUE;
-                if (consolePos) {
-                    char cur = cmdbuff[consolePos];
-                    if ((ch == ')') && (cur == ')')) insert = FALSE;
-                    if ((ch == '}') && (cur == '}')) insert = FALSE;
-                    if ((ch == '"') && (cur == '"')) insert = FALSE;
-                    if ((ch == ']') && (cur == ']')) insert = FALSE;
-                }
                 if (insert) {
                     chinsert(cmdbuff, consolePos, buffLoc, ch);
                 }
             }
             cursor++;
             break;
-        }
-
-        if (ch == '(') {
-            /*printf("\ncmdbuff = '%s', cursor = %d, consolePos = %d, buffLoc = %d\n",
-              cmdbuff, cursor, consolePos, buffLoc);*/
-            chinsert(cmdbuff, cursor, buffLoc + 1, ')');
-        } else if (ch == '{') {
-            chinsert(cmdbuff, cursor, buffLoc + 1, '}');
-        } else if (ch == '"') {
-            chinsert(cmdbuff, cursor, buffLoc + 1, '"');
-        } else if (ch == '[') {
-            chinsert(cmdbuff, cursor, buffLoc + 1, ']');
         }
 
         if (!execute) {
@@ -539,7 +527,9 @@ int corto_shellEngine_readInput(
         ch = cortoconsole_getch();
     }
 
-    printf("\n");
+    if (strcmp(cmdbuff, "exit")) {
+        printf("\n");
+    }
 
     /* Execute command */
     if (cmd && execute) {

@@ -1,8 +1,28 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "cortotool_build.h"
 #include "corto/argparse/argparse.h"
 
-static char *errfmt = "[ %l %c%m ]";
+static char *errfmt = "[ %k %f:%l: %c: %m ]";
 
 /* Run a command for multiple projects */
 static corto_int16 cortotool_runcmd(
@@ -42,9 +62,9 @@ static corto_int16 cortotool_printCortoListAsRubyArray(corto_file f, const char*
 {
     fprintf((FILE*)f, "%s = [\n", rubyName);
     {
-        corto_iter it = corto_llIter(list);
-        while (corto_iterHasNext(&it)) {
-            corto_string elem = corto_iterNext(&it);
+        corto_iter it = corto_ll_iter(list);
+        while (corto_iter_hasNext(&it)) {
+            corto_string elem = corto_iter_next(&it);
             fprintf((FILE*)f, "    \"%s\",\n", elem);
         }
     }
@@ -57,29 +77,38 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     corto_file rakefile = corto_fileOpen("rakefile");
     fprintf((FILE*)rakefile, "PACKAGE = '%s'\n", corto_path(NULL, root_o, package, "/"));
 
-    if (corto_llSize(package->lib)) {
+    if (corto_ll_size(package->lib)) {
         cortotool_printCortoListAsRubyArray(rakefile, "LIB", package->lib);
     }
-    if (corto_llSize(package->libpath)) {
+    if (corto_ll_size(package->libpath)) {
         cortotool_printCortoListAsRubyArray(rakefile, "LIBPATH", package->libpath);
     }
-    if (corto_llSize(package->include)) {
+    if (corto_ll_size(package->include)) {
         cortotool_printCortoListAsRubyArray(rakefile, "INCLUDE", package->include);
     }
-    if (corto_llSize(package->link)) {
+    if (corto_ll_size(package->link)) {
         cortotool_printCortoListAsRubyArray(rakefile, "LINK", package->link);
     }
-    if (corto_llSize(package->dependencies)) {
+    if (corto_ll_size(package->dependencies)) {
         cortotool_printCortoListAsRubyArray(rakefile, "USE_PACKAGE", package->dependencies);
     }
-    if (corto_llSize(package->definitions)) {
+    if (corto_ll_size(package->definitions)) {
         cortotool_printCortoListAsRubyArray(rakefile, "PP_SCOPES", package->definitions);
     }
-    if (corto_llSize(package->cflags)) {
+    if (corto_ll_size(package->cflags)) {
         cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
     }
-    if (package->nocorto) {
+    if (!package->managed) {
         fprintf((FILE*)rakefile, "NOCORTO = true\n");
+    }
+    if (package->language) {
+        fprintf((FILE*)rakefile, "LANGUAGE = '%s'\n", package->language);
+    }
+    if (package->noapi) {
+        fprintf((FILE*)rakefile, "NOAPI = true\n");
+    }
+    if (package->local) {
+        fprintf((FILE*)rakefile, "LOCAL = true\n");
     }
 
     fprintf((FILE*)rakefile, "require \"#{ENV['CORTO_BUILD']}/%s\"\n", corto_idof(corto_typeof(package)));
@@ -112,16 +141,6 @@ corto_int16 cortotool_loadRakefile(void) {
         goto error_result_fromcontent;
     }
 
-    if (!strcmp(r.type, "package")) {
-        if (corto_mkdir("$CORTO_TARGET/lib/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
-            goto error_mkdir;
-        }
-    } else if (!strcmp(r.type, "application")) {
-        if (corto_mkdir("$CORTO_TARGET/cortobin/corto/$CORTO_VERSION/%s/%s", r.parent, r.id)) {
-            goto error_mkdir;
-        }        
-    }
-
     corto_package package = corto_package(corto_createFromContent("text/json", json));
     if (!package) {
         goto error_createFromContent;
@@ -133,16 +152,15 @@ corto_int16 cortotool_loadRakefile(void) {
 
     corto_release(package);
     corto_dealloc(json);
-    corto_deinitp(&r, corto_result_o);
+    corto_ptr_deinit(&r, corto_result_o);
 
 skip:
     return 0;
 
 error_createRakefile:
     corto_delete(package);
-error_mkdir:
 error_result_fromcontent:
-    corto_deinitp(&r, corto_result_o);
+    corto_ptr_deinit(&r, corto_result_o);
 error_createFromContent:
     corto_dealloc(json);
 error_fileLoad:
@@ -176,9 +194,9 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
     }
 
     if (dirs) {
-        it = corto_llIter(dirs);
-        if (corto_iterHasNext(&it)) {
-            dir = corto_iterNext(&it);
+        it = corto_ll_iter(dirs);
+        if (corto_iter_hasNext(&it)) {
+            dir = corto_iter_next(&it);
         }
     }
 
@@ -200,7 +218,7 @@ corto_int16 cortotool_rakefile(int argc, char* argv[])
         if (dir) {
             corto_chdir("..");
         }
-    } while (dirs && corto_iterHasNext(&it) && (dir = corto_iterNext(&it)));
+    } while (dirs && corto_iter_hasNext(&it) && (dir = corto_iter_next(&it)));
 
     corto_argclean(data);
 
@@ -250,12 +268,12 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
     strcpy(cwd, corto_cwd());
 
     if (dirs) {
-        iter = corto_llIter(dirs);
+        iter = corto_ll_iter(dirs);
     }
 
     do {
         if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
+            corto_string dir = corto_iter_next(&iter);
 
             /* Change working directory to project */
             if (corto_chdir(dir)) {
@@ -306,7 +324,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
-    } while (!ret && dirs && corto_iterHasNext(&iter));
+    } while (!ret && dirs && corto_iter_hasNext(&iter));
 
     corto_argclean(data);
 
@@ -349,12 +367,12 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
     strcpy(cwd, corto_cwd());
 
     if (dirs) {
-        iter = corto_llIter(dirs);
+        iter = corto_ll_iter(dirs);
     }
 
     do {
         if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
+            corto_string dir = corto_iter_next(&iter);
 
             /* Change working directory to project */
             if (corto_chdir(dir)) {
@@ -378,7 +396,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
-    } while (!ret && dirs && corto_iterHasNext(&iter));
+    } while (!ret && dirs && corto_iter_hasNext(&iter));
 
     corto_argclean(data);
     if (ret) {
@@ -417,7 +435,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
 
     do {
         if (dirs) {
-            corto_string dir = corto_iterNext(&iter);
+            corto_string dir = corto_iter_next(&iter);
 
             /* Change working directory to project */
             if (corto_chdir(dir)) {
@@ -443,7 +461,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
-    } while (!ret && dirs && corto_iterHasNext(&iter));
+    } while (!ret && dirs && corto_iter_hasNext(&iter));
 
 
     corto_argclean(data);

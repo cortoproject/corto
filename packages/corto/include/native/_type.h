@@ -15,12 +15,16 @@ extern "C" {
 /* Casting macro's */
 #define corto_native_type(o) ((corto_native_type)corto_assertType((corto_type)corto_native_type_o, o))
 
+/* Native types */
+#ifndef CORTO_NATIVE_H
+#endif
+
 /* Type definitions */
 /*  /corto/native/type */
 typedef struct corto_native_type_s *corto_native_type;
 
 struct corto_native_type_s {
-    struct corto_binary_s _parent;
+    struct corto_binary_s super;
     corto_string name;
 };
 

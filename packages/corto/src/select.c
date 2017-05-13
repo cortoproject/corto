@@ -1,9 +1,28 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "corto/corto.h"
 #include "_object.h"
 #include "_matcher.h"
 
-extern corto_int8 CORTO_OLS_REPLICATOR;
 extern corto_int8 CORTO_OLS_AUGMENT;
 extern corto_threadKey CORTO_KEY_FLUENT;
 
@@ -110,6 +129,11 @@ struct corto_selectData {
 
     /* Indicates if the walk should stop */
     corto_bool quit;
+    corto_bool *quitPtr; /* If quit was not set to TRUE, this structure will be
+                          * cleaned up. This pointer allows apps to check if
+                          * iteration stopped because quit was set to TRUE. The
+                          * variable assigned to quitPtr must be initialized to
+                          * FALSE. */
 
     /* Ignore data from the instance (mount) if set */
     corto_object instance;
@@ -265,13 +289,13 @@ static void corto_setItemData(
     }
 
     item->owner = corto_ownerof(o);
-    corto_setref(&item->object, o);
+    corto_ptr_setref(&item->object, o);
 
     if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
     } else {
         corto_string_ser_t serData;
-        struct corto_serializer_s s;
+        corto_walk_opt s;
 
         serData.buffer = CORTO_BUFFER_INIT;
         serData.buffer.buf = item->type;
@@ -283,9 +307,9 @@ static void corto_setItemData(
         s = corto_string_ser(
             CORTO_LOCAL,
             CORTO_NOT,
-            CORTO_SERIALIZER_TRACE_NEVER);
+            CORTO_WALK_TRACE_NEVER);
 
-        corto_serialize(&s, corto_typeof(o), &serData);
+        corto_walk(&s, corto_typeof(o), &serData);
     }
 
     if (data->contentType) {
@@ -358,7 +382,6 @@ static corto_bool corto_selectMatch(
                          * mount. This prevents returning duplicate results. */
                         if (!strcmp(rType, type)) {
                             result = FALSE;
-                            break;
                         } else {
                             continue;
                         }
@@ -366,19 +389,22 @@ static corto_bool corto_selectMatch(
                         /* A SINK mount that has no type specified blocks
                          * everything */
                         result = FALSE;
-                        break;
                     }
 
                     /* Do the same for attributes */
                     if (o && r->attr) {
                         if (corto_checkAttr(o, r->attr)) {
                             result = FALSE;
-                            break;
                         } else {
+                            /* If result was set to FALSE by type, reset to TRUE */
+                            result = TRUE;
                             continue;
                         }
                     } else {
                         result = FALSE;
+                    }
+
+                    if (!result) {
                         break;
                     }
                 }
@@ -487,29 +513,32 @@ static corto_resultIter corto_selectRequestMount(
             if (!data->mountAction(mount, &r, data)) {
                 data->mountAction = NULL;
                 data->quit = TRUE;
+                if (data->quitPtr) {
+                    *(data->quitPtr) = TRUE;
+                }
             }
         }
 
         /* If this is a dry run, don't request data from mount */
         if (data->quit) {
-            return CORTO_ITERATOR_EMPTY;
+            return CORTO_ITER_EMPTY;
         } else {
             return corto_mount_request(mount, &r);
         }
     } else {
-        return CORTO_ITERATOR_EMPTY;
+        return CORTO_ITER_EMPTY;
     }
 }
 
 int corto_selectHistoryHasNext(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->udata;
-    return corto_iterHasNext(&ctx->iter);
+    return corto_iter_hasNext(&ctx->iter);
 }
 
 void* corto_selectHistoryNext(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->udata;
     corto_word dstValue;
-    corto_sample *s = corto_iterNext(&ctx->iter);
+    corto_sample *s = corto_iter_next(&ctx->iter);
     
     dstValue = corto_selectConvert(ctx->data, ctx->data->item.type, s->value);
 
@@ -530,7 +559,7 @@ void corto_selectHistoryRelease(corto_iter *it) {
         ctx->data->dstSer->release(ctx->sample.value);
     }
 
-    corto_iterRelease(&ctx->iter);
+    corto_iter_release(&ctx->iter);
 
     ctx->data->item.history.udata = NULL;
 }
@@ -551,7 +580,7 @@ static corto_int16 corto_selectIterMount(
 
     corto_selectParseFilter(frame->filter, parent, expr);
 
-    corto_result *result = corto_iterNext(&frame->iter);
+    corto_result *result = corto_iter_next(&frame->iter);
     if (!result) {
         corto_error("mount iterator returned NULL");
         goto error;
@@ -565,6 +594,7 @@ static corto_int16 corto_selectIterMount(
 
     mount = data->mounts[frame->currentMount - 1];
     data->item.owner = mount;
+    data->item.object = NULL;
     data->item.leaf = result->leaf;
 
     /* Copy data, so mount can safely release it */
@@ -640,7 +670,7 @@ static corto_int16 corto_selectIterMount(
         corto_type type = NULL;
 
         if (corto_observer(mount)->typeReference) {
-            corto_setref(&type, corto_observer(mount)->typeReference);
+            corto_ptr_setref(&type, corto_observer(mount)->typeReference);
         } else {
             if (!(type = corto_resolve(NULL, result->type))) {
                 corto_warning("select: could not resume '%s/%s' from '%s': type '%s not found",
@@ -689,7 +719,7 @@ static corto_int16 corto_selectIterMount(
         }
 
         corto_setOwner(prev);
-        corto_setref(&result->object, ref);
+        corto_ptr_setref(&result->object, ref);
         corto_release(ref);
     }
 
@@ -724,18 +754,18 @@ static corto_bool corto_selectIterNext(
                  * iterator and move to value that was last iterated over + 1.
                  * This prevents to either having to lock the scope / store all
                  * results in a temporary list. */
-                if (corto_scopeof(frame->scope) && corto_rbtreeIterChanged(&frame->iter)) {
-                    frame->iter = _corto_rbtreeIter(corto_scopeof(frame->scope), &frame->trav);
-                    while (corto_iterHasNext(&frame->iter)) {
-                        corto_object o = corto_iterNext(&frame->iter);
+                if (corto_scopeof(frame->scope) && corto_rb_iterChanged(&frame->iter)) {
+                    frame->iter = _corto_rb_iter(corto_scopeof(frame->scope), &frame->trav);
+                    while (corto_iter_hasNext(&frame->iter)) {
+                        corto_object o = corto_iter_next(&frame->iter);
                         if (stricmp(corto_idof(o), lastKey) > 0) {
                             result = o;
                             break;
                         }
                     }
                 } else {
-                    if (corto_iterHasNext(&frame->iter)) {
-                        result = corto_iterNext(&frame->iter);
+                    if (corto_iter_hasNext(&frame->iter)) {
+                        result = corto_iter_next(&frame->iter);
                     }
                 }
             }
@@ -758,7 +788,7 @@ static corto_bool corto_selectIterNext(
                   data, frame, data->mounts[frame->currentMount - 1]);
             }
 
-            while (!(hasData = corto_iterHasNext(&frame->iter)) && (frame->currentMount < data->mountsLoaded)) {
+            while (!(hasData = corto_iter_hasNext(&frame->iter)) && (frame->currentMount < data->mountsLoaded)) {
                 frame->currentMount ++;
                 frame->iter = corto_selectRequestMount(
                   data, frame, data->mounts[frame->currentMount - 1]);
@@ -769,7 +799,7 @@ static corto_bool corto_selectIterNext(
             }
         }
     } else {
-        if ((hasData = corto_iterHasNext(&frame->iter))) {
+        if ((hasData = corto_iter_hasNext(&frame->iter))) {
             corto_selectIterMount(data, frame);
         }
     }
@@ -781,14 +811,61 @@ static corto_bool corto_selectIterNext(
     return hasData;
 }
 
+static int corto_selectLoadMountWalk(
+    corto_object entity, 
+    corto_object instance, 
+    void *userData) 
+{
+    corto_selectData *data = userData;
+    corto_mount mount = entity;
+
+    CORTO_UNUSED(instance);
+
+    /* If only querying data from one mount, ignore all others */
+    if (data->mount && (mount != data->mount)) {
+        return 1;
+    }
+
+    /* If a mount is querying data for itself, ignore self */
+    if (data->instance && (mount == data->instance)) {
+        return 1;
+    }
+
+    /* If historical data is requested, only request from
+     * historians and vice versa. */
+    if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
+        if (mount->kind != CORTO_HISTORIAN) {
+            return 1;
+        }
+    } else if (mount->kind == CORTO_HISTORIAN) {
+        return 1;
+    }
+
+    /* If type is requested, test whether it is compatible with
+     * the type of the mount */
+    corto_string rType = corto_observer(mount)->type;
+    if (data->typeFilter && rType) {
+        if (!corto_match(data->typeFilter, rType)) {
+            return 1;
+        }
+    }
+
+    data->mounts[data->mountsLoaded] = mount;
+    data->mountsLoaded ++;
+
+    corto_debug("select: LoadMounts: load '%s', type = %s, mountsLoaded = %d",
+      corto_fullpath(NULL, mount),
+      corto_fullpath(NULL, corto_typeof(mount)),
+      data->mountsLoaded);
+
+    return 1;
+}
+
 /* Load mounts for a scope */
 static void corto_selectLoadMounts(
     corto_selectData *data,
-    corto_selectStack *frame,
-    corto__scope *scope)
+    corto_selectStack *frame)
 {
-    corto_bool releaseScope = FALSE;
-
     data->mountsLoaded = 0;
 
     /* 1: Count mounts registered on parent scopes */
@@ -799,70 +876,10 @@ static void corto_selectLoadMounts(
     frame->currentMount = data->mountsLoaded;
     frame->firstMount = data->mountsLoaded;
 
-    /* 2: Lock scope and get mounts */
-    if (!scope) {
-        scope = corto__scopeClaim(frame->scope);
-        releaseScope = TRUE;
-    }
+    corto_id parentId;
+    corto_fullpath(parentId, frame->scope);
 
-    corto__ols *ols = corto_olsFind(scope, CORTO_OLS_REPLICATOR);
-
-    corto_debug("select: LoadMounts: found mounts in '%s' (%p)",
-       corto_fullpath(NULL, frame->scope),
-       ols);
-
-    if (ols) {
-        corto_ll mounts = ols->value;
-        if (mounts) {
-            corto_iter iter = corto_llIter(mounts);
-
-            while (corto_iterHasNext(&iter)) {
-                corto_mount_olsData_t *odata = corto_iterNext(&iter);
-
-                /* If only querying data from one mount, ignore all others */
-                if (data->mount && (odata->mount != data->mount)) {
-                    continue;
-                }
-
-                /* If a mount is querying data for itself, ignore self */
-                if (data->instance && (odata->mount == data->instance)) {
-                    continue;
-                }
-
-                /* If historical data is requested, only request from
-                 * historians and vice versa. */
-                if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
-                    if (odata->mount->kind != CORTO_HISTORIAN) {
-                        continue;
-                    }
-                } else if (odata->mount->kind == CORTO_HISTORIAN) {
-                    continue;
-                }
-
-                /* If type is requested, test whether it is compatible with
-                 * the type of the mount */
-                corto_string rType = corto_observer(odata->mount)->type;
-                if (data->typeFilter && rType) {
-                    if (!corto_match(data->typeFilter, rType)) {
-                        continue;
-                    }
-                }
-
-                data->mounts[data->mountsLoaded] = odata->mount;
-                data->mountsLoaded ++;
-
-                corto_debug("select: LoadMounts: load '%s', type = %s, mountsLoaded = %d",
-                  corto_fullpath(NULL, odata->mount),
-                  corto_fullpath(NULL, corto_typeof(odata->mount)),
-                  data->mountsLoaded);
-            }
-        }
-    }
-
-    /* Unlock scope */
-    if (releaseScope) {
-        corto__scopeRelease(frame->scope);
-    }
+    corto_entityAdmin_walk(&corto_mount_admin, corto_selectLoadMountWalk, parentId, data);
 }
 
 /* Depth first search */
@@ -891,7 +908,7 @@ static void corto_selectTree(
             /* Cache name as next line might delete object */
             if (frame->scope) {
                 strcpy(data->item.name, corto_idof(frame->scope));
-                corto_setref(&frame->scope, NULL);
+                corto_ptr_setref(&frame->scope, NULL);
             }
             data->sp --;
             data->mountsLoaded = frame->firstMount;
@@ -934,13 +951,13 @@ static void corto_selectTree(
                 frame->firstMount = data->mountsLoaded;
                 frame->currentMount = frame->firstMount;
 
-                corto_setref(&frame->scope, o);
+                corto_ptr_setref(&frame->scope, o);
                 if (o) {
                     corto_rbtree scope = corto_scopeof(o);
                     if (scope) {
-                        frame->iter = _corto_rbtreeIter(scope, &frame->trav);
+                        frame->iter = _corto_rb_iter(scope, &frame->trav);
                     }
-                    corto_selectLoadMounts(data, frame, NULL);
+                    corto_selectLoadMounts(data, frame);
                 } else {
                     frame->currentMount = prevFrame->currentMount;
                     if (prevFrame->scopeQuery) {
@@ -970,7 +987,7 @@ static void corto_selectReset(corto_selectData *data) {
     }
 
     if (data->item.object) {
-        corto_setref(&data->item.object, NULL);
+        corto_ptr_setref(&data->item.object, NULL);
     }
 
     if (data->item.history.release) {
@@ -1004,12 +1021,12 @@ static void corto_selectPrepareFrame(
 
     corto_rbtree tree = corto_scopeof(frame->scope);
     if (tree) {
-        frame->iter = _corto_rbtreeIter(tree, &frame->trav);
+        frame->iter = _corto_rb_iter(tree, &frame->trav);
     } else {
         memset(&frame->iter, 0, sizeof(corto_iter));
     }
 
-    corto_selectLoadMounts(data, frame, NULL);
+    corto_selectLoadMounts(data, frame);
 }
 
 /* When moving to the next scope element, filter out active mounts that
@@ -1074,7 +1091,14 @@ static void corto_selectRelease(corto_iter *iter) {
     /* Free iterators */
     corto_int32 i;
     for (i = 0; i <= data->sp; i ++) {
-        corto_iterRelease(&data->stack[i].iter);
+        corto_iter_release(&data->stack[i].iter);
+    }
+
+    /* Free scope objects */
+    i = 0;
+    while (data->scopes[i].scope) {
+        corto_ptr_setref(&data->scopes[i].scope, NULL);
+        i++;
     }
 
     corto_selectReset(data);
@@ -1110,7 +1134,7 @@ static corto_int16 corto_selectSplitScope(corto_selectData *data) {
     }
 
     /* Set first scope to root */
-    corto_setref(&data->scopes[0].scope, root_o);
+    corto_ptr_setref(&data->scopes[0].scope, root_o);
     data->scopes[0].scopeQuery = *ptr ? ptr : NULL;
     current ++;
     prev = ptr;
@@ -1181,7 +1205,7 @@ static corto_int16 corto_selectRun(corto_selectData *data) {
         }
     }
 
-    corto_setstr(&data->fullscope, fullscope);
+    corto_ptr_setstr(&data->fullscope, fullscope);
     corto_cleanpath(data->fullscope, data->fullscope);
 
     /* Does expression contain a filter? */
@@ -1365,9 +1389,9 @@ error:
     return result;
 }
 
-static corto_selectFluent corto_selectFluentGet(void);
+static corto_select__fluent corto_select__fluentGet(void);
 
-static corto_selectFluent corto_selectorContentType(
+static corto_select__fluent corto_selectorContentType(
     corto_string contentType)
 {
     corto_selectRequest *request =
@@ -1375,10 +1399,10 @@ static corto_selectFluent corto_selectorContentType(
     if (request) {
         request->contentType = contentType;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorLimit(
+static corto_select__fluent corto_selectorLimit(
     corto_uint64 offset,
     corto_uint64 limit)
 {
@@ -1388,10 +1412,10 @@ static corto_selectFluent corto_selectorLimit(
         request->offset = offset;
         request->limit = limit;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorType(
+static corto_select__fluent corto_selectorType(
     corto_string type)
 {
     corto_selectRequest *request =
@@ -1399,7 +1423,7 @@ static corto_selectFluent corto_selectorType(
     if (request) {
         request->type = type;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
 static corto_int16 corto_selectorIter(corto_resultIter *ret)
@@ -1445,6 +1469,7 @@ static corto_string corto_selectorId()
       corto_threadTlsGet(CORTO_KEY_FLUENT);
 
     if (request) {
+        corto_bool quit = FALSE;
         request->mountAction = corto_mountAction_id;
         corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
@@ -1454,14 +1479,15 @@ static corto_string corto_selectorId()
         corto_dealloc(request);
 
         corto_selectData *data = it.udata;
+        data->quitPtr = &quit;
 
         /* Walk results until id is found */
-        while (corto_iterHasNext(&it) && !data->quit) {
-            corto_iterNext(&it);
+        while (corto_iter_hasNext(&it) && !quit) {
+            corto_iter_next(&it);
         }
-        if (data->quit) {
+        if (quit) {
             result = data->item.id;
-            corto_iterRelease(&it);
+            corto_iter_release(&it);
         }
     }
 
@@ -1515,8 +1541,8 @@ static corto_int16 corto_selectorUnsubscribe()
         corto_dealloc(request);
 
         /* Walk results to unsubscribe all mounts */
-        while (corto_iterHasNext(&it)) {
-            corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_iter_next(&it);
         }
     }
 
@@ -1571,8 +1597,8 @@ static corto_int64 corto_selectorCount()
         }
         corto_dealloc(request);
 
-        while (corto_iterHasNext(&it)) {
-            corto_iterNext(&it);
+        while (corto_iter_hasNext(&it)) {
+            corto_iter_next(&it);
             count ++;
         }
     }
@@ -1582,7 +1608,7 @@ error:
     return -1;
 }
 
-static corto_selectFluent corto_selectorFromNow(void)
+static corto_select__fluent corto_selectorFromNow(void)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1590,10 +1616,10 @@ static corto_selectFluent corto_selectorFromNow(void)
         request->from.kind = CORTO_FRAME_NOW;
         request->from.value = 0;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorFromTime(corto_time t)
+static corto_select__fluent corto_selectorFromTime(corto_time t)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1606,10 +1632,10 @@ static corto_selectFluent corto_selectorFromTime(corto_time t)
         toInt.t = t;
         request->from.value = toInt.i;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorFromSample(corto_uint64 sample)
+static corto_select__fluent corto_selectorFromSample(corto_uint64 sample)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1617,10 +1643,10 @@ static corto_selectFluent corto_selectorFromSample(corto_uint64 sample)
         request->from.kind = CORTO_FRAME_SAMPLE;
         request->from.value = sample;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorToNow(void)
+static corto_select__fluent corto_selectorToNow(void)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1628,10 +1654,10 @@ static corto_selectFluent corto_selectorToNow(void)
         request->to.kind = CORTO_FRAME_NOW;
         request->from.value = 0;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorToTime(corto_time t)
+static corto_select__fluent corto_selectorToTime(corto_time t)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1644,10 +1670,10 @@ static corto_selectFluent corto_selectorToTime(corto_time t)
         toInt.t = t;
         request->to.value = toInt.i;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorToSample(corto_uint64 sample)
+static corto_select__fluent corto_selectorToSample(corto_uint64 sample)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1655,10 +1681,10 @@ static corto_selectFluent corto_selectorToSample(corto_uint64 sample)
         request->to.kind = CORTO_FRAME_SAMPLE;
         request->to.value = sample;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorForDuration(corto_time t)
+static corto_select__fluent corto_selectorForDuration(corto_time t)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1671,10 +1697,10 @@ static corto_selectFluent corto_selectorForDuration(corto_time t)
         toInt.t = t;
         request->to.value = toInt.i;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorForDepth(corto_int64 depth)
+static corto_select__fluent corto_selectorForDepth(corto_int64 depth)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
@@ -1682,32 +1708,43 @@ static corto_selectFluent corto_selectorForDepth(corto_int64 depth)
         request->to.kind = CORTO_FRAME_DEPTH;
         request->to.value = depth;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorInstance(corto_object instance)
+static corto_select__fluent corto_selectorInstance(corto_object instance)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectorMount(corto_mount mount)
+static corto_select__fluent corto_selectorMount(corto_mount mount)
 {
     corto_selectRequest *request =
       corto_threadTlsGet(CORTO_KEY_FLUENT);
     if (request) {
         request->mount = mount;
     }
-    return corto_selectFluentGet();
+    return corto_select__fluentGet();
 }
 
-static corto_selectFluent corto_selectFluentGet(void)
+static corto_select__fluent corto_selectorFrom(char *scope)
 {
-    corto_selectFluent result;
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->scope = scope;
+    }
+    return corto_select__fluentGet();
+}
+
+static corto_select__fluent corto_select__fluentGet(void)
+{
+    corto_select__fluent result;
+    result.from = corto_selectorFrom;
     result.contentType = corto_selectorContentType;
     result.limit = corto_selectorLimit;
     result.type = corto_selectorType;
@@ -1730,8 +1767,7 @@ static corto_selectFluent corto_selectFluentGet(void)
     return result;
 }
 
-corto_selectFluent corto_select(
-    corto_string scope,
+corto_select__fluent corto_select(
     corto_string expr,
     ...)
 {
@@ -1745,7 +1781,7 @@ corto_selectFluent corto_select(
         memset(request, 0, sizeof(corto_selectRequest));
     }
 
-    corto_debug("select: '%s', '%s'", scope, expr);
+    corto_debug("select: '%s'", expr);
     
     if (expr) {
         va_start(arglist, expr);
@@ -1753,6 +1789,6 @@ corto_selectFluent corto_select(
         va_end(arglist);
     }
 
-    request->scope = scope;
-    return corto_selectFluentGet();
+    request->scope = NULL;
+    return corto_select__fluentGet();
 }

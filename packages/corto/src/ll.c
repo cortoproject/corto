@@ -1,38 +1,51 @@
-/*
- * corto_ll.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Apr 19, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
-
 
 #include "corto/corto.h"
 
-#define get(list, index) corto_llGet(list, index)
-#define walk(list, cb, udata) corto_llWalk(list, cb, udata)
+#define get(list, index) corto_ll_get(list, index)
+#define walk(list, cb, udata) corto_ll_walk(list, cb, udata)
 
-#define next(iter) corto_llIterNext(&iter)
-#define remove(iter) corto_llIterRemove(&iter)
-#define hasNext(iter) corto_llIterHasNext(&iter)
-#define insert(iter, data) corto_llIterInsert(&iter, data)
-#define set(iter) corto_llIterSet(&iter)
+#define next(iter) corto_ll_iterNext(&iter)
+#define remove(iter) corto_ll_iterRemove(&iter)
+#define hasNext(iter) corto_ll_iterHasNext(&iter)
+#define insert(iter, data) corto_ll_iterInsert(&iter, data)
+#define set(iter) corto_ll_iterSet(&iter)
 
-typedef struct corto_llNode_s {
+typedef struct corto_ll_node_s {
     void* data;
-    corto_llNode next;
-    corto_llNode prev;
-} corto_llNode_s;
+    corto_ll_node next;
+    corto_ll_node prev;
+} corto_ll_node_s;
 
 typedef struct corto_ll_s {
-    corto_llNode first;
-    corto_llNode last;
+    corto_ll_node first;
+    corto_ll_node last;
     unsigned int size;
 } corto_ll_s;
 
-#define corto_iterData(iter) ((corto_llIter_s*)(iter).udata)
+#define corto_iterData(iter) ((corto_ll_iter_s*)(iter).udata)
 
 /* New list */
-corto_ll corto_llNew() {
+corto_ll corto_ll_new() {
     corto_ll result = (corto_ll)malloc(sizeof(corto_ll_s));
 
     result->first = 0;
@@ -44,12 +57,12 @@ corto_ll corto_llNew() {
 }
 
 /* Get listsize */
-int corto_llSize(corto_ll list) {
+int corto_ll_size(corto_ll list) {
     return list->size;
 }
 
-void corto_llFree(corto_ll list) {
-    corto_llNode node, next;
+void corto_ll_free(corto_ll list) {
+    corto_ll_node node, next;
     node = list->first;
     while (node) {
         next = node->next;
@@ -60,9 +73,9 @@ void corto_llFree(corto_ll list) {
     free(list);
 }
 
-int corto_llWalk(corto_ll list, corto_walkAction callback, void* userdata) {
-    corto_llNode next;
-    corto_llNode ptr;
+int corto_ll_walk(corto_ll list, corto_elementWalk_cb callback, void* userdata) {
+    corto_ll_node next;
+    corto_ll_node ptr;
     int result;
     corto_uint32 i=0;
 
@@ -82,9 +95,9 @@ int corto_llWalk(corto_ll list, corto_walkAction callback, void* userdata) {
     return result;
 }
 
-int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata) {
-    corto_llNode next;
-    corto_llNode ptr;
+int corto_ll_walkPtr(corto_ll list, corto_elementWalk_cb callback, void* userdata) {
+    corto_ll_node next;
+    corto_ll_node ptr;
     int result;
     corto_uint32 i=0;
 
@@ -105,15 +118,15 @@ int corto_llWalkPtr(corto_ll list, corto_walkAction callback, void* userdata) {
 }
 
 /* Insert at start */
-void corto_llInsert(corto_ll list, void* data) {
-    corto_iter iter = corto_llIter(list);
+void corto_ll_insert(corto_ll list, void* data) {
+    corto_iter iter = corto_ll_iter(list);
     insert(iter, data);
 }
 
 /* Insert at end */
-void corto_llAppend(corto_ll list, void* data) {
-    corto_llNode node = list->first;
-    corto_iter iter = corto_llIter(list);
+void corto_ll_append(corto_ll list, void* data) {
+    corto_ll_node node = list->first;
+    corto_iter iter = corto_ll_iter(list);
 
     if (node) {
         node = list->last;
@@ -126,8 +139,8 @@ void corto_llAppend(corto_ll list, void* data) {
 }
 
 /* Random access read */
-void* corto_llGet(corto_ll list, int index) {
-    corto_llNode node;
+void* corto_ll_get(corto_ll list, int index) {
+    corto_ll_node node;
     void* result;
     int i;
 
@@ -146,8 +159,8 @@ void* corto_llGet(corto_ll list, int index) {
 }
 
 /* Get element ptr */
-void* corto_llGetPtr(corto_ll list, int index) {
-    corto_llNode node;
+void* corto_ll_getPtr(corto_ll list, int index) {
+    corto_ll_node node;
     void* result;
     int i;
 
@@ -166,8 +179,8 @@ void* corto_llGetPtr(corto_ll list, int index) {
     return result;
 }
 
-void* corto_llFind(corto_ll list, corto_compareAction callback, void* o) {
-    corto_llNode ptr;
+void* corto_ll_find(corto_ll list, corto_compare_cb callback, void* o) {
+    corto_ll_node ptr;
     void* result;
 
     ptr = list->first;
@@ -184,8 +197,8 @@ void* corto_llFind(corto_ll list, corto_compareAction callback, void* o) {
     return result;
 }
 
-corto_uint32 corto_llHasObject(corto_ll list, void* o) {
-    corto_llNode ptr;
+corto_uint32 corto_ll_hasObject(corto_ll list, void* o) {
+    corto_ll_node ptr;
     corto_uint32 index = 0;
 
     ptr = list->first;
@@ -202,7 +215,7 @@ corto_uint32 corto_llHasObject(corto_ll list, void* o) {
 }
 
 /* Last element */
-void* corto_llLast(corto_ll list) {
+void* corto_ll_last(corto_ll list) {
     if (list->last) {
         return list->last->data;
     }
@@ -210,9 +223,9 @@ void* corto_llLast(corto_ll list) {
 }
 
 /* Take first */
-void* corto_llTakeFirst(corto_ll list) {
+void* corto_ll_takeFirst(corto_ll list) {
     void* data;
-    corto_llNode node;
+    corto_ll_node node;
 
     node = list->first;
     data = 0;
@@ -231,8 +244,8 @@ void* corto_llTakeFirst(corto_ll list) {
 }
 
 /* Remove object */
-void* corto_llRemove(corto_ll list, void* o) {
-    corto_llNode node, prev;
+void* corto_ll_remove(corto_ll list, void* o) {
+    corto_ll_node node, prev;
     void *result = NULL;
 
     prev = 0;
@@ -264,8 +277,8 @@ void* corto_llRemove(corto_ll list, void* o) {
 }
 
 /* Replace object */
-void corto_llReplace(corto_ll list, void* src, void* by) {
-    corto_llNode node;
+void corto_ll_replace(corto_ll list, void* src, void* by) {
+    corto_ll_node node;
 
     node = list->first;
     while(node) {
@@ -278,29 +291,29 @@ void corto_llReplace(corto_ll list, void* src, void* by) {
 }
 
 /* Append one list to another */
-void corto_llAppendList(corto_ll l1, corto_ll l2) {
-    corto_llNode ptr;
+void corto_ll_appendList(corto_ll l1, corto_ll l2) {
+    corto_ll_node ptr;
 
     ptr = l2->first;
     while(ptr) {
-        corto_llInsert(l1, ptr->data);
+        corto_ll_insert(l1, ptr->data);
         ptr = ptr->next;
     }
 }
 
 /* Insert one list into another */
-void corto_llInsertList(corto_ll l1, corto_ll l2) {
+void corto_ll_insertList(corto_ll l1, corto_ll l2) {
     printf("TODO\n");
     (void)l1;
     (void)l2;
 }
 
 /* Reverse list */
-void corto_llReverse(corto_ll list) {
-    corto_uint32 i, size = corto_llSize(list);
-    corto_llNode start = list->first;
-    corto_llNode end = list->last;
-    corto_llNode ptr;
+void corto_ll_reverse(corto_ll list) {
+    corto_uint32 i, size = corto_ll_size(list);
+    corto_ll_node start = list->first;
+    corto_ll_node end = list->last;
+    corto_ll_node ptr;
 
     for(i=0; i<size / 2; i++) {
         void *tmp = start->data;
@@ -321,60 +334,60 @@ void corto_llReverse(corto_ll list) {
 }
 
 /* Copy list */
-corto_ll corto_llCopy(corto_ll list) {
-    corto_iter iter = corto_llIter(list);
+corto_ll corto_ll_copy(corto_ll list) {
+    corto_iter iter = corto_ll_iter(list);
     corto_ll result = NULL;
     if (list) {
-        result = corto_llNew();
-        while (corto_iterHasNext(&iter)) {
-            corto_llAppend(result, corto_iterNext(&iter));
+        result = corto_ll_new();
+        while (corto_iter_hasNext(&iter)) {
+            corto_ll_append(result, corto_iter_next(&iter));
         }
     }
     return result;
 }
 
 /* Clear list */
-void corto_llClear(corto_ll list) {
+void corto_ll_clear(corto_ll list) {
     while(list->size) {
-        corto_llTakeFirst(list);
+        corto_ll_takeFirst(list);
     }
 }
 
 /* Return list iterator */
-corto_iter _corto_llIter(corto_ll list, void *udata) {
+corto_iter _corto_ll_iter(corto_ll list, void *udata) {
     corto_iter result;
 
     result.udata = udata;
     corto_iterData(result)->cur = 0;
     corto_iterData(result)->next = list->first;
     corto_iterData(result)->list = list;
-    result.hasNext = corto_llIterHasNext;
-    result.next = corto_llIterNext;
-    result.nextPtr = corto_llIterNextPtr;
+    result.hasNext = corto_ll_iterHasNext;
+    result.next = corto_ll_iterNext;
+    result.nextPtr = corto_ll_iterNextPtr;
     result.release = NULL;
 
     return result;
 }
 
-corto_iter corto_llIterAlloc(corto_ll list) {
+corto_iter corto_ll_iterAlloc(corto_ll list) {
     corto_iter result;
-    corto_llIter_s *udata =  corto_alloc(sizeof(corto_llIter_s));
-    result = _corto_llIter(list, udata);
-    result.release = corto_llIterRelease;
+    corto_ll_iter_s *udata =  corto_alloc(sizeof(corto_ll_iter_s));
+    result = _corto_ll_iter(list, udata);
+    result.release = corto_ll_iterRelease;
     return result;
 }
 
-void corto_llIterRelease(corto_iter *iter) {
+void corto_ll_iterRelease(corto_iter *iter) {
     corto_dealloc(iter->udata);
     iter->udata = NULL;
 }
 
-void corto_llIterMoveFirst(corto_iter* iter) {
+void corto_ll_iterMoveFirst(corto_iter* iter) {
     corto_iterData(*iter)->cur = 0;
     corto_iterData(*iter)->next = (corto_iterData(*iter)->list)->first;
 }
 
-void* corto_llIterMove(corto_iter* iter, unsigned int index) {
+void* corto_ll_iterMove(corto_iter* iter, unsigned int index) {
     void* result;
 
     result = NULL;
@@ -382,9 +395,9 @@ void* corto_llIterMove(corto_iter* iter, unsigned int index) {
     if (corto_iterData(*iter)->list->size <= index) {
         corto_critical("iterMove exceeds list-bound (%d >= %d).", index, (corto_iterData(*iter)->list)->size);
     }
-    corto_llIterMoveFirst(iter);
+    corto_ll_iterMoveFirst(iter);
     while(index) {
-        result = corto_iterNext(iter);
+        result = corto_iter_next(iter);
         index--;
     }
 
@@ -392,13 +405,13 @@ void* corto_llIterMove(corto_iter* iter, unsigned int index) {
 }
 
 /* Can the iterator provide a 'next' value */
-int corto_llIterHasNext(corto_iter* iter) {
+int corto_ll_iterHasNext(corto_iter* iter) {
     return corto_iterData(*iter)->next != 0;
 }
 
 /* Take next element of iterator */
-void* corto_llIterNext(corto_iter* iter) {
-    corto_llNode current;
+void* corto_ll_iterNext(corto_iter* iter) {
+    corto_ll_node current;
     void* result;
 
     current = corto_iterData(*iter)->next;
@@ -416,8 +429,8 @@ void* corto_llIterNext(corto_iter* iter) {
 }
 
 /* Take next element of iterator */
-void* corto_llIterNextPtr(corto_iter* iter) {
-    corto_llNode current;
+void* corto_ll_iterNextPtr(corto_iter* iter) {
+    corto_ll_node current;
     void* result;
 
     current = corto_iterData(*iter)->next;
@@ -435,8 +448,8 @@ void* corto_llIterNextPtr(corto_iter* iter) {
 }
 
 /* Remove the last-read element from the iterator. */
-void* corto_llIterRemove(corto_iter* iter) {
-    corto_llNode current;
+void* corto_ll_iterRemove(corto_iter* iter) {
+    corto_ll_node current;
     void* result;
 
     result = 0;
@@ -465,15 +478,15 @@ void* corto_llIterRemove(corto_iter* iter) {
 }
 
 /* Insert element after current (update next of iterator) */
-void corto_llIterInsert(corto_iter* iter, void* o) {
-    corto_llNode newNode;
-    corto_llNode current;
-    corto_llNode next;
+void corto_ll_iterInsert(corto_iter* iter, void* o) {
+    corto_ll_node newNode;
+    corto_ll_node current;
+    corto_ll_node next;
 
     current = corto_iterData(*iter)->cur;
     next = corto_iterData(*iter)->next;
 
-    newNode = malloc(sizeof(corto_llNode_s));
+    newNode = malloc(sizeof(corto_ll_node_s));
     newNode->data = o;
     newNode->prev = current;
     newNode->next = next;
@@ -494,23 +507,23 @@ void corto_llIterInsert(corto_iter* iter, void* o) {
 }
 
 /* Set data of current element. */
-void corto_llIterSet(corto_iter* iter, void* o) {
+void corto_ll_iterSet(corto_iter* iter, void* o) {
     if (corto_iterData(*iter)->cur) {
-        ((corto_llNode)corto_iterData(*iter)->cur)->data = o;
+        ((corto_ll_node)corto_iterData(*iter)->cur)->data = o;
     } else {
         corto_critical("Illegal use of 'set' by corto_iter: no element selected. Use 'next' to select an element first.");
     }
 }
 
-corto_ll corto_llMap(corto_ll l, corto_mapAction f, void* data)
+corto_ll corto_ll_map(corto_ll l, corto_mapAction f, void* data)
 {
-    corto_ll ll = corto_llNew();
+    corto_ll ll = corto_ll_new();
     {
-        corto_iter i = corto_llIter(l);
-        while (corto_iterHasNext(&i)) {
-            void* e = corto_iterNext(&i);
+        corto_iter i = corto_ll_iter(l);
+        while (corto_iter_hasNext(&i)) {
+            void* e = corto_iter_next(&i);
             void* r = f(e, data);
-            corto_llAppend(ll, r);
+            corto_ll_append(ll, r);
         }
     }
     return ll;

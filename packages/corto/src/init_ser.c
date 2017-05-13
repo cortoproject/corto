@@ -1,39 +1,54 @@
-/*
- * corto_mm.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Sep 7, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
 
-corto_int16 corto_ser_initCollection(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_initAny(corto_walk_opt* s, corto_value* v, void* userData) {
+    corto_any *ptr = corto_value_ptrof(v);
+    CORTO_UNUSED(s);
+    CORTO_UNUSED(userData);
+    ptr->owner = TRUE;
+    return 0;
+}
+
+corto_int16 corto_ser_initCollection(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_type t;
     void* o;
 
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     switch(corto_collection(t)->kind) {
         case CORTO_ARRAY:
-            /* Serialize elements */
-            if (corto_serializeElements(s, v, userData)) {
+            if (corto_walk_elements(s, v, userData)) {
                 goto error;
             }
             break;
-        case CORTO_SEQUENCE:
-            ((corto_objectseq*)o)->buffer = NULL;
-            ((corto_objectseq*)o)->length = 0;
-            break;
         case CORTO_LIST:
-            *(corto_ll*)o = corto_llNew();
+            *(corto_ll*)o = corto_ll_new();
             break;
         case CORTO_MAP:
-            /**(corto_rbtree*)o = corto_rbtreeNew(t);*/
+            /**(corto_rbtree*)o = corto_rb_new(t);*/
             break;
         default:
-            corto_error("invalid collection object!");
-            goto error;
             break;
     }
 
@@ -42,14 +57,14 @@ error:
     return -1;
 }
 
-corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_initMember(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_member m = v->is.member.t;
 
     /* If type is instanceof target, initialize member to a new target object */
     if (m->modifiers & CORTO_OBSERVABLE) {
-        corto_type t = corto_value_getType(v);
-        corto_object p = corto_value_getObject(v);
-        void* ptr = corto_value_getPtr(v);
+        corto_type t = corto_value_typeof(v);
+        corto_object p = corto_value_objectof(v);
+        void* ptr = corto_value_ptrof(v);
 
         /* Create observable that is not added to the scope of its parent */
         corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);
@@ -63,21 +78,21 @@ corto_int16 corto_ser_initMember(corto_serializer s, corto_value* v, void* userD
         *(corto_object*)ptr = o;
     }
 
-    return corto_serializeValue(s, v, userData);
+    return corto_value_walk(s, v, userData);
 error:
     return -1;
 }
 
-struct corto_serializer_s corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.program[CORTO_COLLECTION] = corto_ser_initCollection;
-    s.program[CORTO_ANY] = NULL;
+    s.program[CORTO_ANY] = corto_ser_initAny;
     s.metaprogram[CORTO_MEMBER] = corto_ser_initMember;
 
     return s;

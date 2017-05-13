@@ -1,8 +1,22 @@
-/*
- * corto_loader.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 30, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
@@ -32,7 +46,7 @@ struct corto_fileHandler {
     void* userData;
 };
 
-static char* corto_convertToPath(corto_string lib, corto_id path) {
+static char* corto_ptr_castToPath(corto_string lib, corto_id path) {
     char *ptr, *bptr, ch;
     /* Convert '::' in library name to '/' */
     ptr = lib;
@@ -65,15 +79,15 @@ static char* corto_convertToPath(corto_string lib, corto_id path) {
 /* Lookup loaded library by name */
 static struct corto_loadedAdmin* corto_loadedAdminFind(corto_string name) {
     if (loadedAdmin) {
-        corto_iter iter = corto_llIter(loadedAdmin);
+        corto_iter iter = corto_ll_iter(loadedAdmin);
         struct corto_loadedAdmin *lib;
         corto_id libPath, adminPath;
 
-        corto_convertToPath(name, libPath);
+        corto_ptr_castToPath(name, libPath);
 
-        while (corto_iterHasNext(&iter)) {
-            lib = corto_iterNext(&iter);
-            corto_convertToPath(lib->name, adminPath);
+        while (corto_iter_hasNext(&iter)) {
+            lib = corto_iter_next(&iter);
+            corto_ptr_castToPath(lib->name, adminPath);
             if (!strcmp(adminPath, libPath)) {
                 return lib;
             }
@@ -89,9 +103,9 @@ static struct corto_loadedAdmin* corto_loadedAdminAdd(corto_string library) {
     lib->name = corto_strdup(library);
     lib->loading = corto_threadSelf();
     if (!loadedAdmin) {
-        loadedAdmin = corto_llNew();
+        loadedAdmin = corto_ll_new();
     }
-    corto_llInsert(loadedAdmin, lib);
+    corto_ll_insert(loadedAdmin, lib);
     return lib;
 }
 
@@ -113,7 +127,7 @@ static struct corto_fileHandler* corto_lookupExt(corto_string ext) {
 
     /* Walk handlers */
     if (fileHandlers) {
-        corto_llWalk(fileHandlers, (corto_walkAction)corto_lookupExtWalk, &dummy_p);
+        corto_ll_walk(fileHandlers, (corto_elementWalk_cb)corto_lookupExtWalk, &dummy_p);
     }
 
     if (dummy_p == &dummy) {
@@ -142,10 +156,10 @@ int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userD
         h->userData = userData;
 
         if (!fileHandlers) {
-            fileHandlers = corto_llNew();
+            fileHandlers = corto_ll_new();
         }
 
-        corto_llAppend(fileHandlers, h);
+        corto_ll_append(fileHandlers, h);
     }
     corto_mutexUnlock(&corto_adminLock);
 
@@ -303,10 +317,10 @@ int corto_loadFromDl(corto_dl dl, char *fileName, int argc, char *argv[]) {
     /* Add library to libraries list */
     corto_mutexLock (&corto_adminLock);
     if (!libraries) {
-        libraries = corto_llNew();
+        libraries = corto_ll_new();
     }
 
-    corto_llInsert(libraries, dl);
+    corto_ll_insert(libraries, dl);
     corto_mutexUnlock (&corto_adminLock);
 
     corto_debug("loader: loaded '%s'", fileName);
@@ -354,9 +368,9 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
 
     /* Search libraries for specified symbol */
     corto_mutexLock (&corto_adminLock);
-    corto_iter iter = corto_llIter(libraries);
-    while (!result && corto_iterHasNext(&iter)) {
-        corto_dl dl = corto_iterNext(&iter);
+    corto_iter iter = corto_ll_iter(libraries);
+    while (!result && corto_iter_hasNext(&iter)) {
+        corto_dl dl = corto_iter_next(&iter);
         result = (void(*)(void))corto_dlProc(dl, procName);
     }
     corto_mutexUnlock (&corto_adminLock);
@@ -385,9 +399,9 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         if (lib->loading == corto_threadSelf()) {
             if (!ignoreRecursive) {
                 corto_error("illegal recursive load of file '%s' from:", lib->name);
-                corto_iter iter = corto_llIter(loadedAdmin);
-                while (corto_iterHasNext(&iter)) {
-                    struct corto_loadedAdmin *lib = corto_iterNext(&iter);
+                corto_iter iter = corto_ll_iter(loadedAdmin);
+                while (corto_iter_hasNext(&iter)) {
+                    struct corto_loadedAdmin *lib = corto_iter_next(&iter);
                     if (lib->loading) {
                         fprintf(stderr, "   %s\n", lib->name);
                     }
@@ -451,7 +465,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
     corto_mutexUnlock(&corto_adminLock);
 
     if (!result) {
-        corto_trace("loader: '%s' loaded", str[0] == '/' ? &str[1] : str);
+        corto_trace("loader: loaded '%s'", str[0] == '/' ? &str[1] : str);
     }
 
     return result;
@@ -782,8 +796,8 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
 
         if (!loaded->filename && setLoadAdminWhenFound) {
             corto_mutexLock(&corto_adminLock);
-            corto_setstr(&loaded->filename, result);
-            corto_setstr(&loaded->base, base);
+            corto_ptr_setstr(&loaded->filename, result);
+            corto_ptr_setstr(&loaded->base, base);
             if (dl_out) {
                 loaded->library = dl;
             }
@@ -842,11 +856,11 @@ corto_ll corto_loadGetDependencies(corto_string file) {
 
     if (corto_fileTest(file)) {
         corto_id name;
-        result = corto_llNew();
+        result = corto_ll_new();
         corto_file f = corto_fileRead(file);
         char *dependency;
         while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
-            corto_llAppend(result, corto_strdup(dependency));
+            corto_ll_append(result, corto_strdup(dependency));
         }
         corto_fileClose(f);
     }
@@ -856,9 +870,9 @@ corto_ll corto_loadGetDependencies(corto_string file) {
 
 static void corto_loadFreeDependencies(corto_ll dependencies) {
     if (dependencies) {
-        corto_iter iter = corto_llIter(dependencies);
-        while (corto_iterHasNext(&iter)) {
-            corto_dealloc(corto_iterNext(&iter));
+        corto_iter iter = corto_ll_iter(dependencies);
+        while (corto_iter_hasNext(&iter)) {
+            corto_dealloc(corto_iter_next(&iter));
         }
         corto_dealloc(dependencies);
     }
@@ -868,9 +882,9 @@ static corto_bool corto_loadRequiresDependency(corto_ll dependencies, corto_stri
     corto_bool result = FALSE;
 
     if (dependencies) {
-        corto_iter iter = corto_llIter(dependencies);
-        while (!result && corto_iterHasNext(&iter)) {
-            corto_string package = corto_iterNext(&iter);
+        corto_iter iter = corto_ll_iter(dependencies);
+        while (!result && corto_iter_hasNext(&iter)) {
+            corto_string package = corto_iter_next(&iter);
             if (!strcmp(package, query)) {
                 result = TRUE;
             }
@@ -898,9 +912,9 @@ corto_bool corto_loadRequiresPackage(corto_string package) {
 int corto_loadPackages(void) {
     corto_ll packages = corto_loadGetPackages();
     if (packages) {
-        corto_iter iter = corto_llIter(packages);
-        while (corto_iterHasNext(&iter)) {
-            corto_load(corto_iterNext(&iter), 0, NULL);
+        corto_iter iter = corto_ll_iter(packages);
+        while (corto_iter_hasNext(&iter)) {
+            corto_load(corto_iter_next(&iter), 0, NULL);
         }
         corto_loadFreePackages(packages);
     }
@@ -924,6 +938,9 @@ int corto_fileLoader(corto_string package, int argc, char* argv[], void* udata) 
 
     result = corto_loadFromDl(dl, fileName, argc, argv);
     corto_dealloc(fileName);
+    if (result) {
+        corto_seterr(corto_lastinfo());
+    }
 
     return result;
 }
@@ -938,27 +955,27 @@ void corto_loaderOnExit(void* udata) {
     /* Free loaded administration (always happens from mainthread) */
 
     if (loadedAdmin) {
-        iter = corto_llIter(loadedAdmin);
-         while(corto_iterHasNext(&iter)) {
-             struct corto_loadedAdmin *loaded = corto_iterNext(&iter);
+        iter = corto_ll_iter(loadedAdmin);
+         while(corto_iter_hasNext(&iter)) {
+             struct corto_loadedAdmin *loaded = corto_iter_next(&iter);
              corto_dealloc(loaded->name);
              corto_dealloc(loaded);
          }
-         corto_llFree(loadedAdmin);
+         corto_ll_free(loadedAdmin);
     }
 
     /* Free handlers */
-    while ((h = corto_llTakeFirst(fileHandlers))) {
+    while ((h = corto_ll_takeFirst(fileHandlers))) {
         corto_dealloc(h);
     }
-    corto_llFree(fileHandlers);
+    corto_ll_free(fileHandlers);
 
     /* Free libraries */
     if (libraries) {
-        while ((dl = corto_llTakeFirst(libraries))) {
+        while ((dl = corto_ll_takeFirst(libraries))) {
             corto_dlClose(dl);
         }
-        corto_llFree(libraries);
+        corto_ll_free(libraries);
     }
 }
 

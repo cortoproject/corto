@@ -238,7 +238,7 @@ error:
 }
 /* $end */
 
-corto_void _test_Project_setup(
+void _test_Project_setup(
     test_Project this)
 {
 /* $begin(test/Project/setup) */
@@ -260,7 +260,7 @@ corto_void _test_Project_setup(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageCortoDependencyNoCorto(
+void _test_Project_tc_packageCortoDependencyNoCorto(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageCortoDependencyNoCorto) */
@@ -277,7 +277,7 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -339,7 +339,7 @@ corto_void _test_Project_tc_packageCortoDependencyNoCorto(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
+void _test_Project_tc_packageCortoNestedDependencyNoCorto(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageCortoNestedDependencyNoCorto) */
@@ -356,7 +356,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -375,7 +375,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -437,7 +437,7 @@ corto_void _test_Project_tc_packageCortoNestedDependencyNoCorto(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageDependency(
+void _test_Project_tc_packageDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageDependency) */
@@ -515,84 +515,7 @@ corto_void _test_Project_tc_packageDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageDependencyColons(
-    test_Project this)
-{
-/* $begin(test/Project/tc_packageDependencyColons) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    /* Create package that will be depended on */
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "foo",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* Create package that will depend on foo */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "bar",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* Add package dependency */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "add",
-            "bar",
-            "::foo",
-            "--silent",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* If test is still running, it means the package builds */
-
-    /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
-    test_assert(!strcmp(str, "/foo\n"));
-    corto_dealloc(str);
-
-    /* Add function to foo package */
-    test_assert(!test_Project_implement("foo"));
-    test_assert(!test_Project_use("bar", "/bar", "foo"));
-/* $end */
-}
-
-corto_void _test_Project_tc_packageNested(
+void _test_Project_tc_packageNested(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNested) */
@@ -638,53 +561,7 @@ corto_void _test_Project_tc_packageNested(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedColons(
-    test_Project this)
-{
-/* $begin(test/Project/tc_packageNestedColons) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "parent",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "parent::child",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-/* $end */
-}
-
-corto_void _test_Project_tc_packageNestedDependency(
+void _test_Project_tc_packageNestedDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedDependency) */
@@ -780,103 +657,7 @@ corto_void _test_Project_tc_packageNestedDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedDependencyColons(
-    test_Project this)
-{
-/* $begin(test/Project/tc_packageNestedDependencyColons) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    /* Create nested package */
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "parent",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "parent/child",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* Create package that will depend on parent/child */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "foo",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* Add package dependency */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "add",
-            "foo",
-            "parent::child",
-            "--silent",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* If test is still running, it means the package builds */
-
-    /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
-    test_assert(!strcmp(str, "/parent/child\n"));
-    corto_dealloc(str);
-
-    /* Add function to foo package */
-    test_assert(!test_Project_implement("child"));
-    test_assert(!test_Project_use("foo", "/foo", "child"));
-
-/* $end */
-}
-
-corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
+void _test_Project_tc_packageNestedDependencyFullyScoped(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedDependencyFullyScoped) */
@@ -972,103 +753,7 @@ corto_void _test_Project_tc_packageNestedDependencyFullyScoped(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedDependencyFullyScopedColons(
-    test_Project this)
-{
-/* $begin(test/Project/tc_packageNestedDependencyFullyScopedColons) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    /* Create nested package */
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "parent",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "parent/child",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* Create package that will depend on parent/child */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "foo",
-            "--silent",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* Add package dependency */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "add",
-            "foo",
-            "::parent::child",
-            "--silent",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    /* If test is still running, it means the package builds */
-
-    /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
-    test_assert(!strcmp(str, "/parent/child\n"));
-    corto_dealloc(str);
-
-    /* Add function to foo package */
-    test_assert(!test_Project_implement("child"));
-    test_assert(!test_Project_use("foo", "/foo", "child"));
-
-/* $end */
-}
-
-corto_void _test_Project_tc_packageNestedFullyScoped(
+void _test_Project_tc_packageNestedFullyScoped(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNestedFullyScoped) */
@@ -1112,51 +797,7 @@ corto_void _test_Project_tc_packageNestedFullyScoped(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNestedFullyScopedColons(
-    test_Project this)
-{
-/* $begin(test/Project/tc_packageNestedFullyScopedColons) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "::parent",
-            "--silent",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "::parent::child",
-            "--silent",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-/* $end */
-}
-
-corto_void _test_Project_tc_packageNoCorto(
+void _test_Project_tc_packageNoCorto(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCorto) */
@@ -1171,7 +812,7 @@ corto_void _test_Project_tc_packageNoCorto(
             "package",
             "Project",
             "--silent",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1182,7 +823,7 @@ corto_void _test_Project_tc_packageNoCorto(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
@@ -1233,7 +874,7 @@ corto_void _test_Project_tc_packageNoCorto(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoDependency(
+void _test_Project_tc_packageNoCortoDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoDependency) */
@@ -1250,7 +891,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1270,7 +911,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(
             "bar",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1316,7 +957,7 @@ corto_void _test_Project_tc_packageNoCortoDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoLocal(
+void _test_Project_tc_packageNoCortoLocal(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoLocal) */
@@ -1332,7 +973,7 @@ corto_void _test_Project_tc_packageNoCortoLocal(
             "package",
             "foo",
             "--silent",
-            "--nocorto",
+            "--unmanaged",
             "--local",
             NULL
         });
@@ -1350,7 +991,7 @@ corto_void _test_Project_tc_packageNoCortoLocal(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoNested(
+void _test_Project_tc_packageNoCortoNested(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoNested) */
@@ -1366,7 +1007,7 @@ corto_void _test_Project_tc_packageNoCortoNested(
             "package",
             "corto::Project",
             "--silent",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1377,7 +1018,7 @@ corto_void _test_Project_tc_packageNoCortoNested(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
@@ -1428,7 +1069,7 @@ corto_void _test_Project_tc_packageNoCortoNested(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNoCortoNestedDependency(
+void _test_Project_tc_packageNoCortoNestedDependency(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNoCortoNestedDependency) */
@@ -1445,7 +1086,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1464,7 +1105,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1484,7 +1125,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -1530,7 +1171,7 @@ corto_void _test_Project_tc_packageNoCortoNestedDependency(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodef(
+void _test_Project_tc_packageNodef(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodef) */
@@ -1556,7 +1197,7 @@ corto_void _test_Project_tc_packageNodef(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1568,20 +1209,20 @@ corto_void _test_Project_tc_packageNodef(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.c"));
     test_assert(corto_fileTest("Project/test/src/MySuite.c"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/_api.c"));
     test_assert(!corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
@@ -1605,7 +1246,7 @@ corto_void _test_Project_tc_packageNodef(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodefC4cpp(
+void _test_Project_tc_packageNodefC4cpp(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodefC4cpp) */
@@ -1633,7 +1274,7 @@ corto_void _test_Project_tc_packageNodefC4cpp(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1645,20 +1286,20 @@ corto_void _test_Project_tc_packageNodefC4cpp(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.cpp"));
     test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/_api.cpp"));
     test_assert(!corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
@@ -1682,7 +1323,7 @@ corto_void _test_Project_tc_packageNodefC4cpp(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodefLocal(
+void _test_Project_tc_packageNodefLocal(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodefLocal) */
@@ -1709,7 +1350,7 @@ corto_void _test_Project_tc_packageNodefLocal(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1721,20 +1362,20 @@ corto_void _test_Project_tc_packageNodefLocal(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.c"));
     test_assert(corto_fileTest("Project/test/src/MySuite.c"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
     test_assert(corto_fileTest("Project/test/include/_type.h"));
 
     test_assert(corto_fileTest("Project/.corto"));
+    test_assert(!corto_fileTest("Project/.corto/_api.c"));
     test_assert(corto_fileTest("Project/.corto/libProject.so"));
 
     test_assert(!corto_fileTest("Project/doc"));
@@ -1758,7 +1399,7 @@ corto_void _test_Project_tc_packageNodefLocal(
 /* $end */
 }
 
-corto_void _test_Project_tc_packageNodefLocalC4cpp(
+void _test_Project_tc_packageNodefLocalC4cpp(
     test_Project this)
 {
 /* $begin(test/Project/tc_packageNodefLocalC4cpp) */
@@ -1787,7 +1428,7 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
     test_assert(!corto_fileTest("Project/Project.md"));
     test_assert(!corto_fileTest("Project/Project.cx"));
 
@@ -1799,14 +1440,13 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
 
     test_assert(corto_fileTest("Project/test"));
     test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/rakefile"));
+    test_assert(corto_fileTest("Project/test/project.json"));
     test_assert(corto_fileTest("Project/test/test.cx"));
     test_assert(corto_fileTest("Project/test/src"));
     test_assert(corto_fileTest("Project/test/src/test.cpp"));
     test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
     test_assert(corto_fileTest("Project/test/include"));
     test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/MySuite.h"));
     test_assert(corto_fileTest("Project/test/include/_api.h"));
     test_assert(corto_fileTest("Project/test/include/_project.h"));
     test_assert(corto_fileTest("Project/test/include/_load.h"));
@@ -1836,7 +1476,7 @@ corto_void _test_Project_tc_packageNodefLocalC4cpp(
 /* $end */
 }
 
-corto_void _test_Project_tc_packagePublicHeaderRemoval(
+void _test_Project_tc_packagePublicHeaderRemoval(
     test_Project this)
 {
 /* $begin(test/Project/tc_packagePublicHeaderRemoval) */
@@ -1850,7 +1490,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
             "create",
             "package",
             "Project",
-            "--nocorto",
+            "--unmanaged",
             "--silent",
             "--notest",
             NULL
@@ -1863,7 +1503,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
     test_assert(ret == 0);
 
     test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
+    test_assert(corto_fileTest("Project/project.json"));
 
     test_assert(corto_fileTest("Project/src"));
     test_assert(corto_fileTest("Project/src/Project.c"));
@@ -1943,121 +1583,7 @@ corto_void _test_Project_tc_packagePublicHeaderRemoval(
 /* $end */
 }
 
-corto_void _test_Project_tc_publishNotag(
-    test_Project this)
-{
-/* $begin(test/Project/tc_publishNotag) */
-    corto_int8 ret;
-    corto_int16 waitResult;
-
-    corto_pid pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "create",
-            "package",
-            "Project",
-            "--silent",
-            "--local",
-            "--notest",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    corto_string v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(v != NULL);
-    test_assert(!strcmp(v, "0.0.0\n"));
-    corto_dealloc(v);
-
-    /* Test patch version increase */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "publish",
-            "Project",
-            "patch",
-            "--silent",
-            "--notag",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(v != NULL);
-    test_assert(!strcmp(v, "0.0.1\n"));
-    corto_dealloc(v);
-
-    /* Test minor version increase */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "publish",
-            "Project",
-            "minor",
-            "--silent",
-            "--notag",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(v != NULL);
-    test_assert(!strcmp(v, "0.1.1\n"));
-    corto_dealloc(v);
-
-    /* Test major version increase */
-    pid = corto_procrun(
-        "corto",
-        (char*[]){
-            "corto",
-            "publish",
-            "Project",
-            "major",
-            "--silent",
-            "--notag",
-            NULL
-        });
-
-    test_assert(pid != 0);
-
-    waitResult = corto_procwait(pid, &ret);
-    test_assert(waitResult == 0);
-    test_assert(ret == 0);
-
-    test_assert(corto_fileTest("Project/.corto/version.txt"));
-
-    v = corto_fileLoad("Project/.corto/version.txt");
-    test_assert(!strcmp(v, "1.1.1\n"));
-    corto_dealloc(v);
-
-/* $end */
-}
-
-corto_void _test_Project_teardown(
+void _test_Project_teardown(
     test_Project this)
 {
 /* $begin(test/Project/teardown) */

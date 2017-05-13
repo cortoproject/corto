@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Attributes_tc_isDefaultPersistent(
+void _test_Attributes_tc_isDefaultPersistent(
     test_Attributes this)
 {
 /* $begin(test/Attributes/tc_isDefaultPersistent) */
@@ -21,7 +21,7 @@ corto_void _test_Attributes_tc_isDefaultPersistent(
 /* $end */
 }
 
-corto_void _test_Attributes_tc_isDefaultScopedPersistent(
+void _test_Attributes_tc_isDefaultScopedPersistent(
     test_Attributes this)
 {
 /* $begin(test/Attributes/tc_isDefaultScopedPersistent) */
@@ -34,7 +34,7 @@ corto_void _test_Attributes_tc_isDefaultScopedPersistent(
 /* $end */
 }
 
-corto_void _test_Attributes_tc_testDefaultSet(
+void _test_Attributes_tc_testDefaultSet(
     test_Attributes this)
 {
 /* $begin(test/Attributes/tc_testDefaultSet) */
@@ -44,7 +44,7 @@ corto_void _test_Attributes_tc_testDefaultSet(
 /* $end */
 }
 
-corto_void _test_Attributes_tc_testTargetAttr(
+void _test_Attributes_tc_testTargetAttr(
     test_Attributes this)
 {
 /* $begin(test/Attributes/tc_testTargetAttr) */
@@ -58,7 +58,7 @@ corto_void _test_Attributes_tc_testTargetAttr(
 /* $end */
 }
 
-corto_void _test_Attributes_tc_testTargetOrphanAttr(
+void _test_Attributes_tc_testTargetOrphanAttr(
     test_Attributes this)
 {
 /* $begin(test/Attributes/tc_testTargetOrphanAttr) */
@@ -73,7 +73,7 @@ corto_void _test_Attributes_tc_testTargetOrphanAttr(
 /* $end */
 }
 
-corto_void _test_Attributes_tc_typeOverridesAttributes(
+void _test_Attributes_tc_typeOverridesAttributes(
     test_Attributes this)
 {
 /* $begin(test/Attributes/tc_typeOverridesAttributes) */

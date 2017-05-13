@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Buffer_tc_append(
+void _test_Buffer_tc_append(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_append) */
@@ -24,7 +24,7 @@ corto_void _test_Buffer_tc_append(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendEmpty(
+void _test_Buffer_tc_appendEmpty(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendEmpty) */
@@ -40,7 +40,7 @@ corto_void _test_Buffer_tc_appendEmpty(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendEmptyToExisting(
+void _test_Buffer_tc_appendEmptyToExisting(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendEmptyToExisting) */
@@ -58,7 +58,7 @@ corto_void _test_Buffer_tc_appendEmptyToExisting(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendLarge(
+void _test_Buffer_tc_appendLarge(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendLarge) */
@@ -86,7 +86,7 @@ corto_void _test_Buffer_tc_appendLarge(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendLargeMulti(
+void _test_Buffer_tc_appendLargeMulti(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendLargeMulti) */
@@ -115,7 +115,7 @@ corto_void _test_Buffer_tc_appendLargeMulti(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendLargeOverflow(
+void _test_Buffer_tc_appendLargeOverflow(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendLargeOverflow) */
@@ -147,7 +147,7 @@ corto_void _test_Buffer_tc_appendLargeOverflow(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendNull(
+void _test_Buffer_tc_appendNull(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendNull) */
@@ -162,7 +162,7 @@ corto_void _test_Buffer_tc_appendNull(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendNullToExisting(
+void _test_Buffer_tc_appendNullToExisting(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendNullToExisting) */
@@ -179,7 +179,7 @@ corto_void _test_Buffer_tc_appendNullToExisting(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendOverflow(
+void _test_Buffer_tc_appendOverflow(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendOverflow) */
@@ -211,7 +211,7 @@ corto_void _test_Buffer_tc_appendOverflow(
 /* $end */
 }
 
-corto_void _test_Buffer_tc_appendToExisting(
+void _test_Buffer_tc_appendToExisting(
     test_Buffer this)
 {
 /* $begin(test/Buffer/tc_appendToExisting) */

@@ -6,13 +6,13 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_map_construct(
+int16_t _corto_map_construct(
     corto_map this)
 {
 /* $begin(corto/lang/map/construct) */
-    corto_type(this)->hasResources = TRUE;
+    corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
     corto_type(this)->size = sizeof(corto_map);
     corto_type(this)->alignment = CORTO_ALIGNMENT(corto_map);
     corto_collection(this)->elementType = this->elementType;
@@ -22,7 +22,7 @@ corto_int16 _corto_map_construct(
 /* $end */
 }
 
-corto_int16 _corto_map_init(
+int16_t _corto_map_init(
     corto_map this)
 {
 /* $begin(corto/lang/map/init) */

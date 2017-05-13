@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_AttrCheck_tc_constructorAttr(
+void _test_AttrCheck_tc_constructorAttr(
     test_AttrCheck this)
 {
 /* $begin(test/AttrCheck/tc_constructorAttr) */
@@ -31,7 +31,7 @@ corto_void _test_AttrCheck_tc_constructorAttr(
 /* $end */
 }
 
-corto_void _test_AttrCheck_tc_packageMainAttr(
+void _test_AttrCheck_tc_packageMainAttr(
     test_AttrCheck this)
 {
 /* $begin(test/AttrCheck/tc_packageMainAttr) */
@@ -53,7 +53,7 @@ corto_void _test_AttrCheck_tc_packageMainAttr(
 /* $end */
 }
 
-corto_void _test_AttrCheck_tc_packageObjectAttr(
+void _test_AttrCheck_tc_packageObjectAttr(
     test_AttrCheck this)
 {
 /* $begin(test/AttrCheck/tc_packageObjectAttr) */

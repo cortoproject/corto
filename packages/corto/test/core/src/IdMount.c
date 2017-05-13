@@ -8,13 +8,13 @@
 
 #include <include/test.h>
 
-corto_int16 _test_IdMount_construct(
+int16_t _test_IdMount_construct(
     test_IdMount this)
 {
 /* $begin(test/IdMount/construct) */
 
     corto_mount(this)->kind = CORTO_SINK;
-    corto_setstr(&corto_subscriber(this)->expr, "//");
+    corto_ptr_setstr(&corto_subscriber(this)->expr, "//");
 
     return corto_mount_construct(this);
 /* $end */

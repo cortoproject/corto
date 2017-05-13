@@ -8,9 +8,9 @@
 
 #include <include/test.h>
 
-corto_void _test_ObserverDispatcher_post(
+void _test_ObserverDispatcher_post(
     test_ObserverDispatcher this,
-    corto_event e)
+    corto_event *e)
 {
 /* $begin(test/ObserverDispatcher/post) */
 

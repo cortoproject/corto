@@ -1,8 +1,22 @@
-/*
- * corto_convert.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 23, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
@@ -30,7 +44,8 @@ typedef corto_int16 bin16_t;
 typedef corto_int32 bin32_t;
 typedef corto_int64 bin64_t;
 typedef corto_word word_t;
-typedef corto_bool bool_t;
+typedef bool bool_t;
+typedef bool char_t;
 
 /* Conversions between numeric types */
 #define CORTO_CONVERT_NUM(typeFrom, typeTo) \
@@ -341,7 +356,7 @@ error:
     CORTO_CONVERT_NUM(fromType,uintptr)\
     CORTO_CONVERT_NUM(fromType,float32)\
     CORTO_CONVERT_NUM(fromType,float64)\
-    CORTO_CONVERT_BOOL(fromType, bool)\
+    CORTO_CONVERT_BOOL(fromType,bool)\
     CORTO_CONVERT_TO_STR(fromType, fmt)
 
 /* Conversion functions for integer types */
@@ -444,7 +459,7 @@ CORTO_CONVERT_FROM_STR_FLOAT(float64)
     CORTO_CONVERT_INIT_NUM(kind, width, CORTO_TEXT, CORTO_WIDTH_WORD, type, string);\
 
 /* Init conversions */
-void corto_convertInit(void) {
+void corto_ptr_castInit(void) {
     CORTO_CONVERT_INIT_NUM_INT(CORTO_BOOLEAN, CORTO_WIDTH_8, bool);
     CORTO_CONVERT_INIT_NUM_INT(CORTO_BINARY, CORTO_WIDTH_8, uint8);
     CORTO_CONVERT_INIT_NUM_INT(CORTO_BINARY, CORTO_WIDTH_16, int16);
@@ -526,7 +541,7 @@ void corto_convertInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-corto_int16 _corto_convert(corto_type fromType, void *from, corto_type toType, void *to) {
+corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, void *to) {
     corto_conversion c;
 
     if (fromType->reference) {
@@ -544,7 +559,7 @@ corto_int16 _corto_convert(corto_type fromType, void *from, corto_type toType, v
                 *(corto_bool*)to = *(corto_object*)from ? TRUE : FALSE;
             } else if (corto_primitive(toType)->kind == CORTO_TEXT) {
                 corto_id id;
-                corto_setstr((corto_string*)to,
+                corto_ptr_setstr((corto_string*)to,
                   corto_fullpath(id, *(corto_object*)from));
             } else {
                 corto_seterr(

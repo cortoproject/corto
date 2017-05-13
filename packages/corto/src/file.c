@@ -1,8 +1,22 @@
-/*
- * corto_file.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Feb 10, 2011
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
@@ -122,7 +136,7 @@ char* corto_fileSearch(const char* file, corto_ll locations) {
     walkData.file = file;
     walkData.result = 0;
 
-    corto_llWalk(locations, (corto_walkAction)fileSearchWalk, &walkData);
+    corto_ll_walk(locations, (corto_elementWalk_cb)fileSearchWalk, &walkData);
 
     return walkData.result;
 }
@@ -224,6 +238,16 @@ char* corto_fileExtension(char* file, char* buffer) {
         *bptr = '\0';
         return buffer;
     }
+}
+
+/* Get file base */
+char* corto_fileBase(char* file, char* buffer) {
+    strcpy(buffer, file);
+    char *ch = strrchr(buffer, '.');
+    if (ch) {
+        *ch = '\0';
+    }
+    return buffer;
 }
 
 /* Get file path */

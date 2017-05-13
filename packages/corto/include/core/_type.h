@@ -15,10 +15,9 @@ extern "C" {
 /* Casting macro's */
 #define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
 #define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
-#define corto_augmentData(o) ((corto_augmentData*)corto_assertType((corto_type)corto_augmentData_o, o))
-#define corto_augmentseq(o) ((corto_augmentseq*)corto_assertType((corto_type)corto_augmentseq_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
-#define corto_event(o) ((corto_event)corto_assertType((corto_type)corto_event_o, o))
+#define corto_handleAction(o) ((corto_handleAction*)corto_assertType((corto_type)corto_handleAction_o, o))
+#define corto_event(o) ((corto_event*)corto_assertType((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
 #define corto_frameKind(o) ((corto_frameKind*)corto_assertType((corto_type)corto_frameKind_o, o))
 #define corto_frame(o) ((corto_frame*)corto_assertType((corto_type)corto_frame_o, o))
@@ -33,7 +32,7 @@ extern "C" {
 #define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
-#define corto_observableEvent(o) ((corto_observableEvent)corto_assertType((corto_type)corto_observableEvent_o, o))
+#define corto_observerEvent(o) ((corto_observerEvent*)corto_assertType((corto_type)corto_observerEvent_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
@@ -48,7 +47,11 @@ extern "C" {
 #define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
 #define corto_stager(o) ((corto_stager)corto_assertType((corto_type)corto_stager_o, o))
-#define corto_subscriberEvent(o) ((corto_subscriberEvent)corto_assertType((corto_type)corto_subscriberEvent_o, o))
+#define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assertType((corto_type)corto_subscriberEvent_o, o))
+
+/* Native types */
+#ifndef CORTO_CORE_H
+#endif
 
 /* Type definitions */
 /*  /corto/core/package */
@@ -60,50 +63,51 @@ struct corto_package_s {
     corto_string author;
     corto_string description;
     corto_string env;
-    corto_bool nocorto;
+    corto_string language;
+    bool managed;
+    bool noapi;
     corto_stringlist cflags;
     corto_stringlist dependencies;
     corto_stringlist definitions;
     corto_string prefix;
     corto_stringlist cortoVersion;
-    corto_bool local;
+    bool local;
     corto_stringlist lib;
     corto_stringlist libpath;
     corto_stringlist include;
     corto_stringlist link;
+    bool coverage;
 };
 
 /*  /corto/core/application */
 typedef struct corto_application_s *corto_application;
 
 struct corto_application_s {
-    struct corto_package_s _parent;
+    struct corto_package_s super;
 };
-
-/*  /corto/core/augmentData */
-typedef struct corto_augmentData corto_augmentData;
-
-struct corto_augmentData {
-    corto_string id;
-    corto_word data;
-};
-
-CORTO_SEQUENCE(corto_augmentseq, corto_augmentData,);
 
 /*  /corto/core/dispatcher */
-CORTO_INTERFACE(corto_dispatcher);
+typedef void *corto_dispatcher;
 
+
+/*  /corto/core/handleAction */
+typedef struct corto_handleAction corto_handleAction;
+
+struct corto_handleAction {
+    corto_delegatedata super;
+};
 
 /*  /corto/core/event */
-typedef struct corto_event_s *corto_event;
+typedef struct corto_event corto_event;
 
-struct corto_event_s {
-    corto_uint16 kind;
-    corto_bool handled;
+struct corto_event {
+    uint16_t kind;
+    bool handled;
+    corto_handleAction handleAction;
 };
 
 /* /corto/core/eventMask */
-CORTO_BITMASK(corto_eventMask);
+typedef uint32_t corto_eventMask;
     #define CORTO_ON_DECLARE (0x1)
     #define CORTO_ON_DEFINE (0x2)
     #define CORTO_ON_DELETE (0x4)
@@ -132,21 +136,21 @@ typedef struct corto_frame corto_frame;
 
 struct corto_frame {
     corto_frameKind kind;
-    corto_int64 value;
+    int64_t value;
 };
 
 /*  /corto/core/observer */
 typedef struct corto_observer_s *corto_observer;
 
 struct corto_observer_s {
-    struct corto_function_s _parent;
+    struct corto_function_s super;
     corto_eventMask mask;
     corto_object observable;
     corto_object instance;
     corto_dispatcher dispatcher;
     corto_string type;
-    corto_bool enabled;
-    corto_uint32 active;
+    bool enabled;
+    uint32_t active;
     corto_type typeReference;
 };
 
@@ -154,12 +158,12 @@ struct corto_observer_s {
 typedef struct corto_subscriber_s *corto_subscriber;
 
 struct corto_subscriber_s {
-    struct corto_observer_s _parent;
+    struct corto_observer_s super;
     corto_string parent;
     corto_string expr;
     corto_string contentType;
-    corto_word contentTypeHandle;
-    corto_word matchProgram;
+    uintptr_t contentTypeHandle;
+    uintptr_t matchProgram;
 };
 
 /* /corto/core/mountKind */
@@ -174,16 +178,16 @@ typedef enum corto_mountKind {
 typedef struct corto_mountStats corto_mountStats;
 
 struct corto_mountStats {
-    corto_uint64 declares;
-    corto_uint64 updates;
-    corto_uint64 deletes;
+    uint64_t declares;
+    uint64_t updates;
+    uint64_t deletes;
 };
 
 /*  /corto/core/mountPolicy */
 typedef struct corto_mountPolicy corto_mountPolicy;
 
 struct corto_mountPolicy {
-    corto_float64 sampleRate;
+    double sampleRate;
 };
 
 /*  /corto/core/mountSubscription */
@@ -193,17 +197,20 @@ struct corto_mountSubscription {
     corto_string parent;
     corto_string expr;
     corto_eventMask mask;
-    corto_uint32 count;
-    corto_word userData;
+    uint32_t count;
+    uintptr_t userData;
 };
 
-CORTO_LIST(corto_mountSubscriptionList);
+#ifndef corto_mountSubscriptionList_DEFINED
+#define corto_mountSubscriptionList_DEFINED
+typedef corto_ll corto_mountSubscriptionList;
+#endif
 
 /*  /corto/core/mount */
 typedef struct corto_mount_s *corto_mount;
 
 struct corto_mount_s {
-    struct corto_subscriber_s _parent;
+    struct corto_subscriber_s super;
     corto_mountKind kind;
     corto_string policy;
     corto_object mount;
@@ -214,48 +221,48 @@ struct corto_mount_s {
     corto_mountPolicy policies;
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
-    corto_bool passThrough;
-    corto_word thread;
-    corto_bool quit;
-    corto_bool hasNotify;
-    corto_bool hasResume;
-    corto_bool hasSubscribe;
+    bool passThrough;
+    uintptr_t thread;
+    bool quit;
+    bool hasNotify;
+    bool hasResume;
+    bool hasSubscribe;
     corto_string contentTypeOut;
-    corto_word contentTypeOutHandle;
+    uintptr_t contentTypeOutHandle;
 };
 
 /*  /corto/core/invokeEvent */
 typedef struct corto_invokeEvent_s *corto_invokeEvent;
 
 struct corto_invokeEvent_s {
-    struct corto_event_s _parent;
+    corto_event super;
     corto_mount mount;
     corto_object instance;
     corto_function function;
-    corto_word args;
+    uintptr_t args;
 };
 
 /*  /corto/core/loader */
 typedef struct corto_loader_s *corto_loader;
 
 struct corto_loader_s {
-    struct corto_mount_s _parent;
-    corto_bool autoLoad;
+    struct corto_mount_s super;
+    bool autoLoad;
 };
 
-CORTO_ITERATOR(corto_objectIter);
+typedef corto_iter corto_objectIter;
 
-/*  /corto/core/observableEvent */
-typedef struct corto_observableEvent_s *corto_observableEvent;
+/*  /corto/core/observerEvent */
+typedef struct corto_observerEvent corto_observerEvent;
 
-struct corto_observableEvent_s {
-    struct corto_event_s _parent;
-    corto_function observer;
-    corto_object me;
+struct corto_observerEvent {
+    corto_event super;
+    corto_observer observer;
+    corto_object instance;
     corto_object source;
-    corto_object observable;
-    corto_eventMask mask;
-    corto_word thread;
+    corto_eventMask event;
+    corto_object data;
+    uintptr_t thread;
 };
 
 /* /corto/core/operatorKind */
@@ -299,15 +306,15 @@ typedef enum corto_operatorKind {
 typedef struct corto_position corto_position;
 
 struct corto_position {
-    corto_float64 latitude;
-    corto_float64 longitude;
+    double latitude;
+    double longitude;
 };
 
 /*  /corto/core/remote */
 typedef struct corto_remote_s *corto_remote;
 
 struct corto_remote_s {
-    struct corto_method_s _parent;
+    struct corto_method_s super;
 };
 
 /*  /corto/core/request */
@@ -317,9 +324,9 @@ struct corto_request {
     corto_string parent;
     corto_string expr;
     corto_string type;
-    corto_uint64 offset;
-    corto_uint64 limit;
-    corto_bool content;
+    uint64_t offset;
+    uint64_t limit;
+    bool content;
     corto_frame from;
     corto_frame to;
 };
@@ -328,8 +335,8 @@ struct corto_request {
 typedef struct corto_time corto_time;
 
 struct corto_time {
-    corto_int32 sec;
-    corto_uint32 nanosec;
+    int32_t sec;
+    uint32_t nanosec;
 };
 
 /*  /corto/core/sample */
@@ -337,10 +344,10 @@ typedef struct corto_sample corto_sample;
 
 struct corto_sample {
     corto_time timestamp;
-    corto_word value;
+    uintptr_t value;
 };
 
-CORTO_ITERATOR(corto_sampleIter);
+typedef corto_iter corto_sampleIter;
 
 /*  /corto/core/result */
 typedef struct corto_result corto_result;
@@ -350,23 +357,25 @@ struct corto_result {
     corto_string name;
     corto_string parent;
     corto_string type;
-    corto_word value;
-    corto_bool leaf;
+    uintptr_t value;
+    bool leaf;
     corto_object object;
     corto_sampleIter history;
-    corto_augmentseq augments;
     corto_object owner;
 };
 
-CORTO_ITERATOR(corto_resultIter);
+typedef corto_iter corto_resultIter;
 
-CORTO_LIST(corto_resultList);
+#ifndef corto_resultList_DEFINED
+#define corto_resultList_DEFINED
+typedef corto_ll corto_resultList;
+#endif
 
 /*  /corto/core/route */
 typedef struct corto_route_s *corto_route;
 
 struct corto_route_s {
-    struct corto_method_s _parent;
+    struct corto_method_s super;
     corto_string pattern;
     corto_stringseq elements;
 };
@@ -375,7 +384,7 @@ struct corto_route_s {
 typedef struct corto_router_s *corto_router;
 
 struct corto_router_s {
-    struct corto_class_s _parent;
+    struct corto_class_s super;
     corto_type returnType;
     corto_type paramType;
     corto_string paramName;
@@ -388,8 +397,8 @@ struct corto_router_s {
 typedef struct corto_routerimpl_s *corto_routerimpl;
 
 struct corto_routerimpl_s {
-    struct corto_class_s _parent;
-    corto_uint16 maxArgs;
+    struct corto_class_s super;
+    uint16_t maxArgs;
     corto_route matched;
 };
 
@@ -397,16 +406,20 @@ struct corto_routerimpl_s {
 typedef struct corto_stager_s *corto_stager;
 
 struct corto_stager_s {
-    corto_word resolver;
+    uintptr_t resolver;
 };
 
 /*  /corto/core/subscriberEvent */
-typedef struct corto_subscriberEvent_s *corto_subscriberEvent;
+typedef struct corto_subscriberEvent corto_subscriberEvent;
 
-struct corto_subscriberEvent_s {
-    struct corto_observableEvent_s _parent;
-    corto_result result;
-    corto_word contentTypeHandle;
+struct corto_subscriberEvent {
+    corto_event super;
+    corto_subscriber subscriber;
+    corto_object instance;
+    corto_object source;
+    corto_eventMask event;
+    corto_result data;
+    uintptr_t contentTypeHandle;
 };
 
 #ifdef __cplusplus

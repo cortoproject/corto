@@ -1,8 +1,22 @@
-/*
- * corto_operator.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 7, 2013
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
@@ -54,8 +68,8 @@ static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) 
     sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
 }
 static void CORTO_NAME_BINARYOP(string,assign)(void* op1, void* op2, void* result) {
-    corto_setstr((corto_string*)result, *(corto_string*)op2);
-    corto_setstr((corto_string*)op1, *(corto_string*)op2);
+    corto_ptr_setstr((corto_string*)result, *(corto_string*)op2);
+    corto_ptr_setstr((corto_string*)op1, *(corto_string*)op2);
 }
 
 
@@ -268,7 +282,7 @@ void corto_operatorInit(void) {
     CORTO_STRING_OPS_INIT();
 }
 
-corto_int16 corto_unaryOperator(corto_type type, corto_operatorKind operator, void* operand, void* result) {
+corto_int16 corto_ptr_unaryOp(corto_type type, corto_operatorKind operator, void* operand, void* result) {
     if (type->kind == CORTO_PRIMITIVE) {
         corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
@@ -287,7 +301,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_binaryOperator(corto_type type, corto_operatorKind operator, void *operand1, void *operand2, void *result) {
+corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, void *operand1, void *operand2, void *result) {
     if (type->kind == CORTO_PRIMITIVE) {
         corto__binaryOperator impl = corto_binaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {

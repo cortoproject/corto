@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_interface.h"
@@ -37,7 +37,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
         /* Check if procedures are compatible */
         if (m_class && !distance) {
             if ((compatible = corto_interface_checkProcedureCompatibility(corto_function(m_interface), corto_function(m_class)))) {
-                corto_setref(&vtable->buffer[i], m_class);
+                corto_ptr_setref(&vtable->buffer[i], m_class);
             }
         } else {
             corto_seterr(
@@ -56,7 +56,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
 }
 /* $end */
 
-corto_int16 _corto_class_construct(
+int16_t _corto_class_construct(
     corto_class this)
 {
 /* $begin(corto/lang/class/construct) */
@@ -92,7 +92,7 @@ corto_int16 _corto_class_construct(
 /* $end */
 }
 
-corto_void _corto_class_destruct(
+void _corto_class_destruct(
     corto_class this)
 {
 /* $begin(corto/lang/class/destruct) */
@@ -116,7 +116,7 @@ corto_void _corto_class_destruct(
 /* $end */
 }
 
-corto_int16 _corto_class_init(
+int16_t _corto_class_init(
     corto_class this)
 {
 /* $begin(corto/lang/class/init) */
@@ -133,7 +133,7 @@ error:
 /* $end */
 }
 
-corto_bool _corto_class_instanceof(
+bool _corto_class_instanceof(
     corto_class this,
     corto_object object)
 {
@@ -163,7 +163,7 @@ corto_bool _corto_class_instanceof(
 corto_method _corto_class_resolveInterfaceMethod(
     corto_class this,
     corto_interface interface,
-    corto_uint32 method)
+    uint32_t method)
 {
 /* $begin(corto/lang/class/resolveInterfaceMethod) */
     corto_uint32 i;

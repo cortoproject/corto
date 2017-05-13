@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/secure/secure.h>
+#include <corto/corto.h>
 
 /* $header() */
 static corto_secure_key corto_secure_keyInstance;
@@ -66,9 +66,9 @@ corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
             goto error;
         }
         if (!corto_secure_locks[depth]) {
-            corto_secure_locks[depth] = corto_llNew();
+            corto_secure_locks[depth] = corto_ll_new();
         }
-        corto_llAppend(corto_secure_locks[depth], lock);
+        corto_ll_append(corto_secure_locks[depth], lock);
     } else {
         corto_seterr("locks can only be created in mainthread");
         goto error;
@@ -100,9 +100,9 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
         do {
             corto_ll locks = corto_secure_locks[depth];
             if (locks) {
-                corto_iter it = corto_llIter(locks);
-                while (corto_iterHasNext(&it)) {
-                    corto_secure_lock lock = corto_iterNext(&it);
+                corto_iter it = corto_ll_iter(locks);
+                while (corto_iter_hasNext(&it)) {
+                    corto_secure_lock lock = corto_iter_next(&it);
                     char *expr;
                     if (!(expr = corto_matchParent(lock->mount, objectId))) {
                         continue;
@@ -163,7 +163,7 @@ corto_string _corto_secure_key_authenticate_v(
 /* $end */
 }
 
-corto_int16 _corto_secure_key_construct(
+int16_t _corto_secure_key_construct(
     corto_secure_key this)
 {
 /* $begin(corto/secure/key/construct) */
@@ -186,7 +186,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_secure_key_destruct(
+void _corto_secure_key_destruct(
     corto_secure_key this)
 {
 /* $begin(corto/secure/key/destruct) */

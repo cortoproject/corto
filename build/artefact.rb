@@ -1,3 +1,23 @@
+# Copyright (c) 2010-2017 the corto developers
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 require "#{ENV['CORTO_BUILD']}/common"
 require "#{ENV['CORTO_BUILD']}/libmapping"
 require 'rake/clean'
@@ -25,11 +45,7 @@ USE_PACKAGE_LOADED = [] if not defined? USE_PACKAGE_LOADED
 # resolved
 $redis_dependencies_resolved = true
 
-if ARTEFACT_EXT and ARTEFACT_EXT != "" then
-  ARTEFACT_NAME = "#{TARGETDIR}/#{ARTEFACT_PREFIX}#{ARTEFACT}.#{ARTEFACT_EXT}"
-else
-  ARTEFACT_NAME = "#{TARGETDIR}/#{ARTEFACT_PREFIX}#{ARTEFACT}"
-end
+ARTEFACT_NAME = getArtefactName(ARTEFACT_PREFIX, ARTEFACT, ARTEFACT_EXT)
 
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
@@ -106,6 +122,9 @@ end
 # Setup default clean & clobber rules
 CLEAN.include(".corto/obj/#{CORTO_PLATFORM}")
 CLEAN.include("doc")
+if NOCORTO == false
+  CLEAN.include("c")
+end
 CLEAN.include("*.gcov")
 CLOBBER.include(".corto/obj")
 CLOBBER.include(".corto/*.c")
@@ -119,11 +138,12 @@ end
 CLOBBER.include(TARGETDIR + "/" + "#{ARTEFACT_PREFIX}#{ARTEFACT}.a")
 CLOBBER.include(GENERATED_SOURCES)
 CLOBBER.include(GENERATED_HEADERS)
-CLOBBER.include("include/_load.h")
-CLOBBER.include("include/_interface.h")
 
 if TARGET != "corto" then
+  CLOBBER.include("include/_load.h")
+  CLOBBER.include("include/_interface.h")
   CLOBBER.include("include/_project.h")
+  CLOBBER.include("include/_api.h")
 end
 
 if File.exists? "project.json"
@@ -214,7 +234,7 @@ def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
       prefix = ""
       ext = ""
     else
-      directory = ENV['CORTO_TARGET'] + "/redis/corto/" + ENV['CORTO_VERSION'] + "/" + artefact + "/"
+      directory = ENV['CORTO_TARGET'] + "/redistr/corto/" + ENV['CORTO_VERSION'] + "/" + artefact + "/"
       sh "mkdir -p #{directory}"
     end
   end
@@ -256,7 +276,7 @@ def build_target(hardcodedPaths)
     LINK_NO_DEPS.each do |l|
       l = corto_replace(l)
       so = File.dirname(l) + "/lib" + File.basename(l) + ".so"
-      targetDir = ENV['CORTO_TARGET'] + "/redis/corto/" + ENV['CORTO_VERSION'] + "/lib"
+      targetDir = ENV['CORTO_TARGET'] + "/redistr/corto/" + ENV['CORTO_VERSION'] + "/lib"
       targetSo = targetDir + "/lib" + File.basename(l) + ".so"
       if File.exists? so and not File.exists? targetSo then
         sh "cp #{so} #{targetDir}"
@@ -294,7 +314,7 @@ def build_target(hardcodedPaths)
   lflags = "#{LFLAGS.join(" ")}"
 
   if not hardcodedPaths then
-    libpath = libpath + " -L#{CORTO_TARGET}/redis/corto/#{CORTO_VERSION}/lib"
+    libpath = libpath + " -L#{CORTO_TARGET}/redistr/corto/#{CORTO_VERSION}/lib"
   end
 
   linkShared = ""
@@ -346,7 +366,7 @@ def build()
 
   if not ENV['binaries'] == "false" then
     if not LOCAL then
-      if not ENV['redis'] == "false" then
+      if not ENV['redistr'] == "false" then
         if $redis_dependencies_resolved then
           build_target(false)
           if ENV['silent'] != "true" then
@@ -383,12 +403,58 @@ else
   end
 end
 
-# :prebuild and :postbuild allow projects to define actions that should happen
-# before and after the build.
+def loadPackageConfigs()
+  USE_PACKAGE.each do |p|
+    location = `corto locate #{p} --path`.strip
+    if not $?.to_i == 0 then
+      if ENV['binaries'] == "true" then
+        STDERR.puts "[\033[0;31m error\033[0;49m missing dependency: #{p} ]"
+        sh "corto locate #{p} --verbose --error_only"
+        abort
+      else
+        # If not building binaries, all we need is a build.rb
+        location = "#{ENV['CORTO_TARGET']}/lib/corto/#{CORTO_VERSION}/#{p}"
+        if not File.exists? location then
+        STDERR.puts "[\033[0;31m error\033[0;49m missing dependency: #{p} ]"
+          abort
+        end
+      end
+    else
+      redis_msg = ""
+
+      # Check if redistributable library can be found for dependency
+      if ENV['redistr'] != "false" then
+        redistr = `corto locate #{p} --lib-redistr`.strip
+        if not $?.to_i == 0 then
+          # Disable redistributable build when there are unresolved dependencies
+          redis_msg = "#{C_WARNING} (no redistr)#{C_NORMAL}"
+          $redis_dependencies_resolved = false
+        end
+      end
+      if ENV['silent'] != "true" then
+        msg "  use #{C_NORMAL}#{location}#{redis_msg}"
+      end
+    end
+
+    if LANGUAGE == "c4cpp" then
+      lang_buildscript = "#{location}/c/build.rb"
+    else
+      lang_buildscript = "#{location}/#{LANGUAGE}/build.rb"
+    end
+    if not NOCORTO and defined? LANGUAGE and LANGUAGE != "none" then
+      if File.exists? lang_buildscript then
+        require "#{lang_buildscript}"
+      end
+    end
+
+    buildscript = location + "/build.rb"
+    if File.exists? buildscript then
+        require "#{buildscript}"
+    end
+  end
+end
 
 task :prebuild => GENERATED_SOURCES do
-  verbose(VERBOSE)
-
   verbose(VERBOSE)
   if ENV['silent'] != "true" then
       pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
@@ -400,43 +466,7 @@ task :prebuild => GENERATED_SOURCES do
   end
 
   # Load dependency build instructions before anything else
-  USE_PACKAGE.each do |p|
-    location = `corto locate #{p} --path`.strip
-    if not $?.to_i == 0 then
-      if ENV['binaries'] == "true" then
-        STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
-        sh "corto locate #{p} --verbose --error_only"
-        abort
-      else
-        # If not building binaries, all we need is a build.rb
-        location = "#{ENV['CORTO_TARGET']}/lib/corto/#{CORTO_VERSION}/#{p}"
-        if not File.exists? location then
-          STDERR.puts "\033[1;31mcorto:\033[0;49m missing dependency: #{p}"
-          abort
-        end
-      end
-    else
-      redis_msg = ""
-
-      # Check if redistributable library can be found for dependency
-      if ENV['redis'] != "false" then
-        redis = `corto locate #{p} --lib-redis`.strip
-        if not $?.to_i == 0 then
-          # Disable redistributable build when there are unresolved dependencies
-          redis_msg = "#{C_WARNING} (no redis)#{C_NORMAL}"
-          $redis_dependencies_resolved = false
-        end
-      end
-      if ENV['silent'] != "true" then
-        msg "  use #{C_NORMAL}#{location}#{redis_msg}"
-      end
-    end
-
-    buildscript = location + "/build.rb"
-    if File.exists? buildscript then
-        require "#{buildscript}"
-    end
-  end
+  loadPackageConfigs()
 
   # Don't overwhelm the compiler with potentially duplicate include paths that can
   # be introduced when the same package is included multiple times, by multiple

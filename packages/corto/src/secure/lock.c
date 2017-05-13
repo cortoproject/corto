@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/secure/secure.h>
+#include <corto/corto.h>
 
 /* $header() */
 corto_int16 corto_secure_registerLock(corto_secure_lock lock);
@@ -27,7 +27,7 @@ corto_secure_accessKind _corto_secure_lock_authorize_v(
 /* $end */
 }
 
-corto_int16 _corto_secure_lock_construct(
+int16_t _corto_secure_lock_construct(
     corto_secure_lock this)
 {
 /* $begin(corto/secure/lock/construct) */
@@ -42,7 +42,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_secure_lock_destruct(
+void _corto_secure_lock_destruct(
     corto_secure_lock this)
 {
 /* $begin(corto/secure/lock/destruct) */

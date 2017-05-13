@@ -6,13 +6,14 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 typedef struct __dummySeq {
     corto_uint32 length;
     void* buffer;
 }__dummySeq;
+
 
 /* Allocate buffer of specific size */
 int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_uint32 elements) {
@@ -26,11 +27,11 @@ int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_ui
 }
 /* $end */
 
-corto_int16 _corto_sequence_construct(
+int16_t _corto_sequence_construct(
     corto_sequence this)
 {
 /* $begin(corto/lang/sequence/construct) */
-    corto_type(this)->hasResources = TRUE;
+    corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
     corto_type(this)->size = sizeof(__dummySeq);
     corto_type(this)->alignment = CORTO_ALIGNMENT(__dummySeq);
     if (!corto_collection(this)->elementType) {
@@ -43,7 +44,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_sequence_init(
+int16_t _corto_sequence_init(
     corto_sequence this)
 {
 /* $begin(corto/lang/sequence/init) */

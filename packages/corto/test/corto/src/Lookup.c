@@ -24,27 +24,29 @@ int tc_lookupAllWalk(corto_object o, void *udata) {
     corto_release(r);
 
     corto_objectseq scope = corto_scopeClaim(o);
-    corto_objectseqForeach(scope, child) {
-        tc_lookupAllWalk(child, NULL);
+    int i;
+    for (i = 0; i < scope.length; i ++) {
+        tc_lookupAllWalk(scope.buffer[i], NULL);
     }
     corto_scopeRelease(scope);
 
     return 1;
 }
 /* $end */
-corto_void _test_Lookup_tc_lookupAll(
+void _test_Lookup_tc_lookupAll(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupAll) */
     corto_objectseq scope = corto_scopeClaim(root_o);
-    corto_objectseqForeach(scope, o) {
-        tc_lookupAllWalk(o, NULL);
+    int i;
+    for (i = 0; i < scope.length; i ++) {
+        tc_lookupAllWalk(scope.buffer[i], NULL);
     }
     corto_scopeRelease(scope);
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupCaseInsensitive(
+void _test_Lookup_tc_lookupCaseInsensitive(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupCaseInsensitive) */
@@ -57,7 +59,7 @@ corto_void _test_Lookup_tc_lookupCaseInsensitive(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupEmptyString(
+void _test_Lookup_tc_lookupEmptyString(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupEmptyString) */
@@ -69,7 +71,7 @@ corto_void _test_Lookup_tc_lookupEmptyString(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupFunctionArgs(
+void _test_Lookup_tc_lookupFunctionArgs(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupFunctionArgs) */
@@ -81,7 +83,7 @@ corto_void _test_Lookup_tc_lookupFunctionArgs(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupFunctionNoArgs(
+void _test_Lookup_tc_lookupFunctionNoArgs(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupFunctionNoArgs) */
@@ -93,7 +95,7 @@ corto_void _test_Lookup_tc_lookupFunctionNoArgs(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupIdEndsWithDot(
+void _test_Lookup_tc_lookupIdEndsWithDot(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupIdEndsWithDot) */
@@ -111,7 +113,7 @@ corto_void _test_Lookup_tc_lookupIdEndsWithDot(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupIdFromNull(
+void _test_Lookup_tc_lookupIdFromNull(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupIdFromNull) */
@@ -123,7 +125,7 @@ corto_void _test_Lookup_tc_lookupIdFromNull(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupIdFromRoot(
+void _test_Lookup_tc_lookupIdFromRoot(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupIdFromRoot) */
@@ -135,7 +137,7 @@ corto_void _test_Lookup_tc_lookupIdFromRoot(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupIdFromScope(
+void _test_Lookup_tc_lookupIdFromScope(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupIdFromScope) */
@@ -147,7 +149,7 @@ corto_void _test_Lookup_tc_lookupIdFromScope(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupIdStartsWithDot(
+void _test_Lookup_tc_lookupIdStartsWithDot(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupIdStartsWithDot) */
@@ -165,7 +167,7 @@ corto_void _test_Lookup_tc_lookupIdStartsWithDot(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNested2FromNull(
+void _test_Lookup_tc_lookupNested2FromNull(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNested2FromNull) */
@@ -177,7 +179,7 @@ corto_void _test_Lookup_tc_lookupNested2FromNull(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNested2FromRoot(
+void _test_Lookup_tc_lookupNested2FromRoot(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNested2FromRoot) */
@@ -189,7 +191,7 @@ corto_void _test_Lookup_tc_lookupNested2FromRoot(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNested2FromScope(
+void _test_Lookup_tc_lookupNested2FromScope(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNested2FromScope) */
@@ -208,7 +210,7 @@ corto_void _test_Lookup_tc_lookupNested2FromScope(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNestedFromNull(
+void _test_Lookup_tc_lookupNestedFromNull(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNestedFromNull) */
@@ -220,7 +222,7 @@ corto_void _test_Lookup_tc_lookupNestedFromNull(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNestedFromRoot(
+void _test_Lookup_tc_lookupNestedFromRoot(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNestedFromRoot) */
@@ -232,7 +234,7 @@ corto_void _test_Lookup_tc_lookupNestedFromRoot(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNestedFromScope(
+void _test_Lookup_tc_lookupNestedFromScope(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNestedFromScope) */
@@ -244,7 +246,7 @@ corto_void _test_Lookup_tc_lookupNestedFromScope(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupNull(
+void _test_Lookup_tc_lookupNull(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupNull) */
@@ -256,7 +258,7 @@ corto_void _test_Lookup_tc_lookupNull(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParent(
+void _test_Lookup_tc_lookupParent(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParent) */
@@ -268,7 +270,7 @@ corto_void _test_Lookup_tc_lookupParent(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParentAfterExpr(
+void _test_Lookup_tc_lookupParentAfterExpr(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParentAfterExpr) */
@@ -280,7 +282,7 @@ corto_void _test_Lookup_tc_lookupParentAfterExpr(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParentBeforeExpr(
+void _test_Lookup_tc_lookupParentBeforeExpr(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParentBeforeExpr) */
@@ -292,7 +294,7 @@ corto_void _test_Lookup_tc_lookupParentBeforeExpr(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParenthesesNoFunction(
+void _test_Lookup_tc_lookupParenthesesNoFunction(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParenthesesNoFunction) */
@@ -311,7 +313,7 @@ corto_void _test_Lookup_tc_lookupParenthesesNoFunction(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParenthesesNoFunctionArgs(
+void _test_Lookup_tc_lookupParenthesesNoFunctionArgs(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParenthesesNoFunctionArgs) */
@@ -330,7 +332,7 @@ corto_void _test_Lookup_tc_lookupParenthesesNoFunctionArgs(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParenthesesNoFunctionArgsScoped(
+void _test_Lookup_tc_lookupParenthesesNoFunctionArgsScoped(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParenthesesNoFunctionArgsScoped) */
@@ -353,7 +355,7 @@ corto_void _test_Lookup_tc_lookupParenthesesNoFunctionArgsScoped(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgs(
+void _test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgs(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParenthesesNoFunctionMatchingArgs) */
@@ -370,7 +372,7 @@ corto_void _test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgs(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgsScoped(
+void _test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgsScoped(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParenthesesNoFunctionMatchingArgsScoped) */
@@ -391,7 +393,7 @@ corto_void _test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgsScoped(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParenthesesNoFunctionScoped(
+void _test_Lookup_tc_lookupParenthesesNoFunctionScoped(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParenthesesNoFunctionScoped) */
@@ -416,7 +418,7 @@ corto_void _test_Lookup_tc_lookupParenthesesNoFunctionScoped(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupParentInExpr(
+void _test_Lookup_tc_lookupParentInExpr(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupParentInExpr) */
@@ -428,7 +430,7 @@ corto_void _test_Lookup_tc_lookupParentInExpr(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupRoot(
+void _test_Lookup_tc_lookupRoot(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupRoot) */
@@ -440,7 +442,7 @@ corto_void _test_Lookup_tc_lookupRoot(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupThis(
+void _test_Lookup_tc_lookupThis(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupThis) */
@@ -452,7 +454,7 @@ corto_void _test_Lookup_tc_lookupThis(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupThisAfterExpr(
+void _test_Lookup_tc_lookupThisAfterExpr(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupThisAfterExpr) */
@@ -464,7 +466,7 @@ corto_void _test_Lookup_tc_lookupThisAfterExpr(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupThisBeforeExpr(
+void _test_Lookup_tc_lookupThisBeforeExpr(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupThisBeforeExpr) */
@@ -476,7 +478,7 @@ corto_void _test_Lookup_tc_lookupThisBeforeExpr(
 /* $end */
 }
 
-corto_void _test_Lookup_tc_lookupThisInExpr(
+void _test_Lookup_tc_lookupThisInExpr(
     test_Lookup this)
 {
 /* $begin(test/Lookup/tc_lookupThisInExpr) */

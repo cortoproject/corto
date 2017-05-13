@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include <src/_object.h>
@@ -27,7 +27,7 @@ error:
 
 /* $end */
 
-corto_int16 _corto_unit_construct(
+int16_t _corto_unit_construct(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/construct) */
@@ -58,7 +58,7 @@ corto_int16 _corto_unit_construct(
     }
 
     /* The resulting type shall be like an alias for 'this->type'  */
-    corto_setref(&corto_interface(this)->base, corto_interface(corto_typeof(this->type)));
+    corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_typeof(this->type)));
     corto_struct(this)->baseAccess = CORTO_PRIVATE;
 
     /* Setup the constructor */
@@ -75,17 +75,17 @@ corto_int16 _corto_unit_construct(
     /* Setup members for quantity, symbol, conversion */
     corto_member quantity = corto_declareChild(this, "quantity", corto_member_o);
         if (!quantity) goto error;
-        corto_setref(&quantity->type, corto_quantity_o);
+        corto_ptr_setref(&quantity->type, corto_quantity_o);
         if (corto_define(quantity)) goto error;
 
     corto_member symbol = corto_declareChild(this, "symbol", corto_string_o);
         if (!quantity) goto error;
-        corto_setref(&quantity->type, corto_quantity_o);
+        corto_ptr_setref(&quantity->type, corto_quantity_o);
         if (corto_define(quantity)) goto error;
 
     corto_member conversion = corto_declareChild(this, "conversion", corto_string_o);
         if (!quantity) goto error;
-        corto_setref(&quantity->type, corto_quantity_o);
+        corto_ptr_setref(&quantity->type, corto_quantity_o);
         if (corto_define(quantity)) goto error;
 
     return corto_class_construct(this);
@@ -94,7 +94,7 @@ error:
 /* $end */
 }
 
-corto_void _corto_unit_destruct(
+void _corto_unit_destruct(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/destruct) */
@@ -104,12 +104,12 @@ corto_void _corto_unit_destruct(
 /* $end */
 }
 
-corto_int16 _corto_unit_init(
+int16_t _corto_unit_init(
     corto_unit this)
 {
 /* $begin(corto/lang/unit/init) */
 
-    corto_setref(&this->type, corto_float64_o);
+    corto_ptr_setref(&this->type, corto_float64_o);
     return 0;
 /* $end */
 }

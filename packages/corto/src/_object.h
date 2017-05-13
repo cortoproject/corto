@@ -1,18 +1,36 @@
-/*
- * corto__object.h
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 3, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #ifndef CORTO__OBJECT_H_
 #define CORTO__OBJECT_H_
 
-#include "corto/corto.h"
+#include <corto/corto.h>
+#include "entityadmin.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void corto_operatorInit(void);
+void corto_ptr_castInit(void);
 
 void corto_drop(corto_object o, corto_bool delete);
 corto_object corto_resumePersistent(corto_object o);
@@ -30,7 +48,7 @@ struct corto_contentType {
     corto_int16 ___ (*toResult)(corto_result* o, corto_word content);
 
     /* Translate objects to and from self-contained contentType values */
-    corto_word ___ (*fromObject)(corto_object *o);
+    corto_string ___ (*fromObject)(corto_object o);
     corto_int16 ___ (*toObject)(corto_object* o, corto_word content);
 
     /* Duplicate a contentType value */
@@ -188,10 +206,7 @@ corto_object corto_resume(corto_object parent, corto_string expr, corto_object o
 corto_int16 corto_suspend(corto_object o);
 int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool _try, corto_bool ignoreRecursive);
 
-corto_uint32 corto_collection_size(corto_any _this);
-typedef int (*corto_subscriptionWalkAction)(corto_subscriber s, corto_object instance, void *userData);
-int corto_subscriptionWalk(corto_subscriptionWalkAction action, void *userData);
-
+corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, char *id);
 
 /* proxy for corto/expr functions */
 typedef struct ext_corto_expr {
@@ -211,6 +226,9 @@ corto_int16 ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **a
 corto_int16 ext_corto_expr_free(ext_corto_expr *expr);
 
 corto_procedure corto_function_getProcedureType(corto_function this);
+
+extern corto_entityAdmin corto_subscriber_admin;
+extern corto_entityAdmin corto_mount_admin;
 
 #ifdef __cplusplus
 }

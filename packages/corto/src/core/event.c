@@ -6,21 +6,23 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 /* $header() */
 static int corto_maxEventId = 16; /* kind 0 - 15 are reserved for internal usage */
 /* $end */
 
-corto_void _corto_event_handle_v(
-    corto_event this)
+void _corto_event_handle(
+    corto_event* this)
 {
 /* $begin(corto/core/event/handle) */
+    void *args[] = {&this};
+    corto_callb(this->handleAction.super.procedure, NULL, args);
     this->handled = TRUE;
 /* $end */
 }
 
-corto_int16 _corto_event_uniqueKind(void)
+int16_t _corto_event_uniqueKind(void)
 {
 /* $begin(corto/core/event/uniqueKind) */
     int result = corto_ainc(&corto_maxEventId)-1;

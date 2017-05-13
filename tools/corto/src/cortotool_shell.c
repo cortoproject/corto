@@ -1,8 +1,22 @@
-/*
- * corto_shell.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 21, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "cortotool_shell.h"
@@ -13,16 +27,16 @@
 #define CXSH_CMD_MAX (1024)
 
 #define CXSH_COL_NAME     (46)
-#define CXSH_COL_ID       (18)
+#define CXSH_COL_ID       (64)
 #define CXSH_COL_TYPE     (32)
 #define CXSH_COL_TOTAL    (CXSH_COL_NAME + CXSH_COL_TYPE)
 
-#define SHELL_COLOR (CORTO_BOLD)
+#define SHELL_COLOR (CORTO_NORMAL)
 #define ERROR_COLOR (CORTO_RED)
 #define TYPE_COLOR (CORTO_MAGENTA)
 #define OBJECT_COLOR (CORTO_CYAN)
 #define META_COLOR (CORTO_MAGENTA)
-#define INTERFACE_COLOR (CORTO_BOLD)
+#define INTERFACE_COLOR (CORTO_NORMAL)
 #define HEADER_COLOR (CORTO_BOLD)
 
 static corto_id scope;
@@ -94,10 +108,11 @@ static corto_string cxsh_printColumnValue(corto_string str, unsigned int width){
 
 /* Print shell prompt */
 static void cxsh_prompt(int enableColors, corto_id prompt) {
+
     if (enableColors) {
-        sprintf(prompt, "%s%s%s %s$%s ", OBJECT_COLOR, scope, CORTO_NORMAL, SHELL_COLOR, CORTO_NORMAL);
+        sprintf(prompt, "%s<%s %s%s >%s ", CORTO_GREEN, CORTO_NORMAL, scope, CORTO_CYAN, CORTO_NORMAL);
     } else {
-        sprintf(prompt, "%s $ ", scope);
+        sprintf(prompt, "< %s > ", scope);
     }
 }
 
@@ -165,36 +180,47 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
     return buff;
 }
 
-static int cxsh_printRow(corto_string parent, corto_string id, corto_string name, corto_string type) {
+static int cxsh_printRow(corto_string parent, corto_string id, corto_string type) {
     corto_string remaining = 0;
-    corto_string objcolor = OBJECT_COLOR;
+    corto_string objcolor;
     corto_uint32 colId = CXSH_COL_ID;
+    corto_id fullId, searchId;
+
+    sprintf(fullId, "%s/%s", parent, id);
+    corto_cleanpath(fullId, fullId);
+    sprintf(searchId, "%s/%s", scope, fullId);
+    corto_cleanpath(searchId, searchId);
+
+    corto_object obj = corto_find(NULL, searchId, CORTO_FIND_DEFAULT);
+    if (obj) corto_release(obj);
 
     /* Print columns */
-    cxsh_color(objcolor);
-    if (strcmp(parent, scope) && strcmp(parent, ".")) {
-        printf("%s/", parent);
-        colId -= strlen(parent) + 1;
+    if (obj) {
+        objcolor = CORTO_GREEN;
+    } else {
+        objcolor = CORTO_BLUE;
     }
-    cxsh_printColumnValue(id, colId);
-    cxsh_color(CORTO_NORMAL);
-    remaining = cxsh_printColumnValue(name, CXSH_COL_NAME);
+    cxsh_color(objcolor);
+    remaining = cxsh_printColumnValue(fullId, colId);
+
     cxsh_color(TYPE_COLOR); printf("%s", type); cxsh_color(CORTO_NORMAL);
     printf("\n");
 
     /* Print remainder of the name */
+    cxsh_color(objcolor);
     while (remaining) {
-        printf("%*s    ", CXSH_COL_ID, " ");
-        remaining = cxsh_printColumnValue(remaining, CXSH_COL_NAME - 4);
+        printf("    ");
+        remaining = cxsh_printColumnValue(remaining, CXSH_COL_ID - 4);
         printf("\n");
     }
+    cxsh_color(CORTO_NORMAL);
 
-    return 1;
+    return obj ? 1 : 0;
 }
 
 /* List scope */
 static void cxsh_ls(char* arg) {
-    corto_uint32 i = 0;
+    corto_uint32 i = 0, inStore = 0;
     corto_id buff;
     char ch;
 
@@ -214,22 +240,21 @@ static void cxsh_ls(char* arg) {
     }
 
     corto_iter iter;
-    if (corto_select(scope, buff).iter(&iter)) {
+    if (corto_select(buff).from(scope).iter(&iter)) {
         goto error;
     }
 
-    while (corto_iterHasNext(&iter)) {
-        corto_result *item = corto_iterNext(&iter);
-        cxsh_printRow(item->parent, item->id, item->name, item->type);
+    while (corto_iter_hasNext(&iter)) {
+        corto_result *item = corto_iter_next(&iter);
+        inStore += cxsh_printRow(item->parent, item->id, item->type);
         i ++; /* Count objects so total can be printed */
     }
 
     if (!i) {
         printf("  no objects.\n\n");
-    } else if (i > 1) {
-        printf("  %d objects\n\n", i);
     } else {
-        printf("  %d object\n\n", i);
+        printf("  %d objects (%d %sin store%s, %d %smounted%s)\n\n", i, 
+            inStore, CORTO_GREEN, CORTO_NORMAL, i - inStore, CORTO_BLUE, CORTO_NORMAL);
     }
 
     return;
@@ -253,11 +278,11 @@ static void cxsh_cd(char* arg) {
         corto_seterr(NULL);
 
         corto_resultIter iter;
-        if (corto_select(scope, arg).iter(&iter)) goto error;
+        if (corto_select(arg).from(scope).iter(&iter)) goto error;
 
         /* Reuse request to temporarily store result, count results */
-        while (corto_iterHasNext(&iter)) {
-            corto_result *e = corto_iterNext(&iter);
+        while (corto_iter_hasNext(&iter)) {
+            corto_result *e = corto_iter_next(&iter);
 
             if (count) {
                 corto_seterr("more than one result returned by 'cd %s' (%s/%s/%s)", arg, scope, e->parent, e->id);
@@ -361,7 +386,7 @@ static int cxsh_show(char* object) {
     corto_id id;
     char state[sizeof("valid | declared | defined")];
     char attr[sizeof("scope | writable | observable | persistent")];
-    struct corto_serializer_s s;
+    corto_walk_opt s;
     corto_string_ser_t sdata;
     corto_value result;
     char *expr = object;
@@ -383,7 +408,7 @@ static int cxsh_show(char* object) {
         result = corto_value_object(result_obj, NULL);
         corto_object o = NULL;
         if (result.kind == CORTO_OBJECT) {
-            o = corto_value_getObject(&result);
+            o = corto_value_objectof(&result);
         }
 
         /* Release scope as soon as possible */
@@ -404,13 +429,10 @@ static int cxsh_show(char* object) {
                       CORTO_NORMAL);
                 }
                 if (o != root_o) {
-                    char *parentPtr = corto_fullpath(id, corto_parentof(o));
-                    if (strcmp(parentPtr, "/")) {
-                        parentPtr += 1;
-                    }
+                    corto_fullpath(id, corto_parentof(o));
                     printf("%sparent:       %s%s%s\n",
                       INTERFACE_COLOR, OBJECT_COLOR,
-                      parentPtr,
+                      id,
                       CORTO_NORMAL);
                 }
             }
@@ -431,22 +453,22 @@ static int cxsh_show(char* object) {
                 printf("%sstate:        %s%s\n", CORTO_RED, cxsh_stateStr(o, state), CORTO_NORMAL);
             }
             printf("%sattributes:%s   %s%s%s\n", INTERFACE_COLOR, CORTO_NORMAL, META_COLOR, cxsh_attrStr(o, attr), CORTO_NORMAL);
-            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, CORTO_NORMAL, OBJECT_COLOR,
-                corto_fullpath(NULL, corto_value_getType(&result)), CORTO_NORMAL);
+            printf("%stype:%s         %s%s%s\n", INTERFACE_COLOR, CORTO_NORMAL, META_COLOR,
+                corto_fullpath(NULL, corto_value_typeof(&result)), CORTO_NORMAL);
         }
 
         /* Initialize serializer userData */
-        s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+        s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
         memset(&sdata, 0, sizeof(corto_string_ser_t));
         sdata.enableColors = TRUE;
         s.access = CORTO_PRIVATE;
         s.accessKind = CORTO_NOT;
-        s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-        s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+        s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+        s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
 
         /* Serialize value to string */
-        if (corto_value_getPtr(&result)) {
-            corto_serializeValue(&s, &result, &sdata);
+        if (corto_value_ptrof(&result)) {
+            corto_value_walk(&s, &result, &sdata);
             corto_string str = corto_buffer_str(&sdata.buffer);
             if (str) {
                 if (o) {
@@ -464,12 +486,12 @@ static int cxsh_show(char* object) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
-                s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-                s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
-                corto_metaWalk(&s, o, &sdata);
+                s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+                s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+                corto_metawalk(&s, o, &sdata);
                 corto_string str = corto_buffer_str(&sdata.buffer);
                 if (str) {
-                    printf("%sinitializer:%s     %s\n", INTERFACE_COLOR, CORTO_NORMAL, str);
+                    printf("%sinitializer:%s  %s\n", INTERFACE_COLOR, CORTO_NORMAL, str);
                     corto_dealloc(str);
                 }
             }
@@ -559,6 +581,25 @@ int cxsh_getErrorLocation(corto_string str) {
     return result;
 }
 
+
+static void cxsh_goodbye(char *cmd) {
+    int bs;
+    corto_id prompt;
+    cxsh_prompt(TRUE, prompt);
+
+    for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+        printf("\b");
+    }
+    for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+        printf(" ");
+    }
+    for (bs = 0; bs < (strlen(prompt) + strlen(cmd)); bs++) {
+        printf("\b");
+    }
+    printf("Bye!\n");
+}
+
+
 static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     CORTO_UNUSED(argc);
 
@@ -568,7 +609,7 @@ static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     } else
     /* exit */
     if (!strcmp(argv[0], "exit")) {
-        printf("Bye!\n");
+        cxsh_goodbye(cmd);
         goto quit;
     } else
     /* cd */
@@ -624,7 +665,7 @@ typedef struct cxsh_memberSer_t {
 } cxsh_memberSer_t;
 
 static corto_int16 cxsh_ser_member(
-  corto_serializer s,
+  corto_walk_opt* s,
   corto_value *info,
   void *userData)
 {
@@ -635,21 +676,21 @@ static corto_int16 cxsh_ser_member(
     if (m && !fnmatch(data->filter, m, 0)) {
         corto_id str;
         sprintf(str, "%s.%s", data->prefix, m);
-        corto_llAppend(data->results, corto_strdup(str));
+        corto_ll_append(data->results, corto_strdup(str));
     }
 
     return 0;
 }
 
 /* Resolve members for type */
-struct corto_serializer_s cxsh_memberSer(void) {
-    struct corto_serializer_s s;
+corto_walk_opt cxsh_memberSer(void) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
-    s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
+    s.traceKind = CORTO_WALK_TRACE_ON_FAIL;
     s.metaprogram[CORTO_MEMBER] = cxsh_ser_member;
     return s;
 }
@@ -678,7 +719,7 @@ corto_type cxsh_exprType(corto_string expr) {
 
 /* Return result for TAB expansion */
 corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
-    corto_ll result = corto_llNew();
+    corto_ll result = corto_ll_new();
     corto_iter iter;
     corto_id expr;
 
@@ -702,7 +743,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             /* If first argument doesn't end with a space, insert space on first
              * tab. */
             if (!firstArgSpace) {
-                corto_llFree(result);
+                corto_ll_free(result);
                 result = NULL;
             } else {
                 strcat(expr, "*");
@@ -736,8 +777,8 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     cxsh_memberSer_t walkData = {objExpr, filter, result};
 
                     /* Add members to auto complete */
-                    struct corto_serializer_s ser = cxsh_memberSer();
-                    corto_metaWalk(&ser, t, &walkData);
+                    corto_walk_opt ser = cxsh_memberSer();
+                    corto_metawalk(&ser, t, &walkData);
 
                     /* Add methods to auto complete */
                     corto_int32 i;
@@ -747,16 +788,16 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                         corto_signatureName(corto_idof(m), sigName);
                         if (!fnmatch(filter, sigName, 0)) {
                             sprintf(method, "%s.%s(", objExpr, sigName);
-                            corto_llAppend(result, corto_strdup(method));
+                            corto_ll_append(result, corto_strdup(method));
                         }
                     }
                 }
             }
         } else {
             corto_int32 i = 0;
-            if (corto_select(scope, expr).iter(&iter)) goto error;
-            while (corto_iterHasNext(&iter)) {
-                corto_result *item = corto_iterNext(&iter);
+            if (corto_select(expr).from(scope).iter(&iter)) goto error;
+            while (corto_iter_hasNext(&iter)) {
+                corto_result *item = corto_iter_next(&iter);
                 corto_id scopedItem;
                 if (strcmp(item->parent, ".")) {
                     sprintf(scopedItem, "%s/%s", item->parent, item->id);
@@ -766,14 +807,14 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                 if (appendSlash) {
                     strcat(scopedItem, "/");
                 }
-                corto_llAppend(result, corto_strdup(scopedItem));
+                corto_ll_append(result, corto_strdup(scopedItem));
                 i++;
             }
 
             if (!i) {
-                if (corto_select("/corto", expr).iter(&iter)) goto error;
-                while (corto_iterHasNext(&iter)) {
-                    corto_result *item = corto_iterNext(&iter);
+                if (corto_select(expr).from("/corto").iter(&iter)) goto error;
+                while (corto_iter_hasNext(&iter)) {
+                    corto_result *item = corto_iter_next(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
                         sprintf(scopedItem, "corto/%s/%s", item->parent, item->id);
@@ -783,15 +824,15 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     if (appendSlash) {
                         strcat(scopedItem, "/");
                     }
-                    corto_llAppend(result, corto_strdup(scopedItem));
+                    corto_ll_append(result, corto_strdup(scopedItem));
                     i++;
                 }
             }
 
             if (!i) {
-                if (corto_select("/corto/lang", expr).iter(&iter)) goto error;
-                while (corto_iterHasNext(&iter)) {
-                    corto_result *item = corto_iterNext(&iter);
+                if (corto_select(expr).from("/corto/lang").iter(&iter)) goto error;
+                while (corto_iter_hasNext(&iter)) {
+                    corto_result *item = corto_iter_next(&iter);
                     corto_id scopedItem;
                     if (strcmp(item->parent, ".")) {
                         sprintf(scopedItem, "corto/lang/%s/%s", item->parent, item->name);
@@ -801,27 +842,27 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
                     if (appendSlash) {
                         strcat(scopedItem, "/");
                     }
-                    corto_llAppend(result, corto_strdup(scopedItem));
+                    corto_ll_append(result, corto_strdup(scopedItem));
                     i++;
                 }
             }
         }
 
         if (!argc || !firstArgSpace) {
-            if (!fnmatch(expr, "cd", 0)) corto_llAppend(result, corto_strdup ("cd"));
-            if (!fnmatch(expr, "ls", 0)) corto_llAppend(result, corto_strdup ("ls"));
-            if (!fnmatch(expr, "tree", 0)) corto_llAppend(result, corto_strdup ("tree"));
-            if (!fnmatch(expr, "delete", 0)) corto_llAppend(result, corto_strdup ("delete"));
-            if (!fnmatch(expr, "import", 0)) corto_llAppend(result, corto_strdup ("import"));
-            if (!fnmatch(expr, "exit", 0)) corto_llAppend(result, corto_strdup ("exit"));
-            if (!fnmatch(expr, "clear", 0)) corto_llAppend(result, corto_strdup ("clear"));
-            if (!fnmatch(expr, "help", 0)) corto_llAppend(result, corto_strdup ("help"));
+            if (!fnmatch(expr, "cd", 0)) corto_ll_append(result, corto_strdup ("cd"));
+            if (!fnmatch(expr, "ls", 0)) corto_ll_append(result, corto_strdup ("ls"));
+            if (!fnmatch(expr, "tree", 0)) corto_ll_append(result, corto_strdup ("tree"));
+            if (!fnmatch(expr, "delete", 0)) corto_ll_append(result, corto_strdup ("delete"));
+            if (!fnmatch(expr, "import", 0)) corto_ll_append(result, corto_strdup ("import"));
+            if (!fnmatch(expr, "exit", 0)) corto_ll_append(result, corto_strdup ("exit"));
+            if (!fnmatch(expr, "clear", 0)) corto_ll_append(result, corto_strdup ("clear"));
+            if (!fnmatch(expr, "help", 0)) corto_ll_append(result, corto_strdup ("help"));
         }
     }
 
     return result;
 error:
-    corto_llFree(result);
+    corto_ll_free(result);
     corto_error("%s", corto_lasterr());
     return NULL;
 }
@@ -835,30 +876,30 @@ int cxsh_command(int argc, char* argv[], char *cmd) {
 corto_uint32 cxsh_countSelect(char *expr) {
     corto_uint32 result = 0;
     corto_iter iter;
-    if (corto_select(scope, expr).iter(&iter)) goto error;
-    while (corto_iterHasNext(&iter)) {
-        corto_iterNext(&iter);
+    if (corto_select(expr).from(scope).iter(&iter)) goto error;
+    while (corto_iter_hasNext(&iter)) {
+        corto_iter_next(&iter);
         result++;
         break;
     }
-    corto_iterRelease(&iter);
+    corto_iter_release(&iter);
     if (!result) {
-        if (corto_select(scope, expr).iter(&iter)) goto error;
-        while (corto_iterHasNext(&iter)) {
-            corto_iterNext(&iter);
+        if (corto_select(expr).from("corto/lang").iter(&iter)) goto error;
+        while (corto_iter_hasNext(&iter)) {
+            corto_iter_next(&iter);
             result++;
             break;
         }
-        corto_iterRelease(&iter);
+        corto_iter_release(&iter);
     }
     if (!result) {
-        if (corto_select(scope, expr).iter(&iter)) goto error;
-        while (corto_iterHasNext(&iter)) {
-            corto_iterNext(&iter);
+        if (corto_select(expr).from("corto").iter(&iter)) goto error;
+        while (corto_iter_hasNext(&iter)) {
+            corto_iter_next(&iter);
             result++;
             break;
         }
-        corto_iterRelease(&iter);
+        corto_iter_release(&iter);
     }
 
     return result;
@@ -931,32 +972,12 @@ void cxsh_print(const char *arg) {
             }
             if (ch == '/') {
                 printf("%s%c%s", CORTO_CYAN, ch, CORTO_NORMAL);
-            } else if (ch == '"') {
-                printf("%s%c%s", CORTO_RED, ch, CORTO_NORMAL);
             } else {
                 printf("%s%c%s", CORTO_BOLD, ch, CORTO_NORMAL);
             }
 
             bptr = buff;
             token++;
-
-            if (ch == '"') {
-                while ((ch = *(++ptr)) && (ch != '"')) {
-                    *bptr = ch;
-                    bptr++;
-                }
-                if (ch) {
-                    *bptr = '"';
-                    bptr++;
-                }
-                *bptr = '\0';
-                printf("%s%s%s", CORTO_RED, buff, CORTO_NORMAL);
-                bptr = buff;
-            } else if (ch == '.') {
-                isMember = TRUE;
-            } else {
-                isMember = FALSE;
-            }
         } else if ((bptr == buff) && isdigit(ch)) {
             printf("%s%c%s", CORTO_GREEN, ch, CORTO_NORMAL);
             bptr = buff;
@@ -1005,7 +1026,9 @@ static void cxsh_shell(void) {
 }
 
 corto_int16 cortotool_shell(int argc, char* argv[]) {
-    int i;
+    int i, bs;
+
+    corto_errfmt("%k: %f:%l: %c: %m");
 
     cxsh_color(SHELL_COLOR);
     printf("corto shell - type 'help' for instructions.\n");
@@ -1019,6 +1042,19 @@ corto_int16 cortotool_shell(int argc, char* argv[]) {
             corto_load(argv[i], argc-i, &argv[i]);
             break;
         }
+    }
+
+    for (i = 0; i < 3; i ++) {
+        for (bs = 0; bs < 6; bs ++) {
+            printf("\b");
+        }
+        printf("%s<%s%*s>%s ", CORTO_GREEN, CORTO_CYAN, i, "", CORTO_NORMAL);
+        fflush(stdout);
+        corto_sleep(0, 40000000);
+    }
+
+    for (bs = 0; bs < 6; bs ++) {
+        printf("\b");
     }
 
     /* Set scope to root */

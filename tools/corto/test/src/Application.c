@@ -25,7 +25,7 @@ corto_int16 test_Project_useNoCorto(
 
 /* $end */
 
-corto_void _test_Application_setup(
+void _test_Application_setup(
     test_Application this)
 {
 /* $begin(test/Application/setup) */
@@ -47,7 +47,7 @@ corto_void _test_Application_setup(
 /* $end */
 }
 
-corto_void _test_Application_tc_app(
+void _test_Application_tc_app(
     test_Application this)
 {
 /* $begin(test/Application/tc_app) */
@@ -73,7 +73,7 @@ corto_void _test_Application_tc_app(
 /* $end */
 }
 
-corto_void _test_Application_tc_appCortoDependencyNoCorto(
+void _test_Application_tc_appCortoDependencyNoCorto(
     test_Application this)
 {
 /* $begin(test/Application/tc_appCortoDependencyNoCorto) */
@@ -90,7 +90,7 @@ corto_void _test_Application_tc_appCortoDependencyNoCorto(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -151,7 +151,7 @@ corto_void _test_Application_tc_appCortoDependencyNoCorto(
 /* $end */
 }
 
-corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
+void _test_Application_tc_appCortoNestedDependencyNoCorto(
     test_Application this)
 {
 /* $begin(test/Application/tc_appCortoNestedDependencyNoCorto) */
@@ -168,7 +168,7 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -187,7 +187,7 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -248,7 +248,7 @@ corto_void _test_Application_tc_appCortoNestedDependencyNoCorto(
 /* $end */
 }
 
-corto_void _test_Application_tc_appDef(
+void _test_Application_tc_appDef(
     test_Application this)
 {
 /* $begin(test/Application/tc_appDef) */
@@ -289,13 +289,12 @@ corto_void _test_Application_tc_appDef(
 
     test_assert(corto_fileTest("Project/include"));
     test_assert(corto_fileTest("Project/include/Project.h"));
-    test_assert(corto_fileTest("Project/include/Point.h"));
     test_assert(corto_fileTest("Project/src/Point.c"));
 
 /* $end */
 }
 
-corto_void _test_Application_tc_appDependency(
+void _test_Application_tc_appDependency(
     test_Application this)
 {
 /* $begin(test/Application/tc_appDependency) */
@@ -372,7 +371,7 @@ corto_void _test_Application_tc_appDependency(
 /* $end */
 }
 
-corto_void _test_Application_tc_appNested(
+void _test_Application_tc_appNested(
     test_Application this)
 {
 /* $begin(test/Application/tc_appNested) */
@@ -417,7 +416,7 @@ corto_void _test_Application_tc_appNested(
 /* $end */
 }
 
-corto_void _test_Application_tc_appNestedDependency(
+void _test_Application_tc_appNestedDependency(
     test_Application this)
 {
 /* $begin(test/Application/tc_appNestedDependency) */
@@ -512,7 +511,7 @@ corto_void _test_Application_tc_appNestedDependency(
 /* $end */
 }
 
-corto_void _test_Application_tc_appNoCortoDependency(
+void _test_Application_tc_appNoCortoDependency(
     test_Application this)
 {
 /* $begin(test/Application/tc_appNoCortoDependency) */
@@ -529,7 +528,7 @@ corto_void _test_Application_tc_appNoCortoDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -548,7 +547,7 @@ corto_void _test_Application_tc_appNoCortoDependency(
             "bar",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -591,7 +590,7 @@ corto_void _test_Application_tc_appNoCortoDependency(
 /* $end */
 }
 
-corto_void _test_Application_tc_appNoCortoNestedDependency(
+void _test_Application_tc_appNoCortoNestedDependency(
     test_Application this)
 {
 /* $begin(test/Application/tc_appNoCortoNestedDependency) */
@@ -608,7 +607,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "parent",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -627,7 +626,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "parent/child",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -646,7 +645,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
             "foo",
             "--silent",
             "--notest",
-            "--nocorto",
+            "--unmanaged",
             NULL
         });
 
@@ -689,7 +688,7 @@ corto_void _test_Application_tc_appNoCortoNestedDependency(
 /* $end */
 }
 
-corto_void _test_Application_tc_appNoTest(
+void _test_Application_tc_appNoTest(
     test_Application this)
 {
 /* $begin(test/Application/tc_appNoTest) */
@@ -715,7 +714,7 @@ corto_void _test_Application_tc_appNoTest(
 /* $end */
 }
 
-corto_void _test_Application_teardown(
+void _test_Application_teardown(
     test_Application this)
 {
 /* $begin(test/Application/teardown) */

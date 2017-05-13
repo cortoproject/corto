@@ -6,9 +6,9 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-corto_bool _corto_delegate_castable_v(
+bool _corto_delegate_castable_v(
     corto_delegate this,
     corto_type type)
 {
@@ -17,7 +17,7 @@ corto_bool _corto_delegate_castable_v(
 /* $end */
 }
 
-corto_bool _corto_delegate_compatible_v(
+bool _corto_delegate_compatible_v(
     corto_delegate this,
     corto_type type)
 {
@@ -56,7 +56,7 @@ corto_bool _corto_delegate_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_delegate_construct(
+int16_t _corto_delegate_construct(
     corto_function object)
 {
 /* $begin(corto/lang/delegate/construct) */
@@ -73,11 +73,11 @@ corto_int16 _corto_delegate_construct(
             (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE)) {
             if (corto_delegate_instanceof(corto_delegate(m->type), object)) {
                 /* Bind instance of function is a method */
-                if (corto_procedure(corto_typeof(object))->kind == CORTO_METHOD) {
-                    corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
+                if (corto_procedure(corto_typeof(object))->hasThis) {
+                    corto_ptr_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
                 }
                 /* Bind procedure */
-                corto_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
+                corto_ptr_setref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
             } else {
                 /* If there is a member that corresponds to a delegate but has a non matching
                  * signature, always report error */
@@ -97,7 +97,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_delegate_init(
+int16_t _corto_delegate_init(
     corto_delegate this)
 {
 /* $begin(corto/lang/delegate/init) */
@@ -133,7 +133,7 @@ corto_bool corto_delegate_matchParameter(
     }
 }
 /* $end */
-corto_bool _corto_delegate_instanceof(
+bool _corto_delegate_instanceof(
     corto_delegate this,
     corto_object object)
 {

@@ -1,19 +1,33 @@
-/*
- * corto_mm.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Sep 7, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
 #include "_object.h"
 
-corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_keepReference(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_object o;
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
 
-    o = *(corto_object*)corto_value_getPtr(v);
+    o = *(corto_object*)corto_value_ptrof(v);
     if (o) {
         corto_bool weak = FALSE;
         if (v->kind == CORTO_MEMBER) {
@@ -29,15 +43,15 @@ corto_int16 corto_ser_keepReference(corto_serializer s, corto_value* v, void* us
     return 0;
 }
 
-corto_int16 corto_ser_freePrimitive(corto_serializer s, corto_value* v, void* udata) {
+corto_int16 corto_ser_freePrimitive(corto_walk_opt* s, corto_value* v, void* udata) {
     corto_type t;
     void* o;
 
     CORTO_UNUSED(s);
     CORTO_UNUSED(udata);
 
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     /* Free strings */
     switch(corto_primitive(t)->kind) {
@@ -61,15 +75,15 @@ int corto_ser_clear(void* o, void* udata) {
     return 1;
 }
 
-corto_int16 corto_ser_freeCollection(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_type t;
     void* o;
 
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     /* Serialize elements */
-    if (corto_serializeElements(s, v, userData)) {
+    if (corto_walk_elements(s, v, userData)) {
         goto error;
     }
 
@@ -88,18 +102,18 @@ corto_int16 corto_ser_freeCollection(corto_serializer s, corto_value* v, void* u
         if (*(corto_ll*)o) {
             /* Free memory allocated for listnodes */
             if (corto_collection_requiresAlloc(corto_collection(t)->elementType)) {
-                corto_llWalk(*(corto_ll*)o, corto_ser_clear,NULL);
+                corto_ll_walk(*(corto_ll*)o, corto_ser_clear,NULL);
             }
-            corto_llFree(*(corto_ll*)o);
+            corto_ll_free(*(corto_ll*)o);
         }
         break;
     case CORTO_MAP:
         if (*(corto_rbtree*)o) {
             /* Free memory allocated for mapnodes */
             if (corto_collection_requiresAlloc(corto_collection(t)->elementType)) {
-                corto_rbtreeWalk(*(corto_rbtree*)o, corto_ser_clear,NULL);
+                corto_rb_walk(*(corto_rbtree*)o, corto_ser_clear,NULL);
             }
-            corto_rbtreeFree(*(corto_rbtree*)o);
+            corto_rb_free(*(corto_rbtree*)o);
         }
         break;
 
@@ -115,12 +129,12 @@ error:
     return -1;
 }
 
-corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* userData) {
+corto_int16 corto_ser_freeReference(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_object *optr, o;
 
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
-    optr = corto_value_getPtr(v);
+    optr = corto_value_ptrof(v);
 
     if ((o = *optr)) {
         corto_bool weak = FALSE;
@@ -132,7 +146,7 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
         if (!weak) {
             if (CORTO_TRACE_OBJECT) {
                 corto_id buff;
-                corto_valueExpr(v, buff, sizeof(buff));
+                corto_value_exprStr(v, buff, sizeof(buff));
                 corto_release_ext(NULL, o, buff);
             } else {
                 corto_release(o);
@@ -143,46 +157,62 @@ corto_int16 corto_ser_freeReference(corto_serializer s, corto_value* v, void* us
     return 0;
 }
 
-struct corto_serializer_s corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_int16 corto_ser_freeMember(corto_walk_opt* s, corto_value* v, void* userData) {
+    corto_member m = v->is.member.t;
+    void *ptr = corto_value_ptrof(v);
 
-    corto_serializerInit(&s);
+    corto_value_walk(s, v, userData);
+
+    if (m->modifiers & CORTO_OPTIONAL) {
+        corto_dealloc(ptr);
+    }
+
+    return 0;
+}
+
+
+corto_walk_opt corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
+
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.reference = corto_ser_keepReference;
     return s;
 }
 
-struct corto_serializer_s corto_ser_free(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_free(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.reference = corto_ser_freeReference;
     return s;
 }
 
-struct corto_serializer_s corto_ser_freeResources(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_ser_freeResources(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
     s.traceKind = trace;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
-    s.optionalAction = CORTO_SERIALIZER_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.program[CORTO_PRIMITIVE] = corto_ser_freePrimitive;
     s.program[CORTO_COLLECTION] = corto_ser_freeCollection;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_freeMember;
+
     s.reference = corto_ser_freeReference;
     return s;
 }

@@ -6,11 +6,11 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
-corto_void _corto_dispatcher_post_v(
+void _corto_dispatcher_post_v(
     corto_dispatcher this,
-    corto_event e)
+    corto_event *e)
 {
 /* $begin(corto/core/dispatcher/post) */
 

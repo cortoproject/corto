@@ -1,38 +1,38 @@
-#package ::test
+#package /test
 
 int8 initCalled: 0
 int8 constructCalled: 0
 int8 destructCalled: 0
 
-class Foo::
+class Foo:/
     fail: bool, local
     x, y: int32
     int16 init()
     int16 construct()
     void destruct()
 
-struct Point::
+struct Point:/
     x, y: int32
     string nameof()
 
-class JsonReplicator : mount, hidden::
+class JsonReplicator : mount, hidden:/
     alias mount: mount/mount
     int16 construct()
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
-class StringReplicator : mount, hidden::
+class StringReplicator : mount, hidden:/
     alias mount: mount/mount
     int16 construct()
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
-class IdMount : mount, hidden::
+class IdMount : mount, hidden:/
     alias mount: mount/mount
     alias type: observer/type
     int16 construct()
-    string onId()
+    string onId() override
 
 // Test setting content types
-test/Suite SelectContentType::
+test/Suite SelectContentType:/
     void setup() method
 
     void tc_selectStringFromObjects()
@@ -43,29 +43,29 @@ test/Suite SelectContentType::
     void tc_selectJsonFromString()
     void tc_selectJsonFromJson()
 
-class ListMount : mount, hidden::
+class ListMount : mount, hidden:/
     alias mount : mount/mount
     alias mask : observer/mask
     alias kind : mount/kind
     items: resultList, private
     int16 construct()
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
-class MountWIterData: mount, hidden::
+class MountWIterData: mount, hidden:/
     alias mount: mount/mount
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
-class MountIterCount: mount, hidden::
+class MountIterCount: mount, hidden:/
     alias mount: mount/mount
     nextCount: int32, readonly
     hasNextCount: int32, readonly
     releaseCount: int32, readonly
     result: core/result, readonly
     id: string, readonly
-    resultIter onRequest(core/request request)
+    resultIter onRequest(core/request request) override
 
 // Test corto_select requesting data from mounts
-test/Suite SelectMount::
+test/Suite SelectMount:/
     void setup() method
     void teardown() method
     mount: ListMount
@@ -120,18 +120,18 @@ test/Suite SelectMount::
     void tc_selectIteratorPartialReleaseTwoMountsNested()
 
 
-class HistoryMount : core/mount, hidden::
+class HistoryMount : core/mount, hidden:/
     alias mount: mount/mount
     int16 construct()
-    core/resultIter onRequest(core/request request)
+    core/resultIter onRequest(core/request request) override
 
-    struct data::
+    struct data:/
         result: core/result
         history: list{string}
 
     history: list{data}, private
 
-test/Suite SelectHistory::
+test/Suite SelectHistory:/
     void setup() method
     void tc_selectNowToDepth()
     void tc_selectSampleToDepth()
@@ -139,16 +139,16 @@ test/Suite SelectHistory::
     void tc_selectAll()
     void tc_selectJson()
 
-class SinkMount : core/mount, hidden::
+class SinkMount : core/mount, hidden:/
     alias mount: mount/mount
     alias type: mount/type
     value: string
     items: resultList, private
     int16 construct()
-    resultIter onRequest(core/request request)
-    object onResume(string parent, string name, object o)
+    resultIter onRequest(core/request request) override
+    object onResume(string parent, string name, object o) override
 
-class AutoResumeSinkMount : core/mount, hidden::
+class AutoResumeSinkMount : core/mount, hidden:/
     alias mount: mount/mount
     alias type: mount/type
     value: string
@@ -156,12 +156,12 @@ class AutoResumeSinkMount : core/mount, hidden::
     unsubscribes: list{core/request},readonly
     items: resultList, private
     int16 construct()
-    resultIter onRequest(core/request request)
-    word onSubscribe(string parent, string expr, word ctx)
-    void onUnsubscribe(string parent, string expr, word ctx)
+    resultIter onRequest(core/request request) override
+    word onSubscribe(string parent, string expr, word ctx) override
+    void onUnsubscribe(string parent, string expr, word ctx) override
 
 // Request data from a SINK mount
-test/Suite SelectSink::
+test/Suite SelectSink:/
     void setup() method
     void teardown() method
 
@@ -183,7 +183,7 @@ test/Suite SelectSink::
     void tc_selectMountInResult()
 
 // Resume data from SINK mount
-test/Suite ResumeSink::
+test/Suite ResumeSink:/
     void setup() method
     void teardown() method
     void tc_resolve()
@@ -222,7 +222,7 @@ test/Suite ResumeSink::
     declared, defined, updated, deleted, resumed, suspended: int8
 
 // Resume data from SINK mount without resume function
-test/Suite AutoResumeSink::
+test/Suite AutoResumeSink:/
     void setup() method
     void teardown() method
     void tc_resolve()
@@ -250,7 +250,7 @@ test/Suite AutoResumeSink::
     declared, defined, updated, deleted, resumed, suspended: int8
 
 // Request data from a SINK mount with a type
-test/Suite SelectSinkWithType::
+test/Suite SelectSinkWithType:/
     void setup() method
     void teardown() method
 
@@ -263,12 +263,12 @@ test/Suite SelectSinkWithType::
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
 
-class EmptySinkMount : core/mount, hidden::
+class EmptySinkMount : core/mount, hidden:/
     alias mount: mount/mount
     int16 construct()
 
 // Test pass-through behavior for SINK mounts that don't override onRequest
-test/Suite SelectSinkNoOnRequest::
+test/Suite SelectSinkNoOnRequest:/
     void setup() method
     void teardown() method
 
@@ -276,7 +276,7 @@ test/Suite SelectSinkNoOnRequest::
     void tc_selectScope()
 
 
-class EventReplicator: mount, hidden::
+class EventReplicator: mount, hidden:/
   alias mount: mount/mount
   alias mask: observer/mask
   alias type: mount/type
@@ -286,10 +286,10 @@ class EventReplicator: mount, hidden::
   updateCount: int32, readonly
   deleteCount: int32, readonly
 
-  void onNotify(core/eventMask event, core/result object)
+  void onNotify(core/eventMask event, core/result object) override
 
 // Test events received by replicator
-test/Suite ReplicatorEvent::
+test/Suite ReplicatorEvent:/
     void tc_event()
     void tc_eventDefineWithUpdate()
     void tc_eventTree()
@@ -301,7 +301,7 @@ test/Suite ReplicatorEvent::
     void tc_rateLimitOneObject()
     void tc_rateLimitThreeObjects()
 
-test/Suite MountSubscription::
+test/Suite MountSubscription:/
     void tc_subscribeSingle()
     void tc_subscribeScope()
     void tc_subscribeTree()
@@ -323,13 +323,13 @@ test/Suite MountSubscription::
     void tc_subscribeTreeDeleteNested()
 
 // Test mount that provides unique id's
-test/Suite MountId::
+test/Suite MountId:/
     void tc_id()
     void tc_noIdAvailable()
     void tc_idForNested()
     void tc_idTypeFilter()
 
 // Test loader
-test/Suite Loader::
+test/Suite Loader:/
     void tc_loadNonExistent()
 

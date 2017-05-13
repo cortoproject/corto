@@ -1,5 +1,25 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
-#include "corto/cdeclhandler.h"
+#include "cdeclhandler.h"
 #include "_object.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */
@@ -137,6 +157,7 @@ corto_int16 corto_cdeclInit(corto_function this) {
     ffi_type **args = CORTO_OFFSET(cif, sizeof(ffi_cif));
     corto_uint8 hasThis = 0;
 
+
     /* Add size of this-pointer */
     corto_procedure procedure = corto_function_getProcedureType(this);
 
@@ -151,7 +172,7 @@ corto_int16 corto_cdeclInit(corto_function this) {
     }
 
     corto_uint32 i;
-    for(i=0; i<this->parameters.length; i++) {
+    for(i = 0; i < this->parameters.length; i++) {
         if (this->parameters.buffer[i].passByReference) {
             args[i + hasThis] = &ffi_type_pointer;
         } else {

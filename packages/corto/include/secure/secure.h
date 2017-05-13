@@ -15,20 +15,11 @@
 
 #include <corto/secure/_type.h>
 #include <corto/secure/_load.h>
+#include <corto/secure/_interface.h>
 
 /* $body() */
 /* Enter code that requires types here */
 /* $end */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <corto/secure/key.h>
-#include <corto/secure/lock.h>
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

@@ -6,9 +6,9 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_array_construct(
+int16_t _corto_array_construct(
     corto_array this)
 {
 /* $begin(corto/lang/array/construct) */
@@ -60,13 +60,20 @@ corto_int16 _corto_array_construct(
         goto error;
     }
 
+    if (elementType->flags & CORTO_TYPE_HAS_RESOURCES) {
+        corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
+    }
+    if (elementType->flags & CORTO_TYPE_NEEDS_INIT) {
+        corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+    }
+
     return corto_type_construct(corto_type(this));
 error:
     return -1;
 /* $end */
 }
 
-corto_void _corto_array_destruct(
+void _corto_array_destruct(
     corto_array this)
 {
 /* $begin(corto/lang/array/destruct) */
@@ -78,7 +85,7 @@ corto_void _corto_array_destruct(
 /* $end */
 }
 
-corto_int16 _corto_array_init(
+int16_t _corto_array_init(
     corto_array this)
 {
 /* $begin(corto/lang/array/init) */

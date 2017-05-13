@@ -1,8 +1,22 @@
-/*
- * corto.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 2, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "_bootstrap.h"
@@ -10,7 +24,8 @@
 #include "_object.h"
 
 #include "corto/corto.h"
-#include "corto/cdeclhandler.h"
+#include "cdeclhandler.h"
+#include "memory_ser.h"
 
 void corto_secure_init(void);
 
@@ -32,10 +47,10 @@ struct corto_exitHandler {
     void* userData;
 };
 
-#define VERSION_MAJOR "0"
-#define VERSION_MINOR "2"
-#define VERSION_PATCH "16"
-#define VERSION_SUFFIX "alpha"
+#define VERSION_MAJOR "1"
+#define VERSION_MINOR "0"
+#define VERSION_PATCH "0"
+#define VERSION_SUFFIX "beta"
 
 #ifdef VERSION_SUFFIX
 const char* CORTO_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
@@ -64,7 +79,6 @@ char *corto_appName = NULL;
 
 /* TLS keys */
 corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
-corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;
 corto_threadKey CORTO_KEY_DECLARED_ADMIN;
 corto_threadKey CORTO_KEY_LISTEN_ADMIN;
 corto_threadKey CORTO_KEY_OWNER;
@@ -73,10 +87,6 @@ corto_threadKey CORTO_KEY_FLUENT;
 corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_threadKey CORTO_KEY_MOUNT_RESULT;
 corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
-
-/* OLS keys */
-corto_int8 CORTO_OLS_REPLICATOR;
-corto_int8 CORTO_OLS_AUGMENT;
 
 /* variables that control verbosity of logging functions */
 int8_t CORTO_DEBUG_ENABLED = 0;
@@ -163,7 +173,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, primitiveKind),\
     SSO_OP_VALUE(lang_, compositeKind),\
     SSO_OP_VALUE(lang_, collectionKind),\
-    SSO_OP_VALUE(lang_, procedureKind),\
     SSO_OP_VALUE(lang_, equalityKind),\
     SSO_OP_VALUE(lang_, inout),\
     SSO_OP_VALUE(core_, operatorKind),\
@@ -181,7 +190,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, interfaceseq),\
     SSO_OP_VALUE(lang_, parameterseq),\
     SSO_OP_VALUE(lang_, stringseq),\
-    SSO_OP_VALUE(core_, augmentseq),\
     SSO_OP_VALUE(lang_, interfaceVectorseq),\
     SSO_OP_VALUE(lang_, interfaceVector),\
     SSO_OP_VALUE(lang_, objectlist),\
@@ -190,7 +198,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, mountSubscriptionList),\
     SSO_OP_VALUE(lang_, parameter),\
     SSO_OP_VALUE(lang_, typeOptions),\
-    SSO_OP_VALUE(core_, augmentData),\
     SSO_OP_VALUE(core_, time),\
     SSO_OP_VALUE(core_, frame),\
     SSO_OP_VALUE(core_, sample),\
@@ -205,12 +212,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, initAction),\
     SSO_OP_VALUE(lang_, nameAction),\
     SSO_OP_VALUE(lang_, destructAction),\
+    SSO_OP_VALUE(core_, handleAction),\
     SSO_OP_VALUE(core_, resultIter),\
     SSO_OP_VALUE(core_, objectIter),\
     SSO_OP_VALUE(core_, position),\
     SSO_OP_CLASS(lang_, function),\
     SSO_OP_CLASS(lang_, method),\
-    SSO_OP_CLASS(lang_, virtual),\
+    SSO_OP_CLASS(lang_, overridable),\
+    SSO_OP_CLASS(lang_, override),\
     SSO_OP_CLASS(core_, remote),\
     SSO_OP_CLASS(core_, observer),\
     SSO_OP_CLASS(core_, subscriber),\
@@ -223,9 +232,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, iterator),\
     SSO_OP_CLASS(lang_, struct),\
     SSO_OP_CLASS(lang_, union),\
-    SSO_OP_CLASS(core_, event),\
-    SSO_OP_CLASS(core_, observableEvent),\
-    SSO_OP_CLASS(core_, subscriberEvent),\
+    SSO_OP_VALUE(core_, event),\
+    SSO_OP_VALUE(core_, observerEvent),\
+    SSO_OP_VALUE(core_, subscriberEvent),\
     SSO_OP_CLASS(core_, invokeEvent),\
     SSO_OP_CLASS(lang_, binary),\
     SSO_OP_CLASS(lang_, boolean),\
@@ -234,6 +243,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, uint),\
     SSO_OP_CLASS(lang_, float),\
     SSO_OP_CLASS(lang_, text),\
+    SSO_OP_CLASS(lang_, verbatim),\
     SSO_OP_CLASS(lang_, enum),\
     SSO_OP_CLASS(lang_, bitmask),\
     SSO_OP_CLASS(lang_, array),\
@@ -274,26 +284,26 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* function */\
     SSO_OP_OBJ(lang_function_returnType),\
     SSO_OP_OBJ(lang_function_returnsReference),\
+    SSO_OP_OBJ(lang_function_parameters),\
+    SSO_OP_OBJ(lang_function_overridable),\
     SSO_OP_OBJ(lang_function_overloaded),\
     SSO_OP_OBJ(lang_function_kind),\
     SSO_OP_OBJ(lang_function_impl),\
     SSO_OP_OBJ(lang_function_fptr),\
     SSO_OP_OBJ(lang_function_fdata),\
-    SSO_OP_OBJ(lang_function_resource),\
     SSO_OP_OBJ(lang_function_size),\
-    SSO_OP_OBJ(lang_function_parameters),\
-    SSO_OP_OBJ(lang_function_nextParameterId),\
     SSO_OP_OBJ(lang_function_init_),\
     SSO_OP_OBJ(lang_function_construct_),\
     SSO_OP_OBJ(lang_function_destruct_),\
     SSO_OP_OBJ(lang_function_stringToParameterSeq),\
     SSO_OP_OBJ(lang_function_parseParamString_),\
     /* method */\
-    SSO_OP_OBJ(lang_method_virtual),\
     SSO_OP_OBJ(lang_method_init_),\
     SSO_OP_OBJ(lang_method_construct_),\
-    /* virtual */\
-    SSO_OP_OBJ(lang_virtual_init_),\
+    /* overridable */\
+    SSO_OP_OBJ(lang_overridable_init_),\
+    /* override */\
+    SSO_OP_OBJ(lang_override_init_),\
     /* observer */\
     SSO_OP_OBJ(core_observer_mask),\
     SSO_OP_OBJ(core_observer_observable),\
@@ -322,22 +332,29 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* event */\
     SSO_OP_OBJ(core_event_kind),\
     SSO_OP_OBJ(core_event_handled),\
+    SSO_OP_OBJ(core_event_handleAction),\
     SSO_OP_OBJ(core_event_handle_),\
     SSO_OP_OBJ(core_event_uniqueKind),\
-    /* observableEvent */\
-    SSO_OP_OBJ(core_observableEvent_observer),\
-    SSO_OP_OBJ(core_observableEvent_me),\
-    SSO_OP_OBJ(core_observableEvent_source),\
-    SSO_OP_OBJ(core_observableEvent_observable),\
-    SSO_OP_OBJ(core_observableEvent_mask),\
-    SSO_OP_OBJ(core_observableEvent_thread),\
-    SSO_OP_OBJ(core_observableEvent_handle_),\
+    /* observerEvent */\
+    SSO_OP_OBJ(core_observerEvent_observer),\
+    SSO_OP_OBJ(core_observerEvent_instance),\
+    SSO_OP_OBJ(core_observerEvent_source),\
+    SSO_OP_OBJ(core_observerEvent_event),\
+    SSO_OP_OBJ(core_observerEvent_data),\
+    SSO_OP_OBJ(core_observerEvent_thread),\
+    SSO_OP_OBJ(core_observerEvent_handle),\
+    SSO_OP_OBJ(core_observerEvent_init_),\
+    SSO_OP_OBJ(core_observerEvent_deinit_),\
     /* subscriberEvent */\
-    SSO_OP_OBJ(core_subscriberEvent_result),\
+    SSO_OP_OBJ(core_subscriberEvent_subscriber),\
+    SSO_OP_OBJ(core_subscriberEvent_instance),\
+    SSO_OP_OBJ(core_subscriberEvent_source),\
+    SSO_OP_OBJ(core_subscriberEvent_event),\
+    SSO_OP_OBJ(core_subscriberEvent_data),\
     SSO_OP_OBJ(core_subscriberEvent_contentTypeHandle),\
-    SSO_OP_OBJ(core_subscriberEvent_handle_),\
-    SSO_OP_OBJ(core_subscriberEvent_construct_),\
-    SSO_OP_OBJ(core_subscriberEvent_destruct_),\
+    SSO_OP_OBJ(core_subscriberEvent_handle),\
+    SSO_OP_OBJ(core_subscriberEvent_init_),\
+    SSO_OP_OBJ(core_subscriberEvent_deinit_),\
     /* invokeEvent */\
     SSO_OP_OBJ(core_invokeEvent_mount),\
     SSO_OP_OBJ(core_invokeEvent_instance),\
@@ -379,11 +396,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_collectionKind_SEQUENCE),\
     SSO_OP_OBJ(lang_collectionKind_LIST),\
     SSO_OP_OBJ(lang_collectionKind_MAP),\
-    /* procedureKind */\
-    SSO_OP_OBJ(lang_procedureKind_FUNCTION),\
-    SSO_OP_OBJ(lang_procedureKind_METHOD),\
-    SSO_OP_OBJ(lang_procedureKind_OBSERVER),\
-    SSO_OP_OBJ(lang_procedureKind_METAPROCEDURE),\
     /* equalityKind */\
     SSO_OP_OBJ(lang_equalityKind_EQ),\
     SSO_OP_OBJ(lang_equalityKind_LT),\
@@ -492,12 +504,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_type_reference),\
     SSO_OP_OBJ(lang_type_attr),\
     SSO_OP_OBJ(lang_type_options),\
-    SSO_OP_OBJ(lang_type_hasResources),\
-    SSO_OP_OBJ(lang_type_hasTarget),\
+    SSO_OP_OBJ(lang_type_flags),\
     SSO_OP_OBJ(lang_type_size),\
     SSO_OP_OBJ(lang_type_alignment),\
     SSO_OP_OBJ(lang_type_metaprocedures),\
     SSO_OP_OBJ(lang_type_init),\
+    SSO_OP_OBJ(lang_type_deinit),\
     SSO_OP_OBJ(lang_type_nameof),\
     SSO_OP_OBJ(lang_type_sizeof_),\
     SSO_OP_OBJ(lang_type_alignmentof_),\
@@ -568,6 +580,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_text_charWidth),\
     SSO_OP_OBJ(lang_text_length),\
     SSO_OP_OBJ(lang_text_init_),\
+    /* verbatim */\
+    SSO_OP_OBJ(lang_verbatim_contentType),\
+    SSO_OP_OBJ(lang_verbatim_init_),\
     /* enum */\
     SSO_OP_OBJ(lang_enum_constants),\
     SSO_OP_OBJ(lang_enum_constant_),\
@@ -592,10 +607,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_union_construct_),\
     SSO_OP_OBJ(lang_union_findCase_),\
     /* procedure */\
-    SSO_OP_OBJ(lang_procedure_kind),\
     SSO_OP_OBJ(lang_procedure_hasThis),\
     SSO_OP_OBJ(lang_procedure_thisType),\
     SSO_OP_OBJ(lang_procedure_init_),\
+    SSO_OP_OBJ(lang_procedure_construct_),\
     /* interfaceVector */\
     SSO_OP_OBJ(lang_interfaceVector_interface),\
     SSO_OP_OBJ(lang_interfaceVector_vector),\
@@ -639,6 +654,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_subscriber_contentTypeHandle),\
     SSO_OP_OBJ(core_subscriber_matchProgram),\
     SSO_OP_OBJ(core_subscriber_init_),\
+    SSO_OP_OBJ(core_subscriber_deinit_),\
     SSO_OP_OBJ(core_subscriber_construct_),\
     SSO_OP_OBJ(core_subscriber_destruct_),\
     SSO_OP_OBJ(core_subscriber_subscribe_),\
@@ -786,9 +802,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_parameter_type),\
     SSO_OP_OBJ(lang_parameter_inout),\
     SSO_OP_OBJ(lang_parameter_passByReference),\
-    /* augmentData */\
-    SSO_OP_OBJ(core_augmentData_id),\
-    SSO_OP_OBJ(core_augmentData_data),\
     /* sample */\
     SSO_OP_OBJ(core_sample_timestamp),\
     SSO_OP_OBJ(core_sample_value),\
@@ -801,7 +814,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_result_leaf),\
     SSO_OP_OBJ(core_result_object),\
     SSO_OP_OBJ(core_result_history),\
-    SSO_OP_OBJ(core_result_augments),\
     SSO_OP_OBJ(core_result_owner),\
     SSO_OP_OBJ(core_result_getText_),\
     SSO_OP_OBJ(core_result_fromcontent_),\
@@ -821,7 +833,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_package_author),\
     SSO_OP_OBJ(core_package_description),\
     SSO_OP_OBJ(core_package_env),\
-    SSO_OP_OBJ(core_package_nocorto),\
+    SSO_OP_OBJ(core_package_language),\
+    SSO_OP_OBJ(core_package_managed),\
+    SSO_OP_OBJ(core_package_noapi),\
     SSO_OP_OBJ(core_package_cflags),\
     SSO_OP_OBJ(core_package_dependencies),\
     SSO_OP_OBJ(core_package_definitions),\
@@ -832,6 +846,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_package_libpath),\
     SSO_OP_OBJ(core_package_include),\
     SSO_OP_OBJ(core_package_link),\
+    SSO_OP_OBJ(core_package_coverage),\
+    SSO_OP_OBJ(core_package_init_),\
     SSO_OP_OBJ(core_package_construct_),\
     /* time */\
     SSO_OP_OBJ(core_time_sec),\
@@ -910,16 +926,16 @@ static void corto_defineType(corto_object o, corto_uint32 size) {
 
 /* Update references */
 static void corto_updateRef(corto_object o) {
-    struct corto_serializer_s s;
-    s = corto_ser_keep(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    corto_serialize(&s, o, NULL);
+    corto_walk_opt s;
+    s = corto_ser_keep(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk(&s, o, NULL);
 }
 
 /* Decrease references */
 static void corto_decreaseRef(corto_object o) {
-    struct corto_serializer_s s;
-    s = corto_ser_free(CORTO_LOCAL, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
-    corto_serialize(&s, o, NULL);
+    corto_walk_opt s;
+    s = corto_ser_free(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk(&s, o, NULL);
 }
 
 static void corto_genericTlsFree(void *o) {
@@ -927,10 +943,17 @@ static void corto_genericTlsFree(void *o) {
 }
 
 static void corto_patchSequences(void) {
-    /* Replicator implements table */
+    /* Mount implements dispatcher */
     corto_mount_o->implements.length = 1;
     corto_mount_o->implements.buffer = corto_alloc(sizeof(corto_object));
     corto_mount_o->implements.buffer[0] = corto_dispatcher_o;
+
+    /* Add parameter to handleAction */
+    corto_handleAction_o->parameters.length = 1;
+    corto_handleAction_o->parameters.buffer = corto_calloc(sizeof(corto_parameter));
+    corto_parameter *p = &corto_handleAction_o->parameters.buffer[0];
+    corto_ptr_setref(&p->type, corto_event_o);
+    corto_ptr_setstr(&p->name, "event");
 }
 
 void corto_initEnvironment(void) {
@@ -1044,7 +1067,6 @@ int corto_start(char *appName) {
 
     /* Initialize TLS keys */
     corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_SUBSCRIBER_ADMIN, corto_subscriberAdminFree);
     corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
     corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
     corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
@@ -1055,9 +1077,9 @@ int corto_start(char *appName) {
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
     corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
 
-    /* Initialize OLS keys */
-    CORTO_OLS_REPLICATOR = corto_olsKey(NULL);
-    CORTO_OLS_AUGMENT = corto_olsKey(NULL);
+    /* Initialize entity administrations */
+    corto_threadTlsKey(&corto_subscriber_admin.key, corto_entityAdmin_free);
+    corto_threadTlsKey(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Register CDECL as first binding */
     if (corto_callRegister(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {
@@ -1105,6 +1127,10 @@ int corto_start(char *appName) {
      * allocated on the heap */
     corto_patchSequences();
 
+    /* Manually assign two function objects that are used as delegate callbacks */
+    corto_observerEvent_handle_o = &core_observerEvent_handle__o.v;
+    corto_subscriberEvent_handle_o = &core_subscriberEvent_handle__o.v;
+
     /* Construct objects */
     for (i = 0; (o = objects[i].o); i++) corto_defineObject(o);
     for (i = 0; (o = types[i].o); i++) corto_defineType(o, types[i].size);
@@ -1115,7 +1141,7 @@ int corto_start(char *appName) {
 
     /* Initialize conversions and operators */
 #ifdef CORTO_CONVERSIONS
-    corto_convertInit();
+    corto_ptr_castInit();
 #endif
 #ifdef CORTO_OPERATORS
     corto_operatorInit();
@@ -1166,9 +1192,9 @@ void corto_onexit(void(*handler)(void*), void* userData) {
 
     corto_mutexLock(&corto_adminLock);
     if (!corto_exitHandlers) {
-        corto_exitHandlers = corto_llNew();
+        corto_exitHandlers = corto_ll_new();
     }
-    corto_llInsert(corto_exitHandlers, h);
+    corto_ll_insert(corto_exitHandlers, h);
     corto_mutexUnlock(&corto_adminLock);
 }
 
@@ -1177,11 +1203,11 @@ static void corto_exit(void) {
     struct corto_exitHandler* h;
 
     if (corto_exitHandlers) {
-        while((h = corto_llTakeFirst(corto_exitHandlers))) {
+        while((h = corto_ll_takeFirst(corto_exitHandlers))) {
             h->handler(h->userData);
             corto_dealloc(h);
         }
-        corto_llFree(corto_exitHandlers);
+        corto_ll_free(corto_exitHandlers);
         corto_exitHandlers = NULL;
     }
 }

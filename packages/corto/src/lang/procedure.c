@@ -6,9 +6,26 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_procedure_init(
+int16_t _corto_procedure_construct(
+    corto_procedure this)
+{
+/* $begin(corto/lang/procedure/construct) */
+
+    if (!this->hasThis) {
+        if (corto_interface(this)->base && 
+            corto_instanceof(corto_procedure_o, corto_interface(this)->base)) 
+        {
+            this->hasThis = corto_procedure(corto_interface(this)->base)->hasThis;
+        }
+    }
+
+    return corto_class_construct(this);
+/* $end */
+}
+
+int16_t _corto_procedure_init(
     corto_procedure this)
 {
 /* $begin(corto/lang/procedure/init) */

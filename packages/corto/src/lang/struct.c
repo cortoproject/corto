@@ -6,14 +6,14 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_interface.h"
 #include "_class.h"
 /* $end */
 
-corto_bool _corto_struct_castable_v(
+bool _corto_struct_castable_v(
     corto_struct this,
     corto_type type)
 {
@@ -22,7 +22,7 @@ corto_bool _corto_struct_castable_v(
 /* $end */
 }
 
-corto_bool _corto_struct_compatible_v(
+bool _corto_struct_compatible_v(
     corto_struct this,
     corto_type type)
 {
@@ -53,7 +53,7 @@ corto_bool _corto_struct_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_struct_construct(
+int16_t _corto_struct_construct(
     corto_struct this)
 {
 /* $begin(corto/lang/struct/construct) */
@@ -70,7 +70,7 @@ corto_int16 _corto_struct_construct(
         if (!m) {
             corto_critical("failed to declare dummy member (%s)", corto_lasterr());
         }
-        corto_setref(&m->type, corto_int8_o);
+        corto_ptr_setref(&m->type, corto_int8_o);
         m->modifiers = CORTO_PRIVATE|CORTO_LOCAL;
         corto_define(m);
     }
@@ -116,8 +116,11 @@ corto_int16 _corto_struct_construct(
     if (base) {
         size = corto_type(base)->size;
 
-        if (corto_type(base)->hasResources) {
-            corto_type(this)->hasResources = TRUE;
+        if (corto_type(base)->flags & CORTO_TYPE_HAS_RESOURCES) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
+        }
+        if (corto_type(base)->flags & CORTO_TYPE_NEEDS_INIT) {
+            corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
         }
     }
 
@@ -200,7 +203,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_struct_init(
+int16_t _corto_struct_init(
     corto_struct this)
 {
 /* $begin(corto/lang/struct/init) */

@@ -1,13 +1,25 @@
-/*
- * g_generator.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Sep 17, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/g/g.h"
-
-#ifdef CORTO_GENERATOR
 
 /* Generator functions */
 g_generator g_new(corto_string name, corto_string language) {
@@ -53,6 +65,9 @@ g_generator g_new(corto_string name, corto_string language) {
 
     /* Current will be set by object walk */
     result->current = NULL;
+    result->inWalk = FALSE;
+
+    result->anonymousObjects = NULL;
 
     return result;
 }
@@ -117,12 +132,12 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
 
     /* First do a lookup, check if the object already exists */
     if (g->objects) {
-        g_object *object;
-        objectIter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&objectIter)) {
-            object = corto_iterNext(&objectIter);
-            if (object->o == object) {
-                o = object;
+        g_object *gObj;
+        objectIter = corto_ll_iter(g->objects);
+        while(corto_iter_hasNext(&objectIter)) {
+            gObj = corto_iter_next(&objectIter);
+            if (gObj->o == object) {
+                o = gObj;
                 break;
             }
         }
@@ -137,7 +152,7 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
 
         if (prefix) {
             if (strlen(prefix) >= sizeof(corto_id)) {
-                corto_seterr("prefix cannot be longer than %d characters", sizeof(corto_id));
+                corto_error("prefix cannot be longer than %d characters", sizeof(corto_id));
                 o->prefix = NULL;
             } else {
                 o->prefix = corto_strdup(prefix);
@@ -147,9 +162,9 @@ void g_parse(g_generator g, corto_object object, corto_bool parseSelf, corto_boo
         }
 
         if (!g->objects) {
-            g->objects = corto_llNew();
+            g->objects = corto_ll_new();
         }
-        corto_llAppend(g->objects, o);
+        corto_ll_append(g->objects, o);
 
         if ((parseSelf || parseScope) && !g->current) {
             g->current = o;
@@ -176,10 +191,10 @@ void g_setAttribute(g_generator g, corto_string key, corto_string value) {
     g_attribute* attr = NULL;
 
     if (!g->attributes) {
-        g->attributes = corto_llNew();
+        g->attributes = corto_ll_new();
     }else {
         void* userData = key;
-        if(!corto_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+        if(!corto_ll_walk(g->attributes, g_genAttributeFind, &userData)) {
             attr = userData;
         }
     }
@@ -187,7 +202,7 @@ void g_setAttribute(g_generator g, corto_string key, corto_string value) {
     if(!attr) {
         attr = corto_alloc(sizeof(g_attribute));
         attr->key = corto_strdup(key);
-        corto_llAppend(g->attributes, attr);
+        corto_ll_append(g->attributes, attr);
     }else {
         corto_dealloc(attr->value);
     }
@@ -200,7 +215,7 @@ corto_string g_getAttribute(g_generator g, corto_string key) {
 
     if(g->attributes) {
         void *userData = key;
-        if(!corto_llWalk(g->attributes, g_genAttributeFind, &userData)) {
+        if(!corto_ll_walk(g->attributes, g_genAttributeFind, &userData)) {
             result = ((g_attribute*)userData)->value;
         }
     }
@@ -333,27 +348,31 @@ void g_free(g_generator g) {
     }
 
     if (g->objects) {
-        corto_llWalk(g->objects, g_freeObjects, NULL);
-        corto_llFree(g->objects);
+        corto_ll_walk(g->objects, g_freeObjects, NULL);
+        corto_ll_free(g->objects);
         g->objects = NULL;
     }
 
     if (g->files) {
-        corto_llWalk(g->files, g_closeFile, NULL);
-        corto_llFree(g->files);
+        corto_ll_walk(g->files, g_closeFile, NULL);
+        corto_ll_free(g->files);
         g->files = NULL;
     }
 
     if (g->attributes) {
-        corto_llWalk(g->attributes, g_freeAttribute, NULL);
-        corto_llFree(g->attributes);
+        corto_ll_walk(g->attributes, g_freeAttribute, NULL);
+        corto_ll_free(g->attributes);
         g->attributes = NULL;
     }
 
     if (g->imports) {
-        corto_llWalk(g->imports, g_freeImport, NULL);
-        corto_llFree(g->imports);
+        corto_ll_walk(g->imports, g_freeImport, NULL);
+        corto_ll_free(g->imports);
         g->imports = NULL;
+    }
+
+    if (g->anonymousObjects) {
+        corto_ll_free(g->anonymousObjects);
     }
 
     if (g->name) {
@@ -362,14 +381,15 @@ void g_free(g_generator g) {
     if (g->language) {
         corto_dealloc(g->language);
     }
+
     corto_dealloc(g);
 }
 
 corto_int16 g_loadPrefixes(g_generator g, corto_ll list) {
-    corto_iter iter = corto_llIter(list);
+    corto_iter iter = corto_ll_iter(list);
 
-    while (corto_iterHasNext(&iter)) {
-        corto_object p = corto_iterNext(&iter);
+    while (corto_iter_hasNext(&iter)) {
+        corto_object p = corto_iter_next(&iter);
         corto_string prefixFileStr;
         corto_string prefix;
         corto_string includePath =
@@ -462,15 +482,15 @@ corto_int16 g_leafDependencies(
     corto_ll deps = corto_loadGetDependencies(packagesTxt);
     if (deps) {
         if (!g->importsNested) {
-            g->importsNested = corto_llNew();
+            g->importsNested = corto_ll_new();
         }
-        corto_iter it = corto_llIter(deps);
-        while (corto_iterHasNext(&it)) {
-            corto_string dep = corto_iterNext(&it);
+        corto_iter it = corto_ll_iter(deps);
+        while (corto_iter_hasNext(&it)) {
+            corto_string dep = corto_iter_next(&it);
             corto_object o = corto_resolve(NULL, dep);
             if (o) {
-                if (!corto_llHasObject(g->importsNested, o)) {
-                    corto_llAppend(g->importsNested, o);
+                if (!corto_ll_hasObject(g->importsNested, o)) {
+                    corto_ll_append(g->importsNested, o);
                     corto_claim(o);
                 } else {
                     corto_release(o);
@@ -485,10 +505,10 @@ corto_int16 g_leafDependencies(
 
 corto_int16 g_import(g_generator g, corto_object package) {
     if (!g->imports) {
-        g->imports = corto_llNew();
+        g->imports = corto_ll_new();
     }
-    if (!corto_llHasObject(g->imports, package)) {
-        corto_llInsert(g->imports, package);
+    if (!corto_ll_hasObject(g->imports, package)) {
+        corto_ll_insert(g->imports, package);
         corto_claim(package);
 
         /* Recursively obtain imports */
@@ -503,6 +523,21 @@ struct g_walkObjects_t {
     void* userData;
 };
 
+int g_scopeWalk(corto_object o, int (*action)(corto_object,void*), void *data) {
+    corto_objectseq scope = corto_scopeClaim(o);
+    corto_int32 i;
+    for (i = 0; i < scope.length; i ++) {
+        if (!action(scope.buffer[i], data)) {
+            break;
+        }
+    }
+    corto_scopeRelease(scope);
+    if (i != scope.length) {
+        return 0;
+    }
+    return 1;
+}
+
 /* Recursively walk scopes */
 int g_walkObjects(void* o, void* userData) {
     struct g_walkObjects_t* data;
@@ -513,48 +548,61 @@ int g_walkObjects(void* o, void* userData) {
         goto stop;
     }
 
-    return corto_scopeWalk(o, g_walkObjects, userData);
+    return g_scopeWalk(o, g_walkObjects, userData);
+stop:
+    return 0;
+}
+
+static int g_walkIterObject(g_generator g, g_object *o, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
+    /* Parse object */
+    if (o->parseSelf) {
+        g->current = o;
+        if (!action(o->o, userData)) {
+            goto stop;
+        }
+    }
+    /* Walk scopes */
+    if (o->parseScope && scopeWalk) {
+        g->current = o;
+        if (!recursiveWalk) {
+            if (!g_scopeWalk(o->o, action, userData)) {
+                goto stop;
+            }
+        } else {
+            struct g_walkObjects_t walkData;
+            walkData.action = action;
+            walkData.userData = userData;
+
+            /* Recursively walk scopes */
+            if (!g_scopeWalk(o->o, g_walkObjects, &walkData)) {
+                goto stop;
+            }
+        }
+    }
+
+    return 1;
 stop:
     return 0;
 }
 
 /* Walk objects, choose between recursive scopewalk or only top-level objects */
 static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
-    corto_iter iter;
-
-    if (g->objects) {
-        g_object* o;
-
-        iter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&iter)) {
-            o = corto_iterNext(&iter);
-
-            /* Parse object */
-            if (o->parseSelf) {
-                g->current = o;
-                if (!action(o->o, userData)) {
-                    goto stop;
-                }
-            }
-            /* Walk scopes */
-            if (o->parseScope && scopeWalk) {
-                g->current = o;
-                if (!recursiveWalk) {
-                    if (!corto_scopeWalk(o->o, action, userData)) {
-                        goto stop;
-                    }
-                } else {
-                    struct g_walkObjects_t walkData;
-                    walkData.action = action;
-                    walkData.userData = userData;
-
-                    /* Recursively walk scopes */
-                    if (!corto_scopeWalk(o->o, g_walkObjects, &walkData)) {
-                        goto stop;
-                    }
-                }
+    if (g->inWalk) {
+        /* If already in a walk, continue */
+        g_object *o = g->current;
+        g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk);
+        g->current = o;
+    } else if (g->objects) {
+        g->inWalk = TRUE;
+        corto_iter iter = corto_ll_iter(g->objects);
+        while(corto_iter_hasNext(&iter)) {
+            g_object* o = corto_iter_next(&iter);
+            if (!g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk)) {
+                g->inWalk = FALSE;
+                goto stop;
             }
         }
+        g->inWalk = FALSE;
     }
 
     return 1;
@@ -593,9 +641,9 @@ static g_object* g_findObjectIntern(
     result = NULL;
     if (g->objects) {
         minDistance = -1;
-        iter = corto_llIter(g->objects);
-        while(corto_iterHasNext(&iter)) {
-            t = corto_iterNext(&iter);
+        iter = corto_ll_iter(g->objects);
+        while(corto_iter_hasNext(&iter)) {
+            t = corto_iter_next(&iter);
 
             /* Check if object occurs in scope of 'o' and measure distance to 'o' */
             parent = o;
@@ -648,6 +696,28 @@ corto_string g_getPrefix(g_generator g, corto_object o) {
     return (prefix != NULL) ? prefix->prefix : NULL;
 }
 
+/* Instead of looking at function overload attribute, check if there are functions
+ * in the same scope that have the same name. The difference is that a method
+ * may overload a method from a baseclass from a different scope. In that case
+ * however, there is no danger of a name-clash in generated code, so a short
+ * name can still be used. */
+static corto_bool g_isOverloaded(corto_function o) {
+    corto_bool result = FALSE;
+    corto_int32 i, d = 0;
+    corto_objectseq scope = corto_scopeClaim(corto_parentof(o));
+    for (i = 0; i < scope.length; i ++) {
+        if (corto_instanceof(corto_procedure_o, corto_typeof(scope.buffer[i]))) {
+            corto_assert(corto_overload(scope.buffer[i], corto_idof(o), &d) == 0, "overloading error discovered in generator: %s", corto_lasterr());
+            if (d > 0 || d == CORTO_OVERLOAD_NOMATCH_OVERLOAD) {
+                result = TRUE;
+                break;
+            }
+        }
+    }
+    corto_scopeRelease(scope);
+    return result;
+}
+
 /* Object transformations */
 static corto_char* g_oidTransform(g_generator g, corto_object o, corto_id _id, g_idKind kind) {
     CORTO_UNUSED(g);
@@ -656,7 +726,7 @@ static corto_char* g_oidTransform(g_generator g, corto_object o, corto_id _id, g
      * from the name if the function is not overloaded. This keeps processing
      * for generators trivial. */
     if (corto_class_instanceof(corto_procedure_o, corto_typeof(o))) {
-        if (!corto_function(o)->overloaded) {
+        if (!g_isOverloaded(o)) {
             corto_char* ptr;
             ptr = strchr(_id, '(');
             if (ptr) {
@@ -744,36 +814,63 @@ corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind k
 
     /* TODO: prefix i.c.m. !CORTO_GENERATOR_ID_DEFAULT & nested classes i.c.m. !CORTO_GENERATOR_ID_DEFAULT */
 
-    /* If prefix is found, replace the scope up until the found object with the prefix */
-    if (prefix && prefix->prefix) {
-        if (strcmp(prefix->prefix, ".")) {
-            corto_uint32 count;
-            corto_object scopes[CORTO_MAX_SCOPE_DEPTH];
+    if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
+        /* If prefix is found, replace the scope up until the found object with the prefix */
+        if (prefix && prefix->prefix) {
+            if (strcmp(prefix->prefix, ".")) {
+                corto_uint32 count;
+                corto_object scopes[CORTO_MAX_SCOPE_DEPTH];
 
-            /* Obtain list of scopes from matched to object */
-            count = 0;
-            scopes[count] = o;
-            while(scopes[count] != match) {
-                scopes[count+1] = corto_parentof(scopes[count]);
-                count++;
-            }
+                /* Obtain list of scopes from matched to object */
+                count = 0;
+                scopes[count] = o;
+                while(scopes[count] != match) {
+                    scopes[count+1] = corto_parentof(scopes[count]);
+                    count++;
+                }
 
-            /* Paste in prefix */
-            strcpy(_id, prefix->prefix);
-            while(count) {
-                count--;
-                strcat(_id, "/");
-                strcat(_id, corto_idof(scopes[count]));
+                /* Paste in prefix */
+                strcpy(_id, prefix->prefix);
+                while(count) {
+                    count--;
+                    strcat(_id, "/");
+                    strcat(_id, corto_idof(scopes[count]));
+                }
+            } else {
+                corto_path(_id, g_getCurrent(g), o, "/");
             }
+        /* If no prefix is found for object, just use the scoped identifier */
         } else {
-            corto_path(_id, g_getCurrent(g), o, "/");
+            corto_fullpath(_id, o);
         }
-    /* If no prefix is found for object, just use the scoped identifier */
-    } else {
-        corto_fullpath(_id, o);
-    }
 
-    g_oidTransform(g, o, _id, kind);
+        g_oidTransform(g, o, _id, kind);
+    } else {
+        corto_uint32 count = 0;
+        if (!g->anonymousObjects) {
+            g->anonymousObjects = corto_ll_new();
+        }
+        corto_iter it = corto_ll_iter(g->anonymousObjects);
+        while (corto_iter_hasNext(&it)) {
+            corto_object e = corto_iter_next(&it);
+            if (e == o) {
+                break;
+            }
+            count ++;
+        }
+        if (count == corto_ll_size(g->anonymousObjects)) {
+            corto_ll_append(g->anonymousObjects, o);
+        }
+
+        corto_object cur = g_getCurrent(g);
+        if (corto_instanceof(corto_package_o, cur)) {
+            corto_id packageId;
+            g_fullOid(g, cur, packageId);
+            sprintf(_id, "anonymous_%s_%u", packageId, count);
+        } else {
+            sprintf(_id, "anonymous_%u", count);
+        }
+    } 
 
     if (g->id_action) {
         g->id_action(_id, id);
@@ -941,7 +1038,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
                         src = corto_strdup(ptr);
 
                         if (!*list) {
-                            *list = corto_llNew();
+                            *list = corto_ll_new();
                         }
 
                         if(strstr(src, "$begin")) {
@@ -956,7 +1053,7 @@ corto_int16 g_loadExisting(g_generator g, corto_string name, corto_string option
                         existing->id = corto_strdup(identifier);
                         existing->src = src;
                         existing->used = FALSE;
-                        corto_llInsert(*list, existing);
+                        corto_ll_insert(*list, existing);
 
                         ptr = endptr + 1;
 
@@ -987,16 +1084,16 @@ error:
 
 void g_fileClose(g_file file) {
     /* Remove file from generator administration */
-    corto_llRemove(file->generator->files, file);
+    corto_ll_remove(file->generator->files, file);
 
     /* Free snippets */
     if (file->snippets) {
-        corto_llWalk(file->snippets, g_freeSnippet, file);
-        corto_llFree(file->snippets);
+        corto_ll_walk(file->snippets, g_freeSnippet, file);
+        corto_ll_free(file->snippets);
     }
     if (file->headers) {
-        corto_llWalk(file->headers, g_freeSnippet, file);
-        corto_llFree(file->headers);
+        corto_ll_walk(file->headers, g_freeSnippet, file);
+        corto_ll_free(file->headers);
     }
 
     corto_fileClose(file->file);
@@ -1042,14 +1139,13 @@ static g_file g_fileOpenIntern(g_generator g, corto_string name) {
     }
 
     if (!g->files) {
-        g->files = corto_llNew();
+        g->files = corto_ll_new();
     }
-    corto_llInsert(g->files, result);
+    corto_ll_insert(g->files, result);
 
     return result;
 error:
     corto_seterr("failed to open file '%s'", name);
-    abort();
     return NULL;
 }
 
@@ -1085,9 +1181,9 @@ corto_string g_fileLookupSnippetIntern(g_file file, corto_string snippetId, cort
     snippet = NULL;
 
     if (list) {
-        iter = corto_llIter(list);
-        while(corto_iterHasNext(&iter)) {
-            snippet = corto_iterNext(&iter);
+        iter = corto_ll_iter(list);
+        while(corto_iter_hasNext(&iter)) {
+            snippet = corto_iter_next(&iter);
             corto_id path; strcpy(path, snippet->id);
             char *snippetPtr = path;
 
@@ -1154,7 +1250,7 @@ corto_bool g_mustParse(g_generator g, corto_object o) {
 
     result = TRUE;
     if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
-        if (corto_llWalk(g->objects, g_checkParseWalk, o)) {
+        if (corto_ll_walk(g->objects, g_checkParseWalk, o)) {
             result = FALSE;
         }
     }
@@ -1230,9 +1326,9 @@ static corto_uint32 corto_genMemberCacheCount(corto_ll cache, corto_member m) {
     corto_genWalkMember_t *member;
     corto_uint32 result = 0;
 
-    memberIter = corto_llIter(cache);
-    while(corto_iterHasNext(&memberIter)) {
-        member = corto_iterNext(&memberIter);
+    memberIter = corto_ll_iter(cache);
+    while(corto_iter_hasNext(&memberIter)) {
+        member = corto_iter_next(&memberIter);
         if (!strcmp(corto_idof(member->member), corto_idof(m))) {
             result++;
         }
@@ -1246,9 +1342,9 @@ static corto_uint32 corto_genMemberCacheGet(corto_ll cache, corto_member m) {
     corto_genWalkMember_t *member;
     corto_uint32 result = 0;
 
-    memberIter = corto_llIter(cache);
-    while(corto_iterHasNext(&memberIter)) {
-        member = corto_iterNext(&memberIter);
+    memberIter = corto_ll_iter(cache);
+    while(corto_iter_hasNext(&memberIter)) {
+        member = corto_iter_next(&memberIter);
         if (member->member == m) {
             result = member->occurred;
             break;
@@ -1258,7 +1354,7 @@ static corto_uint32 corto_genMemberCacheGet(corto_ll cache, corto_member m) {
     return result;
 }
 
-static corto_int16 corto_genMemberCache_member(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_genMemberCache_member(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_ll cache;
     CORTO_UNUSED(s);
 
@@ -1271,9 +1367,9 @@ static corto_int16 corto_genMemberCache_member(corto_serializer s, corto_value *
         parameter = corto_alloc(sizeof(corto_genWalkMember_t));
         parameter->member = m;
         parameter->occurred = corto_genMemberCacheCount(cache, m);
-        corto_llAppend(cache, parameter);
+        corto_ll_append(cache, parameter);
     } else {
-        corto_serializeMembers(s, info, userData);
+        corto_walk_members(s, info, userData);
     }
 
     return 0;
@@ -1296,16 +1392,16 @@ corto_char* corto_genMemberName(g_generator g, corto_ll cache, corto_member m, c
 
 /* Build cache to determine whether membernames occur more than once (due to inheritance) */
 corto_ll corto_genMemberCacheBuild(corto_interface o) {
-    struct corto_serializer_s s;
+    corto_walk_opt s;
     corto_ll result;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
     s.access = CORTO_LOCAL | CORTO_PRIVATE;
     s.accessKind = CORTO_NOT;
     s.metaprogram[CORTO_MEMBER] = corto_genMemberCache_member;
-    result = corto_llNew();
+    result = corto_ll_new();
 
-    corto_metaWalk(&s, corto_type(o), result);
+    corto_metawalk(&s, corto_type(o), result);
 
     return result;
 }
@@ -1314,12 +1410,99 @@ void corto_genMemberCacheClean(corto_ll cache) {
     corto_iter memberIter;
     corto_genWalkMember_t *member;
 
-    memberIter = corto_llIter(cache);
-    while(corto_iterHasNext(&memberIter)) {
-        member = corto_iterNext(&memberIter);
+    memberIter = corto_ll_iter(cache);
+    while(corto_iter_hasNext(&memberIter)) {
+        member = corto_iter_next(&memberIter);
         corto_dealloc(member);
     }
-    corto_llFree(cache);
+    corto_ll_free(cache);
 }
 
-#endif
+typedef struct g_depWalk_t {
+    g_generator g;
+    corto_ll dependencies;
+} g_depWalk_t;
+
+static corto_package g_addDepencency(g_generator g, corto_object o, g_depWalk_t *data) {
+    corto_package result = NULL;
+
+    if (!g_mustParse(g, o)) {
+        corto_object parent = o;
+        while (parent && !corto_instanceof(corto_package_o, parent)) {
+            parent = corto_parentof(parent);
+        }
+
+        if (parent && !corto_childof(g_getCurrent(g), parent)) {
+            result = parent;
+        }
+    }
+
+    if (result) {
+        if (!data->dependencies) {
+            data->dependencies = corto_ll_new();
+        }
+        if (!corto_ll_hasObject(data->dependencies, result)) {
+            corto_ll_append(data->dependencies, result);
+        }
+    }
+
+    return result;
+}
+
+/* Serialize dependencies on references */
+static corto_int16 g_evalRef(corto_walk_opt* s, corto_value* info, void* userData) {
+    g_depWalk_t *data = userData;
+
+    CORTO_UNUSED(s);
+
+    corto_object dep = *(corto_object*)corto_value_ptrof(info);
+    if (dep) {
+        g_addDepencency(data->g, dep, data);
+    }
+
+    return 0;
+}
+
+/* Serialize object type */
+static corto_int16 g_evalObject(corto_walk_opt* s, corto_value* info, void* userData) {
+    g_depWalk_t *data = userData;
+    corto_object o = corto_value_objectof(info);
+
+    CORTO_UNUSED(s);
+
+    g_addDepencency(data->g, corto_typeof(o), data);
+
+    return corto_value_walk(s, info, userData);
+}
+
+/* Dependency serializer */
+corto_walk_opt g_depSerializer(void) {
+    corto_walk_opt s;
+
+    corto_walk_init(&s);
+    s.reference = g_evalRef;
+    s.metaprogram[CORTO_OBJECT] = g_evalObject;
+    s.access = CORTO_LOCAL;
+    s.accessKind = CORTO_NOT;
+
+    return s;
+}
+
+static int g_collectDependency(corto_object o, void *userData) {
+    corto_walk_opt s = g_depSerializer();
+    corto_walk(&s, o, userData);
+    return 1;
+}
+
+corto_ll g_getDependencies(g_generator g) {
+    g_depWalk_t walkData = {.g = g};
+
+    /* Walk objects in dependency order */
+    if (corto_genDepWalk(g, NULL, g_collectDependency, &walkData)) {
+        goto error;
+    }
+
+    return walkData.dependencies;
+error:
+    return NULL;
+}

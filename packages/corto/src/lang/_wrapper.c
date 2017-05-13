@@ -6,13 +6,13 @@
 #include <corto/lang/lang.h>
 #include <corto/lang/_load.h>
 
-corto_bool _corto_collection_castable(
+bool _corto_collection_castable(
     corto_collection this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -28,7 +28,7 @@ corto_bool _corto_collection_castable(
     corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -36,13 +36,13 @@ corto_bool _corto_collection_castable(
     return _result;
 }
 
-corto_bool _corto_collection_compatible(
+bool _corto_collection_compatible(
     corto_collection this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -58,7 +58,7 @@ corto_bool _corto_collection_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -66,13 +66,13 @@ corto_bool _corto_collection_compatible(
     return _result;
 }
 
-corto_bool _corto_delegate_castable(
+bool _corto_delegate_castable(
     corto_delegate this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -88,7 +88,7 @@ corto_bool _corto_delegate_castable(
     corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -96,13 +96,13 @@ corto_bool _corto_delegate_castable(
     return _result;
 }
 
-corto_bool _corto_delegate_compatible(
+bool _corto_delegate_compatible(
     corto_delegate this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -118,7 +118,7 @@ corto_bool _corto_delegate_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -126,13 +126,13 @@ corto_bool _corto_delegate_compatible(
     return _result;
 }
 
-corto_bool _corto_interface_compatible(
+bool _corto_interface_compatible(
     corto_interface this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -148,7 +148,7 @@ corto_bool _corto_interface_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -186,13 +186,13 @@ corto_member _corto_interface_resolveMember(
     return _result;
 }
 
-corto_bool _corto_iterator_castable(
+bool _corto_iterator_castable(
     corto_iterator this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -208,7 +208,7 @@ corto_bool _corto_iterator_castable(
     corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -216,13 +216,13 @@ corto_bool _corto_iterator_castable(
     return _result;
 }
 
-corto_bool _corto_iterator_compatible(
+bool _corto_iterator_compatible(
     corto_iterator this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -238,7 +238,7 @@ corto_bool _corto_iterator_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -246,13 +246,13 @@ corto_bool _corto_iterator_compatible(
     return _result;
 }
 
-corto_bool _corto_primitive_castable(
+bool _corto_primitive_castable(
     corto_primitive this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -268,7 +268,7 @@ corto_bool _corto_primitive_castable(
     corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -276,13 +276,13 @@ corto_bool _corto_primitive_castable(
     return _result;
 }
 
-corto_bool _corto_primitive_compatible(
+bool _corto_primitive_compatible(
     corto_primitive this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -298,7 +298,7 @@ corto_bool _corto_primitive_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -306,13 +306,13 @@ corto_bool _corto_primitive_compatible(
     return _result;
 }
 
-corto_bool _corto_struct_castable(
+bool _corto_struct_castable(
     corto_struct this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -328,7 +328,7 @@ corto_bool _corto_struct_castable(
     corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -336,13 +336,13 @@ corto_bool _corto_struct_castable(
     return _result;
 }
 
-corto_bool _corto_struct_compatible(
+bool _corto_struct_compatible(
     corto_struct this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -358,7 +358,7 @@ corto_bool _corto_struct_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -396,13 +396,13 @@ corto_member _corto_struct_resolveMember(
     return _result;
 }
 
-corto_bool _corto_type_castable(
+bool _corto_type_castable(
     corto_type this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -418,7 +418,7 @@ corto_bool _corto_type_castable(
     corto_assert(_method != NULL, "unresolved method '%s::castable(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }
@@ -426,13 +426,13 @@ corto_bool _corto_type_castable(
     return _result;
 }
 
-corto_bool _corto_type_compatible(
+bool _corto_type_compatible(
     corto_type this,
     corto_type type)
 {
     static corto_uint32 _methodId;
     corto_method _method;
-    corto_bool _result;
+    bool _result;
     corto_interface _abstract;
 
     _abstract = corto_interface(corto_typeof(this));
@@ -448,7 +448,7 @@ corto_bool _corto_type_compatible(
     corto_assert(_method != NULL, "unresolved method '%s::compatible(type type)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
+        _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(this, type);
     } else {
         corto_call(corto_function(_method), &_result, this, type);
     }

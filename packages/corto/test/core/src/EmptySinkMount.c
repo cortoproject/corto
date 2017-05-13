@@ -8,13 +8,13 @@
 
 #include <include/test.h>
 
-corto_int16 _test_EmptySinkMount_construct(
+int16_t _test_EmptySinkMount_construct(
     test_EmptySinkMount this)
 {
 /* $begin(test/EmptySinkMount/construct) */
 
     corto_mount(this)->kind = CORTO_SINK;
-    return 0;
+    return corto_mount_construct(this);
 
 /* $end */
 }

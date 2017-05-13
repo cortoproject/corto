@@ -8,85 +8,67 @@
 
 #include <include/test.h>
 
-corto_void _test_ResumeSink_onDeclare(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+void _test_ResumeSink_onDeclare(
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onDeclare) */
-
+    test_ResumeSink this = e->instance;
     this->declared ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onDefine(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+void _test_ResumeSink_onDefine(
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onDefine) */
-
+    test_ResumeSink this = e->instance;
     this->defined ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onDelete(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+void _test_ResumeSink_onDelete(
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onDelete) */
-
+    test_ResumeSink this = e->instance;
     this->deleted ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onResume(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+void _test_ResumeSink_onResume(
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onResume) */
-
+    test_ResumeSink this = e->instance;
     this->resumed ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onSuspend(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+void _test_ResumeSink_onSuspend(
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onSuspend) */
-
-      this->suspended ++;
+    test_ResumeSink this = e->instance;
+    this->suspended ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_onUpdate(
-    test_ResumeSink this,
-    corto_eventMask event,
-    corto_object object,
-    corto_observer observer)
+void _test_ResumeSink_onUpdate(
+    corto_observerEvent *e)
 {
 /* $begin(test/ResumeSink/onUpdate) */
-
+    test_ResumeSink this = e->instance;
     this->updated ++;
 
 /* $end */
 }
 
-corto_void _test_ResumeSink_setup(
+void _test_ResumeSink_setup(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/setup) */
@@ -107,7 +89,7 @@ corto_void _test_ResumeSink_setup(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_define(
+void _test_ResumeSink_tc_define(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_define) */
@@ -169,7 +151,7 @@ corto_void _test_ResumeSink_tc_define(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_defineNested1(
+void _test_ResumeSink_tc_defineNested1(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_defineNested1) */
@@ -239,7 +221,7 @@ corto_void _test_ResumeSink_tc_defineNested1(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_defineNested2(
+void _test_ResumeSink_tc_defineNested2(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_defineNested2) */
@@ -309,7 +291,7 @@ corto_void _test_ResumeSink_tc_defineNested2(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookup(
+void _test_ResumeSink_tc_lookup(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookup) */
@@ -361,7 +343,7 @@ corto_void _test_ResumeSink_tc_lookup(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupFromMount(
+void _test_ResumeSink_tc_lookupFromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupFromMount) */
@@ -417,7 +399,7 @@ corto_void _test_ResumeSink_tc_lookupFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested1(
+void _test_ResumeSink_tc_lookupNested1(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested1) */
@@ -469,7 +451,7 @@ corto_void _test_ResumeSink_tc_lookupNested1(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested1FromMount(
+void _test_ResumeSink_tc_lookupNested1FromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested1FromMount) */
@@ -525,7 +507,7 @@ corto_void _test_ResumeSink_tc_lookupNested1FromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
+void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested1FromObjectFromMount) */
@@ -594,7 +576,7 @@ corto_void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested1NotExist(
+void _test_ResumeSink_tc_lookupNested1NotExist(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested1NotExist) */
@@ -628,7 +610,7 @@ corto_void _test_ResumeSink_tc_lookupNested1NotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested2(
+void _test_ResumeSink_tc_lookupNested2(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested2) */
@@ -680,7 +662,7 @@ corto_void _test_ResumeSink_tc_lookupNested2(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested2FromMount(
+void _test_ResumeSink_tc_lookupNested2FromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested2FromMount) */
@@ -736,7 +718,7 @@ corto_void _test_ResumeSink_tc_lookupNested2FromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
+void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested2FromObjectFromMount) */
@@ -819,7 +801,7 @@ corto_void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNested2NotExist(
+void _test_ResumeSink_tc_lookupNested2NotExist(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNested2NotExist) */
@@ -853,7 +835,7 @@ corto_void _test_ResumeSink_tc_lookupNested2NotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_lookupNotExist(
+void _test_ResumeSink_tc_lookupNotExist(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_lookupNotExist) */
@@ -887,7 +869,7 @@ corto_void _test_ResumeSink_tc_lookupNotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolve(
+void _test_ResumeSink_tc_resolve(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolve) */
@@ -939,7 +921,7 @@ corto_void _test_ResumeSink_tc_resolve(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveFromMount(
+void _test_ResumeSink_tc_resolveFromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveFromMount) */
@@ -995,7 +977,7 @@ corto_void _test_ResumeSink_tc_resolveFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1(
+void _test_ResumeSink_tc_resolveNested1(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested1) */
@@ -1047,7 +1029,7 @@ corto_void _test_ResumeSink_tc_resolveNested1(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1FromMount(
+void _test_ResumeSink_tc_resolveNested1FromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested1FromMount) */
@@ -1103,7 +1085,7 @@ corto_void _test_ResumeSink_tc_resolveNested1FromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
+void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested1FromObjectFromMount) */
@@ -1172,7 +1154,7 @@ corto_void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested1NotExist(
+void _test_ResumeSink_tc_resolveNested1NotExist(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested1NotExist) */
@@ -1206,7 +1188,7 @@ corto_void _test_ResumeSink_tc_resolveNested1NotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2(
+void _test_ResumeSink_tc_resolveNested2(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested2) */
@@ -1258,7 +1240,7 @@ corto_void _test_ResumeSink_tc_resolveNested2(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2FromMount(
+void _test_ResumeSink_tc_resolveNested2FromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested2FromMount) */
@@ -1314,7 +1296,7 @@ corto_void _test_ResumeSink_tc_resolveNested2FromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
+void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested2FromObjectFromMount) */
@@ -1397,7 +1379,7 @@ corto_void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNested2NotExist(
+void _test_ResumeSink_tc_resolveNested2NotExist(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNested2NotExist) */
@@ -1431,7 +1413,7 @@ corto_void _test_ResumeSink_tc_resolveNested2NotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_tc_resolveNotExist(
+void _test_ResumeSink_tc_resolveNotExist(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/tc_resolveNotExist) */
@@ -1465,7 +1447,7 @@ corto_void _test_ResumeSink_tc_resolveNotExist(
 /* $end */
 }
 
-corto_void _test_ResumeSink_teardown(
+void _test_ResumeSink_teardown(
     test_ResumeSink this)
 {
 /* $begin(test/ResumeSink/teardown) */

@@ -1,8 +1,22 @@
-/*
- * g_generatorDepWalk.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Sep 25, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/g/g.h"
@@ -35,12 +49,12 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
 
     if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
         if (!data->anonymousObjects) {
-            data->anonymousObjects = corto_llNew();
+            data->anonymousObjects = corto_ll_new();
         }
 
-        corto_iter iter = corto_llIter(data->anonymousObjects);
-        while (corto_iterHasNext(&iter)) {
-            corto_object a = corto_iterNext(&iter);
+        corto_iter iter = corto_ll_iter(data->anonymousObjects);
+        while (corto_iter_hasNext(&iter)) {
+            corto_object a = corto_iter_next(&iter);
             if (corto_compare(o, a) == CORTO_EQ) {
                 result = a;
                 break;
@@ -48,7 +62,7 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
         }
 
         if (o == result) {
-            corto_llAppend(data->anonymousObjects, o);
+            corto_ll_append(data->anonymousObjects, o);
         }
     }
 
@@ -56,8 +70,8 @@ corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
 }
 
 /* Serialize dependencies on references */
-corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* userData) {
-    corto_object o = *(corto_object*)corto_value_getPtr(info);
+corto_int16 corto_genDepReference(corto_walk_opt* s, corto_value* info, void* userData) {
+    corto_object o = *(corto_object*)corto_value_ptrof(info);
     g_depWalk_t data = userData;
 
     CORTO_UNUSED(s);
@@ -92,14 +106,14 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
                 corto_value v = corto_value_object(o, NULL);
                 corto_value out;
 
-                if (corto_value_getMember(&v, m->stateCondExpr, &out)) {
+                if (corto_value_memberExpr(&v, m->stateCondExpr, &out)) {
                     corto_seterr("invalid stateCondExpr '%s' for member '%s'",
                         m->stateCondExpr,
                         corto_fullpath(NULL, m));
                     goto error;
                 }
 
-                if (corto_value_getType(&out) != corto_type(corto_bool_o)) {
+                if (corto_value_typeof(&out) != corto_type(corto_bool_o)) {
                     if (corto_value_cast(&out, corto_bool_o, &out)) {
                         corto_seterr("stateCondExpr '%s' of member '%s' is not castable to a boolean",
                             m->stateCondExpr,
@@ -108,7 +122,7 @@ corto_int16 corto_genDepReference(corto_serializer s, corto_value* info, void* u
                     }
                 }
 
-                corto_bool *result = corto_value_getPtr(&out);
+                corto_bool *result = corto_value_ptrof(&out);
 
                 if (!*result) {
                     switch(state) {
@@ -136,14 +150,14 @@ error:
 }
 
 /* Dependency serializer */
-struct corto_serializer_s corto_genDepSerializer(void) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_genDepSerializer(void) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
     s.reference = corto_genDepReference;
     s.access = CORTO_LOCAL;
     s.accessKind = CORTO_NOT;
-    s.traceKind = CORTO_SERIALIZER_TRACE_ON_FAIL;
+    s.traceKind = CORTO_WALK_TRACE_ON_FAIL;
 
     return s;
 }
@@ -153,13 +167,11 @@ static int corto_genDepBuildProc(corto_function f, struct g_depWalk_t* data) {
     corto_uint32 i;
     corto_type t;
 
-    if (corto_procedure(corto_typeof(f))->kind != CORTO_OBSERVER) {
-        for(i=0; i<f->parameters.length; i++) {
-            t = f->parameters.buffer[i].type;
-            if (g_mustParse(data->data->g, t)) {
-                t = corto_genDepFindAnonymous(data, t);
-                corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
-            }
+    for(i=0; i<f->parameters.length; i++) {
+        t = f->parameters.buffer[i].type;
+        if (g_mustParse(data->data->g, t)) {
+            t = corto_genDepFindAnonymous(data, t);
+            corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
         }
     }
 
@@ -170,7 +182,7 @@ static int corto_genDepBuildProc(corto_function f, struct g_depWalk_t* data) {
 int corto_genDepBuildAction(corto_object o, void* userData) {
     g_itemWalk_t data;
     struct g_depWalk_t walkData;
-    struct corto_serializer_s s;
+    corto_walk_opt s;
     int result;
     corto_object parent = NULL;
 
@@ -230,7 +242,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
 
         /* Insert dependencies on references in the object-value */
         s = corto_genDepSerializer();
-        if (corto_serialize(&s, o, &walkData)) {
+        if (corto_walk(&s, o, &walkData)) {
             goto error;
         }
         data->anonymousObjects = walkData.anonymousObjects;
@@ -247,7 +259,10 @@ error:
 static int corto_genDeclareAction(corto_object o, void* userData) {
     g_itemWalk_t data;
     data = userData;
-    data->onDeclare(o, data->userData);
+    if (data->onDeclare) {
+        data->onDeclare(o, data->userData);
+    }
+    
     return 1;
 }
 
@@ -287,7 +302,7 @@ int corto_genDepWalk(g_generator g, corto_depresolver_action onDeclare, corto_de
     }
 
     if (walkData.anonymousObjects) {
-        corto_llFree(walkData.anonymousObjects);
+        corto_ll_free(walkData.anonymousObjects);
     }
 
     return corto_depresolver_walk(resolver);

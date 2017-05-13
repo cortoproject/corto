@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_StringReplicator_construct(
+int16_t _test_StringReplicator_construct(
     test_StringReplicator this)
 {
 /* $begin(test/StringReplicator/construct) */
@@ -22,10 +22,10 @@ corto_int16 _test_StringReplicator_construct(
 /* $header(test/StringReplicator/onRequest) */
 /* Custom release function */
 void test_StringReplicator_iterRelease(corto_iter *iter) {
-    corto_llIter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->udata;
     corto_resultListClear(data->list);
-    corto_llFree(data->list);
-    corto_llIterRelease(iter);
+    corto_ll_free(data->list);
+    corto_ll_iterRelease(iter);
 }
 /* $end */
 corto_resultIter _test_StringReplicator_onRequest(
@@ -33,7 +33,7 @@ corto_resultIter _test_StringReplicator_onRequest(
     corto_request *request)
 {
 /* $begin(test/StringReplicator/onRequest) */
-    corto_ll data = corto_llNew();
+    corto_ll data = corto_ll_new();
 
     /* Create top level objects */
     corto_resultAssign(
@@ -65,7 +65,7 @@ corto_resultIter _test_StringReplicator_onRequest(
     );
 
     /* Create persistent iterator */
-    corto_iter result = corto_llIterAlloc(data);
+    corto_iter result = corto_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_StringReplicator_iterRelease;

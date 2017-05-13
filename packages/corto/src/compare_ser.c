@@ -1,34 +1,55 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "corto/corto.h"
+#include "compare_ser.h"
 #include "_object.h"
 
 #define CORTO_COMPARE(type,v1,v2) *(type*)v1 > *(type*)v2 ? CORTO_GT : *(type*)v1 < *(type*)v2 ? CORTO_LT : CORTO_EQ
 
-static corto_int16 corto_ser_any(corto_serializer s, corto_value *info, void *userData) {
-    corto_any *this = corto_value_getPtr(info);
+static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *userData) {
+    corto_any *this = corto_value_ptrof(info);
     corto_compare_ser_t *data = userData, privateData;
-    corto_any *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
 
-    corto_value v = corto_value_value(this->type, this->value);
-    privateData.value = corto_value_value(value->type, value->value);
+    corto_value v = corto_value_value(this->value, this->type);
+    privateData.value = corto_value_value(value->value, value->type);
 
     /* Set base of privateData. Because we're reusing the serializer, the
      * construct callback won't be called again */
     privateData.base = this->value;
 
-    corto_serializeValue(s, &v, &privateData);
+    corto_value_walk(s, &v, &privateData);
 
     data->result = privateData.result;
 
     return data->result != CORTO_EQ;
 }
 
-static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_equalityKind result = CORTO_EQ;
     corto_compare_ser_t *data = userData;
-    corto_type type = corto_value_getType(info);
-    void *this = corto_value_getPtr(info);
-    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_type type = corto_value_typeof(info);
+    void *this = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
 
     CORTO_UNUSED(s);
 
@@ -118,10 +139,10 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value *info, vo
     return data->result != CORTO_EQ;
 }
 
-static corto_int16 corto_ser_reference(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_compare_ser_t *data = userData;
-    void *this = corto_value_getPtr(info);
-    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
+    void *this = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
     CORTO_UNUSED(s);
 
     if (*(corto_object*)this != *(corto_object*)value) {
@@ -140,15 +161,15 @@ static corto_equalityKind corto_collection_compareArrayWithList(corto_collection
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
-    iter = corto_llIter(list);
-    while(corto_iterHasNext(&iter)) {
+    iter = corto_ll_iter(list);
+    while(corto_iter_hasNext(&iter)) {
         if (corto_collection_requiresAlloc(elementType)) {
-            e1 = corto_iterNext(&iter);
+            e1 = corto_iter_next(&iter);
         } else {
-            e1 = corto_iterNextPtr(&iter);
+            e1 = corto_iter_nextPtr(&iter);
         }
         e2 = CORTO_OFFSET(array, elementSize * i);
-        result = corto_comparep(e2, elementType, e1);
+        result = corto_ptr_compare(e2, elementType, e1);
         if (result != CORTO_EQ) {
             break;
         }
@@ -164,17 +185,17 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
-    iter1 = corto_llIter(list1);
-    iter2 = corto_llIter(list2);
-    while(corto_iterHasNext(&iter1) && corto_iterHasNext(&iter2)) {
+    iter1 = corto_ll_iter(list1);
+    iter2 = corto_ll_iter(list2);
+    while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
         if (corto_collection_requiresAlloc(elementType)) {
-            e1 = corto_iterNext(&iter1);
-            e2 = corto_iterNext(&iter2);
+            e1 = corto_iter_next(&iter1);
+            e2 = corto_iter_next(&iter2);
         } else {
-            e1 = corto_iterNextPtr(&iter1);
-            e2 = corto_iterNextPtr(&iter2);
+            e1 = corto_iter_nextPtr(&iter1);
+            e2 = corto_iter_nextPtr(&iter2);
         }
-        result = corto_comparep(e1, elementType, e2);
+        result = corto_ptr_compare(e1, elementType, e2);
         if (result != CORTO_EQ) {
             break;
         }
@@ -184,11 +205,11 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
 }
 
 /* Compare composites */
-static corto_int16 corto_ser_composite(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_ser_composite(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_compare_ser_t *data = userData;
-    corto_type t = corto_value_getType(info);
-    void *this = corto_value_getPtr(info);
-    void *value = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_type t = corto_value_typeof(info);
+    void *this = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
 
     if (corto_interface(t)->kind == CORTO_UNION) {
         corto_int32 d1 = *(corto_int32*)this;
@@ -203,14 +224,33 @@ static corto_int16 corto_ser_composite(corto_serializer s, corto_value *info, vo
         }
     }
 
-    return corto_serializeMembers(s, info, userData);
+    return corto_walk_members(s, info, userData);
 nomatch:
     data->result = CORTO_NEQ;
     return 1;
 }
 
+static corto_uint32 corto_ser_getCollectionSize(corto_any this) {
+    corto_uint32 result = 0;
+    switch(corto_collection(this.type)->kind) {
+    case CORTO_ARRAY:
+        result = corto_collection(this.type)->max;
+        break;
+    case CORTO_SEQUENCE:
+        result = ((corto_objectseq*)this.value)->length;
+        break;
+    case CORTO_LIST:
+        result = corto_ll_size(*(corto_ll*)this.value);
+        break;
+    case CORTO_MAP:
+        result = corto_rb_size(*(corto_rbtree*)this.value);
+        break;
+    }
+    return result;
+}
+
 /* Compare collections */
-static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_type t1, t2;
     void *v1, *v2;
     corto_equalityKind result = CORTO_EQ;
@@ -224,16 +264,16 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
      * base-object was a collection, the collection type can be different. When the base-object
      * was a composite type, the collection type has to be equal, since different composite
      * types are considered non-comparable. */
-    t1 = corto_value_getType(info);
-    v1 = corto_value_getPtr(info);
+    t1 = corto_value_typeof(info);
+    v1 = corto_value_ptrof(info);
 
     /* Verify whether current serialized object is the base-object */
     if (info->parent) {
         t2 = t1;
-        v2 = (void*)((corto_word)corto_value_getPtr(&data->value) + ((corto_word)v1 - (corto_word)data->base));
+        v2 = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)v1 - (corto_word)data->base));
     } else {
-        t2 = corto_value_getType(&data->value);
-        v2 = corto_value_getPtr(&data->value);
+        t2 = corto_value_typeof(&data->value);
+        v2 = corto_value_ptrof(&data->value);
     }
 
     /* Prepare any structures for determining sizes of collections */
@@ -242,7 +282,7 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
     a2.type = t2;
     a2.value = v2;
 
-    if ((size1 = corto_collection_size(a1)) == (size2 = corto_collection_size(a2))) {
+    if ((size1 = corto_ser_getCollectionSize(a1)) == (size2 = corto_ser_getCollectionSize(a2))) {
         void *array1=NULL, *array2=NULL;
         corto_ll list1=NULL, list2=NULL;
         corto_uint32 elementSize=0, mem=0;
@@ -311,13 +351,13 @@ static corto_int16 corto_ser_collection(corto_serializer s, corto_value *info, v
     return data->result != CORTO_EQ;
 }
 
-static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void *userData) {
+static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_compare_ser_t *data = userData;
     corto_bool compare = FALSE;
     CORTO_UNUSED(s);
 
-    corto_type t1 = corto_value_getType(info);
-    corto_type t2 = corto_value_getType(&data->value);
+    corto_type t1 = corto_value_typeof(info);
+    corto_type t2 = corto_value_typeof(&data->value);
 
     /* If types are different, validate whether comparison should take place */
     if (t1 != t2) {
@@ -366,15 +406,15 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
     }
 
     data->result = compare ? CORTO_EQ : CORTO_NEQ;
-    data->base = corto_value_getPtr(info);
+    data->base = corto_value_ptrof(info);
 
     return !compare;
 }
 
-struct corto_serializer_s corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;

@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Container_tc_complexContainer(
+void _test_Container_tc_complexContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_complexContainer) */
@@ -18,7 +18,7 @@ corto_void _test_Container_tc_complexContainer(
     test_assertint(corto_scopeSize(o), 2);
 
     test_Car car = test_Car(o);
-    corto_setstr(&car->license_plate, "abc");
+    corto_ptr_setstr(&car->license_plate, "abc");
     car->speed = 100;
 
     corto_object wheel = corto_lookup(car, "Wheel");
@@ -59,7 +59,7 @@ corto_void _test_Container_tc_complexContainer(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerEmpty(
+void _test_Container_tc_containerEmpty(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerEmpty) */
@@ -70,7 +70,7 @@ corto_void _test_Container_tc_containerEmpty(
 
     test_ContainerEmpty c = test_ContainerEmpty(o);
     c->id = 10;
-    corto_setstr(&c->value, "Foo");
+    corto_ptr_setstr(&c->value, "Foo");
     test_assert(corto_define(c) == 0);
     test_assertint(corto_scopeSize(o), 0);
 
@@ -79,7 +79,7 @@ corto_void _test_Container_tc_containerEmpty(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerNestedContainer(
+void _test_Container_tc_containerNestedContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerNestedContainer) */
@@ -96,7 +96,7 @@ corto_void _test_Container_tc_containerNestedContainer(
     /* Test if members of container are properly generated */
     test_ContainerNestedContainer container = test_ContainerNestedContainer(o);
     container->id = 10;
-    corto_setstr(&container->value, "Foo");
+    corto_ptr_setstr(&container->value, "Foo");
     test_assert(corto_define(container) == 0);
     test_assertint(corto_scopeSize(o), 1);
 
@@ -104,7 +104,7 @@ corto_void _test_Container_tc_containerNestedContainer(
     test_ContainerNestedContainer_ChildContainer childContainer = 
         test_ContainerNestedContainer_ChildContainer(child);
     childContainer->id = 10;
-    corto_setstr(&childContainer->value, "Foo");
+    corto_ptr_setstr(&childContainer->value, "Foo");
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
 
@@ -115,7 +115,7 @@ corto_void _test_Container_tc_containerNestedContainer(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerNestedLeaf(
+void _test_Container_tc_containerNestedLeaf(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerNestedLeaf) */
@@ -132,7 +132,7 @@ corto_void _test_Container_tc_containerNestedLeaf(
     /* Test if members of container are properly generated */
     test_ContainerNestedLeaf container = test_ContainerNestedLeaf(o);
     container->id = 10;
-    corto_setstr(&container->value, "Foo");
+    corto_ptr_setstr(&container->value, "Foo");
     test_assert(corto_define(container) == 0);
     test_assertint(corto_scopeSize(o), 1);
 
@@ -140,7 +140,7 @@ corto_void _test_Container_tc_containerNestedLeaf(
     test_ContainerNestedLeaf_ChildLeaf childLeaf = 
         test_ContainerNestedLeaf_ChildLeaf(child);
     childLeaf->id = 10;
-    corto_setstr(&childLeaf->value, "Foo");
+    corto_ptr_setstr(&childLeaf->value, "Foo");
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
 
@@ -151,7 +151,7 @@ corto_void _test_Container_tc_containerNestedLeaf(
 /* $end */
 }
 
-corto_void _test_Container_tc_containerNestedTable(
+void _test_Container_tc_containerNestedTable(
     test_Container this)
 {
 /* $begin(test/Container/tc_containerNestedTable) */
@@ -173,7 +173,7 @@ corto_void _test_Container_tc_containerNestedTable(
     /* Test if members of container are properly generated */
     test_ContainerNestedTable container = test_ContainerNestedTable(o);
     container->id = 10;
-    corto_setstr(&container->value, "Foo");
+    corto_ptr_setstr(&container->value, "Foo");
     test_assert(corto_define(container) == 0);
     test_assertint(corto_scopeSize(o), 1);
 
@@ -184,7 +184,7 @@ corto_void _test_Container_tc_containerNestedTable(
 /* $end */
 }
 
-corto_void _test_Container_tc_leafRoot(
+void _test_Container_tc_leafRoot(
     test_Container this)
 {
 /* $begin(test/Container/tc_leafRoot) */
@@ -195,7 +195,7 @@ corto_void _test_Container_tc_leafRoot(
     
     test_LeafRoot leaf = test_LeafRoot(o);
     leaf->id = 10;
-    corto_setstr(&leaf->value, "Foo");
+    corto_ptr_setstr(&leaf->value, "Foo");
     test_assert(corto_define(leaf) == 0);
     test_assertint(corto_scopeSize(o), 0);
 
@@ -204,7 +204,7 @@ corto_void _test_Container_tc_leafRoot(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableMultiKey(
+void _test_Container_tc_tableMultiKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiKey) */
@@ -212,7 +212,7 @@ corto_void _test_Container_tc_tableMultiKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableMultiKey_o);
+    corto_ptr_setref(&o->type, test_TableMultiKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableMultiKey record = corto_declareChild(o, "1,2", test_TableMultiKey_o);
@@ -228,7 +228,7 @@ corto_void _test_Container_tc_tableMultiKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableMultiMixedKey(
+void _test_Container_tc_tableMultiMixedKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiMixedKey) */
@@ -236,7 +236,7 @@ corto_void _test_Container_tc_tableMultiMixedKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableMultiMixedKey_o);
+    corto_ptr_setref(&o->type, test_TableMultiMixedKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableMultiMixedKey record = corto_declareChild(o, "1,Hello World", test_TableMultiMixedKey_o);
@@ -252,7 +252,7 @@ corto_void _test_Container_tc_tableMultiMixedKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableMultiStringKey(
+void _test_Container_tc_tableMultiStringKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiStringKey) */
@@ -260,7 +260,7 @@ corto_void _test_Container_tc_tableMultiStringKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableMultiStringKey_o);
+    corto_ptr_setref(&o->type, test_TableMultiStringKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableMultiStringKey record = corto_declareChild(o, "Hello,World", test_TableMultiStringKey_o);
@@ -275,7 +275,7 @@ corto_void _test_Container_tc_tableMultiStringKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableNested(
+void _test_Container_tc_tableNested(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNested) */
@@ -283,7 +283,7 @@ corto_void _test_Container_tc_tableNested(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableNested_o);
+    corto_ptr_setref(&o->type, test_TableNested_o);
 
     test_TableSingleKey record = corto_declareChild(o, "1", test_TableNested_o);
     test_assert(record != NULL);
@@ -307,7 +307,7 @@ corto_void _test_Container_tc_tableNested(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableNestedContainer(
+void _test_Container_tc_tableNestedContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNestedContainer) */
@@ -315,7 +315,7 @@ corto_void _test_Container_tc_tableNestedContainer(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableNestedContainer_o);
+    corto_ptr_setref(&o->type, test_TableNestedContainer_o);
     test_assert (corto_define(o) == 0);
 
     test_TableNestedContainer record = corto_declareChild(o, "1", test_TableNestedContainer_o);
@@ -339,7 +339,7 @@ corto_void _test_Container_tc_tableNestedContainer(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableNestedLeafs(
+void _test_Container_tc_tableNestedLeafs(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNestedLeafs) */
@@ -347,7 +347,7 @@ corto_void _test_Container_tc_tableNestedLeafs(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableNestedLeafs_o);
+    corto_ptr_setref(&o->type, test_TableNestedLeafs_o);
     test_assert (corto_define(o) == 0);
 
     test_TableNestedLeafs record = corto_declareChild(o, "1", test_TableNestedLeafs_o);
@@ -378,7 +378,7 @@ corto_void _test_Container_tc_tableNestedLeafs(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableSingleKey(
+void _test_Container_tc_tableSingleKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableSingleKey) */
@@ -386,7 +386,7 @@ corto_void _test_Container_tc_tableSingleKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableSingleKey_o);
+    corto_ptr_setref(&o->type, test_TableSingleKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableSingleKey record = corto_declareChild(o, "1", test_TableSingleKey_o);
@@ -401,7 +401,7 @@ corto_void _test_Container_tc_tableSingleKey(
 /* $end */
 }
 
-corto_void _test_Container_tc_tableStringKey(
+void _test_Container_tc_tableStringKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableStringKey) */
@@ -409,7 +409,7 @@ corto_void _test_Container_tc_tableStringKey(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
     test_assertint(corto_scopeSize(o), 0);
-    corto_setref(&o->type, test_TableStringKey_o);
+    corto_ptr_setref(&o->type, test_TableStringKey_o);
     test_assert (corto_define(o) == 0);
 
     test_TableStringKey record = corto_declareChild(o, "Hello World", test_TableStringKey_o);

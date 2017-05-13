@@ -6,13 +6,14 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_list_construct(
+int16_t _corto_list_construct(
     corto_list this)
 {
 /* $begin(corto/lang/list/construct) */
-    corto_type(this)->hasResources = TRUE;
+    corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
+    corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
     corto_type(this)->size = sizeof(corto_ll);
     corto_type(this)->alignment = CORTO_ALIGNMENT(corto_ll);
     if (!corto_collection(this)->elementType) {
@@ -25,7 +26,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_list_init(
+int16_t _corto_list_init(
     corto_list this)
 {
 /* $begin(corto/lang/list/init) */

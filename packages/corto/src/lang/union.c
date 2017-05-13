@@ -6,14 +6,14 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_interface.h"
 #include "_class.h"
 /* $end */
 
-corto_int16 _corto_union_construct(
+int16_t _corto_union_construct(
     corto_union this)
 {
 /* $begin(corto/lang/union/construct) */
@@ -68,7 +68,7 @@ error:
 
 corto_member _corto_union_findCase(
     corto_union this,
-    corto_int32 discriminator)
+    int32_t discriminator)
 {
 /* $begin(corto/lang/union/findCase) */
     corto_member member = NULL;
@@ -103,7 +103,7 @@ corto_member _corto_union_findCase(
 /* $end */
 }
 
-corto_int16 _corto_union_init(
+int16_t _corto_union_init(
     corto_union this)
 {
 /* $begin(corto/lang/union/init) */

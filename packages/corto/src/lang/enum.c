@@ -6,11 +6,10 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_enum.h"
-#include "_collection.h"
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
@@ -44,7 +43,7 @@ static int corto_enum_findConstant(corto_object o, void* udata) {
 /* $end */
 corto_object _corto_enum_constant(
     corto_enum this,
-    corto_int32 value)
+    int32_t value)
 {
 /* $begin(corto/lang/enum/constant) */
     struct corto_enum_findConstant_t walkData;
@@ -58,7 +57,7 @@ corto_object _corto_enum_constant(
 /* $end */
 }
 
-corto_int16 _corto_enum_construct(
+int16_t _corto_enum_construct(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/construct) */
@@ -73,16 +72,23 @@ corto_int16 _corto_enum_construct(
 /* $end */
 }
 
-corto_void _corto_enum_destruct(
+void _corto_enum_destruct(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/destruct) */
-    corto_clear(corto_collection(corto_objectseq_o), &this->constants);
+    int i;
+    for (i = 0; i < this->constants.length; i++) {
+      corto_release(this->constants.buffer[i]);
+    }
+    this->constants.length = 0;
+    corto_dealloc(this->constants.buffer);
+    this->constants.buffer = NULL;
+    
     corto_type_destruct(corto_type(this));
 /* $end */
 }
 
-corto_int16 _corto_enum_init(
+int16_t _corto_enum_init(
     corto_enum this)
 {
 /* $begin(corto/lang/enum/init) */

@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_MethodResolver_tc_inheritOverload(
+void _test_MethodResolver_tc_inheritOverload(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverload) */
@@ -20,7 +20,7 @@ corto_void _test_MethodResolver_tc_inheritOverload(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritOverloadBaseClass(
+void _test_MethodResolver_tc_inheritOverloadBaseClass(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadBaseClass) */
@@ -32,7 +32,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadBaseClass(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritOverloadBaseInt(
+void _test_MethodResolver_tc_inheritOverloadBaseInt(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadBaseInt) */
@@ -44,7 +44,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadBaseInt(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritOverloadBaseString(
+void _test_MethodResolver_tc_inheritOverloadBaseString(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadBaseString) */
@@ -56,7 +56,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadBaseString(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritOverloadBaseTwoArgs(
+void _test_MethodResolver_tc_inheritOverloadBaseTwoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadBaseTwoArgs) */
@@ -68,7 +68,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadBaseTwoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritOverloadClass(
+void _test_MethodResolver_tc_inheritOverloadClass(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadClass) */
@@ -80,7 +80,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadClass(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritOverloadNoArgs(
+void _test_MethodResolver_tc_inheritOverloadNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritOverloadNoArgs) */
@@ -93,7 +93,7 @@ corto_void _test_MethodResolver_tc_inheritOverloadNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritSimple(
+void _test_MethodResolver_tc_inheritSimple(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritSimple) */
@@ -105,7 +105,7 @@ corto_void _test_MethodResolver_tc_inheritSimple(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritSimpleNoArgs(
+void _test_MethodResolver_tc_inheritSimpleNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritSimpleNoArgs) */
@@ -117,7 +117,7 @@ corto_void _test_MethodResolver_tc_inheritSimpleNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritVirtualOverload(
+void _test_MethodResolver_tc_inheritVirtualOverload(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritVirtualOverload) */
@@ -129,7 +129,7 @@ corto_void _test_MethodResolver_tc_inheritVirtualOverload(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_inheritVirtualOverloadNoArgs(
+void _test_MethodResolver_tc_inheritVirtualOverloadNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_inheritVirtualOverloadNoArgs) */
@@ -142,7 +142,7 @@ corto_void _test_MethodResolver_tc_inheritVirtualOverloadNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_nonexisting(
+void _test_MethodResolver_tc_nonexisting(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_nonexisting) */
@@ -153,7 +153,7 @@ corto_void _test_MethodResolver_tc_nonexisting(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_onearg(
+void _test_MethodResolver_tc_onearg(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_onearg) */
@@ -165,7 +165,7 @@ corto_void _test_MethodResolver_tc_onearg(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_oneargErr(
+void _test_MethodResolver_tc_oneargErr(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_oneargErr) */
@@ -176,7 +176,7 @@ corto_void _test_MethodResolver_tc_oneargErr(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_oneargErrType(
+void _test_MethodResolver_tc_oneargErrType(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_oneargErrType) */
@@ -189,7 +189,7 @@ corto_void _test_MethodResolver_tc_oneargErrType(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_oneargNoArgs(
+void _test_MethodResolver_tc_oneargNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_oneargNoArgs) */
@@ -201,7 +201,7 @@ corto_void _test_MethodResolver_tc_oneargNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_overloadAmbiguous(
+void _test_MethodResolver_tc_overloadAmbiguous(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_overloadAmbiguous) */
@@ -214,7 +214,7 @@ corto_void _test_MethodResolver_tc_overloadAmbiguous(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_overloadClass(
+void _test_MethodResolver_tc_overloadClass(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_overloadClass) */
@@ -226,7 +226,7 @@ corto_void _test_MethodResolver_tc_overloadClass(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_overloadInt(
+void _test_MethodResolver_tc_overloadInt(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_overloadInt) */
@@ -238,7 +238,7 @@ corto_void _test_MethodResolver_tc_overloadInt(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_overloadString(
+void _test_MethodResolver_tc_overloadString(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_overloadString) */
@@ -250,7 +250,7 @@ corto_void _test_MethodResolver_tc_overloadString(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_overloadTwoArgs(
+void _test_MethodResolver_tc_overloadTwoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_overloadTwoArgs) */
@@ -262,7 +262,7 @@ corto_void _test_MethodResolver_tc_overloadTwoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_redeclare(
+void _test_MethodResolver_tc_redeclare(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_redeclare) */
@@ -286,7 +286,7 @@ corto_void _test_MethodResolver_tc_redeclare(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_simple(
+void _test_MethodResolver_tc_simple(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_simple) */
@@ -298,7 +298,7 @@ corto_void _test_MethodResolver_tc_simple(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_simpleErr(
+void _test_MethodResolver_tc_simpleErr(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_simpleErr) */
@@ -309,7 +309,7 @@ corto_void _test_MethodResolver_tc_simpleErr(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_simpleErrType(
+void _test_MethodResolver_tc_simpleErrType(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_simpleErrType) */
@@ -320,7 +320,7 @@ corto_void _test_MethodResolver_tc_simpleErrType(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_simpleNoArgs(
+void _test_MethodResolver_tc_simpleNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_simpleNoArgs) */
@@ -332,7 +332,7 @@ corto_void _test_MethodResolver_tc_simpleNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_twoargs(
+void _test_MethodResolver_tc_twoargs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_twoargs) */
@@ -344,7 +344,7 @@ corto_void _test_MethodResolver_tc_twoargs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_twoargsNoArgs(
+void _test_MethodResolver_tc_twoargsNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_twoargsNoArgs) */
@@ -356,7 +356,7 @@ corto_void _test_MethodResolver_tc_twoargsNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_twoargsSpaces(
+void _test_MethodResolver_tc_twoargsSpaces(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_twoargsSpaces) */
@@ -368,7 +368,7 @@ corto_void _test_MethodResolver_tc_twoargsSpaces(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_virtualOverload(
+void _test_MethodResolver_tc_virtualOverload(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_virtualOverload) */
@@ -380,7 +380,7 @@ corto_void _test_MethodResolver_tc_virtualOverload(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_virtualOverloadArg(
+void _test_MethodResolver_tc_virtualOverloadArg(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_virtualOverloadArg) */
@@ -392,7 +392,7 @@ corto_void _test_MethodResolver_tc_virtualOverloadArg(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_virtualOverloadNoArgs(
+void _test_MethodResolver_tc_virtualOverloadNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_virtualOverloadNoArgs) */
@@ -405,7 +405,7 @@ corto_void _test_MethodResolver_tc_virtualOverloadNoArgs(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_virtualSimple(
+void _test_MethodResolver_tc_virtualSimple(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_virtualSimple) */
@@ -417,7 +417,7 @@ corto_void _test_MethodResolver_tc_virtualSimple(
 /* $end */
 }
 
-corto_void _test_MethodResolver_tc_virtualSimpleNoArgs(
+void _test_MethodResolver_tc_virtualSimpleNoArgs(
     test_MethodResolver this)
 {
 /* $begin(test/MethodResolver/tc_virtualSimpleNoArgs) */

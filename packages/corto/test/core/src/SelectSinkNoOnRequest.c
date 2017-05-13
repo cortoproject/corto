@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_SelectSinkNoOnRequest_setup(
+void _test_SelectSinkNoOnRequest_setup(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/setup) */
@@ -26,61 +26,61 @@ corto_void _test_SelectSinkNoOnRequest_setup(
 /* $end */
 }
 
-corto_void _test_SelectSinkNoOnRequest_tc_selectScope(
+void _test_SelectSinkNoOnRequest_tc_selectScope(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/tc_selectScope) */
     corto_result *result;
     corto_iter iter;
-    corto_int16 ret = corto_select("/mount", "*").iter( &iter );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "x"));
     test_assert(!strcmp(result->parent, "."));
     test_assert(!strcmp(result->type, "int32"));
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "y"));
     test_assert(!strcmp(result->parent, "."));
     test_assert(!strcmp(result->type, "int32"));
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
 
-corto_void _test_SelectSinkNoOnRequest_tc_selectSingle(
+void _test_SelectSinkNoOnRequest_tc_selectSingle(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/tc_selectSingle) */
     corto_result *result;
     corto_iter iter;
-    corto_int16 ret = corto_select("/mount", "x").iter( &iter );
+    corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
-    test_assert(corto_iterHasNext(&iter));
-    result = corto_iterNext(&iter);
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assert(!strcmp(result->id, "x"));
     test_assert(!strcmp(result->parent, "."));
     test_assert(!strcmp(result->type, "int32"));
 
-    test_assert(!corto_iterHasNext(&iter));
+    test_assert(!corto_iter_hasNext(&iter));
 
 /* $end */
 }
 
-corto_void _test_SelectSinkNoOnRequest_teardown(
+void _test_SelectSinkNoOnRequest_teardown(
     test_SelectSinkNoOnRequest this)
 {
 /* $begin(test/SelectSinkNoOnRequest/teardown) */

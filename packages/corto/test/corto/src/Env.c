@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_void _test_Env_tc_envparseFormatAndReplace(
+void _test_Env_tc_envparseFormatAndReplace(
     test_Env this)
 {
 /* $begin(test/Env/tc_envparseFormatAndReplace) */
@@ -19,7 +19,7 @@ corto_void _test_Env_tc_envparseFormatAndReplace(
 /* $end */
 }
 
-corto_void _test_Env_tc_envparseReplaceMultiple(
+void _test_Env_tc_envparseReplaceMultiple(
     test_Env this)
 {
 /* $begin(test/Env/tc_envparseReplaceMultiple) */
@@ -30,7 +30,7 @@ corto_void _test_Env_tc_envparseReplaceMultiple(
 /* $end */
 }
 
-corto_void _test_Env_tc_envparseReplaceWithSameVariable(
+void _test_Env_tc_envparseReplaceWithSameVariable(
     test_Env this)
 {
 /* $begin(test/Env/tc_envparseReplaceWithSameVariable) */
@@ -41,7 +41,7 @@ corto_void _test_Env_tc_envparseReplaceWithSameVariable(
 /* $end */
 }
 
-corto_void _test_Env_tc_envparseSimpleFormat(
+void _test_Env_tc_envparseSimpleFormat(
     test_Env this)
 {
 /* $begin(test/Env/tc_envparseSimpleFormat) */
@@ -51,7 +51,7 @@ corto_void _test_Env_tc_envparseSimpleFormat(
 /* $end */
 }
 
-corto_void _test_Env_tc_envparseSimpleReplace(
+void _test_Env_tc_envparseSimpleReplace(
     test_Env this)
 {
 /* $begin(test/Env/tc_envparseSimpleReplace) */
@@ -62,7 +62,7 @@ corto_void _test_Env_tc_envparseSimpleReplace(
 /* $end */
 }
 
-corto_void _test_Env_tc_envparseVariableNotFound(
+void _test_Env_tc_envparseVariableNotFound(
     test_Env this)
 {
 /* $begin(test/Env/tc_envparseVariableNotFound) */
@@ -72,7 +72,7 @@ corto_void _test_Env_tc_envparseVariableNotFound(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvFormatAndReplace(
+void _test_Env_tc_setenvFormatAndReplace(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvFormatAndReplace) */
@@ -82,7 +82,7 @@ corto_void _test_Env_tc_setenvFormatAndReplace(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvNull(
+void _test_Env_tc_setenvNull(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvNull) */
@@ -93,7 +93,7 @@ corto_void _test_Env_tc_setenvNull(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvReplaceMultiple(
+void _test_Env_tc_setenvReplaceMultiple(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvReplaceMultiple) */
@@ -103,7 +103,7 @@ corto_void _test_Env_tc_setenvReplaceMultiple(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvReplaceWithSameVariable(
+void _test_Env_tc_setenvReplaceWithSameVariable(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvReplaceWithSameVariable) */
@@ -113,7 +113,7 @@ corto_void _test_Env_tc_setenvReplaceWithSameVariable(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvSimple(
+void _test_Env_tc_setenvSimple(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvSimple) */
@@ -122,7 +122,7 @@ corto_void _test_Env_tc_setenvSimple(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvSimpleFormat(
+void _test_Env_tc_setenvSimpleFormat(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvSimpleFormat) */
@@ -131,7 +131,7 @@ corto_void _test_Env_tc_setenvSimpleFormat(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvSimpleReplace(
+void _test_Env_tc_setenvSimpleReplace(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvSimpleReplace) */
@@ -141,7 +141,7 @@ corto_void _test_Env_tc_setenvSimpleReplace(
 /* $end */
 }
 
-corto_void _test_Env_tc_setenvVariableNotFound(
+void _test_Env_tc_setenvVariableNotFound(
     test_Env this)
 {
 /* $begin(test/Env/tc_setenvVariableNotFound) */

@@ -1,8 +1,22 @@
-/*
- * corto_string_ser.c
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Aug 27, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #include "corto/corto.h"
@@ -16,7 +30,7 @@
 #define CONSTANT (CORTO_MAGENTA)
 #define MEMBER (CORTO_NORMAL)
 
-static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* userData);
+static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* userData);
 
 /* Insert color if enabled */
 static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string color) {
@@ -28,19 +42,19 @@ static corto_bool corto_ser_appendColor(corto_string_ser_t *data, corto_string c
 }
 
 /* Serialize any */
-static corto_int16 corto_ser_any(corto_serializer s, corto_value* v, void* userData) {
+static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_string_ser_t* data = userData;
-    corto_any *this = corto_value_getPtr(v);
+    corto_any *this = corto_value_ptrof(v);
     corto_int16 result = 0;
     corto_id id;
     corto_value anyValue;
-    anyValue = corto_value_value(this->type, this->value);
+    anyValue = corto_value_value(this->value, this->type);
 
     if (!corto_buffer_append(&data->buffer, "{%s,", corto_fullpath(id, this->type))) {
         goto finished;
     }
 
-    if ((result = corto_serializeValue(s, &anyValue, data))) {
+    if ((result = corto_value_walk(s, &anyValue, data))) {
         return result;
     }
 
@@ -54,7 +68,7 @@ finished:
 }
 
 /* Serialize primitive values */
-static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void* userData) {
+static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_string_ser_t* data;
     corto_type t;
     void* o;
@@ -64,8 +78,8 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
     result = NULL;
 
     data = (corto_string_ser_t*)userData;
-    t = corto_value_getType(v);
-    o = corto_value_getPtr(v);
+    t = corto_value_typeof(v);
+    o = corto_value_ptrof(v);
 
     /* If src is string and value is null, put NULL in result. */
     if (corto_primitive(t)->kind == CORTO_TEXT) {
@@ -116,7 +130,7 @@ static corto_int16 corto_ser_primitive(corto_serializer s, corto_value* v, void*
                 break;
         }
         /* Convert primitive value to string */
-        corto_convert(corto_primitive(t), o, corto_primitive(corto_string_o), &result);
+        corto_ptr_cast(corto_primitive(t), o, corto_primitive(corto_string_o), &result);
 
         /* Append conversionresult to serializer-result*/
         if (!corto_buffer_append(&data->buffer, "%s", result)) {
@@ -133,7 +147,7 @@ finished:
 }
 
 /* Serialize references */
-static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void* userData) {
+static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_id id;
     void *o;
     corto_object object;
@@ -142,7 +156,7 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
     corto_string_ser_t* data;
 
     data = userData;
-    o = corto_value_getPtr(v);
+    o = corto_value_ptrof(v);
     object = *(corto_object*)o;
 
     /* Obtain fully scoped name */
@@ -160,13 +174,13 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
             int index = 0;
 
             if (!data->anonymousObjects) {
-                data->anonymousObjects = corto_llNew();
+                data->anonymousObjects = corto_ll_new();
             }
 
-            if (object == corto_value_getObject(v)) {
+            if (object == corto_value_objectof(v)) {
                 sprintf(id, "<0>");
                 str = id;
-            }else if ((index = corto_llHasObject(data->anonymousObjects, object))) {
+            }else if ((index = corto_ll_hasObject(data->anonymousObjects, object))) {
                 sprintf(id, "<%d>", index);
                 str = id;
             } else {
@@ -180,8 +194,8 @@ static corto_int16 corto_ser_reference(corto_serializer s, corto_value* v, void*
                 walkData.anonymousObjects = data->anonymousObjects;
                 walkData.enableColors = data->enableColors;
 
-                corto_llAppend(data->anonymousObjects, object);
-                if (!corto_buffer_append(&data->buffer, "<%d>", corto_llSize(data->anonymousObjects))) {
+                corto_ll_append(data->anonymousObjects, object);
+                if (!corto_buffer_append(&data->buffer, "<%d>", corto_ll_size(data->anonymousObjects))) {
                     goto finished;
                 }
 
@@ -217,13 +231,13 @@ finished:
 }
 
 /* For composite and collection objects */
-static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* userData) {
+static corto_int16 corto_ser_scope(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_int16 result;
     corto_string_ser_t *data, privateData;
     corto_type t;
 
     data = userData;
-    t = corto_value_getType(v);
+    t = corto_value_typeof(v);
     result = 0;
 
     /* Nested data has private itemCount, which prevents superfluous ',' to be added to the result. */
@@ -242,9 +256,9 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
     if (!corto_ser_appendColor(&privateData, CORTO_NORMAL)) goto finished;
     if (t->kind == CORTO_COMPOSITE) {
         if (corto_interface(t)->kind == CORTO_UNION) {
-            void *ptr = corto_value_getPtr(v);
+            void *ptr = corto_value_ptrof(v);
             char *d;
-            if (corto_convert(corto_union(t)->discriminator, ptr, corto_string_o, &d)) {
+            if (corto_ptr_cast(corto_union(t)->discriminator, ptr, corto_string_o, &d)) {
                 corto_seterr("invalid discriminator value '%d' for union '%s'",
                   *(corto_int32*)ptr,
                   corto_fullpath(NULL, t));
@@ -256,9 +270,9 @@ static corto_int16 corto_ser_scope(corto_serializer s, corto_value* v, void* use
             corto_dealloc(d);
             privateData.itemCount = 1;
         }
-        result = corto_serializeMembers(s, v, &privateData);
+        result = corto_walk_members(s, v, &privateData);
     } else if (t->kind == CORTO_COLLECTION){
-        result = corto_serializeElements(s, v, &privateData);
+        result = corto_walk_elements(s, v, &privateData);
     } else {
         corto_assert(0, "corto_ser_scope: invalid typekind for function.");
     }
@@ -286,7 +300,7 @@ finished:
 }
 
 /* Serialize item (can be either member or element) */
-static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* userData) {
+static corto_int16 corto_ser_item(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_string_ser_t* data;
     CORTO_UNUSED(s);
 
@@ -316,7 +330,7 @@ static corto_int16 corto_ser_item(corto_serializer s, corto_value* v, void* user
     }
 
     /* Serialize value of item */
-    if (corto_serializeValue(s, v, userData)) {
+    if (corto_value_walk(s, v, userData)) {
         goto error;
     }
 
@@ -329,11 +343,11 @@ finished:
     return 1;
 }
 
-static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* userData) {
+static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_string_ser_t* data;
     data = userData;
 
-    corto_serializeValue(s, v, userData);
+    corto_value_walk(s, v, userData);
 
     if (data->prefixType) {
         corto_id buffer;
@@ -343,27 +357,27 @@ static corto_int16 corto_ser_object(corto_serializer s, corto_value* v, void* us
         corto_string str = corto_buffer_str(&data->buffer);
 
         if (str) {
-            o = corto_value_getObject(v);
+            o = corto_value_objectof(v);
             if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
                 corto_fullpath(typeId, corto_typeof(o));
             } else {
-                struct corto_serializer_s typeSer;
+                corto_walk_opt typeSer;
                 corto_string_ser_t data;
 
                 /* Serialize type to string */
-                typeSer = corto_string_ser(CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_SERIALIZER_TRACE_ON_FAIL);
+                typeSer = corto_string_ser(CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
                 data.compactNotation = TRUE;
                 data.buffer = CORTO_BUFFER_INIT;
                 data.buffer.buf = NULL;
                 data.buffer.max = 0;
                 data.prefixType = TRUE;
                 data.enableColors = FALSE;
-                if (corto_serialize(&typeSer, corto_typeof(o), &data)) {
+                if (corto_walk(&typeSer, corto_typeof(o), &data)) {
                     goto error;
                 }
 
                 typeId = corto_buffer_str(&data.buffer);
-                corto_serializeDestruct(&typeSer, &data);
+                corto_walk_deinit(&typeSer, &data);
             }
 
             if (corto_typeof(o)->kind != CORTO_PRIMITIVE) {
@@ -403,7 +417,7 @@ error:
     return -1;
 }
 
-static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, void* userData) {
+static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, void* userData) {
     CORTO_UNUSED(s);
     CORTO_UNUSED(info);
 
@@ -416,24 +430,24 @@ static corto_int16 corto_ser_construct(corto_serializer s, corto_value *info, vo
     return 0;
 }
 
-corto_int16 corto_ser_destruct(corto_serializer s, void* userData) {
+corto_int16 corto_ser_destruct(corto_walk_opt* s, void* userData) {
     CORTO_UNUSED(s);
     corto_string_ser_t* data = userData;
     if (data->anonymousObjects) {
-        corto_llFree(data->anonymousObjects);
+        corto_ll_free(data->anonymousObjects);
         data->anonymousObjects = NULL;
     }
     return 0;
 }
 
-struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
 
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
 
     s.access = access;
     s.accessKind = accessKind;
-    s.aliasAction = CORTO_SERIALIZER_ALIAS_IGNORE;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
     s.traceKind = trace;
     s.construct = corto_ser_construct;
     s.destruct = corto_ser_destruct;
@@ -444,7 +458,7 @@ struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operator
     s.program[CORTO_COLLECTION] = corto_ser_scope;
 
     s.metaprogram[CORTO_MEMBER] = corto_ser_item;
-    s.metaprogram[CORTO_BASE] = corto_serializeMembers;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
+    s.metaprogram[CORTO_BASE] = corto_walk_members;   /* Skip the scope-callback by directly calling serializeMembers. This will cause the extra
                                                      * '{ }' not to appear, which is required by this string format. */
     s.metaprogram[CORTO_ELEMENT] = corto_ser_item;
     s.metaprogram[CORTO_OBJECT] = corto_ser_object;
@@ -453,12 +467,12 @@ struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operator
     return s;
 }
 #else
-struct corto_serializer_s corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_serializerTraceKind trace) {
-    struct corto_serializer_s s;
+corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+    corto_walk_opt s;
     CORTO_UNUSED(access);
     CORTO_UNUSED(accessKind);
     CORTO_UNUSED(trace);
-    corto_serializerInit(&s);
+    corto_walk_init(&s);
     return s;
 }
 #endif

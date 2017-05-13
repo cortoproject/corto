@@ -6,14 +6,14 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_table_construct(
+int16_t _corto_table_construct(
     corto_table this)
 {
 /* $begin(corto/lang/table/construct) */
 
-    corto_setref(&corto_type(this)->options.parentType, corto_tablescope_o);
+    corto_ptr_setref(&corto_type(this)->options.parentType, corto_tablescope_o);
 
     return corto_class_construct(this);
 /* $end */

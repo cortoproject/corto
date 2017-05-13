@@ -1,3 +1,23 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include "cortotool_pp.h"
 #include "corto/g/g.h"
@@ -10,46 +30,46 @@ static corto_string name = NULL;
 
 corto_int16 cortotool_language(char *language) {
     if (!generators) {
-        generators = corto_llNew();
+        generators = corto_ll_new();
     }
 
     if (!attributes) {
-        attributes = corto_llNew();
+        attributes = corto_ll_new();
     }
 
     if (!strcmp(language, "c")) {
-        corto_llAppend(generators, "c/project");
-        corto_llAppend(generators, "c/type");
-        corto_llAppend(generators, "c/interface");
-        corto_llAppend(generators, "c/load");
-        corto_llAppend(generators, "c/api");
-        corto_llAppend(attributes, "c=src");
-        corto_llAppend(attributes, "h=include");
+        corto_ll_append(generators, "c/project");
+        corto_ll_append(generators, "c/type");
+        corto_ll_append(generators, "c/interface");
+        corto_ll_append(generators, "c/load");
+        corto_ll_append(generators, "c/api");
+        corto_ll_append(attributes, "c=src");
+        corto_ll_append(attributes, "h=include");
     } else if (!strcmp(language, "c4cpp")) {
-        corto_llAppend(generators, "c/project");
-        corto_llAppend(generators, "c/type");
-        corto_llAppend(generators, "c/interface");
-        corto_llAppend(generators, "c/load");
-        corto_llAppend(generators, "c/api");
-        corto_llAppend(attributes, "c=src");
-        corto_llAppend(attributes, "cpp=src");
-        corto_llAppend(attributes, "h=include");
-        corto_llAppend(attributes, "c4cpp=true");
+        corto_ll_append(generators, "c/project");
+        corto_ll_append(generators, "c/type");
+        corto_ll_append(generators, "c/interface");
+        corto_ll_append(generators, "c/load");
+        corto_ll_append(generators, "c/api");
+        corto_ll_append(attributes, "c=src");
+        corto_ll_append(attributes, "cpp=src");
+        corto_ll_append(attributes, "h=include");
+        corto_ll_append(attributes, "c4cpp=true");
     } else if (!strcmp(language, "cpp") || (!strcmp(language, "c++"))) {
         if (!prefixes) {
-            prefixes = corto_llNew();
+            prefixes = corto_ll_new();
         }
-        corto_llAppend(prefixes, "");
-        corto_llAppend(generators, "c/type");
-        corto_llAppend(generators, "c/load");
-        corto_llAppend(generators, "c/project");
-        corto_llAppend(generators, "cpp/class");
-        corto_llAppend(attributes, "c=src");
-        corto_llAppend(attributes, "h=include");
-        corto_llAppend(attributes, "cpp=src");
-        corto_llAppend(attributes, "hpp=include");
-        corto_llAppend(attributes, "c4cpp=true");
-        corto_llAppend(attributes, "lang=cpp");
+        corto_ll_append(prefixes, "");
+        corto_ll_append(generators, "c/type");
+        corto_ll_append(generators, "c/load");
+        corto_ll_append(generators, "c/project");
+        corto_ll_append(generators, "cpp/class");
+        corto_ll_append(attributes, "c=src");
+        corto_ll_append(attributes, "h=include");
+        corto_ll_append(attributes, "cpp=src");
+        corto_ll_append(attributes, "hpp=include");
+        corto_ll_append(attributes, "c4cpp=true");
+        corto_ll_append(attributes, "lang=cpp");
     } else {
         corto_error("unknown language '%s'", language);
         goto error;
@@ -146,21 +166,22 @@ corto_int16 cortotool_core(void) {
         goto error;
     }
 
+    /* Generate C API */
     pid = corto_procrun("corto", (char*[]){
       "corto",
       "pp",
-      "--prefix", "corto",
       "--name", "corto",
+      "--scope", "corto/lang,corto/core,corto/secure,corto/native",
       "--attr", "c=src",
       "--attr", "h=include",
       "--attr", "bootstrap=true",
       "--attr", "stubs=false",
-      "-g", "c/project",
+      "-g", "c/api",
       NULL
     });
     if (corto_procwait(pid, &ret) || ret) {
-        corto_error("failed to setup project for corto (%d)", ret);
-        printf("   command: corto pp --prefix corto --name corto --attr c=src --attr h=include --attr bootstrap=true --attr stubs=false -g c/project\n");
+        corto_error("failed to generate code for corto/c (%d)", ret);
+        printf("   command: corto pp --prefix corto --name corto --scope corto/core --attr c=src/core --attr h=include/core --attr bootstrap=true --attr stubs=false -g c/interface -g c/api -g c/type\n");
         goto error;
     }
 
@@ -175,10 +196,10 @@ corto_int16 cortotool_ppParse(
     corto_bool parseSelf,
     corto_bool parseScope)
 {
-    corto_iter it = corto_llIter(list);
-    while (corto_iterHasNext(&it)) {
+    corto_iter it = corto_ll_iter(list);
+    while (corto_iter_hasNext(&it)) {
         corto_id id;
-        char *objId = corto_iterNext(&it);
+        char *objId = corto_iter_next(&it);
 
         /* Ensure the scope is fully qualified */
         if ((objId[0] != '/') && (objId[0] != ':')) {
@@ -190,10 +211,10 @@ corto_int16 cortotool_ppParse(
         /* Resolve object */
         corto_object o = corto_resolve(NULL, id);
         if (!o) {
-            if (includes && corto_llSize(includes)) {
-                if (corto_llSize(includes) == 1) {
+            if (includes && corto_ll_size(includes)) {
+                if (corto_ll_size(includes) == 1) {
                     corto_error("'%s' does not define object '%s'",
-                      corto_llGet(includes, 0),
+                      corto_ll_get(includes, 0),
                       id);
                 } else {
                     corto_error("object '%s' is not in loaded definitions",
@@ -235,10 +256,10 @@ void cortotool_splitId(corto_string path, char **parent, char **id) {
 
 /* Add imports to parser */
 corto_int16 cortotool_ppParseImports(g_generator g, corto_ll imports) {
-    corto_iter it = corto_llIter(imports);
+    corto_iter it = corto_ll_iter(imports);
 
-    while (corto_iterHasNext(&it)) {
-        corto_string import = corto_iterNext(&it);
+    while (corto_iter_hasNext(&it)) {
+        corto_string import = corto_iter_next(&it);
 
         if (strcmp(import, "corto") && strcmp(import, "/corto")) {
             corto_object package = corto_lookup(NULL, import);
@@ -305,11 +326,11 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     if (prefixes) {
-        prefix = corto_llGet(prefixes, 0);
+        prefix = corto_ll_get(prefixes, 0);
     }
 
     if (names) {
-        name = corto_llGet(names, 0);
+        name = corto_ll_get(names, 0);
     }
 
     if (core) {
@@ -318,19 +339,19 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
     }
 
     if (languages) {
-        cortotool_language(corto_llGet(languages, 0));
+        cortotool_language(corto_ll_get(languages, 0));
     }
 
     corto_trace("pp: start generator from '%s'", corto_cwd());
 
     /* Load imports */
     if (imports) {
-        corto_iter it = corto_llIter(imports);
-        while (corto_iterHasNext(&it)) {
-            corto_string import = corto_iterNext(&it);
+        corto_iter it = corto_ll_iter(imports);
+        while (corto_iter_hasNext(&it)) {
+            corto_string import = corto_iter_next(&it);
             if (strcmp(import, "corto") && strcmp(import, "/corto")) {
                 if (corto_load(import, 0, NULL)) {
-                    corto_seterr("import of '%s' failed: %s", import, corto_lasterr());
+                    corto_seterr("importing '%s' failed: %s", import, corto_lasterr());
                     goto error;
                 }
             }
@@ -339,9 +360,9 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     /* Load includes */
     if (includes) {
-        it = corto_llIter(includes);
-        while (corto_iterHasNext(&it)) {
-            include = corto_iterNext(&it);
+        it = corto_ll_iter(includes);
+        while (corto_iter_hasNext(&it)) {
+            include = corto_iter_next(&it);
 
             corto_trace("pp: loading '%s'", include);
             if (corto_load(include, 0, NULL)) {
@@ -349,12 +370,12 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                 goto error;
             } else {
                 /* Add name to scope list if none provided */
-                if (!scopes && (corto_llSize(includes) == 1) && !strchr(include, '.')) {
-                    scopes = corto_llNew();
-                    corto_llInsert(scopes, include);
+                if (!scopes && (corto_ll_size(includes) == 1) && !strchr(include, '.')) {
+                    scopes = corto_ll_new();
+                    corto_ll_insert(scopes, include);
                 }
                 /* Add prefix to scope if none provided */
-                if (!prefix && (corto_llSize(includes) == 1) && !strchr(include, '.')) {
+                if (!prefix && (corto_ll_size(includes) == 1) && !strchr(include, '.')) {
                     prefix = include;
                 }
             }
@@ -362,19 +383,19 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
         /* If there's a single include file, set an attribute to pass the name
          * of the file to a generator */
-        if (corto_llSize(includes) == 1) {
+        if (corto_ll_size(includes) == 1) {
             corto_string str;
-            corto_asprintf(&str, "include=%s", corto_llGet(includes, 0));
+            corto_asprintf(&str, "include=%s", corto_ll_get(includes, 0));
             if (!attributes) {
-                attributes = corto_llNew();
+                attributes = corto_ll_new();
             }
-            corto_llAppend(attributes, str);
+            corto_ll_append(attributes, str);
         }
     }
 
     /* Load library */
     if (generators) {
-        while ((lib = corto_llTakeFirst(generators))) {
+        while ((lib = corto_ll_takeFirst(generators))) {
 
             /* Create generator for each provided generator library */
             g = g_new(name, NULL);
@@ -406,11 +427,11 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
             /* Set attributes */
             if (attributes) {
-                it = corto_llIter(attributes);
-                while (corto_iterHasNext(&it)) {
+                it = corto_ll_iter(attributes);
+                while (corto_iter_hasNext(&it)) {
                     corto_string ptr;
 
-                    attr = corto_strdup(corto_iterNext(&it));
+                    attr = corto_strdup(corto_iter_next(&it));
 
                     ptr = strchr(attr, '=');
                     if (ptr) {

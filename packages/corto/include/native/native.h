@@ -15,19 +15,11 @@
 
 #include <corto/native/_type.h>
 #include <corto/native/_load.h>
+#include <corto/native/_interface.h>
 
 /* $body() */
 /* Enter code that requires types here */
 /* $end */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <corto/native/type.h>
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

@@ -6,15 +6,15 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
-corto_int16 _corto_stager_add(
+int16_t _corto_stager_add(
     corto_stager this,
     corto_string id,
     corto_string type,
     corto_string contentType,
-    corto_word content,
-    corto_uint64 childcount)
+    uintptr_t content,
+    uint64_t childcount)
 {
 /* $begin(corto/core/stager/add) */
     CORTO_UNUSED(this);
@@ -27,7 +27,7 @@ corto_int16 _corto_stager_add(
 /* $end */
 }
 
-corto_int16 _corto_stager_construct(
+int16_t _corto_stager_construct(
     corto_stager this)
 {
 /* $begin(corto/core/stager/construct) */
@@ -36,7 +36,7 @@ corto_int16 _corto_stager_construct(
 /* $end */
 }
 
-corto_void _corto_stager_destruct(
+void _corto_stager_destruct(
     corto_stager this)
 {
 /* $begin(corto/core/stager/destruct) */

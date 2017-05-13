@@ -4,7 +4,7 @@
  */
 
 #if BUILDING_CORTO && defined _MSC_VER
-#define CORTO_DLL_EXPORTED __declspec(dllexport)
+#define CORTO_EXPORT __declspec(dllexport)
 #elif BUILDING_CORTO
 #define CORTO_EXPORT __attribute__((__visibility__("default")))
 #elif defined _MSC_VER

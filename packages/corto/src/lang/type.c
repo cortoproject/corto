@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_interface.h"
@@ -41,7 +41,7 @@ error:
 }
 /* $end */
 
-corto_uint16 _corto_type_alignmentof(
+uint16_t _corto_type_alignmentof(
     corto_type this)
 {
 /* $begin(corto/lang/type/alignmentof) */
@@ -56,7 +56,7 @@ corto_uint16 _corto_type_alignmentof(
 /* $end */
 }
 
-corto_bool _corto_type_castable_v(
+bool _corto_type_castable_v(
     corto_type this,
     corto_type type)
 {
@@ -77,7 +77,7 @@ corto_bool _corto_type_castable_v(
 /* $end */
 }
 
-corto_bool _corto_type_compatible_v(
+bool _corto_type_compatible_v(
     corto_type this,
     corto_type type)
 {
@@ -104,7 +104,7 @@ corto_bool _corto_type_compatible_v(
 /* $end */
 }
 
-corto_int16 _corto_type_construct(
+int16_t _corto_type_construct(
     corto_type this)
 {
 /* $begin(corto/lang/type/construct) */
@@ -119,11 +119,14 @@ corto_int16 _corto_type_construct(
     default:
         break;
     }
+    if (this->kind == CORTO_ANY) {
+        this->flags |= CORTO_TYPE_NEEDS_INIT;
+    }
     return 0;
 /* $end */
 }
 
-corto_void _corto_type_destruct(
+void _corto_type_destruct(
     corto_type this)
 {
 /* $begin(corto/lang/type/destruct) */
@@ -141,7 +144,7 @@ corto_void _corto_type_destruct(
 /* $end */
 }
 
-corto_int16 _corto_type_init(
+int16_t _corto_type_init(
     corto_type this)
 {
 /* $begin(corto/lang/type/init) */
@@ -189,7 +192,7 @@ corto_function _corto_type_resolveProcedure(
 /* $end */
 }
 
-corto_uint32 _corto_type_sizeof(
+uint32_t _corto_type_sizeof(
     corto_type this)
 {
 /* $begin(corto/lang/type/sizeof) */

@@ -1,41 +1,51 @@
-/*
- * g_generator.h
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Sep 17, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #ifndef CORTO_GEN_H_
 #define CORTO_GEN_H_
 
-#include "corto/lang/_type.h"
-#include "corto/file.h"
-#include "corto/dl.h"
+#include "corto/corto.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-CORTO_CLASS(g_generator);
+typedef struct g_generator_s* g_generator;
 
 typedef int (*g_walkAction)(corto_object o, void* userData);
 typedef corto_string ___ (*g_idAction)(corto_string in, corto_id out);
 typedef corto_int16 ___ (*g_startAction)(g_generator g);
 typedef void (*g_stopAction)(g_generator g);
 
-CORTO_STRUCT(g_object);
-CORTO_STRUCT_DEF(g_object) {
+typedef struct g_object {
     corto_object o;
     corto_bool parseSelf;
     corto_bool parseScope;
     corto_string prefix;
-};
+} g_object;
 
-CORTO_STRUCT(g_attribute);
-CORTO_STRUCT_DEF(g_attribute) {
+typedef struct g_attribute {
     corto_string key;
     corto_string value;
-};
+} g_attribute;
 
 typedef enum g_idKind {
     CORTO_GENERATOR_ID_DEFAULT,
@@ -43,7 +53,7 @@ typedef enum g_idKind {
     CORTO_GENERATOR_ID_CLASS_LOWER
 }g_idKind;
 
-CORTO_CLASS_DEF(g_generator) {
+struct g_generator_s {
     corto_ll objects;
     corto_ll files;
     corto_dl library;
@@ -58,6 +68,8 @@ CORTO_CLASS_DEF(g_generator) {
     g_idAction id_action;
 
     g_object* current;
+    corto_bool inWalk;
+    corto_ll anonymousObjects;
 };
 
 typedef struct g_fileSnippet {
@@ -67,8 +79,8 @@ typedef struct g_fileSnippet {
     corto_bool used;
 }g_fileSnippet;
 
-CORTO_CLASS(g_file);
-CORTO_CLASS_DEF(g_file) {
+typedef struct g_file_s* g_file;
+struct g_file_s {
     corto_file file;
     corto_string name;
     corto_uint32 indent;
@@ -107,18 +119,18 @@ CORTO_EXPORT void g_setAttribute(g_generator g, corto_string key, corto_string v
 CORTO_EXPORT corto_string g_getAttribute(g_generator g, corto_string key);
 
 /* Load a generator library. */
-CORTO_EXPORT corto_int16 g_load(g_generator generator, corto_string library);
+CORTO_EXPORT int16_t g_load(g_generator generator, corto_string library);
 
 /* Free generator. */
 CORTO_EXPORT void g_free(g_generator generator);
 
 /* Start generating. */
-CORTO_EXPORT corto_int16 g_start(g_generator generator);
+CORTO_EXPORT int16_t g_start(g_generator generator);
 
 /* === Generator utility functions */
 
 /* Add import */
-CORTO_EXPORT corto_int16 g_import(g_generator generator, corto_object package);
+CORTO_EXPORT int16_t g_import(g_generator generator, corto_object package);
 
 /* Walk generator objects. Parse scopes of generator objects when configured. */
 CORTO_EXPORT int g_walk(g_generator generator, g_walkAction o, void* userData);
@@ -193,6 +205,8 @@ CORTO_EXPORT int g_fileWrite(g_file file, char* fmt, ...);
 /* Get generator */
 CORTO_EXPORT g_generator g_fileGetGenerator(g_file file);
 
+/* Get dependencies based on metadata */
+CORTO_EXPORT corto_ll g_getDependencies(g_generator g);
 
 /* == Generator unique name-generator for members utility */
 

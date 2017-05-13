@@ -1,14 +1,28 @@
-/*
- * corto_util.h
+/* Copyright (c) 2010-2017 the corto developers
  *
- *  Created on: Apr 10, 2012
- *      Author: sander
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 #ifndef CORTO_UTIL_H_
 #define CORTO_UTIL_H_
 
-#include "corto/object.h"
+/* UNSTABLE API */
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,10 +46,13 @@ extern "C" {
 #define CORTO_TYPEHASH(kind, width) ((kind) <= CORTO_FLOAT ? CORTO_TYPEHASH_VARWIDTH((kind), (width)) : CORTO_TYPEHASH_VARWIDTH(CORTO_FLOAT, CORTO_WIDTH_64) + ((kind) - CORTO_FLOAT))
 #define CORTO_TYPEHASH_MAX (50)
 
-/* 16bit value for convenient matching on scope-characters */
-#define CORTO_SCOPE_HEX ((corto_uint16)(0x3A3A)) /* '::' */
-
 #define CORTO_ISNAN(x) ((x) != (x))
+
+/* Macros for memory allocation functions */
+#define corto_calloc(n) calloc(n, 1)
+#define corto_alloc(n) malloc(n)
+#define corto_dealloc free
+#define corto_realloc realloc
 
 /* In place replacelemt of '::' with '/' */
 CORTO_EXPORT corto_string corto_pathFromFullname(corto_id buffer);
@@ -86,6 +103,104 @@ CORTO_EXPORT double corto_benchmark_fini(int id);
 #define corto_benchmark_start(id) ((void)(id))
 #define corto_benchmark_fini(id) ((void)0)
 #endif
+
+/* Overload utility functions */
+
+/* Parameter kinds */
+#define CORTO_PARAMETER_REFERENCE          (1)
+#define CORTO_PARAMETER_FORCEREFERENCE     (2)
+#define CORTO_PARAMETER_WILDCARD           (4)
+#define CORTO_PARAMETER_NULL               (8)
+#define CORTO_PARAMETER_IN                 (16)
+#define CORTO_PARAMETER_OUT                (32)
+
+/* Special distance values for corto_overload */
+#define CORTO_OVERLOAD_ERROR               (-1)
+#define CORTO_OVERLOAD_NOMATCH             (-2)
+#define CORTO_OVERLOAD_NOMATCH_OVERLOAD    (-3)
+
+/* Calculate the distance between a function and a request signature */
+CORTO_EXPORT int16_t corto_overload(corto_object object, corto_string name, corto_int32* distance);
+
+/* Obtain information from signature.
+ *   Signatures can be of the following form:
+ *     name(type name,type name)
+ *     name(type,type)
+ *     name --> Only allowed for non-overloaded functions
+ *
+ *   No extra whitespaces are allowed.
+ */
+CORTO_EXPORT corto_int32 corto_signatureName(corto_string signature, corto_id buffer);
+CORTO_EXPORT corto_int32 corto_signatureParamCount(corto_string signature);
+CORTO_EXPORT corto_int32 corto_signatureParamName(corto_string signature, corto_uint32 id, corto_id buffer);
+CORTO_EXPORT corto_int32 corto_signatureParamType(corto_string signature, corto_uint32 id, corto_id buffer, int* reference);
+
+/* Create request signature */
+CORTO_EXPORT corto_string corto_signatureOpen(corto_string name);
+CORTO_EXPORT corto_string corto_signatureAdd(corto_string sig, corto_type type, int flags);
+CORTO_EXPORT corto_string corto_signatureAddWildcard(corto_string sig, corto_bool isReference);
+CORTO_EXPORT corto_string corto_signatureClose(corto_string sig);
+
+/* Obtain signature from object */
+CORTO_EXPORT char* corto_signature(corto_object o, corto_id buffer);
+
+/* Find a function that matches a signature */
+CORTO_EXPORT corto_object corto_lookupFunction(corto_object scope, corto_string requested, corto_int32 *d, corto_int32 *diff);
+CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, corto_string requested, corto_int32* d, corto_int32 *diff);
+
+/* String utility functions */
+/* Case insensitive string compare */
+CORTO_EXPORT int stricmp(const char *str1, const char *str2);
+
+/* Compare case insensitive token */
+CORTO_EXPORT int tokicmp(char ** const str_out, const char *str2, char tok);
+
+/* Case insensitive string compare, stop at / instead of \0. Returns next
+ * element, NULL when no match or "\0" when reached the end */
+CORTO_EXPORT char* corto_elemcmp(char *path, char *elem);
+
+/* Search element separator in id string. Stop when argument list is found. */
+char *corto_strelem(char *str);
+
+/* Convert characters in string to uppercase */
+CORTO_EXPORT char* corto_strupper(char *str);
+
+/* Convert characters in string to lowercase */
+CORTO_EXPORT char* corto_strlower(char *str);
+
+CORTO_EXPORT char *strappend(char *src, char *fmt, ...);
+CORTO_EXPORT char *itostr(int value, char *result, int base);
+CORTO_EXPORT char *utostr(unsigned int value, char *result, int base);
+
+/*
+ * Escapes a character `in` and prints it to `out`. Does not not include
+ * surrounding single quotes.
+ * Returns the next available location to write, usually out+1 or out+2.
+ */
+CORTO_EXPORT char *chresc(char *out, char in, char delimiter);
+
+/*
+ * Escapes a null-terminated string `in` and attempts to print it to `out`.
+ * Does not include surrounding double quotes.
+ * The maximum number of characters to be printed is `n` including the null
+ * character, but it may be less if the following character requires escaping.
+ * The resulting string is null terminated.
+ */
+CORTO_EXPORT size_t stresc(char *out, size_t n, const char *in);
+
+/* Count the number of characters in a string that do not match a provided
+ * mask. */
+CORTO_EXPORT size_t strmask(char *str, char *mask);
+
+/* Duplicate string */
+CORTO_EXPORT char* corto_strdup(const char* str);
+
+/* sprintf with automatic allocation */
+CORTO_EXPORT int corto_asprintf (char **str, const char *fmt, ...);
+CORTO_EXPORT int corto_vasprintf (char **str, const char *fmt, va_list args);
+
+/* Replace substring in string */
+CORTO_EXPORT char* corto_replace(char *s, char *old, char *_new);
 
 #ifdef __cplusplus
 }

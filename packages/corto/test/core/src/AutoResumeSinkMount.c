@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-corto_int16 _test_AutoResumeSinkMount_construct(
+int16_t _test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
 /* $begin(test/AutoResumeSinkMount/construct) */
@@ -151,10 +151,10 @@ corto_int16 _test_AutoResumeSinkMount_construct(
 /* $header(test/AutoResumeSinkMount/onRequest) */
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
-    corto_llIter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->udata;
     corto_resultListClear(data->list);
-    corto_llFree(data->list);
-    corto_llIterRelease(iter);
+    corto_ll_free(data->list);
+    corto_ll_iterRelease(iter);
 }
 /* $end */
 corto_resultIter _test_AutoResumeSinkMount_onRequest(
@@ -162,8 +162,8 @@ corto_resultIter _test_AutoResumeSinkMount_onRequest(
     corto_request *request)
 {
 /* $begin(test/AutoResumeSinkMount/onRequest) */
-    corto_iter iter = corto_llIter(this->items);
-    corto_ll data = corto_llNew();
+    corto_iter iter = corto_ll_iter(this->items);
+    corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
@@ -183,7 +183,7 @@ corto_resultIter _test_AutoResumeSinkMount_onRequest(
     }
 
     /* Create persistent iterator */
-    corto_iter result = corto_llIterAlloc(data);
+    corto_iter result = corto_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
@@ -193,11 +193,11 @@ corto_resultIter _test_AutoResumeSinkMount_onRequest(
 /* $end */
 }
 
-corto_word _test_AutoResumeSinkMount_onSubscribe(
+uintptr_t _test_AutoResumeSinkMount_onSubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onSubscribe) */
     corto_request r = {.parent = parent, .expr = expr};
@@ -220,11 +220,11 @@ corto_word _test_AutoResumeSinkMount_onSubscribe(
 /* $end */
 }
 
-corto_void _test_AutoResumeSinkMount_onUnsubscribe(
+void _test_AutoResumeSinkMount_onUnsubscribe(
     test_AutoResumeSinkMount this,
     corto_string parent,
     corto_string expr,
-    corto_word ctx)
+    uintptr_t ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onUnsubscribe) */
     corto_request r = {.parent = parent, .expr = expr};

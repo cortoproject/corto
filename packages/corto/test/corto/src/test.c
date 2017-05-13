@@ -8,18 +8,18 @@
 
 #include <include/test.h>
 
-corto_void _test_functionToResolve(
-    corto_int32 a,
-    corto_int32 b)
+void _test_functionToResolve(
+    int32_t a,
+    int32_t b)
 {
 /* $begin(test/functionToResolve) */
 
-    /* Dummy function */
+    /* << Insert implementation >> */
 
 /* $end */
 }
 
-corto_void _test_ol_any__test_Color(
+void _test_ol_any__test_Color(
     test_Color a)
 {
 /* $begin(test/ol_any(/test/Color a)) */
@@ -29,8 +29,8 @@ corto_void _test_ol_any__test_Color(
 /* $end */
 }
 
-corto_void _test_ol_any_bool(
-    corto_bool a)
+void _test_ol_any_bool(
+    bool a)
 {
 /* $begin(test/ol_any(bool a)) */
 
@@ -39,8 +39,8 @@ corto_void _test_ol_any_bool(
 /* $end */
 }
 
-corto_void _test_ol_any_char(
-    corto_char a)
+void _test_ol_any_char(
+    char a)
 {
 /* $begin(test/ol_any(char a)) */
 
@@ -49,8 +49,8 @@ corto_void _test_ol_any_char(
 /* $end */
 }
 
-corto_void _test_ol_any_float32(
-    corto_float32 a)
+void _test_ol_any_float32(
+    float a)
 {
 /* $begin(test/ol_any(float32 a)) */
 
@@ -59,8 +59,8 @@ corto_void _test_ol_any_float32(
 /* $end */
 }
 
-corto_void _test_ol_any_int32(
-    corto_int32 a)
+void _test_ol_any_int32(
+    int32_t a)
 {
 /* $begin(test/ol_any(int32 a)) */
 
@@ -69,7 +69,7 @@ corto_void _test_ol_any_int32(
 /* $end */
 }
 
-corto_void _test_ol_any_object(
+void _test_ol_any_object(
     corto_object a)
 {
 /* $begin(test/ol_any(object a)) */
@@ -79,7 +79,7 @@ corto_void _test_ol_any_object(
 /* $end */
 }
 
-corto_void _test_ol_any_string(
+void _test_ol_any_string(
     corto_string a)
 {
 /* $begin(test/ol_any(string a)) */
@@ -89,8 +89,8 @@ corto_void _test_ol_any_string(
 /* $end */
 }
 
-corto_void _test_ol_bool(
-    corto_bool a)
+void _test_ol_bool(
+    bool a)
 {
 /* $begin(test/ol_bool) */
 
@@ -99,7 +99,7 @@ corto_void _test_ol_bool(
 /* $end */
 }
 
-corto_void _test_ol_inherit__test_Animal(
+void _test_ol_inherit__test_Animal(
     test_Animal a)
 {
 /* $begin(test/ol_inherit(/test/Animal a)) */
@@ -109,7 +109,7 @@ corto_void _test_ol_inherit__test_Animal(
 /* $end */
 }
 
-corto_void _test_ol_inherit__test_Dog(
+void _test_ol_inherit__test_Dog(
     test_Dog a)
 {
 /* $begin(test/ol_inherit(/test/Dog a)) */
@@ -119,8 +119,8 @@ corto_void _test_ol_inherit__test_Dog(
 /* $end */
 }
 
-corto_void _test_ol_int(
-    corto_int32 a)
+void _test_ol_int(
+    int32_t a)
 {
 /* $begin(test/ol_int) */
 
@@ -129,8 +129,8 @@ corto_void _test_ol_int(
 /* $end */
 }
 
-corto_void _test_ol_null_bool(
-    corto_bool a)
+void _test_ol_null_bool(
+    bool a)
 {
 /* $begin(test/ol_null(bool a)) */
 
@@ -139,7 +139,7 @@ corto_void _test_ol_null_bool(
 /* $end */
 }
 
-corto_void _test_ol_null_object(
+void _test_ol_null_object(
     corto_object a)
 {
 /* $begin(test/ol_null(object a)) */
@@ -149,7 +149,7 @@ corto_void _test_ol_null_object(
 /* $end */
 }
 
-corto_void _test_ol_null_string(
+void _test_ol_null_string(
     corto_string a)
 {
 /* $begin(test/ol_null(string a)) */
@@ -159,8 +159,8 @@ corto_void _test_ol_null_string(
 /* $end */
 }
 
-corto_void _test_ol_num_float64(
-    corto_float64 a)
+void _test_ol_num_float64(
+    double a)
 {
 /* $begin(test/ol_num(float64 a)) */
 
@@ -169,8 +169,8 @@ corto_void _test_ol_num_float64(
 /* $end */
 }
 
-corto_void _test_ol_num_int32(
-    corto_int32 a)
+void _test_ol_num_int32(
+    int32_t a)
 {
 /* $begin(test/ol_num(int32 a)) */
 
@@ -179,7 +179,7 @@ corto_void _test_ol_num_int32(
 /* $end */
 }
 
-corto_void _test_ol_object(
+void _test_ol_object(
     corto_object a)
 {
 /* $begin(test/ol_object) */
@@ -189,7 +189,7 @@ corto_void _test_ol_object(
 /* $end */
 }
 
-corto_void _test_ol_string(
+void _test_ol_string(
     corto_string a)
 {
 /* $begin(test/ol_string) */
@@ -199,8 +199,8 @@ corto_void _test_ol_string(
 /* $end */
 }
 
-corto_void _test_ol_uint(
-    corto_int32 a)
+void _test_ol_uint(
+    int32_t a)
 {
 /* $begin(test/ol_uint) */
 
@@ -209,8 +209,8 @@ corto_void _test_ol_uint(
 /* $end */
 }
 
-corto_void _test_ol_wildcard_float32_string(
-    corto_float32 a,
+void _test_ol_wildcard_float32_string(
+    float a,
     corto_string b)
 {
 /* $begin(test/ol_wildcard(float32 a,string b)) */
@@ -220,8 +220,8 @@ corto_void _test_ol_wildcard_float32_string(
 /* $end */
 }
 
-corto_void _test_ol_wildcard_int32_string(
-    corto_int32 a,
+void _test_ol_wildcard_int32_string(
+    int32_t a,
     corto_string b)
 {
 /* $begin(test/ol_wildcard(int32 a,string b)) */
@@ -236,10 +236,11 @@ int testMain(int argc, char *argv[]) {
     int result = 0;
     test_Runner runner = test_RunnerCreate("corto", argv[0], (argc > 1) ? argv[1] : NULL);
     if (!runner) return -1;
-    if (corto_llSize(runner->failures)) {
+    if (corto_ll_size(runner->failures)) {
         result = -1;
     }
     corto_delete(runner);
     return result;
+    return 0;
 /* $end */
 }

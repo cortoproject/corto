@@ -6,7 +6,7 @@
  * when the file is regenerated.
  */
 
-#include <corto/core/core.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_object.h"
@@ -34,7 +34,7 @@ error:
 /* $end */
 }
 
-corto_int16 _corto_result_fromcontent(
+int16_t _corto_result_fromcontent(
     corto_result* this,
     corto_string contentType,
     corto_string content)

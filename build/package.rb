@@ -1,3 +1,23 @@
+# Copyright (c) 2010-2017 the corto developers
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 require "#{ENV['CORTO_BUILD']}/common"
 require 'rake/clean'
 
@@ -17,7 +37,8 @@ ARTEFACT_EXT = "so" if not defined? ARTEFACT_EXT
 INSTALL = "lib/corto" if not defined? INSTALL
 NOCORTO = false if not defined? NOCORTO
 DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
-
+COMPONENTS = [] if not defined? COMPONENTS
+APP = false if not defined? APP
 # Private variables
 GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
 GENERATED_HEADERS = [] if not defined? GENERATED_HEADERS
@@ -53,7 +74,9 @@ if TARGET != "corto" and NOCORTO == false then
   if LANGUAGE == "cpp" or LANGUAGE == "c++" then
     USE_PACKAGE << "corto/cpp"
   elsif LANGUAGE == "c" or LANGUAGE == "c4cpp" then
-    USE_PACKAGE << "corto/lang/c" << "corto/core/c"
+    if not NOAPI then
+      USE_PACKAGE << "corto/c"
+    end
   end
 end
 
@@ -111,16 +134,19 @@ if NOCORTO == false then
 
     if LANGUAGE == "c" or LANGUAGE == "c4cpp" then
       GENERATED_SOURCES <<
-        ".corto/_api.#{EXT}" <<
         ".corto/_wrapper.#{EXT}" <<
         ".corto/_project.#{EXT}" <<
         ".corto/_load.#{EXT}"
 
       GENERATED_HEADERS <<
-        "include/_api.h" <<
         "include/_load.h" <<
         "include/_type.h" <<
         "include/_project.h"
+
+      if LOCAL == true or APP == true then
+        GENERATED_SOURCES << ".corto/_api.#{EXT}"
+        GENERATED_HEADERS << "include/_api.h"
+      end
     else
       GENERATED_SOURCES <<
         ".corto/_api.#{EXT}" <<
@@ -143,22 +169,20 @@ if NOCORTO == false then
 
       if LOCAL then
         localStr = "--attr local=true "
-      else
-        begin
-          cmd "corto locate corto/gen/doc/doc --silent"
-          # docStr = "-g doc/doc"
-        rescue
-        end
       end
 
       if defined? PREFIX then
         prefixStr = "--prefix #{PREFIX} "
       end
 
+      packages_filtered = USE_PACKAGE.select do |elem|
+        elem != PACKAGE + "/c"
+      end
+
       command = "#{DEBUGCMD}corto pp #{preload} #{GENFILE} --name #{PACKAGE} " +
                 "#{PP_SCOPES.map{|s| "--scope " + s}.join(" ")} " +
                 "#{PP_OBJECTS.map{|o| "--object " + o}.join(" ")} " +
-                "--import #{USE_PACKAGE.join(",")} " +
+                "--import #{packages_filtered.join(",")} " +
                 "#{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
                 "#{prefixStr}#{localStr}#{docStr}--lang #{LANGUAGE}"
 
@@ -168,11 +192,10 @@ if NOCORTO == false then
       begin
         cmd command
       rescue
-        STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
         if File.exists? "include/_type.h" then
           cmd "rm include/_type.h"
         end
-        abort()
+        exit(-1)
       end
     end
     task :default => ["include/_type.h"]
@@ -212,11 +235,10 @@ if NOCORTO == false then
       begin
         cmd command
       rescue
-        STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
         if File.exists? "include/#{NAME}.h" then
           cmd "rm include/#{NAME}.h"
         end
-        abort()
+        exit(-1)
       end
     end
     task :prebuild => [".corto/_project.#{EXT}"]
@@ -224,30 +246,6 @@ if NOCORTO == false then
 else
   if not defined? ADD_OWN_INCLUDE then
     ADD_OWN_INCLUDE = true
-  end
-end
-
-# Document framework integration
-task :doc do
-  verbose(VERBOSE)
-  if `which corto` != "" then
-    begin
-      cmd "corto locate corto/md --silent"
-      if File.exists? "#{NAME}.md" then
-        if not LOCAL and not NOCORTO then
-          command = "corto pp #{NAME}.md --scope #{PACKAGE_FWSLASH} -g doc/html"
-        else
-          command = "corto pp #{NAME}.md -g doc/html"
-        end
-        begin
-          # cmd command
-        rescue
-          STDERR.puts "\033[1;31mcorto: command failed: #{command}\033[0;49m"
-          abort
-        end
-      end
-    rescue
-    end
   end
 end
 
@@ -313,6 +311,8 @@ task :uninstaller do
 end
 
 def uninstallDir(dir)
+  artefact = getArtefactName(ARTEFACT_PREFIX, ARTEFACT_NAME, ARTEFACT_EXT)
+
   if File.exists?("#{dir}/uninstall.txt") then
     File.open("#{dir}/uninstall.txt") do |file|
       file.each_line do |l|
@@ -321,16 +321,24 @@ def uninstallDir(dir)
           file = l[0...-1]
           if File.directory? file then
             if not Dir.glob("#{file}/*").length then
-              cmd "rm -rf #{l[0...-1]}"
+              cmd "rm -rf #{file}"
             end
           else
-            cmd "rm -f #{l[0...-1]}"
+            if file != artefact then
+              cmd "rm -f #{file}"
+            end
           end
         end
       end
     end
   else
-    cmd "rm -rf #{dir}"
+    # Remove files from directory, keep directories
+    files = Dir.glob("#{dir}/*")
+    files.each do |f|
+      if not File.directory? f and f != artefact then
+        cmd "rm -f #{f}"
+      end
+    end
   end
 end
 
@@ -341,14 +349,11 @@ task :uninstall_files do
     uninstallDir(dir)
 
     # Also make sure that there are no packages with the same name but different case
-    dir = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{PACKAGEDIR.downcase}"
-    uninstallDir(dir)
+    dirLc = dir.downcase
+    if dirLc != dir then
+      uninstallDir(dirLc)
+    end
   end
-end
-
-# dep.rb contains CLOBBER rules for generated header files
-if File.exists? "./.corto/dep.rb"
-  require "./.corto/dep.rb"
 end
 
 # Crawl project directory for files that need to be installed with binary
@@ -360,12 +365,10 @@ def installFile(source, target)
     begin
       cmd "ln -fs #{source} #{target}"
     rescue
-      STDERR.puts "#{C_WARNING}warning: failed to create link #{target}#{File.basename(source)}, retrying#{C_NORMAL}"
       if File.exists?(target) then
         cmd "rm -rf #{target}#{File.basename(source)}"
       end
       cmd "ln -fs #{source} #{target}"
-      STDERR.puts " => OK"
     end
   else
     begin
@@ -424,6 +427,14 @@ def installDir(dir)
   end
 end
 
+task :build_binding do
+  # If a package for C language binding was generated, install its headers
+  # so the current package can be compiled
+  if not NOCORTO and File.exists? "c" then
+    sh "rake -f c/rakefile"
+  end
+end
+
 task :install_files do
   verbose(VERBOSE)
 
@@ -433,7 +444,7 @@ task :install_files do
         begin
           cmd "mkdir -p #{libpath}"
         rescue
-          abort "\033[1;31m[ command failed: mkdir #{libpath} ]\033[0;49m"
+          exit(-1)
         end
     end
 
@@ -532,10 +543,10 @@ task :collect do
 end
 
 # Prebuild tasks
-task :prebuild => [:uninstall_files, :install_files]
+task :prebuild => [:uninstall_files, :install_files, :build_binding]
 
 # Postbuild tasks
-task :postbuild => [:doc, :buildscript, :uninstaller]
+task :postbuild => [:buildscript, :uninstaller]
 
 require "#{CORTO_BUILD}/artefact"
 require "#{CORTO_BUILD}/subrake"

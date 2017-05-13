@@ -1,11 +1,34 @@
+/* Copyright (c) 2010-2017 the corto developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 /*
   Red Black balanced tree library
 
     > Created (Julienne Walker): August 23, 2003
     > Modified (Julienne Walker): March 14, 2008
+    > Modified (Sander Mertens): 2010 - 2017
 */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
+#include "jsw_rbtree.h"
 
 #ifdef __cplusplus
 #include <cstdlib>
@@ -26,7 +49,7 @@ typedef corto_equalityKind ___ (*corto_equalFunction)(corto_any this, corto_any 
 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
-  corto_equalsAction cmp;  /* Compare two items */
+  corto_equals_cb cmp;  /* Compare two items */
   corto_type type; /* This object which must be passed to cmp-function */
   size_t size; /* Number of items (user-defined) */
   corto_int32 changes; /* Change counter- for iterators */
@@ -121,7 +144,7 @@ void *jsw_rbnodedata(jsw_rbnode_t *node) {
 
 /* Marshall between intern comparefunction and corto::type::equals */
 static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v1, const void* v2) {
-    return corto_comparep((void*)v1, (corto_map(t))->keyType, (void*)v2);
+    return corto_ptr_compare((void*)v1, (corto_map(t))->keyType, (void*)v2);
 }
 
 /**
@@ -137,7 +160,7 @@ static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v
   The returned pointer must be released with jsw_rbdelete
   </remarks>
 */
-jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equalsAction cmp)
+jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp)
 {
   jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
 
@@ -287,7 +310,7 @@ int jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data )
   return jsw_rbhaskey_w_cmp( tree, key, data, tree->cmp );
 }
 
-int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equalsAction f_cmp )
+int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equals_cb f_cmp )
 {
   jsw_rbnode_t *it = tree->root;
 

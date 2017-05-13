@@ -6,15 +6,15 @@
  * when the file is regenerated.
  */
 
-#include <corto/lang/lang.h>
+#include <corto/corto.h>
 
 /* $header() */
 #include "_enum.h"
 #include "_bitmask.h"
 /* $end */
 
-corto_int16 _corto_constant_init(
-    corto_constant* this)
+int16_t _corto_constant_init(
+    int32_t* this)
 {
 /* $begin(corto/lang/constant/init) */
     corto_object parent;

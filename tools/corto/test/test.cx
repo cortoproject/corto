@@ -1,7 +1,7 @@
-#package ::test
+#package /test
 
 // Test corto create command
-test::Suite Project::
+test/Suite Project:/
     void setup() method
     void teardown() method
     void tc_packageNoCorto()
@@ -16,19 +16,13 @@ test::Suite Project::
     void tc_packageNodefC4cpp()
     void tc_packageNodefLocalC4cpp()
     void tc_packageNested()
-    void tc_packageNestedColons()
     void tc_packageNestedFullyScoped()
-    void tc_packageNestedFullyScopedColons()
     void tc_packageDependency()
-    void tc_packageDependencyColons()
     void tc_packageNestedDependency()
-    void tc_packageNestedDependencyColons()
     void tc_packageNestedDependencyFullyScoped()
-    void tc_packageNestedDependencyFullyScopedColons()
     void tc_packagePublicHeaderRemoval()
-    void tc_publishNotag()
 
-test::Suite Application::
+test/Suite Application:/
     void setup() method
     void teardown() method
     void tc_app()
@@ -42,7 +36,7 @@ test::Suite Application::
     void tc_appNested()
     void tc_appDef()
 
-test::Suite Builds::
+test/Suite Builds:/
     void setup() method
     void tc_runFromParent()
     void tc_runFromProject()
