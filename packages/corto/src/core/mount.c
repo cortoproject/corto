@@ -64,7 +64,8 @@ int corto_mount_alignSubscriptionsAction(
 
     CORTO_UNUSED(instance);
 
-    corto_select(s->parent, s->expr)
+    corto_select(s->expr)
+      .from(s->parent)
       .mount(this)
       .subscribe(&it);
 

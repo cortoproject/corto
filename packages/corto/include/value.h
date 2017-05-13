@@ -20,8 +20,35 @@
  */
 
 /** @file 
- * API for corto_value instances.
- * Corto objects are the things that you put in the store!
+ * @section value Value API
+ * @brief API for dynamic access to corto values.
+ *
+ * The corto_value type contains meta-information in addition to a pointer
+ * and a type that allows it to describe any possible value in corto. The most
+ * commonly used values are objects, members and elements. 
+ *
+ * The corto_walk API in particular uses corto_value to communicate 
+ * meta information about the value that is visited. A corto_value instance can
+ * itself also be an input for the corto_walk API. The corto_value type also plays
+ * a prominent role in the contentType interface. Whenever a value that is potentially
+ * not an object needs to be shared between components, corto_value is the 
+ * preferred carrier.
+ *
+ * The functions that are available for corto_value allow an application to
+ * work with values of which the types are not known upfront. Beyond getting and
+ * setting values dynamically, applications can use the corto_value API to cast
+ * values dynamically, perform unary and binary operators and navigate and query
+ * all scalar values of a value encapsulated by corto_value.
+ *
+ * In addition to describing corto values, a corto_value instance can also 
+ * contain a literal value. Literal values can be used to represent constant
+ * values in unary or binary operations.
+ *
+ * Each corto_value has a parent field which can point to another corto_value.
+ * This allows a corto_value to express a hierarchy of values, as is often found
+ * in nested (composite/collection) types. The walk API automatically populates 
+ * the parent field so that walk callbacks have full access to all information 
+ * about the value being serialized.
  */
 
 #ifndef CORTO_VALUE_H_

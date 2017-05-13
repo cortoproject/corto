@@ -304,7 +304,7 @@ static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
 static void corto_updateSubscriptionById(char *id) {
     corto_iter it;
 
-    corto_select(NULL, id).subscribe(&it);
+    corto_select(id).subscribe(&it);
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
 
@@ -330,7 +330,7 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
                 corto_id id;
                 corto_fullpath(id, observable);
                 corto_info("observer: unsubscribe for '%s'", id);
-                corto_select(id, "//").unsubscribe();
+                corto_select("//").from(id).unsubscribe();
             }
         }
     }
@@ -1000,9 +1000,9 @@ int16_t _corto_observer_observe(
             corto_id observableId;
             corto_fullpath(observableId, observable);
             corto_int16 ret = corto_select(
-                observableId,
                 mask & CORTO_ON_SELF ? "." :
                 mask & CORTO_ON_SCOPE ? "/" : "//")
+              .from(observableId)
               .instance(this)
               .subscribe(&it);
             if (ret) {
@@ -1209,10 +1209,10 @@ int16_t _corto_observer_unobserve(
         if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
             corto_id observableId;
             corto_fullpath(observableId, observable);
-            corto_select(observableId,
+            corto_select(
                 mask & CORTO_ON_SELF ? "." :
                 mask & CORTO_ON_SCOPE ? "/" : "//")
-               .instance(this).unsubscribe();
+               .from(observableId).instance(this).unsubscribe();
        }
     }
 

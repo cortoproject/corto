@@ -240,7 +240,7 @@ static void cxsh_ls(char* arg) {
     }
 
     corto_iter iter;
-    if (corto_select(scope, buff).iter(&iter)) {
+    if (corto_select(buff).from(scope).iter(&iter)) {
         goto error;
     }
 
@@ -278,7 +278,7 @@ static void cxsh_cd(char* arg) {
         corto_seterr(NULL);
 
         corto_resultIter iter;
-        if (corto_select(scope, arg).iter(&iter)) goto error;
+        if (corto_select(arg).from(scope).iter(&iter)) goto error;
 
         /* Reuse request to temporarily store result, count results */
         while (corto_iter_hasNext(&iter)) {
@@ -795,7 +795,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             }
         } else {
             corto_int32 i = 0;
-            if (corto_select(scope, expr).iter(&iter)) goto error;
+            if (corto_select(expr).from(scope).iter(&iter)) goto error;
             while (corto_iter_hasNext(&iter)) {
                 corto_result *item = corto_iter_next(&iter);
                 corto_id scopedItem;
@@ -812,7 +812,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             }
 
             if (!i) {
-                if (corto_select("/corto", expr).iter(&iter)) goto error;
+                if (corto_select(expr).from("/corto").iter(&iter)) goto error;
                 while (corto_iter_hasNext(&iter)) {
                     corto_result *item = corto_iter_next(&iter);
                     corto_id scopedItem;
@@ -830,7 +830,7 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
             }
 
             if (!i) {
-                if (corto_select("/corto/lang", expr).iter(&iter)) goto error;
+                if (corto_select(expr).from("/corto/lang").iter(&iter)) goto error;
                 while (corto_iter_hasNext(&iter)) {
                     corto_result *item = corto_iter_next(&iter);
                     corto_id scopedItem;
@@ -876,7 +876,7 @@ int cxsh_command(int argc, char* argv[], char *cmd) {
 corto_uint32 cxsh_countSelect(char *expr) {
     corto_uint32 result = 0;
     corto_iter iter;
-    if (corto_select(scope, expr).iter(&iter)) goto error;
+    if (corto_select(expr).from(scope).iter(&iter)) goto error;
     while (corto_iter_hasNext(&iter)) {
         corto_iter_next(&iter);
         result++;
@@ -884,7 +884,7 @@ corto_uint32 cxsh_countSelect(char *expr) {
     }
     corto_iter_release(&iter);
     if (!result) {
-        if (corto_select("corto/lang", expr).iter(&iter)) goto error;
+        if (corto_select(expr).from("corto/lang").iter(&iter)) goto error;
         while (corto_iter_hasNext(&iter)) {
             corto_iter_next(&iter);
             result++;
@@ -893,7 +893,7 @@ corto_uint32 cxsh_countSelect(char *expr) {
         corto_iter_release(&iter);
     }
     if (!result) {
-        if (corto_select("corto", expr).iter(&iter)) goto error;
+        if (corto_select(expr).from("corto").iter(&iter)) goto error;
         while (corto_iter_hasNext(&iter)) {
             corto_iter_next(&iter);
             result++;

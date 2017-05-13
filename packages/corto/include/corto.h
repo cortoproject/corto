@@ -47,6 +47,7 @@ typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 #include <corto/depresolver.h>
 #include <corto/object.h>
 #include <corto/ptr.h>
+#include <corto/query.h>
 #include <corto/string_deser.h>
 #include <corto/string_ser.h>
 #include <corto/util.h>

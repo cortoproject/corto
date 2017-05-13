@@ -1366,7 +1366,7 @@ static corto_object corto_declareChildIntern(
         corto_id parentId, typeId;
         corto_fullpath(parentId, parent);
         corto_fullpath(typeId, type);
-        mountId = corto_select(parentId, "*").type(typeId).id();
+        mountId = corto_select("*").from(parentId).type(typeId).id();
         if (!mountId) {
             id = corto_randomId(16);
         } else {

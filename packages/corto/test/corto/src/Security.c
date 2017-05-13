@@ -285,21 +285,22 @@ void _test_Security_tc_authorizeDeniedSelect(
     test_AccessRuleListInsert(l->rules, &r);
 
     corto_iter iter;
-    corto_int16 ret = corto_select("/a/b", ".").iter(&iter);
+    corto_int16 ret = corto_select(".").from("/a/b").iter(&iter);
     test_assert(ret == 0);
     test_assert(!corto_iter_hasNext(&iter));
 
-    ret = corto_select("/a", "b").iter(&iter);
+    ret = corto_select("b").from("/a").iter(&iter);
     test_assert(ret == 0);
     test_assert(!corto_iter_hasNext(&iter));
 
-    ret = corto_select("/a", "*").iter(&iter);
+    ret = corto_select("*")
+        .from("/A").iter(&iter);
     test_assert(ret == 0);
     corto_resultIterForeach(iter, result) {
         test_assert(strcmp(result.id, "b"));
     }
 
-    ret = corto_select("/a/b/c", "..").iter(&iter);
+    ret = corto_select("..").from("/a/b/c").iter(&iter);
     test_assert(ret == 0);
     test_assert(!corto_iter_hasNext(&iter));
 
@@ -423,15 +424,16 @@ void _test_Security_tc_authorizeSelect(
     test_AccessRuleListInsert(l->rules, &r);
 
     corto_iter iter;
-    corto_int16 ret = corto_select("/a/b", ".").iter(&iter);
+    corto_int16 ret = corto_select(".").from("/a/b").iter(&iter);
     test_assert(ret == 0);
     test_assert(corto_iter_hasNext(&iter));
 
-    ret = corto_select("/a", "b").iter(&iter);
+    ret = corto_select("b").from("/a").iter(&iter);
     test_assert(ret == 0);
     test_assert(corto_iter_hasNext(&iter));
 
-    ret = corto_select("/a", "*").iter(&iter);
+    ret = corto_select("*")
+        .from("/A").iter(&iter);
     test_assert(ret == 0);
     corto_int32 count = 0;
     corto_resultIterForeach(iter, result) {
@@ -441,7 +443,7 @@ void _test_Security_tc_authorizeSelect(
     }
     test_assertint(count, 1);
 
-    ret = corto_select("/a/b/c", "..").iter(&iter);
+    ret = corto_select("..").from("/a/b/c").iter(&iter);
     test_assert(ret == 0);
     test_assert(corto_iter_hasNext(&iter));
 

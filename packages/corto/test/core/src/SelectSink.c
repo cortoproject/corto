@@ -44,7 +44,7 @@ void _test_SelectSink_tc_selectMixedScope(
 
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "*").iter( &iter );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -98,7 +98,7 @@ void _test_SelectSink_tc_selectMixedScopeNested1(
 
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/*").iter( &iter );
+    corto_int16 ret = corto_select("x/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -153,7 +153,7 @@ void _test_SelectSink_tc_selectMixedScopeNested2(
 
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/a/*").iter( &iter );
+    corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -192,7 +192,7 @@ void _test_SelectSink_tc_selectMountInResult(
 /* $begin(test/SelectSink/tc_selectMountInResult) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "x").iter( &iter );
+    corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
     test_assert(ret == 0);
 
     corto_object mount = corto_lookup(NULL, "sinkMount");
@@ -219,7 +219,7 @@ void _test_SelectSink_tc_selectScope(
 /* $begin(test/SelectSink/tc_selectScope) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "*").iter( &iter );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -258,7 +258,7 @@ void _test_SelectSink_tc_selectSingle(
 /* $begin(test/SelectSink/tc_selectSingle) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "x").iter( &iter );
+    corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -283,7 +283,7 @@ void _test_SelectSink_tc_selectSingleTypeFilter(
     corto_result *result;
 
     // Select single object of the package type
-    corto_int16 ret = corto_select(NULL, "//native*").iter( &iter );
+    corto_int16 ret = corto_select("//native*").iter( &iter );
     test_assert(ret == 0);
     test_assertstr(corto_lasterr(), NULL);
 
@@ -304,7 +304,7 @@ void _test_SelectSink_tc_selectSingleVirtualNested1(
 /* $begin(test/SelectSink/tc_selectSingleVirtualNested1) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "x/a").iter( &iter );
+    corto_int16 ret = corto_select("x/a").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -333,7 +333,7 @@ void _test_SelectSink_tc_selectSingleVirtualNested2(
 /* $begin(test/SelectSink/tc_selectSingleVirtualNested2) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "x/a/k").iter( &iter );
+    corto_int16 ret = corto_select("x/a/k").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -362,7 +362,7 @@ void _test_SelectSink_tc_selectVirtualScopeNested1(
     corto_int32CreateChild(mount, "x", 0);
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/a/*").iter( &iter );
+    corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -408,7 +408,7 @@ void _test_SelectSink_tc_selectVirtualScopeNested2(
     corto_int32CreateChild_auto(x, a, 0);
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/a/*").iter( &iter );
+    corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -447,7 +447,7 @@ void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
 /* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested1) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "x/a/*").iter( &iter );
+    corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -486,7 +486,7 @@ void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
 /* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested2) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount", "x/a/k/*").iter( &iter );
+    corto_int16 ret = corto_select("x/a/k/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -530,7 +530,7 @@ void _test_SelectSink_tc_selectVirtualSingleNested1(
     corto_int32CreateChild_auto(mount, x, 0);
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/a").iter( &iter );
+    corto_int16 ret = corto_select("x/a").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -558,7 +558,7 @@ void _test_SelectSink_tc_selectVirtualSingleNested2(
     corto_int32CreateChild_auto(mount, x, 0);
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/a/k").iter( &iter );
+    corto_int16 ret = corto_select("x/a/k").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 

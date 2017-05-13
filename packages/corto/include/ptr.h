@@ -20,8 +20,19 @@
  */
 
 /** @file 
- * API for native pointers.
- * Corto objects are the things that you put in the store!
+ * @section ptr Ptr API
+ * @brief API for native pointers.
+ *
+ * This API allows applications to utilize the corto typesystem with values that
+ * are either allocated on the stack or the heap. All API functions accept at
+ * least a pointer value and a corresponding type. The value pointed to by the
+ * pointer must be at least of the size prescribed by the type, and must contain
+ * a valid value.
+ *
+ * For safe creation of values on heap or stack, use `corto_ptr_new` and 
+ * `corto_ptr_init`. To ensure that an application does not leak memory, ensure
+ * to call `corto_ptr_free` for heap values created with `corto_ptr_new`, and call
+ * `corto_ptr_deinit` for stack/heap values initialized with `corto_ptr_init`.
  */
 
 #ifndef CORTO_PTR_H_

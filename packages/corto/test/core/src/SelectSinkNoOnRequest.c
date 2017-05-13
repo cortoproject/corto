@@ -32,7 +32,7 @@ void _test_SelectSinkNoOnRequest_tc_selectScope(
 /* $begin(test/SelectSinkNoOnRequest/tc_selectScope) */
     corto_result *result;
     corto_iter iter;
-    corto_int16 ret = corto_select("/mount", "*").iter( &iter );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -63,7 +63,7 @@ void _test_SelectSinkNoOnRequest_tc_selectSingle(
 /* $begin(test/SelectSinkNoOnRequest/tc_selectSingle) */
     corto_result *result;
     corto_iter iter;
-    corto_int16 ret = corto_select("/mount", "x").iter( &iter );
+    corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 

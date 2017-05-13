@@ -29,6 +29,11 @@ static int indent = 0;
 
 int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData);
 
+int16_t corto_ptr_walk(corto_walk_opt* this, void *ptr, corto_type type, void* userData) {
+    corto_value v = corto_value_value(ptr, type);
+    return corto_value_walk(this, &v, userData);
+}
+
 /* Forward value to the right callback function */
 int16_t corto_value_walk(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_type t;

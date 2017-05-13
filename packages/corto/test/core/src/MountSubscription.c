@@ -19,13 +19,13 @@ void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
     test_assertint(corto_ll_size(m->unsubscribes), 0);
 
-    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "Foo")
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "Foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -66,7 +66,7 @@ void _test_MountSubscription_tc_subscribeScope(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "*").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -97,7 +97,7 @@ void _test_MountSubscription_tc_subscribeScopeAlign(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "*").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
 
@@ -137,13 +137,13 @@ void _test_MountSubscription_tc_subscribeScopeTwice(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "*").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
     test_assertint(corto_ll_size(m->unsubscribes), 0);
 
-    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "*").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -183,7 +183,7 @@ void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "*").from("/mountRoot")
       .disabled()
       .callback(NULL);
     test_assert(s != NULL);
@@ -230,7 +230,7 @@ void _test_MountSubscription_tc_subscribeSingle(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -261,7 +261,7 @@ void _test_MountSubscription_tc_subscribeSingleAlign(
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
 
@@ -301,13 +301,13 @@ void _test_MountSubscription_tc_subscribeSingleTwice(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
     test_assertint(corto_ll_size(m->unsubscribes), 0);
 
-    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -347,7 +347,7 @@ void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "foo")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "foo").from("/mountRoot")
       .disabled()
       .callback(NULL);
     test_assert(s != NULL);
@@ -394,7 +394,7 @@ void _test_MountSubscription_tc_subscribeTree(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "//").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
     test_assertint(corto_ll_size(m->subscribes), 13);
@@ -535,7 +535,7 @@ void _test_MountSubscription_tc_subscribeTreeAlign(
     test_assert(mountRoot != NULL);
 
     /* Create subscriber before mount */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "//").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
 
@@ -724,13 +724,13 @@ void _test_MountSubscription_tc_subscribeTreeTwice(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "//").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 13);
     test_assertint(corto_ll_size(m->unsubscribes), 0);
 
-    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "//").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 13);
@@ -878,7 +878,7 @@ void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "//")
+    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "//").from("/mountRoot")
       .disabled()
       .callback(NULL);
     test_assert(s != NULL);
@@ -1033,7 +1033,7 @@ void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "A")
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "A").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -1044,7 +1044,7 @@ void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     test_assertstr(r->parent, ".");
     test_assertstr(r->expr, "A");
 
-    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "B")
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "B").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 2);
@@ -1088,7 +1088,7 @@ void _test_MountSubscription_tc_subscribeTwoSingleSameCtx(
       test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*A")
+    corto_subscriber s1 = corto_subscribe(CORTO_ON_UPDATE, "*A").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 1);
@@ -1099,7 +1099,7 @@ void _test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     test_assertstr(r->parent, ".");
     test_assertstr(r->expr, "*A");
 
-    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "/mountRoot", "*B")
+    corto_subscriber s2 = corto_subscribe(CORTO_ON_UPDATE, "*B").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
     test_assertint(corto_ll_size(m->subscribes), 2);

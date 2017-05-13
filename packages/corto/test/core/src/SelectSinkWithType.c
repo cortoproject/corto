@@ -44,7 +44,7 @@ void _test_SelectSinkWithType_tc_selectMixedScope(
 
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "*").iter( &iter );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -106,7 +106,7 @@ void _test_SelectSinkWithType_tc_selectMixedScopeNested1(
 
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/*").iter( &iter );
+    corto_int16 ret = corto_select("x/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -169,7 +169,7 @@ void _test_SelectSinkWithType_tc_selectMixedScopeNested2(
 
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "x/a/*").iter( &iter );
+    corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -217,7 +217,7 @@ void _test_SelectSinkWithType_tc_selectMount(
     corto_iter iter;
     corto_result *result;
 
-    corto_int16 ret = corto_select("/", "mount").iter( &iter );
+    corto_int16 ret = corto_select("mount").from("/").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -242,7 +242,7 @@ void _test_SelectSinkWithType_tc_selectMountFromParent(
 
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount/x", "..").iter( &iter );
+    corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -263,7 +263,7 @@ void _test_SelectSinkWithType_tc_selectMountFromVirtualParent(
 /* $begin(test/SelectSinkWithType/tc_selectMountFromVirtualParent) */
     corto_iter iter;
     corto_result *result;
-    corto_int16 ret = corto_select("/mount/x", "..").iter( &iter );
+    corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -288,7 +288,7 @@ void _test_SelectSinkWithType_tc_selectSingleMatch(
     corto_int32CreateChild_auto(mount, test, 0);
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "test").iter( &iter );
+    corto_int16 ret = corto_select("test").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
     test_assert(!corto_iter_hasNext(&iter));
@@ -307,7 +307,7 @@ void _test_SelectSinkWithType_tc_selectSingleNoMatch(
     corto_float32CreateChild_auto(mount, test, 0);
     corto_release(mount);
 
-    corto_int16 ret = corto_select("/mount", "test").iter( &iter );
+    corto_int16 ret = corto_select("test").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
 

@@ -33,7 +33,7 @@ void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "../..").iter( &iter );
+    corto_int16 ret = corto_select("../..").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -56,7 +56,7 @@ void _test_SelectMount_tc_selectInvertCase(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "XYZ").iter( &iter );
+    corto_int16 ret = corto_select("XYZ").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -79,7 +79,7 @@ void _test_SelectMount_tc_selectInvertCaseFilter(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "XY?").iter( &iter );
+    corto_int16 ret = corto_select("XY?").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -102,7 +102,7 @@ void _test_SelectMount_tc_selectInvertCaseScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/A", "xyz").iter( &iter );
+    corto_int16 ret = corto_select("xyz").from("/A").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -128,7 +128,7 @@ void _test_SelectMount_tc_selectIteratorPartialRelease(
     corto_iter it;
     corto_int32 i = 0;
     
-    corto_int16 ret = corto_select("/mount", "*").iter( &it );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &it );
     test_assert(ret == 0);
 
     for (i = 0; i < 5; i++) {
@@ -161,7 +161,7 @@ void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
     test_MountIterCount mountB = test_MountIterCountCreate(mount);
     test_assert(mountB != NULL);
     
-    corto_int16 ret = corto_select("/mount", "*").iter( &it );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &it );
     test_assert(ret == 0);
 
     for (i = 0; i < 15; i++) {
@@ -195,7 +195,7 @@ void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
     corto_iter it;
     corto_int32 i = 0;
     
-    corto_int16 ret = corto_select("/mount", "//").iter( &it );
+    corto_int16 ret = corto_select("//").from("/mount").iter( &it );
     test_assert(ret == 0);
 
     for (i = 0; i < 15; i++) {
@@ -226,7 +226,7 @@ void _test_SelectMount_tc_selectIteratorRelease(
     corto_iter it;
     corto_int32 count = 0;
     
-    corto_int16 ret = corto_select("/mount", "*").iter( &it );
+    corto_int16 ret = corto_select("*").from("/mount").iter( &it );
     test_assert(ret == 0);
 
     while (corto_iter_hasNext(&it)) {
@@ -251,7 +251,7 @@ void _test_SelectMount_tc_selectParentFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "..").iter( &iter );
+    corto_int16 ret = corto_select("..").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -274,7 +274,7 @@ void _test_SelectMount_tc_selectParentFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "..").iter( &iter );
+    corto_int16 ret = corto_select("..").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -296,7 +296,7 @@ void _test_SelectMount_tc_selectScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "a/*").iter( &iter );
+    corto_int16 ret = corto_select("a/*").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -335,7 +335,7 @@ void _test_SelectMount_tc_selectScopeFilter(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "a/*z").iter( &iter );
+    corto_int16 ret = corto_select("a/*z").from("/").iter( &iter );
 
     test_assert(ret == 0);
 
@@ -367,7 +367,7 @@ void _test_SelectMount_tc_selectScopeFilterFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "*z").iter( &iter );
+    corto_int16 ret = corto_select("*z").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -398,7 +398,7 @@ void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "*c").iter( &iter );
+    corto_int16 ret = corto_select("*c").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -429,7 +429,8 @@ void _test_SelectMount_tc_selectScopeFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "*").iter( &iter );
+    corto_int16 ret = corto_select("*")
+        .from("/A").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -468,7 +469,7 @@ void _test_SelectMount_tc_selectScopeFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "*").iter( &iter );
+    corto_int16 ret = corto_select("*").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -514,7 +515,7 @@ void _test_SelectMount_tc_selectScopeMixed(
     corto_voidCreateChild(a, "abc");
     corto_release(a);
 
-    corto_int16 ret = corto_select("/", "a/*").iter( &iter );
+    corto_int16 ret = corto_select("a/*").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -577,7 +578,7 @@ void _test_SelectMount_tc_selectScopeNested(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "a/xyz/*").iter( &iter );
+    corto_int16 ret = corto_select("a/xyz/*").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -616,7 +617,7 @@ void _test_SelectMount_tc_selectScopeNestedDirty(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "a/../a/./xyz/./*").iter( &iter );
+    corto_int16 ret = corto_select("a/../a/./xyz/./*").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -655,7 +656,7 @@ void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "../a/./xyz/./*").iter( &iter );
+    corto_int16 ret = corto_select("../a/./xyz/./*").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -694,7 +695,7 @@ void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "../../a/../a/./xyz/./abc/*").iter( &iter );
+    corto_int16 ret = corto_select("../../a/../a/./xyz/./abc/*").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -725,7 +726,7 @@ void _test_SelectMount_tc_selectScopeNestedFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "xyz/*").iter( &iter );
+    corto_int16 ret = corto_select("xyz/*").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -764,7 +765,7 @@ void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "abc/*").iter( &iter );
+    corto_int16 ret = corto_select("abc/*").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -795,7 +796,7 @@ void _test_SelectMount_tc_selectSingle(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "a/xyz").iter( &iter );
+    corto_int16 ret = corto_select("a/xyz").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -818,7 +819,7 @@ void _test_SelectMount_tc_selectSingleFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "xyz").iter( &iter );
+    corto_int16 ret = corto_select("xyz").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -841,7 +842,7 @@ void _test_SelectMount_tc_selectSingleFromScopeTree(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "//foo").iter( &iter );
+    corto_int16 ret = corto_select("//foo").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -864,7 +865,7 @@ void _test_SelectMount_tc_selectSingleFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "bc").iter( &iter );
+    corto_int16 ret = corto_select("bc").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -887,7 +888,7 @@ void _test_SelectMount_tc_selectSingleNested(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "a/xyz/abc").iter( &iter );
+    corto_int16 ret = corto_select("a/xyz/abc").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -910,7 +911,7 @@ void _test_SelectMount_tc_selectSingleNestedFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "xyz/bc").iter( &iter );
+    corto_int16 ret = corto_select("xyz/bc").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -933,7 +934,7 @@ void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "xyz//foo").iter( &iter );
+    corto_int16 ret = corto_select("xyz//foo").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -956,7 +957,7 @@ void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "abc/foo").iter( &iter );
+    corto_int16 ret = corto_select("abc/foo").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -979,7 +980,7 @@ void _test_SelectMount_tc_selectSingleTree(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "//a").iter( &iter );
+    corto_int16 ret = corto_select("//a").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1010,7 +1011,7 @@ void _test_SelectMount_tc_selectSingleTree2(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "//foo").iter( &iter );
+    corto_int16 ret = corto_select("//foo").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1033,7 +1034,7 @@ void _test_SelectMount_tc_selectSingleTree3(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/", "//hello").iter( &iter );
+    corto_int16 ret = corto_select("//hello").from("/").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1056,7 +1057,7 @@ void _test_SelectMount_tc_selectTree(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "//").iter( &iter );
+    corto_int16 ret = corto_select("//").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1188,7 +1189,7 @@ void _test_SelectMount_tc_selectTreeEmptyNestedScope(
     test_assert(m != NULL);
 
     corto_iter it;
-    corto_int16 ret = corto_select("/b", "//").iter(&it);
+    corto_int16 ret = corto_select("//").from("/b").iter(&it);
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it));
@@ -1227,7 +1228,7 @@ void _test_SelectMount_tc_selectTreeEmptyScope(
     test_assert(m != NULL);
 
     corto_iter it;
-    corto_int16 ret = corto_select("/b", "//").iter(&it);
+    corto_int16 ret = corto_select("//").from("/b").iter(&it);
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it));
@@ -1252,7 +1253,7 @@ void _test_SelectMount_tc_selectTreeFromNestedScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz/abc", "//").iter( &iter );
+    corto_int16 ret = corto_select("//").from("/a/xyz/abc").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1299,7 +1300,7 @@ void _test_SelectMount_tc_selectTreeFromScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz", "//").iter( &iter );
+    corto_int16 ret = corto_select("//").from("/a/xyz").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1370,7 +1371,7 @@ void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "xyz/abc//").iter( &iter );
+    corto_int16 ret = corto_select("xyz/abc//").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1417,7 +1418,7 @@ void _test_SelectMount_tc_selectTreeFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a", "xyz//").iter( &iter );
+    corto_int16 ret = corto_select("xyz//").from("/a").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1488,7 +1489,7 @@ void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz/abc/foo", "../..").iter( &iter );
+    corto_int16 ret = corto_select("../..").from("/a/xyz/abc/foo").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -1511,7 +1512,7 @@ void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
     corto_result *result;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("/a/xyz/abc/foo", "..").iter( &iter );
+    corto_int16 ret = corto_select("..").from("/a/xyz/abc/foo").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));

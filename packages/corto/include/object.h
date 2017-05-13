@@ -20,10 +20,12 @@
  */
 
 /** @file 
- * API for corto objects.
+ * @section object Object API
+ * @brief API for corto objects.
+ *
  * Corto objects are application-level entities that populate the corto object
  * store. Application logic is expressed through creating, updating and deleting
- * corto objects.
+ * corto objects. Objects are always allocated on the heap.
  *
  * Every corto object is annotated with a type, which allows for runtime 
  * reflection. Typical usecases for reflection are marshalling/demarshalling
@@ -33,22 +35,24 @@
  * Objects can be either anonymous or named. Named objects are identified by a
  * string identifier and can be discovered dynamically in the corto object store.
  * Anonymous objects have no name, and cannot be automatically discovered, but are
- * otherwise the same as named objects. The corto_declare and corto_create
+ * otherwise the same as named objects. The `corto_declare` and `corto_create`
  * functions create anonymous objects.
  *
  * In addition to a name, named objects also have a parent. Objects in corto are
  * stored in a hierarchy, and any named object can act as a parent for another
  * object. Once created, an object cannot be moved to another parent. The
- * corto_declareChild and corto_createChild functions create named objects.
+ * `corto_declareChild` and `corto_createChild` functions create named objects.
  *
  * Objects are reference counted. When there are no more references to an object
- * it is deleted from RAM. This does not mean the object does not exist anymore
- * as it can still 'live' in another medium, like a database. Objects that are 
- * no longer in the store but are still alive are called "suspended objects".
+ * it is deleted from RAM. The `corto_claim` function increases refcount, and 
+ * the `corto_release` function decreases refcount. This does not mean the object
+ * does not exist anymore as it can still 'live' in another medium, like a 
+ * database. Objects that are no longer in the store but are still alive are 
+ * called "suspended objects".
  *
  * Suspended objects can be resumed by doing a lookup for the object id, which
- * will re-insert the object in RAM if it is still available. The corto_lookup
- * and corto_resolve functions can resume objects.
+ * will re-insert the object in RAM if it is still available. The `corto_lookup`
+ * and `corto_resolve` functions can resume objects.
  *
  * Whenever an object is created, updated or deleted events are emitted. These
  * events can be catched with observers and subscribers. See corto_observe and
@@ -383,35 +387,6 @@ int16_t corto_updateCancel(
 CORTO_EXPORT 
 int16_t corto_invalidate(
     corto_object o);
-
-/** Publish event for an object.
- * This function enables emitting events for objects that are not loaded in the
- * RAM store. This allows for efficient routing of events between subscribers
- * without the need to (de)marshall object values.
- *
- * If the object is loaded in the RAM store, a call to corto_publish will demarshall
- * the specified value into the object.
- *
- * The function may only emit "data events", which are ON_DEFINE, 
- * ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for 
- * objects that are loaded in the RAM store.
- *
- * @param event The event to be emitted
- * @param id A string representing the id of the object in the form of 'foo/bar'.
- * @param type A string representing the id of the type as returned by corto_fullpath.
- * @param contentType A string representing the content type (format) of the specified value.
- * @param value A string (or binary value) representing the serialized value of the object.
- * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
- * @see corto_observe corto_subscribe
- */
-CORTO_EXPORT 
-int16_t corto_publish(
-    corto_eventMask event,
-    char *id,
-    char *type,
-    char *contentType,
-    void *content);
 
 /** Claim an object.
  * This function increases the reference count of an object, which will prevent
@@ -931,9 +906,9 @@ char *corto_pathname(
  * This function splits up a path using the specified separator. An element with
  * at least *CORTO_MAX_SCOPE_DEPTH* elements must be provided. 
  * 
- * ``warning
+ * ```warning
  * This function modifies the input path.
- * ``
+ * ```
  *
  * @param path The path to be split up.
  * @param elements The result array with the path elements.
@@ -962,170 +937,136 @@ char *corto_cleanpath(
     corto_id buffer, 
     char* path);
 
-typedef struct corto_select__fluent {
-    /** Request results in a specific contentType.
-     * @param contentType A MIME identifier identifying a contentType.
-     */
-    struct corto_select__fluent (*contentType)(
-        char *contentType);
-
-    /** Enable pagination by specifying an offset and limit.
-     * @param offset Specifies from which nth object results should be returned.
-     * @param limit Specifies the total number of results that should be returned.
-     */
-    struct corto_select__fluent (*limit)(
-        corto_uint64 offset, 
-        corto_uint64 limit);
-
-    /** Filter results by type.
-     * @param filter An id expression matching one or more types.
-     */
-    struct corto_select__fluent (*type)(
-        char *filter);
-
-    /** Filter out results from a specific instance (mount).
-     * This is typically useful when using corto_select from a mount, and the
-     * mount does not want to invoke itself.
-     *
-     * @param instance The instance object.
-     */
-    struct corto_select__fluent (*instance)(
-        corto_object instance);
-
-    /** Only return results for a specific mount.
-     * This is typically useful when using corto_select from a mount, and the
-     * mount does not want to invoke itself.
-     *
-     * @param instance The instance object.
-     */    
-    struct corto_select__fluent (*mount)(
-        corto_mount mount);
-
-    /** Request historical data starting from the current time. */
-    struct corto_select__fluent (*fromNow)(void);
-
-    /** Request historical data starting from fixed timestamp 
-     * @param t The timestamp from which to return historical data.
-     */
-    struct corto_select__fluent (*fromTime)(
-        corto_time t);
-
-    /** Request historical data from a fixed sample id.
-     * @param sample Sample id, starting from the beginning of the sequence.
-     */
-    struct corto_select__fluent (*fromSample)(
-        corto_uint64 sample);
-
-    /** Request historical data until now. */
-    struct corto_select__fluent (*toNow)(void);
-
-    /** Request historical data until a fixed timestamp.
-     * @param t The timestamp until which to return historical data.
-     */
-    struct corto_select__fluent (*toTime)(corto_time t);
-
-    /** Request historical data until a fixed sample id.
-     * @param sample Sample id, starting from the beginning of the sequence.
-     */    
-    struct corto_select__fluent (*toSample)(corto_uint64 sample);
-
-    /** Request historical data for a specific time window.
-     * @param t The duration of the time window.
-     */
-    struct corto_select__fluent (*forDuration)(corto_time t);
-
-    /** Request historical data for a specific number of samples.
-     * @param depth The number of samples in the window.
-     */
-    struct corto_select__fluent (*forDepth)(int64_t depth);
-
-    /** Return an iterator to the requested results.
-     * Results are returned as corto_result instances. A corto_result contains
-     * metadata and when a content type is specified, a serialized value of an 
-     * object. When using this function, no objects are created.
-     *
-     * @param iter_out A pointer to an iterator object.
-     * @return 0 if success, -1 if failed.
-     */
-    int16_t (*iter)(corto_resultIter *iter_out);
-
-    /** Return an iterator to the requested objects.
-     * This function will return results as anonymous objects. No objects will be
-     * created in the object store.
-     *
-     * @param iter_out A pointer to an iterator object.
-     * @return 0 if success, -1 if failed.
-     */
-    int16_t (*iterObjects)(corto_objectIter *iter_out); /* Unstable API */
-
-    /** Return the number of objects for a query.
-     * This function requires a walk over all the returned results to determine
-     * the total number of objects. 
-     *
-     * @return -1 if failed, otherwise the total number of objects.
-     */
-    int64_t (*count)(void);
-
-    /* Internal APIs */
-    int16_t (*subscribe)(corto_resultIter *ret); /* Unstable API */
-    int16_t (*unsubscribe)(void); /* Unstable API */
-    char* (*id)(void); /* Unstable API */
-} corto_select__fluent;
-
-/** Query for objects.
- * This function performs an operation on objects matching a corto identifier 
- * expression (parent, expr). Selector methods control what kind of information
- * is to be retrieved.
- *
- * The corto_select function is designed to be an API that enables accessing large 
- * datasets with constrained resources. The iterative design of the API allows the
- * corto mount implementations to feed data to the application one object at a time,
- * so that even with large result sets, the memory of an application will not be
- * exhausted. Furthermore the API has native support for pagination, which allows
- * applications to further narrow down results.
- *
- * The results returned by corto_select are in abitrary order, which is a result
- * of the requirement of being able to deal with large datasets. Ordering results
- * would require obtaining a full resultset before anything can be returned to
- * the application, which is not scalable.
- *
- * The performance of corto_select highly depends on the implementation of a mount.
- * The backend provides as much information as possible upfront to the mount about
- * which information is required, which allows a mount to prefetch/cache results. 
- * A mount may choose to implement such optimizations, but this is not enforced.
- *
- * The function employs minimal locking on the object store while an application
- * is iterating over a resultset. Outside of the corto_iter_next and corto_iter_hasNext
- * calls no locks will be held, which enables applications to run corto_select
- * queries concurrently and without disturbing other tasks in an application.
- *
- * @param scope The scope of the request. Query results are relative to the scope.
- * @param expr An expression matching one or more objects [printf-style format specifier].
- */ 
-CORTO_EXPORT struct corto_select__fluent corto_select(char *scope, char *expr, ...);
-
 /* Observe objects for an observable matching an eventmask */
 typedef struct corto_observe__fluent {
+    /** Create disabled observer.
+     * Disabled observers allow an application to make modifications to the
+     * observer mask or observable, and to observe multiple objects using 
+     * `corto_observer_observe`.
+     */
     struct corto_observe__fluent (*disabled)(void);
-    struct corto_observe__fluent (*dispatcher)(corto_dispatcher dispatcher);
-    struct corto_observe__fluent (*instance)(corto_object instance);
-    struct corto_observe__fluent (*type)(char *type);
-    corto_observer ___ (*callback)(void (*r)(corto_observerEvent*));
-} corto_observe__fluent;
-CORTO_EXPORT struct corto_observe__fluent corto_observe(corto_eventMask event, corto_object observable);
-CORTO_EXPORT int16_t corto_unobserve(corto_observer observer);
 
-/* Subscribe for notifications matching an expression and eventmask */
-typedef struct corto_subscribe__fluent {
-    struct corto_subscribe__fluent (*disabled)(void);
-    struct corto_subscribe__fluent (*dispatcher)(corto_dispatcher dispatcher);
-    struct corto_subscribe__fluent (*instance)(corto_object instance);
-    struct corto_subscribe__fluent (*contentType)(char *contentType);
-    struct corto_subscribe__fluent (*type)(char *type);
-    corto_subscriber ___ (*callback)(void (*r)(corto_subscriberEvent*));
-} corto_subscribe__fluent;
-CORTO_EXPORT struct corto_subscribe__fluent corto_subscribe(corto_eventMask mask, char *scope, char *expr, ...);
-CORTO_EXPORT int16_t corto_unsubscribe(corto_subscriber subscriber, corto_object instance);
+    /** Provide dispatcher for observer.
+     * Dispatchers intercept events before they are delivered to an observer
+     * callback, which enables applications to implement custom event handlers.
+     * A common usecase for this is to forward events to a worker thread.
+     *
+     * @param dispatcher A dispatcher object.
+     */
+    struct corto_observe__fluent (*dispatcher)(
+        corto_dispatcher dispatcher);
+
+    /** Specify an instance.
+     * Instances are passed to observer callbacks. They are typically used to pass
+     * the `this` variable when an observer is associated with a class.
+     *
+     * @param instance A corto object.
+     */
+    struct corto_observe__fluent (*instance)(
+        corto_object instance);
+
+    /** Filter objects by type.
+     * The observer will only trigger on objects of the specified type.
+     *
+     * @param type A valid corto type identifier.
+     */
+    struct corto_observe__fluent (*type)(
+        char *type);
+
+    /** Specify callback, create observer.
+     * Provide a callback function that is invoked when a matching event occurs.
+     * This function returns a new observer based on the specified parameters.
+     *
+     * @param callback An observer callback function.
+     */
+    corto_observer ___ (*callback)(
+        void (*r)(corto_observerEvent*));
+} corto_observe__fluent;
+
+/** Create an observer.
+ * Observers enable an application to listen for events from the object store, such 
+ * as objects that are being created, updated or deleted. Observers can observe
+ * a single object, an object scope or a subtree of objects. `corto_observe`
+ * accepts a parameter `event` of the `corto_eventMask` type, which has the
+ * following values:
+ *
+@verbatim
+Flag | Value | Kind | Description
+-----|-------|------|------------
+CORTO_ON_DECLARE    | 0x1    | infra | Observe objects being forward declared.
+CORTO_ON_DEFINE     | 0x2    | data  | Observe objects being defined.
+CORTO_ON_DELETE     | 0x4    | data  | Observe objects being deleted.
+CORTO_ON_INVALIDATE | 0x8    | data  | Observe objects being invalidated.
+CORTO_ON_UPDATE     | 0x10   | data  | Observe objects being updated.
+CORTO_ON_RESUME     | 0x20   | infra | Observe objects being resumed.
+CORTO_ON_SUSPEND    | 0x40   | infra | Observe objects being suspended.
+CORTO_ON_SELF       | 0x80   | scope | Observe a single object.
+CORTO_ON_SCOPE      | 0x100  | scope | Observe children of an object.
+CORTO_ON_TREE       | 0x200  | scope | Observe children of an object recursively.
+CORTO_ON_VALUE      | 0x400  | async | Observe value of an object (requires lock).
+CORTO_ON_METAVALUE  | 0x800  | async | Observe metavalue of an object.
+CORTO_ON_ANY        | 0xffff | any   | Observe all notifications.
+@endverbatim
+ *
+ * The flag kinds have the following meaning:
+ *
+@verbatim
+Kind  | Description
+------|------------
+infra | Inform application about (meta) data in the RAM object store.
+data  | Inform application about data (CrUD) events.
+scope | Set the scope of a mask.
+async | Set whether the mask requires an object to be locked.
+any   | Enable all flags.
+@endverbatim
+ *
+ * The functionality of corto_observe is further extended by fluent methods. See
+ * [corto_observe fluent methods](corto_observe_fluent_methods)). A call to
+ * corto_observe must always finish with the `callback` fluent method, which
+ * creates the observer and accepts a callback that will be invoked when a matching
+ * notification triggers.
+ *
+ * Observers provide a very fast mechanism for delivering events. The 
+ * tradeoff is that for an observer to work, objects must be stored in RAM,
+ * which is fine if you don't observe millions of objects at the same time.
+ * 
+ * If you want to observe big datasets, check out corto_subscribe which offers
+ * equivalent functionality, but does not require objects to be stored in RAM.
+ *
+ * @param event A mask that specifies the events to observe.
+ * @param observable The object to observe.
+ */ 
+CORTO_EXPORT 
+struct corto_observe__fluent corto_observe(
+    corto_eventMask event, 
+    corto_object observable);
+
+/** Delete an observer.
+ * No more events will be delivered to the callback after this function is
+ * called. Note that the observer object will not be deallocated if there are
+ * references to the object.
+ *
+ * When there are still events in flight when this function is called (something
+ * that can happen when a dispatcher is pushing events to another thread) the
+ * application can prevent delivery of the event by checking the state of the
+ * observer object, which is part of the `corto_observerEvent` instance, by doing:
+ *
+@verbatim
+```c
+void myDispatcher_post(corto_observerEvent *e) {
+    if (!corto_checkState(e->observer, CORTO_DESTRUCTED)) {
+        corto_event_handle(e);
+    } else {
+        // Do nothing
+    }
+}
+```
+@endverbatim
+ *
+ * @param observer An observer object.
+ * @return 0 if success, -1 if failed.
+ */ 
+CORTO_EXPORT int16_t corto_unobserve(corto_observer observer);
 
 /* Match corto expression */
 typedef struct corto_matchProgram_s* corto_matchProgram;

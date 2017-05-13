@@ -1731,9 +1731,20 @@ static corto_select__fluent corto_selectorMount(corto_mount mount)
     return corto_select__fluentGet();
 }
 
+static corto_select__fluent corto_selectorFrom(char *scope)
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->scope = scope;
+    }
+    return corto_select__fluentGet();
+}
+
 static corto_select__fluent corto_select__fluentGet(void)
 {
     corto_select__fluent result;
+    result.from = corto_selectorFrom;
     result.contentType = corto_selectorContentType;
     result.limit = corto_selectorLimit;
     result.type = corto_selectorType;
@@ -1757,7 +1768,6 @@ static corto_select__fluent corto_select__fluentGet(void)
 }
 
 corto_select__fluent corto_select(
-    corto_string scope,
     corto_string expr,
     ...)
 {
@@ -1771,7 +1781,7 @@ corto_select__fluent corto_select(
         memset(request, 0, sizeof(corto_selectRequest));
     }
 
-    corto_debug("select: '%s', '%s'", scope, expr);
+    corto_debug("select: '%s'", expr);
     
     if (expr) {
         va_start(arglist, expr);
@@ -1779,6 +1789,6 @@ corto_select__fluent corto_select(
         va_end(arglist);
     }
 
-    request->scope = scope;
+    request->scope = NULL;
     return corto_select__fluentGet();
 }

@@ -432,6 +432,18 @@ static corto_subscribe__fluent corto_subscribeDispatcher(corto_dispatcher dispat
     return corto_subscribe__fluentGet();
 }
 
+
+static corto_subscribe__fluent corto_subscribeFrom(
+    char *scope)
+{
+    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    if (request) {
+        request->scope = scope;
+    }
+
+    return corto_subscribe__fluentGet();
+}
+
 static corto_subscriber corto_subscribeCallback(
     void (*callback)(corto_subscriberEvent*))
 {
@@ -451,6 +463,7 @@ static corto_subscriber corto_subscribeCallback(
 static corto_subscribe__fluent corto_subscribe__fluentGet(void)
 {
     corto_subscribe__fluent result;
+    result.from = corto_subscribeFrom;
     result.contentType = corto_subscribeContentType;
     result.callback = corto_subscribeCallback;
     result.instance = corto_subscribeInstance;
@@ -462,7 +475,6 @@ static corto_subscribe__fluent corto_subscribe__fluentGet(void)
 
 corto_subscribe__fluent corto_subscribe(
     corto_eventMask mask,
-    corto_string scope,
     corto_string expr,
     ...)
 {
@@ -481,7 +493,6 @@ corto_subscribe__fluent corto_subscribe(
     va_end (arglist);
 
     request->mask = mask;
-    request->scope = scope;
     request->enabled = TRUE;
     return corto_subscribe__fluentGet();
 }
@@ -505,7 +516,7 @@ static uint16_t corto_subscriber_unsubscribeIntern(
 
     /* Unsubscribe outside of lock for every instance that is unsubscribed */
     for (i = 0; i < count; i ++) {
-        corto_select(this->parent, this->expr).instance(this).unsubscribe();
+        corto_select(this->expr).from(this->parent).instance(this).unsubscribe();
     }
 
     if (!removeAll) {
@@ -611,7 +622,8 @@ int16_t _corto_subscriber_subscribe(
       this->expr);
 
     /* If subscriber was not yet enabled, subscribe to mounts */
-    corto_int16 ret = corto_select(this->parent, this->expr)
+    corto_int16 ret = corto_select(this->expr)
+      .from(this->parent)
       .instance(this) /* this prevents mounts from subscribing to themselves */
       .subscribe(&it);
     if (ret) {

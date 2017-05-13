@@ -26,7 +26,8 @@ void _test_SelectHistory_tc_selectAll(
     corto_result *r;
     corto_sample *s;
 
-    corto_int16 ret = corto_select("/A", "*")
+    corto_int16 ret = corto_select("*")
+        .from("/A")
         .contentType("text/corto")
         .fromNow()
         .toSample(0)
@@ -126,7 +127,8 @@ void _test_SelectHistory_tc_selectJson(
     corto_result *r;
     corto_sample *s;
 
-    corto_int16 ret = corto_select("/A", "*")
+    corto_int16 ret = corto_select("*")
+        .from("/A")
         .contentType("text/json")
         .fromNow()
         .forDepth(2)
@@ -209,7 +211,8 @@ void _test_SelectHistory_tc_selectNowToDepth(
     corto_result *r;
     corto_sample *s;
 
-    corto_int16 ret = corto_select("/A", "*")
+    corto_int16 ret = corto_select("*")
+        .from("/A")
         .contentType("text/corto")
         .fromNow()
         .forDepth(2)
@@ -292,7 +295,8 @@ void _test_SelectHistory_tc_selectSampleToDepth(
     corto_result *r;
     corto_sample *s;
 
-    corto_int16 ret = corto_select("/A", "*")
+    corto_int16 ret = corto_select("*")
+        .from("/A")
         .contentType("text/corto")
         .fromSample(1)
         .forDepth(2)
@@ -375,7 +379,8 @@ void _test_SelectHistory_tc_selectSampleToSample(
     corto_result *r;
     corto_sample *s;
 
-    corto_int16 ret = corto_select("/A", "*")
+    corto_int16 ret = corto_select("*")
+        .from("/A")
         .contentType("text/corto")
         .fromSample(3)
         .toSample(1)
