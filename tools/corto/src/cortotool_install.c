@@ -232,6 +232,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
         if (installLocal) {
             /* Generate object files outside of sudo so that permissions of files in
              * projects won't be set to root. */
+            printf("\n");
             printf (CORTO_PROMPT "step 1: compile sources\n\n");
             corto_pid pid;
             if (release) {
@@ -277,6 +278,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                 goto error;
             }
 
+            printf("\n");
             printf (CORTO_PROMPT "step 2: generate binaries\n\n");
         } else if (installRemote){
             corto_lasterr();

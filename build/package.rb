@@ -497,7 +497,7 @@ task :install_files do
       if DRYRUN != true then
         if File.exists? "#{libpath}/source.txt" then
           if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
-            warn "potential package name clash (did you move the '#{PACKAGE}' project?)"
+            warn "potential project name clash (did you move '#{PACKAGE}'?)"
           end
         end
         cmd "mv source.txt #{libpath}/source.txt"
