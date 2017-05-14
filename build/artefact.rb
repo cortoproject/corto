@@ -370,10 +370,10 @@ def build()
         if $redis_dependencies_resolved then
           build_target(false)
           if ENV['silent'] != "true" then
-            msg "  rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+            msg "rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
           end
         else
-          msg "  rds #{C_WARNING}missing dependencies, skipping"
+          msg "rds #{C_WARNING}missing dependencies, skipping"
         end
       end
     end
@@ -385,11 +385,8 @@ def build()
       else
         artefact = "app"
       end
-      msg "  #{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(TRUE))}"
+      msg "#{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(TRUE))}"
     end
-  end
-  if ENV['silent'] != "true" then
-    print "\n"
   end
 end
 
@@ -432,7 +429,7 @@ def loadPackageConfigs()
         end
       end
       if ENV['silent'] != "true" then
-        msg "  use #{C_NORMAL}#{location}#{redis_msg}"
+        msg "use #{C_NORMAL}#{location}#{redis_msg}"
       end
     end
 
@@ -454,16 +451,19 @@ def loadPackageConfigs()
   end
 end
 
+task :msg do
+  if ENV['silent'] != "true" then
+    pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
+    if pkg == "." then
+      msg "build#{C_BOLD}"
+    else
+      msg "build #{C_HIGHLIGHT}#{pkg}"
+    end
+  end
+end
+
 task :prebuild => GENERATED_SOURCES do
   verbose(VERBOSE)
-  if ENV['silent'] != "true" then
-      pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
-      if pkg == "." then
-        msg "build"
-      else
-        msg "build #{C_NORMAL}#{pkg}"
-      end
-  end
 
   # Load dependency build instructions before anything else
   loadPackageConfigs()
@@ -477,7 +477,7 @@ end
 task :postbuild
 
 # The default rule that kicks of the build process
-task :default => [:prebuild, :binary, :postbuild]
+task :default => [:msg, :prebuild, :binary, :postbuild]
 
 task :clean do
   verbose(VERBOSE)
@@ -657,7 +657,7 @@ def build_source(source, target, echo, custom)
 
   if echo
     if ENV['silent'] != "true" and DRYRUN != true then
-      msg "  src #{C_NORMAL}#{source}"
+      msg "src #{C_NORMAL}#{source}"
     end
   end
 

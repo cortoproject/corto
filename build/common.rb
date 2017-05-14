@@ -130,6 +130,7 @@ C_NORMAL = "\033[0;49m"
 C_FAIL = "\033[0;31m"
 C_OK = "\033[0;32m"
 C_WARNING = "\033[0;33m"
+C_HIGHLIGHT = "\033[0;32m\033[1;49m"
 
 # Initialize public variables
 INCLUDE = [] if not defined? INCLUDE
