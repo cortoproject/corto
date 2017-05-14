@@ -129,10 +129,9 @@ int main(int argc, char* argv[]) {
                     }
                     i++;
                 } else if (*(argv[i]+1) == '-') {
-                    if (!strcmp(argv[i] + 2, "version")) {
+                    if (!strcmp(argv[i] + 2, "logo")) {
                         char *color1 = CORTO_GREEN, *color2 = CORTO_CYAN;
-
-                        /*printf("\n");
+                        printf("\n");
                         printf("            %s##########%s\n", color1, CORTO_NORMAL);
                         printf("          %s##########%s ####%s\n", color1, color2, CORTO_NORMAL);
                         printf("        %s##########%s ########%s\n", color1, color2, CORTO_NORMAL);
@@ -144,8 +143,8 @@ int main(int argc, char* argv[]) {
                         printf("       %s##########%s ##########%s\n", color1, color2, CORTO_NORMAL);
                         printf("         %s######%s ##########%s\n", color1, color2, CORTO_NORMAL);
                         printf("           %s##%s ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("\n");*/
-
+                        printf("\n");
+                    } else if (!strcmp(argv[i] + 2, "version")) {
                         printf("corto version %s (%s)\n  library: %s (%s)\n",
                             CORTO_VERSION,
                             CORTO_PLATFORM_STRING,

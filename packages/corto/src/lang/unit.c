@@ -73,7 +73,7 @@ int16_t _corto_unit_construct(
         if (corto_define(constructor)) goto error;
 
     /* Setup members for quantity, symbol, conversion */
-    corto_member quantity = corto_declareChild(this, "quantity", corto_member_o);
+    /*corto_member quantity = corto_declareChild(this, "quantity", corto_member_o);
         if (!quantity) goto error;
         corto_ptr_setref(&quantity->type, corto_quantity_o);
         if (corto_define(quantity)) goto error;
@@ -86,7 +86,7 @@ int16_t _corto_unit_construct(
     corto_member conversion = corto_declareChild(this, "conversion", corto_string_o);
         if (!quantity) goto error;
         corto_ptr_setref(&quantity->type, corto_quantity_o);
-        if (corto_define(quantity)) goto error;
+        if (corto_define(quantity)) goto error;*/
 
     return corto_class_construct(this);
 error:
