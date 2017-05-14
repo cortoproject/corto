@@ -1,6 +1,12 @@
 #!/bin/bash
 
-DIR="$(echo $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+# This can happen if a shell is sourced from a non-bash process
+if [ "$0" != "/bin/bash" ]; then
+    DIR=`pwd`
+else
+    DIR="$(echo $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+fi
+
 export CORTO_HOME="$HOME/.corto"
 export CORTO_TARGET="$HOME/.corto"
 export PATH="$CORTO_TARGET/bin:$PATH"
