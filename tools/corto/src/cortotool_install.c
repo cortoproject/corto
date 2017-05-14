@@ -109,7 +109,7 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose, corto_bool re
 
     fprintf(install, "rc=$?; if [ $rc != 0 ]; then exit $rc; fi\n");
 #ifdef CORTO_OS_LINUX
-    fprintf(install, "sudo ldconfig\n");
+    fprintf(install, "sudo ldconfig > /dev/null 2>&1\n");
 #endif
     fclose(install);
 
@@ -156,7 +156,7 @@ static corto_int16 cortotool_installFromRemote(corto_string package) {
     fprintf(install, "rm -rf $INSTALL_TMPDIR/install.tar.gz\n");
     fprintf(install, "sudo cp -a \"$INSTALL_TMPDIR/.\" /usr/local\n");
     fprintf(install, "rm -rf $INSTALL_TMPDIR\n");
-    fprintf(install, "sudo ldconfig\n");
+    fprintf(install, "sudo ldconfig > /dev/null 2>&1\n");
     fprintf(install, "trap - EXIT\n");
     fprintf(install, "}\n");
     fprintf(install, "install\n");
@@ -205,7 +205,7 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
     }
 
     /* After installing, return back to current working directory */
-    char *cwd = corto_cwd();
+    char *cwd = corto_strdup(corto_cwd());
 
     do {
         corto_string dir = NULL;
@@ -330,9 +330,14 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
             }
         }
         if (dirs) {
-            corto_chdir(cwd);
+            /* Return to previous directory */
+            if (corto_chdir(cwd)) {
+                corto_seterr("failed to reset current working directory to '%s'", cwd);
+            }
         }
     } while (dirs && corto_iter_hasNext(&it));
+
+    corto_dealloc(cwd);
 
     corto_argclean(data);
 

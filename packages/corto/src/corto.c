@@ -1172,7 +1172,8 @@ int corto_start(char *appName) {
         corto_loaderInstance->autoLoad = TRUE;
     }
     else {
-        /* If loader couldn't be created, json package is probably not installed */
+        corto_trace("init: autoloading of packages disabled: %s", 
+            corto_lasterr());
         corto_lasterr();
     }
 #endif
