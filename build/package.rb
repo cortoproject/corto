@@ -374,7 +374,7 @@ def installFile(source, target)
     begin
       cmd "cp -r #{source} #{target}"
     rescue
-      STDERR.puts "#{C_WARNING}warning: failed to copy file #{source}, retrying#{C_NORMAL}"
+      warn "failed to copy file #{source}, retrying#{C_NORMAL}"
       if File.exists?(target) then
         cmd "rm -rf #{target}"
       end
@@ -497,7 +497,7 @@ task :install_files do
       if DRYRUN != true then
         if File.exists? "#{libpath}/source.txt" then
           if not FileUtils.compare_file("source.txt", "#{libpath}/source.txt") then
-            STDERR.puts "\033[0;33mwarning: potential package name clash (did you move the '#{PACKAGE}' project?)\033[0;49m"
+            warn "potential package name clash (did you move the '#{PACKAGE}' project?)"
           end
         end
         cmd "mv source.txt #{libpath}/source.txt"

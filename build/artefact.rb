@@ -455,9 +455,9 @@ task :msg do
   if ENV['silent'] != "true" then
     pkg = relative_path(CORTO_BUILDROOT, Dir.pwd).to_s
     if pkg == "." then
-      msg "build#{C_BOLD}"
+      msg "#{C_HIGHLIGHT}build"
     else
-      msg "build #{C_HIGHLIGHT}#{pkg}"
+      msg "#{C_HIGHLIGHT}build #{C_BOLD}#{pkg}"
     end
   end
 end

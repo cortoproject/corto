@@ -28,6 +28,11 @@ def err(text)
   print "[ #{C_FAIL}error #{C_NORMAL}#{text} ]\n"
 end
 
+def warn(text)
+  print "[ #{C_WARNING}warning #{C_NORMAL}#{text} ]\n"
+end
+
+
 def cmd(command)
   begin
     sh command
@@ -186,22 +191,19 @@ CORTO_BUILDROOT = if ENV['CORTO_BUILDROOT'].nil? or ENV['CORTO_BUILDROOT'].empty
   # First time rake is called
   if ENV['silent'] != "true" then
     if ENV['show_header'] != "false" then
-      print "#{C_BOLD}corto buildsystem v#{CORTO_VERSION}#{C_NORMAL}\n"
-      print "\n"
+      print "#{C_BOLD}[ #{C_HIGHLIGHT}corto #{C_BOLD}buildsystem v#{CORTO_VERSION}#{C_NORMAL} ]\n"
     end
     if ENV['binaries'] != "false" then
-      print "  Corto apps & packages are installed to #{C_DEFAULT}#{CORTO_TARGET}#{C_NORMAL}.\n"
+      msg "install to #{C_BOLD}#{CORTO_TARGET}"
       if ENV['redistr'] != "false" then
-        print "  The #{C_DEFAULT}#{CORTO_TARGET}/redistr/corto/#{CORTO_VERSION}#{C_NORMAL} directory contains\n"
-        print "  binaries that can be embedded in other (non-corto) projects.\n"
-      end
-      print "\n"
+        msg "redistr to #{C_BOLD}#{CORTO_TARGET}/redistr/corto/#{CORTO_VERSION}"
+      end      
     end
 
     tool = `which corto`
     if $?.exitstatus == 0 then
-      print "  #{`corto --version`}"
-      print "  tool:    #{tool}\n"
+      # print "  #{`corto --version`}"
+      # print "  tool:    #{tool}\n"
     end
     msg "start from #{C_BOLD}#{Dir.pwd}"
     msg "config #{C_BOLD}#{CONFIG}"
