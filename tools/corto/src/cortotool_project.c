@@ -25,6 +25,7 @@
 #include "corto/argparse/argparse.h"
 
 #define CORTO_PROMPT CORTO_CYAN "corto: " CORTO_NORMAL
+static char *errfmt = "[ %k - %c: %m ]";
 
 static corto_int16 cortotool_setupProject(
     const char *projectKind,
@@ -33,10 +34,7 @@ static corto_int16 cortotool_setupProject(
     corto_bool isSilent)
 {
     CORTO_UNUSED(isLocal);
-
-    if (!isSilent) {
-        printf (CORTO_PROMPT "create %s '%s'\n", projectKind, name);
-    }
+    CORTO_UNUSED(projectKind);
 
     if (corto_fileTest(name)) {
         corto_id id;
@@ -62,6 +60,20 @@ static corto_int16 cortotool_setupProject(
             "corto: couldn't create project directory '%s' (check permissions)",
             name);
         goto error;
+    }
+
+    if (!isSilent) {
+        printf("\n");
+        printf("               \\ /\n");
+        printf("              - . -\n");
+        printf("               / \\\n");
+        printf("%s                | /\\\n", CORTO_GREEN);
+        printf("%s             /\\ |/\n", CORTO_GREEN);
+        printf("%s               \\|%s\n", CORTO_GREEN, CORTO_NORMAL);
+        printf ("\nPlanting a new idea in directory %s'%s'%s\n", 
+            CORTO_CYAN,
+            name,
+            CORTO_NORMAL);
     }
 
     return 0;
@@ -275,10 +287,10 @@ static char* cortotool_randomName(void) {
 static char* cortotool_fmtName(
     corto_id buffer,
     corto_id parentName,
-    char *projectname,
+    char *projectName,
     char **name_out)
 {
-    strcpy(buffer, projectname);
+    strcpy(buffer, projectName);
     char *include = buffer;
 
     /* Ignore initial colons and slashes */
@@ -414,7 +426,11 @@ static corto_int16 cortotool_app (
     }
 
     if (!silent) {
-        printf(CORTO_PROMPT "done\n\n");
+        printf("  Type = %s'application'%s\n", CORTO_CYAN, CORTO_NORMAL);
+        printf("  Name = %s'%s'%s\n", CORTO_CYAN, projectName, CORTO_NORMAL);
+        printf("  Language = %s'%s'%s\n", CORTO_CYAN , language, CORTO_NORMAL);
+        printf("  Managed = %s'%s'%s\n", CORTO_CYAN , nocorto ? "no" : "yes", CORTO_NORMAL);
+        printf("Done! Run the app with %s/%s.\n\n", name, name);
     }
 
     return 0;
@@ -423,7 +439,7 @@ error:
 }
 
 static corto_int16 cortotool_package(
-    char *projectname,
+    char *projectName,
     corto_bool silent,
     corto_bool mute,
     corto_bool nobuild,
@@ -441,7 +457,7 @@ static corto_int16 cortotool_package(
 
     silent |= mute;
 
-    if (!(include = cortotool_fmtName(includeMem, parentName, projectname, &name))) {
+    if (!(include = cortotool_fmtName(includeMem, parentName, projectName, &name))) {
         if (!mute) {
             corto_error("%s", corto_lasterr());
         }
@@ -664,7 +680,11 @@ static corto_int16 cortotool_package(
     }
 
     if (!silent) {
-        printf(CORTO_PROMPT " done\n\n");
+        printf("  Type = %s'package'%s\n", CORTO_CYAN, CORTO_NORMAL);
+        printf("  Name = %s'%s'%s\n", CORTO_CYAN, projectName, CORTO_NORMAL);
+        printf("  Language = %s'%s'%s\n", CORTO_CYAN , language, CORTO_NORMAL);
+        printf("  Managed = %s'%s'%s\n", CORTO_CYAN , nocorto ? "no" : "yes", CORTO_NORMAL);
+        printf("Done\n\n");
     }
 
     return 0;
@@ -679,6 +699,8 @@ corto_int16 cortotool_create(int argc, char *argv[]) {
     corto_string language = "c";
 
     CORTO_UNUSED(argc);
+
+    corto_errfmt(errfmt);
 
     corto_argdata *data = corto_argparse(
       argv,
