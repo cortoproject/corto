@@ -236,31 +236,36 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
             printf ("[ " CORTO_PROMPT "step 1: compile sources ]\n");
             corto_pid pid;
             if (release) {
-                pid = corto_procrun("rake",
-                    (char*[]) {
-                      "rake",
-                      "clobber",
-                      "default",
-                      verbose ? "verbose=true" : "verbose=false",
-                      debug ? "debug=true" : "debug=false",
-                      "config=release",
-                      "coverage=false",
-                      "multithread=false",
-                      "redistr=false",
-                      "show_header=false",
+                if (corto_fileTest("project.json")) {
+                    corto_procrun("corto", (char*[]) {
+                      "corto",
+                      "rakefile",
                       NULL
+                    });
+                }
+                pid = corto_procrun("rake", (char*[]) {
+                  "rake",
+                  "clobber",
+                  "default",
+                  verbose ? "verbose=true" : "verbose=false",
+                  debug ? "debug=true" : "debug=false",
+                  "config=release",
+                  "coverage=false",
+                  "multithread=false",
+                  "redistr=false",
+                  "show_header=false",
+                  NULL
                 });
             } else {
-                pid = corto_procrun("rake",
-                    (char*[]) {
-                      "rake",
-                      verbose ? "verbose=true" : "verbose=false",
-                      debug ? "debug=true" : "debug=false",
-                      "coverage=false",
-                      "multithread=false",
-                      "redistr=false",
-                      "show_header=false",
-                      NULL
+                pid = corto_procrun("rake", (char*[]) {
+                  "rake",
+                  verbose ? "verbose=true" : "verbose=false",
+                  debug ? "debug=true" : "debug=false",
+                  "coverage=false",
+                  "multithread=false",
+                  "redistr=false",
+                  "show_header=false",
+                  NULL
                 });
             }
 
@@ -278,6 +283,14 @@ corto_int16 cortotool_install(int argc, char *argv[]) {
                 goto error;
             }
 
+            /* Rake clobber default cleans up the rakefile */
+            if (release && corto_fileTest("project.json")) {
+                corto_procrun("corto", (char*[]) {
+                  "corto",
+                  "rakefile",
+                  NULL
+                });
+            }
             printf("\n");
             printf ("[ " CORTO_PROMPT "step 2: generate binaries ]\n");
         } else if (installRemote){
