@@ -507,28 +507,6 @@ static int cxsh_show(char* object) {
     }
 }
 
-/* Import file */
-static void cxsh_import(char* file) {
-    corto_load(file, 0, NULL);
-}
-
-/* Drop scope */
-static void cxsh_delete(char* name) {
-    corto_id id;
-    corto_object o;
-
-    sprintf(id, "%s/%s", scope, name);
-
-    o = corto_resolve(root_o, id);
-    if (o) {
-        corto_delete(o);
-        corto_release(o);
-    } else {
-        corto_error("expression '%s' did not resolve to object.", id);
-        printf("\n");
-    }
-}
-
 static void cxsh_help(void) {
     printf("%sCorto shell help%s\n", HEADER_COLOR, CORTO_NORMAL);
     printf("\n");
@@ -541,14 +519,8 @@ static void cxsh_help(void) {
     printf("  %sls [expr]%s\n", HEADER_COLOR, CORTO_NORMAL);
     printf("      Lists result of select expression. If no expression is\n");
     printf("      provided, ls lists the contents of the current scope.\n");
-    printf("  %stree [scope]%s\n", HEADER_COLOR, CORTO_NORMAL);
-    printf("      Lists contents of a scope recursively. If no scope is\n");
-    printf("      provided the current scope is listed.\n");
     printf("  %scd [scope]%s\n", HEADER_COLOR, CORTO_NORMAL);
     printf("      Change current scope to specified scope.\n");
-    printf("  %simport [file]%s\n", HEADER_COLOR, CORTO_NORMAL);
-    printf("      Load a file into the database. The file can be of any type\n");
-    printf("      that is supported by corto.\n");
     printf("  %sclear%s\n", HEADER_COLOR, CORTO_NORMAL);
     printf("      Clears the screen.\n");
     printf("  %sexit%s\n", HEADER_COLOR, CORTO_NORMAL);
@@ -561,9 +533,6 @@ static void cxsh_help(void) {
     printf("      Lists all objects that start with the letter 'w'\n");
     printf("  %s$%s corto/lang/class\n", SHELL_COLOR, CORTO_NORMAL);
     printf("      Display object 'corto/lang/class'\n");
-    printf("  %s$%s class.base\n", SHELL_COLOR, CORTO_NORMAL);
-    printf("      Resolves 'base' member of class object. Requires the corto\n");
-    printf("      scripting language to be installed.\n");
     printf("\n");
 }
 
@@ -615,14 +584,6 @@ static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     /* cd */
     if (!strcmp(argv[0], "cd")) {
         cxsh_cd(argv[1]);
-    } else
-    /* import */
-    if (!strcmp(argv[0], "import")) {
-        cxsh_import(argv[1]);
-    } else
-    /* drop */
-    if (!strcmp(argv[0], "delete")) {
-        cxsh_delete(argv[1]);
     } else
     /* clear */
     if (!strcmp(argv[0], "clear")) {
@@ -851,9 +812,6 @@ corto_ll cxsh_shellExpand(int argc, const char* argv[], char *cmd) {
         if (!argc || !firstArgSpace) {
             if (!fnmatch(expr, "cd", 0)) corto_ll_append(result, corto_strdup ("cd"));
             if (!fnmatch(expr, "ls", 0)) corto_ll_append(result, corto_strdup ("ls"));
-            if (!fnmatch(expr, "tree", 0)) corto_ll_append(result, corto_strdup ("tree"));
-            if (!fnmatch(expr, "delete", 0)) corto_ll_append(result, corto_strdup ("delete"));
-            if (!fnmatch(expr, "import", 0)) corto_ll_append(result, corto_strdup ("import"));
             if (!fnmatch(expr, "exit", 0)) corto_ll_append(result, corto_strdup ("exit"));
             if (!fnmatch(expr, "clear", 0)) corto_ll_append(result, corto_strdup ("clear"));
             if (!fnmatch(expr, "help", 0)) corto_ll_append(result, corto_strdup ("help"));
@@ -911,10 +869,7 @@ error:
 int cxsh_printCommand(char* buff) {
     if (!strcmp(buff, "cd") ||
       !strcmp(buff, "ls") ||
-      !strcmp(buff, "tree") ||
       !strcmp(buff, "exit") ||
-      !strcmp(buff, "import") ||
-      !strcmp(buff, "delete") ||
       !strcmp(buff, "help") ||
       !strcmp(buff, "clear")) {
         printf("%s%s%s", CORTO_BOLD, buff, CORTO_NORMAL);

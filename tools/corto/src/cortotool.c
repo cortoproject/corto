@@ -35,7 +35,7 @@ static void cortotool_printUsage(corto_bool expert) {
     printf("       corto [-d] [--keep-alive] [files] [loader]\n");
     printf("       corto [--version] [-v] [--help] [-h] [--expert]\n");
     printf("\n");
-    printf("Without arguments, 'corto' starts the corto shell.\n");
+    printf("Without arguments, 'corto' builds the current project.\n");
     printf("\n");
     printf("Commands:\n");
     printf("   create               Create a new project.\n");
@@ -62,6 +62,23 @@ static void cortotool_printUsage(corto_bool expert) {
         printf("\n");
     }
     printf("See 'corto help <command>' for details on a command.\n\n");
+}
+
+static void printLogo(void) {
+    char *color1 = CORTO_GREEN, *color2 = CORTO_CYAN;
+    printf("\n");
+    printf("            %s##########%s\n", color1, CORTO_NORMAL);
+    printf("          %s##########%s ####%s\n", color1, color2, CORTO_NORMAL);
+    printf("        %s##########%s ########%s\n", color1, color2, CORTO_NORMAL);
+    printf("      %s##########%s   ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("    %s##########%s       ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("  %s##########%s           ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("   %s##########%s         ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("     %s##########%s     ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("       %s##########%s ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("         %s######%s ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("           %s##%s ##########%s\n", color1, color2, CORTO_NORMAL);
+    printf("\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -107,8 +124,27 @@ int main(int argc, char* argv[]) {
 
     /* Parse arguments */
     if (argc == 1) {
-        if (cortotool_build(argc, argv)) {
-            goto error;
+        if (corto_fileTest("rakefile") || corto_fileTest("project.json")) {
+            if (cortotool_build(argc, argv)) {
+                goto error;
+            }
+        } else {
+            printLogo();
+            printf("Welcome to Corto! Unsure about what to do? Here are some ideas:\n");
+            printf("\n");
+            printf("corto create myApp\n");
+            printf("  Create a new corto app.\n");
+            printf("\n");
+            printf("corto create package myPackage\n");
+            printf("  Create a new corto package.\n");
+            printf("\n");
+            printf("corto sh\n");
+            printf("  Start the corto shell.\n");
+            printf("\n");
+            printf("corto --help\n");
+            printf("  Show all available corto commands.\n");
+            printf("\n");
+            printf("Happy coding!\n");
         }
     } else {
         for(i = 1; i < argc; i++) {
@@ -130,20 +166,7 @@ int main(int argc, char* argv[]) {
                     i++;
                 } else if (*(argv[i]+1) == '-') {
                     if (!strcmp(argv[i] + 2, "logo")) {
-                        char *color1 = CORTO_GREEN, *color2 = CORTO_CYAN;
-                        printf("\n");
-                        printf("            %s##########%s\n", color1, CORTO_NORMAL);
-                        printf("          %s##########%s ####%s\n", color1, color2, CORTO_NORMAL);
-                        printf("        %s##########%s ########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("      %s##########%s   ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("    %s##########%s       ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("  %s##########%s           ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("   %s##########%s         ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("     %s##########%s     ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("       %s##########%s ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("         %s######%s ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("           %s##%s ##########%s\n", color1, color2, CORTO_NORMAL);
-                        printf("\n");
+                        printLogo();
                     } else if (!strcmp(argv[i] + 2, "version")) {
                         printf("corto version %s (%s)\n  library: %s (%s)\n",
                             CORTO_VERSION,

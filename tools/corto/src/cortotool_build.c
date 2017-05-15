@@ -290,7 +290,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
         );
 
         if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
-            goto error;
+            goto error_rakefile;
         }
 
         if (rebuild) {
@@ -335,6 +335,7 @@ corto_int16 cortotool_build(int argc, char *argv[]) {
     return 0;
 error:
     corto_error("%s", corto_lasterr());
+error_rakefile:
     return -1;
 }
 
@@ -381,7 +382,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
         }
 
         if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
-            goto error;
+            goto error_rakefile;
         }
 
         ret = cortotool_runcmd(
@@ -406,6 +407,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
     return 0;
 error:
     corto_error("%s", corto_lasterr());
+error_rakefile:
     return -1;
 }
 
@@ -444,7 +446,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
         }
 
         if (cortotool_rakefile(1, (char*[]){"rakefile", NULL})) {
-            goto error;
+            goto error_rakefile;
         }
 
 
@@ -473,6 +475,7 @@ corto_int16 cortotool_coverage(int argc, char *argv[]) {
     return 0;
 error:
     corto_error("%s", corto_lasterr());
+error_rakefile:
     return -1;
 }
 
