@@ -54,8 +54,12 @@ int corto_chdir(const char *name) {
 
 char* corto_cwd(void) {
     corto_id cwd;
-    getcwd(cwd, sizeof(cwd));
-    return corto_setThreadString(cwd);
+    if (getcwd(cwd, sizeof(cwd))) {
+        return corto_setThreadString(cwd);
+    } else {
+        corto_seterr("%s", strerror(errno));
+        return NULL;
+    }
 }
 
 int corto_mkdir(const char *fmt, ...) {

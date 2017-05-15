@@ -3809,7 +3809,8 @@ corto_object _corto_lookupAssert(corto_object scope, corto_string id, corto_type
 {
     corto_object result = corto_lookup_intern(scope, id, TRUE);
     corto_assert(result != NULL, "corto_lookupAssert returned NULL for '%s'", id);
-    corto_assertType(type, result);
+    (void)type;
+    (void)corto_assertType(type, result);
     corto_release(result);
     return result;
 }

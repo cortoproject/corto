@@ -626,7 +626,7 @@ static int cxsh_doCmd(int argc, char* argv[], char *cmd) {
     } else
     /* clear */
     if (!strcmp(argv[0], "clear")) {
-        system("clear");
+        assert(system("clear") == 0); /* silence warning; not gonna fail */
     } else
     /* help */
     if (!strcmp(argv[0], "help")) {

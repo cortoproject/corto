@@ -253,8 +253,6 @@ corto_function corto_valueFunction(corto_value* val) {
     return result;
 }
 
-static char* corto_valueKindString[CORTO_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
-
 char* corto_value_exprStr(corto_value* v, char* buffer, unsigned int length) {
     corto_member m;
     corto_value* parents[CORTO_MAX_INHERITANCE_DEPTH];
