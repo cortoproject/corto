@@ -83,7 +83,7 @@ int16_t _corto_function_construct(
     }
 
     /* Bind with interface if possible */
-    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
         if (corto_delegate_construct(this)) {
             goto error;
         }
@@ -168,7 +168,7 @@ int16_t _corto_function_init(
     extern int CORTO_BENCHMARK_FUNCTION_INIT;
     corto_benchmark_start(CORTO_BENCHMARK_FUNCTION_INIT);
 
-    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
         if (!corto_instanceof(corto_interface_o, corto_parentof(this)) &&
             !corto_instanceof(corto_method_o, this)) 
         {
@@ -218,7 +218,7 @@ int16_t _corto_function_parseParamString(
 /* $begin(corto/lang/function/parseParamString) */
     corto_object scope;
 
-    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
         scope = corto_parentof(this);
     } else {
         scope = root_o;

@@ -119,7 +119,7 @@ typedef bool corto_bool;
 
 /* attr */
 typedef uint32_t corto_attr;
-    #define CORTO_ATTR_SCOPED (0x1)
+    #define CORTO_ATTR_NAMED (0x1)
     #define CORTO_ATTR_WRITABLE (0x2)
     #define CORTO_ATTR_OBSERVABLE (0x4)
     #define CORTO_ATTR_PERSISTENT (0x8)
@@ -476,6 +476,7 @@ typedef struct corto_container_s *corto_container;
 struct corto_container_s {
     struct corto_class_s super;
     corto_type type;
+    corto_string value;
 };
 
 /*  default */

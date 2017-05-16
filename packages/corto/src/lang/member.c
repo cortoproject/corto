@@ -51,7 +51,7 @@ int16_t _corto_member_init(
     corto_object parent;
     corto_type parentType;
 
-    if (corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
         parent = corto_parentof(this);
         parentType = corto_typeof(parent);
 

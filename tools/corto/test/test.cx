@@ -17,6 +17,7 @@ test/Suite Project:/
     void tc_packageNodefLocalC4cpp()
     void tc_packageNested()
     void tc_packageNestedFullyScoped()
+    void tc_packageNestedNoParent()
     void tc_packageDependency()
     void tc_packageNestedDependency()
     void tc_packageNestedDependencyFullyScoped()

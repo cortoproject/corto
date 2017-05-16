@@ -761,7 +761,7 @@ CORTO_BITMASK_O(lang, state);
     CORTO_CONSTANT_O(lang_state, DESTRUCTED);
 
 CORTO_BITMASK_O(lang, attr);
-    CORTO_CONSTANT_O(lang_attr, ATTR_SCOPED);
+    CORTO_CONSTANT_O(lang_attr, ATTR_NAMED);
     CORTO_CONSTANT_O(lang_attr, ATTR_WRITABLE);
     CORTO_CONSTANT_O(lang_attr, ATTR_OBSERVABLE);
     CORTO_CONSTANT_O(lang_attr, ATTR_PERSISTENT);
@@ -963,7 +963,7 @@ CORTO_CLASS_O(lang, bitmask, lang_enum, CORTO_LOCAL | CORTO_READONLY, CORTO_ATTR
 
 /* /corto/lang/struct */
 CORTO_FW_IC(lang, struct);
-CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_SCOPED, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
+CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_NAMED, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_ALIAS_O (lang_struct, base, lang_interface_base, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_struct, baseAccess, lang_modifier, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_struct, keys, lang_stringseq, CORTO_HIDDEN);
@@ -1021,7 +1021,7 @@ CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, CORTO_ATTR_DEFAULT, N
 
 /* /corto/lang/target */
 CORTO_FW_C(lang, target);
-CORTO_CLASS_O(lang, target, lang_struct, CORTO_READONLY, CORTO_ATTR_SCOPED|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
+CORTO_CLASS_O(lang, target, lang_struct, CORTO_READONLY, CORTO_ATTR_NAMED|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
     CORTO_METHOD_O(lang_target, construct, "()", lang_int16, corto_target_construct);
     CORTO_MEMBER_O(lang_target, type, lang_type, CORTO_GLOBAL);
 
@@ -1165,6 +1165,7 @@ CORTO_CLASS_O(lang, unit, lang_class, CORTO_PRIVATE, CORTO_ATTR_DEFAULT, NULL, C
 /* /corto/lang/container */
 CORTO_CLASS_O(lang, container, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
     CORTO_MEMBER_O(lang_container, type, lang_type, CORTO_GLOBAL);
+    CORTO_MEMBER_O(lang_container, value, lang_string, CORTO_GLOBAL);
 
 /* /corto/lang/leaf */
 CORTO_CLASS_O(lang, leaf, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
@@ -1364,13 +1365,12 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_ALIAS_O(core_mount, expr, core_subscriber_expr, CORTO_GLOBAL);
     CORTO_ALIAS_O(core_mount, type, core_subscriber_type, CORTO_GLOBAL);
     CORTO_ALIAS_O(core_mount, contentType, core_subscriber_contentType, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mount, policy, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mount, policy, core_mountPolicy, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mount, mount, lang_object, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_mount, attr, lang_attr, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_mount, sent, core_mountStats, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, received, core_mountStats, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, sentDiscarded, core_mountStats, CORTO_READONLY);
-    CORTO_MEMBER_O(core_mount, policies, core_mountPolicy, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, subscriptions, core_mountSubscriptionList, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, events, lang_objectlist, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, passThrough, lang_bool, CORTO_PRIVATE);

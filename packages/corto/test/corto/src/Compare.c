@@ -39,15 +39,15 @@ void _test_Compare_tc_array(
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {10, 20, 30, 40};
 
-    eq = corto_ptr_compare(v1, test_PrimitiveArray_o, v2);
+    eq = corto_ptr_compare(v1, test_IntArray_o, v2);
     test_assert(eq == CORTO_EQ);
 
     v2[0] = 20;
-    eq = corto_ptr_compare(v1, test_PrimitiveArray_o, v2);
+    eq = corto_ptr_compare(v1, test_IntArray_o, v2);
     test_assert(eq == CORTO_LT);
 
     v2[0] = 0;
-    eq = corto_ptr_compare(v1, test_PrimitiveArray_o, v2);
+    eq = corto_ptr_compare(v1, test_IntArray_o, v2);
     test_assert(eq == CORTO_GT);
 
 /* $end */
@@ -60,8 +60,8 @@ void _test_Compare_tc_arrayWithList(
     corto_equalityKind eq;
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {10, 20, 30, 40};
-    test_PrimitiveListCreate_auto(o1, 4, v1);
-    test_PrimitiveArrayCreate_auto(o2, 4, v2);
+    test_IntListCreate_auto(o1, 4, v1);
+    test_IntArrayCreate_auto(o2, 4, v2);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
@@ -114,8 +114,8 @@ void _test_Compare_tc_arrayWithSequence(
     corto_equalityKind eq;
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {10, 20, 30, 40};
-    test_PrimitiveSequenceCreate_auto(o1, 4, v1);
-    test_PrimitiveArrayCreate_auto(o2, 4, v2);
+    test_IntSequenceCreate_auto(o1, 4, v1);
+    test_IntArrayCreate_auto(o2, 4, v2);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
@@ -366,19 +366,19 @@ void _test_Compare_tc_list(
 /* $begin(test/Compare/tc_list) */
     corto_equalityKind eq;
     corto_int32 v[] = {10, 20, 30, 40};
-    test_PrimitiveListCreate_auto(o1, 4, v);
-    test_PrimitiveListCreate_auto(o2, 4, v);
+    test_IntListCreate_auto(o1, 4, v);
+    test_IntListCreate_auto(o2, 4, v);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
 
     v[0] = 20;
-    test_PrimitiveListSet(o2, 4, v);
+    test_IntListSet(o2, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_LT);
 
     v[0] = 0;
-    test_PrimitiveListSet(o2, 4, v);
+    test_IntListSet(o2, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_GT);
 
@@ -394,17 +394,17 @@ void _test_Compare_tc_listSizeMismatch(
 /* $begin(test/Compare/tc_listSizeMismatch) */
     corto_equalityKind eq;
     corto_int32 v[] = {10, 20, 30, 40};
-    test_PrimitiveListCreate_auto(o1, 3, v);
-    test_PrimitiveListCreate_auto(o2, 3, v);
+    test_IntListCreate_auto(o1, 3, v);
+    test_IntListCreate_auto(o2, 3, v);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
 
-    test_PrimitiveListSet(o1, 2, v);
+    test_IntListSet(o1, 2, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_LT);
 
-    test_PrimitiveListSet(o1, 4, v);
+    test_IntListSet(o1, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_GT);
 
@@ -421,8 +421,8 @@ void _test_Compare_tc_listWithArray(
     corto_equalityKind eq;
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {10, 20, 30, 40};
-    test_PrimitiveArrayCreate_auto(o1, 4, v1);
-    test_PrimitiveListCreate_auto(o2, 4, v2);
+    test_IntArrayCreate_auto(o1, 4, v1);
+    test_IntListCreate_auto(o2, 4, v2);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
@@ -495,19 +495,19 @@ void _test_Compare_tc_sequence(
 /* $begin(test/Compare/tc_sequence) */
     corto_equalityKind eq;
     corto_int32 v[] = {10, 20, 30, 40};
-    test_PrimitiveSequenceCreate_auto(o1, 4, v);
-    test_PrimitiveSequenceCreate_auto(o2, 4, v);
+    test_IntSequenceCreate_auto(o1, 4, v);
+    test_IntSequenceCreate_auto(o2, 4, v);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
 
     v[0] = 20;
-    test_PrimitiveSequenceSet(o2, 4, v);
+    test_IntSequenceSet(o2, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_LT);
 
     v[0] = 0;
-    test_PrimitiveSequenceSet(o2, 4, v);
+    test_IntSequenceSet(o2, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_GT);
 
@@ -523,17 +523,17 @@ void _test_Compare_tc_sequenceSizeMismatch(
 /* $begin(test/Compare/tc_sequenceSizeMismatch) */
     corto_equalityKind eq;
     corto_int32 v[] = {10, 20, 30, 40};
-    test_PrimitiveSequenceCreate_auto(o1, 3, v);
-    test_PrimitiveSequenceCreate_auto(o2, 3, v);
+    test_IntSequenceCreate_auto(o1, 3, v);
+    test_IntSequenceCreate_auto(o2, 3, v);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
 
-    test_PrimitiveSequenceSet(o1, 2, v);
+    test_IntSequenceSet(o1, 2, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_LT);
 
-    test_PrimitiveSequenceSet(o1, 4, v);
+    test_IntSequenceSet(o1, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_GT);
 
@@ -549,19 +549,19 @@ void _test_Compare_tc_sequenceWithList(
 /* $begin(test/Compare/tc_sequenceWithList) */
     corto_equalityKind eq;
     corto_int32 v[] = {10, 20, 30, 40};
-    test_PrimitiveListCreate_auto(o1, 4, v);
-    test_PrimitiveSequenceCreate_auto(o2, 4, v);
+    test_IntListCreate_auto(o1, 4, v);
+    test_IntSequenceCreate_auto(o2, 4, v);
 
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_EQ);
 
     v[0] = 20;
-    test_PrimitiveSequenceSet(o2, 4, v);
+    test_IntSequenceSet(o2, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_LT);
 
     v[0] = 0;
-    test_PrimitiveSequenceSet(o2, 4, v);
+    test_IntSequenceSet(o2, 4, v);
     eq = corto_compare(o1, o2);
     test_assert(eq == CORTO_GT);
 

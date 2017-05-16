@@ -523,7 +523,8 @@ void _test_ReplicatorEvent_tc_rateLimitOneObject(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, "sampleRate=5");
+    corto_mountPolicy policy = {.sampleRate = 5};
+    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, &policy);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -573,7 +574,8 @@ void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, "sampleRate=5");
+    corto_mountPolicy policy = {.sampleRate = 5};
+    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, &policy);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);

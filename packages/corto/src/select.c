@@ -291,7 +291,7 @@ static void corto_setItemData(
     item->owner = corto_ownerof(o);
     corto_ptr_setref(&item->object, o);
 
-    if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_NAMED)) {
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
     } else {
         corto_string_ser_t serData;

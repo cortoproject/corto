@@ -29,13 +29,13 @@ static int indent = 0;
 
 int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData);
 
-int16_t corto_ptr_walk(corto_walk_opt* this, void *ptr, corto_type type, void* userData) {
+int16_t corto_walk_ptr(corto_walk_opt* this, void *ptr, corto_type type, void* userData) {
     corto_value v = corto_value_value(ptr, type);
-    return corto_value_walk(this, &v, userData);
+    return corto_walk_value(this, &v, userData);
 }
 
 /* Forward value to the right callback function */
-int16_t corto_value_walk(corto_walk_opt* this, corto_value* info, void* userData) {
+int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_type t;
     int16_t result;
     corto_walk_cb cb;
@@ -87,7 +87,7 @@ void corto_walk_init(corto_walk_opt* this) {
     this->program[CORTO_ANY] = corto_any_walk;
     this->program[CORTO_COMPOSITE] = corto_walk_members;
     this->program[CORTO_COLLECTION] = corto_walk_elements;
-    this->metaprogram[CORTO_BASE] = corto_value_walk;
+    this->metaprogram[CORTO_BASE] = corto_walk_value;
     this->initialized = TRUE;
     this->constructed = FALSE;
     this->access = CORTO_GLOBAL;
@@ -121,7 +121,7 @@ int16_t corto_walk(corto_walk_opt* this, corto_object o, void* userData) {
     this->constructed = TRUE;
 
     if (!(cb = this->metaprogram[CORTO_OBJECT])) {
-        cb = corto_value_walk;
+        cb = corto_walk_value;
     }
 
 #ifdef CORTO_WALK_TRACING
@@ -188,7 +188,7 @@ int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData) 
     if (any->type) {
         v.parent = info;
         v = corto_value_value(any->value, corto_type(any->type));
-        result = corto_value_walk(this, &v, userData);
+        result = corto_walk_value(this, &v, userData);
     }
 
     return result;
@@ -302,7 +302,7 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
 
     cb = this->metaprogram[CORTO_MEMBER];
     if (!cb) {
-        cb = corto_value_walk;
+        cb = corto_walk_value;
     }
 
     /* Process members */
@@ -426,7 +426,7 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
     /* Determine callback now, instead of having to do this in the element callback */
     walkData.cb = this->metaprogram[CORTO_ELEMENT];
     if (!walkData.cb) {
-        walkData.cb = corto_value_walk;
+        walkData.cb = corto_walk_value;
     }
 
     int16_t result = 1;

@@ -756,7 +756,7 @@ corto_int16 corto_valueExpr_getTypeForBinary(
     }
 
     /* If objects are not scoped, verify whether they're equal */
-    if (!corto_checkAttr(leftType, CORTO_ATTR_SCOPED) && !corto_checkAttr(rightType, CORTO_ATTR_SCOPED)) {
+    if (!corto_checkAttr(leftType, CORTO_ATTR_NAMED) && !corto_checkAttr(rightType, CORTO_ATTR_NAMED)) {
         if (corto_compare(leftType, rightType) == CORTO_EQ) {
             equal = TRUE;
         }

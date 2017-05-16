@@ -37,7 +37,7 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *use
      * construct callback won't be called again */
     privateData.base = this->value;
 
-    corto_value_walk(s, &v, &privateData);
+    corto_walk_value(s, &v, &privateData);
 
     data->result = privateData.result;
 

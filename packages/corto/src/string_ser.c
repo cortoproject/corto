@@ -54,7 +54,7 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value* v, void* userDa
         goto finished;
     }
 
-    if ((result = corto_value_walk(s, &anyValue, data))) {
+    if ((result = corto_walk_value(s, &anyValue, data))) {
         return result;
     }
 
@@ -162,7 +162,7 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
     /* Obtain fully scoped name */
     corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        if (corto_checkAttr(object, CORTO_ATTR_SCOPED)) {
+        if (corto_checkAttr(object, CORTO_ATTR_NAMED)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_idof(object));
                 str = id;
@@ -330,7 +330,7 @@ static corto_int16 corto_ser_item(corto_walk_opt* s, corto_value* v, void* userD
     }
 
     /* Serialize value of item */
-    if (corto_value_walk(s, v, userData)) {
+    if (corto_walk_value(s, v, userData)) {
         goto error;
     }
 
@@ -347,7 +347,7 @@ static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* use
     corto_string_ser_t* data;
     data = userData;
 
-    corto_value_walk(s, v, userData);
+    corto_walk_value(s, v, userData);
 
     if (data->prefixType) {
         corto_id buffer;
@@ -358,7 +358,7 @@ static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* use
 
         if (str) {
             o = corto_value_objectof(v);
-            if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+            if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_NAMED)) {
                 corto_fullpath(typeId, corto_typeof(o));
             } else {
                 corto_walk_opt typeSer;

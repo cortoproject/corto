@@ -35,7 +35,7 @@ int16_t _corto_package_construct(
 {
 /* $begin(corto/core/package/construct) */
 
-    if (!corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_SCOPED)) {
+    if (!corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_NAMED)) {
 
         /* Load package after object has been defined. Create one-shot observer to
          * trigger on DEFINE event */

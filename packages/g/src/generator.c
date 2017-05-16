@@ -814,7 +814,7 @@ corto_string g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind k
 
     /* TODO: prefix i.c.m. !CORTO_GENERATOR_ID_DEFAULT & nested classes i.c.m. !CORTO_GENERATOR_ID_DEFAULT */
 
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
+    if (corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_childof(root_o, o)) {
         /* If prefix is found, replace the scope up until the found object with the prefix */
         if (prefix && prefix->prefix) {
             if (strcmp(prefix->prefix, ".")) {
@@ -1249,7 +1249,7 @@ corto_bool g_mustParse(g_generator g, corto_object o) {
     corto_bool result;
 
     result = TRUE;
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_childof(root_o, o)) {
+    if (corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_childof(root_o, o)) {
         if (corto_ll_walk(g->objects, g_checkParseWalk, o)) {
             result = FALSE;
         }
@@ -1472,7 +1472,7 @@ static corto_int16 g_evalObject(corto_walk_opt* s, corto_value* info, void* user
 
     g_addDepencency(data->g, corto_typeof(o), data);
 
-    return corto_value_walk(s, info, userData);
+    return corto_walk_value(s, info, userData);
 }
 
 /* Dependency serializer */

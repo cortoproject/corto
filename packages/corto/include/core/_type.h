@@ -24,8 +24,8 @@ extern "C" {
 #define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
 #define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
 #define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
-#define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
+#define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
 #define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assertType((corto_type)corto_mountSubscriptionList_o, o))
 #define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
@@ -174,6 +174,13 @@ typedef enum corto_mountKind {
     CORTO_HISTORIAN = 3
 } corto_mountKind;
 
+/*  /corto/core/mountPolicy */
+typedef struct corto_mountPolicy corto_mountPolicy;
+
+struct corto_mountPolicy {
+    double sampleRate;
+};
+
 /*  /corto/core/mountStats */
 typedef struct corto_mountStats corto_mountStats;
 
@@ -181,13 +188,6 @@ struct corto_mountStats {
     uint64_t declares;
     uint64_t updates;
     uint64_t deletes;
-};
-
-/*  /corto/core/mountPolicy */
-typedef struct corto_mountPolicy corto_mountPolicy;
-
-struct corto_mountPolicy {
-    double sampleRate;
 };
 
 /*  /corto/core/mountSubscription */
@@ -212,13 +212,12 @@ typedef struct corto_mount_s *corto_mount;
 struct corto_mount_s {
     struct corto_subscriber_s super;
     corto_mountKind kind;
-    corto_string policy;
+    corto_mountPolicy policy;
     corto_object mount;
     corto_attr attr;
     corto_mountStats sent;
     corto_mountStats received;
     corto_mountStats sentDiscarded;
-    corto_mountPolicy policies;
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
     bool passThrough;

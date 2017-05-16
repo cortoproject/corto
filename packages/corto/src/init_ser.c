@@ -78,7 +78,7 @@ corto_int16 corto_ser_initMember(corto_walk_opt* s, corto_value* v, void* userDa
         *(corto_object*)ptr = o;
     }
 
-    return corto_value_walk(s, v, userData);
+    return corto_walk_value(s, v, userData);
 error:
     return -1;
 }

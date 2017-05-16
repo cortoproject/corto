@@ -47,7 +47,7 @@ struct g_depWalk_t  {
 corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
     corto_object result = o;
 
-    if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (!corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         if (!data->anonymousObjects) {
             data->anonymousObjects = corto_ll_new();
         }
@@ -89,7 +89,7 @@ corto_int16 corto_genDepReference(corto_walk_opt* s, corto_value* info, void* us
         }
 
         /* Include dependencies on anonymous types */
-        if (!corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (!corto_checkAttr(o, CORTO_ATTR_NAMED)) {
             /* Look for equivalent anonymous objects. Since anonymous objects do
              * not have their own identity, they are equal if they have the same
              * value. Therefore, if multiple anonymous objects are found with
@@ -186,7 +186,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
     int result;
     corto_object parent = NULL;
 
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         parent = corto_parentof(o);
     }
 
@@ -226,7 +226,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
         }
 
         /* Insert dependency on parent */
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED) && corto_parentof(o)) {
+        if (corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_parentof(o)) {
             if (parent != root_o) { /* Root is always available */
                 corto_int8 parentState = corto_type(corto_typeof(o))->options.parentState;
 

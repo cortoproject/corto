@@ -66,7 +66,7 @@ static corto_int16 cortotool_setupProject(
         printf("\n");
         printf("               \\ /\n");
         printf("              - . -\n");
-        printf("               / \\\n");
+        printf("               /|\\\n");
         printf("%s                | /\\\n", CORTO_GREEN);
         printf("%s             /\\ |/\n", CORTO_GREEN);
         printf("%s               \\|%s\n", CORTO_GREEN, CORTO_NORMAL);
@@ -430,7 +430,7 @@ static corto_int16 cortotool_app (
         printf("  Name = %s'%s'%s\n", CORTO_CYAN, projectName, CORTO_NORMAL);
         printf("  Language = %s'%s'%s\n", CORTO_CYAN , language, CORTO_NORMAL);
         printf("  Managed = %s'%s'%s\n", CORTO_CYAN , nocorto ? "no" : "yes", CORTO_NORMAL);
-        printf("Done! Run the app with %s/%s.\n\n", name, name);
+        printf("Done! Run the app by running %s'./%s/%s'%s.\n\n", CORTO_CYAN, name, name, CORTO_NORMAL);
     }
 
     return 0;

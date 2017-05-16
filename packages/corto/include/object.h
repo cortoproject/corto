@@ -538,9 +538,9 @@ int32_t corto_countof(
     corto_object o);
 
 /** Get the object id.
- * The object passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined. 
  *
  * @param o A named object for which to obtain the id.
@@ -552,9 +552,9 @@ char *corto_idof(
     corto_object o);
 
 /** Get the object name.
- * The object passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined. 
  *
  * The object name is the same as the object id, unless the 'nameof' function of
@@ -576,9 +576,9 @@ char *corto_nameof(
     corto_object o);
 
 /** Get the parent of an object.
- * The object passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined. 
  *
  * This function may return NULL if the corto root object is passed as argument. If
@@ -591,9 +591,9 @@ corto_object corto_parentof(
     corto_object o);
 
 /** Check if object is a child of the specified parent.
- * The objects passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined. 
  *
  * @param p The parent object.
@@ -607,9 +607,9 @@ bool corto_childof(
     corto_object o);
 
 /** Returns the number of child objects in a scope.
- * The objects passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
  * This function must be used with care as it only returns number of objects that
@@ -625,9 +625,9 @@ uint32_t corto_scopeSize(
     corto_object o);
 
 /** Returns a sequence with the objects in the current scope.
- * The object passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
  * This function must be used with care as it only returns objects that are 
@@ -652,9 +652,9 @@ void corto_scopeRelease(
     corto_objectseq scope);
 
 /** Invoke a callback for each object in a scope.
- * The object passed to this function must be created with CORTO_ATTR_SCOPED. Any
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
  * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_SCOPED is passed to this function the behavior is
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
  * Usage of this function is generally NOT recommended as it locks the scope
@@ -1111,6 +1111,7 @@ CORTO_EXPORT corto_equalityKind corto_compare(corto_object o1, corto_object o2);
 
 /* Call base initalizer / constructor / destructor */
 CORTO_EXPORT int16_t corto_super_init(corto_object o);
+CORTO_EXPORT int16_t corto_super_deinit(corto_object o);
 CORTO_EXPORT int16_t corto_super_construct(corto_object o);
 CORTO_EXPORT void corto_super_destruct(corto_object o);
 

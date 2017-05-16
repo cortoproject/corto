@@ -149,7 +149,7 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
     *buff = '\0';
 
     first = TRUE;
-    if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         strcat(buff, "S");
         first = FALSE;
     }
@@ -278,7 +278,7 @@ static void cxsh_cd(char* arg) {
         corto_seterr(NULL);
 
         corto_resultIter iter;
-        if (corto_select(arg).from(scope).iter(&iter)) goto error;
+        if (corto_select(result).from(scope).iter(&iter)) goto error;
 
         /* Reuse request to temporarily store result, count results */
         while (corto_iter_hasNext(&iter)) {
@@ -416,7 +416,7 @@ static int cxsh_show(char* object) {
 
         /* Print object properties */
         if (o) {
-            if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+            if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
                 if (o == root_o) {
                     printf("%sname:%s         %s/%s\n",
                       INTERFACE_COLOR, CORTO_NORMAL, OBJECT_COLOR, CORTO_NORMAL);
@@ -468,7 +468,7 @@ static int cxsh_show(char* object) {
 
         /* Serialize value to string */
         if (corto_value_ptrof(&result)) {
-            corto_value_walk(&s, &result, &sdata);
+            corto_walk_value(&s, &result, &sdata);
             corto_string str = corto_buffer_str(&sdata.buffer);
             if (str) {
                 if (o) {
@@ -486,7 +486,7 @@ static int cxsh_show(char* object) {
             if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
-                s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
+                s.aliasAction = CORTO_WALK_ALIAS_FOLLOW;
                 s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
                 corto_metawalk(&s, o, &sdata);
                 corto_string str = corto_buffer_str(&sdata.buffer);

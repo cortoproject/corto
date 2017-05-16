@@ -74,23 +74,86 @@ struct EventCount:/
     resumeCount: int32
     suspendCount: int32
 
-array PrimitiveArray: int32, 4
+array IntArray: int32, 4
 array StringArray: string, 4
 array CompositeArray: Point, 4
 array ObjectArray: object, 4
 array AllocArray: int64, 4
 
-sequence PrimitiveSequence: int32
+sequence IntSequence: int32
 sequence StringSequence: string
 sequence CompositeSequence: Point
 sequence ObjectSequence: object
 sequence AllocSequence: int64
 
-list PrimitiveList: int32
+list IntList: int32
 list StringList: string
 list CompositeList: Point
 list ObjectList: object
 list AllocList: int64
+
+struct struct_observableInt:/
+    m: int32, observable
+
+struct struct_observableString:/
+    m: string, observable
+
+struct struct_observableReference:/
+    m: object, observable
+
+struct struct_observableStruct:/
+    m: Point, observable
+
+struct struct_observableArray:/
+    m: IntArray, observable
+
+struct struct_observableSequence:/
+    m: intSequence, observable
+
+struct struct_observableList:/
+    m: intList, observable
+
+struct struct_optionalInt:/
+    m: int32, optional
+
+struct struct_optionalString:/
+    m: string, optional
+
+struct struct_optionalReference:/
+    m: object, optional
+
+struct struct_optionalStruct:/
+    m: Point, optional
+
+struct struct_optionalArray:/
+    m: IntArray, optional
+
+struct struct_optionalSequence:/
+    m: IntSequence, optional
+
+struct struct_optionalList:/
+    m: IntList, optional
+
+struct struct_targetInt:/
+    m: target{int32}
+
+struct struct_targetString:/
+    m: target{string}
+
+struct struct_targetReference:/
+    m: target{object}
+
+struct struct_targetStruct:/
+    m: target{Point}
+
+struct struct_targetArray:/
+    m: target{IntArray}
+
+struct struct_targetSequence:/
+    m: target{IntSequence}
+
+struct struct_targetList:/
+    m: target{IntList}
 
 struct VoidParent: options={parentType=void}:/
     foo: int32
@@ -395,6 +458,99 @@ test/Suite Copy:/
     void tc_any()
     void tc_int()
     void tc_string()
+    void tc_reference()
+    void tc_struct()
+    void tc_structWithObservableInt()
+    void tc_structWithObservableString()
+    void tc_structWithObservableReference()
+    void tc_structWithObservableStruct()
+    void tc_structWithObservableArray()
+    void tc_structWithObservableSequence()
+    void tc_structWithObservableList()
+    void tc_structWithOptionalInt()
+    void tc_structWithOptionalString()
+    void tc_structWithOptionalReference()
+    void tc_structWithOptionalStruct()
+    void tc_structWithOptionalArray()
+    void tc_structWithOptionalSequence()
+    void tc_structWithOptionalList()
+    void tc_structWithTargetInt()
+    void tc_structWithTargetString()
+    void tc_structWithTargetReference()
+    void tc_structWithTargetStruct()
+    void tc_structWithTargetArray()
+    void tc_structWithTargetSequence()
+    void tc_structWithTargetList()
+    void tc_union()
+    void tc_unionWithObservableInt()
+    void tc_unionWithObservableString()
+    void tc_unionWithObservableReference()
+    void tc_unionWithObservableStruct()
+    void tc_unionWithObservableArray()
+    void tc_unionWithObservableSequence()
+    void tc_unionWithObservableList()
+    void tc_unionWithOptionalInt()
+    void tc_unionWithOptionalString()
+    void tc_unionWithOptionalReference()
+    void tc_unionWithOptionalStruct()
+    void tc_unionWithOptionalArray()
+    void tc_unionWithOptionalSequence()
+    void tc_unionWithOptionalList()
+    void tc_unionWithTargetInt()
+    void tc_unionWithTargetString()
+    void tc_unionWithTargetReference()
+    void tc_unionWithTargetStruct()
+    void tc_unionWithTargetArray()
+    void tc_unionWithTargetSequence()
+    void tc_unionWithTargetList()
+    void tc_arrayWithInt()
+    void tc_arrayWithString()
+    void tc_arrayWithReference()
+    void tc_arrayWithStruct()
+    void tc_arrayWithObservableInt()
+    void tc_arrayWithObservableString()
+    void tc_arrayWithObservableReference()
+    void tc_arrayWithObservableStruct()
+    void tc_arrayWithOptionalInt()
+    void tc_arrayWithOptionalString()
+    void tc_arrayWithOptionalReference()
+    void tc_arrayWithOptionalStruct()
+    void tc_arrayWithTargetInt()
+    void tc_arrayWithTargetString()
+    void tc_arrayWithTargetReference()
+    void tc_arrayWithTargetStruct()
+    void tc_sequenceWithInt()
+    void tc_sequenceWithString()
+    void tc_sequenceWithReference()
+    void tc_sequenceWithStruct()
+    void tc_sequenceWithObservableInt()
+    void tc_sequenceWithObservableString()
+    void tc_sequenceWithObservableReference()
+    void tc_sequenceWithObservableStruct()
+    void tc_sequenceWithOptionalInt()
+    void tc_sequenceWithOptionalString()
+    void tc_sequenceWithOptionalReference()
+    void tc_sequenceWithOptionalStruct()
+    void tc_sequenceWithTargetInt()
+    void tc_sequenceWithTargetString()
+    void tc_sequenceWithTargetReference()
+    void tc_sequenceWithTargetStruct()
+    void tc_listWithInt()
+    void tc_listWithString()
+    void tc_listWithReference()
+    void tc_listWithStruct()
+    void tc_listWithObservableInt()
+    void tc_listWithObservableString()
+    void tc_listWithObservableReference()
+    void tc_listWithObservableStruct()
+    void tc_listWithOptionalInt()
+    void tc_listWithOptionalString()
+    void tc_listWithOptionalReference()
+    void tc_listWithOptionalStruct()
+    void tc_listWithTargetInt()
+    void tc_listWithTargetString()
+    void tc_listWithTargetReference()
+    void tc_listWithTargetStruct()
     void tc_arrayToArray()
     void tc_arrayToList()
     void tc_arrayToExistingList()

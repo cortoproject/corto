@@ -17,7 +17,7 @@ corto_entityAdmin corto_mount_admin;
 /* $header(corto/core/mount/construct) */
 void* corto_mount_thread(void* arg) {
     corto_mount this = arg;
-    corto_float64 frequency = this->policies.sampleRate;
+    corto_float64 frequency = this->policy.sampleRate;
     corto_uint32 sec = 1.0 / frequency;
     frequency -= sec;
     corto_uint32 nanosec = 0;
@@ -105,7 +105,7 @@ int16_t _corto_mount_construct(
     corto_object dispatcher = NULL;
 
     /* If mount isn't set, and object is scoped, mount data on itself */
-    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_SCOPED) && !corto_subscriber(this)->parent) {
+    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_NAMED) && !corto_subscriber(this)->parent) {
         corto_ptr_setref(&this->mount, this);
     }
 
@@ -141,19 +141,7 @@ int16_t _corto_mount_construct(
     }
 
     /* Parse policies */
-    if (this->policy) {
-        corto_string value;
-        void *policies = &this->policies;
-        corto_asprintf(&value, "{%s}", this->policy);
-        if (corto_ptr_fromStr(&policies, corto_mountPolicy_o, value)) {
-            corto_dealloc(value);
-            goto error;
-        }
-        corto_dealloc(value);
-    }
-
-    /* If rate limiting is enabled, start thread */
-    if (this->policies.sampleRate) {
+    if (this->policy.sampleRate) {
         dispatcher = this;
         this->thread = (corto_word)corto_threadNew(
             corto_mount_thread,
@@ -446,7 +434,7 @@ void _corto_mount_post(
 
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
-    if (this->policies.sampleRate) {
+    if (this->policy.sampleRate) {
         corto_uint32 size = 0;
         corto_subscriberEvent *e2;
 

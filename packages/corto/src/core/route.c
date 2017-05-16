@@ -62,7 +62,7 @@ int16_t _corto_route_construct(
         corto_ptr_setref(&p->type, routerBase->paramType);
         if (routerBase->paramName) {
             corto_ptr_setstr(&p->name, routerBase->paramName);
-        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_SCOPED)) {
+        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_NAMED)) {
             corto_ptr_setstr(&p->name, corto_idof(routerBase->paramType));
             p->name[0] = tolower(p->name[0]);
         } else {
@@ -80,7 +80,7 @@ int16_t _corto_route_construct(
         corto_ptr_setref(&p->type, routerBase->routerDataType);
         if (routerBase->routerDataName) {
             corto_ptr_setstr(&p->name, routerBase->routerDataName);
-        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_SCOPED)) {
+        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_NAMED)) {
             corto_ptr_setstr(&p->name, corto_idof(routerBase->routerDataType));
             p->name[0] = tolower(p->name[0]);
         } else {

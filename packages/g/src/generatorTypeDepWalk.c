@@ -110,13 +110,13 @@ static corto_bool corto_genTypeIsParsed(corto_object o, corto_genTypeWalk_t* dat
     while(!found && corto_iter_hasNext(&iter)) {
         p = corto_iter_next(&iter);
         /* If object is scoped, it must be matched exactly */
-        if (corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+        if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
             if (o == p) {
                 found = TRUE;
             }
         /* If object is not scoped (anonymous), it is matched structurally */
         } else {
-            if (!corto_checkAttr(p, CORTO_ATTR_SCOPED)) {
+            if (!corto_checkAttr(p, CORTO_ATTR_NAMED)) {
                 if (corto_typeof(o) == corto_typeof(p)) {
                     if (corto_genTypeCompareStructural(o, p)) {
                         found = TRUE;
@@ -367,14 +367,14 @@ error:
  *   to the generator. */
 static int corto_genTypeProcedureDependencies(corto_function o, corto_genTypeWalk_t* data) {
     corto_uint32 i;
-    if (o->returnType && !corto_checkAttr(o->returnType, CORTO_ATTR_SCOPED)) {
+    if (o->returnType && !corto_checkAttr(o->returnType, CORTO_ATTR_NAMED)) {
         if (corto_genTypeParse(o->returnType, TRUE, NULL, data)) {
             goto error;
         }
     }
 
     for(i=0; i<o->parameters.length; i++) {
-        if (!corto_checkAttr(o->parameters.buffer[i].type, CORTO_ATTR_SCOPED)) {
+        if (!corto_checkAttr(o->parameters.buffer[i].type, CORTO_ATTR_NAMED)) {
             if (corto_genTypeParse(o->parameters.buffer[i].type, TRUE, NULL, data)) {
                 goto error;
             }
@@ -402,7 +402,7 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
     }
 
     /* Check if the object has an anonymous type */
-    if (!corto_checkAttr(corto_typeof(o), CORTO_ATTR_SCOPED)) {
+    if (!corto_checkAttr(corto_typeof(o), CORTO_ATTR_NAMED)) {
         if (corto_genTypeParse(corto_typeof(o), TRUE, NULL, data)) {
             goto error;
         }

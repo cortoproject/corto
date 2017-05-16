@@ -160,6 +160,15 @@ class AutoResumeSinkMount : core/mount, hidden:/
     word onSubscribe(string parent, string expr, word ctx) override
     void onUnsubscribe(string parent, string expr, word ctx) override
 
+// The loader is a complex mount that filters on type, hides store packages and
+// has to take into account that builtin packages do not have the persistent
+// attribute. This class simulates the loader so the combination of these usecases
+// can be verified.
+class LoaderSimulatorMount : core/mount, hidden:/
+    int16 construct()
+    resultIter onRequest(core/request request) override
+    packages: list{core/result}
+
 // Request data from a SINK mount
 test/Suite SelectSink:/
     void setup() method
@@ -181,6 +190,16 @@ test/Suite SelectSink:/
 
     void tc_selectSingleTypeFilter()
     void tc_selectMountInResult()
+
+    void tc_selectLoaderRootSingle()
+    void tc_selectLoaderCortoSingle()
+    void tc_selectLoaderNestedSingle()
+    void tc_selectLoaderRootScope()
+    void tc_selectLoaderCortoScope()
+    void tc_selectLoaderNestedScope()
+    void tc_selectLoaderRootTree()
+    void tc_selectLoaderCortoTree()
+    void tc_selectLoaderNestedTree()
 
 // Resume data from SINK mount
 test/Suite ResumeSink:/

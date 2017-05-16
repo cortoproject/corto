@@ -87,7 +87,7 @@ CORTO_EXPORT void corto_criticalv(char *file, unsigned int line, char* fmt, va_l
 CORTO_EXPORT void corto_seterrv(char *fmt, va_list args);
 
 /* Set console error format */
-#define CORTO_ERRFMT_DEFAULT "%T - %k: [%a] %c: %m"
+#define CORTO_ERRFMT_DEFAULT "%k: [%a] %c: %m"
 CORTO_EXPORT void corto_errfmt(char *fmt);
 
 /* Set & get last error */

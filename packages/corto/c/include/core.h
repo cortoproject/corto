@@ -252,13 +252,13 @@ CORTO_EXPORT corto_loader _corto_loaderAssign(corto_loader _this, bool autoLoad)
 #define corto_loaderSet(_this, autoLoad) _this = _this ? _this : (corto_loader*)corto_calloc(sizeof(corto_loader)); _corto_loaderAssign(_this, autoLoad)
 
 /* /corto/core/mount */
-CORTO_EXPORT corto_mount _corto_mountCreate(corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy);
+CORTO_EXPORT corto_mount _corto_mountCreate(corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy);
 #define corto_mountCreate(kind, parent, expr, type, contentType, policy) _corto_mountCreate(kind, parent, expr, type, contentType, policy)
 #define corto_mountCreate_auto(_id, kind, parent, expr, type, contentType, policy) corto_mount _id = corto_mountCreate(kind, parent, expr, type, contentType, policy); (void)_id
-CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy);
+CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy);
 #define corto_mountCreateChild(_parent, _id, kind, parent, expr, type, contentType, policy) _corto_mountCreateChild(_parent, _id, kind, parent, expr, type, contentType, policy)
 #define corto_mountCreateChild_auto(_parent, _id, kind, parent, expr, type, contentType, policy) corto_mount _id = corto_mountCreateChild(_parent, #_id, kind, parent, expr, type, contentType, policy); (void)_id
-CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy);
+CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy);
 #define corto_mountUpdate(_this, kind, parent, expr, type, contentType, policy) _corto_mountUpdate(corto_mount(_this), kind, parent, expr, type, contentType, policy)
 
 CORTO_EXPORT corto_mount _corto_mountDeclare(void);
@@ -267,9 +267,9 @@ CORTO_EXPORT corto_mount _corto_mountDeclare(void);
 CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _id);
 #define corto_mountDeclareChild(_parent, _id) _corto_mountDeclareChild(_parent, _id)
 #define corto_mountDeclareChild_auto(_parent, _id) corto_mount _id = corto_mountDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy);
+CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy);
 #define corto_mountDefine(_this, kind, parent, expr, type, contentType, policy) _corto_mountDefine(corto_mount(_this), kind, parent, expr, type, contentType, policy)
-CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy);
+CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy);
 #define corto_mount__optional_NotSet NULL
 #define corto_mount__optional_Set(kind, parent, expr, type, contentType, policy) corto_mountAssign((corto_mount*)corto_calloc(sizeof(corto_mount)), kind, parent, expr, type, contentType, policy)
 #define corto_mount__optional_SetCond(cond, kind, parent, expr, type, contentType, policy) cond ? corto_mountAssign((corto_mount*)corto_calloc(sizeof(corto_mount)), kind, parent, expr, type, contentType, policy) : NULL

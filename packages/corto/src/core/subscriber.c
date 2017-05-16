@@ -333,7 +333,7 @@ error:
 corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
     corto_int16 result = 0;
 
-    if (corto_subscriber_admin.count && corto_checkAttr(o, CORTO_ATTR_SCOPED)) {
+    if (corto_subscriber_admin.count && corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         corto_id path, type;
         corto_fullpath(path, o);
 

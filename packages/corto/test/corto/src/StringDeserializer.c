@@ -408,13 +408,13 @@ void _test_StringDeserializer_tc_deserArray(
 {
 /* $begin(test/StringDeserializer/tc_deserArray) */
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveArray{0, 1, 2, 3}");
+    corto_int16 ret = corto_fromStr(&o, "test/IntArray{0, 1, 2, 3}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
-    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveArray_o);
+    test_assert(corto_typeof(o) == (corto_type)test_IntArray_o);
 
-    corto_int32 *c = test_PrimitiveArray(o);
+    corto_int32 *c = test_IntArray(o);
     test_assert(c != NULL);
 
     test_assert(c[0] == 0);
@@ -1071,13 +1071,13 @@ void _test_StringDeserializer_tc_deserList(
 {
 /* $begin(test/StringDeserializer/tc_deserList) */
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveList{0, 1, 2, 3}");
+    corto_int16 ret = corto_fromStr(&o, "test/IntList{0, 1, 2, 3}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
-    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveList_o);
+    test_assert(corto_typeof(o) == (corto_type)test_IntList_o);
 
-    test_PrimitiveList *c = test_PrimitiveList(o);
+    test_IntList *c = test_IntList(o);
     test_assert(c != NULL);
     test_assert(corto_ll_size(*c) == 4);
 
@@ -1135,7 +1135,7 @@ void _test_StringDeserializer_tc_deserListReference(
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ObjectList_o);
 
-    test_PrimitiveList *c = test_ObjectList(o);
+    test_IntList *c = test_ObjectList(o);
     test_assert(c != NULL);
     test_assert(corto_ll_size(*c) == 4);
 
@@ -1154,13 +1154,13 @@ void _test_StringDeserializer_tc_deserSequence(
 {
 /* $begin(test/StringDeserializer/tc_deserSequence) */
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/PrimitiveSequence{0, 1, 2, 3}");
+    corto_int16 ret = corto_fromStr(&o, "test/IntSequence{0, 1, 2, 3}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
-    test_assert(corto_typeof(o) == (corto_type)test_PrimitiveSequence_o);
+    test_assert(corto_typeof(o) == (corto_type)test_IntSequence_o);
 
-    test_PrimitiveSequence *c = test_PrimitiveSequence(o);
+    test_IntSequence *c = test_IntSequence(o);
     test_assert(c != NULL);
     test_assert(c->length == 4);
     test_assert(c->buffer != NULL);

@@ -161,7 +161,7 @@ corto_int16 corto_ser_freeMember(corto_walk_opt* s, corto_value* v, void* userDa
     corto_member m = v->is.member.t;
     void *ptr = corto_value_ptrof(v);
 
-    corto_value_walk(s, v, userData);
+    corto_walk_value(s, v, userData);
 
     if (m->modifiers & CORTO_OPTIONAL) {
         corto_dealloc(ptr);

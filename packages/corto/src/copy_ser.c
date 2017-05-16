@@ -39,7 +39,7 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *use
      * construct callback won't be called again */
     privateData.base = this->value;
 
-    corto_value_walk(s, &v, &privateData);
+    corto_walk_value(s, &v, &privateData);
 
     value->type = this->type;
     value->owner = TRUE;
@@ -342,6 +342,17 @@ static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, voi
     return ret;
 }
 
+static corto_int16 corto_ser_member(corto_walk_opt* s, corto_value *info, void *userData) {
+    corto_member m = info->is.member.t;
+
+    if (m->modifiers & CORTO_OBSERVABLE) {
+        printf("serialize observable\n");
+        return 0;
+    } else {
+        return corto_walk_value(s, info, userData);
+    }
+}
+
 corto_walk_opt corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
     corto_walk_opt s;
 
@@ -359,5 +370,6 @@ corto_walk_opt corto_copy_ser(corto_modifier access, corto_operatorKind accessKi
     s.program[CORTO_COMPOSITE] = corto_ser_composite;
     s.program[CORTO_COLLECTION] = corto_ser_collection;
     s.reference = corto_ser_reference;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_member;
     return s;
 }

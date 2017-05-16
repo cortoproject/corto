@@ -752,7 +752,7 @@ corto_loader _corto_loaderAssign(corto_loader _this, bool autoLoad) {
     return _this;
 }
 
-corto_mount _corto_mountCreate(corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy) {
+corto_mount _corto_mountCreate(corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy) {
     corto_mount _this;
     _this = corto_mount(corto_declare(corto_mount_o));
     if (!_this) {
@@ -764,7 +764,9 @@ corto_mount _corto_mountCreate(corto_mountKind kind, corto_string parent, corto_
         corto_ptr_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_ptr_setstr(&((corto_observer)_this)->type, type);
         corto_ptr_setstr(&((corto_subscriber)_this)->contentType, contentType);
-        corto_ptr_setstr(&((corto_mount)_this)->policy, policy);
+        if (policy) {
+            corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+        }
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -773,7 +775,7 @@ corto_mount _corto_mountCreate(corto_mountKind kind, corto_string parent, corto_
     return _this;
 }
 
-corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy) {
+corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy) {
     corto_mount _this;
     _this = corto_mount(corto_declareChild(_parent, _id, corto_mount_o));
     if (!_this) {
@@ -785,7 +787,9 @@ corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, cort
         corto_ptr_setstr(&((corto_subscriber)_this)->expr, expr);
         corto_ptr_setstr(&((corto_observer)_this)->type, type);
         corto_ptr_setstr(&((corto_subscriber)_this)->contentType, contentType);
-        corto_ptr_setstr(&((corto_mount)_this)->policy, policy);
+        if (policy) {
+            corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+        }
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -794,7 +798,7 @@ corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, cort
     return _this;
 }
 
-corto_int16 _corto_mountUpdate(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy) {
+corto_int16 _corto_mountUpdate(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -803,14 +807,18 @@ corto_int16 _corto_mountUpdate(corto_mount _this, corto_mountKind kind, corto_st
             corto_ptr_setstr(&((corto_subscriber)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->expr, expr);
             corto_ptr_setstr(&((corto_observer)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->type, type);
             corto_ptr_setstr(&((corto_subscriber)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->contentType, contentType);
-            corto_ptr_setstr(&((corto_mount)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->policy, policy);
+            if (policy) {
+                corto_ptr_copy(&((corto_mount)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->policy, corto_mountPolicy_o, policy);
+            }
         } else {
             ((corto_mount)_this)->kind = kind;
             corto_ptr_setstr(&((corto_subscriber)_this)->parent, parent);
             corto_ptr_setstr(&((corto_subscriber)_this)->expr, expr);
             corto_ptr_setstr(&((corto_observer)_this)->type, type);
             corto_ptr_setstr(&((corto_subscriber)_this)->contentType, contentType);
-            corto_ptr_setstr(&((corto_mount)_this)->policy, policy);
+            if (policy) {
+                corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+            }
         }
         corto_updateEnd(_this);
     } else {
@@ -837,25 +845,29 @@ corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_mountDefine(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy) {
+corto_int16 _corto_mountDefine(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy) {
     CORTO_UNUSED(_this);
     ((corto_mount)_this)->kind = kind;
     corto_ptr_setstr(&((corto_subscriber)_this)->parent, parent);
     corto_ptr_setstr(&((corto_subscriber)_this)->expr, expr);
     corto_ptr_setstr(&((corto_observer)_this)->type, type);
     corto_ptr_setstr(&((corto_subscriber)_this)->contentType, contentType);
-    corto_ptr_setstr(&((corto_mount)_this)->policy, policy);
+    if (policy) {
+        corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+    }
     return corto_define(_this);
 }
 
-corto_mount _corto_mountAssign(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_string policy) {
+corto_mount _corto_mountAssign(corto_mount _this, corto_mountKind kind, corto_string parent, corto_string expr, corto_string type, corto_string contentType, corto_mountPolicy* policy) {
     CORTO_UNUSED(_this);
     ((corto_mount)_this)->kind = kind;
     corto_ptr_setstr(&((corto_subscriber)_this)->parent, parent);
     corto_ptr_setstr(&((corto_subscriber)_this)->expr, expr);
     corto_ptr_setstr(&((corto_observer)_this)->type, type);
     corto_ptr_setstr(&((corto_subscriber)_this)->contentType, contentType);
-    corto_ptr_setstr(&((corto_mount)_this)->policy, policy);
+    if (policy) {
+        corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+    }
     return _this;
 }
 

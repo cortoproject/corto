@@ -1281,7 +1281,7 @@ int32_t* _corto_constantAssign(int32_t* _this, int32_t value) {
     return _this;
 }
 
-corto_container _corto_containerCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_container _corto_containerCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     corto_container _this;
     _this = corto_container(corto_declare(corto_container_o));
     if (!_this) {
@@ -1292,6 +1292,7 @@ corto_container _corto_containerCreate(corto_interface base, corto_modifier base
         ((corto_struct)_this)->baseAccess = baseAccess;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_ptr_setref(&((corto_container)_this)->type, type);
+        corto_ptr_setstr(&((corto_container)_this)->value, value);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -1300,7 +1301,7 @@ corto_container _corto_containerCreate(corto_interface base, corto_modifier base
     return _this;
 }
 
-corto_container _corto_containerCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_container _corto_containerCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     corto_container _this;
     _this = corto_container(corto_declareChild(_parent, _id, corto_container_o));
     if (!_this) {
@@ -1311,6 +1312,7 @@ corto_container _corto_containerCreateChild(corto_object _parent, corto_string _
         ((corto_struct)_this)->baseAccess = baseAccess;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_ptr_setref(&((corto_container)_this)->type, type);
+        corto_ptr_setstr(&((corto_container)_this)->value, value);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -1319,7 +1321,7 @@ corto_container _corto_containerCreateChild(corto_object _parent, corto_string _
     return _this;
 }
 
-corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -1327,11 +1329,13 @@ corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, 
             ((corto_struct)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->implements, corto_interfaceseq_o, &implements);
             corto_ptr_setref(&((corto_container)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->type, type);
+            corto_ptr_setstr(&((corto_container)((corto_container)CORTO_OFFSET(_this, ((corto_type)corto_container_o)->size)))->value, value);
         } else {
             corto_ptr_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
             corto_ptr_setref(&((corto_container)_this)->type, type);
+            corto_ptr_setstr(&((corto_container)_this)->value, value);
         }
         corto_updateEnd(_this);
     } else {
@@ -1358,21 +1362,23 @@ corto_container _corto_containerDeclareChild(corto_object _parent, corto_string 
     return _this;
 }
 
-corto_int16 _corto_containerDefine(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_int16 _corto_containerDefine(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_ptr_setref(&((corto_container)_this)->type, type);
+    corto_ptr_setstr(&((corto_container)_this)->value, value);
     return corto_define(_this);
 }
 
-corto_container _corto_containerAssign(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_container _corto_containerAssign(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_ptr_setref(&((corto_container)_this)->type, type);
+    corto_ptr_setstr(&((corto_container)_this)->value, value);
     return _this;
 }
 
@@ -3371,7 +3377,7 @@ corto_iterator _corto_iteratorAssign(corto_iterator _this, corto_type elementTyp
     return _this;
 }
 
-corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     corto_leaf _this;
     _this = corto_leaf(corto_declare(corto_leaf_o));
     if (!_this) {
@@ -3382,6 +3388,7 @@ corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, co
         ((corto_struct)_this)->baseAccess = baseAccess;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_ptr_setref(&((corto_container)_this)->type, type);
+        corto_ptr_setstr(&((corto_container)_this)->value, value);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -3390,7 +3397,7 @@ corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, co
     return _this;
 }
 
-corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     corto_leaf _this;
     _this = corto_leaf(corto_declareChild(_parent, _id, corto_leaf_o));
     if (!_this) {
@@ -3401,6 +3408,7 @@ corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_
         ((corto_struct)_this)->baseAccess = baseAccess;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_ptr_setref(&((corto_container)_this)->type, type);
+        corto_ptr_setstr(&((corto_container)_this)->value, value);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -3409,7 +3417,7 @@ corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_
     return _this;
 }
 
-corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -3417,11 +3425,13 @@ corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modi
             ((corto_struct)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->implements, corto_interfaceseq_o, &implements);
             corto_ptr_setref(&((corto_container)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->type, type);
+            corto_ptr_setstr(&((corto_container)((corto_leaf)CORTO_OFFSET(_this, ((corto_type)corto_leaf_o)->size)))->value, value);
         } else {
             corto_ptr_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
             corto_ptr_setref(&((corto_container)_this)->type, type);
+            corto_ptr_setstr(&((corto_container)_this)->value, value);
         }
         corto_updateEnd(_this);
     } else {
@@ -3448,21 +3458,23 @@ corto_leaf _corto_leafDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_leafDefine(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_int16 _corto_leafDefine(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_ptr_setref(&((corto_container)_this)->type, type);
+    corto_ptr_setstr(&((corto_container)_this)->value, value);
     return corto_define(_this);
 }
 
-corto_leaf _corto_leafAssign(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_leaf _corto_leafAssign(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_ptr_setref(&((corto_container)_this)->type, type);
+    corto_ptr_setstr(&((corto_container)_this)->value, value);
     return _this;
 }
 
@@ -5651,7 +5663,7 @@ corto_struct _corto_structAssign(corto_struct _this, corto_interface base, corto
     return _this;
 }
 
-corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     corto_table _this;
     _this = corto_table(corto_declare(corto_table_o));
     if (!_this) {
@@ -5662,6 +5674,7 @@ corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, 
         ((corto_struct)_this)->baseAccess = baseAccess;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_ptr_setref(&((corto_container)_this)->type, type);
+        corto_ptr_setstr(&((corto_container)_this)->value, value);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -5670,7 +5683,7 @@ corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, 
     return _this;
 }
 
-corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     corto_table _this;
     _this = corto_table(corto_declareChild(_parent, _id, corto_table_o));
     if (!_this) {
@@ -5681,6 +5694,7 @@ corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, cort
         ((corto_struct)_this)->baseAccess = baseAccess;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         corto_ptr_setref(&((corto_container)_this)->type, type);
+        corto_ptr_setstr(&((corto_container)_this)->value, value);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -5689,7 +5703,7 @@ corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, cort
     return _this;
 }
 
-corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -5697,11 +5711,13 @@ corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_mo
             ((corto_struct)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->implements, corto_interfaceseq_o, &implements);
             corto_ptr_setref(&((corto_container)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->type, type);
+            corto_ptr_setstr(&((corto_container)((corto_table)CORTO_OFFSET(_this, ((corto_type)corto_table_o)->size)))->value, value);
         } else {
             corto_ptr_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
             corto_ptr_setref(&((corto_container)_this)->type, type);
+            corto_ptr_setstr(&((corto_container)_this)->value, value);
         }
         corto_updateEnd(_this);
     } else {
@@ -5728,21 +5744,23 @@ corto_table _corto_tableDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_tableDefine(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_int16 _corto_tableDefine(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_ptr_setref(&((corto_container)_this)->type, type);
+    corto_ptr_setstr(&((corto_container)_this)->value, value);
     return corto_define(_this);
 }
 
-corto_table _corto_tableAssign(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type) {
+corto_table _corto_tableAssign(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     corto_ptr_setref(&((corto_container)_this)->type, type);
+    corto_ptr_setstr(&((corto_container)_this)->value, value);
     return _this;
 }
 

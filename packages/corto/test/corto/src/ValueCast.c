@@ -164,7 +164,7 @@ void _test_ValueCast_tc_castBitmaskInt(
     test_ValueCast this)
 {
 /* $begin(test/ValueCast/tc_castBitmaskInt) */
-    corto_attr v = CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE;
+    corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
     corto_value left = corto_value_value(&v, corto_attr_o);
     corto_value out = corto_value_value(NULL, NULL);
 
@@ -178,7 +178,7 @@ void _test_ValueCast_tc_castBitmaskInt(
 
     corto_int64 *ptr = corto_value_ptrof(&out);
     test_assert(ptr != NULL);
-    test_assertint(*ptr, CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE);
+    test_assertint(*ptr, CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE);
 
 /* $end */
 }
@@ -187,7 +187,7 @@ void _test_ValueCast_tc_castBitmaskString(
     test_ValueCast this)
 {
 /* $begin(test/ValueCast/tc_castBitmaskString) */
-    corto_attr v = CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE;
+    corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
     corto_value left = corto_value_value(&v, corto_attr_o);
     corto_value out = corto_value_value(NULL, NULL);
 
@@ -201,7 +201,7 @@ void _test_ValueCast_tc_castBitmaskString(
 
     corto_string *ptr = corto_value_ptrof(&out);
     test_assert(ptr != NULL);
-    test_assertstr(*ptr, "ATTR_SCOPED|ATTR_WRITABLE");
+    test_assertstr(*ptr, "ATTR_NAMED|ATTR_WRITABLE");
 
 /* $end */
 }
@@ -210,7 +210,7 @@ void _test_ValueCast_tc_castBitmaskUint(
     test_ValueCast this)
 {
 /* $begin(test/ValueCast/tc_castBitmaskUint) */
-    corto_attr v = CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE;
+    corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
     corto_value left = corto_value_value(&v, corto_attr_o);
     corto_value out = corto_value_value(NULL, NULL);
 
@@ -224,7 +224,7 @@ void _test_ValueCast_tc_castBitmaskUint(
 
     corto_uint64 *ptr = corto_value_ptrof(&out);
     test_assert(ptr != NULL);
-    test_assertint(*ptr, CORTO_ATTR_SCOPED | CORTO_ATTR_WRITABLE);
+    test_assertint(*ptr, CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE);
 
 /* $end */
 }

@@ -797,6 +797,16 @@ void _test_Project_tc_packageNestedFullyScoped(
 /* $end */
 }
 
+void _test_Project_tc_packageNestedNoParent(
+    test_Project this)
+{
+/* $begin(test/Project/tc_packageNestedNoParent) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 void _test_Project_tc_packageNoCorto(
     test_Project this)
 {

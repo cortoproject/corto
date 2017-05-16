@@ -29,13 +29,13 @@ void _test_Fullname_tc_anonymousCollection(
     test_Fullname this)
 {
 /* $begin(test/Fullname/tc_anonymousCollection) */
-    corto_object o = corto_resolve(NULL, "test/PrimitiveList{10, 20, 30}");
+    corto_object o = corto_resolve(NULL, "test/IntList{10, 20, 30}");
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(test_PrimitiveList_o));
-    test_PrimitiveList *l = test_PrimitiveList(o);
+    test_assert(corto_typeof(o) == corto_type(test_IntList_o));
+    test_IntList *l = test_IntList(o);
     test_assertint(corto_ll_size(*l), 3);
 
-    test_assertstr(corto_fullpath(NULL, o), "/test/PrimitiveList{10,20,30}");
+    test_assertstr(corto_fullpath(NULL, o), "/test/IntList{10,20,30}");
     corto_int16 ret = corto_delete(o);
     test_assert(ret == 0);
 

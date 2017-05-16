@@ -319,7 +319,7 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
     /* If there are no subscribers, then there are no mounts that are potentially
      * interested in subscriptions */
 
-    if (corto_subscriber_admin.count && corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+    if (corto_subscriber_admin.count && corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
         if (observerMask & CORTO_ON_TREE) {
             if (mask == CORTO_ON_DEFINE) {
                 corto_id id;
@@ -732,7 +732,7 @@ int16_t _corto_observer_construct(
     }
 
     if (!corto_function(this)->parameters.length) {
-        if (!corto_checkAttr(this, CORTO_ATTR_SCOPED) || !strchr(corto_idof(this), '(')) {
+        if (!corto_checkAttr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
             corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
             corto_function(this)->parameters.length = 1;
             corto_parameter *p;
@@ -793,7 +793,7 @@ int16_t _corto_observer_init(
     corto_ptr_setref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
-    if (corto_checkAttr(this, CORTO_ATTR_SCOPED) && strchr(corto_idof(this), '(')) {
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED) && strchr(corto_idof(this), '(')) {
         /* id of function contains a parameter list, parse in function/init */
         corto_int16 result = corto_function_init(this);
         if (result) {
@@ -866,7 +866,7 @@ int16_t _corto_observer_observe(
 
     /* Test for error conditions before making changes */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-        if (!corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+        if (!corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
             corto_seterr(
                 "invalid nested subscription, observable is not scoped");
             goto error;
@@ -995,7 +995,7 @@ int16_t _corto_observer_observe(
         this->enabled = TRUE;
 
         /* Let mounts know of observer */
-        if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+        if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
             corto_iter it;
             corto_id observableId;
             corto_fullpath(observableId, observable);
@@ -1081,7 +1081,7 @@ bool _corto_observer_observing(
         if (!result) {
             if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
                 if ((this->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE))) {
-                    if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+                    if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
                         corto_rwmutexWrite(&_o->align.selfLock);
                         observerData = corto_observerFind(_o->onChild, this, instance);
                         if (observerData) {
@@ -1171,7 +1171,7 @@ int16_t _corto_observer_unobserve(
 
         /* If observer triggered on updates of childs, remove from onChilds list */
         if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-            if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+            if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
                 if (corto_rwmutexWrite(&_o->align.selfLock)) {
                     goto error;
                 }
@@ -1206,7 +1206,7 @@ int16_t _corto_observer_unobserve(
             this->enabled = FALSE;
         }
         
-        if (corto_checkAttr(observable, CORTO_ATTR_SCOPED)) {
+        if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
             corto_id observableId;
             corto_fullpath(observableId, observable);
             corto_select(

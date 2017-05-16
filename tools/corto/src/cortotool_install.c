@@ -444,11 +444,11 @@ int cortotool_uninstaller(corto_string env, corto_string dir) {
 
             filesTotal ++;
             if (!corto_fileTest(dependency)) {
-                corto_error("cannot remove %s: file does not exist");
+                corto_warning("cannot remove %s: file does not exist", dependency);
                 continue;
             }
             if (corto_rm(dependency)) {
-                corto_error("cannot remove %s: %s", dependency, corto_lasterr());
+                corto_warning("cannot remove %s: %s", dependency, corto_lasterr());
                 err = -1;
             } else {
                 corto_trace("removed '%s'", dependency);
@@ -644,7 +644,7 @@ corto_int32 cortotool_uninstallFromEnv(corto_string env, corto_string package)
         } else if (r < 0) {
             corto_error("not all files could be removed:%s", corto_lasterr());
         } else if (r < 4) {
-            corto_warning(
+            corto_info(
                 "partial installation removed for '%s' in '%s'",
                 package, env);
         }

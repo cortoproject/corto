@@ -41,7 +41,7 @@
  * The walk API is recursively implemented, which means that to visit deeper
  * levels of nesting, a walk method has to be invoked recursively. Scalar values
  * represent the leaf nodes of the values to visit. To visit all values, callbacks
- * in the `metaprogram` array must invoke `corto_value_walk` on the 'value' parameter
+ * in the `metaprogram` array must invoke `corto_walk_value` on the 'value' parameter
  * of the callback. In the `program` array, the following typeKinds must invoke
  * these functions respectively (if not specified, do not invoke anything):
  *
@@ -151,7 +151,7 @@ struct corto_walk_opt {
  * @param object The object to be visited.
  * @param userData A pointer that will be passed to the callbacks.  
  * @return 0 if success, non-zero if failed.
- * @see corto_value_walk corto_ptr_walk corto_metawalk
+ * @see corto_walk_value corto_walk_ptr corto_metawalk corto_walk_init
  */
 CORTO_EXPORT int16_t corto_walk(corto_walk_opt* opt, corto_object o, void* userData);
 
@@ -160,9 +160,9 @@ CORTO_EXPORT int16_t corto_walk(corto_walk_opt* opt, corto_object o, void* userD
  * @param object The corto_value instance to be visited.
  * @param userData A pointer that will be passed to the callbacks.  
  * @return 0 if success, non-zero if failed.
- * @see corto_walk corto_ptr_walk
+ * @see corto_walk corto_walk_ptr corto_walk_init
  */
-CORTO_EXPORT int16_t corto_value_walk(corto_walk_opt* opt, corto_value* value, void* userData);
+CORTO_EXPORT int16_t corto_walk_value(corto_walk_opt* opt, corto_value* value, void* userData);
 
 /** Walk over a native pointer.
  * @param opt Pointer to an initialized corto_walk_opt instance.
@@ -170,9 +170,9 @@ CORTO_EXPORT int16_t corto_value_walk(corto_walk_opt* opt, corto_value* value, v
  * @param type The type of the pointer.
  * @param userData A pointer that will be passed to the callbacks.  
  * @return 0 if success, non-zero if failed.
- * @see corto_walk corto_value_walk
+ * @see corto_walk corto_walk_value corto_walk_init
  */
-CORTO_EXPORT int16_t corto_ptr_walk(corto_walk_opt* opt, void* ptr, corto_type type, void* userData);
+CORTO_EXPORT int16_t corto_walk_ptr(corto_walk_opt* opt, void* ptr, corto_type type, void* userData);
 
 /** Walk over the members of a composite type.
  * This function should only be called from the CORTO_COMPOSITE callback in the
@@ -194,17 +194,19 @@ CORTO_EXPORT int16_t corto_walk_members(corto_walk_opt* opt, corto_value* value,
  * @param value The 'value' parameter passed to the CORTO_COLLECTION callback.
  * @param userData A pointer that will be passed to the callbacks.  
  * @return 0 if success, non-zero if failed.
- * @see corto_walk_elements
+ * @see corto_walk_members
  */
 CORTO_EXPORT int16_t corto_walk_elements(corto_walk_opt* opt, corto_value* value, void* userData);
 
 /** Initialize a corto_walk_opt instance.
  * @param opt Pointer to corto_walk_opt struct.
+ * @see corto_walk_deinit
  */
 CORTO_EXPORT void corto_walk_init(corto_walk_opt* opt);
 
 /** Deinitialize a corto_walk_opt instance.
  * @param opt Pointer to an initialized corto_walk_opt instance.
+ * @see corto_walk_init
  */
 CORTO_EXPORT int16_t corto_walk_deinit(corto_walk_opt* opt, void* userData);
 

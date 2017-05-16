@@ -58,7 +58,7 @@ void _test_AttrCheck_tc_packageObjectAttr(
 {
 /* $begin(test/AttrCheck/tc_packageObjectAttr) */
 
-    test_assertint(corto_attrof(test_o), CORTO_ATTR_SCOPED|CORTO_ATTR_PERSISTENT|CORTO_ATTR_OBSERVABLE);
+    test_assertint(corto_attrof(test_o), CORTO_ATTR_NAMED|CORTO_ATTR_PERSISTENT|CORTO_ATTR_OBSERVABLE);
 
 /* $end */
 }

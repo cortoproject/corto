@@ -465,7 +465,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_state_DEFINED),\
     SSO_OP_OBJ(lang_state_DESTRUCTED),\
     /* attr */\
-    SSO_OP_OBJ(lang_attr_ATTR_SCOPED),\
+    SSO_OP_OBJ(lang_attr_ATTR_NAMED),\
     SSO_OP_OBJ(lang_attr_ATTR_WRITABLE),\
     SSO_OP_OBJ(lang_attr_ATTR_OBSERVABLE),\
     SSO_OP_OBJ(lang_attr_ATTR_PERSISTENT),\
@@ -626,6 +626,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
     /* leaf */\
     SSO_OP_OBJ(lang_container_type),\
+    SSO_OP_OBJ(lang_container_value),\
     /* tablescope */\
     SSO_OP_OBJ(lang_tablescope_type),\
     /* table */\
@@ -688,7 +689,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_sent),\
     SSO_OP_OBJ(core_mount_received),\
     SSO_OP_OBJ(core_mount_sentDiscarded),\
-    SSO_OP_OBJ(core_mount_policies),\
     SSO_OP_OBJ(core_mount_subscriptions),\
     SSO_OP_OBJ(core_mount_events),\
     SSO_OP_OBJ(core_mount_passThrough),\

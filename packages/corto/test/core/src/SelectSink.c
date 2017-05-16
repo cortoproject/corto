@@ -23,6 +23,96 @@ void _test_SelectSink_setup(
 /* $end */
 }
 
+void _test_SelectSink_tc_selectLoaderCortoScope(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderCortoScope) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderCortoSingle(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderCortoSingle) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderCortoTree(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderCortoTree) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderNestedScope(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderNestedScope) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderNestedSingle(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderNestedSingle) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderNestedTree(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderNestedTree) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderRootScope(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderRootScope) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderRootSingle(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderRootSingle) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectLoaderRootTree(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectLoaderRootTree) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 void _test_SelectSink_tc_selectMixedScope(
     test_SelectSink this)
 {
