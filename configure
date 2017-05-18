@@ -12,7 +12,7 @@ export CORTO_TARGET="$HOME/.corto"
 export PATH="$CORTO_TARGET/bin:$PATH"
 export CORTO_VERSION=1.0
 export CORTO_BUILD="$HOME/.corto/lib/corto/$CORTO_VERSION/build"
-export LD_LIBRARY_PATH="$CORTO_HOME/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH-}:$CORTO_HOME/lib"
 
 mkdir -p "$HOME/.corto/lib/corto/$CORTO_VERSION"
 rm -rf "$HOME/.corto/lib/corto/$CORTO_VERSION/build"
