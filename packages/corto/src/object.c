@@ -5273,6 +5273,7 @@ corto_int16 corto_value_init(corto_value *v) {
 
 corto_int16 _corto_ptr_init(void *p, corto_type type) {
     corto_assertObject(type);
+    memset(p, 0, type->size);
     corto_value v;
     v = corto_value_value(p, type);
     return corto_value_init(&v);
@@ -5436,9 +5437,7 @@ error:;
 void* _corto_ptr_new(corto_type type) {
     void *result = NULL;
 
-    corto_assert(!type->reference, "cannot use corto_ptr_new for reference types, use corto_create");
-
-    result = corto_calloc(type->size);
+    result = corto_calloc(corto_type_sizeof(type));
     if (corto_ptr_init(result, type)) {
         corto_dealloc(result);
         goto error;
@@ -5449,8 +5448,7 @@ error:
     return NULL;
 }
 
-void _corto_ptr_free(corto_type type, void *ptr) {
-    corto_assert(!type->reference, "cannot use corto_ptr_free for reference types, use corto_delete");
+void _corto_ptr_free(void *ptr, corto_type type) {
     corto_ptr_deinit(ptr, type);
     corto_dealloc(ptr);
 }

@@ -34,12 +34,25 @@ int16_t corto_walk_ptr(corto_walk_opt* this, void *ptr, corto_type type, void* u
     return corto_walk_value(this, &v, userData);
 }
 
+int16_t corto_walk_observable(corto_walk_opt* this, corto_value* info, void* userData) {
+    corto_type type = corto_value_typeof(info);
+    corto_walk_cb cb = this->metaprogram[CORTO_MEMBER];
+    if (!cb) {
+        cb = corto_walk_value;
+    }
+
+    if (!type->reference) {
+        corto_value_ptrset(info, *(void**)corto_value_ptrof(info));
+    }
+
+    return cb(this, info, userData);
+}
+
 /* Forward value to the right callback function */
 int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData) {
     corto_type t;
     int16_t result;
     corto_walk_cb cb;
-    corto_bool isObservable = (info->kind == CORTO_MEMBER) && (info->is.member.t->modifiers & CORTO_OBSERVABLE);
 
     t = corto_value_typeof(info);
 
@@ -60,16 +73,13 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
 
     /* If the serializer has a special handler for reference types, use it in case the
      * type is a reference type. */
-    if (t->reference && (info->kind != CORTO_OBJECT) && (info->kind != CORTO_BASE) && !isObservable)
+    if (t->reference && (info->kind != CORTO_OBJECT) && (info->kind != CORTO_BASE))
     {
         cb = this->reference;
     } else
     /* ..otherwise use the program-handler */
     if (!cb) {
         cb = this->program[t->kind];
-    }
-    if (isObservable) {
-        corto_value_ptrset(info, *(void**)corto_value_ptrof(info));
     }
 
     result = 0;
@@ -88,6 +98,7 @@ void corto_walk_init(corto_walk_opt* this) {
     this->program[CORTO_COMPOSITE] = corto_walk_members;
     this->program[CORTO_COLLECTION] = corto_walk_elements;
     this->metaprogram[CORTO_BASE] = corto_walk_value;
+    this->observable = corto_walk_observable;
     this->initialized = TRUE;
     this->constructed = FALSE;
     this->access = CORTO_GLOBAL;
@@ -195,7 +206,7 @@ int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData) 
 }
 
 /* Serialize a single member */
-static int16_t corto_serializeMember(
+static int16_t corto_walk_member(
     corto_walk_opt* this,
     corto_member m,
     corto_object o,
@@ -209,9 +220,13 @@ static int16_t corto_serializeMember(
     corto_bool isAlias = corto_instanceof(corto_alias_o, m);
 
     if (isAlias && (this->aliasAction == CORTO_WALK_ALIAS_FOLLOW)) {
-        while (corto_instanceof(corto_alias_o, m)) {
+        do {
             m = corto_alias(m)->member;
-        }
+        } while (corto_typeof(m) == (corto_type)corto_alias_o);
+    }
+
+    if (modifiers & CORTO_OBSERVABLE) {
+        cb = this->observable;
     }
 
     if (!isAlias || (this->aliasAction != CORTO_WALK_ALIAS_IGNORE)) {
@@ -220,7 +235,7 @@ static int16_t corto_serializeMember(
             member.parent = info;
             member.is.member.o = o;
             member.is.member.t = m;
-            if (modifiers & CORTO_OPTIONAL) {
+            if (modifiers & CORTO_OPTIONAL && (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH)) {
                 member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
             } else {
                 member.is.member.v = CORTO_OFFSET(v, m->offset);
@@ -238,6 +253,7 @@ static int16_t corto_serializeMember(
             /* Don't serialize if member is optional and not set */
             if (!(modifiers & CORTO_OPTIONAL) ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_ALWAYS) ||
+                (this->optionalAction == CORTO_WALK_OPTIONAL_PASSTHROUGH) ||
                 member.is.member.v)
             {
                 if (cb(this, &member, userData)) {
@@ -309,7 +325,7 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
     if (this->members.length) {
         for (i = 0; i < this->members.length; i++) {
             m = this->members.buffer[i];
-            if (corto_serializeMember(this, m, o, v, cb, info, userData)) {
+            if (corto_walk_member(this, m, o, v, cb, info, userData)) {
                 goto error;
             }
         }
@@ -317,7 +333,7 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
         corto_int32 discriminator = *(corto_int32*)v;
         corto_member member = corto_union_findCase(t, discriminator);
         if (member) {
-            if (corto_serializeMember(this, member, o, v, cb, info, userData)) {
+            if (corto_walk_member(this, member, o, v, cb, info, userData)) {
                 goto error;
             }
         } else {
@@ -328,9 +344,9 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
             goto error;
         }
     } else {
-        for(i = 0; i < t->members.length; i  ++) {
+        for(i = 0; i < t->members.length; i ++) {
             m = t->members.buffer[i];
-            if (corto_serializeMember(this, m, o, v, cb, info, userData)) {
+            if (corto_walk_member(this, m, o, v, cb, info, userData)) {
                 goto error;
             }
         }

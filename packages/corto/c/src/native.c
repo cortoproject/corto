@@ -54,6 +54,12 @@ corto_int16 _corto_native_typeUpdate(corto_native_type _this, corto_string name)
     return 0;
 }
 
+corto_native_type _corto_native_typeAssign(corto_native_type _this, corto_string name) {
+    CORTO_UNUSED(_this);
+    corto_ptr_setstr(&((corto_native_type)_this)->name, name);
+    return _this;
+}
+
 corto_native_type _corto_native_typeDeclare(void) {
     corto_native_type _this;
     _this = corto_native_type(corto_declare(corto_native_type_o));
@@ -76,12 +82,6 @@ corto_int16 _corto_native_typeDefine(corto_native_type _this, corto_string name)
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_native_type)_this)->name, name);
     return corto_define(_this);
-}
-
-corto_native_type _corto_native_typeAssign(corto_native_type _this, corto_string name) {
-    CORTO_UNUSED(_this);
-    corto_ptr_setstr(&((corto_native_type)_this)->name, name);
-    return _this;
 }
 
 int32_t* corto_int32seqAppend(corto_int32seq *seq, int32_t element) {

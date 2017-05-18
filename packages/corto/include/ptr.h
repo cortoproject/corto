@@ -71,7 +71,7 @@ void* _corto_ptr_new(
  */
 CORTO_EXPORT
 void _corto_ptr_free(
-    corto_type type, void *ptr);
+    void *ptr, corto_type type);
 
 /** Get a corto string representation for value.
  * @param ptr A pointer to the value.
@@ -234,7 +234,7 @@ void corto_ptr_setstr(
 #define corto_ptr_init(p, type) _corto_ptr_init(p, corto_type(type))
 #define corto_ptr_deinit(p, type) _corto_ptr_deinit(p, corto_type(type))
 #define corto_ptr_new(type) _corto_ptr_new(corto_type(type))
-#define corto_ptr_free(type, ptr) _corto_ptr_free(corto_type(type), ptr)
+#define corto_ptr_free(ptr, type) _corto_ptr_free(ptr, corto_type(type))
 
 #ifdef __cplusplus
 }

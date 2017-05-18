@@ -197,6 +197,9 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
             if (m->modifiers & CORTO_OBSERVABLE) {
                 corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
             }
+            if (m->modifiers & CORTO_OPTIONAL) {
+                corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+            }
 
             m->offset = size;
             size += memberSize;

@@ -57,28 +57,26 @@ error:
     return -1;
 }
 
-corto_int16 corto_ser_initMember(corto_walk_opt* s, corto_value* v, void* userData) {
+corto_int16 corto_ser_initObservable(corto_walk_opt* s, corto_value* v, void* userData) {
     corto_member m = v->is.member.t;
 
-    /* If type is instanceof target, initialize member to a new target object */
-    if (m->modifiers & CORTO_OBSERVABLE) {
-        corto_type t = corto_value_typeof(v);
-        corto_object p = corto_value_objectof(v);
-        void* ptr = corto_value_ptrof(v);
+    /* Initialize member to a new object of member type */
+    corto_type t = corto_value_typeof(v);
+    corto_object p = corto_value_objectof(v);
+    void* ptr = corto_value_ptrof(v);
 
-        /* Create observable that is not added to the scope of its parent */
-        corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);
-        corto_object o = corto_createOrphan(p, corto_idof(m), t);
-        corto_setAttr(prev);
+    /* Create observable that is not added to the scope of its parent */
+    corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);
+    corto_object o = corto_createOrphan(p, corto_idof(m), t);
+    corto_setAttr(prev);
 
-        if (!o) {
-            goto error;
-        }
-
-        *(corto_object*)ptr = o;
+    if (!o) {
+        goto error;
     }
 
-    return corto_walk_value(s, v, userData);
+    *(corto_object*)ptr = o;
+
+    return corto_walk_observable(s, v, userData);
 error:
     return -1;
 }
@@ -93,7 +91,7 @@ corto_walk_opt corto_ser_init(corto_modifier access, corto_operatorKind accessKi
     s.traceKind = trace;
     s.program[CORTO_COLLECTION] = corto_ser_initCollection;
     s.program[CORTO_ANY] = corto_ser_initAny;
-    s.metaprogram[CORTO_MEMBER] = corto_ser_initMember;
-
+    s.observable = corto_ser_initObservable;
+    
     return s;
 }

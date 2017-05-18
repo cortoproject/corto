@@ -121,7 +121,8 @@ typedef enum corto_aliasActionKind {
 /* How should walk treat optional members */
 typedef enum corto_optionalActionKind {
     CORTO_WALK_OPTIONAL_IF_SET,
-    CORTO_WALK_OPTIONAL_ALWAYS
+    CORTO_WALK_OPTIONAL_ALWAYS,
+    CORTO_WALK_OPTIONAL_PASSTHROUGH
 } corto_optionalActionKind;
 
 struct corto_walk_opt {
@@ -144,6 +145,7 @@ struct corto_walk_opt {
     corto_walk_cb program[CORTO_ITERATOR+1];
     corto_walk_cb metaprogram[CORTO_CONSTANT+1];
     corto_walk_cb reference;
+    corto_walk_cb observable;
 };
 
 /** Walk over a corto object.
@@ -197,6 +199,24 @@ CORTO_EXPORT int16_t corto_walk_members(corto_walk_opt* opt, corto_value* value,
  * @see corto_walk_members
  */
 CORTO_EXPORT int16_t corto_walk_elements(corto_walk_opt* opt, corto_value* value, void* userData);
+
+/** Walk an observable member.
+ * This function should only be called from the callback specified for the 
+ * 'observable' member of 'opt'.
+ *
+ * Observable members introduce a level of indirection by creating an object of
+ * the member type, as opposed to inlining the member value. This function 
+ * resolves this indirection so that subsequent walk functions will be presented 
+ * with a pointer to the value, instead of the object. This allows walk callbacks
+ * to be agnostic about whether a member is observable.
+ *
+ * @param opt Pointer to an initialized corto_walk_opt instance.
+ * @param value The 'value' parameter passed to the observable callback.
+ * @param userData A pointer that will be passed to the callbacks.  
+ * @return 0 if success, non-zero if failed.
+ * @see corto_walk_members corto_walk_elements
+ */
+CORTO_EXPORT int16_t corto_walk_observable(corto_walk_opt* opt, corto_value* info, void* userData);
 
 /** Initialize a corto_walk_opt instance.
  * @param opt Pointer to corto_walk_opt struct.

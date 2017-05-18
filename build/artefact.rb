@@ -328,7 +328,6 @@ def build_target(hardcodedPaths)
   begin
     cmd cc_command
   rescue
-    STDERR.puts "\033[1;31mcorto:\033[0;49m command failed: #{cc_command}"
     abort
   end
 

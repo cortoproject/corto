@@ -23,25 +23,25 @@
 #include "copy_ser.h"
 
 static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *userData) {
-    corto_any *this = corto_value_ptrof(info);
+    corto_any *ptr = corto_value_ptrof(info);
     corto_copy_ser_t *data = userData, privateData;
-    corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
+    corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
     corto_value v;
 
-    if (this->type->kind == CORTO_PRIMITIVE) {
-        value->value = corto_calloc(corto_type_sizeof(this->type));
+    if (ptr->type->kind == CORTO_PRIMITIVE) {
+        value->value = corto_calloc(corto_type_sizeof(ptr->type));
     }
 
-    v = corto_value_value(this->value, this->type);
+    v = corto_value_value(ptr->value, ptr->type);
     privateData.value = corto_value_value(value->value, value->type);
 
     /* Set base of privateData. Because we're reusing the serializer, the
      * construct callback won't be called again */
-    privateData.base = this->value;
+    privateData.base = ptr->value;
 
     corto_walk_value(s, &v, &privateData);
 
-    value->type = this->type;
+    value->type = ptr->type;
     value->owner = TRUE;
 
     return 0;
@@ -50,15 +50,15 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *use
 static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_type type = corto_value_typeof(info);
     corto_copy_ser_t *data = userData;
-    void *this = corto_value_ptrof(info);
-    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
+    void *ptr = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
 
     CORTO_UNUSED(s);
 
     if (corto_primitive(type)->kind != CORTO_TEXT) {
-        memcpy(value, this, type->size);
+        memcpy(value, ptr, type->size);
     } else {
-        corto_ptr_setstr((corto_string*)value, *(corto_string*)this);
+        corto_ptr_setstr((corto_string*)value, *(corto_string*)ptr);
     }
 
     return 0;
@@ -66,23 +66,23 @@ static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, voi
 
 static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
-    void *this = corto_value_ptrof(info);
-    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
+    void *ptr = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
     CORTO_UNUSED(s);
 
-    corto_ptr_setref(value, *(corto_object*)this);
+    corto_ptr_setref(value, *(corto_object*)ptr);
 
     return 0;
 }
 
 static corto_int16 corto_ser_composite(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
-    void *this = corto_value_ptrof(info);
-    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)this - (corto_word)data->base));
+    void *ptr = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
     corto_type t = corto_value_typeof(info);
 
     if (corto_interface(t)->kind == CORTO_UNION) {
-        *(corto_int32*)value = *(corto_int32*)this;
+        *(corto_int32*)value = *(corto_int32*)ptr;
     }
 
     return corto_walk_members(s, info, userData);
@@ -233,7 +233,6 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
 
     CORTO_UNUSED(s);
 
-
     /* If this function is reached, collection-types are either equal or comparable. When the
      * base-object was a collection, the collection type can be different. When the base-object
      * was a composite type, the collection type has to be equal, since different composite
@@ -343,13 +342,56 @@ static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, voi
 }
 
 static corto_int16 corto_ser_member(corto_walk_opt* s, corto_value *info, void *userData) {
+    corto_copy_ser_t *data = userData;
     corto_member m = info->is.member.t;
 
-    if (m->modifiers & CORTO_OBSERVABLE) {
-        printf("serialize observable\n");
-        return 0;
+    if (m->modifiers & CORTO_OPTIONAL) {
+        void *ptr = corto_value_ptrof(info);
+        void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
+
+        void *ptrOptional = *(void**)ptr;
+        void *valueOptional = *(void**)value;
+
+        if (ptrOptional) {
+            if (!valueOptional) {
+                *(void**)value = valueOptional = corto_ptr_new(m->type);
+            }
+
+            corto_copy_ser_t privateData = {
+                .value = corto_value_value(valueOptional, m->type),
+                .base = ptrOptional
+            };
+
+            corto_value_ptrset(info, *(void**)ptr);
+            return corto_walk_value(s, info, &privateData);
+        } else {
+            if (valueOptional) {
+                /* Unset value */
+                corto_ptr_free(valueOptional, m->type);
+                *(void**)value = NULL;
+            }
+            return 0;
+        }
     } else {
-        return corto_walk_value(s, info, userData);
+        return corto_walk_value(s, info, data);
+    }
+}
+
+static corto_int16 corto_ser_observable(corto_walk_opt* s, corto_value *info, void *userData) {
+    corto_copy_ser_t *data = userData;
+
+    corto_type type = corto_value_typeof(info);
+
+    if (!type->reference) {
+        void *ptr = corto_value_ptrof(info);
+        void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
+        corto_copy_ser_t privateData = {
+            .value = corto_value_object(*(corto_object*)value, NULL), 
+            .base = *(corto_object*)ptr
+        };
+        return corto_walk_observable(s, info, &privateData);
+    } else {
+        return corto_walk_observable(s, info, data);
     }
 }
 
@@ -362,14 +404,16 @@ corto_walk_opt corto_copy_ser(corto_modifier access, corto_operatorKind accessKi
     s.accessKind = accessKind;
     s.traceKind = trace;
     s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
-    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+    s.optionalAction = CORTO_WALK_OPTIONAL_PASSTHROUGH;
     s.construct = corto_ser_construct;
     s.program[CORTO_VOID] = NULL;
     s.program[CORTO_ANY] = corto_ser_any;
     s.program[CORTO_PRIMITIVE] = corto_ser_primitive;
     s.program[CORTO_COMPOSITE] = corto_ser_composite;
     s.program[CORTO_COLLECTION] = corto_ser_collection;
-    s.reference = corto_ser_reference;
     s.metaprogram[CORTO_MEMBER] = corto_ser_member;
+    s.reference = corto_ser_reference;
+    s.observable = corto_ser_observable;
+
     return s;
 }

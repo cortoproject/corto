@@ -196,6 +196,8 @@ corto_walk_opt corto_ser_free(corto_modifier access, corto_operatorKind accessKi
     s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
     s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
     s.reference = corto_ser_freeReference;
+    s.observable = corto_ser_freeReference;
+
     return s;
 }
 
@@ -212,7 +214,8 @@ corto_walk_opt corto_ser_freeResources(corto_modifier access, corto_operatorKind
     s.program[CORTO_PRIMITIVE] = corto_ser_freePrimitive;
     s.program[CORTO_COLLECTION] = corto_ser_freeCollection;
     s.metaprogram[CORTO_MEMBER] = corto_ser_freeMember;
-
     s.reference = corto_ser_freeReference;
+    s.observable = corto_ser_freeReference;
+    
     return s;
 }

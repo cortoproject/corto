@@ -158,6 +158,10 @@ if NOCORTO == false then
         "include/_type.h"
     end
 
+    if not LOCAL and not APP and not USE_PACKAGE.include? PACKAGE + "/c" then
+      USE_PACKAGE << PACKAGE + "/c"
+    end
+
     file "include/_type.h" => [GENFILE, ".corto/packages.txt"] do
       verbose(VERBOSE)
       preload = PP_PRELOAD.join(" ")
