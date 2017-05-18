@@ -67,6 +67,11 @@ CFLAGS.unshift("-Wall")
 # Default CXXFLAGS
 CXXFLAGS << "-Wall" << "-std=c++0x" << "-fPIC" << "-Wno-write-strings"
 
+if CORTO_OS == "Darwin" then
+  LFLAGS << "-undefined dynamic_lookup"
+  LFLAGS << "-undefined dynamic_lookup"
+end
+
 # Set default compiler
 if LANGUAGE == "c" then
   COMPILER = CC

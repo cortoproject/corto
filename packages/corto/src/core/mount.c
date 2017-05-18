@@ -11,7 +11,12 @@
 /* $header() */
 #include "_object.h"
 extern corto_threadKey CORTO_KEY_MOUNT_RESULT;
-corto_entityAdmin corto_mount_admin;
+corto_entityAdmin corto_mount_admin = {
+    .key = 0,
+    .count = 0,
+    .lock = CORTO_RWMUTEX_INITIALIZER,
+    .changed = 0
+};
 /* $end */
 
 /* $header(corto/core/mount/construct) */
