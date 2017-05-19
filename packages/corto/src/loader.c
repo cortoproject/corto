@@ -334,7 +334,7 @@ error:
  * Load a Corto library
  * Receives the absolute path to the lib<name>.so file.
  */
-static int corto_loadLibrary(corto_string fileName, corto_bool validated, int argc, char* argv[]) {
+static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_dl *dl_out, int argc, char* argv[]) {
     corto_dl dl = NULL;
     corto_string build = NULL;
 
@@ -355,6 +355,10 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, int ar
 
     if (corto_loadFromDl(dl, fileName, argc, argv)) {
         goto error;
+    }
+
+    if (dl_out) {
+        *dl_out = dl;
     }
 
     return 0;
@@ -383,7 +387,7 @@ void (*corto_loaderResolveProc(corto_string procName))(void) {
  */
 int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data) {
     CORTO_UNUSED(data);
-    return corto_loadLibrary(file, FALSE, argc, argv);
+    return corto_loadLibrary(file, FALSE, NULL, argc, argv);
 }
 
 /* Load a package */
@@ -395,7 +399,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
 
     corto_mutexLock(&corto_adminLock);
     lib = corto_loadedAdminFind(str);
-    if (lib) {
+    if (lib && lib->library) {
         if (lib->loading == corto_threadSelf()) {
             if (!ignoreRecursive) {
                 corto_error("illegal recursive load of file '%s' from:", lib->name);
@@ -460,10 +464,17 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
     }
 
     /* Load file */
-    lib = corto_loadedAdminAdd(str);
-    corto_mutexUnlock(&corto_adminLock);
-    result = h->load(str, argc, argv, h->userData);
+    if (!lib) {
+        lib = corto_loadedAdminAdd(str);
+        corto_mutexUnlock(&corto_adminLock);
+        result = h->load(str, argc, argv, h->userData);
+    } else {
+        corto_mutexUnlock(&corto_adminLock);
+        result = corto_loadLibrary(lib->filename, TRUE, &lib->library, argc, argv);
+    }
+    
     corto_mutexLock(&corto_adminLock);
+
     lib->loading = 0;
     lib->result = result;
 
@@ -782,6 +793,7 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
     }
     }
 #else
+
     corto_bool setLoadAdminWhenFound = TRUE;
     if (!loaded || (!result && loaded->loading)) {
         result = corto_locatePackageIntern(relativePath, &base, &dl, TRUE);
@@ -797,6 +809,7 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
         corto_bool cleanupBase = FALSE;
         if (!loaded) {
             loaded = corto_loadedAdminAdd(package);
+            loaded->loading = 0;
         }
 
         if (!loaded->filename && setLoadAdminWhenFound) {

@@ -74,11 +74,54 @@
  * - CORTO_WALK_ALIAS_IGNORE: ignore alias members
  * - CORTO_WALK_ALIAS_PASSTHROUGH: visit alias members like ordinary members.
  *
+ * Corto types can, when inheriting from other types or on their own members,
+ * specify which parts of a type are be hidden. Hidden means that a member will
+ * not show up in "ordered initializers". Ordered initializers are initializers
+ * where member values are specified in order of occurrence (`{10, 20, 30}`). 
+ * The opposite is an unordered initializers, where members are initialized by 
+ * name (`{z=10 x=20 y=30}`). With `alias` members, a user can "unhide" hidden 
+ * members. By combining hidden and alias members, a user can exercise full 
+ * control over the order in which members appear in ordered initializers. An
+ * example:
+ *
+@verbatim
+```
+struct Foo:/
+  u: int32
+  v: int32, hidden
+  w: int32
+
+struct Bar: Foo, hidden
+  alias x: Foo/u
+  alias y: Foo/v
+  z: int32
+```
+@endverbatim
+ * 
+ * The initializers for Foo is `{u, w}`, whereas the initializer for Bar is
+ * `{x, y, z}` where `x` and `y` are an alias for `Foo/u` and `Foo/v`. The `w`
+ * member is not part of the ordered initializer for `Bar`, while the `v` member
+ * is not part of the ordered initializer for `Foo`.
+ *
+ * Ordered initializers are used in many places in corto. For example, the `Bar`
+ * type uses an ordered initializer to set its base member to `Foo` (it could also
+ * have read `struct Bar: base=Foo`). Furthermore, ordered initializers are used
+ * in many generated functions where a value is initialized or set.
+ *
  * The `optionalAction` member specifies what to do when an optional member is 
  * encountered:
  *
  * - CORTO_WALK_OPTIONAL_IF_SET: only visit optional values when set.
  * - CORTO_WALK_OPTIONAL_ALWAYS: always visit optional values.
+ * - CORTO_WALK_OPTIONAL_PASSTHROUGH: do not dereference optional values
+ *
+ * Optional members in Corto are implemented as a pointer to the member type. If
+ * an optional member is not set, the member contains a NULL pointer. By default
+ * the walk routine dereferences optional values so that callbacks do not have
+ * to implement special logic to deal with optional values. In some cases
+ * however a walk routine needs access to the "raw" pointer, for example, when
+ * a member needs to be set/unset in a callback. For these scenario's, the
+ * CORTO_WALK_OPTIONAL_PASSTHROUGH feature can be used.
  *
  * The `visitAllCases` member specifies whether the walk action should visit
  * all union cases or only the active union case (determined by the 

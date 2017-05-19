@@ -383,9 +383,9 @@ static int corto_logprint_msg(corto_buffer *buf, corto_string msg) {
     return 1;
 }
 
-static int corto_logprint_file(corto_buffer *buf, char* file) {
+static int corto_logprint_file(corto_buffer *buf, char const *file) {
     if (file) {
-        corto_buffer_appendstr(buf, file);
+        corto_buffer_appendstr(buf, (char*)file);
         return 1;
     } else {
         return 0;
@@ -401,7 +401,7 @@ static int corto_logprint_line(corto_buffer *buf, corto_uint64 line) {
     }
 }
 
-static void corto_logprint(FILE *f, corto_err kind, char *components[], char *file, corto_uint64 line, char *msg) {
+static void corto_logprint(FILE *f, corto_err kind, char *components[], char const *file, corto_uint64 line, char *msg) {
     size_t n = 0;
     corto_buffer buf = CORTO_BUFFER_INIT;
     char *fmtptr, ch;
@@ -490,7 +490,7 @@ void corto_errfmt(char *fmt) {
     corto_setenv("CORTO_ERRFMT", "%s", fmt);
 }
 
-corto_err corto_logv(char *file, unsigned int line, corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
+corto_err corto_logv(char const *file, unsigned int line, corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
     if (kind >= CORTO_LOG_LEVEL || corto_err_callbacks) {
         corto_string alloc = NULL;
         char buff[CORTO_MAX_LOG + 1];
@@ -542,7 +542,7 @@ corto_err corto_logv(char *file, unsigned int line, corto_err kind, unsigned int
     return kind;
 }
 
-void _corto_assertv(char *file, unsigned int line, unsigned int condition, char* fmt, va_list args) {
+void _corto_assertv(char const *file, unsigned int line, unsigned int condition, char* fmt, va_list args) {
     if (!condition) {
         corto_logv(file, line, CORTO_ASSERT, 0, fmt, args, stderr);
         corto_backtrace(stderr);
@@ -550,38 +550,38 @@ void _corto_assertv(char *file, unsigned int line, unsigned int condition, char*
     }
 }
 
-void corto_criticalv(char *file, unsigned int line, char* fmt, va_list args) {
+void corto_criticalv(char const *file, unsigned int line, char* fmt, va_list args) {
     corto_logv(file, line, CORTO_CRITICAL, 0, fmt, args, stdout);
     corto_backtrace(stdout);
     fflush(stdout);
     abort();
 }
 
-corto_err corto_debugv(char *file, unsigned int line, char* fmt, va_list args) {
+corto_err corto_debugv(char const *file, unsigned int line, char* fmt, va_list args) {
     return corto_logv(file, line, CORTO_DEBUG, 0, fmt, args, stderr);
 }
 
-corto_err corto_tracev(char *file, unsigned int line, char* fmt, va_list args) {
+corto_err corto_tracev(char const *file, unsigned int line, char* fmt, va_list args) {
     return corto_logv(file, line, CORTO_TRACE, 0, fmt, args, stderr);
 }
 
-corto_err corto_warningv(char *file, unsigned int line, char* fmt, va_list args) {
+corto_err corto_warningv(char const *file, unsigned int line, char* fmt, va_list args) {
     return corto_logv(file, line, CORTO_WARNING, 0, fmt, args, stderr);
 }
 
-corto_err corto_errorv(char *file, unsigned int line, char* fmt, va_list args) {
+corto_err corto_errorv(char const *file, unsigned int line, char* fmt, va_list args) {
     corto_err result = corto_logv(file, line, CORTO_ERROR, 0, fmt, args, stderr);
-    if (CORTO_DEBUG_ENABLED) {
+    if (CORTO_BACKTRACE_ENABLED || CORTO_DEBUG_ENABLED) {
         corto_backtrace(stderr);
     }
     return result;
 }
 
-corto_err corto_okv(char *file, unsigned int line, char* fmt, va_list args) {
+corto_err corto_okv(char const *file, unsigned int line, char* fmt, va_list args) {
     return corto_logv(file, line, CORTO_OK, 0, fmt, args, stderr);
 }
 
-corto_err corto_infov(char *file, unsigned int line, char* fmt, va_list args) {
+corto_err corto_infov(char const *file, unsigned int line, char* fmt, va_list args) {
     return corto_logv(file, line, CORTO_INFO, 0, fmt, args, stdout);
 }
 
@@ -615,7 +615,7 @@ void corto_setmsgv(char *fmt, va_list args) {
     corto_dealloc(err);
 }
 
-corto_err _corto_debug(char *file, unsigned int line, char* fmt, ...) {
+corto_err _corto_debug(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -626,7 +626,7 @@ corto_err _corto_debug(char *file, unsigned int line, char* fmt, ...) {
     return result;
 }
 
-corto_err _corto_trace(char *file, unsigned int line, char* fmt, ...) {
+corto_err _corto_trace(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -637,7 +637,7 @@ corto_err _corto_trace(char *file, unsigned int line, char* fmt, ...) {
     return result;
 }
 
-corto_err _corto_info(char *file, unsigned int line, char* fmt, ...) {
+corto_err _corto_info(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -648,7 +648,7 @@ corto_err _corto_info(char *file, unsigned int line, char* fmt, ...) {
     return result;
 }
 
-corto_err _corto_ok(char *file, unsigned int line, char* fmt, ...) {
+corto_err _corto_ok(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -659,7 +659,7 @@ corto_err _corto_ok(char *file, unsigned int line, char* fmt, ...) {
     return result;
 }
 
-corto_err _corto_warning(char *file, unsigned int line, char* fmt, ...) {
+corto_err _corto_warning(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -670,7 +670,7 @@ corto_err _corto_warning(char *file, unsigned int line, char* fmt, ...) {
     return result;
 }
 
-corto_err _corto_error(char *file, unsigned int line, char* fmt, ...) {
+corto_err _corto_error(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
     corto_err result;
 
@@ -681,7 +681,7 @@ corto_err _corto_error(char *file, unsigned int line, char* fmt, ...) {
     return result;
 }
 
-void _corto_critical(char *file, unsigned int line, char* fmt, ...) {
+void _corto_critical(char const *file, unsigned int line, char* fmt, ...) {
     va_list arglist;
 
     va_start(arglist, fmt);
@@ -689,7 +689,7 @@ void _corto_critical(char *file, unsigned int line, char* fmt, ...) {
     va_end(arglist);
 }
 
-void _corto_assert(char *file, unsigned int line, unsigned int condition, char* fmt, ...) {
+void _corto_assert(char const *file, unsigned int line, unsigned int condition, char* fmt, ...) {
     va_list arglist;
 
     va_start(arglist, fmt);

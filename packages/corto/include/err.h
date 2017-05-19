@@ -66,24 +66,24 @@ CORTO_EXPORT void corto_verbosity(corto_err level);
 CORTO_EXPORT corto_err corto_verbosityGet(void);
 
 /* Report errors */
-CORTO_EXPORT void _corto_assert(char *file, unsigned int line, unsigned int condition, char* fmt, ...);
-CORTO_EXPORT corto_err _corto_debug(char *file, unsigned int line, char* fmt, ...);
-CORTO_EXPORT corto_err _corto_trace(char *file, unsigned int line, char* fmt, ...);
-CORTO_EXPORT corto_err _corto_info(char *file, unsigned int line, char* fmt, ...);
-CORTO_EXPORT corto_err _corto_ok(char *file, unsigned int line, char* fmt, ...);
-CORTO_EXPORT corto_err _corto_warning(char *file, unsigned int line, char* fmt, ...);
-CORTO_EXPORT corto_err _corto_error(char *file, unsigned int line, char* fmt, ...);
-CORTO_EXPORT void _corto_critical(char *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT void _corto_assert(char const *file, unsigned int line, unsigned int condition, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_debug(char const *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_trace(char const *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_info(char const *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_ok(char const *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_warning(char const *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT corto_err _corto_error(char const *file, unsigned int line, char* fmt, ...);
+CORTO_EXPORT void _corto_critical(char const *file, unsigned int line, char* fmt, ...);
 
 /* Report errors (va_list as parameter) */
-CORTO_EXPORT void _corto_assertv(char *file, unsigned int line, unsigned int condition, char* fmt, va_list args);
-CORTO_EXPORT corto_err corto_debugv(char *file, unsigned int line, char* fmt, va_list args);
-CORTO_EXPORT corto_err corto_tracev(char *file, unsigned int line, char* fmt, va_list args);
-CORTO_EXPORT corto_err corto_infov(char *file, unsigned int line, char* fmt, va_list args);
-CORTO_EXPORT corto_err corto_okv(char *file, unsigned int line, char* fmt, va_list args);
-CORTO_EXPORT corto_err corto_warningv(char *file, unsigned int line, char* fmt, va_list args);
-CORTO_EXPORT corto_err corto_errorv(char *file, unsigned int line, char* fmt, va_list args);
-CORTO_EXPORT void corto_criticalv(char *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT void _corto_assertv(char const *file, unsigned int line, unsigned int condition, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_debugv(char const *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_tracev(char const *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_infov(char const *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_okv(char const *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_warningv(char const *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT corto_err corto_errorv(char const *file, unsigned int line, char* fmt, va_list args);
+CORTO_EXPORT void corto_criticalv(char const *file, unsigned int line, char* fmt, va_list args);
 CORTO_EXPORT void corto_seterrv(char *fmt, va_list args);
 
 /* Set console error format */
