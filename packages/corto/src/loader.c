@@ -401,21 +401,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
     lib = corto_loadedAdminFind(str);
     if (lib && lib->library) {
         if (lib->loading == corto_threadSelf()) {
-            if (!ignoreRecursive) {
-                corto_error("illegal recursive load of file '%s' from:", lib->name);
-                corto_iter iter = corto_ll_iter(loadedAdmin);
-                while (corto_iter_hasNext(&iter)) {
-                    struct corto_loadedAdmin *lib = corto_iter_next(&iter);
-                    if (lib->loading) {
-                        fprintf(stderr, "   %s\n", lib->name);
-                    }
-                }
-                corto_backtrace(stderr);
-                abort();
-            } else {
-                corto_mutexUnlock(&corto_adminLock);
-                goto loaded;
-            }
+            goto recursive;
         } else {
             result = lib->result;
             corto_mutexUnlock(&corto_adminLock);
@@ -469,7 +455,11 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         corto_mutexUnlock(&corto_adminLock);
         result = h->load(str, argc, argv, h->userData);
     } else {
+        if (lib->loading == corto_threadSelf()) {
+            goto recursive;
+        }
         corto_mutexUnlock(&corto_adminLock);
+        lib->loading = corto_threadSelf();
         result = corto_loadLibrary(lib->filename, TRUE, &lib->library, argc, argv);
     }
     
@@ -487,6 +477,21 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
     return result;
 error:
     return -1;
+recursive:
+    if (!ignoreRecursive) {
+        corto_error("illegal recursive load of file '%s' from:", lib->name);
+        corto_iter iter = corto_ll_iter(loadedAdmin);
+        while (corto_iter_hasNext(&iter)) {
+            struct corto_loadedAdmin *lib = corto_iter_next(&iter);
+            if (lib->loading) {
+                fprintf(stderr, "   %s\n", lib->name);
+            }
+        }
+        corto_backtrace(stderr);
+        abort();
+    } else {
+        corto_mutexUnlock(&corto_adminLock);
+    }
 loaded:
     return result;
 }

@@ -209,16 +209,16 @@ void _test_Loader_tc_loadSelf(
     test_assert(corto_chdir(TEST_ETC) == 0);
 
     sig = corto_proccmd("corto rebuild loadSelf --silent", &ret);
-    test_assert(ret == 0);
-    test_assert(sig == 0);
+    test_assertint(ret, 0);
+    test_assertint(sig, 0);
 
     sig = corto_proccmd("corto loadSelf", &ret);
-    test_assert(ret == 0);
-    test_assert(sig == 6);
+    test_assertint(ret, 0);
+    test_assertint(sig, 6);
 
     sig = corto_proccmd("corto clean loadSelf --silent", &ret);
-    test_assert(ret == 0);
-    test_assert(sig == 0);
+    test_assertint(ret, 0);
+    test_assertint(sig, 0);
 
 /* $end */
 }

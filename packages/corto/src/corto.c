@@ -966,8 +966,14 @@ void corto_initEnvironment(void) {
     }
 
     /* CORTO_HOME is where corto binaries are located */
-    if (!corto_getenv("CORTO_HOME")) {
+    if (!corto_getenv("CORTO_HOME") || !strlen(corto_getenv("CORTO_HOME"))) {
         corto_setenv("CORTO_HOME", "/usr/local");
+    }
+
+    /* If there is no home directory, default to /usr/local. This should be
+     * avoided in development environments. */
+    if (!corto_getenv("HOME") || !strlen(corto_getenv("HOME"))) {
+        corto_setenv("HOME", "/usr/local");
     }
 
     /* CORTO_TARGET is where a project will be built */
@@ -1318,10 +1324,13 @@ corto_bool corto_isbuiltin(corto_object o) {
     return FALSE;
 }
 
-void corto_autoload(corto_bool autoload) {
+bool corto_autoload(corto_bool autoload) {
+    bool prev = false;
     if (corto_loaderInstance) {
+        prev = corto_loaderInstance->autoLoad;
         corto_loaderInstance->autoLoad = autoload;
     }
+    return prev;
 }
 
 corto_bool corto_enableload(corto_bool enable) {

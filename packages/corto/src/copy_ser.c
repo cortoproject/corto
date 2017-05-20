@@ -382,16 +382,24 @@ static corto_int16 corto_ser_observable(corto_walk_opt* s, corto_value *info, vo
 
     corto_type type = corto_value_typeof(info);
 
+    void *ptr = corto_value_ptrof(info);
+    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
+
     if (!type->reference) {
-        void *ptr = corto_value_ptrof(info);
-        void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
         corto_copy_ser_t privateData = {
             .value = corto_value_object(*(corto_object*)value, NULL), 
             .base = *(corto_object*)ptr
         };
         return corto_walk_observable(s, info, &privateData);
     } else {
-        return corto_walk_observable(s, info, data);
+        /* Observable reference members are automatically initialized with an
+         * orphaned object of the specified member type. */
+        corto_object dst = *(corto_object*)value;
+        corto_object src = *(corto_object*)ptr;
+        if (corto_copy(&dst, src)) {
+            return -1;
+        }
+        return 0;
     }
 }
 

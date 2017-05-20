@@ -118,6 +118,9 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
 
 corto_int16 cortotool_loadRakefile(void) {
 
+    /* Don't load package library */
+    bool prev = corto_autoload(false);
+
     if (!corto_fileTest("project.json")) {
         if (!corto_fileTest("rakefile")) {
             corto_seterr("no project.json or rakefile provided");
@@ -132,9 +135,6 @@ corto_int16 cortotool_loadRakefile(void) {
         goto error_fileLoad;
     }
 
-    /* Extract id from JSON. If the package is nested, and its parent does not
-     * exist, a directory must be created for the parent before the JSON can be
-     * parsed. */
     corto_result r;
     memset(&r, 0, sizeof(r));
     if (corto_result_fromcontent(&r, "text/json", json)) {
@@ -155,6 +155,7 @@ corto_int16 cortotool_loadRakefile(void) {
     corto_ptr_deinit(&r, corto_result_o);
 
 skip:
+    corto_autoload(prev);
     return 0;
 
 error_createRakefile:
@@ -165,6 +166,7 @@ error_createFromContent:
     corto_dealloc(json);
 error_fileLoad:
 error_fileTest:
+    corto_autoload(prev);
     return -1;
 }
 

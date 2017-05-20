@@ -58,8 +58,8 @@ extern "C" {
 
 CORTO_EXPORT int corto_start(char *appName);
 CORTO_EXPORT int corto_stop(void);
-CORTO_EXPORT corto_bool corto_enableload(corto_bool enable);
-CORTO_EXPORT void corto_autoload(corto_bool autoload);
+CORTO_EXPORT bool corto_enableload(corto_bool enable);
+CORTO_EXPORT bool corto_autoload(corto_bool autoload);
 CORTO_EXPORT corto_string corto_getBuild(void);
 CORTO_EXPORT corto_string corto_getLibrary(void);
 CORTO_EXPORT corto_bool corto_isbuiltin(corto_object o);

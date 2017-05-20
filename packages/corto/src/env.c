@@ -101,6 +101,10 @@ char* corto_venvparse(const char* input, va_list arglist) {
             varptr++;
         } else if (ch == '~') {
             char *val = corto_getenv("HOME");
+            if (!val) {
+                corto_seterr("$HOME environment variable (~) not found in string '%s'", str);
+                goto error;
+            }
             int len = strlen(val);
             bptr = corto_growBuffer(&result, bptr, &size, len);
             memcpy(bptr, val, len);
