@@ -39,6 +39,61 @@ void _test_Subscribe_tc_noInitialSep(
 /* $end */
 }
 
+/* $header(test/Subscribe/tc_subscribeAlignSelf) */
+void subscribeAlignSelf(corto_subscriberEvent *e)
+{
+    test_Subscribe this = e->instance;
+    test_assertstr(e->data.id, "o");
+    test_assert(e->event == CORTO_ON_DEFINE);
+    this->triggered = TRUE;
+}
+/* $end */
+void _test_Subscribe_tc_subscribeAlignSelf(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeAlignSelf) */
+    corto_createChild(root_o, "o", corto_void_o);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE, "o")
+      .instance(this)
+      .callback(subscribeAlignSelf);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeAlignType) */
+void subscribeAlignType(corto_subscriberEvent *e)
+{
+    test_Subscribe this = e->instance;
+    test_assertstr(e->data.id, "p");
+    test_assert(e->event == CORTO_ON_DEFINE);
+    this->triggered = TRUE;
+}
+/* $end */
+void _test_Subscribe_tc_subscribeAlignType(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeAlignType) */
+    corto_createChild(root_o, "o", corto_int32_o);
+    corto_createChild(root_o, "p", corto_float32_o);
+    corto_createChild(root_o, "q", corto_string_o);
+
+    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE, "*")
+      .instance(this)
+      .type("float32")
+      .callback(subscribeAlignType);
+
+    test_assert(this->triggered == TRUE);
+
+    test_assert(corto_delete(s) == 0);
+
+/* $end */
+}
+
 /* $header(test/Subscribe/tc_subscribeInvertCase) */
 void subscribeInvertCaseOnUpdate(corto_subscriberEvent *e)
 {

@@ -4917,12 +4917,17 @@ corto_string corto_value_str(corto_value* v, corto_uint32 maxLength) {
     return result;
 }
 
-corto_string _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
+char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
     corto_assertObject(type);
 
     corto_value v;
     v = corto_value_value(p, type);
     return corto_value_str(&v, maxLength);
+}
+
+char *_corto_ptr_contentof(void *ptr, corto_type type, char *contentType) {
+    corto_value v = corto_value_value(ptr, type);
+    return corto_value_contentof(&v, contentType);
 }
 
 corto_int16 corto_fromStr(void *o, corto_string string) {

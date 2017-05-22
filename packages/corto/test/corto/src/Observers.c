@@ -158,6 +158,63 @@ void _test_Observers_tc_notObserving(
 /* $end */
 }
 
+/* $header(test/Observers/tc_observeAlignSelf) */
+void tc_observeAlignCallbackSelf(corto_observerEvent *e) {
+    test_assert(e->data != NULL);
+    test_assertstr(corto_idof(e->data), "o");
+    test_assert(e->event == CORTO_ON_DEFINE);
+}
+/* $end */
+void _test_Observers_tc_observeAlignSelf(
+    test_Observers this)
+{
+/* $begin(test/Observers/tc_observeAlignSelf) */
+    corto_object o = corto_createChild(root_o, "o", corto_void_o);
+
+    corto_observer observer = corto_observe(CORTO_ON_DEFINE|CORTO_ON_INVALIDATE, o)
+      .callback(tc_observeAlignCallbackSelf);
+    test_assert(observer != NULL);
+
+    test_assert(corto_delete(observer) == 0);
+    test_assert(corto_delete(o) == 0);
+
+/* $end */
+}
+
+/* $header(test/Observers/tc_observeAlignSelf) */
+void tc_observeAlignCallbackType(corto_observerEvent *e) {
+    test_Observers this = e->instance;
+    test_assert(e->data != NULL);
+    test_assertstr(corto_idof(e->data), "p");
+    test_assert(e->event == CORTO_ON_DEFINE);
+    this->observable = e->data;
+
+}
+/* $end */
+void _test_Observers_tc_observeAlignType(
+    test_Observers this)
+{
+/* $begin(test/Observers/tc_observeAlignType) */
+    corto_object o = corto_createChild(root_o, "o", corto_int32_o);
+    corto_object p = corto_createChild(root_o, "p", corto_float32_o);
+    corto_object q = corto_createChild(root_o, "q", corto_string_o);
+
+    corto_observer observer = corto_observe(CORTO_ON_DEFINE|CORTO_ON_SCOPE, root_o)
+      .type("float32")
+      .instance(this)
+      .callback(tc_observeAlignCallbackType);
+    test_assert(observer != NULL);
+
+    test_assert(this->observable == p);
+
+    test_assert(corto_delete(observer) == 0);
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(p) == 0);
+    test_assert(corto_delete(q) == 0);
+
+/* $end */
+}
+
 void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     test_Observers this)
 {

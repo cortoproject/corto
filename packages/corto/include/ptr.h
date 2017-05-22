@@ -73,12 +73,26 @@ CORTO_EXPORT
 void _corto_ptr_free(
     void *ptr, corto_type type);
 
+/** Serialize pointer to a specified format.
+ * @param ptr A pointer to the value.
+ * @param type The type of the value.
+ * @param contentType The contentType to serialize to.
+ * @return A serialized string for the value. Must be deallocated with free.
+ * @see corto_ptr_str
+ */
+CORTO_EXPORT
+char *_corto_ptr_contentof(
+    void *ptr, corto_type type, char *contentType);
+
 /** Get a corto string representation for value.
+ * This function is equivalent to calling `corto_ptr_contentof` with content
+ * type `text/corto`.
+ *
  * @param ptr A pointer to the value.
  * @param type The type of the value.
  * @param maxLength The type of the value.
  * @return A serialized corto string for the value. Must be deallocated with free.
- * @see corto_ptr_fromStr
+ * @see corto_ptr_fromStr corto_ptr_contentof
  */
 CORTO_EXPORT
 char *_corto_ptr_str(
@@ -229,6 +243,7 @@ void corto_ptr_setstr(
 #define corto_ptr_cast(fromType, from, toType, to) _corto_ptr_cast(corto_type(fromType), from, corto_type(toType), to)
 #define corto_ptr_str(p, type, maxLength) _corto_ptr_str(p, corto_type(type), maxLength)
 #define corto_ptr_fromStr(out, type, string) _corto_ptr_fromStr(out, corto_type(type), string)
+#define corto_ptr_contentof(p, type, maxLength) _corto_ptr_contentof(p, corto_type(type), maxLength)
 #define corto_ptr_copy(p, type, src) _corto_ptr_copy(p, corto_type(type), src)
 #define corto_ptr_compare(p1, type, p2) _corto_ptr_compare(p1, corto_type(type), p2)
 #define corto_ptr_init(p, type) _corto_ptr_init(p, corto_type(type))

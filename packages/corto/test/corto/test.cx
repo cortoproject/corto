@@ -1051,6 +1051,8 @@ test/Suite Observers:/
     void tc_notObserving()
     void tc_observingSingleInstance()
     void tc_observingMultipleInstances()
+    void tc_observeAlignSelf()
+    void tc_observeAlignType()
 
     mask: core/eventMask, private
     observable: object, private
@@ -1133,6 +1135,8 @@ test/Suite Subscribe:/
     void tc_subscribePartialMatchingParent()
     void tc_subscribePartialMatchingParentObject()
     void tc_subscribeOwnerSet()
+    void tc_subscribeAlignSelf()
+    void tc_subscribeAlignType()
 
 // Function overloading support types
 void ol_null(object a)

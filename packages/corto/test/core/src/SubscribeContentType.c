@@ -420,6 +420,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
     corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
         .instance(this)
         .contentType("text/corto")
+        .dispatcher(dispatcher)
         .callback(string);
 
     test_assert(s != 0);

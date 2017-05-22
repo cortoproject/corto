@@ -631,11 +631,13 @@ int16_t _corto_subscriber_subscribe(
     if (!align || !this->contentType) {
         ret = corto_select(this->expr)
           .from(this->parent)
+          .type(corto_observer(this)->type)
           .instance(this) /* this prevents mounts from subscribing to themselves */
           .subscribe(&it);
     } else {
         ret = corto_select(this->expr)
           .from(this->parent)
+          .type(corto_observer(this)->type)
           .contentType(this->contentType)
           .instance(this) /* this prevents mounts from subscribing to themselves */
           .subscribe(&it);
@@ -647,7 +649,7 @@ int16_t _corto_subscriber_subscribe(
     /* Add subscriber to global subscriber admin */
     corto_entityAdmin_add(
         &corto_subscriber_admin,
-        this->parent,
+        this->parent ? this->parent : "/",
         this,
         instance);
 
