@@ -36,6 +36,156 @@ void _test_SelectContentType_setup(
 /* $end */
 }
 
+void _test_SelectContentType_tc_selectBinaryFromJson(
+    test_SelectContentType this)
+{
+/* $begin(test/SelectContentType/tc_selectBinaryFromJson) */
+    corto_iter iter;
+    corto_result *result;
+    test_Point *p;
+
+    corto_int16 ret = corto_select("json/*").contentType("binary/corto").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "/json"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 10);
+    test_assertint(p->y, 20);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "b"));
+    test_assert(!strcmp(result->parent, "/json"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 30);
+    test_assertint(p->y, 40);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "c"));
+    test_assert(!strcmp(result->parent, "/json"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 50);
+    test_assertint(p->y, 60);
+
+/* $end */
+}
+
+void _test_SelectContentType_tc_selectBinaryFromObjects(
+    test_SelectContentType this)
+{
+/* $begin(test/SelectContentType/tc_selectBinaryFromObjects) */
+    corto_iter iter;
+    corto_result *result;
+    test_Point *p;
+
+    corto_int16 ret = corto_select("obj/*").contentType("binary/corto").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "/obj"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 10);
+    test_assertint(p->y, 20);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "b"));
+    test_assert(!strcmp(result->parent, "/obj"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 30);
+    test_assertint(p->y, 40);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "c"));
+    test_assert(!strcmp(result->parent, "/obj"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 50);
+    test_assertint(p->y, 60);
+
+/* $end */
+}
+
+void _test_SelectContentType_tc_selectBinaryFromString(
+    test_SelectContentType this)
+{
+/* $begin(test/SelectContentType/tc_selectBinaryFromString) */
+    corto_result *result;
+    corto_iter iter;
+    test_Point *p;
+
+    corto_int16 ret = corto_select("str/*").contentType("binary/corto").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "a"));
+    test_assert(!strcmp(result->parent, "/str"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 10);
+    test_assertint(p->y, 20);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "b"));
+    test_assert(!strcmp(result->parent, "/str"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 30);
+    test_assertint(p->y, 40);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assert(!strcmp(result->id, "c"));
+    test_assert(!strcmp(result->parent, "/str"));
+    test_assert(!strcmp(result->type, "/test/Point"));
+    p = (test_Point*)result->value;
+    test_assert(p != NULL);
+    test_assertint(p->x, 50);
+    test_assertint(p->y, 60);
+
+/* $end */
+}
+
 void _test_SelectContentType_tc_selectJsonFromJson(
     test_SelectContentType this)
 {

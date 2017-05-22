@@ -38,17 +38,18 @@ corto_object corto_resumePersistent(corto_object o);
 typedef struct corto_contentType *corto_contentType;
 struct corto_contentType {
     corto_string name;
+    bool isBinary;
 
     /* Translate values to and from a contentType value */
     corto_word ___ (*fromValue)(corto_value *v);
     corto_int16 ___ (*toValue)(corto_value *v, corto_word content);
 
-    /* Translate objects to and from self-contained contentType values */
+    /* Translate results to and from self-contained contentType values */
     corto_word ___ (*fromResult)(corto_result *o);
     corto_int16 ___ (*toResult)(corto_result* o, corto_word content);
 
     /* Translate objects to and from self-contained contentType values */
-    corto_string ___ (*fromObject)(corto_object o);
+    corto_word ___ (*fromObject)(corto_object o);
     corto_int16 ___ (*toObject)(corto_object* o, corto_word content);
 
     /* Duplicate a contentType value */

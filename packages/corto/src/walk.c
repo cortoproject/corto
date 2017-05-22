@@ -73,7 +73,10 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
 
     /* If the serializer has a special handler for reference types, use it in case the
      * type is a reference type. */
-    if (t->reference && ((t->kind == CORTO_VOID) || ((info->kind != CORTO_OBJECT) && (info->kind != CORTO_BASE))))
+    if (t->reference && ((t->kind == CORTO_VOID) || 
+                         ((info->kind != CORTO_OBJECT) && 
+                          (info->kind != CORTO_BASE) && 
+                          (info->kind != CORTO_MEM))))
     {
         cb = this->reference;
     } else

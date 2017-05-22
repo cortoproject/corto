@@ -43,6 +43,19 @@ corto_int16 corto_ser_keepReference(corto_walk_opt* s, corto_value* v, void* use
     return 0;
 }
 
+corto_int16 corto_ser_keepCollection(corto_walk_opt* s, corto_value* v, void* userData) {
+    CORTO_UNUSED(s);
+    CORTO_UNUSED(userData);
+    corto_object ptr = corto_value_ptrof(v);
+    corto_type t = corto_value_typeof(v);
+
+    if (corto_collection(t)->kind == CORTO_LIST) {
+        *(corto_ll*)ptr = corto_ll_new();
+    }
+
+    return 0;
+}
+
 corto_int16 corto_ser_freePrimitive(corto_walk_opt* s, corto_value* v, void* udata) {
     corto_type t;
     void* o;
@@ -181,6 +194,7 @@ corto_walk_opt corto_ser_keep(corto_modifier access, corto_operatorKind accessKi
     s.traceKind = trace;
     s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
     s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+    s.program[CORTO_COLLECTION] = corto_ser_keepCollection;
     s.reference = corto_ser_keepReference;
     return s;
 }

@@ -170,6 +170,12 @@ static corto_word corto_selectConvert(
 
     corto_contentType srcType = corto_selectSrcContentType(data);
 
+    if (!srcType && value) {
+        corto_warning("select: mount '%s' provides value but no contentType",
+            corto_fullpath(NULL, data->mounts[data->stack[data->sp].currentMount - 1]));
+        return 0;
+    }
+
     /* If source serializer is loaded, a conversion is
      * needed */
     if (srcType && (srcType != data->dstSer)) {

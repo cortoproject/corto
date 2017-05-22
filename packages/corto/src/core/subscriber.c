@@ -616,23 +616,32 @@ int16_t _corto_subscriber_subscribe(
     corto_bool align = FALSE;
     corto_eventMask mask = corto_observer(this)->mask;
 
+    /* If subscriber subscribes for DECLARE or DEFINE events, align data */
+    if ((mask & CORTO_ON_DECLARE) || (mask & CORTO_ON_DEFINE)) {
+        align = TRUE;
+    }
+
     corto_debug("subscriber '%s': subscribe for %s, %s",
       corto_fullpath(NULL, this),
       this->parent,
       this->expr);
 
     /* If subscriber was not yet enabled, subscribe to mounts */
-    corto_int16 ret = corto_select(this->expr)
-      .from(this->parent)
-      .instance(this) /* this prevents mounts from subscribing to themselves */
-      .subscribe(&it);
+    corto_int16 ret;
+    if (!align || !this->contentType) {
+        ret = corto_select(this->expr)
+          .from(this->parent)
+          .instance(this) /* this prevents mounts from subscribing to themselves */
+          .subscribe(&it);
+    } else {
+        ret = corto_select(this->expr)
+          .from(this->parent)
+          .contentType(this->contentType)
+          .instance(this) /* this prevents mounts from subscribing to themselves */
+          .subscribe(&it);
+    }
     if (ret) {
         goto error;
-    }
-
-    /* If subscriber subscribes for DECLARE or DEFINE events, align data */
-    if ((mask & CORTO_ON_DECLARE) || (mask & CORTO_ON_DEFINE)) {
-        align = TRUE;
     }
 
     /* Add subscriber to global subscriber admin */

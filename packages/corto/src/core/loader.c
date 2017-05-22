@@ -19,7 +19,7 @@ int16_t _corto_loader_construct(
         corto_observer(this)->mask = CORTO_ON_TREE;
         corto_mount(this)->kind = CORTO_SINK;
         corto_ptr_setstr(&corto_observer(this)->type, "/corto/core/package");
-        corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
+        corto_mount_setContentType(this, "text/json");
         return corto_mount_construct(this);
     } else {
         return -1;

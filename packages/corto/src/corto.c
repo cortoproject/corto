@@ -25,6 +25,7 @@
 
 #include "corto/corto.h"
 #include "cdeclhandler.h"
+#include "init_ser.h"
 #include "memory_ser.h"
 
 void corto_secure_init(void);
@@ -902,6 +903,9 @@ corto_int16 corto_delegateConstruct(corto_type t, corto_object o);
 /* Initialization of objects */
 static void corto_initObject(corto_object o) {
     corto_createObject(o);
+    corto_walk_opt s =
+        corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk(&s, o, NULL);
     corto_delegateInit(corto_typeof(o), o);
 }
 
@@ -1144,6 +1148,14 @@ int corto_start(char *appName) {
     /* Update refcounts of public members */
     for (i = 0; (o = types[i].o); i++) corto_updateRef(o);
     for (i = 0; (o = objects[i].o); i++) corto_updateRef(o);
+
+    /* Now that types are defined, update refs on scopes */
+    corto_updateRef(root_o);
+    corto_updateRef(corto_o);
+    corto_updateRef(corto_lang_o);
+    corto_updateRef(corto_core_o);
+    corto_updateRef(corto_native_o);
+    corto_updateRef(corto_secure_o);
 
     /* Initialize conversions and operators */
 #ifdef CORTO_CONVERSIONS

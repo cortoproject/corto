@@ -63,11 +63,12 @@ typedef enum corto_valueKind {
     CORTO_OBJECT = 0,
     CORTO_BASE = 1, /* serialize inheritance relation */
     CORTO_VALUE = 2,
-    CORTO_LITERAL = 3,
-    CORTO_MEMBER = 4,
-    CORTO_ELEMENT = 5,
-    CORTO_MAP_ELEMENT = 6,
-    CORTO_CONSTANT = 7 /* must be last */
+    CORTO_MEM = 3, /* used internally. allows copying non-object memory of reference type by value. */ 
+    CORTO_LITERAL = 4,
+    CORTO_MEMBER = 5,
+    CORTO_ELEMENT = 6,
+    CORTO_MAP_ELEMENT = 7,
+    CORTO_CONSTANT = 8 /* must be last */
 }corto_valueKind;
 
 /* Base corto literal kinds */
@@ -327,6 +328,36 @@ corto_value _corto_value_value(
     void *ptr, 
     corto_type t);
 
+/** Initialize a new corto_value instance holding a generic value.
+ * Similar to corto_value_value, with the exception that if of a reference type,
+ * and encountered by a walk routine, the routine initiates a walk by value instead
+ * of invoking the reference callback.
+ *
+ * Reference values are otherwise only walked by value if of valueKind 
+ * CORTO_OBJECT. Reference types mandate that they are instantiated as objects
+ * which is consistent with this design.
+ *
+ * However, in case of the 'ptr' contentType, values are communicated in a 
+ * memory representation consistent with objects, but without the overhead of an
+ * actual object. To facilitate this usecase, a copy function is needed that can
+ * walk over the value of a non-object pointer of a reference type.
+ *
+ * Value instances of kind CORTO_MEM explicitly do not have an associated object,
+ * which is another difference with values of the CORTO_VALUE kind.
+ * 
+ * Given the exotic nature of this functionality it is recommended that
+ * applications avoid it unless they have a keen understanding of what the
+ * implications are.
+ *
+ * @param ptr A pointer to a value.
+ * @param type The type of the value.
+ * @return A new corto_value instance.
+ */
+CORTO_EXPORT 
+corto_value _corto_value_mem(
+    void *ptr, 
+    corto_type t);
+
 /** Initialize a new corto_value instance holding a member value.
  * A value used to represent members of composite values.
  *
@@ -480,6 +511,7 @@ CORTO_EXPORT int16_t corto_value_deinit(corto_value *v);
 #define corto_value_object(o, t) _corto_value_object(o, corto_type(t))
 #define corto_value_base(v, t) _corto_value_base(v, corto_type(t))
 #define corto_value_value(v, t) _corto_value_value(v, corto_type(t))
+#define corto_value_mem(v, t) _corto_value_mem(v, corto_type(t))
 #define corto_value_element(o, t, i, v) _corto_value_element(o, corto_type(t), i, v)
 #define corto_value_mapElement(o, t, kt, k, v) _corto_value_mapElement(o, corto_type(t), corto_type(kt), k, v)
 #define corto_value_cast(in, dstType, out) _corto_value_cast(in, corto_type(dstType), out)

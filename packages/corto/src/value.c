@@ -33,6 +33,7 @@ corto_type corto_value_typeof(corto_value* val) {
         result = val->is.base.t;
         break;
     case CORTO_VALUE:
+    case CORTO_MEM:
         result = val->is.value.t;
         break;
     case CORTO_LITERAL:
@@ -98,6 +99,7 @@ corto_void* corto_value_ptrof(corto_value* val) {
         result = &val->is.literal.v;
         break;
     case CORTO_VALUE:
+    case CORTO_MEM:
         result = val->is.value.v;
         break;
     case CORTO_MEMBER:
@@ -129,6 +131,7 @@ corto_int16 corto_value_ptrset(corto_value *val, void *ptr) {
         val->is.base.v = ptr;
         break;
     case CORTO_VALUE:
+    case CORTO_MEM:
         val->is.value.v = ptr;
         break;
     case CORTO_MEMBER:
@@ -166,6 +169,9 @@ corto_object corto_value_objectof(corto_value* val) {
         result = val->is.base.o;
         break;
     case CORTO_LITERAL:
+        result = NULL;
+        break;
+    case CORTO_MEM:
         result = NULL;
         break;
     case CORTO_VALUE:
@@ -282,6 +288,7 @@ char* corto_value_exprStr(corto_value* v, char* buffer, unsigned int length) {
         switch(vptr->kind) {
         case CORTO_LITERAL:
         case CORTO_VALUE:
+        case CORTO_MEM:
             break;
         case CORTO_BASE:
             break;
@@ -344,6 +351,13 @@ corto_value _corto_value_value(void* v, corto_type t) {
     val.is.value.v = v;
     return val;
 }
+
+corto_value _corto_value_mem(void* v, corto_type t) {
+    corto_value val = _corto_value_value(v, t);
+    val.kind = CORTO_MEM;
+    return val;
+}
+
 corto_value corto_value_member(corto_object o, corto_member t, corto_void* v) {
     corto_value val;
     val.kind = CORTO_MEMBER;
@@ -460,6 +474,7 @@ void corto_valueSetValue(corto_value* val, corto_void* v) {
         val->is.mapElement.v = v;
         break;
     case CORTO_VALUE:
+    case CORTO_MEM:
         val->is.value.v = v; // ??
         break;
     default:
@@ -981,6 +996,7 @@ void corto_value_free(corto_value *v) {
     switch(v->kind) {
     case CORTO_LITERAL:
     case CORTO_VALUE:
+    case CORTO_MEM:
         t = corto_value_typeof(v);
         break;
     default:

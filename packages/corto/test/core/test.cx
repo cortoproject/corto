@@ -43,6 +43,40 @@ test/Suite SelectContentType:/
     void tc_selectJsonFromString()
     void tc_selectJsonFromJson()
 
+    void tc_selectBinaryFromObjects()
+    void tc_selectBinaryFromString()
+    void tc_selectBinaryFromJson()
+
+class FooDispatcher: implements={core/dispatcher}:/
+    void post(event e)
+
+// Test content types with subscribers
+test/Suite SubscribeContentType:/
+    eventsReceived: int32
+
+    void setup() method
+
+    void tc_subscribeStringFromObjects()
+    void tc_subscribeStringFromString()
+    void tc_subscribeStringFromJson()
+    void tc_subscribeStringFromObjectsDispatch()
+    void tc_subscribeStringFromStringDispatch()
+    void tc_subscribeStringFromJsonDispatch()
+
+    void tc_subscribeJsonFromObjects()
+    void tc_subscribeJsonFromString()
+    void tc_subscribeJsonFromJson()
+    void tc_subscribeJsonFromObjectsDispatch()
+    void tc_subscribeJsonFromStringDispatch()
+    void tc_subscribeJsonFromJsonDispatch()
+
+    void tc_subscribeBinaryFromObjects()
+    void tc_subscribeBinaryFromString()
+    void tc_subscribeBinaryFromJson()
+    void tc_subscribeBinaryFromObjectsDispatch()
+    void tc_subscribeBinaryFromStringDispatch()
+    void tc_subscribeBinaryFromJsonDispatch()
+
 class ListMount : mount, hidden:/
     alias mount : mount/mount
     alias mask : observer/mask
@@ -290,7 +324,6 @@ class EmptySinkMount : core/mount, hidden:/
 test/Suite SelectSinkNoOnRequest:/
     void setup() method
     void teardown() method
-
     void tc_selectSingle()
     void tc_selectScope()
 
