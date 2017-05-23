@@ -588,8 +588,14 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     walkData.depth = 0;
 
     if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
-        if (((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DECLARED)) ||
-            ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) && corto_checkState(observable, CORTO_DEFINED))) {
+        if ((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF))
+        {
+            corto_notifyObserver(observer, observable, observable, CORTO_ON_DECLARE, 0);
+        }
+
+        if ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) &&
+            corto_checkState(observable, CORTO_DEFINED))
+        {
             corto_notifyObserver(observer, observable, observable, CORTO_ON_DEFINE, 0);
         }
     }

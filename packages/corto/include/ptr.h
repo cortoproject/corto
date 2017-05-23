@@ -73,6 +73,33 @@ CORTO_EXPORT
 void _corto_ptr_free(
     void *ptr, corto_type type);
 
+/** Populate a collection with specified number of elements.
+ * This function fills a collection with initialized elements. Depending on
+ * the kind of the collection the function will either populate an array, sequence
+ * or list. This function is not valid for map collection types.
+ *
+ * If the provided collection is not empty, the existing elements will be 
+ * deinitialized. Note that for array types the size is fixed, and if the
+ * function finds an existing array it won't do anything.
+ *
+ * To free the resources, either call this function with size 0 or call the
+ * `corto_ptr_free` function.
+ *
+ * This function may fail if the initializer of the elementType fails or if the
+ * specified size exceeds the bound of the collection type.
+ *
+ * @param ptr A pointer to the collection
+ * @param type The type for which to initialize the collection.
+ * @param size The size to which to grow/shrink the collection.
+ * @return 0 if success, -1 if failed.
+ * @see corto_ptr_free
+ */
+CORTO_EXPORT
+int16_t _corto_ptr_size(
+    void *ptr,
+    corto_type type,
+    uint32_t size);
+
 /** Serialize pointer to a specified format.
  * @param ptr A pointer to the value.
  * @param type The type of the value.
@@ -250,6 +277,7 @@ void corto_ptr_setstr(
 #define corto_ptr_deinit(p, type) _corto_ptr_deinit(p, corto_type(type))
 #define corto_ptr_new(type) _corto_ptr_new(corto_type(type))
 #define corto_ptr_free(ptr, type) _corto_ptr_free(ptr, corto_type(type))
+#define corto_ptr_size(p, type, size) _corto_ptr_size(p, corto_type(type), size)
 
 #ifdef __cplusplus
 }

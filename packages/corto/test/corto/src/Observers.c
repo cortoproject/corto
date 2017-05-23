@@ -181,14 +181,13 @@ void _test_Observers_tc_observeAlignSelf(
 /* $end */
 }
 
-/* $header(test/Observers/tc_observeAlignSelf) */
+/* $header(test/Observers/tc_observeAlignType) */
 void tc_observeAlignCallbackType(corto_observerEvent *e) {
     test_Observers this = e->instance;
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "p");
     test_assert(e->event == CORTO_ON_DEFINE);
-    this->observable = e->data;
-
+    corto_ptr_setref(&this->observable, e->data);
 }
 /* $end */
 void _test_Observers_tc_observeAlignType(

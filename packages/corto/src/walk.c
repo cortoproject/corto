@@ -35,17 +35,18 @@ int16_t corto_walk_ptr(corto_walk_opt* this, void *ptr, corto_type type, void* u
 }
 
 int16_t corto_walk_observable(corto_walk_opt* this, corto_value* info, void* userData) {
-    corto_type type = corto_value_typeof(info);
     corto_walk_cb cb = this->metaprogram[CORTO_MEMBER];
     if (!cb) {
         cb = corto_walk_value;
     }
 
-    if (!type->reference) {
-        corto_value_ptrset(info, *(void**)corto_value_ptrof(info));
-    }
+    corto_value_ptrset(info, *(void**)corto_value_ptrof(info));
 
-    return cb(this, info, userData);
+    if (cb) {
+        return cb(this, info, userData);
+    } else {
+        return 0;
+    }
 }
 
 /* Forward value to the right callback function */
@@ -53,6 +54,14 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
     corto_type t;
     int16_t result;
     corto_walk_cb cb;
+    bool isObservable = false;
+
+    if (info->kind == CORTO_MEMBER) {
+        corto_member m = info->is.member.t;
+        if (m->modifiers & CORTO_OBSERVABLE) {
+            isObservable = true;
+        }
+    }
 
     t = corto_value_typeof(info);
 
@@ -68,7 +77,7 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
                 goto error;
             }
         }
-        this->constructed = TRUE;
+        this->constructed = true;
     }
 
     /* If the serializer has a special handler for reference types, use it in case the
@@ -76,7 +85,8 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
     if (t->reference && ((t->kind == CORTO_VOID) || 
                          ((info->kind != CORTO_OBJECT) && 
                           (info->kind != CORTO_BASE) && 
-                          (info->kind != CORTO_MEM))))
+                          (info->kind != CORTO_MEM) &&
+                          !isObservable)))
     {
         cb = this->reference;
     } else

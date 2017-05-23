@@ -67,6 +67,7 @@ corto_int16 corto_ser_initObservable(corto_walk_opt* s, corto_value* v, void* us
 
     /* Create observable that is not added to the scope of its parent */
     corto_attr prev = corto_setAttr(CORTO_OBSERVABLE);
+
     corto_object o = corto_createOrphan(p, corto_idof(m), t);
     corto_setAttr(prev);
 

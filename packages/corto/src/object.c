@@ -4858,29 +4858,6 @@ corto_string corto_signatureClose(corto_string sig) {
     return sig;
 }
 
-/* Set reference field */
-void corto_ptr_setref(void* ptr, corto_object value) {
-    corto_assertObject(value);
-
-    corto_object old;
-    old = *(corto_object*)ptr;
-    if (value) {
-        corto_claim(value);
-    }
-    *(corto_object*)ptr = value;
-    if (old) {
-        corto_release(old);
-    }
-}
-
-/* Set string field */
-void corto_ptr_setstr(corto_string* ptr, corto_string value) {
-    if (*ptr) {
-        corto_dealloc(*ptr);
-    }
-    *ptr = value ? corto_strdup(value) : NULL;
-}
-
 corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     corto_assertObject(object);
 
@@ -4915,19 +4892,6 @@ corto_string corto_value_str(corto_value* v, corto_uint32 maxLength) {
     corto_string result = corto_buffer_str(&serData.buffer);
     corto_walk_deinit(&s, &serData);
     return result;
-}
-
-char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
-    corto_assertObject(type);
-
-    corto_value v;
-    v = corto_value_value(p, type);
-    return corto_value_str(&v, maxLength);
-}
-
-char *_corto_ptr_contentof(void *ptr, corto_type type, char *contentType) {
-    corto_value v = corto_value_value(ptr, type);
-    return corto_value_contentof(&v, contentType);
 }
 
 corto_int16 corto_fromStr(void *o, corto_string string) {
@@ -4974,30 +4938,6 @@ error:
     return -1;
 }
 
-corto_int16 _corto_ptr_fromStr(void* out, corto_type type, corto_string string) {
-    corto_assertObject(type);
-
-    corto_string_deser_t serData = {
-        .out = *(void**)out,
-        .type = type,
-        .isObject = FALSE
-    };
-
-    if (!corto_string_deser(string, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
-    }
-
-    if (serData.out) {
-        *(void**)out = serData.out;
-    } else {
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
 corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
     corto_assertObject(o1);
     corto_assertObject(o2);
@@ -5024,16 +4964,6 @@ corto_equalityKind corto_value_compare(corto_value *value1, corto_value *value2)
     corto_walk_value(&s, value1, &data);
 
     return data.result;
-}
-
-corto_equalityKind _corto_ptr_compare(void *p1, corto_type type, void *p2) {
-    corto_assertObject(type);
-
-    corto_value vdst;
-    corto_value vsrc;
-    vdst = corto_value_value(p1, type);
-    vsrc = corto_value_value(p2, type);
-    return corto_value_compare(&vdst, &vsrc);
 }
 
 corto_int16 corto_init(corto_object o) {
@@ -5069,14 +4999,6 @@ corto_int16 corto_value_init(corto_value *v) {
     return corto_delegateInit(corto_value_typeof(v), corto_value_ptrof(v));
 }
 
-corto_int16 _corto_ptr_init(void *p, corto_type type) {
-    corto_assertObject(type);
-    memset(p, 0, type->size);
-    corto_value v;
-    v = corto_value_value(p, type);
-    return corto_value_init(&v);
-}
-
 corto_int16 corto_deinit(corto_object o) {
     corto_assertObject(o);
     corto_type type = corto_typeof(o);
@@ -5100,13 +5022,6 @@ corto_int16 corto_value_deinit(corto_value *v) {
     }
     corto_delegateDeinit(corto_value_typeof(v), corto_value_ptrof(v));
     return 0;
-}
-
-corto_int16 _corto_ptr_deinit(void *p, corto_type type) {
-    corto_assertObject(type);
-    corto_value v;
-    v = corto_value_value(p, type);
-    return corto_value_deinit(&v);
 }
 
 corto_int16 _corto_copy(corto_object *dst, corto_object src) {
@@ -5151,18 +5066,6 @@ corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
         corto_define(corto_value_ptrof(dst));
     }
 
-    return result;
-}
-
-corto_int16 _corto_ptr_copy(void *dst, corto_type type, void *src) {
-    corto_assertObject(type);
-
-    corto_value vdst;
-    corto_value vsrc;
-    corto_int16 result;
-    vdst = corto_value_value(dst, type);
-    vsrc = corto_value_value(src, type);
-    result = corto_value_copy(&vdst, &vsrc);
     return result;
 }
 
@@ -5232,21 +5135,3 @@ void corto_super_destruct(corto_object o) {
 error:;
 }
 
-void* _corto_ptr_new(corto_type type) {
-    void *result = NULL;
-
-    result = corto_calloc(corto_type_sizeof(type));
-    if (corto_ptr_init(result, type)) {
-        corto_dealloc(result);
-        goto error;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-void _corto_ptr_free(void *ptr, corto_type type) {
-    corto_ptr_deinit(ptr, type);
-    corto_dealloc(ptr);
-}

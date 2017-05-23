@@ -1306,22 +1306,26 @@ void _test_Copy_tc_structWithOptionalArray(
     test_Copy this)
 {
 /* $begin(test/Copy/tc_structWithOptionalArray) */
-    test_struct_optionalStruct v1;
-    test_struct_optionalStruct v2;
+    test_struct_optionalArray v1;
+    test_struct_optionalArray v2;
 
-    test_assert(corto_ptr_init(&v1, test_struct_optionalStruct_o) == 0);
-    test_assert(corto_ptr_init(&v2, test_struct_optionalStruct_o) == 0);
+    test_assert(corto_ptr_init(&v1, test_struct_optionalArray_o) == 0);
+    test_assert(corto_ptr_init(&v2, test_struct_optionalArray_o) == 0);
 
-    test_PointSet(v1.m, 10, 20);
+    test_IntArraySet(v1.m, 4, ((int32_t[]){
+        10, 20, 30, 40
+    }));
 
-    corto_ptr_copy(&v2, test_struct_optionalStruct_o, &v1);
+    corto_ptr_copy(&v2, test_struct_optionalArray_o, &v1);
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
-    test_assertint(v2.m->x, 10);
-    test_assertint(v2.m->y, 20);
+    test_assertint((*v2.m)[0], 10);
+    test_assertint((*v2.m)[1], 20);
+    test_assertint((*v2.m)[2], 30);
+    test_assertint((*v2.m)[3], 40);
 
-    test_assert(corto_ptr_deinit(&v1, test_struct_optionalStruct_o) == 0);
-    test_assert(corto_ptr_deinit(&v2, test_struct_optionalStruct_o) == 0);
+    test_assert(corto_ptr_deinit(&v1, test_struct_optionalArray_o) == 0);
+    test_assert(corto_ptr_deinit(&v2, test_struct_optionalArray_o) == 0);
 
 /* $end */
 }

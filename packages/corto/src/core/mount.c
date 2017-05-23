@@ -336,6 +336,7 @@ void _corto_mount_onPoll_v(
     }
 
     corto_ll_free(events);
+    
 /* $end */
 }
 

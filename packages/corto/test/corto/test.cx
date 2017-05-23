@@ -79,18 +79,66 @@ array StringArray: string, 4
 array CompositeArray: Point, 4
 array ObjectArray: object, 4
 array AllocArray: int64, 4
+array ReferenceArray: object, 4
 
 sequence IntSequence: int32
 sequence StringSequence: string
 sequence CompositeSequence: Point
 sequence ObjectSequence: object
 sequence AllocSequence: int64
+sequence ReferenceSequence: object
 
 list IntList: int32
 list StringList: string
 list CompositeList: Point
 list ObjectList: object
 list AllocList: int64
+list ReferenceList: object
+
+struct struct_string:/
+    m: string
+
+struct struct_base:/
+    x, y: int32
+
+struct struct_inherit: struct_base:/
+    x, z: int32
+
+struct struct_arrayInt:/
+    m: array{int32, 3}
+
+struct struct_arrayReference:/
+    m: array{object, 3}
+
+struct struct_arrayString:/
+    m: array{string, 3}
+
+struct struct_arrayStruct:/
+    m: array{Point, 3}
+
+struct struct_sequenceInt:/
+    m: sequence{int32}
+
+struct struct_sequenceReference:/
+    m: sequence{object}
+
+struct struct_sequenceString:/
+    m: sequence{string}
+
+struct struct_sequenceStruct:/
+    m: sequence{Point}
+
+struct struct_listInt:/
+    m: list{int32}
+
+struct struct_listReference:/
+    m: list{object}
+
+struct struct_listString:/
+    m: list{string}
+
+struct struct_listStruct:/
+    m: list{Point}
 
 struct struct_observableInt:/
     m: int32, observable
@@ -1335,6 +1383,42 @@ test/Suite StringSerializer:/
     void tc_serAnonymousComplexString()
     void tc_serAnonymousComplexStringEsc()
 
+    void tc_serStructPrimitive()
+    void tc_serStructString()
+    void tc_serStructObservableInt()
+    void tc_serStructObservableString()
+    void tc_serStructObservableReference()
+    void tc_serStructObservableStruct()
+    void tc_serStructObservableArray()
+    void tc_serStructObservableSequence()
+    void tc_serStructObservableList()
+    void tc_serStructOptionalInt()
+    void tc_serStructOptionalString()
+    void tc_serStructOptionalReference()
+    void tc_serStructOptionalStruct()
+    void tc_serStructOptionalArray()
+    void tc_serStructOptionalSequence()
+    void tc_serStructOptionalList()
+    void tc_serStructTargetInt()
+    void tc_serStructTargetString()
+    void tc_serStructTargetReference()
+    void tc_serStructTargetStruct() 
+    void tc_serStructTargetArray()
+    void tc_serStructTargetSequence() 
+    void tc_serStructTargetList()
+    void tc_serStructArrayInt()
+    void tc_serStructArrayString()
+    void tc_serStructArrayReference()
+    void tc_serStructArrayStruct()
+    void tc_serStructSequenceInt()
+    void tc_serStructSequenceString()
+    void tc_serStructSequenceReference()
+    void tc_serStructSequenceStruct()
+    void tc_serStructListInt()
+    void tc_serStructListString()
+    void tc_serStructListReference()
+    void tc_serStructListStruct()
+    void tc_serStructInherit()
 
 class AnonymousTest:/
     objects: list{object}

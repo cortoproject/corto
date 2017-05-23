@@ -33,7 +33,7 @@ void _test_Event_tc_onDeclare(
 /* $begin(test/Event/tc_onDeclare) */
     corto_int16 ret;
 
-    test_assert(this->et->countDeclare == 1);
+    test_assertint(this->et->countDeclare, 1);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
     test_assert(o != NULL);
@@ -104,7 +104,7 @@ void _test_Event_tc_onDeclareScope(
 {
 /* $begin(test/Event/tc_onDeclareScope) */
     corto_int16 ret;
-    test_assert(this->et->countDeclareScope == 0);
+    test_assertint(this->et->countDeclareScope, 0);
 
     corto_object o = corto_int32DeclareChild(testScope, "o");
     test_assert(o != NULL);
