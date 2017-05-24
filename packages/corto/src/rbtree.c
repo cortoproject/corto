@@ -26,11 +26,15 @@ corto_rbtree corto_rb_new(corto_type keyType) {
 
     corto_assert(keyType->size <= sizeof(corto_word), "corto_rb_new: keytype sizes cannot be larger than the size of a word.");
 
-    return (corto_rbtree)jsw_rbnew(keyType, NULL);
+    return (corto_rbtree)jsw_rbnew(keyType, NULL, NULL, NULL);
 }
 
-corto_rbtree corto_rb_new_w_func(corto_equals_cb compare) {
-    return (corto_rbtree)jsw_rbnew(NULL, compare);
+corto_rbtree corto_rb_new_w_compare(corto_equals_cb compare) {
+    return (corto_rbtree)jsw_rbnew(NULL, compare, NULL, NULL);
+}
+
+corto_rbtree corto_rb_new_w_func(corto_equals_cb cmp, corto_duplicate_cb dup, corto_release_cb rel) {
+    return (corto_rbtree)jsw_rbnew(NULL, cmp, dup, rel);
 }
 
 void corto_rb_free(corto_rbtree tree) {
@@ -45,8 +49,10 @@ void* corto_rb_getPtr(corto_rbtree tree, void* key) {
     return jsw_rbfindPtr((jsw_rbtree_t*)tree, key);
 }
 
-void corto_rb_set(corto_rbtree tree, const void* key, void* value) {
-    jsw_rbinsert((jsw_rbtree_t*)tree, (void*)key, value, NULL, TRUE);
+void* corto_rb_set(corto_rbtree tree, const void* key, void* value) {
+    void *old = NULL;
+    jsw_rbinsert((jsw_rbtree_t*)tree, (void*)key, value, &old, TRUE);
+    return old;
 }
 
 void* corto_rb_findOrSet(corto_rbtree tree, const void* key, void* value) {

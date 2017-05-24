@@ -25,6 +25,7 @@
     > Created (Julienne Walker): August 23, 2003
     > Modified (Julienne Walker): March 14, 2008
     > Modified (Sander Mertens): 2010 - 2017
+    > Modified (Roberto Flores): 2018
 */
 
 #include <corto/corto.h>
@@ -50,6 +51,8 @@ typedef corto_equalityKind ___ (*corto_equalFunction)(corto_any this, corto_any 
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
   corto_equals_cb cmp;  /* Compare two items */
+  corto_duplicate_cb dup; /* Copy item */
+  corto_release_cb rel; /* Release item */
   corto_type type; /* This object which must be passed to cmp-function */
   size_t size; /* Number of items (user-defined) */
   corto_int32 changes; /* Change counter- for iterators */
@@ -147,6 +150,34 @@ static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v
     return corto_ptr_compare((void*)v1, (corto_map(t))->keyType, (void*)v2);
 }
 
+static void* corto_rbtreeGenericDuplicate(corto_type t, const void*v) {
+    void *out = (void*)v;
+    if (t) {
+        corto_type keyType = corto_map(t)->keyType;
+
+        if (keyType->reference) {
+            corto_claim(*(corto_object*)v);
+        } else {
+            out = corto_declare(keyType);
+            corto_ptr_copy(out, keyType, (void*)v);
+            corto_define(out);
+        }
+    }
+    return out;
+}
+
+static void corto_rbtreeGenericRelease(corto_type t, void*v) {
+    if (t) {
+        corto_type keyType = corto_map(t)->keyType;
+
+        if (keyType->reference) {
+            corto_release(*(corto_object*)v);
+        } else {
+            corto_ptr_free(v, keyType);
+        }
+    }
+}
+
 /**
   <summary>
   Creates and initializes an empty red black tree with
@@ -160,8 +191,7 @@ static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v
   The returned pointer must be released with jsw_rbdelete
   </remarks>
 */
-jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp)
-{
+jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp, corto_duplicate_cb dup, corto_release_cb rel) {
   jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
 
   if ( rt == NULL )
@@ -170,9 +200,17 @@ jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp)
   if (!cmp) {
       cmp = corto_rbtreeGenericCompare;
   }
+  if (!dup) {
+      dup = corto_rbtreeGenericDuplicate;
+  }
+  if (!rel) {
+      rel = corto_rbtreeGenericRelease;
+  }
 
   rt->root = NULL;
   rt->cmp = cmp;
+  rt->dup = dup;
+  rt->rel = rel;
   rt->type = type;
   rt->size = 0;
   rt->changes = 0;
@@ -225,10 +263,10 @@ void jsw_rbdelete ( jsw_rbtree_t *tree )
     if ( it->link[0] == NULL ) {
       /* No left links, just kill the node and move on */
       save = it->link[1];
-      jsw_keyFree( tree, it->key );
+      tree->rel(tree->type, it->key);
+
       free ( it );
-    }
-    else {
+    } else {
       /* Rotate away the left link and check again */
       save = it->link[0];
       it->link[0] = save->link[1];
@@ -352,8 +390,6 @@ int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto
 */
 int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, corto_bool overwrite )
 {
-  CORTO_UNUSED(overwrite);
-
   if (old_out)
     *old_out = NULL;
 
@@ -362,13 +398,13 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
       We have an empty tree; attach the
       new node directly to the root
     */
+    key = tree->dup(tree->type, key);
     tree->root = new_node ( tree, key, data );
     ++tree->size;
 
     if ( tree->root == NULL )
       return 0;
-  }
-  else {
+  } else {
     jsw_rbnode_t head = {0, NULL, NULL, {NULL,NULL}}; /* False tree root */
     jsw_rbnode_t *g, *t;     /* Grandparent & parent */
     jsw_rbnode_t *p, *q;     /* Iterator & parent */
@@ -383,13 +419,13 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
     for ( ; ; ) {
       if ( q == NULL ) {
         /* Insert a new node at the first null link */
+        key = tree->dup(tree->type, key);
         p->link[dir] = q = new_node ( tree, key, data );
         ++tree->size;
 
         if ( q == NULL )
           return 0;
-      }
-      else if ( is_red ( q->link[0] ) && is_red ( q->link[1] ) ) {
+      } else if ( is_red ( q->link[0] ) && is_red ( q->link[1] ) ) {
         /* Simple red violation: color flip */
         q->red = 1;
         q->link[0]->red = 0;
@@ -412,8 +448,10 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
       */
       corto_equalityKind eq = tree->cmp ( tree->type, q->key, key );
       if ( eq == 0 ) {
-        if (old_out)
+        if (old_out && (q->data != data))
           *old_out = q->data;
+        if (overwrite)
+          q->data = data;
         break;
       }
 
@@ -522,6 +560,7 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *key )
 
     /* Replace and remove the saved node */
     if ( f != NULL ) {
+      tree->rel(tree->type, f->key);
       f->key = q->key;
       f->data = q->data;
       p->link[p->link[1] == q] =

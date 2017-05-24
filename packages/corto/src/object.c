@@ -883,7 +883,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
-                p_scope->scope = corto_rb_new_w_func(corto_compareDefault);
+                p_scope->scope = corto_rb_new_w_compare(corto_compareDefault);
             }
 
             corto_object existing = corto_rb_findOrSet(p_scope->scope, c_scope->id, child);
@@ -1581,9 +1581,9 @@ typedef struct corto_resumeWalk_t {
 } corto_resumeWalk_t;
 
 static int corto_resumeWalk(
-    corto_object entity, 
+    corto_object entity,
     corto_object instance,
-    void *userData) 
+    void *userData)
 {
     corto_mount mount = entity;
     corto_resumeWalk_t *data = userData;
@@ -5134,4 +5134,3 @@ void corto_super_destruct(corto_object o) {
     }
 error:;
 }
-

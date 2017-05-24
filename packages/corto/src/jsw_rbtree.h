@@ -28,7 +28,7 @@
     > Created (Julienne Walker): August 23, 2003
     > Modified (Julienne Walker): March 14, 2008
     > Modified (Sander Mertens): 2010 - 2017
-
+    > Modified (Roberto Flores): 2018
   This code is in the public domain. Anyone may
   use it or change it in any way that they see
   fit. The author assumes no responsibility for
@@ -54,12 +54,8 @@ extern "C" {
 #include <stddef.h>
 #endif
 
-/* User-defined item handling */
-typedef void *(*dup_f) ( void *p );
-typedef void  (*rel_f) ( void *p );
-
 /* Red Black tree functions */
-jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp);
+jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp, corto_duplicate_cb dup, corto_release_cb rel);
 void          jsw_rbdelete ( jsw_rbtree_t *tree );
 corto_type    jsw_rbtype( jsw_rbtree_t *tree);
 void         *jsw_rbfind ( jsw_rbtree_t *tree, void *key );

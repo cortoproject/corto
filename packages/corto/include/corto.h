@@ -32,6 +32,10 @@
 
 /* Callback used to determine if value is smaller/larger/equal */
 typedef corto_equalityKind ___ (*corto_equals_cb)(corto_type _this, const void* o1, const void* o2);
+/* Callback used to copy value */
+typedef void* ___ (*corto_duplicate_cb)(corto_type _this, const void* o1);
+/* Callback used to release value */
+typedef void ___ (*corto_release_cb)(corto_type _this, void* o1);
 
 /* Callback used to walk contents of scope */
 typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
