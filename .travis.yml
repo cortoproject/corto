@@ -45,5 +45,10 @@ install:
 
 script:
   - source corto/configure
-  - rake
-  - rake test
+  - cd corto && rake && cd -
+  - cd c-binding && rake && cd -
+  - cd json && rake && cd -
+  - corto build xml
+  - corto build corto-language
+  - corto build test
+  - corto test
