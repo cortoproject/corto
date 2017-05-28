@@ -35,20 +35,20 @@ install:
   - git clone https://github.com/cortoproject/c-binding.git
   - git clone https://github.com/cortoproject/json.git
   - git clone https://github.com/cortoproject/xml.git
+  - git clone https://github.com/cortoproject/vm.git
+  - git clone https://github.com/cortoproject/ic.git
   - git clone https://github.com/cortoproject/corto-language.git
   - git clone https://github.com/cortoproject/test.git
-  - |+
-    echo 'COMPONENTS = %w(corto c-binding json xml corto-language test)
-    require "#{ENV["CORTO_BUILD"]}/forward"' > rakefile
-  - source corto/configure
   - function hashes() { for g in `find . -name .git` ; do d=$(basename $(dirname $g)); h=$(git --git-dir $g rev-parse HEAD) ; echo -e "$d\t$h"; done } ; hashes | column -t | sort
-
-script:
   - source corto/configure
   - cd corto && rake && cd -
   - cd c-binding && rake && cd -
   - cd json && rake && cd -
   - corto build xml
+  - corto build vm
+  - corto build ic
   - corto build corto-language
   - corto build test
-  - corto test
+
+script:
+  - cd corto && corto test && cd -
