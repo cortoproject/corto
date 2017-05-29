@@ -551,9 +551,9 @@ void _corto_assertv(char const *file, unsigned int line, unsigned int condition,
 }
 
 void corto_criticalv(char const *file, unsigned int line, char* fmt, va_list args) {
-    corto_logv(file, line, CORTO_CRITICAL, 0, fmt, args, stdout);
-    corto_backtrace(stdout);
-    fflush(stdout);
+    corto_logv(file, line, CORTO_CRITICAL, 0, fmt, args, stderr);
+    corto_backtrace(stderr);
+    fflush(stderr);
     abort();
 }
 
@@ -582,7 +582,7 @@ corto_err corto_okv(char const *file, unsigned int line, char* fmt, va_list args
 }
 
 corto_err corto_infov(char const *file, unsigned int line, char* fmt, va_list args) {
-    return corto_logv(file, line, CORTO_INFO, 0, fmt, args, stdout);
+    return corto_logv(file, line, CORTO_INFO, 0, fmt, args, stderr);
 }
 
 void corto_seterrv(char *fmt, va_list args) {

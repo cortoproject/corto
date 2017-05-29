@@ -16,6 +16,7 @@ int16_t _test_ListMount_construct(
     test_ListMount this)
 {
 /* $begin(test/ListMount/construct) */
+    corto_mount(this)->policy.ownership = this->kind;
 
     /* Create top level objects */
     corto_resultAssign(
@@ -153,7 +154,7 @@ int16_t _test_ListMount_construct(
 /* $end */
 }
 
-/* $header(test/ListMount/onRequest) */
+/* $header(test/ListMount/onQuery) */
 /* Custom release function */
 void test_ListMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->udata;
@@ -162,23 +163,23 @@ void test_ListMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_ListMount_onRequest(
+corto_resultIter _test_ListMount_onQuery(
     test_ListMount this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/ListMount/onRequest) */
+/* $begin(test/ListMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
-        if (corto_match(request->parent, e.parent)) {
-            if (corto_match(request->expr, e.id)) {
+        if (corto_match(query->from, e.parent)) {
+            if (corto_match(query->select, e.id)) {
                 corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,
                     e.id,
-                    ".",
+                    e.parent,
                     e.type,
                     0,
                     e.leaf

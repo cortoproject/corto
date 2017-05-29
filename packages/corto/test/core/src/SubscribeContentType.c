@@ -73,7 +73,7 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromJson(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeBinaryFromJson) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
+    corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("binary/corto")
         .callback(binary);
@@ -96,7 +96,7 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeBinaryFromJsonDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
+    corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("binary/corto")
         .dispatcher(dispatcher)
@@ -118,7 +118,7 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromObjects(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeBinaryFromObjects) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "obj/*")
+    corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("binary/corto")
         .callback(binary);
@@ -141,7 +141,7 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeBinaryFromObjectsDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "obj/*")
+    corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("binary/corto")
         .dispatcher(dispatcher)
@@ -163,7 +163,7 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromString(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeBinaryFromString) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "str/*")
+    corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("binary/corto")
         .callback(binary);
@@ -185,7 +185,7 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeBinaryFromStringDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "str/*")
+    corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("binary/corto")
         .dispatcher(dispatcher)
@@ -235,7 +235,7 @@ void _test_SubscribeContentType_tc_subscribeJsonFromJson(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeJsonFromJson) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
+    corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("text/json")
         .callback(json);
@@ -257,7 +257,7 @@ void _test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeJsonFromJsonDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
+    corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("text/json")
         .dispatcher(dispatcher)
@@ -278,7 +278,7 @@ void _test_SubscribeContentType_tc_subscribeJsonFromObjects(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeJsonFromObjects) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "obj/*")
+    corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("text/json")
         .callback(json);
@@ -301,7 +301,7 @@ void _test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeJsonFromObjectsDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "obj/*")
+    corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("text/json")
         .dispatcher(dispatcher)
@@ -323,7 +323,7 @@ void _test_SubscribeContentType_tc_subscribeJsonFromString(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeJsonFromString) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "str/*")
+    corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("text/json")
         .callback(json);
@@ -345,7 +345,7 @@ void _test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeJsonFromStringDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "str/*")
+    corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("text/json")
         .dispatcher(dispatcher)
@@ -395,7 +395,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromJson(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeStringFromJson) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
+    corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("text/corto")
         .callback(string);
@@ -417,7 +417,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeStringFromJsonDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "json/*")
+    corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("text/corto")
         .dispatcher(dispatcher)
@@ -438,7 +438,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromObjects(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeStringFromObjects) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "obj/*")
+    corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("text/corto")
         .callback(string);
@@ -461,7 +461,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeStringFromObjectsDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "obj/*")
+    corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("text/corto")
         .dispatcher(dispatcher)
@@ -483,7 +483,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromString(
     test_SubscribeContentType this)
 {
 /* $begin(test/SubscribeContentType/tc_subscribeStringFromString) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "str/*")
+    corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("text/corto")
         .callback(string);
@@ -505,7 +505,7 @@ void _test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
 /* $begin(test/SubscribeContentType/tc_subscribeStringFromStringDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE|CORTO_ON_UPDATE, "str/*")
+    corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("text/corto")
         .dispatcher(dispatcher)

@@ -74,7 +74,7 @@ void corto_callDeinit(corto_function f) {
         corto_object owner = corto_ownerof(instance);\
         if (owner \
             && corto_instanceof(corto_mount_o, owner) \
-            && (corto_mount(owner)->kind != CORTO_SINK)) \
+            && (corto_mount(owner)->policy.ownership != CORTO_LOCAL_OWNER)) \
         {\
             if (!(owner == corto_getOwner())) {\
                 corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\

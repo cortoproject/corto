@@ -578,3 +578,31 @@ void corto_matchProgram_free(corto_matchProgram matcher) {
         corto_dealloc(matcher);
     }
 }
+
+corto_eventMask corto_match_getScope(corto_matchProgram program) {
+    corto_eventMask result = CORTO_ON_SCOPE;
+    corto_int32 op;
+    bool quit = false;
+
+    for (op = 0; (op < program->size) && !quit; op ++) {
+        switch (program->ops[op].token) {
+        case CORTO_MATCHER_TOKEN_IDENTIFIER:
+        case CORTO_MATCHER_TOKEN_THIS:
+        case CORTO_MATCHER_TOKEN_PARENT:
+            result = CORTO_ON_SELF;
+            break;
+        case CORTO_MATCHER_TOKEN_SCOPE:
+            result = CORTO_ON_SCOPE;
+            break;
+        case CORTO_MATCHER_TOKEN_TREE:
+            result = CORTO_ON_TREE;
+        default:
+            quit = true;
+            break;
+        }
+    }
+
+    return result;
+}
+
+

@@ -44,6 +44,30 @@ int stricmp(const char *str1, const char *str2) {
     return tolower(*ptr1) - tolower(*ptr2);
 }
 
+int strnicmp(const char *str1, int length, const char *str2) {
+    const char *ptr1, *ptr2;
+    char ch1, ch2;
+    ptr1 = str1;
+    ptr2 = str2;
+
+    while((ch1 = *ptr1) && (ch2 = *ptr2)) {
+        if (ptr1 - str1 >= (length - 1)) break;
+        if (ch1 == ch2) {
+            ptr1++; ptr2++;
+            continue;
+        }
+        if (ch1 < 97) ch1 = tolower(ch1);
+        if (ch2 < 97) ch2 = tolower(ch2);
+        if (ch1 != ch2) {
+            return ch1 - ch2;
+        }
+        ptr1++;
+        ptr2++;
+    }
+
+    return tolower(*ptr1) - tolower(*ptr2);
+}
+
 int tokicmp(char ** const str1, const char *str2, char sep) {
     const char *ptr2;
     char ch1, ch2, *ptr1;

@@ -25,7 +25,6 @@ CORTO_EXPORT extern corto_package corto_core_o;
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, application);
-CORTO_META_OBJECT(class, query);
 CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
 CORTO_META_OBJECT(class, mount);
@@ -34,20 +33,18 @@ CORTO_META_OBJECT(struct, mountPolicy);
 CORTO_META_OBJECT(struct, mountSubscription);
 CORTO_META_OBJECT(class, loader);
 CORTO_META_OBJECT(class, stager);
-CORTO_META_OBJECT(struct, augmentData);
 CORTO_META_OBJECT(struct, result);
 CORTO_META_OBJECT(struct, request);
 CORTO_META_OBJECT(struct, frame);
+CORTO_META_OBJECT(struct, query);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(enum, equalityKind);
 CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(bitmask, eventMask);
-CORTO_META_OBJECT(bitmask, modifier);
-CORTO_META_OBJECT(enum, mountKind);
+CORTO_META_OBJECT(enum, ownership);
+CORTO_META_OBJECT(bitmask, readWrite);
 CORTO_META_OBJECT(enum, frameKind);
-CORTO_META_OBJECT(bitmask, state);
-CORTO_META_OBJECT(bitmask, attr);
 
 CORTO_META_OBJECT(list, resultList);
 CORTO_META_OBJECT(list, mountSubscriptionList);
@@ -74,6 +71,7 @@ CORTO_META_OBJECT(subscriber, mount_on_notify);
 
 CORTO_META_OBJECT(iterator, resultIter);
 CORTO_META_OBJECT(iterator, sampleIter);
+CORTO_META_OBJECT(iterator, subscriberEventIter);
 
 CORTO_META_OBJECT(function, observerEvent_handle);
 CORTO_META_OBJECT(function, subscriberEvent_handle);

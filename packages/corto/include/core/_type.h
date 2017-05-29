@@ -22,8 +22,10 @@ extern "C" {
 #define corto_frameKind(o) ((corto_frameKind*)corto_assertType((corto_type)corto_frameKind_o, o))
 #define corto_frame(o) ((corto_frame*)corto_assertType((corto_type)corto_frame_o, o))
 #define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
+#define corto_query(o) ((corto_query*)corto_assertType((corto_type)corto_query_o, o))
 #define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
-#define corto_mountKind(o) ((corto_mountKind*)corto_assertType((corto_type)corto_mountKind_o, o))
+#define corto_ownership(o) ((corto_ownership*)corto_assertType((corto_type)corto_ownership_o, o))
+#define corto_readWrite(o) ((corto_readWrite*)corto_assertType((corto_type)corto_readWrite_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
 #define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
@@ -36,7 +38,6 @@ extern "C" {
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
-#define corto_request(o) ((corto_request*)corto_assertType((corto_type)corto_request_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 #define corto_sample(o) ((corto_sample*)corto_assertType((corto_type)corto_sample_o, o))
 #define corto_sampleIter(o) ((corto_sampleIter*)corto_assertType((corto_type)corto_sampleIter_o, o))
@@ -48,6 +49,7 @@ extern "C" {
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
 #define corto_stager(o) ((corto_stager)corto_assertType((corto_type)corto_stager_o, o))
 #define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assertType((corto_type)corto_subscriberEvent_o, o))
+#define corto_subscriberEventIter(o) ((corto_subscriberEventIter*)corto_assertType((corto_type)corto_subscriberEventIter_o, o))
 
 /* Native types */
 #ifndef CORTO_CORE_H
@@ -148,10 +150,25 @@ struct corto_observer_s {
     corto_object observable;
     corto_object instance;
     corto_dispatcher dispatcher;
-    corto_string type;
+    corto_type type;
     bool enabled;
     uint32_t active;
-    corto_type typeReference;
+};
+
+/*  /corto/core/query */
+typedef struct corto_query corto_query;
+
+struct corto_query {
+    corto_string select;
+    corto_string from;
+    corto_string type;
+    corto_string member;
+    corto_string where;
+    uint64_t offset;
+    uint64_t limit;
+    corto_frame timeBegin;
+    corto_frame timeEnd;
+    bool content;
 };
 
 /*  /corto/core/subscriber */
@@ -159,26 +176,33 @@ typedef struct corto_subscriber_s *corto_subscriber;
 
 struct corto_subscriber_s {
     struct corto_observer_s super;
-    corto_string parent;
-    corto_string expr;
+    corto_query query;
     corto_string contentType;
     uintptr_t contentTypeHandle;
     uintptr_t matchProgram;
 };
 
-/* /corto/core/mountKind */
-typedef enum corto_mountKind {
-    CORTO_SOURCE = 0,
-    CORTO_SINK = 1,
-    CORTO_CACHE = 2,
-    CORTO_HISTORIAN = 3
-} corto_mountKind;
+/* /corto/core/ownership */
+typedef enum corto_ownership {
+    CORTO_REMOTE_OWNER = 0,
+    CORTO_LOCAL_OWNER = 1,
+    CORTO_CACHE_OWNER = 2
+} corto_ownership;
+
+/* /corto/core/readWrite */
+typedef uint32_t corto_readWrite;
+    #define CORTO_READ (0x1)
+    #define CORTO_WRITE (0x2)
+    #define CORTO_HISTORY (0x4)
 
 /*  /corto/core/mountPolicy */
 typedef struct corto_mountPolicy corto_mountPolicy;
 
 struct corto_mountPolicy {
+    corto_ownership ownership;
+    corto_readWrite readWrite;
     double sampleRate;
+    uint64_t expiryTime;
 };
 
 /*  /corto/core/mountStats */
@@ -194,11 +218,9 @@ struct corto_mountStats {
 typedef struct corto_mountSubscription corto_mountSubscription;
 
 struct corto_mountSubscription {
-    corto_string parent;
-    corto_string expr;
-    corto_eventMask mask;
+    corto_query query;
     uint32_t count;
-    uintptr_t userData;
+    uintptr_t ctx;
 };
 
 #ifndef corto_mountSubscriptionList_DEFINED
@@ -211,7 +233,6 @@ typedef struct corto_mount_s *corto_mount;
 
 struct corto_mount_s {
     struct corto_subscriber_s super;
-    corto_mountKind kind;
     corto_mountPolicy policy;
     corto_object mount;
     corto_attr attr;
@@ -316,20 +337,6 @@ struct corto_remote_s {
     struct corto_method_s super;
 };
 
-/*  /corto/core/request */
-typedef struct corto_request corto_request;
-
-struct corto_request {
-    corto_string parent;
-    corto_string expr;
-    corto_string type;
-    uint64_t offset;
-    uint64_t limit;
-    bool content;
-    corto_frame from;
-    corto_frame to;
-};
-
 /*  /corto/core/time */
 typedef struct corto_time corto_time;
 
@@ -420,6 +427,8 @@ struct corto_subscriberEvent {
     corto_result data;
     uintptr_t contentTypeHandle;
 };
+
+typedef corto_iter corto_subscriberEventIter;
 
 #ifdef __cplusplus
 }

@@ -59,9 +59,9 @@ void _corto_invokeEvent_handle(
     }
 }
 
-corto_resultIter _corto_loader_onRequest(
+corto_resultIter _corto_loader_onQuery(
     corto_loader this,
-    corto_request *request)
+    corto_query *query)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -72,18 +72,18 @@ corto_resultIter _corto_loader_onRequest(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(/corto/core/request request)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onQuery(/corto/core/query query)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(/corto/core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onQuery(/corto/core/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(/corto/core/request request)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onQuery(/corto/core/query query)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_resultIter ___ (*)(corto_object, corto_request*))((corto_function)_method)->fptr)(this, request);
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_query*))((corto_function)_method)->fptr)(this, query);
     } else {
-        corto_call(corto_function(_method), &_result, this, request);
+        corto_call(corto_function(_method), &_result, this, query);
     }
     
     return _result;
@@ -149,8 +149,7 @@ void _corto_mount_onInvoke(
 
 void _corto_mount_onNotify(
     corto_mount this,
-    corto_eventMask event,
-    corto_result *object)
+    corto_subscriberEvent *event)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -160,18 +159,45 @@ void _corto_mount_onNotify(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onNotify(core/eventMask event,core/result object)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onNotify(core/subscriberEvent event)");
     }
-    corto_assert(_methodId, "virtual 'onNotify(core/eventMask event,core/result object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onNotify(core/subscriberEvent event)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onNotify(core/eventMask event,core/result object)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onNotify(core/subscriberEvent event)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_eventMask, corto_result*))((corto_function)_method)->fptr)(this, event, object);
+        ((void ___ (*)(corto_object, corto_subscriberEvent*))((corto_function)_method)->fptr)(this, event);
     } else {
-        corto_call(corto_function(_method), NULL, this, event, object);
+        corto_call(corto_function(_method), NULL, this, event);
+    }
+}
+
+void _corto_mount_onNotifyBatch(
+    corto_mount this,
+    corto_subscriberEventIter data)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onNotifyBatch(core/subscriberEventIter data)");
+    }
+    corto_assert(_methodId, "virtual 'onNotifyBatch(core/subscriberEventIter data)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onNotifyBatch(core/subscriberEventIter data)@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_subscriberEventIter))((corto_function)_method)->fptr)(this, data);
+    } else {
+        corto_call(corto_function(_method), NULL, this, data);
     }
 }
 
@@ -201,9 +227,9 @@ void _corto_mount_onPoll(
     }
 }
 
-corto_resultIter _corto_mount_onRequest(
+corto_resultIter _corto_mount_onQuery(
     corto_mount this,
-    corto_request *request)
+    corto_query *query)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -214,18 +240,48 @@ corto_resultIter _corto_mount_onRequest(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onRequest(/corto/core/request request)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onQuery(/corto/core/query query)");
     }
-    corto_assert(_methodId, "virtual 'onRequest(/corto/core/request request)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onQuery(/corto/core/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onRequest(/corto/core/request request)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onQuery(/corto/core/query query)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_resultIter ___ (*)(corto_object, corto_request*))((corto_function)_method)->fptr)(this, request);
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_query*))((corto_function)_method)->fptr)(this, query);
     } else {
-        corto_call(corto_function(_method), &_result, this, request);
+        corto_call(corto_function(_method), &_result, this, query);
+    }
+    
+    return _result;
+}
+
+corto_resultIter _corto_mount_onQueryHistorical(
+    corto_mount this,
+    corto_query *query)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_resultIter _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onQueryHistorical(/corto/core/query query)");
+    }
+    corto_assert(_methodId, "virtual 'onQueryHistorical(/corto/core/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onQueryHistorical(/corto/core/query query)@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_query*))((corto_function)_method)->fptr)(this, query);
+    } else {
+        corto_call(corto_function(_method), &_result, this, query);
     }
     
     return _result;
@@ -235,7 +291,7 @@ corto_object _corto_mount_onResume(
     corto_mount this,
     corto_string parent,
     corto_string name,
-    corto_object o)
+    corto_object object)
 {
     static corto_uint32 _methodId;
     corto_method _method;
@@ -246,18 +302,18 @@ corto_object _corto_mount_onResume(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object o)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object object)");
     }
-    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object o)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object o)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object object)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(this, parent, name, o);
+        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(this, parent, name, object);
     } else {
-        corto_call(corto_function(_method), &_result, this, parent, name, o);
+        corto_call(corto_function(_method), &_result, this, parent, name, object);
     }
     
     return _result;
@@ -265,8 +321,7 @@ corto_object _corto_mount_onResume(
 
 uintptr_t _corto_mount_onSubscribe(
     corto_mount this,
-    corto_string parent,
-    corto_string expr,
+    corto_query *query,
     uintptr_t ctx)
 {
     static corto_uint32 _methodId;
@@ -278,27 +333,55 @@ uintptr_t _corto_mount_onSubscribe(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(string parent,string expr,lang/word ctx)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(core/query query,lang/word ctx)");
     }
-    corto_assert(_methodId, "virtual 'onSubscribe(string parent,string expr,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onSubscribe(core/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(string parent,string expr,lang/word ctx)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(core/query query,lang/word ctx)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((uintptr_t ___ (*)(corto_object, corto_string, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, expr, ctx);
+        _result = ((uintptr_t ___ (*)(corto_object, corto_query*, corto_word))((corto_function)_method)->fptr)(this, query, ctx);
     } else {
-        corto_call(corto_function(_method), &_result, this, parent, expr, ctx);
+        corto_call(corto_function(_method), &_result, this, query, ctx);
     }
     
     return _result;
 }
 
-void _corto_mount_onUnsubscribe(
+uintptr_t _corto_mount_onTransactionBegin(
+    corto_mount this)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    uintptr_t _result;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onTransactionBegin()");
+    }
+    corto_assert(_methodId, "virtual 'onTransactionBegin()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onTransactionBegin()@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        _result = ((uintptr_t ___ (*)(corto_object))((corto_function)_method)->fptr)(this);
+    } else {
+        corto_call(corto_function(_method), &_result, this);
+    }
+    
+    return _result;
+}
+
+void _corto_mount_onTransactionEnd(
     corto_mount this,
-    corto_string parent,
-    corto_string expr,
+    corto_subscriberEventIter events,
     uintptr_t ctx)
 {
     static corto_uint32 _methodId;
@@ -309,18 +392,46 @@ void _corto_mount_onUnsubscribe(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(string parent,string expr,lang/word ctx)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onTransactionEnd(core/subscriberEventIter events,word ctx)");
     }
-    corto_assert(_methodId, "virtual 'onUnsubscribe(string parent,string expr,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onTransactionEnd(core/subscriberEventIter events,word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(string parent,string expr,lang/word ctx)@%d'", corto_idof(this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onTransactionEnd(core/subscriberEventIter events,word ctx)@%d'", corto_idof(this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_string, corto_string, corto_word))((corto_function)_method)->fptr)(this, parent, expr, ctx);
+        ((void ___ (*)(corto_object, corto_subscriberEventIter, corto_word))((corto_function)_method)->fptr)(this, events, ctx);
     } else {
-        corto_call(corto_function(_method), NULL, this, parent, expr, ctx);
+        corto_call(corto_function(_method), NULL, this, events, ctx);
+    }
+}
+
+void _corto_mount_onUnsubscribe(
+    corto_mount this,
+    corto_query *query,
+    uintptr_t ctx)
+{
+    static corto_uint32 _methodId;
+    corto_method _method;
+    corto_interface _abstract;
+
+    _abstract = corto_interface(corto_typeof(this));
+
+    /* Determine methodId once, then cache it for subsequent calls. */
+    if (!_methodId) {
+        _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(core/query query,lang/word ctx)");
+    }
+    corto_assert(_methodId, "virtual 'onUnsubscribe(core/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+
+    /* Lookup method-object. */
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(core/query query,lang/word ctx)@%d'", corto_idof(this), _methodId);
+
+    if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
+        ((void ___ (*)(corto_object, corto_query*, corto_word))((corto_function)_method)->fptr)(this, query, ctx);
+    } else {
+        corto_call(corto_function(_method), NULL, this, query, ctx);
     }
 }
 

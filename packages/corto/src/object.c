@@ -1422,7 +1422,7 @@ static corto_object corto_declareChildIntern(
                     corto_object owner = corto_ownerof(o);
                     if (owner && corto_instanceof(corto_mount_o, owner)) {
                         if (owner != corto_getOwner()) {
-                            if (corto_getOwner() || corto_mount(owner)->kind != CORTO_SINK) {
+                            if (corto_getOwner() || corto_mount(owner)->policy.ownership != CORTO_LOCAL_OWNER) {
                                 if (forceType) {
                                     corto_release(o);
                                     corto_seterr(
@@ -1547,7 +1547,7 @@ corto_object corto_resume_fromMount(
     corto_object o)
 {
     corto_object result = NULL;
-    corto_type mountType = corto_observer(m)->typeReference;
+    corto_type mountType = corto_observer(m)->type;
 
     /* If mount implements resume, this will load the
      * persistent copy in memory */
@@ -1594,7 +1594,7 @@ static int corto_resumeWalk(
      * provided object, or the mount must have ON_TREE set */
     if ((data->p == data->parent) ||
       (((corto_observer)mount)->mask & CORTO_ON_TREE)) {
-        corto_type mountType = corto_observer(mount)->typeReference;
+        corto_type mountType = corto_observer(mount)->type;
 
         if (!mountType || (data->parent == data->p) || (corto_typeof(data->parent) == mountType)) {
             if (!data->parentIdSet) {
@@ -1680,7 +1680,7 @@ corto_object corto_resume(
         while (!walkData.result && walkData.p) {
             corto_id pId;
             corto_fullpath(pId, walkData.p);
-            corto_entityAdmin_walk(&corto_mount_admin, corto_resumeWalk, pId, &walkData);
+            corto_entityAdmin_walk(&corto_mount_admin, corto_resumeWalk, pId, false, &walkData);
             if (!walkData.result) {
                 walkData.p = corto_parentof(walkData.p);
             }
@@ -1722,7 +1722,7 @@ corto_bool corto_resumeDeclared(corto_object o) {
         /* If owner of an object is a SINK, object is resumed */
         } else if (_p->owner
           && corto_instanceof(corto_mount_o, _p->owner)
-          && (corto_mount(_p->owner)->kind == CORTO_SINK))
+          && (corto_mount(_p->owner)->policy.ownership == CORTO_LOCAL_OWNER))
         {
             resumed = TRUE;
         }
@@ -2424,28 +2424,65 @@ corto_object _corto_assertType(corto_type type, corto_object o) {
     return o;
 }
 
-corto_bool _corto_instanceofType(corto_type type, corto_type t) {
+corto_bool _corto_instanceofType(corto_type dst, corto_type src) {
     corto_bool result = TRUE;
 
-    corto_assertObject(type);
-    corto_assertObject(t);
+    corto_assertObject(dst);
+    corto_assertObject(src);
 
-    if (type != t) {
+    if (dst != src) {
         result = FALSE;
 
-        if (t->kind == type->kind) {
-            switch(type->kind) {
+        if (src->kind == dst->kind) {
+            switch(dst->kind) {
+            case CORTO_PRIMITIVE: {
+                corto_primitive pSrc = corto_primitive(src);
+                corto_primitive pDst = corto_primitive(dst);
+
+                switch(pDst->kind) {
+                case CORTO_BITMASK:
+                case CORTO_UINTEGER:
+                case CORTO_BINARY:
+                case CORTO_CHARACTER:
+                    switch(pSrc->kind) {
+                    case CORTO_BITMASK:
+                    case CORTO_UINTEGER:
+                    case CORTO_BINARY:
+                    case CORTO_CHARACTER:
+                        result = pSrc->width == pDst->width;
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                case CORTO_ENUM:
+                case CORTO_INTEGER:
+                    switch(pSrc->kind) {
+                    case CORTO_ENUM:
+                    case CORTO_INTEGER:
+                        result = pSrc->width == pDst->width;
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                default:
+                    result = pSrc->kind == pDst->kind && pSrc->width == pDst->width;
+                    break;
+                }
+                break;
+            }
             case CORTO_COMPOSITE: {
-                if (((corto_interface)type)->kind == CORTO_DELEGATE) {
-                    /*result = corto_delegate_instanceof(corto_delegate(type), o);*/
-                } else if (((corto_interface)type)->kind == CORTO_INTERFACE) {
-                    if (((corto_interface)t)->kind == CORTO_CLASS) {
-                        corto_interface base = (corto_interface)t;
+                if (((corto_interface)dst)->kind == CORTO_DELEGATE) {
+                    /*result = corto_delegate_instanceof(corto_delegate(dst), o);*/
+                } else if (((corto_interface)dst)->kind == CORTO_INTERFACE) {
+                    if (((corto_interface)src)->kind == CORTO_CLASS) {
+                        corto_interface base = (corto_interface)src;
                         while (!result && base) {
                             corto_int32 i;
                             for (i = 0; i < ((corto_class)base)->implements.length; i++) {
                                 if (_corto_interface_baseof(
-                                    (corto_interface)((corto_class)base)->implements.buffer[i], (corto_interface)type)) {
+                                    (corto_interface)((corto_class)base)->implements.buffer[i], (corto_interface)dst)) {
                                     result = TRUE;
                                     break;
                                 }
@@ -2454,7 +2491,7 @@ corto_bool _corto_instanceofType(corto_type type, corto_type t) {
                         }
                     }
                 } else {
-                    result = _corto_interface_baseof((corto_interface)t, (corto_interface)type);
+                    result = _corto_interface_baseof((corto_interface)src, (corto_interface)dst);
                 }
                 break;
             }
@@ -2462,15 +2499,15 @@ corto_bool _corto_instanceofType(corto_type type, corto_type t) {
                 break;
             }
         } else {
-            if ((type->kind == CORTO_VOID) && (type->reference)) {
-                if (t->reference) {
+            if ((dst->kind == CORTO_VOID) && (dst->reference)) {
+                if (src->reference) {
                     result = TRUE;
                 }
             }
         }
     }
-    if (!result && (corto_typeof(t) == (corto_type)corto_target_o)) {
-        result = type == ((corto_target)t)->type;
+    if (!result && (corto_typeof(src) == (corto_type)corto_target_o)) {
+        result = dst == ((corto_target)src)->type;
     }
 
     return result;
@@ -3333,7 +3370,7 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
         result = TRUE;
     } else if (owner && corto_instanceof(corto_mount_o, owner)) {
         if (!current) {
-            if (corto_mount(owner)->kind != CORTO_SINK) {
+            if (corto_mount(owner)->policy.ownership != CORTO_LOCAL_OWNER) {
                 result = FALSE;
             } else {
                 result = TRUE;
@@ -3343,7 +3380,7 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
         }
     } else if (current && corto_instanceof(corto_mount_o, current)) {
         if (!owner) {
-            if (corto_mount(current)->kind != CORTO_SINK) {
+            if (corto_mount(current)->policy.ownership != CORTO_LOCAL_OWNER) {
                 result = FALSE;
             } else {
                 result = TRUE;
@@ -3813,7 +3850,7 @@ corto_int16 corto_updateEnd(corto_object observable) {
         defined = FALSE;
         corto_eventMask mask = 0;
         if (owner && corto_instanceof(corto_mount_o, owner) &&
-            (corto_mount(owner)->kind == CORTO_SINK))
+            (corto_mount(owner)->policy.ownership == CORTO_LOCAL_OWNER))
         {
             /* If not defined, and owner is a SINK, object is resumed */
             mask |= CORTO_ON_RESUME;

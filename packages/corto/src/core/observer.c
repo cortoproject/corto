@@ -341,7 +341,7 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
     corto_eventMask observerMask = observer->mask;
 
     if ((mask & observerMask) &&
-        (!observer->typeReference || (observer->typeReference == corto_typeof(observable))) &&
+        (!observer->type || (observer->type == corto_typeof(observable))) &&
         (!depth || (observerMask & CORTO_ON_TREE)))
     {
         corto_object this = data->_this;
@@ -364,7 +364,7 @@ static void corto_notifyObserverCdecl(corto__observer *data, corto_object observ
     corto_eventMask observerMask = observer->mask;
 
     if ((mask & observerMask) &&
-        (!observer->typeReference || (observer->typeReference == corto_typeof(observable))) &&
+        (!observer->type || (observer->type == corto_typeof(observable))) &&
         (!depth || (observerMask & CORTO_ON_TREE)))
     {
         corto_object this = data->_this;
@@ -385,7 +385,7 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
     corto_eventMask observerMask = observer->mask;
 
     if ((mask & observerMask) &&
-        (!observer->typeReference || (observer->typeReference == corto_typeof(observable))) &&
+        (!observer->type || (observer->type == corto_typeof(observable))) &&
         (!depth || (observerMask & CORTO_ON_TREE)))
     {
         corto_dispatcher dispatcher = observer->dispatcher;
@@ -619,10 +619,21 @@ static corto_observer corto_observeObserve(corto_observeRequest *r)
     corto_ptr_setref(&result->observable, r->observable);
     corto_ptr_setref(&result->instance, r->instance);
     corto_ptr_setref(&result->dispatcher, r->dispatcher);
-    corto_ptr_setstr(&result->type, r->type);
     result->enabled = r->enabled;
     ((corto_function)result)->fptr = (corto_word)r->callback;
     ((corto_function)result)->kind = CORTO_PROCEDURE_CDECL;
+    if (r->type) {
+        corto_type type = corto_resolve(NULL, r->type);
+        if (!type) {
+            corto_seterr("unresolved type '%s'", r->type);
+            goto error;
+        }
+        if (!corto_instanceof(corto_type_o, type)) {
+            corto_seterr("'%s' is not a type", r->type);
+            goto error;
+        }
+        corto_ptr_setref(&result->type, type);
+    }
 
     if (corto_define(result)) {
         corto_delete(result);
@@ -630,6 +641,8 @@ static corto_observer corto_observeObserve(corto_observeRequest *r)
     }
 
     return result;
+error:
+    return NULL;
 }
 
 static corto_observe__fluent corto_observeInstance(
@@ -723,19 +736,6 @@ int16_t _corto_observer_construct(
     corto_observer this)
 {
 /* $begin(corto/core/observer/construct) */
-    corto_type t = corto_object_o;
-    if (this->type) {
-        t = corto_resolve(NULL, this->type);
-        if (!t) {
-            corto_seterr("unresolved type '%s'", this->type);
-            goto error;
-        }
-        if (!corto_instanceof(corto_type_o, t)) {
-            corto_seterr("'%s' is not a type", this->type);
-            goto error;
-        }
-        corto_ptr_setref(&this->typeReference, t);
-    }
 
     if (!corto_function(this)->parameters.length) {
         if (!corto_checkAttr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {

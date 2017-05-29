@@ -179,7 +179,7 @@ void* corto_ll_getPtr(corto_ll list, int index) {
     return result;
 }
 
-void* corto_ll_find(corto_ll list, corto_compare_cb callback, void* o) {
+void* corto_ll_findPtr(corto_ll list, corto_compare_cb callback, void* o) {
     corto_ll_node ptr;
     void* result;
 
@@ -188,13 +188,18 @@ void* corto_ll_find(corto_ll list, corto_compare_cb callback, void* o) {
 
     while (ptr) {
         if (!callback(o, ptr->data)) {
-            result = ptr->data;
+            result = &ptr->data;
             break;
         }
         ptr = ptr->next;
     }
 
     return result;
+}
+
+void* corto_ll_find(corto_ll list, corto_compare_cb callback, void* o) {
+    void *result = corto_ll_findPtr(list, callback, o);
+    return result ? *(void**)result : NULL;
 }
 
 corto_uint32 corto_ll_hasObject(corto_ll list, void* o) {

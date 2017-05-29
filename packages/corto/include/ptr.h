@@ -100,6 +100,24 @@ int16_t _corto_ptr_size(
     corto_type type,
     uint32_t size);
 
+/** Return the number of elements in a type.
+ * This function will return the number of elements in the specified pointer. If
+ * the pointer is of an array type, the function will always return the max size
+ * of the array. If the pointer is of any other collection type, the function
+ * will return the current size.
+ *
+ * If this function is called on a non-collection type, it will return 1.
+ *
+ * @param ptr A pointer to the collection
+ * @param type The type for which to initialize the collection.
+ * @return 0 if success, -1 if failed.
+ * @see corto_ptr_free
+ */
+CORTO_EXPORT
+uint64_t _corto_ptr_count(
+    void *ptr,
+    corto_type type);
+
 /** Serialize pointer to a specified format.
  * @param ptr A pointer to the value.
  * @param type The type of the value.
@@ -278,6 +296,7 @@ void corto_ptr_setstr(
 #define corto_ptr_new(type) _corto_ptr_new(corto_type(type))
 #define corto_ptr_free(ptr, type) _corto_ptr_free(ptr, corto_type(type))
 #define corto_ptr_size(p, type, size) _corto_ptr_size(p, corto_type(type), size)
+#define corto_ptr_count(p, type) _corto_ptr_count(p, corto_type(type))
 
 #ifdef __cplusplus
 }

@@ -12,8 +12,10 @@ int16_t _test_SinkMount_construct(
     test_SinkMount this)
 {
 /* $begin(test/SinkMount/construct) */
+
+    corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
-      corto_observer(this)->type ? corto_observer(this)->type : "int32";
+      this->type ? this->type : "int32";
 
     // First tier
     corto_resultAssign(
@@ -139,14 +141,14 @@ int16_t _test_SinkMount_construct(
         FALSE
     );
 
-    corto_mount(this)->kind = CORTO_SINK;
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     return corto_mount_construct(this);
 /* $end */
 }
 
-/* $header(test/SinkMount/onRequest) */
+/* $header(test/SinkMount/onQuery) */
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->udata;
@@ -155,23 +157,23 @@ static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_SinkMount_onRequest(
+corto_resultIter _test_SinkMount_onQuery(
     test_SinkMount this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/SinkMount/onRequest) */
+/* $begin(test/SinkMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
-        if (!fnmatch(request->parent, e.parent, 0)) {
-            if (!fnmatch(request->expr, e.id, 0)) {
+        if (!fnmatch(query->from, e.parent, 0)) {
+            if (!fnmatch(query->select, e.id, 0)) {
                 corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,
                     e.id,
-                    ".",
+                    e.parent,
                     e.type,
                     0,
                     e.leaf
@@ -195,7 +197,7 @@ corto_object _test_SinkMount_onResume(
     test_SinkMount this,
     corto_string parent,
     corto_string name,
-    corto_object o)
+    corto_object object)
 {
 /* $begin(test/SinkMount/onResume) */
     corto_iter iter = corto_ll_iter(this->items);
@@ -212,9 +214,9 @@ corto_object _test_SinkMount_onResume(
                     goto error;
                 }
 
-                if (o && (t != corto_typeof(o))) {
+                if (object && (t != corto_typeof(object))) {
                     corto_seterr("type '%s' does not match type of object '%s'",
-                      e.type, corto_fullpath(NULL, corto_typeof(o)));
+                      e.type, corto_fullpath(NULL, corto_typeof(object)));
                 }
 
                 corto_object p = corto_lookup(
@@ -226,14 +228,14 @@ corto_object _test_SinkMount_onResume(
                     goto error;
                 }
 
-                if (o && (p != corto_parentof(o))) {
+                if (object && (p != corto_parentof(object))) {
                     corto_seterr("parent '%s' does not match parent of object '%s'",
-                      e.type, corto_fullpath(NULL, corto_parentof(o)));
+                      e.type, corto_fullpath(NULL, corto_parentof(object)));
                     goto error;
                 }
 
-                if (o) {
-                    result = o;
+                if (object) {
+                    result = object;
                 } else {
                     result = corto_declareChild(p, e.id, t);
                     if (!result) {
@@ -247,7 +249,7 @@ corto_object _test_SinkMount_onResume(
                     corto_fromStr(&result, (corto_string)e.value);
                 }
 
-                if (!o) {
+                if (!object) {
                     corto_define(result);
                 }
 

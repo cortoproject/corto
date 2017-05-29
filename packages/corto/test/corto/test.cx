@@ -203,6 +203,38 @@ struct struct_targetSequence:/
 struct struct_targetList:/
     m: target{IntList}
 
+enum TypeKind :/ 
+    Int,
+    String,
+    Composite,
+    Reference
+    Array,
+    Sequence,
+    List
+    OptionalInt,
+    OptionalString,
+    OptionalComposite,
+    OptionalReference
+    OptionalArray,
+    OptionalSequence,
+    OptionalList
+
+union unionTypes: test/TypeKind::
+    m_int: {TypeKind/Int}, int32
+    m_string: {TypeKind/String}, string
+    m_composite: {TypeKind/Composite}, Point
+    m_reference: {TypeKind/Reference}, object
+    m_array: {TypeKind/Array}, IntArray
+    m_sequence: {TypeKind/Sequence}, IntSequence
+    m_list: {TypeKind/List}, IntList
+    m_optionalInt: {TypeKind/OptionalInt}, int32, optional
+    m_optionalString: {TypeKind/OptionalString}, string, optional
+    m_optionalComposite: {TypeKind/OptionalComposite}, Point, optional
+    m_optionalReference: {TypeKind/OptionalReference}, object, optional
+    m_optionalArray: {TypeKind/OptionalArray}, IntArray, optional
+    m_optionalSequence: {TypeKind/OptionalSequence}, IntSequence, optional
+    m_optionalList: {TypeKind/OptionalList}, IntList, optional
+
 struct VoidParent: options={parentType=void}:/
     foo: int32
 
@@ -530,13 +562,13 @@ test/Suite Copy:/
     void tc_structWithTargetSequence()
     void tc_structWithTargetList()
     void tc_union()
-    void tc_unionWithObservableInt()
-    void tc_unionWithObservableString()
-    void tc_unionWithObservableReference()
-    void tc_unionWithObservableStruct()
-    void tc_unionWithObservableArray()
-    void tc_unionWithObservableSequence()
-    void tc_unionWithObservableList()
+    void tc_unionWithInt()
+    void tc_unionWithString()
+    void tc_unionWithReference()
+    void tc_unionWithStruct()
+    void tc_unionWithArray()
+    void tc_unionWithSequence()
+    void tc_unionWithList()
     void tc_unionWithOptionalInt()
     void tc_unionWithOptionalString()
     void tc_unionWithOptionalReference()
@@ -544,13 +576,6 @@ test/Suite Copy:/
     void tc_unionWithOptionalArray()
     void tc_unionWithOptionalSequence()
     void tc_unionWithOptionalList()
-    void tc_unionWithTargetInt()
-    void tc_unionWithTargetString()
-    void tc_unionWithTargetReference()
-    void tc_unionWithTargetStruct()
-    void tc_unionWithTargetArray()
-    void tc_unionWithTargetSequence()
-    void tc_unionWithTargetList()
     void tc_arrayWithInt()
     void tc_arrayWithString()
     void tc_arrayWithReference()
@@ -1118,28 +1143,20 @@ class SubscriberTest:/
     void destruct()
     void clear()
 
-    subscriber onDeclare:      ON_DECLARE, "/testScope", ".,//"
-    subscriber onDeclareSelf:  ON_DECLARE, "/testScope", "."
-    subscriber onDeclareScope: ON_DECLARE, "/testScope", "/"
-    subscriber onDeclareTree:  ON_DECLARE, "/testScope", "//"
+    subscriber onAll:   query={select=".,//" from="/testScope"}
+    subscriber onSelf:  query={select="."    from="/testScope"}
+    subscriber onScope: query={select="/"    from="/testScope"}
+    subscriber onTree:  query={select="//"   from="/testScope"}
     countDeclare: uint32, readonly
     countDeclareSelf: uint32, readonly
     countDeclareScope: uint32, readonly
     countDeclareTree: uint32, readonly
 
-    subscriber onDefine:      ON_DEFINE, "/testScope", ".,//"
-    subscriber onDefineSelf:  ON_DEFINE, "/testScope", "."
-    subscriber onDefineScope: ON_DEFINE, "/testScope", "/"
-    subscriber onDefineTree:  ON_DEFINE, "/testScope", "//"
     countDefine: uint32, readonly
     countDefineSelf: uint32, readonly
     countDefineScope: uint32, readonly
     countDefineTree: uint32, readonly
 
-    subscriber onUpdate:      ON_UPDATE, "/testScope", ".,//"
-    subscriber onUpdateSelf:  ON_UPDATE, "/testScope", "."
-    subscriber onUpdateScope: ON_UPDATE, "/testScope", "/"
-    subscriber onUpdateTree:  ON_UPDATE, "/testScope", "//"
     countUpdate: uint32, readonly
     countUpdateSelf: uint32, readonly
     countUpdateScope: uint32, readonly
@@ -1168,7 +1185,7 @@ test/Suite SubscriberEvent:/
     st: SubscriberTest
 
 test/Suite Subscribe:/
-    subscriber noInitialSep: ON_UPDATE, "testScope", "*"
+    subscriber noInitialSep: query={select="*" from="testScope"}
     triggered: uint8
     owner: object
     void tc_noInitialSep()

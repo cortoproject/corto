@@ -296,10 +296,8 @@ typedef struct corto_subscribe__fluent {
 
 /** Create a realtime query.
  * Subscribers enable an application to listen for for events from the object 
- * store and events that come directly from mounts. As with a `corto_observer`,
- * a subscriber can use an `corto_eventMask` to express interest. A subscriber
- * mask however may only contain `data` and `scope` flags. For an overview of
- * available flags, see the documentation of `corto_observe`.
+ * store and events that come directly from mounts. Subscribers receive only
+ * data events (`ON_DEFINE`, `ON_UPDATE`, `ON_DELETE`).
  *
  * The difference between subscribers and observers is that while observers 
  * provide a reference to an object, a subscriber returns a `corto_result`, which
@@ -309,13 +307,11 @@ typedef struct corto_subscribe__fluent {
  * in-memory object store, which makes it a better API for working with large 
  * datasets.
  *
- * @param event A mask that specifies the events to subscribe for.
  * @param scope The scope of the request. Query results are relative to the scope.
  * @param expr An expression matching one or more objects [printf-style format specifier].
  */
 CORTO_EXPORT 
 struct corto_subscribe__fluent corto_subscribe(
-    corto_eventMask event, 
     char *expr, 
     ...);
 

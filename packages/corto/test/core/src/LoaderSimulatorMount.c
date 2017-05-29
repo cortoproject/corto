@@ -15,8 +15,8 @@ int16_t _test_LoaderSimulatorMount_construct(
 
     corto_ptr_setref(&corto_mount(this)->mount, root_o);
     corto_observer(this)->mask = CORTO_ON_TREE;
-    corto_mount(this)->kind = CORTO_SINK;
-    corto_ptr_setstr(&corto_observer(this)->type, "/corto/core/package");
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_ptr_setstr(&corto_subscriber(this)->query.type, "/corto/core/package");
     corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
 
     corto_resultAssign(
@@ -63,11 +63,11 @@ int16_t _test_LoaderSimulatorMount_construct(
 /* $end */
 }
 
-corto_resultIter _test_LoaderSimulatorMount_onRequest(
+corto_resultIter _test_LoaderSimulatorMount_onQuery(
     test_LoaderSimulatorMount this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/LoaderSimulatorMount/onRequest) */
+/* $begin(test/LoaderSimulatorMount/onQuery) */
 
     /* << Insert implementation >> */
 

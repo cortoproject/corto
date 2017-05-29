@@ -21,7 +21,8 @@ void _test_ReplicatorEvent_tc_event(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, NULL);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -68,7 +69,8 @@ void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, NULL);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -107,7 +109,8 @@ void _test_ReplicatorEvent_tc_eventTree(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, NULL);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -174,7 +177,8 @@ void _test_ReplicatorEvent_tc_eventTreeWithTree(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_TREE, NULL, NULL);
+    corto_query q = {.select = "//", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -241,7 +245,8 @@ void _test_ReplicatorEvent_tc_eventWithTree(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_TREE, NULL, NULL);
+    corto_query q = {.select = "//", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -288,7 +293,8 @@ void _test_ReplicatorEvent_tc_matchingType(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, "int32", NULL);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent), .type = "int32"};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -361,7 +367,8 @@ void _test_ReplicatorEvent_tc_nonPersistent(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, NULL);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -436,7 +443,8 @@ void _test_ReplicatorEvent_tc_ownedByMount(
     corto_voidCreateChild_auto(root_o, parent);
     test_assert(parent != NULL);
 
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, NULL);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -524,7 +532,8 @@ void _test_ReplicatorEvent_tc_rateLimitOneObject(
     test_assert(parent != NULL);
 
     corto_mountPolicy policy = {.sampleRate = 5};
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, &policy);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, &policy);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);
@@ -575,7 +584,8 @@ void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
     test_assert(parent != NULL);
 
     corto_mountPolicy policy = {.sampleRate = 5};
-    test_EventReplicatorCreate_auto(mount, parent, CORTO_ON_SCOPE, NULL, &policy);
+    corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+    test_EventReplicatorCreate_auto(mount, &q, &policy);
     test_assert(mount != NULL);
 
     corto_int32DeclareChild_auto(parent, a);

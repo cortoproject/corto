@@ -10,12 +10,11 @@
 
 void _test_EventReplicator_onNotify(
     test_EventReplicator this,
-    corto_eventMask event,
-    corto_result *object)
+    corto_subscriberEvent *event)
 {
 /* $begin(test/EventReplicator/onNotify) */
 
-    switch(event) {
+    switch(event->event) {
         case CORTO_ON_DECLARE: this->declareCount ++; break;
         case CORTO_ON_DEFINE: this->updateCount ++; break;
         case CORTO_ON_UPDATE: this->updateCount ++; break;

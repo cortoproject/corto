@@ -19,7 +19,7 @@ void _test_SelectMount_setup(
     corto_setAttr(old);
 
     /* Create mount */
-    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_SOURCE);
+    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_REMOTE_OWNER);
 
     corto_enableload(FALSE);
 
@@ -430,7 +430,8 @@ void _test_SelectMount_tc_selectScopeFromScope(
     corto_iter iter;
 
     corto_int16 ret = corto_select("*")
-        .from("/A").iter( &iter );
+        .from("/A")
+        .iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -458,6 +459,43 @@ void _test_SelectMount_tc_selectScopeFromScope(
     test_assertstr(result->type, "float64");
 
     test_assert(!corto_iter_hasNext(&iter));
+
+/* $end */
+}
+
+void _test_SelectMount_tc_selectScopeFromVirtualMount(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectScopeFromVirtualMount) */
+
+    corto_object m = test_VirtualMountCreate("/data");
+    test_assert(m != NULL);
+
+    corto_iter it;
+    test_assert(!corto_select("data/*").contentType("text/corto").iter(&it));
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, "/data");
+    test_assertstr(r->type, "int32");
+    test_assertstr(corto_result_getText(r), "10");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assertstr(r->id, "b");
+    test_assertstr(r->parent, "/data");
+    test_assertstr(r->type, "string");
+    test_assertstr(corto_result_getText(r), "Hello World");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assertstr(r->id, "c");
+    test_assertstr(r->parent, "/data");
+    test_assertstr(r->type, "float64");
+    test_assertstr(corto_result_getText(r), "10.5");
+
+    test_assert(!corto_iter_hasNext(&it));
 
 /* $end */
 }
@@ -854,6 +892,16 @@ void _test_SelectMount_tc_selectSingleFromScopeTree(
     test_assertstr(result->type, "uint32");
 
     test_assert(!corto_iter_hasNext(&iter));
+
+/* $end */
+}
+
+void _test_SelectMount_tc_selectSingleFromVirtualMount(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectSingleFromVirtualMount) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -1360,6 +1408,16 @@ void _test_SelectMount_tc_selectTreeFromScope(
     test_assertstr(result->type, "uint32");
 
     test_assert(!corto_iter_hasNext(&iter));
+
+/* $end */
+}
+
+void _test_SelectMount_tc_selectTreeFromVirtualMount(
+    test_SelectMount this)
+{
+/* $begin(test/SelectMount/tc_selectTreeFromVirtualMount) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }

@@ -12,10 +12,14 @@ int16_t _test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
 /* $begin(test/AutoResumeSinkMount/construct) */
+    corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
-      corto_observer(this)->type ? corto_observer(this)->type : "int32";
+      this->type ? this->type : "int32";
 
     corto_mount_setContentType(this, "text/corto");
+
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_observer(this)->mask = CORTO_ON_TREE;
 
     // First tier
     corto_resultAssign(
@@ -141,14 +145,11 @@ int16_t _test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_mount(this)->kind = CORTO_SINK;
-    corto_observer(this)->mask = CORTO_ON_TREE;
-
     return corto_mount_construct(this);
 /* $end */
 }
 
-/* $header(test/AutoResumeSinkMount/onRequest) */
+/* $header(test/AutoResumeSinkMount/onQuery) */
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->udata;
@@ -157,23 +158,23 @@ static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_AutoResumeSinkMount_onRequest(
+corto_resultIter _test_AutoResumeSinkMount_onQuery(
     test_AutoResumeSinkMount this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/AutoResumeSinkMount/onRequest) */
+/* $begin(test/AutoResumeSinkMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
-        if (!fnmatch(request->parent, e.parent, 0)) {
-            if (!fnmatch(request->expr, e.id, 0)) {
+        if (!fnmatch(query->from, e.parent, 0)) {
+            if (!fnmatch(query->select, e.id, 0)) {
                 corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,
                     e.id,
-                    ".",
+                    e.parent,
                     e.type,
                     e.value,
                     e.leaf
@@ -195,25 +196,23 @@ corto_resultIter _test_AutoResumeSinkMount_onRequest(
 
 uintptr_t _test_AutoResumeSinkMount_onSubscribe(
     test_AutoResumeSinkMount this,
-    corto_string parent,
-    corto_string expr,
+    corto_query *query,
     uintptr_t ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onSubscribe) */
-    corto_request r = {.parent = parent, .expr = expr};
 
     /* Result is set to either this or 'expr' depending on the content of expr.
      * This allows the testcase to test both cases where onSubscribe returns the
      * same value of ctx, as well as cases where it doesn't */
     corto_word result = (corto_word)this;
 
-    if (expr[0] != '*') {
+    if (query->select[0] != '*') {
         result = rand();
     }
 
-    corto_requestListAppend(
+    corto_queryListAppend(
       this->subscribes,
-      &r
+      query
     );
 
     return result;
@@ -222,20 +221,17 @@ uintptr_t _test_AutoResumeSinkMount_onSubscribe(
 
 void _test_AutoResumeSinkMount_onUnsubscribe(
     test_AutoResumeSinkMount this,
-    corto_string parent,
-    corto_string expr,
+    corto_query *query,
     uintptr_t ctx)
 {
 /* $begin(test/AutoResumeSinkMount/onUnsubscribe) */
-    corto_request r = {.parent = parent, .expr = expr};
-
-    if (expr[0] == '*') {
+    if (query->select[0] == '*') {
         test_assert(ctx == (corto_word)this);
     }
 
-    corto_requestListAppend(
+    corto_queryListAppend(
       this->unsubscribes,
-      &r
+      query
     );
 
 /* $end */

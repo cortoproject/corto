@@ -19,7 +19,7 @@ int16_t _test_StringReplicator_construct(
 /* $end */
 }
 
-/* $header(test/StringReplicator/onRequest) */
+/* $header(test/StringReplicator/onQuery) */
 /* Custom release function */
 void test_StringReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->udata;
@@ -28,11 +28,11 @@ void test_StringReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_StringReplicator_onRequest(
+corto_resultIter _test_StringReplicator_onQuery(
     test_StringReplicator this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/StringReplicator/onRequest) */
+/* $begin(test/StringReplicator/onQuery) */
     corto_ll data = corto_ll_new();
 
     /* Create top level objects */

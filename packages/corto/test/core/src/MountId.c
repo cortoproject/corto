@@ -47,7 +47,7 @@ void _test_MountId_tc_idTypeFilter(
     test_MountId this)
 {
 /* $begin(test/MountId/tc_idTypeFilter) */
-    test_IdMount m = test_IdMountCreate(root_o, "int32");
+    test_IdMount m = test_IdMountCreate(root_o, corto_int32_o);
 
     /* Create object with a type that does not match the id mount */
     corto_object o = corto_declareChild(root_o, NULL, corto_float32_o);

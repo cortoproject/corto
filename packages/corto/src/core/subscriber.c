@@ -30,7 +30,6 @@ extern int S_B_CONTENTTYPE;
 typedef struct corto_subscribeRequest {
     corto_int16 err;
     corto_object instance;
-    corto_eventMask mask;
     corto_string scope;
     corto_string expr;
     corto_string type;
@@ -122,6 +121,11 @@ corto_int16 corto_notifySubscribersId(
         return 0;
     }
 
+    /* Subscribers only receive data events */
+    if (!(mask & (CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE))) {
+        return 0;
+    }
+
     /* Don't notify when shutting down */
     if (CORTO_OPERATIONAL != 0) {
         return 0;
@@ -192,7 +196,7 @@ corto_int16 corto_notifySubscribersId(
                 corto_word content = 0;
                 corto_object instance = sub->instance;
 
-                if (!s->expr) {
+                if (!s->query.select) {
                     continue;
                 }
 
@@ -200,11 +204,7 @@ corto_int16 corto_notifySubscribersId(
                     continue;
                 }
 
-                if ((corto_observer(s)->mask & mask) != mask) {
-                    continue;
-                }
-
-                if (corto_observer(s)->type && strcmp(corto_observer(s)->type, type)) {
+                if (s->query.type && strcmp(s->query.type, type)) {
                     continue;
                 }
 
@@ -272,8 +272,8 @@ corto_int16 corto_notifySubscribersId(
                     if (sep) *sep = '\0';
                     corto_id fromElem, toElem;
                     char *fromElemPtr = fromElem;
-                    if (s->parent) {
-                        strcpy(fromElem, s->parent);
+                    if (s->query.from) {
+                        strcpy(fromElem, s->query.from);
                     } else {
                         fromElemPtr = NULL;
                     }
@@ -351,23 +351,22 @@ corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
 static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 {
     corto_subscriber s = corto_declare(corto_subscriber_o);
-    ((corto_observer)s)->mask = r->mask;
-    corto_ptr_setstr(&s->parent, r->scope);
+    corto_ptr_setstr(&s->query.from, r->scope);
 
     if (r->scope && *r->scope) {
         if (*r->scope != '/') {
-            corto_asprintf(&s->parent, "/%s", r->scope);
+            corto_asprintf(&s->query.from, "/%s", r->scope);
         } else {
-            s->parent = corto_strdup(r->scope);
+            s->query.from = corto_strdup(r->scope);
         } } else {
-        s->parent = NULL;
+        s->query.from = NULL;
     }
 
-    corto_ptr_setstr(&s->expr, r->expr);
+    corto_ptr_setstr(&s->query.select, r->expr);
     corto_ptr_setstr(&s->contentType, r->contentType);
     corto_ptr_setref(&((corto_observer)s)->instance, r->instance);
     corto_ptr_setref(&((corto_observer)s)->dispatcher, r->dispatcher);
-    corto_ptr_setstr(&((corto_observer)s)->type, r->type);
+    corto_ptr_setstr(&s->query.type, r->type);
     ((corto_observer)s)->enabled = r->enabled;
     ((corto_function)s)->fptr = (corto_word)r->callback;
     ((corto_function)s)->kind = CORTO_PROCEDURE_CDECL;
@@ -474,7 +473,6 @@ static corto_subscribe__fluent corto_subscribe__fluentGet(void)
 }
 
 corto_subscribe__fluent corto_subscribe(
-    corto_eventMask mask,
     corto_string expr,
     ...)
 {
@@ -492,7 +490,6 @@ corto_subscribe__fluent corto_subscribe(
     corto_vasprintf(&request->expr, expr, arglist);
     va_end (arglist);
 
-    request->mask = mask;
     request->enabled = TRUE;
     return corto_subscribe__fluentGet();
 }
@@ -508,7 +505,7 @@ static uint16_t corto_subscriber_unsubscribeIntern(
 {
     int i, count = 
         corto_entityAdmin_remove(
-            &corto_subscriber_admin, this->parent, this, instance, removeAll);
+            &corto_subscriber_admin, this->query.from, this, instance, removeAll);
 
     if (count < 0) {
         goto error;
@@ -516,7 +513,7 @@ static uint16_t corto_subscriber_unsubscribeIntern(
 
     /* Unsubscribe outside of lock for every instance that is unsubscribed */
     for (i = 0; i < count; i ++) {
-        corto_select(this->expr).from(this->parent).instance(this).unsubscribe();
+        corto_select(this->query.select).from(this->query.from).instance(this).unsubscribe();
     }
 
     if (!removeAll) {
@@ -535,7 +532,7 @@ int16_t _corto_subscriber_construct(
     corto_subscriber this)
 {
 /* $begin(corto/core/subscriber/construct) */
-    if (!this->expr || !this->expr[0]) {
+    if (!this->query.select || !this->query.select[0]) {
         corto_seterr("'null' is not a valid subscriber expression");
         goto error;
     }
@@ -547,7 +544,7 @@ int16_t _corto_subscriber_construct(
         }
     }
 
-    this->matchProgram = (corto_word)corto_matchProgram_compile(this->expr, TRUE, TRUE);
+    this->matchProgram = (corto_word)corto_matchProgram_compile(this->query.select, TRUE, TRUE);
     if (!this->matchProgram) {
         goto error;
     }
@@ -556,6 +553,20 @@ int16_t _corto_subscriber_construct(
         if (corto_subscriber_subscribe(this, corto_observer(this)->instance)) {
             goto error;
         }
+    }
+
+    if (this->query.type) {
+        corto_type type = corto_resolve(NULL, this->query.type);
+        if (!corto_instanceof(corto_type_o, type)) {
+            corto_seterr("'%s' is not a type", this->query.type);
+            goto error;
+        }
+        corto_ptr_setref(&corto_observer(this)->type, type);
+
+    } else if (corto_observer(this)->type) {
+        corto_id id;
+        corto_fullpath(id, corto_observer(this)->type);
+        corto_ptr_setstr(&this->query.type, id);
     }
 
     return corto_observer_construct(this);
@@ -601,8 +612,6 @@ int16_t _corto_subscriber_init(
     p->passByReference = FALSE;
     corto_ptr_setref(&p->type, corto_subscriberEvent_o);
 
-    corto_observer(this)->mask = CORTO_ON_ANY;
-
     return corto_function_init(this);
 /* $end */
 }
@@ -613,31 +622,24 @@ int16_t _corto_subscriber_subscribe(
 {
 /* $begin(corto/core/subscriber/subscribe(object instance)) */
     corto_iter it;
-    corto_bool align = FALSE;
-    corto_eventMask mask = corto_observer(this)->mask;
 
-    /* If subscriber subscribes for DECLARE or DEFINE events, align data */
-    if ((mask & CORTO_ON_DECLARE) || (mask & CORTO_ON_DEFINE)) {
-        align = TRUE;
-    }
-
-    corto_debug("subscriber '%s': subscribe for %s, %s",
+    corto_debug("subscriber: '%s' subscribing for '%s', '%s'",
       corto_fullpath(NULL, this),
-      this->parent,
-      this->expr);
+      this->query.from,
+      this->query.select);
 
     /* If subscriber was not yet enabled, subscribe to mounts */
     corto_int16 ret;
-    if (!align || !this->contentType) {
-        ret = corto_select(this->expr)
-          .from(this->parent)
-          .type(corto_observer(this)->type)
+    if (!this->contentType) {
+        ret = corto_select(this->query.select)
+          .from(this->query.from)
+          .type(this->query.type)
           .instance(this) /* this prevents mounts from subscribing to themselves */
           .subscribe(&it);
     } else {
-        ret = corto_select(this->expr)
-          .from(this->parent)
-          .type(corto_observer(this)->type)
+        ret = corto_select(this->query.select)
+          .from(this->query.from)
+          .type(this->query.type)
           .contentType(this->contentType)
           .instance(this) /* this prevents mounts from subscribing to themselves */
           .subscribe(&it);
@@ -649,7 +651,7 @@ int16_t _corto_subscriber_subscribe(
     /* Add subscriber to global subscriber admin */
     corto_entityAdmin_add(
         &corto_subscriber_admin,
-        this->parent ? this->parent : "/",
+        this->query.from ? this->query.from : "/",
         this,
         instance);
 
@@ -661,12 +663,7 @@ int16_t _corto_subscriber_subscribe(
     /* Align subscriber */
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
-        /* Only forward results to subscriber if subscriber wants to be
-         * aligned. If not, still walk the results so mounts will receive
-         * onSubscribe callbacks */
-        if (align) {
-            corto_subscriber_invoke(instance, mask, r, this);
-        }
+        corto_subscriber_invoke(instance, CORTO_ON_DEFINE, r, this);
     }
 
     return 0;
@@ -682,8 +679,8 @@ int16_t _corto_subscriber_unsubscribe(
 /* $begin(corto/core/subscriber/unsubscribe(object instance)) */
     corto_debug("subscriber '%s': unsubscribe for %s, %s",
       corto_fullpath(NULL, this),
-      this->parent,
-      this->expr);
+      this->query.from,
+      this->query.select);
 
     return corto_subscriber_unsubscribeIntern(this, instance, FALSE);
 /* $end */

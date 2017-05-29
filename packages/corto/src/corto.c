@@ -49,7 +49,7 @@ struct corto_exitHandler {
 };
 
 #define VERSION_MAJOR "1"
-#define VERSION_MINOR "0"
+#define VERSION_MINOR "1"
 #define VERSION_PATCH "0"
 #define VERSION_SUFFIX "beta"
 
@@ -177,7 +177,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, equalityKind),\
     SSO_OP_VALUE(lang_, inout),\
     SSO_OP_VALUE(core_, operatorKind),\
-    SSO_OP_VALUE(core_, mountKind),\
+    SSO_OP_VALUE(core_, ownership),\
+    SSO_OP_VALUE(core_, readWrite),\
     SSO_OP_VALUE(core_, frameKind),\
     SSO_OP_VALUE(,secure_accessKind),\
     SSO_OP_VALUE(,secure_actionKind),\
@@ -203,11 +204,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, frame),\
     SSO_OP_VALUE(core_, sample),\
     SSO_OP_VALUE(core_, sampleIter),\
+    SSO_OP_VALUE(core_, subscriberEventIter),\
     SSO_OP_VALUE(core_, result),\
-    SSO_OP_VALUE(core_, request),\
     SSO_OP_VALUE(core_, mountStats),\
     SSO_OP_VALUE(core_, mountPolicy),\
-    SSO_OP_VALUE(core_, mountSubscription),\
     SSO_OP_VALUE(lang_, delegatedata),\
     SSO_OP_VOID(core_, dispatcher),\
     SSO_OP_VALUE(lang_, initAction),\
@@ -217,6 +217,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, resultIter),\
     SSO_OP_VALUE(core_, objectIter),\
     SSO_OP_VALUE(core_, position),\
+    SSO_OP_VALUE(core_, query),\
+    SSO_OP_VALUE(core_, mountSubscription),\
     SSO_OP_CLASS(lang_, function),\
     SSO_OP_CLASS(lang_, method),\
     SSO_OP_CLASS(lang_, overridable),\
@@ -313,7 +315,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_observer_type),\
     SSO_OP_OBJ(core_observer_enabled),\
     SSO_OP_OBJ(core_observer_active),\
-    SSO_OP_OBJ(core_observer_typeReference),\
     SSO_OP_OBJ(core_observer_init_),\
     SSO_OP_OBJ(core_observer_construct_),\
     SSO_OP_OBJ(core_observer_destruct_),\
@@ -406,11 +407,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_inout_IN),\
     SSO_OP_OBJ(lang_inout_OUT),\
     SSO_OP_OBJ(lang_inout_INOUT),\
-    /* mountKind */\
-    SSO_OP_OBJ(core_mountKind_SOURCE),\
-    SSO_OP_OBJ(core_mountKind_SINK),\
-    SSO_OP_OBJ(core_mountKind_CACHE),\
-    SSO_OP_OBJ(core_mountKind_HISTORIAN),\
+    /* ownership */\
+    SSO_OP_OBJ(core_ownership_REMOTE_OWNER),\
+    SSO_OP_OBJ(core_ownership_LOCAL_OWNER),\
+    SSO_OP_OBJ(core_ownership_CACHE_OWNER),\
+    /* readWrite */\
+    SSO_OP_OBJ(core_readWrite_READ),\
+    SSO_OP_OBJ(core_readWrite_WRITE),\
+    SSO_OP_OBJ(core_readWrite_HISTORY),\
     /* frameKind */\
     SSO_OP_OBJ(core_frameKind_FRAME_NOW),\
     SSO_OP_OBJ(core_frameKind_FRAME_TIME),\
@@ -636,22 +640,31 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mountStats_declares),\
     SSO_OP_OBJ(core_mountStats_updates),\
     SSO_OP_OBJ(core_mountStats_deletes),\
-    /* mountPolicy */\
+    /* ownership */\
+    SSO_OP_OBJ(core_mountPolicy_ownership),\
+    SSO_OP_OBJ(core_mountPolicy_readWrite),\
     SSO_OP_OBJ(core_mountPolicy_sampleRate),\
+    SSO_OP_OBJ(core_mountPolicy_expiryTime),\
     /* mountSubscription */\
-    SSO_OP_OBJ(core_mountSubscription_parent),\
-    SSO_OP_OBJ(core_mountSubscription_expr),\
-    SSO_OP_OBJ(core_mountSubscription_mask),\
+    SSO_OP_OBJ(core_mountSubscription_query),\
     SSO_OP_OBJ(core_mountSubscription_count),\
-    SSO_OP_OBJ(core_mountSubscription_userData),\
+    SSO_OP_OBJ(core_mountSubscription_ctx),\
+    /* query */\
+    SSO_OP_OBJ(core_query_select),\
+    SSO_OP_OBJ(core_query_from),\
+    SSO_OP_OBJ(core_query_type),\
+    SSO_OP_OBJ(core_query_member),\
+    SSO_OP_OBJ(core_query_where),\
+    SSO_OP_OBJ(core_query_offset),\
+    SSO_OP_OBJ(core_query_limit),\
+    SSO_OP_OBJ(core_query_timeBegin),\
+    SSO_OP_OBJ(core_query_timeEnd),\
+    SSO_OP_OBJ(core_query_content),\
     /* subscriber */\
-    SSO_OP_OBJ(core_subscriber_mask),\
-    SSO_OP_OBJ(core_subscriber_parent),\
-    SSO_OP_OBJ(core_subscriber_expr),\
+    SSO_OP_OBJ(core_subscriber_query),\
     SSO_OP_OBJ(core_subscriber_contentType),\
     SSO_OP_OBJ(core_subscriber_instance),\
     SSO_OP_OBJ(core_subscriber_dispatcher),\
-    SSO_OP_OBJ(core_subscriber_type),\
     SSO_OP_OBJ(core_subscriber_enabled),\
     SSO_OP_OBJ(core_subscriber_contentTypeHandle),\
     SSO_OP_OBJ(core_subscriber_matchProgram),\
@@ -679,10 +692,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_routerimpl_matchRoute_),\
     SSO_OP_OBJ(core_routerimpl_findRoute_),\
     /* mount */\
-    SSO_OP_OBJ(core_mount_kind),\
-    SSO_OP_OBJ(core_mount_parent),\
-    SSO_OP_OBJ(core_mount_expr),\
-    SSO_OP_OBJ(core_mount_type),\
+    SSO_OP_OBJ(core_mount_query),\
     SSO_OP_OBJ(core_mount_contentType),\
     SSO_OP_OBJ(core_mount_policy),\
     SSO_OP_OBJ(core_mount_mount),\
@@ -705,7 +715,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_destruct_),\
     SSO_OP_OBJ(core_mount_invoke_),\
     SSO_OP_OBJ(core_mount_id_),\
-    SSO_OP_OBJ(core_mount_request_),\
+    SSO_OP_OBJ(core_mount_query_),\
     SSO_OP_OBJ(core_mount_resume_),\
     SSO_OP_OBJ(core_mount_subscribe_),\
     SSO_OP_OBJ(core_mount_unsubscribe_),\
@@ -716,17 +726,21 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_post_),\
     SSO_OP_OBJ(core_mount_onPoll_),\
     SSO_OP_OBJ(core_mount_onNotify_),\
+    SSO_OP_OBJ(core_mount_onNotifyBatch_),\
     SSO_OP_OBJ(core_mount_onInvoke_),\
     SSO_OP_OBJ(core_mount_onId_),\
-    SSO_OP_OBJ(core_mount_onRequest_),\
+    SSO_OP_OBJ(core_mount_onQuery_),\
+    SSO_OP_OBJ(core_mount_onQueryHistorical_),\
     SSO_OP_OBJ(core_mount_onResume_),\
     SSO_OP_OBJ(core_mount_onSubscribe_),\
     SSO_OP_OBJ(core_mount_onUnsubscribe_),\
+    SSO_OP_OBJ(core_mount_onTransactionBegin_),\
+    SSO_OP_OBJ(core_mount_onTransactionEnd_),\
     /* loader */\
     SSO_OP_OBJ(core_loader_autoLoad),\
     SSO_OP_OBJ(core_loader_construct_),\
     SSO_OP_OBJ(core_loader_destruct_),\
-    SSO_OP_OBJ(core_loader_onRequest_),\
+    SSO_OP_OBJ(core_loader_onQuery_),\
     /* stager */\
     SSO_OP_OBJ(core_stager_resolver),\
     SSO_OP_OBJ(core_stager_add_),\
@@ -794,6 +808,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* case */\
     SSO_OP_OBJ(lang_case_discriminator),\
     SSO_OP_OBJ(lang_case_type),\
+    SSO_OP_OBJ(lang_case_modifiers),\
     SSO_OP_OBJ(lang_case_construct_),\
     /* default */\
     SSO_OP_OBJ(lang_default_type),\
@@ -819,15 +834,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_result_getText_),\
     SSO_OP_OBJ(core_result_fromcontent_),\
     SSO_OP_OBJ(core_result_contentof_),\
-    /* request */\
-    SSO_OP_OBJ(core_request_parent),\
-    SSO_OP_OBJ(core_request_expr),\
-    SSO_OP_OBJ(core_request_type),\
-    SSO_OP_OBJ(core_request_offset),\
-    SSO_OP_OBJ(core_request_limit),\
-    SSO_OP_OBJ(core_request_content),\
-    SSO_OP_OBJ(core_request_from),\
-    SSO_OP_OBJ(core_request_to),\
     /* package */\
     SSO_OP_OBJ(core_package_url),\
     SSO_OP_OBJ(core_package_version),\

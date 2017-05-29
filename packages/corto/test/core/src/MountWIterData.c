@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-/* $header(test/MountWIterData/onRequest) */
+/* $header(test/MountWIterData/onQuery) */
 void *iterNext(corto_iter *iter)
 {
     return NULL;
@@ -19,11 +19,11 @@ int iterHasNext(corto_iter *iter)
     return 0;
 }
 /* $end */
-corto_resultIter _test_MountWIterData_onRequest(
+corto_resultIter _test_MountWIterData_onQuery(
     test_MountWIterData this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/MountWIterData/onRequest) */
+/* $begin(test/MountWIterData/onQuery) */
     corto_resultIter result;
 
     result.udata = corto_calloc(sizeof(char));

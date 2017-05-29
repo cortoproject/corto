@@ -15,11 +15,14 @@ int16_t _corto_loader_construct(
     static corto_int32 constructOnce;
 
     if (corto_ainc(&constructOnce) == 1) {
-        corto_ptr_setref(&corto_mount(this)->mount, root_o);
-        corto_observer(this)->mask = CORTO_ON_TREE;
-        corto_mount(this)->kind = CORTO_SINK;
-        corto_ptr_setstr(&corto_observer(this)->type, "/corto/core/package");
-        corto_mount_setContentType(this, "text/json");
+        corto_query *q = &corto_subscriber(this)->query;
+        corto_ptr_setstr(&q->select, "//*");
+        corto_ptr_setstr(&q->from, "/");
+        corto_ptr_setstr(&q->type, "/corto/core/package");
+        corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+        if (corto_mount_setContentType(this, "text/json")) {
+            return -1;;
+        }
         return corto_mount_construct(this);
     } else {
         return -1;
@@ -36,7 +39,7 @@ void _corto_loader_destruct(
 /* $end */
 }
 
-/* $header(corto/core/loader/onRequest) */
+/* $header(corto/core/loader/onQuery) */
 void corto_loader_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->udata;
 
@@ -67,7 +70,7 @@ corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
 void corto_loader_addDir(
     corto_ll list,
     corto_string path,
-    corto_request *r)
+    corto_query *q)
 {
     corto_ll dirs = corto_opendir(path);
 
@@ -78,7 +81,7 @@ void corto_loader_addDir(
         while (corto_iter_hasNext(&iter)) {
             corto_string f = corto_iter_next(&iter);
 
-            if (!corto_loader_checkIfAdded(list, f) && corto_match(r->expr, f)) {
+            if (!corto_loader_checkIfAdded(list, f) && corto_match(q->select, f)) {
                 struct stat attr;
                 corto_string content = NULL;
 
@@ -97,7 +100,7 @@ void corto_loader_addDir(
                 }
 
                 corto_id package;
-                sprintf(package, "%s/%s", r->parent, f);
+                sprintf(package, "%s/%s", q->from, f);
                 corto_cleanpath(package, package);
 
                 if (!strcmp(package, "corto")) {
@@ -130,12 +133,12 @@ void corto_loader_addDir(
                     env = corto_strdup("");
                 }
 
-                if (r->content) {
-                    if (strcmp(r->parent, ".")) {
+                if (q->content) {
+                    if (strcmp(q->from, ".")) {
                         corto_asprintf(
                             &content,
                             "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"env\":\"%s\"}",
-                            r->parent,
+                            q->from,
                             f,
                             env
                         );
@@ -151,12 +154,12 @@ void corto_loader_addDir(
 
                 corto_dealloc(env);
 
-                corto_result *r = corto_calloc(sizeof(corto_result));
-                r->id = corto_strdup(f);
-                r->parent = corto_strdup(".");
-                r->type = corto_strdup("/corto/core/package");
-                r->value = (corto_word)content;
-                corto_ll_append(list, r);
+                corto_result *result = corto_calloc(sizeof(corto_result));
+                result->id = corto_strdup(f);
+                result->parent = corto_strdup(q->from);
+                result->type = corto_strdup("/corto/core/package");
+                result->value = (corto_word)content;
+                corto_ll_append(list, result);
             }
         }
 
@@ -168,11 +171,11 @@ void corto_loader_addDir(
     }
 }
 /* $end */
-corto_resultIter _corto_loader_onRequest_v(
+corto_resultIter _corto_loader_onQuery_v(
     corto_loader this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(corto/core/loader/onRequest) */
+/* $begin(corto/core/loader/onQuery) */
     corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
 
@@ -181,27 +184,27 @@ corto_resultIter _corto_loader_onRequest_v(
     corto_string targetPath, homePath, globalPath;
     targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
-      request->parent);
+      query->from);
     corto_cleanpath(targetPath, targetPath);
 
     homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
-      request->parent);
+      query->from);
     corto_cleanpath(homePath, homePath);
 
     globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
-      request->parent);
+      query->from);
     corto_cleanpath(globalPath, globalPath);
 
-    corto_loader_addDir(data, targetPath, request);
+    corto_loader_addDir(data, targetPath, query);
 
     if (strcmp(targetPath, homePath)) {
-        corto_loader_addDir(data, homePath, request);
+        corto_loader_addDir(data, homePath, query);
     }
     
     if (strcmp(targetPath, globalPath) && strcmp(homePath, globalPath)) {
-        corto_loader_addDir(data, globalPath, request);
+        corto_loader_addDir(data, globalPath, query);
     }
 
     /* Allocate persistent iterator. Set a custom release function so that the

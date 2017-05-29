@@ -863,7 +863,11 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLo
     }
 
     if (dl_out) {
-        *dl_out = loaded->library;
+        if (loaded) {
+            *dl_out = loaded->library;
+        } else {
+            *dl_out = NULL;
+        }
     } else if (dl) {
         corto_dlClose(dl);
     }

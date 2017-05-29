@@ -64,7 +64,7 @@ corto_int16 corto_entityAdmin_getDepthFromId(char *id);
 corto_entityAdmin* corto_entityAdmin_get(corto_entityAdmin *this);
 int16_t corto_entityAdmin_add(corto_entityAdmin *this, char *parent, corto_object e, corto_object instance);
 int corto_entityAdmin_remove(corto_entityAdmin *this, char *parent, corto_object e, corto_object instance, corto_bool removeAll);
-int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction action, char *parent, void *userData);
+int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction action, char *parent, bool recursive, void *userData);
 void corto_entityAdmin_free(void *admin);
 
 #endif

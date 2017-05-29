@@ -64,8 +64,11 @@ CORTO_EXPORT void* corto_ll_get(corto_ll list, int index);
 /* Get element ptr */
 CORTO_EXPORT void* corto_ll_getPtr(corto_ll list, int index);
 
-/* Find object - performs semantic comparison */
+/* Find object - comparison by value */
 CORTO_EXPORT void* corto_ll_find(corto_ll list, corto_compare_cb callback, void* o);
+
+/* Find object, return ptr - comparison by value */
+CORTO_EXPORT void* corto_ll_findPtr(corto_ll list, corto_compare_cb callback, void* o);
 
 /* Check if object is in list - simple compare on address */
 CORTO_EXPORT unsigned int corto_ll_hasObject(corto_ll list, void* o);

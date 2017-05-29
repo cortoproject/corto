@@ -118,10 +118,17 @@ corto_int16 corto_entityAdmin_getDepthFromId(char *id) {
     return result;
 }
 
-int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction action, char *parent, void *userData) {
+int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction action, char *parent, bool recursive, void *userData) {
     int result = 1;
     int depthStart = 0;
     int depthStop = CORTO_MAX_SCOPE_DEPTH;
+    int parentLength = 0;
+    if (parent) {
+         parentLength = strlen(parent);
+        if (!recursive) {
+            parentLength ++; /* Match null terminator */
+        }
+    }
 
     if (this->count) {
         corto_entityAdmin *admin = corto_entityAdmin_get(this);
@@ -133,7 +140,9 @@ int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction actio
         if (parent) {
             int depth = corto_entityAdmin_getDepthFromId(parent);
             depthStart = depth;
-            depthStop = depth + 1;
+            if (!recursive) {
+                depthStop = depth + 1;
+            }
         }
 
         int d, sp, s;
@@ -145,7 +154,7 @@ int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction actio
                         continue;
                     }
                 } else {
-                    if (parent && strcmp(entityPerParent->parent, parent)) {
+                    if (parent && strnicmp(entityPerParent->parent, parentLength, parent)) {
                         continue;
                     }
                 }

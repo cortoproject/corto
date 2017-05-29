@@ -66,7 +66,7 @@ static corto_int16 cortotool_setupProject(
         printf("\n");
         printf("               \\ /\n");
         printf("              - . -\n");
-        printf("               /|\\\n");
+        printf("               /%s|%s\\\n", CORTO_GREEN, CORTO_NORMAL);
         printf("%s                | /\\\n", CORTO_GREEN);
         printf("%s             /\\ |/\n", CORTO_GREEN);
         printf("%s               \\|%s\n", CORTO_GREEN, CORTO_NORMAL);

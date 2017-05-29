@@ -19,7 +19,7 @@ int16_t _test_JsonReplicator_construct(
 /* $end */
 }
 
-/* $header(test/JsonReplicator/onRequest) */
+/* $header(test/JsonReplicator/onQuery) */
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->udata;
@@ -28,11 +28,11 @@ void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 /* $end */
-corto_resultIter _test_JsonReplicator_onRequest(
+corto_resultIter _test_JsonReplicator_onQuery(
     test_JsonReplicator this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/JsonReplicator/onRequest) */
+/* $begin(test/JsonReplicator/onQuery) */
     corto_ll data = corto_ll_new();
 
     /* Create top level objects */

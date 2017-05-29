@@ -641,7 +641,7 @@ corto_boolean _corto_booleanAssign(corto_boolean _this) {
     return _this;
 }
 
-corto_case _corto_caseCreate(corto_int32seq discriminator, corto_type type) {
+corto_case _corto_caseCreate(corto_int32seq discriminator, corto_type type, corto_modifier modifiers) {
     corto_case _this;
     _this = corto_case(corto_declare(corto_case_o));
     if (!_this) {
@@ -650,6 +650,7 @@ corto_case _corto_caseCreate(corto_int32seq discriminator, corto_type type) {
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
         corto_ptr_setref(&((corto_member)_this)->type, type);
+        ((corto_member)_this)->modifiers = modifiers;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -658,7 +659,7 @@ corto_case _corto_caseCreate(corto_int32seq discriminator, corto_type type) {
     return _this;
 }
 
-corto_case _corto_caseCreateChild(corto_object _parent, corto_string _id, corto_int32seq discriminator, corto_type type) {
+corto_case _corto_caseCreateChild(corto_object _parent, corto_string _id, corto_int32seq discriminator, corto_type type, corto_modifier modifiers) {
     corto_case _this;
     _this = corto_case(corto_declareChild(_parent, _id, corto_case_o));
     if (!_this) {
@@ -667,6 +668,7 @@ corto_case _corto_caseCreateChild(corto_object _parent, corto_string _id, corto_
     if (!corto_checkState(_this, CORTO_DEFINED)) {
         corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
         corto_ptr_setref(&((corto_member)_this)->type, type);
+        ((corto_member)_this)->modifiers = modifiers;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -675,15 +677,17 @@ corto_case _corto_caseCreateChild(corto_object _parent, corto_string _id, corto_
     return _this;
 }
 
-corto_int16 _corto_caseUpdate(corto_case _this, corto_int32seq discriminator, corto_type type) {
+corto_int16 _corto_caseUpdate(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifier modifiers) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_ptr_copy(&((corto_case)((corto_case)CORTO_OFFSET(_this, ((corto_type)corto_case_o)->size)))->discriminator, corto_int32seq_o, &discriminator);
             corto_ptr_setref(&((corto_member)((corto_case)CORTO_OFFSET(_this, ((corto_type)corto_case_o)->size)))->type, type);
+            ((corto_member)((corto_case)CORTO_OFFSET(_this, ((corto_type)corto_case_o)->size)))->modifiers = modifiers;
         } else {
             corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
             corto_ptr_setref(&((corto_member)_this)->type, type);
+            ((corto_member)_this)->modifiers = modifiers;
         }
         corto_updateEnd(_this);
     } else {
@@ -710,17 +714,19 @@ corto_case _corto_caseDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_caseDefine(corto_case _this, corto_int32seq discriminator, corto_type type) {
+corto_int16 _corto_caseDefine(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifier modifiers) {
     CORTO_UNUSED(_this);
     corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
     corto_ptr_setref(&((corto_member)_this)->type, type);
+    ((corto_member)_this)->modifiers = modifiers;
     return corto_define(_this);
 }
 
-corto_case _corto_caseAssign(corto_case _this, corto_int32seq discriminator, corto_type type) {
+corto_case _corto_caseAssign(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifier modifiers) {
     CORTO_UNUSED(_this);
     corto_ptr_copy(&((corto_case)_this)->discriminator, corto_int32seq_o, &discriminator);
     corto_ptr_setref(&((corto_member)_this)->type, type);
+    ((corto_member)_this)->modifiers = modifiers;
     return _this;
 }
 

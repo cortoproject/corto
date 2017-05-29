@@ -29,12 +29,12 @@ void _test_Subscribe_tc_noInitialSep(
 
     corto_int16 ret = corto_subscriber_subscribe(test_Subscribe_noInitialSep_o, this);
     test_assert(ret == 0);
-    test_assertint(this->triggered, 0);
+    test_assertint(this->triggered, 1); /* Alignment */
 
     ret = corto_int32Update(i, 20);
     test_assert(ret == 0);
 
-    test_assertint(this->triggered, 1);
+    test_assertint(this->triggered, 2);
 
 /* $end */
 }
@@ -54,7 +54,7 @@ void _test_Subscribe_tc_subscribeAlignSelf(
 /* $begin(test/Subscribe/tc_subscribeAlignSelf) */
     corto_createChild(root_o, "o", corto_void_o);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE, "o")
+    corto_subscriber s = corto_subscribe("o")
       .instance(this)
       .callback(subscribeAlignSelf);
 
@@ -82,7 +82,7 @@ void _test_Subscribe_tc_subscribeAlignType(
     corto_createChild(root_o, "p", corto_float32_o);
     corto_createChild(root_o, "q", corto_string_o);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_DEFINE, "*")
+    corto_subscriber s = corto_subscribe("*")
       .instance(this)
       .type("float32")
       .callback(subscribeAlignType);
@@ -111,7 +111,7 @@ void _test_Subscribe_tc_subscribeInvertCase(
     corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
     test_assert(xyz != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "XYZ").from("/a")
+    corto_subscriber s = corto_subscribe("XYZ").from("/a")
       .instance(this)
       .callback(subscribeInvertCaseOnUpdate);
 
@@ -142,7 +142,7 @@ void _test_Subscribe_tc_subscribeInvertCaseFilter(
     corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
     test_assert(xyz != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "XY?").from("/a")
+    corto_subscriber s = corto_subscribe("XY?").from("/a")
       .instance(this)
       .callback(subscribeInvertCaseFilterOnUpdate);
 
@@ -167,7 +167,7 @@ void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "XY?").from("/a")
+    corto_subscriber s = corto_subscribe("XY?").from("/a")
       .instance(this)
       .callback(subscribeInvertCaseFilterFromPublishOnUpdate);
 
@@ -193,7 +193,7 @@ void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "XYZ").from("/a")
+    corto_subscriber s = corto_subscribe("XYZ").from("/a")
       .instance(this)
       .callback(subscribeInvertCaseFromPublishOnUpdate);
 
@@ -225,7 +225,7 @@ void _test_Subscribe_tc_subscribeInvertCaseParent(
     corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
     test_assert(xyz != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "xyz").from("/A")
+    corto_subscriber s = corto_subscribe("xyz").from("/A")
       .instance(this)
       .callback(subscribeInvertCaseParentOnUpdate);
 
@@ -250,7 +250,7 @@ void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "xyz").from("/A")
+    corto_subscriber s = corto_subscribe("xyz").from("/A")
       .instance(this)
       .callback(subscribeInvertCaseParentFromPublishOnUpdate);
 
@@ -276,7 +276,7 @@ void _test_Subscribe_tc_subscribeNestedIdFromRoot(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeNestedIdFromRoot) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "A/XYZ").from("/")
+    corto_subscriber s = corto_subscribe("A/XYZ").from("/")
       .instance(this)
       .callback(tc_subscribeNestedIdFromRootOnUpdate);
 
@@ -300,7 +300,7 @@ void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "A/*").from("/")
+    corto_subscriber s = corto_subscribe("A/*").from("/")
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
 
@@ -330,7 +330,7 @@ void _test_Subscribe_tc_subscribeOwnerSet(
     corto_setOwner(prevOwner);
     corto_object b = corto_createChild(NULL, "b", corto_int32_o);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "a,b").from("/")
+    corto_subscriber s = corto_subscribe("a,b").from("/")
       .instance(this)
       .callback(tc_subscribeOwnerSet);
  
@@ -357,7 +357,7 @@ void _test_Subscribe_tc_subscribePartialMatchingParent(
     test_Subscribe this)
 {
 /* $begin(test/Subscribe/tc_subscribePartialMatchingParent) */
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/").from("/foo")
+    corto_subscriber s = corto_subscribe("/").from("/foo")
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
 
@@ -377,7 +377,7 @@ void _test_Subscribe_tc_subscribePartialMatchingParentObject(
     corto_object foobar = corto_createChild(root_o, "foobar", corto_void_o);
     test_assert(foobar != NULL);
 
-    corto_subscriber s = corto_subscribe(CORTO_ON_UPDATE, "/").from("/foo")
+    corto_subscriber s = corto_subscribe("/").from("/foo")
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
 

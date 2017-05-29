@@ -29,7 +29,7 @@ def forward(dir, task)
       begin
         sh "corto rakefile #{dir}"
       rescue
-        STDERR.puts "#{C_WARNING}warning: failed to generate rakefile for '#{dir}'#{C_NORMAL}"
+        warn "failed to generate rakefile for '#{dir}'"
       end
     end
     if File.exists? "#{dir}/rakefile" then

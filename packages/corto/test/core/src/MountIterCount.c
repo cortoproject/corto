@@ -8,7 +8,7 @@
 
 #include <include/test.h>
 
-/* $header(test/MountIterCount/onRequest) */
+/* $header(test/MountIterCount/onQuery) */
 int test_MounterIterCount_hasNext(corto_iter *it) {
     test_MountIterCount this = it->udata;
     this->hasNextCount ++;
@@ -27,21 +27,20 @@ void test_MounterIterCount_release(corto_iter *it) {
     this->releaseCount ++;
 }
 /* $end */
-corto_resultIter _test_MountIterCount_onRequest(
+corto_resultIter _test_MountIterCount_onQuery(
     test_MountIterCount this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/MountIterCount/onRequest) */
+/* $begin(test/MountIterCount/onQuery) */
     corto_iter it = CORTO_ITER_EMPTY;
 
-    if (!strcmp(request->expr, "*")) {
+    if (!strcmp(query->select, "*")) {
         it.udata = this;
         it.next = test_MounterIterCount_next;
         it.hasNext = test_MounterIterCount_hasNext;
         it.release = test_MounterIterCount_release;
 
         this->result.id = "foo";
-        this->result.parent = "/bar";
         this->result.parent = "/hello/world";
         corto_ptr_setstr(&this->id, "a");
     }

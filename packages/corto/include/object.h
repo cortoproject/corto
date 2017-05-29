@@ -1076,6 +1076,7 @@ CORTO_EXPORT bool corto_matchProgram_run(corto_matchProgram program, char *str);
 CORTO_EXPORT void corto_matchProgram_free(corto_matchProgram matcher);
 /* Match parent of expression. Returns NULL if no match, or ptr to remainder (for corto_match) */
 CORTO_EXPORT char* corto_matchParent(char *parent, char *expr);
+CORTO_EXPORT corto_eventMask corto_match_getScope(corto_matchProgram matcher);
 
 /* Serialize object value to contentType */
 CORTO_EXPORT char *corto_contentof(corto_object o, char *contentType);

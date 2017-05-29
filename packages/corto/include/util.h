@@ -151,6 +151,7 @@ CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scop
 /* String utility functions */
 /* Case insensitive string compare */
 CORTO_EXPORT int stricmp(const char *str1, const char *str2);
+CORTO_EXPORT int strnicmp(const char *str1, int length, const char *str2);
 
 /* Compare case insensitive token */
 CORTO_EXPORT int tokicmp(char ** const str_out, const char *str2, char tok);

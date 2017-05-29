@@ -212,12 +212,16 @@ void corto_interfaceVectorseqClear(corto_interfaceVectorseq *seq) {
 
 void corto_objectlistInsert(corto_objectlist list, corto_object element) {
     corto_ll_insert(list, (void*)(corto_word)element);
-    corto_claim(element);
+    if (element) {
+        corto_claim(element);
+    }
 }
 
 void corto_objectlistAppend(corto_objectlist list, corto_object element) {
     corto_ll_append(list, (void*)(corto_word)element);
-    corto_claim(element);
+    if (element) {
+        corto_claim(element);
+    }
 }
 
 void corto_objectlistRemove(corto_objectlist list, corto_object element) {
@@ -347,11 +351,19 @@ void corto_parameterseqClear(corto_parameterseq *seq) {
 }
 
 void corto_stringlistInsert(corto_stringlist list, corto_string element) {
-    corto_ll_insert(list, (void*)corto_strdup(element));
+    if (element) {
+        corto_ll_insert(list, (void*)corto_strdup(element));
+    } else {
+    corto_ll_insert(list, (void*)element);
+    }
 }
 
 void corto_stringlistAppend(corto_stringlist list, corto_string element) {
-    corto_ll_append(list, (void*)corto_strdup(element));
+    if (element) {
+        corto_ll_append(list, (void*)corto_strdup(element));
+    } else {
+    corto_ll_append(list, (void*)element);
+    }
 }
 
 corto_string corto_stringlistTakeFirst(corto_stringlist list) {

@@ -15,7 +15,7 @@ int16_t _test_HistoryMount_construct(
     corto_ll samples;
     corto_result r;
 
-    corto_mount(this)->kind = CORTO_HISTORIAN;
+    corto_mount(this)->policy.readWrite = CORTO_HISTORY;
     corto_mount_setContentType(this, "text/corto");
 
     samples = corto_ll_new();
@@ -58,7 +58,7 @@ int16_t _test_HistoryMount_construct(
 /* $end */
 }
 
-/* $header(test/HistoryMount/onRequest) */
+/* $header(test/HistoryMount/onQuery) */
 typedef struct iterData {
     test_HistoryMount this;
     corto_frame from, to;
@@ -126,17 +126,17 @@ void release(corto_iter *it) {
     corto_dealloc(ctx);
 }
 /* $end */
-corto_resultIter _test_HistoryMount_onRequest(
+corto_resultIter _test_HistoryMount_onQuery(
     test_HistoryMount this,
-    corto_request *request)
+    corto_query *query)
 {
-/* $begin(test/HistoryMount/onRequest) */
+/* $begin(test/HistoryMount/onQuery) */
     corto_resultIter it;
 
     iterData *data = corto_alloc(sizeof(iterData));
     data->this = this;
-    data->from = request->from;
-    data->to = request->to;
+    data->from = query->timeBegin;
+    data->to = query->timeEnd;
     data->iter = corto_ll_iterAlloc(this->history);
     data->history = corto_ll_new();
 

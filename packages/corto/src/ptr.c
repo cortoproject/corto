@@ -95,7 +95,7 @@ corto_equalityKind _corto_ptr_compare(void *p1, corto_type type, void *p2) {
 
 corto_int16 _corto_ptr_init(void *p, corto_type type) {
     corto_assertObject(type);
-    memset(p, 0, type->size);
+    memset(p, 0, corto_type_sizeof(type));
     corto_value v;
     v = corto_value_value(p, type);
     return corto_value_init(&v);
@@ -191,4 +191,35 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
     return 0;
 error:
     return -1;
+}
+
+uint64_t _corto_ptr_count(void *ptr, corto_type type) {
+    if (type->kind != CORTO_COLLECTION) {
+        if (ptr) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    corto_collection collectionType = corto_collection(type);
+
+    switch(collectionType->kind) {
+    case CORTO_ARRAY:
+        return collectionType->max;
+        break;
+    case CORTO_SEQUENCE: {
+        dummySeq *seq = ptr;
+        return seq->length;
+        break;
+    }
+    case CORTO_LIST:
+        return corto_ll_size(*(corto_ll*)ptr);
+        break;
+    default:
+        //return corto_rb_size(*(corto_rb*)ptr);
+        break;    
+    }
+
+    return 0;
 }

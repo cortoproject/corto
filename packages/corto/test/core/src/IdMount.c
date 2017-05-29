@@ -13,8 +13,8 @@ int16_t _test_IdMount_construct(
 {
 /* $begin(test/IdMount/construct) */
 
-    corto_mount(this)->kind = CORTO_SINK;
-    corto_ptr_setstr(&corto_subscriber(this)->expr, "//");
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_ptr_setstr(&corto_subscriber(this)->query.select, "//");
 
     return corto_mount_construct(this);
 /* $end */

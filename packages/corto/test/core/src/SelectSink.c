@@ -408,9 +408,9 @@ void _test_SelectSink_tc_selectSingleVirtualNested1(
     result = corto_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
-    test_assert(!strcmp(result->id, "a"));
-    test_assert(!strcmp(result->parent, "x"));
-    test_assert(!strcmp(result->type, "int32"));
+    test_assertstr(result->id, "a");
+    test_assertstr(result->parent, "x");
+    test_assertstr(result->type, "int32");
 
     test_assert(!corto_iter_hasNext(&iter));
 

@@ -13,7 +13,7 @@ int16_t _test_EmptySinkMount_construct(
 {
 /* $begin(test/EmptySinkMount/construct) */
 
-    corto_mount(this)->kind = CORTO_SINK;
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
     return corto_mount_construct(this);
 
 /* $end */
