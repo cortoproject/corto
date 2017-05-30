@@ -67,14 +67,14 @@ typedef struct iterData {
 } iterData;
 
 int hasNext(corto_iter *it) {
-    iterData *ctx = it->udata;
+    iterData *ctx = it->ctx;
     return corto_iter_hasNext(&ctx->iter);
 }
 
 void* next(corto_iter *it) {
     int start, stop, i;
 
-    iterData *ctx = it->udata;
+    iterData *ctx = it->ctx;
     test_HistoryMount_data *data = corto_iter_next(&ctx->iter);
     corto_result *result = &data->result;
 
@@ -117,7 +117,7 @@ void* next(corto_iter *it) {
 }
 
 void release(corto_iter *it) {
-    iterData *ctx = it->udata;
+    iterData *ctx = it->ctx;
     corto_sample *s;
     while ((s = corto_ll_takeFirst(ctx->history))) {
         corto_dealloc(s);
@@ -143,7 +143,7 @@ corto_resultIter _test_HistoryMount_onQuery(
     it.next = next;
     it.hasNext = hasNext;
     it.release = release;
-    it.udata = data;
+    it.ctx = data;
     
     return it;
 /* $end */

@@ -73,9 +73,9 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
              * specified name, implicit referencing is not allowed. */
             if (!strcmp(corto_idof(info->m), member) && (!info->parsed)) {
                 found = TRUE;
-                data->iterData = *(corto_ll_iter_s*)iter.udata;
+                data->iterData = *(corto_ll_iter_s*)iter.ctx;
                 data->currentIter = iter;
-                data->currentIter.udata = &data->iterData;
+                data->currentIter.ctx = &data->iterData;
                 break;
             }
         }
@@ -101,8 +101,8 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexNext(corto_str
 }
 
 /* Free nodes from index */
-int corto_string_deserWalkIndex(void* o, void* udata) {
-    CORTO_UNUSED(udata);
+int corto_string_deserWalkIndex(void* o, void* ctx) {
+    CORTO_UNUSED(ctx);
     corto_dealloc(o);
     return 1;
 }

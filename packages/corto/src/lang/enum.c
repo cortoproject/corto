@@ -31,10 +31,10 @@ struct corto_enum_findConstant_t {
     corto_constant* o;
 };
 
-static int corto_enum_findConstant(corto_object o, void* udata) {
+static int corto_enum_findConstant(corto_object o, void* ctx) {
     struct corto_enum_findConstant_t* userData;
 
-    userData = udata;
+    userData = ctx;
     if (*(corto_constant*)o == userData->value) {
         userData->o = o;
     }

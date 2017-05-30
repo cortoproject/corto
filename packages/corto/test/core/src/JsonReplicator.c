@@ -22,7 +22,7 @@ int16_t _test_JsonReplicator_construct(
 /* $header(test/JsonReplicator/onQuery) */
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->ctx;
     corto_resultListClear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);

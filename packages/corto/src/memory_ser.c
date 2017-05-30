@@ -56,12 +56,12 @@ corto_int16 corto_ser_keepCollection(corto_walk_opt* s, corto_value* v, void* us
     return 0;
 }
 
-corto_int16 corto_ser_freePrimitive(corto_walk_opt* s, corto_value* v, void* udata) {
+corto_int16 corto_ser_freePrimitive(corto_walk_opt* s, corto_value* v, void* ctx) {
     corto_type t;
     void* o;
 
     CORTO_UNUSED(s);
-    CORTO_UNUSED(udata);
+    CORTO_UNUSED(ctx);
 
     t = corto_value_typeof(v);
     o = corto_value_ptrof(v);
@@ -82,8 +82,8 @@ corto_int16 corto_ser_freePrimitive(corto_walk_opt* s, corto_value* v, void* uda
     return 0;
 }
 
-int corto_ser_clear(void* o, void* udata) {
-    CORTO_UNUSED(udata);
+int corto_ser_clear(void* o, void* ctx) {
+    CORTO_UNUSED(ctx);
     corto_dealloc(o);
     return 1;
 }

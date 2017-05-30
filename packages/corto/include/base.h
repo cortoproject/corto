@@ -221,7 +221,7 @@ typedef struct corto_ll_s* corto_ll;
 typedef struct corto_iter corto_iter;
 struct corto_iter {
     int (*hasNext)(corto_iter*);
-    void *udata;
+    void *ctx;
     void* (*next)(corto_iter*);
     void* (*nextPtr)(corto_iter*);
     void (*release)(corto_iter*);

@@ -46,7 +46,7 @@ typedef struct corto_string_deser_t {
     corto_void* ptr;
     corto_ll anonymousObjects;
     corto_bool isObject;
-    void* (*allocValue)(void *ptr, struct corto_string_deser_t *udata);
+    void* (*allocValue)(void *ptr, struct corto_string_deser_t *ctx);
     void *allocUdata;
 }corto_string_deser_t;
 

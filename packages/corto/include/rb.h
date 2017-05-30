@@ -62,7 +62,7 @@ CORTO_EXPORT int corto_rb_walk(corto_rbtree tree, corto_elementWalk_cb callback,
 CORTO_EXPORT int corto_rb_walkPtr(corto_rbtree tree, corto_elementWalk_cb callback, void* userData);
 
 #define corto_rb_iter(tree) _corto_rb_iter(tree, alloca(sizeof(struct jsw_rbtrav)));
-CORTO_EXPORT corto_iter _corto_rb_iter(corto_rbtree tree, void *udata);
+CORTO_EXPORT corto_iter _corto_rb_iter(corto_rbtree tree, void *ctx);
 CORTO_EXPORT corto_type corto_rb_keyType(corto_rbtree tree);
 CORTO_EXPORT corto_bool corto_rb_iterChanged(corto_iter *iter);
 

@@ -81,7 +81,7 @@ CORTO_EXPORT int corto_ll_size(corto_ll list);
 
 /* Obtain regular iterator, not valid outside scope of origin. */
 #define corto_ll_iter(list) _corto_ll_iter(list, alloca(sizeof(corto_ll_iter_s)));
-CORTO_EXPORT corto_iter _corto_ll_iter(corto_ll, void *udata);
+CORTO_EXPORT corto_iter _corto_ll_iter(corto_ll, void *ctx);
 
 /* Obtain persistent iterator. Requries corto_iter_release to be called */
 CORTO_EXPORT corto_iter corto_ll_iterAlloc(corto_ll);

@@ -522,7 +522,7 @@ void _corto_mount_post(
 
 /* $header(corto/core/mount/query) */
 void corto_mount_queryRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->ctx;
     corto_ptr_deinit(&data->list, corto_resultList_o);
     corto_ll_iterRelease(iter);
 }

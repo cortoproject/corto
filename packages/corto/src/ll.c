@@ -22,7 +22,7 @@
 #include "corto/corto.h"
 
 #define get(list, index) corto_ll_get(list, index)
-#define walk(list, cb, udata) corto_ll_walk(list, cb, udata)
+#define walk(list, cb, ctx) corto_ll_walk(list, cb, ctx)
 
 #define next(iter) corto_ll_iterNext(&iter)
 #define remove(iter) corto_ll_iterRemove(&iter)
@@ -42,7 +42,7 @@ typedef struct corto_ll_s {
     unsigned int size;
 } corto_ll_s;
 
-#define corto_iterData(iter) ((corto_ll_iter_s*)(iter).udata)
+#define corto_iterData(iter) ((corto_ll_iter_s*)(iter).ctx)
 
 /* New list */
 corto_ll corto_ll_new() {
@@ -359,10 +359,10 @@ void corto_ll_clear(corto_ll list) {
 }
 
 /* Return list iterator */
-corto_iter _corto_ll_iter(corto_ll list, void *udata) {
+corto_iter _corto_ll_iter(corto_ll list, void *ctx) {
     corto_iter result;
 
-    result.udata = udata;
+    result.ctx = ctx;
     corto_iterData(result)->cur = 0;
     corto_iterData(result)->next = list->first;
     corto_iterData(result)->list = list;
@@ -376,15 +376,15 @@ corto_iter _corto_ll_iter(corto_ll list, void *udata) {
 
 corto_iter corto_ll_iterAlloc(corto_ll list) {
     corto_iter result;
-    corto_ll_iter_s *udata =  corto_alloc(sizeof(corto_ll_iter_s));
-    result = _corto_ll_iter(list, udata);
+    corto_ll_iter_s *ctx =  corto_alloc(sizeof(corto_ll_iter_s));
+    result = _corto_ll_iter(list, ctx);
     result.release = corto_ll_iterRelease;
     return result;
 }
 
 void corto_ll_iterRelease(corto_iter *iter) {
-    corto_dealloc(iter->udata);
-    iter->udata = NULL;
+    corto_dealloc(iter->ctx);
+    iter->ctx = NULL;
 }
 
 void corto_ll_iterMoveFirst(corto_iter* iter) {

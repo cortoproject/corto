@@ -9,8 +9,8 @@
 #include <include/test.h>
 
 /* $header(test/Lookup/tc_lookupAll) */
-int tc_lookupAllWalk(corto_object o, void *udata) {
-    CORTO_UNUSED(udata);
+int tc_lookupAllWalk(corto_object o, void *ctx) {
+    CORTO_UNUSED(ctx);
     corto_id id;
     corto_object r;
 

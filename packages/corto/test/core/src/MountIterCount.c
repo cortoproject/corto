@@ -10,12 +10,12 @@
 
 /* $header(test/MountIterCount/onQuery) */
 int test_MounterIterCount_hasNext(corto_iter *it) {
-    test_MountIterCount this = it->udata;
+    test_MountIterCount this = it->ctx;
     this->hasNextCount ++;
     return this->hasNextCount <= 10;
 }
 void* test_MounterIterCount_next(corto_iter *it) {
-    test_MountIterCount this = it->udata;
+    test_MountIterCount this = it->ctx;
     this->nextCount ++;
     this->result.id = this->id;
     this->result.leaf = TRUE;
@@ -23,7 +23,7 @@ void* test_MounterIterCount_next(corto_iter *it) {
     return &this->result;
 }
 void test_MounterIterCount_release(corto_iter *it) {
-    test_MountIterCount this = it->udata;
+    test_MountIterCount this = it->ctx;
     this->releaseCount ++;
 }
 /* $end */
@@ -35,7 +35,7 @@ corto_resultIter _test_MountIterCount_onQuery(
     corto_iter it = CORTO_ITER_EMPTY;
 
     if (!strcmp(query->select, "*")) {
-        it.udata = this;
+        it.ctx = this;
         it.next = test_MounterIterCount_next;
         it.hasNext = test_MounterIterCount_hasNext;
         it.release = test_MounterIterCount_release;

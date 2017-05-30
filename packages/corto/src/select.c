@@ -503,12 +503,12 @@ static corto_resultIter corto_selectRequestMount(
 }
 
 int corto_selectHistoryHasNext(corto_iter *it) {
-    corto_selectHistoryIter_t *ctx = it->udata;
+    corto_selectHistoryIter_t *ctx = it->ctx;
     return corto_iter_hasNext(&ctx->iter);
 }
 
 void* corto_selectHistoryNext(corto_iter *it) {
-    corto_selectHistoryIter_t *ctx = it->udata;
+    corto_selectHistoryIter_t *ctx = it->ctx;
     corto_word dstValue;
     corto_sample *s = corto_iter_next(&ctx->iter);
     
@@ -525,7 +525,7 @@ void* corto_selectHistoryNext(corto_iter *it) {
 }
 
 void corto_selectHistoryRelease(corto_iter *it) {
-    corto_selectHistoryIter_t *ctx = it->udata;
+    corto_selectHistoryIter_t *ctx = it->ctx;
     
     if (ctx->sample.value) {
         ctx->data->dstSer->release(ctx->sample.value);
@@ -533,7 +533,7 @@ void corto_selectHistoryRelease(corto_iter *it) {
 
     corto_iter_release(&ctx->iter);
 
-    ctx->data->item.history.udata = NULL;
+    ctx->data->item.history.ctx = NULL;
 }
 
 static corto_int16 corto_selectIterMount(
@@ -610,7 +610,7 @@ static corto_int16 corto_selectIterMount(
             data->item.history.hasNext = corto_selectHistoryHasNext;
             data->item.history.next = corto_selectHistoryNext;
             data->item.history.release = corto_selectHistoryRelease;
-            data->item.history.udata = &data->historyIterData;
+            data->item.history.ctx = &data->historyIterData;
             data->historyIterData.iter = result->history;
             data->historyIterData.data = data;
             data->historyIterData.sample.value = 0;            
@@ -974,7 +974,7 @@ static void corto_selectReset(corto_select_data *data) {
 
     if (data->item.history.release) {
         data->item.history.release(&data->item.history);
-        data->item.history.udata = 0;
+        data->item.history.ctx = 0;
     }
 
     data->sp = 0;
@@ -1032,7 +1032,7 @@ static void corto_selectFilterMounts(corto_select_data *data) {
 }
 
 static void* corto_selectNext(corto_resultIter *iter) {
-    corto_select_data *data = iter->udata;
+    corto_select_data *data = iter->ctx;
 
     CORTO_UNUSED(iter);
 
@@ -1045,7 +1045,7 @@ static void* corto_selectNext(corto_resultIter *iter) {
 }
 
 static void* corto_selectNextObjects(corto_objectIter *iter) {
-    corto_select_data *data = iter->udata;
+    corto_select_data *data = iter->ctx;
 
     CORTO_UNUSED(iter);
 
@@ -1058,7 +1058,7 @@ static void* corto_selectNextObjects(corto_objectIter *iter) {
 }
 
 static void corto_selectRelease(corto_iter *iter) {
-    corto_select_data *data = iter->udata;
+    corto_select_data *data = iter->ctx;
 
     CORTO_UNUSED(iter);
 
@@ -1249,7 +1249,7 @@ error:
 }
 
 static int corto_selectHasNext(corto_resultIter *iter) {
-    corto_select_data *data = iter->udata;
+    corto_select_data *data = iter->ctx;
     if (data->quit) {
         return 0;
     }
@@ -1343,7 +1343,7 @@ static corto_resultIter corto_selectPrepareIterator (
         }
     }
 
-    result.udata = data;
+    result.ctx = data;
     result.hasNext = corto_selectHasNext;
     result.next = corto_selectNext;
     result.release = corto_selectRelease;
@@ -1469,7 +1469,7 @@ static corto_string corto_selectorId()
         }
         corto_dealloc(request);
 
-        corto_select_data *data = it.udata;
+        corto_select_data *data = it.ctx;
         data->quitPtr = &quit;
 
         /* Walk results until id is found */
@@ -1560,7 +1560,7 @@ static corto_int16 corto_selectorIterObjects(corto_objectIter *ret)
         /* When requesting objects, the from-scope is meaningless. Setting the
          * scope to NULL makes it easier to resolve the parent while iterating.
          */
-        corto_select_data *data = ret->udata;
+        corto_select_data *data = ret->ctx;
         data->resume = TRUE;
 
         /* Override iterator callbacks for object iterator */

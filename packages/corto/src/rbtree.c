@@ -137,7 +137,7 @@ corto_type corto_rb_keyType(corto_rbtree tree) {
     return corto_type(jsw_rbtype((jsw_rbtree_t*)tree));
 }
 
-#define corto_iterData(iter) ((jsw_rbtrav_t*)iter->udata)
+#define corto_iterData(iter) ((jsw_rbtrav_t*)iter->ctx)
 
 static int corto_rb_iterHasNext(corto_iter *iter) {
     return corto_iterData(iter)->it != NULL;
@@ -158,11 +158,11 @@ corto_bool corto_rb_iterChanged(corto_iter *iter) {
     }
 }
 
-corto_iter _corto_rb_iter(corto_rbtree tree, void *udata) {
+corto_iter _corto_rb_iter(corto_rbtree tree, void *ctx) {
     corto_iter result;
 
-    result.udata = udata;
-    jsw_rbtfirst(result.udata, (jsw_rbtree_t*)tree);
+    result.ctx = ctx;
+    jsw_rbtfirst(result.ctx, (jsw_rbtree_t*)tree);
     result.hasNext = corto_rb_iterHasNext;
     result.next = corto_rb_iterNext;
     result.release = NULL;

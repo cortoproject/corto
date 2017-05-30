@@ -30,8 +30,8 @@ void _test_Resolver_tc_caseInsensitive(
 }
 
 /* $header(test/Resolver/tc_resolveAll) */
-int tc_resolveAllWalk(corto_object o, void *udata) {
-    CORTO_UNUSED(udata);
+int tc_resolveAllWalk(corto_object o, void *ctx) {
+    CORTO_UNUSED(ctx);
     corto_id id;
     corto_object r;
 

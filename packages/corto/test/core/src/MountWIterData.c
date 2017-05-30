@@ -26,7 +26,7 @@ corto_resultIter _test_MountWIterData_onQuery(
 /* $begin(test/MountWIterData/onQuery) */
     corto_resultIter result;
 
-    result.udata = corto_calloc(sizeof(char));
+    result.ctx = corto_calloc(sizeof(char));
     result.hasNext = iterHasNext;
     result.next = iterNext;
     result.release = NULL;

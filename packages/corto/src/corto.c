@@ -1172,7 +1172,7 @@ int corto_start(char *appName) {
 #endif
 
     /* Register exit-handler */
-    void corto_loaderOnExit(void* udata);
+    void corto_loaderOnExit(void* ctx);
     corto_onexit(corto_loaderOnExit, NULL);
 
     /* Register library-binding */

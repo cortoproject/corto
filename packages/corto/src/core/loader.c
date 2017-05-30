@@ -41,7 +41,7 @@ void _corto_loader_destruct(
 
 /* $header(corto/core/loader/onQuery) */
 void corto_loader_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->ctx;
 
     /* Delete data from request */
     corto_iter it = corto_ll_iter(data->list);

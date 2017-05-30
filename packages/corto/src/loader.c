@@ -956,8 +956,8 @@ int corto_loadPackages(void) {
 }
 
 /* Load file with unspecified extension */
-int corto_fileLoader(corto_string package, int argc, char* argv[], void* udata) {
-    CORTO_UNUSED(udata);
+int corto_fileLoader(corto_string package, int argc, char* argv[], void* ctx) {
+    CORTO_UNUSED(ctx);
     corto_string fileName;
     int result;
     corto_dl dl = NULL;
@@ -979,12 +979,12 @@ int corto_fileLoader(corto_string package, int argc, char* argv[], void* udata) 
     return result;
 }
 
-void corto_loaderOnExit(void* udata) {
+void corto_loaderOnExit(void* ctx) {
     struct corto_fileHandler* h;
     corto_dl dl;
     corto_iter iter;
 
-    CORTO_UNUSED(udata);
+    CORTO_UNUSED(ctx);
 
     /* Free loaded administration (always happens from mainthread) */
 

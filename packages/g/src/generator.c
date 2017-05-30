@@ -260,10 +260,10 @@ error:
     return -1;
 }
 
-static int g_freeObjects(void* _o, void* udata) {
+static int g_freeObjects(void* _o, void* ctx) {
     g_object* o;
 
-    CORTO_UNUSED(udata);
+    CORTO_UNUSED(ctx);
 
     o = _o;
     if (o->prefix) {
@@ -276,12 +276,12 @@ static int g_freeObjects(void* _o, void* udata) {
 }
 
 /* Free snippet */
-static int g_freeSnippet(void* o, void* udata) {
+static int g_freeSnippet(void* o, void* ctx) {
     g_fileSnippet* snippet;
     g_file file;
 
     snippet = o;
-    file = udata;
+    file = ctx;
 
     if (!snippet->used) {
         g_fileWrite(file, "%s(%s)", snippet->option, snippet->id);
@@ -303,9 +303,9 @@ static int g_freeSnippet(void* o, void* udata) {
 }
 
 /* Close file */
-static int g_closeFile(void* o, void* udata) {
+static int g_closeFile(void* o, void* ctx) {
     g_file file;
-    CORTO_UNUSED(udata);
+    CORTO_UNUSED(ctx);
 
     file = o;
 
@@ -314,10 +314,10 @@ static int g_closeFile(void* o, void* udata) {
     return 1;
 }
 
-static int g_freeAttribute(void* _o, void* udata) {
+static int g_freeAttribute(void* _o, void* ctx) {
     g_attribute* o;
 
-    CORTO_UNUSED(udata);
+    CORTO_UNUSED(ctx);
 
     o = _o;
     if (o->key) {
@@ -332,8 +332,8 @@ static int g_freeAttribute(void* _o, void* udata) {
     return 1;
 }
 
-static int g_freeImport(void* _o, void* udata) {
-    CORTO_UNUSED(udata);
+static int g_freeImport(void* _o, void* ctx) {
+    CORTO_UNUSED(ctx);
 
     corto_release(_o);
 

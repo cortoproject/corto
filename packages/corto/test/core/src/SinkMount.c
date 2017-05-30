@@ -151,7 +151,7 @@ int16_t _test_SinkMount_construct(
 /* $header(test/SinkMount/onQuery) */
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->udata;
+    corto_ll_iter_s *data = iter->ctx;
     corto_resultListClear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
