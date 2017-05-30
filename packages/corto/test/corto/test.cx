@@ -1202,6 +1202,8 @@ test/Suite Subscribe:/
     void tc_subscribeOwnerSet()
     void tc_subscribeAlignSelf()
     void tc_subscribeAlignType()
+    void tc_subscribeMultiDifferentParent()
+    void tc_subscribeMultiDifferentParentVirtual()
 
 // Function overloading support types
 void ol_null(object a)

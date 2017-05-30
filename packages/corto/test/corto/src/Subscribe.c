@@ -265,6 +265,129 @@ void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
 /* $end */
 }
 
+/* $header(test/Subscribe/tc_subscribeMultiDifferentParent) */
+void MultiDifferentParent1(corto_subscriberEvent *e) {
+    test_Subscribe instance = e->instance;
+    instance->triggered ++;
+
+    test_assertstr(e->data.id, "foo");
+    test_assertstr(e->data.parent, "/data");
+    test_assertstr(e->data.type, "void");
+}
+void MultiDifferentParent2(corto_subscriberEvent *e) {
+    test_Subscribe instance = e->instance;
+    instance->triggered ++;
+
+    test_assertstr(e->data.id, "foo");
+    test_assertstr(e->data.parent, "data");
+    test_assertstr(e->data.type, "void");
+}
+void MultiDifferentParent3(corto_subscriberEvent *e) {
+    test_Subscribe instance = e->instance;
+    instance->triggered ++;
+    
+    test_assertstr(e->data.id, "foo");
+    test_assertstr(e->data.parent, ".");
+    test_assertstr(e->data.type, "void");   
+}
+/* $end */
+void _test_Subscribe_tc_subscribeMultiDifferentParent(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeMultiDifferentParent) */
+    corto_subscriber s0 = corto_subscribe("/data/*")
+        .instance(this)
+        .callback(MultiDifferentParent1);
+
+    corto_subscriber s1 = corto_subscribe("data/*").from("/")
+        .instance(this)
+        .callback(MultiDifferentParent2);
+
+    corto_subscriber s2 = corto_subscribe("*").from("data")
+        .instance(this)
+        .callback(MultiDifferentParent3);
+
+    corto_subscriber s3 = corto_subscribe("*").from("/data")
+        .instance(this)
+        .callback(MultiDifferentParent3);
+
+    /* Create data scope */
+    corto_object data = corto_createChild(root_o, "data", corto_void_o);
+
+    /* Create foo object in data (triggers subscribers) */
+    corto_createChild(data, "foo", corto_void_o);
+    test_assertint(this->triggered, 4);
+
+    test_assert(corto_delete(s0) == 0);
+    test_assert(corto_delete(s1) == 0);
+    test_assert(corto_delete(s2) == 0);
+    test_assert(corto_delete(s3) == 0);
+    test_assert(corto_delete(data) == 0);
+
+/* $end */
+}
+
+/* $header(test/Subscribe/tc_subscribeMultiDifferentParent) */
+void MultiDifferentParentVirtual1(corto_subscriberEvent *e) {
+    test_Subscribe instance = e->instance;
+    instance->triggered ++;
+
+    test_assertstr(e->data.id, "foo");
+    test_assertstr(e->data.parent, "/data");
+    test_assertstr(e->data.type, "void");
+}
+void MultiDifferentParentVirtual2(corto_subscriberEvent *e) {
+    test_Subscribe instance = e->instance;
+    instance->triggered ++;
+
+    test_assertstr(e->data.id, "foo");
+    test_assertstr(e->data.parent, "data");
+    test_assertstr(e->data.type, "void");
+}
+void MultiDifferentParentVirtual3(corto_subscriberEvent *e) {
+    test_Subscribe instance = e->instance;
+    instance->triggered ++;
+    
+    test_assertstr(e->data.id, "foo");
+    test_assertstr(e->data.parent, ".");
+    test_assertstr(e->data.type, "void");   
+}
+/* $end */
+void _test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeMultiDifferentParentVirtual) */
+    corto_subscriber s0 = corto_subscribe("/data/*")
+        .instance(this)
+        .callback(MultiDifferentParentVirtual1);
+
+    corto_subscriber s1 = corto_subscribe("data/*").from("/")
+        .instance(this)
+        .callback(MultiDifferentParentVirtual2);
+
+    corto_subscriber s2 = corto_subscribe("*").from("data")
+        .instance(this)
+        .callback(MultiDifferentParentVirtual3);
+
+    corto_subscriber s3 = corto_subscribe("*").from("/data")
+        .instance(this)
+        .callback(MultiDifferentParentVirtual3);
+
+    /* Publish foo object in data (triggers subscribers) */
+    corto_publish(CORTO_ON_DEFINE, "data/foo", "void", NULL, 0);
+    test_assertint(this->triggered, 4);
+
+    corto_publish(CORTO_ON_DEFINE, "/data/foo", "void", NULL, 0);
+    test_assertint(this->triggered, 8);
+
+    test_assert(corto_delete(s0) == 0);
+    test_assert(corto_delete(s1) == 0);
+    test_assert(corto_delete(s2) == 0);
+    test_assert(corto_delete(s3) == 0);
+
+/* $end */
+}
+
 /* $header(test/Subscribe/tc_subscribeNestedIdFromRoot) */
 void tc_subscribeNestedIdFromRootOnUpdate(corto_subscriberEvent *e)
 {

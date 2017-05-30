@@ -271,6 +271,7 @@ error:
 
 static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_out, corto_dl *dl_out) {
     corto_dl dl = corto_loadValidLibrary(fileName, build_out);
+
     corto_bool result = FALSE;
     if (dl) {
         result = TRUE;
@@ -283,6 +284,7 @@ static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_
             *dl_out = dl;
         }
     }
+
     return result;
 }
 
@@ -443,8 +445,9 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         corto_mutexLock(&corto_adminLock);
         h = corto_lookupExt(ext);
         if (!h) {
-            corto_seterr("extension '%s' found but could not be loaded: %s", 
-                ext, corto_lasterr());
+            corto_seterr(
+                "package 'corto/ext/%s' loaded but extension is not registered", 
+                ext);
             goto error;
         }
     }
@@ -511,12 +514,16 @@ static time_t corto_getModified(corto_string file) {
     struct stat attr;
 
     if (stat(file, &attr) < 0) {
-        printf("failed to stat '%s' (%s)\n", file, strerror(errno));
+        corto_error("failed to stat '%s' (%s)\n", file, strerror(errno));
     }
 
     return attr.st_mtime;
 }
 
+/* Locate the right environment for a corto package.
+ * Input 'foo/bar'
+ * Output: '/home/me/.corto/lib/corto/1.1/foo/bar'
+ */
 static corto_string corto_locatePackageIntern(
     corto_string lib,
     corto_string *base,

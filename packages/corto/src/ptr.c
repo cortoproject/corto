@@ -40,10 +40,13 @@ void corto_ptr_setref(void* ptr, corto_object value) {
 
 /* Set string field */
 void corto_ptr_setstr(corto_string* ptr, corto_string value) {
-    if (*ptr) {
-        corto_dealloc(*ptr);
+    char *str = *ptr;
+    if (str != value) {
+        if (str) {
+            corto_dealloc(*ptr);
+        }
+        *ptr = value ? corto_strdup(value) : NULL;
     }
-    *ptr = value ? corto_strdup(value) : NULL;
 }
 
 char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {

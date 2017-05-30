@@ -177,11 +177,11 @@ corto_int16 corto_notifySubscribersId(
 
     do {
         corto_uint32 sp, s;
-        corto_bool relativeParentSet = FALSE;
         corto_id relativeParent;
 
         for (sp = 0; sp < admin->entities[depth].length; sp ++) {
             corto_entityPerParent *subPerParent = &admin->entities[depth].buffer[sp];
+            corto_bool relativeParentSet = FALSE;
 
             corto_benchmark_start(S_B_MATCHPARENT);
             char *expr = corto_matchParent(subPerParent->parent, path);
@@ -267,27 +267,39 @@ corto_int16 corto_notifySubscribersId(
                 }
 
                 /* Relative parent will be the same for each subscriber at same depth */
+                char *parentPtr = relativeParent;
                 if (!relativeParentSet) {
                     corto_benchmark_start(S_B_PATHID);
                     if (sep) *sep = '\0';
                     corto_id fromElem, toElem;
                     char *fromElemPtr = fromElem;
-                    if (s->query.from) {
-                        strcpy(fromElem, s->query.from);
+                    if (subPerParent->parent && subPerParent->parent[1]) {
+                        strcpy(fromElem, subPerParent->parent);
                     } else {
                         fromElemPtr = NULL;
                     }
-                    strcpy(toElem, parent);
-
+                    if (parent[0] == '/') {
+                        strcpy(toElem, parent);
+                    } else {
+                        toElem[0] = '/';
+                        strcpy(&toElem[1], parent);
+                    }
                     corto_pathstr(relativeParent, fromElemPtr, toElem, "/");
                     corto_benchmark_stop(S_B_PATHID);
                     relativeParentSet = TRUE;
                 }
 
+                /* Subscribers with query.from set to '/' and null share the
+                 * same computed relative parent, however for subscribers with
+                 * '/' we need to strip the initial '/' */
+                if (s->query.from && !s->query.from[1] && (s->query.from[0] == '/')) {
+                    if (parentPtr[0] == '/') parentPtr ++;
+                }
+
                 corto_result r = {
                   .id = id,
                   .name = NULL,
-                  .parent = relativeParent,
+                  .parent = parentPtr,
                   .type = type,
                   .value = content,
                   .leaf = FALSE,
@@ -537,7 +549,7 @@ int16_t _corto_subscriber_construct(
         goto error;
     }
 
-    if (this->contentType) {
+    if (this->contentType && !this->contentTypeHandle) {
         this->contentTypeHandle = (corto_word)corto_loadContentType(this->contentType);
         if (!this->contentTypeHandle) {
             goto error;

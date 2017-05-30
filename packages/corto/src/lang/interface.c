@@ -389,15 +389,17 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
     result = TRUE;
 
     returnType1 = o1->returnType ? o1->returnType : (corto_type)corto_void_o;
-    returnType2 = o2->returnType ? o1->returnType : (corto_type)corto_void_o;
+    returnType2 = o2->returnType ? o2->returnType : (corto_type)corto_void_o;
 
     if (returnType1 != returnType2) {
-        corto_error("function '%s' and '%s' have conflicting returntypes (%s vs %s).",
-            corto_fullpath(NULL, o1),
-            corto_fullpath(NULL, o2),
-            corto_fullpath(NULL, returnType1),
-            corto_fullpath(NULL, returnType2));
-        result = FALSE; /* Returntypes must match exactly (save for typedefs) */
+        if (!corto_type_compatible(returnType1, returnType2)) {
+            corto_seterr("function '%s' and '%s' have conflicting returntypes ('%s' vs '%s').",
+                corto_fullpath(NULL, o1),
+                corto_fullpath(NULL, o2),
+                corto_fullpath(NULL, returnType1),
+                corto_fullpath(NULL, returnType2));
+            result = FALSE; /* Returntypes must match exactly (save for typedefs) */
+        }
     } else {
         if (o1->overridable) {
             result = corto_interface_checkProcedureParameters(o1, o2);
@@ -458,16 +460,23 @@ int16_t _corto_interface_bindMethod(
     }
 
     /* If type is override, it must override a method */
-    if (found && !(*found)->overridable && procedureType == corto_override_o) {
-        if (!found) {
-            corto_seterr("no overridable method found for '%s'", 
-                corto_fullpath(NULL, method));
-        } else {
+    if (procedureType == corto_override_o) {
+        if (!found || !*found || d < 0) {
+            if (found && *found) {
+                corto_seterr("no overridable method found for '%s'\n  closest match: '%s'", 
+                    corto_fullpath(NULL, method),
+                    corto_fullpath(NULL, *found));
+            } else {
+                corto_seterr("no overridable method found for '%s'", 
+                    corto_fullpath(NULL, method));
+            }
+            goto error;
+        } else if (*found && (*found != (corto_function)method) && !(*found)->overridable) {
             corto_seterr("method '%s' is not overridable by '%s'",
                 corto_fullpath(NULL, *found),
                 corto_fullpath(NULL, method));
+            goto error;
         }
-        goto error;
     }
 
     /* Function is reentrant */

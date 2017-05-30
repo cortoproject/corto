@@ -171,6 +171,13 @@ int16_t _corto_mount_construct(
         corto_ptr_setstr(&s->query.select, "//");
     }
 
+    if (s->contentType &&
+        (!s->contentTypeHandle ||
+        !this->contentTypeOutHandle))
+    {
+        corto_mount_setContentType(this, s->contentType);
+    }
+
     corto_entityAdmin_add(&corto_mount_admin, s->query.from, this, this);
 
     /* If mount is interested in subscriptions, align from existing subscribers */
@@ -612,6 +619,12 @@ corto_object _corto_mount_resume(
                         }
                         newObject = TRUE;
                         corto_release(type_o);
+                    } else {
+                        corto_seterr("unresolved type '%s' of object '%s' returned by '%s'",
+                            iterResult->type,
+                            iterResult->id,
+                            corto_fullpath(NULL, this));
+                        goto error;
                     }
                     corto_release(parent_o);
                 }
