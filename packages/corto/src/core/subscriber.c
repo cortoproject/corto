@@ -139,6 +139,7 @@ corto_int16 corto_notifySubscribersId(
     corto_contentType contentTypeHandle = NULL;
     corto_object owner = corto_getOwner();
     corto_object objectOwner = owner;
+    bool valueIsObject = false;
 
     struct {
         corto_contentType ct;
@@ -150,6 +151,7 @@ corto_int16 corto_notifySubscribersId(
         intermediate = (corto_object)value;
         intermediateValue = corto_value_object(intermediate, NULL);
         objectOwner = corto_ownerof(intermediate);
+        valueIsObject = true;
     }
 
     char *sep = NULL, *id = strrchr(path, '/');
@@ -303,7 +305,7 @@ corto_int16 corto_notifySubscribersId(
                   .type = type,
                   .value = content,
                   .leaf = FALSE,
-                  .object = intermediate,
+                  .object = valueIsObject ? intermediate : NULL,
                   .owner = objectOwner
                 };
 
