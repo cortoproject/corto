@@ -327,7 +327,7 @@ void _test_Subscribe_tc_subscribeMultiDifferentParent(
 /* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeMultiDifferentParent) */
+/* $header(test/Subscribe/tc_subscribeMultiDifferentParentVirtual) */
 void MultiDifferentParentVirtual1(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;

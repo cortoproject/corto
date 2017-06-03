@@ -1668,13 +1668,18 @@ corto_object corto_resume(
         /* If expression consists of multiple elements, and one element has been
          * found in a mount, it is likely that the next elements are going to be
          * found in the same mount, so start searching there. */
-        if (walkData.lastMount) {
+        if (walkData.lastMount && corto_observer(walkData.lastMount)->mask & CORTO_ON_TREE) {
             corto_path(
                 walkData.parentId,
                 walkData.p,
                 walkData.parent,
                 "/");
-            walkData.result = corto_resume_fromMount(walkData.lastMount, walkData.parentId, walkData.exprPtr, walkData.o);
+
+            walkData.result = corto_resume_fromMount(
+                walkData.lastMount, 
+                walkData.parentId, 
+                walkData.exprPtr, 
+                walkData.o);
         }
 
         while (!walkData.result && walkData.p) {

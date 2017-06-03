@@ -607,8 +607,11 @@ corto_object _corto_mount_resume(
                     );
                     goto error;
                 }
-                corto_object parent_o =
-                  corto_lookup(corto_mount(this)->mount, parent);
+
+                corto_id fullparent;
+                sprintf(fullparent, "%s/%s", corto_subscriber(this)->query.from, iterResult->parent);
+                corto_cleanpath(fullparent, fullparent);
+                corto_object parent_o = corto_lookup(NULL, fullparent);
                 if (parent_o) {
                     corto_object type_o = corto_resolve(NULL, iterResult->type);
                     if (type_o) {
@@ -627,6 +630,12 @@ corto_object _corto_mount_resume(
                         goto error;
                     }
                     corto_release(parent_o);
+                } else {
+                    corto_seterr("parent '%s' is not provided by any mount, cannot resume '%s/%s'",
+                        fullparent,
+                        parent,
+                        name);
+                    goto error;
                 }
             }
 
@@ -687,7 +696,7 @@ void _corto_mount_return(
 
     corto_result *elem = corto_calloc(sizeof(corto_result));
     elem->id = corto_strdup(r->id);
-    elem->id = corto_strdup(r->name);
+    elem->name = corto_strdup(r->name);
     elem->parent = corto_strdup(r->parent);
     elem->type = corto_strdup(r->type);
     elem->value = (corto_word)r->value;
