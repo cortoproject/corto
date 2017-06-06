@@ -85,12 +85,12 @@ typedef struct corto__object {
     #endif
     corto_int32 refcount;
     corto_type type;
-}corto__object;
+} corto__object;
 
 typedef struct corto__ols {
     corto_int8 key;
     void *value;
-}corto__ols;
+} corto__ols;
 
 typedef struct corto__scope {
     corto_object parent;
@@ -103,7 +103,7 @@ typedef struct corto__scope {
         corto_int64 dummy;
     } align;
     corto__ols *ols;
-}corto__scope;
+} corto__scope;
 
 typedef struct corto__writable {
     /* See corto__object */
@@ -111,7 +111,7 @@ typedef struct corto__writable {
         struct corto_rwmutex_s lock;
         corto_int64 dummy;
     } align;
-}corto__writable;
+} corto__writable;
 
 typedef struct corto__observer corto__observer;
 typedef void (*corto__notifyCallback)(corto__observer* data, corto_object _this, corto_object observable, corto_uint32 mask);
@@ -150,6 +150,15 @@ struct corto__persistent {
      * builtin objects, it isn't necessary to take into account struct
      * alignment. */
     corto_object owner;
+
+    /* Objects that are explicitly resumed should also be explicitly suspended
+     * by an application. If this is set to true, corto won't automatically
+     * attempt to decrease refcount when dropping a scope. 
+     *
+     * Only objects that are resumed through a lookup operation set this flag to
+     * true. If an object has been created with declareChild explicitly, it
+     * will be set to false. */
+    bool resumed;
 };
 
 typedef struct corto_mount_olsData_t {

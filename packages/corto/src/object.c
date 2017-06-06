@@ -1563,6 +1563,14 @@ corto_object corto_resume_fromMount(
             corto__persistent *_p = corto__objectPersistent(_o);
             corto_assert(_p != NULL, "cannot resume object that is not persistent");
             corto_ptr_setref(&_p->owner, m);
+
+            /* If object was resumed without creating an object in the store first, it
+             * means that a lookup or resolve triggered the resume. In that case, set
+             * the 'resume' attribute to true, to indicate that the object should not be
+             * released by a drop operation, but explicitly by an application. */
+            if (!o) {
+                _p->resumed = TRUE;
+            }
         }
     }
 
@@ -1593,7 +1601,8 @@ static int corto_resumeWalk(
     /* Either the mount registered for the direct parent of the
      * provided object, or the mount must have ON_TREE set */
     if ((data->p == data->parent) ||
-      (((corto_observer)mount)->mask & CORTO_ON_TREE)) {
+      (((corto_observer)mount)->mask & CORTO_ON_TREE)) 
+    {
         corto_type mountType = corto_observer(mount)->type;
 
         if (!mountType || (data->parent == data->p) || (corto_typeof(data->parent) == mountType)) {
@@ -1640,7 +1649,7 @@ corto_object corto_resume(
     corto_id exprBuff;
 
     corto_resumeWalk_t walkData = {
-        .o = o,
+        .o = NULL,
         .p = parent,
         .parent = parent,
         .result = NULL,
@@ -1661,6 +1670,10 @@ corto_object corto_resume(
         nextSep = strchr(walkData.exprPtr, '/');
         if (nextSep) {
             *nextSep = '\0';
+        } else {
+            /* If object is last one to be resumed in expression, pass it to
+             * mount resume function. */
+            walkData.o = o;
         }
 
         walkData.result = NULL;
@@ -1817,7 +1830,11 @@ static corto_object corto_declareChildInternRecursive(
         next ++;
 
         do {
-            result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
+            /* Try to resume parent objects first, in case they have another type */
+            if (!next || !(result = corto_resume(parent, cur, NULL))) {
+                /* If object was not resumed, declare it */
+                result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
+            }
 
             parent = result;
             stack[sp ++] = result;
@@ -2154,6 +2171,11 @@ void corto_drop(corto_object o, corto_bool delete) {
             while(corto_iter_hasNext(&iter)) {
                 collected = corto_iter_next(&iter);
 
+                /* Check if object is resumed before releasing it */
+                corto__object *_o = CORTO_OFFSET(collected, -sizeof(corto__object));
+                corto__persistent *_p = corto__objectPersistent(_o);
+                bool resumed = _p && _p->resumed;
+
                 if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
 
                 if (delete) {
@@ -2161,22 +2183,19 @@ void corto_drop(corto_object o, corto_bool delete) {
                         collected,
                         corto_owned(collected) && delete))
                     {
-                        corto_release(collected);
+                        /* Release the object if it was not a pure resumed object */
+                        if (!resumed) {
+                            corto_release(collected);
+                        }
                     }
                 } else {
                     corto_drop(collected, delete);
                 }
 
                 if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
-
+                
                 /* Release the claim introduced by corto_drop */
-                if (corto_release(collected) && !delete) {
-                    corto_release(collected);
-                } else {
-                    /* If the object was already deleted, the object was likely
-                     * resumed, and only kept alive by one of the objects that
-                     * also had been deleted by corto_drop. */
-                }
+                corto_release(collected);
             }
             corto_ll_free(walkData.objects);
         }

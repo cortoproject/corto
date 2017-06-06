@@ -55,7 +55,7 @@ int16_t _test_VirtualSinkMount_construct(
         "a",
         NULL,
         "x",
-        type,
+        "float32", /* Test resuming multiple objects of different type */
         0,
         FALSE
     );

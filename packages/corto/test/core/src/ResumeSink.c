@@ -89,6 +89,46 @@ void _test_ResumeSink_setup(
 /* $end */
 }
 
+void _test_ResumeSink_tc_cleanupParentFromResumedChild(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_cleanupParentFromResumedChild) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object k = corto_lookup(vmount, "x/a/k");
+    test_assert(k != NULL);
+    test_assertstr(corto_fullpath(NULL, k), "/vmount/x/a/k");
+    test_assert(corto_typeof(k) == (corto_type)corto_int32_o);
+    test_assertint(corto_countof(k), 1);
+
+    corto_object a = corto_parentof(k);
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/x/a");
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+    test_assertint(corto_countof(a), 1);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/x");
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assertint(corto_countof(x), 1);
+
+    test_assert(corto_delete(k) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_define(
     test_ResumeSink this)
 {
@@ -147,6 +187,90 @@ void _test_ResumeSink_tc_define(
 
     corto_release(mount);
     corto_release(sinkMount);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineFromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineFromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_createChild(vmount, "x", corto_int32_o);
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/nested/x");
+    test_assert(corto_ownerof(o) == mount);
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineFromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineFromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_createChild(vmount, "x", corto_int32_o);
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x");
+    test_assert(corto_ownerof(o) == mount);
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineMismatchingTypeFromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineMismatchingTypeFromVirtualMountPoint) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineMismatchingTypeNested1FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineMismatchingTypeNested1FromVirtualMountPoint) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineMismatchingTypeNested2FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineMismatchingTypeNested2FromVirtualMountPoint) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -221,6 +345,51 @@ void _test_ResumeSink_tc_defineNested1(
 /* $end */
 }
 
+void _test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineNested1FromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object a = corto_createChild(vmount, "x/a", corto_float32_o);
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
+    test_assert(corto_ownerof(a) == mount);
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
+    test_assert(corto_ownerof(x) == mount);
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(x) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineNested1FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineNested1FromVirtualMountPoint) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_defineNested2(
     test_ResumeSink this)
 {
@@ -287,6 +456,26 @@ void _test_ResumeSink_tc_defineNested2(
     test_assertint(*test_destructCalled_o, 3);
 
     corto_release(sinkMount);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineNested2FromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineNested2FromNestedVirtualMountPoint) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_defineNested2FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_defineNested2FromVirtualMountPoint) */
+
+    /* << Insert implementation >> */
 
 /* $end */
 }
@@ -399,6 +588,58 @@ void _test_ResumeSink_tc_lookupFromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_lookupFromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_lookupFromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_lookup(vmount, "x");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/nested/x");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_lookupFromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_lookupFromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_lookup(vmount, "x");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_lookupNested1(
     test_ResumeSink this)
 {
@@ -507,6 +748,38 @@ void _test_ResumeSink_tc_lookupNested1FromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_lookupNested1FromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object a = corto_lookup(vmount, "x/a");
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_ResumeSink this)
 {
@@ -572,6 +845,32 @@ void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_assertint(this->updated, 0);
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_lookupNested1FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_lookupNested1FromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_lookup(vmount, "x/a");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x/a");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
 
 /* $end */
 }
@@ -718,6 +1017,43 @@ void _test_ResumeSink_tc_lookupNested2FromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_lookupNested2FromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object k = corto_lookup(vmount, "x/a/k");
+    test_assert(k != NULL);
+    test_assertstr(corto_fullpath(NULL, k), "/vmount/nested/x/a/k");
+    test_assert(corto_typeof(k) == (corto_type)corto_int32_o);
+
+    corto_object a = corto_lookup(vmount, "x/a");
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+
+    test_assert(corto_delete(k) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_ResumeSink this)
 {
@@ -797,6 +1133,43 @@ void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_assertint(this->updated, 0);
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_lookupNested2FromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object k = corto_lookup(vmount, "x/a/k");
+    test_assert(k != NULL);
+    test_assertstr(corto_fullpath(NULL, k), "/vmount/x/a/k");
+    test_assert(corto_typeof(k) == (corto_type)corto_int32_o);
+
+    corto_object a = corto_parentof(k);
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/x/a");
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/x");
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+
+    test_assert(corto_delete(k) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
 
 /* $end */
 }
@@ -977,6 +1350,59 @@ void _test_ResumeSink_tc_resolveFromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_resolveFromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveFromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_resolve(vmount, "x");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/nested/x");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_resolveFromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveFromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_resolve(vmount, "x");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_resolveNested1(
     test_ResumeSink this)
 {
@@ -1085,6 +1511,38 @@ void _test_ResumeSink_tc_resolveNested1FromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveNested1FromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object a = corto_resolve(vmount, "x/a");
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_ResumeSink this)
 {
@@ -1150,6 +1608,33 @@ void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_assertint(this->updated, 0);
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
+
+/* $end */
+}
+
+void _test_ResumeSink_tc_resolveNested1FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveNested1FromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_autoload(false);
+    corto_object o = corto_resolve(vmount, "x/a");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x/a");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
 
 /* $end */
 }
@@ -1296,6 +1781,43 @@ void _test_ResumeSink_tc_resolveNested2FromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveNested2FromNestedVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object k = corto_resolve(vmount, "x/a/k");
+    test_assert(k != NULL);
+    test_assertstr(corto_fullpath(NULL, k), "/vmount/nested/x/a/k");
+    test_assert(corto_typeof(k) == (corto_type)corto_int32_o);
+
+    corto_object a = corto_resolve(vmount, "x/a");
+    test_assert(a != NULL);
+    test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
+    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+
+    corto_object x = corto_parentof(a);
+    test_assert(x != NULL);
+    test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
+    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+
+    test_assert(corto_delete(k) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
     test_ResumeSink this)
 {
@@ -1379,6 +1901,32 @@ void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
 /* $end */
 }
 
+void _test_ResumeSink_tc_resolveNested2FromVirtualMountPoint(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resolveNested2FromVirtualMountPoint) */
+
+    /* Create a mount that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount */
+    corto_object o = corto_resolve(vmount, "x/a/k");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x/a/k");
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_tc_resolveNested2NotExist(
     test_ResumeSink this)
 {
@@ -1447,6 +1995,39 @@ void _test_ResumeSink_tc_resolveNotExist(
 /* $end */
 }
 
+void _test_ResumeSink_tc_resumeNestedFromMultiple(
+    test_ResumeSink this)
+{
+/* $begin(test/ResumeSink/tc_resumeNestedFromMultiple) */
+
+    /* Create two mounts that mounts data under vmount, which does not exist in the
+     * RAM store. */
+    test_VirtualSinkMount mount1 = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount1 != NULL);
+
+    test_VirtualSinkMount mount2 = test_VirtualSinkMountCreate("/vmount");
+    test_assert(mount2 != NULL);
+
+    /* Create mount point after mount- 'mount' member has not been set */
+    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    test_assert(vmount != NULL);
+
+    /* Lookup object from mount, test that only one mount has been invoked */
+    corto_object o = corto_lookup(vmount, "x/a");
+    test_assert(o != NULL);
+    test_assertstr(corto_fullpath(NULL, o), "/vmount/x/a");
+
+    /* Two queries, to resume x and x/a */
+    test_assertint(mount1->count + mount2->count, 2);
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(mount1) == 0);
+    test_assert(corto_delete(mount2) == 0);
+    test_assert(corto_delete(vmount) == 0);
+
+/* $end */
+}
+
 void _test_ResumeSink_teardown(
     test_ResumeSink this)
 {
@@ -1461,3 +2042,5 @@ void _test_ResumeSink_teardown(
     corto_release(mount);
 /* $end */
 }
+
+

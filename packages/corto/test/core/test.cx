@@ -299,7 +299,11 @@ test/Suite ResumeSink:/
     void tc_defineNested2FromVirtualMountPoint()
     void tc_defineNested1FromNestedVirtualMountPoint()
     void tc_defineNested2FromNestedVirtualMountPoint()
+    void tc_defineMismatchingTypeFromVirtualMountPoint()
+    void tc_defineMismatchingTypeNested1FromVirtualMountPoint()
+    void tc_defineMismatchingTypeNested2FromVirtualMountPoint()
     void tc_resumeNestedFromMultiple()
+    void tc_cleanupParentFromResumedChild()
 
     observer onDeclare: on_declare | on_tree
     observer onDefine: on_define | on_tree
