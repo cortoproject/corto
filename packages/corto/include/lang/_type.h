@@ -89,7 +89,7 @@ extern "C" {
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
 #define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
 #define corto_table(o) ((corto_table)corto_assertType((corto_type)corto_table_o, o))
-#define corto_tablescope(o) ((corto_tablescope)corto_assertType((corto_type)corto_tablescope_o, o))
+#define corto_tableinstance(o) ((corto_tableinstance)corto_assertType((corto_type)corto_tableinstance_o, o))
 #define corto_target(o) ((corto_target)corto_assertType((corto_type)corto_target_o, o))
 #define corto_uint64(o) ((uint64_t*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
@@ -634,10 +634,10 @@ struct corto_table_s {
     struct corto_container_s super;
 };
 
-/*  tablescope */
-typedef struct corto_tablescope_s *corto_tablescope;
+/*  tableinstance */
+typedef struct corto_tableinstance_s *corto_tableinstance;
 
-struct corto_tablescope_s {
+struct corto_tableinstance_s {
     corto_struct type;
 };
 

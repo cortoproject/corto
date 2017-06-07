@@ -59,7 +59,7 @@ CORTO_META_OBJECT(class, unit);
 CORTO_META_OBJECT(class, container);
 CORTO_META_OBJECT(class, leaf);
 CORTO_META_OBJECT(class, table);
-CORTO_META_OBJECT(class, tablescope);
+CORTO_META_OBJECT(class, tableinstance);
 CORTO_META_OBJECT(struct, typespec);
 CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);

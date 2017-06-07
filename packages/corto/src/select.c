@@ -465,7 +465,7 @@ static corto_resultIter corto_selectRequestMount(
         /*printf("frame = {%s,%s} recursiveQuery = '%s' parent = '%s'\n",
             segment->scope, segment->expr, data->recursiveQuery, corto_subscriber(mount)->parent);*/
 
-        corto_trace("select: request from '%s', parent='%s', expr='%s'",
+        corto_debug("select: request from '%s', parent='%s', expr='%s'",
           corto_fullpath(NULL, mount),
           parent,
           expr);
@@ -1348,7 +1348,7 @@ static corto_resultIter corto_selectPrepareIterator (
     result.next = corto_selectNext;
     result.release = corto_selectRelease;
 
-    corto_trace("select: '%s' from '%s'", data->expr, scope);
+    corto_debug("select: '%s' from '%s'", data->expr, scope);
 
     /* Split expression on ,. Expressions with multiple segments should be
      * evaluated sequentially. */

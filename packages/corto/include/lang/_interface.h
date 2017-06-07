@@ -130,6 +130,11 @@ CORTO_EXPORT
 int16_t _corto_constant_init(
     int32_t* _this);
 
+#define corto_container_construct(_this) _corto_container_construct(corto_container(_this))
+CORTO_EXPORT
+int16_t _corto_container_construct(
+    corto_container _this);
+
 #define corto_default_construct(_this) _corto_default_construct(corto_default(_this))
 CORTO_EXPORT
 int16_t _corto_default_construct(

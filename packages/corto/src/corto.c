@@ -261,7 +261,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, container),\
     SSO_OP_CLASS(lang_, leaf),\
     SSO_OP_CLASS(lang_, table),\
-    SSO_OP_CLASS(lang_, tablescope),\
+    SSO_OP_CLASS(lang_, tableinstance),\
     SSO_OP_CLASS(lang_, procedure),\
     SSO_OP_CLASS(lang_, delegate),\
     SSO_OP_CLASS(lang_, target),\
@@ -630,10 +630,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_instanceof_),\
     SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
     /* leaf */\
+    SSO_OP_OBJ(lang_container_construct_),\
     SSO_OP_OBJ(lang_container_type),\
     SSO_OP_OBJ(lang_container_value),\
-    /* tablescope */\
-    SSO_OP_OBJ(lang_tablescope_type),\
+    /* tableinstance */\
+    SSO_OP_OBJ(lang_tableinstance_type),\
     /* table */\
     SSO_OP_OBJ(lang_table_construct_),\
     /* mountStats */\

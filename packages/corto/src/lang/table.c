@@ -13,8 +13,8 @@ int16_t _corto_table_construct(
 {
 /* $begin(corto/lang/table/construct) */
 
-    corto_ptr_setref(&corto_type(this)->options.parentType, corto_tablescope_o);
+    corto_ptr_setref(&corto_type(this)->options.parentType, corto_tableinstance_o);
 
-    return corto_class_construct(this);
+    return corto_container_construct(this);
 /* $end */
 }

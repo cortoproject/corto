@@ -1749,3 +1749,4 @@ test/Suite Container:/
     void tc_containerEmpty()
     void tc_leafRoot()
     void tc_complexContainer()
+    void tc_anonymousContainer()

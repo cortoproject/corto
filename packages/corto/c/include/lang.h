@@ -1753,31 +1753,31 @@ CORTO_EXPORT corto_table _corto_tableAssign(corto_table _this, corto_interface b
 #define corto_tableAssign(_this, base, baseAccess, implements, type, value) _corto_tableAssign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
 #define corto_tableSet(_this, base, baseAccess, implements, type, value) _this = _this ? _this : (corto_table*)corto_ptr_new(corto_table_o); _corto_tableAssign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
 
-/* tablescope */
-CORTO_EXPORT corto_tablescope _corto_tablescopeCreate(corto_struct type);
-#define corto_tablescopeCreate(type) _corto_tablescopeCreate(corto_struct(type))
-#define corto_tablescopeCreate_auto(_id, type) corto_tablescope _id = corto_tablescopeCreate(type); (void)_id
-CORTO_EXPORT corto_tablescope _corto_tablescopeCreateChild(corto_object _parent, corto_string _id, corto_struct type);
-#define corto_tablescopeCreateChild(_parent, _id, type) _corto_tablescopeCreateChild(_parent, _id, corto_struct(type))
-#define corto_tablescopeCreateChild_auto(_parent, _id, type) corto_tablescope _id = corto_tablescopeCreateChild(_parent, #_id, type); (void)_id
-CORTO_EXPORT corto_int16 _corto_tablescopeUpdate(corto_tablescope _this, corto_struct type);
-#define corto_tablescopeUpdate(_this, type) _corto_tablescopeUpdate(corto_tablescope(_this), corto_struct(type))
+/* tableinstance */
+CORTO_EXPORT corto_tableinstance _corto_tableinstanceCreate(corto_struct type);
+#define corto_tableinstanceCreate(type) _corto_tableinstanceCreate(corto_struct(type))
+#define corto_tableinstanceCreate_auto(_id, type) corto_tableinstance _id = corto_tableinstanceCreate(type); (void)_id
+CORTO_EXPORT corto_tableinstance _corto_tableinstanceCreateChild(corto_object _parent, corto_string _id, corto_struct type);
+#define corto_tableinstanceCreateChild(_parent, _id, type) _corto_tableinstanceCreateChild(_parent, _id, corto_struct(type))
+#define corto_tableinstanceCreateChild_auto(_parent, _id, type) corto_tableinstance _id = corto_tableinstanceCreateChild(_parent, #_id, type); (void)_id
+CORTO_EXPORT corto_int16 _corto_tableinstanceUpdate(corto_tableinstance _this, corto_struct type);
+#define corto_tableinstanceUpdate(_this, type) _corto_tableinstanceUpdate(corto_tableinstance(_this), corto_struct(type))
 
-CORTO_EXPORT corto_tablescope _corto_tablescopeDeclare(void);
-#define corto_tablescopeDeclare() _corto_tablescopeDeclare()
-#define corto_tablescopeDeclare_auto(_id) corto_tablescope _id = corto_tablescopeDeclare(); (void)_id
-CORTO_EXPORT corto_tablescope _corto_tablescopeDeclareChild(corto_object _parent, corto_string _id);
-#define corto_tablescopeDeclareChild(_parent, _id) _corto_tablescopeDeclareChild(_parent, _id)
-#define corto_tablescopeDeclareChild_auto(_parent, _id) corto_tablescope _id = corto_tablescopeDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_tablescopeDefine(corto_tablescope _this, corto_struct type);
-#define corto_tablescopeDefine(_this, type) _corto_tablescopeDefine(corto_tablescope(_this), corto_struct(type))
-CORTO_EXPORT corto_tablescope _corto_tablescopeAssign(corto_tablescope _this, corto_struct type);
-#define corto_tablescope__optional_NotSet NULL
-#define corto_tablescope__optional_Set(type) corto_tablescopeAssign((corto_tablescope*)corto_ptr_new(corto_tablescope_o)), type)
-#define corto_tablescope__optional_SetCond(cond, type) cond ? corto_tablescopeAssign((corto_tablescope*)corto_ptr_new(corto_tablescope_o), type) : NULL
-#define corto_tablescopeUnset(_this) _this ? corto_ptr_free(_this, corto_tablescope_o), 0 : 0; _this = NULL;
-#define corto_tablescopeAssign(_this, type) _corto_tablescopeAssign(_this, corto_struct(type))
-#define corto_tablescopeSet(_this, type) _this = _this ? _this : (corto_tablescope*)corto_ptr_new(corto_tablescope_o); _corto_tablescopeAssign(_this, corto_struct(type))
+CORTO_EXPORT corto_tableinstance _corto_tableinstanceDeclare(void);
+#define corto_tableinstanceDeclare() _corto_tableinstanceDeclare()
+#define corto_tableinstanceDeclare_auto(_id) corto_tableinstance _id = corto_tableinstanceDeclare(); (void)_id
+CORTO_EXPORT corto_tableinstance _corto_tableinstanceDeclareChild(corto_object _parent, corto_string _id);
+#define corto_tableinstanceDeclareChild(_parent, _id) _corto_tableinstanceDeclareChild(_parent, _id)
+#define corto_tableinstanceDeclareChild_auto(_parent, _id) corto_tableinstance _id = corto_tableinstanceDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_tableinstanceDefine(corto_tableinstance _this, corto_struct type);
+#define corto_tableinstanceDefine(_this, type) _corto_tableinstanceDefine(corto_tableinstance(_this), corto_struct(type))
+CORTO_EXPORT corto_tableinstance _corto_tableinstanceAssign(corto_tableinstance _this, corto_struct type);
+#define corto_tableinstance__optional_NotSet NULL
+#define corto_tableinstance__optional_Set(type) corto_tableinstanceAssign((corto_tableinstance*)corto_ptr_new(corto_tableinstance_o)), type)
+#define corto_tableinstance__optional_SetCond(cond, type) cond ? corto_tableinstanceAssign((corto_tableinstance*)corto_ptr_new(corto_tableinstance_o), type) : NULL
+#define corto_tableinstanceUnset(_this) _this ? corto_ptr_free(_this, corto_tableinstance_o), 0 : 0; _this = NULL;
+#define corto_tableinstanceAssign(_this, type) _corto_tableinstanceAssign(_this, corto_struct(type))
+#define corto_tableinstanceSet(_this, type) _this = _this ? _this : (corto_tableinstance*)corto_ptr_new(corto_tableinstance_o); _corto_tableinstanceAssign(_this, corto_struct(type))
 
 /* target */
 CORTO_EXPORT corto_target _corto_targetCreate(corto_type type);

@@ -2042,5 +2042,3 @@ void _test_ResumeSink_teardown(
     corto_release(mount);
 /* $end */
 }
-
-

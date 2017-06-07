@@ -671,7 +671,7 @@ corto_object _corto_mount_resume(
     corto_setOwner(prevOwner);
 
     if (result) {
-        corto_trace("mount: resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
+        corto_debug("mount: resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
     }
 
     return result;

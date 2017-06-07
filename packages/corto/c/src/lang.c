@@ -5770,14 +5770,14 @@ corto_table _corto_tableAssign(corto_table _this, corto_interface base, corto_mo
     return _this;
 }
 
-corto_tablescope _corto_tablescopeCreate(corto_struct type) {
-    corto_tablescope _this;
-    _this = corto_tablescope(corto_declare(corto_tablescope_o));
+corto_tableinstance _corto_tableinstanceCreate(corto_struct type) {
+    corto_tableinstance _this;
+    _this = corto_tableinstance(corto_declare(corto_tableinstance_o));
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_ptr_setref(&((corto_tablescope)_this)->type, type);
+        corto_ptr_setref(&((corto_tableinstance)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -5786,14 +5786,14 @@ corto_tablescope _corto_tablescopeCreate(corto_struct type) {
     return _this;
 }
 
-corto_tablescope _corto_tablescopeCreateChild(corto_object _parent, corto_string _id, corto_struct type) {
-    corto_tablescope _this;
-    _this = corto_tablescope(corto_declareChild(_parent, _id, corto_tablescope_o));
+corto_tableinstance _corto_tableinstanceCreateChild(corto_object _parent, corto_string _id, corto_struct type) {
+    corto_tableinstance _this;
+    _this = corto_tableinstance(corto_declareChild(_parent, _id, corto_tableinstance_o));
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_DEFINED)) {
-        corto_ptr_setref(&((corto_tablescope)_this)->type, type);
+        corto_ptr_setref(&((corto_tableinstance)_this)->type, type);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -5802,13 +5802,13 @@ corto_tablescope _corto_tablescopeCreateChild(corto_object _parent, corto_string
     return _this;
 }
 
-corto_int16 _corto_tablescopeUpdate(corto_tablescope _this, corto_struct type) {
+corto_int16 _corto_tableinstanceUpdate(corto_tableinstance _this, corto_struct type) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_ptr_setref(&((corto_tablescope)((corto_tablescope)CORTO_OFFSET(_this, ((corto_type)corto_tablescope_o)->size)))->type, type);
+            corto_ptr_setref(&((corto_tableinstance)((corto_tableinstance)CORTO_OFFSET(_this, ((corto_type)corto_tableinstance_o)->size)))->type, type);
         } else {
-            corto_ptr_setref(&((corto_tablescope)_this)->type, type);
+            corto_ptr_setref(&((corto_tableinstance)_this)->type, type);
         }
         corto_updateEnd(_this);
     } else {
@@ -5817,33 +5817,33 @@ corto_int16 _corto_tablescopeUpdate(corto_tablescope _this, corto_struct type) {
     return 0;
 }
 
-corto_tablescope _corto_tablescopeDeclare(void) {
-    corto_tablescope _this;
-    _this = corto_tablescope(corto_declare(corto_tablescope_o));
+corto_tableinstance _corto_tableinstanceDeclare(void) {
+    corto_tableinstance _this;
+    _this = corto_tableinstance(corto_declare(corto_tableinstance_o));
     if (!_this) {
         return NULL;
     }
     return _this;
 }
 
-corto_tablescope _corto_tablescopeDeclareChild(corto_object _parent, corto_string _id) {
-    corto_tablescope _this;
-    _this = corto_tablescope(corto_declareChild(_parent, _id, corto_tablescope_o));
+corto_tableinstance _corto_tableinstanceDeclareChild(corto_object _parent, corto_string _id) {
+    corto_tableinstance _this;
+    _this = corto_tableinstance(corto_declareChild(_parent, _id, corto_tableinstance_o));
     if (!_this) {
         return NULL;
     }
     return _this;
 }
 
-corto_int16 _corto_tablescopeDefine(corto_tablescope _this, corto_struct type) {
+corto_int16 _corto_tableinstanceDefine(corto_tableinstance _this, corto_struct type) {
     CORTO_UNUSED(_this);
-    corto_ptr_setref(&((corto_tablescope)_this)->type, type);
+    corto_ptr_setref(&((corto_tableinstance)_this)->type, type);
     return corto_define(_this);
 }
 
-corto_tablescope _corto_tablescopeAssign(corto_tablescope _this, corto_struct type) {
+corto_tableinstance _corto_tableinstanceAssign(corto_tableinstance _this, corto_struct type) {
     CORTO_UNUSED(_this);
-    corto_ptr_setref(&((corto_tablescope)_this)->type, type);
+    corto_ptr_setref(&((corto_tableinstance)_this)->type, type);
     return _this;
 }
 

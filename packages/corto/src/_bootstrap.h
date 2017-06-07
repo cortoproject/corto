@@ -462,7 +462,7 @@ CORTO_FWDECL_CORE(class, router);
 CORTO_FWDECL_CORE(class, routerimpl);
 CORTO_FWDECL_CORE(class, stager);
 CORTO_FWDECL(class, table);
-CORTO_FWDECL(class, tablescope);
+CORTO_FWDECL(class, tableinstance);
 CORTO_FWDECL(class, unit);
 
 CORTO_FWDECL(class, sequence);
@@ -1171,7 +1171,9 @@ CORTO_CLASS_O(lang, unit, lang_class, CORTO_PRIVATE, CORTO_ATTR_DEFAULT, NULL, C
     CORTO_METHOD_O(lang_unit, destruct, "()", lang_void, corto_unit_destruct);
 
 /* /corto/lang/container */
-CORTO_CLASS_O(lang, container, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_NODELEGATE);
+CORTO_FW_C(lang, container);
+CORTO_CLASS_O(lang, container, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
+    CORTO_METHOD_O(lang_container, construct, "()", lang_int16, corto_container_construct);
     CORTO_MEMBER_O(lang_container, type, lang_type, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_container, value, lang_string, CORTO_GLOBAL);
 
@@ -1183,9 +1185,9 @@ CORTO_FW_C(lang, table);
 CORTO_CLASS_O(lang, table, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
     CORTO_METHOD_O(lang_table, construct, "()", lang_int16, corto_table_construct);
 
-/* /corto/lang/tablescope */
-CORTO_CLASS_NOBASE_O(lang, tablescope, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(lang_tablescope, type, lang_struct, CORTO_GLOBAL);
+/* /corto/lang/tableinstance */
+CORTO_CLASS_NOBASE_O(lang, tableinstance, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+    CORTO_MEMBER_O(lang_tableinstance, type, lang_struct, CORTO_GLOBAL);
 
 /* /corto/core/sample */
 CORTO_STRUCT_O(core, sample, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);

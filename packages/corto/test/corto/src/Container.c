@@ -8,6 +8,36 @@
 
 #include <include/test.h>
 
+void _test_Container_tc_anonymousContainer(
+    test_Container this)
+{
+/* $begin(test/Container/tc_anonymousContainer) */
+    /* Containers are always created as named objects. If using corto_declare
+     * an anonymous "named" object is created. */
+    test_ContainerNestedLeaf o = corto_declare(test_ContainerNestedLeaf_o);
+    test_assert(o != NULL);
+    test_assert(corto_typeof(o) == corto_type(test_ContainerNestedLeaf_o));
+    test_assert(corto_checkAttr(o, CORTO_ATTR_NAMED) == true);
+    test_assertint(corto_scopeSize(o), 1);
+    test_assert(!corto_checkState(o, CORTO_DEFINED));
+
+    corto_object leaf = corto_lookup(o, "ChildLeaf");
+    test_assert(leaf != NULL);
+    test_assert(corto_typeof(leaf) == corto_type(test_ContainerNestedLeaf_ChildLeaf_o));
+    test_assertint(corto_scopeSize(leaf), 0);
+    test_assert(!corto_checkState(o, CORTO_DEFINED));
+
+    test_assert(corto_define(o) == 0);
+    test_assertint(corto_scopeSize(o), 1);
+    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_checkState(leaf, CORTO_DEFINED));
+
+    test_assert(corto_release(leaf) == 1);
+    test_assert(corto_delete(o) == 0);
+
+/* $end */
+}
+
 void _test_Container_tc_complexContainer(
     test_Container this)
 {
@@ -23,7 +53,7 @@ void _test_Container_tc_complexContainer(
 
     corto_object wheel = corto_lookup(car, "Wheel");
     test_assert(wheel != NULL);
-    test_assert(corto_typeof(wheel) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(wheel) == corto_type(corto_tableinstance_o));
     test_assert(!corto_checkState(wheel, CORTO_DEFINED));
     test_assertint(corto_scopeSize(wheel), 0);
 
@@ -162,10 +192,10 @@ void _test_Container_tc_containerNestedTable(
 
     corto_object child = corto_lookup(o, "ChildTable");
     test_assert(child != NULL);
-    test_assert(corto_typeof(child) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(child) == corto_type(corto_tableinstance_o));
     test_assert(!corto_checkState(child, CORTO_DEFINED));
 
-    corto_tablescope childTable = corto_tablescope(child);
+    corto_tableinstance childTable = corto_tableinstance(child);
     test_assert(childTable->type == corto_struct(test_ContainerNestedTable_ChildTable_o));
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
@@ -208,9 +238,9 @@ void _test_Container_tc_tableMultiKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiKey) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableMultiKey_o);
     test_assert (corto_define(o) == 0);
@@ -232,9 +262,9 @@ void _test_Container_tc_tableMultiMixedKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiMixedKey) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableMultiMixedKey_o);
     test_assert (corto_define(o) == 0);
@@ -256,9 +286,9 @@ void _test_Container_tc_tableMultiStringKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableMultiStringKey) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableMultiStringKey_o);
     test_assert (corto_define(o) == 0);
@@ -279,9 +309,9 @@ void _test_Container_tc_tableNested(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNested) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableNested_o);
 
@@ -291,9 +321,9 @@ void _test_Container_tc_tableNested(
     test_assert(!corto_checkState(record, CORTO_DEFINED));
     test_assertint(record->id, 1);
 
-    corto_tablescope nested = corto_lookup(record, "ChildTable");
+    corto_tableinstance nested = corto_lookup(record, "ChildTable");
     test_assert(nested != NULL);
-    test_assert(corto_typeof(nested) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(nested) == corto_type(corto_tableinstance_o));
     test_assert(!corto_checkState(nested, CORTO_DEFINED));
     test_assertint(corto_scopeSize(nested), 0);
 
@@ -311,9 +341,9 @@ void _test_Container_tc_tableNestedContainer(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNestedContainer) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableNestedContainer_o);
     test_assert (corto_define(o) == 0);
@@ -343,9 +373,9 @@ void _test_Container_tc_tableNestedLeafs(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableNestedLeafs) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableNestedLeafs_o);
     test_assert (corto_define(o) == 0);
@@ -382,9 +412,9 @@ void _test_Container_tc_tableSingleKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableSingleKey) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableSingleKey_o);
     test_assert (corto_define(o) == 0);
@@ -405,9 +435,9 @@ void _test_Container_tc_tableStringKey(
     test_Container this)
 {
 /* $begin(test/Container/tc_tableStringKey) */
-    corto_tablescope o = corto_declareChild(root_o, "o", corto_tablescope_o);
+    corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
-    test_assert(corto_typeof(o) == corto_type(corto_tablescope_o));
+    test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
     test_assertint(corto_scopeSize(o), 0);
     corto_ptr_setref(&o->type, test_TableStringKey_o);
     test_assert (corto_define(o) == 0);

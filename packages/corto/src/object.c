@@ -911,11 +911,11 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                     }
                 }
 
-                /* If parentType is a tablescope, check if child type matches
+                /* If parentType is a tableinstance, check if child type matches
                  * table type */
-                if (corto_instanceof(corto_tablescope_o, parent)) {
-                    if (childType != corto_type(corto_tablescope_o)) {
-                        corto_struct tableType = corto_tablescope(parent)->type;
+                if (corto_instanceof(corto_tableinstance_o, parent)) {
+                    if (childType != corto_type(corto_tableinstance_o)) {
+                        corto_struct tableType = corto_tableinstance(parent)->type;
                         if ((corto_type(tableType) != childType)) {
                             if (!corto_instanceof(childType, corto_container_o)) {
                                 corto_seterr("type '%s' does not match tabletype '%s' of '%s'",
@@ -1045,6 +1045,102 @@ corto_bool corto_childof(corto_object p, corto_object o) {
         }
     }
     return result;
+}
+
+static corto_type corto_containerType(corto_container c) {
+    if (c->type) return c->type; else return corto_type(c);
+}
+
+/* Recursively declare containers in its definition */
+static corto_int16 corto_declareContainer(corto_object parent) {
+    corto_type type = corto_typeof(parent);
+
+    if (corto_instanceof(corto_container_o, type))
+    {
+        corto_objectseq seq = corto_scopeClaim(type);
+        corto_int32 i;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
+                (corto_typeof(c) == corto_type(corto_leaf_o)))
+            {
+                if (!corto_declareChild(parent, corto_idof(c), corto_containerType(c))) {
+                    goto error;
+                }
+            } else if (corto_typeof(c) == corto_type(corto_table_o)) {
+                corto_tableinstance ts = corto_declareChild(parent, corto_idof(c), corto_tableinstance_o);
+                if (!ts) {
+                    goto error;
+                }
+                corto_ptr_setref(&ts->type, corto_containerType(c));
+            }
+        }
+        corto_scopeRelease(seq);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+/* Recursively define containers in its definition */
+static corto_int16 corto_defineContainer(corto_object parent) {
+    corto_type type = corto_typeof(parent);
+
+    if (corto_instanceof(corto_container_o, type)) {
+        corto_objectseq seq = corto_scopeClaim(type);
+        corto_int32 i;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
+                (corto_typeof(c) == corto_type(corto_leaf_o)) ||
+                (corto_typeof(c) == corto_type(corto_table_o)))
+            {
+                corto_object o = corto_lookup(parent, corto_idof(c));
+                if (!o) {
+                    corto_seterr("could not find '%s' in container '%s'",
+                        corto_idof(c),
+                        corto_fullpath(NULL, parent));
+                    goto error;
+                }
+                if (corto_define(o)) {
+                    corto_release(o);
+                    goto error;
+                }
+                corto_release(o);
+            }
+        }
+        corto_scopeRelease(seq);
+    } else if (type == corto_type(corto_tableinstance_o)) {
+        corto_objectseq seq = corto_scopeClaim(parent);
+        corto_int32 i;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if (corto_typeof(corto_typeof(c)) == corto_type(corto_table_o)) {
+                if (corto_define(c)) {
+                    corto_release(c);
+                    goto error;
+                }
+                corto_release(c);
+            }
+        }
+        corto_scopeRelease(seq);
+    } else if (corto_parentof(parent) == corto_type(corto_tableinstance_o)) {
+        corto_objectseq seq = corto_scopeClaim(parent);
+        corto_int32 i, error = 0;
+        for (i = 0; i < seq.length; i++) {
+            corto_object c = seq.buffer[i];
+            if (corto_define(c)) {
+                error = 1;
+            }
+        }
+        corto_scopeRelease(seq);
+        if (error) goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* Create new object with attributes */
@@ -1194,6 +1290,12 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
                 corto_define(CORTO_OFFSET(o, sizeof(corto__object)));
             }
         }
+
+        if (initializeScoped) {
+            if (corto_declareContainer(CORTO_OFFSET(o, sizeof(corto__object)))) {
+                goto error;
+            }
+        }
     }
 
     corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
@@ -1218,102 +1320,6 @@ error:
 
 corto_object _corto_declare(corto_type type) {
     return corto_declareIntern(type, FALSE);
-}
-
-static corto_type corto_containerType(corto_container c) {
-    if (c->type) return c->type; else return corto_type(c);
-}
-
-/* Recursively declare containers in its definition */
-static corto_int16 corto_declareContainer(corto_object parent) {
-    corto_type type = corto_typeof(parent);
-
-    if (corto_instanceof(corto_container_o, type))
-    {
-        corto_objectseq seq = corto_scopeClaim(type);
-        corto_int32 i;
-        for (i = 0; i < seq.length; i++) {
-            corto_object c = seq.buffer[i];
-            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o)))
-            {
-                if (!corto_declareChild(parent, corto_idof(c), corto_containerType(c))) {
-                    goto error;
-                }
-            } else if (corto_typeof(c) == corto_type(corto_table_o)) {
-                corto_tablescope ts = corto_declareChild(parent, corto_idof(c), corto_tablescope_o);
-                if (!ts) {
-                    goto error;
-                }
-                corto_ptr_setref(&ts->type, corto_containerType(c));
-            }
-        }
-        corto_scopeRelease(seq);
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
-/* Recursively define containers in its definition */
-static corto_int16 corto_defineContainer(corto_object parent) {
-    corto_type type = corto_typeof(parent);
-
-    if (corto_instanceof(corto_container_o, type)) {
-        corto_objectseq seq = corto_scopeClaim(type);
-        corto_int32 i;
-        for (i = 0; i < seq.length; i++) {
-            corto_object c = seq.buffer[i];
-            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o)) ||
-                (corto_typeof(c) == corto_type(corto_table_o)))
-            {
-                corto_object o = corto_lookup(parent, corto_idof(c));
-                if (!o) {
-                    corto_seterr("could not find '%s' in container '%s'",
-                        corto_idof(c),
-                        corto_fullpath(NULL, parent));
-                    goto error;
-                }
-                if (corto_define(o)) {
-                    corto_release(o);
-                    goto error;
-                }
-                corto_release(o);
-            }
-        }
-        corto_scopeRelease(seq);
-    } else if (type == corto_type(corto_tablescope_o)) {
-        corto_objectseq seq = corto_scopeClaim(parent);
-        corto_int32 i;
-        for (i = 0; i < seq.length; i++) {
-            corto_object c = seq.buffer[i];
-            if (corto_typeof(corto_typeof(c)) == corto_type(corto_table_o)) {
-                if (corto_define(c)) {
-                    corto_release(c);
-                    goto error;
-                }
-                corto_release(c);
-            }
-        }
-        corto_scopeRelease(seq);
-    } else if (corto_parentof(parent) == corto_type(corto_tablescope_o)) {
-        corto_objectseq seq = corto_scopeClaim(parent);
-        corto_int32 i, error = 0;
-        for (i = 0; i < seq.length; i++) {
-            corto_object c = seq.buffer[i];
-            if (corto_define(c)) {
-                error = 1;
-            }
-        }
-        corto_scopeRelease(seq);
-        if (error) goto error;
-    }
-
-    return 0;
-error:
-    return -1;
 }
 
 static corto_string corto_randomId(
