@@ -804,6 +804,22 @@ static int corto_selectLoadMountWalk(
         }
     }
 
+    /* If select query consists of multiple segments, ensure that next segments
+     * do not conflict with mount type, if set. */
+    if (rType) {
+        int s = data->segment + 1;
+        while (data->segments[s].scope) {
+            corto_select_segment *segment = &data->segments[s];
+            if (segment->o) {
+                corto_id typeId;
+                if (strcmp(rType, corto_fullpath(typeId, corto_typeof(segment->o)))) {
+                    return 1;
+                }
+            }
+            s ++;
+        }
+    }
+
     if (data->mountsLoaded == CORTO_MAX_MOUNTS_PER_SELECT) {
         corto_seterr("number of mounts exceeded (%d) for request",
             CORTO_MAX_MOUNTS_PER_SELECT);
@@ -1010,12 +1026,24 @@ static int16_t corto_selectPrepareFrame(
 
 /* When moving to the next scope element, filter out active mounts that
  * don't operate on a tree, as they don't contain relevant data for
- * a child scope. The remaining mounts are used to evaluate whether a SINK is
- * active for a scope, in which case objects must be masked. */
+ * a child scope. The remaining mounts are used to evaluate whether a 
+ * LOCAL_SOURCE is active for a scope, in which case objects must be masked. */
 static void corto_selectFilterMounts(corto_select_data *data) {
     corto_int32 i = 0;
+
     for (i = 0; i < data->mountsLoaded; i ++) {
-        if (!(((corto_observer)data->mounts[i])->mask & CORTO_ON_TREE)) {
+        corto_string mountType = NULL, segmentType = NULL;
+        corto_id typeId;
+
+        if (data->segments[data->segment + 1].scope && data->segments[data->segment + 2].scope) {
+            mountType = ((corto_subscriber)data->mounts[i])->query.type;
+            corto_select_segment *segment = &data->segments[data->segment + 2];
+            segmentType = segment->o ? corto_fullpath(typeId, corto_typeof(segment->o)) : NULL;   
+        }
+
+        if (!(((corto_observer)data->mounts[i])->mask & CORTO_ON_TREE) ||
+             (segmentType && strcmp(segmentType, mountType))) 
+        {
             if (i == (data->mountsLoaded - 1)) {
                 data->mounts[i] = NULL;
             } else {
@@ -1025,6 +1053,9 @@ static void corto_selectFilterMounts(corto_select_data *data) {
                 data->mounts[i] =
                   data->mounts[data->mountsLoaded - 1];
                 data->mounts[data->mountsLoaded - 1] = NULL;
+
+                /* Process the mount moved into this position */
+                i--;
             }
             data->mountsLoaded --;
         }
@@ -1489,7 +1520,9 @@ error:
 
 static int corto_mountAction_subscribe(corto_mount m, corto_query *r, void *ctx) {
     CORTO_UNUSED(ctx);
-    _corto_mount_subscribe(m, r);
+    if (corto_getOwner() != m) {
+        _corto_mount_subscribe(m, r);
+    }
     return 1;
 }
 static corto_int16 corto_selectorSubscribe(corto_resultIter *ret)
@@ -1515,7 +1548,9 @@ error:
 
 static int corto_mountAction_unsubscribe(corto_mount m, corto_query *r, void *ctx) {
     CORTO_UNUSED(ctx);
-    _corto_mount_unsubscribe(m, r);
+    if (corto_getOwner() != m) {
+        _corto_mount_unsubscribe(m, r);
+    }
     return 1;
 }
 static corto_int16 corto_selectorUnsubscribe()

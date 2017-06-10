@@ -200,7 +200,6 @@ typedef struct corto_select__fluent {
  * calls no locks will be held, which enables applications to run corto_select
  * queries concurrently and without disturbing other tasks in an application.
  *
- * @param scope The scope of the request. Query results are relative to the scope.
  * @param expr An expression matching one or more objects [printf-style format specifier].
  */ 
 CORTO_EXPORT 
@@ -307,7 +306,6 @@ typedef struct corto_subscribe__fluent {
  * in-memory object store, which makes it a better API for working with large 
  * datasets.
  *
- * @param scope The scope of the request. Query results are relative to the scope.
  * @param expr An expression matching one or more objects [printf-style format specifier].
  */
 CORTO_EXPORT 

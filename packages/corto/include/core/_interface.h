@@ -257,6 +257,16 @@ void _corto_mount_post(
     corto_mount _this,
     corto_event *e);
 
+#define corto_mount_publish(_this, event, from, id, type, value) _corto_mount_publish(corto_mount(_this), event, from, id, type, value)
+CORTO_EXPORT
+void _corto_mount_publish(
+    corto_mount _this,
+    corto_eventMask event,
+    corto_string from,
+    corto_string id,
+    corto_string type,
+    uintptr_t value);
+
 #define corto_mount_query(_this, query) _corto_mount_query(corto_mount(_this), query)
 CORTO_EXPORT
 corto_resultIter _corto_mount_query(

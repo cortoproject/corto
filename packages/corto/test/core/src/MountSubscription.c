@@ -8,6 +8,148 @@
 
 #include <include/test.h>
 
+void _test_MountSubscription_tc_subscribeForMountWithTypeFilter(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeForMountWithTypeFilter) */
+    corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
+    test_assert(mountRoot != NULL);
+
+    corto_object obj1 = corto_createChild(mountRoot, "obj1", corto_int32_o);
+    test_assert(obj1 != NULL);
+
+    corto_object obj2 = corto_createChild(mountRoot, "obj2", corto_float32_o);
+    test_assert(obj2 != NULL);
+
+    /* Create a mount with a filter on int32 */
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, "int32", NULL);
+    test_assert(m != NULL);
+
+    /* Subscribe for scope in mountRoot: ok */
+    corto_subscriber s1 = corto_subscribe("*").from("/mountRoot")
+      .callback(NULL);
+    test_assert(s1 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 1);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    /* Subscribe for scope in obj1: ok */
+    corto_subscriber s2 = corto_subscribe("obj1/*").from("/mountRoot")
+      .callback(NULL);
+    test_assert(s2 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    /* Subscribe for scope in obj2: should not trigger new subscription */
+    corto_subscriber s3 = corto_subscribe("obj2/*").from("/mountRoot")
+      .callback(NULL);
+    test_assert(s3 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    test_assert(corto_delete(s1) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 1);
+
+    test_assert(corto_delete(s2) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 2);
+
+    test_assert(corto_delete(s3) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 2);
+
+    test_assert(corto_delete(m) == 0);
+    test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
+void _test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeNestedForMountWithTypeFilter) */
+    corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
+    test_assert(mountRoot != NULL);
+
+    corto_object obj1 = corto_createChild(mountRoot, "obj1", corto_int32_o);
+    test_assert(obj1 != NULL);
+
+    corto_object obj2 = corto_createChild(obj1, "obj2", corto_float32_o);
+    test_assert(obj2 != NULL);
+
+    corto_object obj3 = corto_createChild(obj2, "obj3", corto_int32_o);
+    test_assert(obj3 != NULL);
+
+    corto_object obj4 = corto_createChild(obj3, "obj4", corto_int32_o);
+    test_assert(obj4 != NULL);
+
+    /* Create a mount with a filter on int32 */
+    test_AutoResumeSinkMount m =
+      test_AutoResumeSinkMountCreate(mountRoot, "int32", NULL);
+    test_assert(m != NULL);
+
+    /* Subscribe for nested scope in mountRoot: ok */
+    corto_subscriber s1 = corto_subscribe("*").from("/mountRoot")
+      .callback(NULL);
+    test_assert(s1 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 1);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    /* Subscribe for scope in obj1: ok */
+    corto_subscriber s2 = corto_subscribe("*").from("/mountRoot/obj1")
+      .callback(NULL);
+    test_assert(s2 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    /* Subscribe for scope in obj2: should not trigger new subscription */
+    corto_subscriber s3 = corto_subscribe("*").from("/mountRoot/obj1/obj2")
+      .callback(NULL);
+    test_assert(s3 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    /* Subscribe for scope in obj3: should not trigger new subscription */
+    corto_subscriber s4 = corto_subscribe("*").from("/mountRoot/obj1/obj2/obj3")
+      .callback(NULL);
+    test_assert(s4 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    /* Subscribe for scope in obj4: should not trigger new subscription */
+    corto_subscriber s5 = corto_subscribe("*").from("/mountRoot/obj1/obj2/obj3/obj4")
+      .callback(NULL);
+    test_assert(s5 != NULL);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 0);
+
+    test_assert(corto_delete(s1) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 1);
+
+    test_assert(corto_delete(s2) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 2);
+
+    test_assert(corto_delete(s3) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 2);
+
+    test_assert(corto_delete(s4) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 2);
+
+    test_assert(corto_delete(s5) == 0);
+    test_assertint(corto_ll_size(m->subscribes), 2);
+    test_assertint(corto_ll_size(m->unsubscribes), 2);
+
+    test_assert(corto_delete(m) == 0);
+    test_assert(corto_delete(mountRoot) == 0);
+
+/* $end */
+}
+
 void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_MountSubscription this)
 {
@@ -669,46 +811,6 @@ void _test_MountSubscription_tc_subscribeTreeAlign(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
-
-/* $end */
-}
-
-void _test_MountSubscription_tc_subscribeTreeDefine(
-    test_MountSubscription this)
-{
-/* $begin(test/MountSubscription/tc_subscribeTreeDefine) */
-
-    /* << Insert implementation >> */
-
-/* $end */
-}
-
-void _test_MountSubscription_tc_subscribeTreeDefineNested(
-    test_MountSubscription this)
-{
-/* $begin(test/MountSubscription/tc_subscribeTreeDefineNested) */
-
-    /* << Insert implementation >> */
-
-/* $end */
-}
-
-void _test_MountSubscription_tc_subscribeTreeDelete(
-    test_MountSubscription this)
-{
-/* $begin(test/MountSubscription/tc_subscribeTreeDelete) */
-
-    /* << Insert implementation >> */
-
-/* $end */
-}
-
-void _test_MountSubscription_tc_subscribeTreeDeleteNested(
-    test_MountSubscription this)
-{
-/* $begin(test/MountSubscription/tc_subscribeTreeDeleteNested) */
-
-    /* << Insert implementation >> */
 
 /* $end */
 }

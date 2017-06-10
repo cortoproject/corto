@@ -1373,6 +1373,7 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_METHOD_O(core_mount, setContentTypeIn, "(string type)", lang_int16, corto_mount_setContentTypeIn);
     CORTO_METHOD_O(core_mount, setContentTypeOut, "(string type)", lang_int16, corto_mount_setContentTypeOut);
     CORTO_METHOD_O(core_mount, return, "(core/result r)", lang_void, corto_mount_return);
+    CORTO_METHOD_O(core_mount, publish, "(core/eventMask event,string from,string id,string type,word value)", lang_void, corto_mount_unsubscribe);
     CORTO_METHOD_O(core_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_invoke);
     CORTO_METHOD_O(core_mount, id, "()", lang_string, corto_mount_id);
     CORTO_METHOD_O(core_mount, query, "(core/query query)", core_resultIter, corto_mount_query);

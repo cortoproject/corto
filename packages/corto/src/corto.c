@@ -724,6 +724,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_setContentTypeIn_),\
     SSO_OP_OBJ(core_mount_setContentTypeOut_),\
     SSO_OP_OBJ(core_mount_return_),\
+    SSO_OP_OBJ(core_mount_publish_),\
     SSO_OP_OBJ(core_mount_post_),\
     SSO_OP_OBJ(core_mount_onPoll_),\
     SSO_OP_OBJ(core_mount_onNotify_),\

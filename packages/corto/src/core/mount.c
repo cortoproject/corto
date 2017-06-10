@@ -69,6 +69,7 @@ int corto_mount_alignSubscriptionsAction(
 
     corto_select(s->query.select)
       .from(s->query.from)
+      .type(s->query.type)
       .mount(this)
       .subscribe(&it);
 
@@ -114,10 +115,9 @@ int16_t _corto_mount_construct(
     }
 
     if (this->mount) {
-        /*corto_warning(
-          "corto: %s: using mount/mount is deprecated, please use 'parent' and 'expr'",
-          corto_fullpath(NULL, corto_typeof(this)));*/
         corto_ptr_setstr(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto_find(NULL, s->query.from, CORTO_FIND_DEFAULT);
     }
 
     corto_eventMask mask = corto_observer(this)->mask;
@@ -184,6 +184,7 @@ int16_t _corto_mount_construct(
     if (corto_mount_hasMethod(this, "onSubscribe") ||
         corto_mount_hasMethod(this, "onUnsubscribe"))
     {
+        this->hasSubscribe = TRUE;
         if (corto_mount_alignSubscriptions(this)) {
             goto error;
         }
@@ -520,6 +521,30 @@ void _corto_mount_post(
 /* $end */
 }
 
+void _corto_mount_publish(
+    corto_mount this,
+    corto_eventMask event,
+    corto_string from,
+    corto_string id,
+    corto_string type,
+    uintptr_t value)
+{
+/* $begin(corto/core/mount/publish) */
+    corto_id identifier;
+    sprintf(identifier, "%s/%s/%s", corto_subscriber(this)->query.from, from, id);
+    corto_cleanpath(identifier, identifier);
+
+    corto_publish(
+        event,
+        identifier,
+        type,
+        this->contentTypeOut,
+        (void*)value
+    );
+
+/* $end */
+}
+
 /* $header(corto/core/mount/query) */
 void corto_mount_queryRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -792,8 +817,12 @@ void _corto_mount_subscribe(
 {
 /* $begin(corto/core/mount/subscribe(/corto/core/query query)) */
     corto_word ctx = 0;
-    corto_mountSubscription *subscription = NULL;
+    corto_mountSubscription *subscription = NULL, *placeHolder = NULL;
     bool found = FALSE;
+
+    if (!this->hasSubscribe) {
+        return;
+    }
 
     if (corto_checkState(this, CORTO_DEFINED)) corto_lock(this);
 
@@ -803,7 +832,7 @@ void _corto_mount_subscribe(
         subscription->count ++;
     } else {
         /* Add placeholder to list, so onSubscribe won't be called recursively */
-        corto_mountSubscription *placeHolder = corto_calloc(sizeof(corto_mountSubscription));
+        placeHolder = corto_calloc(sizeof(corto_mountSubscription));
         corto_ptr_copy(&placeHolder->query, corto_query_o, query);
         placeHolder->count = 1;
         corto_ll_append(this->subscriptions, placeHolder);
@@ -856,13 +885,22 @@ void _corto_mount_subscribe(
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'select' parameter of the
-         * subscription is meaningless, so to avoid confusion set it to '*' */
-       if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
-       corto_ptr_setstr(&subscription->query.select, "*");
+         * subscription is meaningless, so to avoid confusion set it to '*' 
+         */
+        if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
+        corto_ptr_setstr(&subscription->query.select, "*");
 
-       /* Doesn't count as new subscription, so undo increase in refcount */
-       subscription->count --;
-       if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
+        /* Doesn't count as new subscription, so undo increase in refcount */
+        subscription->count --;
+        if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
+
+    /* If placeholder was added & no (new) subscription is created, remove the
+     * placeholder from the list */
+    } else if (placeHolder) {
+        if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
+        corto_ll_remove(this->subscriptions, placeHolder);
+        corto_ptr_free(placeHolder, corto_mountSubscription_o);
+        if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
     }
 
 /* $end */
@@ -875,6 +913,10 @@ void _corto_mount_unsubscribe(
 /* $begin(corto/core/mount/unsubscribe(/corto/core/query query)) */
     corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
+
+    if (!this->hasSubscribe) {
+        return;
+    }
 
     corto_lock(this);
     subscription = corto_mount_findSubscription(this, query, &found);
