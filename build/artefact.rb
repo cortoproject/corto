@@ -505,6 +505,10 @@ task :test do
   TEST = true
 
   # Build test
+  if File.exists? "test/project.json" then
+    cmd "corto rakefile test"
+  end
+
   if File.exists? "test/rakefile" then
     begin
       buildCmd = "none"
