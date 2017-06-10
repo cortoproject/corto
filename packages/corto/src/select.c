@@ -224,6 +224,10 @@ char* corto_pathstr(
     corto_string to,
     char *sep)
 {
+    bool fromIsFullPath = false, toIsFullPath = false;
+    if (from[0] == '/') fromIsFullPath = true;
+    if (to[0] == '/') toIsFullPath = true;
+
     char *fromArray[CORTO_MAX_SCOPE_DEPTH];
     if (!from) from = "";
     corto_int32 fromCount = corto_pathToArray(from, fromArray, sep);
@@ -232,10 +236,23 @@ char* corto_pathstr(
     corto_int32 common = 0;
     buffer[0] = '\0'; buffer[1] = '\0';
 
+    char **fromPtr = fromArray;
+    char **toPtr = toArray;
+
+    if (fromIsFullPath) {
+        fromPtr = &fromArray[1];
+        fromCount --;
+    }
+
+    if (toIsFullPath) {
+        toPtr = &toArray[1];
+        toCount --;
+    }
+
     /* Find common ancestor */
     while ((common < fromCount) &&
        (common < toCount) &&
-       !stricmp(fromArray[common], toArray[common]))
+       !stricmp(fromPtr[common], toPtr[common]))
     {
         common ++;
     }
@@ -255,12 +272,12 @@ char* corto_pathstr(
 
         /* Navigate from common ancestor to target */
         while (common < toCount) {
-            if (!toArray[common][0] || (buffer[0] && strcmp(buffer, "/"))) {
+            if (!toPtr[common][0] || (buffer[0] && strcmp(buffer, "/"))) {
                 if (common || (toCount != 1)) {
                     strcat(buffer, "/");
                 }
             }
-            strcat(buffer, toArray[common]);
+            strcat(buffer, toPtr[common]);
             common ++;
         }
     }
