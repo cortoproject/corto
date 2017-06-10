@@ -1,5 +1,5 @@
 #!/bin/bash
-
+CURRENT_SHELL="sh"
 if ! [ -z ${BASH+x} ]; then
     CURRENT_SHELL="bash"
 fi
