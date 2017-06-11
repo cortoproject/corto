@@ -225,8 +225,8 @@ char* corto_pathstr(
     char *sep)
 {
     bool fromIsFullPath = false, toIsFullPath = false;
-    if (from[0] == '/') fromIsFullPath = true;
-    if (to[0] == '/') toIsFullPath = true;
+    if (from && from[0] == '/') fromIsFullPath = true;
+    if (to && to[0] == '/') toIsFullPath = true;
 
     char *fromArray[CORTO_MAX_SCOPE_DEPTH];
     if (!from) from = "";
