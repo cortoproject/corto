@@ -69,6 +69,7 @@ struct corto_package_s {
     bool managed;
     bool noapi;
     corto_stringlist cflags;
+    corto_stringlist cxxflags;
     corto_stringlist dependencies;
     corto_stringlist definitions;
     corto_string prefix;
