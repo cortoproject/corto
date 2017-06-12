@@ -98,6 +98,9 @@ static corto_int16 cortotool_writeRakefileFromPackage(corto_package package)
     if (corto_ll_size(package->cflags)) {
         cortotool_printCortoListAsRubyArray(rakefile, "CFLAGS", package->cflags);
     }
+    if (corto_ll_size(package->cxxflags)) {
+        cortotool_printCortoListAsRubyArray(rakefile, "CXXFLAGS", package->cxxflags);
+    }
     if (!package->managed) {
         fprintf((FILE*)rakefile, "NOCORTO = true\n");
     }
@@ -395,7 +398,7 @@ corto_int16 cortotool_clean(int argc, char *argv[]) {
             verbose ? "verbose=true" : "verbose=false",
             NULL
           }, silent != NULL, mute != NULL);
-        
+
         /* Reset to previous CWD if there is more than one project to build */
         corto_chdir(cwd);
 
