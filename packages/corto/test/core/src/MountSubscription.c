@@ -815,6 +815,46 @@ void _test_MountSubscription_tc_subscribeTreeAlign(
 /* $end */
 }
 
+void _test_MountSubscription_tc_subscribeTreeDefine(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDefine) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_MountSubscription_tc_subscribeTreeDefineNested(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDefineNested) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_MountSubscription_tc_subscribeTreeDelete(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDelete) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
+void _test_MountSubscription_tc_subscribeTreeDeleteNested(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeTreeDeleteNested) */
+
+    /* << Insert implementation >> */
+
+/* $end */
+}
+
 void _test_MountSubscription_tc_subscribeTreeTwice(
     test_MountSubscription this)
 {

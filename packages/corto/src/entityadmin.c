@@ -180,6 +180,10 @@ int16_t corto_entityAdmin_add(
     corto_object e, 
     corto_object instance) 
 {
+    if (!parent || !parent[0]) {
+        parent = "/";
+    }
+    
     corto_int16 depth = corto_entityAdmin_getDepthFromId(parent);
 
     if (corto_rwmutexWrite(&this->lock)) {

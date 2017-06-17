@@ -211,6 +211,13 @@ class VirtualSinkMount : core/mount, hidden:/
     items: resultList, private
     count: int32, readonly
 
+class ObjectMount : core/mount, hidden:/
+    select: string
+    from: string
+    item: result
+    int16 construct()
+    resultIter onQuery(core/query query) override
+
 // The loader is a complex mount that filters on type, hides store packages and
 // has to take into account that builtin packages do not have the persistent
 // attribute. This class simulates the loader so the combination of these usecases
@@ -241,6 +248,12 @@ test/Suite SelectSink:/
 
     void tc_selectSingleTypeFilter()
     void tc_selectMountInResult()
+    void tc_selectSingleWithType()
+    void tc_selectScopeWithType()
+    void tc_selectTreeWithType()
+    void tc_selectSingleWithTypeFromTreeMount()
+    void tc_selectScopeWithTypeFromTreeMount()
+    void tc_selectTreeWithTypeFromTreeMount()
 
     void tc_selectLoaderRootSingle()
     void tc_selectLoaderCortoSingle()

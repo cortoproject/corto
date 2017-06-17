@@ -569,13 +569,18 @@ int16_t _corto_subscriber_construct(
         }
     }
 
+
+
     if (this->query.type) {
         corto_type type = corto_resolve(NULL, this->query.type);
-        if (!corto_instanceof(corto_type_o, type)) {
-            corto_seterr("'%s' is not a type", this->query.type);
-            goto error;
+        if (type) {
+            if (!corto_instanceof(corto_type_o, type)) {
+                corto_seterr("'%s' is not a type", this->query.type);
+                goto error;
+            }
+            corto_ptr_setref(&corto_observer(this)->type, type);
+            corto_release(type);
         }
-        corto_ptr_setref(&corto_observer(this)->type, type);
 
     } else if (corto_observer(this)->type) {
         corto_id id;

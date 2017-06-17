@@ -342,6 +342,82 @@ void _test_SelectSink_tc_selectScope(
 /* $end */
 }
 
+void _test_SelectSink_tc_selectScopeWithType(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectScopeWithType) */
+    corto_result r1 = {
+        .id = "root",
+        .parent = ".",
+        .type = "int32",
+        .leaf = FALSE
+    };
+    corto_result r2 = {
+        .id = "obj",
+        .parent = ".",
+        .type = "float32",
+        .leaf = TRUE
+    };
+
+    test_ObjectMount m1 = test_ObjectMountCreate("*", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMountCreate("*", "/root", &r2);
+
+    corto_iter it;
+    corto_select("root/obj").type("float32").iter(&it);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "obj");
+    test_assertstr(r->parent, "/root");
+    test_assertstr(r->type, "float32");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m1) == 0);
+    test_assert(corto_delete(m2) == 0);
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectScopeWithTypeFromTreeMount) */
+    corto_result r1 = {
+        .id = "root",
+        .parent = ".",
+        .type = "int32",
+        .leaf = FALSE
+    };
+    corto_result r2 = {
+        .id = "obj",
+        .parent = ".",
+        .type = "float32",
+        .leaf = TRUE
+    };
+
+    test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMountCreate("//", "/root", &r2);
+
+    corto_iter it;
+    corto_select("root/obj").type("float32").iter(&it);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "obj");
+    test_assertstr(r->parent, "/root");
+    test_assertstr(r->type, "float32");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m1) == 0);
+    test_assert(corto_delete(m2) == 0);
+
+/* $end */
+}
+
 void _test_SelectSink_tc_selectSingle(
     test_SelectSink this)
 {
@@ -436,6 +512,180 @@ void _test_SelectSink_tc_selectSingleVirtualNested2(
     test_assert(!strcmp(result->type, "int32"));
 
     test_assert(!corto_iter_hasNext(&iter));
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectSingleWithType(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectSingleWithType) */
+    corto_result r1 = {
+        .id = "a",
+        .parent = ".",
+        .type = "int32",
+        .leaf = FALSE
+    };
+
+    /* use root as mount point */
+    test_ObjectMount m1 = test_ObjectMountCreate("*", "/", &r1);
+    test_assert(m1 != NULL);
+
+    corto_iter it;
+    corto_select("a").type("int32").iter(&it);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "int32");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m1) == 0);
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectSingleWithTypeFromTreeMount) */
+    corto_result r1 = {
+        .id = "a",
+        .parent = ".",
+        .type = "int32",
+        .leaf = FALSE
+    };
+
+    /* use root as mount point */
+    test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
+    test_assert(m1 != NULL);
+
+    corto_iter it;
+    corto_select("a").type("int32").iter(&it);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "int32");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m1) == 0);
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectTreeWithType(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectTreeWithType) */
+    corto_result r1 = {
+        .id = "root",
+        .parent = ".",
+        .type = "int32",
+        .leaf = FALSE
+    };
+    corto_result r2 = {
+        .id = "obj",
+        .parent = ".",
+        .type = "float32",
+        .leaf = TRUE
+    };
+    corto_result r3 = {
+        .id = "nested",
+        .parent = ".",
+        .type = "float32",
+        .leaf = TRUE
+    };
+
+    test_ObjectMount m1 = test_ObjectMountCreate("/", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMountCreate("/", "/root", &r2);
+    test_ObjectMount m3 = test_ObjectMountCreate("/", "/root/obj", &r3);
+    test_ObjectMount m4 = test_ObjectMountCreate("/", "/root/obj/nested", &r2);
+
+    corto_iter it;
+    corto_select("//obj").type("float32").iter(&it);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "obj");
+    test_assertstr(r->parent, "/root");
+    test_assertstr(r->type, "float32");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "obj");
+    test_assertstr(r->parent, "/root/obj/nested");
+    test_assertstr(r->type, "float32");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m1) == 0);
+    test_assert(corto_delete(m2) == 0);
+    test_assert(corto_delete(m3) == 0);
+    test_assert(corto_delete(m4) == 0);
+
+/* $end */
+}
+
+void _test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
+    test_SelectSink this)
+{
+/* $begin(test/SelectSink/tc_selectTreeWithTypeFromTreeMount) */
+    corto_result r1 = {
+        .id = "root",
+        .parent = ".",
+        .type = "int32",
+        .leaf = FALSE
+    };
+    corto_result r2 = {
+        .id = "obj",
+        .parent = ".",
+        .type = "float32",
+        .leaf = TRUE
+    };
+    corto_result r3 = {
+        .id = "nested",
+        .parent = ".",
+        .type = "float32",
+        .leaf = TRUE
+    };
+
+    test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMountCreate("//", "/root", &r2);
+    test_ObjectMount m3 = test_ObjectMountCreate("//", "/root/obj", &r3);
+    test_ObjectMount m4 = test_ObjectMountCreate("//", "/root/obj/nested", &r2);
+
+    corto_iter it;
+    corto_select("//obj").type("float32").iter(&it);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "obj");
+    test_assertstr(r->parent, "/root");
+    test_assertstr(r->type, "float32");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "obj");
+    test_assertstr(r->parent, "/root/obj/nested");
+    test_assertstr(r->type, "float32");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m1) == 0);
+    test_assert(corto_delete(m2) == 0);
+    test_assert(corto_delete(m3) == 0);
+    test_assert(corto_delete(m4) == 0);
 
 /* $end */
 }

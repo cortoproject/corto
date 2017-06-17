@@ -66,12 +66,12 @@ typedef struct iterData {
     corto_iter iter;
 } iterData;
 
-int hasNext(corto_iter *it) {
+static int hasNext(corto_iter *it) {
     iterData *ctx = it->ctx;
     return corto_iter_hasNext(&ctx->iter);
 }
 
-void* next(corto_iter *it) {
+static void* next(corto_iter *it) {
     int start, stop, i;
 
     iterData *ctx = it->ctx;
@@ -116,7 +116,7 @@ void* next(corto_iter *it) {
     return result;
 }
 
-void release(corto_iter *it) {
+static void release(corto_iter *it) {
     iterData *ctx = it->ctx;
     corto_sample *s;
     while ((s = corto_ll_takeFirst(ctx->history))) {

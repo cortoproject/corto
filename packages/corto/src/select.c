@@ -244,7 +244,7 @@ char* corto_pathstr(
         fromCount --;
     }
 
-    if (toIsFullPath) {
+    if (toIsFullPath && fromIsFullPath) {
         toPtr = &toArray[1];
         toCount --;
     }
@@ -1059,7 +1059,7 @@ static void corto_selectFilterMounts(corto_select_data *data) {
         }
 
         if (!(((corto_observer)data->mounts[i])->mask & CORTO_ON_TREE) ||
-             (segmentType && strcmp(segmentType, mountType))) 
+             (segmentType && mountType && strcmp(segmentType, mountType))) 
         {
             if (i == (data->mountsLoaded - 1)) {
                 data->mounts[i] = NULL;
