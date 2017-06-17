@@ -105,7 +105,7 @@ if CONFIG == "debug" then
 end
 
 # Crawl src directory to get list of source files
-SOURCES = Rake::FileList["src/**/*.{c,cpp}"] - ALWAYS_REBUILD
+SOURCES = Rake::FileList["src/**/*.{c,cpp,cxx}"] - ALWAYS_REBUILD
 OBJECTS = SOURCES.
           ext(".o").
           pathmap(".corto/%{^src/,obj/#{CORTO_PLATFORM}/}p") +
@@ -359,7 +359,7 @@ def build()
   verbose(VERBOSE)
 
   # Check if there were any new files created during code generation
-  files = Rake::FileList["src/*.{c,cpp}"] - ALWAYS_REBUILD
+  files = Rake::FileList["src/*.{c,cpp,cxx}"] - ALWAYS_REBUILD
   files.each do |file|
     obj = file.ext(".o").pathmap(".corto/obj/#{CORTO_PLATFORM}/%f")
     if not OBJECTS.include? obj
