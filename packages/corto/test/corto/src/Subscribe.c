@@ -94,6 +94,235 @@ void _test_Subscribe_tc_subscribeAlignType(
 /* $end */
 }
 
+/* $header(test/Subscribe/tc_subscribeFromEmpty) */
+void subscribeResultTest(corto_subscriberEvent *e)
+{
+    test_Subscribe this = e->instance;
+    this->triggered = TRUE;
+    corto_ptr_copy(&this->result, corto_result_o, &e->data);
+}
+/* $end */
+void _test_Subscribe_tc_subscribeFromEmpty(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromEmpty) */
+    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from("")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, "");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromImplicit(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromImplicit) */
+    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, "");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromNested(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromNested) */
+    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
+    corto_object nested = corto_createChild(scope, "nested", corto_void_o);
+    corto_int32 *a = corto_createChild(nested, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from("/scope/nested")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, ".");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(scope) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromNestedNoInitialSlash(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromNestedNoInitialSlash) */
+    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
+    corto_object nested = corto_createChild(scope, "nested", corto_void_o);
+    corto_int32 *a = corto_createChild(nested, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from("scope/nested")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, ".");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(scope) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromNull(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromNull) */
+    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from(NULL)
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, "");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromRoot(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromRoot) */
+    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from("/")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, ".");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromScope(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromScope) */
+    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
+    corto_int32 *a = corto_createChild(scope, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from("/scope")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, ".");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(scope) == 0);
+
+/* $end */
+}
+
+void _test_Subscribe_tc_subscribeFromScopeNoInitialSlash(
+    test_Subscribe this)
+{
+/* $begin(test/Subscribe/tc_subscribeFromScopeNoInitialSlash) */
+    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
+    corto_int32 *a = corto_createChild(scope, "a", corto_int32_o);
+    test_assert(a != NULL);
+
+    corto_subscriber s = corto_subscribe("*")
+        .from("scope")
+        .instance(this)
+        .callback(subscribeResultTest);
+    test_assert(s != NULL);
+
+    this->triggered = FALSE;
+
+    corto_update(a);
+
+    test_assertstr(this->result.id, "a");
+    test_assertstr(this->result.parent, ".");
+    test_assertstr(this->result.type, "int32");
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(scope) == 0);
+
+/* $end */
+}
+
 /* $header(test/Subscribe/tc_subscribeInvertCase) */
 void subscribeInvertCaseOnUpdate(corto_subscriberEvent *e)
 {

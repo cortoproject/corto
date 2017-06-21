@@ -228,8 +228,14 @@ char* corto_pathstr(
     if (from && from[0] == '/') fromIsFullPath = true;
     if (to && to[0] == '/') toIsFullPath = true;
 
+    if (!from) {
+        from = "";
+    }
+    if (!to) {
+        to = "";
+    }
+
     char *fromArray[CORTO_MAX_SCOPE_DEPTH];
-    if (!from) from = "";
     corto_int32 fromCount = corto_pathToArray(from, fromArray, sep);
     char *toArray[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 toCount = corto_pathToArray(to, toArray, sep);

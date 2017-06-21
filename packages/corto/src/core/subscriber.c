@@ -275,17 +275,29 @@ corto_int16 corto_notifySubscribersId(
                     if (sep) *sep = '\0';
                     corto_id fromElem, toElem;
                     char *fromElemPtr = fromElem;
+
                     if (subPerParent->parent && subPerParent->parent[1]) {
                         strcpy(fromElem, subPerParent->parent);
                     } else {
                         fromElemPtr = NULL;
                     }
-                    if (parent[0] == '/') {
-                        strcpy(toElem, parent);
+
+                    if (fromElemPtr && fromElemPtr[0]) {
+                        if (parent[1] && parent[0] == '/') {
+                            strcpy(toElem, &parent[1]);
+                        } else {
+                            strcpy(toElem, parent);
+                        }
                     } else {
-                        toElem[0] = '/';
-                        strcpy(&toElem[1], parent);
+                        if (parent[1] || parent[0] != '/') {
+                            toElem[0] = '/';
+                            strcpy(&toElem[1], parent);
+                        } else {
+                            strcpy(toElem, parent);
+                        }
                     }
+
+                    /* pathstr modifies from & to buffers */
                     corto_pathstr(relativeParent, fromElemPtr, toElem, "/");
                     corto_benchmark_stop(S_B_PATHID);
                     relativeParentSet = TRUE;
@@ -295,7 +307,11 @@ corto_int16 corto_notifySubscribersId(
                  * same computed relative parent, however for subscribers with
                  * '/' we need to strip the initial '/' */
                 if (s->query.from && !s->query.from[1] && (s->query.from[0] == '/')) {
-                    if (parentPtr[0] == '/') parentPtr ++;
+                    if (parentPtr[0] == '/' && parentPtr[1]) {
+                        parentPtr ++;
+                    } else {
+                        parentPtr = ".";
+                    }
                 }
 
                 corto_result r = {

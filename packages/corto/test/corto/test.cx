@@ -1188,6 +1188,7 @@ test/Suite Subscribe:/
     subscriber noInitialSep: query={select="*" from="testScope"}
     triggered: uint8
     owner: object
+    result: core/result
     void tc_noInitialSep()
     void tc_subscribeInvertCase()
     void tc_subscribeInvertCaseFilter()
@@ -1197,6 +1198,14 @@ test/Suite Subscribe:/
     void tc_subscribeInvertCaseParentFromPublish()
     void tc_subscribeNestedIdFromRoot()
     void tc_subscribeNestedScopeFromRoot()
+    void tc_subscribeFromImplicit()
+    void tc_subscribeFromNull()
+    void tc_subscribeFromEmpty()
+    void tc_subscribeFromRoot()
+    void tc_subscribeFromScope()
+    void tc_subscribeFromScopeNoInitialSlash()
+    void tc_subscribeFromNested()
+    void tc_subscribeFromNestedNoInitialSlash()
     void tc_subscribePartialMatchingParent()
     void tc_subscribePartialMatchingParentObject()
     void tc_subscribeOwnerSet()
