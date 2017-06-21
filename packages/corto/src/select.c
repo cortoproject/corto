@@ -460,7 +460,8 @@ static corto_resultIter corto_selectRequestMount(
         corto_id parent;
         char *expr = data->mask == CORTO_ON_TREE ? "*" : data->filter ? data->filter : "*";
         corto_select_segment *segment = frame->cur;
-        uint64_t len = strlen(corto_subscriber(mount)->query.from);
+        corto_query *q = &corto_subscriber(mount)->query;
+        uint64_t len = q->from ? strlen(q->from) : 0;
         uint64_t scopeLen = strlen(segment->scope);
 
         if (len < scopeLen) {

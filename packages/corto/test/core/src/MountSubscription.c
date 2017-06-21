@@ -150,6 +150,27 @@ void _test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
 /* $end */
 }
 
+void _test_MountSubscription_tc_subscribeOnMountWithFromNull(
+    test_MountSubscription this)
+{
+/* $begin(test/MountSubscription/tc_subscribeOnMountWithFromNull) */
+
+    /* Create default mount with 'from' set to NULL */
+    corto_object m = corto_create(corto_mount_o);
+    test_assert(m != NULL);
+
+    /* Create subscriber on root */
+    corto_subscriber s = corto_subscribe("*").callback(NULL);
+    test_assert(s != NULL);
+
+    /* test didn't crash, yay */
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(m) == 0);
+
+/* $end */
+}
+
 void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_MountSubscription this)
 {

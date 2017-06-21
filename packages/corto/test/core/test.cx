@@ -425,7 +425,8 @@ test/Suite MountSubscription:/
     void tc_subscribeTreeDefineNested()
     void tc_subscribeTreeDeleteNested()
     void tc_subscribeForMountWithTypeFilter()
-    void tc_subscribeNestedForMountWithTypeFilter()    
+    void tc_subscribeNestedForMountWithTypeFilter()  
+    void tc_subscribeOnMountWithFromNull() 
 
 // Test mount that provides unique id's
 test/Suite MountId:/
