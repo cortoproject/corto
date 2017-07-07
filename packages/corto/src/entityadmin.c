@@ -209,7 +209,13 @@ int16_t corto_entityAdmin_add(
         corto_uint32 length = this->entities[depth].length + 1;
         this->entities[depth].buffer =
           corto_realloc(this->entities[depth].buffer, length * sizeof(corto_entityPerParent));
-        this->entities[depth].buffer[length - 1].parent = parent ? corto_strdup(parent) : NULL;
+
+        if (parent[0] != '/') {
+            corto_asprintf(&this->entities[depth].buffer[length - 1].parent, "/%s", parent);
+        } else {
+            this->entities[depth].buffer[length - 1].parent = strdup(parent);
+        }
+                
         this->entities[depth].buffer[length - 1].entities.length = 0;
         this->entities[depth].buffer[length - 1].entities.buffer = NULL;
         this->entities[depth].length ++;

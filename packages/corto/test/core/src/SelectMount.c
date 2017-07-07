@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_SelectMount_setup(
     test_SelectMount this)
 {
@@ -118,14 +117,12 @@ void test_SelectMount_tc_selectIteratorPartialRelease(
         test_assert(corto_iter_hasNext(&it));
         test_assert(corto_iter_next(&it) != NULL);
     }
-    corto_iter_release(&it);
 
+    corto_iter_release(&it);
     test_assertint(mount->hasNextCount, 5);
     test_assertint(mount->nextCount, 5);
     test_assertint(mount->releaseCount, 1);
-
     test_assert(corto_delete(mount) == 0);
-
 }
 
 void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
@@ -149,17 +146,15 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
         test_assert(corto_iter_hasNext(&it));
         test_assert(corto_iter_next(&it) != NULL);
     }
-    corto_iter_release(&it);
 
+    corto_iter_release(&it);
     test_assertint(mountA->hasNextCount + mountB->hasNextCount, 16);
     test_assertint(mountA->nextCount + mountB->nextCount, 15);
     test_assertint(mountA->releaseCount, 1);
     test_assertint(mountB->releaseCount, 1);
-
     test_assert(corto_delete(mountA) == 0);
     test_assert(corto_delete(mountB) == 0);
     test_assert(corto_delete(mount) == 0);
-
 }
 
 void test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
@@ -181,19 +176,16 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
         test_assert(corto_iter_hasNext(&it));
         test_assert(corto_iter_next(&it) != NULL);
     }
-    corto_iter_release(&it);
 
+    corto_iter_release(&it);
     test_assertint(mountA->releaseCount, 1);
     test_assertint(mountB->releaseCount, 1);
     test_assertint(mountA->hasNextCount + mountB->hasNextCount, 15);
     test_assertint(mountA->nextCount + mountB->nextCount, 14);
-
     /* hasNext and next are called in total 15 and 14 times, because select also
      * finds the nested 'mount' object */
-
     test_assert(corto_delete(mountA) == 0);
     test_assert(corto_delete(mountB) == 0);
-
 }
 
 void test_SelectMount_tc_selectIteratorRelease(
@@ -215,9 +207,7 @@ void test_SelectMount_tc_selectIteratorRelease(
     test_assertint(mount->hasNextCount, 11);
     test_assertint(mount->nextCount, 10);
     test_assertint(mount->releaseCount, 1);
-
     test_assert(corto_delete(mount) == 0);
-
 }
 
 void test_SelectMount_tc_selectParentFromScope(
@@ -1493,5 +1483,22 @@ void test_SelectMount_teardown(
     corto_delete(this->mount);
     this->mount = NULL;
 
+}
+
+void test_SelectMount_tc_selectFromMountWithPartialFrom(
+    test_SelectMount this)
+{
+    corto_object p = corto_createChild(root_o, "parent", corto_void_o);
+    test_assert(p != NULL);
+
+    test_VirtualMount m = test_VirtualSinkMountCreate("parent");
+    test_assert(m != NULL);
+
+    corto_object o = corto_lookup(p, "x");
+    test_assert(o != NULL);
+
+    test_assert(corto_delete(m) == 0);
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(p) == 0);
 }
 

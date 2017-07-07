@@ -382,7 +382,8 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
             corto_asprintf(&s->query.from, "/%s", r->scope);
         } else {
             s->query.from = corto_strdup(r->scope);
-        } } else {
+        } 
+    } else {
         s->query.from = NULL;
     }
 
@@ -576,8 +577,6 @@ int16_t corto_subscriber_construct(
             goto error;
         }
     }
-
-
 
     if (this->query.type) {
         corto_type type = corto_resolve(NULL, this->query.type);

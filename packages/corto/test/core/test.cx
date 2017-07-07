@@ -163,6 +163,8 @@ test/Suite SelectMount:/
     void tc_selectScopeFromVirtualMount()
     void tc_selectTreeFromVirtualMount()
 
+    void tc_selectFromMountWithPartialFrom()
+
 
 class HistoryMount : core/mount, hidden:/
     alias mount: mount/mount
