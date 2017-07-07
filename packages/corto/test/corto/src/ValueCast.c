@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * ValueCast.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_ValueCast_tc_castBinaryBool(
+void test_ValueCast_tc_castBinaryBool(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBinaryBool) */
     corto_word w = 10;
     corto_value left = corto_value_value(&w, corto_word_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -42,13 +35,11 @@ void _test_ValueCast_tc_castBinaryBool(
     test_assert(ptr != NULL);
     test_assertint(*ptr, FALSE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBinaryChar(
+void test_ValueCast_tc_castBinaryChar(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBinaryChar) */
     corto_word w = 65;
     corto_value left = corto_value_value(&w, corto_word_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -65,13 +56,11 @@ void _test_ValueCast_tc_castBinaryChar(
     test_assert(ptr != NULL);
     test_assertint(*ptr, 'A');
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBinaryFloat(
+void test_ValueCast_tc_castBinaryFloat(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBinaryFloat) */
     corto_word w = 10;
     corto_value left = corto_value_value(&w, corto_word_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -88,13 +77,11 @@ void _test_ValueCast_tc_castBinaryFloat(
     test_assert(ptr != NULL);
     test_assertflt(*ptr, 10);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBinaryInt(
+void test_ValueCast_tc_castBinaryInt(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBinaryInt) */
     corto_word w = 10;
     corto_value left = corto_value_value(&w, corto_word_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -111,13 +98,11 @@ void _test_ValueCast_tc_castBinaryInt(
     test_assert(ptr != NULL);
     test_assertint(*ptr, 10);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBinaryString(
+void test_ValueCast_tc_castBinaryString(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBinaryString) */
     corto_word w = 10;
     corto_value left = corto_value_value(&w, corto_word_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -134,13 +119,11 @@ void _test_ValueCast_tc_castBinaryString(
     test_assert(ptr != NULL);
     test_assertstr(*ptr, "0xa");
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBinaryUint(
+void test_ValueCast_tc_castBinaryUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBinaryUint) */
     corto_word w = 10;
     corto_value left = corto_value_value(&w, corto_word_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -157,13 +140,11 @@ void _test_ValueCast_tc_castBinaryUint(
     test_assert(ptr != NULL);
     test_assertint(*ptr, 10);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBitmaskInt(
+void test_ValueCast_tc_castBitmaskInt(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBitmaskInt) */
     corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
     corto_value left = corto_value_value(&v, corto_attr_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -180,13 +161,11 @@ void _test_ValueCast_tc_castBitmaskInt(
     test_assert(ptr != NULL);
     test_assertint(*ptr, CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBitmaskString(
+void test_ValueCast_tc_castBitmaskString(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBitmaskString) */
     corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
     corto_value left = corto_value_value(&v, corto_attr_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -203,13 +182,11 @@ void _test_ValueCast_tc_castBitmaskString(
     test_assert(ptr != NULL);
     test_assertstr(*ptr, "ATTR_NAMED|ATTR_WRITABLE");
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBitmaskUint(
+void test_ValueCast_tc_castBitmaskUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBitmaskUint) */
     corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
     corto_value left = corto_value_value(&v, corto_attr_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -226,13 +203,11 @@ void _test_ValueCast_tc_castBitmaskUint(
     test_assert(ptr != NULL);
     test_assertint(*ptr, CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBoolBinary(
+void test_ValueCast_tc_castBoolBinary(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBoolBinary) */
     corto_bool v = TRUE;
     corto_value left = corto_value_value(&v, corto_bool_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -263,13 +238,11 @@ void _test_ValueCast_tc_castBoolBinary(
     test_assert(ptr != NULL);
     test_assertint(*ptr, FALSE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBoolInt(
+void test_ValueCast_tc_castBoolInt(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBoolInt) */
     corto_bool v = TRUE;
     corto_value left = corto_value_value(&v, corto_bool_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -300,13 +273,11 @@ void _test_ValueCast_tc_castBoolInt(
     test_assert(ptr != NULL);
     test_assertint(*ptr, FALSE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBoolString(
+void test_ValueCast_tc_castBoolString(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBoolString) */
     corto_bool v = TRUE;
     corto_value left = corto_value_value(&v, corto_bool_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -337,13 +308,11 @@ void _test_ValueCast_tc_castBoolString(
     test_assert(ptr != NULL);
     test_assertstr(*ptr, "false");
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castBoolUint(
+void test_ValueCast_tc_castBoolUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castBoolUint) */
     corto_bool v = TRUE;
     corto_value left = corto_value_value(&v, corto_bool_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -374,13 +343,11 @@ void _test_ValueCast_tc_castBoolUint(
     test_assert(ptr != NULL);
     test_assertint(*ptr, FALSE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castEnumInt(
+void test_ValueCast_tc_castEnumInt(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castEnumInt) */
     corto_width v = CORTO_WIDTH_WORD;
     corto_value left = corto_value_value(&v, corto_width_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -397,13 +364,11 @@ void _test_ValueCast_tc_castEnumInt(
     test_assert(ptr != NULL);
     test_assertint(*ptr, CORTO_WIDTH_WORD);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castEnumString(
+void test_ValueCast_tc_castEnumString(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castEnumString) */
     corto_width v = CORTO_WIDTH_WORD;
     corto_value left = corto_value_value(&v, corto_width_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -420,13 +385,11 @@ void _test_ValueCast_tc_castEnumString(
     test_assert(ptr != NULL);
     test_assertstr(*ptr, "WIDTH_WORD");
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castEnumUint(
+void test_ValueCast_tc_castEnumUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castEnumUint) */
     corto_width v = CORTO_WIDTH_WORD;
     corto_value left = corto_value_value(&v, corto_width_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -443,13 +406,11 @@ void _test_ValueCast_tc_castEnumUint(
     test_assert(ptr != NULL);
     test_assertint(*ptr, CORTO_WIDTH_WORD);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castFloatBool(
+void test_ValueCast_tc_castFloatBool(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castFloatBool) */
     corto_float64 v = 10.5;
     corto_value left = corto_value_value(&v, corto_float64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -479,13 +440,11 @@ void _test_ValueCast_tc_castFloatBool(
     test_assert(ptr != NULL);
     test_assertint(*ptr, FALSE);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castFloatInt(
+void test_ValueCast_tc_castFloatInt(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castFloatInt) */
     corto_float64 v = 10.5;
     corto_value left = corto_value_value(&v, corto_float64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -502,13 +461,11 @@ void _test_ValueCast_tc_castFloatInt(
     test_assert(ptr != NULL);
     test_assertint(*ptr, 10);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castFloatString(
+void test_ValueCast_tc_castFloatString(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castFloatString) */
     corto_float64 v = 10.5;
     corto_value left = corto_value_value(&v, corto_float64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -527,13 +484,11 @@ void _test_ValueCast_tc_castFloatString(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castFloatUint(
+void test_ValueCast_tc_castFloatUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castFloatUint) */
     corto_float64 v = 10.5;
     corto_value left = corto_value_value(&v, corto_float64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -552,13 +507,11 @@ void _test_ValueCast_tc_castFloatUint(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castIntBinary(
+void test_ValueCast_tc_castIntBinary(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castIntBinary) */
     corto_int64 v = 10;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -577,13 +530,11 @@ void _test_ValueCast_tc_castIntBinary(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castIntBool(
+void test_ValueCast_tc_castIntBool(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castIntBool) */
     corto_int64 v = 10;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -615,13 +566,11 @@ void _test_ValueCast_tc_castIntBool(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castIntChar(
+void test_ValueCast_tc_castIntChar(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castIntChar) */
     corto_int64 v = 65;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -640,13 +589,11 @@ void _test_ValueCast_tc_castIntChar(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castIntFloat(
+void test_ValueCast_tc_castIntFloat(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castIntFloat) */
     corto_int64 v = 10;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -665,13 +612,11 @@ void _test_ValueCast_tc_castIntFloat(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castIntString(
+void test_ValueCast_tc_castIntString(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castIntString) */
     corto_int64 v = 10;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -690,13 +635,11 @@ void _test_ValueCast_tc_castIntString(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castIntUint(
+void test_ValueCast_tc_castIntUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castIntUint) */
     corto_int64 v = 10;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -715,13 +658,11 @@ void _test_ValueCast_tc_castIntUint(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castStringBinary(
+void test_ValueCast_tc_castStringBinary(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castStringBinary) */
     corto_string v = "0xa";
     corto_value left = corto_value_value(&v, corto_string_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -740,13 +681,11 @@ void _test_ValueCast_tc_castStringBinary(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castStringBool(
+void test_ValueCast_tc_castStringBool(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castStringBool) */
     corto_string v = "true";
     corto_value left = corto_value_value(&v, corto_string_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -779,13 +718,11 @@ void _test_ValueCast_tc_castStringBool(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castStringEnum(
+void test_ValueCast_tc_castStringEnum(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castStringEnum) */
     corto_string v = "WIDTH_WORD";
     corto_value left = corto_value_value(&v, corto_string_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -804,13 +741,11 @@ void _test_ValueCast_tc_castStringEnum(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castStringFloat(
+void test_ValueCast_tc_castStringFloat(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castStringFloat) */
     corto_string v = "10.5";
     corto_value left = corto_value_value(&v, corto_string_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -829,13 +764,11 @@ void _test_ValueCast_tc_castStringFloat(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castStringInt(
+void test_ValueCast_tc_castStringInt(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castStringInt) */
     corto_string v = "10";
     corto_value left = corto_value_value(&v, corto_string_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -854,13 +787,11 @@ void _test_ValueCast_tc_castStringInt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueCast_tc_castStringUint(
+void test_ValueCast_tc_castStringUint(
     test_ValueCast this)
 {
-/* $begin(test/ValueCast/tc_castStringUint) */
     corto_string v = "10";
     corto_value left = corto_value_value(&v, corto_string_o);
     corto_value out = corto_value_value(NULL, NULL);
@@ -879,5 +810,5 @@ void _test_ValueCast_tc_castStringUint(
 
     corto_value_free(&out);
 
-/* $end */
 }
+

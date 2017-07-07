@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Fullname.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Fullname_tc_anonymousAnonymous(
+void test_Fullname_tc_anonymousAnonymous(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_anonymousAnonymous) */
     corto_object o = corto_resolve(NULL, "list{int32}{10, 20, 30}");
     test_assert(o != NULL);
     test_assert(corto_typeof(o)->kind == CORTO_COLLECTION);
@@ -22,13 +15,11 @@ void _test_Fullname_tc_anonymousAnonymous(
     corto_int16 ret = corto_delete(o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Fullname_tc_anonymousCollection(
+void test_Fullname_tc_anonymousCollection(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_anonymousCollection) */
     corto_object o = corto_resolve(NULL, "test/IntList{10, 20, 30}");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_IntList_o));
@@ -39,13 +30,11 @@ void _test_Fullname_tc_anonymousCollection(
     corto_int16 ret = corto_delete(o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Fullname_tc_anonymousComposite(
+void test_Fullname_tc_anonymousComposite(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_anonymousComposite) */
     corto_object o = corto_resolve(NULL, "test/Point{10, 20}");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Point_o));
@@ -57,13 +46,11 @@ void _test_Fullname_tc_anonymousComposite(
     corto_int16 ret = corto_delete(o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Fullname_tc_anonymousPrimitive(
+void test_Fullname_tc_anonymousPrimitive(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_anonymousPrimitive) */
     corto_object o = corto_resolve(NULL, "int32{10}");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
@@ -74,26 +61,22 @@ void _test_Fullname_tc_anonymousPrimitive(
     corto_int16 ret = corto_delete(o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Fullname_tc_fromLang(
+void test_Fullname_tc_fromLang(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_fromLang) */
     corto_id id;
 
     corto_string result = corto_fullpath(id, corto_int32_o);
     test_assert(result == id);
     test_assert(!strcmp(result, "int32"));
 
-/* $end */
 }
 
-void _test_Fullname_tc_null(
+void test_Fullname_tc_null(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_null) */
     corto_id id;
 
     id[0] = 'a';
@@ -103,13 +86,11 @@ void _test_Fullname_tc_null(
     corto_string err = corto_lasterr();
     test_assert(err == NULL);
 
-/* $end */
 }
 
-void _test_Fullname_tc_nullBuffer(
+void test_Fullname_tc_nullBuffer(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_nullBuffer) */
 
     corto_string result = corto_fullpath(NULL, NULL);
     test_assert(result != NULL);
@@ -117,44 +98,38 @@ void _test_Fullname_tc_nullBuffer(
     corto_string err = corto_lasterr();
     test_assert(err == NULL);
 
-/* $end */
 }
 
-void _test_Fullname_tc_onelevel(
+void test_Fullname_tc_onelevel(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_onelevel) */
     corto_id id;
 
     corto_string result = corto_fullpath(id, corto_o);
     test_assert(result == id);
     test_assert(!strcmp(result, "/corto"));
 
-/* $end */
 }
 
-void _test_Fullname_tc_root(
+void test_Fullname_tc_root(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_root) */
     corto_id id;
 
     corto_string result = corto_fullpath(id, root_o);
     test_assert(result == id);
     test_assert(!strcmp(result, "/"));
 
-/* $end */
 }
 
-void _test_Fullname_tc_twolevels(
+void test_Fullname_tc_twolevels(
     test_Fullname this)
 {
-/* $begin(test/Fullname/tc_twolevels) */
     corto_id id;
 
     corto_string result = corto_fullpath(id, corto_lang_o);
     test_assert(result == id);
     test_assert(!strcmp(result, "/corto/lang"));
 
-/* $end */
 }
+

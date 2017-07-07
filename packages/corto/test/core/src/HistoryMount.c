@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * HistoryMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_HistoryMount_construct(
+int16_t test_HistoryMount_construct(
     test_HistoryMount this)
 {
-/* $begin(test/HistoryMount/construct) */
     corto_ll samples;
     corto_result r;
 
@@ -55,10 +48,9 @@ int16_t _test_HistoryMount_construct(
     );
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-/* $header(test/HistoryMount/onQuery) */
+
 typedef struct iterData {
     test_HistoryMount this;
     corto_frame from, to;
@@ -125,12 +117,11 @@ static void release(corto_iter *it) {
     corto_ll_free(ctx->history);
     corto_dealloc(ctx);
 }
-/* $end */
-corto_resultIter _test_HistoryMount_onQuery(
+
+corto_resultIter test_HistoryMount_onQuery(
     test_HistoryMount this,
     corto_query *query)
 {
-/* $begin(test/HistoryMount/onQuery) */
     corto_resultIter it;
 
     iterData *data = corto_alloc(sizeof(iterData));
@@ -146,5 +137,5 @@ corto_resultIter _test_HistoryMount_onQuery(
     it.ctx = data;
     
     return it;
-/* $end */
 }
+

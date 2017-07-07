@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SelectContentType.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SelectContentType_setup(
+void test_SelectContentType_setup(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/setup) */
 
     /* Create 'json' scope for JSON mount */
     corto_object json_o = corto_voidCreateChild(root_o, "json");
@@ -33,13 +26,11 @@ void _test_SelectContentType_setup(
     test_PointCreateChild(obj_o, "b", 30, 40);
     test_PointCreateChild(obj_o, "c", 50, 60);
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectBinaryFromJson(
+void test_SelectContentType_tc_selectBinaryFromJson(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectBinaryFromJson) */
     corto_iter iter;
     corto_result *result;
     test_Point *p;
@@ -83,13 +74,11 @@ void _test_SelectContentType_tc_selectBinaryFromJson(
     test_assertint(p->x, 50);
     test_assertint(p->y, 60);
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectBinaryFromObjects(
+void test_SelectContentType_tc_selectBinaryFromObjects(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectBinaryFromObjects) */
     corto_iter iter;
     corto_result *result;
     test_Point *p;
@@ -133,13 +122,11 @@ void _test_SelectContentType_tc_selectBinaryFromObjects(
     test_assertint(p->x, 50);
     test_assertint(p->y, 60);
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectBinaryFromString(
+void test_SelectContentType_tc_selectBinaryFromString(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectBinaryFromString) */
     corto_result *result;
     corto_iter iter;
     test_Point *p;
@@ -183,13 +170,11 @@ void _test_SelectContentType_tc_selectBinaryFromString(
     test_assertint(p->x, 50);
     test_assertint(p->y, 60);
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectJsonFromJson(
+void test_SelectContentType_tc_selectJsonFromJson(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectJsonFromJson) */
     corto_iter iter;
     corto_result *result;
     corto_string json;
@@ -230,13 +215,11 @@ void _test_SelectContentType_tc_selectJsonFromJson(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectJsonFromObjects(
+void test_SelectContentType_tc_selectJsonFromObjects(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectJsonFromObjects) */
     corto_iter iter;
     corto_result *result;
     corto_string json;
@@ -277,13 +260,11 @@ void _test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectJsonFromString(
+void test_SelectContentType_tc_selectJsonFromString(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectJsonFromString) */
     corto_result *result;
     corto_string json;
     corto_iter iter;
@@ -324,13 +305,11 @@ void _test_SelectContentType_tc_selectJsonFromString(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectStringFromJson(
+void test_SelectContentType_tc_selectStringFromJson(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectStringFromJson) */
     corto_iter iter;
     corto_result *result;
     corto_string str;
@@ -371,13 +350,11 @@ void _test_SelectContentType_tc_selectStringFromJson(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectStringFromObjects(
+void test_SelectContentType_tc_selectStringFromObjects(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectStringFromObjects) */
     corto_iter iter;
     corto_result *result;
     corto_string str;
@@ -418,13 +395,11 @@ void _test_SelectContentType_tc_selectStringFromObjects(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
-/* $end */
 }
 
-void _test_SelectContentType_tc_selectStringFromString(
+void test_SelectContentType_tc_selectStringFromString(
     test_SelectContentType this)
 {
-/* $begin(test/SelectContentType/tc_selectStringFromString) */
     corto_iter iter;
     corto_result *result;
     corto_string str;
@@ -465,5 +440,5 @@ void _test_SelectContentType_tc_selectStringFromString(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
-/* $end */
 }
+

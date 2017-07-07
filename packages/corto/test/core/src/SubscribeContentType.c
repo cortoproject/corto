@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SubscribeContentType.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SubscribeContentType_setup(
+void test_SubscribeContentType_setup(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/setup) */
 
     /* Create 'json' scope for JSON mount */
     corto_object json_o = corto_voidCreateChild(root_o, "json");
@@ -33,10 +26,9 @@ void _test_SubscribeContentType_setup(
     test_PointCreateChild(obj_o, "b", 30, 40);
     test_PointCreateChild(obj_o, "c", 50, 60);
 
-/* $end */
 }
 
-/* $header(test/SubscribeContentType/tc_subscribeBinaryFromJson) */
+
 void binary(corto_subscriberEvent *e) {
     test_SubscribeContentType this = e->instance;
     test_Point *p;
@@ -68,11 +60,10 @@ void binary(corto_subscriberEvent *e) {
         break;        
     }
 }
-/* $end */
-void _test_SubscribeContentType_tc_subscribeBinaryFromJson(
+
+void test_SubscribeContentType_tc_subscribeBinaryFromJson(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeBinaryFromJson) */
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("binary/corto")
@@ -87,13 +78,11 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromJson(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
+void test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeBinaryFromJsonDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("json/*")
@@ -111,13 +100,11 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeBinaryFromObjects(
+void test_SubscribeContentType_tc_subscribeBinaryFromObjects(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeBinaryFromObjects) */
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("binary/corto")
@@ -132,13 +119,11 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromObjects(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
+void test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeBinaryFromObjectsDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("obj/*")
@@ -156,13 +141,11 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeBinaryFromString(
+void test_SubscribeContentType_tc_subscribeBinaryFromString(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeBinaryFromString) */
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("binary/corto")
@@ -176,13 +159,11 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromString(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
+void test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeBinaryFromStringDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("str/*")
@@ -199,10 +180,9 @@ void _test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/SubscribeContentType/tc_subscribeJsonFromJson) */
+
 void json(corto_subscriberEvent *e) {
     test_SubscribeContentType this = e->instance;
     char *json;
@@ -230,11 +210,10 @@ void json(corto_subscriberEvent *e) {
         break;        
     }
 }
-/* $end */
-void _test_SubscribeContentType_tc_subscribeJsonFromJson(
+
+void test_SubscribeContentType_tc_subscribeJsonFromJson(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeJsonFromJson) */
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("text/json")
@@ -248,13 +227,11 @@ void _test_SubscribeContentType_tc_subscribeJsonFromJson(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
+void test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeJsonFromJsonDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("json/*")
@@ -271,13 +248,11 @@ void _test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeJsonFromObjects(
+void test_SubscribeContentType_tc_subscribeJsonFromObjects(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeJsonFromObjects) */
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("text/json")
@@ -292,13 +267,11 @@ void _test_SubscribeContentType_tc_subscribeJsonFromObjects(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
+void test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeJsonFromObjectsDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("obj/*")
@@ -316,13 +289,11 @@ void _test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeJsonFromString(
+void test_SubscribeContentType_tc_subscribeJsonFromString(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeJsonFromString) */
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("text/json")
@@ -336,13 +307,11 @@ void _test_SubscribeContentType_tc_subscribeJsonFromString(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
+void test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeJsonFromStringDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("str/*")
@@ -359,10 +328,9 @@ void _test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/SubscribeContentType/tc_subscribeStringFromJson) */
+
 void string(corto_subscriberEvent *e) {
     test_SubscribeContentType this = e->instance;
     char *json;
@@ -390,11 +358,10 @@ void string(corto_subscriberEvent *e) {
         break;        
     }
 }
-/* $end */
-void _test_SubscribeContentType_tc_subscribeStringFromJson(
+
+void test_SubscribeContentType_tc_subscribeStringFromJson(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeStringFromJson) */
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
         .contentType("text/corto")
@@ -408,13 +375,11 @@ void _test_SubscribeContentType_tc_subscribeStringFromJson(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
+void test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeStringFromJsonDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("json/*")
@@ -431,13 +396,11 @@ void _test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeStringFromObjects(
+void test_SubscribeContentType_tc_subscribeStringFromObjects(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeStringFromObjects) */
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
         .contentType("text/corto")
@@ -452,13 +415,11 @@ void _test_SubscribeContentType_tc_subscribeStringFromObjects(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
+void test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeStringFromObjectsDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("obj/*")
@@ -476,13 +437,11 @@ void _test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeStringFromString(
+void test_SubscribeContentType_tc_subscribeStringFromString(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeStringFromString) */
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
         .contentType("text/corto")
@@ -496,13 +455,11 @@ void _test_SubscribeContentType_tc_subscribeStringFromString(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
+void test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
     test_SubscribeContentType this)
 {
-/* $begin(test/SubscribeContentType/tc_subscribeStringFromStringDispatch) */
     test_FooDispatcher dispatcher = test_FooDispatcherCreate();
 
     corto_subscriber s = corto_subscribe("str/*")
@@ -519,5 +476,5 @@ void _test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
+

@@ -1,21 +1,13 @@
-/* $CORTO_GENERATED
- *
- * member.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
-#include "_interface.h"
-/* $end */
 
-int16_t _corto_member_construct(
+#include "_interface.h"
+
+int16_t corto_member_construct(
     corto_member this)
 {
-/* $begin(corto/lang/member/construct) */
     if (!this->type) {
         corto_seterr("member '%s' has no type", corto_fullpath(NULL, this));
         goto error;
@@ -41,13 +33,11 @@ int16_t _corto_member_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_member_init(
+int16_t corto_member_init(
     corto_member this)
 {
-/* $begin(corto/lang/member/init) */
     corto_object parent;
     corto_type parentType;
 
@@ -77,5 +67,5 @@ int16_t _corto_member_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
+

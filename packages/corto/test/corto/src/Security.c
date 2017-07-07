@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Security.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Security_setup(
+void test_Security_setup(
     test_Security this)
 {
-/* $begin(test/Security/setup) */
 
     corto_voidCreateChild_auto(root_o, a);
     corto_voidCreateChild_auto(a, b);
@@ -20,13 +13,11 @@ void _test_Security_setup(
 
     test_TestKeyCreate();
 
-/* $end */
 }
 
-void _test_Security_tc_authenticate(
+void test_Security_tc_authenticate(
     test_Security this)
 {
-/* $begin(test/Security/tc_authenticate) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
@@ -35,23 +26,19 @@ void _test_Security_tc_authenticate(
     test_assert(token != NULL);
     test_assertstr(token, "token_user02");
 
-/* $end */
 }
 
-void _test_Security_tc_authenticateFail(
+void test_Security_tc_authenticateFail(
     test_Security this)
 {
-/* $begin(test/Security/tc_authenticateFail) */
     corto_string token = corto_login("Ford Prefect", "41");
     test_assert(token == NULL);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeCreate(
+void test_Security_tc_authorizeCreate(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeCreate) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
@@ -74,13 +61,11 @@ void _test_Security_tc_authorizeCreate(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDelete(
+void test_Security_tc_authorizeDelete(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDelete) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -103,13 +88,11 @@ void _test_Security_tc_authorizeDelete(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedCreate(
+void test_Security_tc_authorizeDeniedCreate(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedCreate) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -130,13 +113,11 @@ void _test_Security_tc_authorizeDeniedCreate(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedDelete(
+void test_Security_tc_authorizeDeniedDelete(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedDelete) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -158,13 +139,11 @@ void _test_Security_tc_authorizeDeniedDelete(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedLookup(
+void test_Security_tc_authorizeDeniedLookup(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedLookup) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -180,13 +159,11 @@ void _test_Security_tc_authorizeDeniedLookup(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedResolve(
+void test_Security_tc_authorizeDeniedResolve(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedResolve) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -202,13 +179,11 @@ void _test_Security_tc_authorizeDeniedResolve(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedScopeClaim(
+void test_Security_tc_authorizeDeniedScopeClaim(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedScopeClaim) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -231,10 +206,9 @@ void _test_Security_tc_authorizeDeniedScopeClaim(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-/* $header(test/Security/tc_authorizeDeniedScopeWalk) */
+
 int test_Security_tc_authorizeDeniedScopeWalk_walk(
     corto_object o,
     void *userData)
@@ -242,11 +216,10 @@ int test_Security_tc_authorizeDeniedScopeWalk_walk(
     test_assert(strcmp(corto_idof(o), "c"));
     return 1;
 }
-/* $end */
-void _test_Security_tc_authorizeDeniedScopeWalk(
+
+void test_Security_tc_authorizeDeniedScopeWalk(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedScopeWalk) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -268,13 +241,11 @@ void _test_Security_tc_authorizeDeniedScopeWalk(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedSelect(
+void test_Security_tc_authorizeDeniedSelect(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedSelect) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -307,13 +278,11 @@ void _test_Security_tc_authorizeDeniedSelect(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedUpdate(
+void test_Security_tc_authorizeDeniedUpdate(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedUpdate) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -334,13 +303,11 @@ void _test_Security_tc_authorizeDeniedUpdate(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeDeniedUpdateVoid(
+void test_Security_tc_authorizeDeniedUpdateVoid(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeDeniedUpdateVoid) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -361,13 +328,11 @@ void _test_Security_tc_authorizeDeniedUpdateVoid(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeLookup(
+void test_Security_tc_authorizeLookup(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeLookup) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -384,13 +349,11 @@ void _test_Security_tc_authorizeLookup(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeResolve(
+void test_Security_tc_authorizeResolve(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeResolve) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -407,13 +370,11 @@ void _test_Security_tc_authorizeResolve(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeSelect(
+void test_Security_tc_authorizeSelect(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeSelect) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -450,13 +411,11 @@ void _test_Security_tc_authorizeSelect(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeUpdate(
+void test_Security_tc_authorizeUpdate(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeUpdate) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -477,13 +436,11 @@ void _test_Security_tc_authorizeUpdate(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_authorizeUpdateVoid(
+void test_Security_tc_authorizeUpdateVoid(
     test_Security this)
 {
-/* $begin(test/Security/tc_authorizeUpdateVoid) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -504,13 +461,11 @@ void _test_Security_tc_authorizeUpdateVoid(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
+void test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantLowerDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -530,13 +485,11 @@ void _test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
+void test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantLowerDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -557,13 +510,11 @@ void _test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyGrantLowerDepthSamePrio(
+void test_Security_tc_lockDenyGrantLowerDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantLowerDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -584,13 +535,11 @@ void _test_Security_tc_lockDenyGrantLowerDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyGrantSameDepthHigherPrio(
+void test_Security_tc_lockDenyGrantSameDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantSameDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -610,13 +559,11 @@ void _test_Security_tc_lockDenyGrantSameDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyGrantSameDepthLowerPrio(
+void test_Security_tc_lockDenyGrantSameDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantSameDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -637,13 +584,11 @@ void _test_Security_tc_lockDenyGrantSameDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyGrantSameDepthSamePrio(
+void test_Security_tc_lockDenyGrantSameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyGrantSameDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -663,13 +608,11 @@ void _test_Security_tc_lockDenyGrantSameDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
+void test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedLowerDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -689,13 +632,11 @@ void _test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
+void test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedLowerDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -715,13 +656,11 @@ void _test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
+void test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedLowerDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -741,13 +680,11 @@ void _test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
+void test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedSameDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -767,13 +704,11 @@ void _test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
+void test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedSameDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -793,13 +728,11 @@ void _test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
+void test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockDenyUndefinedSameDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -819,13 +752,11 @@ void _test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
+void test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenyLowerDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -846,13 +777,11 @@ void _test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
+void test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenyLowerDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -872,13 +801,11 @@ void _test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockGrantDenyLowerDepthSamePrio(
+void test_Security_tc_lockGrantDenyLowerDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenyLowerDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -898,13 +825,11 @@ void _test_Security_tc_lockGrantDenyLowerDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockGrantDenySameDepthHigherPrio(
+void test_Security_tc_lockGrantDenySameDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenySameDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -925,13 +850,11 @@ void _test_Security_tc_lockGrantDenySameDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockGrantDenySameDepthLowerPrio(
+void test_Security_tc_lockGrantDenySameDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenySameDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -951,13 +874,11 @@ void _test_Security_tc_lockGrantDenySameDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockGrantDenySameDepthSamePrio(
+void test_Security_tc_lockGrantDenySameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockGrantDenySameDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -977,13 +898,11 @@ void _test_Security_tc_lockGrantDenySameDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockSwitchUser(
+void test_Security_tc_lockSwitchUser(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockSwitchUser) */
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
     test_AccessRule r1 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
     test_AccessRuleListInsert(l->rules, &r1);
@@ -1010,13 +929,11 @@ void _test_Security_tc_lockSwitchUser(
     prev = corto_authenticate(prev);
     test_assert(prev == token2);
 
-/* $end */
 }
 
-void _test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
+void test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenyLowerDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -1036,13 +953,11 @@ void _test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
+void test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenyLowerDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -1062,13 +977,11 @@ void _test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
+void test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenyLowerDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -1088,13 +1001,11 @@ void _test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
+void test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenySameDepthHigherPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -1114,13 +1025,11 @@ void _test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
+void test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenySameDepthLowerPrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -1140,13 +1049,11 @@ void _test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
 
-void _test_Security_tc_lockUndefinedDenySameDepthSamePrio(
+void test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     test_Security this)
 {
-/* $begin(test/Security/tc_lockUndefinedDenySameDepthSamePrio) */
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     corto_string prev = corto_authenticate(token);
@@ -1166,5 +1073,5 @@ void _test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     prev = corto_authenticate(prev);
     test_assert(prev == token);
 
-/* $end */
 }
+

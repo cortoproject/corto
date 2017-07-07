@@ -1,21 +1,13 @@
-/* $CORTO_GENERATED
- *
- * ListMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header() */
-#include "fnmatch.h"
-/* $end */
 
-int16_t _test_ListMount_construct(
+#include "fnmatch.h"
+
+int16_t test_ListMount_construct(
     test_ListMount this)
 {
-/* $begin(test/ListMount/construct) */
     corto_mount(this)->policy.ownership = this->kind;
 
     /* Create top level objects */
@@ -151,10 +143,9 @@ int16_t _test_ListMount_construct(
     corto_mount_setContentType(this, "text/json");
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-/* $header(test/ListMount/onQuery) */
+
 /* Custom release function */
 void test_ListMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -162,12 +153,11 @@ void test_ListMount_iterRelease(corto_iter *iter) {
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
-/* $end */
-corto_resultIter _test_ListMount_onQuery(
+
+corto_resultIter test_ListMount_onQuery(
     test_ListMount this,
     corto_query *query)
 {
-/* $begin(test/ListMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
@@ -197,5 +187,5 @@ corto_resultIter _test_ListMount_onQuery(
     /* Return persistent iterator to request */
     return result;
 
-/* $end */
 }
+

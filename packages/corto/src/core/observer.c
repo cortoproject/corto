@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * observer.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "../lang/_class.h"
 #include "_object.h"
 
@@ -730,12 +724,10 @@ corto_int16 corto_unobserve(corto_observer observer) {
     return corto_delete(observer);
 }
 
-/* $end */
 
-int16_t _corto_observer_construct(
+int16_t corto_observer_construct(
     corto_observer this)
 {
-/* $begin(corto/core/observer/construct) */
 
     if (!corto_function(this)->parameters.length) {
         if (!corto_checkAttr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
@@ -754,7 +746,7 @@ int16_t _corto_observer_construct(
     /* Bind function. Run this function before listening to observable, as
      * the call handler must be initialized before the observer can be invoked.
      */
-    if (corto_function_construct(this)) {
+    if (safe_corto_function_construct(this)) {
         goto error;
     }
 
@@ -767,14 +759,12 @@ int16_t _corto_observer_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-void _corto_observer_destruct(
+void corto_observer_destruct(
     corto_observer this)
 {
-/* $begin(corto/core/observer/destruct) */
-    corto_function_destruct(this);
+    safe_corto_function_destruct(this);
 
     if (this->enabled && this->observable) {
         if (corto_observer_unobserve(this, this->instance, this->observable)) {
@@ -789,19 +779,17 @@ void _corto_observer_destruct(
 
     this->enabled = FALSE;
     
-/* $end */
 }
 
-int16_t _corto_observer_init(
+int16_t corto_observer_init(
     corto_observer this)
 {
-/* $begin(corto/core/observer/init) */
     corto_ptr_setref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
     if (corto_checkAttr(this, CORTO_ATTR_NAMED) && strchr(corto_idof(this), '(')) {
         /* id of function contains a parameter list, parse in function/init */
-        corto_int16 result = corto_function_init(this);
+        corto_int16 result = safe_corto_function_init(this);
         if (result) {
             goto error;
         }
@@ -820,15 +808,13 @@ int16_t _corto_observer_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_observer_observe(
+int16_t corto_observer_observe(
     corto_observer this,
     corto_object instance,
     corto_object observable)
 {
-/* $begin(corto/core/observer/observe) */
     corto__observable* _o;
     corto__observer* _observerData = NULL;
     corto_bool added = FALSE;
@@ -1058,15 +1044,13 @@ postponed:
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-bool _corto_observer_observing(
+bool corto_observer_observing(
     corto_observer this,
     corto_object instance,
     corto_object observable)
 {
-/* $begin(corto/core/observer/observing) */
     corto__observer* observerData;
     corto__observable* _o;
     corto_bool result = FALSE;
@@ -1107,15 +1091,13 @@ bool _corto_observer_observing(
     return result;
 error:
     return FALSE;
-/* $end */
 }
 
-int16_t _corto_observer_unobserve(
+int16_t corto_observer_unobserve(
     corto_observer this,
     corto_object instance,
     corto_object observable)
 {
-/* $begin(corto/core/observer/unobserve) */
     corto__observer* observerData;
     corto__observable* _o;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
@@ -1243,5 +1225,5 @@ ignore:
     return 0;
 error:
     return -1;
-/* $end */
 }
+

@@ -285,7 +285,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
 
             /* Find corresponding union case */
             corto_int32 d = *(corto_int32*)ptr;
-            corto_member m = corto_union_findCase(info->type, d);
+            corto_member m = safe_corto_union_findCase(info->type, d);
             if (!m) {
                 corto_seterr("discriminator '%d' invalid for union '%s'",
                     d, corto_fullpath(NULL, info->type));

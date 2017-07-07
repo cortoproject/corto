@@ -1,19 +1,12 @@
-/* $CORTO_GENERATED
- *
- * TestLock.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-corto_secure_accessKind _test_TestLock_authorize(
+corto_secure_accessKind test_TestLock_authorize(
     test_TestLock this,
     corto_string token,
     corto_secure_actionKind action)
 {
-/* $begin(test/TestLock/authorize) */
     if (token) {
         corto_iter it = corto_ll_iter(this->rules);
         while (corto_iter_hasNext(&it)) {
@@ -24,5 +17,5 @@ corto_secure_accessKind _test_TestLock_authorize(
         }
     }
     return CORTO_SECURE_ACCESS_UNDEFINED;
-/* $end */
 }
+

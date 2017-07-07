@@ -1,27 +1,18 @@
-/* $CORTO_GENERATED
- *
- * delegate.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-bool _corto_delegate_castable_v(
+bool corto_delegate_castable_v(
     corto_delegate this,
     corto_type type)
 {
-/* $begin(corto/lang/delegate/castable) */
     return corto_delegate_compatible_v(this, type);
-/* $end */
 }
 
-bool _corto_delegate_compatible_v(
+bool corto_delegate_compatible_v(
     corto_delegate this,
     corto_type type)
 {
-/* $begin(corto/lang/delegate/compatible) */
     corto_bool result = FALSE;
     CORTO_UNUSED(this);
 
@@ -53,13 +44,11 @@ bool _corto_delegate_compatible_v(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_delegate_construct(
+int16_t corto_delegate_construct(
     corto_function object)
 {
-/* $begin(corto/lang/delegate/construct) */
     corto_object parent = corto_parentof(object);
 
     if (corto_class_instanceof(corto_interface_o, corto_typeof(parent))) {
@@ -94,13 +83,11 @@ int16_t _corto_delegate_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_delegate_init(
+int16_t corto_delegate_init(
     corto_delegate this)
 {
-/* $begin(corto/lang/delegate/init) */
     corto_int16 result;
 
     corto_interface(this)->base = corto_interface(corto_delegatedata_o);
@@ -116,10 +103,9 @@ int16_t _corto_delegate_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-/* $header(corto/lang/delegate/instanceof) */
+
 corto_bool corto_delegate_matchParameter(
     corto_type t1,
     corto_bool isRef1,
@@ -132,12 +118,11 @@ corto_bool corto_delegate_matchParameter(
         return TRUE;
     }
 }
-/* $end */
-bool _corto_delegate_instanceof(
+
+bool corto_delegate_instanceof(
     corto_delegate this,
     corto_object object)
 {
-/* $begin(corto/lang/delegate/instanceof) */
     corto_type t = corto_typeof(object);
     corto_bool result = TRUE;
 
@@ -178,5 +163,5 @@ bool _corto_delegate_instanceof(
     }
 
     return result;
-/* $end */
 }
+

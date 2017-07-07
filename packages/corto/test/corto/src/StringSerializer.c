@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * StringSerializer.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_StringSerializer_tc_serAnonymous(
+void test_StringSerializer_tc_serAnonymous(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serAnonymous) */
     corto_object anonymous = corto_int32Create(10);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
@@ -26,13 +19,11 @@ void _test_StringSerializer_tc_serAnonymous(
     corto_dealloc(str);
     corto_ll_free(objList);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serAnonymousComplex(
+void test_StringSerializer_tc_serAnonymousComplex(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serAnonymousComplex) */
     test_Point *anonymous = corto_create(test_Point_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
@@ -50,13 +41,11 @@ void _test_StringSerializer_tc_serAnonymousComplex(
     corto_dealloc(str);
     corto_ll_free(objList);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serAnonymousComplexString(
+void test_StringSerializer_tc_serAnonymousComplexString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serAnonymousComplexString) */
     test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
@@ -76,13 +65,11 @@ void _test_StringSerializer_tc_serAnonymousComplexString(
     corto_dealloc(str);
     corto_ll_free(objList);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
+void test_StringSerializer_tc_serAnonymousComplexStringEsc(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serAnonymousComplexStringEsc) */
     test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
@@ -102,13 +89,11 @@ void _test_StringSerializer_tc_serAnonymousComplexStringEsc(
     corto_dealloc(str);
     corto_ll_free(objList);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serArray(
+void test_StringSerializer_tc_serArray(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serArray) */
     corto_array t = corto_arrayCreate(corto_int32_o, 3);
     test_assert(t != NULL);
     corto_string result;
@@ -122,13 +107,11 @@ void _test_StringSerializer_tc_serArray(
     corto_dealloc(result);
     corto_delete(t);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serArrayComplex(
+void test_StringSerializer_tc_serArrayComplex(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serArrayComplex) */
     corto_array t = corto_arrayCreate(test_Point_o, 3);
     test_assert(t != NULL);
     corto_string result;
@@ -142,13 +125,11 @@ void _test_StringSerializer_tc_serArrayComplex(
     corto_dealloc(result);
     corto_delete(t);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serBoolFalse(
+void test_StringSerializer_tc_serBoolFalse(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serBoolFalse) */
     corto_bool v = FALSE;
     corto_string result = NULL;
 
@@ -159,13 +140,11 @@ void _test_StringSerializer_tc_serBoolFalse(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serBoolTrue(
+void test_StringSerializer_tc_serBoolTrue(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serBoolTrue) */
     corto_bool v = TRUE;
     corto_string result = NULL;
 
@@ -176,13 +155,11 @@ void _test_StringSerializer_tc_serBoolTrue(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serChar(
+void test_StringSerializer_tc_serChar(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serChar) */
     corto_char v = 'a';
     corto_string result = NULL;
 
@@ -193,13 +170,11 @@ void _test_StringSerializer_tc_serChar(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serCharEscape(
+void test_StringSerializer_tc_serCharEscape(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serCharEscape) */
     corto_char v = '\n';
     corto_string result = NULL;
 
@@ -210,13 +185,11 @@ void _test_StringSerializer_tc_serCharEscape(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serCharNull(
+void test_StringSerializer_tc_serCharNull(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serCharNull) */
     corto_char v = '\0';
     corto_string result = NULL;
 
@@ -227,13 +200,11 @@ void _test_StringSerializer_tc_serCharNull(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serComposite(
+void test_StringSerializer_tc_serComposite(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serComposite) */
     test_Point v = {10, 20};
     corto_string result;
 
@@ -243,13 +214,11 @@ void _test_StringSerializer_tc_serComposite(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serCompositeNested(
+void test_StringSerializer_tc_serCompositeNested(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serCompositeNested) */
     test_Line v = {{10, 20}, {30, 40}};
     corto_string result;
 
@@ -259,13 +228,11 @@ void _test_StringSerializer_tc_serCompositeNested(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serCycle(
+void test_StringSerializer_tc_serCycle(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serCycle) */
     corto_string result;
     test_ReferenceMember *o = corto_create(test_ReferenceMember_o);
     test_assert(o != NULL);
@@ -274,13 +241,11 @@ void _test_StringSerializer_tc_serCycle(
     result = corto_str(o, 0);
     test_assertstr(result, "{<0>,0}");
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInheritance(
+void test_StringSerializer_tc_serInheritance(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInheritance) */
     test_Point3D v = {{10, 20}, 30};
     corto_string result;
 
@@ -290,13 +255,11 @@ void _test_StringSerializer_tc_serInheritance(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt16(
+void test_StringSerializer_tc_serInt16(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt16) */
     corto_int16 v = 32767;
     corto_string result;
 
@@ -306,13 +269,11 @@ void _test_StringSerializer_tc_serInt16(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt16Minus(
+void test_StringSerializer_tc_serInt16Minus(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt16Minus) */
     corto_int16 v = -32768;
     corto_string result;
 
@@ -322,13 +283,11 @@ void _test_StringSerializer_tc_serInt16Minus(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt32(
+void test_StringSerializer_tc_serInt32(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt32) */
     corto_int32 v = 2147483647;
     corto_string result;
 
@@ -338,13 +297,11 @@ void _test_StringSerializer_tc_serInt32(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt32Minus(
+void test_StringSerializer_tc_serInt32Minus(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt32Minus) */
     corto_int32 v = -2147483648;
     corto_string result;
 
@@ -354,13 +311,11 @@ void _test_StringSerializer_tc_serInt32Minus(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt64(
+void test_StringSerializer_tc_serInt64(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt64) */
     corto_int64 v = 9223372036854775807;
     corto_string result;
 
@@ -370,13 +325,11 @@ void _test_StringSerializer_tc_serInt64(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt64Minus(
+void test_StringSerializer_tc_serInt64Minus(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt64Minus) */
     corto_int64 v = -9223372036854775807 - 1;
     corto_string result;
 
@@ -386,13 +339,11 @@ void _test_StringSerializer_tc_serInt64Minus(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt8(
+void test_StringSerializer_tc_serInt8(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt8) */
     corto_int64 v = 127;
     corto_string result;
 
@@ -402,13 +353,11 @@ void _test_StringSerializer_tc_serInt8(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serInt8Minus(
+void test_StringSerializer_tc_serInt8Minus(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serInt8Minus) */
     corto_int64 v = -128;
     corto_string result;
 
@@ -418,13 +367,11 @@ void _test_StringSerializer_tc_serInt8Minus(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serList(
+void test_StringSerializer_tc_serList(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serList) */
     corto_list t = corto_listCreate(corto_int32_o, 0);
     corto_ll v = corto_ll_new();
     corto_string result;
@@ -441,13 +388,11 @@ void _test_StringSerializer_tc_serList(
     corto_ll_free(v);
     corto_release(t);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serListComplex(
+void test_StringSerializer_tc_serListComplex(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serListComplex) */
     corto_list t = corto_listCreate(test_Point_o, 0);
     corto_ll v = corto_ll_new();
     test_Point e1 = {10, 20}, e2 = {30, 40}, e3 = {50, 60};
@@ -465,13 +410,11 @@ void _test_StringSerializer_tc_serListComplex(
     corto_ll_free(v);
     corto_release(t);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serLongAnonymous(
+void test_StringSerializer_tc_serLongAnonymous(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serLongAnonymous) */
     corto_object anonymous = corto_int32Create(10);
     corto_objectList objList = corto_ll_new();
     corto_uint32 i;
@@ -488,13 +431,11 @@ void _test_StringSerializer_tc_serLongAnonymous(
     corto_delete(o);
     corto_dealloc(str);
     corto_ll_free(objList);
-/* $end */
 }
 
-void _test_StringSerializer_tc_serSameAnonymous(
+void test_StringSerializer_tc_serSameAnonymous(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serSameAnonymous) */
     corto_object anonymous = corto_int32Create(10);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
@@ -510,13 +451,11 @@ void _test_StringSerializer_tc_serSameAnonymous(
     corto_dealloc(str);
     corto_ll_free(objList);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serSequence(
+void test_StringSerializer_tc_serSequence(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serSequence) */
     corto_sequence t = corto_sequenceCreate(corto_int32_o, 0);
     CORTO_SEQUENCE(seqType, corto_int32,);
     corto_int32 elements[] = {10, 20, 30};
@@ -530,13 +469,11 @@ void _test_StringSerializer_tc_serSequence(
     corto_dealloc(result);
     corto_release(t);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serSequenceComplex(
+void test_StringSerializer_tc_serSequenceComplex(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serSequenceComplex) */
     corto_sequence t = corto_sequenceCreate(test_Point_o, 0);
     CORTO_SEQUENCE(seqType, test_Point,);
     test_Point elements[] = {{10, 20}, {30, 40}, {50, 60}};
@@ -550,13 +487,11 @@ void _test_StringSerializer_tc_serSequenceComplex(
     corto_dealloc(result);
     corto_release(t);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serString(
+void test_StringSerializer_tc_serString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serString) */
     corto_string v = "Hello World";
     corto_string result;
 
@@ -566,13 +501,11 @@ void _test_StringSerializer_tc_serString(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStringEscape(
+void test_StringSerializer_tc_serStringEscape(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStringEscape) */
     corto_string v = "Hello World\n";
     corto_string result;
 
@@ -582,13 +515,11 @@ void _test_StringSerializer_tc_serStringEscape(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStringNull(
+void test_StringSerializer_tc_serStringNull(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStringNull) */
     corto_string v = NULL;
     corto_string result;
 
@@ -598,13 +529,11 @@ void _test_StringSerializer_tc_serStringNull(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStringWhitespace(
+void test_StringSerializer_tc_serStringWhitespace(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStringWhitespace) */
     corto_string v = "  Hello World   ";
     corto_string result;
 
@@ -614,13 +543,11 @@ void _test_StringSerializer_tc_serStringWhitespace(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructArrayInt(
+void test_StringSerializer_tc_serStructArrayInt(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructArrayInt) */
     test_struct_arrayInt v = {{10, 20, 30}};
 
     char *str = corto_ptr_str(&v, test_struct_arrayInt_o, 0);
@@ -628,13 +555,11 @@ void _test_StringSerializer_tc_serStructArrayInt(
     test_assertstr(str, "{{10,20,30}}");
     corto_dealloc(str);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructArrayReference(
+void test_StringSerializer_tc_serStructArrayReference(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructArrayReference) */
     test_struct_arrayReference v = {{corto_o, corto_lang_o, corto_class_o}};
 
     char *str = corto_ptr_str(&v, test_struct_arrayReference_o, 0);
@@ -642,13 +567,11 @@ void _test_StringSerializer_tc_serStructArrayReference(
     test_assertstr(str, "{{/corto,/corto/lang,class}}");
     corto_dealloc(str);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructArrayString(
+void test_StringSerializer_tc_serStructArrayString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructArrayString) */
     test_struct_arrayString v = {{"Hello", "World", "Foo"}};
 
     char *str = corto_ptr_str(&v, test_struct_arrayString_o, 0);
@@ -656,13 +579,11 @@ void _test_StringSerializer_tc_serStructArrayString(
     test_assertstr(str, "{{\"Hello\",\"World\",\"Foo\"}}");
     corto_dealloc(str);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructArrayStruct(
+void test_StringSerializer_tc_serStructArrayStruct(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructArrayStruct) */
     test_struct_arrayStruct v = {{{10, 20}, {30, 40}, {50, 60}}};
 
     char *str = corto_ptr_str(&v, test_struct_arrayStruct_o, 0);
@@ -670,13 +591,11 @@ void _test_StringSerializer_tc_serStructArrayStruct(
     test_assertstr(str, "{{{10,20},{30,40},{50,60}}}");
     corto_dealloc(str);
     
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructInherit(
+void test_StringSerializer_tc_serStructInherit(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructInherit) */
     test_struct_inherit v = {{10, 20}, 30, 40};
 
     char *str = corto_ptr_str(&v, test_struct_inherit_o, 0);
@@ -684,13 +603,11 @@ void _test_StringSerializer_tc_serStructInherit(
     test_assertstr(str, "{10,20,30,40}");
     corto_dealloc(str);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructListInt(
+void test_StringSerializer_tc_serStructListInt(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructListInt) */
     test_struct_listInt v;
 
     corto_ptr_init(&v, test_struct_listInt_o);
@@ -705,13 +622,11 @@ void _test_StringSerializer_tc_serStructListInt(
 
     corto_ptr_deinit(&v, test_struct_listInt_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructListReference(
+void test_StringSerializer_tc_serStructListReference(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructListReference) */
     test_struct_listInt v;
 
     corto_ptr_init(&v, test_struct_listReference_o);
@@ -726,13 +641,11 @@ void _test_StringSerializer_tc_serStructListReference(
 
     corto_ptr_deinit(&v, test_struct_listReference_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructListString(
+void test_StringSerializer_tc_serStructListString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructListString) */
     test_struct_listInt v;
 
     corto_ptr_init(&v, test_struct_listInt_o);
@@ -747,13 +660,11 @@ void _test_StringSerializer_tc_serStructListString(
 
     corto_ptr_deinit(&v, test_struct_listString_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructListStruct(
+void test_StringSerializer_tc_serStructListStruct(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructListStruct) */
     test_struct_listInt v;
     test_Point 
         p = {10, 20},
@@ -772,13 +683,11 @@ void _test_StringSerializer_tc_serStructListStruct(
 
     corto_ptr_deinit(&v, test_struct_listStruct_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableArray(
+void test_StringSerializer_tc_serStructObservableArray(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableArray) */
     test_struct_observableArray v;
 
     corto_ptr_init(&v, test_struct_observableArray_o);
@@ -794,13 +703,11 @@ void _test_StringSerializer_tc_serStructObservableArray(
 
     corto_ptr_deinit(&v, test_struct_observableArray_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableInt(
+void test_StringSerializer_tc_serStructObservableInt(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableInt) */
     test_struct_observableInt v;
 
     corto_ptr_init(&v, test_struct_observableInt_o);
@@ -812,13 +719,11 @@ void _test_StringSerializer_tc_serStructObservableInt(
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_observableInt_o);
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableList(
+void test_StringSerializer_tc_serStructObservableList(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableList) */
     test_struct_observableList v;
 
     corto_ptr_init(&v, test_struct_observableList_o);
@@ -833,13 +738,11 @@ void _test_StringSerializer_tc_serStructObservableList(
 
     corto_ptr_deinit(&v, test_struct_observableList_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableReference(
+void test_StringSerializer_tc_serStructObservableReference(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableReference) */
     test_struct_observableReference v;
 
     corto_ptr_init(&v, test_struct_observableReference_o);
@@ -852,13 +755,11 @@ void _test_StringSerializer_tc_serStructObservableReference(
 
     corto_ptr_deinit(&v, test_struct_observableReference_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableSequence(
+void test_StringSerializer_tc_serStructObservableSequence(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableSequence) */
     test_struct_observableSequence v;
 
     corto_ptr_init(&v, test_struct_observableSequence_o);
@@ -874,13 +775,11 @@ void _test_StringSerializer_tc_serStructObservableSequence(
 
     corto_ptr_deinit(&v, test_struct_observableSequence_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableString(
+void test_StringSerializer_tc_serStructObservableString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableString) */
     test_struct_observableString v;
 
     corto_ptr_init(&v, test_struct_observableString_o);
@@ -893,13 +792,11 @@ void _test_StringSerializer_tc_serStructObservableString(
 
     corto_ptr_deinit(&v, test_struct_observableString_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructObservableStruct(
+void test_StringSerializer_tc_serStructObservableStruct(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructObservableStruct) */
     test_struct_observableStruct v;
 
     corto_ptr_init(&v, test_struct_observableStruct_o);
@@ -913,13 +810,11 @@ void _test_StringSerializer_tc_serStructObservableStruct(
 
     corto_ptr_deinit(&v, test_struct_observableStruct_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalArray(
+void test_StringSerializer_tc_serStructOptionalArray(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalArray) */
     test_struct_optionalArray v;
 
     corto_ptr_init(&v, test_struct_optionalArray_o);
@@ -941,13 +836,11 @@ void _test_StringSerializer_tc_serStructOptionalArray(
 
     corto_ptr_deinit(&v, test_struct_optionalArray_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalInt(
+void test_StringSerializer_tc_serStructOptionalInt(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalInt) */
     test_struct_optionalInt v;
 
     corto_ptr_init(&v, test_struct_optionalInt_o);
@@ -968,13 +861,11 @@ void _test_StringSerializer_tc_serStructOptionalInt(
 
     corto_ptr_deinit(&v, test_struct_optionalInt_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalList(
+void test_StringSerializer_tc_serStructOptionalList(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalList) */
     test_struct_optionalList v;
 
     corto_ptr_init(&v, test_struct_optionalList_o);
@@ -996,13 +887,11 @@ void _test_StringSerializer_tc_serStructOptionalList(
 
     corto_ptr_deinit(&v, test_struct_optionalList_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalReference(
+void test_StringSerializer_tc_serStructOptionalReference(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalReference) */
     test_struct_optionalReference v;
 
     corto_ptr_init(&v, test_struct_optionalReference_o);
@@ -1025,13 +914,11 @@ void _test_StringSerializer_tc_serStructOptionalReference(
 
     corto_ptr_deinit(&v, test_struct_optionalReference_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalSequence(
+void test_StringSerializer_tc_serStructOptionalSequence(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalSequence) */
     test_struct_optionalSequence v;
 
     corto_ptr_init(&v, test_struct_optionalSequence_o);
@@ -1053,13 +940,11 @@ void _test_StringSerializer_tc_serStructOptionalSequence(
 
     corto_ptr_deinit(&v, test_struct_optionalSequence_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalString(
+void test_StringSerializer_tc_serStructOptionalString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalString) */
     test_struct_optionalString v;
 
     corto_ptr_init(&v, test_struct_optionalString_o);
@@ -1080,13 +965,11 @@ void _test_StringSerializer_tc_serStructOptionalString(
 
     corto_ptr_deinit(&v, test_struct_optionalString_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructOptionalStruct(
+void test_StringSerializer_tc_serStructOptionalStruct(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructOptionalStruct) */
     test_struct_optionalStruct v;
 
     corto_ptr_init(&v, test_struct_optionalStruct_o);
@@ -1107,13 +990,11 @@ void _test_StringSerializer_tc_serStructOptionalStruct(
 
     corto_ptr_deinit(&v, test_struct_optionalStruct_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructPrimitive(
+void test_StringSerializer_tc_serStructPrimitive(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructPrimitive) */
     test_struct_base v;
 
     corto_ptr_init(&v, test_struct_base_o);
@@ -1128,13 +1009,11 @@ void _test_StringSerializer_tc_serStructPrimitive(
 
     corto_ptr_deinit(&v, test_struct_base_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructSequenceInt(
+void test_StringSerializer_tc_serStructSequenceInt(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructSequenceInt) */
     test_struct_sequenceInt v;
 
     corto_ptr_init(&v, test_struct_sequenceInt_o);
@@ -1151,13 +1030,11 @@ void _test_StringSerializer_tc_serStructSequenceInt(
 
     corto_ptr_deinit(&v, test_struct_sequenceInt_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructSequenceReference(
+void test_StringSerializer_tc_serStructSequenceReference(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructSequenceReference) */
     test_struct_sequenceReference v;
 
     corto_ptr_init(&v, test_struct_sequenceReference_o);
@@ -1174,13 +1051,11 @@ void _test_StringSerializer_tc_serStructSequenceReference(
 
     corto_ptr_deinit(&v, test_struct_sequenceReference_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructSequenceString(
+void test_StringSerializer_tc_serStructSequenceString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructSequenceString) */
     test_struct_sequenceString v;
 
     corto_ptr_init(&v, test_struct_sequenceString_o);
@@ -1197,13 +1072,11 @@ void _test_StringSerializer_tc_serStructSequenceString(
 
     corto_ptr_deinit(&v, test_struct_sequenceString_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructSequenceStruct(
+void test_StringSerializer_tc_serStructSequenceStruct(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructSequenceStruct) */
     test_struct_sequenceStruct v;
 
     corto_ptr_init(&v, test_struct_sequenceStruct_o);
@@ -1220,13 +1093,11 @@ void _test_StringSerializer_tc_serStructSequenceStruct(
 
     corto_ptr_deinit(&v, test_struct_sequenceStruct_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructString(
+void test_StringSerializer_tc_serStructString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructString) */
     test_struct_string v;
 
     corto_ptr_init(&v, test_struct_string_o);
@@ -1240,13 +1111,11 @@ void _test_StringSerializer_tc_serStructString(
 
     corto_ptr_deinit(&v, test_struct_string_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetArray(
+void test_StringSerializer_tc_serStructTargetArray(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetArray) */
     test_struct_targetArray v;
 
     corto_ptr_init(&v, test_struct_targetArray_o);
@@ -1271,13 +1140,11 @@ void _test_StringSerializer_tc_serStructTargetArray(
 
     corto_ptr_deinit(&v, test_struct_targetArray_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetInt(
+void test_StringSerializer_tc_serStructTargetInt(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetInt) */
     test_struct_targetInt v;
 
     corto_ptr_init(&v, test_struct_targetInt_o);
@@ -1293,13 +1160,11 @@ void _test_StringSerializer_tc_serStructTargetInt(
 
     corto_ptr_deinit(&v, test_struct_targetInt_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetList(
+void test_StringSerializer_tc_serStructTargetList(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetList) */
     test_struct_targetList v;
 
     corto_ptr_init(&v, test_struct_targetList_o);
@@ -1324,13 +1189,11 @@ void _test_StringSerializer_tc_serStructTargetList(
 
     corto_ptr_deinit(&v, test_struct_targetList_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetReference(
+void test_StringSerializer_tc_serStructTargetReference(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetReference) */
     test_struct_targetReference v;
 
     corto_ptr_init(&v, test_struct_targetReference_o);
@@ -1346,13 +1209,11 @@ void _test_StringSerializer_tc_serStructTargetReference(
 
     corto_ptr_deinit(&v, test_struct_targetReference_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetSequence(
+void test_StringSerializer_tc_serStructTargetSequence(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetSequence) */
     test_struct_targetSequence v;
 
     corto_ptr_init(&v, test_struct_targetSequence_o);
@@ -1382,13 +1243,11 @@ void _test_StringSerializer_tc_serStructTargetSequence(
 
     corto_ptr_deinit(&v, test_struct_targetSequence_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetString(
+void test_StringSerializer_tc_serStructTargetString(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetString) */
     test_struct_targetString v;
 
     corto_ptr_init(&v, test_struct_targetString_o);
@@ -1404,13 +1263,11 @@ void _test_StringSerializer_tc_serStructTargetString(
 
     corto_ptr_deinit(&v, test_struct_targetString_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serStructTargetStruct(
+void test_StringSerializer_tc_serStructTargetStruct(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serStructTargetStruct) */
     test_struct_targetStruct v;
 
     corto_ptr_init(&v, test_struct_targetStruct_o);
@@ -1426,13 +1283,11 @@ void _test_StringSerializer_tc_serStructTargetStruct(
 
     corto_ptr_deinit(&v, test_struct_targetStruct_o);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serTwoAnonymous(
+void test_StringSerializer_tc_serTwoAnonymous(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serTwoAnonymous) */
     corto_object anonymous1 = corto_int32Create(10);
     corto_object anonymous2 = corto_int32Create(20);
     corto_objectList objList = corto_ll_new();
@@ -1449,13 +1304,11 @@ void _test_StringSerializer_tc_serTwoAnonymous(
     corto_dealloc(str);
     corto_ll_free(objList);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serUint16(
+void test_StringSerializer_tc_serUint16(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serUint16) */
     corto_uint16 v = 65535;
     corto_string result;
 
@@ -1465,13 +1318,11 @@ void _test_StringSerializer_tc_serUint16(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serUint32(
+void test_StringSerializer_tc_serUint32(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serUint32) */
     corto_uint32 v = 4294967295;
     corto_string result;
 
@@ -1481,13 +1332,11 @@ void _test_StringSerializer_tc_serUint32(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serUint64(
+void test_StringSerializer_tc_serUint64(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serUint64) */
     corto_uint64 v = 18446744073709551615u;
     corto_string result;
 
@@ -1497,13 +1346,11 @@ void _test_StringSerializer_tc_serUint64(
 
     corto_dealloc(result);
 
-/* $end */
 }
 
-void _test_StringSerializer_tc_serUint8(
+void test_StringSerializer_tc_serUint8(
     test_StringSerializer this)
 {
-/* $begin(test/StringSerializer/tc_serUint8) */
     corto_uint64 v = 255;
     corto_string result;
 
@@ -1513,5 +1360,5 @@ void _test_StringSerializer_tc_serUint8(
 
     corto_dealloc(result);
 
-/* $end */
 }
+

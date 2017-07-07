@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * NestedConstructFailInTier2.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_NestedConstructFailInTier2_construct(
+int16_t test_NestedConstructFailInTier2_construct(
     test_NestedConstructFailInTier2 this)
 {
-/* $begin(test/NestedConstructFailInTier2/construct) */
     corto_object parent = this;
     corto_int32 count = 0;
     while ((parent = corto_parentof(parent))) {
@@ -21,5 +14,5 @@ int16_t _test_NestedConstructFailInTier2_construct(
     if (count == 3) return -1;
 
     return 0;
-/* $end */
 }
+

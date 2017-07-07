@@ -1,0 +1,7 @@
+PACKAGE = 'corto/cdiff'
+
+NOCORTO = true
+CFLAGS = ["-Wunused-parameter"]
+LINK = ["#{ENV['CORTO_TARGET']}/lib/corto/#{ENV['CORTO_VERSION']}/corto/corto"]
+
+require "#{ENV['CORTO_BUILD']}/package"

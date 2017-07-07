@@ -12,12 +12,23 @@
 extern "C" {
 #endif
 
-#define corto_secure_key_authenticate_v(_this, user, password) _corto_secure_key_authenticate_v(corto_secure_key(_this), user, password)
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
 CORTO_EXPORT
 corto_string _corto_secure_key_authenticate_v(
     corto_secure_key _this,
     corto_string user,
     corto_string password);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_secure_key_authenticate_v(_this, user, password) _corto_secure_key_authenticate_v(corto_secure_key(_this), user, password)
+#else
+#define corto_secure_key_authenticate_v _corto_secure_key_authenticate_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_secure_key_authenticate_v(_this, user, password) _corto_secure_key_authenticate_v(corto_secure_key(_this), user, password)
 
 #define corto_secure_key_authenticate(_this, user, password) _corto_secure_key_authenticate(corto_secure_key(_this), user, password)
 CORTO_EXPORT
@@ -26,22 +37,55 @@ corto_string _corto_secure_key_authenticate(
     corto_string user,
     corto_string password);
 
-#define corto_secure_key_construct(_this) _corto_secure_key_construct(corto_secure_key(_this))
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
 CORTO_EXPORT
 int16_t _corto_secure_key_construct(
     corto_secure_key _this);
 
-#define corto_secure_key_destruct(_this) _corto_secure_key_destruct(corto_secure_key(_this))
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_secure_key_construct(_this) _corto_secure_key_construct(corto_secure_key(_this))
+#else
+#define corto_secure_key_construct _corto_secure_key_construct
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_secure_key_construct(_this) _corto_secure_key_construct(corto_secure_key(_this))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
 CORTO_EXPORT
 void _corto_secure_key_destruct(
     corto_secure_key _this);
 
-#define corto_secure_lock_authorize_v(_this, token, action) _corto_secure_lock_authorize_v(corto_secure_lock(_this), token, action)
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_secure_key_destruct(_this) _corto_secure_key_destruct(corto_secure_key(_this))
+#else
+#define corto_secure_key_destruct _corto_secure_key_destruct
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_secure_key_destruct(_this) _corto_secure_key_destruct(corto_secure_key(_this))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
 CORTO_EXPORT
 corto_secure_accessKind _corto_secure_lock_authorize_v(
     corto_secure_lock _this,
     corto_string token,
     corto_secure_actionKind action);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_secure_lock_authorize_v(_this, token, action) _corto_secure_lock_authorize_v(corto_secure_lock(_this), token, action)
+#else
+#define corto_secure_lock_authorize_v _corto_secure_lock_authorize_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_secure_lock_authorize_v(_this, token, action) _corto_secure_lock_authorize_v(corto_secure_lock(_this), token, action)
 
 #define corto_secure_lock_authorize(_this, token, action) _corto_secure_lock_authorize(corto_secure_lock(_this), token, action)
 CORTO_EXPORT
@@ -50,15 +94,37 @@ corto_secure_accessKind _corto_secure_lock_authorize(
     corto_string token,
     corto_secure_actionKind action);
 
-#define corto_secure_lock_construct(_this) _corto_secure_lock_construct(corto_secure_lock(_this))
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
 CORTO_EXPORT
 int16_t _corto_secure_lock_construct(
     corto_secure_lock _this);
 
-#define corto_secure_lock_destruct(_this) _corto_secure_lock_destruct(corto_secure_lock(_this))
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_secure_lock_construct(_this) _corto_secure_lock_construct(corto_secure_lock(_this))
+#else
+#define corto_secure_lock_construct _corto_secure_lock_construct
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_secure_lock_construct(_this) _corto_secure_lock_construct(corto_secure_lock(_this))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
 CORTO_EXPORT
 void _corto_secure_lock_destruct(
     corto_secure_lock _this);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_secure_lock_destruct(_this) _corto_secure_lock_destruct(corto_secure_lock(_this))
+#else
+#define corto_secure_lock_destruct _corto_secure_lock_destruct
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_secure_lock_destruct(_this) _corto_secure_lock_destruct(corto_secure_lock(_this))
 
 #ifdef __cplusplus
 }

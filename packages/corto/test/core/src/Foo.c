@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Foo.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_Foo_construct(
+int16_t test_Foo_construct(
     test_Foo this)
 {
-/* $begin(test/Foo/construct) */
 
 	if (!this->fail) {
 	    this->x *= 2;
@@ -26,27 +19,23 @@ int16_t _test_Foo_construct(
 error:
 	return -1;
 
-/* $end */
 }
 
-void _test_Foo_destruct(
+void test_Foo_destruct(
     test_Foo this)
 {
-/* $begin(test/Foo/destruct) */
     CORTO_UNUSED(this);
     (*test_destructCalled_o)++;
-/* $end */
 }
 
-int16_t _test_Foo_init(
+int16_t test_Foo_init(
     test_Foo this)
 {
-/* $begin(test/Foo/init) */
     this->x = 1;
     this->y = 2;
 
     (*test_initCalled_o)++;
 
 	return 0;
-/* $end */
 }
+

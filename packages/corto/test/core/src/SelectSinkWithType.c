@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SelectSinkWithType.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SelectSinkWithType_setup(
+void test_SelectSinkWithType_setup(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/setup) */
 
     /* Register sink mount */
     corto_int32CreateChild_auto(root_o, mount, 0);
@@ -20,13 +13,11 @@ void _test_SelectSinkWithType_setup(
     /* Ensure all objects are created with persistency enabled */
     corto_setAttr(CORTO_ATTR_PERSISTENT);
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectMixedScope(
+void test_SelectSinkWithType_tc_selectMixedScope(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectMixedScope) */
     corto_iter iter;
     corto_result *result;
 
@@ -82,13 +73,11 @@ void _test_SelectSinkWithType_tc_selectMixedScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectMixedScopeNested1(
+void test_SelectSinkWithType_tc_selectMixedScopeNested1(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectMixedScopeNested1) */
     corto_iter iter;
     corto_result *result;
 
@@ -144,13 +133,11 @@ void _test_SelectSinkWithType_tc_selectMixedScopeNested1(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectMixedScopeNested2(
+void test_SelectSinkWithType_tc_selectMixedScopeNested2(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectMixedScopeNested2) */
     corto_iter iter;
     corto_result *result;
 
@@ -207,13 +194,11 @@ void _test_SelectSinkWithType_tc_selectMixedScopeNested2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectMount(
+void test_SelectSinkWithType_tc_selectMount(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectMount) */
     corto_iter iter;
     corto_result *result;
 
@@ -229,13 +214,11 @@ void _test_SelectSinkWithType_tc_selectMount(
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectMountFromParent(
+void test_SelectSinkWithType_tc_selectMountFromParent(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectMountFromParent) */
     corto_object mount = corto_resolve(root_o, "mount");
     corto_int32CreateChild_auto(mount, x, 0);
     corto_release(mount);
@@ -254,13 +237,11 @@ void _test_SelectSinkWithType_tc_selectMountFromParent(
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "int32");
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectMountFromVirtualParent(
+void test_SelectSinkWithType_tc_selectMountFromVirtualParent(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectMountFromVirtualParent) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
@@ -275,13 +256,11 @@ void _test_SelectSinkWithType_tc_selectMountFromVirtualParent(
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "int32");
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectSingleMatch(
+void test_SelectSinkWithType_tc_selectSingleMatch(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectSingleMatch) */
     corto_iter iter;
 
     corto_object mount = corto_resolve(root_o, "mount");
@@ -293,13 +272,11 @@ void _test_SelectSinkWithType_tc_selectSingleMatch(
     test_assert(ret == 0);
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_tc_selectSingleNoMatch(
+void test_SelectSinkWithType_tc_selectSingleNoMatch(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/tc_selectSingleNoMatch) */
     corto_iter iter;
     corto_result *result;
 
@@ -319,15 +296,13 @@ void _test_SelectSinkWithType_tc_selectSingleNoMatch(
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float32");
 
-/* $end */
 }
 
-void _test_SelectSinkWithType_teardown(
+void test_SelectSinkWithType_teardown(
     test_SelectSinkWithType this)
 {
-/* $begin(test/SelectSinkWithType/teardown) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
+

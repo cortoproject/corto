@@ -1,33 +1,23 @@
-/* $CORTO_GENERATED
- *
- * subscriberEvent.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
-#include "_object.h"
-/* $end */
 
-void _corto_subscriberEvent_deinit(
+#include "_object.h"
+
+void corto_subscriberEvent_deinit(
     corto_subscriberEvent* this)
 {
-/* $begin(corto/core/subscriberEvent/deinit) */
 
     if (this->contentTypeHandle && this->data.value) {
         ((corto_contentType)this->contentTypeHandle)->release(this->data.value);
     }
 
-/* $end */
 }
 
-void _corto_subscriberEvent_handle(
+void corto_subscriberEvent_handle(
     corto_event *e)
 {
-/* $begin(corto/core/subscriberEvent/handle) */
     corto_function f = corto_function(((corto_subscriberEvent*)e)->subscriber);
 
     if (f->kind == CORTO_PROCEDURE_CDECL) {
@@ -36,14 +26,12 @@ void _corto_subscriberEvent_handle(
         corto_call(f, NULL, e);
     }
 
-/* $end */
 }
 
-int16_t _corto_subscriberEvent_init(
+int16_t corto_subscriberEvent_init(
     corto_subscriberEvent* this)
 {
-/* $begin(corto/core/subscriberEvent/init) */
     ((corto_event*)this)->handleAction.super.procedure = corto_subscriberEvent_handle_o;
     return 0;
-/* $end */
 }
+

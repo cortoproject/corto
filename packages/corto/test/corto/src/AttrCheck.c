@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * AttrCheck.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_AttrCheck_tc_constructorAttr(
+void test_AttrCheck_tc_constructorAttr(
     test_AttrCheck this)
 {
-/* $begin(test/AttrCheck/tc_constructorAttr) */
     corto_int16 ret;
     
     corto_object o = test_AttrConstructorTestCreate();
@@ -28,13 +21,11 @@ void _test_AttrCheck_tc_constructorAttr(
     ret = corto_delete(o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_AttrCheck_tc_packageMainAttr(
+void test_AttrCheck_tc_packageMainAttr(
     test_AttrCheck this)
 {
-/* $begin(test/AttrCheck/tc_packageMainAttr) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -50,15 +41,13 @@ void _test_AttrCheck_tc_packageMainAttr(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_AttrCheck_tc_packageObjectAttr(
+void test_AttrCheck_tc_packageObjectAttr(
     test_AttrCheck this)
 {
-/* $begin(test/AttrCheck/tc_packageObjectAttr) */
 
     test_assertint(corto_attrof(test_o), CORTO_ATTR_NAMED|CORTO_ATTR_PERSISTENT|CORTO_ATTR_OBSERVABLE);
 
-/* $end */
 }
+

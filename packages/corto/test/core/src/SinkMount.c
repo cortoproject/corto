@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SinkMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_SinkMount_construct(
+int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
-/* $begin(test/SinkMount/construct) */
 
     corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
@@ -145,10 +138,9 @@ int16_t _test_SinkMount_construct(
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-/* $header(test/SinkMount/onQuery) */
+
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -156,12 +148,11 @@ static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
-/* $end */
-corto_resultIter _test_SinkMount_onQuery(
+
+corto_resultIter test_SinkMount_onQuery(
     test_SinkMount this,
     corto_query *query)
 {
-/* $begin(test/SinkMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
@@ -190,16 +181,14 @@ corto_resultIter _test_SinkMount_onQuery(
 
     /* Return persistent iterator to request */
     return result;
-/* $end */
 }
 
-corto_object _test_SinkMount_onResume(
+corto_object test_SinkMount_onResume(
     test_SinkMount this,
     corto_string parent,
     corto_string name,
     corto_object object)
 {
-/* $begin(test/SinkMount/onResume) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_object result = NULL;
 
@@ -262,5 +251,5 @@ corto_object _test_SinkMount_onResume(
     return result;
 error:
     return NULL;
-/* $end */
 }
+

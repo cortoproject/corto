@@ -1,18 +1,11 @@
-/* $CORTO_GENERATED
- *
- * package.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
-#include "_object.h"
-/* $end */
 
-/* $header(corto/core/package/construct) */
+#include "_object.h"
+
+
 void corto_package_onDefine(corto_observerEvent *e)
 {
     corto_object owner = corto_ownerof(e->data);
@@ -29,11 +22,10 @@ void corto_package_onDefine(corto_observerEvent *e)
 
     corto_delete(e->observer); // Delete observer after first notification
 }
-/* $end */
-int16_t _corto_package_construct(
+
+int16_t corto_package_construct(
     corto_package this)
 {
-/* $begin(corto/core/package/construct) */
 
     if (!corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_NAMED)) {
 
@@ -50,14 +42,12 @@ int16_t _corto_package_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_package_init(
+int16_t corto_package_init(
     corto_package this)
 {
-/* $begin(corto/core/package/init) */
     this->managed = TRUE;
     return 0;
-/* $end */
 }
+

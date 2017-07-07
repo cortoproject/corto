@@ -1,26 +1,16 @@
-/* $CORTO_GENERATED
- *
- * Subscribe.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
-void _test_Subscribe_noInitialSep(
+void test_Subscribe_noInitialSep(
     corto_subscriberEvent *e)
 {
-/* $begin(test/Subscribe/noInitialSep) */
     test_Subscribe this = e->instance;
     this->triggered ++;
-/* $end */
 }
 
-void _test_Subscribe_tc_noInitialSep(
+void test_Subscribe_tc_noInitialSep(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_noInitialSep) */
     test_assertint(this->triggered, 0);
 
     corto_voidCreateChild_auto(root_o, testScope);
@@ -36,10 +26,8 @@ void _test_Subscribe_tc_noInitialSep(
 
     test_assertint(this->triggered, 2);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeAlignSelf) */
 void subscribeAlignSelf(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
@@ -47,11 +35,10 @@ void subscribeAlignSelf(corto_subscriberEvent *e)
     test_assert(e->event == CORTO_ON_DEFINE);
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeAlignSelf(
+
+void test_Subscribe_tc_subscribeAlignSelf(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeAlignSelf) */
     corto_createChild(root_o, "o", corto_void_o);
 
     corto_subscriber s = corto_subscribe("o")
@@ -62,10 +49,8 @@ void _test_Subscribe_tc_subscribeAlignSelf(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeAlignType) */
 void subscribeAlignType(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
@@ -73,11 +58,10 @@ void subscribeAlignType(corto_subscriberEvent *e)
     test_assert(e->event == CORTO_ON_DEFINE);
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeAlignType(
+
+void test_Subscribe_tc_subscribeAlignType(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeAlignType) */
     corto_createChild(root_o, "o", corto_int32_o);
     corto_createChild(root_o, "p", corto_float32_o);
     corto_createChild(root_o, "q", corto_string_o);
@@ -91,21 +75,18 @@ void _test_Subscribe_tc_subscribeAlignType(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeFromEmpty) */
 void subscribeResultTest(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
     corto_ptr_copy(&this->result, corto_result_o, &e->data);
 }
-/* $end */
-void _test_Subscribe_tc_subscribeFromEmpty(
+
+void test_Subscribe_tc_subscribeFromEmpty(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromEmpty) */
     corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
@@ -126,13 +107,11 @@ void _test_Subscribe_tc_subscribeFromEmpty(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromImplicit(
+void test_Subscribe_tc_subscribeFromImplicit(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromImplicit) */
     corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
@@ -152,13 +131,11 @@ void _test_Subscribe_tc_subscribeFromImplicit(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromNested(
+void test_Subscribe_tc_subscribeFromNested(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromNested) */
     corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
     corto_object nested = corto_createChild(scope, "nested", corto_void_o);
     corto_int32 *a = corto_createChild(nested, "a", corto_int32_o);
@@ -181,13 +158,11 @@ void _test_Subscribe_tc_subscribeFromNested(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(scope) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromNestedNoInitialSlash(
+void test_Subscribe_tc_subscribeFromNestedNoInitialSlash(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromNestedNoInitialSlash) */
     corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
     corto_object nested = corto_createChild(scope, "nested", corto_void_o);
     corto_int32 *a = corto_createChild(nested, "a", corto_int32_o);
@@ -210,13 +185,11 @@ void _test_Subscribe_tc_subscribeFromNestedNoInitialSlash(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(scope) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromNull(
+void test_Subscribe_tc_subscribeFromNull(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromNull) */
     corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
@@ -237,13 +210,11 @@ void _test_Subscribe_tc_subscribeFromNull(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromRoot(
+void test_Subscribe_tc_subscribeFromRoot(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromRoot) */
     corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
@@ -264,13 +235,11 @@ void _test_Subscribe_tc_subscribeFromRoot(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromScope(
+void test_Subscribe_tc_subscribeFromScope(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromScope) */
     corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
     corto_int32 *a = corto_createChild(scope, "a", corto_int32_o);
     test_assert(a != NULL);
@@ -292,13 +261,11 @@ void _test_Subscribe_tc_subscribeFromScope(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(scope) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribeFromScopeNoInitialSlash(
+void test_Subscribe_tc_subscribeFromScopeNoInitialSlash(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeFromScopeNoInitialSlash) */
     corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
     corto_int32 *a = corto_createChild(scope, "a", corto_int32_o);
     test_assert(a != NULL);
@@ -320,20 +287,17 @@ void _test_Subscribe_tc_subscribeFromScopeNoInitialSlash(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(scope) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeInvertCase) */
 void subscribeInvertCaseOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeInvertCase(
+
+void test_Subscribe_tc_subscribeInvertCase(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeInvertCase) */
     corto_object a = corto_createChild(root_o, "a", corto_void_o);
     test_assert(a != NULL);
 
@@ -351,20 +315,17 @@ void _test_Subscribe_tc_subscribeInvertCase(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeInvertCaseFilter) */
 void subscribeInvertCaseFilterOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeInvertCaseFilter(
+
+void test_Subscribe_tc_subscribeInvertCaseFilter(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeInvertCaseFilter) */
     corto_object a = corto_createChild(root_o, "a", corto_void_o);
     test_assert(a != NULL);
 
@@ -382,20 +343,17 @@ void _test_Subscribe_tc_subscribeInvertCaseFilter(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
 void subscribeInvertCaseFilterFromPublishOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
+
+void test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeInvertCaseFilterFromPublish) */
     corto_subscriber s = corto_subscribe("XY?").from("/a")
       .instance(this)
       .callback(subscribeInvertCaseFilterFromPublishOnUpdate);
@@ -408,20 +366,17 @@ void _test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
 void subscribeInvertCaseFromPublishOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
+
+void test_Subscribe_tc_subscribeInvertCaseFromPublish(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeInvertCaseFromPublish) */
     corto_subscriber s = corto_subscribe("XYZ").from("/a")
       .instance(this)
       .callback(subscribeInvertCaseFromPublishOnUpdate);
@@ -434,20 +389,17 @@ void _test_Subscribe_tc_subscribeInvertCaseFromPublish(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeInvertCaseParent) */
 void subscribeInvertCaseParentOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeInvertCaseParent(
+
+void test_Subscribe_tc_subscribeInvertCaseParent(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeInvertCaseParent) */
     corto_object a = corto_createChild(root_o, "a", corto_void_o);
     test_assert(a != NULL);
 
@@ -465,20 +417,17 @@ void _test_Subscribe_tc_subscribeInvertCaseParent(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
 void subscribeInvertCaseParentFromPublishOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
+
+void test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeInvertCaseParentFromPublish) */
     corto_subscriber s = corto_subscribe("xyz").from("/A")
       .instance(this)
       .callback(subscribeInvertCaseParentFromPublishOnUpdate);
@@ -491,10 +440,8 @@ void _test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeMultiDifferentParent) */
 void MultiDifferentParent1(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
@@ -503,6 +450,7 @@ void MultiDifferentParent1(corto_subscriberEvent *e) {
     test_assertstr(e->data.parent, "/data");
     test_assertstr(e->data.type, "void");
 }
+
 void MultiDifferentParent2(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
@@ -511,6 +459,7 @@ void MultiDifferentParent2(corto_subscriberEvent *e) {
     test_assertstr(e->data.parent, "data");
     test_assertstr(e->data.type, "void");
 }
+
 void MultiDifferentParent3(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
@@ -519,11 +468,10 @@ void MultiDifferentParent3(corto_subscriberEvent *e) {
     test_assertstr(e->data.parent, ".");
     test_assertstr(e->data.type, "void");   
 }
-/* $end */
-void _test_Subscribe_tc_subscribeMultiDifferentParent(
+
+void test_Subscribe_tc_subscribeMultiDifferentParent(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeMultiDifferentParent) */
     corto_subscriber s0 = corto_subscribe("/data/*")
         .instance(this)
         .callback(MultiDifferentParent1);
@@ -553,10 +501,8 @@ void _test_Subscribe_tc_subscribeMultiDifferentParent(
     test_assert(corto_delete(s3) == 0);
     test_assert(corto_delete(data) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeMultiDifferentParentVirtual) */
 void MultiDifferentParentVirtual1(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
@@ -565,6 +511,7 @@ void MultiDifferentParentVirtual1(corto_subscriberEvent *e) {
     test_assertstr(e->data.parent, "/data");
     test_assertstr(e->data.type, "void");
 }
+
 void MultiDifferentParentVirtual2(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
@@ -573,6 +520,7 @@ void MultiDifferentParentVirtual2(corto_subscriberEvent *e) {
     test_assertstr(e->data.parent, "data");
     test_assertstr(e->data.type, "void");
 }
+
 void MultiDifferentParentVirtual3(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
@@ -581,11 +529,10 @@ void MultiDifferentParentVirtual3(corto_subscriberEvent *e) {
     test_assertstr(e->data.parent, ".");
     test_assertstr(e->data.type, "void");   
 }
-/* $end */
-void _test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
+
+void test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeMultiDifferentParentVirtual) */
     corto_subscriber s0 = corto_subscribe("/data/*")
         .instance(this)
         .callback(MultiDifferentParentVirtual1);
@@ -614,20 +561,17 @@ void _test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
     test_assert(corto_delete(s2) == 0);
     test_assert(corto_delete(s3) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeNestedIdFromRoot) */
 void tc_subscribeNestedIdFromRootOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeNestedIdFromRoot(
+
+void test_Subscribe_tc_subscribeNestedIdFromRoot(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeNestedIdFromRoot) */
     corto_subscriber s = corto_subscribe("A/XYZ").from("/")
       .instance(this)
       .callback(tc_subscribeNestedIdFromRootOnUpdate);
@@ -638,44 +582,34 @@ void _test_Subscribe_tc_subscribeNestedIdFromRoot(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
 void tc_subscribeNestedScopeFromRootOnUpdate(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
 }
-/* $end */
-void _test_Subscribe_tc_subscribeNestedScopeFromRoot(
+
+void test_Subscribe_tc_subscribeNestedScopeFromRoot(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeNestedScopeFromRoot) */
     corto_subscriber s = corto_subscribe("A/*").from("/")
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
-
     test_assert(corto_publish(CORTO_ON_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
-
     test_assert(this->triggered == TRUE);
-
     test_assert(corto_delete(s) == 0);
-
-/* $end */
 }
 
-/* $header(test/Subscribe/tc_subscribeOwnerSet) */
 void tc_subscribeOwnerSet(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     corto_ptr_setref(&this->owner, e->data.owner);
 }
-/* $end */
-void _test_Subscribe_tc_subscribeOwnerSet(
+
+void test_Subscribe_tc_subscribeOwnerSet(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribeOwnerSet) */
     corto_object owner = corto_voidCreate();
     corto_object prevOwner = corto_setOwner(owner);
     corto_object a = corto_createChild(NULL, "a", corto_int32_o);
@@ -702,16 +636,16 @@ void _test_Subscribe_tc_subscribeOwnerSet(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribePartialMatchingParent(
+void test_Subscribe_tc_subscribePartialMatchingParent(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribePartialMatchingParent) */
     corto_subscriber s = corto_subscribe("/").from("/foo")
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
+
+    test_assert(this->triggered == FALSE);
 
     test_assert(corto_publish(CORTO_ON_UPDATE, "/foobar", "void", NULL, 0) == 0);
 
@@ -719,13 +653,11 @@ void _test_Subscribe_tc_subscribePartialMatchingParent(
 
     test_assert(corto_delete(s) == 0);
 
-/* $end */
 }
 
-void _test_Subscribe_tc_subscribePartialMatchingParentObject(
+void test_Subscribe_tc_subscribePartialMatchingParentObject(
     test_Subscribe this)
 {
-/* $begin(test/Subscribe/tc_subscribePartialMatchingParentObject) */
     corto_object foobar = corto_createChild(root_o, "foobar", corto_void_o);
     test_assert(foobar != NULL);
 
@@ -733,10 +665,12 @@ void _test_Subscribe_tc_subscribePartialMatchingParentObject(
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
 
+    test_assert(this->triggered == FALSE);
+
     test_assert(corto_update(foobar) == 0);
 
     test_assert(this->triggered == FALSE);
 
     test_assert(corto_delete(s) == 0);
-/* $end */
 }
+

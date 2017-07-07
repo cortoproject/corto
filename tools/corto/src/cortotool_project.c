@@ -172,7 +172,9 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
     }
     file = fopen(filename, "w");
     if (file) {
-        fprintf(file, "/* $begin(main) */\n");
+        fprintf(file, "#include <include/test.h>\n");
+        fprintf(file, "\n");
+        fprintf(file, "int testMain(int argc, char *argv[]) {\n");
         fprintf(file, "    int result = 0;\n");
         fprintf(file, "    test_Runner runner = test_RunnerCreate(\"%s\", argv[0], (argc > 1) ? argv[1] : NULL);\n", name);
         fprintf(file, "    if (!runner) return -1;\n");
@@ -181,7 +183,7 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
         fprintf(file, "    }\n");
         fprintf(file, "    corto_delete(runner);\n");
         fprintf(file, "    return result;\n");
-        fprintf(file, "/* $end */\n");
+        fprintf(file, "}\n");
         fclose(file);
     } else {
         corto_error("couldn't create 'test/%s' (check permissions)", filename);
@@ -190,8 +192,8 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
 
     file = fopen("test.cx", "w");
     if (file) {
-        fprintf(file, "#package ::test\n\n");
-        fprintf(file, "test/Suite MySuite::\n");
+        fprintf(file, "in package test\n\n");
+        fprintf(file, "test/Suite MySuite:/\n");
         fprintf(file, "    void testSomething()\n\n");
         fclose(file);
     } else {
@@ -217,7 +219,9 @@ static corto_int16 cortotool_createTest(corto_string name, corto_bool isPackage,
 
     /* Timestamps of the files are likely too close to trigger a build, so explicitly
      * do a rebuild of the test project */
-    cortotool_rebuild(2, (char*[]){"rebuild", "--silent", NULL});
+    if (cortotool_rebuild(2, (char*[]){"rebuild", "--silent", NULL})) {
+        goto error;
+    }
 
     if (corto_chdir("..")) {
         corto_error("failed to change directory to parent");
@@ -389,7 +393,7 @@ static corto_int16 cortotool_app (
     file = fopen(buff, "w");
     if (file) {
         if (!nocorto) {
-            fprintf(file, "#include \"%s.h\"\n\n", name);
+            fprintf(file, "#include \"include/%s.h\"\n\n", name);
         }
         fprintf(file, "int %s%s(int argc, char *argv[]) {\n\n", nocorto ? "" : name, nocorto ? "main" : "Main");
         if (!nocorto) {
@@ -503,7 +507,7 @@ static corto_int16 cortotool_package(
     if (!nodef && !nocorto) {
         file = fopen(cxfile, "w");
         if (file) {
-            fprintf(file, "#package /%s\n\n", include);
+            fprintf(file, "in package /%s\n\n", include);
             fclose(file);
         } else {
             corto_error(
@@ -603,7 +607,7 @@ static corto_int16 cortotool_package(
             if (file) {
                 fprintf(file, "\n");
                 if (local) {
-                    fprintf(file, "#include \"%s.h\"\n", name);
+                    fprintf(file, "#include \"include/%s.h\"\n", name);
                 } else {
                     fprintf(file, "#include \"%s/%s.h\"\n", include, name);
                 }
@@ -632,7 +636,7 @@ static corto_int16 cortotool_package(
             if (file) {
                 fprintf(file, "\n");
                 if (local) {
-                    fprintf(file, "#include \"%s.h\"\n", name);
+                    fprintf(file, "#include \"include/%s.h\"\n", name);
                 } else {
                     fprintf(file, "#include \"%s/%s.h\"\n", include, name);
                 }

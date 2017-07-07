@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SelectSink.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SelectSink_setup(
+void test_SelectSink_setup(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/setup) */
 
     /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
@@ -20,103 +13,83 @@ void _test_SelectSink_setup(
     /* Ensure all objects are created with persistency enabled */
     corto_setAttr(CORTO_ATTR_PERSISTENT);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderCortoScope(
+void test_SelectSink_tc_selectLoaderCortoScope(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderCortoScope) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderCortoSingle(
+void test_SelectSink_tc_selectLoaderCortoSingle(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderCortoSingle) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderCortoTree(
+void test_SelectSink_tc_selectLoaderCortoTree(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderCortoTree) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderNestedScope(
+void test_SelectSink_tc_selectLoaderNestedScope(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderNestedScope) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderNestedSingle(
+void test_SelectSink_tc_selectLoaderNestedSingle(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderNestedSingle) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderNestedTree(
+void test_SelectSink_tc_selectLoaderNestedTree(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderNestedTree) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderRootScope(
+void test_SelectSink_tc_selectLoaderRootScope(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderRootScope) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderRootSingle(
+void test_SelectSink_tc_selectLoaderRootSingle(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderRootSingle) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectLoaderRootTree(
+void test_SelectSink_tc_selectLoaderRootTree(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectLoaderRootTree) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectMixedScope(
+void test_SelectSink_tc_selectMixedScope(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectMixedScope) */
     corto_iter iter;
     corto_result *result;
 
@@ -164,13 +137,11 @@ void _test_SelectSink_tc_selectMixedScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectMixedScopeNested1(
+void test_SelectSink_tc_selectMixedScopeNested1(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectMixedScopeNested1) */
     corto_iter iter;
     corto_result *result;
 
@@ -218,13 +189,11 @@ void _test_SelectSink_tc_selectMixedScopeNested1(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectMixedScopeNested2(
+void test_SelectSink_tc_selectMixedScopeNested2(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectMixedScopeNested2) */
     corto_iter iter;
     corto_result *result;
 
@@ -273,13 +242,11 @@ void _test_SelectSink_tc_selectMixedScopeNested2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectMountInResult(
+void test_SelectSink_tc_selectMountInResult(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectMountInResult) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
@@ -300,13 +267,11 @@ void _test_SelectSink_tc_selectMountInResult(
     test_assert(!corto_iter_hasNext(&iter));
     corto_release(mount);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectScope(
+void test_SelectSink_tc_selectScope(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectScope) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
@@ -339,13 +304,11 @@ void _test_SelectSink_tc_selectScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectScopeWithType(
+void test_SelectSink_tc_selectScopeWithType(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectScopeWithType) */
     corto_result r1 = {
         .id = "root",
         .parent = ".",
@@ -377,13 +340,11 @@ void _test_SelectSink_tc_selectScopeWithType(
     test_assert(corto_delete(m1) == 0);
     test_assert(corto_delete(m2) == 0);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
+void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectScopeWithTypeFromTreeMount) */
     corto_result r1 = {
         .id = "root",
         .parent = ".",
@@ -415,13 +376,11 @@ void _test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
     test_assert(corto_delete(m1) == 0);
     test_assert(corto_delete(m2) == 0);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectSingle(
+void test_SelectSink_tc_selectSingle(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectSingle) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
@@ -438,13 +397,11 @@ void _test_SelectSink_tc_selectSingle(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectSingleTypeFilter(
+void test_SelectSink_tc_selectSingleTypeFilter(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectSingleTypeFilter) */
     corto_iter iter;
     corto_result *result;
 
@@ -461,13 +418,11 @@ void _test_SelectSink_tc_selectSingleTypeFilter(
     test_assertstr(result->parent, "/corto");
     test_assertstr(result->type, "/corto/core/package");
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectSingleVirtualNested1(
+void test_SelectSink_tc_selectSingleVirtualNested1(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectSingleVirtualNested1) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("x/a").from("/mount").iter( &iter );
@@ -490,13 +445,11 @@ void _test_SelectSink_tc_selectSingleVirtualNested1(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectSingleVirtualNested2(
+void test_SelectSink_tc_selectSingleVirtualNested2(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectSingleVirtualNested2) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("x/a/k").from("/mount").iter( &iter );
@@ -513,13 +466,11 @@ void _test_SelectSink_tc_selectSingleVirtualNested2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectSingleWithType(
+void test_SelectSink_tc_selectSingleWithType(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectSingleWithType) */
     corto_result r1 = {
         .id = "a",
         .parent = ".",
@@ -545,13 +496,11 @@ void _test_SelectSink_tc_selectSingleWithType(
 
     test_assert(corto_delete(m1) == 0);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
+void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectSingleWithTypeFromTreeMount) */
     corto_result r1 = {
         .id = "a",
         .parent = ".",
@@ -577,13 +526,11 @@ void _test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
 
     test_assert(corto_delete(m1) == 0);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectTreeWithType(
+void test_SelectSink_tc_selectTreeWithType(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectTreeWithType) */
     corto_result r1 = {
         .id = "root",
         .parent = ".",
@@ -632,13 +579,11 @@ void _test_SelectSink_tc_selectTreeWithType(
     test_assert(corto_delete(m3) == 0);
     test_assert(corto_delete(m4) == 0);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
+void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectTreeWithTypeFromTreeMount) */
     corto_result r1 = {
         .id = "root",
         .parent = ".",
@@ -687,13 +632,11 @@ void _test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
     test_assert(corto_delete(m3) == 0);
     test_assert(corto_delete(m4) == 0);
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectVirtualScopeNested1(
+void test_SelectSink_tc_selectVirtualScopeNested1(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectVirtualScopeNested1) */
     corto_iter iter;
     corto_result *result;
 
@@ -732,13 +675,11 @@ void _test_SelectSink_tc_selectVirtualScopeNested1(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectVirtualScopeNested2(
+void test_SelectSink_tc_selectVirtualScopeNested2(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectVirtualScopeNested2) */
     corto_iter iter;
     corto_result *result;
 
@@ -778,13 +719,11 @@ void _test_SelectSink_tc_selectVirtualScopeNested2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
+void test_SelectSink_tc_selectVirtualScopeVirtualNested1(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested1) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
@@ -817,13 +756,11 @@ void _test_SelectSink_tc_selectVirtualScopeVirtualNested1(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
+void test_SelectSink_tc_selectVirtualScopeVirtualNested2(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectVirtualScopeVirtualNested2) */
     corto_iter iter;
     corto_result *result;
     corto_int16 ret = corto_select("x/a/k/*").from("/mount").iter( &iter );
@@ -856,13 +793,11 @@ void _test_SelectSink_tc_selectVirtualScopeVirtualNested2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectVirtualSingleNested1(
+void test_SelectSink_tc_selectVirtualSingleNested1(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectVirtualSingleNested1) */
     corto_iter iter;
     corto_result *result;
 
@@ -884,13 +819,11 @@ void _test_SelectSink_tc_selectVirtualSingleNested1(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_tc_selectVirtualSingleNested2(
+void test_SelectSink_tc_selectVirtualSingleNested2(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/tc_selectVirtualSingleNested2) */
     corto_iter iter;
     corto_result *result;
 
@@ -912,15 +845,13 @@ void _test_SelectSink_tc_selectVirtualSingleNested2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSink_teardown(
+void test_SelectSink_teardown(
     test_SelectSink this)
 {
-/* $begin(test/SelectSink/teardown) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
+

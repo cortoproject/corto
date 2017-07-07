@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * route.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 static corto_routerimpl corto_route_findRouterImpl(corto_route this) {
     corto_interface base = corto_interface(corto_parentof(this));
     do {
@@ -18,12 +12,10 @@ static corto_routerimpl corto_route_findRouterImpl(corto_route this) {
     } while ((base = base->base));
     return corto_routerimpl(base);
 }
-/* $end */
 
-int16_t _corto_route_construct(
+int16_t corto_route_construct(
     corto_route this)
 {
-/* $begin(corto/core/route/construct) */
     corto_id pattern;
     char *ptr = pattern;
     corto_int32 count = 0, elementCount = 0;
@@ -111,24 +103,22 @@ int16_t _corto_route_construct(
     corto_ptr_setref(&corto_function(this)->returnType, routerBase->returnType);
     corto_function(this)->parameters.length = count;
 
-    return corto_method_construct(this);
+    return safe_corto_method_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_route_init(
+int16_t corto_route_init(
     corto_route this)
 {
-/* $begin(corto/core/route/init) */
     if (!corto_route_findRouterImpl(this)) {
         corto_seterr("parent of '%s' is not an instance of 'routerimpl'",
             corto_fullpath(NULL, this));
         goto error;
     }
 
-    return corto_method_init(this);
+    return safe_corto_method_init(this);
 error:
     return -1;
-/* $end */
 }
+

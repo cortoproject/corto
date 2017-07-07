@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SelectSinkNoOnRequest.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SelectSinkNoOnRequest_setup(
+void test_SelectSinkNoOnRequest_setup(
     test_SelectSinkNoOnRequest this)
 {
-/* $begin(test/SelectSinkNoOnRequest/setup) */
     /* Register sink mount */
     corto_int32CreateChild_auto(root_o, mount, 0);
     corto_int32CreateChild_auto(mount, x, 10);
@@ -23,13 +16,11 @@ void _test_SelectSinkNoOnRequest_setup(
     corto_setAttr(CORTO_ATTR_PERSISTENT);
 
 
-/* $end */
 }
 
-void _test_SelectSinkNoOnRequest_tc_selectScope(
+void test_SelectSinkNoOnRequest_tc_selectScope(
     test_SelectSinkNoOnRequest this)
 {
-/* $begin(test/SelectSinkNoOnRequest/tc_selectScope) */
     corto_result *result;
     corto_iter iter;
     corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
@@ -54,13 +45,11 @@ void _test_SelectSinkNoOnRequest_tc_selectScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSinkNoOnRequest_tc_selectSingle(
+void test_SelectSinkNoOnRequest_tc_selectSingle(
     test_SelectSinkNoOnRequest this)
 {
-/* $begin(test/SelectSinkNoOnRequest/tc_selectSingle) */
     corto_result *result;
     corto_iter iter;
     corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
@@ -77,15 +66,13 @@ void _test_SelectSinkNoOnRequest_tc_selectSingle(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectSinkNoOnRequest_teardown(
+void test_SelectSinkNoOnRequest_teardown(
     test_SelectSinkNoOnRequest this)
 {
-/* $begin(test/SelectSinkNoOnRequest/teardown) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
+

@@ -1,23 +1,15 @@
-/* $CORTO_GENERATED
- *
- * metaprocedure.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 corto_int16 corto_type_bindMetaprocedure(
     corto_type this,
     corto_metaprocedure procedure);
-/* $end */
 
-int16_t _corto_metaprocedure_construct(
+int16_t corto_metaprocedure_construct(
     corto_metaprocedure this)
 {
-/* $begin(corto/lang/metaprocedure/construct) */
     corto_object parent;
 
     parent = corto_parentof(this);
@@ -34,5 +26,5 @@ int16_t _corto_metaprocedure_construct(
     return corto_function_construct(corto_function(this));
 error:
     return -1;
-/* $end */
 }
+

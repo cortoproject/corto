@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * primitive.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width) {
     corto_uint8 id = 0;
 
@@ -43,13 +37,11 @@ corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width wid
     }
     return id;
 }
-/* $end */
 
-bool _corto_primitive_castable_v(
+bool corto_primitive_castable_v(
     corto_primitive this,
     corto_type type)
 {
-/* $begin(corto/lang/primitive/castable) */
     corto_bool result;
 
     result = FALSE;
@@ -168,14 +160,12 @@ bool _corto_primitive_castable_v(
     }
 
     return result;
-/* $end */
 }
 
-bool _corto_primitive_compatible_v(
+bool corto_primitive_compatible_v(
     corto_primitive this,
     corto_type type)
 {
-/* $begin(corto/lang/primitive/compatible) */
     corto_bool result;
 
     result = FALSE;
@@ -234,13 +224,11 @@ bool _corto_primitive_compatible_v(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_primitive_construct(
+int16_t corto_primitive_construct(
     corto_primitive this)
 {
-/* $begin(corto/lang/primitive/construct) */
 
     switch(this->width) {
     case CORTO_WIDTH_8:
@@ -269,22 +257,18 @@ int16_t _corto_primitive_construct(
     this->convertId = corto__primitive_convertId(this->kind, this->width);
 
     return corto_type_construct(corto_type(this));
-/* $end */
 }
 
-int16_t _corto_primitive_init(
+int16_t corto_primitive_init(
     corto_primitive this)
 {
-/* $begin(corto/lang/primitive/init) */
     corto_type(this)->kind = CORTO_PRIMITIVE;
     return corto_type_init((corto_type)this);
-/* $end */
 }
 
-bool _corto_primitive_isInteger(
+bool corto_primitive_isInteger(
     corto_primitive this)
 {
-/* $begin(corto/lang/primitive/isInteger) */
 
     switch(this->kind) {
     case CORTO_BINARY:
@@ -296,13 +280,11 @@ bool _corto_primitive_isInteger(
         return FALSE;
     }
 
-/* $end */
 }
 
-bool _corto_primitive_isNumber(
+bool corto_primitive_isNumber(
     corto_primitive this)
 {
-/* $begin(corto/lang/primitive/isNumber) */
 
     switch(this->kind) {
     case CORTO_BINARY:
@@ -315,5 +297,5 @@ bool _corto_primitive_isNumber(
         return FALSE;
     }
 
-/* $end */
 }
+

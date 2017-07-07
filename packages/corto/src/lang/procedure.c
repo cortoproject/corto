@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * procedure.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_procedure_construct(
+int16_t corto_procedure_construct(
     corto_procedure this)
 {
-/* $begin(corto/lang/procedure/construct) */
 
     if (!this->hasThis) {
         if (corto_interface(this)->base && 
@@ -21,14 +14,12 @@ int16_t _corto_procedure_construct(
         }
     }
 
-    return corto_class_construct(this);
-/* $end */
+    return safe_corto_class_construct(this);
 }
 
-int16_t _corto_procedure_init(
+int16_t corto_procedure_init(
     corto_procedure this)
 {
-/* $begin(corto/lang/procedure/init) */
 
     if (corto_interface_init(corto_interface(this))) {
         goto error;
@@ -40,5 +31,5 @@ int16_t _corto_procedure_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
+

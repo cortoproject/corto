@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * class.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_interface.h"
 
 /* Check interfaces */
@@ -54,18 +48,16 @@ static corto_bool corto_class_checkInterfaceCompatibility(
 
     return compatible;
 }
-/* $end */
 
-int16_t _corto_class_construct(
+int16_t corto_class_construct(
     corto_class this)
 {
-/* $begin(corto/lang/class/construct) */
     corto_int16 result;
     corto_uint32 i;
 
     /* This will construct methods of potential base-class which is necessary before validating
      * whether this class correctly (fully) implements its interface. */
-    result = corto_struct_construct(this);
+    result = safe_corto_struct_construct(this);
 
     /* Create interface vector */
     if (!result) {
@@ -89,13 +81,11 @@ int16_t _corto_class_construct(
     }
 
     return result;
-/* $end */
 }
 
-void _corto_class_destruct(
+void corto_class_destruct(
     corto_class this)
 {
-/* $begin(corto/lang/class/destruct) */
     corto_uint32 i,j;
     corto_interfaceVector *v;
 
@@ -113,13 +103,11 @@ void _corto_class_destruct(
 
     /* Call type::destruct */
     corto_interface_destruct(corto_interface(this));
-/* $end */
 }
 
-int16_t _corto_class_init(
+int16_t corto_class_init(
     corto_class this)
 {
-/* $begin(corto/lang/class/init) */
     if (_corto_struct_init((corto_struct)this)) {
         goto error;
     }
@@ -130,14 +118,12 @@ int16_t _corto_class_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-bool _corto_class_instanceof(
+bool corto_class_instanceof(
     corto_class this,
     corto_object object)
 {
-/* $begin(corto/lang/class/instanceof) */
     corto_type t;
     corto_bool result;
 
@@ -157,15 +143,13 @@ bool _corto_class_instanceof(
     }
 
     return result;
-/* $end */
 }
 
-corto_method _corto_class_resolveInterfaceMethod(
+corto_method corto_class_resolveInterfaceMethod(
     corto_class this,
     corto_interface interface,
     uint32_t method)
 {
-/* $begin(corto/lang/class/resolveInterfaceMethod) */
     corto_uint32 i;
     corto_interfaceVector *v;
 
@@ -190,5 +174,5 @@ corto_method _corto_class_resolveInterfaceMethod(
     return corto_method(v->vector.buffer[method-1]);
 error:
     return NULL;
-/* $end */
 }
+

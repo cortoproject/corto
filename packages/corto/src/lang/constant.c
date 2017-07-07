@@ -1,22 +1,14 @@
-/* $CORTO_GENERATED
- *
- * constant.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_enum.h"
 #include "_bitmask.h"
-/* $end */
 
-int16_t _corto_constant_init(
+int16_t corto_constant_init(
     int32_t* this)
 {
-/* $begin(corto/lang/constant/init) */
     corto_object parent;
     corto_type parentType;
 
@@ -43,5 +35,5 @@ int16_t _corto_constant_init(
 
     return 0;
 error:
-    return -1;/* $end */
-}
+    return -1;}
+

@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * ValueExpr.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_ValueExpr_tc_add(
+void test_ValueExpr_tc_add(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_add) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -30,13 +23,11 @@ void _test_ValueExpr_tc_add(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_and(
+void test_ValueExpr_tc_and(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_and) */
     corto_value left = corto_value_int(12);
     corto_value right = corto_value_int(9);
     corto_value out = corto_value_value(NULL, NULL);
@@ -55,13 +46,11 @@ void _test_ValueExpr_tc_and(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_condAnd(
+void test_ValueExpr_tc_condAnd(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_condAnd) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -108,13 +97,11 @@ void _test_ValueExpr_tc_condAnd(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_condNot(
+void test_ValueExpr_tc_condNot(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_condNot) */
     corto_value left = corto_value_bool(FALSE);
     corto_value out = corto_value_value(NULL, NULL);
 
@@ -132,13 +119,11 @@ void _test_ValueExpr_tc_condNot(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_condOr(
+void test_ValueExpr_tc_condOr(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_condOr) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -184,13 +169,11 @@ void _test_ValueExpr_tc_condOr(
     test_assertint(*ptr, FALSE);
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_div(
+void test_ValueExpr_tc_div(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_div) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -209,13 +192,11 @@ void _test_ValueExpr_tc_div(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAddFltInt(
+void test_ValueExpr_tc_exprAddFltInt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAddFltInt) */
     corto_value left = corto_value_float(10.5);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -234,13 +215,11 @@ void _test_ValueExpr_tc_exprAddFltInt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAddIntFlt(
+void test_ValueExpr_tc_exprAddIntFlt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAddIntFlt) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_float(20.5);
     corto_value out = corto_value_value(NULL, NULL);
@@ -259,13 +238,11 @@ void _test_ValueExpr_tc_exprAddIntFlt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAddIntStr(
+void test_ValueExpr_tc_exprAddIntStr(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAddIntStr) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_string("Hello");
     corto_value out = corto_value_value(NULL, NULL);
@@ -284,13 +261,11 @@ void _test_ValueExpr_tc_exprAddIntStr(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAddStrInt(
+void test_ValueExpr_tc_exprAddStrInt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAddStrInt) */
     corto_value left = corto_value_string("Hello");
     corto_value right = corto_value_int(10);
     corto_value out = corto_value_value(NULL, NULL);
@@ -309,13 +284,11 @@ void _test_ValueExpr_tc_exprAddStrInt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAddStrStr(
+void test_ValueExpr_tc_exprAddStrStr(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAddStrStr) */
     corto_value left = corto_value_string("Hello");
     corto_value right = corto_value_string("World");
     corto_value out = corto_value_value(NULL, NULL);
@@ -334,13 +307,11 @@ void _test_ValueExpr_tc_exprAddStrStr(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignBoolRef(
+void test_ValueExpr_tc_exprAssignBoolRef(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignBoolRef) */
     corto_bool leftValue = FALSE;
     corto_value left = corto_value_value(&leftValue, corto_bool_o);
     corto_value right = corto_value_value(corto_typeKind_o, corto_object_o);
@@ -365,13 +336,11 @@ void _test_ValueExpr_tc_exprAssignBoolRef(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignFltInt(
+void test_ValueExpr_tc_exprAssignFltInt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignFltInt) */
     corto_float64 leftValue = 0;
     corto_value left = corto_value_value(&leftValue, corto_float64_o);
     corto_value right = corto_value_int(10);
@@ -396,13 +365,11 @@ void _test_ValueExpr_tc_exprAssignFltInt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignIntFlt(
+void test_ValueExpr_tc_exprAssignIntFlt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignIntFlt) */
     corto_int64 leftValue = 0;
     corto_value left = corto_value_value(&leftValue, corto_int64_o);
     corto_value right = corto_value_float(10.5);
@@ -427,13 +394,11 @@ void _test_ValueExpr_tc_exprAssignIntFlt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignIntInt(
+void test_ValueExpr_tc_exprAssignIntInt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignIntInt) */
     corto_int64 leftValue = 0;
     corto_value left = corto_value_value(&leftValue, corto_int64_o);
     corto_value right = corto_value_int(10);
@@ -458,13 +423,11 @@ void _test_ValueExpr_tc_exprAssignIntInt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignIntStr(
+void test_ValueExpr_tc_exprAssignIntStr(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignIntStr) */
     corto_int64 leftValue = 0;
     corto_value left = corto_value_value(&leftValue, corto_int64_o);
     corto_value right = corto_value_string("10");
@@ -489,13 +452,11 @@ void _test_ValueExpr_tc_exprAssignIntStr(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignStrInt(
+void test_ValueExpr_tc_exprAssignStrInt(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignStrInt) */
     corto_string leftValue = NULL;
     corto_value left = corto_value_value(&leftValue, corto_string_o);
     corto_value right = corto_value_int(10);
@@ -520,13 +481,11 @@ void _test_ValueExpr_tc_exprAssignStrInt(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprAssignStrStr(
+void test_ValueExpr_tc_exprAssignStrStr(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprAssignStrStr) */
     corto_string leftValue = NULL;
     corto_value left = corto_value_value(&leftValue, corto_string_o);
     corto_value right = corto_value_string("Hello");
@@ -551,13 +510,11 @@ void _test_ValueExpr_tc_exprAssignStrStr(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemLiteralOut(
+void test_ValueExpr_tc_exprMemLiteralOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemLiteralOut) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_int(0);
@@ -576,13 +533,11 @@ void _test_ValueExpr_tc_exprMemLiteralOut(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemMemberInOut(
+void test_ValueExpr_tc_exprMemMemberInOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemMemberInOut) */
     test_Point p = {10, 20};
     corto_value pY, pValue = corto_value_value(&p, test_Point_o);
     test_assert(corto_value_memberExpr(&pValue, "y", &pY) == 0);
@@ -604,13 +559,11 @@ void _test_ValueExpr_tc_exprMemMemberInOut(
 
     corto_value_free(&pY);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemMemberOut(
+void test_ValueExpr_tc_exprMemMemberOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemMemberOut) */
     test_Point p = {10, 20};
     corto_value pX, pValue = corto_value_value(&p, test_Point_o);
     test_assert(corto_value_memberExpr(&pValue, "x", &pX) == 0);
@@ -633,13 +586,11 @@ void _test_ValueExpr_tc_exprMemMemberOut(
 
     corto_value_free(&pX);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemNullOut(
+void test_ValueExpr_tc_exprMemNullOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemNullOut) */
     corto_uint64 v = 10;
     corto_value left = corto_value_value(&v, corto_int64_o);
     corto_value right = corto_value_int(20);
@@ -659,13 +610,11 @@ void _test_ValueExpr_tc_exprMemNullOut(
 
     corto_value_free(&right);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemNullOutAssignMember(
+void test_ValueExpr_tc_exprMemNullOutAssignMember(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemNullOutAssignMember) */
     test_Point p = {10, 20};
     corto_value pX, pValue = corto_value_value(&p, test_Point_o);
     test_assert(corto_value_memberExpr(&pValue, "x", &pX) == 0);
@@ -687,13 +636,11 @@ void _test_ValueExpr_tc_exprMemNullOutAssignMember(
 
     corto_value_free(&pX);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemPtrOut(
+void test_ValueExpr_tc_exprMemPtrOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemPtrOut) */
     corto_uint64 v = 10;
     corto_value out = corto_value_value(&v, corto_int64_o);
     corto_value left = corto_value_int(10);
@@ -714,13 +661,11 @@ void _test_ValueExpr_tc_exprMemPtrOut(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemSameInOut(
+void test_ValueExpr_tc_exprMemSameInOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemSameInOut) */
     corto_uint64 val = 10;
     corto_value out = corto_value_value(&val, corto_int64_o);
     corto_value v = corto_value_int(20);
@@ -740,13 +685,11 @@ void _test_ValueExpr_tc_exprMemSameInOut(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_exprMemValueOut(
+void test_ValueExpr_tc_exprMemValueOut(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_exprMemValueOut) */
     corto_value out = corto_value_empty();
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
@@ -765,13 +708,11 @@ void _test_ValueExpr_tc_exprMemValueOut(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_member(
+void test_ValueExpr_tc_member(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_member) */
     test_Point *p = corto_create(test_Point_o);
     test_assert(p != NULL);
 
@@ -797,13 +738,11 @@ void _test_ValueExpr_tc_member(
     test_assert(ptr != NULL);
     test_assertint(*(corto_int32*)ptr, 20);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_memberNested(
+void test_ValueExpr_tc_memberNested(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_memberNested) */
 
     test_Line *l = corto_create(test_Line_o);
     test_assert(l != NULL);
@@ -848,13 +787,11 @@ void _test_ValueExpr_tc_memberNested(
     test_assert(ptr != NULL);
     test_assertint(*(corto_int32*)ptr, 40);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_mod(
+void test_ValueExpr_tc_mod(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_mod) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(3);
     corto_value out = corto_value_value(NULL, NULL);
@@ -873,13 +810,11 @@ void _test_ValueExpr_tc_mod(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_mul(
+void test_ValueExpr_tc_mul(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_mul) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -898,13 +833,11 @@ void _test_ValueExpr_tc_mul(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_or(
+void test_ValueExpr_tc_or(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_or) */
     corto_value left = corto_value_int(12);
     corto_value right = corto_value_int(9);
     corto_value out = corto_value_value(NULL, NULL);
@@ -923,13 +856,11 @@ void _test_ValueExpr_tc_or(
 
     corto_value_free(&out);
 
-/* $end */
 }
 
-void _test_ValueExpr_tc_sub(
+void test_ValueExpr_tc_sub(
     test_ValueExpr this)
 {
-/* $begin(test/ValueExpr/tc_sub) */
     corto_value left = corto_value_int(10);
     corto_value right = corto_value_int(20);
     corto_value out = corto_value_value(NULL, NULL);
@@ -948,5 +879,5 @@ void _test_ValueExpr_tc_sub(
 
     corto_value_free(&out);
 
-/* $end */
 }
+

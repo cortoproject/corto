@@ -1,27 +1,18 @@
-/* $CORTO_GENERATED
- *
- * SelectHistory.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SelectHistory_setup(
+void test_SelectHistory_setup(
     test_SelectHistory this)
 {
-/* $begin(test/SelectHistory/setup) */
 
     test_HistoryMountCreateChild(root_o, "A", NULL);
 
-/* $end */
 }
 
-void _test_SelectHistory_tc_selectAll(
+void test_SelectHistory_tc_selectAll(
     test_SelectHistory this)
 {
-/* $begin(test/SelectHistory/tc_selectAll) */
     corto_iter it;
     corto_result *r;
     corto_sample *s;
@@ -116,13 +107,11 @@ void _test_SelectHistory_tc_selectAll(
     
     test_assert(!corto_iter_hasNext(&it));
 
-/* $end */
 }
 
-void _test_SelectHistory_tc_selectJson(
+void test_SelectHistory_tc_selectJson(
     test_SelectHistory this)
 {
-/* $begin(test/SelectHistory/tc_selectJson) */
     corto_iter it;
     corto_result *r;
     corto_sample *s;
@@ -200,13 +189,11 @@ void _test_SelectHistory_tc_selectJson(
 
     test_assert(!corto_iter_hasNext(&it));
 
-/* $end */
 }
 
-void _test_SelectHistory_tc_selectNowToDepth(
+void test_SelectHistory_tc_selectNowToDepth(
     test_SelectHistory this)
 {
-/* $begin(test/SelectHistory/tc_selectNowToDepth) */
     corto_iter it;
     corto_result *r;
     corto_sample *s;
@@ -284,13 +271,11 @@ void _test_SelectHistory_tc_selectNowToDepth(
 
     test_assert(!corto_iter_hasNext(&it));
 
-/* $end */
 }
 
-void _test_SelectHistory_tc_selectSampleToDepth(
+void test_SelectHistory_tc_selectSampleToDepth(
     test_SelectHistory this)
 {
-/* $begin(test/SelectHistory/tc_selectSampleToDepth) */
     corto_iter it;
     corto_result *r;
     corto_sample *s;
@@ -368,13 +353,11 @@ void _test_SelectHistory_tc_selectSampleToDepth(
 
     test_assert(!corto_iter_hasNext(&it));
 
-/* $end */
 }
 
-void _test_SelectHistory_tc_selectSampleToSample(
+void test_SelectHistory_tc_selectSampleToSample(
     test_SelectHistory this)
 {
-/* $begin(test/SelectHistory/tc_selectSampleToSample) */
     corto_iter it;
     corto_result *r;
     corto_sample *s;
@@ -454,5 +437,5 @@ void _test_SelectHistory_tc_selectSampleToSample(
 
     test_assert(!corto_iter_hasNext(&it));
 
-/* $end */
 }
+

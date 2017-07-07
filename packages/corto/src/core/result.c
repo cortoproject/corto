@@ -1,22 +1,14 @@
-/* $CORTO_GENERATED
- *
- * result.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
-#include "_object.h"
-/* $end */
 
-corto_string _corto_result_contentof(
+#include "_object.h"
+
+corto_string corto_result_contentof(
     corto_result* this,
     corto_string contentType)
 {
-/* $begin(corto/core/result/contentof) */
     corto_string result = NULL;
 
     corto_contentType type = corto_loadContentType(contentType);
@@ -31,15 +23,13 @@ corto_string _corto_result_contentof(
     return 0;
 error:
     return NULL;
-/* $end */
 }
 
-int16_t _corto_result_fromcontent(
+int16_t corto_result_fromcontent(
     corto_result* this,
     corto_string contentType,
     corto_string content)
 {
-/* $begin(corto/core/result/fromcontent) */
     corto_contentType type = corto_loadContentType(contentType);
     if (!type) {
         goto error;
@@ -52,15 +42,13 @@ int16_t _corto_result_fromcontent(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-corto_string _corto_result_getText(
+corto_string corto_result_getText(
     corto_result* this)
 {
-/* $begin(corto/core/result/getText) */
 
     return (corto_string)this->value;
 
-/* $end */
 }
+

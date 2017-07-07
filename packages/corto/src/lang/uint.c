@@ -1,18 +1,11 @@
-/* $CORTO_GENERATED
- *
- * uint.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_uint_init(
+int16_t corto_uint_init(
     corto_uint this)
 {
-/* $begin(corto/lang/uint/init) */
     corto_primitive(this)->kind = CORTO_UINTEGER;
     return corto_primitive_init((corto_primitive)this);
-/* $end */
 }
+

@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Container.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Container_tc_anonymousContainer(
+void test_Container_tc_anonymousContainer(
     test_Container this)
 {
-/* $begin(test/Container/tc_anonymousContainer) */
     /* Containers are always created as named objects. If using corto_declare
      * an anonymous "named" object is created. */
     test_ContainerNestedLeaf o = corto_declare(test_ContainerNestedLeaf_o);
@@ -35,13 +28,11 @@ void _test_Container_tc_anonymousContainer(
     test_assert(corto_release(leaf) == 1);
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_complexContainer(
+void test_Container_tc_complexContainer(
     test_Container this)
 {
-/* $begin(test/Container/tc_complexContainer) */
     corto_object o = corto_declareChild(root_o, "o", test_Car_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Car_o));
@@ -86,13 +77,11 @@ void _test_Container_tc_complexContainer(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_containerEmpty(
+void test_Container_tc_containerEmpty(
     test_Container this)
 {
-/* $begin(test/Container/tc_containerEmpty) */
     corto_object o = corto_declareChild(root_o, "o", test_ContainerEmpty_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_ContainerEmpty_o));
@@ -106,13 +95,11 @@ void _test_Container_tc_containerEmpty(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_containerNestedContainer(
+void test_Container_tc_containerNestedContainer(
     test_Container this)
 {
-/* $begin(test/Container/tc_containerNestedContainer) */
     corto_object o = corto_declareChild(root_o, "o", test_ContainerNestedContainer_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_ContainerNestedContainer_o));
@@ -142,13 +129,11 @@ void _test_Container_tc_containerNestedContainer(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_containerNestedLeaf(
+void test_Container_tc_containerNestedLeaf(
     test_Container this)
 {
-/* $begin(test/Container/tc_containerNestedLeaf) */
     corto_object o = corto_declareChild(root_o, "o", test_ContainerNestedLeaf_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_ContainerNestedLeaf_o));
@@ -178,13 +163,11 @@ void _test_Container_tc_containerNestedLeaf(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_containerNestedTable(
+void test_Container_tc_containerNestedTable(
     test_Container this)
 {
-/* $begin(test/Container/tc_containerNestedTable) */
     corto_object o = corto_declareChild(root_o, "o", test_ContainerNestedTable_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_ContainerNestedTable_o));
@@ -211,13 +194,11 @@ void _test_Container_tc_containerNestedTable(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_leafRoot(
+void test_Container_tc_leafRoot(
     test_Container this)
 {
-/* $begin(test/Container/tc_leafRoot) */
     corto_object o = corto_declareChild(root_o, "o", test_LeafRoot_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_LeafRoot_o));
@@ -231,13 +212,11 @@ void _test_Container_tc_leafRoot(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableMultiKey(
+void test_Container_tc_tableMultiKey(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableMultiKey) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -255,13 +234,11 @@ void _test_Container_tc_tableMultiKey(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableMultiMixedKey(
+void test_Container_tc_tableMultiMixedKey(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableMultiMixedKey) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -279,13 +256,11 @@ void _test_Container_tc_tableMultiMixedKey(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableMultiStringKey(
+void test_Container_tc_tableMultiStringKey(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableMultiStringKey) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -302,13 +277,11 @@ void _test_Container_tc_tableMultiStringKey(
     test_assertint(corto_scopeSize(record), 0);
 
     test_assert(corto_delete(o) == 0);
-/* $end */
 }
 
-void _test_Container_tc_tableNested(
+void test_Container_tc_tableNested(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableNested) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -334,13 +307,11 @@ void _test_Container_tc_tableNested(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableNestedContainer(
+void test_Container_tc_tableNestedContainer(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableNestedContainer) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -366,13 +337,11 @@ void _test_Container_tc_tableNestedContainer(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableNestedLeafs(
+void test_Container_tc_tableNestedLeafs(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableNestedLeafs) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -405,13 +374,11 @@ void _test_Container_tc_tableNestedLeafs(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableSingleKey(
+void test_Container_tc_tableSingleKey(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableSingleKey) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -428,13 +395,11 @@ void _test_Container_tc_tableSingleKey(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Container_tc_tableStringKey(
+void test_Container_tc_tableStringKey(
     test_Container this)
 {
-/* $begin(test/Container/tc_tableStringKey) */
     corto_tableinstance o = corto_declareChild(root_o, "o", corto_tableinstance_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(corto_tableinstance_o));
@@ -451,5 +416,5 @@ void _test_Container_tc_tableStringKey(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
+

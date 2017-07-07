@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * MountIterCount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header(test/MountIterCount/onQuery) */
+
 int test_MounterIterCount_hasNext(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->hasNextCount ++;
@@ -26,12 +20,11 @@ void test_MounterIterCount_release(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->releaseCount ++;
 }
-/* $end */
-corto_resultIter _test_MountIterCount_onQuery(
+
+corto_resultIter test_MountIterCount_onQuery(
     test_MountIterCount this,
     corto_query *query)
 {
-/* $begin(test/MountIterCount/onQuery) */
     corto_iter it = CORTO_ITER_EMPTY;
 
     if (!strcmp(query->select, "*")) {
@@ -46,5 +39,5 @@ corto_resultIter _test_MountIterCount_onQuery(
     }
 
     return it;
-/* $end */
 }
+

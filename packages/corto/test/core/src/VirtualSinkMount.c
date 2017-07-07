@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * VirtualSinkMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_VirtualSinkMount_construct(
+int16_t test_VirtualSinkMount_construct(
     test_VirtualSinkMount this)
 {
-/* $begin(test/VirtualSinkMount/construct) */
     char *type = "int32";
 
     corto_ptr_setstr(&corto_subscriber(this)->query.select, "//");
@@ -143,10 +136,9 @@ int16_t _test_VirtualSinkMount_construct(
     );
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-/* $header(test/VirtualSinkMount/onQuery) */
+
 /* Custom release function */
 static void test_VirtualSinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -154,12 +146,11 @@ static void test_VirtualSinkMount_iterRelease(corto_iter *iter) {
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
-/* $end */
-corto_resultIter _test_VirtualSinkMount_onQuery(
+
+corto_resultIter test_VirtualSinkMount_onQuery(
     test_VirtualSinkMount this,
     corto_query *query)
 {
-/* $begin(test/VirtualSinkMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
@@ -190,5 +181,5 @@ corto_resultIter _test_VirtualSinkMount_onQuery(
 
     /* Return persistent iterator to request */
     return result;
-/* $end */
 }
+

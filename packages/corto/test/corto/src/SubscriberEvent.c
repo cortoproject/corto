@@ -1,21 +1,13 @@
-/* $CORTO_GENERATED
- *
- * SubscriberEvent.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header() */
-static corto_object testScope;
-/* $end */
 
-void _test_SubscriberEvent_setup(
+static corto_object testScope;
+
+void test_SubscriberEvent_setup(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/setup) */
 
     this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
     corto_voidCreateChild(NULL, "shouldNotBeMatched");
@@ -27,13 +19,11 @@ void _test_SubscriberEvent_setup(
     corto_release(st);
 
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDeclare(
+void test_SubscriberEvent_tc_onDeclare(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDeclare) */
     corto_int16 ret;
 
     test_assertint(this->st->countDeclare, 0);
@@ -65,13 +55,11 @@ void _test_SubscriberEvent_tc_onDeclare(
 
     test_assertint(this->st->countDeclare, 0);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDeclareScope(
+void test_SubscriberEvent_tc_onDeclareScope(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDeclareScope) */
     corto_int16 ret;
 
     test_assert(this->st->countDeclareScope == 0);
@@ -103,13 +91,11 @@ void _test_SubscriberEvent_tc_onDeclareScope(
 
     test_assert(this->st->countDeclareScope == 0);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDeclareSelf(
+void test_SubscriberEvent_tc_onDeclareSelf(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDeclareSelf) */
     corto_int16 ret;
 
     test_assert(this->st->countDeclareSelf == 0);
@@ -141,13 +127,11 @@ void _test_SubscriberEvent_tc_onDeclareSelf(
 
     test_assert(this->st->countDeclareSelf == 0);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDeclareTree(
+void test_SubscriberEvent_tc_onDeclareTree(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDeclareTree) */
     corto_int16 ret;
 
     test_assert(this->st->countDeclareTree == 0);
@@ -179,13 +163,11 @@ void _test_SubscriberEvent_tc_onDeclareTree(
 
     test_assert(this->st->countDeclareTree == 0);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDefine(
+void test_SubscriberEvent_tc_onDefine(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDefine) */
     corto_int16 ret;
 
     test_assertint(this->st->countDefine, 1);
@@ -233,13 +215,11 @@ void _test_SubscriberEvent_tc_onDefine(
 
     test_assertint(this->st->countDefine, 4);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDefineScope(
+void test_SubscriberEvent_tc_onDefineScope(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDefineScope) */
     corto_int16 ret;
 
     test_assert(this->st->countDefineScope == 0);
@@ -283,13 +263,11 @@ void _test_SubscriberEvent_tc_onDefineScope(
 
     test_assert(this->st->countDefineScope == 2);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDefineSelf(
+void test_SubscriberEvent_tc_onDefineSelf(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDefineSelf) */
     corto_int16 ret;
 
     test_assert(this->st->countDefineSelf == 1);
@@ -326,13 +304,11 @@ void _test_SubscriberEvent_tc_onDefineSelf(
 
     test_assert(this->st->countDefineSelf == 1);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onDefineTree(
+void test_SubscriberEvent_tc_onDefineTree(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onDefineTree) */
     corto_int16 ret;
 
     test_assert(this->st->countDefineTree == 0);
@@ -380,13 +356,11 @@ void _test_SubscriberEvent_tc_onDefineTree(
 
     test_assert(this->st->countDefineTree == 3);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onUpdate(
+void test_SubscriberEvent_tc_onUpdate(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onUpdate) */
     int ret;
 
     test_assertint(this->st->countUpdate, 0);
@@ -464,13 +438,11 @@ void _test_SubscriberEvent_tc_onUpdate(
 
     test_assertint(this->st->countUpdate, 4);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onUpdateScope(
+void test_SubscriberEvent_tc_onUpdateScope(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onUpdateScope) */
     int ret;
 
     test_assertint(this->st->countUpdateScope, 0);
@@ -543,13 +515,11 @@ void _test_SubscriberEvent_tc_onUpdateScope(
 
     test_assertint(this->st->countUpdateScope, 2);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onUpdateSelf(
+void test_SubscriberEvent_tc_onUpdateSelf(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onUpdateSelf) */
     int ret;
 
     test_assertint(this->st->countUpdateSelf, 0);
@@ -612,13 +582,11 @@ void _test_SubscriberEvent_tc_onUpdateSelf(
 
     test_assertint(this->st->countUpdateSelf, 1);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_tc_onUpdateTree(
+void test_SubscriberEvent_tc_onUpdateTree(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/tc_onUpdateTree) */
     int ret;
 
     test_assertint(this->st->countUpdateTree, 0);
@@ -691,18 +659,16 @@ void _test_SubscriberEvent_tc_onUpdateTree(
 
     test_assertint(this->st->countUpdateTree, 3);
 
-/* $end */
 }
 
-void _test_SubscriberEvent_teardown(
+void test_SubscriberEvent_teardown(
     test_SubscriberEvent this)
 {
-/* $begin(test/SubscriberEvent/teardown) */
 
     corto_setAttr(this->prevAttr);
 
     /* Delete before stopping testcase, to catch errors while unsubscribing */
     corto_ptr_setref(&this->st, NULL);
 
-/* $end */
 }
+

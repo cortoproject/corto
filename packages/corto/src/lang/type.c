@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * type.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_interface.h"
 
 corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure) {
@@ -39,12 +33,10 @@ corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure pr
 error:
     return -1;
 }
-/* $end */
 
-uint16_t _corto_type_alignmentof(
+uint16_t corto_type_alignmentof(
     corto_type this)
 {
-/* $begin(corto/lang/type/alignmentof) */
     corto_uint16 alignment;
 
     if (this->reference) {
@@ -53,14 +45,12 @@ uint16_t _corto_type_alignmentof(
         alignment = this->alignment;
     }
     return alignment;
-/* $end */
 }
 
-bool _corto_type_castable_v(
+bool corto_type_castable_v(
     corto_type this,
     corto_type type)
 {
-/* $begin(corto/lang/type/castable) */
     corto_bool result = FALSE;
 
     if (this->kind == CORTO_VOID) { /* A void reference can be casted to any reference type */
@@ -74,14 +64,12 @@ bool _corto_type_castable_v(
     }
 
     return result;
-/* $end */
 }
 
-bool _corto_type_compatible_v(
+bool corto_type_compatible_v(
     corto_type this,
     corto_type type)
 {
-/* $begin(corto/lang/type/compatible) */
     corto_bool result;
 
     result = FALSE;
@@ -101,13 +89,11 @@ bool _corto_type_compatible_v(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_type_construct(
+int16_t corto_type_construct(
     corto_type this)
 {
-/* $begin(corto/lang/type/construct) */
     switch(this->kind) {
     case CORTO_ANY:
         this->size = sizeof(corto_any);
@@ -123,13 +109,11 @@ int16_t _corto_type_construct(
         this->flags |= CORTO_TYPE_NEEDS_INIT;
     }
     return 0;
-/* $end */
 }
 
-void _corto_type_destruct(
+void corto_type_destruct(
     corto_type this)
 {
-/* $begin(corto/lang/type/destruct) */
     corto_uint32 i;
 
     /* Free methods */
@@ -141,13 +125,11 @@ void _corto_type_destruct(
         corto_dealloc(this->metaprocedures.buffer);
         this->metaprocedures.buffer = NULL;
     }
-/* $end */
 }
 
-int16_t _corto_type_init(
+int16_t corto_type_init(
     corto_type this)
 {
-/* $begin(corto/lang/type/init) */
     if (!this->options.parentState) {
         this->options.parentState = CORTO_DECLARED | CORTO_DEFINED;
     }
@@ -155,14 +137,12 @@ int16_t _corto_type_init(
         this->attr = CORTO_ATTR_DEFAULT;
     }
     return 0;
-/* $end */
 }
 
-corto_function _corto_type_resolveProcedure(
+corto_function corto_type_resolveProcedure(
     corto_type this,
     corto_string name)
 {
-/* $begin(corto/lang/type/resolveProcedure) */
     corto_function result = NULL;
 
     /* If type is an interface, try first to resolve a method on the interface */
@@ -189,13 +169,11 @@ corto_function _corto_type_resolveProcedure(
     }
 
     return result;
-/* $end */
 }
 
-uint32_t _corto_type_sizeof(
+uint32_t corto_type_sizeof(
     corto_type this)
 {
-/* $begin(corto/lang/type/sizeof) */
     corto_uint32 size;
     if (this->reference) {
         size = sizeof(corto_object);
@@ -203,5 +181,5 @@ uint32_t _corto_type_sizeof(
         size = this->size;
     }
     return size;
-/* $end */
 }
+

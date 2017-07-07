@@ -1,19 +1,12 @@
-/* $CORTO_GENERATED
- *
- * case.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_case_construct(
+int16_t corto_case_construct(
     corto_case this)
 {
-/* $begin(corto/lang/case/construct) */
 
-    return corto_member_construct(this);
+    return safe_corto_member_construct(this);
 
-/* $end */
 }
+

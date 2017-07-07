@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * AutoResumeSinkMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_AutoResumeSinkMount_construct(
+int16_t test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
-/* $begin(test/AutoResumeSinkMount/construct) */
     corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
       this->type ? this->type : "int32";
@@ -146,10 +139,9 @@ int16_t _test_AutoResumeSinkMount_construct(
     );
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-/* $header(test/AutoResumeSinkMount/onQuery) */
+
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -157,12 +149,11 @@ static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
-/* $end */
-corto_resultIter _test_AutoResumeSinkMount_onQuery(
+
+corto_resultIter test_AutoResumeSinkMount_onQuery(
     test_AutoResumeSinkMount this,
     corto_query *query)
 {
-/* $begin(test/AutoResumeSinkMount/onQuery) */
     corto_iter iter = corto_ll_iter(this->items);
     corto_ll data = corto_ll_new();
 
@@ -191,15 +182,13 @@ corto_resultIter _test_AutoResumeSinkMount_onQuery(
 
     /* Return persistent iterator to request */
     return result;
-/* $end */
 }
 
-uintptr_t _test_AutoResumeSinkMount_onSubscribe(
+uintptr_t test_AutoResumeSinkMount_onSubscribe(
     test_AutoResumeSinkMount this,
     corto_query *query,
     uintptr_t ctx)
 {
-/* $begin(test/AutoResumeSinkMount/onSubscribe) */
 
     /* Result is set to either this or 'expr' depending on the content of expr.
      * This allows the testcase to test both cases where onSubscribe returns the
@@ -216,15 +205,13 @@ uintptr_t _test_AutoResumeSinkMount_onSubscribe(
     );
 
     return result;
-/* $end */
 }
 
-void _test_AutoResumeSinkMount_onUnsubscribe(
+void test_AutoResumeSinkMount_onUnsubscribe(
     test_AutoResumeSinkMount this,
     corto_query *query,
     uintptr_t ctx)
 {
-/* $begin(test/AutoResumeSinkMount/onUnsubscribe) */
     if (query->select[0] == '*') {
         test_assert(ctx == (corto_word)this);
     }
@@ -234,5 +221,5 @@ void _test_AutoResumeSinkMount_onUnsubscribe(
       query
     );
 
-/* $end */
 }
+

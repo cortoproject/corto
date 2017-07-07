@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * RelativeName.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_RelativeName_setup(
+void test_RelativeName_setup(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/setup) */
 
     corto_ptr_setref(&this->tier1, corto_voidCreateChild(NULL, "tier1"));
     corto_ptr_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
@@ -27,13 +20,11 @@ void _test_RelativeName_setup(
     test_assert(this->disjunct != NULL);
     test_assert(this->child != NULL);
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromChild(
+void test_RelativeName_tc_fromChild(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromChild) */
     corto_id id;
     corto_string result;
 
@@ -42,13 +33,11 @@ void _test_RelativeName_tc_fromChild(
     test_assert(result == id);
     test_assert(!strcmp(result, ".."));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromDisjunct(
+void test_RelativeName_tc_fromDisjunct(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromDisjunct) */
     corto_id id;
     corto_string result;
 
@@ -57,13 +46,11 @@ void _test_RelativeName_tc_fromDisjunct(
     test_assert(result == id);
     test_assert(!strcmp(result, "tier2/tier3/obj"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromGrandchild(
+void test_RelativeName_tc_fromGrandchild(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromGrandchild) */
     corto_id id;
     corto_string result;
 
@@ -72,13 +59,11 @@ void _test_RelativeName_tc_fromGrandchild(
     test_assert(result == id);
     test_assert(!strcmp(result, "../.."));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromNull(
+void test_RelativeName_tc_fromNull(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromNull) */
     corto_id id;
     corto_string result;
 
@@ -87,13 +72,11 @@ void _test_RelativeName_tc_fromNull(
     test_assert(result == id);
     test_assert(!strcmp(result, "/tier1"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromOneUp(
+void test_RelativeName_tc_fromOneUp(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromOneUp) */
     corto_id id;
     corto_string result;
 
@@ -102,13 +85,11 @@ void _test_RelativeName_tc_fromOneUp(
     test_assert(result == id);
     test_assert(!strcmp(result, "tier3/obj"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromParent(
+void test_RelativeName_tc_fromParent(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromParent) */
     corto_id id;
     corto_string result;
 
@@ -117,13 +98,11 @@ void _test_RelativeName_tc_fromParent(
     test_assert(result == id);
     test_assert(!strcmp(result, "obj"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromRoot(
+void test_RelativeName_tc_fromRoot(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromRoot) */
     corto_id id;
     corto_string result;
 
@@ -132,13 +111,11 @@ void _test_RelativeName_tc_fromRoot(
     test_assert(result == id);
     test_assert(!strcmp(result, "tier1/tier2/tier3/obj"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromSelf(
+void test_RelativeName_tc_fromSelf(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromSelf) */
     corto_id id;
     corto_string result;
 
@@ -147,13 +124,11 @@ void _test_RelativeName_tc_fromSelf(
     test_assert(result == id);
     test_assert(!strcmp(result, "."));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromThreeUp(
+void test_RelativeName_tc_fromThreeUp(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromThreeUp) */
     corto_id id;
     corto_string result;
 
@@ -162,13 +137,11 @@ void _test_RelativeName_tc_fromThreeUp(
     test_assert(result == id);
     test_assert(!strcmp(result, "tier2/tier3/obj/child"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_fromTwoUp(
+void test_RelativeName_tc_fromTwoUp(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_fromTwoUp) */
     corto_id id;
     corto_string result;
 
@@ -177,13 +150,11 @@ void _test_RelativeName_tc_fromTwoUp(
     test_assert(result == id);
     test_assert(!strcmp(result, "tier2/tier3/obj"));
 
-/* $end */
 }
 
-void _test_RelativeName_tc_rootFromNull(
+void test_RelativeName_tc_rootFromNull(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_rootFromNull) */
     corto_id id;
     corto_string result;
 
@@ -191,13 +162,11 @@ void _test_RelativeName_tc_rootFromNull(
     test_assert(result != NULL);
     test_assert(result == id);
     test_assert(!strcmp(result, "/"));
-/* $end */
 }
 
-void _test_RelativeName_tc_rootFromNullColon(
+void test_RelativeName_tc_rootFromNullColon(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_rootFromNullColon) */
     corto_id id;
     corto_string result;
 
@@ -205,13 +174,11 @@ void _test_RelativeName_tc_rootFromNullColon(
     test_assert(result != NULL);
     test_assert(result == id);
     test_assert(!strcmp(result, "::"));
-/* $end */
 }
 
-void _test_RelativeName_tc_rootFromObj(
+void test_RelativeName_tc_rootFromObj(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/tc_rootFromObj) */
     corto_id id;
     corto_string result;
 
@@ -220,13 +187,11 @@ void _test_RelativeName_tc_rootFromObj(
     test_assert(result == id);
     test_assert(!strcmp(result, ".."));
 
-/* $end */
 }
 
-void _test_RelativeName_teardown(
+void test_RelativeName_teardown(
     test_RelativeName this)
 {
-/* $begin(test/RelativeName/teardown) */
 
     corto_delete(this->tier1);
     corto_ptr_setref(&this->tier1, NULL);
@@ -236,5 +201,5 @@ void _test_RelativeName_teardown(
     corto_ptr_setref(&this->disjunct, NULL);
     corto_ptr_setref(&this->child, NULL);
 
-/* $end */
 }
+

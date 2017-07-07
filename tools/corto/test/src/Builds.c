@@ -1,28 +1,19 @@
-/* $CORTO_GENERATED
- *
- * Builds.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Builds_setup(
+void test_Builds_setup(
     test_Builds this)
 {
-/* $begin(test/Builds/setup) */
 
     corto_int16 ret = corto_chdir(TEST_ETC);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_appDef(
+void test_Builds_tc_appDef(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_appDef) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -38,13 +29,11 @@ void _test_Builds_tc_appDef(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_appDefObject(
+void test_Builds_tc_appDefObject(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_appDefObject) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -60,13 +49,11 @@ void _test_Builds_tc_appDefObject(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_appLocalDef(
+void test_Builds_tc_appLocalDef(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_appLocalDef) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -82,13 +69,11 @@ void _test_Builds_tc_appLocalDef(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_appLocalDefObject(
+void test_Builds_tc_appLocalDefObject(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_appLocalDefObject) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -104,13 +89,11 @@ void _test_Builds_tc_appLocalDefObject(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_appNested(
+void test_Builds_tc_appNested(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_appNested) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -130,13 +113,11 @@ void _test_Builds_tc_appNested(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_appNestedDef(
+void test_Builds_tc_appNestedDef(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_appNestedDef) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -156,13 +137,11 @@ void _test_Builds_tc_appNestedDef(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_packageNoDef(
+void test_Builds_tc_packageNoDef(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_packageNoDef) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -186,13 +165,11 @@ void _test_Builds_tc_packageNoDef(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_runDirect(
+void test_Builds_tc_runDirect(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_runDirect) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -208,13 +185,11 @@ void _test_Builds_tc_runDirect(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_runFromParent(
+void test_Builds_tc_runFromParent(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_runFromParent) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -230,13 +205,11 @@ void _test_Builds_tc_runFromParent(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
 
-void _test_Builds_tc_runFromProject(
+void test_Builds_tc_runFromProject(
     test_Builds this)
 {
-/* $begin(test/Builds/tc_runFromProject) */
     corto_int8 ret;
     corto_int8 sig;
 
@@ -253,5 +226,5 @@ void _test_Builds_tc_runFromProject(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-/* $end */
 }
+

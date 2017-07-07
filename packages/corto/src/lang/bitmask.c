@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * bitmask.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_bitmask.h"
 
 corto_int16 corto__bitmask_bindConstant(corto_bitmask this, corto_constant* c) {
@@ -23,14 +17,12 @@ corto_int16 corto__bitmask_bindConstant(corto_bitmask this, corto_constant* c) {
 
     return 0;
 }
-/* $end */
 
-int16_t _corto_bitmask_init(
+int16_t corto_bitmask_init(
     corto_bitmask this)
 {
-/* $begin(corto/lang/bitmask/init) */
     corto_primitive(this)->kind = CORTO_BITMASK;
     corto_primitive(this)->width = CORTO_WIDTH_32;
     return corto_primitive_init((corto_primitive)this);
-/* $end */
 }
+

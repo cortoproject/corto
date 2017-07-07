@@ -216,8 +216,8 @@ static corto_int16 corto_ser_composite(corto_walk_opt* s, corto_value *info, voi
         corto_int32 d2 = *(corto_int32*)value;
 
         if (d1 != d2) {
-            corto_member m1 = corto_union_findCase(t, d1);
-            corto_member m2 = corto_union_findCase(t, d2);
+            corto_member m1 = safe_corto_union_findCase(t, d1);
+            corto_member m2 = safe_corto_union_findCase(t, d2);
             if (m1 != m2) {
                 goto nomatch;
             }

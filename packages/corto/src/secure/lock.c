@@ -1,36 +1,26 @@
-/* $CORTO_GENERATED
- *
- * lock.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
-corto_int16 corto_secure_registerLock(corto_secure_lock lock);
-/* $end */
 
-corto_secure_accessKind _corto_secure_lock_authorize_v(
+corto_int16 corto_secure_registerLock(corto_secure_lock lock);
+
+corto_secure_accessKind corto_secure_lock_authorize_v(
     corto_secure_lock this,
     corto_string token,
     corto_secure_actionKind action)
 {
-/* $begin(corto/secure/lock/authorize) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(token);
     CORTO_UNUSED(action);
 
     return CORTO_SECURE_ACCESS_UNDEFINED;
-/* $end */
 }
 
-int16_t _corto_secure_lock_construct(
+int16_t corto_secure_lock_construct(
     corto_secure_lock this)
 {
-/* $begin(corto/secure/lock/construct) */
 
     if (corto_secure_registerLock(this)) {
         goto error;
@@ -39,15 +29,13 @@ int16_t _corto_secure_lock_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-void _corto_secure_lock_destruct(
+void corto_secure_lock_destruct(
     corto_secure_lock this)
 {
-/* $begin(corto/secure/lock/destruct) */
 
     CORTO_UNUSED(this);
 
-/* $end */
 }
+

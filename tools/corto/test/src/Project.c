@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * Project.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header() */
+
 corto_int16 test_Project_cleanEnv(corto_string name) {
     char *env;
 
@@ -94,7 +88,7 @@ corto_int16 test_Project_implementNoCorto(
     if (!local) {
         fprintf(f, "#include \"%s/%s.h\"\n", package, name);
     } else {
-        fprintf(f, "#include \"%s.h\"\n", name);
+        fprintf(f, "#include \"include/%s.h\"\n", name);
     }
     fprintf(f, "void foo(void) {}\n\n");
     fclose(f);
@@ -236,12 +230,10 @@ corto_int16 test_Project_useNoCorto(
 error:
     return -1;
 }
-/* $end */
 
-void _test_Project_setup(
+void test_Project_setup(
     test_Project this)
 {
-/* $begin(test/Project/setup) */
     test_Project_cleanEnv("Project");
     test_Project_cleanEnv("corto/Project");
     test_Project_cleanEnv("foo");
@@ -257,13 +249,11 @@ void _test_Project_setup(
 
     corto_time timeout = {20, 0};
     test_setTimeout(&timeout);
-/* $end */
 }
 
-void _test_Project_tc_packageCortoDependencyNoCorto(
+void test_Project_tc_packageCortoDependencyNoCorto(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageCortoDependencyNoCorto) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -334,15 +324,13 @@ void _test_Project_tc_packageCortoDependencyNoCorto(
 
     /* Add function to foo package */
     test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
-    test_assert(!test_Project_useNoCorto("bar", "/bar", "foo"));
+    test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageCortoNestedDependencyNoCorto(
+void test_Project_tc_packageCortoNestedDependencyNoCorto(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageCortoNestedDependencyNoCorto) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -434,13 +422,11 @@ void _test_Project_tc_packageCortoNestedDependencyNoCorto(
     test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageDependency(
+void test_Project_tc_packageDependency(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -512,13 +498,11 @@ void _test_Project_tc_packageDependency(
     test_assert(!test_Project_implement("foo"));
     test_assert(!test_Project_use("bar", "/bar", "foo"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNested(
+void test_Project_tc_packageNested(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNested) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -558,13 +542,11 @@ void _test_Project_tc_packageNested(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Project_tc_packageNestedDependency(
+void test_Project_tc_packageNestedDependency(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNestedDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -654,13 +636,11 @@ void _test_Project_tc_packageNestedDependency(
     test_assert(!test_Project_implement("child"));
     test_assert(!test_Project_use("foo", "/foo", "child"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNestedDependencyFullyScoped(
+void test_Project_tc_packageNestedDependencyFullyScoped(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNestedDependencyFullyScoped) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -750,13 +730,11 @@ void _test_Project_tc_packageNestedDependencyFullyScoped(
     test_assert(!test_Project_implement("child"));
     test_assert(!test_Project_use("foo", "/foo", "child"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNestedFullyScoped(
+void test_Project_tc_packageNestedFullyScoped(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNestedFullyScoped) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -794,23 +772,19 @@ void _test_Project_tc_packageNestedFullyScoped(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Project_tc_packageNestedNoParent(
+void test_Project_tc_packageNestedNoParent(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNestedNoParent) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Project_tc_packageNoCorto(
+void test_Project_tc_packageNoCorto(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNoCorto) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -881,13 +855,11 @@ void _test_Project_tc_packageNoCorto(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNoCortoDependency(
+void test_Project_tc_packageNoCortoDependency(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNoCortoDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -964,13 +936,11 @@ void _test_Project_tc_packageNoCortoDependency(
     /* Add implementation */
     test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNoCortoLocal(
+void test_Project_tc_packageNoCortoLocal(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNoCortoLocal) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -998,13 +968,11 @@ void _test_Project_tc_packageNoCortoLocal(
      * is nothing to be built */
     test_assert(!test_Project_implementNoCorto("foo", "foo", TRUE));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNoCortoNested(
+void test_Project_tc_packageNoCortoNested(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNoCortoNested) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1076,13 +1044,11 @@ void _test_Project_tc_packageNoCortoNested(
       "$CORTO_TARGET/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNoCortoNestedDependency(
+void test_Project_tc_packageNoCortoNestedDependency(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNoCortoNestedDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1178,13 +1144,11 @@ void _test_Project_tc_packageNoCortoNestedDependency(
     /* Add implementation */
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNodef(
+void test_Project_tc_packageNodef(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNodef) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1253,13 +1217,11 @@ void _test_Project_tc_packageNodef(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNodefC4cpp(
+void test_Project_tc_packageNodefC4cpp(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNodefC4cpp) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1330,13 +1292,11 @@ void _test_Project_tc_packageNodefC4cpp(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNodefLocal(
+void test_Project_tc_packageNodefLocal(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNodefLocal) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1406,13 +1366,11 @@ void _test_Project_tc_packageNodefLocal(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_tc_packageNodefLocalC4cpp(
+void test_Project_tc_packageNodefLocalC4cpp(
     test_Project this)
 {
-/* $begin(test/Project/tc_packageNodefLocalC4cpp) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1483,13 +1441,11 @@ void _test_Project_tc_packageNodefLocalC4cpp(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_tc_packagePublicHeaderRemoval(
+void test_Project_tc_packagePublicHeaderRemoval(
     test_Project this)
 {
-/* $begin(test/Project/tc_packagePublicHeaderRemoval) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -1590,13 +1546,11 @@ void _test_Project_tc_packagePublicHeaderRemoval(
       "$CORTO_TARGET/include/corto/%s.%s/Project/MyInclude.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-/* $end */
 }
 
-void _test_Project_teardown(
+void test_Project_teardown(
     test_Project this)
 {
-/* $begin(test/Project/teardown) */
     test_Project_cleanEnv("Project");
     test_Project_cleanEnv("corto/Project");
     test_Project_cleanEnv("foo");
@@ -1609,5 +1563,5 @@ void _test_Project_teardown(
     corto_rmtree("bar");
     corto_rmtree("parent");
     corto_rmtree("child");
-/* $end */
 }
+

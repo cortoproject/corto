@@ -231,6 +231,15 @@ static int16_t corto_walk_member(
     corto_value member;
     corto_modifier modifiers = m->modifiers;
     corto_bool isAlias = corto_instanceof(corto_alias_o, m);
+    corto_bool isKey = modifiers & CORTO_KEY;
+
+    if (isKey && this->keyAction == CORTO_WALK_KEY_DATA_ONLY) {
+        return 0;
+    }
+
+    if (!isKey && this->keyAction == CORTO_WALK_KEY_KEYS_ONLY) {
+        return 0;
+    }
 
     if (isAlias && (this->aliasAction == CORTO_WALK_ALIAS_FOLLOW)) {
         do {
@@ -344,7 +353,7 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
         }
     } else if (!this->visitAllCases && (corto_typeof(t) == corto_type(corto_union_o))) {
         corto_int32 discriminator = *(corto_int32*)v;
-        corto_member member = corto_union_findCase(t, discriminator);
+        corto_member member = safe_corto_union_findCase(t, discriminator);
         if (member) {
             if (corto_walk_member(this, member, o, v, cb, info, userData)) {
                 goto error;

@@ -1,22 +1,14 @@
-/* $CORTO_GENERATED
- *
- * Observers.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Observers_setup(
+void test_Observers_setup(
     test_Observers this)
 {
-/* $begin(test/Observers/setup) */
 
-/* $end */
 }
 
-/* $header(test/Observers/tc_dispatchObserver) */
+
 void dispatchObserver_onUpdate(
     corto_observerEvent *e)
 {
@@ -25,11 +17,10 @@ void dispatchObserver_onUpdate(
     corto_ptr_setref(&this->observable, e->data);
     corto_ptr_setref(&this->observer, e->observer);
 }
-/* $end */
-void _test_Observers_tc_dispatchObserver(
+
+void test_Observers_tc_dispatchObserver(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_dispatchObserver) */
     corto_object o = corto_create(corto_void_o);
     test_assert(o != NULL);
 
@@ -54,10 +45,9 @@ void _test_Observers_tc_dispatchObserver(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(d) == 0);
 
-/* $end */
 }
 
-/* $header(test/Observers/tc_notifyReadDenied) */
+
 void notifyReadDenied_onUpdate(corto_observerEvent *e)
 {
     test_Observers this = e->instance;
@@ -66,11 +56,10 @@ void notifyReadDenied_onUpdate(corto_observerEvent *e)
     corto_ptr_setref(&this->observer, e->observer);
     this->count ++;
 }
-/* $end */
-void _test_Observers_tc_notifyReadDenied(
+
+void test_Observers_tc_notifyReadDenied(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_notifyReadDenied) */
     test_TestKeyCreate();
 
     test_TestLock l = test_TestLockCreate("/o", ".", 0, NULL);
@@ -103,13 +92,11 @@ void _test_Observers_tc_notifyReadDenied(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(l) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_notifyUpdateDenied(
+void test_Observers_tc_notifyUpdateDenied(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_notifyUpdateDenied) */
     test_TestKeyCreate();
 
     test_TestLock l = test_TestLockCreate("/o", ".", 0, NULL);
@@ -140,13 +127,11 @@ void _test_Observers_tc_notifyUpdateDenied(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(l) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_notObserving(
+void test_Observers_tc_notObserving(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_notObserving) */
     corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
@@ -155,20 +140,18 @@ void _test_Observers_tc_notObserving(
 
     test_assert(corto_delete(observer) == 0);
 
-/* $end */
 }
 
-/* $header(test/Observers/tc_observeAlignSelf) */
+
 void tc_observeAlignCallbackSelf(corto_observerEvent *e) {
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "o");
     test_assert(e->event == CORTO_ON_DEFINE);
 }
-/* $end */
-void _test_Observers_tc_observeAlignSelf(
+
+void test_Observers_tc_observeAlignSelf(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeAlignSelf) */
     corto_object o = corto_createChild(root_o, "o", corto_void_o);
 
     corto_observer observer = corto_observe(CORTO_ON_DEFINE|CORTO_ON_INVALIDATE, o)
@@ -178,10 +161,9 @@ void _test_Observers_tc_observeAlignSelf(
     test_assert(corto_delete(observer) == 0);
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-/* $header(test/Observers/tc_observeAlignType) */
+
 void tc_observeAlignCallbackType(corto_observerEvent *e) {
     test_Observers this = e->instance;
     test_assert(e->data != NULL);
@@ -189,11 +171,10 @@ void tc_observeAlignCallbackType(corto_observerEvent *e) {
     test_assert(e->event == CORTO_ON_DEFINE);
     corto_ptr_setref(&this->observable, e->data);
 }
-/* $end */
-void _test_Observers_tc_observeAlignType(
+
+void test_Observers_tc_observeAlignType(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeAlignType) */
     corto_object o = corto_createChild(root_o, "o", corto_int32_o);
     corto_object p = corto_createChild(root_o, "p", corto_float32_o);
     corto_object q = corto_createChild(root_o, "q", corto_string_o);
@@ -211,13 +192,11 @@ void _test_Observers_tc_observeAlignType(
     test_assert(corto_delete(p) == 0);
     test_assert(corto_delete(q) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
+void test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeNonScopedObjectWithScopeMaskErr) */
     corto_object o = corto_create(corto_void_o);
     test_assert(o != NULL);
 
@@ -229,13 +208,11 @@ void _test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observerMissingObservable(
+void test_Observers_tc_observerMissingObservable(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observerMissingObservable) */
 
     corto_object o = corto_create(corto_void_o);
     test_assert(o != NULL);
@@ -248,10 +225,9 @@ void _test_Observers_tc_observerMissingObservable(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-/* $header(test/Observers/tc_observeTypeFilter) */
+
 void observeTypeFilter_onUpdate(corto_observerEvent *e)
 {
     test_Observers this = e->instance;
@@ -259,11 +235,10 @@ void observeTypeFilter_onUpdate(corto_observerEvent *e)
     corto_ptr_setref(&this->observable, e->data);
     corto_ptr_setref(&this->observer, e->observer);
 }
-/* $end */
-void _test_Observers_tc_observeTypeFilter(
+
+void test_Observers_tc_observeTypeFilter(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeTypeFilter) */
     corto_object testRoot = corto_createChild(root_o, "testRoot", corto_void_o);
     test_assert(testRoot != NULL);
 
@@ -292,13 +267,11 @@ void _test_Observers_tc_observeTypeFilter(
     test_assert(corto_delete(testRoot) == 0);
     test_assert(corto_delete(observer) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observeTypeFilterNotAType(
+void test_Observers_tc_observeTypeFilterNotAType(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeTypeFilterNotAType) */
 
     corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, root_o)
       .type("/corto")
@@ -306,13 +279,11 @@ void _test_Observers_tc_observeTypeFilterNotAType(
     test_assert(observer == NULL);
     test_assertstr(corto_lasterr(), "'/corto' is not a type");
 
-/* $end */
 }
 
-void _test_Observers_tc_observeTypeFilterUnresolved(
+void test_Observers_tc_observeTypeFilterUnresolved(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeTypeFilterUnresolved) */
 
     corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, root_o)
       .type("/doesnotexist")
@@ -320,10 +291,9 @@ void _test_Observers_tc_observeTypeFilterUnresolved(
     test_assert(observer == NULL);
     test_assertstr(corto_lasterr(), "unresolved type '/doesnotexist'");
 
-/* $end */
 }
 
-/* $header(test/Observers/tc_observeWithMultipleInstances) */
+
 void observeWithMultipleInstances_onUpdate(
     corto_observerEvent *e)
 {
@@ -333,11 +303,10 @@ void observeWithMultipleInstances_onUpdate(
     corto_ptr_setref(&this->observer, e->observer);
     this->count ++;
 }
-/* $end */
-void _test_Observers_tc_observeWithMultipleInstances(
+
+void test_Observers_tc_observeWithMultipleInstances(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observeWithMultipleInstances) */
     corto_object o = corto_create(corto_void_o);
     corto_object instance1 = corto_create(corto_void_o);
     corto_object instance2 = corto_create(corto_void_o);
@@ -366,13 +335,11 @@ void _test_Observers_tc_observeWithMultipleInstances(
     test_assert(corto_delete(instance2) == 0);
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observing(
+void test_Observers_tc_observing(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observing) */
     corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
@@ -381,13 +348,11 @@ void _test_Observers_tc_observing(
 
     test_assert(corto_delete(observer) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observingDisabled(
+void test_Observers_tc_observingDisabled(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observingDisabled) */
     corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
       .disabled()
       .callback(NULL);
@@ -397,13 +362,11 @@ void _test_Observers_tc_observingDisabled(
 
     test_assert(corto_delete(observer) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observingMultipleInstances(
+void test_Observers_tc_observingMultipleInstances(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observingMultipleInstances) */
     corto_object instance1 = corto_create(corto_void_o);
     corto_object instance2 = corto_create(corto_void_o);
 
@@ -428,13 +391,11 @@ void _test_Observers_tc_observingMultipleInstances(
     test_assert(corto_delete(instance1) == 0);
     test_assert(corto_delete(instance2) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observingScope(
+void test_Observers_tc_observingScope(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observingScope) */
     corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
@@ -443,13 +404,11 @@ void _test_Observers_tc_observingScope(
 
     test_assert(corto_delete(observer) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observingSingleInstance(
+void test_Observers_tc_observingSingleInstance(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observingSingleInstance) */
     corto_object instance = corto_create(corto_void_o);
 
     corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
@@ -462,13 +421,11 @@ void _test_Observers_tc_observingSingleInstance(
     test_assert(corto_delete(observer) == 0);
     test_assert(corto_delete(instance) == 0);
 
-/* $end */
 }
 
-void _test_Observers_tc_observingTree(
+void test_Observers_tc_observingTree(
     test_Observers this)
 {
-/* $begin(test/Observers/tc_observingTree) */
     corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_TREE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
@@ -477,5 +434,5 @@ void _test_Observers_tc_observingTree(
 
     test_assert(corto_delete(observer) == 0);
 
-/* $end */
 }
+

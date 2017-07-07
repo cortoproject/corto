@@ -2,6 +2,7 @@
 COMPONENTS = %w(
     packages/corto
     packages/corto/c
+    packages/cdiff
     packages/g
     packages/argparse
     tools

@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Buffer.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Buffer_tc_append(
+void test_Buffer_tc_append(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_append) */
     corto_buffer b = CORTO_BUFFER_INIT;
 
     corto_bool proceed = corto_buffer_append(&b, "Foo");
@@ -21,13 +14,11 @@ void _test_Buffer_tc_append(
     test_assert(str != NULL);
     test_assertstr(str, "Foo");
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendEmpty(
+void test_Buffer_tc_appendEmpty(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendEmpty) */
     corto_buffer b = CORTO_BUFFER_INIT;
 
     corto_bool proceed = corto_buffer_append(&b, "");
@@ -37,13 +28,11 @@ void _test_Buffer_tc_appendEmpty(
     test_assert(str != NULL);
     test_assertstr(str, "");
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendEmptyToExisting(
+void test_Buffer_tc_appendEmptyToExisting(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendEmptyToExisting) */
     corto_buffer b = CORTO_BUFFER_INIT;
 
     corto_bool proceed = corto_buffer_append(&b, "Foo");
@@ -55,13 +44,11 @@ void _test_Buffer_tc_appendEmptyToExisting(
     test_assert(str != NULL);
     test_assertstr(str, "Foo");
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendLarge(
+void test_Buffer_tc_appendLarge(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendLarge) */
     /* Pick a size that doesn't align with buffer boundaries */
     char largeString[800];
 
@@ -83,13 +70,11 @@ void _test_Buffer_tc_appendLarge(
     test_assert(str != NULL);
     test_assertstr(str, largeString);
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendLargeMulti(
+void test_Buffer_tc_appendLargeMulti(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendLargeMulti) */
     /* Pick a size that doesn't align with buffer and requires at least three
      * elements */
     char largeString[1400];
@@ -112,13 +97,11 @@ void _test_Buffer_tc_appendLargeMulti(
     test_assert(str != NULL);
     test_assertstr(str, largeString);
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendLargeOverflow(
+void test_Buffer_tc_appendLargeOverflow(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendLargeOverflow) */
     /* Pick a size that doesn't align with buffer boundaries and is larger than
      * an element. */
     char largeString[800];
@@ -144,13 +127,11 @@ void _test_Buffer_tc_appendLargeOverflow(
     sprintf(result, "HelloWorld!%s", largeString);
     test_assertstr(str, result);
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendNull(
+void test_Buffer_tc_appendNull(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendNull) */
     corto_buffer b = CORTO_BUFFER_INIT;
 
     corto_bool proceed = corto_buffer_append(&b, NULL);
@@ -159,13 +140,11 @@ void _test_Buffer_tc_appendNull(
     corto_string str = corto_buffer_str(&b);
     test_assert(str == NULL);
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendNullToExisting(
+void test_Buffer_tc_appendNullToExisting(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendNullToExisting) */
     corto_buffer b = CORTO_BUFFER_INIT;
 
     corto_bool proceed = corto_buffer_append(&b, "Foo");
@@ -176,13 +155,11 @@ void _test_Buffer_tc_appendNullToExisting(
     test_assert(str != NULL);
     test_assertstr(str, "Foo");
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendOverflow(
+void test_Buffer_tc_appendOverflow(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendOverflow) */
     /* Pick a size that doesn't align with buffer boundaries, fits within an
      * element but requires the buffer to allocate a new element. */
     char largeString[505];
@@ -208,13 +185,11 @@ void _test_Buffer_tc_appendOverflow(
     sprintf(result, "HelloWorld!%s", largeString);
     test_assertstr(str, result);
 
-/* $end */
 }
 
-void _test_Buffer_tc_appendToExisting(
+void test_Buffer_tc_appendToExisting(
     test_Buffer this)
 {
-/* $begin(test/Buffer/tc_appendToExisting) */
     corto_buffer b = CORTO_BUFFER_INIT;
 
     corto_bool proceed = corto_buffer_append(&b, "Foo");
@@ -225,5 +200,5 @@ void _test_Buffer_tc_appendToExisting(
     test_assert(str != NULL);
     test_assertstr(str, "FooBar");
 
-/* $end */
 }
+

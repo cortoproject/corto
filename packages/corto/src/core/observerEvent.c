@@ -1,27 +1,18 @@
-/* $CORTO_GENERATED
- *
- * observerEvent.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-void _corto_observerEvent_deinit(
+void corto_observerEvent_deinit(
     corto_observerEvent* this)
 {
-/* $begin(corto/core/observerEvent/deinit) */
 
     CORTO_UNUSED(this);
 
-/* $end */
 }
 
-void _corto_observerEvent_handle(
+void corto_observerEvent_handle(
     corto_event *e)
 {
-/* $begin(corto/core/observerEvent/handle) */
     corto_observerEvent *this = (corto_observerEvent*)e;
     corto_bool lockRequired =
       (this->thread != corto_threadSelf()) &&
@@ -46,14 +37,12 @@ void _corto_observerEvent_handle(
         corto_backtrace(stderr);
     }
 
-/* $end */
 }
 
-int16_t _corto_observerEvent_init(
+int16_t corto_observerEvent_init(
     corto_observerEvent* this)
 {
-/* $begin(corto/core/observerEvent/init) */
     ((corto_event*)this)->handleAction.super.procedure = corto_observerEvent_handle_o;
     return 0;
-/* $end */
 }
+

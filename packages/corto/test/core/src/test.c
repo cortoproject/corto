@@ -1,15 +1,8 @@
-/* $CORTO_GENERATED
- *
- * test.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
 int testMain(int argc, char *argv[]) {
-/* $begin(main) */
     int result = 0;
     test_Runner runner = test_RunnerCreate("corto/core", argv[0], (argc > 1) ? argv[1] : NULL);
     if (!runner) return -1;
@@ -18,5 +11,5 @@ int testMain(int argc, char *argv[]) {
     }
     corto_delete(runner);
     return result;
-/* $end */
 }
+

@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * routerimpl.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header(corto/core/routerimpl/construct) */
+
 int corto_routerimpl_countArgs(corto_object o, void *userData) {
     if (corto_instanceof(corto_route_o, o)) {
         if (corto_routerimpl(userData)->maxArgs < corto_function(o)->parameters.length) {
@@ -17,34 +11,29 @@ int corto_routerimpl_countArgs(corto_object o, void *userData) {
     }
     return 1;
 }
-/* $end */
-int16_t _corto_routerimpl_construct(
+
+int16_t corto_routerimpl_construct(
     corto_routerimpl this)
 {
-/* $begin(corto/core/routerimpl/construct) */
     corto_scopeWalk(this, corto_routerimpl_countArgs, this);
-    return corto_class_construct(this);
-/* $end */
+    return safe_corto_class_construct(this);
 }
 
-void _corto_routerimpl_destruct(
+void corto_routerimpl_destruct(
     corto_routerimpl this)
 {
-/* $begin(corto/core/routerimpl/destruct) */
 
     CORTO_UNUSED(this);
 
-/* $end */
 }
 
-corto_route _corto_routerimpl_findRoute_v(
+corto_route corto_routerimpl_findRoute_v(
     corto_routerimpl this,
     corto_object instance,
     corto_stringseq pattern,
     corto_any param,
     corto_any *routerData)
 {
-/* $begin(corto/core/routerimpl/findRoute) */
     corto_route result = NULL;
     corto_router routerBase = corto_router(corto_typeof(this));
     corto_interface interfaceType = corto_interface(corto_typeof(instance));
@@ -73,17 +62,15 @@ corto_route _corto_routerimpl_findRoute_v(
 
     return result;
 
-/* $end */
 }
 
-int32_t _corto_routerimpl_matchRoute_v(
+int32_t corto_routerimpl_matchRoute_v(
     corto_routerimpl this,
     corto_route route,
     corto_stringseq pattern,
     corto_any param,
     corto_any *routerData)
 {
-/* $begin(corto/core/routerimpl/matchRoute) */
     corto_int32 result = -1;
 
     CORTO_UNUSED(this);
@@ -108,5 +95,5 @@ int32_t _corto_routerimpl_matchRoute_v(
     return result;
 nomatch:
     return -1;
-/* $end */
 }
+

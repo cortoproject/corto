@@ -453,6 +453,25 @@ def loadPackageConfigs()
         require "#{buildscript}"
     end
   end
+
+  # Check if link objects are available for building redistributables
+  if $redis_dependencies_resolved and ENV['redistr'] != "false" then
+    LINK.each do |p|
+      lib = get_library_name(FALSE, FALSE, File.dirname(p), File.basename(p), "lib", "so");
+      if not File.exists? lib then
+        if CORTO_OS == "Darwin" then
+          lib = get_library_name(FALSE, FALSE, File.dirname(p), File.basename(p), "lib", "dylib");
+          if not File.exists? lib then
+            $redis_dependencies_resolved = false;
+            warn "no redistributable version of #{p} found"
+          end
+        else
+          $redis_dependencies_resolved = false;
+          warn "no redistributable version of #{p} found"
+        end
+      end
+    end
+  end
 end
 
 task :msg do

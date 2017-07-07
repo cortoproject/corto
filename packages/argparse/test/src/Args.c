@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Args.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Args_tc_matchAddNoProject(
+void test_Args_tc_matchAddNoProject(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchAddNoProject) */
     char *argv[] = {"add", "::corto::test", "--silent", NULL};
     corto_ll project, packages, silent;
 
@@ -40,13 +33,11 @@ void _test_Args_tc_matchAddNoProject(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchAll(
+void test_Args_tc_matchAll(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchAll) */
     char *argv[] = {"abc", "def", "-g", "--hi", NULL};
     corto_ll args;
 
@@ -69,13 +60,11 @@ void _test_Args_tc_matchAll(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreate(
+void test_Args_tc_matchCreate(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreate) */
     char *argv[] = {"create", "MyApp", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -108,13 +97,11 @@ void _test_Args_tc_matchCreate(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreateApp(
+void test_Args_tc_matchCreateApp(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreateApp) */
     char *argv[] = {"create", "app", "MyApp", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -147,13 +134,11 @@ void _test_Args_tc_matchCreateApp(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreateMultiple(
+void test_Args_tc_matchCreateMultiple(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreateMultiple) */
     char *argv[] = {"create", "app", "MyApp1", "MyApp2", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -187,13 +172,11 @@ void _test_Args_tc_matchCreateMultiple(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreatePackage(
+void test_Args_tc_matchCreatePackage(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreatePackage) */
     char *argv[] = {"create", "package", "myPackage", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -226,13 +209,11 @@ void _test_Args_tc_matchCreatePackage(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreatePackageAndApp(
+void test_Args_tc_matchCreatePackageAndApp(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreatePackageAndApp) */
     char *argv[] = {"create", "package", "myPackage", "app", "MyApp", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -268,13 +249,11 @@ void _test_Args_tc_matchCreatePackageAndApp(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreatePackageAndAppEscaped(
+void test_Args_tc_matchCreatePackageAndAppEscaped(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreatePackageAndAppEscaped) */
     char *argv[] = {"create", "package", "package", "app", "app", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -310,13 +289,11 @@ void _test_Args_tc_matchCreatePackageAndAppEscaped(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchCreatePackageOptions(
+void test_Args_tc_matchCreatePackageOptions(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchCreatePackageOptions) */
     char *argv[] = {"create", "package", "myPackage", "--silent", "--notest", "--local", NULL};
     corto_ll app, package, component, silent, notest, local;
 
@@ -358,13 +335,11 @@ void _test_Args_tc_matchCreatePackageOptions(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchDuplicate(
+void test_Args_tc_matchDuplicate(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchDuplicate) */
     char *argv[] = {"abc", "def", "abc", "def", NULL};
     corto_ll abc, def;
 
@@ -392,13 +367,11 @@ void _test_Args_tc_matchDuplicate(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchDuplicateArg(
+void test_Args_tc_matchDuplicateArg(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchDuplicateArg) */
     char *argv[] = {"--option1", "arg1", "--option1", "arg2", "--option2", "arg3", NULL};
     corto_ll option1, option2, args1, args2;
 
@@ -435,13 +408,11 @@ void _test_Args_tc_matchDuplicateArg(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchErr(
+void test_Args_tc_matchErr(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchErr) */
     char *argv[] = {"abc", "def", NULL};
     corto_ll args;
 
@@ -457,13 +428,11 @@ void _test_Args_tc_matchErr(
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "unknown option 'abc'"));
 
-/* $end */
 }
 
-void _test_Args_tc_matchFixed(
+void test_Args_tc_matchFixed(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchFixed) */
     char *argv[] = {"a", "b", "c", "d", NULL};
     corto_ll a, b, c, d;
 
@@ -499,13 +468,11 @@ void _test_Args_tc_matchFixed(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchMultiple(
+void test_Args_tc_matchMultiple(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchMultiple) */
     char *argv[] = {"abc", "def", NULL};
     corto_ll abc, def;
 
@@ -531,13 +498,11 @@ void _test_Args_tc_matchMultiple(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchMultipleArg(
+void test_Args_tc_matchMultipleArg(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchMultipleArg) */
     char *argv[] = {"--option1", "arg1", "--option2", "arg2", NULL};
     corto_ll option1, option2, args1, args2;
 
@@ -572,13 +537,11 @@ void _test_Args_tc_matchMultipleArg(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchNone(
+void test_Args_tc_matchNone(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchNone) */
     char *argv[] = {"abc", "def", NULL};
 
     corto_argdata *data = corto_argparse(
@@ -595,13 +558,11 @@ void _test_Args_tc_matchNone(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchOptional(
+void test_Args_tc_matchOptional(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchOptional) */
     char *argv[] = {"ab", "cd", "ef", NULL};
     corto_ll atMostOnce, atLeastOnce;
 
@@ -628,13 +589,11 @@ void _test_Args_tc_matchOptional(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchOptionalOneArg(
+void test_Args_tc_matchOptionalOneArg(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchOptionalOneArg) */
     char *argv[] = {"ab", NULL};
     corto_ll atMostOnce, atLeastOnce;
 
@@ -657,13 +616,11 @@ void _test_Args_tc_matchOptionalOneArg(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchOptionalWithOtherArgs(
+void test_Args_tc_matchOptionalWithOtherArgs(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchOptionalWithOtherArgs) */
     char *argv[] = {"ab", "other", NULL};
     corto_ll atMostOnce, atLeastOnce, other;
 
@@ -691,13 +648,11 @@ void _test_Args_tc_matchOptionalWithOtherArgs(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchPattern(
+void test_Args_tc_matchPattern(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchPattern) */
     char *argv[] = {"abcd", "bacd", NULL};
     corto_ll args;
 
@@ -719,13 +674,11 @@ void _test_Args_tc_matchPattern(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchPublish(
+void test_Args_tc_matchPublish(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchPublish) */
     char *argv[] = {"publish", "MyApp", "major", "--notag", NULL};
     corto_ll notag, dirs, majorarg, minorarg, patcharg;
 
@@ -754,13 +707,11 @@ void _test_Args_tc_matchPublish(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchPublishNoProject(
+void test_Args_tc_matchPublishNoProject(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchPublishNoProject) */
     char *argv[] = {"publish", "major", "--notag", NULL};
     corto_ll notag, dirs, majorarg, minorarg, patcharg;
 
@@ -787,13 +738,11 @@ void _test_Args_tc_matchPublishNoProject(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchShell(
+void test_Args_tc_matchShell(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchShell) */
     char *argv[] = {"shell", "-p", "corto/idl", "test.cx", "-d", "test2.cx", NULL};
     corto_ll pp, d, load;
 
@@ -825,13 +774,11 @@ void _test_Args_tc_matchShell(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchSingle(
+void test_Args_tc_matchSingle(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchSingle) */
     char *argv[] = {"abc", NULL};
     corto_ll abc;
 
@@ -852,13 +799,11 @@ void _test_Args_tc_matchSingle(
 
     corto_argclean(data);
 
-/* $end */
 }
 
-void _test_Args_tc_matchSingleArg(
+void test_Args_tc_matchSingleArg(
     test_Args this)
 {
-/* $begin(test/Args/tc_matchSingleArg) */
     char *argv[] = {"--option", "arg", NULL};
     corto_ll options, args;
 
@@ -883,5 +828,5 @@ void _test_Args_tc_matchSingleArg(
 
     corto_argclean(data);
 
-/* $end */
 }
+

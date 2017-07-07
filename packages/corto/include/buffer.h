@@ -71,6 +71,13 @@ CORTO_EXPORT bool corto_buffer_append(
     char *fmt,
     ...);
 
+/* Append format string with argument list to a buffer.
+ * Returns false when max is reached, true when there is still space */
+CORTO_EXPORT bool corto_buffer_vappend(
+    corto_buffer *buffer,
+    char *fmt,
+    va_list args);
+
 /* Append string to buffer.
  * Returns false when max is reached, true when there is still space */
 CORTO_EXPORT bool corto_buffer_appendstr(
@@ -84,8 +91,12 @@ CORTO_EXPORT bool corto_buffer_appendstrn(
     char *str,
     uint32_t n);
 
-/* Return result string */
+/* Return result string (also resets buffer) */
 CORTO_EXPORT char *corto_buffer_str(corto_buffer *buffer);
+
+/* Reset buffer without returning a string */
+CORTO_EXPORT void corto_buffer_reset(corto_buffer *buffer);
+
 
 #ifdef __cplusplus
 }

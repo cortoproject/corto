@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * MountWIterData.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header(test/MountWIterData/onQuery) */
+
 void *iterNext(corto_iter *iter)
 {
     return NULL;
@@ -18,12 +12,11 @@ int iterHasNext(corto_iter *iter)
 {
     return 0;
 }
-/* $end */
-corto_resultIter _test_MountWIterData_onQuery(
+
+corto_resultIter test_MountWIterData_onQuery(
     test_MountWIterData this,
     corto_query *query)
 {
-/* $begin(test/MountWIterData/onQuery) */
     corto_resultIter result;
 
     result.ctx = corto_calloc(sizeof(char));
@@ -32,5 +25,5 @@ corto_resultIter _test_MountWIterData_onQuery(
     result.release = NULL;
 
     return result;
-/* $end */
 }
+

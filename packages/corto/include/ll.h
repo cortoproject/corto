@@ -107,9 +107,12 @@ CORTO_EXPORT corto_ll corto_ll_copy(corto_ll list);
 /* Iterator implementation */
 CORTO_EXPORT void corto_ll_iterMoveFirst(corto_iter* iter);
 CORTO_EXPORT void *corto_ll_iterMove(corto_iter* iter, unsigned int index);
+CORTO_EXPORT void *corto_ll_iterMoveFind(corto_iter *iter, corto_compare_cb callback, void *data);
+CORTO_EXPORT bool corto_ll_iterMoveTo(corto_iter *iter, void *o);
 CORTO_EXPORT int corto_ll_iterHasNext(corto_iter* iter);
 CORTO_EXPORT void* corto_ll_iterNext(corto_iter* iter);
 CORTO_EXPORT void* corto_ll_iterNextPtr(corto_iter* iter);
+CORTO_EXPORT void* corto_ll_iterCurrent(corto_iter* iter);
 CORTO_EXPORT void* corto_ll_iterRemove(corto_iter* iter);
 CORTO_EXPORT void corto_ll_iterInsert(corto_iter* iter, void* o);
 CORTO_EXPORT void corto_ll_iterSet(corto_iter* iter, void* o);

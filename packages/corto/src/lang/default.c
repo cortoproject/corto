@@ -1,19 +1,12 @@
-/* $CORTO_GENERATED
- *
- * default.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_default_construct(
+int16_t corto_default_construct(
     corto_default this)
 {
-/* $begin(corto/lang/default/construct) */
 
-    return corto_case_construct(this);
+    return safe_corto_case_construct(this);
 
-/* $end */
 }
+

@@ -1,34 +1,23 @@
-/* $CORTO_GENERATED
- *
- * Ownership.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Ownership_onDelete(
+void test_Ownership_onDelete(
     corto_observerEvent *e)
 {
-/* $begin(test/Ownership/onDelete) */
     test_Ownership this = e->instance;
     this->observable = (corto_word)e->data;
-/* $end */
 }
 
-void _test_Ownership_setup(
+void test_Ownership_setup(
     test_Ownership this)
 {
-/* $begin(test/Ownership/setup) */
 
-/* $end */
 }
 
-void _test_Ownership_tc_checkOwnerNull(
+void test_Ownership_tc_checkOwnerNull(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_checkOwnerNull) */
     corto_object o = corto_voidCreateChild(NULL, "o");
     test_assert(o != NULL);
     test_assert(corto_ownerof(o) == NULL);
@@ -36,13 +25,11 @@ void _test_Ownership_tc_checkOwnerNull(
     corto_int16 result = corto_delete(o);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_checkOwnerReplicator(
+void test_Ownership_tc_checkOwnerReplicator(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_checkOwnerReplicator) */
     test_FooReplicator r = test_FooReplicatorCreate(root_o);
 
     corto_object old = corto_setOwner(r);
@@ -61,13 +48,11 @@ void _test_Ownership_tc_checkOwnerReplicator(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_createNotOwned(
+void test_Ownership_tc_createNotOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_createNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -98,13 +83,11 @@ void _test_Ownership_tc_createNotOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_createOwned(
+void test_Ownership_tc_createOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_createOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -130,13 +113,11 @@ void _test_Ownership_tc_createOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_declareNotOwned(
+void test_Ownership_tc_declareNotOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_declareNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -165,13 +146,11 @@ void _test_Ownership_tc_declareNotOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_declareOwned(
+void test_Ownership_tc_declareOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_declareOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -194,13 +173,11 @@ void _test_Ownership_tc_declareOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_deleteNotOwned(
+void test_Ownership_tc_deleteNotOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_deleteNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -220,13 +197,11 @@ void _test_Ownership_tc_deleteNotOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_deleteOwned(
+void test_Ownership_tc_deleteOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_deleteOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -244,13 +219,11 @@ void _test_Ownership_tc_deleteOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_invokeNotOwned(
+void test_Ownership_tc_invokeNotOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_invokeNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -277,13 +250,11 @@ void _test_Ownership_tc_invokeNotOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_invokeOwned(
+void test_Ownership_tc_invokeOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_invokeOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -306,13 +277,11 @@ void _test_Ownership_tc_invokeOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedMountMount(
+void test_Ownership_tc_ownedMountMount(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedMountMount) */
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
     test_FooReplicator r2 = test_FooReplicatorCreateChild(root_o, "r2", root_o);
 
@@ -338,13 +307,11 @@ void _test_Ownership_tc_ownedMountMount(
     result = corto_delete(r2);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedMountMountSame(
+void test_Ownership_tc_ownedMountMountSame(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedMountMountSame) */
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
     corto_object old = corto_setOwner(r1);
@@ -364,13 +331,11 @@ void _test_Ownership_tc_ownedMountMountSame(
     result = corto_delete(r1);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedMountObj(
+void test_Ownership_tc_ownedMountObj(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedMountObj) */
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
     corto_voidCreateChild_auto(NULL, obj);
@@ -397,13 +362,11 @@ void _test_Ownership_tc_ownedMountObj(
     result = corto_delete(obj);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedMountSelf(
+void test_Ownership_tc_ownedMountSelf(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedMountSelf) */
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
     corto_object old = corto_setOwner(r1);
@@ -425,13 +388,11 @@ void _test_Ownership_tc_ownedMountSelf(
     result = corto_delete(r1);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedObjMount(
+void test_Ownership_tc_ownedObjMount(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedObjMount) */
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
     corto_voidCreateChild_auto(NULL, obj);
@@ -458,13 +419,11 @@ void _test_Ownership_tc_ownedObjMount(
     result = corto_delete(obj);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedObjObj(
+void test_Ownership_tc_ownedObjObj(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedObjObj) */
     corto_voidCreateChild_auto(NULL, obj1);
     corto_voidCreateChild_auto(NULL, obj2);
 
@@ -490,13 +449,11 @@ void _test_Ownership_tc_ownedObjObj(
     result = corto_delete(obj2);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedObjObjSame(
+void test_Ownership_tc_ownedObjObjSame(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedObjObjSame) */
     corto_voidCreateChild_auto(NULL, obj1);
 
     corto_object old = corto_setOwner(obj1);
@@ -516,13 +473,11 @@ void _test_Ownership_tc_ownedObjObjSame(
     result = corto_delete(obj1);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedObjSelf(
+void test_Ownership_tc_ownedObjSelf(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedObjSelf) */
     corto_voidCreateChild_auto(NULL, obj1);
 
     corto_object old = corto_setOwner(obj1);
@@ -544,13 +499,11 @@ void _test_Ownership_tc_ownedObjSelf(
     result = corto_delete(obj1);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedSelfMount(
+void test_Ownership_tc_ownedSelfMount(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedSelfMount) */
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
     corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
@@ -567,13 +520,11 @@ void _test_Ownership_tc_ownedSelfMount(
     result = corto_delete(r1);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedSelfObj(
+void test_Ownership_tc_ownedSelfObj(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedSelfObj) */
     corto_voidCreateChild_auto(NULL, obj1);
 
     corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
@@ -590,13 +541,11 @@ void _test_Ownership_tc_ownedSelfObj(
     result = corto_delete(obj1);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_ownedSelfSelf(
+void test_Ownership_tc_ownedSelfSelf(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_ownedSelfSelf) */
     corto_int32 *o = corto_int32CreateChild(NULL, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_ownerof(o) == NULL);
@@ -606,13 +555,11 @@ void _test_Ownership_tc_ownedSelfSelf(
     corto_int16 result = corto_delete(o);
     test_assertint(result, 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_releaseNotOwned(
+void test_Ownership_tc_releaseNotOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_releaseNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     /* Create an observable object to catch DELETE event */
@@ -637,13 +584,11 @@ void _test_Ownership_tc_releaseNotOwned(
     corto_int16 result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_releaseOwned(
+void test_Ownership_tc_releaseOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_releaseOwned) */
     corto_object o = corto_voidCreateChild(NULL, "o");
     test_assert(o != NULL);
     test_assert(corto_ownerof(o) == NULL);
@@ -656,13 +601,11 @@ void _test_Ownership_tc_releaseOwned(
     test_assert(count == 0);
     test_assert(this->observable == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_updateNotOwned(
+void test_Ownership_tc_updateNotOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_updateNotOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -689,13 +632,11 @@ void _test_Ownership_tc_updateNotOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_updateNotOwnedTarget(
+void test_Ownership_tc_updateNotOwnedTarget(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_updateNotOwnedTarget) */
     corto_mount r = corto_create(corto_mount_o);
 
     corto_object old = corto_setOwner(r);
@@ -725,13 +666,11 @@ void _test_Ownership_tc_updateNotOwnedTarget(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
 
-void _test_Ownership_tc_updateOwned(
+void test_Ownership_tc_updateOwned(
     test_Ownership this)
 {
-/* $begin(test/Ownership/tc_updateOwned) */
     test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
 
     corto_object old = corto_setOwner(r);
@@ -752,5 +691,5 @@ void _test_Ownership_tc_updateOwned(
     result = corto_delete(r);
     test_assert(result == 0);
 
-/* $end */
 }
+

@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * unit.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include <src/_object.h>
 
 corto_int16 corto_unitinstance_construct(corto_object this) {
@@ -25,12 +19,10 @@ error:
     return -1;
 }
 
-/* $end */
 
-int16_t _corto_unit_construct(
+int16_t corto_unit_construct(
     corto_unit this)
 {
-/* $begin(corto/lang/unit/construct) */
     ext_corto_expr *exprToQuantity = NULL, *exprFromQuantity = NULL;
 
     if (this->conversion) {
@@ -88,28 +80,24 @@ int16_t _corto_unit_construct(
         corto_ptr_setref(&quantity->type, corto_quantity_o);
         if (corto_define(quantity)) goto error;*/
 
-    return corto_class_construct(this);
+    return safe_corto_class_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-void _corto_unit_destruct(
+void corto_unit_destruct(
     corto_unit this)
 {
-/* $begin(corto/lang/unit/destruct) */
 
     CORTO_UNUSED(this);
 
-/* $end */
 }
 
-int16_t _corto_unit_init(
+int16_t corto_unit_init(
     corto_unit this)
 {
-/* $begin(corto/lang/unit/init) */
 
     corto_ptr_setref(&this->type, corto_float64_o);
     return 0;
-/* $end */
 }
+

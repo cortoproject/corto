@@ -1,19 +1,12 @@
-/* $CORTO_GENERATED
- *
- * TestKey.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-corto_string _test_TestKey_authenticate(
+corto_string test_TestKey_authenticate(
     test_TestKey this,
     corto_string user,
     corto_string password)
 {
-/* $begin(test/TestKey/authenticate) */
 
     if (!strcmp(user, "Ford Prefect") && !strcmp(password, "42")) {
         return "token_user01";
@@ -23,5 +16,5 @@ corto_string _test_TestKey_authenticate(
     }
 
     return NULL;
-/* $end */
 }
+

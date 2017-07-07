@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * sequence.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 typedef struct __dummySeq {
     corto_uint32 length;
     void* buffer;
@@ -25,12 +19,10 @@ int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_ui
 
     return (((__dummySeq*)collection)->buffer == NULL) * -1; /* Return -1 on failure */
 }
-/* $end */
 
-int16_t _corto_sequence_construct(
+int16_t corto_sequence_construct(
     corto_sequence this)
 {
-/* $begin(corto/lang/sequence/construct) */
     corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
     corto_type(this)->size = sizeof(__dummySeq);
     corto_type(this)->alignment = CORTO_ALIGNMENT(__dummySeq);
@@ -41,14 +33,12 @@ int16_t _corto_sequence_construct(
     return corto_type_construct(corto_type(this));
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_sequence_init(
+int16_t corto_sequence_init(
     corto_sequence this)
 {
-/* $begin(corto/lang/sequence/init) */
     corto_collection(this)->kind = CORTO_SEQUENCE;
     return corto_collection_init(corto_collection(this));
-/* $end */
 }
+

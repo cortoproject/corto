@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * Copy.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_Copy_tc_any(
+void test_Copy_tc_any(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_any) */
     corto_int32 v = 10;
     corto_any src = {corto_type(corto_int32_o), &v, FALSE};
     corto_any dst = {NULL, NULL, FALSE};
@@ -25,13 +18,11 @@ void _test_Copy_tc_any(
 
     corto_ptr_deinit(&dst, corto_any_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToArray(
+void test_Copy_tc_arrayToArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToArray) */
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {0, 0, 0, 0};
     corto_int16 ret;
@@ -43,13 +34,11 @@ void _test_Copy_tc_arrayToArray(
     test_assert(v2[2] == 30);
     test_assert(v2[3] == 40);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToArrayAlloc(
+void test_Copy_tc_arrayToArrayAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToArrayAlloc) */
     corto_int64 v1[] = {10, 20, 30, 40};
     corto_int64 v2[] = {0, 0, 0, 0};
     corto_int16 ret;
@@ -60,13 +49,11 @@ void _test_Copy_tc_arrayToArrayAlloc(
     test_assertint(v2[1], 20);
     test_assertint(v2[2], 30);
     test_assertint(v2[3], 40);
-/* $end */
 }
 
-void _test_Copy_tc_arrayToArrayString(
+void test_Copy_tc_arrayToArrayString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToArrayString) */
     corto_string v1[] = {"Foo", "Bar", "Hello", "World"};
     corto_string v2[] = {0, 0, 0, 0};
     corto_int16 ret;
@@ -80,13 +67,11 @@ void _test_Copy_tc_arrayToArrayString(
 
     corto_ptr_deinit(v2, test_StringArray_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToExistingArrayString(
+void test_Copy_tc_arrayToExistingArrayString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToExistingArrayString) */
     corto_string v1[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string v2[] = {NULL, NULL, NULL, NULL};
     corto_int16 ret;
@@ -108,13 +93,11 @@ void _test_Copy_tc_arrayToExistingArrayString(
 
     corto_ptr_deinit(v2, test_StringArray_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToExistingList(
+void test_Copy_tc_arrayToExistingList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToExistingList) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntArrayCreate_auto(v1, 4, v);
@@ -136,13 +119,11 @@ void _test_Copy_tc_arrayToExistingList(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToExistingListString(
+void test_Copy_tc_arrayToExistingListString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToExistingListString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
@@ -161,13 +142,11 @@ void _test_Copy_tc_arrayToExistingListString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToList(
+void test_Copy_tc_arrayToList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToList) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntArrayCreate_auto(v1, 4, v);
@@ -183,13 +162,11 @@ void _test_Copy_tc_arrayToList(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToListAlloc(
+void test_Copy_tc_arrayToListAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToListAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocArrayCreate_auto(v1, 4, v);
@@ -205,13 +182,11 @@ void _test_Copy_tc_arrayToListAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayToListString(
+void test_Copy_tc_arrayToListString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayToListString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringArrayCreate_auto(v1, 4, v);
@@ -228,13 +203,11 @@ void _test_Copy_tc_arrayToListString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayWithInt(
+void test_Copy_tc_arrayWithInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayWithInt) */
     test_IntArray v1;
     test_IntArray v2;
 
@@ -255,13 +228,11 @@ void _test_Copy_tc_arrayWithInt(
     test_assert(corto_ptr_deinit(&v2, test_IntArray_o) == 0);
 
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayWithReference(
+void test_Copy_tc_arrayWithReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayWithReference) */
     test_ReferenceArray v1;
     test_ReferenceArray v2;
 
@@ -281,13 +252,11 @@ void _test_Copy_tc_arrayWithReference(
     test_assert(corto_ptr_deinit(&v1, test_ReferenceArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_ReferenceArray_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayWithString(
+void test_Copy_tc_arrayWithString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayWithString) */
     test_StringArray v1;
     test_StringArray v2;
 
@@ -307,13 +276,11 @@ void _test_Copy_tc_arrayWithString(
     test_assert(corto_ptr_deinit(&v1, test_StringArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_StringArray_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_arrayWithStruct(
+void test_Copy_tc_arrayWithStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_arrayWithStruct) */
     test_CompositeArray v1;
     test_CompositeArray v2;
 
@@ -337,13 +304,11 @@ void _test_Copy_tc_arrayWithStruct(
     test_assert(corto_ptr_deinit(&v1, test_CompositeArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_CompositeArray_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_int(
+void test_Copy_tc_int(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_int) */
     corto_int32 v1 = 10;
     corto_int32 v2 = 0;
     corto_int16 ret;
@@ -352,13 +317,11 @@ void _test_Copy_tc_int(
     test_assert(ret == 0);
     test_assert(v1 == 10);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToArray(
+void test_Copy_tc_listToArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToArray) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 4, v);
@@ -373,13 +336,11 @@ void _test_Copy_tc_listToArray(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToArrayAlloc(
+void test_Copy_tc_listToArrayAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToArrayAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 4, v);
@@ -394,13 +355,11 @@ void _test_Copy_tc_listToArrayAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToArrayString(
+void test_Copy_tc_listToArrayString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToArrayString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringListCreate_auto(v1, 4, v);
@@ -415,13 +374,11 @@ void _test_Copy_tc_listToArrayString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToExistingList(
+void test_Copy_tc_listToExistingList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToExistingList) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     corto_int32 w[] = {11, 22, 33, 44, 55};
@@ -439,13 +396,11 @@ void _test_Copy_tc_listToExistingList(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToExistingListString(
+void test_Copy_tc_listToExistingListString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToExistingListString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
@@ -463,13 +418,11 @@ void _test_Copy_tc_listToExistingListString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToExistingSequence(
+void test_Copy_tc_listToExistingSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToExistingSequence) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     corto_int32 w[] = {11, 22, 33, 44, 55};
@@ -488,13 +441,11 @@ void _test_Copy_tc_listToExistingSequence(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToExistingSequenceString(
+void test_Copy_tc_listToExistingSequenceString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToExistingSequenceString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
@@ -514,13 +465,11 @@ void _test_Copy_tc_listToExistingSequenceString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToList(
+void test_Copy_tc_listToList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToList) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 4, v);
@@ -537,13 +486,11 @@ void _test_Copy_tc_listToList(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToListAlloc(
+void test_Copy_tc_listToListAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToListAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 4, v);
@@ -560,13 +507,11 @@ void _test_Copy_tc_listToListAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToListResize(
+void test_Copy_tc_listToListResize(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToListResize) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 3, v);
@@ -589,13 +534,11 @@ void _test_Copy_tc_listToListResize(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToListResizeAlloc(
+void test_Copy_tc_listToListResizeAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToListResizeAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 3, v);
@@ -618,13 +561,11 @@ void _test_Copy_tc_listToListResizeAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToListString(
+void test_Copy_tc_listToListString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToListString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringListCreate_auto(v1, 4, v);
@@ -641,13 +582,11 @@ void _test_Copy_tc_listToListString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToSequence(
+void test_Copy_tc_listToSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToSequence) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 4, v);
@@ -665,13 +604,11 @@ void _test_Copy_tc_listToSequence(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToSequenceAlloc(
+void test_Copy_tc_listToSequenceAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToSequenceAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 4, v);
@@ -689,13 +626,11 @@ void _test_Copy_tc_listToSequenceAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listToSequenceString(
+void test_Copy_tc_listToSequenceString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listToSequenceString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringListCreate_auto(v1, 4, v);
@@ -713,13 +648,11 @@ void _test_Copy_tc_listToSequenceString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_listWithInt(
+void test_Copy_tc_listWithInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listWithInt) */
     test_IntList v1;
     test_IntList v2;
 
@@ -741,13 +674,11 @@ void _test_Copy_tc_listWithInt(
     test_assert(corto_ptr_deinit(&v1, test_IntList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_IntList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_listWithReference(
+void test_Copy_tc_listWithReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listWithReference) */
     test_ReferenceList v1;
     test_ReferenceList v2;
 
@@ -769,13 +700,11 @@ void _test_Copy_tc_listWithReference(
     test_assert(corto_ptr_deinit(&v1, test_ReferenceList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_ReferenceList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_listWithString(
+void test_Copy_tc_listWithString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listWithString) */
     test_StringList v1;
     test_StringList v2;
 
@@ -797,13 +726,11 @@ void _test_Copy_tc_listWithString(
     test_assert(corto_ptr_deinit(&v1, test_StringList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_StringList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_listWithStruct(
+void test_Copy_tc_listWithStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_listWithStruct) */
     test_CompositeList v1;
     test_CompositeList v2;
     test_Point p;
@@ -838,13 +765,11 @@ void _test_Copy_tc_listWithStruct(
     test_assert(corto_ptr_deinit(&v1, test_CompositeList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_CompositeList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_reference(
+void test_Copy_tc_reference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_reference) */
     corto_object v1, v2;
 
     corto_ptr_init(&v1, corto_object_o);
@@ -858,13 +783,11 @@ void _test_Copy_tc_reference(
     corto_ptr_deinit(&v1, corto_object_o);
     corto_ptr_deinit(&v2, corto_object_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToExistingSequence(
+void test_Copy_tc_sequenceToExistingSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToExistingSequence) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     corto_int32 w[] = {11, 22, 33, 44, 55};
@@ -883,13 +806,11 @@ void _test_Copy_tc_sequenceToExistingSequence(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToExistingSequenceString(
+void test_Copy_tc_sequenceToExistingSequenceString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToExistingSequenceString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
@@ -908,13 +829,11 @@ void _test_Copy_tc_sequenceToExistingSequenceString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToExistingSequenceStringStack(
+void test_Copy_tc_sequenceToExistingSequenceStringStack(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToExistingSequenceStringStack) */
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
@@ -941,13 +860,11 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStack(
 
     corto_ptr_deinit(&v2, test_StringSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
+void test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToExistingSequenceStringStackLarger) */
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
@@ -975,13 +892,11 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
 
     corto_ptr_deinit(&v2, test_StringSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
+void test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToExistingSequenceStringStackSmaller) */
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
@@ -1007,13 +922,11 @@ void _test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
 
     corto_ptr_deinit(&v2, test_StringSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequence(
+void test_Copy_tc_sequenceToSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequence) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntSequenceCreate_auto(v1, 4, v);
@@ -1031,13 +944,11 @@ void _test_Copy_tc_sequenceToSequence(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceAlloc(
+void test_Copy_tc_sequenceToSequenceAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocSequenceCreate_auto(v1, 4, v);
@@ -1055,13 +966,11 @@ void _test_Copy_tc_sequenceToSequenceAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceComposite(
+void test_Copy_tc_sequenceToSequenceComposite(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceComposite) */
     corto_int16 ret;
     corto_parameter p1 = {"foo", corto_type(corto_int32_o), CORTO_IN, TRUE};
     corto_parameter p2 = {"bar", corto_type(corto_float32_o), CORTO_IN, FALSE};
@@ -1083,13 +992,11 @@ void _test_Copy_tc_sequenceToSequenceComposite(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceResize(
+void test_Copy_tc_sequenceToSequenceResize(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceResize) */
     corto_int16 ret;
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntSequenceCreate_auto(v1, 3, v);
@@ -1114,13 +1021,11 @@ void _test_Copy_tc_sequenceToSequenceResize(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceResizeAlloc(
+void test_Copy_tc_sequenceToSequenceResizeAlloc(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceResizeAlloc) */
     corto_int16 ret;
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocSequenceCreate_auto(v1, 3, v);
@@ -1145,13 +1050,11 @@ void _test_Copy_tc_sequenceToSequenceResizeAlloc(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceString(
+void test_Copy_tc_sequenceToSequenceString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceString) */
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringSequenceCreate_auto(v1, 4, v);
@@ -1169,13 +1072,11 @@ void _test_Copy_tc_sequenceToSequenceString(
     corto_delete(v1);
     corto_delete(v2);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceStringStack(
+void test_Copy_tc_sequenceToSequenceStringStack(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceStringStack) */
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
@@ -1191,13 +1092,11 @@ void _test_Copy_tc_sequenceToSequenceStringStack(
 
     corto_ptr_deinit(&v2, test_StringSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceToSequenceValueComposite(
+void test_Copy_tc_sequenceToSequenceValueComposite(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceToSequenceValueComposite) */
     corto_int16 ret;
     corto_parameter p1 = {"foo", corto_type(corto_int32_o), CORTO_IN, TRUE};
     corto_parameter p2 = {"bar", corto_type(corto_float32_o), CORTO_IN, FALSE};
@@ -1215,13 +1114,11 @@ void _test_Copy_tc_sequenceToSequenceValueComposite(
     test_assert(v2.buffer[1].type == corto_type(corto_float32_o));
     test_assert(v2.buffer[1].passByReference == FALSE);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceWithInt(
+void test_Copy_tc_sequenceWithInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceWithInt) */
     corto_int16 ret;
     test_IntSequence v1 = {4, (int32_t[]){10, 20, 30, 40}};
     test_IntSequence v2 = {0, NULL};
@@ -1237,13 +1134,11 @@ void _test_Copy_tc_sequenceWithInt(
 
     corto_ptr_deinit(&v2, test_IntSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceWithReference(
+void test_Copy_tc_sequenceWithReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceWithReference) */
     corto_int16 ret;
     test_ReferenceSequence v1 = {4, (corto_object[]){corto_o, corto_lang_o, corto_class_o, NULL}};
     test_ReferenceSequence v2 = {0, NULL};
@@ -1259,13 +1154,11 @@ void _test_Copy_tc_sequenceWithReference(
 
     corto_ptr_deinit(&v2, test_ReferenceSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceWithString(
+void test_Copy_tc_sequenceWithString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceWithString) */
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
@@ -1281,13 +1174,11 @@ void _test_Copy_tc_sequenceWithString(
 
     corto_ptr_deinit(&v2, test_StringSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_sequenceWithStruct(
+void test_Copy_tc_sequenceWithStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_sequenceWithStruct) */
     corto_int16 ret;
     test_CompositeSequence v1 = {4, (test_Point[]){{10, 20}, {30, 40}, {50, 60}, {70, 80}}};
     test_CompositeSequence v2 = {0, NULL};
@@ -1307,13 +1198,11 @@ void _test_Copy_tc_sequenceWithStruct(
 
     corto_ptr_deinit(&v2, test_CompositeSequence_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_string(
+void test_Copy_tc_string(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_string) */
     corto_string v1 = "foo";
     corto_string v2 = NULL;
     corto_int32 ret;
@@ -1322,13 +1211,11 @@ void _test_Copy_tc_string(
     test_assert(ret == 0);
     test_assert(!strcmp(v2, "foo"));
 
-/* $end */
 }
 
-void _test_Copy_tc_struct(
+void test_Copy_tc_struct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_struct) */
     test_Point v1 = {10, 20};
     test_Point v2 = {0};
 
@@ -1336,13 +1223,11 @@ void _test_Copy_tc_struct(
     test_assertint(v2.x, 10);
     test_assertint(v2.y, 20);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableArray(
+void test_Copy_tc_structWithObservableArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableArray) */
     test_struct_observableArray v1;
     test_struct_observableArray v2;
 
@@ -1364,13 +1249,11 @@ void _test_Copy_tc_structWithObservableArray(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableArray_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableInt(
+void test_Copy_tc_structWithObservableInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableInt) */
     test_struct_observableInt v1;
     test_struct_observableInt v2;
 
@@ -1387,13 +1270,11 @@ void _test_Copy_tc_structWithObservableInt(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableInt_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableInt_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableList(
+void test_Copy_tc_structWithObservableList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableList) */
     test_struct_observableList v1;
     test_struct_observableList v2;
 
@@ -1416,13 +1297,11 @@ void _test_Copy_tc_structWithObservableList(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableReference(
+void test_Copy_tc_structWithObservableReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableReference) */
     test_struct_observableReference v1;
     test_struct_observableReference v2;
 
@@ -1438,13 +1317,11 @@ void _test_Copy_tc_structWithObservableReference(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableReference_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableReference_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableSequence(
+void test_Copy_tc_structWithObservableSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableSequence) */
     test_struct_observableSequence v1;
     test_struct_observableSequence v2;
 
@@ -1466,13 +1343,11 @@ void _test_Copy_tc_structWithObservableSequence(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableSequence_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableSequence_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableString(
+void test_Copy_tc_structWithObservableString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableString) */
     test_struct_observableString v1;
     test_struct_observableString v2;
 
@@ -1490,13 +1365,11 @@ void _test_Copy_tc_structWithObservableString(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableString_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableString_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithObservableStruct(
+void test_Copy_tc_structWithObservableStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithObservableStruct) */
     test_struct_observableStruct v1;
     test_struct_observableStruct v2;
 
@@ -1515,13 +1388,11 @@ void _test_Copy_tc_structWithObservableStruct(
     test_assert(corto_ptr_deinit(&v1, test_struct_observableStruct_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableStruct_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalArray(
+void test_Copy_tc_structWithOptionalArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalArray) */
     test_struct_optionalArray v1;
     test_struct_optionalArray v2;
 
@@ -1543,13 +1414,11 @@ void _test_Copy_tc_structWithOptionalArray(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalArray_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalInt(
+void test_Copy_tc_structWithOptionalInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalInt) */
     test_struct_optionalInt v1;
     test_struct_optionalInt v2;
 
@@ -1571,13 +1440,11 @@ void _test_Copy_tc_structWithOptionalInt(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalInt_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalInt_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalList(
+void test_Copy_tc_structWithOptionalList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalList) */
     test_struct_optionalList v1;
     test_struct_optionalList v2;
 
@@ -1600,13 +1467,11 @@ void _test_Copy_tc_structWithOptionalList(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalReference(
+void test_Copy_tc_structWithOptionalReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalReference) */
     test_struct_optionalReference v1;
     test_struct_optionalReference v2;
 
@@ -1624,13 +1489,11 @@ void _test_Copy_tc_structWithOptionalReference(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalReference_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalReference_o) == 0);
     
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalSequence(
+void test_Copy_tc_structWithOptionalSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalSequence) */
     test_struct_optionalSequence v1;
     test_struct_optionalSequence v2;
 
@@ -1653,13 +1516,11 @@ void _test_Copy_tc_structWithOptionalSequence(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalSequence_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalSequence_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalString(
+void test_Copy_tc_structWithOptionalString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalString) */
     test_struct_optionalString v1;
     test_struct_optionalString v2;
 
@@ -1676,13 +1537,11 @@ void _test_Copy_tc_structWithOptionalString(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalString_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalString_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithOptionalStruct(
+void test_Copy_tc_structWithOptionalStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithOptionalStruct) */
     test_struct_optionalStruct v1;
     test_struct_optionalStruct v2;
 
@@ -1700,13 +1559,11 @@ void _test_Copy_tc_structWithOptionalStruct(
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalStruct_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalStruct_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetArray(
+void test_Copy_tc_structWithTargetArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetArray) */
     test_struct_targetArray v1;
     test_struct_targetArray v2;
 
@@ -1736,13 +1593,11 @@ void _test_Copy_tc_structWithTargetArray(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetArray_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetInt(
+void test_Copy_tc_structWithTargetInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetInt) */
     test_struct_targetInt v1;
     test_struct_targetInt v2;
 
@@ -1765,13 +1620,11 @@ void _test_Copy_tc_structWithTargetInt(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetInt_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetInt_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetList(
+void test_Copy_tc_structWithTargetList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetList) */
     test_struct_targetList v1;
     test_struct_targetList v2;
 
@@ -1798,13 +1651,11 @@ void _test_Copy_tc_structWithTargetList(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetList_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetReference(
+void test_Copy_tc_structWithTargetReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetReference) */
     test_struct_targetReference v1;
     test_struct_targetReference v2;
 
@@ -1824,13 +1675,11 @@ void _test_Copy_tc_structWithTargetReference(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetReference_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetReference_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetSequence(
+void test_Copy_tc_structWithTargetSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetSequence) */
     test_struct_targetSequence v1;
     test_struct_targetSequence v2;
 
@@ -1856,13 +1705,11 @@ void _test_Copy_tc_structWithTargetSequence(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetSequence_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetSequence_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetString(
+void test_Copy_tc_structWithTargetString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetString) */
     test_struct_targetString v1;
     test_struct_targetString v2;
 
@@ -1884,13 +1731,11 @@ void _test_Copy_tc_structWithTargetString(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetString_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetString_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_structWithTargetStruct(
+void test_Copy_tc_structWithTargetStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_structWithTargetStruct) */
     test_struct_targetStruct v1;
     test_struct_targetStruct v2;
 
@@ -1916,23 +1761,19 @@ void _test_Copy_tc_structWithTargetStruct(
     test_assert(corto_ptr_deinit(&v1, test_struct_targetStruct_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetStruct_o) == 0);
 
-/* $end */
 }
 
-void _test_Copy_tc_union(
+void test_Copy_tc_union(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_union) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithArray(
+void test_Copy_tc_unionWithArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithArray) */
     /*test_unionTypes v1, v2;
 
     int32_t array[] = {10, 20, 30, 40};
@@ -1950,13 +1791,11 @@ void _test_Copy_tc_unionWithArray(
     corto_ptr_deinit(&v2, test_unionTypes_o);*/
 
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithInt(
+void test_Copy_tc_unionWithInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithInt) */
     test_unionTypes v1, v2;
 
     test_unionTypesAssign_m_int(&v1, Test_Int, 10);
@@ -1969,123 +1808,99 @@ void _test_Copy_tc_unionWithInt(
     corto_ptr_deinit(&v1, test_unionTypes_o);
     corto_ptr_deinit(&v2, test_unionTypes_o);
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithList(
+void test_Copy_tc_unionWithList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithList) */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalArray(
+void test_Copy_tc_unionWithOptionalArray(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalArray) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalInt(
+void test_Copy_tc_unionWithOptionalInt(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalInt) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalList(
+void test_Copy_tc_unionWithOptionalList(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalList) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalReference(
+void test_Copy_tc_unionWithOptionalReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalReference) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalSequence(
+void test_Copy_tc_unionWithOptionalSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalSequence) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalString(
+void test_Copy_tc_unionWithOptionalString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalString) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithOptionalStruct(
+void test_Copy_tc_unionWithOptionalStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithOptionalStruct) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithReference(
+void test_Copy_tc_unionWithReference(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithReference) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithSequence(
+void test_Copy_tc_unionWithSequence(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithSequence) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithString(
+void test_Copy_tc_unionWithString(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithString) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_Copy_tc_unionWithStruct(
+void test_Copy_tc_unionWithStruct(
     test_Copy this)
 {
-/* $begin(test/Copy/tc_unionWithStruct) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
+

@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * VirtualMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_VirtualMount_construct(
+int16_t test_VirtualMount_construct(
     test_VirtualMount this)
 {
-/* $begin(test/VirtualMount/construct) */
 
     corto_ptr_setstr(&corto_subscriber(this)->query.from, this->mount);
 
@@ -50,16 +43,14 @@ int16_t _test_VirtualMount_construct(
     );
 
     return corto_super_construct(this);
-/* $end */
 }
 
-corto_resultIter _test_VirtualMount_onQuery(
+corto_resultIter test_VirtualMount_onQuery(
     test_VirtualMount this,
     corto_query *query)
 {
-/* $begin(test/VirtualMount/onQuery) */
 
     return corto_ll_iterAlloc(this->data);
 
-/* $end */
 }
+

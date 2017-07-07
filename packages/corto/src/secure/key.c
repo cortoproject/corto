@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * key.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 static corto_secure_key corto_secure_keyInstance;
 static corto_string corto_secure_token;
 static corto_ll corto_secure_locks[CORTO_MAX_SCOPE_DEPTH];
@@ -146,27 +140,23 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
     }
     return allowed != CORTO_SECURE_ACCESS_DENIED;
 }
-/* $end */
 
-corto_string _corto_secure_key_authenticate_v(
+corto_string corto_secure_key_authenticate_v(
     corto_secure_key this,
     corto_string user,
     corto_string password)
 {
-/* $begin(corto/secure/key/authenticate) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(user);
     CORTO_UNUSED(password);
 
     return NULL;
-/* $end */
 }
 
-int16_t _corto_secure_key_construct(
+int16_t corto_secure_key_construct(
     corto_secure_key this)
 {
-/* $begin(corto/secure/key/construct) */
     if (corto_secure_keyInstance != NULL) {
         corto_seterr("secure: a secure/key instance is already active");
         goto error;
@@ -183,17 +173,15 @@ int16_t _corto_secure_key_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-void _corto_secure_key_destruct(
+void corto_secure_key_destruct(
     corto_secure_key this)
 {
-/* $begin(corto/secure/key/destruct) */
     CORTO_UNUSED(this);
 
     corto_trace("secure: delete key");
     corto_secure_keyInstance = NULL;
 
-/* $end */
 }
+

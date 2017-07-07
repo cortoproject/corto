@@ -1,25 +1,17 @@
-/* $CORTO_GENERATED
- *
- * JsonReplicator.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_JsonReplicator_construct(
+int16_t test_JsonReplicator_construct(
     test_JsonReplicator this)
 {
-/* $begin(test/JsonReplicator/construct) */
 
     corto_mount_setContentType(this, "application/json");
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-/* $header(test/JsonReplicator/onQuery) */
+
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -27,12 +19,11 @@ void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
-/* $end */
-corto_resultIter _test_JsonReplicator_onQuery(
+
+corto_resultIter test_JsonReplicator_onQuery(
     test_JsonReplicator this,
     corto_query *query)
 {
-/* $begin(test/JsonReplicator/onQuery) */
     corto_ll data = corto_ll_new();
 
     /* Create top level objects */
@@ -72,5 +63,5 @@ corto_resultIter _test_JsonReplicator_onQuery(
 
     /* Return persistent iterator to request */
     return result;
-/* $end */
 }
+

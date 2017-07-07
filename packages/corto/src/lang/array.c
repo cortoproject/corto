@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * array.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_array_construct(
+int16_t corto_array_construct(
     corto_array this)
 {
-/* $begin(corto/lang/array/construct) */
     corto_uint32 elementTypeSize;
     corto_type elementType;
 
@@ -70,26 +63,22 @@ int16_t _corto_array_construct(
     return corto_type_construct(corto_type(this));
 error:
     return -1;
-/* $end */
 }
 
-void _corto_array_destruct(
+void corto_array_destruct(
     corto_array this)
 {
-/* $begin(corto/lang/array/destruct) */
     corto_release(this->elementType);
     this->elementType = NULL;
     corto_release(corto_collection(this)->elementType);
     corto_collection(this)->elementType = NULL;
     corto_type_destruct(corto_type(this));
-/* $end */
 }
 
-int16_t _corto_array_init(
+int16_t corto_array_init(
     corto_array this)
 {
-/* $begin(corto/lang/array/init) */
     corto_collection(this)->kind = CORTO_ARRAY;
     return corto_collection_init(corto_collection(this));
-/* $end */
 }
+

@@ -27,8 +27,8 @@
  * - an initial message
  * The name for the error code will be appended.
  */
-static void printError(int e, const char *msg) {
-    corto_seterr("%s: %s", msg, strerror(e));
+static void printError(int e, const char *ctx) {
+    corto_seterr("%s '%s'", strerror(e), ctx);
 }
 
 int corto_touch(const char *file) {
@@ -44,9 +44,9 @@ int corto_touch(const char *file) {
     return touch ? 0 : -1;
 }
 
-int corto_chdir(const char *name) {
-    if (chdir(name)) {
-        corto_seterr("%s: %s", name, strerror(errno));
+int corto_chdir(const char *dir) {
+    if (chdir(dir)) {
+        corto_seterr("%s '%s'", strerror(errno), dir);
         return -1;
     }
     return 0;

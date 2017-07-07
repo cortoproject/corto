@@ -938,7 +938,7 @@ corto_string g_oid(g_generator g, corto_object o, corto_id id) {
 /* ==== Generator file-utility class */
 
 /* Convert a filename to a filepath, depending on it's extension. */
-static corto_string g_filePath(g_generator g, corto_string filename, corto_char* buffer) {
+static corto_string g_filePath_intern(g_generator g, corto_string filename, corto_char* buffer) {
     corto_string result;
     corto_id path;
 
@@ -1149,6 +1149,28 @@ error:
     return NULL;
 }
 
+/* Get path for file */
+char* g_filePath(g_generator g, corto_id buffer, char *name, ...) {
+    corto_char namebuffer[512];
+    va_list args;
+    va_start(args, name);
+    vsprintf(namebuffer, name, args);
+    va_end(args);
+    return g_filePath_intern(g, namebuffer, buffer);
+}
+
+/* Get path for hidden file */
+char* g_hiddenFilePath(g_generator g, corto_id buffer, char *name, ...) {
+    CORTO_UNUSED(g);
+    corto_char namebuffer[512];
+    va_list args;
+    va_start(args, name);
+    vsprintf(namebuffer, name, args);
+    va_end(args);
+    sprintf(buffer, ".corto/%s", namebuffer);
+    return buffer;    
+}
+
 /* Open file */
 g_file g_fileOpen(g_generator g, corto_string name, ...) {
     corto_char filepath[512];
@@ -1157,7 +1179,7 @@ g_file g_fileOpen(g_generator g, corto_string name, ...) {
     va_start(args, name);
     vsprintf(namebuffer, name, args);
     va_end(args);
-    return g_fileOpenIntern(g, g_filePath(g, namebuffer, filepath));
+    return g_fileOpenIntern(g, g_filePath_intern(g, namebuffer, filepath));
 }
 
 /* Open hidden file for writing. */

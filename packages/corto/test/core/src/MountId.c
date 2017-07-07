@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * MountId.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_MountId_tc_id(
+void test_MountId_tc_id(
     test_MountId this)
 {
-/* $begin(test/MountId/tc_id) */
     test_IdMount m = test_IdMountCreate(root_o, NULL);
 
     /* Create object & request id from mount */
@@ -21,13 +14,11 @@ void _test_MountId_tc_id(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(m) == 0);
 
-/* $end */
 }
 
-void _test_MountId_tc_idForNested(
+void test_MountId_tc_idForNested(
     test_MountId this)
 {
-/* $begin(test/MountId/tc_idForNested) */
     test_IdMount m = test_IdMountCreate(root_o, NULL);
 
     /* Create object & request id from mount */
@@ -40,13 +31,11 @@ void _test_MountId_tc_idForNested(
     test_assert(corto_delete(p) == 0);
     test_assert(corto_delete(m) == 0);
 
-/* $end */
 }
 
-void _test_MountId_tc_idTypeFilter(
+void test_MountId_tc_idTypeFilter(
     test_MountId this)
 {
-/* $begin(test/MountId/tc_idTypeFilter) */
     test_IdMount m = test_IdMountCreate(root_o, corto_int32_o);
 
     /* Create object with a type that does not match the id mount */
@@ -62,13 +51,11 @@ void _test_MountId_tc_idTypeFilter(
     test_assertstr(corto_idof(o), "some_unique_id");
     test_assert(corto_delete(m) == 0);
 
-/* $end */
 }
 
-void _test_MountId_tc_noIdAvailable(
+void test_MountId_tc_noIdAvailable(
     test_MountId this)
 {
-/* $begin(test/MountId/tc_noIdAvailable) */
 
     corto_object o = corto_declareChild(root_o, NULL, corto_void_o);
     test_assert(o != NULL);
@@ -77,5 +64,5 @@ void _test_MountId_tc_noIdAvailable(
     test_assert(strcmp(corto_idof(o), "some_unique_id"));
     corto_delete(o);
     
-/* $end */
 }
+

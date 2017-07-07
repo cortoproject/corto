@@ -1,32 +1,22 @@
-/* $CORTO_GENERATED
- *
- * struct.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_interface.h"
 #include "_class.h"
-/* $end */
 
-bool _corto_struct_castable_v(
+bool corto_struct_castable_v(
     corto_struct this,
     corto_type type)
 {
-/* $begin(corto/lang/struct/castable) */
     return corto_struct_compatible(this, type);
-/* $end */
 }
 
-bool _corto_struct_compatible_v(
+bool corto_struct_compatible_v(
     corto_struct this,
     corto_type type)
 {
-/* $begin(corto/lang/struct/compatible) */
     corto_bool result;
 
     corto_assert(corto_class_instanceof(corto_struct_o, this), "struct::compatible called on non-struct object.");
@@ -50,13 +40,11 @@ bool _corto_struct_compatible_v(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_struct_construct(
+int16_t corto_struct_construct(
     corto_struct this)
 {
-/* $begin(corto/lang/struct/construct) */
     corto_struct base;
     corto_uint16 alignment;
     corto_uint32 size;
@@ -197,16 +185,14 @@ int16_t _corto_struct_construct(
         }
     }
 
-    return corto_interface_construct(this);
+    return safe_corto_interface_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_struct_init(
+int16_t corto_struct_init(
     corto_struct this)
 {
-/* $begin(corto/lang/struct/init) */
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
     if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
         this->baseAccess = CORTO_GLOBAL;
@@ -222,14 +208,12 @@ int16_t _corto_struct_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-corto_member _corto_struct_resolveMember_v(
+corto_member corto_struct_resolveMember_v(
     corto_struct this,
     corto_string name)
 {
-/* $begin(corto/lang/struct/resolveMember) */
     corto_interface base;
     corto_member m;
 
@@ -240,5 +224,5 @@ corto_member _corto_struct_resolveMember_v(
     }while(!m && (base=corto_interface(base)->base));
 
     return m;
-/* $end */
 }
+

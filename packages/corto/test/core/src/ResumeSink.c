@@ -1,77 +1,58 @@
-/* $CORTO_GENERATED
- *
- * ResumeSink.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_ResumeSink_onDeclare(
+void test_ResumeSink_onDeclare(
     corto_observerEvent *e)
 {
-/* $begin(test/ResumeSink/onDeclare) */
     test_ResumeSink this = e->instance;
     this->declared ++;
 
-/* $end */
 }
 
-void _test_ResumeSink_onDefine(
+void test_ResumeSink_onDefine(
     corto_observerEvent *e)
 {
-/* $begin(test/ResumeSink/onDefine) */
     test_ResumeSink this = e->instance;
     this->defined ++;
 
-/* $end */
 }
 
-void _test_ResumeSink_onDelete(
+void test_ResumeSink_onDelete(
     corto_observerEvent *e)
 {
-/* $begin(test/ResumeSink/onDelete) */
     test_ResumeSink this = e->instance;
     this->deleted ++;
 
-/* $end */
 }
 
-void _test_ResumeSink_onResume(
+void test_ResumeSink_onResume(
     corto_observerEvent *e)
 {
-/* $begin(test/ResumeSink/onResume) */
     test_ResumeSink this = e->instance;
     this->resumed ++;
 
-/* $end */
 }
 
-void _test_ResumeSink_onSuspend(
+void test_ResumeSink_onSuspend(
     corto_observerEvent *e)
 {
-/* $begin(test/ResumeSink/onSuspend) */
     test_ResumeSink this = e->instance;
     this->suspended ++;
 
-/* $end */
 }
 
-void _test_ResumeSink_onUpdate(
+void test_ResumeSink_onUpdate(
     corto_observerEvent *e)
 {
-/* $begin(test/ResumeSink/onUpdate) */
     test_ResumeSink this = e->instance;
     this->updated ++;
 
-/* $end */
 }
 
-void _test_ResumeSink_setup(
+void test_ResumeSink_setup(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/setup) */
     /* Register sink mount */
     corto_voidCreateChild_auto(root_o, mount);
     test_SinkMountCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
@@ -86,13 +67,11 @@ void _test_ResumeSink_setup(
     corto_observer_observe(test_ResumeSink_onResume_o, this, mount);
     corto_observer_observe(test_ResumeSink_onSuspend_o, this, mount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_cleanupParentFromResumedChild(
+void test_ResumeSink_tc_cleanupParentFromResumedChild(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_cleanupParentFromResumedChild) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -126,13 +105,11 @@ void _test_ResumeSink_tc_cleanupParentFromResumedChild(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_define(
+void test_ResumeSink_tc_define(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_define) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -188,13 +165,11 @@ void _test_ResumeSink_tc_define(
     corto_release(mount);
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineFromNestedVirtualMountPoint(
+void test_ResumeSink_tc_defineFromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineFromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -215,13 +190,11 @@ void _test_ResumeSink_tc_defineFromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineFromVirtualMountPoint(
+void test_ResumeSink_tc_defineFromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineFromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -242,43 +215,35 @@ void _test_ResumeSink_tc_defineFromVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineMismatchingTypeFromVirtualMountPoint(
+void test_ResumeSink_tc_defineMismatchingTypeFromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineMismatchingTypeFromVirtualMountPoint) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineMismatchingTypeNested1FromVirtualMountPoint(
+void test_ResumeSink_tc_defineMismatchingTypeNested1FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineMismatchingTypeNested1FromVirtualMountPoint) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineMismatchingTypeNested2FromVirtualMountPoint(
+void test_ResumeSink_tc_defineMismatchingTypeNested2FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineMismatchingTypeNested2FromVirtualMountPoint) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineNested1(
+void test_ResumeSink_tc_defineNested1(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested1) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -342,13 +307,11 @@ void _test_ResumeSink_tc_defineNested1(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
+void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested1FromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -377,23 +340,19 @@ void _test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineNested1FromVirtualMountPoint(
+void test_ResumeSink_tc_defineNested1FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested1FromVirtualMountPoint) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineNested2(
+void test_ResumeSink_tc_defineNested2(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested2) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -457,33 +416,27 @@ void _test_ResumeSink_tc_defineNested2(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineNested2FromNestedVirtualMountPoint(
+void test_ResumeSink_tc_defineNested2FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested2FromNestedVirtualMountPoint) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_defineNested2FromVirtualMountPoint(
+void test_ResumeSink_tc_defineNested2FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_defineNested2FromVirtualMountPoint) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookup(
+void test_ResumeSink_tc_lookup(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookup) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -529,13 +482,11 @@ void _test_ResumeSink_tc_lookup(
     test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 1);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupFromMount(
+void test_ResumeSink_tc_lookupFromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupFromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -585,13 +536,11 @@ void _test_ResumeSink_tc_lookupFromMount(
     test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 1);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupFromNestedVirtualMountPoint(
+void test_ResumeSink_tc_lookupFromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupFromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -611,13 +560,11 @@ void _test_ResumeSink_tc_lookupFromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupFromVirtualMountPoint(
+void test_ResumeSink_tc_lookupFromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupFromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -637,13 +584,11 @@ void _test_ResumeSink_tc_lookupFromVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested1(
+void test_ResumeSink_tc_lookupNested1(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested1) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -689,13 +634,11 @@ void _test_ResumeSink_tc_lookupNested1(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested1FromMount(
+void test_ResumeSink_tc_lookupNested1FromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested1FromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -745,13 +688,11 @@ void _test_ResumeSink_tc_lookupNested1FromMount(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
+void test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested1FromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -777,13 +718,11 @@ void _test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
+void test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested1FromObjectFromMount) */
 
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
@@ -846,13 +785,11 @@ void _test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested1FromVirtualMountPoint(
+void test_ResumeSink_tc_lookupNested1FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested1FromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -872,13 +809,11 @@ void _test_ResumeSink_tc_lookupNested1FromVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested1NotExist(
+void test_ResumeSink_tc_lookupNested1NotExist(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested1NotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -906,13 +841,11 @@ void _test_ResumeSink_tc_lookupNested1NotExist(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested2(
+void test_ResumeSink_tc_lookupNested2(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested2) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -958,13 +891,11 @@ void _test_ResumeSink_tc_lookupNested2(
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested2FromMount(
+void test_ResumeSink_tc_lookupNested2FromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested2FromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1014,13 +945,11 @@ void _test_ResumeSink_tc_lookupNested2FromMount(
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
+void test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested2FromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1051,13 +980,11 @@ void _test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
+void test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested2FromObjectFromMount) */
 
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
@@ -1134,13 +1061,11 @@ void _test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
+void test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested2FromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1171,13 +1096,11 @@ void _test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNested2NotExist(
+void test_ResumeSink_tc_lookupNested2NotExist(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNested2NotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1205,13 +1128,11 @@ void _test_ResumeSink_tc_lookupNested2NotExist(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_lookupNotExist(
+void test_ResumeSink_tc_lookupNotExist(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_lookupNotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1239,13 +1160,11 @@ void _test_ResumeSink_tc_lookupNotExist(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolve(
+void test_ResumeSink_tc_resolve(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolve) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1291,13 +1210,11 @@ void _test_ResumeSink_tc_resolve(
     test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 1);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveFromMount(
+void test_ResumeSink_tc_resolveFromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveFromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1347,13 +1264,11 @@ void _test_ResumeSink_tc_resolveFromMount(
     test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 1);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveFromNestedVirtualMountPoint(
+void test_ResumeSink_tc_resolveFromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveFromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1373,13 +1288,11 @@ void _test_ResumeSink_tc_resolveFromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveFromVirtualMountPoint(
+void test_ResumeSink_tc_resolveFromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveFromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1400,13 +1313,11 @@ void _test_ResumeSink_tc_resolveFromVirtualMountPoint(
     test_assert(corto_delete(vmount) == 0);
 
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested1(
+void test_ResumeSink_tc_resolveNested1(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1452,13 +1363,11 @@ void _test_ResumeSink_tc_resolveNested1(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested1FromMount(
+void test_ResumeSink_tc_resolveNested1FromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1FromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1508,13 +1417,11 @@ void _test_ResumeSink_tc_resolveNested1FromMount(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
+void test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1FromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1540,13 +1447,11 @@ void _test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
+void test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1FromObjectFromMount) */
 
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
@@ -1609,13 +1514,11 @@ void _test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 2);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested1FromVirtualMountPoint(
+void test_ResumeSink_tc_resolveNested1FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1FromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1636,13 +1539,11 @@ void _test_ResumeSink_tc_resolveNested1FromVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested1NotExist(
+void test_ResumeSink_tc_resolveNested1NotExist(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested1NotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1670,13 +1571,11 @@ void _test_ResumeSink_tc_resolveNested1NotExist(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested2(
+void test_ResumeSink_tc_resolveNested2(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1722,13 +1621,11 @@ void _test_ResumeSink_tc_resolveNested2(
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested2FromMount(
+void test_ResumeSink_tc_resolveNested2FromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2FromMount) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1778,13 +1675,11 @@ void _test_ResumeSink_tc_resolveNested2FromMount(
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
+void test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2FromNestedVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1815,13 +1710,11 @@ void _test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
+void test_ResumeSink_tc_resolveNested2FromObjectFromMount(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2FromObjectFromMount) */
 
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
@@ -1898,13 +1791,11 @@ void _test_ResumeSink_tc_resolveNested2FromObjectFromMount(
     test_assertint(this->resumed, 3);
     test_assertint(this->suspended, 3);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested2FromVirtualMountPoint(
+void test_ResumeSink_tc_resolveNested2FromVirtualMountPoint(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2FromVirtualMountPoint) */
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -1924,13 +1815,11 @@ void _test_ResumeSink_tc_resolveNested2FromVirtualMountPoint(
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNested2NotExist(
+void test_ResumeSink_tc_resolveNested2NotExist(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNested2NotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1958,13 +1847,11 @@ void _test_ResumeSink_tc_resolveNested2NotExist(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resolveNotExist(
+void test_ResumeSink_tc_resolveNotExist(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resolveNotExist) */
     test_assertint(*test_constructCalled_o, 0);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 0);
@@ -1992,13 +1879,11 @@ void _test_ResumeSink_tc_resolveNotExist(
 
     corto_release(sinkMount);
 
-/* $end */
 }
 
-void _test_ResumeSink_tc_resumeNestedFromMultiple(
+void test_ResumeSink_tc_resumeNestedFromMultiple(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/tc_resumeNestedFromMultiple) */
 
     /* Create two mounts that mounts data under vmount, which does not exist in the
      * RAM store. */
@@ -2025,13 +1910,11 @@ void _test_ResumeSink_tc_resumeNestedFromMultiple(
     test_assert(corto_delete(mount2) == 0);
     test_assert(corto_delete(vmount) == 0);
 
-/* $end */
 }
 
-void _test_ResumeSink_teardown(
+void test_ResumeSink_teardown(
     test_ResumeSink this)
 {
-/* $begin(test/ResumeSink/teardown) */
     corto_object mount = corto_resolve(NULL, "mount");
     corto_observer_unobserve(test_ResumeSink_onDeclare_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onDefine_o, this, mount);
@@ -2040,5 +1923,5 @@ void _test_ResumeSink_teardown(
     corto_observer_unobserve(test_ResumeSink_onResume_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onSuspend_o, this, mount);
     corto_release(mount);
-/* $end */
 }
+

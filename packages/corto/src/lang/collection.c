@@ -1,18 +1,11 @@
-/* $CORTO_GENERATED
- *
- * collection.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-bool _corto_collection_castable_v(
+bool corto_collection_castable_v(
     corto_collection this,
     corto_type type)
 {
-/* $begin(corto/lang/collection/castable) */
     corto_bool result = FALSE;
     if (type->kind == CORTO_COLLECTION) {
         corto_collection t = corto_collection(type);
@@ -30,14 +23,12 @@ bool _corto_collection_castable_v(
     }
 
     return result;
-/* $end */
 }
 
-bool _corto_collection_compatible_v(
+bool corto_collection_compatible_v(
     corto_collection this,
     corto_type type)
 {
-/* $begin(corto/lang/collection/compatible) */
     corto_bool result = FALSE;
 
     if (type->kind == CORTO_COLLECTION) {
@@ -54,22 +45,18 @@ bool _corto_collection_compatible_v(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_collection_init(
+int16_t corto_collection_init(
     corto_collection this)
 {
-/* $begin(corto/lang/collection/init) */
     corto_type(this)->kind = CORTO_COLLECTION;
     return corto_type_init(corto_type(this));
-/* $end */
 }
 
-bool _corto_collection_requiresAlloc(
+bool corto_collection_requiresAlloc(
     corto_type elementType)
 {
-/* $begin(corto/lang/collection/requiresAlloc) */
     corto_bool result = TRUE;
 
     if (elementType->reference) {
@@ -119,5 +106,5 @@ bool _corto_collection_requiresAlloc(
     }
 
     return result;
-/* $end */
 }
+

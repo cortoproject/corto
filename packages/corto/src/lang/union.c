@@ -1,22 +1,14 @@
-/* $CORTO_GENERATED
- *
- * union.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_interface.h"
 #include "_class.h"
-/* $end */
 
-int16_t _corto_union_construct(
+int16_t corto_union_construct(
     corto_union this)
 {
-/* $begin(corto/lang/union/construct) */
     corto_uint32 size = 0;
     corto_uint8 alignment = 0;
 
@@ -60,17 +52,15 @@ int16_t _corto_union_construct(
     corto_type(this)->size = size;
     corto_type(this)->alignment = alignment;
 
-    return corto_type_construct(this);
+    return safe_corto_type_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-corto_member _corto_union_findCase(
+corto_member corto_union_findCase(
     corto_union this,
     int32_t discriminator)
 {
-/* $begin(corto/lang/union/findCase) */
     corto_member member = NULL;
     corto_bool found = FALSE;
     corto_uint32 i = 0;
@@ -100,15 +90,13 @@ corto_member _corto_union_findCase(
     }
 
     return member;
-/* $end */
 }
 
-int16_t _corto_union_init(
+int16_t corto_union_init(
     corto_union this)
 {
-/* $begin(corto/lang/union/init) */
 
-    if (corto_interface_init(this)) {
+    if (safe_corto_interface_init(this)) {
         goto error;
     }
 
@@ -118,5 +106,5 @@ int16_t _corto_union_init(
     return 0;
 error:
     return -1;
-/* $end */
 }
+

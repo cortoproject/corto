@@ -1,20 +1,13 @@
-/* $CORTO_GENERATED
- *
- * EmptySinkMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_EmptySinkMount_construct(
+int16_t test_EmptySinkMount_construct(
     test_EmptySinkMount this)
 {
-/* $begin(test/EmptySinkMount/construct) */
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
     return corto_mount_construct(this);
 
-/* $end */
 }
+

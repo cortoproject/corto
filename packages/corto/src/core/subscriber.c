@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * subscriber.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "entityadmin.h"
 #include "_object.h"
 
@@ -556,12 +550,10 @@ error:
     return -1;
 }
 
-/* $end */
 
-int16_t _corto_subscriber_construct(
+int16_t corto_subscriber_construct(
     corto_subscriber this)
 {
-/* $begin(corto/core/subscriber/construct) */
     if (!this->query.select || !this->query.select[0]) {
         corto_seterr("'null' is not a valid subscriber expression");
         goto error;
@@ -604,39 +596,33 @@ int16_t _corto_subscriber_construct(
         corto_ptr_setstr(&this->query.type, id);
     }
 
-    return corto_observer_construct(this);
+    return safe_corto_observer_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-void _corto_subscriber_deinit(
+void corto_subscriber_deinit(
     corto_subscriber this)
 {
-/* $begin(corto/core/subscriber/deinit) */
 
     /* Delete matchProgram resources only when subscriber itself is deallocated 
      * as notifications might still take place when subscriber is deleted. */
     corto_matchProgram_free((corto_matchProgram)this->matchProgram);
 
-/* $end */
 }
 
-void _corto_subscriber_destruct(
+void corto_subscriber_destruct(
     corto_subscriber this)
 {
-/* $begin(corto/core/subscriber/destruct) */
 
     /* Unsubscribe all entities of this subscriber */
     corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
 
-/* $end */
 }
 
-int16_t _corto_subscriber_init(
+int16_t corto_subscriber_init(
     corto_subscriber this)
 {
-/* $begin(corto/core/subscriber/init) */
     corto_parameter *p;
     corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
     corto_function(this)->parameters.length = 1;
@@ -647,15 +633,13 @@ int16_t _corto_subscriber_init(
     p->passByReference = FALSE;
     corto_ptr_setref(&p->type, corto_subscriberEvent_o);
 
-    return corto_function_init(this);
-/* $end */
+    return safe_corto_function_init(this);
 }
 
-int16_t _corto_subscriber_subscribe(
+int16_t corto_subscriber_subscribe(
     corto_subscriber this,
     corto_object instance)
 {
-/* $begin(corto/core/subscriber/subscribe(object instance)) */
     corto_iter it;
 
     corto_debug("subscriber: '%s' subscribing for '%s', '%s'",
@@ -704,19 +688,17 @@ int16_t _corto_subscriber_subscribe(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_subscriber_unsubscribe(
+int16_t corto_subscriber_unsubscribe(
     corto_subscriber this,
     corto_object instance)
 {
-/* $begin(corto/core/subscriber/unsubscribe(object instance)) */
     corto_debug("subscriber '%s': unsubscribe for %s, %s",
       corto_fullpath(NULL, this),
       this->query.from,
       this->query.select);
 
     return corto_subscriber_unsubscribeIntern(this, instance, FALSE);
-/* $end */
 }
+

@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * SelectMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_SelectMount_setup(
+void test_SelectMount_setup(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/setup) */
 
     /* Create dummy object */
     corto_attr old = corto_setAttr(CORTO_ATTR_OBSERVABLE);
@@ -23,13 +16,11 @@ void _test_SelectMount_setup(
 
     corto_enableload(FALSE);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
+void test_SelectMount_tc_selectGrandparentFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectGrandparentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -46,13 +37,11 @@ void _test_SelectMount_tc_selectGrandparentFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectInvertCase(
+void test_SelectMount_tc_selectInvertCase(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectInvertCase) */
     corto_result *result;
     corto_iter iter;
 
@@ -69,13 +58,11 @@ void _test_SelectMount_tc_selectInvertCase(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectInvertCaseFilter(
+void test_SelectMount_tc_selectInvertCaseFilter(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectInvertCaseFilter) */
     corto_result *result;
     corto_iter iter;
 
@@ -92,13 +79,11 @@ void _test_SelectMount_tc_selectInvertCaseFilter(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectInvertCaseScope(
+void test_SelectMount_tc_selectInvertCaseScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectInvertCaseScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -115,13 +100,11 @@ void _test_SelectMount_tc_selectInvertCaseScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectIteratorPartialRelease(
+void test_SelectMount_tc_selectIteratorPartialRelease(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectIteratorPartialRelease) */
     test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
     test_assert(mount != NULL);
 
@@ -143,13 +126,11 @@ void _test_SelectMount_tc_selectIteratorPartialRelease(
 
     test_assert(corto_delete(mount) == 0);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
+void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectIteratorPartialReleaseTwoMounts) */
     corto_iter it;
     corto_int32 i = 0;
 
@@ -179,13 +160,11 @@ void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
     test_assert(corto_delete(mountB) == 0);
     test_assert(corto_delete(mount) == 0);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
+void test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectIteratorPartialReleaseTwoMountsNested) */
     test_MountIterCount mountA = test_MountIterCountCreateChild(root_o, "mount", NULL);
     test_assert(mountA != NULL);
 
@@ -215,13 +194,11 @@ void _test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
     test_assert(corto_delete(mountA) == 0);
     test_assert(corto_delete(mountB) == 0);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectIteratorRelease(
+void test_SelectMount_tc_selectIteratorRelease(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectIteratorRelease) */
     test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
     corto_iter it;
     corto_int32 count = 0;
@@ -241,13 +218,11 @@ void _test_SelectMount_tc_selectIteratorRelease(
 
     test_assert(corto_delete(mount) == 0);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectParentFromScope(
+void test_SelectMount_tc_selectParentFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectParentFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -264,13 +239,11 @@ void _test_SelectMount_tc_selectParentFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectParentFromVirtualScope(
+void test_SelectMount_tc_selectParentFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectParentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -286,13 +259,11 @@ void _test_SelectMount_tc_selectParentFromVirtualScope(
     test_assertstr(result->type, "void");
 
     test_assert(!corto_iter_hasNext(&iter));
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScope(
+void test_SelectMount_tc_selectScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -325,13 +296,11 @@ void _test_SelectMount_tc_selectScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeFilter(
+void test_SelectMount_tc_selectScopeFilter(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeFilter) */
     corto_result *result;
     corto_iter iter;
 
@@ -357,13 +326,11 @@ void _test_SelectMount_tc_selectScopeFilter(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeFilterFromScope(
+void test_SelectMount_tc_selectScopeFilterFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeFilterFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -388,13 +355,11 @@ void _test_SelectMount_tc_selectScopeFilterFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
+void test_SelectMount_tc_selectScopeFilterFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeFilterFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -419,13 +384,11 @@ void _test_SelectMount_tc_selectScopeFilterFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeFromScope(
+void test_SelectMount_tc_selectScopeFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -460,13 +423,11 @@ void _test_SelectMount_tc_selectScopeFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeFromVirtualMount(
+void test_SelectMount_tc_selectScopeFromVirtualMount(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeFromVirtualMount) */
 
     corto_object m = test_VirtualMountCreate("/data");
     test_assert(m != NULL);
@@ -497,13 +458,11 @@ void _test_SelectMount_tc_selectScopeFromVirtualMount(
 
     test_assert(!corto_iter_hasNext(&it));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeFromVirtualScope(
+void test_SelectMount_tc_selectScopeFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -535,13 +494,11 @@ void _test_SelectMount_tc_selectScopeFromVirtualScope(
     test_assertstr(result->type, "uint32");
 
     test_assert(!corto_iter_hasNext(&iter));
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeMixed(
+void test_SelectMount_tc_selectScopeMixed(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeMixed) */
     corto_result *result;
     corto_iter iter;
 
@@ -606,13 +563,11 @@ void _test_SelectMount_tc_selectScopeMixed(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeNested(
+void test_SelectMount_tc_selectScopeNested(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeNested) */
     corto_result *result;
     corto_iter iter;
 
@@ -645,13 +600,11 @@ void _test_SelectMount_tc_selectScopeNested(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeNestedDirty(
+void test_SelectMount_tc_selectScopeNestedDirty(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeNestedDirty) */
     corto_result *result;
     corto_iter iter;
 
@@ -684,13 +637,11 @@ void _test_SelectMount_tc_selectScopeNestedDirty(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
+void test_SelectMount_tc_selectScopeNestedDirtyFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeNestedDirtyFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -723,13 +674,11 @@ void _test_SelectMount_tc_selectScopeNestedDirtyFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
+void test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeNestedDirtyFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -754,13 +703,11 @@ void _test_SelectMount_tc_selectScopeNestedDirtyFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeNestedFromScope(
+void test_SelectMount_tc_selectScopeNestedFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeNestedFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -793,13 +740,11 @@ void _test_SelectMount_tc_selectScopeNestedFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
+void test_SelectMount_tc_selectScopeNestedFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectScopeNestedFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -824,13 +769,11 @@ void _test_SelectMount_tc_selectScopeNestedFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingle(
+void test_SelectMount_tc_selectSingle(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingle) */
     corto_result *result;
     corto_iter iter;
 
@@ -847,13 +790,11 @@ void _test_SelectMount_tc_selectSingle(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleFromScope(
+void test_SelectMount_tc_selectSingleFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -870,13 +811,11 @@ void _test_SelectMount_tc_selectSingleFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleFromScopeTree(
+void test_SelectMount_tc_selectSingleFromScopeTree(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleFromScopeTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -893,23 +832,19 @@ void _test_SelectMount_tc_selectSingleFromScopeTree(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleFromVirtualMount(
+void test_SelectMount_tc_selectSingleFromVirtualMount(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleFromVirtualMount) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleFromVirtualScope(
+void test_SelectMount_tc_selectSingleFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -926,13 +861,11 @@ void _test_SelectMount_tc_selectSingleFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleNested(
+void test_SelectMount_tc_selectSingleNested(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleNested) */
     corto_result *result;
     corto_iter iter;
 
@@ -949,13 +882,11 @@ void _test_SelectMount_tc_selectSingleNested(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleNestedFromScope(
+void test_SelectMount_tc_selectSingleNestedFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleNestedFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -972,13 +903,11 @@ void _test_SelectMount_tc_selectSingleNestedFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
+void test_SelectMount_tc_selectSingleNestedFromScopeTree(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleNestedFromScopeTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -995,13 +924,11 @@ void _test_SelectMount_tc_selectSingleNestedFromScopeTree(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
+void test_SelectMount_tc_selectSingleNestedFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleNestedFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1018,13 +945,11 @@ void _test_SelectMount_tc_selectSingleNestedFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleTree(
+void test_SelectMount_tc_selectSingleTree(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -1049,13 +974,11 @@ void _test_SelectMount_tc_selectSingleTree(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleTree2(
+void test_SelectMount_tc_selectSingleTree2(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleTree2) */
     corto_result *result;
     corto_iter iter;
 
@@ -1072,13 +995,11 @@ void _test_SelectMount_tc_selectSingleTree2(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectSingleTree3(
+void test_SelectMount_tc_selectSingleTree3(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectSingleTree3) */
     corto_result *result;
     corto_iter iter;
 
@@ -1095,13 +1016,11 @@ void _test_SelectMount_tc_selectSingleTree3(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTree(
+void test_SelectMount_tc_selectTree(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTree) */
     corto_result *result;
     corto_iter iter;
 
@@ -1214,13 +1133,11 @@ void _test_SelectMount_tc_selectTree(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeEmptyNestedScope(
+void test_SelectMount_tc_selectTreeEmptyNestedScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeEmptyNestedScope) */
     corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
     test_assert(b_o != NULL);
 
@@ -1256,13 +1173,11 @@ void _test_SelectMount_tc_selectTreeEmptyNestedScope(
     ret = corto_delete(b_o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeEmptyScope(
+void test_SelectMount_tc_selectTreeEmptyScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeEmptyScope) */
     corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
     test_assert(b_o != NULL);
 
@@ -1291,13 +1206,11 @@ void _test_SelectMount_tc_selectTreeEmptyScope(
     ret = corto_delete(b_o);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeFromNestedScope(
+void test_SelectMount_tc_selectTreeFromNestedScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeFromNestedScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1338,13 +1251,11 @@ void _test_SelectMount_tc_selectTreeFromNestedScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeFromScope(
+void test_SelectMount_tc_selectTreeFromScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeFromScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1409,23 +1320,19 @@ void _test_SelectMount_tc_selectTreeFromScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeFromVirtualMount(
+void test_SelectMount_tc_selectTreeFromVirtualMount(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeFromVirtualMount) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
+void test_SelectMount_tc_selectTreeFromVirtualNestedScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeFromVirtualNestedScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1466,13 +1373,11 @@ void _test_SelectMount_tc_selectTreeFromVirtualNestedScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectTreeFromVirtualScope(
+void test_SelectMount_tc_selectTreeFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectTreeFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1537,13 +1442,11 @@ void _test_SelectMount_tc_selectTreeFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
+void test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectVirtualGrandparentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1560,13 +1463,11 @@ void _test_SelectMount_tc_selectVirtualGrandparentFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
+void test_SelectMount_tc_selectVirtualParentFromVirtualScope(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/tc_selectVirtualParentFromVirtualScope) */
     corto_result *result;
     corto_iter iter;
 
@@ -1583,16 +1484,14 @@ void _test_SelectMount_tc_selectVirtualParentFromVirtualScope(
 
     test_assert(!corto_iter_hasNext(&iter));
 
-/* $end */
 }
 
-void _test_SelectMount_teardown(
+void test_SelectMount_teardown(
     test_SelectMount this)
 {
-/* $begin(test/SelectMount/teardown) */
 
     corto_delete(this->mount);
     this->mount = NULL;
 
-/* $end */
 }
+

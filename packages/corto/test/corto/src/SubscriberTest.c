@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * SubscriberTest.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header() */
+
 void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
 {
     test_SubscriberTest this = e->instance;
@@ -17,23 +11,19 @@ void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
     this->lastMask |= e->event;
     corto_subscriberListAppend(this->triggered, corto_subscriber(e->subscriber));
 }
-/* $end */
 
-void _test_SubscriberTest_clear(
+void test_SubscriberTest_clear(
     test_SubscriberTest this)
 {
-/* $begin(test/SubscriberTest/clear) */
 
     corto_subscriberListClear(this->triggered);
     this->lastMask = 0;
 
-/* $end */
 }
 
-int16_t _test_SubscriberTest_construct(
+int16_t test_SubscriberTest_construct(
     test_SubscriberTest this)
 {
-/* $begin(test/SubscriberTest/construct) */
     corto_int16 ret = 0;
 
     ret = corto_subscriber_subscribe(test_SubscriberTest_onAll_o, this);
@@ -49,13 +39,11 @@ int16_t _test_SubscriberTest_construct(
     test_assert(ret == 0);
 
     return 0;
-/* $end */
 }
 
-void _test_SubscriberTest_destruct(
+void test_SubscriberTest_destruct(
     test_SubscriberTest this)
 {
-/* $begin(test/SubscriberTest/destruct) */
     corto_int16 ret = 0;
 
     ret = corto_subscriber_unsubscribe(test_SubscriberTest_onAll_o, this);
@@ -70,13 +58,11 @@ void _test_SubscriberTest_destruct(
     ret = corto_subscriber_unsubscribe(test_SubscriberTest_onTree_o, this);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_SubscriberTest_onAll(
+void test_SubscriberTest_onAll(
     corto_subscriberEvent *e)
 {
-/* $begin(test/SubscriberTest/onAll) */
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
@@ -90,13 +76,11 @@ void _test_SubscriberTest_onAll(
         this->countUpdate ++;
     }
 
-/* $end */
 }
 
-void _test_SubscriberTest_onScope(
+void test_SubscriberTest_onScope(
     corto_subscriberEvent *e)
 {
-/* $begin(test/SubscriberTest/onScope) */
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
@@ -110,13 +94,11 @@ void _test_SubscriberTest_onScope(
         this->countUpdateScope ++;
     }
 
-/* $end */
 }
 
-void _test_SubscriberTest_onSelf(
+void test_SubscriberTest_onSelf(
     corto_subscriberEvent *e)
 {
-/* $begin(test/SubscriberTest/onSelf) */
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
@@ -130,13 +112,11 @@ void _test_SubscriberTest_onSelf(
         this->countUpdateSelf ++;
     }
 
-/* $end */
 }
 
-void _test_SubscriberTest_onTree(
+void test_SubscriberTest_onTree(
     corto_subscriberEvent *e)
 {
-/* $begin(test/SubscriberTest/onTree) */
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
@@ -150,5 +130,5 @@ void _test_SubscriberTest_onTree(
         this->countUpdateTree ++;
     }
 
-/* $end */
 }
+

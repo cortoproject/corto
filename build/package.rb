@@ -94,12 +94,6 @@ else
   TARGETDIR = "#{CORTO_TARGET}/#{INSTALL}/#{CORTO_VERSION}/#{TARGETPATH}" if not defined? TARGETDIR
 end
 
-if LOCAL == true then
-  if not defined? ADD_OWN_INCLUDE then
-    ADD_OWN_INCLUDE = true
-  end
-end
-
 # Define a convenience macro in the package that points to the installed ETC directory
 if not LOCAL then
   DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}\"'"
@@ -223,10 +217,6 @@ if NOCORTO == false then
         langStr = "--attr c4cpp=true --attr lang=cpp --attr hpp=include --attr cpp=src"
       end
 
-      if not defined? ADD_OWN_INCLUDE then
-        ADD_OWN_INCLUDE = true
-      end
-
       command =
         "#{DEBUGCMD}corto pp #{preload} #{localStr} --name #{PACKAGE} " +
         "--attr h=include --attr c=src #{PP_ATTR.map{|a| "--attr " + a}.join(" ")} " +
@@ -246,10 +236,6 @@ if NOCORTO == false then
       end
     end
     task :prebuild => [".corto/_project.#{EXT}"]
-  end
-else
-  if not defined? ADD_OWN_INCLUDE then
-    ADD_OWN_INCLUDE = true
   end
 end
 

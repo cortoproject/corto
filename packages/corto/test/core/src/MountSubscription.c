@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * MountSubscription.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_MountSubscription_tc_subscribeForMountWithTypeFilter(
+void test_MountSubscription_tc_subscribeForMountWithTypeFilter(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeForMountWithTypeFilter) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -62,13 +55,11 @@ void _test_MountSubscription_tc_subscribeForMountWithTypeFilter(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
+void test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeNestedForMountWithTypeFilter) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -147,13 +138,11 @@ void _test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeOnMountWithFromNull(
+void test_MountSubscription_tc_subscribeOnMountWithFromNull(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeOnMountWithFromNull) */
 
     /* Create default mount with 'from' set to NULL */
     corto_object m = corto_create(corto_mount_o);
@@ -168,13 +157,11 @@ void _test_MountSubscription_tc_subscribeOnMountWithFromNull(
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(m) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
+void test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeSameIdDifferentCase) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -215,13 +202,11 @@ void _test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeScope(
+void test_MountSubscription_tc_subscribeScope(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeScope) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -250,13 +235,11 @@ void _test_MountSubscription_tc_subscribeScope(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeScopeAlign(
+void test_MountSubscription_tc_subscribeScopeAlign(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeScopeAlign) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -286,13 +269,11 @@ void _test_MountSubscription_tc_subscribeScopeAlign(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeScopeTwice(
+void test_MountSubscription_tc_subscribeScopeTwice(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeScopeTwice) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -332,13 +313,11 @@ void _test_MountSubscription_tc_subscribeScopeTwice(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
+void test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeScopeTwiceSameSubscriber) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -379,13 +358,11 @@ void _test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeSingle(
+void test_MountSubscription_tc_subscribeSingle(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeSingle) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -414,13 +391,11 @@ void _test_MountSubscription_tc_subscribeSingle(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeSingleAlign(
+void test_MountSubscription_tc_subscribeSingleAlign(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeSingleAlign) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -450,13 +425,11 @@ void _test_MountSubscription_tc_subscribeSingleAlign(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeSingleTwice(
+void test_MountSubscription_tc_subscribeSingleTwice(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeSingleTwice) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -496,13 +469,11 @@ void _test_MountSubscription_tc_subscribeSingleTwice(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
+void test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeSingleTwiceSameSubscriber) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -543,13 +514,11 @@ void _test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTree(
+void test_MountSubscription_tc_subscribeTree(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTree) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -687,13 +656,11 @@ void _test_MountSubscription_tc_subscribeTree(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeAlign(
+void test_MountSubscription_tc_subscribeTreeAlign(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeAlign) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -833,53 +800,43 @@ void _test_MountSubscription_tc_subscribeTreeAlign(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeDefine(
+void test_MountSubscription_tc_subscribeTreeDefine(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeDefine) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeDefineNested(
+void test_MountSubscription_tc_subscribeTreeDefineNested(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeDefineNested) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeDelete(
+void test_MountSubscription_tc_subscribeTreeDelete(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeDelete) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeDeleteNested(
+void test_MountSubscription_tc_subscribeTreeDeleteNested(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeDeleteNested) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeTwice(
+void test_MountSubscription_tc_subscribeTreeTwice(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeTwice) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -1027,13 +984,11 @@ void _test_MountSubscription_tc_subscribeTreeTwice(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
+void test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTreeTwiceSameSubscriber) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -1182,13 +1137,11 @@ void _test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
+void test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTwoSingleOtherCtx) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -1237,13 +1190,11 @@ void _test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
 
-void _test_MountSubscription_tc_subscribeTwoSingleSameCtx(
+void test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     test_MountSubscription this)
 {
-/* $begin(test/MountSubscription/tc_subscribeTwoSingleSameCtx) */
     corto_object mountRoot = corto_createChild(root_o, "mountRoot", corto_void_o);
     test_assert(mountRoot != NULL);
 
@@ -1288,5 +1239,5 @@ void _test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
 
-/* $end */
 }
+

@@ -383,16 +383,21 @@ corto_iter corto_ll_iterAlloc(corto_ll list) {
 }
 
 void corto_ll_iterRelease(corto_iter *iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
+
     corto_dealloc(iter->ctx);
     iter->ctx = NULL;
 }
 
 void corto_ll_iterMoveFirst(corto_iter* iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     corto_iterData(*iter)->cur = 0;
     corto_iterData(*iter)->next = (corto_iterData(*iter)->list)->first;
 }
 
 void* corto_ll_iterMove(corto_iter* iter, unsigned int index) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
+
     void* result;
 
     result = NULL;
@@ -409,13 +414,60 @@ void* corto_ll_iterMove(corto_iter* iter, unsigned int index) {
     return result;
 }
 
+void *corto_ll_iterMoveFind(corto_iter *iter, corto_compare_cb comparator, void *data) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
+
+    corto_ll_iter_s *ctx = iter->ctx;
+    corto_ll_node current = ctx->cur;
+    void *result = NULL;
+
+    while(corto_ll_iterHasNext(iter)) {
+        void *o = corto_ll_iterNext(iter);
+        if (comparator(o, data)) {
+            result = o;
+            break;
+        }
+    }
+
+    /* If not found, start looking from beginning */
+    if (!result) {
+        corto_ll_iterMoveFirst(iter);
+
+        while(corto_ll_iterHasNext(iter)) {
+            void *o = corto_ll_iterNext(iter);
+
+            /* If at old position, we've looped around. Break out of loop. */
+            if (ctx->cur == current) {
+                break;
+            }
+
+            if (comparator(o, data)) {
+                result = o;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
+static int corto_ll_comparator_equals(void *o1, void *o2) {
+    return o1 == o2;
+}
+
+bool corto_ll_iterMoveTo(corto_iter *iter, void *o) {
+    return corto_ll_iterMoveFind(iter, corto_ll_comparator_equals, o) != NULL;
+}
+
 /* Can the iterator provide a 'next' value */
 int corto_ll_iterHasNext(corto_iter* iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     return corto_iterData(*iter)->next != 0;
 }
 
 /* Take next element of iterator */
 void* corto_ll_iterNext(corto_iter* iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     corto_ll_node current;
     void* result;
 
@@ -427,7 +479,8 @@ void* corto_ll_iterNext(corto_iter* iter) {
         result = current->data;
         corto_iterData(*iter)->cur = current;
     } else {
-        corto_critical("Illegal use of 'next' by corto_iter. Use 'hasNext' to check if data is still available.");
+        corto_critical(
+            "Illegal use of 'next' by corto_iter. Use 'hasNext' to check if data is still available.");
     }
 
     return result;
@@ -435,6 +488,7 @@ void* corto_ll_iterNext(corto_iter* iter) {
 
 /* Take next element of iterator */
 void* corto_ll_iterNextPtr(corto_iter* iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     corto_ll_node current;
     void* result;
 
@@ -452,8 +506,19 @@ void* corto_ll_iterNextPtr(corto_iter* iter) {
     return result;
 }
 
+void* corto_ll_iterCurrent(corto_iter* iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
+    corto_ll_node node = corto_iterData(*iter)->cur;
+    if (node) {
+        return node->data;
+    } else {
+        return NULL;
+    }
+}
+
 /* Remove the last-read element from the iterator. */
 void* corto_ll_iterRemove(corto_iter* iter) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     corto_ll_node current;
     void* result;
 
@@ -484,6 +549,7 @@ void* corto_ll_iterRemove(corto_iter* iter) {
 
 /* Insert element after current (update next of iterator) */
 void corto_ll_iterInsert(corto_iter* iter, void* o) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     corto_ll_node newNode;
     corto_ll_node current;
     corto_ll_node next;
@@ -513,6 +579,7 @@ void corto_ll_iterInsert(corto_iter* iter, void* o) {
 
 /* Set data of current element. */
 void corto_ll_iterSet(corto_iter* iter, void* o) {
+    corto_assert(iter->ctx != NULL, "iterator context not set");
     if (corto_iterData(*iter)->cur) {
         ((corto_ll_node)corto_iterData(*iter)->cur)->data = o;
     } else {

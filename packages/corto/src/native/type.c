@@ -1,18 +1,11 @@
-/* $CORTO_GENERATED
- *
- * type.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_native_type_init(
+int16_t corto_native_type_init(
     corto_native_type this)
 {
-/* $begin(corto/native/type/init) */
     corto_primitive(this)->width = CORTO_WIDTH_WORD;
-    return corto_binary_init(this);
-/* $end */
+    return safe_corto_binary_init(this);
 }
+

@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * mount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_object.h"
 extern corto_threadKey CORTO_KEY_MOUNT_RESULT;
 corto_entityAdmin corto_mount_admin = {
@@ -17,9 +11,8 @@ corto_entityAdmin corto_mount_admin = {
     .lock = CORTO_RWMUTEX_INITIALIZER,
     .changed = 0
 };
-/* $end */
 
-/* $header(corto/core/mount/construct) */
+
 void* corto_mount_thread(void* arg) {
     corto_mount this = arg;
     corto_float64 frequency = this->policy.sampleRate;
@@ -93,7 +86,7 @@ error:
 }
 
 corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
-    corto_method m = corto_interface_resolveMethod(corto_typeof(this), id);
+    corto_method m = safe_corto_interface_resolveMethod(corto_typeof(this), id);
     if (m && (corto_parentof(m) != corto_mount_o)) {
         return TRUE;
     } else {
@@ -101,11 +94,10 @@ corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
     }
 }
 
-/* $end */
-int16_t _corto_mount_construct(
+
+int16_t corto_mount_construct(
     corto_mount this)
 {
-/* $begin(corto/core/mount/construct) */
     corto_object dispatcher = NULL;
     corto_subscriber s = corto_subscriber(this);
 
@@ -190,7 +182,7 @@ int16_t _corto_mount_construct(
         }
     }
 
-    corto_int16 ret = corto_subscriber_construct(this);
+    corto_int16 ret = safe_corto_subscriber_construct(this);
     if (ret) {
         corto_entityAdmin_remove(&corto_mount_admin, s->query.from, this, this, FALSE);
     } else {
@@ -202,13 +194,11 @@ int16_t _corto_mount_construct(
     return ret;
 error:
     return -1;
-/* $end */
 }
 
-void _corto_mount_destruct(
+void corto_mount_destruct(
     corto_mount this)
 {
-/* $begin(corto/core/mount/destruct) */
     corto_mountSubscription *s = NULL;
 
     /* Signal thread ASAP to stop */
@@ -228,28 +218,24 @@ void _corto_mount_destruct(
         corto_threadJoin((corto_thread)this->thread, NULL);
     }
 
-    corto_subscriber_destruct(this);
+    safe_corto_subscriber_destruct(this);
 
     corto_assert(
         corto_entityAdmin_remove(&corto_mount_admin, this->super.query.from, this, this, FALSE) != -1, 
         "trying to remove mount that was never added to mountAdmin");
 
-/* $end */
 }
 
-corto_string _corto_mount_id(
+corto_string corto_mount_id(
     corto_mount this)
 {
-/* $begin(corto/core/mount/id) */
 
     return corto_mount_onId(this);
-/* $end */
 }
 
-int16_t _corto_mount_init(
+int16_t corto_mount_init(
     corto_mount this)
 {
-/* $begin(corto/core/mount/init) */
 
     this->policy.ownership = CORTO_REMOTE_OWNER;
     this->policy.readWrite = CORTO_READ|CORTO_WRITE;
@@ -257,17 +243,15 @@ int16_t _corto_mount_init(
     this->policy.expiryTime = -1;
     this->attr = CORTO_ATTR_PERSISTENT;
 
-    return corto_subscriber_init(this);
-/* $end */
+    return safe_corto_subscriber_init(this);
 }
 
-void _corto_mount_invoke(
+void corto_mount_invoke(
     corto_mount this,
     corto_object instance,
     corto_function proc,
     uintptr_t argptrs)
 {
-/* $begin(corto/core/mount/invoke) */
     corto_object owner = corto_ownerof(instance);
 
     if (owner == this) {
@@ -278,62 +262,52 @@ void _corto_mount_invoke(
         corto_setOwner(prevowner);
     }
 
-/* $end */
 }
 
-corto_string _corto_mount_onId_v(
+corto_string corto_mount_onId_v(
     corto_mount this)
 {
-/* $begin(corto/core/mount/onId) */
     CORTO_UNUSED(this);
     return NULL;
-/* $end */
 }
 
-void _corto_mount_onInvoke_v(
+void corto_mount_onInvoke_v(
     corto_mount this,
     corto_object instance,
     corto_function proc,
     uintptr_t argptrs)
 {
-/* $begin(corto/core/mount/onInvoke) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(instance);
     CORTO_UNUSED(proc);
     CORTO_UNUSED(argptrs);
 
-/* $end */
 }
 
-void _corto_mount_onNotify_v(
+void corto_mount_onNotify_v(
     corto_mount this,
     corto_subscriberEvent *event)
 {
-/* $begin(corto/core/mount/onNotify) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(event);
 
-/* $end */
 }
 
-void _corto_mount_onNotifyBatch_v(
+void corto_mount_onNotifyBatch_v(
     corto_mount this,
     corto_subscriberEventIter data)
 {
-/* $begin(corto/core/mount/onNotifyBatch) */
     
     CORTO_UNUSED(this);
     CORTO_UNUSED(data);
 
-/* $end */
 }
 
-void _corto_mount_onPoll_v(
+void corto_mount_onPoll_v(
     corto_mount this)
 {
-/* $begin(corto/core/mount/onPoll) */
     corto_event *e;
     corto_ll events = corto_ll_new();
 
@@ -352,14 +326,12 @@ void _corto_mount_onPoll_v(
 
     corto_ll_free(events);
     
-/* $end */
 }
 
-corto_resultIter _corto_mount_onQuery_v(
+corto_resultIter corto_mount_onQuery_v(
     corto_mount this,
     corto_query *query)
 {
-/* $begin(corto/core/mount/onQuery) */
     corto_resultIter result;
     CORTO_UNUSED(this);
     memset(&result, 0, sizeof(corto_iter));
@@ -376,90 +348,77 @@ corto_resultIter _corto_mount_onQuery_v(
     }
 
     return result;
-/* $end */
 }
 
-corto_resultIter _corto_mount_onQueryHistorical_v(
+corto_resultIter corto_mount_onQueryHistorical_v(
     corto_mount this,
     corto_query *query)
 {
-/* $begin(corto/core/mount/onQueryHistorical) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(query);
 
     return CORTO_ITER_EMPTY;
-/* $end */
 }
 
-corto_object _corto_mount_onResume_v(
+corto_object corto_mount_onResume_v(
     corto_mount this,
     corto_string parent,
     corto_string name,
     corto_object object)
 {
-/* $begin(corto/core/mount/onResume) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
     CORTO_UNUSED(name);
     CORTO_UNUSED(object);
 
     return NULL;
-/* $end */
 }
 
-uintptr_t _corto_mount_onSubscribe_v(
+uintptr_t corto_mount_onSubscribe_v(
     corto_mount this,
     corto_query *query,
     uintptr_t ctx)
 {
-/* $begin(corto/core/mount/onSubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(query);
     CORTO_UNUSED(ctx);
 
     return 0;
-/* $end */
 }
 
-uintptr_t _corto_mount_onTransactionBegin_v(
+uintptr_t corto_mount_onTransactionBegin_v(
     corto_mount this)
 {
-/* $begin(corto/core/mount/onTransactionBegin) */
 
     CORTO_UNUSED(this);
     return 0;
-/* $end */
 }
 
-void _corto_mount_onTransactionEnd_v(
+void corto_mount_onTransactionEnd_v(
     corto_mount this,
     corto_subscriberEventIter events,
     uintptr_t ctx)
 {
-/* $begin(corto/core/mount/onTransactionEnd) */
 
     CORTO_UNUSED(this);
     CORTO_UNUSED(events);
     CORTO_UNUSED(ctx);
 
-/* $end */
 }
 
-void _corto_mount_onUnsubscribe_v(
+void corto_mount_onUnsubscribe_v(
     corto_mount this,
     corto_query *query,
     uintptr_t ctx)
 {
-/* $begin(corto/core/mount/onUnsubscribe) */
     CORTO_UNUSED(this);
     CORTO_UNUSED(query);
     CORTO_UNUSED(ctx);
 
-/* $end */
 }
 
-/* $header(corto/core/mount/post) */
+
 static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subscriberEvent *e) {
     corto_iter iter = corto_ll_iter(this->events);
     corto_subscriberEvent *e2;
@@ -478,12 +437,11 @@ static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subs
 #define MOUNT_QUEUE_THRESHOLD 2000
 #define MOUNT_QUEUE_THRESHOLD_SLEEP 1000000
 
-/* $end */
-void _corto_mount_post(
+
+void corto_mount_post(
     corto_mount this,
     corto_event *e)
 {
-/* $begin(corto/core/mount/post) */
 
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
@@ -518,10 +476,9 @@ void _corto_mount_post(
         corto_assert(corto_release(e) == 0);
     }
 
-/* $end */
 }
 
-void _corto_mount_publish(
+void corto_mount_publish(
     corto_mount this,
     corto_eventMask event,
     corto_string from,
@@ -529,7 +486,6 @@ void _corto_mount_publish(
     corto_string type,
     uintptr_t value)
 {
-/* $begin(corto/core/mount/publish) */
     corto_id identifier;
     sprintf(identifier, "%s/%s/%s", corto_subscriber(this)->query.from, from, id);
     corto_cleanpath(identifier, identifier);
@@ -542,21 +498,19 @@ void _corto_mount_publish(
         (void*)value
     );
 
-/* $end */
 }
 
-/* $header(corto/core/mount/query) */
+
 void corto_mount_queryRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
     corto_ptr_deinit(&data->list, corto_resultList_o);
     corto_ll_iterRelease(iter);
 }
-/* $end */
-corto_resultIter _corto_mount_query(
+
+corto_resultIter corto_mount_query(
     corto_mount this,
     corto_query *query)
 {
-/* $begin(corto/core/mount/query) */
     corto_iter result;
     corto_ll r, prevResult = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
     corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, NULL);
@@ -573,16 +527,14 @@ corto_resultIter _corto_mount_query(
     corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, prevResult);
 
     return result;
-/* $end */
 }
 
-corto_object _corto_mount_resume(
+corto_object corto_mount_resume(
     corto_mount this,
     corto_string parent,
     corto_string name,
     corto_object o)
 {
-/* $begin(corto/core/mount/resume) */
     /* If objects from mount are not owned locally they cannot be resumed */
     if (this->policy.ownership != CORTO_LOCAL_OWNER) {
         return NULL;
@@ -702,14 +654,12 @@ corto_object _corto_mount_resume(
     return result;
 error:
     return NULL;
-/* $end */
 }
 
-void _corto_mount_return(
+void corto_mount_return(
     corto_mount this,
     corto_result *r)
 {
-/* $begin(corto/core/mount/return) */
     corto_ll result = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
 
     CORTO_UNUSED(this);
@@ -728,14 +678,12 @@ void _corto_mount_return(
     elem->leaf = r->leaf;
     corto_ll_append(result, elem);
 
-/* $end */
 }
 
-int16_t _corto_mount_setContentType(
+int16_t corto_mount_setContentType(
     corto_mount this,
     corto_string type)
 {
-/* $begin(corto/core/mount/setContentType) */
 
     if (corto_mount_setContentTypeIn(this, type)) {
         goto error;
@@ -748,14 +696,12 @@ int16_t _corto_mount_setContentType(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_mount_setContentTypeIn(
+int16_t corto_mount_setContentTypeIn(
     corto_mount this,
     corto_string type)
 {
-/* $begin(corto/core/mount/setContentTypeIn) */
 
     corto_ptr_setstr(&corto_subscriber(this)->contentType, type);
     corto_subscriber(this)->contentTypeHandle = (corto_word)corto_loadContentType(type);
@@ -766,14 +712,12 @@ int16_t _corto_mount_setContentTypeIn(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_mount_setContentTypeOut(
+int16_t corto_mount_setContentTypeOut(
     corto_mount this,
     corto_string type)
 {
-/* $begin(corto/core/mount/setContentTypeOut) */
 
     corto_ptr_setstr(&this->contentTypeOut, type);
     this->contentTypeOutHandle = (corto_word)corto_loadContentType(type);
@@ -784,10 +728,9 @@ int16_t _corto_mount_setContentTypeOut(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-/* $header(corto/core/mount/subscribe(/corto/core/query query)) */
+
 static corto_mountSubscription* corto_mount_findSubscription(
     corto_mount this,
     corto_query *q,
@@ -810,12 +753,11 @@ static corto_mountSubscription* corto_mount_findSubscription(
 
     return result;
 }
-/* $end */
-void _corto_mount_subscribe(
+
+void corto_mount_subscribe(
     corto_mount this,
     corto_query *query)
 {
-/* $begin(corto/core/mount/subscribe(/corto/core/query query)) */
     corto_word ctx = 0;
     corto_mountSubscription *subscription = NULL, *placeHolder = NULL;
     bool found = FALSE;
@@ -903,14 +845,12 @@ void _corto_mount_subscribe(
         if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
     }
 
-/* $end */
 }
 
-void _corto_mount_unsubscribe(
+void corto_mount_unsubscribe(
     corto_mount this,
     corto_query *query)
 {
-/* $begin(corto/core/mount/unsubscribe(/corto/core/query query)) */
     corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
 
@@ -940,5 +880,5 @@ void _corto_mount_unsubscribe(
         corto_dealloc(subscription);
     }
 
-/* $end */
 }
+

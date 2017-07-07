@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * loader.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_loader_construct(
+int16_t corto_loader_construct(
     corto_loader this)
 {
-/* $begin(corto/core/loader/construct) */
     static corto_int32 constructOnce;
 
     if (corto_ainc(&constructOnce) == 1) {
@@ -20,26 +13,23 @@ int16_t _corto_loader_construct(
         corto_ptr_setstr(&q->from, "/");
         corto_ptr_setstr(&q->type, "/corto/core/package");
         corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
-        if (corto_mount_setContentType(this, "text/json")) {
+        if (safe_corto_mount_setContentType(this, "text/json")) {
             return -1;;
         }
-        return corto_mount_construct(this);
+        return safe_corto_mount_construct(this);
     } else {
         return -1;
     }
 
-/* $end */
 }
 
-void _corto_loader_destruct(
+void corto_loader_destruct(
     corto_loader this)
 {
-/* $begin(corto/core/loader/destruct) */
-    corto_mount_destruct(this);
-/* $end */
+    safe_corto_mount_destruct(this);
 }
 
-/* $header(corto/core/loader/onQuery) */
+
 void corto_loader_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
 
@@ -170,12 +160,11 @@ void corto_loader_addDir(
         corto_lasterr();
     }
 }
-/* $end */
-corto_resultIter _corto_loader_onQuery_v(
+
+corto_resultIter corto_loader_onQuery_v(
     corto_loader this,
     corto_query *query)
 {
-/* $begin(corto/core/loader/onQuery) */
     corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
 
@@ -217,5 +206,5 @@ corto_resultIter _corto_loader_onQuery_v(
     corto_dealloc(globalPath);
 
     return result;
-/* $end */
 }
+

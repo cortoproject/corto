@@ -168,6 +168,13 @@ typedef enum corto_optionalActionKind {
     CORTO_WALK_OPTIONAL_PASSTHROUGH
 } corto_optionalActionKind;
 
+/* How should keys be serialized (default = 0, means serialize all) */
+typedef enum corto_keyActionKind {
+    CORTO_WALK_KEY_ALL,
+    CORTO_WALK_KEY_KEYS_ONLY,
+    CORTO_WALK_KEY_DATA_ONLY
+} corto_keyActionKind;
+
 struct corto_walk_opt {
     bool initialized;
     bool constructed;
@@ -177,6 +184,7 @@ struct corto_walk_opt {
 
     corto_aliasActionKind aliasAction;
     corto_optionalActionKind optionalAction;
+    corto_keyActionKind keyAction;
 
     bool visitAllCases; 
     corto_objectseq members;

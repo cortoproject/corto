@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * enum.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_enum.h"
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
@@ -23,9 +17,8 @@ corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
 
     return 0;
 }
-/* $end */
 
-/* $header(corto/lang/enum/constant) */
+
 struct corto_enum_findConstant_t {
     corto_int32 value;
     corto_constant* o;
@@ -40,12 +33,11 @@ static int corto_enum_findConstant(corto_object o, void* ctx) {
     }
     return userData->o == NULL;
 }
-/* $end */
-corto_object _corto_enum_constant(
+
+corto_object corto_enum_constant(
     corto_enum this,
     int32_t value)
 {
-/* $begin(corto/lang/enum/constant) */
     struct corto_enum_findConstant_t walkData;
 
     /* Walk scope */
@@ -54,13 +46,11 @@ corto_object _corto_enum_constant(
     corto_scopeWalk(this, corto_enum_findConstant, &walkData);
 
     return walkData.o;
-/* $end */
 }
 
-int16_t _corto_enum_construct(
+int16_t corto_enum_construct(
     corto_enum this)
 {
-/* $begin(corto/lang/enum/construct) */
     corto_uint32 i;
 
     /* Define constants */
@@ -69,13 +59,11 @@ int16_t _corto_enum_construct(
     }
 
     return corto_primitive_construct(corto_primitive(this));
-/* $end */
 }
 
-void _corto_enum_destruct(
+void corto_enum_destruct(
     corto_enum this)
 {
-/* $begin(corto/lang/enum/destruct) */
     int i;
     for (i = 0; i < this->constants.length; i++) {
       corto_release(this->constants.buffer[i]);
@@ -85,15 +73,13 @@ void _corto_enum_destruct(
     this->constants.buffer = NULL;
     
     corto_type_destruct(corto_type(this));
-/* $end */
 }
 
-int16_t _corto_enum_init(
+int16_t corto_enum_init(
     corto_enum this)
 {
-/* $begin(corto/lang/enum/init) */
     corto_primitive(this)->kind = CORTO_ENUM;
     corto_primitive(this)->width = CORTO_WIDTH_32;
     return corto_primitive_init((corto_primitive)this);
-/* $end */
 }
+

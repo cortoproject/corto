@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * router.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 static corto_routerimpl corto_router_findRouterImpl(corto_route this) {
     corto_interface base = corto_interface(this);
     do {
@@ -18,12 +12,10 @@ static corto_routerimpl corto_router_findRouterImpl(corto_route this) {
     } while ((base = base->base));
     return corto_routerimpl(base);
 }
-/* $end */
 
-int16_t _corto_router_construct(
+int16_t corto_router_construct(
     corto_router this)
 {
-/* $begin(corto/core/router/construct) */
     if (!corto_interface(this)->base) {
         corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
@@ -33,29 +25,25 @@ int16_t _corto_router_construct(
         }
     }
     corto_ptr_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
-    return corto_class_construct(this);
+    return safe_corto_class_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-int16_t _corto_router_init(
+int16_t corto_router_init(
     corto_router this)
 {
-/* $begin(corto/core/router/init) */
     corto_ptr_setstr(&this->elementSeparator, "/");
-    return corto_class_init(this);
-/* $end */
+    return safe_corto_class_init(this);
 }
 
-int16_t _corto_router_match(
+int16_t corto_router_match(
     corto_object instance,
     corto_string request,
     corto_any param,
     corto_any result,
     corto_route *matched)
 {
-/* $begin(corto/core/router/match) */
     corto_object instanceType = corto_typeof(instance);
     corto_routerimpl router = corto_router_findRouterImpl(instanceType);
     corto_router routerBase = corto_router(corto_typeof(router));
@@ -148,5 +136,5 @@ int16_t _corto_router_match(
     return 0;
 error:
     return -1;
-/* $end */
 }
+

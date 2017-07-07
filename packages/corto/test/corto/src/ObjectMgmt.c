@@ -1,28 +1,19 @@
-/* $CORTO_GENERATED
- *
- * ObjectMgmt.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_ObjectMgmt_setup(
+void test_ObjectMgmt_setup(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/setup) */
     this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
     *test_initCalled_o = 0;
     *test_constructCalled_o = 0;
     *test_destructCalled_o = 0;
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildFoo(
+void test_ObjectMgmt_tc_createChildFoo(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildFoo) */
 
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -54,13 +45,11 @@ void _test_ObjectMgmt_tc_createChildFoo(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildFooAttr0(
+void test_ObjectMgmt_tc_createChildFooAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildFooAttr0) */
 
     corto_setAttr(0);
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
@@ -93,25 +82,21 @@ void _test_ObjectMgmt_tc_createChildFooAttr0(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildInitFail(
+void test_ObjectMgmt_tc_createChildInitFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildInitFail) */
 
     corto_object o = corto_createChild(NULL, "o", test_Bar_o);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "init for 'o' of '/test/Bar' failed: /test/Bar/init failed"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildInt(
+void test_ObjectMgmt_tc_createChildInt(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildInt) */
 
     corto_object o = corto_createChild(NULL, "o", corto_int32_o);
     test_assert(o != NULL);
@@ -135,13 +120,11 @@ void _test_ObjectMgmt_tc_createChildInt(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildIntAttr0(
+void test_ObjectMgmt_tc_createChildIntAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildIntAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_createChild(NULL, "o", corto_int32_o);
@@ -166,13 +149,11 @@ void _test_ObjectMgmt_tc_createChildIntAttr0(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildInvalidType(
+void test_ObjectMgmt_tc_createChildInvalidType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildInvalidType) */
 
     corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
@@ -192,13 +173,11 @@ void _test_ObjectMgmt_tc_createChildInvalidType(
     test_assert(o == NULL);
     test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildNested(
+void test_ObjectMgmt_tc_createChildNested(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildNested) */
 
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -253,25 +232,21 @@ void _test_ObjectMgmt_tc_createChildNested(
     test_assert(*test_constructCalled_o == 3);
     test_assert(*test_destructCalled_o == 3);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildNullType(
+void test_ObjectMgmt_tc_createChildNullType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildNullType) */
 
     corto_object o = corto_createChild(NULL, "o", NULL);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildParentStateErr(
+void test_ObjectMgmt_tc_createChildParentStateErr(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildParentStateErr) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
     test_assert(o != NULL);
@@ -288,13 +263,11 @@ void _test_ObjectMgmt_tc_createChildParentStateErr(
 
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildParentTypeErr(
+void test_ObjectMgmt_tc_createChildParentTypeErr(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildParentTypeErr) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
     test_assert(o != NULL);
@@ -311,13 +284,11 @@ void _test_ObjectMgmt_tc_createChildParentTypeErr(
 
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildVoid(
+void test_ObjectMgmt_tc_createChildVoid(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildVoid) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_void_o);
     test_assert(o != NULL);
@@ -341,13 +312,11 @@ void _test_ObjectMgmt_tc_createChildVoid(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createChildVoidAttr0(
+void test_ObjectMgmt_tc_createChildVoidAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createChildVoidAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_createChild(NULL, "o", corto_void_o);
@@ -372,13 +341,11 @@ void _test_ObjectMgmt_tc_createChildVoidAttr0(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createFoo(
+void test_ObjectMgmt_tc_createFoo(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createFoo) */
 
     test_Foo o = corto_create(test_Foo_o);
     test_assert(o != NULL);
@@ -401,13 +368,11 @@ void _test_ObjectMgmt_tc_createFoo(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createFooAttr0(
+void test_ObjectMgmt_tc_createFooAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createFooAttr0) */
 
     corto_setAttr(0);
     test_Foo o = corto_create(test_Foo_o);
@@ -431,25 +396,21 @@ void _test_ObjectMgmt_tc_createFooAttr0(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createInitFail(
+void test_ObjectMgmt_tc_createInitFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createInitFail) */
 
     corto_object o = corto_create(test_Bar_o);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "/test/Bar/init failed"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createInt(
+void test_ObjectMgmt_tc_createInt(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createInt) */
 
     corto_object o = corto_create(corto_int32_o);
     test_assert(o != NULL);
@@ -463,13 +424,11 @@ void _test_ObjectMgmt_tc_createInt(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createIntAttr0(
+void test_ObjectMgmt_tc_createIntAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createIntAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_create(corto_int32_o);
@@ -484,13 +443,11 @@ void _test_ObjectMgmt_tc_createIntAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createInvalidType(
+void test_ObjectMgmt_tc_createInvalidType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createInvalidType) */
 
     corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
@@ -510,10 +467,9 @@ void _test_ObjectMgmt_tc_createInvalidType(
     test_assert(!strcmp(corto_lasterr(), "type '/invalid' is not valid/defined"));
     test_assert(o == NULL);
 
-/* $end */
 }
 
-/* $header(test/ObjectMgmt/tc_createNested) */
+
 corto_void onCreateNested(corto_observerEvent *e)
 {
     test_EventCount *counter = e->instance;
@@ -525,11 +481,10 @@ corto_void onCreateNested(corto_observerEvent *e)
     if (e->event & CORTO_ON_RESUME) counter->resumeCount++;
     if (e->event & CORTO_ON_SUSPEND) counter->suspendCount++;
 }
-/* $end */
-void _test_ObjectMgmt_tc_createNested(
+
+void test_ObjectMgmt_tc_createNested(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createNested) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("int32")
@@ -571,13 +526,11 @@ void _test_ObjectMgmt_tc_createNested(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 3);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createNestedFirstFail(
+void test_ObjectMgmt_tc_createNestedFirstFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createNestedFirstFail) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("/test/NestedConstructFailInRoot")
@@ -597,13 +550,11 @@ void _test_ObjectMgmt_tc_createNestedFirstFail(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createNestedLastFail(
+void test_ObjectMgmt_tc_createNestedLastFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createNestedLastFail) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("/test/NestedConstructFailInTier2")
@@ -623,13 +574,11 @@ void _test_ObjectMgmt_tc_createNestedLastFail(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createNestedSecondFail(
+void test_ObjectMgmt_tc_createNestedSecondFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createNestedSecondFail) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("/test/NestedConstructFailInTier1")
@@ -649,25 +598,21 @@ void _test_ObjectMgmt_tc_createNestedSecondFail(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createNullType(
+void test_ObjectMgmt_tc_createNullType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createNullType) */
 
     corto_object o = corto_create(NULL);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createVoid(
+void test_ObjectMgmt_tc_createVoid(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createVoid) */
 
     corto_object o = corto_create(corto_void_o);
     test_assert(o != NULL);
@@ -681,13 +626,11 @@ void _test_ObjectMgmt_tc_createVoid(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_createVoidAttr0(
+void test_ObjectMgmt_tc_createVoidAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_createVoidAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_create(corto_void_o);
@@ -702,13 +645,11 @@ void _test_ObjectMgmt_tc_createVoidAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildFoo(
+void test_ObjectMgmt_tc_declareChildFoo(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildFoo) */
 
     test_Foo o = corto_declareChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -740,13 +681,11 @@ void _test_ObjectMgmt_tc_declareChildFoo(
     test_assert(*test_constructCalled_o == 0);
     test_assert(*test_destructCalled_o == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildFooAttr0(
+void test_ObjectMgmt_tc_declareChildFooAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildFooAttr0) */
 
     corto_setAttr(0);
     test_Foo o = corto_declareChild(NULL, "o", test_Foo_o);
@@ -779,25 +718,21 @@ void _test_ObjectMgmt_tc_declareChildFooAttr0(
     test_assert(*test_constructCalled_o == 0);
     test_assert(*test_destructCalled_o == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildInitFail(
+void test_ObjectMgmt_tc_declareChildInitFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildInitFail) */
 
     corto_object o = corto_declareChild(NULL, "o", test_Bar_o);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "init for 'o' of '/test/Bar' failed: /test/Bar/init failed"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildInt(
+void test_ObjectMgmt_tc_declareChildInt(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildInt) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
     test_assert(o != NULL);
@@ -825,13 +760,11 @@ void _test_ObjectMgmt_tc_declareChildInt(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildIntAttr0(
+void test_ObjectMgmt_tc_declareChildIntAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildIntAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
@@ -856,13 +789,11 @@ void _test_ObjectMgmt_tc_declareChildIntAttr0(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildInvalidType(
+void test_ObjectMgmt_tc_declareChildInvalidType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildInvalidType) */
 
     corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
@@ -882,25 +813,21 @@ void _test_ObjectMgmt_tc_declareChildInvalidType(
     test_assert(o == NULL);
     test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildNullType(
+void test_ObjectMgmt_tc_declareChildNullType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildNullType) */
 
     corto_object o = corto_declareChild(NULL, "o", NULL);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildParentStateErr(
+void test_ObjectMgmt_tc_declareChildParentStateErr(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildParentStateErr) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
     test_assert(o != NULL);
@@ -917,13 +844,11 @@ void _test_ObjectMgmt_tc_declareChildParentStateErr(
 
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildParentTypeErr(
+void test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildParentTypeErr) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
     test_assert(o != NULL);
@@ -940,13 +865,11 @@ void _test_ObjectMgmt_tc_declareChildParentTypeErr(
 
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildVoid(
+void test_ObjectMgmt_tc_declareChildVoid(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildVoid) */
 
     corto_object o = corto_declareChild(NULL, "o", corto_void_o);
     test_assert(o != NULL);
@@ -970,13 +893,11 @@ void _test_ObjectMgmt_tc_declareChildVoid(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareChildVoidAttr0(
+void test_ObjectMgmt_tc_declareChildVoidAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareChildVoidAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_declareChild(NULL, "o", corto_void_o);
@@ -1001,13 +922,11 @@ void _test_ObjectMgmt_tc_declareChildVoidAttr0(
     corto_object q = corto_resolve(NULL, "o");
     test_assert(q == NULL);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareExistingWithParentState(
+void test_ObjectMgmt_tc_declareExistingWithParentState(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareExistingWithParentState) */
 
     corto_struct s = corto_structDeclareChild(NULL, "s");
     test_assert(s != NULL);
@@ -1030,13 +949,11 @@ void _test_ObjectMgmt_tc_declareExistingWithParentState(
     corto_delete(m);
     corto_delete(s);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareFoo(
+void test_ObjectMgmt_tc_declareFoo(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareFoo) */
 
     test_Foo o = corto_declare(test_Foo_o);
     test_assert(o != NULL);
@@ -1059,13 +976,11 @@ void _test_ObjectMgmt_tc_declareFoo(
     test_assert(*test_constructCalled_o == 0);
     test_assert(*test_destructCalled_o == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareFooAttr0(
+void test_ObjectMgmt_tc_declareFooAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareFooAttr0) */
 
     corto_setAttr(0);
     test_Foo o = corto_declare(test_Foo_o);
@@ -1090,25 +1005,21 @@ void _test_ObjectMgmt_tc_declareFooAttr0(
     test_assert(*test_destructCalled_o == 0);
 
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareInitFail(
+void test_ObjectMgmt_tc_declareInitFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareInitFail) */
 
     corto_object o = corto_declare(test_Bar_o);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "/test/Bar/init failed"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareInt(
+void test_ObjectMgmt_tc_declareInt(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareInt) */
 
     corto_object o = corto_declare(corto_int32_o);
     test_assert(o != NULL);
@@ -1122,13 +1033,11 @@ void _test_ObjectMgmt_tc_declareInt(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareIntAttr0(
+void test_ObjectMgmt_tc_declareIntAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareIntAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_declare(corto_int32_o);
@@ -1143,13 +1052,11 @@ void _test_ObjectMgmt_tc_declareIntAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareInvalidType(
+void test_ObjectMgmt_tc_declareInvalidType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareInvalidType) */
 
     corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
@@ -1169,10 +1076,9 @@ void _test_ObjectMgmt_tc_declareInvalidType(
     test_assert(o == NULL);
     test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
 
-/* $end */
 }
 
-/* $header(test/ObjectMgmt/tc_declareNested) */
+
 corto_void onDeclareNested(corto_observerEvent *e)
 {
     test_EventCount *counter = e->instance;
@@ -1184,11 +1090,10 @@ corto_void onDeclareNested(corto_observerEvent *e)
     if (e->event & CORTO_ON_RESUME) counter->resumeCount++;
     if (e->event & CORTO_ON_SUSPEND) counter->suspendCount++;
 }
-/* $end */
-void _test_ObjectMgmt_tc_declareNested(
+
+void test_ObjectMgmt_tc_declareNested(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareNested) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("int32")
@@ -1231,13 +1136,11 @@ void _test_ObjectMgmt_tc_declareNested(
     test_assertint(counter->deleteCount, 0);
 
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareNestedFirstFail(
+void test_ObjectMgmt_tc_declareNestedFirstFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareNestedFirstFail) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("int32")
@@ -1257,13 +1160,11 @@ void _test_ObjectMgmt_tc_declareNestedFirstFail(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareNestedLastFail(
+void test_ObjectMgmt_tc_declareNestedLastFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareNestedLastFail) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("/test/NestedInitFailInTier2")
@@ -1283,13 +1184,11 @@ void _test_ObjectMgmt_tc_declareNestedLastFail(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareNestedSecondFail(
+void test_ObjectMgmt_tc_declareNestedSecondFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareNestedSecondFail) */
     test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .type("/test/NestedInitFailInTier1")
@@ -1309,25 +1208,21 @@ void _test_ObjectMgmt_tc_declareNestedSecondFail(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareNullType(
+void test_ObjectMgmt_tc_declareNullType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareNullType) */
 
     corto_object o = corto_declare(NULL);
     test_assert(o == NULL);
     test_assert(!strcmp(corto_lasterr(), "type not specified"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareOrphan(
+void test_ObjectMgmt_tc_declareOrphan(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareOrphan) */
     corto_int16 ret;
 
     /* Create orphaned object */
@@ -1347,13 +1242,11 @@ void _test_ObjectMgmt_tc_declareOrphan(
     ret = corto_delete(i);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareScoped(
+void test_ObjectMgmt_tc_declareScoped(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareScoped) */
     corto_int16 ret;
 
     /* Create scoped anonymous object (structs are always scoped) */
@@ -1393,13 +1286,11 @@ void _test_ObjectMgmt_tc_declareScoped(
     ret = corto_delete(s);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareVoid(
+void test_ObjectMgmt_tc_declareVoid(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareVoid) */
 
     corto_object o = corto_declare(corto_void_o);
     test_assert(o != NULL);
@@ -1413,13 +1304,11 @@ void _test_ObjectMgmt_tc_declareVoid(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_declareVoidAttr0(
+void test_ObjectMgmt_tc_declareVoidAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_declareVoidAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_declare(corto_void_o);
@@ -1434,13 +1323,11 @@ void _test_ObjectMgmt_tc_declareVoidAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineFoo(
+void test_ObjectMgmt_tc_defineFoo(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineFoo) */
 
     test_Foo o = corto_declare(test_Foo_o);
     test_assert(o != NULL);
@@ -1472,13 +1359,11 @@ void _test_ObjectMgmt_tc_defineFoo(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineFooAttr0(
+void test_ObjectMgmt_tc_defineFooAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineFooAttr0) */
 
     corto_setAttr(0);
     test_Foo o = corto_declare(test_Foo_o);
@@ -1511,13 +1396,11 @@ void _test_ObjectMgmt_tc_defineFooAttr0(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 1);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineFooFail(
+void test_ObjectMgmt_tc_defineFooFail(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineFooFail) */
 
     test_Foo o = corto_declare(test_Foo_o);
     test_assert(o != NULL);
@@ -1563,13 +1446,11 @@ void _test_ObjectMgmt_tc_defineFooFail(
 
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineInt(
+void test_ObjectMgmt_tc_defineInt(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineInt) */
 
     corto_object o = corto_declare(corto_int32_o);
     test_assert(o != NULL);
@@ -1584,13 +1465,11 @@ void _test_ObjectMgmt_tc_defineInt(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineIntAttr0(
+void test_ObjectMgmt_tc_defineIntAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineIntAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_declare(corto_int32_o);
@@ -1606,13 +1485,11 @@ void _test_ObjectMgmt_tc_defineIntAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineVoid(
+void test_ObjectMgmt_tc_defineVoid(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineVoid) */
 
     corto_object o = corto_declare(corto_void_o);
     corto_define(o);
@@ -1628,13 +1505,11 @@ void _test_ObjectMgmt_tc_defineVoid(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_defineVoidAttr0(
+void test_ObjectMgmt_tc_defineVoidAttr0(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_defineVoidAttr0) */
 
     corto_setAttr(0);
     corto_object o = corto_declare(corto_void_o);
@@ -1651,13 +1526,11 @@ void _test_ObjectMgmt_tc_defineVoidAttr0(
     test_assert(!corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_deleteRedeclaration(
+void test_ObjectMgmt_tc_deleteRedeclaration(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_deleteRedeclaration) */
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -1721,13 +1594,11 @@ void _test_ObjectMgmt_tc_deleteRedeclaration(
 
     corto_delete(e);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_deleteSingle(
+void test_ObjectMgmt_tc_deleteSingle(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_deleteSingle) */
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -1764,13 +1635,11 @@ void _test_ObjectMgmt_tc_deleteSingle(
 
     corto_delete(e);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_deleteTreeExplicit(
+void test_ObjectMgmt_tc_deleteTreeExplicit(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_deleteTreeExplicit) */
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -1848,13 +1717,11 @@ void _test_ObjectMgmt_tc_deleteTreeExplicit(
 
     corto_delete(e);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_deleteTreeImplicit(
+void test_ObjectMgmt_tc_deleteTreeImplicit(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_deleteTreeImplicit) */
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -1912,13 +1779,11 @@ void _test_ObjectMgmt_tc_deleteTreeImplicit(
 
     corto_delete(e);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_deleteWithReference(
+void test_ObjectMgmt_tc_deleteWithReference(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_deleteWithReference) */
     corto_int16 result;
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
@@ -1965,13 +1830,11 @@ void _test_ObjectMgmt_tc_deleteWithReference(
     /* This will get rid of the remaining 2 references */
     corto_delete(e);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_findOrCreate(
+void test_ObjectMgmt_tc_findOrCreate(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_findOrCreate) */
 
     corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
     test_assert(o != NULL);
@@ -1987,13 +1850,11 @@ void _test_ObjectMgmt_tc_findOrCreate(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_findOrCreateExisting(
+void test_ObjectMgmt_tc_findOrCreateExisting(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_findOrCreateExisting) */
     corto_object e = corto_createChild(root_o, "foo", corto_int32_o);
     test_assert(e != NULL);
 
@@ -2009,13 +1870,11 @@ void _test_ObjectMgmt_tc_findOrCreateExisting(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
+void test_ObjectMgmt_tc_findOrCreateExistingOtherType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_findOrCreateExistingOtherType) */
     corto_object e = corto_createChild(root_o, "foo", corto_float32_o);
 
     corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
@@ -2030,13 +1889,11 @@ void _test_ObjectMgmt_tc_findOrCreateExistingOtherType(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_findOrDeclare(
+void test_ObjectMgmt_tc_findOrDeclare(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_findOrDeclare) */
     corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
     test_assert(o != NULL);
     test_assert(!corto_checkState(o, CORTO_DEFINED));
@@ -2051,13 +1908,11 @@ void _test_ObjectMgmt_tc_findOrDeclare(
 
     test_assert(corto_delete(o) == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_findOrDeclareExisting(
+void test_ObjectMgmt_tc_findOrDeclareExisting(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_findOrDeclareExisting) */
     corto_object e = corto_declareChild(root_o, "foo", corto_int32_o);
     test_assert(e != NULL);
 
@@ -2073,13 +1928,11 @@ void _test_ObjectMgmt_tc_findOrDeclareExisting(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
+void test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_findOrDeclareExistingOtherType) */
     corto_object e = corto_declareChild(root_o, "foo", corto_float32_o);
 
     corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
@@ -2094,13 +1947,11 @@ void _test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
     
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_invalidate(
+void test_ObjectMgmt_tc_invalidate(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_invalidate) */
 
     corto_object o = corto_voidCreate();
     test_assert(o != NULL);
@@ -2114,35 +1965,29 @@ void _test_ObjectMgmt_tc_invalidate(
     test_assert(!corto_checkState(o, CORTO_VALID));
     corto_delete(o);
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_nameof(
+void test_ObjectMgmt_tc_nameof(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_nameof) */
 
     corto_int32CreateChild_auto(root_o, a, 10);
     test_assertstr(corto_nameof(NULL, a), "a");
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_nameofOverride(
+void test_ObjectMgmt_tc_nameofOverride(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_nameofOverride) */
 
     test_PointCreateChild_auto(root_o, p, 10, 20);
     test_assertstr(corto_nameof(NULL, p), "10,20");
 
-/* $end */
 }
 
-void _test_ObjectMgmt_tc_redeclareWithDifferentType(
+void test_ObjectMgmt_tc_redeclareWithDifferentType(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/tc_redeclareWithDifferentType) */
 
     corto_float32DeclareChild(NULL, "a");
     corto_float32DeclareChild(NULL, "b");
@@ -2163,13 +2008,11 @@ void _test_ObjectMgmt_tc_redeclareWithDifferentType(
     test_assert(corto_lasterr() != NULL);
     test_assert(!strcmp(corto_lasterr(), "init for 'c' of 'float64' failed: 'c' is already declared with type 'float32'"));
 
-/* $end */
 }
 
-void _test_ObjectMgmt_teardown(
+void test_ObjectMgmt_teardown(
     test_ObjectMgmt this)
 {
-/* $begin(test/ObjectMgmt/teardown) */
     corto_setAttr(this->prevAttr);
-/* $end */
 }
+

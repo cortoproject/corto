@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * Application.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header() */
+
 corto_int16 test_Project_cleanEnv(corto_string name);
 corto_int16 test_Project_implement(corto_string package);
 corto_int16 test_Project_implementNoCorto(
@@ -23,12 +17,10 @@ corto_int16 test_Project_useNoCorto(
     corto_string include,
     corto_string includeName);
 
-/* $end */
 
-void _test_Application_setup(
+void test_Application_setup(
     test_Application this)
 {
-/* $begin(test/Application/setup) */
     test_Project_cleanEnv("Project");
     test_Project_cleanEnv("corto/Project");
     test_Project_cleanEnv("foo");
@@ -44,13 +36,11 @@ void _test_Application_setup(
 
     corto_time timeout = {10, 0};
     test_setTimeout(&timeout);
-/* $end */
 }
 
-void _test_Application_tc_app(
+void test_Application_tc_app(
     test_Application this)
 {
-/* $begin(test/Application/tc_app) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -70,13 +60,11 @@ void _test_Application_tc_app(
     test_assert(corto_fileTest("Project/src/Project.c"));
     test_assert(corto_fileTest("Project/test"));
 
-/* $end */
 }
 
-void _test_Application_tc_appCortoDependencyNoCorto(
+void test_Application_tc_appCortoDependencyNoCorto(
     test_Application this)
 {
-/* $begin(test/Application/tc_appCortoDependencyNoCorto) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -148,13 +136,11 @@ void _test_Application_tc_appCortoDependencyNoCorto(
     test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
     test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
 
-/* $end */
 }
 
-void _test_Application_tc_appCortoNestedDependencyNoCorto(
+void test_Application_tc_appCortoNestedDependencyNoCorto(
     test_Application this)
 {
-/* $begin(test/Application/tc_appCortoNestedDependencyNoCorto) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -245,13 +231,11 @@ void _test_Application_tc_appCortoNestedDependencyNoCorto(
     test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
-/* $end */
 }
 
-void _test_Application_tc_appDef(
+void test_Application_tc_appDef(
     test_Application this)
 {
-/* $begin(test/Application/tc_appDef) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -263,7 +247,7 @@ void _test_Application_tc_appDef(
     waitResult = corto_procwait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
-
+ 
     test_assert(corto_fileTest("Project"));
     test_assert(corto_fileTest("Project/rakefile"));
     test_assert(corto_fileTest("Project/src"));
@@ -272,8 +256,8 @@ void _test_Application_tc_appDef(
 
     /* Create definition file */
     FILE *f = fopen("Project/Project.cx", "w");
-    fprintf(f, "#package /Project\n\n");
-    fprintf(f, "struct Point::\n");
+    fprintf(f, "in package Project\n\n");
+    fprintf(f, "struct Point:/\n");
     fprintf(f, "    x, y: int32\n");
     fprintf(f, "    void add(Point p)\n");
     fclose(f);
@@ -291,13 +275,11 @@ void _test_Application_tc_appDef(
     test_assert(corto_fileTest("Project/include/Project.h"));
     test_assert(corto_fileTest("Project/src/Point.c"));
 
-/* $end */
 }
 
-void _test_Application_tc_appDependency(
+void test_Application_tc_appDependency(
     test_Application this)
 {
-/* $begin(test/Application/tc_appDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -368,13 +350,11 @@ void _test_Application_tc_appDependency(
     test_assert(!test_Project_implement("foo"));
     test_assert(!test_Project_use("bar", NULL, "foo"));
 
-/* $end */
 }
 
-void _test_Application_tc_appNested(
+void test_Application_tc_appNested(
     test_Application this)
 {
-/* $begin(test/Application/tc_appNested) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -413,13 +393,11 @@ void _test_Application_tc_appNested(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_Application_tc_appNestedDependency(
+void test_Application_tc_appNestedDependency(
     test_Application this)
 {
-/* $begin(test/Application/tc_appNestedDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -508,13 +486,11 @@ void _test_Application_tc_appNestedDependency(
     test_assert(!test_Project_implement("child"));
     test_assert(!test_Project_use("foo", NULL, "child"));
 
-/* $end */
 }
 
-void _test_Application_tc_appNoCortoDependency(
+void test_Application_tc_appNoCortoDependency(
     test_Application this)
 {
-/* $begin(test/Application/tc_appNoCortoDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -587,13 +563,11 @@ void _test_Application_tc_appNoCortoDependency(
     test_assert(!test_Project_implementNoCorto("foo", "foo", FALSE));
     test_assert(!test_Project_useNoCorto("bar", "foo", "foo"));
 
-/* $end */
 }
 
-void _test_Application_tc_appNoCortoNestedDependency(
+void test_Application_tc_appNoCortoNestedDependency(
     test_Application this)
 {
-/* $begin(test/Application/tc_appNoCortoNestedDependency) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -685,13 +659,11 @@ void _test_Application_tc_appNoCortoNestedDependency(
     test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
-/* $end */
 }
 
-void _test_Application_tc_appNoTest(
+void test_Application_tc_appNoTest(
     test_Application this)
 {
-/* $begin(test/Application/tc_appNoTest) */
     corto_int8 ret;
     corto_int16 waitResult;
 
@@ -711,13 +683,11 @@ void _test_Application_tc_appNoTest(
     test_assert(corto_fileTest("Project/src/Project.c"));
     test_assert(!corto_fileTest("Project/test"));
 
-/* $end */
 }
 
-void _test_Application_teardown(
+void test_Application_teardown(
     test_Application this)
 {
-/* $begin(test/Application/teardown) */
     test_Project_cleanEnv("Project");
     test_Project_cleanEnv("corto/Project");
     test_Project_cleanEnv("foo");
@@ -730,5 +700,5 @@ void _test_Application_teardown(
     corto_rmtree("bar");
     corto_rmtree("parent");
     corto_rmtree("child");
-/* $end */
 }
+

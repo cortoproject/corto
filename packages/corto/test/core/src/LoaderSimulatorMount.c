@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * LoaderSimulatorMount.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_LoaderSimulatorMount_construct(
+int16_t test_LoaderSimulatorMount_construct(
     test_LoaderSimulatorMount this)
 {
-/* $begin(test/LoaderSimulatorMount/construct) */
 
     corto_ptr_setref(&corto_mount(this)->mount, root_o);
     corto_observer(this)->mask = CORTO_ON_TREE;
@@ -60,16 +53,14 @@ int16_t _test_LoaderSimulatorMount_construct(
     );
 
     return corto_mount_construct(this);
-/* $end */
 }
 
-corto_resultIter _test_LoaderSimulatorMount_onQuery(
+corto_resultIter test_LoaderSimulatorMount_onQuery(
     test_LoaderSimulatorMount this,
     corto_query *query)
 {
-/* $begin(test/LoaderSimulatorMount/onQuery) */
 
     /* << Insert implementation >> */
 
-/* $end */
 }
+

@@ -192,6 +192,27 @@ static corto_uint32 corto_buffer_fmtcpy(
     return vsnprintf(dst, len, src, data->call == 1 ? data->args: data->argcpy);
 }
 
+corto_bool corto_buffer_vappend(
+    corto_buffer *b,
+    corto_string fmt,
+    va_list args)
+{
+    corto_buffer_fmt_t data;
+
+    va_copy(data.args, args);
+    va_copy(data.argcpy, args);
+    data.call = 0;
+
+    corto_bool result = corto_buffer_appendIntern(
+        b, fmt, &data, corto_buffer_fmtcpy
+    );
+
+    va_end(data.args);
+    va_end(data.argcpy);
+
+    return result;
+}
+
 corto_bool corto_buffer_append(
     corto_buffer *b,
     corto_string fmt,
@@ -304,4 +325,19 @@ corto_string corto_buffer_str(corto_buffer *b) {
     b->elementCount = 0;
 
     return result;
+}
+
+void corto_buffer_reset(corto_buffer *b) {
+    if (b->elementCount && !b->buf) {
+        void *next = NULL;
+        corto_buffer_element *e = &b->firstElement;
+        do {
+            next = e->next;
+            if (e != &b->firstElement) {
+                corto_dealloc(e);
+            }
+        } while ((e = next));
+    }
+
+    *b = CORTO_BUFFER_INIT;
 }

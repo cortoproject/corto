@@ -1,18 +1,11 @@
-/* $CORTO_GENERATED
- *
- * EventReplicator.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-void _test_EventReplicator_onNotify(
+void test_EventReplicator_onNotify(
     test_EventReplicator this,
     corto_subscriberEvent *event)
 {
-/* $begin(test/EventReplicator/onNotify) */
 
     switch(event->event) {
         case CORTO_ON_DECLARE: this->declareCount ++; break;
@@ -21,5 +14,5 @@ void _test_EventReplicator_onNotify(
         case CORTO_ON_DELETE: this->deleteCount ++; break;
     }
 
-/* $end */
 }
+

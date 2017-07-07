@@ -1,21 +1,13 @@
-/* $CORTO_GENERATED
- *
- * ReplicatorEvent.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-/* $header() */
-#include <math.h>
-/* $end */
 
-void _test_ReplicatorEvent_tc_event(
+#include <math.h>
+
+void test_ReplicatorEvent_tc_event(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_event) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -57,13 +49,11 @@ void _test_ReplicatorEvent_tc_event(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
+void test_ReplicatorEvent_tc_eventDefineWithUpdate(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_eventDefineWithUpdate) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -97,13 +87,11 @@ void _test_ReplicatorEvent_tc_eventDefineWithUpdate(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_eventTree(
+void test_ReplicatorEvent_tc_eventTree(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_eventTree) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -165,13 +153,11 @@ void _test_ReplicatorEvent_tc_eventTree(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_eventTreeWithTree(
+void test_ReplicatorEvent_tc_eventTreeWithTree(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_eventTreeWithTree) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -233,13 +219,11 @@ void _test_ReplicatorEvent_tc_eventTreeWithTree(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_eventWithTree(
+void test_ReplicatorEvent_tc_eventWithTree(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_eventWithTree) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -281,13 +265,11 @@ void _test_ReplicatorEvent_tc_eventWithTree(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_matchingType(
+void test_ReplicatorEvent_tc_matchingType(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_matchingType) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -355,13 +337,11 @@ void _test_ReplicatorEvent_tc_matchingType(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_nonPersistent(
+void test_ReplicatorEvent_tc_nonPersistent(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_nonPersistent) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -431,13 +411,11 @@ void _test_ReplicatorEvent_tc_nonPersistent(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_ownedByMount(
+void test_ReplicatorEvent_tc_ownedByMount(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_ownedByMount) */
     corto_int16 ret;
 
     corto_voidCreateChild_auto(root_o, parent);
@@ -511,13 +489,11 @@ void _test_ReplicatorEvent_tc_ownedByMount(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_rateLimitOneObject(
+void test_ReplicatorEvent_tc_rateLimitOneObject(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_rateLimitOneObject) */
     corto_int16 ret;
     int cycles = 50000;
     
@@ -564,13 +540,11 @@ void _test_ReplicatorEvent_tc_rateLimitOneObject(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
+void test_ReplicatorEvent_tc_rateLimitThreeObjects(
     test_ReplicatorEvent this)
 {
-/* $begin(test/ReplicatorEvent/tc_rateLimitThreeObjects) */
     corto_int16 ret;
     int cycles = 50000;
     corto_time timeout = {60, 0};
@@ -624,5 +598,5 @@ void _test_ReplicatorEvent_tc_rateLimitThreeObjects(
     ret = corto_delete(parent);
     test_assert(ret == 0);
 
-/* $end */
 }
+

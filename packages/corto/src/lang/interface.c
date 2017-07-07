@@ -1,14 +1,8 @@
-/* $CORTO_GENERATED
- *
- * interface.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
+
 #include "_interface.h"
 #include "_sequence.h"
 
@@ -411,13 +405,11 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
     return result;
 }
 
-/* $end */
 
-int16_t _corto_interface_baseof(
+int16_t corto_interface_baseof(
     corto_interface this,
     corto_interface type)
 {
-/* $begin(corto/lang/interface/baseof) */
     corto_interface ptr = this->base;
     corto_bool result = this == type;
 
@@ -427,14 +419,12 @@ int16_t _corto_interface_baseof(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_interface_bindMethod(
+int16_t corto_interface_bindMethod(
     corto_interface this,
     corto_method method)
 {
-/* $begin(corto/lang/interface/bindMethod) */
     corto_function* found = NULL;
     corto_int32 d = 0;
     corto_procedure procedureType = corto_procedure(corto_typeof(method));
@@ -521,14 +511,12 @@ int16_t _corto_interface_bindMethod(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-bool _corto_interface_compatible_v(
+bool corto_interface_compatible_v(
     corto_interface this,
     corto_type type)
 {
-/* $begin(corto/lang/interface/compatible) */
     corto_bool result;
 
     /* First test if types are compatible using the rules that are
@@ -547,13 +535,11 @@ bool _corto_interface_compatible_v(
     }
 
     return result;
-/* $end */
 }
 
-int16_t _corto_interface_construct(
+int16_t corto_interface_construct(
     corto_interface this)
 {
-/* $begin(corto/lang/interface/construct) */
 
     this->methods = corto_interface_vtableFromBase(this);
 
@@ -561,16 +547,14 @@ int16_t _corto_interface_construct(
         goto error;
     }
 
-    return corto_type_construct(this);
+    return safe_corto_type_construct(this);
 error:
     return -1;
-/* $end */
 }
 
-void _corto_interface_destruct(
+void corto_interface_destruct(
     corto_interface this)
 {
-/* $begin(corto/lang/interface/destruct) */
     corto_uint32 i;
 
     /* Free members */
@@ -594,25 +578,21 @@ void _corto_interface_destruct(
     }
 
     corto_type_destruct(corto_type(this));
-/* $end */
 }
 
-int16_t _corto_interface_init(
+int16_t corto_interface_init(
     corto_interface this)
 {
-/* $begin(corto/lang/interface/init) */
     corto_type(this)->reference = TRUE;
     corto_type(this)->kind = CORTO_COMPOSITE;
     this->kind = CORTO_INTERFACE;
     return _corto_type_init((corto_type)this);
-/* $end */
 }
 
-corto_member _corto_interface_resolveMember_v(
+corto_member corto_interface_resolveMember_v(
     corto_interface this,
     corto_string name)
 {
-/* $begin(corto/lang/interface/resolveMember) */
     corto_uint32 i;
     corto_member result = NULL;
 
@@ -637,14 +617,12 @@ corto_member _corto_interface_resolveMember_v(
     return result;
 error:
     return NULL;
-/* $end */
 }
 
-corto_method _corto_interface_resolveMethod(
+corto_method corto_interface_resolveMethod(
     corto_interface this,
     corto_string name)
 {
-/* $begin(corto/lang/interface/resolveMethod) */
     corto_method result;
     corto_method* found;
     corto_int32 d = 0;
@@ -659,14 +637,12 @@ corto_method _corto_interface_resolveMethod(
     }
 
     return result;
-/* $end */
 }
 
-corto_method _corto_interface_resolveMethodById(
+corto_method corto_interface_resolveMethodById(
     corto_interface this,
     uint32_t id)
 {
-/* $begin(corto/lang/interface/resolveMethodById) */
     corto_method result;
     corto_objectseq* vtable;
 
@@ -689,14 +665,12 @@ corto_method _corto_interface_resolveMethodById(
     }
 
     return result;
-/* $end */
 }
 
-uint32_t _corto_interface_resolveMethodId(
+uint32_t corto_interface_resolveMethodId(
     corto_interface this,
     corto_string name)
 {
-/* $begin(corto/lang/interface/resolveMethodId) */
     corto_int32 result;
     corto_function *f;
     corto_int32 d;
@@ -725,5 +699,5 @@ notfound:
     return 0;
 error:
     return -1;
-/* $end */
 }
+

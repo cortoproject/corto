@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * EventTest.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
 
-int16_t _test_EventTest_construct(
+int16_t test_EventTest_construct(
     test_EventTest this)
 {
-/* $begin(test/EventTest/construct) */
     corto_int16 ret;
 
     ret = corto_observer_observe(test_EventTest_onDeclare_o, this, this->scope);
@@ -60,13 +53,11 @@ int16_t _test_EventTest_construct(
     test_assert(ret == 0);
 
     return 0;
-/* $end */
 }
 
-void _test_EventTest_destruct(
+void test_EventTest_destruct(
     test_EventTest this)
 {
-/* $begin(test/EventTest/destruct) */
     corto_int16 ret;
 
     ret = corto_observer_unobserve(test_EventTest_onDeclare_o, this, this->scope);
@@ -114,225 +105,185 @@ void _test_EventTest_destruct(
     ret = corto_observer_unobserve(test_EventTest_onUpdateDefineTree_o, this, this->scope);
     test_assert(ret == 0);
 
-/* $end */
 }
 
-void _test_EventTest_onDeclare(
+void test_EventTest_onDeclare(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeclare) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeclare++;
-/* $end */
 }
 
-void _test_EventTest_onDeclareScope(
+void test_EventTest_onDeclareScope(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeclareScope) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeclareScope++;
-/* $end */
 }
 
-void _test_EventTest_onDeclareSelf(
+void test_EventTest_onDeclareSelf(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeclareSelf) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeclareSelf++;
-/* $end */
 }
 
-void _test_EventTest_onDeclareTree(
+void test_EventTest_onDeclareTree(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeclareTree) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeclareTree++;
-/* $end */
 }
 
-void _test_EventTest_onDefine(
+void test_EventTest_onDefine(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDefine) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDefine++;
-/* $end */
 }
 
-void _test_EventTest_onDefineScope(
+void test_EventTest_onDefineScope(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDefineScope) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDefineScope++;
-/* $end */
 }
 
-void _test_EventTest_onDefineSelf(
+void test_EventTest_onDefineSelf(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDefineSelf) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDefineSelf++;
-/* $end */
 }
 
-void _test_EventTest_onDefineTree(
+void test_EventTest_onDefineTree(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDefineTree) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDefineTree++;
-/* $end */
 }
 
-void _test_EventTest_onDelete(
+void test_EventTest_onDelete(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDelete) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDelete++;
-/* $end */
 }
 
-void _test_EventTest_onDeleteScope(
+void test_EventTest_onDeleteScope(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeleteScope) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeleteScope++;
-/* $end */
 }
 
-void _test_EventTest_onDeleteSelf(
+void test_EventTest_onDeleteSelf(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeleteSelf) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeleteSelf++;
-/* $end */
 }
 
-void _test_EventTest_onDeleteTree(
+void test_EventTest_onDeleteTree(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onDeleteTree) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countDeleteTree++;
-/* $end */
 }
 
-void _test_EventTest_onUpdate(
+void test_EventTest_onUpdate(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdate) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdate++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateDefine(
+void test_EventTest_onUpdateDefine(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateDefine) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateDefine++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateDefineScope(
+void test_EventTest_onUpdateDefineScope(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateDefineScope) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateDefineScope++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateDefineSelf(
+void test_EventTest_onUpdateDefineSelf(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateDefineSelf) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateDefineSelf++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateDefineTree(
+void test_EventTest_onUpdateDefineTree(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateDefineTree) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateDefineTree++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateScope(
+void test_EventTest_onUpdateScope(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateScope) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateScope++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateSelf(
+void test_EventTest_onUpdateSelf(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateSelf) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateSelf++;
-/* $end */
 }
 
-void _test_EventTest_onUpdateTree(
+void test_EventTest_onUpdateTree(
     corto_observerEvent *e)
 {
-/* $begin(test/EventTest/onUpdateTree) */
    test_EventTest this = e->instance;
    corto_ptr_setref(&this->lastThis, e->instance);
    corto_ptr_setref(&this->lastObservable, e->data);
    this->countUpdateTree++;
-/* $end */
 }
+

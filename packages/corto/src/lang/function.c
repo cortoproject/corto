@@ -1,18 +1,11 @@
-/* $CORTO_GENERATED
- *
- * function.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-/* $header() */
-#include "_object.h"
-/* $end */
 
-/* $header(corto/lang/function/construct) */
+#include "_object.h"
+
+
 
 /* Not all types that inherit from from function are necessarily procedures. Find
  * the first procedure type in the inheritance hierarchy. */
@@ -26,11 +19,10 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
 
     return corto_procedure(t);
 }
-/* $end */
-int16_t _corto_function_construct(
+
+int16_t corto_function_construct(
     corto_function this)
 {
-/* $begin(corto/lang/function/construct) */
     /* If no returntype is set, make it void */
     if (!this->returnType) {
         corto_ptr_setref(&this->returnType, corto_void_o);
@@ -97,13 +89,11 @@ int16_t _corto_function_construct(
     return 0;
 error:
     return -1;
-/* $end */
 }
 
-void _corto_function_destruct(
+void corto_function_destruct(
     corto_function this)
 {
-/* $begin(corto/lang/function/destruct) */
     corto_uint32 i;
 
     corto_callDeinit(this);
@@ -118,10 +108,9 @@ void _corto_function_destruct(
 
     corto_dealloc(this->parameters.buffer);
     this->parameters.buffer = NULL;
-/* $end */
 }
 
-/* $header(corto/lang/function/init) */
+
 typedef struct corto_functionLookup_t {
     corto_function f;
     corto_bool error;
@@ -160,11 +149,10 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
 finish:
     return 0;
 }
-/* $end */
-int16_t _corto_function_init(
+
+int16_t corto_function_init(
     corto_function this)
 {
-/* $begin(corto/lang/function/init) */
     extern int CORTO_BENCHMARK_FUNCTION_INIT;
     corto_benchmark_start(CORTO_BENCHMARK_FUNCTION_INIT);
 
@@ -208,14 +196,12 @@ error:
     this->parameters.length = 0;
     corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return -1;
-/* $end */
 }
 
-int16_t _corto_function_parseParamString(
+int16_t corto_function_parseParamString(
     corto_function this,
     corto_string params)
 {
-/* $begin(corto/lang/function/parseParamString) */
     corto_object scope;
 
     if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
@@ -229,14 +215,12 @@ int16_t _corto_function_parseParamString(
     }
 
     return this->parameters.length == (corto_uint32)-1;
-/* $end */
 }
 
-corto_parameterseq _corto_function_stringToParameterSeq(
+corto_parameterseq corto_function_stringToParameterSeq(
     corto_string name,
     corto_object scope)
 {
-/* $begin(corto/lang/function/stringToParameterSeq) */
     corto_parameterseq result = {0, NULL};
 
     corto_char* ptr;
@@ -319,5 +303,5 @@ error:
     corto_dealloc(result.buffer);
     result.buffer = NULL;
     return result;
-/* $end */
 }
+

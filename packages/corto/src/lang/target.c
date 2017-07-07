@@ -1,17 +1,10 @@
-/* $CORTO_GENERATED
- *
- * target.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
 
-int16_t _corto_target_construct(
+int16_t corto_target_construct(
     corto_target this)
 {
-/* $begin(corto/lang/target/construct) */
 
     corto_member actual = corto_declareChild(this, "actual", corto_member_o);
     if (!actual) {
@@ -50,8 +43,8 @@ int16_t _corto_target_construct(
     corto_type(this)->flags |= CORTO_TYPE_HAS_TARGET;
     corto_type(this)->attr = CORTO_ATTR_OBSERVABLE | CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
 
-    return corto_struct_construct(this);
+    return safe_corto_struct_construct(this);
 error:
     return -1;
-/* $end */
 }
+
