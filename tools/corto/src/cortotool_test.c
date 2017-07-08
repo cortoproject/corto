@@ -31,7 +31,7 @@ static char *errfmt = "[ %k %f:%l: %c: %m ]";
 corto_int16 cortotool_test(int argc, char *argv[]) {
     corto_string projectArg = NULL;
     corto_int8 ret, sig, err = 0;
-    corto_ll verbose, project, build, rebuild, clean, tool;
+    corto_ll verbose, project, build, rebuild, clean, tool, testcase;
 
     CORTO_UNUSED(argc);
     
@@ -50,6 +50,8 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         {"--rebuild", &rebuild, NULL},
         {"--clean", &clean, NULL},
         {"--tool", NULL, &tool},
+        {"--testcase", NULL, &testcase},
+        {"-t", NULL, &testcase},
         {"*", &project, NULL},
         {NULL}
       }
@@ -79,15 +81,36 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
             }
         }
 
-        corto_pid pid = corto_procrun("rake", (char*[]){
-          "rake",
-          "test",
-          verbose ? "verbose=true" : "verbose=false",
-          build ? "build=true" : "build=false",
-          rebuild ? "rebuild=true" : "rebuild=false",
-          clean ? "clean=true" : "clean=false",
-          "silent=true",
-          NULL});
+        corto_pid pid;
+        if (testcase) {
+            corto_id testcaseStr;
+            sprintf(testcaseStr, "testcase=%s", corto_ll_get(testcase, 0));
+
+            /* Set environment variable, so test framework knows to log when
+             * the test was executed. */
+            corto_setenv("CORTO_TEST_BY_ID", "TRUE");
+
+            pid = corto_procrun("rake", (char*[]){
+                "rake",
+                "test",
+                verbose ? "verbose=true" : "verbose=false",
+                build ? "build=true" : "build=false",
+                rebuild ? "rebuild=true" : "rebuild=false",
+                clean ? "clean=true" : "clean=false",
+                testcaseStr,
+                "silent=true",
+                NULL});
+        } else {
+            pid = corto_procrun("rake", (char*[]){
+              "rake",
+              "test",
+              verbose ? "verbose=true" : "verbose=false",
+              build ? "build=true" : "build=false",
+              rebuild ? "rebuild=true" : "rebuild=false",
+              clean ? "clean=true" : "clean=false",
+              "silent=true",
+              NULL});
+        }
         if ((sig = corto_procwait(pid, &ret) || ret)) {
             if ((sig > 0) && !(build || rebuild || clean)) {
                 corto_error("Aww, tests failed.");

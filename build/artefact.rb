@@ -563,7 +563,7 @@ task :runtest do
   TEST = true
   cmd "rake"
   begin
-    cmd "corto #{get_artefact_name(TRUE)} #{ENV['testcase']}"
+    cmd "corto -l #{get_artefact_name(TRUE)} #{ENV['testcase']}"
   rescue
     abort
   end
