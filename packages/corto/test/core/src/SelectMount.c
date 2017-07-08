@@ -1491,7 +1491,7 @@ void test_SelectMount_tc_selectFromMountWithPartialFrom(
     corto_object p = corto_createChild(root_o, "parent", corto_void_o);
     test_assert(p != NULL);
 
-    test_VirtualMount m = test_VirtualSinkMountCreate("parent");
+    test_VirtualSinkMount m = test_VirtualSinkMountCreate("parent");
     test_assert(m != NULL);
 
     corto_object o = corto_lookup(p, "x");

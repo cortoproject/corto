@@ -101,7 +101,7 @@ struct corto_select_data {
     corto_mount mounts[CORTO_MAX_MOUNTS_PER_SELECT];
 
     /* Mounts with outstanding requests */
-    corto_int8 mountsLoaded;
+    corto_int16 mountsLoaded;
 
     /* Serializer for requested content type */
     corto_contentType dstSer;

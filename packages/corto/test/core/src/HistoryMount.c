@@ -64,7 +64,7 @@ static int hasNext(corto_iter *it) {
 }
 
 static void* next(corto_iter *it) {
-    int start, stop, i;
+    int start = 0, stop = 0, i;
 
     iterData *ctx = it->ctx;
     test_HistoryMount_data *data = corto_iter_next(&ctx->iter);

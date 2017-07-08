@@ -49,7 +49,9 @@ ARTEFACT_NAME = getArtefactName(ARTEFACT_PREFIX, ARTEFACT, ARTEFACT_EXT)
 
 # Add lib path for builds that don't install to global environment
 if ENV['CORTO_TARGET'] != "/usr/local" then
-  LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
+  if File.exists? "#{ENV['CORTO_TARGET']}/lib" then
+    LIBPATH << "#{ENV['CORTO_TARGET']}/lib"
+  end
 end
 
 # Add default include paths
