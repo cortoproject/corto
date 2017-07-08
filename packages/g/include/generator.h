@@ -49,6 +49,7 @@ typedef struct g_attribute {
 
 typedef enum g_idKind {
     CORTO_GENERATOR_ID_DEFAULT,
+    CORTO_GENERATOR_ID_LOCAL,
     CORTO_GENERATOR_ID_CLASS_UPPER,
     CORTO_GENERATOR_ID_CLASS_LOWER
 }g_idKind;
@@ -150,6 +151,9 @@ CORTO_EXPORT char *g_getPrefix(g_generator g, corto_object o);
 
 /* Translate an object to a language-specific identifier. */
 CORTO_EXPORT char *g_fullOid(g_generator g, corto_object o, corto_id id);
+
+/* Translate an object to a local language-specific identifier (no package). */
+CORTO_EXPORT char *g_localOid(g_generator g, corto_object o, corto_id id);
 
 /* Translate an object to a language-specific identifier with idKind provided. */
 CORTO_EXPORT char *g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind);
