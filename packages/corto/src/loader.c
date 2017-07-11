@@ -23,6 +23,9 @@
 
 #ifdef CORTO_LOADER
 
+static corto_dl corto_load_validLibrary(corto_string fileName, corto_string *build_out);
+static int corto_load_fromDl(corto_dl dl, char *fileName, int argc, char *argv[]);
+
 void corto_onexit(void(*handler)(void*),void*userData);
 
 static corto_ll fileHandlers = NULL;
@@ -138,14 +141,14 @@ static struct corto_fileHandler* corto_lookupExt(corto_string ext) {
 }
 
 /* Register a filetype */
-int corto_loaderRegister(corto_string ext, corto_loadAction handler, void* userData) {
+int corto_load_register(corto_string ext, corto_loadAction handler, void* userData) {
     struct corto_fileHandler* h;
 
     /* Check if extension is already registered */
     corto_mutexLock(&corto_adminLock);
     if ((h = corto_lookupExt(ext))) {
         if (h->load != handler) {
-            corto_error("corto_loaderRegister: extension '%s' is already registered with another loader.", ext);
+            corto_error("corto_load_register: extension '%s' is already registered with another loader.", ext);
             abort();
             goto error;
         }
@@ -222,7 +225,7 @@ static corto_string corto_packageToFile(corto_string package) {
     return path;
 }
 
-corto_dl corto_loadValidLibrary(corto_string fileName, corto_string *build_out) {
+static corto_dl corto_load_validLibrary(corto_string fileName, corto_string *build_out) {
     corto_dl result = NULL;
     corto_string ___ (*build)(void);
     corto_string ___ (*library)(void);
@@ -270,7 +273,7 @@ error:
 }
 
 static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_out, corto_dl *dl_out) {
-    corto_dl dl = corto_loadValidLibrary(fileName, build_out);
+    corto_dl dl = corto_load_validLibrary(fileName, build_out);
 
     corto_bool result = FALSE;
     if (dl) {
@@ -289,7 +292,7 @@ static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_
 }
 
 /* Load from a dynamic library */
-int corto_loadFromDl(corto_dl dl, char *fileName, int argc, char *argv[]) {
+static int corto_load_fromDl(corto_dl dl, char *fileName, int argc, char *argv[]) {
     int (*proc)(int argc, char* argv[]);
 
     corto_debug("loader: invoke cortomain of '%s' with %d arguments", fileName, argc);
@@ -341,7 +344,7 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_
     corto_string build = NULL;
 
     if (!validated) {
-        dl = corto_loadValidLibrary(fileName, &build);
+        dl = corto_load_validLibrary(fileName, &build);
     } else {
         dl = corto_dlOpen(fileName);
     }
@@ -355,7 +358,7 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_
         goto error;
     }
 
-    if (corto_loadFromDl(dl, fileName, argc, argv)) {
+    if (corto_load_fromDl(dl, fileName, argc, argv)) {
         goto error;
     }
 
@@ -367,21 +370,6 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_
 error:
     if (dl) corto_dlClose(dl);
     return -1;
-}
-
-void (*corto_loaderResolveProc(corto_string procName))(void) {
-    void (*result)(void) = NULL;
-
-    /* Search libraries for specified symbol */
-    corto_mutexLock (&corto_adminLock);
-    corto_iter iter = corto_ll_iter(libraries);
-    while (!result && corto_iter_hasNext(&iter)) {
-        corto_dl dl = corto_iter_next(&iter);
-        result = (void(*)(void))corto_dlProc(dl, procName);
-    }
-    corto_mutexUnlock (&corto_adminLock);
-
-    return result;
 }
 
 /*
@@ -505,7 +493,7 @@ int corto_load(corto_string str, int argc, char* argv[]) {
 }
 
 /* Try loading a package */
-int corto_loadTry(corto_string str, int argc, char* argv[]) {
+int corto_load_try(corto_string str, int argc, char* argv[]) {
     return corto_loadIntern(str, argc, argv, TRUE, FALSE);
 }
 
@@ -736,7 +724,7 @@ error:
 }
 #endif
 
-corto_string corto_locateGetName(corto_string package, corto_loaderLocationKind kind) {
+corto_string corto_locateGetName(corto_string package, corto_load_locateKind kind) {
     corto_string result = corto_strdup(package);
     corto_string name;
 
@@ -757,7 +745,7 @@ corto_string corto_locateGetName(corto_string package, corto_loaderLocationKind 
     return result;
 }
 
-corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_loaderLocationKind kind) {
+corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_locateKind kind) {
     corto_string relativePath = NULL;
     corto_string result = NULL;
 
@@ -885,6 +873,24 @@ error:
     return NULL;
 }
 
+void* corto_load_sym(char *package, corto_dl *dl_out, char *symbol) {
+    if (!*dl_out) {
+        char *location = corto_locate(package, dl_out, CORTO_LOCATION_LIB);
+        if (!*dl_out) {
+            if (location) {
+                *dl_out = corto_load_validLibrary(location, NULL);
+            }
+        }
+    }
+
+    if (*dl_out) {
+        return corto_dlSym(*dl_out, symbol);
+    } else {
+        return NULL;
+    }
+}
+
+
 corto_ll corto_loadGetDependencies(corto_string file) {
     corto_ll result = NULL;
 
@@ -970,7 +976,7 @@ int corto_fileLoader(corto_string package, int argc, char* argv[], void* ctx) {
 
     corto_assert(dl != NULL, "package located but dl_out is NULL");
 
-    result = corto_loadFromDl(dl, fileName, argc, argv);
+    result = corto_load_fromDl(dl, fileName, argc, argv);
     corto_dealloc(fileName);
     if (result) {
         corto_seterr(corto_lastinfo());

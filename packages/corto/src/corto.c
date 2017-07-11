@@ -1180,10 +1180,10 @@ int corto_start(char *appName) {
 
     /* Register library-binding */
     int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data);
-    corto_loaderRegister("so", corto_loadLibraryAction, NULL);
+    corto_load_register("so", corto_loadLibraryAction, NULL);
 
     int corto_fileLoader(corto_string file, int argc, char* argv[], void *data);
-    corto_loaderRegister("", corto_fileLoader, NULL);
+    corto_load_register("", corto_fileLoader, NULL);
 
     /* Always randomize seed */
     srand (time(NULL));

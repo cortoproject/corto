@@ -815,7 +815,9 @@ char* g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind) {
 
     if (corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_childof(root_o, o)) {
         /* For local identifiers, strip path from name */
-        if ((kind == CORTO_GENERATOR_ID_LOCAL) && !corto_instanceof(corto_package_o, o)) {
+        if ((kind == CORTO_GENERATOR_ID_LOCAL) && 
+            !corto_instanceof(corto_package_o, o)) 
+        {
             corto_object parent = o;
             do {
                 parent = corto_parentof(parent);

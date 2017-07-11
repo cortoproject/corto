@@ -84,7 +84,7 @@ corto_int16 cortotool_test(int argc, char *argv[]) {
         corto_pid pid;
         if (testcase) {
             corto_id testcaseStr;
-            sprintf(testcaseStr, "testcase=%s", corto_ll_get(testcase, 0));
+            sprintf(testcaseStr, "testcase=%s", (char*)corto_ll_get(testcase, 0));
 
             /* Set environment variable, so test framework knows to log when
              * the test was executed. */
