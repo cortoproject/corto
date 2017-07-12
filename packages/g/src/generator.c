@@ -554,6 +554,7 @@ stop:
 }
 
 static int g_walkIterObject(g_generator g, g_object *o, g_walkAction action, void* userData, corto_bool scopeWalk, corto_bool recursiveWalk) {
+
     /* Parse object */
     if (o->parseSelf) {
         g->current = o;
@@ -590,7 +591,10 @@ static int g_walk_ext(g_generator g, g_walkAction action, void* userData, corto_
     if (g->inWalk) {
         /* If already in a walk, continue */
         g_object *o = g->current;
-        g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk);
+        if (!g_walkIterObject(g, o, action, userData, scopeWalk, recursiveWalk)) {
+            g->current = o;
+            goto stop;
+        }
         g->current = o;
     } else if (g->objects) {
         g->inWalk = TRUE;
@@ -1291,9 +1295,7 @@ corto_bool g_mustParse(g_generator g, corto_object o) {
 
     result = TRUE;
     if (corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_childof(root_o, o)) {
-        if (corto_ll_walk(g->objects, g_checkParseWalk, o)) {
-            result = FALSE;
-        }
+        result = !g_checkParseWalk(g->current, o);
     }
 
     return result;

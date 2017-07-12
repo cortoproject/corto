@@ -186,6 +186,7 @@ if NOCORTO == false then
 
       if ENV['silent'] != "true" then
         msg "preprocess #{C_NORMAL}#{GENFILE}"
+        msg "#{C_NORMAL}#{command}"
       end
       begin
         cmd command
@@ -225,6 +226,7 @@ if NOCORTO == false then
 
       if ENV['silent'] != "true" then
         msg "preprocess"
+        msg "#{C_NORMAL}#{command}"
       end
       begin
         cmd command

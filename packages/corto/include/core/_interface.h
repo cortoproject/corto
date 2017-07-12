@@ -1,6 +1,7 @@
 /* _interface.h
  *
- * This file contains generated code. Do not modify!
+ * This file contains generated package function and method declarations.
+ * You should not manually modify the contents of this file.
  */
 
 #ifndef CORTO_CORE_INTERFACE_H

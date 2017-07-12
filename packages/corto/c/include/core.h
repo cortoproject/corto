@@ -980,6 +980,44 @@ CORTO_EXPORT corto_time* _corto_timeAssign(corto_time* _this, int32_t sec, uint3
 #define corto_timeSet(_this, sec, nanosec) _this = _this ? _this : (corto_time*)corto_ptr_new(corto_time_o); _corto_timeAssign(_this, sec, nanosec)
 
 
+/* /corto/core/mountSubscriptionList */
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsert(corto_mountSubscriptionList list, corto_mountSubscription* element);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListAppend(corto_mountSubscriptionList list, corto_mountSubscription* element);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListTakeFirst(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListLast(corto_mountSubscriptionList list);
+CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListGet(corto_mountSubscriptionList list, corto_uint32 index);
+CORTO_EXPORT corto_uint32 corto_mountSubscriptionListSize(corto_mountSubscriptionList list);
+CORTO_EXPORT void corto_mountSubscriptionListClear(corto_mountSubscriptionList list);
+
+/* /corto/core/resultList */
+CORTO_EXPORT corto_result* corto_resultListInsertAlloc(corto_resultList list);
+CORTO_EXPORT corto_result* corto_resultListInsert(corto_resultList list, corto_result* element);
+CORTO_EXPORT corto_result* corto_resultListAppendAlloc(corto_resultList list);
+CORTO_EXPORT corto_result* corto_resultListAppend(corto_resultList list, corto_result* element);
+CORTO_EXPORT corto_result* corto_resultListTakeFirst(corto_resultList list);
+CORTO_EXPORT corto_result* corto_resultListLast(corto_resultList list);
+CORTO_EXPORT corto_result* corto_resultListGet(corto_resultList list, corto_uint32 index);
+CORTO_EXPORT corto_uint32 corto_resultListSize(corto_resultList list);
+CORTO_EXPORT void corto_resultListClear(corto_resultList list);
+#define corto_objectIterForeach(iter, elem) \
+    corto_object elem;\
+    while(corto_iter_hasNext(&iter) ? elem = (corto_object)corto_iter_next(&iter), TRUE : FALSE)
+
+#define corto_resultIterForeach(iter, elem) \
+    corto_result elem;\
+    while(corto_iter_hasNext(&iter) ? elem = *(corto_result*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+
+#define corto_sampleIterForeach(iter, elem) \
+    corto_sample elem;\
+    while(corto_iter_hasNext(&iter) ? elem = *(corto_sample*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+
+#define corto_subscriberEventIterForeach(iter, elem) \
+    corto_subscriberEvent elem;\
+    while(corto_iter_hasNext(&iter) ? elem = *(corto_subscriberEvent*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+
+
 #ifdef __cplusplus
 }
 #endif

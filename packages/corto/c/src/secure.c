@@ -5,11 +5,10 @@
  */
 
 #include <corto/c/c.h>
-#include <corto/secure/_load.h>
 
 corto_secure_accessKind* _corto_secure_accessKindCreate(corto_secure_accessKind value) {
     corto_secure_accessKind* _this;
-    _this = corto_secure_accessKind(corto_declare(corto_secure_accessKind_o));
+    _this = (corto_secure_accessKind*)corto_declare(corto_secure_accessKind_o);
     if (!_this) {
         return NULL;
     }
@@ -25,7 +24,7 @@ corto_secure_accessKind* _corto_secure_accessKindCreate(corto_secure_accessKind 
 
 corto_secure_accessKind* _corto_secure_accessKindCreateChild(corto_object _parent, corto_string _id, corto_secure_accessKind value) {
     corto_secure_accessKind* _this;
-    _this = corto_secure_accessKind(corto_declareChild(_parent, _id, corto_secure_accessKind_o));
+    _this = (corto_secure_accessKind*)corto_declareChild(_parent, _id, corto_secure_accessKind_o);
     if (!_this) {
         return NULL;
     }
@@ -56,7 +55,7 @@ corto_int16 _corto_secure_accessKindUpdate(corto_secure_accessKind* _this, corto
 
 corto_secure_accessKind* _corto_secure_accessKindDeclare(void) {
     corto_secure_accessKind* _this;
-    _this = corto_secure_accessKind(corto_declare(corto_secure_accessKind_o));
+    _this = (corto_secure_accessKind*)corto_declare(corto_secure_accessKind_o);
     if (!_this) {
         return NULL;
     }
@@ -65,7 +64,7 @@ corto_secure_accessKind* _corto_secure_accessKindDeclare(void) {
 
 corto_secure_accessKind* _corto_secure_accessKindDeclareChild(corto_object _parent, corto_string _id) {
     corto_secure_accessKind* _this;
-    _this = corto_secure_accessKind(corto_declareChild(_parent, _id, corto_secure_accessKind_o));
+    _this = (corto_secure_accessKind*)corto_declareChild(_parent, _id, corto_secure_accessKind_o);
     if (!_this) {
         return NULL;
     }
@@ -86,7 +85,7 @@ corto_secure_accessKind* _corto_secure_accessKindAssign(corto_secure_accessKind*
 
 corto_secure_actionKind* _corto_secure_actionKindCreate(corto_secure_actionKind value) {
     corto_secure_actionKind* _this;
-    _this = corto_secure_actionKind(corto_declare(corto_secure_actionKind_o));
+    _this = (corto_secure_actionKind*)corto_declare(corto_secure_actionKind_o);
     if (!_this) {
         return NULL;
     }
@@ -102,7 +101,7 @@ corto_secure_actionKind* _corto_secure_actionKindCreate(corto_secure_actionKind 
 
 corto_secure_actionKind* _corto_secure_actionKindCreateChild(corto_object _parent, corto_string _id, corto_secure_actionKind value) {
     corto_secure_actionKind* _this;
-    _this = corto_secure_actionKind(corto_declareChild(_parent, _id, corto_secure_actionKind_o));
+    _this = (corto_secure_actionKind*)corto_declareChild(_parent, _id, corto_secure_actionKind_o);
     if (!_this) {
         return NULL;
     }
@@ -133,7 +132,7 @@ corto_int16 _corto_secure_actionKindUpdate(corto_secure_actionKind* _this, corto
 
 corto_secure_actionKind* _corto_secure_actionKindDeclare(void) {
     corto_secure_actionKind* _this;
-    _this = corto_secure_actionKind(corto_declare(corto_secure_actionKind_o));
+    _this = (corto_secure_actionKind*)corto_declare(corto_secure_actionKind_o);
     if (!_this) {
         return NULL;
     }
@@ -142,7 +141,7 @@ corto_secure_actionKind* _corto_secure_actionKindDeclare(void) {
 
 corto_secure_actionKind* _corto_secure_actionKindDeclareChild(corto_object _parent, corto_string _id) {
     corto_secure_actionKind* _this;
-    _this = corto_secure_actionKind(corto_declareChild(_parent, _id, corto_secure_actionKind_o));
+    _this = (corto_secure_actionKind*)corto_declareChild(_parent, _id, corto_secure_actionKind_o);
     if (!_this) {
         return NULL;
     }
@@ -163,7 +162,7 @@ corto_secure_actionKind* _corto_secure_actionKindAssign(corto_secure_actionKind*
 
 corto_secure_key _corto_secure_keyCreate(void) {
     corto_secure_key _this;
-    _this = corto_secure_key(corto_declare(corto_secure_key_o));
+    _this = (corto_secure_key)corto_declare(corto_secure_key_o);
     if (!_this) {
         return NULL;
     }
@@ -178,7 +177,7 @@ corto_secure_key _corto_secure_keyCreate(void) {
 
 corto_secure_key _corto_secure_keyCreateChild(corto_object _parent, corto_string _id) {
     corto_secure_key _this;
-    _this = corto_secure_key(corto_declareChild(_parent, _id, corto_secure_key_o));
+    _this = (corto_secure_key)corto_declareChild(_parent, _id, corto_secure_key_o);
     if (!_this) {
         return NULL;
     }
@@ -206,7 +205,7 @@ corto_int16 _corto_secure_keyUpdate(corto_secure_key _this) {
 
 corto_secure_key _corto_secure_keyDeclare(void) {
     corto_secure_key _this;
-    _this = corto_secure_key(corto_declare(corto_secure_key_o));
+    _this = (corto_secure_key)corto_declare(corto_secure_key_o);
     if (!_this) {
         return NULL;
     }
@@ -215,7 +214,7 @@ corto_secure_key _corto_secure_keyDeclare(void) {
 
 corto_secure_key _corto_secure_keyDeclareChild(corto_object _parent, corto_string _id) {
     corto_secure_key _this;
-    _this = corto_secure_key(corto_declareChild(_parent, _id, corto_secure_key_o));
+    _this = (corto_secure_key)corto_declareChild(_parent, _id, corto_secure_key_o);
     if (!_this) {
         return NULL;
     }
@@ -234,7 +233,7 @@ corto_secure_key _corto_secure_keyAssign(corto_secure_key _this) {
 
 corto_secure_lock _corto_secure_lockCreate(corto_string mount, corto_string expr, int16_t priority) {
     corto_secure_lock _this;
-    _this = corto_secure_lock(corto_declare(corto_secure_lock_o));
+    _this = (corto_secure_lock)corto_declare(corto_secure_lock_o);
     if (!_this) {
         return NULL;
     }
@@ -252,7 +251,7 @@ corto_secure_lock _corto_secure_lockCreate(corto_string mount, corto_string expr
 
 corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, corto_string _id, corto_string mount, corto_string expr, int16_t priority) {
     corto_secure_lock _this;
-    _this = corto_secure_lock(corto_declareChild(_parent, _id, corto_secure_lock_o));
+    _this = (corto_secure_lock)corto_declareChild(_parent, _id, corto_secure_lock_o);
     if (!_this) {
         return NULL;
     }
@@ -289,7 +288,7 @@ corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_string mount
 
 corto_secure_lock _corto_secure_lockDeclare(void) {
     corto_secure_lock _this;
-    _this = corto_secure_lock(corto_declare(corto_secure_lock_o));
+    _this = (corto_secure_lock)corto_declare(corto_secure_lock_o);
     if (!_this) {
         return NULL;
     }
@@ -298,7 +297,7 @@ corto_secure_lock _corto_secure_lockDeclare(void) {
 
 corto_secure_lock _corto_secure_lockDeclareChild(corto_object _parent, corto_string _id) {
     corto_secure_lock _this;
-    _this = corto_secure_lock(corto_declareChild(_parent, _id, corto_secure_lock_o));
+    _this = (corto_secure_lock)corto_declareChild(_parent, _id, corto_secure_lock_o);
     if (!_this) {
         return NULL;
     }

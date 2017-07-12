@@ -312,6 +312,14 @@ corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, voi
               corto_fullpath(NULL, type));
             goto error;
         }
+    } else if (operator == CORTO_ASSIGN) {
+        corto_ptr_copy(operand1, type, operand2);
+        if (result && result != operand1) {
+            corto_ptr_copy(result, type, operand1);
+        }
+    } else {
+        corto_seterr("invalid operand for non-scalar type");
+        goto error;
     }
 
     return 0;

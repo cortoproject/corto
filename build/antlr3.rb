@@ -18,7 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
- require "#{ENV['CORTO_BUILD']}/common"
+require "#{ENV['CORTO_BUILD']}/common"
+require 'rake/clean'
 
 ANTLR3_BINARY  = "antlr-3.4-complete-no-antlrv2.jar"
 ANTLR3_ETC = "#{ENV["CORTO_TARGET"]}/etc/corto/#{ENV["CORTO_VERSION"]}/antlr3"
@@ -28,7 +29,15 @@ ENV["CLASSPATH"] = "#{ANTLR3_JAR}:#{ENV['CLASSPATH']}"
 GENERATED_SOURCES = [] if not defined? GENERATED_SOURCES
 GENERATED_SOURCES << "src/#{ANTLR3}Parser.c"
 
+INCLUDE << "#{ENV['CORTO_TARGET']}/include/corto/#{CORTO_VERSION}/antlr3"
+LIB << "antlr3c"
+
 file "src/#{ANTLR3}Parser.c" => "src/#{ANTLR3}.g" do |task|
   msg "preprocess #{C_NORMAL}src/#{ANTLR3}.g"
   sh "java org.antlr.Tool src/#{ANTLR3}.g"
 end
+
+CLEAN.include("src/#{ANTLR3}Parser.c")
+CLEAN.include("src/#{ANTLR3}Parser.h")
+CLEAN.include("src/#{ANTLR3}Lexer.c")
+CLEAN.include("src/#{ANTLR3}Lexer.h")

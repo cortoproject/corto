@@ -1,7 +1,7 @@
 /* _type.h
  *
- * Type definitions for C-language.
- * This file contains generated code. Do not modify!
+ * This file contains generated C type definitions.
+ * You should not manually modify the contents of this file.
  */
 
 #ifndef CORTO_NATIVE__TYPE_H
