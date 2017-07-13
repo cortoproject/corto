@@ -562,10 +562,15 @@ task :runtest do
   verbose(VERBOSE)
   TEST = true
   cmd "rake"
+  command = "corto -l #{get_artefact_name(TRUE)} #{ENV['testcase']}"
   begin
-    cmd "corto -l #{get_artefact_name(TRUE)} #{ENV['testcase']}"
+    sh command
   rescue
-    abort
+    # exitstatus 1 means that testcase is empty, which is not an error
+    if $?.exitstatus != 1 then
+      err command
+      abort
+    end
   end
 end
 
