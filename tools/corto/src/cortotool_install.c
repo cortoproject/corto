@@ -80,11 +80,11 @@ static corto_int16 cortotool_installFromSource(corto_bool verbose, corto_bool re
      * the link ensures that the shell-cached location to corto still points
      * to a valid destination. Without this the user would have to start a new
      * shell after installing. */
-    fprintf(install, "export CORTO_INSTALLFROM=%s\n", getenv("CORTO_TARGET"));
+    fprintf(install, "export CORTO_INSTALLFROM=\"%s\"\n", getenv("CORTO_TARGET"));
 
     /* Use current PATH in case sudo has different env */
     char *PATH = getenv("PATH");
-    fprintf(install, "export PATH=%s\n", PATH);
+    fprintf(install, "export PATH=\"%s\"\n", PATH);
 
     /* Don't do the same for LD_LIBRARY_PATH. Because installed projects should
      * work for all users, local changes to LD_LIBRARY_PATH should not be
