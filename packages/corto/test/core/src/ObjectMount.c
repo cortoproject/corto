@@ -5,7 +5,6 @@
 int16_t test_ObjectMount_construct(
     test_ObjectMount this)
 {
-
     corto_ptr_setstr(&corto_subscriber(this)->query.select, this->select);
     corto_ptr_setstr(&corto_subscriber(this)->query.from, this->from);
     corto_ptr_setstr(&corto_subscriber(this)->query.type, this->item.type);

@@ -167,7 +167,7 @@ corto_resultIter test_SinkMount_onQuery(
                     e.parent,
                     e.type,
                     0,
-                    e.leaf
+                    e.flags
                 );
             }
         }

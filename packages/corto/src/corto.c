@@ -184,6 +184,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(,secure_actionKind),\
     SSO_OP_VALUE(lang_, modifier),\
     SSO_OP_VALUE(core_, eventMask),\
+    SSO_OP_VALUE(core_, resultMask),\
     SSO_OP_VALUE(lang_, state),\
     SSO_OP_VALUE(lang_, attr),\
     SSO_OP_VALUE(lang_, int32seq),\
@@ -499,6 +500,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_modifier_OPTIONAL),\
     SSO_OP_OBJ(lang_modifier_OBSERVABLE),\
     SSO_OP_OBJ(lang_modifier_KEY),\
+    /* resultMask */\
+    SSO_OP_OBJ(core_resultMask_RESULT_LEAF),\
+    SSO_OP_OBJ(core_resultMask_RESULT_HIDDEN),\
     /* typeOptions */\
     SSO_OP_OBJ(lang_typeOptions_parentType),\
     SSO_OP_OBJ(lang_typeOptions_parentState),\
@@ -829,7 +833,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_result_parent),\
     SSO_OP_OBJ(core_result_type),\
     SSO_OP_OBJ(core_result_value),\
-    SSO_OP_OBJ(core_result_leaf),\
+    SSO_OP_OBJ(core_result_flags),\
     SSO_OP_OBJ(core_result_object),\
     SSO_OP_OBJ(core_result_history),\
     SSO_OP_OBJ(core_result_owner),\
@@ -1347,10 +1351,12 @@ corto_bool corto_isbuiltin(corto_object o) {
 
 bool corto_autoload(corto_bool autoload) {
     bool prev = false;
+
     if (corto_loaderInstance) {
         prev = corto_loaderInstance->autoLoad;
         corto_loaderInstance->autoLoad = autoload;
     }
+    
     return prev;
 }
 

@@ -12,7 +12,7 @@ void* test_MounterIterCount_next(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->nextCount ++;
     this->result.id = this->id;
-    this->result.leaf = TRUE;
+    this->result.flags = CORTO_RESULT_LEAF;
     this->id[0] ++;
     return &this->result;
 }

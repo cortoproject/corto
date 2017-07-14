@@ -1,4 +1,4 @@
-#package test
+in package test
 
 int8 initCalled: 0
 int8 constructCalled: 0

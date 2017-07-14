@@ -165,7 +165,7 @@ corto_resultIter test_VirtualSinkMount_onQuery(
                     e.parent,
                     e.type,
                     0,
-                    e.leaf
+                    e.flags
                 );
             }
         }

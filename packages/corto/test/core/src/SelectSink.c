@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_SelectSink_setup(
     test_SelectSink this)
 {
@@ -12,79 +11,408 @@ void test_SelectSink_setup(
 
     /* Ensure all objects are created with persistency enabled */
     corto_setAttr(CORTO_ATTR_PERSISTENT);
-
 }
 
 void test_SelectSink_tc_selectLoaderCortoScope(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("/").from("corto").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, ".");
+        
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "core");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "lang");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "native");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, ".");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderCortoSingle(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("r").from("corto").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, ".");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderCortoTree(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+
+    corto_iter it;
+    test_assert(corto_select("//").from("corto").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "u");
+    test_assertstr(r->parent, "r");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "core");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "lang");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "native");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, ".");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 
 }
 
 void test_SelectSink_tc_selectLoaderNestedScope(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("corto/").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "core");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "lang");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "native");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderNestedSingle(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("corto/native").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "native");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
+}
+
+void test_SelectSink_tc_selectLoaderNestedSingleVirtual(
+    test_SelectSink this)
+{
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
+
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+
+    corto_iter it;
+    test_assert(corto_select("corto/r").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderNestedTree(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("corto//").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "u");
+    test_assertstr(r->parent, "/corto/r");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "core");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "lang");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "native");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderRootScope(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("/").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "p");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderRootSingle(
     test_SelectSink this)
 {
 
-    /* << Insert implementation >> */
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+
+    corto_iter it;
+    test_assert(corto_select("p").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "p");
+    test_assertstr(r->parent, "");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectLoaderRootTree(
     test_SelectSink this)
 {
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
 
-    /* << Insert implementation >> */
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
+    corto_iter it;
+    test_assert(corto_select("//").type("/corto/core/package").iter(&it) == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "corto");
+    test_assertstr(r->parent, "");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "core");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "lang");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "native");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "r");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "u");
+    test_assertstr(r->parent, "/corto/r");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "p");
+    test_assertstr(r->parent, "");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "q");
+    test_assertstr(r->parent, "/p");
+
+    test_assert(!corto_iter_hasNext(&it));
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_SelectSink_tc_selectMixedScope(
@@ -136,7 +464,6 @@ void test_SelectSink_tc_selectMixedScope(
     test_assert(!strcmp(result->type, "int32"));
 
     test_assert(!corto_iter_hasNext(&iter));
-
 }
 
 void test_SelectSink_tc_selectMixedScopeNested1(
@@ -313,33 +640,27 @@ void test_SelectSink_tc_selectScopeWithType(
         .id = "root",
         .parent = ".",
         .type = "int32",
-        .leaf = FALSE
+        .flags = 0
     };
     corto_result r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .leaf = TRUE
+        .flags = CORTO_RESULT_LEAF
     };
-
     test_ObjectMount m1 = test_ObjectMountCreate("*", "/", &r1);
     test_ObjectMount m2 = test_ObjectMountCreate("*", "/root", &r2);
-
     corto_iter it;
     corto_select("root/obj").type("float32").iter(&it);
-
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
     test_assertstr(r->type, "float32");
-
     test_assert(!corto_iter_hasNext(&it));
-
     test_assert(corto_delete(m1) == 0);
     test_assert(corto_delete(m2) == 0);
-
 }
 
 void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
@@ -349,33 +670,27 @@ void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
         .id = "root",
         .parent = ".",
         .type = "int32",
-        .leaf = FALSE
+        .flags = 0
     };
     corto_result r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .leaf = TRUE
+        .flags = CORTO_RESULT_LEAF
     };
-
     test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
     test_ObjectMount m2 = test_ObjectMountCreate("//", "/root", &r2);
-
     corto_iter it;
     corto_select("root/obj").type("float32").iter(&it);
-
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
     test_assertstr(r->type, "float32");
-
     test_assert(!corto_iter_hasNext(&it));
-
     test_assert(corto_delete(m1) == 0);
     test_assert(corto_delete(m2) == 0);
-
 }
 
 void test_SelectSink_tc_selectSingle(
@@ -475,27 +790,21 @@ void test_SelectSink_tc_selectSingleWithType(
         .id = "a",
         .parent = ".",
         .type = "int32",
-        .leaf = FALSE
+        .flags = CORTO_RESULT_LEAF
     };
-
     /* use root as mount point */
     test_ObjectMount m1 = test_ObjectMountCreate("*", "/", &r1);
     test_assert(m1 != NULL);
-
     corto_iter it;
     corto_select("a").type("int32").iter(&it);
-
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "int32");
-
     test_assert(!corto_iter_hasNext(&it));
-
     test_assert(corto_delete(m1) == 0);
-
 }
 
 void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
@@ -505,27 +814,21 @@ void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
         .id = "a",
         .parent = ".",
         .type = "int32",
-        .leaf = FALSE
+        .flags = 0
     };
-
     /* use root as mount point */
     test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
     test_assert(m1 != NULL);
-
     corto_iter it;
     corto_select("a").type("int32").iter(&it);
-
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "int32");
-
     test_assert(!corto_iter_hasNext(&it));
-
     test_assert(corto_delete(m1) == 0);
-
 }
 
 void test_SelectSink_tc_selectTreeWithType(
@@ -535,50 +838,43 @@ void test_SelectSink_tc_selectTreeWithType(
         .id = "root",
         .parent = ".",
         .type = "int32",
-        .leaf = FALSE
+        .flags = 0
     };
     corto_result r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .leaf = TRUE
+        .flags = CORTO_RESULT_LEAF
     };
     corto_result r3 = {
         .id = "nested",
         .parent = ".",
         .type = "float32",
-        .leaf = TRUE
+        .flags = CORTO_RESULT_LEAF
     };
-
     test_ObjectMount m1 = test_ObjectMountCreate("/", "/", &r1);
     test_ObjectMount m2 = test_ObjectMountCreate("/", "/root", &r2);
     test_ObjectMount m3 = test_ObjectMountCreate("/", "/root/obj", &r3);
     test_ObjectMount m4 = test_ObjectMountCreate("/", "/root/obj/nested", &r2);
-
     corto_iter it;
     corto_select("//obj").type("float32").iter(&it);
-
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
     test_assertstr(r->type, "float32");
-
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root/obj/nested");
     test_assertstr(r->type, "float32");
-
     test_assert(!corto_iter_hasNext(&it));
-
     test_assert(corto_delete(m1) == 0);
     test_assert(corto_delete(m2) == 0);
     test_assert(corto_delete(m3) == 0);
     test_assert(corto_delete(m4) == 0);
-
 }
 
 void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
@@ -588,50 +884,43 @@ void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
         .id = "root",
         .parent = ".",
         .type = "int32",
-        .leaf = FALSE
+        .flags = 0
     };
     corto_result r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .leaf = TRUE
+        .flags = CORTO_RESULT_LEAF
     };
     corto_result r3 = {
         .id = "nested",
         .parent = ".",
         .type = "float32",
-        .leaf = TRUE
+        .flags = CORTO_RESULT_LEAF
     };
-
     test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
     test_ObjectMount m2 = test_ObjectMountCreate("//", "/root", &r2);
     test_ObjectMount m3 = test_ObjectMountCreate("//", "/root/obj", &r3);
     test_ObjectMount m4 = test_ObjectMountCreate("//", "/root/obj/nested", &r2);
-
     corto_iter it;
     corto_select("//obj").type("float32").iter(&it);
-
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
     test_assertstr(r->type, "float32");
-
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root/obj/nested");
     test_assertstr(r->type, "float32");
-
     test_assert(!corto_iter_hasNext(&it));
-
     test_assert(corto_delete(m1) == 0);
     test_assert(corto_delete(m2) == 0);
     test_assert(corto_delete(m3) == 0);
     test_assert(corto_delete(m4) == 0);
-
 }
 
 void test_SelectSink_tc_selectVirtualScopeNested1(

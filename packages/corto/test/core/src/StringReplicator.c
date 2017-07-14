@@ -34,7 +34,7 @@ corto_resultIter test_StringReplicator_onQuery(
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{10,20}"),
-        TRUE
+        CORTO_RESULT_LEAF
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(data),
@@ -43,7 +43,7 @@ corto_resultIter test_StringReplicator_onQuery(
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{30,40}"),
-        TRUE
+        CORTO_RESULT_LEAF
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(data),
@@ -52,7 +52,7 @@ corto_resultIter test_StringReplicator_onQuery(
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{50,60}"),
-        TRUE
+        CORTO_RESULT_LEAF
     );
 
     /* Create persistent iterator */

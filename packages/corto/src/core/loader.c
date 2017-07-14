@@ -2,11 +2,11 @@
 
 #include <corto/corto.h>
 
+static corto_int32 constructOnce;
+
 int16_t corto_loader_construct(
     corto_loader this)
 {
-    static corto_int32 constructOnce;
-
     if (corto_ainc(&constructOnce) == 1) {
         corto_query *q = &corto_subscriber(this)->query;
         corto_ptr_setstr(&q->select, "//*");
@@ -14,18 +14,18 @@ int16_t corto_loader_construct(
         corto_ptr_setstr(&q->type, "/corto/core/package");
         corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
         if (safe_corto_mount_setContentType(this, "text/json")) {
-            return -1;;
+            return -1;
         }
         return safe_corto_mount_construct(this);
     } else {
         return -1;
     }
-
 }
 
 void corto_loader_destruct(
     corto_loader this)
 {
+    corto_assert(corto_adec(&constructOnce) >= 0, "loader destructed too many times");
     safe_corto_mount_destruct(this);
 }
 
@@ -93,10 +93,6 @@ void corto_loader_addDir(
                 sprintf(package, "%s/%s", q->from, f);
                 corto_cleanpath(package, package);
 
-                if (!strcmp(package, "corto")) {
-                    continue;
-                }
-
                 corto_string env = corto_locate(package, NULL, CORTO_LOCATION_ENV);
 
                 if (!env) {
@@ -149,6 +145,17 @@ void corto_loader_addDir(
                 result->parent = corto_strdup(q->from);
                 result->type = corto_strdup("/corto/core/package");
                 result->value = (corto_word)content;
+
+                /* because the corto object is not persistent, but because the
+                 * mount does have objects under the corto scope, hide the corto
+                 * object from the mount for the user, but let corto_select know
+                 * that more objects may be available. */
+                if (!strcmp(package, "corto")) {
+                    result->flags = CORTO_RESULT_HIDDEN;
+                } else {
+                    result->flags = 0;
+                }
+
                 corto_ll_append(list, result);
             }
         }

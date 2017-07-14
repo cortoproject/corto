@@ -574,7 +574,6 @@ task :runtest do
   end
 end
 
-
 # Keep track of overal coverage statistics for project
 covered = 0
 total = 0

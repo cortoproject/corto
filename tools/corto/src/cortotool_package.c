@@ -267,6 +267,7 @@ corto_int16 cortotool_list(int argc, char* argv[]) {
                 }
             }
         } else {
+            corto_lasterr();
             printf(CORTO_PROMPT "no packages to list\n");
         }
 

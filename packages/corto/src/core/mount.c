@@ -675,7 +675,7 @@ void corto_mount_return(
     elem->parent = corto_strdup(r->parent);
     elem->type = corto_strdup(r->type);
     elem->value = (corto_word)r->value;
-    elem->leaf = r->leaf;
+    elem->flags = r->flags;
     corto_ll_append(result, elem);
 
 }

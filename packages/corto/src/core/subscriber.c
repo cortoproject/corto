@@ -314,7 +314,7 @@ corto_int16 corto_notifySubscribersId(
                   .parent = parentPtr,
                   .type = type,
                   .value = content,
-                  .leaf = FALSE,
+                  .flags = 0,
                   .object = valueIsObject ? intermediate : NULL,
                   .owner = objectOwner
                 };

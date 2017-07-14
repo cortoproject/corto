@@ -18,7 +18,7 @@ int16_t test_ListMount_construct(
         ".",
         "uint32",
         0,
-        FALSE
+        0
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
@@ -27,7 +27,7 @@ int16_t test_ListMount_construct(
         ".",
         "string",
         0,
-        FALSE
+        0
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
@@ -36,7 +36,7 @@ int16_t test_ListMount_construct(
         ".",
         "float64",
         0,
-        FALSE
+        0
     );
 
     /* Create nested objects */
@@ -47,7 +47,7 @@ int16_t test_ListMount_construct(
         "x",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -57,7 +57,7 @@ int16_t test_ListMount_construct(
         "x",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -67,7 +67,7 @@ int16_t test_ListMount_construct(
         "x",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -77,7 +77,7 @@ int16_t test_ListMount_construct(
         "xyz",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -87,7 +87,7 @@ int16_t test_ListMount_construct(
         "xyz",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -97,7 +97,7 @@ int16_t test_ListMount_construct(
         "xyz",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -107,7 +107,7 @@ int16_t test_ListMount_construct(
         "xyz/abc",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -117,7 +117,7 @@ int16_t test_ListMount_construct(
         "xyz/abc",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -127,7 +127,7 @@ int16_t test_ListMount_construct(
         "xyz/abc/foo",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_resultAssign(
@@ -137,7 +137,7 @@ int16_t test_ListMount_construct(
         "xyz/abc/foo",
         "uint32",
         0,
-        FALSE
+        0
     );
 
     corto_mount_setContentType(this, "text/json");
@@ -172,7 +172,7 @@ corto_resultIter test_ListMount_onQuery(
                     e.parent,
                     e.type,
                     0,
-                    e.leaf
+                    e.flags
                 );
             }
         }

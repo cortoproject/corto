@@ -512,7 +512,7 @@ static time_t corto_getModified(corto_string file) {
  * Input 'foo/bar'
  * Output: '/home/me/.corto/lib/corto/1.1/foo/bar'
  */
-static corto_string corto_locatePackageIntern(
+static char* corto_locatePackageIntern(
     corto_string lib,
     corto_string *base,
     corto_dl *dl_out,
@@ -757,7 +757,7 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_loc
     /* If package has been loaded already, don't resolve it again */
     loaded = corto_loadedAdminFind(package);
     if (loaded) {
-        result = loaded->filename;
+        result = loaded->filename ? corto_strdup(loaded->filename) : NULL;
         base = loaded->base;
     }    
 #endif

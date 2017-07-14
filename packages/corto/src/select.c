@@ -234,7 +234,7 @@ char* corto_pathstr(
     if (!to) {
         to = "";
     }
-
+    
     char *fromArray[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 fromCount = corto_pathToArray(from, fromArray, sep);
     char *toArray[CORTO_MAX_SCOPE_DEPTH];
@@ -350,7 +350,9 @@ static void corto_setItemData(
         item->value = data->dstSer->fromValue(&v);
     }
 
-    item->leaf = corto_scopeSize(o) == 0;
+    if (corto_scopeSize(o)) {
+        item->flags = CORTO_RESULT_LEAF;
+    }
 }
 
 static corto_bool corto_selectMatch(
@@ -489,10 +491,10 @@ static corto_resultIter corto_selectRequestMount(
         /*printf("frame = {%s,%s} recursiveQuery = '%s' parent = '%s'\n",
             segment->scope, segment->expr, data->recursiveQuery, corto_subscriber(mount)->parent);*/
 
-        corto_debug("select: request from '%s', parent='%s', expr='%s'",
-          corto_fullpath(NULL, mount),
+        corto_debug("select: query (select='%s' from='%s') mount '%s'",
+          expr, 
           parent,
-          expr);
+          corto_fullpath(NULL, mount));
 
         corto_query r = {
           .from = parent,
@@ -574,15 +576,15 @@ static corto_int16 corto_selectIterMount(
     }
 
     corto_debug(
-        "select: mount returned '%s, %s'",
-        result->id, result->parent);
+        "select: mount returned (id = '%s', parent = '%s' leaf = '%s')",
+        result->id, result->parent, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
 
     data->next = &data->item;
 
     mount = data->mounts[frame->currentMount - 1];
     data->item.owner = mount;
     data->item.object = NULL;
-    data->item.leaf = result->leaf;
+    data->item.flags = result->flags;
 
     /* Copy data, so mount can safely release it */
     if (result->id) {
@@ -920,7 +922,7 @@ static int16_t corto_selectTree(
             data->sp, frame->cur->scope, frame->cur->expr);
 
     do {
-        corto_bool leaf = TRUE, hasData = FALSE;
+        corto_resultMask flags = CORTO_RESULT_LEAF, hasData = FALSE;
 
         /* Unwind stack for depleted iterators */
         while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) && data->sp && !data->quit) {
@@ -929,8 +931,6 @@ static int16_t corto_selectTree(
                 strcpy(data->item.name, corto_idof(frame->o));
                 corto_ptr_setref(&frame->o, NULL);
             }
-
-            corto_debug("select: frame %d depleted, move to %d", data->sp, data->sp - 1);
 
             data->sp --;
             data->mountsLoaded = frame->firstMount;
@@ -950,7 +950,7 @@ static int16_t corto_selectTree(
                 } else {
                     data->skip ++;
                 }
-                leaf = FALSE;
+                flags = 0;
                 data->recursiveQuery[0] = '\0';
             } else {
                 /* If doing a lookup on a tree, select requests all objects from
@@ -962,11 +962,11 @@ static int16_t corto_selectTree(
                 } else {
                     noMatch = !corto_selectMatch(NULL, data);
                 }
-                leaf = data->next->leaf;
+                flags = data->next->flags;
             }
 
             /* Prepare next frame if object has scope */
-            if (!leaf && (data->mask == CORTO_ON_TREE)) {
+            if (!(flags & CORTO_RESULT_LEAF) && (data->mask == CORTO_ON_TREE)) {
                 corto_select_frame *prevFrame = frame;
                 frame = &data->stack[++ data->sp];
                 frame->recursiveQueryLength = strlen(data->recursiveQuery);
@@ -974,10 +974,6 @@ static int16_t corto_selectTree(
                 frame->currentMount = frame->firstMount;
                 frame->cur = prevFrame->cur;
                 corto_ptr_setref(&frame->o, o);
-
-                corto_debug("select: move to frame %d (scope = '%s', expr = '%s', o = '%s')",
-                        data->sp, frame->cur->scope, frame->cur->expr, 
-                        o ? corto_fullpath(NULL, o) : "null");
 
                 if (o) {
                     corto_rbtree scope = corto_scopeof(o);
@@ -991,6 +987,11 @@ static int16_t corto_selectTree(
                     frame->iter = corto_selectRequestMount(
                       data, frame, data->mounts[frame->currentMount - 1]);
                 }
+            }
+
+            /* If result is hidden, skip */
+            if (flags & CORTO_RESULT_HIDDEN) {
+                noMatch = true;
             }
         } else {
             data->next = NULL;
@@ -1092,7 +1093,9 @@ static void* corto_selectNext(corto_resultIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->next) {
-        corto_debug("select: yield ('%s', '%s')", data->next->id, data->next->parent);
+        corto_debug("select: yield ('%s', '%s')", 
+            data->next->id, 
+            data->next->parent);
         data->count ++;
     }
 
@@ -1183,29 +1186,31 @@ static corto_int16 corto_selectSplitScope(corto_select_data *data) {
     corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p", 
         data->segments[0].scope, data->segments[0].expr, data->segments[0].o);
 
-    do {
-        ch = *ptr;
-        if ((!ch && ptr != scope) || ch == '/') {
-            *ptr = '\0';
+    if (ptr[0]) {
+        do {
+            ch = *ptr;
+            if ((!ch && ptr != scope) || ch == '/') {
+                *ptr = '\0';
 
-            corto_ptr_setstr(&data->segments[current].scope, scope);
-            corto_ptr_setstr(&data->segments[current].expr, ch ? ptr + 1 : NULL);
+                corto_ptr_setstr(&data->segments[current].scope, scope);
+                corto_ptr_setstr(&data->segments[current].expr, ch ? ptr + 1 : NULL);
 
-            /* Lookup object in advance, if it exists */
-            data->segments[current].o = corto_find(
-                NULL,
-                data->segments[current].scope,
-                CORTO_FIND_DEFAULT);
+                /* Lookup object in advance, if it exists */
+                data->segments[current].o = corto_find(
+                    NULL,
+                    data->segments[current].scope,
+                    CORTO_FIND_DEFAULT);
 
-            *ptr = ch;
+                *ptr = ch;
 
-            corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p", 
-                data->segments[current].scope, data->segments[current].expr, data->segments[current].o);
+                corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p", 
+                    data->segments[current].scope, data->segments[current].expr, data->segments[current].o);
 
-            current++;
-        }
-        ptr++;
-    } while (ch);
+                current++;
+            }
+            ptr++;
+        } while (ch);
+    }
 
     return 0;
 }
@@ -1386,7 +1391,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->item.name = data->name;
     data->item.type = data->type;
     data->item.id = data->id;
-    data->item.leaf = TRUE;
+    data->item.flags = CORTO_RESULT_LEAF;
     data->mountAction = r->mountAction;
     data->instance = r->instance;
     data->mount = r->mount;

@@ -38,6 +38,7 @@ extern "C" {
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
 #define corto_position(o) ((corto_position*)corto_assertType((corto_type)corto_position_o, o))
 #define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
+#define corto_resultMask(o) ((corto_resultMask*)corto_assertType((corto_type)corto_resultMask_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
 #define corto_sample(o) ((corto_sample*)corto_assertType((corto_type)corto_sample_o, o))
 #define corto_sampleIter(o) ((corto_sampleIter*)corto_assertType((corto_type)corto_sampleIter_o, o))
@@ -338,6 +339,11 @@ struct corto_remote_s {
     struct corto_method_s super;
 };
 
+/* /corto/core/resultMask */
+typedef uint32_t corto_resultMask;
+    #define CORTO_RESULT_LEAF (0x1)
+    #define CORTO_RESULT_HIDDEN (0x2)
+
 /*  /corto/core/time */
 typedef struct corto_time corto_time;
 
@@ -365,7 +371,7 @@ struct corto_result {
     corto_string parent;
     corto_string type;
     uintptr_t value;
-    bool leaf;
+    corto_resultMask flags;
     corto_object object;
     corto_sampleIter history;
     corto_object owner;

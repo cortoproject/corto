@@ -2182,7 +2182,7 @@ corto_remote _corto_remoteAssign(corto_remote _this, corto_type returnType, bool
     return _this;
 }
 
-corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, bool leaf) {
+corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, corto_resultMask flags) {
     corto_result* _this;
     _this = (corto_result*)corto_declare(corto_result_o);
     if (!_this) {
@@ -2194,7 +2194,7 @@ corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_stri
         corto_ptr_setstr(&((corto_result*)_this)->parent, parent);
         corto_ptr_setstr(&((corto_result*)_this)->type, type);
         ((corto_result*)_this)->value = value;
-        ((corto_result*)_this)->leaf = leaf;
+        ((corto_result*)_this)->flags = flags;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -2203,7 +2203,7 @@ corto_result* _corto_resultCreate(corto_string id, corto_string name, corto_stri
     return _this;
 }
 
-corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _id, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, bool leaf) {
+corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _id, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, corto_resultMask flags) {
     corto_result* _this;
     _this = (corto_result*)corto_declareChild(_parent, _id, corto_result_o);
     if (!_this) {
@@ -2215,7 +2215,7 @@ corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _id, c
         corto_ptr_setstr(&((corto_result*)_this)->parent, parent);
         corto_ptr_setstr(&((corto_result*)_this)->type, type);
         ((corto_result*)_this)->value = value;
-        ((corto_result*)_this)->leaf = leaf;
+        ((corto_result*)_this)->flags = flags;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -2224,7 +2224,7 @@ corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _id, c
     return _this;
 }
 
-corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, bool leaf) {
+corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, corto_resultMask flags) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -2233,14 +2233,14 @@ corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_stri
             corto_ptr_setstr(&((corto_result*)((corto_result*)CORTO_OFFSET(_this, ((corto_type)corto_result_o)->size)))->parent, parent);
             corto_ptr_setstr(&((corto_result*)((corto_result*)CORTO_OFFSET(_this, ((corto_type)corto_result_o)->size)))->type, type);
             ((corto_result*)((corto_result*)CORTO_OFFSET(_this, ((corto_type)corto_result_o)->size)))->value = value;
-            ((corto_result*)((corto_result*)CORTO_OFFSET(_this, ((corto_type)corto_result_o)->size)))->leaf = leaf;
+            ((corto_result*)((corto_result*)CORTO_OFFSET(_this, ((corto_type)corto_result_o)->size)))->flags = flags;
         } else {
             corto_ptr_setstr(&((corto_result*)_this)->id, id);
             corto_ptr_setstr(&((corto_result*)_this)->name, name);
             corto_ptr_setstr(&((corto_result*)_this)->parent, parent);
             corto_ptr_setstr(&((corto_result*)_this)->type, type);
             ((corto_result*)_this)->value = value;
-            ((corto_result*)_this)->leaf = leaf;
+            ((corto_result*)_this)->flags = flags;
         }
         corto_updateEnd(_this);
     } else {
@@ -2267,25 +2267,25 @@ corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _id) 
     return _this;
 }
 
-corto_int16 _corto_resultDefine(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, bool leaf) {
+corto_int16 _corto_resultDefine(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, corto_resultMask flags) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_result*)_this)->id, id);
     corto_ptr_setstr(&((corto_result*)_this)->name, name);
     corto_ptr_setstr(&((corto_result*)_this)->parent, parent);
     corto_ptr_setstr(&((corto_result*)_this)->type, type);
     ((corto_result*)_this)->value = value;
-    ((corto_result*)_this)->leaf = leaf;
+    ((corto_result*)_this)->flags = flags;
     return corto_define(_this);
 }
 
-corto_result* _corto_resultAssign(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, bool leaf) {
+corto_result* _corto_resultAssign(corto_result* _this, corto_string id, corto_string name, corto_string parent, corto_string type, uintptr_t value, corto_resultMask flags) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_result*)_this)->id, id);
     corto_ptr_setstr(&((corto_result*)_this)->name, name);
     corto_ptr_setstr(&((corto_result*)_this)->parent, parent);
     corto_ptr_setstr(&((corto_result*)_this)->type, type);
     ((corto_result*)_this)->value = value;
-    ((corto_result*)_this)->leaf = leaf;
+    ((corto_result*)_this)->flags = flags;
     return _this;
 }
 
@@ -2458,6 +2458,83 @@ corto_resultList* _corto_resultListAssign(corto_resultList* _this, corto_uint32 
     for (i = 0; i < length; i ++) {
         corto_resultListAppend(*_this, &elements[i]);
     }
+    return _this;
+}
+
+corto_resultMask* _corto_resultMaskCreate(corto_resultMask value) {
+    corto_resultMask* _this;
+    _this = (corto_resultMask*)corto_declare(corto_resultMask_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_resultMask* _corto_resultMaskCreateChild(corto_object _parent, corto_string _id, corto_resultMask value) {
+    corto_resultMask* _this;
+    _this = (corto_resultMask*)corto_declareChild(_parent, _id, corto_resultMask_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_resultMaskUpdate(corto_resultMask* _this, corto_resultMask value) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            *((corto_resultMask*)CORTO_OFFSET(_this, ((corto_type)corto_resultMask_o)->size)) = value;
+        } else {
+            *_this = value;
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_resultMask* _corto_resultMaskDeclare(void) {
+    corto_resultMask* _this;
+    _this = (corto_resultMask*)corto_declare(corto_resultMask_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_resultMask* _corto_resultMaskDeclareChild(corto_object _parent, corto_string _id) {
+    corto_resultMask* _this;
+    _this = (corto_resultMask*)corto_declareChild(_parent, _id, corto_resultMask_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_resultMaskDefine(corto_resultMask* _this, corto_resultMask value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+    return corto_define(_this);
+}
+
+corto_resultMask* _corto_resultMaskAssign(corto_resultMask* _this, corto_resultMask value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
     return _this;
 }
 

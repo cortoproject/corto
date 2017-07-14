@@ -827,7 +827,16 @@ char* g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind) {
                 parent = corto_parentof(parent);
             } while (!corto_instanceof(corto_package_o, parent));
 
-            corto_path(_id, parent, o, "/");
+            corto_id signatureName;
+            corto_signatureName(corto_idof(o), signatureName);
+
+            /* Only use shorter name if id of parent is not equal to id of object. 
+             * Otherwise, this may result in name clashes. */
+            if (parent && corto_idof(parent) && strcmp(signatureName, corto_idof(parent))) {
+                corto_path(_id, parent, o, "/");
+            } else {
+                return g_fullOidExt(g, o, id, CORTO_GENERATOR_ID_DEFAULT);
+            }
 
         /* If prefix is found, replace the scope up until the found object with the prefix */
         } else {

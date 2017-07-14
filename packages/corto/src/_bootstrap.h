@@ -533,7 +533,6 @@ CORTO_FWDECL(enum, typeKind);
 CORTO_FWDECL(enum, width);
 CORTO_FWDECL_CORE(enum, frameKind);
 CORTO_FWDECL_CORE(enum, ownership);
-CORTO_FWDECL_CORE(bitmask, readWrite);
 CORTO_FWDECL_CORE(enum, operatorKind);
 CORTO_FWDECL_SECURE(enum, accessKind);
 CORTO_FWDECL_SECURE(enum, actionKind);
@@ -541,6 +540,8 @@ CORTO_FWDECL_SECURE(enum, actionKind);
 CORTO_FWDECL(bitmask, attr);
 CORTO_FWDECL_CORE(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifier);
+CORTO_FWDECL_CORE(bitmask, readWrite);
+CORTO_FWDECL_CORE(bitmask, resultMask);
 CORTO_FWDECL(bitmask, state);
 
 CORTO_FWDECL(sequence, interfaceseq);
@@ -799,6 +800,10 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
     CORTO_CONSTANT_O(lang_modifier, OBSERVABLE);
     CORTO_CONSTANT_O(lang_modifier, KEY);
+
+CORTO_BITMASK_O(core, resultMask);
+    CORTO_CONSTANT_O(core_resultMask, RESULT_LEAF);
+    CORTO_CONSTANT_O(core_resultMask, RESULT_HIDDEN);
 
 /* Collections */
 CORTO_SEQUENCE_O(lang, interfaceseq, lang_interface, 0);
@@ -1202,7 +1207,7 @@ CORTO_STRUCT_O(core, result, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_result, parent, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, type, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, value, lang_word, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_result, leaf, lang_bool, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_result, flags, core_resultMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_result, object, lang_object, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, history, core_sampleIter, CORTO_HIDDEN);
     CORTO_MEMBER_O(core_result, owner, lang_object, CORTO_HIDDEN);

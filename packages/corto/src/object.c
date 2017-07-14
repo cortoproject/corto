@@ -1837,9 +1837,13 @@ static corto_object corto_declareChildInternRecursive(
 
         do {
             /* Try to resume parent objects first, in case they have another type */
-            if (!next || !(result = corto_resume(parent, cur, NULL))) {
-                /* If object was not resumed, declare it */
-                result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
+            if (!(result = corto_find(parent, cur, CORTO_FIND_DEFAULT))) {
+                if (!next || !(result = corto_resume(parent, cur, NULL))) {
+                    /* If object was not resumed, declare it */
+                    result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
+                }
+            } else {
+                corto_release(result);
             }
 
             parent = result;

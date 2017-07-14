@@ -1,4 +1,4 @@
-#package /test
+in package /test
 
 int8 initCalled: 0
 int8 constructCalled: 0
@@ -227,7 +227,8 @@ class ObjectMount : core/mount, hidden:/
 class LoaderSimulatorMount : core/mount, hidden:/
     int16 construct()
     resultIter onQuery(core/query query) override
-    packages: list{core/result}
+    queryCount: int32, private
+    items: list{core/result}, private
 
 // Request data from a SINK mount
 test/Suite SelectSink:/
@@ -260,6 +261,7 @@ test/Suite SelectSink:/
     void tc_selectLoaderRootSingle()
     void tc_selectLoaderCortoSingle()
     void tc_selectLoaderNestedSingle()
+    void tc_selectLoaderNestedSingleVirtual()
     void tc_selectLoaderRootScope()
     void tc_selectLoaderCortoScope()
     void tc_selectLoaderNestedScope()

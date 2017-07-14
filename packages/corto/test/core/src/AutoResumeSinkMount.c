@@ -168,7 +168,7 @@ corto_resultIter test_AutoResumeSinkMount_onQuery(
                     e.parent,
                     e.type,
                     e.value,
-                    e.leaf
+                    e.flags
                 );
             }
         }

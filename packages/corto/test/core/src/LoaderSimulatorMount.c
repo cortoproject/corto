@@ -5,15 +5,25 @@
 int16_t test_LoaderSimulatorMount_construct(
     test_LoaderSimulatorMount this)
 {
-
-    corto_ptr_setref(&corto_mount(this)->mount, root_o);
-    corto_observer(this)->mask = CORTO_ON_TREE;
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_ptr_setstr(&corto_subscriber(this)->query.select, "//*");
+    corto_ptr_setstr(&corto_subscriber(this)->query.from, "/");
     corto_ptr_setstr(&corto_subscriber(this)->query.type, "/corto/core/package");
     corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
 
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+
     corto_resultAssign(
-        corto_resultListAppendAlloc(this->packages),
+        corto_resultListAppendAlloc(this->items),
+        "corto",
+        NULL,
+        ".",
+        "/corto/core/package",
+        0,
+        CORTO_RESULT_HIDDEN
+    );
+
+    corto_resultAssign(
+        corto_resultListAppendAlloc(this->items),
         "p",
         NULL,
         ".",
@@ -23,7 +33,7 @@ int16_t test_LoaderSimulatorMount_construct(
     );
 
     corto_resultAssign(
-        corto_resultListAppendAlloc(this->packages),
+        corto_resultListAppendAlloc(this->items),
         "q",
         NULL,
         "p",
@@ -33,8 +43,8 @@ int16_t test_LoaderSimulatorMount_construct(
     );
 
     corto_resultAssign(
-        corto_resultListAppendAlloc(this->packages),
-        "p",
+        corto_resultListAppendAlloc(this->items),
+        "r",
         NULL,
         "corto",
         "/corto/core/package",
@@ -43,10 +53,10 @@ int16_t test_LoaderSimulatorMount_construct(
     );
     
     corto_resultAssign(
-        corto_resultListAppendAlloc(this->packages),
-        "p/q",
+        corto_resultListAppendAlloc(this->items),
+        "u",
         NULL,
-        "corto/p",
+        "corto/r",
         "/corto/core/package",
         0,
         FALSE
@@ -55,12 +65,47 @@ int16_t test_LoaderSimulatorMount_construct(
     return corto_mount_construct(this);
 }
 
+/* Custom release function */
+static void test_LoaderSimulatorMount_iterRelease(corto_iter *iter) {
+    corto_ll_iter_s *data = iter->ctx;
+    corto_resultListClear(data->list);
+    corto_ll_free(data->list);
+    corto_ll_iterRelease(iter);
+}
+
 corto_resultIter test_LoaderSimulatorMount_onQuery(
     test_LoaderSimulatorMount this,
     corto_query *query)
 {
+    corto_iter iter = corto_ll_iter(this->items);
+    corto_ll data = corto_ll_new();
 
-    /* << Insert implementation >> */
+    /* Filter items by parent */
+    corto_resultIterForeach(iter, e) {
+        if (!fnmatch(query->from, e.parent, 0)) {
+            if (!fnmatch(query->select, e.id, 0)) {
+                corto_resultAssign(
+                    corto_resultListAppendAlloc(data),
+                    e.id,
+                    e.id,
+                    e.parent,
+                    e.type,
+                    0,
+                    e.flags
+                );
+            }
+        }
+    }
 
+    /* Create persistent iterator */
+    corto_iter result = corto_ll_iterAlloc(data);
+
+    /* Overwrite release so that list is cleaned up after select is done */
+    result.release = test_LoaderSimulatorMount_iterRelease;
+
+    this->queryCount ++;
+
+    /* Return persistent iterator to request */
+    return result;
 }
 
