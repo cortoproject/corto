@@ -14,8 +14,6 @@ void test_SelectSinkNoOnRequest_setup(
 
     /* Ensure all objects are created with persistency enabled */
     corto_setAttr(CORTO_ATTR_PERSISTENT);
-
-
 }
 
 void test_SelectSinkNoOnRequest_tc_selectScope(

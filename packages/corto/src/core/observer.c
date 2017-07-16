@@ -323,7 +323,6 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
             } else if (mask == CORTO_ON_DELETE) {
                 corto_id id;
                 corto_fullpath(id, observable);
-                corto_info("observer: unsubscribe for '%s'", id);
                 corto_select("//").from(id).unsubscribe();
             }
         }

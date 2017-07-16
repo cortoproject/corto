@@ -5,9 +5,7 @@
 int16_t test_JsonReplicator_construct(
     test_JsonReplicator this)
 {
-
     corto_mount_setContentType(this, "application/json");
-
     return corto_mount_construct(this);
 }
 
@@ -34,7 +32,7 @@ corto_resultIter test_JsonReplicator_onQuery(
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{\"x\":10,\"y\":20}"),
-        0
+        CORTO_RESULT_LEAF
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(data),
@@ -43,7 +41,7 @@ corto_resultIter test_JsonReplicator_onQuery(
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{\"x\":30,\"y\":40}"),
-        0
+        CORTO_RESULT_LEAF
     );
     corto_resultAssign(
         corto_resultListAppendAlloc(data),
@@ -52,7 +50,7 @@ corto_resultIter test_JsonReplicator_onQuery(
         ".",
         "/test/Point",
         (corto_word)corto_strdup("{\"x\":50,\"y\":60}"),
-        0
+        CORTO_RESULT_LEAF
     );
 
     /* Create persistent iterator */

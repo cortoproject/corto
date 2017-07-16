@@ -44,7 +44,7 @@ CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(bitmask, eventMask);
 CORTO_META_OBJECT(bitmask, resultMask);
 CORTO_META_OBJECT(enum, ownership);
-CORTO_META_OBJECT(bitmask, readWrite);
+CORTO_META_OBJECT(bitmask, mountMask);
 CORTO_META_OBJECT(enum, frameKind);
 
 CORTO_META_OBJECT(list, resultList);

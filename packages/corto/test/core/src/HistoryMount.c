@@ -8,7 +8,6 @@ int16_t test_HistoryMount_construct(
     corto_ll samples;
     corto_result r;
 
-    corto_mount(this)->policy.readWrite = CORTO_HISTORY;
     corto_mount_setContentType(this, "text/corto");
 
     samples = corto_ll_new();
@@ -21,35 +20,30 @@ int16_t test_HistoryMount_construct(
         &r,
         samples
     );
-
     corto_ll_clear(samples);
     corto_stringListAppend(samples, "{30,33}");
     corto_stringListAppend(samples, "{40,44}");
     corto_stringListAppend(samples, "{50,55}");
-
     r = (corto_result){"b", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
     test_HistoryMount_dataAssign(
         test_HistoryMount_dataListAppendAlloc(this->history),
         &r,
         samples
     );
-
     corto_ll_clear(samples);
     corto_stringListAppend(samples, "{60,66}");
     corto_stringListAppend(samples, "{70,77}");
     corto_stringListAppend(samples, "{80,88}");
     corto_stringListAppend(samples, "{90,99}");
-
     r = (corto_result){"c", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
     test_HistoryMount_dataAssign(
         test_HistoryMount_dataListAppendAlloc(this->history),
         &r,
         samples
     );
-
+    
     return corto_mount_construct(this);
 }
-
 
 typedef struct iterData {
     test_HistoryMount this;
@@ -57,7 +51,6 @@ typedef struct iterData {
     corto_ll history;
     corto_iter iter;
 } iterData;
-
 static int hasNext(corto_iter *it) {
     iterData *ctx = it->ctx;
     return corto_iter_hasNext(&ctx->iter);
@@ -65,11 +58,9 @@ static int hasNext(corto_iter *it) {
 
 static void* next(corto_iter *it) {
     int start = 0, stop = 0, i;
-
     iterData *ctx = it->ctx;
     test_HistoryMount_data *data = corto_iter_next(&ctx->iter);
     corto_result *result = &data->result;
-
     /* Clear previous history */
     corto_sample *s;
     while ((s = corto_ll_takeFirst(ctx->history))) {
@@ -85,7 +76,9 @@ static void* next(corto_iter *it) {
         if (start >= corto_ll_size(data->history)) {
             start = corto_ll_size(data->history) - 1;
         }
+
     }
+
     if (ctx->to.kind == CORTO_FRAME_SAMPLE) {
         stop = ctx->to.value;
     } else if (ctx->to.kind == CORTO_FRAME_DEPTH) {
@@ -114,11 +107,12 @@ static void release(corto_iter *it) {
     while ((s = corto_ll_takeFirst(ctx->history))) {
         corto_dealloc(s);
     }
+
     corto_ll_free(ctx->history);
     corto_dealloc(ctx);
 }
 
-corto_resultIter test_HistoryMount_onQuery(
+corto_resultIter test_HistoryMount_onHistoryQuery(
     test_HistoryMount this,
     corto_query *query)
 {
@@ -138,4 +132,3 @@ corto_resultIter test_HistoryMount_onQuery(
     
     return it;
 }
-

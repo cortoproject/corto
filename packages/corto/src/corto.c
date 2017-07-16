@@ -178,7 +178,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, inout),\
     SSO_OP_VALUE(core_, operatorKind),\
     SSO_OP_VALUE(core_, ownership),\
-    SSO_OP_VALUE(core_, readWrite),\
+    SSO_OP_VALUE(core_, mountMask),\
     SSO_OP_VALUE(core_, frameKind),\
     SSO_OP_VALUE(,secure_accessKind),\
     SSO_OP_VALUE(,secure_actionKind),\
@@ -413,9 +413,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_ownership_LOCAL_OWNER),\
     SSO_OP_OBJ(core_ownership_CACHE_OWNER),\
     /* readWrite */\
-    SSO_OP_OBJ(core_readWrite_READ),\
-    SSO_OP_OBJ(core_readWrite_WRITE),\
-    SSO_OP_OBJ(core_readWrite_HISTORY),\
+    SSO_OP_OBJ(core_mountMask_QUERY),\
+    SSO_OP_OBJ(core_mountMask_HISTORY_QUERY),\
+    SSO_OP_OBJ(core_mountMask_NOTIFY),\
+    SSO_OP_OBJ(core_mountMask_BATCH_NOTIFY),\
+    SSO_OP_OBJ(core_mountMask_SUBSCRIBE),\
+    SSO_OP_OBJ(core_mountMask_MOUNT),\
+    SSO_OP_OBJ(core_mountMask_RESUME),\
+    SSO_OP_OBJ(core_mountMask_INVOKE),\
     /* frameKind */\
     SSO_OP_OBJ(core_frameKind_FRAME_NOW),\
     SSO_OP_OBJ(core_frameKind_FRAME_TIME),\
@@ -647,13 +652,15 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mountStats_deletes),\
     /* ownership */\
     SSO_OP_OBJ(core_mountPolicy_ownership),\
-    SSO_OP_OBJ(core_mountPolicy_readWrite),\
+    SSO_OP_OBJ(core_mountPolicy_mask),\
     SSO_OP_OBJ(core_mountPolicy_sampleRate),\
     SSO_OP_OBJ(core_mountPolicy_expiryTime),\
     /* mountSubscription */\
     SSO_OP_OBJ(core_mountSubscription_query),\
-    SSO_OP_OBJ(core_mountSubscription_count),\
-    SSO_OP_OBJ(core_mountSubscription_ctx),\
+    SSO_OP_OBJ(core_mountSubscription_objectCount),\
+    SSO_OP_OBJ(core_mountSubscription_subscriberCount),\
+    SSO_OP_OBJ(core_mountSubscription_mountCtx),\
+    SSO_OP_OBJ(core_mountSubscription_subscriberCtx),\
     /* query */\
     SSO_OP_OBJ(core_query_select),\
     SSO_OP_OBJ(core_query_from),\
@@ -708,11 +715,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_subscriptions),\
     SSO_OP_OBJ(core_mount_events),\
     SSO_OP_OBJ(core_mount_passThrough),\
+    SSO_OP_OBJ(core_mount_explicitResume),\
     SSO_OP_OBJ(core_mount_thread),\
     SSO_OP_OBJ(core_mount_quit),\
-    SSO_OP_OBJ(core_mount_hasNotify),\
-    SSO_OP_OBJ(core_mount_hasResume),\
-    SSO_OP_OBJ(core_mount_hasSubscribe),\
     SSO_OP_OBJ(core_mount_contentTypeOut),\
     SSO_OP_OBJ(core_mount_contentTypeOutHandle),\
     SSO_OP_OBJ(core_mount_init_),\
@@ -732,14 +737,16 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mount_post_),\
     SSO_OP_OBJ(core_mount_onPoll_),\
     SSO_OP_OBJ(core_mount_onNotify_),\
-    SSO_OP_OBJ(core_mount_onNotifyBatch_),\
+    SSO_OP_OBJ(core_mount_onBatchNotify_),\
     SSO_OP_OBJ(core_mount_onInvoke_),\
     SSO_OP_OBJ(core_mount_onId_),\
     SSO_OP_OBJ(core_mount_onQuery_),\
-    SSO_OP_OBJ(core_mount_onQueryHistorical_),\
+    SSO_OP_OBJ(core_mount_onHistoryQuery_),\
     SSO_OP_OBJ(core_mount_onResume_),\
     SSO_OP_OBJ(core_mount_onSubscribe_),\
     SSO_OP_OBJ(core_mount_onUnsubscribe_),\
+    SSO_OP_OBJ(core_mount_onMount_),\
+    SSO_OP_OBJ(core_mount_onUnmount_),\
     SSO_OP_OBJ(core_mount_onTransactionBegin_),\
     SSO_OP_OBJ(core_mount_onTransactionEnd_),\
     /* loader */\

@@ -540,7 +540,7 @@ CORTO_FWDECL_SECURE(enum, actionKind);
 CORTO_FWDECL(bitmask, attr);
 CORTO_FWDECL_CORE(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifier);
-CORTO_FWDECL_CORE(bitmask, readWrite);
+CORTO_FWDECL_CORE(bitmask, mountMask);
 CORTO_FWDECL_CORE(bitmask, resultMask);
 CORTO_FWDECL(bitmask, state);
 
@@ -739,10 +739,15 @@ CORTO_ENUM_O(core, ownership);
     CORTO_CONSTANT_O(core_ownership, LOCAL_OWNER);
     CORTO_CONSTANT_O(core_ownership, CACHE_OWNER);
 
-CORTO_BITMASK_O(core, readWrite);
-    CORTO_CONSTANT_O(core_readWrite, READ);
-    CORTO_CONSTANT_O(core_readWrite, WRITE);
-    CORTO_CONSTANT_O(core_readWrite, HISTORY);
+CORTO_BITMASK_O(core, mountMask);
+    CORTO_CONSTANT_O(core_mountMask, QUERY);
+    CORTO_CONSTANT_O(core_mountMask, HISTORY_QUERY);
+    CORTO_CONSTANT_O(core_mountMask, NOTIFY);
+    CORTO_CONSTANT_O(core_mountMask, BATCH_NOTIFY);
+    CORTO_CONSTANT_O(core_mountMask, SUBSCRIBE);
+    CORTO_CONSTANT_O(core_mountMask, MOUNT);
+    CORTO_CONSTANT_O(core_mountMask, RESUME);
+    CORTO_CONSTANT_O(core_mountMask, INVOKE);
 
 CORTO_ENUM_O(core, frameKind);
     CORTO_CONSTANT_O(core_frameKind, FRAME_NOW);
@@ -1339,15 +1344,17 @@ CORTO_STRUCT_O(core, mountStats, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NUL
 /* /corto/core/mountPolicy */
 CORTO_STRUCT_O(core, mountPolicy, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_mountPolicy, ownership, core_ownership, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountPolicy, readWrite, core_readWrite, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountPolicy, mask, core_mountMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_mountPolicy, expiryTime, lang_uint64, CORTO_GLOBAL);
 
 /* /corto/core/mountSubscription */
 CORTO_STRUCT_O(core, mountSubscription, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_mountSubscription, query, core_query, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountSubscription, count, lang_uint32, CORTO_GLOBAL);
-    CORTO_MEMBER_O(core_mountSubscription, ctx, lang_word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, objectCount, lang_uint32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, subscriberCount, lang_uint32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, subscriberCtx, lang_word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(core_mountSubscription, mountCtx, lang_word, CORTO_GLOBAL);
 
 /* /corto/core/mount */
 CORTO_FW_ICD(core, mount);
@@ -1363,11 +1370,9 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_MEMBER_O(core_mount, subscriptions, core_mountSubscriptionList, CORTO_READONLY);
     CORTO_MEMBER_O(core_mount, events, lang_objectlist, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, passThrough, lang_bool, CORTO_PRIVATE);
+    CORTO_MEMBER_O(core_mount, explicitResume, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, thread, lang_word, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, quit, lang_bool, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, hasNotify, lang_bool, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, hasResume, lang_bool, CORTO_PRIVATE);
-    CORTO_MEMBER_O(core_mount, hasSubscribe, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(core_mount, contentTypeOut, lang_string, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(core_mount, contentTypeOutHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_mount, init, "()", lang_int16, corto_mount_init);
@@ -1387,14 +1392,16 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_METHOD_O(core_mount, subscribe, "(/corto/core/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(core_mount, unsubscribe, "(/corto/core/query query)", lang_void, corto_mount_unsubscribe);
     CORTO_OVERRIDABLE_O(core_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_onInvoke_v);
-    CORTO_OVERRIDABLE_O(core_mount, onId, "()", lang_string, corto_mount_onQuery_v);
+    CORTO_OVERRIDABLE_O(core_mount, onId, "()", lang_string, corto_mount_onId_v);
     CORTO_OVERRIDABLE_O(core_mount, onQuery, "(/corto/core/query query)", core_resultIter, corto_mount_onQuery_v);
-    CORTO_OVERRIDABLE_O(core_mount, onQueryHistorical, "(/corto/core/query query)", core_resultIter, corto_mount_onQuery_v);
+    CORTO_OVERRIDABLE_O(core_mount, onHistoryQuery, "(/corto/core/query query)", core_resultIter, corto_mount_onHistoryQuery_v);
     CORTO_OVERRIDABLE_O(core_mount, onResume, "(string parent,string name,object object)", lang_object, corto_mount_onResume_v);
     CORTO_OVERRIDABLE_O(core_mount, onNotify, "(core/subscriberEvent event)", lang_void, corto_mount_onNotify_v);
-    CORTO_OVERRIDABLE_O(core_mount, onNotifyBatch, "(core/subscriberEventIter data)", lang_void, corto_mount_onNotify_v);
+    CORTO_OVERRIDABLE_O(core_mount, onBatchNotify, "(core/subscriberEventIter data)", lang_void, corto_mount_onBatchNotify_v);
     CORTO_OVERRIDABLE_O(core_mount, onSubscribe, "(core/query query,lang/word ctx)", lang_word, corto_mount_onSubscribe_v);
     CORTO_OVERRIDABLE_O(core_mount, onUnsubscribe, "(core/query query,lang/word ctx)", lang_void, corto_mount_onUnsubscribe_v);
+    CORTO_OVERRIDABLE_O(core_mount, onMount, "(core/query event,lang/word ctx)", lang_word, corto_mount_onMount_v);
+    CORTO_OVERRIDABLE_O(core_mount, onUnmount, "(core/query data,lang/word ctx)", lang_void, corto_mount_onUnmount_v);
     CORTO_OVERRIDABLE_O(core_mount, onTransactionBegin, "()", lang_word, corto_mount_onSubscribe_v);
     CORTO_OVERRIDABLE_O(core_mount, onTransactionEnd, "(core/subscriberEventIter events,word ctx)", lang_void, corto_mount_onUnsubscribe_v);
 

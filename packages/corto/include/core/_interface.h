@@ -246,6 +246,52 @@ void _corto_mount_invoke(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
+void _corto_mount_onBatchNotify_v(
+    corto_mount _this,
+    corto_subscriberEventIter data);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_mount_onBatchNotify_v(_this, data) _corto_mount_onBatchNotify_v(corto_mount(_this), data)
+#else
+#define corto_mount_onBatchNotify_v _corto_mount_onBatchNotify_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_mount_onBatchNotify_v(_this, data) _corto_mount_onBatchNotify_v(corto_mount(_this), data)
+
+#define corto_mount_onBatchNotify(_this, data) _corto_mount_onBatchNotify(corto_mount(_this), data)
+CORTO_EXPORT
+void _corto_mount_onBatchNotify(
+    corto_mount _this,
+    corto_subscriberEventIter data);
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
+corto_resultIter _corto_mount_onHistoryQuery_v(
+    corto_mount _this,
+    corto_query *query);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_mount_onHistoryQuery_v(_this, query) _corto_mount_onHistoryQuery_v(corto_mount(_this), query)
+#else
+#define corto_mount_onHistoryQuery_v _corto_mount_onHistoryQuery_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_mount_onHistoryQuery_v(_this, query) _corto_mount_onHistoryQuery_v(corto_mount(_this), query)
+
+#define corto_mount_onHistoryQuery(_this, query) _corto_mount_onHistoryQuery(corto_mount(_this), query)
+CORTO_EXPORT
+corto_resultIter _corto_mount_onHistoryQuery(
+    corto_mount _this,
+    corto_query *query);
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
 corto_string _corto_mount_onId_v(
     corto_mount _this);
 
@@ -294,6 +340,31 @@ void _corto_mount_onInvoke(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
+uintptr_t _corto_mount_onMount_v(
+    corto_mount _this,
+    corto_query *event,
+    uintptr_t ctx);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_mount_onMount_v(_this, event, ctx) _corto_mount_onMount_v(corto_mount(_this), event, ctx)
+#else
+#define corto_mount_onMount_v _corto_mount_onMount_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_mount_onMount_v(_this, event, ctx) _corto_mount_onMount_v(corto_mount(_this), event, ctx)
+
+#define corto_mount_onMount(_this, event, ctx) _corto_mount_onMount(corto_mount(_this), event, ctx)
+CORTO_EXPORT
+uintptr_t _corto_mount_onMount(
+    corto_mount _this,
+    corto_query *event,
+    uintptr_t ctx);
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
 void _corto_mount_onNotify_v(
     corto_mount _this,
     corto_subscriberEvent *event);
@@ -313,29 +384,6 @@ CORTO_EXPORT
 void _corto_mount_onNotify(
     corto_mount _this,
     corto_subscriberEvent *event);
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-void _corto_mount_onNotifyBatch_v(
-    corto_mount _this,
-    corto_subscriberEventIter data);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_mount_onNotifyBatch_v(_this, data) _corto_mount_onNotifyBatch_v(corto_mount(_this), data)
-#else
-#define corto_mount_onNotifyBatch_v _corto_mount_onNotifyBatch_v
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_mount_onNotifyBatch_v(_this, data) _corto_mount_onNotifyBatch_v(corto_mount(_this), data)
-
-#define corto_mount_onNotifyBatch(_this, data) _corto_mount_onNotifyBatch(corto_mount(_this), data)
-CORTO_EXPORT
-void _corto_mount_onNotifyBatch(
-    corto_mount _this,
-    corto_subscriberEventIter data);
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
@@ -378,29 +426,6 @@ corto_resultIter _corto_mount_onQuery_v(
 #define corto_mount_onQuery(_this, query) _corto_mount_onQuery(corto_mount(_this), query)
 CORTO_EXPORT
 corto_resultIter _corto_mount_onQuery(
-    corto_mount _this,
-    corto_query *query);
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-corto_resultIter _corto_mount_onQueryHistorical_v(
-    corto_mount _this,
-    corto_query *query);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_mount_onQueryHistorical_v(_this, query) _corto_mount_onQueryHistorical_v(corto_mount(_this), query)
-#else
-#define corto_mount_onQueryHistorical_v _corto_mount_onQueryHistorical_v
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_mount_onQueryHistorical_v(_this, query) _corto_mount_onQueryHistorical_v(corto_mount(_this), query)
-
-#define corto_mount_onQueryHistorical(_this, query) _corto_mount_onQueryHistorical(corto_mount(_this), query)
-CORTO_EXPORT
-corto_resultIter _corto_mount_onQueryHistorical(
     corto_mount _this,
     corto_query *query);
 
@@ -500,6 +525,31 @@ CORTO_EXPORT
 void _corto_mount_onTransactionEnd(
     corto_mount _this,
     corto_subscriberEventIter events,
+    uintptr_t ctx);
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
+void _corto_mount_onUnmount_v(
+    corto_mount _this,
+    corto_query *data,
+    uintptr_t ctx);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_mount_onUnmount_v(_this, data, ctx) _corto_mount_onUnmount_v(corto_mount(_this), data, ctx)
+#else
+#define corto_mount_onUnmount_v _corto_mount_onUnmount_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_mount_onUnmount_v(_this, data, ctx) _corto_mount_onUnmount_v(corto_mount(_this), data, ctx)
+
+#define corto_mount_onUnmount(_this, data, ctx) _corto_mount_onUnmount(corto_mount(_this), data, ctx)
+CORTO_EXPORT
+void _corto_mount_onUnmount(
+    corto_mount _this,
+    corto_query *data,
     uintptr_t ctx);
 
 /* forward declaration of the function. the '_' in front of the name allows

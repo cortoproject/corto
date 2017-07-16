@@ -25,7 +25,7 @@ extern "C" {
 #define corto_query(o) ((corto_query*)corto_assertType((corto_type)corto_query_o, o))
 #define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
 #define corto_ownership(o) ((corto_ownership*)corto_assertType((corto_type)corto_ownership_o, o))
-#define corto_readWrite(o) ((corto_readWrite*)corto_assertType((corto_type)corto_readWrite_o, o))
+#define corto_mountMask(o) ((corto_mountMask*)corto_assertType((corto_type)corto_mountMask_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
 #define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
@@ -191,18 +191,23 @@ typedef enum corto_ownership {
     CORTO_CACHE_OWNER = 2
 } corto_ownership;
 
-/* /corto/core/readWrite */
-typedef uint32_t corto_readWrite;
-    #define CORTO_READ (0x1)
-    #define CORTO_WRITE (0x2)
-    #define CORTO_HISTORY (0x4)
+/* /corto/core/mountMask */
+typedef uint32_t corto_mountMask;
+    #define CORTO_QUERY (0x1)
+    #define CORTO_HISTORY_QUERY (0x2)
+    #define CORTO_NOTIFY (0x4)
+    #define CORTO_BATCH_NOTIFY (0x8)
+    #define CORTO_SUBSCRIBE (0x10)
+    #define CORTO_MOUNT (0x20)
+    #define CORTO_RESUME (0x40)
+    #define CORTO_INVOKE (0x80)
 
 /*  /corto/core/mountPolicy */
 typedef struct corto_mountPolicy corto_mountPolicy;
 
 struct corto_mountPolicy {
     corto_ownership ownership;
-    corto_readWrite readWrite;
+    corto_mountMask mask;
     double sampleRate;
     uint64_t expiryTime;
 };
@@ -221,8 +226,10 @@ typedef struct corto_mountSubscription corto_mountSubscription;
 
 struct corto_mountSubscription {
     corto_query query;
-    uint32_t count;
-    uintptr_t ctx;
+    uint32_t objectCount;
+    uint32_t subscriberCount;
+    uintptr_t mountCtx;
+    uintptr_t subscriberCtx;
 };
 
 #ifndef corto_mountSubscriptionList_DEFINED
@@ -244,11 +251,9 @@ struct corto_mount_s {
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
     bool passThrough;
+    bool explicitResume;
     uintptr_t thread;
     bool quit;
-    bool hasNotify;
-    bool hasResume;
-    bool hasSubscribe;
     corto_string contentTypeOut;
     uintptr_t contentTypeOutHandle;
 };

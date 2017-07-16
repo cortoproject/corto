@@ -14,6 +14,7 @@ void test_ReplicatorEvent_tc_event(
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
+
     test_EventReplicatorCreate_auto(mount, &q, NULL);
     test_assert(mount != NULL);
 

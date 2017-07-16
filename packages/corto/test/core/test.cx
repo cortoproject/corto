@@ -169,7 +169,7 @@ test/Suite SelectMount:/
 class HistoryMount : core/mount, hidden:/
     alias mount: mount/mount
     int16 construct()
-    core/resultIter onQuery(core/query query) override
+    core/resultIter onHistoryQuery(core/query query) override
 
     struct data:/
         result: core/result
