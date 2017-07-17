@@ -1125,7 +1125,7 @@ corto_mountStats* _corto_mountStatsAssign(corto_mountStats* _this, uint64_t decl
     return _this;
 }
 
-corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
     corto_mountSubscription* _this;
     _this = (corto_mountSubscription*)corto_declare(corto_mountSubscription_o);
     if (!_this) {
@@ -1135,7 +1135,7 @@ corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint
         if (query) {
             corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
         }
-        ((corto_mountSubscription*)_this)->objectCount = objectCount;
+        ((corto_mountSubscription*)_this)->mountCount = mountCount;
         ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
         ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
         ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
@@ -1147,7 +1147,7 @@ corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint
     return _this;
 }
 
-corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _id, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
     corto_mountSubscription* _this;
     _this = (corto_mountSubscription*)corto_declareChild(_parent, _id, corto_mountSubscription_o);
     if (!_this) {
@@ -1157,7 +1157,7 @@ corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _paren
         if (query) {
             corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
         }
-        ((corto_mountSubscription*)_this)->objectCount = objectCount;
+        ((corto_mountSubscription*)_this)->mountCount = mountCount;
         ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
         ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
         ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
@@ -1169,14 +1169,14 @@ corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _paren
     return _this;
 }
 
-corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             if (query) {
                 corto_ptr_copy(&((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->query, corto_query_o, query);
             }
-            ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->objectCount = objectCount;
+            ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->mountCount = mountCount;
             ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->subscriberCount = subscriberCount;
             ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->mountCtx = mountCtx;
             ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->subscriberCtx = subscriberCtx;
@@ -1184,7 +1184,7 @@ corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto
             if (query) {
                 corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
             }
-            ((corto_mountSubscription*)_this)->objectCount = objectCount;
+            ((corto_mountSubscription*)_this)->mountCount = mountCount;
             ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
             ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
             ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
@@ -1214,24 +1214,24 @@ corto_mountSubscription* _corto_mountSubscriptionDeclareChild(corto_object _pare
     return _this;
 }
 
-corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
     CORTO_UNUSED(_this);
     if (query) {
         corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
     }
-    ((corto_mountSubscription*)_this)->objectCount = objectCount;
+    ((corto_mountSubscription*)_this)->mountCount = mountCount;
     ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
     ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
     ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
     return corto_define(_this);
 }
 
-corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mountSubscription* _this, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
     CORTO_UNUSED(_this);
     if (query) {
         corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
     }
-    ((corto_mountSubscription*)_this)->objectCount = objectCount;
+    ((corto_mountSubscription*)_this)->mountCount = mountCount;
     ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
     ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
     ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
