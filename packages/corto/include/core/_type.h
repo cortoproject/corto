@@ -226,7 +226,7 @@ typedef struct corto_mountSubscription corto_mountSubscription;
 
 struct corto_mountSubscription {
     corto_query query;
-    uint32_t objectCount;
+    uint32_t mountCount;
     uint32_t subscriberCount;
     uintptr_t mountCtx;
     uintptr_t subscriberCtx;

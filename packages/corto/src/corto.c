@@ -657,7 +657,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_mountPolicy_expiryTime),\
     /* mountSubscription */\
     SSO_OP_OBJ(core_mountSubscription_query),\
-    SSO_OP_OBJ(core_mountSubscription_objectCount),\
+    SSO_OP_OBJ(core_mountSubscription_mountCount),\
     SSO_OP_OBJ(core_mountSubscription_subscriberCount),\
     SSO_OP_OBJ(core_mountSubscription_mountCtx),\
     SSO_OP_OBJ(core_mountSubscription_subscriberCtx),\
