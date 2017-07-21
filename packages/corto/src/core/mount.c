@@ -47,7 +47,9 @@ void corto_mount_notify(corto_subscriberEvent *e) {
     corto_result *r = &e->data;
 
     if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
-        corto_mount_onNotify(this, e);
+        if (this->policy.mask & CORTO_NOTIFY) {
+            corto_mount_onNotify(this, e);
+        }
 
         switch(event) {
         case CORTO_ON_DEFINE: 
@@ -57,7 +59,9 @@ void corto_mount_notify(corto_subscriberEvent *e) {
                     .select = e->data.id,
                     .from = e->data.parent
                 };
-                corto_mount_subscribeOrMount(this, &q, false, true);
+                if (r->object) {
+                    corto_mount_subscribeOrMount(this, &q, false, true);
+                }
             }
             break;
         case CORTO_ON_UPDATE: 
@@ -70,7 +74,9 @@ void corto_mount_notify(corto_subscriberEvent *e) {
                     .select = e->data.id,
                     .from = e->data.parent
                 };
-                corto_mount_unsubscribeOrUnmount(this, &q, false, true);
+                if (r->object) {
+                    corto_mount_unsubscribeOrUnmount(this, &q, false, true);
+                }
             }            
             break;
         default: 
@@ -211,7 +217,7 @@ int16_t corto_mount_construct(
     corto_ptr_setref(&corto_observer(this)->instance, this);
     corto_ptr_setref(&corto_observer(this)->dispatcher, dispatcher);
     /* Enable subscriber only when mount implements onNotify */
-    if (this->policy.mask & CORTO_NOTIFY) {
+    if (this->policy.mask & CORTO_NOTIFY || this->policy.mask & CORTO_MOUNT) {
         corto_observer(this)->enabled = TRUE;
     }
 
@@ -814,6 +820,42 @@ static corto_mountSubscription* corto_mount_findSubscription(
     return result;
 }
 
+/* Depending on whether a query is for a subscription or whether it comes from
+ * a notification it needs to forward the object, or the parent of the object. */
+corto_query* corto_mount_getQueryForMount(
+    corto_query *q_in, 
+    corto_query *q_out, 
+    char *parentBuffer, 
+    bool subscribe) 
+{
+    /* A subscription for one or more objects in a scope should
+     * result in spawning a mount that provides these objects, so
+     * shift hierarchical query by one level.
+     * If the subscription is for the root, the current mount is
+     * providing the data already. */
+    if (subscribe) {
+        if (strcmp(q_in->from, ".")) {
+            strcpy(parentBuffer, q_in->from);
+            char *lastParent = strrchr(parentBuffer, '/');
+            memset(q_out, 0, sizeof(corto_query));
+            if (lastParent) {
+                *lastParent = '\0';
+                q_out->select = lastParent + 1;
+                q_out->from = parentBuffer;
+            } else {
+                q_out->select = q_in->from;
+                q_out->from = ".";
+            }
+
+            return q_out;
+        } else {
+            return NULL;
+        }
+    } else {
+        return q_in;
+    }
+}
+
 /* Reuse same code for keeping track of subscriptions and mounts */
 void corto_mount_subscribeOrMount(
     corto_mount this,
@@ -831,6 +873,7 @@ void corto_mount_subscribeOrMount(
     if (mount && !(this->policy.mask & CORTO_MOUNT)) {
         mount = false;
     }
+
     if (!subscribe && !mount) {
         return;
     }
@@ -873,11 +916,16 @@ void corto_mount_subscribeOrMount(
                 this,
                 query,
                 subscription ? subscription->subscriberCtx : 0);
-        } else {
-            mntCtx = corto_mount_onMount(
-                this,
-                query,
-                subscription ? subscription->mountCtx : 0);
+        } 
+        if (mount) {
+            corto_query q_out, *q;
+            corto_id parentId;
+            if ((q = corto_mount_getQueryForMount(query, &q_out, parentId, subscribe))) {
+                mntCtx = corto_mount_onMount(
+                    this,
+                    q,
+                    subscription ? subscription->mountCtx : 0);
+            }
         }
     }
 
@@ -987,10 +1035,14 @@ void corto_mount_unsubscribeOrUnmount(
                 subscription->subscriberCtx);
         }
         if (mount) {
-            corto_mount_onUnmount(
-                this,
-                &subscription->query,
-                subscription->mountCtx);
+            corto_query q_out, *q;
+            corto_id parentId;
+            if ((q = corto_mount_getQueryForMount(query, &q_out, parentId, subscribe))) {
+                corto_mount_onUnmount(
+                    this,
+                    q,
+                    subscription->mountCtx);
+            }
         }
         corto_ptr_deinit(subscription, corto_mountSubscription_o);
         corto_dealloc(subscription);

@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 int16_t test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
@@ -141,7 +140,6 @@ int16_t test_AutoResumeSinkMount_construct(
     return corto_mount_construct(this);
 }
 
-
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -171,15 +169,15 @@ corto_resultIter test_AutoResumeSinkMount_onQuery(
                     e.flags
                 );
             }
+
         }
+
     }
 
     /* Create persistent iterator */
     corto_iter result = corto_ll_iterAlloc(data);
-
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
-
     /* Return persistent iterator to request */
     return result;
 }
@@ -220,6 +218,42 @@ void test_AutoResumeSinkMount_onUnsubscribe(
       this->unsubscribes,
       query
     );
+}
 
+uintptr_t test_AutoResumeSinkMount_onMount(
+    test_AutoResumeSinkMount this,
+    corto_query *query,
+    uintptr_t ctx)
+{
+    /* Result is set to either this or 'expr' depending on the content of expr.
+     * This allows the testcase to test both cases where onMount returns the
+     * same value of ctx, as well as cases where it doesn't */
+    corto_word result = (corto_word)this;
+
+    if (query->select[0] != '*') {
+        result = rand();
+    }
+
+    corto_queryListAppend(
+      this->mounts,
+      query
+    );
+    
+    return result;
+}
+
+void test_AutoResumeSinkMount_onUnmount(
+    test_AutoResumeSinkMount this,
+    corto_query *query,
+    uintptr_t ctx)
+{
+    if (query->select[0] == '*') {
+        test_assert(ctx == (corto_word)this);
+    }
+
+    corto_queryListAppend(
+      this->unmounts,
+      query
+    );
 }
 

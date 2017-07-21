@@ -424,7 +424,6 @@ void test_MountSubscription_tc_subscribeSingleAlign(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
-
 }
 
 void test_MountSubscription_tc_subscribeSingleTwice(
@@ -468,7 +467,6 @@ void test_MountSubscription_tc_subscribeSingleTwice(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
-
 }
 
 void test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(

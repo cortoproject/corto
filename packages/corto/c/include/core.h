@@ -356,14 +356,14 @@ CORTO_EXPORT corto_mountStats* _corto_mountStatsAssign(corto_mountStats* _this, 
 #define corto_mountStatsSet(_this, declares, updates, deletes) _this = _this ? _this : (corto_mountStats*)corto_ptr_new(corto_mountStats_o); _corto_mountStatsAssign(_this, declares, updates, deletes)
 
 /* /corto/core/mountSubscription */
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscriptionCreate(query, objectCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionCreate(query, objectCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscriptionCreate_auto(_id, query, objectCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscriptionCreate(query, objectCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _id, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscriptionCreateChild(_parent, _id, query, objectCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionCreateChild(_parent, _id, query, objectCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscriptionCreateChild_auto(_parent, _id, query, objectCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscriptionCreateChild(_parent, #_id, query, objectCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
-CORTO_EXPORT corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscriptionUpdate(_this, query, objectCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionUpdate(corto_mountSubscription(_this), query, objectCount, subscriberCount, mountCtx, subscriberCtx)
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mountSubscriptionCreate(query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionCreate(query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mountSubscriptionCreate_auto(_id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscriptionCreate(query, mountCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mountSubscriptionCreateChild(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionCreateChild(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mountSubscriptionCreateChild_auto(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscriptionCreateChild(_parent, #_id, query, mountCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mountSubscriptionUpdate(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionUpdate(corto_mountSubscription(_this), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
 
 CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclare(void);
 #define corto_mountSubscriptionDeclare() _corto_mountSubscriptionDeclare()
@@ -371,15 +371,15 @@ CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclare(void);
 CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclareChild(corto_object _parent, corto_string _id);
 #define corto_mountSubscriptionDeclareChild(_parent, _id) _corto_mountSubscriptionDeclareChild(_parent, _id)
 #define corto_mountSubscriptionDeclareChild_auto(_parent, _id) corto_mountSubscription* _id = corto_mountSubscriptionDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscriptionDefine(_this, query, objectCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionDefine(corto_mountSubscription(_this), query, objectCount, subscriberCount, mountCtx, subscriberCtx)
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mountSubscription* _this, corto_query* query, uint32_t objectCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+CORTO_EXPORT corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mountSubscriptionDefine(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionDefine(corto_mountSubscription(_this), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
 #define corto_mountSubscription__optional_NotSet NULL
-#define corto_mountSubscription__optional_Set(query, objectCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscriptionAssign((corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o)), query, objectCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscription__optional_SetCond(cond, query, objectCount, subscriberCount, mountCtx, subscriberCtx) cond ? corto_mountSubscriptionAssign((corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o), query, objectCount, subscriberCount, mountCtx, subscriberCtx) : NULL
+#define corto_mountSubscription__optional_Set(query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscriptionAssign((corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o)), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mountSubscription__optional_SetCond(cond, query, mountCount, subscriberCount, mountCtx, subscriberCtx) cond ? corto_mountSubscriptionAssign((corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o), query, mountCount, subscriberCount, mountCtx, subscriberCtx) : NULL
 #define corto_mountSubscriptionUnset(_this) _this ? corto_ptr_free(_this, corto_mountSubscription_o), 0 : 0; _this = NULL;
-#define corto_mountSubscriptionAssign(_this, query, objectCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionAssign(_this, query, objectCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscriptionSet(_this, query, objectCount, subscriberCount, mountCtx, subscriberCtx) _this = _this ? _this : (corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o); _corto_mountSubscriptionAssign(_this, query, objectCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mountSubscriptionAssign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionAssign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mountSubscriptionSet(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _this = _this ? _this : (corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o); _corto_mountSubscriptionAssign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
 
 /* /corto/core/mountSubscriptionList */
 CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListCreate(corto_uint32 length, corto_mountSubscription* elements);

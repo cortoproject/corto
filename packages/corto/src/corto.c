@@ -672,6 +672,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_query_timeBegin),\
     SSO_OP_OBJ(core_query_timeEnd),\
     SSO_OP_OBJ(core_query_content),\
+    SSO_OP_OBJ(core_query_cardinality_),\
     /* subscriber */\
     SSO_OP_OBJ(core_subscriber_query),\
     SSO_OP_OBJ(core_subscriber_contentType),\

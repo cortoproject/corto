@@ -200,11 +200,15 @@ class AutoResumeSinkMount : core/mount, hidden:/
     value: string
     subscribes: list{core/query},readonly
     unsubscribes: list{core/query},readonly
+    mounts: list{core/query},readonly
+    unmounts: list{core/query},readonly
     items: resultList, private
     int16 construct()
     resultIter onQuery(core/query query) override
     word onSubscribe(query query, word ctx) override
     void onUnsubscribe(query query, word ctx) override
+    word onMount(query query, word ctx) override
+    void onUnmount(query query, word ctx) override
 
 class VirtualSinkMount : core/mount, hidden:/
     from: string
@@ -431,6 +435,10 @@ test/Suite MountSubscription:/
     void tc_subscribeForMountWithTypeFilter()
     void tc_subscribeNestedForMountWithTypeFilter()  
     void tc_subscribeOnMountWithFromNull() 
+
+test/Suite MountMounts:/
+    void tc_mountOnDefine()
+    void tc_mountOnSubscribe()
 
 // Test mount that provides unique id's
 test/Suite MountId:/

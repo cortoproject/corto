@@ -1317,6 +1317,7 @@ CORTO_STRUCT_O(core, query, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL);
     CORTO_MEMBER_O(core_query, timeBegin, core_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_query, timeEnd, core_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_query, content, lang_bool, CORTO_GLOBAL|CORTO_HIDDEN);
+    CORTO_METHOD_O(core_query, cardinality, "()", lang_uint32, corto_query_cardinality);
 
 /* /corto/core/subscriber */
 CORTO_FW_IFCD(core, subscriber);
