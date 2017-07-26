@@ -51,6 +51,7 @@ extern "C" {
 #define corto_stager(o) ((corto_stager)corto_assertType((corto_type)corto_stager_o, o))
 #define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assertType((corto_type)corto_subscriberEvent_o, o))
 #define corto_subscriberEventIter(o) ((corto_subscriberEventIter*)corto_assertType((corto_type)corto_subscriberEventIter_o, o))
+#define corto_tool(o) ((corto_tool)corto_assertType((corto_type)corto_tool_o, o))
 
 /* Native types */
 #ifndef CORTO_CORE_H
@@ -441,6 +442,13 @@ struct corto_subscriberEvent {
 };
 
 typedef corto_iter corto_subscriberEventIter;
+
+/*  /corto/core/tool */
+typedef struct corto_tool_s *corto_tool;
+
+struct corto_tool_s {
+    struct corto_package_s super;
+};
 
 #ifdef __cplusplus
 }

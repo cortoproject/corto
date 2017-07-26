@@ -25,6 +25,7 @@ CORTO_EXPORT extern corto_package corto_core_o;
 CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, application);
+CORTO_META_OBJECT(class, tool);
 CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
 CORTO_META_OBJECT(class, mount);

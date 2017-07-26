@@ -270,6 +270,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, unit),\
     SSO_OP_CLASS(core_, package),\
     SSO_OP_CLASS(core_, application),\
+    SSO_OP_CLASS(core_, tool),\
     SSO_OP_CLASS(core_, router),\
     SSO_OP_CLASS(core_, routerimpl),\
     SSO_OP_CLASS(core_, mount),\

@@ -463,6 +463,7 @@ CORTO_FWDECL_CORE(class, routerimpl);
 CORTO_FWDECL_CORE(class, stager);
 CORTO_FWDECL(class, table);
 CORTO_FWDECL(class, tableinstance);
+CORTO_FWDECL_CORE(class, tool);
 CORTO_FWDECL(class, unit);
 
 CORTO_FWDECL(class, sequence);
@@ -646,6 +647,7 @@ CORTO_CLASS_NOBASE_O(core, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NU
     CORTO_METHOD_O(core_package, construct, "()", lang_int16, corto_package_construct);
 
 CORTO_CLASS_O(core, application, core_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_O(core, tool, core_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
 
 /* Enumerations */
 CORTO_ENUM_O(lang, width);

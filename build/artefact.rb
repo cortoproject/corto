@@ -338,6 +338,11 @@ def build_target(hardcodedPaths)
     abort
   end
 
+  if TOOL and not hardcodedPaths then
+    cmd "cp #{artefact} #{CORTO_TARGET}/bin"
+  end
+
+
   # If required, alter paths to dylib files
   linked.each do |lib|
     if File.extname(lib) == ".dylib" then

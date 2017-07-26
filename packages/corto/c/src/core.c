@@ -3476,6 +3476,77 @@ corto_time* _corto_timeAssign(corto_time* _this, int32_t sec, uint32_t nanosec) 
     return _this;
 }
 
+corto_tool _corto_toolCreate(void) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declare(corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_tool _corto_toolCreateChild(corto_object _parent, corto_string _id) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declareChild(_parent, _id, corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_DEFINED)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_toolUpdate(corto_tool _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_tool _corto_toolDeclare(void) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declare(corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_tool _corto_toolDeclareChild(corto_object _parent, corto_string _id) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declareChild(_parent, _id, corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_toolDefine(corto_tool _this) {
+    CORTO_UNUSED(_this);
+    return corto_define(_this);
+}
+
+corto_tool _corto_toolAssign(corto_tool _this) {
+    CORTO_UNUSED(_this);
+    return _this;
+}
+
 corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list) {
     corto_mountSubscription* result;
     result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));

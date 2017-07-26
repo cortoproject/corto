@@ -153,9 +153,8 @@ LANGUAGE = "c" if not defined? LANGUAGE
 ALWAYS_REBUILD = [] if not defined? ALWAYS_REBUILD
 NOAPI = false if not defined? NOAPI
 NOCORTO = false if not defined? NOCORTO
+TOOL = false if not defined? TOOL
 UNINSTALL = []
-
-# Variable that tracks files created by the buildsystem for uninstaller
 
 # Set environment variables in local constants
 CORTO_TARGET = ENV['CORTO_TARGET']

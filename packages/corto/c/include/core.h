@@ -1005,6 +1005,32 @@ CORTO_EXPORT corto_time* _corto_timeAssign(corto_time* _this, int32_t sec, uint3
 #define corto_timeAssign(_this, sec, nanosec) _corto_timeAssign(_this, sec, nanosec)
 #define corto_timeSet(_this, sec, nanosec) _this = _this ? _this : (corto_time*)corto_ptr_new(corto_time_o); _corto_timeAssign(_this, sec, nanosec)
 
+/* /corto/core/tool */
+CORTO_EXPORT corto_tool _corto_toolCreate(void);
+#define corto_toolCreate() _corto_toolCreate()
+#define corto_toolCreate_auto(_id) corto_tool _id = corto_toolCreate(); (void)_id
+CORTO_EXPORT corto_tool _corto_toolCreateChild(corto_object _parent, corto_string _id);
+#define corto_toolCreateChild(_parent, _id) _corto_toolCreateChild(_parent, _id)
+#define corto_toolCreateChild_auto(_parent, _id) corto_tool _id = corto_toolCreateChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_toolUpdate(corto_tool _this);
+#define corto_toolUpdate(_this) _corto_toolUpdate(corto_tool(_this))
+
+CORTO_EXPORT corto_tool _corto_toolDeclare(void);
+#define corto_toolDeclare() _corto_toolDeclare()
+#define corto_toolDeclare_auto(_id) corto_tool _id = corto_toolDeclare(); (void)_id
+CORTO_EXPORT corto_tool _corto_toolDeclareChild(corto_object _parent, corto_string _id);
+#define corto_toolDeclareChild(_parent, _id) _corto_toolDeclareChild(_parent, _id)
+#define corto_toolDeclareChild_auto(_parent, _id) corto_tool _id = corto_toolDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_toolDefine(corto_tool _this);
+#define corto_toolDefine(_this) _corto_toolDefine(corto_tool(_this))
+CORTO_EXPORT corto_tool _corto_toolAssign(corto_tool _this);
+#define corto_tool__optional_NotSet NULL
+#define corto_tool__optional_Set() corto_toolAssign((corto_tool*)corto_ptr_new(corto_tool_o)))
+#define corto_tool__optional_SetCond(cond) cond ? corto_toolAssign((corto_tool*)corto_ptr_new(corto_tool_o)) : NULL
+#define corto_toolUnset(_this) _this ? corto_ptr_free(_this, corto_tool_o), 0 : 0; _this = NULL;
+#define corto_toolAssign(_this) _corto_toolAssign(_this)
+#define corto_toolSet(_this) _this = _this ? _this : (corto_tool*)corto_ptr_new(corto_tool_o); _corto_toolAssign(_this)
+
 
 /* /corto/core/mountSubscriptionList */
 CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubscriptionList list);

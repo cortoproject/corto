@@ -23,7 +23,7 @@ LIBPATH = [] if not defined? LIBPATH
 INCLUDE = [] if not defined? INCLUDE
 PP_ATTR = [] if not defined? PP_ATTR
 
-INSTALL = "bin/cortobin"
+INSTALL = "bin/cortobin" if not defined? INSTALL
 ARTEFACT_PREFIX = "" if not defined? ARTEFACT_PREFIX
 ARTEFACT_EXT = "" if not defined? ARTEFACT_EXT
 PP_ATTR << "app=true"
