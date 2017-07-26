@@ -338,7 +338,7 @@ def build_target(hardcodedPaths)
     abort
   end
 
-  if TOOL and not hardcodedPaths then
+  if TOOL and hardcodedPaths then
     cmd "cp #{artefact} #{CORTO_TARGET}/bin"
   end
 
