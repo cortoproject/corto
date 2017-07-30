@@ -89,11 +89,13 @@ sequence AllocSequence: int64
 sequence ReferenceSequence: object
 
 list IntList: int32
+list LongIntList: int64
 list StringList: string
 list CompositeList: Point
 list ObjectList: object
 list AllocList: int64
 list ReferenceList: object
+list CollectionList: list{int32}
 
 struct struct_string:/
     m: string
@@ -588,6 +590,7 @@ test/Suite Copy:/
     void tc_listWithString()
     void tc_listWithReference()
     void tc_listWithStruct()
+    void tc_listWithList()
     void tc_arrayToArray()
     void tc_arrayToList()
     void tc_arrayToExistingList()

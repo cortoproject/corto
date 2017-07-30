@@ -313,7 +313,7 @@ int main(int argc, char* argv[]) {
                 if (corto_load(argv[i], argc-i, &argv[i])) {
                     if (!mute) {
                         if (corto_lasterr()) {
-                            corto_error("%s: %s", argv[i], corto_lasterr());
+                            corto_error("%s", corto_lasterr());
                         } else {
                             corto_error("unknown command '%s'", argv[i]);
                         }

@@ -44,10 +44,10 @@ CORTO_EXPORT int corto_ll_walk(corto_ll list, corto_elementWalk_cb callback, voi
 CORTO_EXPORT int corto_ll_walkPtr(corto_ll list, corto_elementWalk_cb callback, void* userdata);
 
 /* Insert at start. */
-CORTO_EXPORT void corto_ll_insert(corto_ll list, void* data);
+CORTO_EXPORT void* corto_ll_insert(corto_ll list, void* data);
 
 /* Insert at end */
-CORTO_EXPORT void corto_ll_append(corto_ll list, void* data);
+CORTO_EXPORT void* corto_ll_append(corto_ll list, void* data);
 
 /* Remove object */
 CORTO_EXPORT void* corto_ll_remove(corto_ll list, void* o);
@@ -114,7 +114,7 @@ CORTO_EXPORT void* corto_ll_iterNext(corto_iter* iter);
 CORTO_EXPORT void* corto_ll_iterNextPtr(corto_iter* iter);
 CORTO_EXPORT void* corto_ll_iterCurrent(corto_iter* iter);
 CORTO_EXPORT void* corto_ll_iterRemove(corto_iter* iter);
-CORTO_EXPORT void corto_ll_iterInsert(corto_iter* iter, void* o);
+CORTO_EXPORT void* corto_ll_iterInsert(corto_iter* iter, void* o);
 CORTO_EXPORT void corto_ll_iterSet(corto_iter* iter, void* o);
 
 /* Functional-style */

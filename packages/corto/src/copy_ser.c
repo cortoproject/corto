@@ -133,27 +133,28 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
 }
 
 /* TODO: should new elements be initialized? Should all elements be deinitialized first and then initialized? */
-static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll list1, corto_ll list2) {
+static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll dst, corto_ll src) {
     corto_equalityKind result = 0;
-    corto_iter iter1, iter2;
-    void *e1, *e2;
+    corto_iter dstIter, srcIter;
+    void *dstElem, *srcElem;
     corto_type elementType = t->elementType;
+    bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
 
-    iter1 = corto_ll_iter(list1);
-    iter2 = corto_ll_iter(list2);
-    while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
-        if (corto_collection_requiresAlloc(t->elementType)) {
-            e1 = corto_iter_next(&iter1);
-            e2 = corto_iter_next(&iter2);
+    dstIter = corto_ll_iter(dst);
+    srcIter = corto_ll_iter(src);
+    while(corto_iter_hasNext(&dstIter) && corto_iter_hasNext(&srcIter)) {
+        if (requiresAlloc) {
+            dstElem = corto_iter_next(&dstIter);
+            srcElem = corto_iter_next(&srcIter);
         } else {
-            e1 = corto_iter_nextPtr(&iter1);
-            e2 = corto_iter_nextPtr(&iter2);
+            dstElem = corto_iter_nextPtr(&dstIter);
+            srcElem = corto_iter_nextPtr(&srcIter);
         }
 
         if (elementType->reference) {
-            corto_ptr_setref((corto_object*)e1, *(corto_object*)e2);
+            corto_ptr_setref((corto_object*)dstElem, *(corto_object*)srcElem);
         } else {
-            result = corto_ptr_copy(e1, elementType, e2);
+            result = corto_ptr_copy(dstElem, elementType, srcElem);
         }
     }
 
@@ -164,6 +165,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
 static void corto_collection_resizeList(corto_collection t, corto_ll list, corto_uint32 size) {
     corto_uint32 ownSize = corto_ll_size(list);
     corto_type elementType = t->elementType;
+    bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
 
     /* If there are more elements in the destination, remove superfluous elements */
     if (ownSize > size) {
@@ -173,15 +175,20 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
             ptr = corto_ll_takeFirst(list);
             corto_collection_deinitElement(t, ptr);
         }
-        /* If there are less elements in the destination, add new elements */
+    /* If there are less elements in the destination, add new elements */
     } else if (ownSize < size) {
         corto_uint32 i;
         for(i=ownSize; i<size; i++) {
-            void *ptr = NULL;
-            if (corto_collection_requiresAlloc(t->elementType)) {
-                ptr = corto_calloc(elementType->size);
+            void *elem = NULL;
+            if (requiresAlloc) {
+                elem = corto_ptr_new(elementType);
             }
-            corto_ll_insert(list, ptr);
+
+            void *ptr = corto_ll_insert(list, elem);
+
+            if (!requiresAlloc) {
+                corto_ptr_init(ptr, elementType);
+            }
         }
     }
 }
@@ -225,7 +232,7 @@ static void* corto_collection_resizeArray(corto_collection t, void* sequence, co
 /* Copy collections */
 static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_type t1, t2;
-    void *v1, *v2;
+    void *src, *dst;
     corto_uint32 size1 = 0;
     corto_copy_ser_t *data = userData;
     corto_uint32 result = 0;
@@ -238,40 +245,44 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
      * was a composite type, the collection type has to be equal, since different composite
      * types are considered non-comparable. */
     t1 = corto_value_typeof(info);
-    v1 = corto_value_ptrof(info);
+    src = corto_value_ptrof(info);
 
     /* Verify whether current serialized object is the base-object */
     if (info->parent) {
         t2 = t1;
-        v2 = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)v1 - (corto_word)data->base));
+        dst = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)src - (corto_word)data->base));
     } else {
         t2 = corto_value_typeof(&data->value);
-        v2 = corto_value_ptrof(&data->value);
+        dst = corto_value_ptrof(&data->value);
     }
 
     {
-        void *array1=NULL, *array2=NULL;
-        corto_ll list1=NULL, list2=NULL;
-        corto_uint32 elementSize=0;
+        void *array1 = NULL, *array2 = NULL;
+        corto_ll srcList = NULL, dstList = NULL;
+        corto_uint32 elementSize = 0;
 
         elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
 
         switch(corto_collection(t1)->kind) {
             case CORTO_ARRAY:
-                array1 = v1;
+                array1 = src;
                 elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
                 size1 = corto_collection(t1)->max;
                 v1IsArray = TRUE;
                 break;
             case CORTO_SEQUENCE:
-                array1 = ((corto_objectseq*)v1)->buffer;
+                array1 = ((corto_objectseq*)src)->buffer;
                 elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
-                size1 = ((corto_objectseq*)v1)->length;
+                size1 = ((corto_objectseq*)src)->length;
                 v1IsArray = TRUE;
                 break;
             case CORTO_LIST:
-                list1 = *(corto_ll*)v1;
-                size1 = corto_ll_size(list1);
+                srcList = *(corto_ll*)src;
+                corto_assert(
+                    srcList != NULL, 
+                    "invalid list value (expected instance of %s)", 
+                    corto_fullpath(NULL, t1));
+                size1 = corto_ll_size(srcList);
                 break;
             case CORTO_MAP:
                 break;
@@ -279,15 +290,19 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
 
         switch(corto_collection(t2)->kind) {
             case CORTO_ARRAY:
-                array2 = v2;
+                array2 = dst;
                 v2IsArray = TRUE;
                 break;
             case CORTO_SEQUENCE:
-                array2 = ((corto_objectseq*)v2)->buffer;
+                array2 = ((corto_objectseq*)dst)->buffer;
                 v2IsArray = TRUE;
                 break;
             case CORTO_LIST:
-                list2 = *(corto_ll*)v2;
+                dstList = *(corto_ll*)dst;
+                corto_assert(
+                    dstList != NULL, 
+                    "invalid list value (expected instance of %s)", 
+                    corto_fullpath(NULL, t2));
                 break;
             case CORTO_MAP:
                 break;
@@ -299,22 +314,22 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
 
                 /* This is a bit tricky: passing the pointer to what is potentially a sequence-buffer
                  * while providing a sequence type. */
-                array2 = corto_collection_resizeArray(corto_collection(t2), v2, size1);
+                array2 = corto_collection_resizeArray(corto_collection(t2), dst, size1);
 
                 privateData.value = corto_value_value(array2, corto_type(t2));
                 privateData.base = array1;
                 result = corto_walk_elements(s, info, &privateData);
-            } else if (list2) {
-                corto_collection_resizeList(corto_collection(t1), list2, size1);
-                result = corto_collection_copyListToArray(corto_collection(t1), array1, elementSize, list2, TRUE);
+            } else if (dstList) {
+                corto_collection_resizeList(corto_collection(t1), dstList, size1);
+                result = corto_collection_copyListToArray(corto_collection(t1), array1, elementSize, dstList, TRUE);
             }
-        } else if (list1) {
+        } else if (srcList) {
             if (array2) {
-                array2 = corto_collection_resizeArray(corto_collection(t2), v2, size1);
-                result = corto_collection_copyListToArray(corto_collection(t1), array2, elementSize, list1, FALSE);
-            } else if (list2) {
-                corto_collection_resizeList(corto_collection(t1), list2, size1);
-                result = corto_collection_copyListToList(corto_collection(t1), list2, list1);
+                array2 = corto_collection_resizeArray(corto_collection(t2), dst, size1);
+                result = corto_collection_copyListToArray(corto_collection(t1), array2, elementSize, srcList, FALSE);
+            } else if (dstList) {
+                corto_collection_resizeList(corto_collection(t1), dstList, size1);
+                result = corto_collection_copyListToList(corto_collection(t1), dstList, srcList);
             }
         }
     }

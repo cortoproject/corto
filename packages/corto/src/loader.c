@@ -343,6 +343,7 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_
     corto_dl dl = NULL;
     corto_string build = NULL;
 
+    corto_seterr(NULL);
     if (!validated) {
         dl = corto_load_validLibrary(fileName, &build);
     } else {
@@ -353,7 +354,11 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_
         if (build) {
             corto_seterr("%s: uses a different corto build (%s)", fileName, build);
         } else {
-            corto_seterr("%s: %s", corto_dlError());
+            if (corto_lasterr()) {
+                corto_seterr("%s", corto_lasterr());
+            } else {
+                corto_seterr("%s: %s", fileName, corto_dlError());
+            }
         }
         goto error;
     }

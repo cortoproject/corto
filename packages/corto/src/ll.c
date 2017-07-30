@@ -118,13 +118,13 @@ int corto_ll_walkPtr(corto_ll list, corto_elementWalk_cb callback, void* userdat
 }
 
 /* Insert at start */
-void corto_ll_insert(corto_ll list, void* data) {
+void* corto_ll_insert(corto_ll list, void* data) {
     corto_iter iter = corto_ll_iter(list);
-    insert(iter, data);
+    return insert(iter, data);
 }
 
 /* Insert at end */
-void corto_ll_append(corto_ll list, void* data) {
+void* corto_ll_append(corto_ll list, void* data) {
     corto_ll_node node = list->first;
     corto_iter iter = corto_ll_iter(list);
 
@@ -135,7 +135,7 @@ void corto_ll_append(corto_ll list, void* data) {
     corto_iterData(iter)->cur = node;
     corto_iterData(iter)->next = 0;
 
-    insert(iter, data);
+    return insert(iter, data);
 }
 
 /* Random access read */
@@ -548,7 +548,7 @@ void* corto_ll_iterRemove(corto_iter* iter) {
 }
 
 /* Insert element after current (update next of iterator) */
-void corto_ll_iterInsert(corto_iter* iter, void* o) {
+void* corto_ll_iterInsert(corto_iter* iter, void* o) {
     corto_assert(iter->ctx != NULL, "iterator context not set");
     corto_ll_node newNode;
     corto_ll_node current;
@@ -575,6 +575,8 @@ void corto_ll_iterInsert(corto_iter* iter, void* o) {
 
     (corto_iterData(*iter)->list)->size++;
     corto_iterData(*iter)->next = newNode;
+
+    return &newNode->data;
 }
 
 /* Set data of current element. */

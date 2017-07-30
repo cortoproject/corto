@@ -1,23 +1,19 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_Copy_tc_any(
     test_Copy this)
 {
     corto_int32 v = 10;
     corto_any src = {corto_type(corto_int32_o), &v, FALSE};
     corto_any dst = {NULL, NULL, FALSE};
-
     corto_int16 ret = corto_ptr_copy(&dst, corto_any_o, &src);
     test_assert(ret == 0);
     test_assert(dst.type == corto_type(corto_int32_o));
     test_assert(dst.value != NULL);
     test_assert(dst.owner == TRUE);
     test_assert(*(corto_int32*)dst.value == 10);
-
     corto_ptr_deinit(&dst, corto_any_o);
-
 }
 
 void test_Copy_tc_arrayToArray(
@@ -26,14 +22,12 @@ void test_Copy_tc_arrayToArray(
     corto_int32 v1[] = {10, 20, 30, 40};
     corto_int32 v2[] = {0, 0, 0, 0};
     corto_int16 ret;
-
     ret = corto_ptr_copy(v2, test_IntArray_o, v1);
     test_assert(ret == 0);
     test_assert(v2[0] == 10);
     test_assert(v2[1] == 20);
     test_assert(v2[2] == 30);
     test_assert(v2[3] == 40);
-
 }
 
 void test_Copy_tc_arrayToArrayAlloc(
@@ -42,7 +36,6 @@ void test_Copy_tc_arrayToArrayAlloc(
     corto_int64 v1[] = {10, 20, 30, 40};
     corto_int64 v2[] = {0, 0, 0, 0};
     corto_int16 ret;
-
     ret = corto_ptr_copy(v2, test_AllocArray_o, v1);
     test_assert(ret == 0);
     test_assertint(v2[0], 10);
@@ -57,16 +50,13 @@ void test_Copy_tc_arrayToArrayString(
     corto_string v1[] = {"Foo", "Bar", "Hello", "World"};
     corto_string v2[] = {0, 0, 0, 0};
     corto_int16 ret;
-
     ret = corto_ptr_copy(v2, test_StringArray_o, v1);
     test_assert(ret == 0);
     test_assertstr(v2[0], "Foo");
     test_assertstr(v2[1], "Bar");
     test_assertstr(v2[2], "Hello");
     test_assertstr(v2[3], "World");
-
     corto_ptr_deinit(v2, test_StringArray_o);
-
 }
 
 void test_Copy_tc_arrayToExistingArrayString(
@@ -75,14 +65,12 @@ void test_Copy_tc_arrayToExistingArrayString(
     corto_string v1[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string v2[] = {NULL, NULL, NULL, NULL};
     corto_int16 ret;
-
     ret = corto_ptr_copy(v2, test_StringArray_o, v1);
     test_assert(ret == 0);
     test_assertstr(v2[0], "HELLO");
     test_assertstr(v2[1], "WORLD");
     test_assertstr(v2[2], "FOO");
     test_assertstr(v2[3], "BAR");
-
     corto_string v3[] = {"Foo", "Bar", "Hello", "World"};
     ret = corto_ptr_copy(v2, test_StringArray_o, v3);
     test_assert(ret == 0);
@@ -90,9 +78,7 @@ void test_Copy_tc_arrayToExistingArrayString(
     test_assertstr(v2[1], "Bar");
     test_assertstr(v2[2], "Hello");
     test_assertstr(v2[3], "World");
-
     corto_ptr_deinit(v2, test_StringArray_o);
-
 }
 
 void test_Copy_tc_arrayToExistingList(
@@ -107,7 +93,6 @@ void test_Copy_tc_arrayToExistingList(
     test_IntListAppend(*v2, 3);
     test_IntListAppend(*v2, 4);
     test_IntListAppend(*v2, 5);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(corto_ll_size(*v2), 4);
@@ -115,10 +100,8 @@ void test_Copy_tc_arrayToExistingList(
     test_assertint(test_IntListGet(*v2, 1), 20);
     test_assertint(test_IntListGet(*v2, 2), 30);
     test_assertint(test_IntListGet(*v2, 3), 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_arrayToExistingListString(
@@ -127,10 +110,8 @@ void test_Copy_tc_arrayToExistingListString(
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
-
     test_StringArrayCreate_auto(v1, 4, v);
     test_StringListCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(corto_ll_size(*v2), 4);
@@ -138,10 +119,8 @@ void test_Copy_tc_arrayToExistingListString(
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
     test_assertstr(test_StringListGet(*v2, 3), "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_arrayToList(
@@ -151,17 +130,14 @@ void test_Copy_tc_arrayToList(
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntArrayCreate_auto(v1, 4, v);
     test_IntListCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(test_IntListGet(*v2, 0) == 10);
     test_assert(test_IntListGet(*v2, 1) == 20);
     test_assert(test_IntListGet(*v2, 2) == 30);
     test_assert(test_IntListGet(*v2, 3) == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_arrayToListAlloc(
@@ -171,17 +147,14 @@ void test_Copy_tc_arrayToListAlloc(
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocArrayCreate_auto(v1, 4, v);
     test_AllocListCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(test_AllocListGet(*v2, 0) == 10);
     test_assert(test_AllocListGet(*v2, 1) == 20);
     test_assert(test_AllocListGet(*v2, 2) == 30);
     test_assert(test_AllocListGet(*v2, 3) == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_arrayToListString(
@@ -191,7 +164,6 @@ void test_Copy_tc_arrayToListString(
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringArrayCreate_auto(v1, 4, v);
     test_StringListCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(corto_ll_size(*v2), 4);
@@ -199,10 +171,8 @@ void test_Copy_tc_arrayToListString(
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
     test_assertstr(test_StringListGet(*v2, 3), "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_arrayWithInt(
@@ -217,17 +187,13 @@ void test_Copy_tc_arrayWithInt(
     test_IntArrayAssign(v1, 4, ((int32_t[]){
         1, 2, 3, 4
     }));
-
     corto_ptr_copy(&v2, test_IntArray_o, &v1);
     test_assertint(v2[0], 1);
     test_assertint(v2[1], 2);
     test_assertint(v2[2], 3);
     test_assertint(v2[3], 4);
-
     test_assert(corto_ptr_deinit(&v1, test_IntArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_IntArray_o) == 0);
-
-
 }
 
 void test_Copy_tc_arrayWithReference(
@@ -242,16 +208,13 @@ void test_Copy_tc_arrayWithReference(
     test_ReferenceArrayAssign(v1, 4, ((corto_object[]){
         corto_o, corto_lang_o, corto_class_o, NULL
     }));
-
     corto_ptr_copy(&v2, test_ReferenceArray_o, &v1);
     test_assert(v2[0] == corto_o);
     test_assert(v2[1] == corto_lang_o);
     test_assert(v2[2] == corto_class_o);
     test_assert(v2[3] == NULL);
-
     test_assert(corto_ptr_deinit(&v1, test_ReferenceArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_ReferenceArray_o) == 0);
-
 }
 
 void test_Copy_tc_arrayWithString(
@@ -266,16 +229,13 @@ void test_Copy_tc_arrayWithString(
     test_StringArrayAssign(v1, 4, ((char*[]){
         "Hello", "World", "Foo", NULL
     }));
-
     corto_ptr_copy(&v2, test_StringArray_o, &v1);
     test_assertstr(v2[0], "Hello");
     test_assertstr(v2[1], "World");
     test_assertstr(v2[2], "Foo");
     test_assertstr(v2[3], NULL);
-
     test_assert(corto_ptr_deinit(&v1, test_StringArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_StringArray_o) == 0);
-
 }
 
 void test_Copy_tc_arrayWithStruct(
@@ -289,8 +249,8 @@ void test_Copy_tc_arrayWithStruct(
 
     test_CompositeArrayAssign(v1, 4, ((test_Point[]){
         {10,20},{30,40},{50,60},{70,80}
-    }));
 
+    }));
     corto_ptr_copy(&v2, test_CompositeArray_o, &v1);
     test_assertint(v2[0].x, 10);
     test_assertint(v2[0].y, 20);
@@ -300,10 +260,8 @@ void test_Copy_tc_arrayWithStruct(
     test_assertint(v2[2].y, 60);
     test_assertint(v2[3].x, 70);
     test_assertint(v2[3].y, 80);
-
     test_assert(corto_ptr_deinit(&v1, test_CompositeArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_CompositeArray_o) == 0);
-
 }
 
 void test_Copy_tc_int(
@@ -326,16 +284,13 @@ void test_Copy_tc_listToArray(
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 4, v);
     test_IntArrayCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
     test_assert(!strcmp(
       corto_lasterr(),
       "cannot copy value of type '/test/IntList' to '/test/IntArray'"));
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToArrayAlloc(
@@ -345,16 +300,13 @@ void test_Copy_tc_listToArrayAlloc(
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 4, v);
     test_AllocArrayCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
     test_assert(!strcmp(
       corto_lasterr(),
       "cannot copy value of type '/test/AllocList' to '/test/AllocArray'"));
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToArrayString(
@@ -364,16 +316,13 @@ void test_Copy_tc_listToArrayString(
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringListCreate_auto(v1, 4, v);
     test_StringArrayCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
     test_assert(!strcmp(
       corto_lasterr(),
       "cannot copy value of type '/test/StringList' to '/test/StringArray'"));
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToExistingList(
@@ -384,7 +333,6 @@ void test_Copy_tc_listToExistingList(
     corto_int32 w[] = {11, 22, 33, 44, 55};
     test_IntListCreate_auto(v1, 4, v);
     test_IntListCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(corto_ll_size(*v2), 4);
@@ -392,10 +340,8 @@ void test_Copy_tc_listToExistingList(
     test_assertint(test_IntListGet(*v2, 1), 20);
     test_assertint(test_IntListGet(*v2, 2), 30);
     test_assertint(test_IntListGet(*v2, 3), 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToExistingListString(
@@ -406,7 +352,6 @@ void test_Copy_tc_listToExistingListString(
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
     test_StringListCreate_auto(v1, 4, v);
     test_StringListCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(corto_ll_size(*v2), 4);
@@ -414,10 +359,8 @@ void test_Copy_tc_listToExistingListString(
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
     test_assertstr(test_StringListGet(*v2, 3), "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToExistingSequence(
@@ -428,7 +371,6 @@ void test_Copy_tc_listToExistingSequence(
     corto_int32 w[] = {11, 22, 33, 44, 55};
     test_IntListCreate_auto(v1, 4, v);
     test_IntSequenceCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(v2->length, 4);
@@ -437,10 +379,8 @@ void test_Copy_tc_listToExistingSequence(
     test_assertint(v2->buffer[1], 20);
     test_assertint(v2->buffer[2], 30);
     test_assertint(v2->buffer[3], 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToExistingSequenceString(
@@ -449,10 +389,8 @@ void test_Copy_tc_listToExistingSequenceString(
     corto_int16 ret;
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
-
     test_StringListCreate_auto(v1, 4, v);
     test_StringSequenceCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(v2->length, 4);
@@ -461,10 +399,8 @@ void test_Copy_tc_listToExistingSequenceString(
     test_assertstr(v2->buffer[1], "WORLD");
     test_assertstr(v2->buffer[2], "FOO");
     test_assertstr(v2->buffer[3], "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToList(
@@ -474,7 +410,6 @@ void test_Copy_tc_listToList(
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 4, v);
     test_IntListCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(corto_ll_size(*v2) == 4);
@@ -482,10 +417,8 @@ void test_Copy_tc_listToList(
     test_assert(test_IntListGet(*v2, 1) == 20);
     test_assert(test_IntListGet(*v2, 2) == 30);
     test_assert(test_IntListGet(*v2, 3) == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToListAlloc(
@@ -495,7 +428,6 @@ void test_Copy_tc_listToListAlloc(
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 4, v);
     test_AllocListCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(corto_ll_size(*v2) == 4);
@@ -503,10 +435,8 @@ void test_Copy_tc_listToListAlloc(
     test_assert(test_AllocListGet(*v2, 1) == 20);
     test_assert(test_AllocListGet(*v2, 2) == 30);
     test_assert(test_AllocListGet(*v2, 3) == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToListResize(
@@ -517,23 +447,19 @@ void test_Copy_tc_listToListResize(
     test_IntListCreate_auto(v1, 3, v);
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_IntListCreate_auto(v2, 4, v);
-
     test_assert(corto_ll_size(*v2) == 4);
     test_assert(test_IntListGet(*v2, 0) == 15);
     test_assert(test_IntListGet(*v2, 1) == 25);
     test_assert(test_IntListGet(*v2, 2) == 35);
     test_assert(test_IntListGet(*v2, 3) == 45);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(corto_ll_size(*v2) == 3);
     test_assert(test_IntListGet(*v2, 0) == 10);
     test_assert(test_IntListGet(*v2, 1) == 20);
     test_assert(test_IntListGet(*v2, 2) == 30);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToListResizeAlloc(
@@ -544,23 +470,19 @@ void test_Copy_tc_listToListResizeAlloc(
     test_AllocListCreate_auto(v1, 3, v);
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_AllocListCreate_auto(v2, 4, v);
-
     test_assert(corto_ll_size(*v2) == 4);
     test_assert(test_AllocListGet(*v2, 0) == 15);
     test_assert(test_AllocListGet(*v2, 1) == 25);
     test_assert(test_AllocListGet(*v2, 2) == 35);
     test_assert(test_AllocListGet(*v2, 3) == 45);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(corto_ll_size(*v2) == 3);
     test_assert(test_AllocListGet(*v2, 0) == 10);
     test_assert(test_AllocListGet(*v2, 1) == 20);
     test_assert(test_AllocListGet(*v2, 2) == 30);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToListString(
@@ -570,7 +492,6 @@ void test_Copy_tc_listToListString(
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringListCreate_auto(v1, 4, v);
     test_StringListCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(corto_ll_size(*v2), 4);
@@ -578,10 +499,8 @@ void test_Copy_tc_listToListString(
     test_assertstr(test_StringListGet(*v2, 1), "WORLD");
     test_assertstr(test_StringListGet(*v2, 2), "FOO");
     test_assertstr(test_StringListGet(*v2, 3), "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToSequence(
@@ -591,7 +510,6 @@ void test_Copy_tc_listToSequence(
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntListCreate_auto(v1, 4, v);
     test_IntSequenceCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 4);
@@ -600,10 +518,8 @@ void test_Copy_tc_listToSequence(
     test_assert(v2->buffer[1] == 20);
     test_assert(v2->buffer[2] == 30);
     test_assert(v2->buffer[3] == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToSequenceAlloc(
@@ -613,7 +529,6 @@ void test_Copy_tc_listToSequenceAlloc(
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocListCreate_auto(v1, 4, v);
     test_AllocSequenceCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 4);
@@ -622,10 +537,8 @@ void test_Copy_tc_listToSequenceAlloc(
     test_assert(v2->buffer[1] == 20);
     test_assert(v2->buffer[2] == 30);
     test_assert(v2->buffer[3] == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listToSequenceString(
@@ -635,7 +548,6 @@ void test_Copy_tc_listToSequenceString(
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringListCreate_auto(v1, 4, v);
     test_StringSequenceCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(v2->length, 4);
@@ -644,10 +556,8 @@ void test_Copy_tc_listToSequenceString(
     test_assertstr(v2->buffer[1], "WORLD");
     test_assertstr(v2->buffer[2], "FOO");
     test_assertstr(v2->buffer[3], "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_listWithInt(
@@ -746,7 +656,6 @@ void test_Copy_tc_listWithStruct(
     test_CompositeListAppend(v1, &p);
     p = (test_Point){70, 80};
     test_CompositeListAppend(v1, &p);
-
     corto_ptr_copy(&v2, test_CompositeList_o, &v1);
     test_assertint(corto_ll_size(v2), 4);
     p = *test_CompositeListGet(v2, 0);
@@ -761,11 +670,52 @@ void test_Copy_tc_listWithStruct(
     p = *test_CompositeListGet(v2, 3);
     test_assertint(p.x, 70);
     test_assertint(p.y, 80);
-
     test_assert(corto_ptr_deinit(&v1, test_CompositeList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_CompositeList_o) == 0);
-
 }
+
+void test_Copy_tc_listWithList(
+    test_Copy this)
+{
+    test_CollectionList v1;
+    test_CollectionList v2;
+    corto_int32List l;
+    corto_int32List c;
+
+    test_assert(corto_ptr_init(&v1, test_CollectionList_o) == 0);
+    test_assert(corto_ptr_init(&v2, test_CollectionList_o) == 0);
+
+    corto_ptr_init(&l, corto_int32List_o);
+    int i;
+    for (i = 0; i < 10; i ++) {
+        corto_int32ListAppend(l, i);
+    }
+
+    test_CollectionListAppend(v1, l);
+    test_CollectionListAppend(v1, l);
+    test_CollectionListAppend(v1, l);
+
+    corto_ptr_deinit(&l, corto_int32List_o);
+
+    corto_ptr_copy(&v2, test_CollectionList_o, &v1);
+    test_assertint(corto_ll_size(v2), 3);
+    c = test_CollectionListGet(v2, 0);
+    for (i = 0; i < 10; i++) {
+        test_assertint(corto_int32ListGet(c, i), i);
+    }
+    c = test_CollectionListGet(v2, 1);
+    for (i = 0; i < 10; i++) {
+        test_assertint(corto_int32ListGet(c, i), i);
+    }
+    c = test_CollectionListGet(v2, 2);
+    for (i = 0; i < 10; i++) {
+        test_assertint(corto_int32ListGet(c, i), i);
+    }
+
+    test_assert(corto_ptr_deinit(&v1, test_CollectionList_o) == 0);
+    test_assert(corto_ptr_deinit(&v2, test_CollectionList_o) == 0);
+}
+
 
 void test_Copy_tc_reference(
     test_Copy this)
@@ -793,7 +743,6 @@ void test_Copy_tc_sequenceToExistingSequence(
     corto_int32 w[] = {11, 22, 33, 44, 55};
     test_IntSequenceCreate_auto(v1, 4, v);
     test_IntSequenceCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(v2->length, 4);
@@ -802,10 +751,8 @@ void test_Copy_tc_sequenceToExistingSequence(
     test_assertint(v2->buffer[1], 20);
     test_assertint(v2->buffer[2], 30);
     test_assertint(v2->buffer[3], 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToExistingSequenceString(
@@ -816,7 +763,6 @@ void test_Copy_tc_sequenceToExistingSequenceString(
     corto_string w[] = {"Foo", "Bar", "Hello", "World", "Zoo"};
     test_StringSequenceCreate_auto(v1, 4, v);
     test_StringSequenceCreate_auto(v2, 5, w);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(v2->length, 4);
@@ -825,10 +771,8 @@ void test_Copy_tc_sequenceToExistingSequenceString(
     test_assertstr(v2->buffer[1], "WORLD");
     test_assertstr(v2->buffer[2], "FOO");
     test_assertstr(v2->buffer[3], "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToExistingSequenceStringStack(
@@ -837,7 +781,6 @@ void test_Copy_tc_sequenceToExistingSequenceStringStack(
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -846,7 +789,6 @@ void test_Copy_tc_sequenceToExistingSequenceStringStack(
     test_assertstr(v2.buffer[1], "WORLD");
     test_assertstr(v2.buffer[2], "FOO");
     test_assertstr(v2.buffer[3], "BAR");
-
     /* Copy new value into existing sequence */
     test_StringSequence v3 = {4, (char*[]){"Foo", "Bar", "Hello", "World"}};
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v3);
@@ -857,9 +799,7 @@ void test_Copy_tc_sequenceToExistingSequenceStringStack(
     test_assertstr(v2.buffer[1], "Bar");
     test_assertstr(v2.buffer[2], "Hello");
     test_assertstr(v2.buffer[3], "World");
-
     corto_ptr_deinit(&v2, test_StringSequence_o);
-
 }
 
 void test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
@@ -868,7 +808,6 @@ void test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -877,7 +816,6 @@ void test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     test_assertstr(v2.buffer[1], "WORLD");
     test_assertstr(v2.buffer[2], "FOO");
     test_assertstr(v2.buffer[3], "BAR");
-
     /* Copy new value into existing sequence */
     test_StringSequence v3 = {5, (char*[]){"Foo", "Bar", "Hello", "World", "Zoo"}};
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v3);
@@ -889,9 +827,7 @@ void test_Copy_tc_sequenceToExistingSequenceStringStackLarger(
     test_assertstr(v2.buffer[2], "Hello");
     test_assertstr(v2.buffer[3], "World");
     test_assertstr(v2.buffer[4], "Zoo");
-
     corto_ptr_deinit(&v2, test_StringSequence_o);
-
 }
 
 void test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
@@ -900,7 +836,6 @@ void test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -909,7 +844,6 @@ void test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     test_assertstr(v2.buffer[1], "WORLD");
     test_assertstr(v2.buffer[2], "FOO");
     test_assertstr(v2.buffer[3], "BAR");
-
     /* Copy new value into existing sequence */
     test_StringSequence v3 = {3, (char*[]){"Foo", "Bar", "Hello"}};
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v3);
@@ -919,9 +853,7 @@ void test_Copy_tc_sequenceToExistingSequenceStringStackSmaller(
     test_assertstr(v2.buffer[0], "Foo");
     test_assertstr(v2.buffer[1], "Bar");
     test_assertstr(v2.buffer[2], "Hello");
-
     corto_ptr_deinit(&v2, test_StringSequence_o);
-
 }
 
 void test_Copy_tc_sequenceToSequence(
@@ -931,7 +863,6 @@ void test_Copy_tc_sequenceToSequence(
     corto_int32 v[] = {10, 20, 30, 40};
     test_IntSequenceCreate_auto(v1, 4, v);
     test_IntSequenceCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 4);
@@ -940,10 +871,8 @@ void test_Copy_tc_sequenceToSequence(
     test_assert(v2->buffer[1] == 20);
     test_assert(v2->buffer[2] == 30);
     test_assert(v2->buffer[3] == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToSequenceAlloc(
@@ -953,7 +882,6 @@ void test_Copy_tc_sequenceToSequenceAlloc(
     corto_int64 v[] = {10, 20, 30, 40};
     test_AllocSequenceCreate_auto(v1, 4, v);
     test_AllocSequenceCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 4);
@@ -962,10 +890,8 @@ void test_Copy_tc_sequenceToSequenceAlloc(
     test_assert(v2->buffer[1] == 20);
     test_assert(v2->buffer[2] == 30);
     test_assert(v2->buffer[3] == 40);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToSequenceComposite(
@@ -977,7 +903,6 @@ void test_Copy_tc_sequenceToSequenceComposite(
     corto_parameter v[] = {p1, p2};
     corto_parameterseqCreate_auto(v1, 2, v);
     corto_parameterseqCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 2);
@@ -988,10 +913,8 @@ void test_Copy_tc_sequenceToSequenceComposite(
     test_assertstr(v2->buffer[1].name, "bar");
     test_assert(v2->buffer[1].type == corto_type(corto_float32_o));
     test_assert(v2->buffer[1].passByReference == FALSE);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToSequenceResize(
@@ -1002,14 +925,12 @@ void test_Copy_tc_sequenceToSequenceResize(
     test_IntSequenceCreate_auto(v1, 3, v);
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_IntSequenceCreate_auto(v2, 4, v);
-
     test_assert(v2->length == 4);
     test_assert(v2->buffer != NULL);
     test_assert(v2->buffer[0] == 15);
     test_assert(v2->buffer[1] == 25);
     test_assert(v2->buffer[2] == 35);
     test_assert(v2->buffer[3] == 45);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 3);
@@ -1017,10 +938,8 @@ void test_Copy_tc_sequenceToSequenceResize(
     test_assert(v2->buffer[0] == 10);
     test_assert(v2->buffer[1] == 20);
     test_assert(v2->buffer[2] == 30);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToSequenceResizeAlloc(
@@ -1031,14 +950,12 @@ void test_Copy_tc_sequenceToSequenceResizeAlloc(
     test_AllocSequenceCreate_auto(v1, 3, v);
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_AllocSequenceCreate_auto(v2, 4, v);
-
     test_assert(v2->length == 4);
     test_assert(v2->buffer != NULL);
     test_assert(v2->buffer[0] == 15);
     test_assert(v2->buffer[1] == 25);
     test_assert(v2->buffer[2] == 35);
     test_assert(v2->buffer[3] == 45);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(v2->length == 3);
@@ -1046,10 +963,8 @@ void test_Copy_tc_sequenceToSequenceResizeAlloc(
     test_assert(v2->buffer[0] == 10);
     test_assert(v2->buffer[1] == 20);
     test_assert(v2->buffer[2] == 30);
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToSequenceString(
@@ -1059,7 +974,6 @@ void test_Copy_tc_sequenceToSequenceString(
     corto_string v[] = {"HELLO", "WORLD", "FOO", "BAR"};
     test_StringSequenceCreate_auto(v1, 4, v);
     test_StringSequenceCreate_auto(v2, 0, NULL);
-
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assertint(v2->length, 4);
@@ -1068,10 +982,8 @@ void test_Copy_tc_sequenceToSequenceString(
     test_assertstr(v2->buffer[1], "WORLD");
     test_assertstr(v2->buffer[2], "FOO");
     test_assertstr(v2->buffer[3], "BAR");
-
     corto_delete(v1);
     corto_delete(v2);
-
 }
 
 void test_Copy_tc_sequenceToSequenceStringStack(
@@ -1080,7 +992,6 @@ void test_Copy_tc_sequenceToSequenceStringStack(
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -1089,9 +1000,7 @@ void test_Copy_tc_sequenceToSequenceStringStack(
     test_assertstr(v2.buffer[1], "WORLD");
     test_assertstr(v2.buffer[2], "FOO");
     test_assertstr(v2.buffer[3], "BAR");
-
     corto_ptr_deinit(&v2, test_StringSequence_o);
-
 }
 
 void test_Copy_tc_sequenceToSequenceValueComposite(
@@ -1102,7 +1011,6 @@ void test_Copy_tc_sequenceToSequenceValueComposite(
     corto_parameter p2 = {"bar", corto_type(corto_float32_o), CORTO_IN, FALSE};
     corto_parameterseq v1 = {2, (corto_parameter[]){p1, p2}};
     corto_parameterseq v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, corto_parameterseq_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 2);
@@ -1113,7 +1021,6 @@ void test_Copy_tc_sequenceToSequenceValueComposite(
     test_assertstr(v2.buffer[1].name, "bar");
     test_assert(v2.buffer[1].type == corto_type(corto_float32_o));
     test_assert(v2.buffer[1].passByReference == FALSE);
-
 }
 
 void test_Copy_tc_sequenceWithInt(
@@ -1122,7 +1029,6 @@ void test_Copy_tc_sequenceWithInt(
     corto_int16 ret;
     test_IntSequence v1 = {4, (int32_t[]){10, 20, 30, 40}};
     test_IntSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_IntSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -1131,9 +1037,7 @@ void test_Copy_tc_sequenceWithInt(
     test_assertint(v2.buffer[1], 20);
     test_assertint(v2.buffer[2], 30);
     test_assertint(v2.buffer[3], 40);
-
     corto_ptr_deinit(&v2, test_IntSequence_o);
-
 }
 
 void test_Copy_tc_sequenceWithReference(
@@ -1142,7 +1046,6 @@ void test_Copy_tc_sequenceWithReference(
     corto_int16 ret;
     test_ReferenceSequence v1 = {4, (corto_object[]){corto_o, corto_lang_o, corto_class_o, NULL}};
     test_ReferenceSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_ReferenceSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -1151,9 +1054,7 @@ void test_Copy_tc_sequenceWithReference(
     test_assert(v2.buffer[1] == corto_lang_o);
     test_assert(v2.buffer[2] == corto_class_o);
     test_assert(v2.buffer[3] == NULL);
-
     corto_ptr_deinit(&v2, test_ReferenceSequence_o);
-
 }
 
 void test_Copy_tc_sequenceWithString(
@@ -1162,7 +1063,6 @@ void test_Copy_tc_sequenceWithString(
     corto_int16 ret;
     test_StringSequence v1 = {4, (char*[]){"HELLO", "WORLD", "FOO", "BAR"}};
     test_StringSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_StringSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -1171,9 +1071,7 @@ void test_Copy_tc_sequenceWithString(
     test_assertstr(v2.buffer[1], "WORLD");
     test_assertstr(v2.buffer[2], "FOO");
     test_assertstr(v2.buffer[3], "BAR");
-
     corto_ptr_deinit(&v2, test_StringSequence_o);
-
 }
 
 void test_Copy_tc_sequenceWithStruct(
@@ -1182,7 +1080,6 @@ void test_Copy_tc_sequenceWithStruct(
     corto_int16 ret;
     test_CompositeSequence v1 = {4, (test_Point[]){{10, 20}, {30, 40}, {50, 60}, {70, 80}}};
     test_CompositeSequence v2 = {0, NULL};
-
     ret = corto_ptr_copy(&v2, test_CompositeSequence_o, &v1);
     test_assert(ret == 0);
     test_assertint(v2.length, 4);
@@ -1195,9 +1092,7 @@ void test_Copy_tc_sequenceWithStruct(
     test_assertint(v2.buffer[2].y, 60);
     test_assertint(v2.buffer[3].x, 70);
     test_assertint(v2.buffer[3].y, 80);
-
     corto_ptr_deinit(&v2, test_CompositeSequence_o);
-
 }
 
 void test_Copy_tc_string(
@@ -1218,11 +1113,9 @@ void test_Copy_tc_struct(
 {
     test_Point v1 = {10, 20};
     test_Point v2 = {0};
-
     test_assert(corto_ptr_copy(&v2, test_Point_o, &v1) == 0);
     test_assertint(v2.x, 10);
     test_assertint(v2.y, 20);
-
 }
 
 void test_Copy_tc_structWithObservableArray(
@@ -1237,7 +1130,6 @@ void test_Copy_tc_structWithObservableArray(
     test_IntArrayAssign(*v1.m, 4, ((int32_t[]){
         1, 2, 3, 4
     }));
-
     corto_ptr_copy(&v2, test_struct_observableArray_o, &v1);
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
@@ -1245,10 +1137,8 @@ void test_Copy_tc_structWithObservableArray(
     test_assertint((*v2.m)[1], 2);
     test_assertint((*v2.m)[2], 3);
     test_assertint((*v2.m)[3], 4);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_observableArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_observableArray_o) == 0);
-
 }
 
 void test_Copy_tc_structWithObservableInt(
@@ -1402,7 +1292,6 @@ void test_Copy_tc_structWithOptionalArray(
     test_IntArraySet(v1.m, 4, ((int32_t[]){
         10, 20, 30, 40
     }));
-
     corto_ptr_copy(&v2, test_struct_optionalArray_o, &v1);
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
@@ -1410,10 +1299,8 @@ void test_Copy_tc_structWithOptionalArray(
     test_assertint((*v2.m)[1], 20);
     test_assertint((*v2.m)[2], 30);
     test_assertint((*v2.m)[3], 40);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalArray_o) == 0);
-
 }
 
 void test_Copy_tc_structWithOptionalInt(
@@ -1453,8 +1340,8 @@ void test_Copy_tc_structWithOptionalList(
 
     test_IntListSet(v1.m, 4, ((corto_int32[])
         {1, 2, 3, 4}
-    ));
 
+    ));
     corto_ptr_copy(&v2, test_struct_optionalList_o, &v1);
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
@@ -1463,10 +1350,8 @@ void test_Copy_tc_structWithOptionalList(
     test_assertint(test_IntListGet(*v2.m, 1), 2);
     test_assertint(test_IntListGet(*v2.m, 2), 3);
     test_assertint(test_IntListGet(*v2.m, 3), 4);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalList_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalList_o) == 0);
-
 }
 
 void test_Copy_tc_structWithOptionalReference(
@@ -1502,8 +1387,8 @@ void test_Copy_tc_structWithOptionalSequence(
 
     test_IntSequenceSet(v1.m, 4, ((corto_int32[])
         {1, 2, 3, 4}
-    ));
 
+    ));
     corto_ptr_copy(&v2, test_struct_optionalSequence_o, &v1);
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
@@ -1512,10 +1397,8 @@ void test_Copy_tc_structWithOptionalSequence(
     test_assertint(v2.m->buffer[1], 2);
     test_assertint(v2.m->buffer[2], 3);
     test_assertint(v2.m->buffer[3], 4);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalSequence_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalSequence_o) == 0);
-
 }
 
 void test_Copy_tc_structWithOptionalString(
@@ -1572,9 +1455,7 @@ void test_Copy_tc_structWithTargetArray(
 
     test_IntArray a = {10, 20, 30, 40};
     test_struct_targetArrayAssign(&v1, a);
-
     corto_ptr_copy(&v2, test_struct_targetArray_o, &v1);
-
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
     test_assertint(v2.m->actual[0], 10);
@@ -1589,10 +1470,8 @@ void test_Copy_tc_structWithTargetArray(
     test_assertint(v2.m->objective[1], 0);
     test_assertint(v2.m->objective[2], 0);
     test_assertint(v2.m->objective[3], 0);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_targetArray_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetArray_o) == 0);
-
 }
 
 void test_Copy_tc_structWithTargetInt(
@@ -1688,9 +1567,7 @@ void test_Copy_tc_structWithTargetSequence(
 
     test_IntSequence s = {4, (corto_int32[]){10, 20, 30, 40}};
     test_struct_targetSequenceAssign(&v1, s);
-
     corto_ptr_copy(&v2, test_struct_targetSequence_o, &v1);
-
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
     test_assertint(v2.m->actual.length, 4);
@@ -1701,10 +1578,8 @@ void test_Copy_tc_structWithTargetSequence(
     test_assertint(v2.m->actual.buffer[1], 20);
     test_assertint(v2.m->actual.buffer[2], 30);
     test_assertint(v2.m->actual.buffer[3], 40);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_targetSequence_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetSequence_o) == 0);
-
 }
 
 void test_Copy_tc_structWithTargetString(
@@ -1746,9 +1621,7 @@ void test_Copy_tc_structWithTargetStruct(
     test_struct_targetStructAssign(&v1, &p);
     test_assertint(v1.m->actual.x, 10);
     test_assertint(v1.m->actual.y, 20);
-
     corto_ptr_copy(&v2, test_struct_targetStruct_o, &v1);
-
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
     test_assertint(v2.m->actual.x, 10);
@@ -1757,10 +1630,8 @@ void test_Copy_tc_structWithTargetStruct(
     test_assertint(v2.m->target.y, 0);
     test_assertint(v2.m->objective.x, 0);
     test_assertint(v2.m->objective.y, 0);
-
     test_assert(corto_ptr_deinit(&v1, test_struct_targetStruct_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_targetStruct_o) == 0);
-
 }
 
 void test_Copy_tc_union(
@@ -1903,4 +1774,5 @@ void test_Copy_tc_unionWithStruct(
     /* << Insert implementation >> */
 
 }
+
 

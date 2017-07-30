@@ -4948,23 +4948,6 @@ corto_string corto_str(corto_object object, corto_uint32 maxLength) {
     return result;
 }
 
-corto_string corto_value_str(corto_value* v, corto_uint32 maxLength) {
-    corto_string_ser_t serData;
-    corto_walk_opt s;
-
-    serData.buffer = CORTO_BUFFER_INIT;
-    serData.buffer.max = maxLength;
-    serData.compactNotation = TRUE;
-    serData.prefixType = FALSE;
-    serData.enableColors = FALSE;
-
-    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
-    corto_walk_value(&s, v, &serData);
-    corto_string result = corto_buffer_str(&serData.buffer);
-    corto_walk_deinit(&s, &serData);
-    return result;
-}
-
 corto_int16 corto_fromStr(void *o, corto_string string) {
     corto_string_deser_t serData = {
         .out = *(void**)o,
@@ -4987,28 +4970,6 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_fromStr(corto_value *v, corto_string string) {
-    corto_string_deser_t serData = {
-        .out = corto_value_ptrof(v),
-        .type = corto_value_typeof(v),
-        .isObject = v->kind == CORTO_OBJECT
-    };
-
-    if (!corto_string_deser(string, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
-    }
-
-    if (serData.out) {
-        corto_value_ptrset(v, serData.out);
-    } else {
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
 corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
     corto_assertObject(o1);
     corto_assertObject(o2);
@@ -5021,18 +4982,6 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
     corto_walk(&s, o1, &data);
-
-    return data.result;
-}
-
-corto_equalityKind corto_value_compare(corto_value *value1, corto_value *value2) {
-    corto_compare_ser_t data;
-    corto_walk_opt s;
-
-    data.value = *value2;
-    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
-
-    corto_walk_value(&s, value1, &data);
 
     return data.result;
 }
@@ -5059,17 +5008,6 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_init(corto_value *v) {
-    corto_type type = corto_value_typeof(v);
-    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        if (corto_walk_value(&s, v, NULL)) {
-            return -1;
-        }
-    }
-    return corto_delegateInit(corto_value_typeof(v), corto_value_ptrof(v));
-}
-
 corto_int16 corto_deinit(corto_object o) {
     corto_assertObject(o);
     corto_type type = corto_typeof(o);
@@ -5081,17 +5019,6 @@ corto_int16 corto_deinit(corto_object o) {
         corto_walk(&s, o, NULL);
     }
 
-    return 0;
-}
-
-corto_int16 corto_value_deinit(corto_value *v) {
-    corto_type type = corto_value_typeof(v);
-    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        corto_walk_opt s =
-            corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        corto_walk_value(&s, v, NULL);
-    }
-    corto_delegateDeinit(corto_value_typeof(v), corto_value_ptrof(v));
     return 0;
 }
 
@@ -5113,28 +5040,6 @@ corto_int16 _corto_copy(corto_object *dst, corto_object src) {
 
     if (newObject) {
         corto_define(*dst);
-    }
-
-    return result;
-}
-
-corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
-    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-    corto_copy_ser_t data;
-    corto_int16 result;
-    corto_bool newObject = FALSE;
-
-    if (!corto_value_ptrof(dst)) {
-        corto_type t = corto_value_typeof(src);
-        *dst = corto_value_value(corto_declare(t), t);
-        newObject = TRUE;
-    }
-
-    data.value = *dst;
-    result = corto_walk_value(&s, src, &data);
-
-    if (newObject) {
-        corto_define(corto_value_ptrof(dst));
     }
 
     return result;

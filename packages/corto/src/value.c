@@ -22,6 +22,11 @@
 #include "corto/corto.h"
 #include "_object.h"
 
+#include "compare_ser.h"
+#include "copy_ser.h"
+#include "init_ser.h"
+#include "memory_ser.h"
+
 corto_type corto_value_typeof(corto_value* val) {
     corto_type result;
 
@@ -1047,4 +1052,103 @@ corto_string corto_value_contentof(corto_value *v, corto_string contentType) {
     return result;
 error:
     return NULL;
+}
+
+corto_string corto_value_str(corto_value* v, corto_uint32 maxLength) {
+    corto_string_ser_t serData;
+    corto_walk_opt s;
+
+    serData.buffer = CORTO_BUFFER_INIT;
+    serData.buffer.max = maxLength;
+    serData.compactNotation = TRUE;
+    serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
+
+    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+    corto_walk_value(&s, v, &serData);
+    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_walk_deinit(&s, &serData);
+    return result;
+}
+
+corto_int16 corto_value_fromStr(corto_value *v, corto_string string) {
+    corto_string_deser_t serData = {
+        .out = corto_value_ptrof(v),
+        .type = corto_value_typeof(v),
+        .isObject = v->kind == CORTO_OBJECT
+    };
+
+    if (!corto_string_deser(string, &serData)) {
+        corto_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    if (serData.out) {
+        corto_value_ptrset(v, serData.out);
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+corto_equalityKind corto_value_compare(corto_value *value1, corto_value *value2) {
+    corto_compare_ser_t data;
+    corto_walk_opt s;
+
+    data.value = *value2;
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+
+    corto_walk_value(&s, value1, &data);
+
+    return data.result;
+}
+
+corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
+    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_copy_ser_t data;
+    corto_int16 result;
+    corto_bool newObject = FALSE;
+
+    if (!corto_value_ptrof(dst)) {
+        corto_type t = corto_value_typeof(src);
+        *dst = corto_value_value(corto_declare(t), t);
+        newObject = TRUE;
+    }
+
+    data.value = *dst;
+    result = corto_walk_value(&s, src, &data);
+
+    if (newObject) {
+        corto_define(corto_value_ptrof(dst));
+    }
+
+    return result;
+}
+
+corto_int16 corto_delegateInit(corto_type t, void *o);
+
+corto_int16 corto_value_init(corto_value *v) {
+    corto_type type = corto_value_typeof(v);
+    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+        corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        if (corto_walk_value(&s, v, NULL)) {
+            return -1;
+        }
+    }
+    return corto_delegateInit(corto_value_typeof(v), corto_value_ptrof(v));
+}
+
+void corto_delegateDeinit(corto_type t, void *o);
+
+corto_int16 corto_value_deinit(corto_value *v) {
+    corto_type type = corto_value_typeof(v);
+    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+        corto_walk_opt s =
+            corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        corto_walk_value(&s, v, NULL);
+    }
+    corto_delegateDeinit(corto_value_typeof(v), corto_value_ptrof(v));
+    return 0;
 }
