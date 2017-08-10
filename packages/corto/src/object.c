@@ -3715,6 +3715,8 @@ corto_int16 corto_publish(
     corto_string contentType,
     void *content)
 {
+    corto_assert(id != NULL, "NULL passed to 'id' parameter of corto_publish");
+
     corto_object o = corto_find(NULL, id, CORTO_FIND_DEFAULT);
     corto_int16 result = 0;
 

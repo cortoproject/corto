@@ -883,6 +883,8 @@ char* g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind) {
             corto_object e = corto_iter_next(&it);
             if (e == o) {
                 break;
+            } else if (corto_compare(e, o) == CORTO_EQ) {
+                break;
             }
             count ++;
         }
