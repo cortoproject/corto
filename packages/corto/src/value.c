@@ -221,19 +221,30 @@ corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_
             goto error;
         }
 
-        corto_member m = corto_interface_resolveMember(t, prev);
-        if (!m) {
-            corto_seterr(
-                "unresolved member '%s' in type '%s'",
-                prev,
-                corto_fullpath(NULL, t));
-            goto error;
+        if (!strcmp(prev, "super")) {
+            if (!(t = (corto_type)corto_interface(t)->base)) {
+                corto_seterr("super unpexpected: interface '%s' does not have a base",
+                    corto_fullpath(NULL, t));
+                goto error;
+            } else {
+                *out = corto_value_mem(ptr, t);
+            }
+        } else {
+            corto_member m = corto_interface_resolveMember(t, prev);
+            if (!m) {
+                corto_seterr(
+                    "unresolved member '%s' in type '%s'",
+                    prev,
+                    corto_fullpath(NULL, t));
+                goto error;
+            }
+
+            ptr = CORTO_OFFSET(ptr, m->offset);
+            t = m->type;
+
+            *out = corto_value_member(o, m, ptr);
         }
 
-        ptr = CORTO_OFFSET(ptr, m->offset);
-        t = m->type;
-
-        *out = corto_value_member(o, m, ptr);
         prev = cur + 1;
     } while (cur);
 

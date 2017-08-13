@@ -471,7 +471,7 @@ static char* corto_log_parseComponents(char *components[], char *msg) {
     char *ptr, *prev = msg, ch;
     int count = 0;
 
-    for (ptr = msg; (ch = *ptr) && (isalpha(ch) || isdigit(ch) || (ch == ':') || (ch == '/')); ptr++) {
+    for (ptr = msg; (ch = *ptr) && (isalpha(ch) || isdigit(ch) || (ch == ':') || (ch == '/') || (ch == '_')); ptr++) {
         if ((ch == ':') && (ptr[1] == ' ')) {
             *ptr = '\0';
             components[count ++] = prev;

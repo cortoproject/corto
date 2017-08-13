@@ -22,10 +22,28 @@
 #include "corto/corto.h"
 #include "_object.h" /* To mimic an object on stack */
 
+/* If application does not specify PRIMITIVE, replace with generic primitive
+ * that automatically walks constants */
+static corto_int16 corto_walk_primitive(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
+    corto_primitive t = corto_primitive(corto_value_typeof(v));
+
+    if (t->kind == CORTO_ENUM || t->kind == CORTO_BITMASK) {
+        return corto_walk_constants(s, v, userData);
+    } else {
+        return 0;
+    }
+}
 /* Do metawalk on type */
 corto_int16 _corto_metawalk(corto_walk_opt* s, corto_type type, void* userData) {
     corto__object* o;
     corto_int16 result;
+
+    /* Since we potentially overwrite some callbacks, make private copy */
+    corto_walk_opt private = *s;
 
     corto_assert(type != NULL, "corto_metawalk called with NULL type");
 
@@ -37,8 +55,13 @@ corto_int16 _corto_metawalk(corto_walk_opt* s, corto_type type, void* userData) 
 #ifndef NDEBUG
     o->magic = CORTO_MAGIC;
 #endif
-    s->visitAllCases = TRUE;
-    result = corto_walk(s, CORTO_OFFSET(o, sizeof(corto__object)), userData);
+    private.visitAllCases = TRUE;
+
+    if (!private.program[CORTO_PRIMITIVE]) {
+        private.program[CORTO_PRIMITIVE] = corto_walk_primitive;
+    }
+
+    result = corto_walk(&private, CORTO_OFFSET(o, sizeof(corto__object)), userData);
     corto_dealloc(o);
 
     return result;

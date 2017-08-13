@@ -58,7 +58,7 @@ char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
 }
 
 char *_corto_ptr_contentof(void *ptr, corto_type type, char *contentType) {
-    corto_value v = corto_value_value(ptr, type);
+    corto_value v = corto_value_mem(ptr, type);
     return corto_value_contentof(&v, contentType);
 }
 

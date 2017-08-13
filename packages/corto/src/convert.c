@@ -303,6 +303,7 @@ CORTO_DECL_TRANSFORM(string, bitmask) {
         do {
             switch(ch) {
             case '|':
+            case ',':
             case '\0':
                 *bptr = '\0';
                 constant = corto_find(toType, buffer, CORTO_FIND_DEFAULT);
