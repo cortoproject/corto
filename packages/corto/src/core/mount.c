@@ -731,16 +731,31 @@ void corto_mount_return(
 {
     corto_ll result = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
 
-    CORTO_UNUSED(this);
-
     if (!result) {
         result = corto_ll_new();
         corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, result);
     }
 
+    if (!r->id) {
+        corto_error("mount: returned result that doesn't set the id");
+        return;        
+    }
+    if (!r->parent) {
+        corto_error("mount: returned result that doesn't set the parent");
+        return;        
+    }
+    if (!r->type) {
+        corto_error("mount: returned result that doesn't set the type");
+        return;        
+    }
+    if (!r->value && this->contentTypeOutHandle) {
+        corto_error("mount: returned result that doesn't set value but mount has contentType");
+        return;
+    }
+
     corto_result *elem = corto_calloc(sizeof(corto_result));
     elem->id = corto_strdup(r->id);
-    elem->name = corto_strdup(r->name);
+    elem->name = r->name ? corto_strdup(r->name) : NULL;
     elem->parent = corto_strdup(r->parent);
     elem->type = corto_strdup(r->type);
     elem->value = (corto_word)r->value;
