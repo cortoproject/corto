@@ -227,7 +227,7 @@ corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_
                     corto_fullpath(NULL, t));
                 goto error;
             } else {
-                *out = corto_value_mem(ptr, t);
+                *out = corto_value_base(ptr, t);
             }
         } else {
             corto_member m = corto_interface_resolveMember(t, prev);
