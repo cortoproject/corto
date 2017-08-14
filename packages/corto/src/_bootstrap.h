@@ -1015,6 +1015,8 @@ CORTO_CLASS_O(lang, class, lang_struct, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_MEMBER_O(lang_class, implements, lang_interfaceseq, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_class, interfaceVector, lang_interfaceVectorseq, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, construct, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, validate, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, update, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, destruct, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_METHOD_O(lang_class, init, "()", lang_int16, corto_class_init);
     CORTO_METHOD_O(lang_class, construct, "()", lang_int16, corto_class_construct);
