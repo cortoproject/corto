@@ -1218,6 +1218,11 @@ int corto_start(char *appName) {
     }
 #endif
 
+    /* Create builtin root scopes */
+    corto_createChild(root_o, "config", corto_void_o);
+    corto_createChild(root_o, "data", corto_void_o);
+    corto_createChild(root_o, "home", corto_void_o);
+    
     corto_ok("init: initialized");
 
     return 0;

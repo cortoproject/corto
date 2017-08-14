@@ -264,9 +264,30 @@ void test_Select_tc_selectEmptyParentAst(
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
+    test_assertstr(r->id, "config");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
     test_assertstr(r->id, "corto");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "/corto/core/package");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "data");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "home");
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
 
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
